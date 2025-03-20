@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import authService from '../../services/auth';
 import { useAuth } from '../../hooks/useAuth';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Image from 'next/image';
 import { FaGoogle, FaFacebook, FaApple } from 'react-icons/fa';
 import Modal from '../../components/ui/Modal'; // Assuming you have a Modal component
 
@@ -12,7 +11,7 @@ export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const { user, loading } = useAuth(); // Get user and loading from AuthContext
+    const { login, user, loading } = useAuth(); // Get user and loading from useAuth
     const router = useRouter();
     const searchParams = useSearchParams();
     const [inactiveLogoutModalOpen, setInactiveLogoutModalOpen] = useState(false);
@@ -29,16 +28,15 @@ export default function LoginPage() {
         if (!loading && user) { // Check if not loading AND user is logged in
             router.push('/dashboard'); // Redirect to dashboard
         }
-    }, [user, loading, router]);
+    }, [user, loading, router]); // Add user, loading, router to dependency array
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         try {
             const { user, token } = await authService.login({ email, password });
-            // Login state is handled by AuthContext, no need to redirect here,
-            // the useEffect above will handle redirection after successful login
-            // because 'user' in AuthContext will be updated.
+            login(user, token);
+            router.push('/dashboard');
         } catch (err) {
             setError(err);
         }
@@ -46,30 +44,17 @@ export default function LoginPage() {
 
     const closeModal = () => {
         setInactiveLogoutModalOpen(false);
-        router.replace('/auth/login');
+        router.replace('/auth/login'); // Remove the query param from URL
     };
-
-    if (loading) { // Add loading state handling to prevent flashing login page
-        return <p>Loading...</p>; // Or a loading spinner
-    }
-
-    if (user) { // User is already logged in, no need to render login form
-        return null; // Redirect is handled by useEffect, so return null here to avoid rendering form briefly
-    }
 
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-            {/* ... rest of your login page UI code ... */}
             <div className="w-full max-w-md">
-                <div className="mb-8 flex justify-center">
-                    <Image src={WiseLogo} alt="Wise Logo" width={100} height={30} />
-                </div>
                 <div className="bg-white shadow rounded-lg px-8 pt-6 pb-8 mb-4">
 
                     {inactiveLogoutModalOpen && (
                         <Modal isOpen={inactiveLogoutModalOpen} onClose={closeModal}>
-                            {/* ... Inactive Logout Modal content ... */}
                             <div className="flex items-start space-x-4">
                                 <div className="flex-shrink-0">
                                     <div className="flex items-center justify-center h-12 w-12 rounded-full bg-gray-100">
