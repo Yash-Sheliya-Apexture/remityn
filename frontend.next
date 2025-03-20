@@ -1,0 +1,91 @@
+frontend/
+├── public/             (Static assets - images, fonts, etc.)
+├── src/                (Source code)
+│   ├── app/             (Next.js App Router structure - Pages, Layouts, Route Handlers)
+│   │   ├── (website)/    (Website related routes - public facing)
+│   │   │   ├── page.js     (Home page)
+│   │   │   ├── about/
+│   │   │   │   └── page.js
+│   │   │   ├── contact/
+│   │   │   │   └── page.js
+│   │   │   └── ...
+│   │   ├── dashboard/    (User Dashboard routes - protected)
+│   │   │   ├── layout.js   (Dashboard layout)
+│   │   │   ├── page.js     (Dashboard landing page)
+│   │   │   ├── profile/
+│   │   │   │   └── page.js
+│   │   │   ├── settings/
+│   │   │   │   └── page.js
+│   │   │   └── ...
+│   │   ├── admin/        (Admin Panel routes - protected, admin role)
+│   │   │   ├── layout.js   (Admin layout)
+│   │   │   ├── page.js     (Admin dashboard landing page)
+│   │   │   ├── users/
+│   │   │   │   ├── page.js   (User management page)
+│   │   │   │   ├── [userId]/
+│   │   │   │   │   └── page.js (Individual user details)
+│   │   │   ├── content/
+│   │   │   │   └── page.js   (Content management page)
+│   │   │   └── ...
+│   │   ├── auth/         (Authentication related routes - login, register - could be modals/components instead)
+│   │   │   ├── login/
+│   │   │   │   └── page.js
+│   │   │   ├── register/
+│   │   │   │   └── page.js
+│   │   │   └── ...
+│   │   └── api/          (Frontend API route handlers - for server-side logic within Next.js - less common in this setup as backend is separate, but good to know)
+│   ├── components/       (Reusable React components)
+│   │   ├── ui/           (Generic UI components - buttons, inputs, modals, etc.)
+│   │   │   ├── Button.js
+│   │   │   ├── Input.js
+│   │   │   ├── Modal.js
+│   │   │   └── ...
+│   │   ├── layout/       (Layout components - website header, footer, dashboard sidebar)
+│   │   │   ├── WebsiteLayout.js
+│   │   │   ├── DashboardLayout.js
+│   │   │   ├── AdminLayout.js
+│   │   │   └── ...
+│   │   ├── features/     (Feature-specific components - e.g., UserProfile, ContentCard, AnalyticsDashboard)
+│   │   │   ├── UserProfile.js
+│   │   │   ├── ContentCard.js
+│   │   │   ├── AnalyticsDashboard.js
+│   │   │   └── ...
+│   │   ├── common/       (Highly reusable, cross-feature components - maybe form components, data display components)
+│   │   │   └── ...
+│   ├── services/         (API service layer - functions to interact with backend API)
+│   │   ├── auth.js       (Authentication API calls)
+│   │   ├── user.js       (User related API calls)
+│   │   ├── content.js    (Content related API calls)
+│   │   └── ...
+│   ├── utils/            (Utility functions, helpers - formatting, validation, etc.)
+│   │   ├── date.js
+│   │   ├── validation.js
+│   │   ├── helpers.js
+│   │   └── ...
+│   ├── contexts/         (React Contexts for state management - e.g., AuthContext, ThemeContext)
+│   │   ├── AuthContext.js
+│   │   ├── ThemeContext.js
+│   │   └── ...
+│   ├── hooks/            (Custom React hooks - for logic reuse)
+│   │   ├── useAuth.js
+│   │   ├── useForm.js
+│   │   └── ...
+│   ├── styles/           (Global styles, component-specific styles - CSS modules, Tailwind config, etc.)
+│   │   ├── global.css
+│   │   ├── components/    (Component-specific CSS modules)
+│   │   │   ├── Button.module.css
+│   │   │   └── ...
+│   │   ├── tailwind.config.js (Tailwind configuration if used)
+│   │   └── ...
+│   ├── types/            (TypeScript type definitions - if using TypeScript)
+│   │   ├── user.ts
+│   │   ├── content.ts
+│   │   └── ...
+│   ├── assets/           (Frontend specific assets - images, icons for frontend only)
+│   │   ├── images/
+│   │   ├── icons/
+│   │   └── ...
+│   └── ...
+├── next.config.js        (Next.js configuration)
+├── package.json          (Frontend dependencies and scripts)
+└── ...

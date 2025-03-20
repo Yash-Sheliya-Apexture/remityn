@@ -1,0 +1,57 @@
+// backend/src/validators/auth.validators.js
+import validator from 'validator'; // Import validator library for input validation
+
+const validateRegister = (req, res, next) => {
+    const { fullName, email, password } = req.body;
+
+    // Check for missing fields
+    if (!fullName) {
+        return res.status(400).json({ message: 'Full Name is required.' });
+    }
+    if (!email) {
+        return res.status(400).json({ message: 'Email is required.' });
+    }
+    if (!password) {
+        return res.status(400).json({ message: 'Password is required.' });
+    }
+
+    // Input validation using 'validator' library
+    if (!validator.isLength(fullName, { min: 2, max: 50 })) { // Example: Full name length validation
+        return res.status(400).json({ message: 'Full Name must be between 2 and 50 characters.' });
+    }
+
+    if (!validator.isEmail(email)) { // Validate email format
+        return res.status(400).json({ message: 'Invalid email format.' });
+    }
+
+    if (!validator.isLength(password, { min: 8 })) { // Example: Password length validation
+        return res.status(400).json({ message: 'Password must be at least 8 characters long.' });
+    }
+    // Add more robust password strength validation if needed (e.g., using regex for special characters, numbers, uppercase, lowercase)
+
+    next(); // If validation passes, proceed to the next middleware or route handler
+};
+
+const validateLogin = (req, res, next) => {
+    const { email, password } = req.body;
+
+    // Check for missing fields
+    if (!email) {
+        return res.status(400).json({ message: 'Email is required.' });
+    }
+    if (!password) {
+        return res.status(400).json({ message: 'Password is required.' });
+    }
+
+    // Validate email format for login
+    if (!validator.isEmail(email)) {
+        return res.status(400).json({ message: 'Invalid email format.' });
+    }
+
+    next(); // If validation passes, proceed
+};
+
+export default {
+    validateRegister,
+    validateLogin,
+};
