@@ -1,1 +1,37 @@
 @import "tailwindcss";
+
+@import './style/font.css';
+@import './style/style.css';
+
+body {
+    font-family: var(--font-Outfit);
+}
+
+@theme {
+    --font-mont: var(--font-Montserrat);
+    --color-main: #0e0f0c;
+    --color-lightgreen: #9fe870;
+    --color-lightgreen-hover: #80e142;
+    --color-gray: #454745;
+    --color-green: #163300;
+    --shadow-color: inset 0 0 0 2px #6c6c6b;
+}
+
+
+@keyframes float {
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-20px) rotate(180deg);
+    }
+
+    100% {
+        transform: translateY(0) rotate(360deg);
+    }
+}
+
+.animate-float {
+    animation: float 15s infinite;
+}
