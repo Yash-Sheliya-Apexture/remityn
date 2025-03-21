@@ -1,9 +1,9 @@
-
 'use client'
 
 import { useAuth } from '../../hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import DashboardHeader from '../section/DashboardHeader';
 
 export default function DashboardLayout({ children }) {
     const { user, loading } = useAuth();
@@ -26,19 +26,18 @@ export default function DashboardLayout({ children }) {
     return (
         <div className="dashboard-layout">
             <header>
-                <h1>Dashboard</h1>
-                {/* Navigation, user info, etc. */}
+                <DashboardHeader />
             </header>
             <aside>
                 {/* Sidebar navigation */}
                 <ul>
-                    <li><a href="/dashboard">Dashboard Home</a></li>
+                    {/* <li><a href="/dashboard">Dashboard Home</a></li>
                     <li><a href="/dashboard/profile">Profile</a></li>
-                    <li><a href="/dashboard/settings">Settings</a></li>
+                    <li><a href="/dashboard/settings">Settings</a></li> */}
                     {/* ... other dashboard links */}
                 </ul>
             </aside>
-            <main className="dashboard-content">{children}</main>
+            {/* <main className="dashboard-content">{children}</main> */}
             <footer>
                 {/* Footer content */}
             </footer>
