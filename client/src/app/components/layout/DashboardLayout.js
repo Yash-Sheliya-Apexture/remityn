@@ -1,46 +1,59 @@
-'use client'
-
-import { useAuth } from '../../hooks/useAuth';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import DashboardHeader from '../section/DashboardHeader';
+// layout.tsx
+"use client";
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../../hooks/useAuth";
+import { useRouter } from "next/navigation";
+import Sidebar from "../../dashboard/components/Sidebar"; // Import Sidebar component
+import Header from "../../dashboard/components/Header";
 
 export default function DashboardLayout({ children }) {
-    const { user, loading } = useAuth();
-    const router = useRouter();
+  // State to manage sidebar, notifications, and active section
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-    useEffect(() => {
-        if (!loading && !user) {
-            router.push('/auth/login'); // Redirect to login if not authenticated
-        }
-    }, [user, loading, router]);
+  const [isSendModalOpen, setIsSendModalOpen] = useState(false); // State for Send Money Modal
+  const [isAddMoneyModalOpen, setIsAddMoneyModalOpen] = useState(false); // State for Add Money Modal
 
-    if (loading) {
-        return <p>Loading dashboard...</p>; // Or a spinner
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/auth/login"); // Redirect to login if not authenticated
     }
+  }, [user, loading, router]);
 
-    if (!user) {
-        return null; // Redirect is handled in useEffect, so return null here
-    }
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
-    return (
-        <div className="dashboard-layout">
-            <header>
-                <DashboardHeader />
-            </header>
-            <aside>
-                {/* Sidebar navigation */}
-                <ul>
-                    {/* <li><a href="/dashboard">Dashboard Home</a></li>
-                    <li><a href="/dashboard/profile">Profile</a></li>
-                    <li><a href="/dashboard/settings">Settings</a></li> */}
-                    {/* ... other dashboard links */}
-                </ul>
-            </aside>
-            {/* <main className="dashboard-content">{children}</main> */}
-            <footer>
-                {/* Footer content */}
-            </footer>
+  if (loading) {
+    return <p>Loading dashboard...</p>; // Or a spinner
+  }
+
+  if (!user) {
+    return null; // Redirect is handled in useEffect, so return null here
+  }
+
+  return (
+    <div className="dashboard-layout">
+
+        <div className="bg-white max-w-[1440px] mx-auto">
+          <div className="flex h-screen">
+            <Sidebar
+              sidebarOpen={isSidebarOpen}
+              toggleSidebar={toggleSidebar}
+            />
+            <div className="flex-1 flex flex-col overflow-hidden">
+              <Header toggleSidebar={toggleSidebar} />
+              {/* Main Content */}
+              <main className="flex-1 overflow-x-hidden overflow-y-auto scrollbar-hide">
+                <div className="max-w-5xl mx-auto px-4">
+                  {children} {/* Render page content here */}
+                </div>
+              </main>
+            </div>
+          </div>
         </div>
-    );
+    </div>
+  );
 }
