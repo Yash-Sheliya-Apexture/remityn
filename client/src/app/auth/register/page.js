@@ -67,11 +67,11 @@
 //     return (
 //         <div className="flex justify-center items-center min-h-screen px-4">
 //             <div className="w-full max-w-md mt-10">
-//                 <h2 className="text-3xl font-semibold text-center text-main mb-4">
+//                 <h2 className="text-3xl text-center text-main font-semibold mb-4">
 //                     Create your Wise account
 //                 </h2>
 
-//                 <p className="text-base text-gray text-center mb-4">
+//                 <p className="text-base text-center text-gray mb-4">
 //                     Already have an account?{" "}
 //                     <Link
 //                         href="/login"
@@ -86,18 +86,18 @@
 
 
 
-//                 <form onSubmit={handleSubmit} className="space-y-4 mt-10">
+//                 <form onSubmit={handleSubmit} className="mt-10 space-y-4">
 //                     <div>
 //                         <label
 //                             htmlFor="fullName"
-//                             className="block text-base text-gray capitalize"
+//                             className="text-base text-gray block capitalize"
 //                         >
 //                             Full Name
 //                         </label>
 //                         <input
 //                             type="text"
 //                             id="fullName"
-//                             className="mt-1 block px-4 py-3 w-full border rounded-lg border-[#c9cbce] hover:shadow-color hover:outline-none transition-shadow ease-in-out duration-300"
+//                             className="border border-[#c9cbce] rounded-lg w-full block duration-300 ease-in-out hover:outline-none hover:shadow-color mt-1 px-4 py-3 transition-shadow"
 //                             value={fullName}
 //                             onChange={(e) => setFullName(e.target.value)}
 //                         />
@@ -106,14 +106,14 @@
 //                     <div>
 //                         <label
 //                             htmlFor="email"
-//                             className="block text-base text-gray capitalize"
+//                             className="text-base text-gray block capitalize"
 //                         >
 //                             Email Address
 //                         </label>
 //                         <input
 //                             type="email"
 //                             id="email"
-//                             className="mt-1 block px-4 py-3 w-full border border-[#c9cbce] hover:shadow-color rounded-lg hover:outline-none transition-shadow ease-in-out duration-300"
+//                             className="border border-[#c9cbce] rounded-lg w-full block duration-300 ease-in-out hover:outline-none hover:shadow-color mt-1 px-4 py-3 transition-shadow"
 //                             value={email}
 //                             onChange={(e) => setEmail(e.target.value)}
 //                         />
@@ -122,7 +122,7 @@
 //                     <div>
 //                         <label
 //                             htmlFor="password"
-//                             className="block text-base text-gray capitalize"
+//                             className="text-base text-gray block capitalize"
 //                         >
 //                             Password
 //                         </label>
@@ -130,13 +130,13 @@
 //                             <input
 //                                 type={showPassword ? "text" : "password"}
 //                                 id="password"
-//                                 className="mt-1 block px-4 py-3 w-full border rounded-lg border-[#c9cbce] hover:shadow-color hover:outline-none transition-shadow ease-in-out duration-300"
+//                                 className="border border-[#c9cbce] rounded-lg w-full block duration-300 ease-in-out hover:outline-none hover:shadow-color mt-1 px-4 py-3 transition-shadow"
 //                                 value={password}
 //                                 onChange={(e) => setPassword(e.target.value)}
 //                             />
 //                             <button
 //                                 type="button"
-//                                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+//                                 className="text-gray-500 -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-3 top-1/2 transform"
 //                                 onClick={togglePasswordVisibility}
 //                             >
 //                                 {showPassword ? (
@@ -153,7 +153,7 @@
 //                     <div>
 //                         <label
 //                             htmlFor="confirmPassword"
-//                             className="block text-base text-gray capitalize"
+//                             className="text-base text-gray block capitalize"
 //                         >
 //                             Confirm Password
 //                         </label>
@@ -161,13 +161,13 @@
 //                             <input
 //                                 type={showConfirmPassword ? "text" : "password"}
 //                                 id="confirmPassword"
-//                                 className="mt-1 block px-4 py-3 w-full border rounded-lg border-[#c9cbce] hover:shadow-color hover:outline-none transition-shadow ease-in-out duration-300"
+//                                 className="border border-[#c9cbce] rounded-lg w-full block duration-300 ease-in-out hover:outline-none hover:shadow-color mt-1 px-4 py-3 transition-shadow"
 //                                 value={confirmPassword}
 //                                 onChange={(e) => setConfirmPassword(e.target.value)}
 //                             />
 //                             <button
 //                                 type="button"
-//                                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+//                                 className="text-gray-500 -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-3 top-1/2 transform"
 //                                 onClick={toggleConfirmPasswordVisibility}
 //                             >
 //                                 {showConfirmPassword ? (
@@ -183,7 +183,7 @@
 //                     {/* Next Button */}
 //                     <button
 //                         type="submit"
-//                         className="w-full py-2.5 bg-lightgreen hover:bg-lightgreen-hover rounded-full font-medium text-lg cursor-pointer transition-colors duration-300 ease-in-out text-green focus:outline-none"
+//                         className="bg-lightgreen rounded-full text-green text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium hover:bg-lightgreen-hover py-2.5 transition-colors"
 //                     >
 //                         Next
 //                     </button>
@@ -192,7 +192,7 @@
 //                 <div className="mt-4">
 //                     <p className="text-base text-gray mb-3">Or log in with</p>
 //                     <div className="mt-4">
-//                         <button className="cursor-pointer text-gray gap-4 border border-gray rounded-full hover:bg-gray-100 flex justify-center w-full items-center bg-white px-4 py-2 font-medium text-md ">
+//                         <button className="flex bg-white border border-gray justify-center rounded-full text-gray text-md w-full cursor-pointer font-medium gap-4 hover:bg-gray-100 items-center px-4 py-2">
 //                             <Image
 //                                 src="/assets/icon/google.svg"
 //                                 width={30}
@@ -204,7 +204,7 @@
 //                     </div>
 //                 </div>
 
-//                 <p className="text-gray my-5 text-center">
+//                 <p className="text-center text-gray my-5">
 //                     By registering, you accept our{" "}
 //                     <Link
 //                         href="/terms-and-conditions"
@@ -346,11 +346,11 @@
 //     return (
 //         <div className="flex justify-center items-center min-h-screen px-4">
 //             <div className="w-full max-w-md mt-10">
-//                 <h2 className="text-3xl font-semibold text-center text-main mb-4">
+//                 <h2 className="text-3xl text-center text-main font-semibold mb-4">
 //                     Create your Wise account
 //                 </h2>
 
-//                 <p className="text-base text-gray text-center mb-4">
+//                 <p className="text-base text-center text-gray mb-4">
 //                     Already have an account?{" "}
 //                     <Link
 //                         href="/login"
@@ -365,11 +365,11 @@
 
 
 
-//                 <form onSubmit={handleSubmit} className="space-y-4 mt-5">
+//                 <form onSubmit={handleSubmit} className="mt-5 space-y-4">
 //                     <div>
 //                         <label
 //                             htmlFor="fullName"
-//                             className="block text-base text-gray capitalize"
+//                             className="text-base text-gray block capitalize"
 //                         >
 //                             Full Name
 //                         </label>
@@ -381,7 +381,7 @@
 //                             onChange={(e) => setFullName(e.target.value)}
 //                         />
 //                         {fullNameError && (
-//                             <p className="text-[#a8200d] text-base mt-0.5 flex items-center">
+//                             <p className="flex text-[#a8200d] text-base items-center mt-0.5">
 //                                 <span className="mr-1">
 //                                     <IoMdCloseCircle className="size-5" />
 //                                 </span>
@@ -393,7 +393,7 @@
 //                     <div>
 //                         <label
 //                             htmlFor="email"
-//                             className="block text-base text-gray capitalize"
+//                             className="text-base text-gray block capitalize"
 //                         >
 //                             Email Address
 //                         </label>
@@ -405,7 +405,7 @@
 //                             onChange={(e) => setEmail(e.target.value)}
 //                         />
 //                         {emailError && (
-//                             <p className="text-[#a8200d] text-base mt-0.5 flex items-center">
+//                             <p className="flex text-[#a8200d] text-base items-center mt-0.5">
 //                                 <span className="mr-1">
 //                                     <IoMdCloseCircle className="size-5" />
 //                                 </span>
@@ -417,7 +417,7 @@
 //                     <div>
 //                         <label
 //                             htmlFor="password"
-//                             className="block text-base text-gray capitalize"
+//                             className="text-base text-gray block capitalize"
 //                         >
 //                             Password
 //                         </label>
@@ -431,7 +431,7 @@
 //                             />
 //                             <button
 //                                 type="button"
-//                                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+//                                 className="text-gray-500 -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-3 top-1/2 transform"
 //                                 onClick={togglePasswordVisibility}
 //                             >
 //                                 {showPassword ? (
@@ -442,7 +442,7 @@
 //                             </button>
 //                         </div>
 //                         {passwordError && (
-//                             <p className="text-[#a8200d] text-base mt-0.5 flex items-center">
+//                             <p className="flex text-[#a8200d] text-base items-center mt-0.5">
 //                                 <span className="mr-1">
 //                                     <IoMdCloseCircle className="size-5" />
 //                                 </span>
@@ -454,7 +454,7 @@
 //                     <div>
 //                         <label
 //                             htmlFor="confirmPassword"
-//                             className="block text-base text-gray capitalize"
+//                             className="text-base text-gray block capitalize"
 //                         >
 //                             Confirm Password
 //                         </label>
@@ -468,7 +468,7 @@
 //                             />
 //                             <button
 //                                 type="button"
-//                                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+//                                 className="text-gray-500 -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-3 top-1/2 transform"
 //                                 onClick={toggleConfirmPasswordVisibility}
 //                             >
 //                                 {showConfirmPassword ? (
@@ -479,7 +479,7 @@
 //                             </button>
 //                         </div>
 //                         {confirmPasswordError && (
-//                             <p className="text-[#a8200d] text-base mt-0.5 flex items-center">
+//                             <p className="flex text-[#a8200d] text-base items-center mt-0.5">
 //                                 <span className="mr-1">
 //                                     <IoMdCloseCircle className="size-5" />
 //                                 </span>
@@ -492,7 +492,7 @@
 //                     {/* Next Button */}
 //                     <button
 //                         type="submit"
-//                         className="w-full py-2.5 bg-lightgreen hover:bg-lightgreen-hover rounded-full font-medium text-lg cursor-pointer transition-colors duration-300 ease-in-out text-green focus:outline-none"
+//                         className="bg-lightgreen rounded-full text-green text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium hover:bg-lightgreen-hover py-2.5 transition-colors"
 //                     >
 //                         Next
 //                     </button>
@@ -501,7 +501,7 @@
 //                 <div className="mt-4">
 //                     <p className="text-base text-gray mb-3">Or log in with</p>
 //                     <div className="mt-4">
-//                         <button className="cursor-pointer text-gray gap-4 border border-gray rounded-full hover:bg-gray-100 flex justify-center w-full items-center bg-white px-4 py-2 font-medium text-md ">
+//                         <button className="flex bg-white border border-gray justify-center rounded-full text-gray text-md w-full cursor-pointer font-medium gap-4 hover:bg-gray-100 items-center px-4 py-2">
 //                             <Image
 //                                 src="/assets/icon/google.svg"
 //                                 width={30}
@@ -513,7 +513,7 @@
 //                     </div>
 //                 </div>
 
-//                 <p className="text-gray my-5 text-center">
+//                 <p className="text-center text-gray my-5">
 //                     By registering, you accept our{" "}
 //                     <Link
 //                         href="/terms-and-conditions"
@@ -549,7 +549,7 @@ import { IoMdCloseCircle } from "react-icons/io";
 import { FaExclamation } from "react-icons/fa6";
 import { RiEyeCloseLine } from "react-icons/ri";
 import { VscEye } from "react-icons/vsc";
-
+import { IoClose } from 'react-icons/io5';
 
 
 export default function RegisterPage() {
@@ -663,25 +663,23 @@ export default function RegisterPage() {
     return (
         <div className="flex justify-center items-center min-h-screen px-4">
             <div className="w-full max-w-md mt-10">
-                <h2 className="text-3xl font-semibold text-center text-main mb-4">
+                <h2 className="text-3xl text-center text-main font-semibold mb-4">
                     Create your Wise account
                 </h2>
 
-                <p className="text-base text-gray text-center mb-4">
+                <p className="text-base text-center text-gray mb-4">
                     Already have an account?{" "}
                     <Link
-                        href="/login"
+                        href="/auth/login"
                         className="text-green font-medium underline underline-offset-4"
                     >
                         Log in
                     </Link>
                 </p>
 
-
-                {/* {error && <p className="text-red-500 text-sm mb-4">{error}</p>} */}
                 {error && (
                     <div
-                        className="flex bg-green/8 p-6 rounded-2xl gap-4 items-center lg:gap-6 relative"
+                        className="flex bg-green/8 p-4 rounded-2xl gap-4 items-center lg:gap-6 relative"
                         role="alert"
                     >
                         <div className="flex bg-[#a8200d] justify-center rounded-full items-center size-12">
@@ -705,11 +703,11 @@ export default function RegisterPage() {
                 )}
 
 
-                <form onSubmit={handleSubmit} className="space-y-4 mt-5">
+                <form onSubmit={handleSubmit} className="mt-5 space-y-4">
                     <div>
                         <label
                             htmlFor="fullName"
-                            className="block text-base text-gray capitalize"
+                            className="text-gray text-sm block capitalize"
                         >
                             Full Name
                         </label>
@@ -724,7 +722,7 @@ export default function RegisterPage() {
                             onChange={(e) => setFullName(e.target.value)}
                         />
                         {fullNameError && (
-                            <p className="text-[#a8200d] text-base mt-0.5 flex items-center">
+                            <p className="flex text-[#a8200d] text-base items-center mt-0.5">
                                 <span className="mr-1">
                                     <IoMdCloseCircle className="size-5" />
                                 </span>
@@ -736,7 +734,7 @@ export default function RegisterPage() {
                     <div>
                         <label
                             htmlFor="email"
-                            className="block text-base text-gray capitalize"
+                            className="text-gray text-sm block capitalize"
                         >
                             Email Address
                         </label>
@@ -751,7 +749,7 @@ export default function RegisterPage() {
                             onChange={(e) => setEmail(e.target.value)}
                         />
                         {emailError && (
-                            <p className="text-[#a8200d] text-base mt-0.5 flex items-center">
+                            <p className="flex text-[#a8200d] text-base items-center mt-0.5">
                                 <span className="mr-1">
                                     <IoMdCloseCircle className="size-5" />
                                 </span>
@@ -763,7 +761,7 @@ export default function RegisterPage() {
                     <div>
                         <label
                             htmlFor="password"
-                            className="block text-base text-gray capitalize"
+                            className="text-gray text-sm block capitalize"
                         >
                             Password
                         </label>
@@ -780,7 +778,7 @@ export default function RegisterPage() {
                             />
                             <button
                                 type="button"
-                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                                className="text-gray-500 -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-3 top-1/2 transform"
                                 onClick={togglePasswordVisibility}
                             >
                                 {showPassword ? (
@@ -791,7 +789,7 @@ export default function RegisterPage() {
                             </button>
                         </div>
                         {passwordError && (
-                            <p className="text-[#a8200d] text-base mt-0.5 flex items-center">
+                            <p className="flex text-[#a8200d] text-base items-center mt-0.5">
                                 <span className="mr-1">
                                     <IoMdCloseCircle className="size-5" />
                                 </span>
@@ -803,7 +801,7 @@ export default function RegisterPage() {
                     <div>
                         <label
                             htmlFor="confirmPassword"
-                            className="block text-base text-gray capitalize"
+                            className="text-gray text-sm block capitalize"
                         >
                             Confirm Password
                         </label>
@@ -820,7 +818,7 @@ export default function RegisterPage() {
                             />
                             <button
                                 type="button"
-                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                                className="text-gray-500 -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-3 top-1/2 transform"
                                 onClick={toggleConfirmPasswordVisibility}
                             >
                                 {showConfirmPassword ? (
@@ -831,7 +829,7 @@ export default function RegisterPage() {
                             </button>
                         </div>
                         {confirmPasswordError && (
-                            <p className="text-[#a8200d] text-base mt-0.5 flex items-center">
+                            <p className="flex text-[#a8200d] text-base items-center mt-0.5">
                                 <span className="mr-1">
                                     <IoMdCloseCircle className="size-5" />
                                 </span>
@@ -844,7 +842,7 @@ export default function RegisterPage() {
                     {/* Next Button */}
                     <button
                         type="submit"
-                        className="w-full py-2.5 bg-lightgreen hover:bg-lightgreen-hover rounded-full font-medium text-lg cursor-pointer transition-colors duration-300 ease-in-out text-green focus:outline-none"
+                        className="bg-lightgreen rounded-full text-green text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium hover:bg-lightgreen-hover py-2.5 transition-colors"
                     >
                         Next
                     </button>
@@ -853,7 +851,7 @@ export default function RegisterPage() {
                 <div className="mt-4">
                     <p className="text-base text-gray mb-3">Or log in with</p>
                     <div className="mt-4">
-                        <button className="cursor-pointer text-gray gap-4 border border-gray rounded-full hover:bg-gray-100 flex justify-center w-full items-center bg-white px-4 py-2 font-medium text-md ">
+                        <button className="flex bg-white border border-gray justify-center rounded-full text-gray text-md w-full cursor-pointer font-medium gap-4 hover:bg-gray-100 items-center px-4 py-2">
                             <Image
                                 src="/assets/icon/google.svg"
                                 width={30}
@@ -865,7 +863,7 @@ export default function RegisterPage() {
                     </div>
                 </div>
 
-                <p className="text-gray my-5 text-center">
+                <p className="text-center text-gray my-5">
                     By registering, you accept our{" "}
                     <Link
                         href="/terms-and-conditions"
