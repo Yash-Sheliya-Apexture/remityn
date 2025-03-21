@@ -48,10 +48,6 @@ coverage/
 *.min.js
 *.gz
 
-# Ignore all unnecessary generated or build folders
-client/public/
-server/public/
-
 # Ignore other cache or temp files
 .cache/
 .pnp/
