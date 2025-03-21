@@ -601,8 +601,8 @@ export default function RegisterPage() {
         if (!password.trim()) {
             setPasswordError('Password is required');
             isValid = false;
-        } else if (password.length < 6) {
-            setPasswordError('Password must be at least 6 characters');
+        } else if (password.length < 8) {
+            setPasswordError('Password must be at least 8 characters');
             isValid = false;
         } else {
             setPasswordError('');
@@ -663,7 +663,7 @@ export default function RegisterPage() {
     return (
         <div className="flex justify-center items-center min-h-screen px-4">
             <div className="w-full max-w-md mt-10">
-                <h2 className="text-3xl text-center text-main font-semibold mb-4">
+                <h2 className="lg:text-3xl text-2xl text-center text-main font-semibold mb-4">
                     Create your Wise account
                 </h2>
 
@@ -703,7 +703,20 @@ export default function RegisterPage() {
                 )}
 
 
-                <form onSubmit={handleSubmit} className="mt-5 space-y-4">
+                <form onSubmit={handleSubmit} className="mt-10 space-y-4">
+                    <div>
+                        <div className="mt-4">
+                            <a className="flex bg-white border border-gray justify-center rounded-lg text-gray text-md w-full cursor-pointer font-medium gap-4 hover:bg-gray-100 items-center px-4 py-2">
+                                <Image
+                                    src="/assets/icon/google.svg"
+                                    width={30}
+                                    height={30}
+                                    alt="Continue with Google"
+                                />
+                                Continue with Google
+                            </a>
+                        </div>
+                    </div>
                     <div>
                         <label
                             htmlFor="fullName"
@@ -848,22 +861,7 @@ export default function RegisterPage() {
                     </button>
                 </form>
 
-                <div className="mt-4">
-                    <p className="text-base text-gray mb-3">Or log in with</p>
-                    <div className="mt-4">
-                        <button className="flex bg-white border border-gray justify-center rounded-full text-gray text-md w-full cursor-pointer font-medium gap-4 hover:bg-gray-100 items-center px-4 py-2">
-                            <Image
-                                src="/assets/icon/google.svg"
-                                width={30}
-                                height={30}
-                                alt="Continue with Google"
-                            />
-                            Continue with Google
-                        </button>
-                    </div>
-                </div>
-
-                <p className="text-center text-gray my-5">
+                <p className="text-center text-gray my-3 text-sm">
                     By registering, you accept our{" "}
                     <Link
                         href="/terms-and-conditions"

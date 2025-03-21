@@ -4,7 +4,8 @@
 @import './style/style.css';
 
 body {
-    font-family: var(--font-Outfit);
+    /* font-family: var(--font-Outfit); */
+    font-family: var(--font-Inter);
 }
 
 @theme {
@@ -16,7 +17,6 @@ body {
     --color-green: #163300;
     --shadow-color: inset 0 0 0 2px #6c6c6b;
 }
-
 
 @keyframes float {
     0% {
