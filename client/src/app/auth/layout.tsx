@@ -12,11 +12,8 @@ export default function AuthLayout({ children }: DashboardLayoutProps) {
   return (
     <>
       <AuthHeader />
-      {/* Main Content */}
       <main>
-        <div>
-          {children} {/* Render page content here */}
-        </div>
+        <div>{children}</div>
       </main>
     </>
   );

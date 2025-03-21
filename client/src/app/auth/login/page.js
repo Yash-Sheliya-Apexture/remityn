@@ -1289,8 +1289,6 @@ export default function LoginPage() {
                         </Link>
                     </p>
 
-
-
                     {loginError && (
                         <div
                             className="flex bg-green/8 p-6 rounded-2xl gap-4 items-center lg:gap-6 relative"

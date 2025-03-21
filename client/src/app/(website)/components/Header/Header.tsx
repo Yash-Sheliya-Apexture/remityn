@@ -1136,7 +1136,7 @@ const Header: React.FC = () => {
                     <Link
                       href="/auth/login"
                       passHref
-                      className="bg-lightgreen px-4 py-2 rounded-full font-medium hover:bg-lightgreen-hover"
+                      className="bg-lightgreen px-5 py-1.5 rounded-full font-medium hover:bg-lightgreen-hover"
                     >
                       Log in
                     </Link>
