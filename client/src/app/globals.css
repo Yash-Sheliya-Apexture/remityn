@@ -15,6 +15,9 @@ body {
     --color-lightgreen-hover: #80e142;
     --color-gray: #454745;
     --color-green: #163300;
+    --color-primary: #3bcbff;
+    --color-secondary: #002330;
+    --color-lightgray: #f4f4f4;
     --shadow-color: inset 0 0 0 2px #6c6c6b;
 }
 
@@ -35,3 +38,14 @@ body {
 .animate-float {
     animation: float 15s infinite;
 }
+
+.scrollbar-hide {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
