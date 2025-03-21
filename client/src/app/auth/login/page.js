@@ -1241,8 +1241,8 @@ export default function LoginPage() {
 
 
     return (
-        <div className="flex flex-col justify-center items-center lg:px-8 min-h-screen px-4">
-            <div className="w-full max-w-md">
+        <div className="flex flex-col justify-center items-center lg:px-8 lg:h-[calc(100vh-73px)] px-4">
+            <div className="w-full max-w-md mt-10">
                 <div className="bg-white">
 
                     {inactiveLogoutModalOpen && (
@@ -1278,7 +1278,7 @@ export default function LoginPage() {
                         </Modal>
                     )}
 
-                    <h2 className="text-3xl text-center text-main font-semibold mb-4">
+                    <h2 className="lg:text-3xl text-2xl text-center text-main font-semibold mb-4">
                         Welcome back.
                     </h2>
 
@@ -1319,7 +1319,19 @@ export default function LoginPage() {
                         </div>
                     )}
 
-                    <form className="mt-5 space-y-6" onSubmit={handleSubmit}>
+                    <form className="mt-10 space-y-5" onSubmit={handleSubmit}>
+                        <div>
+                            <a className="flex bg-white border border-gray justify-center rounded-lg text-gray text-md w-full cursor-pointer font-medium gap-4 hover:bg-gray-100 items-center px-4 py-2">
+                                <Image
+                                    src="/assets/icon/google.svg"
+                                    width={30}
+                                    height={30}
+                                    alt="Continue with Google"
+                                />
+                                Continue with Google
+                            </a>
+                        </div>
+
                         <div>
                             <label
                                 htmlFor="email"
@@ -1383,6 +1395,15 @@ export default function LoginPage() {
                             )}
                         </div>
 
+                        <div className="text-right">
+                            <Link
+                                href="/auth/forgot-password"
+                                className="text-green inline-block font-medium underline underline-offset-4"
+                            >
+                                Forgot Password ?
+                            </Link>
+                        </div>
+
                         <div className="flex justify-between items-center mb-4">
                             <button
                                 type="submit"
@@ -1405,30 +1426,7 @@ export default function LoginPage() {
                             </button>
                         </div>
 
-                        <div className="mt-4">
-                            <Link
-                                href="/forgot-password"
-                                className="text-base text-green block font-medium underline underline-offset-4"
-                            >
-                                Forgot Password ?
-                            </Link>
-                        </div>
                     </form>
-
-                    <div className="mt-5">
-                        <p className="text-base text-gray mb-3">Or log in with</p>
-                        <div className="mt-4">
-                            <button className="flex bg-white border border-gray justify-center rounded-full text-gray text-md w-full cursor-pointer font-medium gap-4 hover:bg-gray-100 items-center px-4 py-2">
-                                <Image
-                                    src="/assets/icon/google.svg"
-                                    width={30}
-                                    height={30}
-                                    alt="Continue with Google"
-                                />
-                                Continue with Google
-                            </button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
