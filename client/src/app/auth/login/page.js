@@ -1244,6 +1244,7 @@ export default function LoginPage() {
         <div className="flex flex-col justify-center items-center lg:px-8 min-h-screen px-4">
             <div className="w-full max-w-md">
                 <div className="bg-white">
+
                     {inactiveLogoutModalOpen && (
                         <Modal isOpen={inactiveLogoutModalOpen} onClose={closeModal}>
                             <div className="flex items-start space-x-4">
@@ -1284,7 +1285,7 @@ export default function LoginPage() {
                     <p className="text-base text-center text-gray font-light mb-4">
                         New to Wise?{" "}
                         <Link
-                            href="/register"
+                            href="/auth/register"
                             className="text-green font-medium underline underline-offset-4"
                         >
                             Sign up
@@ -1409,7 +1410,7 @@ export default function LoginPage() {
                                 href="/forgot-password"
                                 className="text-base text-green block font-medium underline underline-offset-4"
                             >
-                                Forgot Password?
+                                Forgot Password ?
                             </Link>
                         </div>
                     </form>
@@ -1433,3 +1434,5 @@ export default function LoginPage() {
         </div>
     );
 }
+
+
