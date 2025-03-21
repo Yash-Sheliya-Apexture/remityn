@@ -26,7 +26,6 @@ client/build/
 dist/
 tmp/
 temp/
-public/ # If you generate static files in the client folder
 
 # Coverage reports from testing
 coverage/
