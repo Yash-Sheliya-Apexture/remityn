@@ -661,9 +661,9 @@ export default function RegisterPage() {
 
 
     return (
-        <div className="flex justify-center items-center min-h-screen px-4">
-            <div className="w-full max-w-md mt-10">
-                <h2 className="lg:text-3xl text-2xl text-center text-main font-semibold mb-4">
+        <div className="flex justify-center items-center lg:h-[calc(100vh-73px)] px-4">
+            <div className="w-full max-w-md lg:mt-20 mt-10 ">
+                <h2 className="lg:text-3xl text-2xl text-center text-main font-semibold mt-5 mb-4">
                     Create your Wise account
                 </h2>
 

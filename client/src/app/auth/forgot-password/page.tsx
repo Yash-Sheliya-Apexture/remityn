@@ -857,7 +857,7 @@ const ResetPasswordForm = () => {
   // Render Check Your Email design
   if (emailSent) {
     return (
-      <div className="flex flex-col justify-center items-center pt-10 min-h-screen px-4">
+      <div className="flex flex-col justify-center items-center min-h-screen px-4">
         <div className="bg-white w-full max-w-md">
           <div className="flex justify-center mb-6">
             <Image

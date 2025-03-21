@@ -1238,13 +1238,10 @@ export default function LoginPage() {
         setLoginError("");
     };
 
-
-
     return (
-        <div className="flex flex-col justify-center items-center lg:px-8 lg:h-[calc(100vh-73px)] px-4">
+        <div className="flex flex-col justify-center items-center lg:h-[calc(100vh-73px)] px-4">
             <div className="w-full max-w-md mt-10">
                 <div className="bg-white">
-
                     {inactiveLogoutModalOpen && (
                         <Modal isOpen={inactiveLogoutModalOpen} onClose={closeModal}>
                             <div className="flex items-start space-x-4">

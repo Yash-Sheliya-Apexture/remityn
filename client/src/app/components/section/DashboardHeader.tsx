@@ -7,8 +7,8 @@ const DashboardHeader: React.FC = () => {
   const isOnline = true;
 
   return (
-    <div className="p-4 border-b border-gray-300">
-      <div className="container mx-auto flex justify-between items-center max-w-6xl">
+    <div className="border-b border-gray-300">
+      <div className="container mx-auto max-w-6xl">
         <div className="flex items-center justify-between p-2 py-6">
           <div>
             <Image
@@ -24,10 +24,10 @@ const DashboardHeader: React.FC = () => {
             <img
               src="/assets/images/app-store-logo.png"
               alt="User Avatar"
-              className="rounded-full w-12 h-12 object-cover"
+              className="rounded-full size-10 object-cover"
             />
             {isOnline && (
-              <div className="absolute top-0 left-8 size-4 bg-red-500 rounded-full border-2 border-white"></div>
+              <div className="absolute top-0 left-7  size-3.5 bg-red-500 rounded-full border-2 border-white"></div>
             )}
 
             {/* User Name */}
@@ -47,7 +47,6 @@ const DashboardHeader: React.FC = () => {
               />
             </svg>
           </div>
-          
         </div>
       </div>
     </div>
