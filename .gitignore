@@ -48,7 +48,6 @@ coverage/
 *.min.js
 *.gz
 
-
 # Ignore other cache or temp files
 .cache/
 .pnp/
