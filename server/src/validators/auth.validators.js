@@ -51,7 +51,39 @@ const validateLogin = (req, res, next) => {
     next(); // If validation passes, proceed
 };
 
+
+
+
+const validateForgotPassword = (req, res, next) => {
+    const { email } = req.body;
+    if (!email) {
+        return res.status(400).json({ message: 'Email is required.' });
+    }
+    if (!validator.isEmail(email)) {
+        return res.status(400).json({ message: 'Invalid email format.' });
+    }
+    next();
+};
+
+const validateResetPassword = (req, res, next) => {
+    const { token, password } = req.body;
+    if (!token) {
+        return res.status(400).json({ message: 'Token is required.' });
+    }
+    if (!password) {
+        return res.status(400).json({ message: 'Password is required.' });
+    }
+    if (!validator.isLength(password, { min: 8 })) {
+        return res.status(400).json({ message: 'Password must be at least 8 characters long.' });
+    }
+    // Add more password strength validation if needed
+    next();
+};
+
+
 export default {
     validateRegister,
     validateLogin,
+    validateForgotPassword, // Add validateForgotPassword
+    validateResetPassword,   // Add validateResetPassword
 };
