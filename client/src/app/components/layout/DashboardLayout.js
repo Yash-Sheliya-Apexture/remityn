@@ -34,23 +34,23 @@ export default function DashboardLayout({ children }) {
   return (
     <div className="dashboard-layout">
 
-        <div className="bg-white max-w-[1440px] mx-auto">
-          <div className="flex h-screen">
-            <Sidebar
-              sidebarOpen={isSidebarOpen}
-              toggleSidebar={toggleSidebar}
-            />
-            <div className="flex-1 flex flex-col overflow-hidden">
-              <Header toggleSidebar={toggleSidebar} />
-              {/* Main Content */}
-              <main className="flex-1 overflow-x-hidden overflow-y-auto scrollbar-hide">
-                <div className="max-w-5xl mx-auto px-4">
-                  {children} {/* Render page content here */}
-                </div>
-              </main>
-            </div>
+      <div className="bg-white max-w-[1440px] mx-auto">
+        <div className="flex h-screen">
+          <Sidebar
+            sidebarOpen={isSidebarOpen}
+            toggleSidebar={toggleSidebar}
+          />
+          <div className="flex-1 flex flex-col overflow-hidden">
+            <Header toggleSidebar={toggleSidebar} />
+            {/* Main Content */}
+            <main className="flex-1 overflow-x-hidden overflow-y-auto scrollbar-hide">
+              <div className="max-w-5xl mx-auto px-4">
+                {children} {/* Render page content here */}
+              </div>
+            </main>
           </div>
         </div>
+      </div>
     </div>
   );
 }

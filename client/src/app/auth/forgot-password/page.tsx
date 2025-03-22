@@ -857,7 +857,7 @@ const ResetPasswordForm = () => {
   // Render Check Your Email design
   if (emailSent) {
     return (
-      <div className="flex flex-col justify-center items-center pt-10 min-h-screen px-4">
+      <div className="flex flex-col justify-center items-center lg:h-[calc(100vh-73px)] px-4">
         <div className="bg-white w-full max-w-md">
           <div className="flex justify-center mb-6">
             <Image
@@ -875,10 +875,11 @@ const ResetPasswordForm = () => {
           </h2>
 
           <p className="lg:text-base text-sm text-center text-gray text-nowrap mb-6">
-            We sent an email to <span className="font-semibold">{email}</span>{" "}
+            We sent an email to{" "}
+            <span className="font-semibold text-secondary">{email}</span>{" "}
           </p>
 
-          <p className="lg:text-base text-sm text-center text-gray mb-6">
+          <p className="lg:text-base  text-sm text-center text-gray mb-6">
             If the email hasn't arrived yet, please check your spam folder.
             Alternatively, you can also request the email again:
           </p>
@@ -897,7 +898,7 @@ const ResetPasswordForm = () => {
           <button
             onClick={handleSendAgain}
             disabled={isLoading}
-            className={`bg-lightgreen cursor-pointer rounded-full text-green text-lg w-full block duration-300 ease-in-out focus:outline-none focus:shadow-outline font-medium hover:bg-lightgreen-hover mb-3 mx-auto px-6 py-3 transition-colors ${
+            className={`bg-primary hover:bg-primary-hover cursor-pointer rounded-full text-secondary text-lg w-full block duration-300 ease-in-out focus:outline-none focus:shadow-outline font-medium mb-3 mx-auto py-3 transition-colors ${
               isLoading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
@@ -908,7 +909,7 @@ const ResetPasswordForm = () => {
             Still need help?{" "}
             <a
               href="#"
-              className="text-green underline font-medium underline-offset-4"
+              className="text-secondary underline font-medium underline-offset-4"
             >
               Read this article.
             </a>
@@ -920,7 +921,7 @@ const ResetPasswordForm = () => {
 
   // Render Reset Password Form
   return (
-    <div className="flex flex-col bg-white justify-center items-center min-h-screen px-4 pt-10">
+    <div className="flex flex-col bg-white justify-center items-center lg:h-[calc(100vh-73px)] px-4 pt-10">
       <div className="max-w-lg mb-8">
         <Image
           src="/assets/images/key-medium@1x.webp"
@@ -986,7 +987,7 @@ const ResetPasswordForm = () => {
 
         <div className="flex justify-between items-center">
           <button
-            className={`bg-lightgreen hover:bg-lightgreen-hover cursor-pointer text-green font-medium text-lg py-3 w-full px-4 rounded-full transition-colors duration-300 ease-in-out focus:outline-none focus:shadow-outline ${
+            className={`bg-primary hover:bg-primary-hover cursor-pointer text-secondary font-medium text-lg py-3 w-full px-4 rounded-full transition-colors duration-300 ease-in-out focus:outline-none focus:shadow-outline ${
               isLoading ? "opacity-50 cursor-not-allowed" : ""
             }`}
             type="submit"
@@ -1001,7 +1002,7 @@ const ResetPasswordForm = () => {
         Need help? Read this{" "}
         <a
           href="#"
-          className="text-green font-medium underline underline-offset-4"
+          className="text-secondary font-medium underline underline-offset-4"
         >
           Help Centre article.
         </a>

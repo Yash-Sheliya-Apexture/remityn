@@ -551,7 +551,6 @@ import { RiEyeCloseLine } from "react-icons/ri";
 import { VscEye } from "react-icons/vsc";
 import { IoClose } from 'react-icons/io5';
 
-
 export default function RegisterPage() {
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
@@ -661,9 +660,9 @@ export default function RegisterPage() {
 
 
     return (
-        <div className="flex justify-center items-center min-h-screen px-4">
-            <div className="w-full max-w-md mt-10">
-                <h2 className="lg:text-3xl text-2xl text-center text-main font-semibold mb-4">
+        <div className="flex justify-center items-center lg:h-[calc(100vh-73px)] px-4">
+            <div className="w-full max-w-md lg:mt-20 mt-10">
+                <h2 className="lg:text-3xl text-2xl text-center text-main font-semibold mt-5 mb-4">
                     Create your Wise account
                 </h2>
 
@@ -671,7 +670,7 @@ export default function RegisterPage() {
                     Already have an account?{" "}
                     <Link
                         href="/auth/login"
-                        className="text-green font-medium underline underline-offset-4"
+                        className="text-secondary font-medium underline underline-offset-4"
                     >
                         Log in
                     </Link>
@@ -795,9 +794,9 @@ export default function RegisterPage() {
                                 onClick={togglePasswordVisibility}
                             >
                                 {showPassword ? (
-                                    <RiEyeCloseLine className="text-green size-5" />
+                                    <RiEyeCloseLine className="text-secondary size-5" />
                                 ) : (
-                                    <VscEye className="text-green size-5" />
+                                    <VscEye className="text-secondary size-5" />
                                 )}
                             </button>
                         </div>
@@ -835,9 +834,9 @@ export default function RegisterPage() {
                                 onClick={toggleConfirmPasswordVisibility}
                             >
                                 {showConfirmPassword ? (
-                                    <RiEyeCloseLine className="text-green size-5" />
+                                    <RiEyeCloseLine className="text-secondary size-5" />
                                 ) : (
-                                    <VscEye className="text-green size-5" />
+                                    <VscEye className="text-secondary size-5" />
                                 )}
                             </button>
                         </div>
@@ -855,7 +854,7 @@ export default function RegisterPage() {
                     {/* Next Button */}
                     <button
                         type="submit"
-                        className="bg-lightgreen rounded-full text-green text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium hover:bg-lightgreen-hover py-2.5 transition-colors"
+                        className="bg-primary hover:bg-primary-hover rounded-full text-secondary text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium py-2.5 transition-colors"
                     >
                         Next
                     </button>
@@ -865,14 +864,14 @@ export default function RegisterPage() {
                     By registering, you accept our{" "}
                     <Link
                         href="/terms-and-conditions"
-                        className="text-green font-medium underline underline-offset-4"
+                        className="text-secondary font-medium underline underline-offset-4"
                     >
                         Terms of use
                     </Link>{" "}
                     and{" "}
                     <Link
                         href="/privacy-policy-en"
-                        className="text-green font-medium underline underline-offset-4"
+                        className="text-secondary font-medium underline underline-offset-4"
                     >
                         Privacy Policy
                     </Link>

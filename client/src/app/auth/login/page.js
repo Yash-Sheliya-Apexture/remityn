@@ -420,152 +420,152 @@ export default function LoginPage() {
 
                     )}
                     <div className='py-3'>
-                    <h2 className="lg:text-3xl text-2xl text-center text-main font-semibold mb-4">
-                        Welcome back.
-                    </h2>
+                        <h2 className="lg:text-3xl text-2xl text-center text-main font-semibold mb-4">
+                            Welcome back.
+                        </h2>
 
-                    <p className="text-base text-center text-gray font-light mb-4">
-                        New to Wise?{" "}
-                        <Link
-                            href="/auth/register"
-                            className="text-green font-medium underline underline-offset-4"
-                        >
-                            Sign up
-                        </Link>
-                    </p>
+                        <p className="text-base text-center text-gray font-light mb-4">
+                            New to Wise?{" "}
+                            <Link
+                                href="/auth/register"
+                                className="text-secondary font-medium underline underline-offset-4"
+                            >
+                                Sign up
+                            </Link>
+                        </p>
 
-                    {loginError && (
-                        <div
-                            className="flex bg-green/8 p-6 rounded-2xl gap-4 items-center lg:gap-6 relative"
-                            role="alert"
-                        >
-                            <div className="flex bg-[#a8200d] justify-center rounded-full items-center size-12">
-                                <IoClose className="p-0.5 text-white size-8" />
+                        {loginError && (
+                            <div
+                                className="flex bg-green/8 p-6 rounded-2xl gap-4 items-center lg:gap-6 relative"
+                                role="alert"
+                            >
+                                <div className="flex bg-[#a8200d] justify-center rounded-full items-center size-12">
+                                    <IoClose className="p-0.5 text-white size-8" />
+                                </div>
+
+                                <div>
+                                    <span className="text-gray block max-w-60">{loginError}</span>
+                                </div>
+
+                                <button
+                                    className="absolute cursor-pointer right-4 top-4"
+                                    onClick={handleCloseLoginError}
+                                >
+                                    <IoClose
+                                        className="p-1.5 rounded-full text-gray fill-current hover:bg-green/8 size-10"
+                                        role="button"
+                                    />
+                                </button>
+                            </div>
+                        )}
+
+                        <form className="mt-10 space-y-5" onSubmit={handleSubmit}>
+                            <div>
+                                <a className="flex bg-white border border-gray justify-center rounded-lg text-gray text-md w-full cursor-pointer font-medium gap-4 hover:bg-gray-100 items-center px-4 py-2">
+                                    <Image
+                                        src="/assets/icon/google.svg"
+                                        width={30}
+                                        height={30}
+                                        alt="Continue with Google"
+                                    />
+                                    Continue with Google
+                                </a>
                             </div>
 
                             <div>
-                                <span className="text-gray block max-w-60">{loginError}</span>
-                            </div>
-
-                            <button
-                                className="absolute cursor-pointer right-4 top-4"
-                                onClick={handleCloseLoginError}
-                            >
-                                <IoClose
-                                    className="p-1.5 rounded-full text-gray fill-current hover:bg-green/8 size-10"
-                                    role="button"
-                                />
-                            </button>
-                        </div>
-                    )}
-
-                    <form className="mt-10 space-y-5" onSubmit={handleSubmit}>
-                        <div>
-                            <a className="flex bg-white border border-gray justify-center rounded-lg text-gray text-md w-full cursor-pointer font-medium gap-4 hover:bg-gray-100 items-center px-4 py-2">
-                                <Image
-                                    src="/assets/icon/google.svg"
-                                    width={30}
-                                    height={30}
-                                    alt="Continue with Google"
-                                />
-                                Continue with Google
-                            </a>
-                        </div>
-
-                        <div>
-                            <label
-                                htmlFor="email"
-                                className="text-gray text-sm block capitalize font-medium"
-                            >
-                                Your email address
-                            </label>
-                            <input
-                                type="email"
-                                id="email"
-                                className={`mt-1 block px-4 py-3 w-full border rounded-lg transition-shadow ease-in-out duration-300 ${emailError
-                                    ? "border-red-500 border-2 !shadow-none"
-                                    : "border-[#c9cbce] hover:shadow-color"
-                                    }`}
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                            {emailError && (
-                                <p className="flex text-[#a8200d] text-base items-center mt-0.5">
-                                    <span className="mr-1">
-                                        <IoMdCloseCircle className="size-5" />
-                                    </span>
-                                    {emailError}
-                                </p>
-                            )}
-                        </div>
-
-                        <div>
-                            <label
-                                htmlFor="password"
-                                className="text-gray text-sm block capitalize font-medium"
-                            >
-                                Your password
-                            </label>
-                            <div className="relative">
+                                <label
+                                    htmlFor="email"
+                                    className="text-gray text-sm block capitalize font-medium"
+                                >
+                                    Your email address
+                                </label>
                                 <input
-                                    type={showPassword ? 'text' : 'password'}
-                                    id="password"
-                                    className={`mt-1 block px-4 py-3 border w-full rounded-lg transition-shadow ease-in-out duration-300 ${passwordError
+                                    type="email"
+                                    id="email"
+                                    className={`mt-1 block px-4 py-3 w-full border rounded-lg transition-shadow ease-in-out duration-300 ${emailError
                                         ? "border-red-500 border-2 !shadow-none"
                                         : "border-[#c9cbce] hover:shadow-color"
                                         }`}
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                 />
-                                <button
-                                    type="button"
-                                    className="text-gray-500 -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-3 top-1/2 transform"
-                                    onClick={togglePasswordVisibility}
+                                {emailError && (
+                                    <p className="flex text-[#a8200d] text-base items-center mt-0.5">
+                                        <span className="mr-1">
+                                            <IoMdCloseCircle className="size-5" />
+                                        </span>
+                                        {emailError}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div>
+                                <label
+                                    htmlFor="password"
+                                    className="text-gray text-sm block capitalize font-medium"
                                 >
-                                    {showPassword ? <RiEyeCloseLine className="text-green size-5" /> : <VscEye className="text-green size-5" />}
+                                    Your password
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        type={showPassword ? 'text' : 'password'}
+                                        id="password"
+                                        className={`mt-1 block px-4 py-3 border w-full rounded-lg transition-shadow ease-in-out duration-300 ${passwordError
+                                            ? "border-red-500 border-2 !shadow-none"
+                                            : "border-[#c9cbce] hover:shadow-color"
+                                            }`}
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="text-gray-500 -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-3 top-1/2 transform"
+                                        onClick={togglePasswordVisibility}
+                                    >
+                                        {showPassword ? <RiEyeCloseLine className="text-secondary size-5" /> : <VscEye className="text-secondary size-5" />}
+                                    </button>
+                                </div>
+                                {passwordError && (
+                                    <p className="flex text-[#a8200d] text-base items-center mt-0.5">
+                                        <span className="mr-1">
+                                            <IoMdCloseCircle className="size-5" />
+                                        </span>
+                                        {passwordError}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div className="text-right">
+                                <Link
+                                    href="/auth/forgot-password"
+                                    className="text-secondary inline-block font-medium underline underline-offset-4"
+                                >
+                                    Forgot Password ?
+                                </Link>
+                            </div>
+
+                            <div className="flex justify-between items-center mb-4">
+                                <button
+                                    type="submit"
+                                    className={`rounded-full text-green text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium py-2.5 transition-colors
+                                    ${isSubmitting ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-primary hover:bg-primary-hover text-secondary'}
+                                `}
+                                    disabled={isSubmitting}
+                                >
+                                    {isSubmitting ? (
+                                        <div className="flex justify-center items-center">
+                                            <svg className="h-5 text-green w-5 animate-spin mr-3" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            Logging in...
+                                        </div>
+                                    ) : (
+                                        'Log in'
+                                    )}
                                 </button>
                             </div>
-                            {passwordError && (
-                                <p className="flex text-[#a8200d] text-base items-center mt-0.5">
-                                    <span className="mr-1">
-                                        <IoMdCloseCircle className="size-5" />
-                                    </span>
-                                    {passwordError}
-                                </p>
-                            )}
-                        </div>
-
-                        <div className="text-right">
-                            <Link
-                                href="/auth/forgot-password"
-                                className="text-green inline-block font-medium underline underline-offset-4"
-                            >
-                                Forgot Password ?
-                            </Link>
-                        </div>
-
-                        <div className="flex justify-between items-center mb-4">
-                            <button
-                                type="submit"
-                                className={`rounded-full text-green text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium py-2.5 transition-colors
-                                    ${isSubmitting ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-lightgreen hover:bg-lightgreen-hover text-green'}
-                                `}
-                                disabled={isSubmitting}
-                            >
-                                {isSubmitting ? (
-                                    <div className="flex justify-center items-center">
-                                        <svg className="h-5 text-green w-5 animate-spin mr-3" viewBox="0 0 24 24">
-                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
-                                        Logging in...
-                                    </div>
-                                ) : (
-                                    'Log in'
-                                )}
-                            </button>
-                        </div>
-                    </form>
+                        </form>
                     </div>
                 </div>
             </div>

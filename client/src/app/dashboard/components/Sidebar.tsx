@@ -157,11 +157,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import {
-  FiCreditCard,
-  FiUserPlus,
-  FiSettings,
-} from "react-icons/fi";
+import { FiCreditCard, FiUserPlus, FiSettings } from "react-icons/fi";
 import { RiHomeLine } from "react-icons/ri";
 import { GrTransaction } from "react-icons/gr";
 import { BsSend } from "react-icons/bs";
@@ -194,10 +190,18 @@ const icons = {
 
 const navLinksData: NavLink[] = [
   { label: "Dashboard", icon: "RiHomeLine", route: "/dashboard" },
-  { label: "Transactions", icon: "GrTransaction", route: "/dashboard/transactions" },
+  {
+    label: "Transactions",
+    icon: "GrTransaction",
+    route: "/dashboard/transactions",
+  },
   { label: "Send Money", icon: "BsSend", route: "/dashboard/send" },
   { label: "Add Money", icon: "GoArrowUp", route: "/dashboard/add-money" },
-  { label: "Beneficiaries", icon: "FiUserPlus", route: "/dashboard/beneficiaries" },
+  {
+    label: "Beneficiaries",
+    icon: "FiUserPlus",
+    route: "/dashboard/beneficiaries",
+  },
   { label: "Settings", icon: "FiSettings", route: "/dashboard/settings" },
 ];
 
@@ -257,20 +261,33 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
         />
       )}
 
-      {(isMobileView === null || isMobileView === false) || (sidebarOpen && isMobileView === true) ? (
+      {isMobileView === null ||
+      isMobileView === false ||
+      (sidebarOpen && isMobileView === true) ? (
         <motion.div
           ref={sidebarRef}
           className={`bg-white w-72 fixed h-screen inset-y-0 left-0 lg:relative z-50 ${
             isMobileView ? "" : "translate-x-0"
-          } ${sidebarOpen && isMobileView ? "translate-x-0" : isMobileView ? "-translate-x-full" : "translate-x-0"}`}
+          } ${
+            sidebarOpen && isMobileView
+              ? "translate-x-0"
+              : isMobileView
+              ? "-translate-x-full"
+              : "translate-x-0"
+          }`}
           initial={isMobileView ? { x: "-100%" } : {}}
           animate={isMobileView ? { x: sidebarOpen ? 0 : "-100%" } : {}}
           exit={isMobileView ? { x: "-100%" } : {}}
           transition={isMobileView ? { duration: 0.3, ease: "easeInOut" } : {}}
         >
           <div className="border-b">
-            <div className="flex flex-col items-center justify-center h-28">
-              <Image src="/assets/icon/logo.svg" alt="logo" width={100} height={100}/>
+            <div className="flex flex-col items-center justify-center h-20">
+              <Image
+                src="/assets/icon/logo.svg"
+                alt="logo"
+                width={100}
+                height={100}
+              />
             </div>
           </div>
 
