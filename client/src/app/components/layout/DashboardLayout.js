@@ -9,10 +9,7 @@ import Header from "../../dashboard/components/Header";
 export default function DashboardLayout({ children }) {
   // State to manage sidebar, notifications, and active section
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  const [isSendModalOpen, setIsSendModalOpen] = useState(false); // State for Send Money Modal
-  const [isAddMoneyModalOpen, setIsAddMoneyModalOpen] = useState(false); // State for Add Money Modal
-
+  
   const { user, loading } = useAuth();
   const router = useRouter();
 
