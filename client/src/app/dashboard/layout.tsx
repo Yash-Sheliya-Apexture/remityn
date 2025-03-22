@@ -1,18 +1,10 @@
-// import DashboardLayout from '../components/layout/DashboardLayout';
-
-// export default function DashboardRootLayout({ children }) {
-//     return <DashboardLayout>{children}</DashboardLayout>;
-// }
-
-import DashboardLayout from "../components/layout/DashboardLayout";
-import { ReactNode } from "react";
+import DashboardLayout from '../components/layout/DashboardLayout';
+import { ReactNode } from 'react'; // Import ReactNode
 
 interface DashboardRootLayoutProps {
-  children: ReactNode;
+    children: ReactNode;
 }
 
-export default function DashboardRootLayout({
-  children,
-}: DashboardRootLayoutProps) {
-  return <DashboardLayout>{children}</DashboardLayout>;
+export default function DashboardRootLayout({ children }: DashboardRootLayoutProps) {
+    return <DashboardLayout>{children}</DashboardLayout>;
 }
