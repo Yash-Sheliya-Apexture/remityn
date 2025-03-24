@@ -20,7 +20,31 @@ const login = async (req, res, next) => { // Add 'next' for error handling
     }
 };
 
+
+const forgotPassword = async (req, res, next) => {
+    try {
+        const { email } = req.body;
+        await authService.requestPasswordReset(email);
+        res.json({ message: 'Password reset email sent successfully' });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const resetPassword = async (req, res, next) => {
+    try {
+        const { token, password } = req.body;
+        await authService.resetPassword(token, password);
+        res.json({ message: 'Password reset successfully' });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
 export default {
     register,
     login,
+    forgotPassword,
+    resetPassword, 
 };

@@ -15,9 +15,14 @@ body {
     --color-lightgreen-hover: #80e142;
     --color-gray: #454745;
     --color-green: #163300;
+    /* Background-Color */
     --color-primary: #3bcbff;
+    /* Background-Color-Hover */
+    --color-primary-hover: #11a0d3;
+    /* Text-color */
     --color-secondary: #002330;
     --color-lightgray: #f4f4f4;
+    --color-error: #a8200d;
     --shadow-color: inset 0 0 0 2px #6c6c6b;
     /* Border-Color */
     --color-lightborder: #e3e3e3;

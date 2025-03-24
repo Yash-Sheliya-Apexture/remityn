@@ -29,7 +29,38 @@ const login = async (credentials) => {
     }
 };
 
+
+
+const forgotPassword = async (emailData) => {
+    try {
+        const response = await axios.post('/auth/forgot-password', emailData, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data?.message || 'Failed to request password reset';
+    }
+};
+
+const resetPassword = async (resetData) => {
+    try {
+        const response = await axios.post('/auth/reset-password', resetData, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data?.message || 'Password reset failed';
+    }
+};
+
+
 export default {
     register,
     login,
+    forgotPassword, // Add forgotPassword API call
+    resetPassword,   // Add resetPassword API call
 };

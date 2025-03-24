@@ -1,3 +1,100 @@
+<<<<<<< HEAD
+=======
+// import Image from "next/image";
+// import React from "react";
+// import USD from '../../../../../public/assets/icons/usd.svg'
+// import AED from '../../../../../public/assets/icons/aed.svg'
+// import AUD from '../../../../../public/assets/icons/aud.svg'
+// import EUR from '../../../../../public/assets/icons/eur.svg'
+// import GBP from '../../../../../public/assets/icons/gbp.svg'
+
+// const CountryCard = () => {
+//     return(
+//         <section className="Country-card py-12">
+//             <div className="container mx-auto px-4">
+//                 <div>
+//                     <div className="p-6 bg-green/10 rounded-2xl flex flex-col justify-between">
+//                         <div className="flex items-center gap-4">
+//                             <Image
+//                             src={USD}
+//                             alt="USD flag"
+//                             width={50}
+//                             height={50}
+//                             />
+//                             <span className="text-gray text-xl font-semibold">USD</span>
+//                         </div>
+//                         <div className="pt-16">
+//                             <span className="text-main text-2xl font-semibold">10.00</span>
+//                         </div>
+//                     </div>
+
+//                     <div className="p-6 bg-green/10 rounded-2xl flex flex-col justify-between">
+//                         <div className="flex items-center gap-4">
+//                             <Image
+//                             src={AED}
+//                             alt="AED flag"
+//                             width={50}
+//                             height={50}
+//                             />
+//                             <span className="text-gray text-xl font-semibold">AED</span>
+//                         </div>
+//                         <div className="pt-16">
+//                             <span className="text-main text-2xl font-semibold">100.00</span>
+//                         </div>
+//                     </div>
+
+//                     <div className="p-6 bg-green/10 rounded-2xl flex flex-col justify-between">
+//                         <div className="flex items-center gap-4">
+//                             <Image
+//                             src={AUD}
+//                             alt="AUD flag"
+//                             width={50}
+//                             height={50}
+//                             />
+//                             <span className="text-gray text-xl font-semibold">AUD</span>
+//                         </div>
+//                         <div className="pt-16">
+//                             <span className="text-main text-2xl font-semibold">545.00</span>
+//                         </div>
+//                     </div>
+
+//                     <div className="p-6 bg-green/10 rounded-2xl flex flex-col justify-between">
+//                         <div className="flex items-center gap-4">
+//                             <Image
+//                             src={EUR}
+//                             alt="EUR flag"
+//                             width={50}
+//                             height={50}
+//                             />
+//                             <span className="text-gray text-xl font-semibold">EUR</span>
+//                         </div>
+//                         <div className="pt-16">
+//                             <span className="text-main text-2xl font-semibold">00.00</span>
+//                         </div>
+//                     </div>
+
+//                     <div className="p-6 bg-green/10 rounded-2xl flex flex-col justify-between">
+//                         <div className="flex items-center gap-4">
+//                             <Image
+//                             src={GBP}
+//                             alt="GBP flag"
+//                             width={50}
+//                             height={50}
+//                             />
+//                             <span className="text-gray text-xl font-semibold">GBP</span>
+//                         </div>
+//                         <div className="pt-16">
+//                             <span className="text-main text-2xl font-semibold">2110.00</span>
+//                         </div>
+//                     </div>
+//                 </div>
+//             </div>
+//         </section>
+//     )
+// }
+// export default CountryCard;
+
+>>>>>>> 10d7cc9d9daf1414702be768a559c4a37c399916
 "use client";
 import React, { useRef, useState } from "react";
 import Image from "next/image";
@@ -48,7 +145,7 @@ const CountryCard = () => {
   };
 
   return (
-    <section className="Country-card pt-12">
+    <section className="Country-card pt-5">
       <div className="container mx-auto relative z-10">
         {" "}
         {/* Added relative for button positioning */}
@@ -91,7 +188,7 @@ const CountryCard = () => {
                 </div>
                 <div className="pt-16">
                   <span className="text-secondary text-2xl font-semibold">
-                  {parseFloat(card.value).toFixed(2)}
+                    {parseFloat(card.value).toFixed(2)}
                   </span>
                 </div>
               </div>
