@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // 'use client';
 
 // import React, { createContext, useState, useEffect, useContext, useCallback, useRef } from 'react';
@@ -140,6 +141,8 @@
 
 
 
+=======
+>>>>>>> 1b4c08eed72df2a3b4d3ca3da1db33d326afa53d
 'use client';
 
 import React, { createContext, useState, useEffect, useContext, useCallback, useRef } from 'react';
@@ -147,7 +150,11 @@ import { useRouter } from 'next/navigation';
 import { debounce } from 'lodash';
 
 const AuthContext = createContext();
+<<<<<<< HEAD
 const INACTIVITY_TIMEOUT_MS = 5 * 60 * 1000;
+=======
+const INACTIVITY_TIMEOUT_MS = 5 * 60 * 1000; // 5 minute for testing
+>>>>>>> 1b4c08eed72df2a3b4d3ca3da1db33d326afa53d
 const BROADCAST_CHANNEL_NAME = 'wise-auth-channel';
 const DEBOUNCE_WAIT_MS = 500;
 
@@ -182,17 +189,36 @@ export const AuthProvider = ({ children }) => {
 
     const logoutDueToInactivity = useCallback(() => {
         logout();
+<<<<<<< HEAD
         router.push('/auth/login?loggedOutInactive=true');
     }, [logout, router]);
+=======
+        console.log('logoutDueToInactivity called - redirecting to login with autoLogout=true');
+        
+        // Use window.location.href for a hard navigation instead of Next.js router
+        // This ensures the query parameter is properly passed and the page fully reloads
+        if (typeof window !== 'undefined') {
+            window.location.href = '/auth/login?autoLogout=true';
+        }
+    }, [logout]);
+>>>>>>> 1b4c08eed72df2a3b4d3ca3da1db33d326afa53d
 
     // Create the debounced function ONCE using useRef
     const resetInactivityTimerRef = useRef(
         debounce(() => {
             if (logoutTimerRef.current) clearTimeout(logoutTimerRef.current);
+<<<<<<< HEAD
             logoutTimerRef.current = setTimeout(() => {
                 logoutDueToInactivity();
             }, INACTIVITY_TIMEOUT_MS);
             console.log("debounced resetInactivityTimer called");
+=======
+            if (user && token) { // Only set timer if user is logged in
+                logoutTimerRef.current = setTimeout(() => {
+                    logoutDueToInactivity();
+                }, INACTIVITY_TIMEOUT_MS);
+            }
+>>>>>>> 1b4c08eed72df2a3b4d3ca3da1db33d326afa53d
         }, DEBOUNCE_WAIT_MS)
     );
 
@@ -200,12 +226,22 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         resetInactivityTimerRef.current = debounce(() => {
             if (logoutTimerRef.current) clearTimeout(logoutTimerRef.current);
+<<<<<<< HEAD
             logoutTimerRef.current = setTimeout(() => {
                 logoutDueToInactivity();
             }, INACTIVITY_TIMEOUT_MS);
             console.log("debounced resetInactivityTimer called");
         }, DEBOUNCE_WAIT_MS);
     }, [logoutDueToInactivity]);
+=======
+            if (user && token) { // Only set timer if user is logged in
+                logoutTimerRef.current = setTimeout(() => {
+                    logoutDueToInactivity();
+                }, INACTIVITY_TIMEOUT_MS);
+            }
+        }, DEBOUNCE_WAIT_MS);
+    }, [logoutDueToInactivity, user, token]);
+>>>>>>> 1b4c08eed72df2a3b4d3ca3da1db33d326afa53d
 
     // Stable resetInactivityTimer function that uses the ref
     const resetInactivityTimer = useCallback(() => {
@@ -229,17 +265,29 @@ export const AuthProvider = ({ children }) => {
             try {
                 setUser(JSON.parse(storedUser));
             } catch (e) {
+<<<<<<< HEAD
                 console.warn("Error parsing stored user data from localStorage:", e);
                 setUser(null);
                 localStorage.removeItem('user');
             }
             resetInactivityTimer();
+=======
+                setUser(null);
+                localStorage.removeItem('user');
+            }
+>>>>>>> 1b4c08eed72df2a3b4d3ca3da1db33d326afa53d
         } else {
             setUser(null);
         }
         setLoading(false);
+<<<<<<< HEAD
     }, [resetInactivityTimer]);
 
+=======
+    }, []);
+
+    // Separate effect to start timer after user/token are set
+>>>>>>> 1b4c08eed72df2a3b4d3ca3da1db33d326afa53d
     useEffect(() => {
         if (user && token) {
             resetInactivityTimer();
@@ -286,6 +334,7 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
+<<<<<<< HEAD
 export { AuthContext };
 
 
@@ -437,3 +486,6 @@ export { AuthContext };
 
 // export const useAuth = () => useContext(AuthContext);
 // export { AuthContext };
+=======
+export { AuthContext };
+>>>>>>> 1b4c08eed72df2a3b4d3ca3da1db33d326afa53d

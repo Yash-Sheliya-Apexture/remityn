@@ -1030,23 +1030,26 @@
 
 
 
-"use client";
+'use client';
 
 import React, { useState } from "react";
-import Image from "next/image";
-import { IoMdCloseCircle, IoMdCheckmark } from "react-icons/io";
-import authService from '../../services/auth'; // Import authService
+import Image from 'next/image';
+import { IoMdCloseCircle, IoMdCheckmark } from 'react-icons/io';
+import authService from '../../services/auth'; // Correct import path using alias
 
 const ResetPasswordForm = () => {
-    const [email, setEmail] = useState("");
-    const [error, setError] = useState("");
-    const [emailError, setEmailError] = useState("");
-    const [successMessage, setSuccessMessage] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
-    const [emailSent, setEmailSent] = useState(false);
-    const [showCheckAgainMessage, setShowCheckAgainMessage] = useState(false);
+    const [email, setEmail] = useState<string>("");
+    const [error, setError] = useState<string>("");
+    const [emailError, setEmailError] = useState<string>("");
+    const [successMessage, setSuccessMessage] = useState<string>("");
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [emailSent, setEmailSent] = useState<boolean>(false);
+    const [emailResent, setEmailResent] = useState<boolean>(false); // ADDED: Define setEmailResent state
+    const [showCheckAgainMessage, setShowCheckAgainMessage] = useState<boolean>(false);
+    const [resendError, setResendError] = useState<string>(""); // State for resend error message
+    const [resendAttemptFailed, setResendAttemptFailed] = useState<boolean>(false); // Track if resend has already failed
 
-    const isValidEmail = (email: string) => {
+    const isValidEmail = (email: string): boolean => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     };
@@ -1057,6 +1060,7 @@ const ResetPasswordForm = () => {
         let isValid = true;
         setError("");
         setSuccessMessage("");
+        setEmailSent(false); // Reset emailSent on new submission
 
         if (!email) {
             setEmailError("Please fill email address field");
@@ -1071,10 +1075,13 @@ const ResetPasswordForm = () => {
         if (isValid) {
             setIsLoading(true);
             try {
-                await authService.forgotPassword({ email }); // Call forgotPassword API
+                await authService.forgotPassword({ email });
                 setEmailSent(true);
+                setResendAttemptFailed(false); // Reset resend attempt status on successful send
             } catch (err: any) {
                 setError(err.message || "An error occurred while processing your request. Please try again.");
+                setEmailSent(false); // Ensure emailSent is false if initial send fails
+                setResendAttemptFailed(false); // Reset resend attempt status even if initial send fails to allow resend attempt
             } finally {
                 setIsLoading(false);
             }
@@ -1082,25 +1089,34 @@ const ResetPasswordForm = () => {
     };
 
     const handleSendAgain = async () => {
+        if (resendAttemptFailed) {
+            return; // Prevent further resend attempts if already failed
+        }
+
         setEmailResent(true);
         setIsLoading(true);
         setShowCheckAgainMessage(false);
+        setResendError(""); // Clear any previous resend errors
 
         try {
-            await authService.forgotPassword({ email }); // Re-send forgot password request
+            await authService.forgotPassword({ email });
             setSuccessMessage("A new password reset link has been sent to your email address.");
             setShowCheckAgainMessage(true);
+            setResendAttemptFailed(false); // Reset resend attempt status on successful resend
         } catch (err: any) {
-            setError(err.message || "An error occurred while processing your request. Please try again.");
+            setResendError(err.message || "Failed to send email again. Please try again later.");
+            setResendAttemptFailed(true); // Set resend attempt to failed
+            setShowCheckAgainMessage(false); // Hide success message if resend fails
+            setSuccessMessage(""); // Clear success message if resend fails
         } finally {
             setIsLoading(false);
         }
     };
 
+
     if (emailSent) {
         return (
             <div className="flex flex-col justify-center items-center lg:h-[calc(100vh-73px)] px-4">
-                {/* ... (Check your email UI - same as before) ... */}
                 <div className="bg-white w-full max-w-md">
                     <div className="flex justify-center mb-6">
                         <Image
@@ -1138,14 +1154,37 @@ const ResetPasswordForm = () => {
                         </div>
                     )}
 
+                    {resendError && ( // Display resend error message
+                        <div
+                            className="flex bg-green/8 p-6 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4"
+                            role="alert"
+                        >
+                            <div className="flex bg-[#a8200d] justify-center rounded-full items-center size-12">
+                                <IoMdCloseCircle className="p-0.5 text-white size-8" />
+                            </div>
+                            <div>
+                                <span className="text-gray block max-w-60">{resendError}</span>
+                            </div>
+                        </div>
+                    )}
+
+
                     <button
                         onClick={handleSendAgain}
-                        disabled={isLoading}
-                        className={`bg-primary hover:bg-primary-hover cursor-pointer rounded-full text-secondary text-lg w-full block duration-300 ease-in-out focus:outline-none focus:shadow-outline font-medium mb-3 mx-auto py-3 transition-colors ${isLoading ? "opacity-50 cursor-not-allowed" : ""
+                        disabled={isLoading || resendAttemptFailed} // Disable button if loading or resend failed
+                        className={`bg-primary hover:bg-primary-hover cursor-pointer rounded-full text-secondary text-lg w-full block duration-300 ease-in-out focus:outline-none focus:shadow-outline font-medium mb-3 mx-auto py-3 transition-colors
+                            ${isLoading || resendAttemptFailed ? "opacity-50 cursor-not-allowed" : ""
                             }`}
                     >
                         {isLoading ? "Sending..." : "Send email again"}
                     </button>
+
+                    {resendAttemptFailed && ( // Show message if resend failed
+                        <p className="text-center text-red-500 text-sm mt-2">
+                            Couldn't send email again. Please try again later.
+                        </p>
+                    )}
+
 
                     <p className="text-base text-center text-gray mt-5">
                         Still need help?{" "}
@@ -1164,7 +1203,6 @@ const ResetPasswordForm = () => {
 
     return (
         <div className="flex flex-col bg-white justify-center items-center lg:h-[calc(100vh-73px)] px-4 pt-10">
-            {/* ... (Reset password form UI - same as before) ... */}
             <div className="max-w-lg mb-8">
                 <Image
                     src="/assets/images/key-medium@1x.webp"
@@ -1251,6 +1289,5 @@ const ResetPasswordForm = () => {
         </div>
     );
 };
-
 
 export default ResetPasswordForm;
