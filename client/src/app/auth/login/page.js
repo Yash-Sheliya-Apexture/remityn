@@ -110,7 +110,7 @@ export default function LoginPage() {
                     {inactiveLogoutMessage && (
 
                         <div className="flex bg-green/8 p-4 rounded-2xl gap-4 items-center lg:gap-6 relative">
-                            <div className="flex bg-primary justify-center rounded-full items-center lg:size-12 size-10">
+                            <div className="flex bg-gray justify-center rounded-full items-center lg:size-12 size-10">
                                 <AiOutlineInfo className="p-0.5 text-white size-8" />
                             </div>
                             <div>
