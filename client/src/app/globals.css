@@ -22,6 +22,7 @@ body {
     /* Text-color */
     --color-secondary: #002330;
     --color-lightgray: #f4f4f4;
+    --color-error: #a8200d;
     --shadow-color: inset 0 0 0 2px #6c6c6b;
 }
 
