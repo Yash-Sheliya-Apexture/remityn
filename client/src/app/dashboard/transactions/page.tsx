@@ -1,6 +1,6 @@
 //transactions/page.tsx
 import React from "react";
-import TransactionsPage from "../transactions/PageSection/TransactionPage";
+import TransactionsPage from "../components/TransactionPageSection/TransactionPage";
 
 const Page = () => {
     return(

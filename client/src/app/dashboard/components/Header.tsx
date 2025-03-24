@@ -11,7 +11,7 @@ const Header: React.FC<HeaderProps> = ({
   toggleSidebar,
 }) => {
   return (
-    <header className="bg-white border-b">
+    <header className="bg-white">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-28">
           <div className="flex gap-4 items-center">

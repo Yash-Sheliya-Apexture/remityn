@@ -47,7 +47,7 @@ export default function DashboardLayout({ children }) {
               <Header toggleSidebar={toggleSidebar} />
               {/* Main Content */}
               <main className="flex-1 overflow-x-hidden overflow-y-auto scrollbar-hide">
-                <div className="max-w-5xl mx-auto px-4">
+                <div className="max-w-5xl ml-auto px-4">
                   {children} {/* Render page content here */}
                 </div>
               </main>
