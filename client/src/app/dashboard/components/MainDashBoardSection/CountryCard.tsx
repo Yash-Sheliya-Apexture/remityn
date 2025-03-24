@@ -92,13 +92,6 @@
 // }
 // export default CountryCard;
 
-
-
-
-
-
-
-
 "use client";
 import React, { useRef, useState } from "react";
 import Image from "next/image";
@@ -149,7 +142,7 @@ const CountryCard = () => {
   };
 
   return (
-    <section className="Country-card pt-12">
+    <section className="Country-card pt-5">
       <div className="container mx-auto relative z-10">
         {" "}
         {/* Added relative for button positioning */}
@@ -192,7 +185,7 @@ const CountryCard = () => {
                 </div>
                 <div className="pt-16">
                   <span className="text-secondary text-2xl font-semibold">
-                  {parseFloat(card.value).toFixed(2)}
+                    {parseFloat(card.value).toFixed(2)}
                   </span>
                 </div>
               </div>

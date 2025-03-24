@@ -104,23 +104,29 @@ export default function LoginPage() {
 
     return (
         <div className="flex flex-col justify-center items-center lg:h-[calc(100vh-73px)] px-4">
-            <div className="w-full max-w-md mt-10">
+            <div className="w-full max-w-md lg:mt-20 mt-10">
                 <div className="bg-white">
                     {/* Inactive logout message */}
                     {inactiveLogoutMessage && (
+<<<<<<< HEAD
+
+                        <div className="flex bg-green/8 p-4 rounded-2xl gap-4 items-center lg:gap-6 relative">
+                            <div className="flex bg-primary justify-center rounded-full items-center lg:size-12 size-10">
+=======
                         <div className="flex bg-green/8 p-6 rounded-2xl gap-4 items-center lg:gap-6 relative">
                             <div className="flex bg-[#454745] justify-center rounded-full items-center size-12">
+>>>>>>> 1b4c08eed72df2a3b4d3ca3da1db33d326afa53d
                                 <AiOutlineInfo className="p-0.5 text-white size-8" />
                             </div>
                             <div>
-                                <span className="text-gray block max-w-60">{inactiveLogoutMessage}</span>
+                                <span className="text-gray text-sm lg:text-base block max-w-60">{inactiveLogoutMessage}</span>
                             </div>
                             <button
-                                className="absolute cursor-pointer right-4 top-4"
+                                className="absolute cursor-pointer right-3 top-4"
                                 onClick={handleCloseInactiveLogoutMessage}
                             >
                                 <IoClose
-                                    className="p-1.5 rounded-full text-gray fill-current hover:bg-green/8 size-10"
+                                    className="lg:p-1.5 p-0.5 rounded-full text-gray fill-current hover:bg-green/8 size-6 lg:size-10"
                                     role="button"
                                 />
                             </button>
