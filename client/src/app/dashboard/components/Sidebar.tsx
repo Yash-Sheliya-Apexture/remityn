@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 // "use client";
 
 // import React, { useEffect, useRef, useState } from "react";
@@ -332,7 +330,6 @@
 
 // export default Sidebar;
 
->>>>>>> 10d7cc9d9daf1414702be768a559c4a37c399916
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
@@ -462,7 +459,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
       (sidebarOpen && isMobileView === true) ? (
         <motion.div
           ref={sidebarRef}
-          className={`bg-white w-72 fixed h-screen inset-y-0 left-0 lg:relative z-50 ${
+          className={`bg-white w-72 fixed h-screen inset-y-0 left-0 lg:relative ${
             isMobileView ? "" : "translate-x-0"
           } ${
             sidebarOpen && isMobileView
@@ -476,11 +473,6 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
           exit={isMobileView ? { x: "-100%" } : {}}
           transition={isMobileView ? { duration: 0.3, ease: "easeInOut" } : {}}
         >
-<<<<<<< HEAD
-          <div className="">
-            <div className="flex flex-col items-center justify-center h-28">
-              <Image src="/assets/icon/logo.svg" alt="logo" width={100} height={100}/>
-=======
           <div>
             <div className="flex flex-col items-center justify-center lg:h-28 h-20">
               <Link href="/dashboard">
@@ -491,7 +483,6 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                   height={100}
                 />
               </Link>
->>>>>>> 10d7cc9d9daf1414702be768a559c4a37c399916
             </div>
           </div>
 
@@ -535,7 +526,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
       ) : null}
 
       {/* Small screen bottom sidebar */}
-      <div className="sm:hidden fixed bottom-0 left-0 w-full border-t  border-lightgray bg-white z-50 flex justify-center items-center space-x-6 py-4">
+      <div className="sm:hidden fixed bottom-0 left-0 w-full border-t border-lightgray bg-white flex justify-center items-center space-x-6 py-4">
         {bottomNavLinksData.map((item: NavLink) => {
           const IconComponent = icons[item.icon];
           const isActive = pathname === item.route;

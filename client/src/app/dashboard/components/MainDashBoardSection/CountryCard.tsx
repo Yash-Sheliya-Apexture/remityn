@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 // import Image from "next/image";
 // import React from "react";
 // import USD from '../../../../../public/assets/icons/usd.svg'
@@ -94,7 +92,6 @@
 // }
 // export default CountryCard;
 
->>>>>>> 10d7cc9d9daf1414702be768a559c4a37c399916
 "use client";
 import React, { useRef, useState } from "react";
 import Image from "next/image";

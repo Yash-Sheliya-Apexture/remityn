@@ -149,7 +149,6 @@ export default function LoginPage() {
                         </div>
                     )}
 
-
                     <div className='py-3'>
                         <h2 className="lg:text-3xl text-2xl text-center text-main font-semibold mb-4">
                             Welcome back.
@@ -167,10 +166,10 @@ export default function LoginPage() {
 
                         {loginError && (
                             <div
-                                className="flex bg-green/8 p-6 rounded-2xl gap-4 items-center lg:gap-6 relative"
+                                className="flex bg-green/8 lg:p-6 p-4 rounded-2xl gap-4 items-center lg:gap-6 relative"
                                 role="alert"
                             >
-                                <div className="flex bg-error justify-center rounded-full items-center size-12">
+                                <div className="flex bg-error justify-center rounded-full items-center lg:size-12">
                                     <IoClose className="p-0.5 text-white size-8" />
                                 </div>
 
@@ -179,7 +178,7 @@ export default function LoginPage() {
                                 </div>
 
                                 <button
-                                    className="absolute cursor-pointer right-4 top-4"
+                                    className="absolute cursor-pointer md:right-4 right-2 top-2 md:top-4"
                                     onClick={handleCloseLoginError}
                                 >
                                     <IoClose
