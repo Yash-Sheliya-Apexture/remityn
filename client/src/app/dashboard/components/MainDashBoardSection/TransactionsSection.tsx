@@ -30,13 +30,13 @@ const TransactionsSection: React.FC = () => {
         </div>
 
         {/* Latest 3 Transaction History */}
-        <div className="space-y-8">
+        <div className="space-y-2">
           {latestTransactions.map((transaction) => {
             let description = transaction.description;
             if (transaction.type === "Add Money") {
-              description = transaction.status === "processed" ? "Added by you" : "Waiting for your money";
+              description = transaction.status === "completed" ? "Added by you" : "Waiting for your money";
             } else if (transaction.type === "Send Money") {
-              description = transaction.status === "processed" ? "Sent by you" : "Sending your money";
+              description = transaction.status === "completed" ? "Sent by you" : "Sending your money";
             }
             return (
               <div key={transaction.id} className="hover:bg-lightgray p-4 rounded-2xl -mx-4 transition-colors duration-500 ease-in-out">
@@ -58,7 +58,7 @@ const TransactionsSection: React.FC = () => {
                       <p className="text-sm text-gray-500">{description}</p>
                     </div>
                     <div
-                      className={`font-medium ${transaction.type === "Add Money" && transaction.status === "processed" ? "text-green-600" : "text-main"}`}
+                      className={`font-medium ${transaction.type === "Add Money" && transaction.status === "completed" ? "text-green-600" : "text-main"}`}
                     >
                       {transaction.type === "Add Money" ? "+ " : "- "}
                       {transaction.amount.toLocaleString(undefined, {

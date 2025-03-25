@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 // "use client";
 
 // import React, { useEffect, useRef, useState } from "react";
@@ -332,7 +330,6 @@
 
 // export default Sidebar;
 
->>>>>>> 10d7cc9d9daf1414702be768a559c4a37c399916
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
@@ -476,11 +473,6 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
           exit={isMobileView ? { x: "-100%" } : {}}
           transition={isMobileView ? { duration: 0.3, ease: "easeInOut" } : {}}
         >
-<<<<<<< HEAD
-          <div className="">
-            <div className="flex flex-col items-center justify-center h-28">
-              <Image src="/assets/icon/logo.svg" alt="logo" width={100} height={100}/>
-=======
           <div>
             <div className="flex flex-col items-center justify-center lg:h-28 h-20">
               <Link href="/dashboard">
@@ -491,7 +483,6 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                   height={100}
                 />
               </Link>
->>>>>>> 10d7cc9d9daf1414702be768a559c4a37c399916
             </div>
           </div>
 

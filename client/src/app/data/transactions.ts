@@ -295,4 +295,15 @@ export const defaultTransactions: Transaction[] = [
     status: "cancelled",
     recipientId: '1'
   },
+  {
+    id: "8",
+    type: "Send Money",
+    name: getRecipientNameById('1'),
+    amount: 200,
+    currency: "USD",
+    date: "2024-07-20T10:00:00Z", // Transaction on 2024-07-20
+    processedDate: "2024-07-21T10:00:00Z",
+    status: "completed",
+    recipientId: '1'
+  },
 ];
