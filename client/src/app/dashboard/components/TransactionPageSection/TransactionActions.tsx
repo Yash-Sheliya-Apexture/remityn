@@ -38,32 +38,72 @@
 
 
 
+// // components/TransactionActions.tsx
+// import React from "react";
+// import Search from "./Search";
+// import Filter from "./Filter";
+// import Download from "./Download";
+// import { Transaction } from "../../../data/transactions";
+
+// interface TransactionActionsProps {
+//   transactions: Transaction[];
+//   onTransactionsChange: (transactions: Transaction[]) => void;
+//   onFiltersApply: (filters: { selectedRecipients: (string | number)[], selectedDirection?: string, selectedStatus?: string | null }) => void; // Update filters type
+// }
+
+// const TransactionActions: React.FC<TransactionActionsProps> = ({ transactions, onTransactionsChange, onFiltersApply }) => {
+//   return (
+//     <div className="flex items-center gap-4">
+//       <Search
+//         transactions={transactions}
+//         onTransactionsChange={onTransactionsChange}
+//       />
+//       <div className="flex items-center gap-2">
+//         <Filter onFiltersApply={onFiltersApply} />
+//         <Download />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default TransactionActions;
+
+
+
+
+
+
+
+
+
+
+// Latest Code Without Date Picker
 // components/TransactionActions.tsx
 import React from "react";
 import Search from "./Search";
 import Filter from "./Filter";
 import Download from "./Download";
-import { Transaction } from "../../../data/transactions";
+import { Transaction } from "@/app/data/transactions";
 
 interface TransactionActionsProps {
-  transactions: Transaction[];
-  onTransactionsChange: (transactions: Transaction[]) => void;
-  onFiltersApply: (filters: { selectedRecipients: (string | number)[], selectedDirection?: string, selectedStatus?: string | null }) => void; // Update filters type
+    transactions: Transaction[];
+    onTransactionsChange: (transactions: Transaction[]) => void;
+    onFiltersApply: (filters: { selectedRecipients: (string | number)[], selectedDirection?: string, selectedStatus?: string | null, selectedBalance?: string[] }) => void; // Updated selectedBalance type to string[]
 }
 
 const TransactionActions: React.FC<TransactionActionsProps> = ({ transactions, onTransactionsChange, onFiltersApply }) => {
-  return (
-    <div className="flex items-center gap-4">
-      <Search
-        transactions={transactions}
-        onTransactionsChange={onTransactionsChange}
-      />
-      <div className="flex items-center gap-2">
-        <Filter onFiltersApply={onFiltersApply} />
-        <Download />
-      </div>
-    </div>
-  );
+    return (
+        <div className="flex items-center gap-4">
+            <Search
+                transactions={transactions}
+                onTransactionsChange={onTransactionsChange}
+            />
+            <div className="flex items-center gap-2">
+                <Filter onFiltersApply={onFiltersApply} />
+                <Download />
+            </div>
+        </div>
+    );
 };
 
 export default TransactionActions;
