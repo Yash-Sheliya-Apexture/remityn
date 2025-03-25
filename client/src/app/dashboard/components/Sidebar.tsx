@@ -459,7 +459,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
       (sidebarOpen && isMobileView === true) ? (
         <motion.div
           ref={sidebarRef}
-          className={`bg-white w-72 fixed h-screen inset-y-0 left-0 lg:relative z-50 ${
+          className={`bg-white w-72 fixed h-screen inset-y-0 left-0 lg:relative ${
             isMobileView ? "" : "translate-x-0"
           } ${
             sidebarOpen && isMobileView
@@ -526,7 +526,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
       ) : null}
 
       {/* Small screen bottom sidebar */}
-      <div className="sm:hidden fixed bottom-0 left-0 w-full border-t  border-lightgray bg-white z-50 flex justify-center items-center space-x-6 py-4">
+      <div className="sm:hidden fixed bottom-0 left-0 w-full border-t border-lightgray bg-white flex justify-center items-center space-x-6 py-4">
         {bottomNavLinksData.map((item: NavLink) => {
           const IconComponent = icons[item.icon];
           const isActive = pathname === item.route;

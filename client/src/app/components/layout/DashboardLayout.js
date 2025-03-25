@@ -9,7 +9,7 @@ import Header from "../../dashboard/components/Header";
 export default function DashboardLayout({ children }) {
   // State to manage sidebar, notifications, and active section
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  
+
   const { user, loading } = useAuth();
   const router = useRouter();
 
