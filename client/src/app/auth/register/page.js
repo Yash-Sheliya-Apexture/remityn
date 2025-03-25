@@ -776,7 +776,7 @@ export default function RegisterPage() {
                             className="text-gray text-sm block capitalize"
                         >
                             Password <span className="text-error">*</span>
-                        </label> 
+                        </label>
                         <div className="relative">
                             <input
                                 type={showPassword ? "text" : "password"}

@@ -189,15 +189,9 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
 
   return (
     <header className="bg-white">
-<<<<<<< HEAD
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-28">
-          <div className="flex gap-4 items-center">
-=======
       <div className="max-w-5xl mx-auto px-4">
         <div className="flex justify-between items-center lg:h-28 h-20">
           <div className="flex justify-center gap-4">
->>>>>>> 10d7cc9d9daf1414702be768a559c4a37c399916
             {/* Menu button for conditionaly render sidebar below large screen */}
             <button
               onClick={toggleSidebar}

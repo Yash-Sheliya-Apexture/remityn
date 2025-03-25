@@ -9,7 +9,7 @@ import Header from "../../dashboard/components/Header";
 export default function DashboardLayout({ children }) {
   // State to manage sidebar, notifications, and active section
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  
+
   const { user, loading } = useAuth();
   const router = useRouter();
 
@@ -34,23 +34,6 @@ export default function DashboardLayout({ children }) {
   return (
     <div className="dashboard-layout">
 
-<<<<<<< HEAD
-        <div className="bg-white max-w-[1440px] mx-auto">
-          <div className="flex h-screen">
-            <Sidebar
-              sidebarOpen={isSidebarOpen}
-              toggleSidebar={toggleSidebar}
-            />
-            <div className="flex-1 flex flex-col overflow-hidden">
-              <Header toggleSidebar={toggleSidebar} />
-              {/* Main Content */}
-              <main className="flex-1 overflow-x-hidden overflow-y-auto scrollbar-hide">
-                <div className="max-w-5xl ml-auto px-4">
-                  {children} {/* Render page content here */}
-                </div>
-              </main>
-            </div>
-=======
       <div className="bg-white max-w-[1440px] mx-auto">
         <div className="flex h-screen">
           <Sidebar
@@ -65,7 +48,6 @@ export default function DashboardLayout({ children }) {
                 {children} {/* Render page content here */}
               </div>
             </main>
->>>>>>> 10d7cc9d9daf1414702be768a559c4a37c399916
           </div>
         </div>
       </div>
