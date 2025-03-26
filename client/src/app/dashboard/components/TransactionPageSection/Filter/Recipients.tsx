@@ -77,14 +77,6 @@
 
 // export default Recipients;
 
-
-
-
-
-
-
-
-
 // // components/Filter/Recipients.tsx
 // import Image from "next/image";
 // import React, { useState, useEffect } from "react";
@@ -126,7 +118,6 @@
 //     },
 //   ];
 
-
 //   // Effect to call the parent callback when selectedRecipientIds changes
 //   useEffect(() => {
 //     if (onRecipientSelectionChange) {
@@ -138,7 +129,6 @@
 //   useEffect(() => {
 //     setSelectedRecipientIds(parentSelectedRecipientIds);
 //   }, [parentSelectedRecipientIds]);
-
 
 //   const handleCheckboxChange = (recipientId: string | number, isChecked: boolean) => {
 //     if (isChecked) {
@@ -163,7 +153,6 @@
 //       return "";
 //     }
 //   };
-
 
 //   return (
 //     <div>
@@ -204,6 +193,130 @@
 
 // export default Recipients;
 
+// // components/Filter/Recipients.tsx
+// import Image from "next/image";
+// import React, { useState, useEffect } from "react";
+// import { sampleRecipients, Recipient } from "../../../../data/transactions"; // Import Recipient interface from data/transactions.ts
+
+// interface RecipientsProps {
+//   onRecipientSelectionChange?: (
+//     selectedRecipientIds: (string | number)[]
+//   ) => void;
+//   selectedRecipientIds: (string | number)[];
+// }
+
+// const Recipients: React.FC<RecipientsProps> = ({
+//   onRecipientSelectionChange,
+//   selectedRecipientIds: parentSelectedRecipientIds,
+// }) => {
+//   const [selectedRecipientIds, setSelectedRecipientIds] = useState<
+//     (string | number)[]
+//   >(parentSelectedRecipientIds);
+
+//   useEffect(() => {
+//     if (onRecipientSelectionChange) {
+//       onRecipientSelectionChange(selectedRecipientIds);
+//     }
+//   }, [selectedRecipientIds, onRecipientSelectionChange]);
+
+//   useEffect(() => {
+//     setSelectedRecipientIds(parentSelectedRecipientIds);
+//   }, [parentSelectedRecipientIds]);
+
+//   const handleCheckboxChange = (
+//     recipientId: string | number,
+//     isChecked: boolean
+//   ) => {
+//     if (isChecked) {
+//       setSelectedRecipientIds([...selectedRecipientIds, recipientId]);
+//     } else {
+//       setSelectedRecipientIds(
+//         selectedRecipientIds.filter((id) => id !== recipientId)
+//       );
+//     }
+//   };
+
+//   const isRecipientSelected = (recipientId: string | number) => {
+//     return selectedRecipientIds.includes(recipientId);
+//   };
+
+//   const getInitials = (accountHolderName: string): string => {
+//     const nameParts = accountHolderName.split(" ");
+//     if (nameParts.length >= 2) {
+//       return `${nameParts[0][0]}${
+//         nameParts[nameParts.length - 1][0]
+//       }`.toUpperCase();
+//     } else if (nameParts.length === 1) {
+//       return `${nameParts[0][0]}`.toUpperCase();
+//     } else {
+//       return "";
+//     }
+//   };
+
+//   return (
+//     <>
+//       <h4 className="text-gray font-medium relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-gray/20 after:mt-1">
+//         Recipients
+//       </h4>
+//       <div className="pt-4">
+//         {sampleRecipients.map((recipient) => (
+//           <div
+//             key={recipient.id}
+//             className="flex items-center justify-between hover:bg-lightgray p-4 rounded-2xl -mx-4 transition-colors duration-500 ease-in-out"
+//           >
+//             {/* Recipients List */}
+//             <div className="flex items-center">
+//               <div className="w-12 h-12 rounded-full bg-lightborder flex items-center justify-center relative">
+//                 <span className="font-bold text-main">
+//                   {getInitials(recipient.accountHolderName)}
+//                 </span>
+//                 {recipient.countryCode === "INR" && (
+//                   <div className="absolute bottom-0 right-0 w-4 h-4 rounded-full overflow-hidden">
+//                     <Image
+//                       src={"/assets/icon/inr.svg"}
+//                       alt="inr flag"
+//                       width={20}
+//                       height={20}
+//                     />
+//                   </div>
+//                 )}
+//               </div>
+//               <div className="ml-4">
+//                 <h5 className="font-medium text-main capitalize">
+//                   {recipient.accountHolderName}
+//                 </h5>
+//                 {recipient.accountNumber && (
+//                   <p className="text-sm text-gray-600">
+//                    {recipient.countryCode} Account ending in {recipient.accountNumber.slice(-4)}
+//                   </p>
+//                 )}
+//               </div>
+//             </div>
+//             {/* Recipients List */}
+
+//             <div className="pt-1.5">
+//               <input
+//                 type="checkbox"
+//                 className="h-5 w-5 rounded border-gray-300 focus:ring-0 checked:bg-black checked:border-black"
+//                 checked={isRecipientSelected(recipient.id)}
+//                 onChange={(e) =>
+//                   handleCheckboxChange(recipient.id, e.target.checked)
+//                 }
+//               />
+//             </div>
+//           </div>
+//         ))}
+//         {selectedRecipientIds.length > 0 && (
+//           <p className="mt-4 text-sm text-gray-500">
+//             {selectedRecipientIds.length} recipient(s) selected.
+//           </p>
+//         )}
+//       </div>
+//     </>
+//   );
+// };
+
+// export default Recipients;
 
 
 
@@ -217,21 +330,102 @@
 
 
 
+// // components/Filter/Recipients.tsx
+// import React, { useState, useEffect } from "react";
+// import { sampleRecipients } from "../../../../data/transactions";
+// import RecipientList from "../../RecipientList"; // Import the new RecipientListItem component
+
+// interface RecipientsProps {
+//   onRecipientSelectionChange?: (
+//     selectedRecipientIds: (string | number)[]
+//   ) => void;
+//   selectedRecipientIds: (string | number)[];
+// }
+
+// const Recipients: React.FC<RecipientsProps> = ({
+//   onRecipientSelectionChange,
+//   selectedRecipientIds: parentSelectedRecipientIds,
+// }) => {
+//   const [selectedRecipientIds, setSelectedRecipientIds] = useState<
+//     (string | number)[]
+//   >(parentSelectedRecipientIds);
+
+//   useEffect(() => {
+//     if (onRecipientSelectionChange) {
+//       onRecipientSelectionChange(selectedRecipientIds);
+//     }
+//   }, [selectedRecipientIds, onRecipientSelectionChange]);
+
+//   useEffect(() => {
+//     setSelectedRecipientIds(parentSelectedRecipientIds);
+//   }, [parentSelectedRecipientIds]);
+
+//   const handleCheckboxChange = (
+//     recipientId: string | number,
+//     isChecked: boolean
+//   ) => {
+//     if (isChecked) {
+//       setSelectedRecipientIds([...selectedRecipientIds, recipientId]);
+//     } else {
+//       setSelectedRecipientIds(
+//         selectedRecipientIds.filter((id) => id !== recipientId)
+//       );
+//     }
+//   };
+
+//   const isRecipientSelected = (recipientId: string | number) => {
+//     return selectedRecipientIds.includes(recipientId);
+//   };
+
+//   return (
+//     <>
+//       <h4 className="text-gray font-medium relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-gray/20 after:mt-1">
+//         Recipients
+//       </h4>
+//       <div className="pt-4 space-y-2">
+//         {sampleRecipients.map((recipient) => (
+//           <RecipientList
+//             key={recipient.id}
+//             recipient={recipient}
+//             isSelected={isRecipientSelected(recipient.id)}
+//             onCheckboxChange={handleCheckboxChange}
+//           />
+//         ))}
+//         {selectedRecipientIds.length > 0 && (
+//           <p className="mt-4 text-sm text-gray-500">
+//             {selectedRecipientIds.length} recipient(s) selected.
+//           </p>
+//         )}
+//       </div>
+//     </>
+//   );
+// };
+
+// export default Recipients; 
+
+
+
+
+// Latest Updated Code
 // components/Filter/Recipients.tsx
-import Image from "next/image";
 import React, { useState, useEffect } from "react";
-import { sampleRecipients, Recipient } from "../../../../data/transactions"; // Import Recipient interface from data/transactions.ts
-
+import { sampleRecipients } from "../../../../data/transactions";
+import RecipientList from "../../RecipientList"; // Import the new RecipientListItem component
 
 interface RecipientsProps {
-  onRecipientSelectionChange?: (selectedRecipientIds: (string | number)[]) => void;
+  onRecipientSelectionChange?: (
+    selectedRecipientIds: (string | number)[]
+  ) => void;
   selectedRecipientIds: (string | number)[];
 }
 
-
-const Recipients: React.FC<RecipientsProps> = ({ onRecipientSelectionChange, selectedRecipientIds: parentSelectedRecipientIds }) => {
-  const [selectedRecipientIds, setSelectedRecipientIds] = useState<(string | number)[]>(parentSelectedRecipientIds);
-
+const Recipients: React.FC<RecipientsProps> = ({
+  onRecipientSelectionChange,
+  selectedRecipientIds: parentSelectedRecipientIds,
+}) => {
+  const [selectedRecipientIds, setSelectedRecipientIds] = useState<
+    (string | number)[]
+  >(parentSelectedRecipientIds);
 
   useEffect(() => {
     if (onRecipientSelectionChange) {
@@ -243,12 +437,16 @@ const Recipients: React.FC<RecipientsProps> = ({ onRecipientSelectionChange, sel
     setSelectedRecipientIds(parentSelectedRecipientIds);
   }, [parentSelectedRecipientIds]);
 
-
-  const handleCheckboxChange = (recipientId: string | number, isChecked: boolean) => {
+  const handleCheckboxChange = (
+    recipientId: string | number,
+    isChecked: boolean
+  ) => {
     if (isChecked) {
       setSelectedRecipientIds([...selectedRecipientIds, recipientId]);
     } else {
-      setSelectedRecipientIds(selectedRecipientIds.filter((id) => id !== recipientId));
+      setSelectedRecipientIds(
+        selectedRecipientIds.filter((id) => id !== recipientId)
+      );
     }
   };
 
@@ -256,52 +454,27 @@ const Recipients: React.FC<RecipientsProps> = ({ onRecipientSelectionChange, sel
     return selectedRecipientIds.includes(recipientId);
   };
 
-  const getInitials = (accountHolderName: string): string => {
-    const nameParts = accountHolderName.split(" ");
-    if (nameParts.length >= 2) {
-      return `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`.toUpperCase();
-    } else if (nameParts.length === 1) {
-      return `${nameParts[0][0]}`.toUpperCase();
-    } else {
-      return "";
-    }
-  };
-
-
   return (
-    <div>
-      {sampleRecipients.map((recipient) => (
-        <div key={recipient.id} className="flex items-center justify-between hover:bg-lightgray p-4 rounded-2xl -mx-4 transition-colors duration-500 ease-in-out">
-          <div className="flex items-center">
-            <div className="w-12 h-12 rounded-full bg-lightborder flex items-center justify-center relative">
-              <span className="font-bold text-main">{getInitials(recipient.accountHolderName)}</span>
-              {recipient.countryCode === 'IN' && (
-                <div className="absolute bottom-0 right-0 w-4 h-4 rounded-full overflow-hidden">
-                  <Image src={"/assets/icon/inr.svg"} alt="inr flag" width={20} height={20}/>
-                </div>
-              )}
-            </div>
-            <div className="ml-4">
-              <h5 className="font-medium text-main capitalize">{recipient.accountHolderName}</h5>
-              {recipient.accountNumber && <p className="text-sm text-gray-600">Account ending in {recipient.accountNumber.slice(-4)}</p>}
-            </div>
-          </div>
-          <div className="pt-1.5">
-            <input
-              type="checkbox"
-              className="h-5 w-5 rounded border-gray-300 focus:ring-0 checked:bg-black checked:border-black"
-              checked={isRecipientSelected(recipient.id)}
-              onChange={(e) => handleCheckboxChange(recipient.id, e.target.checked)}
-            />
-          </div>
-        </div>
-      ))}
-      {selectedRecipientIds.length > 0 && (
-        <p className="mt-4 text-sm text-gray-500">
-          {selectedRecipientIds.length} recipient(s) selected.
-        </p>
-      )}
-    </div>
+    <>
+      <h4 className="text-gray font-medium relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-gray/20 after:mt-1">
+        Recipients
+      </h4>
+      <div className="pt-4 space-y-2">
+        {sampleRecipients.map((recipient) => (
+          <RecipientList
+            key={recipient.id}
+            recipient={recipient}
+            isSelected={isRecipientSelected(recipient.id)}
+            onCheckboxChange={handleCheckboxChange}
+          />
+        ))}
+        {selectedRecipientIds.length > 0 && (
+          <p className="mt-4 text-sm text-gray-500">
+            {selectedRecipientIds.length} recipient(s) selected.
+          </p>
+        )}
+      </div>
+    </>
   );
 };
 

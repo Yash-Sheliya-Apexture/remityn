@@ -1416,7 +1416,263 @@
 
 
 
-// Latest Code Without Date Picker
+// // Latest Code Without Date Picker
+// // components/Filter.tsx
+// import React, { useState, useEffect } from "react";
+// import { LuSettings2 } from "react-icons/lu";
+// import { motion, AnimatePresence } from "framer-motion";
+// import DateInput from "./Filter/DateInput";
+// import Recipients from "./Filter/Recipients";
+// import DirectionFilter from "./Filter/DirectionFilter";
+// import Status from "./Filter/Status";
+// import Image from "next/image";
+// import BalanceComponent, { currencyBalances, CurrencyBalance } from "./Filter/Balance"; // Import currencyBalances data and interface from BalanceComponent
+
+// interface FilterProps {
+//     onFiltersApply: (filters: {
+//         selectedRecipients: (string | number)[];
+//         selectedDirection?: string;
+//         selectedStatus?: string | null;
+//         selectedBalance?: string[]; // Updated to string[]
+//     }) => void;
+// }
+
+// const Filter: React.FC<FilterProps> = ({ onFiltersApply }) => {
+//     const [isOpen, setIsOpen] = React.useState(false);
+//     const popupRef = React.useRef<HTMLDivElement>(null);
+//     const [fromDate, setFromDate] = React.useState("");
+//     const [toDate, setToDate] = React.useState("");
+//     const [selectedRecipients, setSelectedRecipients] = React.useState<
+//         (string | number)[]
+//     >([]);
+//     const [selectedDirection, setSelectedDirection] = useState<string>('all');
+//     const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+//     const [selectedBalance, setSelectedBalance] = useState<string[]>([]); // Updated to string[] - initialize as empty array
+
+//     const toggleOpen = () => setIsOpen(!isOpen);
+//     const closePopup = () => setIsOpen(false);
+
+//     React.useEffect(() => {
+//         const handleClickOutside = (event: MouseEvent) => {
+//             if (
+//                 popupRef.current &&
+//                 !popupRef.current.contains(event.target as Node) &&
+//                 isOpen
+//             ) {
+//                 closePopup();
+//             }
+//         };
+
+//         document.addEventListener("mousedown", handleClickOutside);
+//         return () => {
+//             document.removeEventListener("mousedown", handleClickOutside);
+//         };
+//     }, [isOpen, popupRef]);
+
+//     const handleRecipientSelectionChange = (
+//         recipientIds: (string | number)[]
+//     ) => {
+//         setSelectedRecipients(recipientIds);
+//         console.log("Selected Recipient IDs in Filter:", recipientIds);
+//     };
+
+//     const handleDirectionChange = (direction: string) => {
+//         setSelectedDirection(direction);
+//     };
+
+//     const handleStatusChange = (status: string | null) => {
+//         setSelectedStatus(status);
+//         console.log("Selected Status in Filter:", status);
+//     };
+
+//     const handleBalanceChange = (isSelected: boolean, currencyCode: string) => {
+//         setSelectedBalance((currentBalances) => {
+//             if (isSelected) {
+//                 // Add currency if selected
+//                 return [...currentBalances, currencyCode];
+//             } else {
+//                 // Remove currency if unselected
+//                 return currentBalances.filter(code => code !== currencyCode);
+//             }
+//         });
+//         console.log("Selected Balance in Filter:", selectedBalance); // Log will show previous state value here, state updates are async
+//     };
+
+
+//     useEffect(() => {
+//         console.log("Selected Balance in Filter (useEffect):", selectedBalance); // Log updated state here
+//     }, [selectedBalance]);
+
+
+//     const handleApplyFilters = () => {
+//         console.log("Applying filters with:", {
+//             fromDate,
+//             toDate,
+//             selectedRecipients,
+//             selectedDirection,
+//             selectedStatus,
+//             selectedBalance,
+//         });
+//         onFiltersApply({
+//             selectedRecipients,
+//             selectedDirection,
+//             selectedStatus,
+//             selectedBalance
+//         });
+//         closePopup();
+//     };
+
+//     const handleClearAllFilters = () => {
+//         setFromDate("");
+//         setToDate("");
+//         setSelectedRecipients([]);
+//         setSelectedDirection('all');
+//         setSelectedStatus(null);
+//         setSelectedBalance([]); // Clear balance filter array
+//         onFiltersApply({
+//             selectedRecipients: [],
+//             selectedDirection: 'all',
+//             selectedStatus: null,
+//             selectedBalance: [] // Clear balance filter in parent
+//         });
+//         closePopup();
+//     };
+
+
+//     return (
+//         <div>
+//             <button
+//                 className="bg-primary text-secondary font-medium py-3 px-6 rounded-full flex items-center"
+//                 onClick={toggleOpen}
+//                 aria-expanded={isOpen}
+//                 aria-controls="filter-popup"
+//             >
+//                 <LuSettings2 size={22} className="sm:mr-2 " />
+//                 <span className="sm:block hidden">Filters</span>
+//             </button>
+//             <AnimatePresence>
+//                 {isOpen && (
+//                     <motion.div
+//                         id="filter-popup"
+//                         ref={popupRef}
+//                         className="fixed top-0 right-0 bottom-0 w-[600px] bg-white shadow-lg border-l border-gray-100 z-50"
+//                         initial={{ x: "100%", opacity: 0 }}
+//                         animate={{ x: "0%", opacity: 1 }}
+//                         exit={{ x: "100%", opacity: 0 }}
+//                         transition={{ type: "tween", duration: 0.2 }}
+//                     >
+//                         <div className="flex flex-col">
+//                             <div className="p-6 shadow">
+//                                 <h3 className="font-semibold text-main text-xl">Filters</h3>
+//                             </div>
+//                             <div className="p-6 h-[calc(100vh-165px)] overflow-y-auto scrollbar-hide">
+//                                 <div className="pb-16">
+//                                     <h4 className="text-gray relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-lightborder after:mt-1">
+//                                         Date
+//                                     </h4>
+//                                     <div className="pt-4">
+//                                         <DateInput
+//                                             placeholder="From Choose a start date"
+//                                             value={fromDate}
+//                                             onChange={(e) => setFromDate(e.target.value)}
+//                                         />
+//                                         <DateInput
+//                                             placeholder="To Choose an end date"
+//                                             value={toDate}
+//                                             onChange={(e) => setToDate(e.target.value)}
+//                                         />
+//                                     </div>
+//                                 </div>
+
+//                                 <div className="pb-16">
+//                                     <h4 className="text-gray relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-lightborder after:mt-1">
+//                                         Recipients
+//                                     </h4>
+//                                     <div className="pt-4">
+//                                         <Recipients
+//                                             onRecipientSelectionChange={
+//                                                 handleRecipientSelectionChange
+//                                             }
+//                                             selectedRecipientIds={selectedRecipients}
+//                                         />
+//                                     </div>
+//                                 </div>
+
+//                                 {/* Status Component */}
+//                                 <div className="pb-16">
+//                                     <Status
+//                                         selectedStatus={selectedStatus}
+//                                         onStatusChange={handleStatusChange}
+//                                     />
+//                                 </div>
+
+//                                 {/* Direction Component */}
+//                                 <div className="pb-16">
+//                                     <DirectionFilter
+//                                         selectedDirection={selectedDirection}
+//                                         onDirectionChange={handleDirectionChange}
+//                                     />
+//                                 </div>
+
+//                                 {/* Balance Component - Now using map to render multiple Balance components */}
+//                                 <div className="pb-16">
+//                                     <h4 className="text-gray relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-lightborder after:mt-1">
+//                                         Balance
+//                                     </h4>
+//                                     <div className="pt-4 space-y-2">
+//                                         {currencyBalances.map((balance) => (
+//                                             <BalanceComponent // Use BalanceComponent here
+//                                                 key={balance.currencyCode}
+//                                                 currencyBalance={balance}
+//                                                 onBalanceChange={handleBalanceChange}
+//                                                 isSelected={selectedBalance.includes(balance.currencyCode)} // Check if currencyCode is in the array
+//                                             />
+//                                         ))}
+//                                     </div>
+//                                 </div>
+//                             </div>
+
+//                             <div className="shadow border-t border-t-gray-100 p-6">
+//                                 <div className="flex items-center">
+//                                     <button
+//                                         type="button"
+//                                         className="bg-white border border-secondary text-secondary font-medium py-3 px-4 rounded-full mr-2 w-full"
+//                                         onClick={handleClearAllFilters}
+//                                     >
+//                                         Cancel all
+//                                     </button>
+//                                     <button
+//                                         type="button"
+//                                         className="bg-primary text-secondary border border-primary font-medium py-3 px-4 rounded-full w-full"
+//                                         onClick={handleApplyFilters}
+//                                     >
+//                                         Apply
+//                                     </button>
+//                                 </div>
+//                             </div>
+//                         </div>
+//                     </motion.div>
+//                 )}
+//             </AnimatePresence>
+//         </div>
+//     );
+// };
+
+// export default Filter;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // components/Filter.tsx
 import React, { useState, useEffect } from "react";
 import { LuSettings2 } from "react-icons/lu";
@@ -1427,235 +1683,341 @@ import DirectionFilter from "./Filter/DirectionFilter";
 import Status from "./Filter/Status";
 import Image from "next/image";
 import BalanceComponent, { currencyBalances, CurrencyBalance } from "./Filter/Balance"; // Import currencyBalances data and interface from BalanceComponent
+import { FiX } from "react-icons/fi";
 
 interface FilterProps {
-    onFiltersApply: (filters: {
-        selectedRecipients: (string | number)[];
-        selectedDirection?: string;
-        selectedStatus?: string | null;
-        selectedBalance?: string[]; // Updated to string[]
-    }) => void;
+  onFiltersApply: (filters: {
+    selectedRecipients: (string | number)[];
+    selectedDirection?: string;
+    selectedStatus?: string | null;
+    selectedBalance?: string[];
+    fromDate?: string;
+    toDate?: string;
+  }) => void;
 }
 
 const Filter: React.FC<FilterProps> = ({ onFiltersApply }) => {
-    const [isOpen, setIsOpen] = React.useState(false);
-    const popupRef = React.useRef<HTMLDivElement>(null);
-    const [fromDate, setFromDate] = React.useState("");
-    const [toDate, setToDate] = React.useState("");
-    const [selectedRecipients, setSelectedRecipients] = React.useState<
-        (string | number)[]
-    >([]);
-    const [selectedDirection, setSelectedDirection] = useState<string>('all');
-    const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
-    const [selectedBalance, setSelectedBalance] = useState<string[]>([]); // Updated to string[] - initialize as empty array
+  const [isOpen, setIsOpen] = React.useState(false);
+  const popupRef = React.useRef<HTMLDivElement>(null);
+  const [fromDate, setFromDate] = React.useState("");
+  const [toDate, setToDate] = React.useState("");
+  const [selectedRecipients, setSelectedRecipients] = React.useState<
+    (string | number)[]
+  >([]);
+  const [selectedDirection, setSelectedDirection] = useState<string>('all');
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+  const [selectedBalance, setSelectedBalance] = useState<string[]>([]);
+  const [selectedDateRange, setSelectedDateRange] = useState<string | null>(null); // New state to track selected date range
+  const [isMobile, setIsMobile] = useState(false);
 
-    const toggleOpen = () => setIsOpen(!isOpen);
-    const closePopup = () => setIsOpen(false);
+  const toggleOpen = () => setIsOpen(!isOpen);
+  const closePopup = () => setIsOpen(false);
 
-    React.useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (
-                popupRef.current &&
-                !popupRef.current.contains(event.target as Node) &&
-                isOpen
-            ) {
-                closePopup();
-            }
-        };
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [isOpen, popupRef]);
-
-    const handleRecipientSelectionChange = (
-        recipientIds: (string | number)[]
-    ) => {
-        setSelectedRecipients(recipientIds);
-        console.log("Selected Recipient IDs in Filter:", recipientIds);
-    };
-
-    const handleDirectionChange = (direction: string) => {
-        setSelectedDirection(direction);
-    };
-
-    const handleStatusChange = (status: string | null) => {
-        setSelectedStatus(status);
-        console.log("Selected Status in Filter:", status);
-    };
-
-    const handleBalanceChange = (isSelected: boolean, currencyCode: string) => {
-        setSelectedBalance((currentBalances) => {
-            if (isSelected) {
-                // Add currency if selected
-                return [...currentBalances, currencyCode];
-            } else {
-                // Remove currency if unselected
-                return currentBalances.filter(code => code !== currencyCode);
-            }
-        });
-        console.log("Selected Balance in Filter:", selectedBalance); // Log will show previous state value here, state updates are async
-    };
-
-
-    useEffect(() => {
-        console.log("Selected Balance in Filter (useEffect):", selectedBalance); // Log updated state here
-    }, [selectedBalance]);
-
-
-    const handleApplyFilters = () => {
-        console.log("Applying filters with:", {
-            fromDate,
-            toDate,
-            selectedRecipients,
-            selectedDirection,
-            selectedStatus,
-            selectedBalance,
-        });
-        onFiltersApply({
-            selectedRecipients,
-            selectedDirection,
-            selectedStatus,
-            selectedBalance
-        });
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        popupRef.current &&
+        !popupRef.current.contains(event.target as Node) &&
+        isOpen
+      ) {
         closePopup();
+      }
     };
 
-    const handleClearAllFilters = () => {
-        setFromDate("");
-        setToDate("");
-        setSelectedRecipients([]);
-        setSelectedDirection('all');
-        setSelectedStatus(null);
-        setSelectedBalance([]); // Clear balance filter array
-        onFiltersApply({
-            selectedRecipients: [],
-            selectedDirection: 'all',
-            selectedStatus: null,
-            selectedBalance: [] // Clear balance filter in parent
-        });
-        closePopup();
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen, popupRef]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640); // Adjust breakpoint as needed (sm: 640px in Tailwind)
     };
 
+    handleResize(); // Check on initial load
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-    return (
-        <div>
-            <button
-                className="bg-primary text-secondary font-medium py-3 px-6 rounded-full flex items-center"
-                onClick={toggleOpen}
-                aria-expanded={isOpen}
-                aria-controls="filter-popup"
-            >
-                <LuSettings2 size={22} className="sm:mr-2 " />
-                <span className="sm:block hidden">Filters</span>
-            </button>
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        id="filter-popup"
-                        ref={popupRef}
-                        className="fixed top-0 right-0 bottom-0 w-[600px] bg-white shadow-lg border-l border-gray-100 z-50"
-                        initial={{ x: "100%", opacity: 0 }}
-                        animate={{ x: "0%", opacity: 1 }}
-                        exit={{ x: "100%", opacity: 0 }}
-                        transition={{ type: "tween", duration: 0.2 }}
-                    >
-                        <div className="flex flex-col">
-                            <div className="p-6 shadow">
-                                <h3 className="font-semibold text-main text-xl">Filters</h3>
-                            </div>
-                            <div className="p-6 h-[calc(100vh-165px)] overflow-y-auto scrollbar-hide">
-                                <div className="pb-16">
-                                    <h4 className="text-gray relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-lightborder after:mt-1">
-                                        Date
-                                    </h4>
-                                    <div className="pt-4">
-                                        <DateInput
-                                            placeholder="From Choose a start date"
-                                            value={fromDate}
-                                            onChange={(e) => setFromDate(e.target.value)}
-                                        />
-                                        <DateInput
-                                            placeholder="To Choose an end date"
-                                            value={toDate}
-                                            onChange={(e) => setToDate(e.target.value)}
-                                        />
-                                    </div>
-                                </div>
 
-                                <div className="pb-16">
-                                    <h4 className="text-gray relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-lightborder after:mt-1">
-                                        Recipients
-                                    </h4>
-                                    <div className="pt-4">
-                                        <Recipients
-                                            onRecipientSelectionChange={
-                                                handleRecipientSelectionChange
-                                            }
-                                            selectedRecipientIds={selectedRecipients}
-                                        />
-                                    </div>
-                                </div>
+  const handleRecipientSelectionChange = (
+    recipientIds: (string | number)[]
+  ) => {
+    setSelectedRecipients(recipientIds);
+    console.log("Selected Recipient IDs in Filter:", recipientIds);
+  };
 
-                                {/* Status Component */}
-                                <div className="pb-16">
-                                    <Status
-                                        selectedStatus={selectedStatus}
-                                        onStatusChange={handleStatusChange}
-                                    />
-                                </div>
+  const handleDirectionChange = (direction: string) => {
+    setSelectedDirection(direction);
+  };
 
-                                {/* Direction Component */}
-                                <div className="pb-16">
-                                    <DirectionFilter
-                                        selectedDirection={selectedDirection}
-                                        onDirectionChange={handleDirectionChange}
-                                    />
-                                </div>
+  const handleStatusChange = (status: string | null) => {
+    setSelectedStatus(status);
+    console.log("Selected Status in Filter:", status);
+  };
 
-                                {/* Balance Component - Now using map to render multiple Balance components */}
-                                <div className="pb-16">
-                                    <h4 className="text-gray relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-lightborder after:mt-1">
-                                        Balance
-                                    </h4>
-                                    <div className="pt-4 space-y-2">
-                                        {currencyBalances.map((balance) => (
-                                            <BalanceComponent // Use BalanceComponent here
-                                                key={balance.currencyCode}
-                                                currencyBalance={balance}
-                                                onBalanceChange={handleBalanceChange}
-                                                isSelected={selectedBalance.includes(balance.currencyCode)} // Check if currencyCode is in the array
-                                            />
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
+  const handleBalanceChange = (isSelected: boolean, currencyCode: string) => {
+    setSelectedBalance((currentBalances) => {
+      if (isSelected) {
+        return [...currentBalances, currencyCode];
+      } else {
+        return currentBalances.filter(code => code !== currencyCode);
+      }
+    });
+    console.log("Selected Balance in Filter:", selectedBalance);
+  };
 
-                            <div className="shadow border-t border-t-gray-100 p-6">
-                                <div className="flex items-center">
-                                    <button
-                                        type="button"
-                                        className="bg-white border border-secondary text-secondary font-medium py-3 px-4 rounded-full mr-2 w-full"
-                                        onClick={handleClearAllFilters}
-                                    >
-                                        Cancel all
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="bg-primary text-secondary border border-primary font-medium py-3 px-4 rounded-full w-full"
-                                        onClick={handleApplyFilters}
-                                    >
-                                        Apply
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </div>
-    );
+
+  useEffect(() => {
+    console.log("Selected Balance in Filter (useEffect):", selectedBalance);
+  }, [selectedBalance]);
+
+  const getLastMonthRange = () => {
+    setSelectedDateRange('month'); // Set selected date range
+    const now = new Date();
+    const lastMonth = new Date(now);
+    lastMonth.setMonth(now.getMonth() - 1);
+    const startOfMonth = new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 1);
+    const endOfMonth = new Date(lastMonth.getFullYear(), lastMonth.getMonth() + 1, 0);
+
+    const formatDate = (date: Date): string => {
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}-${month}-${year}`;
+    };
+
+    setFromDate(formatDate(startOfMonth));
+    setToDate(formatDate(endOfMonth));
+  };
+
+  const getLastQuarterRange = () => {
+    setSelectedDateRange('quarter'); // Set selected date range
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentQuarter = Math.floor(currentMonth / 3);
+    const startMonthOfLastQuarter = (currentQuarter - 1) * 3;
+    const endMonthOfLastQuarter = startMonthOfLastQuarter + 2;
+
+    const startOfLastQuarter = new Date(now.getFullYear(), startMonthOfLastQuarter, 1);
+    if (startMonthOfLastQuarter < 0) { // Adjust year if going to previous year's quarter
+      startOfLastQuarter.setFullYear(now.getFullYear() - 1);
+    }
+    const endOfLastQuarter = new Date(now.getFullYear(), endMonthOfLastQuarter + 1, 0);
+    if (endMonthOfLastQuarter < 0) { // Adjust year if going to previous year's quarter
+      endOfLastQuarter.setFullYear(now.getFullYear() - 1);
+    }
+
+
+    const formatDate = (date: Date): string => {
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}-${month}-${year}`;
+    };
+    setFromDate(formatDate(startOfLastQuarter));
+    setToDate(formatDate(endOfLastQuarter));
+  };
+
+
+  const getLastYearRange = () => {
+    setSelectedDateRange('year'); // Set selected date range
+    const now = new Date();
+    const lastYear = now.getFullYear() - 1;
+    const startOfYear = new Date(lastYear, 0, 1);
+    const endOfYear = new Date(lastYear, 11, 31);
+
+    const formatDate = (date: Date): string => {
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}-${month}-${year}`;
+    };
+
+    setFromDate(formatDate(startOfYear));
+    setToDate(formatDate(endOfYear));
+  };
+
+
+  const handleApplyFilters = () => {
+    console.log("Applying filters with:", {
+      fromDate,
+      toDate,
+      selectedRecipients,
+      selectedDirection,
+      selectedStatus,
+      selectedBalance,
+    });
+    onFiltersApply({
+      selectedRecipients,
+      selectedDirection,
+      selectedStatus,
+      selectedBalance,
+      fromDate,
+      toDate
+    });
+    closePopup();
+  };
+
+  const handleClearAllFilters = () => {
+    setFromDate("");
+    setToDate("");
+    setSelectedRecipients([]);
+    setSelectedDirection('all');
+    setSelectedStatus(null);
+    setSelectedBalance([]);
+    setSelectedDateRange(null); // Clear selected date range
+    onFiltersApply({
+      selectedRecipients: [],
+      selectedDirection: 'all',
+      selectedStatus: null,
+      selectedBalance: [],
+      fromDate: "",
+      toDate: ""
+    });
+    closePopup();
+  };
+
+
+  return (
+    <div>
+      <button
+        className="bg-primary text-secondary font-medium py-3 px-6 rounded-full flex items-center"
+        onClick={toggleOpen}
+        aria-expanded={isOpen}
+        aria-controls="filter-popup"
+      >
+        <LuSettings2 size={22} className="sm:mr-2 " />
+        <span className="md:block hidden">Filters</span>
+      </button>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            id="filter-popup"
+            ref={popupRef}
+            className={`fixed ${isMobile ? 'bottom-0 left-0 w-full' : 'top-0 right-0 sm:w-[600px]'} bg-white shadow-lg ${isMobile ? 'border-t' : 'border-l'} border-gray-100 z-50`}
+            initial={isMobile ? { y: "100%", opacity: 0 } : { x: "100%", opacity: 0 }}
+            animate={isMobile ? { y: "0%", opacity: 1 } : { x: "0%", opacity: 1 }}
+            exit={isMobile ? { y: "100%", opacity: 0 } : { x: "100%", opacity: 0 }}
+            transition={{ type: "tween", duration: 0.2 }}
+          >
+            <div className="flex flex-col">
+              <div className="p-6 shadow flex items-center justify-between ">
+                <h3 className="font-semibold text-main text-xl">Filters</h3>
+                {/* Button:-  Close filter */}
+                <FiX size={24} className="sm:hidden block hover:text-primary cursor-pointer" onClick={closePopup} />
+              </div>
+              <div className="p-6 h-[calc(100vh-165px)] overflow-y-auto scrollbar-hide">
+                <div className="pb-16">
+                  <h4 className="text-gray font-medium relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-gray/20 after:mt-1">
+                    Date
+                  </h4>
+
+                  {/* Month, Quarter and Yearly option */}
+                  <div className="pt-4 flex items-center flex-wrap gap-2">
+                    <button
+                      className={`font-medium border rounded-full px-4 py-1 flex items-center gap-2 ${selectedDateRange === 'month' ? 'bg-secondary text-primary' : 'border-secondary text-secondary bg-white'}`}
+                      onClick={getLastMonthRange}
+                    >Last month</button>
+                    <button
+                      className={`font-medium border rounded-full px-4 py-1 flex items-center gap-2 ${selectedDateRange === 'quarter' ? 'bg-secondary text-primary' : 'border-secondary text-secondary bg-white'}`}
+                      onClick={getLastQuarterRange}
+                    >Last quarter</button>
+                    <button
+                      className={`font-medium border rounded-full px-4 py-1 flex items-center gap-2 ${selectedDateRange === 'year' ? 'bg-secondary text-primary' : ' border-secondary text-secondary bg-white'}`}
+                      onClick={getLastYearRange}
+                    >Last year</button>
+                  </div>
+                  <div className="pt-4 space-y-4">
+                    <DateInput
+                      placeholder="From Choose a start date"
+                      value={fromDate}
+                      onChange={(date) => {
+                        setFromDate(date);
+                        setSelectedDateRange(null); // Deactivate date range button on manual date change
+                      }}
+                    />
+                    <DateInput
+                      placeholder="To Choose an end date"
+                      value={toDate}
+                      onChange={(date) => {
+                        setToDate(date);
+                        setSelectedDateRange(null); // Deactivate date range button on manual date change
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div className="pb-16">
+                  <div>
+                    <Recipients
+                      onRecipientSelectionChange={
+                        handleRecipientSelectionChange
+                      }
+                      selectedRecipientIds={selectedRecipients}
+                    />
+                  </div>
+                </div>
+
+                {/* Status Component */}
+                <div className="pb-16">
+                  <Status
+                    selectedStatus={selectedStatus}
+                    onStatusChange={handleStatusChange}
+                  />
+                </div>
+
+                {/* Direction Component */}
+                <div className="pb-16">
+                  <DirectionFilter
+                    selectedDirection={selectedDirection}
+                    onDirectionChange={handleDirectionChange}
+                  />
+                </div>
+
+                {/* Balance Component - Now using map to render multiple Balance components */}
+                <div className="pb-16">
+                  <h4 className="text-gray font-medium relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-gray/20 after:mt-1">
+                    Balance
+                  </h4>
+                  <div className="pt-4 space-y-2">
+                    {currencyBalances.map((balance) => (
+                      <BalanceComponent
+                        key={balance.currencyCode}
+                        currencyBalance={balance}
+                        onBalanceChange={handleBalanceChange}
+                        isSelected={selectedBalance.includes(balance.currencyCode)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="shadow border-t border-t-gray-100 p-6">
+                <div className="flex items-center">
+                  <button
+                    type="button"
+                    className="bg-white border border-secondary text-secondary font-medium py-3 px-4 rounded-full mr-2 w-full"
+                    onClick={handleClearAllFilters}
+                  >
+                    Cancel all
+                  </button>
+                  <button
+                    type="button"
+                    className="bg-primary text-secondary border border-primary font-medium py-3 px-4 rounded-full w-full"
+                    onClick={handleApplyFilters}
+                  >
+                    Apply
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 };
 
 export default Filter;

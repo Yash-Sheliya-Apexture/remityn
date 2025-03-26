@@ -6,7 +6,7 @@ const Download: React.FC = () => {
   return (
     <button className="bg-primary text-secondary font-medium py-3 px-6 rounded-full flex items-center">
       <LiaDownloadSolid size={22} className="sm:mr-2 " />
-      <span className="sm:block hidden">Download</span>
+      <span className="md:block hidden">Download</span>
     </button>
   );
 };

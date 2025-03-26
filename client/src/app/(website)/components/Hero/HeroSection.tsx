@@ -3252,7 +3252,10 @@ import HeroText from "./HeroText";
 import Image from "next/image";
 import inr from "../../../../../public/assets/icon/inr.svg";
 import { useAppContext } from "../../layout"; // Import the context hook.
+<<<<<<< HEAD
 import exchangeRateService from '../../../services/exchangeRate'; // Import the service
+=======
+>>>>>>> 09cb546c9fb315549224bef417b9d0df136e2e91
 
 interface ExchangeRates {
   [key: string]: { [key: string]: number };
