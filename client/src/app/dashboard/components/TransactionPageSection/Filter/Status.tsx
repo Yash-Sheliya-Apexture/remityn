@@ -25,7 +25,7 @@ export default function Status({ selectedStatus, onStatusChange }: StatusProps) 
 
   return (
     <div>
-      <h4 className="text-gray relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-lightborder after:mt-1">
+      <h4 className="text-gray font-medium relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-gray/20 after:mt-1">
         Status
       </h4>
       <div className="pt-4 flex items-center gap-2">

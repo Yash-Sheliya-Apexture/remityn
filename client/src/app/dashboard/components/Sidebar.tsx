@@ -376,9 +376,9 @@ const navLinksData: NavLink[] = [
   { label: "Send Money", icon: "BsSend", route: "/dashboard/send" },
   { label: "Add Money", icon: "GoArrowUp", route: "/dashboard/add-money" },
   {
-    label: "Beneficiaries",
+    label: "Recipients",
     icon: "FiUserPlus",
-    route: "/dashboard/beneficiaries",
+    route: "/dashboard/recipients",
   },
   { label: "Settings", icon: "FiSettings", route: "/dashboard/settings" },
 ];
