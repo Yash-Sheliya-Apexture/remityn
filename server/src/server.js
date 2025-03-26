@@ -101,12 +101,18 @@ import errorHandler from './middleware/error.middleware.js';
 import authRoutes from './routes/auth.routes.js';
 import authMiddleware from './middleware/auth.middleware.js';
 import adminUserRoutes from './routes/admin/user.admin.routes.js';
+import accountRoutes from './routes/account.routes.js'; // Import account routes
+import currencyRoutes from './routes/currency.routes.js'; // Import currency routes
+import adminCurrencyRoutes from './routes/admin/currency.admin.routes.js'; // Import admin currency routes
+import paymentRoutes from './routes/payment.routes.js'; // Import payment routes
+import exchangeRateRoutes from './routes/exchangeRate.routes.js';
+import exchangeRateService from './services/exchangeRate.service.js';
+import cron from 'node-cron';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-// import rateLimit from 'express-rate-limit'; // Import rate limiting middleware if you decide to use it
 
 dotenv.config(); // Load environment variables from .env file
 
@@ -179,6 +185,34 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes); // Authentication routes (register, login) - no protection needed on these endpoints
 app.use('/api/dashboard/users', authMiddleware.protect, userRoutes); // User routes under /dashboard - protected by authentication middleware
 app.use('/api/admin/users', authMiddleware.protect, authMiddleware.admin, adminUserRoutes); // Admin user routes under /admin - protected by auth and admin role middleware
+app.use('/api/admin/currencies', adminCurrencyRoutes); // Mount admin currency routes under /api/admin/currencies
+app.use('/api/accounts', accountRoutes); // Mount account routes under /api/accounts
+app.use('/api/currencies', currencyRoutes); // Mount currency routes
+app.use('/api/payments', paymentRoutes); // Mount payment routes under /api/payments
+app.use('/api/exchange-rates', exchangeRateRoutes); // Mount exchange rate routes
+
+
+// Schedule cron job to update exchange rates every 12 hours (adjust time as needed)
+// Runs at 00:00 and 12:00 every day
+cron.schedule('0 0,12 * * *', async () => {
+    console.log('Running exchange rate update cron job...');
+    const updateSuccessful = await exchangeRateService.updateExchangeRates();
+    if (updateSuccessful) {
+        console.log('Exchange rate update cron job completed successfully.');
+    } else {
+        console.error('Exchange rate update cron job failed.');
+    }
+});
+
+// Initial exchange rate update when server starts (optional - useful to have data immediately)
+exchangeRateService.updateExchangeRates().then(success => {
+    if (success) {
+        console.log('Initial exchange rates loaded on server start.');
+    } else {
+        console.error('Initial exchange rate load failed on server start.');
+    }
+});
+
 
 // Error Handling Middleware - must be defined after all routes.
 // This middleware will catch any errors thrown in route handlers or middleware above.
