@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import AppStore from "../../../components/AppStore";
+import AppStore from "../../../components/ui/AppStore";
 
 import { PiCurrencyCircleDollar } from "react-icons/pi";
 import { AiOutlineThunderbolt } from "react-icons/ai";

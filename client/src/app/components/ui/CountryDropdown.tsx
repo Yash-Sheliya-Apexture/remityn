@@ -1241,12 +1241,12 @@ import { BiSearch } from "react-icons/bi";
 import { AiOutlineCheck } from "react-icons/ai";
 
 // Import only the required SVG files
-import aed from "../../../public/assets/icons/aed.svg";
-import aud from "../../../public/assets/icons/aud.svg";
-import cad from "../../../public/assets/icons/cad.svg";
-import eur from "../../../public/assets/icons/eur.svg";
-import inr from "../../../public/assets/icons/inr.svg"; // Keep this, but we'll filter it out
-import usd from "../../../public/assets/icons/usd.svg";
+import aed from "../../../../public/assets/icon/aed.svg";
+import aud from "../../../../public/assets/icon/aud.svg";
+import cad from "../../../../public/assets/icon/cad.svg";
+import eur from "../../../../public/assets/icon/eur.svg";
+import inr from "../../../../public/assets/icon/inr.svg"; // Keep this, but we'll filter it out
+import usd from "../../../../public/assets/icon/usd.svg";
 
 interface Currency {
   code: string;

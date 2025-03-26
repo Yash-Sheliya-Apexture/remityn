@@ -3240,33 +3240,33 @@
 
 
 
-// New Latest Code 
+// New Latest Code
 // app/components/Home/HeroSection.tsx
 "use client";
 import { SlLock } from "react-icons/sl";
 import { IoIosArrowForward } from "react-icons/io";
 import { CiBank } from "react-icons/ci";
 import { useState, useEffect } from "react";
-import CountryDropdown from "../../../components/CountryDropdown"; //correct path
+import CountryDropdown from "../../../components/ui/CountryDropdown"; //correct path
 import HeroText from "./HeroText";
 import Image from "next/image";
-import inr from "../../../../../public/assets/icons/inr.svg";
-import { useAppContext } from "../../../layout"; // Import the context hook.
+import inr from "../../../../../public/assets/icon/inr.svg";
+import { useAppContext } from "../../layout"; // Import the context hook.
+import exchangeRateService from '../../../services/exchangeRate'; // Import the service
 
 interface ExchangeRates {
   [key: string]: { [key: string]: number };
 }
 
 interface ApiResponse {
-  date: string;
-  base: string;
-  rates: { [key: string]: number };
+  rates: {
+    date: string;
+    base: string;
+    rates: { [key: string]: number };
+  }
 }
 
 const HeroSection: React.FC = () => {
-//   const [sendAmount, setSendAmount] = useState("");  // Removed local state
-//   const [selectedSendCurrency, setSelectedSendCurrency] = useState("USD"); // Removed local state.
-
     const { selectedSendCurrency, setSelectedSendCurrency } = useAppContext(); //get context
     const [sendAmount, setSendAmount] = useState("");
 
@@ -3284,25 +3284,13 @@ const HeroSection: React.FC = () => {
     const fetchExchangeRates = async () => {
       setLoadingRates(true);
       try {
-        // Access the API key from the environment variable
-        const apiKey = process.env.NEXT_PUBLIC_CURRENCY_FREAKS_API_KEY;
-
-        if (!apiKey) {
-          console.error("API key is not defined in environment variables.");
-          // Handle the missing API key appropriately, e.g., display an error message.
-          setLoadingRates(false); // Stop loading even if there's an error.
-          return;  // Exit the function
-        }
-
-
-        const response = await fetch(
-          `https://api.currencyfreaks.com/v2.0/rates/latest?apikey=${apiKey}`
-        );
-        const data: ApiResponse = await response.json();
+        const response = await exchangeRateService.getExchangeRatesForCurrencies();
+        const data = response.rates; // Access the rates from the service response
 
         if (data && data.rates) {
           const transformedRates: ExchangeRates = {};
           const baseRate = data.rates;
+
 
           // Build the exchange rates object in the desired format.
           for (const baseCurrency of Object.keys(baseRate)) {
@@ -3319,10 +3307,10 @@ const HeroSection: React.FC = () => {
           setRate(initialRate);
           setExchangeRates(transformedRates);
         } else {
-          console.error("Failed to fetch exchange rates:", data);
+          console.error("Failed to fetch exchange rates: No rates data in response", data); // More specific error log
         }
       } catch (error) {
-        console.error("Error fetching exchange rates:", error);
+        console.error("Error fetching exchange rates:", JSON.stringify(error, null, 2)); // Log full error object
       } finally {
         setLoadingRates(false);
       }
@@ -3370,16 +3358,6 @@ const HeroSection: React.FC = () => {
     // No else needed, receive currency is fixed
   };
 
-  //  useEffect(() => {
-  //       const numericSendAmount = parseFloat(sendAmount.replace(/,/g, "")) || 0;
-  //       const feePercentage = 0.0215; // 2.15% as stated in the requirements
-  //       const calculatedSendFee = numericSendAmount * (1337 / 80000); // Example calculation based on sample data
-  //       const calculatedGST = numericSendAmount * (381.57 / 80000) // Example calculation based on sample data
-
-
-  //         setSendFee(calculatedSendFee);
-  //         setGst(calculatedGST);
-  //   }, [sendAmount]);
 
 
   useEffect(() => {

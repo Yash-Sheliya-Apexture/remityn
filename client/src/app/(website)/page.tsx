@@ -9,7 +9,7 @@ import AppSection from "./components/AppSection";
 export default function Home() {
   return (
     <>
-      {/* <HeroSection /> */}
+      <HeroSection />
       <ProtectionSection />
       <SecuritySection />
       {/* <FlagSection /> */}

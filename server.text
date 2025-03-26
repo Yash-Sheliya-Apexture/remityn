@@ -1,0 +1,32 @@
+server/         
+├── src/       
+│   ├── config/             
+│   │   ├── auth.config.js
+│   │   ├── database.config.js
+│   │   ├── index.js
+│   ├── controllers/             
+│   │   ├── admin
+│   │   │   ├── user.admin.controller.js
+│   │   ├── auth.controller.js
+│   │   ├── user.controller.js
+│   ├── middleware/             
+│   │   ├── auth.middleware.js
+│   │   ├── error.middleware.js
+│   ├── models/             
+│   │   ├── User.js
+│   ├── routes/             
+│   │   ├── admin
+│   │   │   ├── user.admin.routes.js
+│   │   ├── auth.routes.js
+│   │   ├── user.routes.js
+│   ├── services/             
+│   │   ├── admin
+│   │   │   ├── user.admin.service.js
+│   │   ├── auth.service.js
+│   │   ├── user.service.js
+│   ├── utils/      
+│   │   ├── database.js
+│   ├── validators/      
+│   │   ├── auth.validators.js
+│   ├── server.js
+├── .env
