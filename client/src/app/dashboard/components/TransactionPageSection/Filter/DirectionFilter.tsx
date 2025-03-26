@@ -137,7 +137,7 @@ const DirectionFilter: React.FC<DirectionFilterProps> = ({
 }) => {
   return (
     <div>
-      <h4 className="text-gray relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-lightborder after:mt-1">
+      <h4 className="text-gray font-medium relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-gray/20 after:mt-1">
         Direction
       </h4>
       <div className="pt-4">

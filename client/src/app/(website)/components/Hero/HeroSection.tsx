@@ -3247,11 +3247,11 @@ import { SlLock } from "react-icons/sl";
 import { IoIosArrowForward } from "react-icons/io";
 import { CiBank } from "react-icons/ci";
 import { useState, useEffect } from "react";
-import CountryDropdown from "../../../components/CountryDropdown"; //correct path
+import CountryDropdown from "../../../components/ui/CountryDropdown"; //correct path
 import HeroText from "./HeroText";
 import Image from "next/image";
-import inr from "../../../../../public/assets/icons/inr.svg";
-import { useAppContext } from "../../../layout"; // Import the context hook.
+import inr from "../../../../../public/assets/icon/inr.svg";
+import { useAppContext } from "../../layout"; // Import the context hook.
 
 interface ExchangeRates {
   [key: string]: { [key: string]: number };
