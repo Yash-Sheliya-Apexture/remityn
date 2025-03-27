@@ -16,7 +16,6 @@ dotenv.config();
 
 import databaseConfig from './database.config.js';
 import authConfig from './auth.config.js';
-import ifscConfig from './ifsc.config.js'; // Import IFSC config
 
 const emailConfig = {
     smtpHost: process.env.SMTP_HOST,
@@ -32,7 +31,6 @@ const emailConfig = {
 export default {
     database: databaseConfig,
     auth: authConfig,
-    ifscApi: ifscConfig, // Add ifscApi to config
     port: process.env.PORT || 5000,
     email: emailConfig, // Add email config
 };

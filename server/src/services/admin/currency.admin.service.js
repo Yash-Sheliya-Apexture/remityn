@@ -1,3 +1,4 @@
+// backend/src/services/admin/currency.admin.service.js
 import Currency from '../../models/Currency.js';
 
 const getAllCurrenciesAdmin = async () => {
@@ -8,7 +9,7 @@ const getCurrencyByIdAdmin = async (currencyId) => {
     return await Currency.findById(currencyId);
 };
 
-const createCurrencyAdmin = async ({ code, payeeName, iban, bicSwift, bankAddress, wiseFeePercentage, bankTransferFee }) => { // Accept fee fields
+const createCurrencyAdmin = async ({ code, payeeName, iban, bicSwift, bankAddress, wiseFeePercentage, bankTransferFee, flagImage, currencyName }) => { // Accept new fields
     if (!code) {
         throw new Error('Currency code is required.');
     }
@@ -22,14 +23,16 @@ const createCurrencyAdmin = async ({ code, payeeName, iban, bicSwift, bankAddres
         iban,
         bicSwift,
         bankAddress,
-        wiseFeePercentage, // Save fee percentages
+        wiseFeePercentage,
         bankTransferFee,
+        flagImage,
+        currencyName,
     });
     await newCurrency.save();
     return newCurrency;
 };
 
-const updateCurrencyAdmin = async (currencyId, { code, payeeName, iban, bicSwift, bankAddress, wiseFeePercentage, bankTransferFee }) => { // Accept fee fields
+const updateCurrencyAdmin = async (currencyId, { code, payeeName, iban, bicSwift, bankAddress, wiseFeePercentage, bankTransferFee, flagImage, currencyName }) => { // Accept new fields
     if (!code) {
         throw new Error('Currency code is required.');
     }
@@ -42,8 +45,10 @@ const updateCurrencyAdmin = async (currencyId, { code, payeeName, iban, bicSwift
     currency.iban = iban;
     currency.bicSwift = bicSwift;
     currency.bankAddress = bankAddress;
-    currency.wiseFeePercentage = wiseFeePercentage; // Update fee percentages
+    currency.wiseFeePercentage = wiseFeePercentage;
     currency.bankTransferFee = bankTransferFee;
+    currency.flagImage = flagImage; // Update flag image
+    currency.currencyName = currencyName; // Update currency name
     await currency.save();
     return currency;
 };

@@ -1,3 +1,4 @@
+// backend/src/controllers/admin/currency.admin.controller.js
 import currencyAdminService from '../../services/admin/currency.admin.service.js';
 
 const getAllCurrenciesAdmin = async (req, res, next) => {
@@ -24,15 +25,18 @@ const getCurrencyByIdAdmin = async (req, res, next) => {
 
 const createCurrencyAdmin = async (req, res, next) => {
     try {
-        const { code, payeeName, iban, bicSwift, bankAddress, wiseFeePercentage, bankTransferFee } = req.body; // Include new fields
+        const { code, payeeName, iban, bicSwift, bankAddress, wiseFeePercentage, bankTransferFee, currencyName, flagImage } = req.body; // Expect flagImage as text input
+
         const newCurrency = await currencyAdminService.createCurrencyAdmin({
-            code,
+            code: code.toUpperCase(),
             payeeName,
             iban,
             bicSwift,
             bankAddress,
             wiseFeePercentage,
             bankTransferFee,
+            flagImage, // Store the provided flagImage path directly
+            currencyName,
         });
         res.status(201).json(newCurrency);
     } catch (error) {
@@ -43,15 +47,18 @@ const createCurrencyAdmin = async (req, res, next) => {
 const updateCurrencyAdmin = async (req, res, next) => {
     try {
         const { currencyId } = req.params;
-        const { code, payeeName, iban, bicSwift, bankAddress, wiseFeePercentage, bankTransferFee } = req.body; // Include new fields
+        const { code, payeeName, iban, bicSwift, bankAddress, wiseFeePercentage, bankTransferFee, currencyName, flagImage } = req.body; // Expect flagImage as text input
+
         const updatedCurrency = await currencyAdminService.updateCurrencyAdmin(currencyId, {
-            code,
+            code: code.toUpperCase(),
             payeeName,
             iban,
             bicSwift,
             bankAddress,
             wiseFeePercentage,
             bankTransferFee,
+            flagImage, // Store the provided flagImage path directly
+            currencyName,
         });
         res.json(updatedCurrency);
     } catch (error) {

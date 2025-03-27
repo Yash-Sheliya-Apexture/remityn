@@ -406,11 +406,87 @@
 
 
 
-// Latest Updated Code
+// // Latest Updated Code
+// // components/Filter/Recipients.tsx
+// import React, { useState, useEffect } from "react";
+// import { sampleRecipients } from "../../../../data/transactions";
+// import RecipientList from "../../RecipientList"; // Import the new RecipientListItem component
+
+// interface RecipientsProps {
+//   onRecipientSelectionChange?: (
+//     selectedRecipientIds: (string | number)[]
+//   ) => void;
+//   selectedRecipientIds: (string | number)[];
+// }
+
+// const Recipients: React.FC<RecipientsProps> = ({
+//   onRecipientSelectionChange,
+//   selectedRecipientIds: parentSelectedRecipientIds,
+// }) => {
+//   const [selectedRecipientIds, setSelectedRecipientIds] = useState<
+//     (string | number)[]
+//   >(parentSelectedRecipientIds);
+
+//   useEffect(() => {
+//     if (onRecipientSelectionChange) {
+//       onRecipientSelectionChange(selectedRecipientIds);
+//     }
+//   }, [selectedRecipientIds, onRecipientSelectionChange]);
+
+//   useEffect(() => {
+//     setSelectedRecipientIds(parentSelectedRecipientIds);
+//   }, [parentSelectedRecipientIds]);
+
+//   const handleCheckboxChange = (
+//     recipientId: string | number,
+//     isChecked: boolean
+//   ) => {
+//     if (isChecked) {
+//       setSelectedRecipientIds([...selectedRecipientIds, recipientId]);
+//     } else {
+//       setSelectedRecipientIds(
+//         selectedRecipientIds.filter((id) => id !== recipientId)
+//       );
+//     }
+//   };
+
+//   const isRecipientSelected = (recipientId: string | number) => {
+//     return selectedRecipientIds.includes(recipientId);
+//   };
+
+//   return (
+//     <>
+//       <h4 className="text-gray font-medium relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-gray/20 after:mt-1">
+//         Recipients
+//       </h4>
+//       <div className="pt-4 space-y-2">
+//         {sampleRecipients.map((recipient) => (
+//           <RecipientList
+//             key={recipient.id}
+//             recipient={recipient}
+//             isSelected={isRecipientSelected(recipient.id)}
+//             onCheckboxChange={handleCheckboxChange}
+//           />
+//         ))}
+//         {selectedRecipientIds.length > 0 && (
+//           <p className="mt-4 text-sm text-gray-500">
+//             {selectedRecipientIds.length} recipient(s) selected.
+//           </p>
+//         )}
+//       </div>
+//     </>
+//   );
+// };
+
+// export default Recipients;
+
+
+
 // components/Filter/Recipients.tsx
 import React, { useState, useEffect } from "react";
-import { sampleRecipients } from "../../../../data/transactions";
-import RecipientList from "../../RecipientList"; // Import the new RecipientListItem component
+import RecipientList from "../../RecipientList";
+import recipientService from "../../../../services/recipient"; // Import your recipient service
+import { useAuth } from "../../../../hooks/useAuth"; // Import useAuth hook
 
 interface RecipientsProps {
   onRecipientSelectionChange?: (
@@ -426,6 +502,33 @@ const Recipients: React.FC<RecipientsProps> = ({
   const [selectedRecipientIds, setSelectedRecipientIds] = useState<
     (string | number)[]
   >(parentSelectedRecipientIds);
+  const [recipients, setRecipients] = useState([]); // State to store recipients from API
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { token } = useAuth(); // Get the token from AuthContext
+
+  useEffect(() => {
+    const fetchRecipients = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        if (!token) {
+          setError("Authentication token is missing.");
+          setLoading(false);
+          return;
+        }
+        const data = await recipientService.getUserRecipients(token);
+        setRecipients(data);
+        setLoading(false);
+      } catch (err: any) {
+        setError(err.message || "Failed to load recipients.");
+        setLoading(false);
+        console.error("Error fetching recipients:", err);
+      }
+    };
+
+    fetchRecipients();
+  }, [token]); // Fetch recipients when component mounts or token changes
 
   useEffect(() => {
     if (onRecipientSelectionChange) {
@@ -454,17 +557,25 @@ const Recipients: React.FC<RecipientsProps> = ({
     return selectedRecipientIds.includes(recipientId);
   };
 
+  if (loading) {
+    return <p>Loading recipients...</p>; // Or a loading spinner
+  }
+
+  if (error) {
+    return <p className="text-red-500">Error: {error}</p>;
+  }
+
   return (
     <>
       <h4 className="text-gray font-medium relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-gray/20 after:mt-1">
         Recipients
       </h4>
       <div className="pt-4 space-y-2">
-        {sampleRecipients.map((recipient) => (
+        {recipients.map((recipient: any) => ( // Type 'recipient' as 'any' initially, adjust if you have a specific type
           <RecipientList
-            key={recipient.id}
+            key={recipient._id} // Use _id from API data
             recipient={recipient}
-            isSelected={isRecipientSelected(recipient.id)}
+            isSelected={isRecipientSelected(recipient._id)} // Use _id for selection
             onCheckboxChange={handleCheckboxChange}
           />
         ))}

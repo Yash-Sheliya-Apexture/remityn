@@ -14,13 +14,15 @@ import paymentRoutes from './routes/payment.routes.js'; // Import payment routes
 import exchangeRateRoutes from './routes/exchangeRate.routes.js';
 import exchangeRateService from './services/exchangeRate.service.js';
 import recipientRoutes from './routes/recipient.routes.js'; // Import recipient routes
-import ifscRoutes from './routes/ifsc.routes.js'; // Import IFSC routes
 import cron from 'node-cron';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
+import path from 'path'; // Import path module
+import { fileURLToPath } from 'url'; // Import fileURLToPath from 'url'
+import { dirname } from 'path';      // Import dirname from 'path'
 
 dotenv.config(); // Load environment variables from .env file
 
@@ -89,6 +91,14 @@ app.get('/', (req, res) => {
     res.send('Welcome to the API server!'); // Simple welcome message
 });
 
+// --- START OF FIX ---
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+// --- END OF FIX ---
+
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
+
 // API Routes - Mounting route handlers for different resources.
 app.use('/api/auth', authRoutes); // Authentication routes (register, login) - no protection needed on these endpoints
 app.use('/api/dashboard/users', authMiddleware.protect, userRoutes); // User routes under /dashboard - protected by authentication middleware
@@ -99,7 +109,6 @@ app.use('/api/currencies', currencyRoutes); // Mount currency routes
 app.use('/api/payments', paymentRoutes); // Mount payment routes under /api/payments
 app.use('/api/exchange-rates', exchangeRateRoutes); // Mount exchange rate routes
 app.use('/api/recipients', recipientRoutes); // Mount recipient routes
-app.use('/api/ifsc', ifscRoutes); // Mount IFSC routes under /api/ifsc
 
 // Schedule cron job to update exchange rates every 12 hours (adjust time as needed)
 // Runs at 00:00 and 12:00 every day
