@@ -1681,7 +1681,6 @@ import DateInput from "./Filter/DateInput";
 import Recipients from "./Filter/Recipients";
 import DirectionFilter from "./Filter/DirectionFilter";
 import Status from "./Filter/Status";
-import Image from "next/image";
 import BalanceComponent, { currencyBalances, CurrencyBalance } from "./Filter/Balance"; // Import currencyBalances data and interface from BalanceComponent
 import { FiX } from "react-icons/fi";
 
@@ -1906,7 +1905,7 @@ const Filter: React.FC<FilterProps> = ({ onFiltersApply }) => {
               <div className="p-6 shadow flex items-center justify-between ">
                 <h3 className="font-semibold text-main text-xl">Filters</h3>
                 {/* Button:-  Close filter */}
-                <FiX size={24} className="sm:hidden block hover:text-primary cursor-pointer" onClick={closePopup} />
+                <FiX size={24} className="block hover:text-primary cursor-pointer" onClick={closePopup} />
               </div>
               <div className="p-6 h-[calc(100vh-165px)] overflow-y-auto scrollbar-hide">
                 <div className="pb-16">
