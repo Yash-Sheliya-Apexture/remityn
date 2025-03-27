@@ -13,6 +13,8 @@ import adminCurrencyRoutes from './routes/admin/currency.admin.routes.js'; // Im
 import paymentRoutes from './routes/payment.routes.js'; // Import payment routes
 import exchangeRateRoutes from './routes/exchangeRate.routes.js';
 import exchangeRateService from './services/exchangeRate.service.js';
+import recipientRoutes from './routes/recipient.routes.js'; // Import recipient routes
+import ifscRoutes from './routes/ifsc.routes.js'; // Import IFSC routes
 import cron from 'node-cron';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
@@ -96,7 +98,8 @@ app.use('/api/accounts', accountRoutes); // Mount account routes under /api/acco
 app.use('/api/currencies', currencyRoutes); // Mount currency routes
 app.use('/api/payments', paymentRoutes); // Mount payment routes under /api/payments
 app.use('/api/exchange-rates', exchangeRateRoutes); // Mount exchange rate routes
-
+app.use('/api/recipients', recipientRoutes); // Mount recipient routes
+app.use('/api/ifsc', ifscRoutes); // Mount IFSC routes under /api/ifsc
 
 // Schedule cron job to update exchange rates every 12 hours (adjust time as needed)
 // Runs at 00:00 and 12:00 every day
