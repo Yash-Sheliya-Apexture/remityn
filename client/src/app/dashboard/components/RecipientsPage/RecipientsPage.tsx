@@ -132,7 +132,7 @@ import React, { useState, ChangeEvent, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
 import RecipientList from "@/app/dashboard/components/RecipientList";
 import { CiBank } from "react-icons/ci";
-import { FaCirclePlus  } from "react-icons/fa6";
+import { FaCirclePlus } from "react-icons/fa6";
 import { IoIosArrowForward } from "react-icons/io";
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../../hooks/useAuth';
@@ -197,6 +197,15 @@ export default function RecipientsPage() {
       <div className="container mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-semibold text-main">Recipients</h1>
+          {/* Conditionally render in small screen  */}
+          {isSmallScreen && ( // Conditionally render based on isSmallScreen state
+            <button
+              className="bg-primary text-secondary font-medium px-4 py-1 rounded-full"
+              onClick={handleAddRecipientClick} // Add onClick handler for small screen button
+            >
+              Add
+            </button>
+          )}
         </div>
 
         <div className="flex items-center space-x-4 mb-6">
@@ -206,11 +215,19 @@ export default function RecipientsPage() {
             </div>
             <input
               type="text"
-              className="block w-full pl-14 pr-3 py-3 border border-lightborder rounded-full focus:outline-none focus:ring-main focus:border-main"
+              className="block w-full pl-14 pr-10 py-3 border border-lightborder rounded-full focus:outline-none focus:ring-main focus:border-main" // Increased pr-10 to accommodate cancel icon
               placeholder="Search existing recipients"
               value={searchTerm}
               onChange={handleSearchChange}
             />
+            {searchTerm && ( // Conditionally render the cancel icon
+              <button
+                onClick={clearSearchTerm}
+                className="absolute inset-y-0 right-3 flex items-center text-gray hover:text-main focus:outline-none" // Position cancel icon
+              >
+                <MdCancel size={24} aria-hidden="true" />
+              </button>
+            )}
           </div>
           <button
             type="button"

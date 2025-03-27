@@ -526,7 +526,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
       ) : null}
 
       {/* Small screen bottom sidebar */}
-      <div className="sm:hidden fixed bottom-0 left-0 w-full border-t border-lightgray bg-white flex justify-center items-center space-x-6 py-4">
+      <div className="sm:hidden fixed bottom-0 left-0 w-full border-t border-lightgray bg-white flex justify-center items-center space-x-6 py-4 z-10">
         {bottomNavLinksData.map((item: NavLink) => {
           const IconComponent = icons[item.icon];
           const isActive = pathname === item.route;

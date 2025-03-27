@@ -673,6 +673,10 @@ const AddRecipientPage = () => {
                             </p>
                         )}
 
+  const handleINRClick = () => {
+    // Handle INR selection logic here (e.g., navigation, state update)
+    console.log("INR Clicked - Implement your logic here");
+  };
 
                         <form className="mt-2 space-y-6" onSubmit={handleSubmit}>
                             <div>
