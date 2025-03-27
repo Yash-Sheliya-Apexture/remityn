@@ -372,7 +372,7 @@ export default function RecipientList({
             )}
           </div>
           <div className="ml-4">
-            <h5 className="font-medium text-main capitalize">
+            <h5 className="font-medium text-main ">
               {recipient.accountHolderName}
             </h5>
             {recipient.accountNumber && (

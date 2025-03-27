@@ -983,12 +983,14 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
   }
 
   const getInitials = (accountHolderName: string) => {
-    const nameParts = accountHolderName.toUpperCase().split(" ");
+    const trimmedName = accountHolderName.trim(); // Trim leading/trailing spaces
+    const nameParts = trimmedName.toUpperCase().split(" ");
     let initials = "";
-    if (nameParts.length >= 2) {
-      initials = nameParts[0][0] + nameParts[1][0];
-    } else if (nameParts.length === 1) {
-      initials = nameParts[0].slice(0, 2);
+    if (nameParts.length >= 1 && nameParts[0] !== "") { // Ensure there's a word after trimming
+      initials += nameParts[0][0]; // First letter of the first word
+      if (nameParts.length > 1 && nameParts[nameParts.length - 1] !== "") { // Ensure there's a last word after trimming
+        initials += nameParts[nameParts.length - 1][0]; // First letter of the last word
+      }
     }
     return initials;
   };
@@ -1047,7 +1049,9 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
         <div className="flex flex-col mb-8 space-y-4">
           <div className="relative w-20 h-20 rounded-full bg-lightborder flex items-center justify-center">
             <span className="font-bold text-2xl text-gray-700">
-              {getInitials(currentRecipient.accountHolderName)}
+              {getInitials(
+                currentRecipient.nickname || currentRecipient.accountHolderName
+              )}
             </span>
             {currentRecipient.currency.code === "INR" && (
               <div className="absolute bottom-1 right-0 w-6 h-6 rounded-full overflow-hidden border border-white">
@@ -1065,7 +1069,7 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
               </div>
             )}
           </div>
-          <h2 className="text-3xl font-semibold text-main capitalize">
+          <h2 className="text-[26px] font-semibold text-main">
             {currentRecipient.nickname || currentRecipient.accountHolderName}
           </h2>
           <div className="flex items-center gap-4">
@@ -1086,12 +1090,12 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
           <h3 className="text-gray text-lg font-semibold relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-gray/20 after:mt-1 mb-6">
             Account Details
           </h3>
-          <div className="grid grid-cols-2 gap-8">
+          <div className="grid sm:grid-cols-2 gap-8 mb-8">
             <div className="">
               <label className="block text-sm font-medium text-gray">
                 Account holder name
               </label>
-              <p className="mt-1 text-main font-medium capitalize">
+              <p className="mt-1 text-main font-medium ">
                 {currentRecipient.accountHolderName}
               </p>
             </div>
