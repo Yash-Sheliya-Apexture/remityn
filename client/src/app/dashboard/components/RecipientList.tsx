@@ -211,12 +211,14 @@ export default function RecipientList({
   showCheckbox = true,
 }: RecipientListProps) {
   const getInitials = (accountHolderName: string) => {
-    const nameParts = accountHolderName.toUpperCase().split(" ");
+    const trimmedName = accountHolderName.trim(); // Trim leading/trailing spaces
+    const nameParts = trimmedName.toUpperCase().split(" ");
     let initials = "";
-    if (nameParts.length >= 2) {
-      initials = nameParts[0][0] + nameParts[1][0];
-    } else if (nameParts.length === 1) {
-      initials = nameParts[0].slice(0, 2);
+    if (nameParts.length >= 1 && nameParts[0] !== "") { // Ensure there's a word after trimming
+      initials += nameParts[0][0]; // First letter of the first word
+      if (nameParts.length > 1 && nameParts[nameParts.length - 1] !== "") { // Ensure there's a last word after trimming
+        initials += nameParts[nameParts.length - 1][0]; // First letter of the last word
+      }
     }
     return initials;
   };

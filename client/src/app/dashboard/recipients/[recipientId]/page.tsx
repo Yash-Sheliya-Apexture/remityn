@@ -194,16 +194,17 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
   }
 
   const getInitials = (accountHolderName: string) => {
-    const nameParts = accountHolderName.toUpperCase().split(" ");
+    const trimmedName = accountHolderName.trim(); // Trim leading/trailing spaces
+    const nameParts = trimmedName.toUpperCase().split(" ");
     let initials = "";
-    if (nameParts.length >= 2) {
-      initials = nameParts[0][0] + nameParts[1][0];
-    } else if (nameParts.length === 1) {
-      initials = nameParts[0].slice(0, 2);
+    if (nameParts.length >= 1 && nameParts[0] !== "") { // Ensure there's a word after trimming
+      initials += nameParts[0][0]; // First letter of the first word
+      if (nameParts.length > 1 && nameParts[nameParts.length - 1] !== "") { // Ensure there's a last word after trimming
+        initials += nameParts[nameParts.length - 1][0]; // First letter of the last word
+      }
     }
     return initials;
   };
-
 
   const handleAddNicknameClick = () => {
     setNicknameInput(currentRecipient.nickname || ""); // Reset input to current nickname when opening
@@ -266,7 +267,7 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
           <h3 className="text-gray text-lg font-semibold relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-gray/20 after:mt-1 mb-6">
             Account Details
           </h3>
-          <div className="grid grid-cols-2 gap-8">
+          <div className="grid sm:grid-cols-2 gap-8 mb-8">
             <div className="">
               <label className="block text-sm font-medium text-gray">
                 Account holder name
