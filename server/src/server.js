@@ -1,97 +1,3 @@
-// import express from 'express';
-// import cors from 'cors';
-// import config from './config/index.js';
-// import connectDB from './utils/database.js';
-// import userRoutes from './routes/user.routes.js';
-// import errorHandler from './middleware/error.middleware.js';
-// import authRoutes from './routes/auth.routes.js';
-// import authMiddleware from './middleware/auth.middleware.js'; // Import auth middleware
-// import adminUserRoutes from './routes/admin/user.admin.routes.js'; // Example admin user routes
-// import dotenv from 'dotenv';
-// import helmet from 'helmet';
-// import compression from 'compression';
-// import morgan from 'morgan';
-// import cookieParser from 'cookie-parser';
-
-// dotenv.config(); // Load environment variables
-
-// const app = express();
-
-// // Security middleware
-// app.use(helmet.crossOriginOpenerPolicy({ policy: "same-origin-allow-popups" })); // Recommended security header
-
-// // Compression middleware
-// app.use(compression());
-
-// // Logging middleware (for development)
-// if (process.env.NODE_ENV === 'development') {
-//     app.use(morgan('dev'));
-// }
-
-// // CORS configuration - adjust allowedOrigins based on your frontend URL
-// const allowedOrigins = [
-//     'http://localhost:3000', // Your frontend development URL, adjust if different
-//     // Add your production frontend URL here if you have one
-// ];
-
-// app.use(cors({
-//     origin: (origin, callback) => {
-//         if (!origin || allowedOrigins.includes(origin)) {
-//             callback(null, true);
-//         } else {
-//             callback(new Error('Not allowed by CORS'));
-//         }
-//     },
-//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-//     allowedHeaders: ['Content-Type', 'Authorization'],
-//     credentials: true,
-// }));
-
-// // Cookie parser middleware
-// app.use(cookieParser());
-
-// // Body parser middleware with size limit
-// app.use(express.json({ limit: '10kb' }));
-// app.use(express.urlencoded({ extended: true })); // For URL-encoded bodies
-
-// // Cache control middleware - for development, adjust for production if needed
-// app.use((req, res, next) => {
-//     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-//     res.setHeader('Pragma', 'no-cache');
-//     res.setHeader('Expires', '0');
-//     next();
-// });
-
-
-// // Connect to MongoDB
-// connectDB();
-
-// // Health check endpoint
-// app.get('/health', (req, res) => {
-//     res.status(200).send('OK');
-// });
-
-// // API welcome endpoint - optional, but good practice
-// app.get('/', (req, res) => {
-//     res.send('Welcome to the API server!');
-// });
-
-
-// // Routes
-// app.use('/api/auth', authRoutes); // Mount auth routes under /api/auth
-// app.use('/api/dashboard/users', authMiddleware.protect, userRoutes); // Example dashboard user routes (adjust as needed)
-// app.use('/api/admin/users', adminUserRoutes); // Mount admin user routes under /api/admin/users
-
-// // Error handling middleware (must be after routes)
-// app.use(errorHandler);
-
-// const PORT = config.port;
-
-// app.listen(PORT, () => {
-//     console.log(`Server running on port ${PORT}`);
-// });
-
-
 import express from 'express';
 import cors from 'cors';
 import config from './config/index.js';
@@ -101,12 +7,20 @@ import errorHandler from './middleware/error.middleware.js';
 import authRoutes from './routes/auth.routes.js';
 import authMiddleware from './middleware/auth.middleware.js';
 import adminUserRoutes from './routes/admin/user.admin.routes.js';
+import accountRoutes from './routes/account.routes.js'; // Import account routes
+import currencyRoutes from './routes/currency.routes.js'; // Import currency routes
+import adminCurrencyRoutes from './routes/admin/currency.admin.routes.js'; // Import admin currency routes
+import paymentRoutes from './routes/payment.routes.js'; // Import payment routes
+import exchangeRateRoutes from './routes/exchangeRate.routes.js';
+import exchangeRateService from './services/exchangeRate.service.js';
+import recipientRoutes from './routes/recipient.routes.js'; // Import recipient routes
+import ifscRoutes from './routes/ifsc.routes.js'; // Import IFSC routes
+import cron from 'node-cron';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-// import rateLimit from 'express-rate-limit'; // Import rate limiting middleware if you decide to use it
 
 dotenv.config(); // Load environment variables from .env file
 
@@ -179,6 +93,35 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes); // Authentication routes (register, login) - no protection needed on these endpoints
 app.use('/api/dashboard/users', authMiddleware.protect, userRoutes); // User routes under /dashboard - protected by authentication middleware
 app.use('/api/admin/users', authMiddleware.protect, authMiddleware.admin, adminUserRoutes); // Admin user routes under /admin - protected by auth and admin role middleware
+app.use('/api/admin/currencies', adminCurrencyRoutes); // Mount admin currency routes under /api/admin/currencies
+app.use('/api/accounts', accountRoutes); // Mount account routes under /api/accounts
+app.use('/api/currencies', currencyRoutes); // Mount currency routes
+app.use('/api/payments', paymentRoutes); // Mount payment routes under /api/payments
+app.use('/api/exchange-rates', exchangeRateRoutes); // Mount exchange rate routes
+app.use('/api/recipients', recipientRoutes); // Mount recipient routes
+app.use('/api/ifsc', ifscRoutes); // Mount IFSC routes under /api/ifsc
+
+// Schedule cron job to update exchange rates every 12 hours (adjust time as needed)
+// Runs at 00:00 and 12:00 every day
+cron.schedule('0 0,12 * * *', async () => {
+    console.log('Running exchange rate update cron job...');
+    const updateSuccessful = await exchangeRateService.updateExchangeRates();
+    if (updateSuccessful) {
+        console.log('Exchange rate update cron job completed successfully.');
+    } else {
+        console.error('Exchange rate update cron job failed.');
+    }
+});
+
+// Initial exchange rate update when server starts (optional - useful to have data immediately)
+exchangeRateService.updateExchangeRates().then(success => {
+    if (success) {
+        console.log('Initial exchange rates loaded on server start.');
+    } else {
+        console.error('Initial exchange rate load failed on server start.');
+    }
+});
+
 
 // Error Handling Middleware - must be defined after all routes.
 // This middleware will catch any errors thrown in route handlers or middleware above.
