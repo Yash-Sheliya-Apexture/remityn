@@ -168,7 +168,7 @@ import {
     DialogFooter,
 } from "@/components/ui/dialog"
 import apiConfig from '../../../config/apiConfig';
-import Image from 'next/image'; // Import Image component
+import Image from 'next/image';
 import { FiSearch } from 'react-icons/fi';
 import { MdCancel } from 'react-icons/md';
 
@@ -176,8 +176,8 @@ axios.defaults.baseURL = apiConfig.baseUrl;
 
 interface CurrencyOption {
     code: string;
-    name?: string; // Optional currency name for display
-    image?: string; // Optional image path for currency flag/icon
+    currencyName?: string; // Currency Name is now expected from the backend
+    flagImage?: string;    // Flag Image path is now expected from the backend
 }
 
 interface CurrencySelectorModalProps {
@@ -185,17 +185,6 @@ interface CurrencySelectorModalProps {
     onClose: () => void;
     onCurrencyAdded: (newAccount: any) => void;
 }
-
-const currencyImages: { [key: string]: string } = { // Mapping of currency codes to image paths
-    'USD': '/assets/icon/usd.svg', // Example paths, adjust as needed
-    'EUR': '/assets/icon/eur.svg',
-    'GBP': '/assets/icon/gbp.svg',
-    'JPY': '/assets/icon/jpy.svg',
-    'CAD': '/assets/icon/cad.svg',
-    'AUD': '/assets/icon/aud.svg',
-    'INR': '/assets/icon/inr.svg',
-    // Add more currency code to image path mappings as needed
-};
 
 
 const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({ isOpen, onClose, onCurrencyAdded }) => {
@@ -212,12 +201,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({ isOpen, o
             setError(null);
             try {
                 const response = await axios.get('/currencies'); // Backend endpoint to get all currencies
-                // Augment currency data with image paths
-                const currenciesWithImages = response.data.map((currency: CurrencyOption) => ({
-                    ...currency,
-                    image: currencyImages[currency.code] || '/assets/icon/default_currency.svg', // Default image if not found
-                }));
-                setCurrencies(currenciesWithImages);
+                setCurrencies(response.data); // Assuming backend now returns currencyName and flagImage
                 setIsLoading(false);
             } catch (err: any) {
                 setError(err.response?.data?.message || 'Failed to load currencies');
@@ -227,11 +211,11 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({ isOpen, o
         };
 
         fetchCurrencies();
-    }, [],);
+    }, []);
 
     const filteredCurrencies = currencies.filter(currency =>
         currency.code.toLowerCase().includes(searchQuery.toLowerCase())
-        || (currency.name && currency.name.toLowerCase().includes(searchQuery.toLowerCase())) // Add search by name if available
+        || (currency.currencyName && currency.currencyName.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
     const handleCurrencySelect = (code: string) => {
@@ -265,91 +249,96 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({ isOpen, o
     };
 
     const handleCancel = () => {
-        clearSearchTerm(); // Clear the search query
-        onClose(); // Then close the modal
+        clearSearchTerm();
+        onClose();
     };
 
 
     return (
-      <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="">
-          <DialogHeader>
-            <DialogTitle>Open a balance</DialogTitle>
-          </DialogHeader>
+        <Dialog open={isOpen} onOpenChange={onClose}>
+            <DialogContent className="">
+                <DialogHeader>
+                    <DialogTitle>Open a balance</DialogTitle>
+                </DialogHeader>
 
-          <div className="relative"> {/* Added mb-4 for spacing */}
-            <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-              <FiSearch className="h-5 w-5 text-gray" aria-hidden="true" />
-            </div>
-            <input
-              type="text"
-              placeholder="Search currency..."
-              className="block w-full pl-14 pr-10 py-3 border border-lightborder rounded-full focus:outline-none focus:ring-main focus:border-main"
-              value={searchQuery} // Bind value to searchQuery
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            {searchQuery && (
-              <button
-                onClick={clearSearchTerm}
-                className="absolute inset-y-0 right-3 flex items-center text-gray hover:text-main focus:outline-none"
-              >
-                <MdCancel size={24} aria-hidden="true" />
-              </button>
-            )}
-          </div>
-          <DialogDescription>
-            Choose a currency to add to your account.
-          </DialogDescription>
-          {isLoading && <p>Loading currencies...</p>}
-          {error && <p className="text-red-500">Error: {error}</p>}
-          <div className={`h-60 overflow-y-auto scrollbar-hide mb-4 space-y-1`}> {/* Fixed height h-[20rem] */}
-            {filteredCurrencies.length > 0 ? (
-              filteredCurrencies.map((currency) => (
-                <div
-                  key={currency.code}
-                  className={`p-4 hover:bg-lightgray cursor-pointer rounded-xl flex items-center gap-4 ${
-                    selectedCurrencyCode === currency.code ? "bg-lightgray" : ""
-                  }`}
-                  onClick={() => handleCurrencySelect(currency.code)}
-                >
-                  {currency.image && (
-                    <Image
-                      src={currency.image}
-                      alt={`${currency.code} flag`}
-                      width={44}
-                      height={44}
+                <div className="relative">
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                        <FiSearch className="h-5 w-5 text-gray" aria-hidden="true" />
+                    </div>
+                    <input
+                        type="text"
+                        placeholder="Search currency..."
+                        className="block w-full pl-14 pr-10 py-3 border border-lightborder rounded-full focus:outline-none focus:ring-main focus:border-main"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
                     />
-                  )}
-                  <span className='text-main font-medium text-lg'>{currency.code}</span>
+                    {searchQuery && (
+                        <button
+                            onClick={clearSearchTerm}
+                            className="absolute inset-y-0 right-3 flex items-center text-gray hover:text-main focus:outline-none"
+                        >
+                            <MdCancel size={24} aria-hidden="true" />
+                        </button>
+                    )}
                 </div>
-              ))
-            ) : (
-              <p className="text-gray-500 text-center">No results found.</p>
-            )}
-          </div>
-          <DialogFooter>
-            <button
-              className="bg-secondary hover:bg-secondary/95 text-primary font-bold py-2 px-6 rounded-full focus:outline-none focus:shadow-outline"
-              onClick={handleCancel} // Use handleCancel here
-              disabled={isLoading}
-            >
-              Cancel
-            </button>
-            <button
-              className="bg-primary hover:bg-primary/80 text-secondary font-bold py-2 px-6 rounded-full focus:outline-none focus:shadow-outline"
-              type="button"
-              onClick={handleConfirm}
-              disabled={
-                isLoading ||
-                !selectedCurrencyCode ||
-                filteredCurrencies.length === 0
-              }
-            >
-              Confirm
-            </button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+                <DialogDescription>
+                    Choose a currency to add to your account.
+                </DialogDescription>
+                {isLoading && <p>Loading currencies...</p>}
+                {error && <p className="text-red-500">Error: {error}</p>}
+                <div className={`h-60 overflow-y-auto scrollbar-hide mb-4 space-y-1`}>
+                    {filteredCurrencies.length > 0 ? (
+                        filteredCurrencies.map((currency) => (
+                            <div
+                                key={currency.code}
+                                className={`p-4 hover:bg-lightgray cursor-pointer rounded-xl flex items-center gap-4 ${selectedCurrencyCode === currency.code ? "bg-lightgray" : ""
+                                    }`}
+                                onClick={() => handleCurrencySelect(currency.code)}
+                            >
+                                {currency.flagImage && (
+                                    <Image
+                                        src={currency.flagImage}
+                                        alt={`${currency.currencyName || currency.code} flag`}
+                                        width={44}
+                                        height={44}
+                                        onError={() => console.error(`Error loading image for ${currency.code}: ${currency.flagImage}`)}
+                                    />
+                                )}
+                                <div className='flex flex-col'>
+                                    <span className='text-main font-medium text-lg'>{currency.code}</span>
+                                    {currency.currencyName && (
+                                        <span className='text-gray-500 text-sm'>{currency.currencyName}</span>
+                                    )}
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="text-gray-500 text-center">No results found.</p>
+                    )}
+                </div>
+                <DialogFooter>
+                    <button
+                        className="bg-secondary hover:bg-secondary/95 text-primary font-bold py-2 px-6 rounded-full focus:outline-none focus:shadow-outline"
+                        onClick={handleCancel}
+                        disabled={isLoading}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        className="bg-primary hover:bg-primary/80 text-secondary font-bold py-2 px-6 rounded-full focus:outline-none focus:shadow-outline"
+                        type="button"
+                        onClick={handleConfirm}
+                        disabled={
+                            isLoading ||
+                            !selectedCurrencyCode ||
+                            filteredCurrencies.length === 0
+                        }
+                    >
+                        Confirm
+                    </button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     );
 };
 
