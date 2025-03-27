@@ -189,16 +189,124 @@
 
 
 
-// components/Filter/RecipientListItem.tsx
+// // components/Filter/RecipientListItem.tsx
+// "use client";
+// import Image from "next/image";
+// import React, { useRef } from "react";
+// import { Recipient } from "../../data/transactions";
+// import { IoIosArrowForward } from "react-icons/io";
+// import { useRouter } from 'next/navigation'; // Import useRouter
+
+// interface RecipientListProps {
+//   recipient: Recipient;
+//   isSelected: boolean;
+//   onCheckboxChange?: (recipientId: string | number, isChecked: boolean) => void;
+//   showCheckbox?: boolean;
+// }
+
+// export default function RecipientList({
+//   recipient,
+//   isSelected,
+//   onCheckboxChange,
+//   showCheckbox = true,
+// }: RecipientListProps) {
+//   const getInitials = (accountHolderName: string) => {
+//     const nameParts = accountHolderName.toUpperCase().split(" ");
+//     let initials = "";
+//     if (nameParts.length >= 2) {
+//       initials = nameParts[0][0] + nameParts[1][0];
+//     } else if (nameParts.length === 1) {
+//       initials = nameParts[0].slice(0, 2);
+//     }
+//     return initials;
+//   };
+
+//   const checkboxRef = useRef<HTMLInputElement>(null);
+//   const router = useRouter(); // Initialize useRouter
+
+//   const handleItemClick = () => {
+//     if (!showCheckbox) {
+//       router.push(`/dashboard/recipients/${recipient.id}`); // Navigate to recipient details page
+//       return;
+//     }
+//     if (showCheckbox && onCheckboxChange && checkboxRef.current) {
+//       checkboxRef.current.click(); // Programmatically trigger checkbox click
+//     }
+//   };
+
+
+//   const handleCheckboxInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     onCheckboxChange && onCheckboxChange(recipient.id, e.target.checked);
+//   };
+
+//   return (
+//     <div
+//       className="hover:bg-lightgray p-4 rounded-2xl -mx-4 transition-colors duration-500 ease-in-out cursor-pointer"
+//       onClick={handleItemClick}
+//     >
+//       <div className="flex items-center justify-between">
+//         {/* Recipients List */}
+//         <div className="flex items-center">
+//           <div className="w-12 h-12 rounded-full bg-lightborder flex items-center justify-center relative">
+//             <span className="font-bold text-main">
+//               {getInitials(recipient.accountHolderName)}
+//             </span>
+//             {recipient.countryCode === "INR" && (
+//               <div className="absolute bottom-0 right-0 w-4 h-4 rounded-full overflow-hidden">
+//                 <Image
+//                   src={"/assets/icon/inr.svg"}
+//                   alt="inr flag"
+//                   width={20}
+//                   height={20}
+//                 />
+//               </div>
+//             )}
+//           </div>
+//           <div className="ml-4">
+//             <h5 className="font-medium text-main capitalize">
+//               {recipient.accountHolderName}
+//             </h5>
+//             {recipient.accountNumber && (
+//               <p className="text-sm text-gray-600">
+//                 {recipient.countryCode} Account ending in {recipient.accountNumber.slice(-4)}
+//               </p>
+//             )}
+//           </div>
+//         </div>
+//         {/* Recipients List */}
+
+//         {showCheckbox ? ( // If showCheckbox is true, render checkbox
+//           <div className="pt-1.5">
+//             <input
+//               ref={checkboxRef}
+//               type="checkbox"
+//               className="h-5 w-5 rounded border-gray-300 focus:ring-0 checked:bg-black checked:border-black"
+//               checked={isSelected}
+//               onChange={handleCheckboxInputChange}
+//             />
+//           </div>
+//         ) : ( // If showCheckbox is false, render icon
+//           <div className="">
+//             <IoIosArrowForward className="h-5 w-5 text-gray-500" />
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+// frontend/src/app/dashboard/components/RecipientList.tsx
 "use client";
 import Image from "next/image";
 import React, { useRef } from "react";
-import { Recipient } from "../../data/transactions";
 import { IoIosArrowForward } from "react-icons/io";
-import { useRouter } from 'next/navigation'; // Import useRouter
+import { useRouter } from 'next/navigation';
 
 interface RecipientListProps {
-  recipient: Recipient;
+  recipient: any; // Type this properly with your Recipient type from backend if possible
   isSelected: boolean;
   onCheckboxChange?: (recipientId: string | number, isChecked: boolean) => void;
   showCheckbox?: boolean;
@@ -222,21 +330,20 @@ export default function RecipientList({
   };
 
   const checkboxRef = useRef<HTMLInputElement>(null);
-  const router = useRouter(); // Initialize useRouter
+  const router = useRouter();
 
   const handleItemClick = () => {
     if (!showCheckbox) {
-      router.push(`/dashboard/recipients/${recipient.id}`); // Navigate to recipient details page
+      router.push(`/dashboard/recipients/${recipient._id}`); // Navigate to recipient details page using _id from backend
       return;
     }
     if (showCheckbox && onCheckboxChange && checkboxRef.current) {
-      checkboxRef.current.click(); // Programmatically trigger checkbox click
+      checkboxRef.current.click();
     }
   };
 
-
   const handleCheckboxInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onCheckboxChange && onCheckboxChange(recipient.id, e.target.checked);
+    onCheckboxChange && onCheckboxChange(recipient._id, e.target.checked); // Use recipient._id
   };
 
   return (
@@ -245,19 +352,19 @@ export default function RecipientList({
       onClick={handleItemClick}
     >
       <div className="flex items-center justify-between">
-        {/* Recipients List */}
         <div className="flex items-center">
           <div className="w-12 h-12 rounded-full bg-lightborder flex items-center justify-center relative">
             <span className="font-bold text-main">
               {getInitials(recipient.accountHolderName)}
             </span>
-            {recipient.countryCode === "INR" && (
+            {recipient.currency.code === "INR" && ( // Access currency code from populated object
               <div className="absolute bottom-0 right-0 w-4 h-4 rounded-full overflow-hidden">
                 <Image
-                  src={"/assets/icon/inr.svg"}
-                  alt="inr flag"
+                  src={`/assets/icon/${recipient.currency.code.toLowerCase()}.svg`} // Use dynamic icon path
+                  alt={`${recipient.currency.code} flag`}
                   width={20}
                   height={20}
+                  onError={() => console.error(`Error loading image for ${recipient.currency.code}`)}
                 />
               </div>
             )}
@@ -268,14 +375,13 @@ export default function RecipientList({
             </h5>
             {recipient.accountNumber && (
               <p className="text-sm text-gray-600">
-                {recipient.countryCode} Account ending in {recipient.accountNumber.slice(-4)}
+                {recipient.currency.code} Account ending in {recipient.accountNumber.slice(-4)} {/* Use dynamic currency code */}
               </p>
             )}
           </div>
         </div>
-        {/* Recipients List */}
 
-        {showCheckbox ? ( // If showCheckbox is true, render checkbox
+        {showCheckbox ? (
           <div className="pt-1.5">
             <input
               ref={checkboxRef}
@@ -285,7 +391,7 @@ export default function RecipientList({
               onChange={handleCheckboxInputChange}
             />
           </div>
-        ) : ( // If showCheckbox is false, render icon
+        ) : (
           <div className="">
             <IoIosArrowForward className="h-5 w-5 text-gray-500" />
           </div>
