@@ -23,15 +23,15 @@ const AdminSidebar = () => {
                         </Link>
                     </li>
                     <li className="mb-3">
-                        <Link href="/admin/users" className="flex items-center p-3 rounded hover:bg-gray-700 transition-colors duration-200">
+                        <Link href="/admin/payments" className="flex items-center p-3 rounded hover:bg-gray-700 transition-colors duration-200">
                             <FaUsers className="mr-3 text-lg" />
-                            <span className="text-base">Users</span>
+                            <span className="text-base">Payments</span>
                         </Link>
                     </li>
                     <li className="mb-3">
-                        <Link href="/admin/transactions" className="flex items-center p-3 rounded hover:bg-gray-700 transition-colors duration-200">
+                        <Link href="/admin/transfer" className="flex items-center p-3 rounded hover:bg-gray-700 transition-colors duration-200">
                             <FaMoneyBillWave className="mr-3 text-lg" />
-                            <span className="text-base">Transactions</span>
+                            <span className="text-base">send</span>
                         </Link>
                     </li>
                     {/* Add more admin navigation links here */}

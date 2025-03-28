@@ -1,3 +1,4 @@
+// backend/src/models/Payment.js
 import mongoose from 'mongoose';
 import { Schema } from 'mongoose';
 
@@ -11,8 +12,12 @@ const paymentSchema = new mongoose.Schema({
     wiseFee: { type: Number, required: true },
     bankTransferFee: { type: Number, required: true },
     referenceCode: { type: String, required: true, unique: true },
-    paymentMethod: { type: String, default: 'bank_transfer' }, // You can expand payment methods
-    status: { type: String, enum: ['pending', 'completed', 'failed'], default: 'pending' },
+    paymentMethod: { type: String, default: 'bank_transfer' },
+    status: {
+        type: String,
+        enum: ['pending', 'completed', 'failed', 'in progress', 'canceled'], // **ADD 'in progress', 'canceled' to enum**
+        default: 'pending'
+    },
     bankDetails: {
         payeeName: { type: String },
         iban: { type: String },
