@@ -359,7 +359,6 @@ export default function RecipientList({
             <span className="font-bold text-main">
               {getInitials(recipient.accountHolderName)}
             </span>
-            {recipient.currency.code === "INR" && ( // Access currency code from populated object
               <div className="absolute bottom-0 right-0 w-4 h-4 rounded-full overflow-hidden">
                 <Image
                   src={`/assets/icon/${recipient.currency.code.toLowerCase()}.svg`} // Use dynamic icon path
@@ -369,7 +368,6 @@ export default function RecipientList({
                   onError={() => console.error(`Error loading image for ${recipient.currency.code}`)}
                 />
               </div>
-            )}
           </div>
           <div className="ml-4">
             <h5 className="font-medium text-main ">
