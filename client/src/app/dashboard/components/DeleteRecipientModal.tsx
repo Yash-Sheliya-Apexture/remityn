@@ -42,15 +42,15 @@ const DeleteRecipientModal: React.FC<DeleteRecipientModalProps> = ({
                         <p className="text-gray font-medium mb-6">
                             You'll have to add {recipientName} again as a recipient to send money to them.
                         </p>
-                        <div className="flex justify-center space-x-4 mt-8">
+                        <div className="flex flex-col justify-center gap-4 mt-8">
                             <button
-                                className="bg-primary text-secondary font-medium rounded-full px-6 py-3 text-center"
+                                className="bg-primary text-secondary font-medium rounded-full px-6 py-3 text-center w-full"
                                 onClick={onConfirmDelete}
                             >
                                 Delete
                             </button>
                             <button
-                                className="bg-white text-main font-medium rounded-full px-6 py-3 text-center border border-gray"
+                                className="bg-white text-main font-medium rounded-full px-6 py-3 text-center border border-gray w-full"
                                 onClick={onClose}
                             >
                                 Cancel
