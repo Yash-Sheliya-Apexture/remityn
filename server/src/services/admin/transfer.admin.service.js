@@ -48,7 +48,9 @@ const getTransferByIdAdmin = async (transferId) => {
         const transfer = await Transfer.findById(transferId)
             .populate('user', 'fullName email role') // Include role maybe
             .populate({ path: 'sourceAccount', select: 'balance currency', populate: { path: 'currency', select: 'code' } })
-            .populate({ path: 'recipient', populate: { path: 'currency', select: 'code' } }); // Populate full recipient + currency
+            .populate({ path: 'recipient', populate: { path: 'currency', select: 'code' } }) // Populate full recipient + currency
+            .populate('sendCurrency', 'code flagImage') // <---- ADD this line to populate sendCurrency with code and flagImage
+            .populate('receiveCurrency', 'code flagImage'); // <---- ADD this line to populate receiveCurrency with code and flagImage
         console.log(`Service: getTransferByIdAdmin - DB Query Result for ID ${transferId}:`, transfer); // <--- LOG 4: After DB query
 
         if (!transfer) {

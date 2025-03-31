@@ -10,7 +10,6 @@ import { useAuth } from '../../../../../hooks/useAuth'; // Adjust path
 import recipientService from '../../../../../services/recipient'; // Adjust path
 import { MdCancel } from 'react-icons/md';
 import Link from 'next/link';
-import DashboardHeader from "../../../../components/layout/DashboardHeader"; // Optional Header
 
 interface SelectRecipientParams {
     balanceId: string;

@@ -161,16 +161,34 @@ const getTransferDetails = async (transferId, userId) => {
      if (!mongoose.Types.ObjectId.isValid(transferId)) {
         throw new Error('Invalid transfer ID format.');
      }
+     // Find the transfer and populate all necessary fields
      const transfer = await Transfer.findOne({ _id: transferId, user: userId })
-        .populate('user', 'fullName email')
-        .populate({ path: 'sourceAccount', select: 'currency', populate: { path: 'currency', select: 'code flagImage' } })
-        .populate({ path: 'recipient', select: 'accountHolderName nickname currency accountNumber bankName', populate: { path: 'currency', select: 'code flagImage' } });
+        .populate('user', 'fullName email') // Populate user details
+        .populate({
+            path: 'sourceAccount', // Populate source account...
+            select: 'currency',    // ...select its currency field...
+            populate: {            // ...and populate that currency field
+                path: 'currency',
+                select: 'code flagImage'
+            }
+        })
+        .populate({
+            path: 'recipient',     // Populate recipient...
+            select: 'accountHolderName nickname currency accountNumber bankName', // ...select needed fields...
+            populate: {            // ...and populate its nested currency field
+                path: 'currency',
+                select: 'code flagImage'
+            }
+        })
+        .populate('sendCurrency', 'code flagImage') // <-- ADD THIS LINE: Populate top-level sendCurrency
+        .populate('receiveCurrency', 'code flagImage'); // <-- ADD THIS LINE: Populate top-level receiveCurrency
+
     if (!transfer) {
         console.log(`Service: getTransferDetails - Transfer ${transferId} not found or access denied for user ${userId}`);
         throw new Error('Transfer not found or access denied.');
     }
-    console.log(`Service: getTransferDetails - Transfer ${transferId} found.`);
-    return transfer;
+    console.log(`Service: getTransferDetails - Transfer ${transferId} found and populated.`);
+    return transfer; // Return the fully populated transfer object
 };
 
 // --- getUserTransfers (Keep as is) ---
@@ -178,10 +196,13 @@ const getUserTransfers = async (userId) => {
     console.log(`Service: getUserTransfers - Fetching transfers for user ${userId}`);
     try {
         const transfers = await Transfer.find({ user: userId })
-            .populate('recipient', 'accountHolderName nickname')
-            .populate('sendCurrency', 'code')
-            .populate('receiveCurrency', 'code')
-            .select('-user -sourceAccount -updatedAt -fees') // Exclude fees here too if desired for list
+            .populate('recipient', 'accountHolderName nickname') // Keep recipient details concise
+            .populate('sendCurrency', 'code flagImage') // Populate send currency
+            .populate('receiveCurrency', 'code flagImage') // Populate receive currency
+            // --- MODIFIED SELECT ---
+            // Include sourceAccount ID, exclude user, updatedAt, fees
+            .select('recipient sendCurrency receiveCurrency sendAmount receiveAmount status createdAt sourceAccount reason reference')
+            // --- END MODIFIED SELECT ---
             .sort({ createdAt: -1 });
         console.log(`Service: getUserTransfers - Found ${transfers.length} transfers for user ${userId}`);
         return transfers;

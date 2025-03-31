@@ -1,21 +1,21 @@
-// frontend/src/app/dashboard/components/DeleteRecipientModal.tsx
+// frontend/app/dashboard/transactions/[transactionId]/components/CancelTransferModal.tsx
 "use client";
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IoClose } from "react-icons/io5";
 
-interface DeleteRecipientModalProps {
+interface CancelTransferModalProps {
     isOpen: boolean;
     onClose: () => void;
-    recipientName: string;
-    onConfirmDelete: () => void;
+    transferNumber: string;
+    onConfirmCancel: () => void; // Changed prop name to onConfirmCancel to be more specific
 }
 
-const DeleteRecipientModal: React.FC<DeleteRecipientModalProps> = ({
+const CancelTransferModal: React.FC<CancelTransferModalProps> = ({
     isOpen,
     onClose,
-    recipientName,
-    onConfirmDelete,
+    transferNumber,
+    onConfirmCancel, // Changed prop name here as well
 }) => {
     return (
         <AnimatePresence>
@@ -38,22 +38,23 @@ const DeleteRecipientModal: React.FC<DeleteRecipientModalProps> = ({
                         >
                             <IoClose size={28} className="text-primary " />
                         </button>
-                        <h3 className="text-3xl font-semibold text-main my-6">Delete recipient?</h3>
+                        <h3 className="text-3xl font-semibold text-main my-6">Cancel transfer #{transferNumber}</h3> {/* Display transfer number */}
                         <p className="text-gray font-medium mb-6">
-                            You'll have to add {recipientName} again as a recipient to send money to them.
+                            We'll refund any payments you have made back to the same account. If we
+                            can't process your refund, we'll get in touch about what to do next.
                         </p>
                         <div className="flex flex-col justify-center gap-4 mt-8">
                             <button
-                                className="bg-primary text-secondary font-medium rounded-full px-6 py-3 text-center w-full"
-                                onClick={onConfirmDelete}
+                                className="bg-green-500 text-white font-medium rounded-full px-6 py-3 text-center w-full hover:bg-green-600 transition-colors" // Changed to green to match image
+                                onClick={onConfirmCancel} // Call the confirm cancel function
                             >
-                                Delete
+                                Cancel transfer {/* Changed button text */}
                             </button>
                             <button
                                 className="bg-white text-main font-medium rounded-full px-6 py-3 text-center border border-gray w-full"
                                 onClick={onClose}
                             >
-                                Cancel
+                                Close {/* Changed button text */}
                             </button>
                         </div>
                     </motion.div>
@@ -63,4 +64,4 @@ const DeleteRecipientModal: React.FC<DeleteRecipientModalProps> = ({
     );
 };
 
-export default DeleteRecipientModal;
+export default CancelTransferModal;
