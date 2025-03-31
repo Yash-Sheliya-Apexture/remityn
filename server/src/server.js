@@ -10,10 +10,13 @@ import adminUserRoutes from './routes/admin/user.admin.routes.js';
 import accountRoutes from './routes/account.routes.js'; // Import account routes
 import currencyRoutes from './routes/currency.routes.js'; // Import currency routes
 import adminCurrencyRoutes from './routes/admin/currency.admin.routes.js'; // Import admin currency routes
+import adminPaymentRoutes from './routes/admin/payment.admin.routes.js'; // Import admin payment routes
 import paymentRoutes from './routes/payment.routes.js'; // Import payment routes
 import exchangeRateRoutes from './routes/exchangeRate.routes.js';
 import exchangeRateService from './services/exchangeRate.service.js';
 import recipientRoutes from './routes/recipient.routes.js'; // Import recipient routes
+import transferRoutes from './routes/transfer.routes.js'; // Import transfer routes
+import adminTransferRoutes from './routes/admin/transfer.admin.routes.js'; // <-- Import Admin transfer routes
 import cron from 'node-cron';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
@@ -104,11 +107,14 @@ app.use('/api/auth', authRoutes); // Authentication routes (register, login) - n
 app.use('/api/dashboard/users', authMiddleware.protect, userRoutes); // User routes under /dashboard - protected by authentication middleware
 app.use('/api/admin/users', authMiddleware.protect, authMiddleware.admin, adminUserRoutes); // Admin user routes under /admin - protected by auth and admin role middleware
 app.use('/api/admin/currencies', adminCurrencyRoutes); // Mount admin currency routes under /api/admin/currencies
+app.use('/api/admin/payments', adminPaymentRoutes); // Mount admin payment routes under /api/admin/payments - already protected in route file
 app.use('/api/accounts', accountRoutes); // Mount account routes under /api/accounts
 app.use('/api/currencies', currencyRoutes); // Mount currency routes
 app.use('/api/payments', paymentRoutes); // Mount payment routes under /api/payments
 app.use('/api/exchange-rates', exchangeRateRoutes); // Mount exchange rate routes
 app.use('/api/recipients', recipientRoutes); // Mount recipient routes
+app.use('/api/transfers', authMiddleware.protect, transferRoutes); // Mount and protect transfer routes
+app.use('/api/admin/transfers', authMiddleware.protect, authMiddleware.admin, adminTransferRoutes); // Mount admin transfer routes
 
 // Schedule cron job to update exchange rates every 12 hours (adjust time as needed)
 // Runs at 00:00 and 12:00 every day

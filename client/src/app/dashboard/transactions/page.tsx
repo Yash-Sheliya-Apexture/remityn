@@ -1,12 +1,12 @@
-//transactions/page.tsx
+// transactions/page.tsx
 import React from "react";
 import TransactionsPage from "../components/TransactionPageSection/TransactionPage";
 
-const Page = () => {
+const Transactions = () => {
     return(
         <>
             <TransactionsPage />
         </>
     )
 }
-export default Page;
+export default Transactions;
