@@ -407,7 +407,7 @@ export default function RecipientsPage() {
             </div>
             <input
               type="text"
-              className="block w-full pl-14 pr-10 py-3 border border-lightborder rounded-full focus:outline-none focus:ring-main focus:border-main" // Increased pr-10 to accommodate cancel icon
+              className="w-full rounded-full py-3 pl-12 pr-3 border transition-shadow ease-in-out duration-300 border-[#c9cbce] hover:shadow-color" // Increased pr-10 to accommodate cancel icon
               placeholder="Search existing recipients"
               value={searchTerm}
               onChange={handleSearchChange}
@@ -435,7 +435,7 @@ export default function RecipientsPage() {
         {filteredRecipients.length > 0 ? (
           <div>
             <div>
-              <h3 className="text-gray font-medium relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-gray/20 after:mt-1">
+              <h3 className="text-gray font-medium relative after:content-[''] after:block after:w-full after:h-[1px] after:rounded-full after:bg-gray/20 after:mt-1">
                 All
               </h3>
               <div className="pt-4 space-y-2">
@@ -453,12 +453,12 @@ export default function RecipientsPage() {
         ) : (
           <div>
             <div>
-              <h3 className="text-gray font-medium relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-gray/20 after:mt-1">
+              <h3 className="text-gray font-medium relative after:content-[''] after:block after:w-full after:h-[1px] after:rounded-full after:bg-gray/20 after:mt-1">
                 Can't find your recipient?
               </h3>
 
               <div
-                className="mt-4 hover:bg-lightgray p-4 rounded-2xl -mx-4 transition-colors duration-500 ease-in-out cursor-pointer"
+                className="mt-4 hover:bg-lightgray p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer"
                 onClick={handleAddRecipientClick}
               >
                 <div className="flex items-center justify-between">

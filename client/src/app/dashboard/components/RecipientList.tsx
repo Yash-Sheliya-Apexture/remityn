@@ -350,7 +350,7 @@ export default function RecipientList({
 
   return (
     <div
-      className="hover:bg-lightgray p-4 rounded-2xl -mx-4 transition-colors duration-500 ease-in-out cursor-pointer"
+      className="hover:bg-lightgray p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer"
       onClick={handleItemClick}
     >
       <div className="flex items-center justify-between">
