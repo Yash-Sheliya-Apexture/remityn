@@ -527,7 +527,7 @@ const AccountSettings: React.FC = () => {
             icon={<RiShieldLine className="size-6" />}
             label="Security and privacy"
             description="Change your security and privacy settings."
-            href="/your-account/security-and-privacy" // Add href for Security and privacy
+            href="your-account/security-and-privacy" // Add href for Security and privacy
           />
 
           <MenuItem
@@ -555,7 +555,7 @@ const AccountSettings: React.FC = () => {
             icon={<FiUser className="size-6" />}
             label="Personal details"
             description="Update your personal information."
-            href="/your-account/language-and-appearance" // Add href for Personal details
+            href="your-account/personal-details" // Add href for Personal details
           />
         </div>
 
