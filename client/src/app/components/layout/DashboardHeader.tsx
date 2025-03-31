@@ -3,7 +3,6 @@ import React from 'react';
 
 interface DashboardHeaderProps {
     title: string;
-    // You can add more props here if needed, like user profile info, etc.
 }
 
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({ title }) => {
