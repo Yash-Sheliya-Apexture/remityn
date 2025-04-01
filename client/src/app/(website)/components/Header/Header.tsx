@@ -955,6 +955,246 @@
 
 // export default Header;
 
+// // components/Header.tsx
+// "use client";
+// import React, { useState, useEffect } from "react";
+// import Link from "next/link";
+// import Image from "next/image";
+// import { GiHamburgerMenu } from "react-icons/gi";
+// import { FiX } from "react-icons/fi";
+// import { motion, AnimatePresence } from "framer-motion";
+// import MobileMenu from "./MobileMenu"; // Correct import path
+// import FeatureDropdown from "@/app/components/ui/FeatureDropdown"; // Correct import path
+
+// const Header: React.FC = () => {
+//   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+//   const [isLargeScreen, setIsLargeScreen] = useState(false);
+
+//   const toggleMobileMenu = () => {
+//     setIsMobileMenuOpen(!isMobileMenuOpen);
+//   };
+//   const closeMobileMenu = () => {
+//     setIsMobileMenuOpen(false);
+//   };
+
+//   useEffect(() => {
+//     const checkScreenSize = () => {
+//       const large = window.innerWidth >= 1024;
+//       setIsLargeScreen(large);
+//       if (large && isMobileMenuOpen) {
+//         closeMobileMenu();
+//       }
+//     };
+
+//     checkScreenSize();
+//     window.addEventListener("resize", checkScreenSize);
+//     return () => window.removeEventListener("resize", checkScreenSize);
+//   }, [isMobileMenuOpen]);
+
+//   useEffect(() => {
+//     if (isMobileMenuOpen) {
+//       document.body.style.overflow = "hidden";
+//     } else {
+//       document.body.style.overflow = "auto";
+//     }
+//     return () => {
+//       document.body.style.overflow = "auto";
+//     };
+//   }, [isMobileMenuOpen]);
+
+//   const mobileMenuVariants = {
+//     open: { x: 0, opacity: 1, transition: { type: "tween", duration: 0.3 } },
+//     closed: {
+//       x: "-100%",
+//       opacity: 0,
+//       transition: { type: "tween", duration: 0.3 },
+//     },
+//   };
+
+//   const featureLinks = [
+//     { href: "/sendmoney", text: "Send Money" },
+//     { href: "/sendlargeamount", text: "Send Large Amounts" },
+//     // Add more features here
+//   ];
+
+//   const topContent = (
+//     <>
+//       <Image
+//         src="/assets/images/plane.webp"
+//         alt="Plane"
+//         width={56}
+//         height={56}
+//       />
+//       <div>
+//         <p className="font-light text-gray">
+//           Learn how millions of customers move their money globally
+//         </p>
+//       </div>
+//     </>
+//   );
+
+//   return (
+//     <header className="header">
+//       <div className="shadow drop-shadow-xs">
+//         <div className="container mx-auto px-4">
+//           <nav className="flex items-center gap-6 h-20" aria-label="Global">
+//             {/* Logo */}
+//             <div className="">
+//               <Link href="/" passHref>
+//                 <Image
+//                   src="/assets/images/wise-logo.svg"
+//                   alt="Wise Logo"
+//                   width={120}
+//                   height={28}
+//                 />
+//               </Link>
+//             </div>
+
+//             <div className="flex justify-end items-center w-full">
+//               {/* Links (Desktop) */}
+//               {isLargeScreen && (
+//                 <div className="flex items-center gap-1">
+//                   <Link
+//                     href="/personal"
+//                     passHref
+//                     className="bg-[#d3f2c0] px-4 py-1 rounded-full font-medium"
+//                   >
+//                     Personal
+//                   </Link>
+//                   <Link
+//                     href="/business"
+//                     passHref
+//                     className="px-4 py-1 rounded-full  font-medium hover:bg-gray-200"
+//                   >
+//                     Business
+//                   </Link>
+//                   <Link
+//                     href="/platform"
+//                     passHref
+//                     className="px-4 py-1 rounded-full  font-medium hover:bg-gray-200"
+//                   >
+//                     Platform
+//                   </Link>
+//                 </div>
+//               )}
+
+//               {/* Links (Desktop) */}
+//               {isLargeScreen && (
+//                 <div className="flex justify-end items-center gap-2 flex-1/2 w-full">
+//                   {/* Feature Link (using the FeatureDropdown component) */}
+//                   <FeatureDropdown
+//                     buttonText="Features"
+//                     links={featureLinks}
+//                     topContent={topContent} //  <--- Pass topContent
+//                     onLinkClick={closeMobileMenu}
+//                   />
+
+//                   <Link
+//                     href="/pricing"
+//                     passHref
+//                     className="px-2.5 py-1.5 rounded-full font-medium hover:bg-gray-200"
+//                   >
+//                     Pricing
+//                   </Link>
+//                   <Link
+//                     href="/help"
+//                     passHref
+//                     className="px-2.5 py-1.5 rounded-full font-medium hover:bg-gray-200"
+//                   >
+//                     Help
+//                   </Link>
+
+//                   {/* Lagunage and country selector */}
+//                   <Link href="/en" passHref>
+//                     <button className="flex items-center px-2.5 py-1.5 rounded-full hover:bg-gray-200">
+//                       <img
+//                         src="https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/1200px-Flag_of_India.svg.png"
+//                         alt="Indian Flag"
+//                         className="h-5 w-5 rounded-full mr-1 object-cover"
+//                       />
+//                       <span className="font-medium">EN</span>
+//                     </button>
+//                   </Link>
+//                 </div>
+//               )}
+
+//               <div className="text-nowrap items-center flex gap-2">
+//                 {/* Login  */}
+//                 {isLargeScreen && (
+//                   <Link
+//                     href="/auth/register"
+//                     passHref
+//                     className="px-4 py-2 rounded-full font-medium hover:bg-gray-200"
+//                   >
+//                     Register
+//                   </Link>
+//                 )}
+
+//                 {/* Register Link and Hamburger (Conditional) */}
+//                 {!isMobileMenuOpen && (
+//                   <>
+//                     <Link
+//                       href="/auth/login"
+//                       passHref
+//                       className="bg-lightgreen px-5 py-1.5 rounded-full font-medium hover:bg-lightgreen-hover"
+//                     >
+//                       Log in
+//                     </Link>
+
+//                     {!isLargeScreen && (
+//                       <button
+//                         onClick={toggleMobileMenu}
+//                         className="text-green  p-2"
+//                       >
+//                         <GiHamburgerMenu size={24} />
+//                       </button>
+//                     )}
+//                   </>
+//                 )}
+
+//                 {/*  Close Button (Mobile) */}
+//                 {isMobileMenuOpen && !isLargeScreen && (
+//                   <button
+//                     onClick={closeMobileMenu}
+//                     className="text-2xl p-2 bg-green/20 rounded-full"
+//                   >
+//                     <FiX className="text-green " />
+//                   </button>
+//                 )}
+//               </div>
+//             </div>
+//           </nav>
+//         </div>
+//       </div>
+
+//       {/* Mobile Menu (Conditional Rendering with Framer Motion) */}
+//       <AnimatePresence>
+//         {isMobileMenuOpen && (
+//           <motion.div
+//             variants={mobileMenuVariants}
+//             initial="closed"
+//             animate="open"
+//             exit="closed"
+//           >
+//             <MobileMenu
+//               isOpen={isMobileMenuOpen}
+//               onClose={closeMobileMenu}
+//               featureLinks={featureLinks}
+//               topContent={topContent} //  <--- Pass topContent
+//             />
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+//     </header>
+//   );
+// };
+
+// export default Header;
+
+
+
+
+
 // components/Header.tsx
 "use client";
 import React, { useState, useEffect } from "react";
@@ -963,16 +1203,23 @@ import Image from "next/image";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { FiX } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
-import MobileMenu from "./MobileMenu"; // Correct import path
-import FeatureDropdown from "@/app/components/ui/FeatureDropdown"; // Correct import path
+import MobileMenu from "./MobileMenu"; // Ensure MobileMenu has proper TypeScript definitions
+import FeatureDropdown from "@/app/components/ui/FeatureDropdown"; // Ensure FeatureDropdown has proper TypeScript definitions
+
+// Define a type for the feature links
+interface FeatureLink {
+  href: string;
+  text: string;
+}
 
 const Header: React.FC = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isLargeScreen, setIsLargeScreen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [isLargeScreen, setIsLargeScreen] = useState<boolean>(false);
 
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+    setIsMobileMenuOpen((prev) => !prev);
   };
+
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
   };
@@ -1011,10 +1258,10 @@ const Header: React.FC = () => {
     },
   };
 
-  const featureLinks = [
+  const featureLinks: FeatureLink[] = [
     { href: "/sendmoney", text: "Send Money" },
     { href: "/sendlargeamount", text: "Send Large Amounts" },
-    // Add more features here
+    // Add more features here as needed
   ];
 
   const topContent = (
@@ -1039,8 +1286,8 @@ const Header: React.FC = () => {
         <div className="container mx-auto px-4">
           <nav className="flex items-center gap-6 h-20" aria-label="Global">
             {/* Logo */}
-            <div className="">
-              <Link href="/" passHref>
+            <div>
+              <Link href="/">
                 <Image
                   src="/assets/images/wise-logo.svg"
                   alt="Wise Logo"
@@ -1051,61 +1298,55 @@ const Header: React.FC = () => {
             </div>
 
             <div className="flex justify-end items-center w-full">
-              {/* Links (Desktop) */}
+              {/* Desktop Links */}
               {isLargeScreen && (
                 <div className="flex items-center gap-1">
                   <Link
                     href="/personal"
-                    passHref
                     className="bg-[#d3f2c0] px-4 py-1 rounded-full font-medium"
                   >
                     Personal
                   </Link>
                   <Link
                     href="/business"
-                    passHref
-                    className="px-4 py-1 rounded-full  font-medium hover:bg-gray-200"
+                    className="px-4 py-1 rounded-full font-medium hover:bg-gray-200"
                   >
                     Business
                   </Link>
                   <Link
                     href="/platform"
-                    passHref
-                    className="px-4 py-1 rounded-full  font-medium hover:bg-gray-200"
+                    className="px-4 py-1 rounded-full font-medium hover:bg-gray-200"
                   >
                     Platform
                   </Link>
                 </div>
               )}
 
-              {/* Links (Desktop) */}
               {isLargeScreen && (
                 <div className="flex justify-end items-center gap-2 flex-1/2 w-full">
-                  {/* Feature Link (using the FeatureDropdown component) */}
+                  {/* Feature Dropdown */}
                   <FeatureDropdown
                     buttonText="Features"
                     links={featureLinks}
-                    topContent={topContent} //  <--- Pass topContent
+                    topContent={topContent}
                     onLinkClick={closeMobileMenu}
                   />
 
                   <Link
                     href="/pricing"
-                    passHref
                     className="px-2.5 py-1.5 rounded-full font-medium hover:bg-gray-200"
                   >
                     Pricing
                   </Link>
                   <Link
                     href="/help"
-                    passHref
                     className="px-2.5 py-1.5 rounded-full font-medium hover:bg-gray-200"
                   >
                     Help
                   </Link>
 
-                  {/* Lagunage and country selector */}
-                  <Link href="/en" passHref>
+                  {/* Language and Country Selector */}
+                  <Link href="/en">
                     <button className="flex items-center px-2.5 py-1.5 rounded-full hover:bg-gray-200">
                       <img
                         src="https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/1200px-Flag_of_India.svg.png"
@@ -1118,25 +1359,23 @@ const Header: React.FC = () => {
                 </div>
               )}
 
-              <div className="text-nowrap items-center flex gap-2">
-                {/* Login  */}
+              <div className="flex items-center gap-2">
+                {/* Register Link (Desktop) */}
                 {isLargeScreen && (
                   <Link
                     href="/auth/register"
-                    passHref
                     className="px-4 py-2 rounded-full font-medium hover:bg-gray-200"
                   >
                     Register
                   </Link>
                 )}
 
-                {/* Register Link and Hamburger (Conditional) */}
+                {/* Login and Hamburger for Mobile */}
                 {!isMobileMenuOpen && (
                   <>
                     <Link
                       href="/auth/login"
-                      passHref
-                      className="bg-lightgreen px-5 py-1.5 rounded-full font-medium hover:bg-lightgreen-hover"
+                      className="bg-primary px-5 py-1.5 rounded-full font-medium hover:bg-lightgreen-hover"
                     >
                       Log in
                     </Link>
@@ -1144,7 +1383,8 @@ const Header: React.FC = () => {
                     {!isLargeScreen && (
                       <button
                         onClick={toggleMobileMenu}
-                        className="text-green  p-2"
+                        className="text-green p-2"
+                        aria-label="Open Mobile Menu"
                       >
                         <GiHamburgerMenu size={24} />
                       </button>
@@ -1152,13 +1392,14 @@ const Header: React.FC = () => {
                   </>
                 )}
 
-                {/*  Close Button (Mobile) */}
+                {/* Close Button (Mobile) */}
                 {isMobileMenuOpen && !isLargeScreen && (
                   <button
                     onClick={closeMobileMenu}
                     className="text-2xl p-2 bg-green/20 rounded-full"
+                    aria-label="Close Mobile Menu"
                   >
-                    <FiX className="text-green " />
+                    <FiX className="text-green" />
                   </button>
                 )}
               </div>
@@ -1180,7 +1421,7 @@ const Header: React.FC = () => {
               isOpen={isMobileMenuOpen}
               onClose={closeMobileMenu}
               featureLinks={featureLinks}
-              topContent={topContent} //  <--- Pass topContent
+              topContent={topContent}
             />
           </motion.div>
         )}

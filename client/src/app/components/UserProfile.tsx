@@ -4,8 +4,8 @@
 import Image from "next/image";
 import React, { useState, useRef, useEffect } from "react";
 import { IoPersonOutline } from "react-icons/io5";
-import { FaRegEnvelope, FaCog, FaTag } from "react-icons/fa";
-import { BiChat, BiListCheck, BiInfoCircle, BiLogOut } from "react-icons/bi";
+import { FaCog, FaTag } from "react-icons/fa";
+import { BiLogOut } from "react-icons/bi";
 
 export interface UserProfileProps {
   userName: string;
