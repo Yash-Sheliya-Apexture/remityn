@@ -21,7 +21,7 @@ export default function SecurityAndPrivacyPage() {
             <div>
               <Link href="security-and-privacy/change-password">
                 {/* Wrap with Link */}
-                <div className="flex items-center gap-4 hover:bg-lightgray p-4 rounded-2xl -mx-4 transition-colors duration-500 ease-in-out cursor-pointer">
+                <div className="flex items-center gap-4 hover:bg-lightgray p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer">
                   {/* Icon Container */}
                   <div className="bg-lightborder rounded-full p-3 ">
                     <FiShield size={24} className="text-main" />
@@ -45,7 +45,7 @@ export default function SecurityAndPrivacyPage() {
             {/* Log out */}
             <div>
               <Link href="security-and-privacy/account-kill">
-                <div className="flex items-center gap-4 hover:bg-lightgray p-4 rounded-2xl -mx-4 transition-colors duration-500 ease-in-out cursor-pointer">
+                <div className="flex items-center gap-4 hover:bg-lightgray p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer">
                   {/* Icon Container */}
                   <div className="bg-lightborder rounded-full p-3 ">
                     <GrLogout size={24} className="text-main" />
@@ -76,7 +76,7 @@ export default function SecurityAndPrivacyPage() {
           <h4 className="text-main text-2xl font-semibold mb-3">Privacy</h4>
 
           <div className="space-y-2">
-            <div className="flex items-center gap-4 hover:bg-lightgray p-4 rounded-2xl -mx-4 transition-colors duration-500 ease-in-out cursor-pointer">
+            <div className="flex items-center gap-4 hover:bg-lightgray p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer">
               {/* Icon Container */}
               <div className="bg-lightborder rounded-full p-3 ">
                 <ImInfo size={24} className="text-main" />

@@ -340,7 +340,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
           {/* Only show profile section if user data is available (or not loading) */}
           {user && !loading && (
             <Link href="/dashboard/your-account">
-              <div className="relative flex items-center group hover:bg-primary/15 rounded-full cursor-pointer gap-2 pr-2 py-1.5 pl-1.5"> {/* Adjusted padding/gap */}
+              <div className="relative flex items-center group hover:bg-primary/15 rounded-full cursor-pointer gap-2 pr-2 py-1.5 pl-1.5 transition-colors duration-500 ease-in-out"> {/* Adjusted padding/gap */}
                 {/* User Initials */}
                 <span className="size-10 md:size-12 bg-primary/50 rounded-full flex items-center justify-center font-bold text-secondary capitalize text-sm md:text-base">
                   {userInitials} {/* Use dynamic initials */}

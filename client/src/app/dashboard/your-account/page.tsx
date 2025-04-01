@@ -617,7 +617,7 @@ const AccountSettings: React.FC = () => {
   return (
     <div className="max-w-2xl mx-auto grid grid-cols-1 gap-10">
       {/* Left Side: Fixed Account Card */}
-      <div className="md:sticky top-0 h-fit bg-white">
+      <div className="md:sticky top-0 h-fit bg-white z-10">
         <AccountCard username="RUDRA SUTARIYA"  />
       </div>
 
@@ -656,7 +656,7 @@ const AccountSettings: React.FC = () => {
             icon={<FaRegBell className="size-6" />}
             label="Notifications"
             description="Customise how you get updates."
-            href="/your-account/notification-preferences" // Add href for Notifications
+            href="your-account/notification-preferences" // Add href for Notifications
           />
 
           <MenuItem

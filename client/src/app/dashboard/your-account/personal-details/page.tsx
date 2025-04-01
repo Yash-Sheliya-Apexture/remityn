@@ -118,7 +118,7 @@ export default function PersonalDetails() {
           <div>
             <Link href={isAccountComplete ? "change-personal-details" : "/dashboard"}>
               {/* Wrap with Link */}
-              <div className="flex items-center gap-4 hover:bg-lightgray p-4 rounded-2xl -mx-4 transition-colors duration-500 ease-in-out cursor-pointer">
+              <div className="flex items-center gap-4 hover:bg-lightgray p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer">
                 {/* Icon Container */}
                 <div className="bg-lightborder rounded-full p-3 ">
                   <LuUser size={24} className="text-main" />
@@ -145,7 +145,7 @@ export default function PersonalDetails() {
           <div>
             <Link href="change-email">
               {/* Wrap with Link */}
-              <div className="flex items-center gap-4 hover:bg-lightgray p-4 rounded-2xl -mx-4 transition-colors duration-500 ease-in-out cursor-pointer">
+              <div className="flex items-center gap-4 hover:bg-lightgray p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer">
                 {/* Icon Container */}
                 <div className="bg-lightborder rounded-full p-3 ">
                   <LuMail size={24} className="text-main" />
@@ -170,7 +170,7 @@ export default function PersonalDetails() {
           <div>
             <Link href="change-email">
               {/* Wrap with Link */}
-              <div className="flex items-center gap-4 hover:bg-lightgray p-4 rounded-2xl -mx-4 transition-colors duration-500 ease-in-out cursor-pointer">
+              <div className="flex items-center gap-4 hover:bg-lightgray p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer">
                 {/* Icon Container */}
                 <div className="bg-lightborder rounded-full p-3 ">
                   <LuPhone size={24} className="text-main" />
