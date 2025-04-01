@@ -143,28 +143,70 @@
 // export default TransactionActions;
 
 
+// // frontend/src/components/TransactionActions.tsx
+// import React from "react";
+// import Search from "./Search";
+// import Filter from "./Filter";
+// import Download from "./Download";
+// import { Transaction } from "@/types/transaction"; // Import Transaction interface from types file
+
+// interface TransactionActionsProps {
+//     transactions: Transaction[];
+//     onTransactionsChange: (transactions: Transaction[]) => void;
+//     onFiltersApply: (filters: { selectedRecipients: (string | number)[], selectedDirection?: string, selectedStatus?: string | null, selectedBalance?: string[], fromDate?: string, toDate?: string }) => void;
+// }
+
+// const TransactionActions: React.FC<TransactionActionsProps> = ({ transactions, onTransactionsChange, onFiltersApply }) => {
+//     return (
+//         <div className="flex items-center gap-4">
+//             <Search
+//                 transactions={transactions}
+//                 onTransactionsChange={onTransactionsChange}
+//             />
+//             <div className="flex items-center gap-2">
+//                 <Filter onFiltersApply={onFiltersApply} />
+//                 <Download />
+//             </div>
+//         </div>
+//     );
+// };
+
+// export default TransactionActions;
+
+
 // frontend/src/components/TransactionActions.tsx
 import React from "react";
 import Search from "./Search";
 import Filter from "./Filter";
 import Download from "./Download";
-import { Transaction } from "@/types/transaction"; // Import Transaction interface from types file
+import { Transaction } from "@/types/transaction";
+import { Account } from "@/types/account"; // Import Account type
 
 interface TransactionActionsProps {
     transactions: Transaction[];
+    userAccounts: Account[]; // <-- Add userAccounts prop
     onTransactionsChange: (transactions: Transaction[]) => void;
-    onFiltersApply: (filters: { selectedRecipients: (string | number)[], selectedDirection?: string, selectedStatus?: string | null, selectedBalance?: string[], fromDate?: string, toDate?: string }) => void;
+    onFiltersApply: (filters: { /* ... filter types */ }) => void;
 }
 
-const TransactionActions: React.FC<TransactionActionsProps> = ({ transactions, onTransactionsChange, onFiltersApply }) => {
+const TransactionActions: React.FC<TransactionActionsProps> = ({
+    transactions,
+    userAccounts, // <-- Destructure userAccounts
+    onTransactionsChange,
+    onFiltersApply
+}) => {
     return (
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 flex-wrap"> {/* Added flex-wrap */}
             <Search
                 transactions={transactions}
                 onTransactionsChange={onTransactionsChange}
             />
             <div className="flex items-center gap-2">
-                <Filter onFiltersApply={onFiltersApply} />
+                 {/* Pass userAccounts down to Filter */}
+                <Filter
+                    userAccounts={userAccounts} // <-- Pass accounts here
+                    onFiltersApply={onFiltersApply}
+                />
                 <Download />
             </div>
         </div>
