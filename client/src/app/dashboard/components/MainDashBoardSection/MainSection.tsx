@@ -7,7 +7,7 @@ import AccountVerification from "@/app/components/ui/AccountVerification";
 const MainDashBoard = () => {
   return (
     <>
-      <AccountVerification />
+      {/* <AccountVerification /> */}
       <CountryCard />
       <TasksPage />
       <TransactionsSection />

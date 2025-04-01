@@ -162,7 +162,7 @@ const BalanceComponent: React.FC<BalanceProps> = ({
 
 
     return (
-        <div className="flex items-center justify-between hover:bg-lightgray p-4 rounded-2xl -mx-4 transition-colors duration-500 ease-in-out">
+        <div className="flex items-center justify-between hover:bg-lightgray p-4 rounded-2xl transition-colors duration-500 ease-in-out">
             <div className="flex items-center">
                 <div className="relative">
                     <Image
