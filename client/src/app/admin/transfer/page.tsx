@@ -231,7 +231,7 @@ const AdminTransfersPage = () => {
     <div className="min-h-screen p-6">
       <div className="max-w-8xl mx-auto">
         {/* Header Section */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-6">
+        <div className="bg-white rounded-xl shadow-md border p-6 mb-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div>
               <h1 className="text-3xl font-bold text-main">

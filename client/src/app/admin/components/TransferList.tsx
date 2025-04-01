@@ -114,20 +114,20 @@ const TransferList: React.FC<TransferListProps> = ({
     },
     processing: {
       icon: <Loader2 size={18} className="animate-spin" />,
-      class: "bg-blue-50 text-blue-600 border-blue-200",
+      class: "bg-blue-300 text-blue-700 ",
     },
     completed: {
       icon: <CheckCircle size={18} />,
-      class: "bg-green-50 text-green-600 border-green-200",
+      class: "bg-green-300 text-green-700",
     },
     failed: {
       icon: <XCircle size={18} />,
-      class: "bg-red-50 text-red-600 border-red-200",
+      class: "bg-red-300 text-red-700",
     },
     canceled: {
       icon: <MinusCircle size={18} />,
-      class: "bg-gray-50 text-gray-600 border-gray-200",
-    },
+      class: "bg-gray-300 text-gray-700",
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -197,31 +197,31 @@ const TransferList: React.FC<TransferListProps> = ({
       {transfers.map((transfer) => (
         <div
           key={transfer._id}
-          className="grid grid-cols-1 md:grid-cols-7 gap-4 p-4 transition-colors duration-200"
+          className="grid grid-cols-1 md:grid-cols-7 border-b border-gray-300 gap-4 p-4 transition-colors duration-200"
         >
           <div
-            className="font-medium text-gray truncate text-lg"
+            className="font-medium text-gray truncate"
             title={transfer._id}
           >
             {transfer._id.substring(0, 10)}...
           </div>
 
-          <div className="text-gray font-medium capitalize text-lg truncate">
+          <div className="text-gray font-medium capitalize truncate">
             {transfer.user?.fullName || "N/A"}
           </div>
 
-          <div className="text-gray truncate text-lg">
+          <div className="text-gray truncate">
             {transfer.recipient?.accountHolderName.substring(0, 16) || "N/A"}...
           </div>
 
-          <div className="font-medium gap-1 flex text-gray capitalize text-lg">
+          <div className="font-medium gap-1 flex text-gray capitalize">
             {transfer.sendAmount}
             <span>{transfer.sendCurrency?.code}</span>
           </div>
 
           <div>
             <div
-              className={`inline-flex items-center gap-1.5 px-3 font-medium py-1.5 rounded-sm ${
+              className={`inline-flex items-center gap-1.5 px-3 font-medium py-1.5 rounded-md ${
                 statusConfig[transfer.status]?.class ||
                 "bg-gray-100 text-gray font-bold"
               }`}
@@ -231,17 +231,17 @@ const TransferList: React.FC<TransferListProps> = ({
             </div>
           </div>
 
-          <div className="text-gray font-medium truncate text-lg">
+          <div className="text-gray font-medium truncate">
             {formatDate(transfer.createdAt)}
           </div>
 
           <div className="text-right">
             <Link
               href={`/admin/transfer/${transfer._id}`}
-              className="inline-flex items-center space-x-1 text-primary transition-colors duration-300 font-medium"
+              className="inline-flex items-center group border border-primary px-4 py-1.5 hover:bg-primary hover:text-main rounded-md space-x-1 text-primary transition-colors duration-300 font-medium"
             >
               <span>View Details</span>
-              <ChevronRight size={16} />
+              <ChevronRight className="size-5 group-hover:translate-x-3 transition-transform ease-in-out duration-300"/>
             </Link>
           </div>
         </div>

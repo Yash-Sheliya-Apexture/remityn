@@ -1,97 +1,257 @@
-// pages/tasks.tsx
-import React from "react";
-import { GetServerSideProps } from "next";
-import { MdError } from "react-icons/md";
-import { LuPlus } from "react-icons/lu";
+// // pages/tasks.tsx
+// import React from "react";
+// import { GetServerSideProps } from "next";
+// import { MdError } from "react-icons/md";
+// import { LuPlus } from "react-icons/lu";
 
-interface Task {
-  id: string;
-  amount: string;
-  currency: string;
-  description: string;
-}
+// interface Task {
+//   id: string;
+//   amount: string;
+//   currency: string;
+//   description: string;
+// }
 
-interface TasksProps {
-  tasks: Task[];
-}
+// interface TasksProps {
+//   tasks: Task[];
+// }
 
-const Tasks: React.FC<TasksProps> = ({ tasks }) => {
+// const Tasks: React.FC<TasksProps> = ({ tasks }) => {
+//   return (
+//     <section className="Tasks pt-12">
+//       <div className="container mx-auto">
+//         <div className="w-full">
+//           <h1 className="text-3xl font-semibold text-main mb-5">Tasks</h1>
+
+//           <div className="bg-lightgray rounded-2xl p-3">
+//             {tasks.map((task) => (
+//               <div
+//                 key={task.id}
+//                 className="flex sm:items-center items-start gap-4 "
+//               >
+//                 <div className="p-3 bg-white rounded-full flex items-center justify-center border border-gray-200 relative z-10">
+//                   <LuPlus size={28} className="text-main" />
+
+//                   {/* status icon */}
+//                   <div className="absolute bottom-0 left-6">
+//                     <MdError size={18} className="text-amber-500 ml-2" />
+//                   </div>
+//                 </div>
+//                 <div className="flex sm:flex-row flex-col sm:items-center justify-between w-full gap-3">
+//                   <div>
+//                     <div className="flex items-center">
+//                       <p className="font-medium text-main">
+//                         {task.amount} {task.currency} to your {task.currency}{" "}
+//                         balance
+//                       </p>
+//                     </div>
+//                     <p className="text-sm text-gray-500">{task.description}</p>
+//                   </div>
+
+//                   {/* Review Button */}
+//                   <button className="w-fit bg-primary text-secondary px-3 py-1 rounded-full text-sm font-medium text-right cursor-pointer">
+//                     Review
+//                   </button>
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// // Page component that uses the Tasks component
+// export default function TasksPage() {
+//   // In a real application, this data would come from props provided by getServerSideProps
+//   const tasks: Task[] = [
+//     {
+//       id: "1",
+//       amount: "91.87",
+//       currency: "EUR",
+//       description: "Waiting for you to pay",
+//     },
+//     // You can add more tasks here if needed
+//   ];
+
+//   return <Tasks tasks={tasks} />;
+// }
+
+// // This function would normally fetch data from an API
+// export const getServerSideProps: GetServerSideProps = async () => {
+//   // In a real application, you would fetch tasks from an API or database
+//   const tasks: Task[] = [
+//     {
+//       id: "1",
+//       amount: "91.87",
+//       currency: "EUR",
+//       description: "Waiting for you to pay",
+//     },
+//   ];
+
+//   return {
+//     props: {
+//       tasks,
+//     },
+//   };
+// };
+
+"use client"; // Use client-side rendering for hooks
+
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { MdErrorOutline } from "react-icons/md"; // Warning icon
+import { LuPlus } from "react-icons/lu"; // Add money icon
+import { useAuth } from "../../../hooks/useAuth"; // Adjust path as needed
+import paymentService from "../../../services/payment"; // Adjust path as needed
+import { Transaction } from "@/types/transaction"; // Adjust path as needed
+import { Skeleton } from "@/components/ui/skeleton"; // Adjust path as needed
+
+const TasksPage: React.FC = () => {
+  // --- State ---
+  const [pendingPayments, setPendingPayments] = useState<Transaction[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { token } = useAuth();
+
+  // --- Data Fetching Effect ---
+  useEffect(() => {
+    console.log("TasksPage: useEffect triggered.");
+
+    const fetchPendingPayments = async () => {
+      if (!token) {
+        console.log("TasksPage: No token found, skipping fetch.");
+        setIsLoading(false);
+        return;
+      }
+
+      setIsLoading(true);
+      setError(null);
+      setPendingPayments([]);
+      console.log("TasksPage: Starting fetch for pending payments.");
+
+      try {
+        const allUserPayments = await paymentService.getUserPayments(token);
+        console.log(
+          `TasksPage: Received ${allUserPayments.length} raw payments from API.`
+        );
+
+        const pending = allUserPayments.filter(
+          (payment): payment is Transaction => {
+            const isPending = payment.status?.toLowerCase() === "pending";
+            const isAddMoney = payment.type === "Add Money";
+            return isPending && isAddMoney;
+          }
+        );
+        console.log(
+          `TasksPage: Filtered down to ${pending.length} pending 'Add Money' tasks.`
+        );
+        setPendingPayments(pending);
+      } catch (err: any) {
+        const errMsg =
+          err.response?.data?.message || err.message || "Failed to load tasks.";
+        setError(errMsg);
+        console.error("TasksPage: Error fetching pending payments:", err);
+      } finally {
+        setIsLoading(false);
+        console.log("TasksPage: Fetch finished.");
+      }
+    };
+
+    fetchPendingPayments();
+  }, [token]);
+
+  // --- Early Return Condition ---
+  // If loading is finished, there's no error, AND there are no pending payments, render nothing.
+  if (!isLoading && !error && pendingPayments.length === 0) {
+    console.log("TasksPage: No pending tasks found, rendering null.");
+    return null; // Render absolutely nothing
+  }
+
+  // --- Render Logic (Only runs if loading, error, or tasks exist) ---
   return (
-    <section className="Tasks pt-12">
-      <div className="container mx-auto">
-        <div className="w-full">
-          <h1 className="text-3xl font-semibold text-main mb-5">Tasks</h1>
+    <section className="Tasks">
+      {/* --- Heading (Now only rendered if loading, error, or tasks exist) --- */}
+      <h1 className="text-2xl md:text-3xl font-semibold text-gray-800 mb-6">
+        Tasks
+      </h1>
 
-          <div className="bg-lightgray rounded-2xl p-3">
-            {tasks.map((task) => (
-              <div
-                key={task.id}
-                className="flex sm:items-center items-start gap-4 "
+      {/* --- Loading State --- */}
+      {isLoading && (
+        <div className="space-y-4">
+          <Skeleton className="h-24 w-full rounded-lg bg-gray-200" />
+          <Skeleton className="h-24 w-full rounded-lg bg-gray-200" />
+        </div>
+      )}
+
+      {/* --- Error State --- */}
+      {!isLoading && error && (
+        <div
+          className="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-md text-center"
+          role="alert"
+        >
+          <strong className="font-bold">Error:</strong>
+          <span className="block sm:inline ml-1">{error}</span>
+        </div>
+      )}
+
+      {/* --- Task List (Only if not loading, no error, and tasks exist) --- */}
+      {/* This condition is implicitly true if we reach here AND pendingPayments.length > 0 */}
+      {!isLoading && !error && pendingPayments.length > 0 && (
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm divide-y divide-gray-200">
+          {pendingPayments.map((task) => {
+            const amount = task.amountToAdd ?? task.amountToPay ?? 0;
+            const currency =
+              task.balanceCurrency?.code ?? task.payInCurrency?.code ?? "";
+
+            return (
+              <Link
+                href={`/dashboard/transactions/${task._id}`}
+                key={task._id}
+                passHref
               >
-                <div className="p-3 bg-white rounded-full flex items-center justify-center border border-gray-200 relative z-10">
-                  <LuPlus size={28} className="text-main" />
-
-                  {/* status icon */}
-                  <div className="absolute bottom-0 left-6">
-                    <MdError size={18} className="text-amber-500 ml-2" />
+                <div className="flex items-center gap-4 p-4 hover:bg-gray-50 cursor-pointer transition-colors duration-150">
+                  {/* Icon */}
+                  <div className="relative flex-shrink-0">
+                    <div className="p-3 bg-yellow-100 rounded-full flex items-center justify-center border border-yellow-200">
+                      <LuPlus size={24} className="text-yellow-700" />
+                    </div>
+                    <MdErrorOutline
+                      size={20}
+                      className="absolute -bottom-1 -right-1 text-orange-500 bg-white rounded-full p-0.5 shadow"
+                    />
                   </div>
-                </div>
-                <div className="flex sm:flex-row flex-col sm:items-center justify-between w-full gap-3">
-                  <div>
-                    <div className="flex items-center">
-                      <p className="font-medium text-main">
-                        {task.amount} {task.currency} to your {task.currency}{" "}
-                        balance
+                  {/* Details & Action */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full gap-2 flex-grow">
+                    {/* Text Details */}
+                    <div className="flex-grow">
+                      <p className="font-medium text-gray-800 text-sm md:text-base leading-tight">
+                        {amount.toLocaleString(undefined, {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}{" "}
+                        {currency} to your {currency} balance
+                      </p>
+                      <p className="text-xs text-orange-600 font-semibold mt-0.5">
+                        Waiting for you to pay
                       </p>
                     </div>
-                    <p className="text-sm text-gray-500">{task.description}</p>
+                    {/* Review Button */}
+                    <button
+                      tabIndex={-1}
+                      className="ml-auto sm:ml-4 shrink-0 bg-blue-600 text-white px-4 py-1.5 rounded-full text-xs font-semibold hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                    >
+                      Review
+                    </button>
                   </div>
-
-                  {/* Review Button */}
-                  <button className="w-fit bg-primary text-secondary px-3 py-1 rounded-full text-sm font-medium text-right cursor-pointer">
-                    Review
-                  </button>
                 </div>
-              </div>
-            ))}
-          </div>
+              </Link>
+            );
+          })}
         </div>
-      </div>
+      )}
     </section>
   );
 };
 
-// Page component that uses the Tasks component
-export default function TasksPage() {
-  // In a real application, this data would come from props provided by getServerSideProps
-  const tasks: Task[] = [
-    {
-      id: "1",
-      amount: "91.87",
-      currency: "EUR",
-      description: "Waiting for you to pay",
-    },
-    // You can add more tasks here if needed
-  ];
-
-  return <Tasks tasks={tasks} />;
-}
-
-// This function would normally fetch data from an API
-export const getServerSideProps: GetServerSideProps = async () => {
-  // In a real application, you would fetch tasks from an API or database
-  const tasks: Task[] = [
-    {
-      id: "1",
-      amount: "91.87",
-      currency: "EUR",
-      description: "Waiting for you to pay",
-    },
-  ];
-
-  return {
-    props: {
-      tasks,
-    },
-  };
-};
+export default TasksPage;

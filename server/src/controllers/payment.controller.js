@@ -143,6 +143,28 @@ const cancelPayment = async (req, res, next) => {
     }
 };
 
+// NEW Controller: Handle user confirming transfer
+const confirmUserTransfer = async (req, res, next) => {
+    try {
+        const paymentId = req.params.paymentId;
+        const userId = req.user._id; // From authMiddleware
+
+        const updatedPayment = await paymentService.confirmUserTransfer(paymentId, userId);
+
+        if (!updatedPayment) {
+            // Specific errors handled in service, this is fallback
+            return res.status(404).json({ message: 'Payment not found or cannot be updated.' });
+        }
+
+        res.status(200).json({ message: 'Payment status updated to in progress.', payment: updatedPayment });
+    } catch (error) {
+        if (error.message === 'Unauthorized action' || error.message === 'Payment not found.' || error.message === 'Payment not in pending state.') {
+             return res.status(400).json({ message: error.message }); // Use 400 for client errors
+        }
+        next(error); // Pass other errors to general handler
+    }
+};
+
 export default {
     calculatePaymentSummary,
     initiatePaymentAndSave,
@@ -150,4 +172,5 @@ export default {
     getUserBalancePayments,
     cancelPayment,
     getUserPayments,
+    confirmUserTransfer,
 };

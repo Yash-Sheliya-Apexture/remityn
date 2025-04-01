@@ -70,6 +70,14 @@ const cancelPayment = async (paymentId: string, token: string | null): Promise<P
     return response.data;
 };
 
+// NEW: Function to confirm user has made the transfer (optional backend call)
+const confirmUserTransfer = async (paymentId: string, token: string | null): Promise<{ message: string; payment: PaymentDetailsResponse }> => {
+    const response = await axios.post(`/payments/${paymentId}/confirm-transfer`, {}, { // Empty body
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+};
+
 
 export default {
     calculatePaymentSummary,
@@ -77,4 +85,5 @@ export default {
     getPaymentDetails,
     getUserPayments,
     cancelPayment,
+    confirmUserTransfer,
 };
