@@ -104,6 +104,7 @@ const AdminPaymentsPage = () => {
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Currency</th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reference Code</th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
@@ -115,6 +116,7 @@ const AdminPaymentsPage = () => {
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{payment.user?.fullName || 'N/A'} ({payment.user?.email || 'N/A'})</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{payment.amountToAdd}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{payment.payInCurrency?.code}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{payment.referenceCode}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     <select
                                         value={payment.status}
