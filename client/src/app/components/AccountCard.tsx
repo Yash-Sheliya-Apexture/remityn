@@ -3611,7 +3611,7 @@ const AccountCard: React.FC<AccountCardProps> = ({
 
   return (
     <>
-      <div className="bg-green/8 p-8 rounded-3xl">
+      <div className="bg-green/8 p-8 rounded-3xl overflow-hidden">
         <div className="flex flex-col items-center mb-4">
           {/* Camera Icon */}
           <div className="relative">
