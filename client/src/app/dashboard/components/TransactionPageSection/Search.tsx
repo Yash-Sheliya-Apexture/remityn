@@ -119,14 +119,13 @@ const Search: React.FC<SearchProps> = ({ transactions, onTransactionsChange }) =
 
     return (
         <div className="relative w-full">
-            <FiSearch
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
-                size={18}
-            />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                          <FiSearch className="h-5 w-5 text-gray" aria-hidden="true" />
+                        </div>
             <input
                 type="text"
                 placeholder="Search"
-                className="w-full border border-gray-300 rounded-full py-3 pl-12 pr-3 focus:outline-none focus:ring-0"
+                className="w-full rounded-full py-3 pl-12 pr-3 border transition-shadow ease-in-out duration-300 border-[#c9cbce] hover:shadow-color"
                 value={searchTerm}
                 onChange={handleSearchChange}
             />

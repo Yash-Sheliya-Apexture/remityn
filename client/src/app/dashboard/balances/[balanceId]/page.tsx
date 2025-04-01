@@ -1329,14 +1329,16 @@
 // export default BalanceDetailPage;
 
 
-"use client";
+// frontend/app/dashboard/balances/[balanceId]/page.tsx
+
+"use client"; // Required for hooks and client-side interactivity
 
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import axios from "axios";
-import { format, parseISO } from "date-fns";
+import axios from "axios"; // Keep for direct balance fetch
+import { format, parseISO } from "date-fns"; // Keep for potential use, though grouping uses toLocaleDateString
 
 // Icons
 import { IoIosArrowBack } from "react-icons/io";
@@ -1345,25 +1347,27 @@ import { GoArrowUp } from "react-icons/go"; // Send Money
 import { MdErrorOutline } from "react-icons/md"; // Needs Attention badge
 
 // Hooks and Services
-import { useAuth } from "../../../hooks/useAuth";
-import paymentService from "../../../services/payment";
-import transferService from "../../../services/transfer";
-import apiConfig from "../../../config/apiConfig";
+import { useAuth } from "../../../hooks/useAuth"; // Adjust path
+import paymentService from "../../../services/payment"; // Adjust path
+import transferService from "../../../services/transfer"; // Adjust path
+import apiConfig from "../../../config/apiConfig"; // Adjust path
 
 // Components and Types
-import TransactionActions from "../../components/TransactionPageSection/TransactionActions"; // Adjust path if needed
-import { Transaction } from "@/types/transaction"; // Adjust path if needed
-import InsufficientBalanceModal from "../../components/InsufficientBalanceModal"; // Adjust path if needed
-import { Skeleton } from "@/components/ui/skeleton"; // For loading
+import TransactionActions from "../../components/TransactionPageSection/TransactionActions"; // Adjust path
+import { Transaction } from "@/types/transaction"; // Adjust path
+import InsufficientBalanceModal from "../../components/InsufficientBalanceModal"; // Adjust path
+import { Skeleton } from "@/components/ui/skeleton"; // Adjust path
+import { Button } from "@/components/ui/button"; // Adjust path
 
-// Axios default URL (optional if only using services)
-// axios.defaults.baseURL = apiConfig.baseUrl;
+// Configure Axios Base URL (Optional: Services might handle this)
+axios.defaults.baseURL = apiConfig.baseUrl;
 
 // --- Interfaces ---
 interface BalanceDetailPageParams {
   balanceId: string;
 }
 
+// Interface for the detailed balance data fetched directly
 interface BalanceDetail {
   _id: string;
   user: string;
@@ -1374,19 +1378,40 @@ interface BalanceDetail {
     currencyName?: string;
   };
   balance: number;
-  accountNumber?: string; // Optional based on your model
+  accountNumber?: string;
   createdAt: string;
-  __v: number; // Optional Mongoose version key
+  __v?: number;
 }
 
 // --- Utility Function ---
+// More robust date parsing, prioritizing ISO format
 function parseDateString(dateString: string | undefined): Date | null {
-    // ... (implementation remains the same)
-     if (!dateString) return null;
-    const parts = dateString.split("-");
-    if (parts.length === 3) { /* dd-MM-yyyy parsing */ return new Date(/*...*/); }
-    try { return parseISO(dateString); }
-    catch { console.error("Failed to parse date string:", dateString); return null; }
+    if (!dateString) return null;
+    try {
+        // Attempt ISO parsing first (most common from backend)
+        const isoDate = parseISO(dateString);
+        // Check if the parsed date is valid
+        if (!isNaN(isoDate.getTime())) {
+            return isoDate;
+        }
+    } catch {
+        // Ignore ISO parsing errors and try other formats if needed
+    }
+
+    // Fallback for dd-MM-yyyy if you expect it from filters
+    const parts = dateString.split('-');
+    if (parts.length === 3) {
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1; // Month is 0-indexed
+        const year = parseInt(parts[2], 10);
+        if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+            // Use local time based on user's system
+            return new Date(year, month, day);
+        }
+    }
+
+    console.warn("Could not parse date string:", dateString);
+    return null;
 }
 
 // --- Component ---
@@ -1400,42 +1425,86 @@ const BalanceDetailPage = () => {
   const [balanceDetail, setBalanceDetail] = useState<BalanceDetail | null>(null);
   const [allTransactions, setAllTransactions] = useState<Transaction[]>([]); // All user transactions
   const [balanceSpecificTransactions, setBalanceSpecificTransactions] = useState<Transaction[]>([]); // Filtered for this balance
-  const [displayTransactions, setDisplayTransactions] = useState<Transaction[]>([]); // Filtered/Searched list for display
+  const [displayTransactions, setDisplayTransactions] = useState<Transaction[]>([]); // Filtered/Searched list for UI display
   const [isLoading, setIsLoading] = useState(true); // Loading balance detail
   const [isTransactionsLoading, setIsTransactionsLoading] = useState(true); // Loading transactions
   const [error, setError] = useState<string | null>(null);
   const [isInsufficientBalanceModalOpen, setIsInsufficientBalanceModalOpen] = useState(false);
 
   // --- Data Fetching ---
-  const fetchData = useCallback(async () => {
-    // ... (fetchData logic remains the same: fetch balance, fetch all payments/transfers)
-     if (!balanceId || !token) { /* handle missing data */ setIsLoading(false); setIsTransactionsLoading(false); return; }
-     setIsLoading(true); setIsTransactionsLoading(true); setError(null);
-     setBalanceDetail(null); setAllTransactions([]);
-     try {
-         const balanceResponse = await axios.get(`/accounts/${balanceId}`, { headers: { Authorization: `Bearer ${token}` } });
-         setBalanceDetail(balanceResponse.data);
-         setIsLoading(false); // Balance done
-         try {
-             const [paymentsResponse, transfersResponse] = await Promise.all([
-                 paymentService.getUserPayments(token),
-                 transferService.getUserTransfers(token),
-             ]);
-             // Map payments and transfers (ensure 'type' is added)
-             const mappedPayments: Transaction[] = paymentsResponse.map(p => ({ ...p, type: 'Add Money' }));
-             const mappedTransfers: Transaction[] = transfersResponse.map(t => ({
-                 _id: t._id, type: "Send Money", name: /*...*/ t.recipient?.accountHolderName ?? 'Recipient',
-                 // ... other transfer fields
-             }));
-             const combined = [...mappedPayments, ...mappedTransfers];
-             combined.sort((a, b) => new Date(b.updatedAt || b.createdAt).getTime() - new Date(a.updatedAt || a.createdAt).getTime());
-             setAllTransactions(combined);
-         } catch (transErr: any) { /* handle transaction fetch error */ setError(/*...*/); }
-         finally { setIsTransactionsLoading(false); } // Transactions done/failed
-     } catch (err: any) { /* handle balance fetch error */ setIsLoading(false); setIsTransactionsLoading(false); setError(/*...*/); }
-  }, [balanceId, token, router]);
+   const fetchData = useCallback(async () => {
+       if (!balanceId || !token) {
+           setError("Missing balance ID or authentication token.");
+           setIsLoading(false); setIsTransactionsLoading(false); return;
+       }
+       // Reset states on new fetch
+       setIsLoading(true); setIsTransactionsLoading(true); setError(null);
+       setBalanceDetail(null); setAllTransactions([]); setBalanceSpecificTransactions([]); setDisplayTransactions([]);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+       try {
+           // Fetch Balance Details using direct Axios call
+           const balanceResponse = await axios.get(`/accounts/${balanceId}`, { headers: { Authorization: `Bearer ${token}` } });
+           setBalanceDetail(balanceResponse.data);
+           setIsLoading(false); // Balance details loaded
+
+           // Fetch Transactions using Services (Parallel)
+           try {
+               const [paymentsResponse, transfersResponse] = await Promise.all([
+                   paymentService.getUserPayments(token),
+                   transferService.getUserTransfers(token),
+               ]);
+
+                // Map Payments (Add Money) - Ensure 'type' is added and status normalized
+                const mappedPayments: Transaction[] = paymentsResponse.map(payment => ({
+                    ...payment, // Spread existing payment data
+                    type: "Add Money", // Explicitly set type
+                    status: payment.status?.toLowerCase() ?? 'unknown', // Normalize status
+                    // Ensure nested objects like currency/account are handled if needed elsewhere
+                }));
+
+                // Map Transfers (Send Money) - Ensure 'type' is added and status normalized
+                const mappedTransfers: Transaction[] = transfersResponse.map(transfer => ({
+                    ...transfer, // Spread existing transfer data
+                    type: "Send Money", // Explicitly set type
+                    status: transfer.status?.toLowerCase() ?? 'unknown', // Normalize status
+                    name: (typeof transfer.recipient === 'object' && transfer.recipient !== null)
+                          ? transfer.recipient.accountHolderName ?? 'Recipient'
+                          : 'Recipient', // Example: Extract name
+                    sourceAccountId: typeof transfer.sourceAccount === 'string'
+                                      ? transfer.sourceAccount
+                                      : transfer.sourceAccount?._id, // Extract source ID
+                }));
+
+               const combined = [...mappedPayments, ...mappedTransfers];
+               // Sort combined transactions by date (newest first)
+               combined.sort((a, b) => {
+                   const dateA = a.updatedAt || a.createdAt;
+                   const dateB = b.updatedAt || b.createdAt;
+                   if (!dateA && !dateB) return 0;
+                   if (!dateA) return 1;
+                   if (!dateB) return -1;
+                   try { return new Date(dateB).getTime() - new Date(dateA).getTime(); }
+                   catch { return 0; }
+               });
+               setAllTransactions(combined);
+
+           } catch (transErr: any) {
+               console.error("Transaction fetch error:", transErr);
+               setError(transErr.response?.data?.message || transErr.message || "Failed to load transactions.");
+               // Don't stop balance display if transactions fail, but show error
+           } finally {
+               setIsTransactionsLoading(false); // Transactions loading finished (success or fail)
+           }
+
+       } catch (err: any) {
+           console.error("Balance fetch error:", err);
+           setError(err.response?.data?.message || err.message || "Failed to load balance details.");
+           setIsLoading(false); // Stop all loading if balance fetch fails
+           setIsTransactionsLoading(false);
+       }
+   }, [balanceId, token]); // Dependencies for fetchData
+
+  useEffect(() => { fetchData(); }, [fetchData]); // Fetch data on mount or when dependencies change
 
   // --- Filter Transactions Specific to this Balance ---
   useEffect(() => {
@@ -1447,229 +1516,425 @@ const BalanceDetailPage = () => {
     // Filter all transactions to get only those relevant to this balanceId
     const filtered = allTransactions.filter((transaction) => {
       if (transaction.type === "Add Money") {
-        // Check if the payment's account reference matches the balanceId
-        const paymentAccountId = transaction.account?._id || transaction.account; // Handle populated vs ObjectId
-        return paymentAccountId === balanceId;
+         // Payment is relevant if its associated account ID matches the current balance ID
+         const paymentAccountId = typeof transaction.account === 'string' ? transaction.account : transaction.account?._id;
+         return paymentAccountId === balanceId;
       } else if (transaction.type === "Send Money") {
-        // Check if the transfer's source account ID matches the balanceId
-        const transferSourceId = transaction.sourceAccountId;
-        return transferSourceId === balanceId;
+         // Transfer is relevant if its source account ID matches the current balance ID
+         return transaction.sourceAccountId === balanceId;
       }
       return false;
     });
-    console.log(`BalanceDetailPage: Filtered ${filtered.length} transactions specific to balance ${balanceId}`); // Debug log
     setBalanceSpecificTransactions(filtered);
-    setDisplayTransactions(filtered); // Initialize display list
-  }, [allTransactions, balanceId]);
+    setDisplayTransactions(filtered); // Initialize display list with balance-specific transactions
+  }, [allTransactions, balanceId]); // Run when all transactions are loaded or balanceId changes
 
   // --- Callbacks for TransactionActions (Search/Filter) ---
-  const handleSearchChange = useCallback((searchResults: Transaction[]) => {
-    // Apply current filters TO search results if needed, or just display search results
-    // For simplicity, let's assume search overrides filters for now on this page
-    setDisplayTransactions(searchResults);
-  }, []);
+    const handleSearchChange = useCallback((searchResults: Transaction[]) => {
+        // This callback receives the results AFTER TransactionActions has filtered
+        // the `balanceSpecificTransactions` list based on the search term.
+        // We just need to update the `displayTransactions` state with these results.
+        setDisplayTransactions(searchResults);
+    }, []); // No dependencies needed here as it only sets state
 
-  const handleFiltersApply = useCallback((filters: { /* filter types */ selectedDirection?: string; selectedStatus?: string; fromDate?: string; toDate?: string; /* etc */ }) => {
-    console.log(`BalanceDetailPage: Applying filters:`, filters);
-    let tempFiltered = [...balanceSpecificTransactions]; // Start with balance-specific list
+    const handleFiltersApply = useCallback((filters: {
+        selectedDirection?: string;
+        selectedStatus?: string | null; // Status filter value (e.g., 'completed', 'pending')
+        fromDate?: string; // Date string format depends on your DatePicker
+        toDate?: string;   // Date string format depends on your DatePicker
+        // Add other potential filter types if TransactionActions supports them
+    }) => {
+        console.log(`BalanceDetailPage: Applying filters:`, filters);
+        let tempFiltered = [...balanceSpecificTransactions]; // Always start filtering from the balance-specific list
 
-      // Apply Direction Filter
-      if (filters.selectedDirection && filters.selectedDirection !== "all") { /* ... filter logic ... */ }
-      // Apply Status Filter
-      if (filters.selectedStatus) { /* ... filter logic ... */ }
-      // Apply Date Filter
-      const fromDateObj = parseDateString(filters.fromDate);
-      const toDateObj = parseDateString(filters.toDate);
-      if (fromDateObj || toDateObj) { /* ... filter logic ... */ }
+        // Apply Direction Filter
+        const direction = filters.selectedDirection;
+        if (direction && direction !== 'all') {
+            tempFiltered = tempFiltered.filter(tx =>
+                (direction === 'add' && tx.type === 'Add Money') ||
+                (direction === 'send' && tx.type === 'Send Money')
+            );
+        }
 
-      setDisplayTransactions(tempFiltered);
-  }, [balanceSpecificTransactions]);
+        // Apply Status Filter
+        const statusFilter = filters.selectedStatus?.toLowerCase();
+        if (statusFilter) {
+            tempFiltered = tempFiltered.filter(tx => {
+                const txStatus = tx.status; // Already normalized to lowercase
+                if (!txStatus) return false;
 
-  // --- Memoized Transaction Grouping for Display (MODIFIED) ---
-  // Now groups into 3 categories: Pending Attention, In Progress, Processed
+                // Map UI filter names to potential backend statuses
+                if (statusFilter === 'needs attention') return tx.type === 'Add Money' && txStatus === 'pending';
+                if (statusFilter === 'completed') return txStatus === 'completed';
+                if (statusFilter === 'cancelled') return txStatus === 'canceled' || txStatus === 'cancelled';
+                if (statusFilter === 'in process') return (tx.type === 'Add Money' && txStatus === 'in progress') || (tx.type === 'Send Money' && (txStatus === 'pending' || txStatus === 'processing'));
+                if (statusFilter === 'failed') return txStatus === 'failed';
+                // Add more mappings if needed
+                return false; // Default to excluding if status doesn't match known filters
+            });
+        }
+
+        // Apply Date Filter
+        const fromDateObj = parseDateString(filters.fromDate);
+        const toDateObj = parseDateString(filters.toDate);
+
+        // Set time to cover the entire day for comparisons
+        if (fromDateObj) fromDateObj.setHours(0, 0, 0, 0); // Start of the selected day
+        if (toDateObj) toDateObj.setHours(23, 59, 59, 999); // End of the selected day
+
+        if (fromDateObj || toDateObj) {
+            tempFiltered = tempFiltered.filter(tx => {
+                // Prefer updatedAt, fallback to createdAt for the transaction date
+                const transactionDateStr = tx.updatedAt || tx.createdAt;
+                if (!transactionDateStr) return false; // Cannot filter if date is missing
+
+                try {
+                    const transactionDateObj = new Date(transactionDateStr); // Assumes ISO 8601 format from backend
+                    if (isNaN(transactionDateObj.getTime())) {
+                         console.warn("Invalid transaction date string for filtering:", transactionDateStr);
+                         return false; // Exclude if date is invalid
+                    }
+                    // Apply date range filtering
+                    let include = true;
+                    if (fromDateObj && transactionDateObj < fromDateObj) include = false;
+                    if (toDateObj && transactionDateObj > toDateObj) include = false;
+                    return include;
+                } catch (e) {
+                    console.error("Error parsing transaction date during filtering:", transactionDateStr, e);
+                    return false; // Exclude on parsing error
+                }
+            });
+        }
+
+        // Update the state that controls the UI display
+        setDisplayTransactions(tempFiltered);
+
+    }, [balanceSpecificTransactions]); // Recalculate filters if the base list changes
+
+
+  // --- Memoized Transaction Grouping for Display ---
+  // Groups transactions from the `displayTransactions` state (which reflects search/filters)
   const { pendingAttentionTransactions, inProgressTransactions, groupedProcessedTransactions, hasProcessedTransactions } = useMemo(() => {
-      console.log("BalanceDetailPage: Recalculating transaction groups...");
-
-      // 1. Needs Attention: 'Add Money' with status 'pending' FROM the balance-specific list
+      // 1. Needs Attention: 'Add Money' transactions with status 'pending'
       const pendingAttention = displayTransactions.filter(
-          (tx) => tx.type === "Add Money" && tx.status?.toLowerCase() === "pending"
+          (tx) => tx.type === "Add Money" && tx.status === "pending" // Status already normalized
       );
-      console.log(`BalanceDetailPage: Found ${pendingAttention.length} items for 'Needs Attention'.`);
 
-      // 2. In Progress: Relevant 'in progress'/'processing' transactions
+      // 2. In Progress: 'Add Money'/'in progress' OR 'Send Money'/'pending'/'processing'
       const inProgress = displayTransactions.filter(
-          (tx) => (tx.type === "Add Money" && tx.status?.toLowerCase() === "in progress") ||
-                   (tx.type === "Send Money" && (tx.status?.toLowerCase() === "pending" || tx.status?.toLowerCase() === "processing"))
+          (tx) => (tx.type === "Add Money" && tx.status === "in progress") ||
+                   (tx.type === "Send Money" && (tx.status === "pending" || tx.status === "processing"))
       );
 
-      // 3. Processed: Completed, Canceled, Failed
+      // 3. Processed: Completed, Canceled, Failed transactions
       const processed = displayTransactions.filter(
-          (tx) => tx.status === "completed" || tx.status === "canceled" || tx.status === "failed"
+          (tx) => tx.status === "completed" || tx.status === "canceled" || tx.status === "cancelled" || tx.status === "failed"
       );
 
-      // Sort and group processed (logic remains the same)
-      const sortedProcessed = [...processed].sort((a, b) => {/*...*/});
-      const grouped = sortedProcessed.reduce((groups: { [date: string]: Transaction[] }, tx) => {/*...*/}, {});
+      // Sort processed transactions by date (newest first)
+      const sortedProcessed = [...processed].sort((a, b) => {
+          const dateA = a.updatedAt || a.createdAt;
+          const dateB = b.updatedAt || b.createdAt;
+          if (!dateA && !dateB) return 0;
+          if (!dateA) return 1; // Put items without date at the end
+          if (!dateB) return -1;
+          try { return new Date(dateB).getTime() - new Date(dateA).getTime(); }
+          catch { return 0; } // Avoid crashing on invalid dates
+      });
+
+      // Group sorted processed transactions by date string (e.g., "July 20, 2023")
+      const grouped = sortedProcessed.reduce((groups: { [date: string]: Transaction[] }, tx) => {
+          const groupDateStr = tx.updatedAt || tx.createdAt;
+          if (!groupDateStr) {
+              const unknownDateKey = 'Unknown Date';
+              groups[unknownDateKey] = [...(groups[unknownDateKey] || []), tx];
+              return groups;
+          }
+          try {
+              // Use a consistent format for grouping keys
+              const dateKey = new Date(groupDateStr).toLocaleDateString('en-US', { // Example locale
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+              });
+              groups[dateKey] = [...(groups[dateKey] || []), tx];
+          } catch (e) {
+              console.error("Error formatting date for grouping:", groupDateStr, e);
+              const errorKey = 'Date Error';
+              groups[errorKey] = [...(groups[errorKey] || []), tx];
+          }
+          return groups;
+      }, {});
 
       return {
           pendingAttentionTransactions: pendingAttention,
           inProgressTransactions: inProgress,
-          groupedProcessedTransactions: grouped,
+          groupedProcessedTransactions: grouped || {}, // Ensure it's always an object
           hasProcessedTransactions: processed.length > 0,
       };
-  }, [displayTransactions]); // Dependency is the list currently being displayed
+  }, [displayTransactions]); // Recalculate only when the transactions to display change
+
 
   // --- Modal Handlers ---
   const handleOpenInsufficientBalanceModal = () => { setIsInsufficientBalanceModalOpen(true); };
   const handleCloseInsufficientBalanceModal = () => { setIsInsufficientBalanceModalOpen(false); };
-  const handleAddMoneyFromModal = () => { /* ... */ };
+  const handleAddMoneyFromModal = () => {
+    router.push(`/dashboard/balances/${balanceId}/add-money`); // Navigate to Add Money page
+  };
+
+   // --- Send Click Handler ---
+    const handleSendClick = () => {
+        if (canSendMoney) {
+            // Navigate to the first step of the send flow
+            router.push(`/dashboard/balances/${balanceId}/send/select-recipient`);
+        } else {
+            // Open the insufficient balance modal
+            handleOpenInsufficientBalanceModal();
+        }
+    };
 
   // --- Render Logic ---
 
-  // Initial Loading State
-  if (isLoading) return ( <div className="container mx-auto px-4 py-8 text-center text-gray-500">Loading balance details...</div> );
-  // Balance Loading Error State
-  if (error && !balanceDetail) return;
-  // Balance Not Found State
-  if (!balanceDetail) return ( <div className="container mx-auto px-4 py-8 text-center text-gray-500">Balance details not found.</div> );
+  // Initial Loading State for Balance Detail
+  if (isLoading) return (
+    <div className="container mx-auto px-4 py-8 animate-pulse">
+        <Skeleton className="h-6 w-20 mb-4" /> {/* Back button */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm mb-8 border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center gap-4 mb-4">
+                <Skeleton className="h-10 w-10 rounded-full" />
+                <Skeleton className="h-6 w-32" />
+            </div>
+            <Skeleton className="h-10 w-48 mb-6" />
+            <div className="flex justify-start space-x-3">
+                <Skeleton className="h-10 w-24 rounded-md" />
+                <Skeleton className="h-10 w-24 rounded-md" />
+            </div>
+        </div>
+         <Skeleton className="h-8 w-40 mb-6" /> {/* Transactions title */}
+         <Skeleton className="h-40 w-full rounded-lg" /> {/* Placeholder for transactions */}
+    </div>
+  );
 
-  // Balance Detail IS Loaded, continue rendering
+  // Balance Loading Error State
+  if (error && !balanceDetail) return (
+    <div className="container mx-auto px-4 py-8 text-center">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/40 text-red-700 dark:text-red-300 p-4 rounded-md max-w-lg mx-auto">
+             <p className="font-semibold">Error Loading Balance</p>
+             <p className="text-sm mt-1">{error}</p>
+        </div>
+        <Button onClick={() => router.back()} variant="outline" className="mt-6">
+            Go Back
+        </Button>
+    </div>
+   );
+
+  // Balance Not Found State
+  if (!isLoading && !balanceDetail) return (
+    <div className="container mx-auto px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+        <p>Balance details not found or you may not have access.</p>
+        <Button onClick={() => router.push('/dashboard')} variant="outline" className="mt-4">
+             Go to Dashboard
+        </Button>
+    </div>
+   );
+
+  // --- Balance Detail is Loaded, Continue Rendering ---
   const currencyCode = balanceDetail.currency.code;
   const currentBalance = balanceDetail.balance;
-  const formattedBalance = parseFloat(currentBalance.toString()).toFixed(2);
+  const formattedBalance = parseFloat(currentBalance.toString()).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); // Format with commas
   const canSendMoney = currentBalance > 0;
-  const handleSendClick = () => { /* ... */ };
   const hasAnyTransactionsToDisplay = pendingAttentionTransactions.length > 0 || inProgressTransactions.length > 0 || hasProcessedTransactions;
 
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Back Button */}
-      <button onClick={() => router.back()} className="mb-4 flex items-center gap-1 text-gray-600 hover:text-gray-900 text-sm">
+      <button onClick={() => router.back()} className="mb-4 flex items-center gap-1 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 text-sm transition-colors">
         <IoIosArrowBack size={18} /> Back
       </button>
 
       {/* Balance Card */}
-      <div className="bg-white rounded-lg p-6 shadow-sm mb-8 border border-gray-200">
-         {/* ... Balance Card Content (Flag, Title, Amount, Buttons) ... */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm mb-8 border border-gray-200 dark:border-gray-700">
+         {/* Card Content: Flag, Title, Amount, Buttons */}
           <div className="flex items-center gap-4 mb-4">
-                <Image src={balanceDetail.currency.flagImage || `/assets/icon/default.svg`} alt={`${currencyCode} flag`} width={40} height={40} onError={(e) => { (e.target as HTMLImageElement).src = '/assets/icon/default.svg'; }} />
-                <h2 className="text-xl font-semibold text-gray-800">{currencyCode} Balance</h2>
+                {balanceDetail.currency.flagImage ? (
+                    <Image src={balanceDetail.currency.flagImage} alt={`${currencyCode} flag`} width={40} height={40} className="rounded-full object-cover" onError={(e) => { (e.target as HTMLImageElement).src = '/assets/icon/default.svg'; }} />
+                 ) : (
+                    <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 text-lg font-semibold">{currencyCode.slice(0, 2)}</div>
+                 )}
+                <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">{currencyCode} Balance</h2>
             </div>
-            <div className="text-3xl font-bold text-gray-900 mb-6">
-                {formattedBalance} <span className="text-2xl font-medium text-gray-600">{currencyCode}</span>
+            <div className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+                {formattedBalance} <span className="text-2xl font-medium text-gray-600 dark:text-gray-400">{currencyCode}</span>
             </div>
             <div className="flex justify-start space-x-3">
                 <Link href={`/dashboard/balances/${balanceId}/add-money`} passHref>
-                    <button className="flex items-center justify-center gap-2 px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-md text-sm font-medium transition duration-150 ease-in-out">
-                        <LuPlus size={18} /> Add
-                    </button>
+                    <Button className="bg-green-600 hover:bg-green-700 text-white">
+                        <LuPlus size={18} className="mr-2"/> Add
+                    </Button>
                 </Link>
-                <button onClick={handleSendClick} className={`flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-md text-sm font-medium transition duration-150 ease-in-out ${!canSendMoney ? 'opacity-50 bg-blue-400 hover:bg-blue-400 cursor-not-allowed' : 'hover:bg-blue-700'}`} title={!canSendMoney ? "Add funds to send money" : "Send money"}>
-                    <GoArrowUp size={18} /> Send
-                </button>
+                <Button onClick={handleSendClick} className={`bg-blue-600 text-white ${!canSendMoney ? 'opacity-50 bg-blue-400 hover:bg-blue-400 cursor-not-allowed' : 'hover:bg-blue-700'}`} title={!canSendMoney ? "Add funds to send money" : "Send money"}>
+                    <GoArrowUp size={18} className="mr-2" /> Send
+                </Button>
             </div>
       </div>
 
       {/* --- Transactions Section --- */}
       <div className="mt-10">
          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-            <h3 className="text-xl font-semibold text-gray-800">Transactions</h3>
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Transactions</h3>
             {/* Render Actions if there are transactions to filter/search */}
-            {balanceSpecificTransactions.length > 0 && !isTransactionsLoading && (
+            {/* Pass balanceSpecificTransactions as the base list for actions */}
+            {!isTransactionsLoading && balanceSpecificTransactions.length > 0 && (
                <TransactionActions
-                  transactions={balanceSpecificTransactions} // Pass balance-specific for searching within this view
-                  onTransactionsChange={handleSearchChange} // Update display based on search
-                  onFiltersApply={handleFiltersApply} // Update display based on filters
-                  // Pass userAccounts if balance filter needed
+                  transactions={balanceSpecificTransactions}
+                  onTransactionsChange={handleSearchChange}
+                  onFiltersApply={handleFiltersApply}
+                  // Add userAccounts prop if filter component needs it
                />
             )}
+            {/* Loading skeleton for actions */}
+            {isTransactionsLoading && (
+                 <div className="flex items-center gap-2 animate-pulse">
+                     <Skeleton className="h-9 w-24 rounded-full bg-gray-200 dark:bg-gray-700" />
+                     <Skeleton className="h-9 w-24 rounded-full bg-gray-200 dark:bg-gray-700" />
+                 </div>
+              )}
         </div>
 
         {/* Transaction Loading State */}
         {isTransactionsLoading && (
-          <div className="text-center py-8 text-gray-500">Loading transactions...</div>
+          <div className="text-center py-8 text-gray-500 dark:text-gray-400">Loading transactions...</div>
         )}
 
-        {/* Transaction Error State (if balance loaded but transactions failed) */}
+        {/* Transaction Error State */}
         {!isTransactionsLoading && error && balanceDetail && (
-             <div className="text-center py-8 text-red-500">Error loading transactions: {error.replace('Failed to load transactions: ','')}</div>
+             <div className="text-center py-8 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-4 rounded-md border border-red-200 dark:border-red-700/40">
+                 <strong>Error:</strong> {error.replace('Failed to load transactions: ','')}
+             </div>
         )}
 
         {/* Transaction List Area */}
         {!isTransactionsLoading && !error && (
             <div className="space-y-8">
 
-                 {/* --- NEW: Needs Your Attention Section --- */}
+                 {/* --- Needs Your Attention Section --- */}
                  {pendingAttentionTransactions.length > 0 && (
                      <div>
-                         <h2 className="font-medium text-orange-600 mb-3 text-sm uppercase tracking-wider">Needs your attention</h2>
-                         <div className="space-y-2 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                         <h2 className="font-medium text-orange-600 dark:text-orange-400 mb-3 text-sm uppercase tracking-wider">Needs your attention</h2>
+                         <div className="space-y-2 bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
                              {pendingAttentionTransactions.map((transaction) => {
                                  const amount = transaction.amountToAdd ?? 0;
-                                 const name = `To your ${currencyCode} balance`; // Use currencyCode from balanceDetail
+                                 const name = `To your ${currencyCode} balance`;
                                  return (
-                                     <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} passHref>
-                                          <div className="block hover:bg-orange-50 p-3 -m-3 rounded-md transition-colors duration-150 ease-in-out cursor-pointer">
+                                     <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} passHref legacyBehavior>
+                                          <a className="block hover:bg-orange-50 dark:hover:bg-orange-900/20 p-3 -m-3 rounded-md transition-colors duration-150 ease-in-out cursor-pointer">
                                              <div className="flex items-center gap-4">
-                                                 {/* Icon */}
+                                                 {/* Icon with Badge */}
                                                  <div className="relative flex-shrink-0">
-                                                      <div className="p-3 bg-yellow-100 rounded-full flex items-center justify-center border border-yellow-200">
-                                                         <LuPlus size={22} className="text-yellow-700" />
+                                                      <div className="p-3 bg-yellow-100 dark:bg-yellow-800/30 rounded-full flex items-center justify-center border border-yellow-200 dark:border-yellow-700/40">
+                                                         <LuPlus size={22} className="text-yellow-700 dark:text-yellow-300" />
                                                      </div>
-                                                      <MdErrorOutline size={18} className="absolute -bottom-1 -right-1 text-orange-500 bg-white rounded-full p-0.5 shadow-sm" />
+                                                      <MdErrorOutline size={18} className="absolute -bottom-1 -right-1 text-orange-500 dark:text-orange-400 bg-white dark:bg-gray-900 rounded-full p-0.5 shadow-sm" />
                                                  </div>
                                                  {/* Details */}
-                                                 <div className="flex-grow flex flex-col sm:flex-row justify-between items-start sm:items-center">
-                                                     <div className="mb-1 sm:mb-0">
-                                                         <h3 className="font-medium text-gray-800 text-sm md:text-base">{name}</h3>
-                                                         <p className="text-xs md:text-sm text-orange-600 font-medium">Waiting for you to pay</p>
+                                                 <div className="flex-grow flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                                                     <div className="mb-1 sm:mb-0 flex-1 min-w-0">
+                                                         <h3 className="font-medium text-gray-800 dark:text-gray-100 text-sm md:text-base truncate" title={name}>{name}</h3>
+                                                         <p className="text-xs md:text-sm text-orange-600 dark:text-orange-400 font-medium">Waiting for you to pay</p>
                                                      </div>
-                                                     <div className={`font-medium text-gray-800 text-sm md:text-base whitespace-nowrap sm:ml-4`}>
+                                                     <div className={`font-medium text-green-600 dark:text-green-400 text-sm md:text-base whitespace-nowrap sm:ml-4`}>
                                                          + {amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencyCode}
                                                      </div>
                                                  </div>
                                              </div>
-                                         </div>
+                                         </a>
                                      </Link>
                                  );
                              })}
                          </div>
                      </div>
                  )}
-                 {/* --- END: Needs Your Attention Section --- */}
-
 
                 {/* --- In Progress Transactions Section --- */}
                 {inProgressTransactions.length > 0 && (
                   <div>
-                    <h2 className="font-medium text-gray-600 mb-3 text-sm uppercase tracking-wider">In progress</h2>
-                     <div className="space-y-2 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                    <h2 className="font-medium text-gray-600 dark:text-gray-400 mb-3 text-sm uppercase tracking-wider">In progress</h2>
+                     <div className="space-y-2 bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
                       {inProgressTransactions.map((transaction) => {
-                          // ... (Render logic for in-progress items - same as TransactionsPage)
                            const isAddMoney = transaction.type === "Add Money";
-                           const icon = isAddMoney ? <LuPlus size={22} className="text-blue-600" /> : <GoArrowUp size={22} className="text-green-600" />;
+                           const icon = isAddMoney ? <LuPlus size={22} className="text-blue-600 dark:text-blue-400" /> : <GoArrowUp size={22} className="text-blue-600 dark:text-blue-400" />;
                            let description = isAddMoney ? "We received your funds" : (transaction.status === 'pending' ? "Sending your money" : "Processing transfer");
                            const amount = isAddMoney ? (transaction.amountToAdd ?? 0) : (transaction.sendAmount ?? 0);
                            const txCurrencyCode = isAddMoney ? transaction.balanceCurrency?.code : transaction.sendCurrency?.code;
                            const amountPrefix = isAddMoney ? "+ " : "- ";
                            const name = isAddMoney ? `To your ${txCurrencyCode} balance` : (transaction.name || "Recipient");
 
-                           return ( <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} passHref> {/* ... item JSX ... */} </Link> );
+                           return (
+                                 <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} passHref legacyBehavior>
+                                     <a className="block hover:bg-gray-100 dark:hover:bg-gray-700/50 p-3 -m-3 rounded-md transition-colors duration-150 ease-in-out cursor-pointer">
+                                         <div className="flex items-center gap-4">
+                                             <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center border border-blue-200 dark:border-blue-700/40">
+                                                 {icon}
+                                             </div>
+                                             <div className="flex-grow flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+                                                 <div className="mb-1 sm:mb-0 flex-1 min-w-0">
+                                                     <h3 className="font-medium text-gray-800 dark:text-gray-100 text-sm md:text-base truncate" title={name}>{name}</h3>
+                                                     <p className="text-xs md:text-sm text-blue-600 dark:text-blue-400 font-medium">{description}</p>
+                                                 </div>
+                                                 <div className={`font-medium text-sm md:text-base whitespace-nowrap sm:ml-4 ${isAddMoney ? 'text-green-600 dark:text-green-400' : 'text-gray-800 dark:text-gray-100'}`}>
+                                                     {amountPrefix}{amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {txCurrencyCode}
+                                                 </div>
+                                             </div>
+                                         </div>
+                                     </a>
+                                 </Link>
+                             );
                       })}
                     </div>
                   </div>
                 )}
 
                 {/* --- Processed Transactions (Grouped by Date) Section --- */}
-                {hasProcessedTransactions && (
+                {/* Fix: Check groupedProcessedTransactions exists before accessing keys */}
+                {hasProcessedTransactions && groupedProcessedTransactions && Object.keys(groupedProcessedTransactions).length > 0 && (
                   <div className="space-y-6">
                     {Object.entries(groupedProcessedTransactions).map(([date, transactionsForDate]) => (
                         <div key={date}>
-                             <h3 className="font-medium text-gray-500 mb-3 text-sm uppercase tracking-wider">{date}</h3>
-                             <div className="space-y-2 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                             <h3 className="font-medium text-gray-500 dark:text-gray-400 mb-3 text-sm uppercase tracking-wider">{date}</h3>
+                             <div className="space-y-2 bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
                                 {transactionsForDate.map((transaction) => {
-                                    // ... (Render logic for processed items - same as TransactionsPage)
-                                     return ( <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} passHref> {/* ... item JSX ... */} </Link> );
+                                    const isAddMoney = transaction.type === "Add Money";
+                                    const icon = isAddMoney ? <LuPlus size={22} className="text-blue-600 dark:text-blue-400" /> : <GoArrowUp size={22} className="text-blue-600 dark:text-blue-400" />;
+                                    let description = isAddMoney ? "Added" : `Sent to ${transaction.name || 'Recipient'}`;
+                                    let amountClass = isAddMoney ? "text-green-600 dark:text-green-400" : "text-gray-800 dark:text-gray-100";
+                                    const amount = isAddMoney ? (transaction.amountToAdd ?? 0) : (transaction.sendAmount ?? 0);
+                                    const displayCurrencyCode = isAddMoney ? transaction.balanceCurrency?.code : transaction.sendCurrency?.code;
+                                    const amountPrefix = isAddMoney ? "+ " : "- ";
+                                    const name = isAddMoney ? `Added to ${displayCurrencyCode} balance` : (transaction.name || "Recipient");
+
+                                    if (transaction.status === "canceled" || transaction.status === "cancelled") { description = "Cancelled"; amountClass = "text-red-500 dark:text-red-400 line-through"; }
+                                    else if (transaction.status === "failed") { description = "Failed"; amountClass = "text-red-500 dark:text-red-400"; }
+
+                                     return (
+                                         <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} passHref legacyBehavior>
+                                             <a className="block hover:bg-gray-100 dark:hover:bg-gray-700/50 p-3 -m-3 rounded-md transition-colors duration-150 ease-in-out cursor-pointer">
+                                                 <div className="flex items-center gap-4">
+                                                     <div className="p-3 bg-gray-100 dark:bg-gray-700/50 rounded-full flex items-center justify-center border border-gray-200 dark:border-gray-600/50">
+                                                         {icon}
+                                                     </div>
+                                                     <div className="flex-grow flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+                                                         <div className="mb-1 sm:mb-0 flex-1 min-w-0">
+                                                             <h3 className="font-medium text-gray-800 dark:text-gray-100 text-sm md:text-base truncate" title={name}>{name}</h3>
+                                                             <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400">{description}</p>
+                                                         </div>
+                                                         <div className={`font-medium ${amountClass} text-sm md:text-base whitespace-nowrap sm:ml-4`}>
+                                                             {amountPrefix}{amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {displayCurrencyCode}
+                                                         </div>
+                                                     </div>
+                                                 </div>
+                                             </a>
+                                         </Link>
+                                     );
                                 })}
                             </div>
                         </div>
@@ -1679,12 +1944,11 @@ const BalanceDetailPage = () => {
                 )}
 
                 {/* --- Empty State for Transactions --- */}
-                {/* Show if not loading, no error, AND no transactions in any category */}
                 {!hasAnyTransactionsToDisplay && (
-                  <div className="text-center text-gray-500 py-10 bg-white rounded-lg mt-6 border border-gray-200 shadow-sm">
-                    {balanceSpecificTransactions.length === 0 // Check if there were *ever* transactions for this balance
+                  <div className="text-center text-gray-500 dark:text-gray-400 py-10 bg-white dark:bg-gray-800/50 rounded-lg mt-6 border border-gray-200 dark:border-gray-700/50">
+                    {balanceSpecificTransactions.length === 0 // Check if the base list for this balance was empty
                        ? `No transactions found for this ${currencyCode} balance yet.`
-                       : "No transactions match your current filter or search criteria." // If filtering resulted in empty
+                       : "No transactions match your current filter or search criteria." // Filters/search yielded empty
                     }
                   </div>
                 )}
