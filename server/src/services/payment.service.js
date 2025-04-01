@@ -460,19 +460,67 @@ const cancelPayment = async (paymentId, userId) => {
 };
 
 const getUserPayments = async (userId) => {
-    try { // Add try-catch for better error reporting
+    try {
+        console.log(`Fetching payments for user: ${userId}`); // Add log
          const payments = await Payment.find({ user: userId })
             .populate('user', 'fullName email') // Select specific user fields if needed
             .populate('balanceCurrency', 'code flagImage currencyName') // Populate needed currency fields
             .populate('payInCurrency', 'code flagImage currencyName')   // Populate needed currency fields
             .populate('account', '_id') // Populate only the ID of the account, or more if needed
-            .sort({ createdAt: 'desc' });
-         return payments;
+            .sort({ createdAt: 'desc' })
+            .lean(); // Use .lean() for plain JS objects for better performance and easier manipulation
+
+         // --- ADD TYPE FIELD ---
+         const paymentsWithType = payments.map(payment => ({
+            ...payment,
+            type: 'Add Money' // Explicitly add the type for easier frontend filtering
+         }));
+         // --- END ADD TYPE ---
+
+         console.log(`Found ${paymentsWithType.length} payments for user ${userId}`); // Add log
+         return paymentsWithType; // Return the modified array
     } catch (error) {
-         console.error("Error fetching user payments:", error);
+         console.error(`Error fetching user payments for ${userId}:`, error); // Log specific error
          throw error; // Re-throw
     }
 };
+
+
+// NEW Service: Update status when user confirms transfer
+const confirmUserTransfer = async (paymentId, userId) => {
+    try {
+        const payment = await Payment.findById(paymentId);
+
+        if (!payment) {
+            throw new Error('Payment not found.');
+        }
+
+        // Ensure the user owns this payment
+        if (payment.user.toString() !== userId.toString()) {
+            throw new Error('Unauthorized action');
+        }
+
+        // Only allow update if status is 'pending'
+        if (payment.status !== 'pending') {
+            // Maybe return the payment as is, or throw error if strict
+            // throw new Error('Payment not in pending state.');
+            console.warn(`User tried to confirm transfer for payment ${paymentId} with status ${payment.status}. No update performed.`);
+            return payment; // Return current payment if not pending
+        }
+
+        // Update status to 'in progress'
+        payment.status = 'in progress';
+        await payment.save();
+
+        // Populate necessary fields for the response if needed
+        return await payment.populate(['balanceCurrency', 'payInCurrency']);
+
+    } catch (error) {
+        console.error("Error in confirmUserTransfer service:", error);
+        throw error; // Re-throw to be handled by controller
+    }
+};
+
 
 export default {
     calculatePaymentSummary,
@@ -481,4 +529,5 @@ export default {
     getUserBalancePayments,
     cancelPayment,
     getUserPayments, 
+    confirmUserTransfer,
 };

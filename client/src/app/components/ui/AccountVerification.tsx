@@ -1,5 +1,6 @@
 // if user not verify their account then render this Account Verification Banner otherwise not.
 
+import Link from "next/link";
 import React from "react";
 import { MdOutlineError } from "react-icons/md";
 
@@ -20,9 +21,9 @@ export default function AccountVerification() {
               <p className="text-gray-700">
                 Verify your account to start receiving money.
               </p>
-              <button className="text-green font-bold relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-green after:mt-1">
+              <Link href="/kyc/currencies" className="text-green font-bold relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-green after:mt-1">
                 Verify now
-              </button>
+              </Link>
             </div>
           </div>
         </div>

@@ -42,4 +42,9 @@ router.get('/balance/:balanceCurrencyId', authMiddleware.protect, paymentControl
 // Cancel a payment by payment ID - User can cancel their own payments
 router.post('/:paymentId/cancel', authMiddleware.protect, paymentController.cancelPayment);
 
+
+// NEW: Route for user confirming they've made the transfer
+router.post('/:paymentId/confirm-transfer', authMiddleware.protect, paymentController.confirmUserTransfer);
+
+
 export default router;
