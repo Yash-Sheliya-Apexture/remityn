@@ -1406,8 +1406,1116 @@
 
 // export default AdminCurrenciesPage;
 
+// "use client";
+// import React, { useState, useEffect } from "react";
+// import { useAuth } from "../../hooks/useAuth";
+// import axios from "axios";
+// import { useRouter } from "next/navigation";
+// import Link from "next/link";
+// import apiConfig from "../../config/apiConfig";
+// import Image from "next/image";
+// import {
+//   Loader2,
+//   PlusCircle,
+//   Search,
+//   Info,
+//   Edit,
+//   Trash2,
+//   Save,
+//   X,
+//   AlertTriangle,
+//   Check,
+// } from "lucide-react";
+// import { motion, AnimatePresence } from "framer-motion";
+// import { FaRegSave } from "react-icons/fa";
+// import { MdError } from "react-icons/md";
+// import { IoClose, IoWarningOutline } from "react-icons/io5";
+
+// axios.defaults.baseURL = apiConfig.baseUrl;
+
+// interface Currency {
+//   _id: string;
+//   code: string;
+//   currencyName: string;
+//   flagImage?: string;
+// }
+
+// interface NewCurrencyData {
+//   code: string;
+//   currencyName: string;
+//   flagImage: string;
+// }
+
+// const AdminCurrenciesPage: React.FC = () => {
+//   const [currencies, setCurrencies] = useState<Currency[]>([]);
+//   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
+//   const [newCurrencyData, setNewCurrencyData] = useState<NewCurrencyData>({
+//     code: "",
+//     currencyName: "",
+//     flagImage: "",
+//   });
+//   const [editingCurrencyId, setEditingCurrencyId] = useState<string | null>(
+//     null
+//   );
+//   const [editingCurrencyCode, setEditingCurrencyCode] = useState<string>("");
+//   const [isLoading, setIsLoading] = useState<boolean>(true);
+//   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+//   const [error, setError] = useState<string | null>(null);
+//   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+//   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+//     useState<boolean>(false);
+//   const [currencyToDeleteId, setCurrencyToDeleteId] = useState<string | null>(
+//     null
+//   );
+//   const [searchTerm, setSearchTerm] = useState<string>("");
+//   const { token } = useAuth();
+//   const router = useRouter();
+
+//   useEffect(() => {
+//     fetchCurrenciesList();
+//   }, [token, router]);
+
+//   useEffect(() => {
+//     // Auto-dismiss success message after 3 seconds
+//     if (successMessage) {
+//       const timer = setTimeout(() => {
+//         setSuccessMessage(null);
+//       }, 3000);
+//       return () => clearTimeout(timer);
+//     }
+//   }, [successMessage]);
+
+//   const fetchCurrenciesList = async () => {
+//     setIsLoading(true);
+//     setError(null);
+//     try {
+//       const response = await axios.get("/admin/currencies", {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       setCurrencies(response.data);
+//     } catch (err: any) {
+//       console.error("Error fetching currencies:", err);
+//       if (err.response?.status === 403 || err.response?.status === 401) {
+//         router.push("/auth/login");
+//       } else {
+//         setError(err.response?.data?.message || "Failed to load currencies");
+//       }
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   const handleCreateCurrency = async () => {
+//     if (!newCurrencyData.code || !newCurrencyData.currencyName) {
+//       setError("Currency code and name are required");
+//       return;
+//     }
+
+//     setIsSubmitting(true);
+//     setError(null);
+//     try {
+//       await axios.post("/admin/currencies", newCurrencyData, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       setNewCurrencyData({ code: "", currencyName: "", flagImage: "" });
+//       await fetchCurrenciesList();
+//       setSuccessMessage("Currency added successfully");
+//       setIsCreateModalOpen(false);
+//     } catch (err: any) {
+//       setError(err.response?.data?.message || "Failed to create currency");
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   const handleUpdateCurrency = async () => {
+//     if (!editingCurrencyCode) {
+//       setError("Currency code cannot be empty");
+//       return;
+//     }
+
+//     setIsSubmitting(true);
+//     setError(null);
+//     try {
+//       await axios.put(
+//         `/admin/currencies/${editingCurrencyId}`,
+//         { code: editingCurrencyCode },
+//         { headers: { Authorization: `Bearer ${token}` } }
+//       );
+//       setEditingCurrencyId(null);
+//       setEditingCurrencyCode("");
+//       await fetchCurrenciesList();
+//       setSuccessMessage("Currency updated successfully");
+//     } catch (err: any) {
+//       setError(err.response?.data?.message || "Failed to update currency");
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   const handleDeleteCurrency = async () => {
+//     if (!currencyToDeleteId) return;
+
+//     setIsSubmitting(true);
+//     setError(null);
+//     try {
+//       await axios.delete(`/admin/currencies/${currencyToDeleteId}`, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       await fetchCurrenciesList();
+//       setSuccessMessage("Currency deleted successfully");
+//       setIsDeleteConfirmationOpen(false);
+//       setCurrencyToDeleteId(null);
+//     } catch (err: any) {
+//       setError(err.response?.data?.message || "Failed to delete currency");
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   const startEditing = (currency: Currency) => {
+//     setEditingCurrencyId(currency._id);
+//     setEditingCurrencyCode(currency.code);
+//   };
+
+//   const cancelEditing = () => {
+//     setEditingCurrencyId(null);
+//     setEditingCurrencyCode("");
+//   };
+
+//   const filteredCurrencies = currencies.filter(
+//     (currency) =>
+//       currency.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//       currency.currencyName.toLowerCase().includes(searchTerm.toLowerCase())
+//   );
+
+//   return (
+//     <div className="min-h-screen p-4">
+//       {/* Header Section */}
+//       <div className="py-6 mb-6 border-b border-gray-300">
+//         <h1 className="text-3xl font-bold text-main mb-2">
+//           Currency Management
+//         </h1>
+//         <p className="text-gray capitalize">
+//           Manage currency options for your application
+//         </p>
+//       </div>
+
+//       {/* Success Message */}
+//       <AnimatePresence>
+//         {successMessage && (
+//           <motion.div
+//             initial={{ opacity: 0, y: -20 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             exit={{ opacity: 0, y: -20 }}
+//             className="fixed top-6 right-6 z-50 bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded shadow-lg flex items-center max-w-md"
+//           >
+//             <Check size={20} className="text-emerald-500 mr-3" />
+//             <p className="text-emerald-800">{successMessage}</p>
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+
+//       {/* Error Message */}
+//       {error && (
+//         <div className="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded flex items-center">
+//           <AlertTriangle size={20} className="text-red-500 mr-3" />
+//           <p className="text-red-700">{error}</p>
+//         </div>
+//       )}
+
+//       {/* Action Bar */}
+//       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+//         <button
+//           onClick={() => setIsCreateModalOpen(true)}
+//           className="flex items-center gap-2 bg-primary cursor-pointer font-medium hover:bg-primary-hover text-secondary py-3 px-4 rounded-lg transition duration-300"
+//         >
+//           <PlusCircle />
+//           <span>Add Currency</span>
+//         </button>
+
+//         {/* Search Bar */}
+//         <div className="relative w-full md:w-64">
+//           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+//             <Search size={20} className="text-gray" />
+//           </div>
+//           <input
+//             type="text"
+//             placeholder="Search currencies..."
+//             value={searchTerm}
+//             onChange={(e) => setSearchTerm(e.target.value)}
+//             className="pl-10 pr-4 py-3 w-full rounded-lg border hover:shadow-color  transition-shadow ease-in-out duration-300 border-gray-300 font-medium text-main focus:outline-none"
+//           />
+//         </div>
+//       </div>
+
+//       {/* Main Content */}
+//       {isLoading ? (
+//         <div className="flex justify-center items-center h-64">
+//           <Loader2 size={40} className="text-primary animate-spin" />
+//         </div>
+//       ) : filteredCurrencies.length === 0 ? (
+//         <div className="bg-white p-8 text-center">
+//           <div className="mb-6 flex justify-center">
+//             <Image
+//               src="/assets/images/exclamation-mark-medium@2x.webp"
+//               width={100}
+//               height={100}
+//               alt="Searching Eroor"
+//               className="size-48"
+//             />
+//           </div>
+//           <h3 className="text-3xl capitalize font-semibold text-main mb-6">
+//             No currencies found
+//           </h3>
+//           <div className="flex justify-center">
+//             <p className="text-gray text-lg max-w-lg">
+//               {searchTerm ? "Try adjusting your search or" : "Get started by"}{" "}
+//               It seems we couldn't find any currencies at the moment. Please
+//               check back later or try adjusting your search.
+//             </p>
+//           </div>
+//         </div>
+//       ) : (
+//         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+//           {filteredCurrencies.map((currency) => (
+//             <div
+//               key={currency._id}
+//               className="rounded-xl overflow-hidden transition-all duration-200 bg-green/5"
+//             >
+//               <div className="px-4 py-8">
+//                 <div className="flex justify-between items-start mb-6">
+//                   <div className="flex items-center gap-3">
+//                     {currency.flagImage ? (
+//                       <img
+//                         src={currency.flagImage}
+//                         alt={`${currency.currencyName} Flag`}
+//                         className="size-14 object-cover"
+//                       />
+//                     ) : (
+//                       <div className="size-14 border border-gray-300 rounded-full flex items-center justify-center text-xs text-main">
+//                         No flag
+//                       </div>
+//                     )}
+//                     <div>
+//                       {editingCurrencyId === currency._id ? (
+//                         <input
+//                           type="text"
+//                           value={editingCurrencyCode}
+//                           onChange={(e) =>
+//                             setEditingCurrencyCode(e.target.value.toUpperCase())
+//                           }
+//                           className="border-b border-primary bg-primary/10 p-1 font-bold text-main w-32 focus:outline-none"
+//                           autoFocus
+//                         />
+//                       ) : (
+//                         <h3 className="font-bold text-main">{currency.code}</h3>
+//                       )}
+//                       <p className="text-slate-500 mt-0.5">
+//                         {currency.currencyName}
+//                       </p>
+//                     </div>
+//                   </div>
+//                 </div>
+
+//                 {editingCurrencyId === currency._id ? (
+//                   <div className="flex gap-2 mt-4">
+//                     <button
+//                       onClick={handleUpdateCurrency}
+//                       disabled={isSubmitting}
+//                       className="flex-1 flex justify-center items-center cursor-pointer gap-1.5 bg-primary hover:bg-primary-hover text-secondary font-medium py-2.5 px-3 rounded-md transition duration-200 disabled:opacity-50"
+//                     >
+//                       {isSubmitting ? (
+//                         <Loader2 size={20} className="animate-spin" />
+//                       ) : (
+//                         <FaRegSave size={20} />
+//                       )}
+//                       <span>Save</span>
+//                     </button>
+//                     <button
+//                       onClick={cancelEditing}
+//                       className="flex-1 flex justify-center cursor-pointer items-center gap-1.5 bg-error hover:bg-red-800 text-white py-2.5 px-3 rounded-md transition duration-200"
+//                     >
+//                       <MdError size={20} />
+//                       <span>Cancel</span>
+//                     </button>
+//                   </div>
+//                 ) : (
+//                   <div className="flex flex-col sm:flex-row gap-2 mt-4">
+//                     <Link
+//                       href={`/admin/currencies/${currency._id}`}
+//                       className="flex-1 flex justify-center items-center gap-1.5 bg-blue-100  text-blue-700 font-medium py-2 px-3 rounded-sm transition duration-300"
+//                     >
+//                       <Info size={20} />
+//                       <span>Details</span>
+//                     </Link>
+//                     <button
+//                       onClick={() => startEditing(currency)}
+//                       className="flex-1 flex justify-center cursor-pointer items-center gap-1.5 bg-yellow-100 font-medium text-yellow-700 py-2 px-3 rounded-sm transition duration-300"
+//                     >
+//                       <Edit size={20} />
+//                       <span>Edit</span>
+//                     </button>
+//                     <button
+//                       onClick={() => {
+//                         setCurrencyToDeleteId(currency._id);
+//                         setIsDeleteConfirmationOpen(true);
+//                       }}
+//                       className="flex-1 flex justify-center cursor-pointer items-center gap-1.5 bg-red-100 font-medium text-error py-2 px-3 rounded-sm transition duration-300"
+//                     >
+//                       <Trash2 size={20} />
+//                       <span>Delete</span>
+//                     </button>
+//                   </div>
+//                 )}
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       )}
+
+//       {/* Create Currency Modal */}
+//       {isCreateModalOpen && (
+//         <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+//           <div
+//             className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto scrollbar-hide"
+//             onClick={(e) => e.stopPropagation()}
+//           >
+//             <div className="lg:p-6 p-4">
+//               <div className="flex justify-between items-center mb-6">
+//                 <h2 className="lg:text-2xl font-medium text-main">
+//                   Add New Currency
+//                 </h2>
+//                 <button
+//                   onClick={() => setIsCreateModalOpen(false)}
+//                   className="text-main hover:bg-green/10 lg:size-12 size-10 flex justify-center items-center transition rounded-full cursor-pointer"
+//                 >
+//                   <IoClose className="lg:size-10 size-6 p-0.5" />
+//                 </button>
+//               </div>
+
+//               <div className="space-y-6">
+//                 <div>
+//                   <label
+//                     htmlFor="code"
+//                     className="inline-block lg:text-base text-sm font-medium text-main mb-1"
+//                   >
+//                     Currency Code <span className="text-red-500">*</span>
+//                   </label>
+//                   <input
+//                     type="text"
+//                     id="code"
+//                     name="code"
+//                     placeholder="e.g. USD"
+//                     value={newCurrencyData.code}
+//                     onChange={(e) =>
+//                       setNewCurrencyData({
+//                         ...newCurrencyData,
+//                         code: e.target.value.toUpperCase(),
+//                       })
+//                     }
+//                     className="w-full rounded-lg border border-gray-300 hover:shadow-color transition-shadow duration-300 ease-in-out px-4 py-3 focus:outline-none"
+//                   />
+//                   <p className="mt-2 lg:text-sm text-xs text-main">
+//                     Enter the 3-letter currency code (e.g., USD, EUR, GBP)
+//                   </p>
+//                 </div>
+
+//                 <div>
+//                   <label
+//                     htmlFor="currencyName"
+//                     className="inline-block lg:text-base text-sm font-medium text-main mb-1"
+//                   >
+//                     Currency Name <span className="text-red-500">*</span>
+//                   </label>
+//                   <input
+//                     type="text"
+//                     id="currencyName"
+//                     name="currencyName"
+//                     placeholder="e.g. US Dollar"
+//                     value={newCurrencyData.currencyName}
+//                     onChange={(e) =>
+//                       setNewCurrencyData({
+//                         ...newCurrencyData,
+//                         currencyName: e.target.value,
+//                       })
+//                     }
+//                     className="w-full rounded-lg border border-gray-300 hover:shadow-color transition-shadow duration-300 ease-in-out px-4 py-3 focus:outline-none"
+//                   />
+//                 </div>
+
+//                 <div>
+//                   <label
+//                     htmlFor="flagImage"
+//                     className="inline-block lg:text-base text-sm font-medium text-main mb-1"
+//                   >
+//                     Flag Image Path
+//                   </label>
+//                   <input
+//                     type="text"
+//                     id="flagImage"
+//                     name="flagImage"
+//                     placeholder="/assets/icon/flags/usd.png"
+//                     value={newCurrencyData.flagImage}
+//                     onChange={(e) =>
+//                       setNewCurrencyData({
+//                         ...newCurrencyData,
+//                         flagImage: e.target.value,
+//                       })
+//                     }
+//                     className="w-full rounded-lg border border-gray-300 hover:shadow-color transition-shadow duration-300 ease-in-out px-4 py-3 focus:outline-none"
+//                   />
+//                   <p className="mt-2 lg:text-sm text-xs text-main">
+//                     Path to the flag image (e.g., /assets/icon/flags/usd.png)
+//                   </p>
+//                 </div>
+
+//                 <div className="flex md:flex-row flex-col gap-3 pt-4">
+//                   <button
+//                     onClick={handleCreateCurrency}
+//                     disabled={
+//                       isSubmitting ||
+//                       !newCurrencyData.code ||
+//                       !newCurrencyData.currencyName
+//                     }
+//                     className="flex-1 flex justify-center items-center lg:text-lg gap-2 bg-primary text-gray hover:bg-primary-hover font-medium py-2.5 focus:outline-none px-4 rounded-lg transition-colors ease-in-out duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+//                   >
+//                     {isSubmitting ? (
+//                       <Loader2 size={20} className="animate-spin" />
+//                     ) : (
+//                       <PlusCircle size={20} />
+//                     )}
+//                     {isSubmitting ? "Adding..." : "Add Currency"}
+//                   </button>
+//                   <button
+//                     onClick={() => setIsCreateModalOpen(false)}
+//                     className="flex-1 bg-error flex justify-center items-center gap-2 gap cursor-pointer font-medium text-white py-2.5 px-4 rounded-lg transition duration-300"
+//                   >
+//                     <IoWarningOutline size={20} />
+//                     Cancel
+//                   </button>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+
+//       {/* Delete Confirmation Modal */}
+//       {isDeleteConfirmationOpen && (
+//         <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+//           <div
+//             className="bg-white rounded-2xl shadow-md max-w-md w-full"
+//             onClick={(e) => e.stopPropagation()}
+//           >
+//             <div className="p-6 text-center">
+//               <div className="flex justify-center mb-6">
+//                 <div className="size-20 bg-red-100 rounded-full flex items-center justify-center">
+//                   <AlertTriangle className="text-red-500 size-10" />
+//                 </div>
+//               </div>
+
+//               <h2 className="text-2xl font-bold text-main mb-4">
+//                 Delete Currency
+//               </h2>
+//               <p className="text-gray text-lg leading-relaxed mb-6">
+//                 Are you sure you want to delete this currency? This action
+//                 cannot be undone.
+//               </p>
+
+//               <div className="flex flex-col gap-3">
+//                 <button
+//                   onClick={handleDeleteCurrency}
+//                   disabled={isSubmitting}
+//                   className="flex-1 flex justify-center cursor-pointer items-center font-medium text-lg gap-2 bg-error  text-white py-3 px-4 rounded-lg transition duration-200 disabled:opacity-50"
+//                 >
+//                   {isSubmitting ? (
+//                     <Loader2 size={20} className="animate-spin" />
+//                   ) : (
+//                     <Trash2 size={20} />
+//                   )}
+//                   {isSubmitting ? "Deleting..." : "Delete Currency"}
+//                 </button>
+//                 <button
+//                   onClick={() => {
+//                     setIsDeleteConfirmationOpen(false);
+//                     setCurrencyToDeleteId(null);
+//                   }}
+//                   className="flex-1 bg-slate-300 cursor-pointer text-gray text-lg font-medium py-3 px-4 rounded-lg transition duration-200"
+//                 >
+//                   Cancel
+//                 </button>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default AdminCurrenciesPage;
+
+// "use client";
+// import React, { useState, useEffect } from "react";
+// import { useAuth } from "../../hooks/useAuth";
+// import axios from "axios";
+// import { useRouter } from "next/navigation";
+// import Link from "next/link";
+// import apiConfig from "../../config/apiConfig";
+// import Image from "next/image";
+// import {
+//   Loader2,
+//   PlusCircle,
+//   Search,
+//   Info,
+//   Edit,
+//   Trash2,
+//   Save,
+//   X,
+//   AlertTriangle,
+//   Check,
+// } from "lucide-react";
+// import { motion, AnimatePresence } from "framer-motion";
+// import { FaRegSave } from "react-icons/fa";
+// import { MdError } from "react-icons/md";
+// import { IoClose, IoWarningOutline } from "react-icons/io5";
+
+// axios.defaults.baseURL = apiConfig.baseUrl;
+
+// interface Currency {
+//   _id: string;
+//   code: string;
+//   currencyName: string;
+//   flagImage?: string;
+// }
+
+// interface NewCurrencyData {
+//   code: string;
+//   currencyName: string;
+//   flagImage: string;
+// }
+
+// const AdminCurrenciesPage: React.FC = () => {
+//   const [currencies, setCurrencies] = useState<Currency[]>([]);
+//   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
+//   const [newCurrencyData, setNewCurrencyData] = useState<NewCurrencyData>({
+//     code: "",
+//     currencyName: "",
+//     flagImage: "",
+//   });
+//   const [editingCurrencyId, setEditingCurrencyId] = useState<string | null>(
+//     null
+//   );
+//   const [editingCurrencyCode, setEditingCurrencyCode] = useState<string>("");
+//   const [isLoading, setIsLoading] = useState<boolean>(true);
+//   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+//   const [error, setError] = useState<string | null>(null);
+//   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+//   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+//     useState<boolean>(false);
+//   const [currencyToDeleteId, setCurrencyToDeleteId] = useState<string | null>(
+//     null
+//   );
+//   const [searchTerm, setSearchTerm] = useState<string>("");
+//   const { token } = useAuth();
+//   const router = useRouter();
+
+//   useEffect(() => {
+//     fetchCurrenciesList();
+//   }, [token, router]);
+
+//   useEffect(() => {
+//     // Auto-dismiss success message after 3 seconds
+//     if (successMessage) {
+//       const timer = setTimeout(() => {
+//         setSuccessMessage(null);
+//       }, 3000);
+//       return () => clearTimeout(timer);
+//     }
+//   }, [successMessage]);
+
+//   const fetchCurrenciesList = async () => {
+//     setIsLoading(true);
+//     setError(null);
+//     try {
+//       const response = await axios.get("/admin/currencies", {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       setCurrencies(response.data);
+//     } catch (err: any) {
+//       console.error("Error fetching currencies:", err);
+//       if (err.response?.status === 403 || err.response?.status === 401) {
+//         router.push("/auth/login");
+//       } else {
+//         setError(err.response?.data?.message || "Failed to load currencies");
+//       }
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   const handleCreateCurrency = async () => {
+//     if (!newCurrencyData.code || !newCurrencyData.currencyName) {
+//       setError("Currency code and name are required");
+//       return;
+//     }
+
+//     setIsSubmitting(true);
+//     setError(null);
+//     try {
+//       await axios.post("/admin/currencies", newCurrencyData, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       setNewCurrencyData({ code: "", currencyName: "", flagImage: "" });
+//       await fetchCurrenciesList();
+//       setSuccessMessage("Currency added successfully");
+//       setIsCreateModalOpen(false);
+//     } catch (err: any) {
+//       setError(err.response?.data?.message || "Failed to create currency");
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   const handleUpdateCurrency = async () => {
+//     if (!editingCurrencyCode) {
+//       setError("Currency code cannot be empty");
+//       return;
+//     }
+
+//     setIsSubmitting(true);
+//     setError(null);
+//     try {
+//       await axios.put(
+//         `/admin/currencies/${editingCurrencyId}`,
+//         { code: editingCurrencyCode },
+//         { headers: { Authorization: `Bearer ${token}` } }
+//       );
+//       setEditingCurrencyId(null);
+//       setEditingCurrencyCode("");
+//       await fetchCurrenciesList();
+//       setSuccessMessage("Currency updated successfully");
+//     } catch (err: any) {
+//       setError(err.response?.data?.message || "Failed to update currency");
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   const handleDeleteCurrency = async () => {
+//     if (!currencyToDeleteId) return;
+
+//     setIsSubmitting(true);
+//     setError(null);
+//     try {
+//       await axios.delete(`/admin/currencies/${currencyToDeleteId}`, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       await fetchCurrenciesList();
+//       setSuccessMessage("Currency deleted successfully");
+//       setIsDeleteConfirmationOpen(false);
+//       setCurrencyToDeleteId(null);
+//     } catch (err: any) {
+//       setError(err.response?.data?.message || "Failed to delete currency");
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   const startEditing = (currency: Currency) => {
+//     setEditingCurrencyId(currency._id);
+//     setEditingCurrencyCode(currency.code);
+//   };
+
+//   const cancelEditing = () => {
+//     setEditingCurrencyId(null);
+//     setEditingCurrencyCode("");
+//   };
+
+//   const filteredCurrencies = currencies.filter((currency) => {
+//     const searchLower = searchTerm.toLowerCase();
+//     return (
+//       currency.code.toLowerCase().includes(searchLower) ||
+//       currency.currencyName.toLowerCase().includes(searchLower)
+//     );
+//   });
+
+//   return (
+//     <div className="min-h-screen p-4 bg-gray-50">
+//       {/* Header Section */}
+//       <div className="py-6 mb-6 border-b border-gray-200">
+//         <h1 className="text-3xl font-bold text-gray-900 mb-2">
+//           Currency Management
+//         </h1>
+//         <p className="text-gray-500 capitalize">
+//           Manage currency options for your application
+//         </p>
+//       </div>
+
+//       {/* Success Message */}
+//       <AnimatePresence>
+//         {successMessage && (
+//           <motion.div
+//             initial={{ opacity: 0, y: -20 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             exit={{ opacity: 0, y: -20 }}
+//             className="fixed top-6 right-6 z-50 bg-green-50 border-l-4 border-green-500 p-4 rounded shadow-lg flex items-center max-w-md"
+//           >
+//             <Check size={20} className="text-green-500 mr-3" />
+//             <p className="text-green-800">{successMessage}</p>
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+
+//       {/* Error Message */}
+//       {error && (
+//         <div className="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded flex items-center">
+//           <AlertTriangle size={20} className="text-red-500 mr-3" />
+//           <p className="text-red-700">{error}</p>
+//         </div>
+//       )}
+
+//       {/* Action Bar */}
+//       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+//         <button
+//           onClick={() => setIsCreateModalOpen(true)}
+//           className="flex items-center gap-2 bg-blue-600 cursor-pointer font-medium hover:bg-blue-700 text-white py-3 px-4 rounded-lg transition duration-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+//         >
+//           <PlusCircle className="size-4" />
+//           <span>Add Currency</span>
+//         </button>
+
+//         {/* Search Bar */}
+//         <div className="relative w-full md:w-64">
+//           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+//             <Search size={20} className="text-gray-400" />
+//           </div>
+//           <input
+//             type="text"
+//             placeholder="Search currencies..."
+//             value={searchTerm}
+//             onChange={(e) => setSearchTerm(e.target.value)}
+//             className="pl-10 pr-4 py-3 w-full rounded-lg border border-gray-300  transition-shadow ease-in-out duration-300 text-gray-900 font-medium shadow-sm focus:outline-none sm:text-sm"
+//           />
+//         </div>
+//       </div>
+
+//       {/* Main Content */}
+//       {isLoading ? (
+//         <div className="flex justify-center items-center h-64">
+//           <Loader2 size={40} className="text-blue-600 animate-spin" />
+//         </div>
+//       ) : filteredCurrencies.length === 0 ? (
+//         <div className="bg-white p-8 text-center rounded-lg shadow-sm">
+//           <div className="mb-6 flex justify-center">
+//             <Image
+//               src="/assets/images/exclamation-mark-medium@2x.webp"
+//               width={100}
+//               height={100}
+//               alt="Searching Error"
+//               className="size-48"
+//             />
+//           </div>
+//           <h3 className="text-3xl capitalize font-semibold text-gray-900 mb-6">
+//             No currencies found
+//           </h3>
+//           <div className="flex justify-center">
+//             <p className="text-gray-500 text-lg max-w-lg">
+//               {searchTerm ? "Try adjusting your search or" : "Get started by"}{" "}
+//               It seems we couldn't find any currencies at the moment. Please
+//               check back later or try adjusting your search.
+//             </p>
+//           </div>
+//         </div>
+//       ) : (
+//         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+//           {filteredCurrencies.map((currency) => (
+//             <div
+//               key={currency._id}
+//               className="rounded-xl overflow-hidden transition-all duration-200 bg-white shadow-md"
+//             >
+//               <div className="px-4 py-8">
+//                 <div className="flex justify-between items-start mb-6">
+//                   <div className="flex items-center gap-3">
+//                     {currency.flagImage ? (
+//                       <img
+//                         src={currency.flagImage}
+//                         alt={`${currency.currencyName} Flag`}
+//                         className="size-14 object-cover rounded-full"
+//                       />
+//                     ) : (
+//                       <div className="size-14 border border-gray-300 rounded-full flex items-center justify-center text-xs text-gray-900">
+//                         No flag
+//                       </div>
+//                     )}
+//                     <div>
+//                       {editingCurrencyId === currency._id ? (
+//                         <input
+//                           type="text"
+//                           value={editingCurrencyCode}
+//                           onChange={(e) =>
+//                             setEditingCurrencyCode(e.target.value.toUpperCase())
+//                           }
+//                           className="border-b border-blue-600 bg-blue-50 p-1 font-bold text-gray-900 w-32 focus:outline-none"
+//                           autoFocus
+//                         />
+//                       ) : (
+//                         <h3 className="font-bold text-gray-900">
+//                           {currency.code}
+//                         </h3>
+//                       )}
+//                       <p className="text-slate-500 mt-0.5">
+//                         {currency.currencyName}
+//                       </p>
+//                     </div>
+//                   </div>
+//                 </div>
+
+//                 {editingCurrencyId === currency._id ? (
+//                   <div className="flex gap-2 mt-4">
+//                     <button
+//                       onClick={handleUpdateCurrency}
+//                       disabled={isSubmitting}
+//                       className="flex-1 flex justify-center items-center cursor-pointer gap-1.5 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-3 rounded-md transition duration-200 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                     >
+//                       {isSubmitting ? (
+//                         <Loader2 size={20} className="animate-spin" />
+//                       ) : (
+//                         <FaRegSave size={20} />
+//                       )}
+//                       <span>Save</span>
+//                     </button>
+//                     <button
+//                       onClick={cancelEditing}
+//                       className="flex-1 flex justify-center cursor-pointer items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white py-2.5 px-3 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-red-500"
+//                     >
+//                       <MdError size={20} />
+//                       <span>Cancel</span>
+//                     </button>
+//                   </div>
+//                 ) : (
+//                   <div className="flex flex-col sm:flex-row gap-2 mt-4">
+//                     <Link
+//                       href={`/admin/currencies/${currency._id}`}
+//                       className="flex-1 flex justify-center items-center gap-1.5 bg-blue-100  text-blue-700 font-medium py-2 px-3 rounded-sm transition duration-300 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                     >
+//                       <Info size={20} />
+//                       <span>Details</span>
+//                     </Link>
+//                     <button
+//                       onClick={() => startEditing(currency)}
+//                       className="flex-1 flex justify-center cursor-pointer items-center gap-1.5 bg-yellow-100 font-medium text-yellow-700 py-2 px-3 rounded-sm transition duration-300 hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+//                     >
+//                       <Edit size={20} />
+//                       <span>Edit</span>
+//                     </button>
+//                     <button
+//                       onClick={() => {
+//                         setCurrencyToDeleteId(currency._id);
+//                         setIsDeleteConfirmationOpen(true);
+//                       }}
+//                       className="flex-1 flex justify-center cursor-pointer items-center gap-1.5 bg-red-100 font-medium text-red-700 py-2 px-3 rounded-sm transition duration-300 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500"
+//                     >
+//                       <Trash2 size={20} />
+//                       <span>Delete</span>
+//                     </button>
+//                   </div>
+//                 )}
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       )}
+
+//       {/* Create Currency Modal */}
+//       {isCreateModalOpen && (
+//         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+//           <div
+//             className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto scrollbar-hide"
+//             onClick={(e) => e.stopPropagation()}
+//           >
+//             <div className="lg:p-6 p-4">
+//               <div className="flex justify-between items-center mb-6">
+//                 <h2 className="lg:text-2xl font-medium text-gray-900">
+//                   Add New Currency
+//                 </h2>
+//                 <button
+//                   onClick={() => setIsCreateModalOpen(false)}
+//                   className="text-gray-900 hover:bg-gray-100 lg:size-12 size-10 flex justify-center items-center transition rounded-full cursor-pointer"
+//                 >
+//                   <IoClose className="lg:size-10 size-6 p-0.5" />
+//                 </button>
+//               </div>
+
+//               <div className="space-y-6">
+//                 <div>
+//                   <label
+//                     htmlFor="code"
+//                     className="inline-block lg:text-base text-sm font-medium text-gray-900 mb-1"
+//                   >
+//                     Currency Code <span className="text-red-500">*</span>
+//                   </label>
+//                   <input
+//                     type="text"
+//                     id="code"
+//                     name="code"
+//                     placeholder="e.g. USD"
+//                     value={newCurrencyData.code}
+//                     onChange={(e) =>
+//                       setNewCurrencyData({
+//                         ...newCurrencyData,
+//                         code: e.target.value.toUpperCase(),
+//                       })
+//                     }
+//                     className="w-full rounded-lg border border-gray-300 transition-shadow duration-300 ease-in-out px-4 py-3 focus:outline-none sm:text-sm shadow-sm"
+//                     required
+//                   />
+//                   <p className="mt-2 lg:text-sm text-xs text-gray-500">
+//                     Enter the 3-letter currency code (e.g., USD, EUR, GBP)
+//                   </p>
+//                 </div>
+
+//                 <div>
+//                   <label
+//                     htmlFor="currencyName"
+//                     className="inline-block lg:text-base text-sm font-medium text-gray-900 mb-1"
+//                   >
+//                     Currency Name <span className="text-red-500">*</span>
+//                   </label>
+//                   <input
+//                     type="text"
+//                     id="currencyName"
+//                     name="currencyName"
+//                     placeholder="e.g. US Dollar"
+//                     value={newCurrencyData.currencyName}
+//                     onChange={(e) =>
+//                       setNewCurrencyData({
+//                         ...newCurrencyData,
+//                         currencyName: e.target.value,
+//                       })
+//                     }
+//                     className="w-full rounded-lg border border-gray-300 transition-shadow duration-300 ease-in-out px-4 py-3 focus:outline-none sm:text-sm shadow-sm"
+//                     required
+//                   />
+//                 </div>
+
+//                 <div>
+//                   <label
+//                     htmlFor="flagImage"
+//                     className="inline-block lg:text-base text-sm font-medium text-gray-900 mb-1"
+//                   >
+//                     Flag Image Path
+//                   </label>
+//                   <input
+//                     type="text"
+//                     id="flagImage"
+//                     name="flagImage"
+//                     placeholder="/assets/icon/flags/usd.png"
+//                     value={newCurrencyData.flagImage}
+//                     onChange={(e) =>
+//                       setNewCurrencyData({
+//                         ...newCurrencyData,
+//                         flagImage: e.target.value,
+//                       })
+//                     }
+//                     className="w-full rounded-lg border border-gray-300 transition-shadow duration-300 ease-in-out px-4 py-3 focus:outline-none sm:text-sm shadow-sm"
+//                   />
+//                   <p className="mt-2 lg:text-sm text-xs text-gray-500">
+//                     Path to the flag image (e.g., /assets/icon/flags/usd.png)
+//                   </p>
+//                 </div>
+
+//                 <div className="flex md:flex-row flex-col gap-3 pt-4">
+//                   <button
+//                     onClick={handleCreateCurrency}
+//                     disabled={
+//                       isSubmitting ||
+//                       !newCurrencyData.code ||
+//                       !newCurrencyData.currencyName
+//                     }
+//                     className="flex-1 flex justify-center items-center lg:text-lg gap-2 bg-blue-600 text-white hover:bg-blue-700 font-medium py-2.5 focus:outline-none px-4 rounded-lg transition-colors ease-in-out duration-300 disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-blue-500"
+//                   >
+//                     {isSubmitting ? (
+//                       <Loader2 size={20} className="animate-spin" />
+//                     ) : (
+//                       <PlusCircle size={20} />
+//                     )}
+//                     {isSubmitting ? "Adding..." : "Add Currency"}
+//                   </button>
+//                   <button
+//                     onClick={() => setIsCreateModalOpen(false)}
+//                     className="flex-1 bg-red-600 hover:bg-red-700 flex justify-center items-center gap-2 gap cursor-pointer font-medium text-white py-2.5 px-4 rounded-lg transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-500"
+//                   >
+//                     <IoWarningOutline size={20} />
+//                     Cancel
+//                   </button>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+
+//       {/* Delete Confirmation Modal */}
+//       {isDeleteConfirmationOpen && (
+//         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+//           <div
+//             className="bg-white rounded-2xl shadow-md max-w-md w-full"
+//             onClick={(e) => e.stopPropagation()}
+//           >
+//             <div className="p-6 text-center">
+//               <div className="flex justify-center mb-6">
+//                 <div className="size-20 bg-red-100 rounded-full flex items-center justify-center">
+//                   <AlertTriangle className="text-red-500 size-10" />
+//                 </div>
+//               </div>
+
+//               <h2 className="text-2xl font-bold text-gray-900 mb-4">
+//                 Delete Currency
+//               </h2>
+//               <p className="text-gray-500 text-lg leading-relaxed mb-6">
+//                 Are you sure you want to delete this currency? This action
+//                 cannot be undone.
+//               </p>
+
+//               <div className="flex flex-col gap-3">
+//                 <button
+//                   onClick={handleDeleteCurrency}
+//                   disabled={isSubmitting}
+//                   className="flex-1 flex justify-center cursor-pointer items-center font-medium text-lg gap-2 bg-red-600  text-white py-3 px-4 rounded-lg transition duration-200 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-red-500"
+//                 >
+//                   {isSubmitting ? (
+//                     <Loader2 size={20} className="animate-spin" />
+//                   ) : (
+//                     <Trash2 size={20} />
+//                   )}
+//                   {isSubmitting ? "Deleting..." : "Delete Currency"}
+//                 </button>
+//                 <button
+//                   onClick={() => {
+//                     setIsDeleteConfirmationOpen(false);
+//                     setCurrencyToDeleteId(null);
+//                   }}
+//                   className="flex-1 bg-gray-200 hover:bg-gray-300 cursor-pointer text-gray-900 text-lg font-medium py-3 px-4 rounded-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500"
+//                 >
+//                   Cancel
+//                 </button>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default AdminCurrenciesPage;
+
+/* Deepseck Ai Componets */
+
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -1470,6 +2578,19 @@ const AdminCurrenciesPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const { token } = useAuth();
   const router = useRouter();
+
+  // Memoized filtered currencies
+  const filteredCurrencies = useMemo(() => {
+    if (!searchTerm) return currencies;
+
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    return currencies.filter((currency) => {
+      return (
+        currency.code.toLowerCase().includes(lowerSearchTerm) ||
+        currency.currencyName.toLowerCase().includes(lowerSearchTerm)
+      );
+    });
+  }, [currencies, searchTerm]);
 
   useEffect(() => {
     fetchCurrenciesList();
@@ -1583,20 +2704,14 @@ const AdminCurrenciesPage: React.FC = () => {
     setEditingCurrencyCode("");
   };
 
-  const filteredCurrencies = currencies.filter(
-    (currency) =>
-      currency.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      currency.currencyName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
-    <div className="min-h-screen bg-slate-50 p-4">
+    <div className="min-h-screen p-4 bg-gray-50">
       {/* Header Section */}
-      <div className="py-6 mb-6 border-b border-gray-300">
-        <h1 className="text-3xl font-bold text-main mb-2">
+      <div className="py-6 mb-6 border-b border-gray-200">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
           Currency Management
         </h1>
-        <p className="text-gray capitalize">
+        <p className="text-gray-500 capitalize">
           Manage currency options for your application
         </p>
       </div>
@@ -1608,10 +2723,10 @@ const AdminCurrenciesPage: React.FC = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed top-6 right-6 z-50 bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded shadow-lg flex items-center max-w-md"
+            className="fixed top-6 right-6 z-50 bg-green-50 border-l-4 border-green-500 p-4 rounded shadow-lg flex items-center max-w-md"
           >
-            <Check size={20} className="text-emerald-500 mr-3" />
-            <p className="text-emerald-800">{successMessage}</p>
+            <Check size={20} className="text-green-500 mr-3" />
+            <p className="text-green-800">{successMessage}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -1628,71 +2743,88 @@ const AdminCurrenciesPage: React.FC = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <button
           onClick={() => setIsCreateModalOpen(true)}
-          className="flex items-center gap-2 bg-primary cursor-pointer font-medium hover:bg-primary-hover text-secondary py-3 px-4 rounded-lg transition duration-300"
+          className="flex items-center gap-2 bg-primary dark:bg-main dark:text-white cursor-pointer font-medium hover:bg-primary-hover text-secondary py-3 px-4 rounded-lg transition duration-300 focus:outline-none"
         >
-          <PlusCircle />
+          <PlusCircle className="size-4" />
           <span>Add Currency</span>
         </button>
 
+        {/* Search Bar - Fixed to properly filter */}
         <div className="relative w-full md:w-64">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Search size={20} className="text-gray" />
+            <Search size={20} className="text-gray-400" />
           </div>
           <input
             type="text"
             placeholder="Search currencies..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 pr-4 py-3 w-full rounded-lg border hover:shadow-color  transition-shadow ease-in-out duration-300 border-gray-300 font-medium text-main focus:outline-none"
+            className="pl-10 pr-4 py-3 w-full rounded-lg border border-gray-300 hover:shadow-color transition-shadow ease-in-out duration-300 text-gray-900 font-medium focus:outline-none sm:text-sm"
           />
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm("")}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center"
+            >
+              <X size={18} className="text-gray-400 hover:text-gray-600" />
+            </button>
+          )}
         </div>
       </div>
 
       {/* Main Content */}
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
-          <Loader2 size={40} className="text-indigo-600 animate-spin" />
+          <Loader2 size={40} className="text-blue-600 animate-spin" />
         </div>
       ) : filteredCurrencies.length === 0 ? (
-        <div className="bg-white p-8 text-center">
+        <div className="bg-white p-8 text-center rounded-lg shadow-sm">
           <div className="mb-6 flex justify-center">
             <Image
               src="/assets/images/exclamation-mark-medium@2x.webp"
               width={100}
               height={100}
-              alt="Searching Eroor"
+              alt="No currencies found"
               className="size-48"
             />
           </div>
           <h3 className="text-3xl capitalize font-semibold text-main mb-6">
-            No currencies found
+            {searchTerm ? "No matching currencies" : "No currencies found"}
           </h3>
           <div className="flex justify-center">
-            <p className="text-gray text-lg max-w-lg">
-              {searchTerm ? "Try adjusting your search or" : "Get started by"}{" "}
-              It seems we couldn't find any currencies at the moment. Please
-              check back later or try adjusting your search.
+            <p className="text-gray-500 text-lg max-w-lg">
+              {searchTerm
+                ? "No currencies match your search. Try a different term."
+                : "It seems we couldn't find any currencies at the moment. Please check back later."}
             </p>
           </div>
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm("")}
+              className="mt-6 bg-primary hover:bg-primary-hover text-lg text-secondary font-medium py-2.5 px-6 rounded-md cursor-pointer transition duration-200"
+            >
+              Clear search
+            </button>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {filteredCurrencies.map((currency) => (
             <div
               key={currency._id}
-              className="bg-white rounded-xl overflow-hidden transition-all duration-200 border border-gray-300 shadow-md"
+              className="rounded-xl overflow-hidden transition-all duration-200 bg-white shadow-md hover:shadow-lg"
             >
-              <div className="p-6">
+              <div className="px-4 py-8">
                 <div className="flex justify-between items-start mb-6">
                   <div className="flex items-center gap-3">
                     {currency.flagImage ? (
                       <img
                         src={currency.flagImage}
                         alt={`${currency.currencyName} Flag`}
-                        className="size-14 object-cover"
+                        className="size-14 object-cover rounded-full"
                       />
                     ) : (
-                      <div className="size-14 border border-gray-300 rounded-full flex items-center justify-center text-xs text-main">
+                      <div className="size-14 border border-gray-300 rounded-full flex items-center justify-center text-xs text-gray-900">
                         No flag
                       </div>
                     )}
@@ -1704,11 +2836,14 @@ const AdminCurrenciesPage: React.FC = () => {
                           onChange={(e) =>
                             setEditingCurrencyCode(e.target.value.toUpperCase())
                           }
-                          className="border-b border-primary bg-primary/10 p-1 font-bold text-main w-32 focus:outline-none"
+                          className="border-b border-blue-600 bg-blue-50 p-1 font-bold text-gray-900 w-32 focus:outline-none"
                           autoFocus
+                          maxLength={3}
                         />
                       ) : (
-                        <h3 className="font-bold text-main">{currency.code}</h3>
+                        <h3 className="font-bold text-gray-900">
+                          {currency.code}
+                        </h3>
                       )}
                       <p className="text-slate-500 mt-0.5">
                         {currency.currencyName}
@@ -1722,7 +2857,7 @@ const AdminCurrenciesPage: React.FC = () => {
                     <button
                       onClick={handleUpdateCurrency}
                       disabled={isSubmitting}
-                      className="flex-1 flex justify-center items-center cursor-pointer gap-1.5 bg-primary hover:bg-primary-hover text-secondary font-medium py-2.5 px-3 rounded-md transition duration-200 disabled:opacity-50"
+                      className="flex-1 flex justify-center items-center cursor-pointer gap-1.5 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-3 rounded-md transition duration-200 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       {isSubmitting ? (
                         <Loader2 size={20} className="animate-spin" />
@@ -1733,7 +2868,7 @@ const AdminCurrenciesPage: React.FC = () => {
                     </button>
                     <button
                       onClick={cancelEditing}
-                      className="flex-1 flex justify-center cursor-pointer items-center gap-1.5 bg-error hover:bg-red-800 text-white py-2.5 px-3 rounded-md transition duration-200"
+                      className="flex-1 flex justify-center cursor-pointer items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white py-2.5 px-3 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-red-500"
                     >
                       <MdError size={20} />
                       <span>Cancel</span>
@@ -1743,14 +2878,14 @@ const AdminCurrenciesPage: React.FC = () => {
                   <div className="flex flex-col sm:flex-row gap-2 mt-4">
                     <Link
                       href={`/admin/currencies/${currency._id}`}
-                      className="flex-1 flex justify-center items-center gap-1.5 bg-blue-100  text-blue-700 font-medium py-2 px-3 rounded-sm transition duration-300"
+                      className="flex-1 flex justify-center items-center gap-1.5 bg-blue-100 text-blue-700 font-medium py-2 px-3 rounded-sm transition duration-300 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <Info size={20} />
                       <span>Details</span>
                     </Link>
                     <button
                       onClick={() => startEditing(currency)}
-                      className="flex-1 flex justify-center cursor-pointer items-center gap-1.5 bg-yellow-100 font-medium text-yellow-700 py-2 px-3 rounded-sm transition duration-300"
+                      className="flex-1 flex justify-center cursor-pointer items-center gap-1.5 bg-yellow-100 font-medium text-yellow-700 py-2 px-3 rounded-sm transition duration-300 hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-yellow-500"
                     >
                       <Edit size={20} />
                       <span>Edit</span>
@@ -1760,7 +2895,7 @@ const AdminCurrenciesPage: React.FC = () => {
                         setCurrencyToDeleteId(currency._id);
                         setIsDeleteConfirmationOpen(true);
                       }}
-                      className="flex-1 flex justify-center cursor-pointer items-center gap-1.5 bg-red-100 font-medium text-error py-2 px-3 rounded-sm transition duration-300"
+                      className="flex-1 flex justify-center cursor-pointer items-center gap-1.5 bg-red-100 font-medium text-red-700 py-2 px-3 rounded-sm transition duration-300 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500"
                     >
                       <Trash2 size={20} />
                       <span>Delete</span>
@@ -1775,21 +2910,21 @@ const AdminCurrenciesPage: React.FC = () => {
 
       {/* Create Currency Modal */}
       {isCreateModalOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div
             className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto scrollbar-hide"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="lg:p-6 p-4">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="lg:text-2xl font-medium text-main">
+                <h2 className="lg:text-xl font-medium text-main">
                   Add New Currency
                 </h2>
                 <button
                   onClick={() => setIsCreateModalOpen(false)}
                   className="text-main hover:bg-green/10 lg:size-12 size-10 flex justify-center items-center transition rounded-full cursor-pointer"
                 >
-                  <IoClose className="lg:size-10 size-6 p-0.5" />
+                  <IoClose className="lg:size-10 size-6 p-1" />
                 </button>
               </div>
 
@@ -1813,9 +2948,11 @@ const AdminCurrenciesPage: React.FC = () => {
                         code: e.target.value.toUpperCase(),
                       })
                     }
-                    className="w-full rounded-lg border border-gray-300 hover:shadow-color transition-shadow duration-300 ease-in-out px-4 py-3 focus:outline-none"
+                    className="w-full rounded-lg border border-gray-300 hover:shadow-color transition-shadow duration-300 ease-in-out px-4 py-3 focus:outline-none sm:text-sm"
+                    required
+                    maxLength={3}
                   />
-                  <p className="mt-2 lg:text-sm text-xs text-main">
+                  <p className="mt-2 lg:text-sm text-xs text-gray-500">
                     Enter the 3-letter currency code (e.g., USD, EUR, GBP)
                   </p>
                 </div>
@@ -1823,7 +2960,7 @@ const AdminCurrenciesPage: React.FC = () => {
                 <div>
                   <label
                     htmlFor="currencyName"
-                    className="inline-block lg:text-base text-sm font-medium text-main mb-1"
+                    className="inline-block lg:text-base text-sm font-medium text-gray-900 mb-1"
                   >
                     Currency Name <span className="text-red-500">*</span>
                   </label>
@@ -1839,14 +2976,15 @@ const AdminCurrenciesPage: React.FC = () => {
                         currencyName: e.target.value,
                       })
                     }
-                    className="w-full rounded-lg border border-gray-300 hover:shadow-color transition-shadow duration-300 ease-in-out px-4 py-3 focus:outline-none"
+                    className="w-full rounded-lg border border-gray-300 transition-shadow duration-300 ease-in-out px-4 py-3 focus:outline-none sm:text-sm hover:shadow-color"
+                    required
                   />
                 </div>
 
                 <div>
                   <label
                     htmlFor="flagImage"
-                    className="inline-block lg:text-base text-sm font-medium text-main mb-1"
+                    className="inline-block lg:text-base text-sm font-medium text-gray-900 mb-1"
                   >
                     Flag Image Path
                   </label>
@@ -1862,9 +3000,9 @@ const AdminCurrenciesPage: React.FC = () => {
                         flagImage: e.target.value,
                       })
                     }
-                    className="w-full rounded-lg border border-gray-300 hover:shadow-color transition-shadow duration-300 ease-in-out px-4 py-3 focus:outline-none"
+                    className="w-full rounded-lg border border-gray-300 transition-shadow duration-300 ease-in-out px-4 py-3 focus:outline-none sm:text-sm hover:shadow-color"
                   />
-                  <p className="mt-2 lg:text-sm text-xs text-main">
+                  <p className="mt-2 lg:text-sm text-xs text-gray-500">
                     Path to the flag image (e.g., /assets/icon/flags/usd.png)
                   </p>
                 </div>
@@ -1877,7 +3015,7 @@ const AdminCurrenciesPage: React.FC = () => {
                       !newCurrencyData.code ||
                       !newCurrencyData.currencyName
                     }
-                    className="flex-1 flex justify-center items-center lg:text-lg gap-2 bg-primary text-gray hover:bg-primary-hover font-medium py-2.5 focus:outline-none px-4 rounded-lg transition-colors ease-in-out duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 flex justify-center items-center lg:text-lg gap-2 bg-blue-600 text-white hover:bg-blue-700 font-medium py-2.5 focus:outline-none px-4 rounded-lg transition-colors ease-in-out duration-300 disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-blue-500"
                   >
                     {isSubmitting ? (
                       <Loader2 size={20} className="animate-spin" />
@@ -1888,7 +3026,7 @@ const AdminCurrenciesPage: React.FC = () => {
                   </button>
                   <button
                     onClick={() => setIsCreateModalOpen(false)}
-                    className="flex-1 bg-error flex justify-center items-center gap-2 gap cursor-pointer font-medium text-white py-2.5 px-4 rounded-lg transition duration-300"
+                    className="flex-1 bg-red-600 hover:bg-red-700 flex justify-center items-center gap-2 gap cursor-pointer font-medium text-white py-2.5 px-4 rounded-lg transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-500"
                   >
                     <IoWarningOutline size={20} />
                     Cancel
@@ -1902,7 +3040,7 @@ const AdminCurrenciesPage: React.FC = () => {
 
       {/* Delete Confirmation Modal */}
       {isDeleteConfirmationOpen && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div
             className="bg-white rounded-2xl shadow-md max-w-md w-full"
             onClick={(e) => e.stopPropagation()}
@@ -1914,10 +3052,10 @@ const AdminCurrenciesPage: React.FC = () => {
                 </div>
               </div>
 
-              <h2 className="text-2xl font-bold text-main mb-4">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
                 Delete Currency
               </h2>
-              <p className="text-gray text-lg leading-relaxed mb-6">
+              <p className="text-gray-500 text-lg leading-relaxed mb-6">
                 Are you sure you want to delete this currency? This action
                 cannot be undone.
               </p>
@@ -1926,7 +3064,7 @@ const AdminCurrenciesPage: React.FC = () => {
                 <button
                   onClick={handleDeleteCurrency}
                   disabled={isSubmitting}
-                  className="flex-1 flex justify-center cursor-pointer items-center font-medium text-lg gap-2 bg-error  text-white py-3 px-4 rounded-lg transition duration-200 disabled:opacity-50"
+                  className="flex-1 flex justify-center cursor-pointer items-center font-medium text-lg gap-2 bg-red-600 text-white py-3 px-4 rounded-lg transition duration-200 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
                   {isSubmitting ? (
                     <Loader2 size={20} className="animate-spin" />
@@ -1940,7 +3078,7 @@ const AdminCurrenciesPage: React.FC = () => {
                     setIsDeleteConfirmationOpen(false);
                     setCurrencyToDeleteId(null);
                   }}
-                  className="flex-1 bg-slate-300 cursor-pointer text-gray text-lg font-medium py-3 px-4 rounded-lg transition duration-200"
+                  className="flex-1 bg-gray-200 hover:bg-gray-300 cursor-pointer text-gray-900 text-lg font-medium py-3 px-4 rounded-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500"
                 >
                   Cancel
                 </button>

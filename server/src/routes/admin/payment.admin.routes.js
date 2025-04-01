@@ -4,7 +4,12 @@ import authMiddleware from '../../middleware/auth.middleware.js';
 
 const router = express.Router();
 
-// Admin update payment status
-router.put('/:paymentId/status', authMiddleware.protect, authMiddleware.admin, paymentAdminController.updatePaymentStatusAdmin);
+// Get all payments (Admin only)
+router.get('/', authMiddleware.protect, authMiddleware.admin, paymentAdminController.getAllPaymentsAdmin);
 
+// Get payment by ID (Admin only) - Optional for now, but good to have
+router.get('/:paymentId', authMiddleware.protect, authMiddleware.admin, paymentAdminController.getPaymentByIdAdmin);
+
+// Update payment status (Admin only)
+router.put('/:paymentId/status', authMiddleware.protect, authMiddleware.admin, paymentAdminController.updatePaymentStatusAdmin);
 export default router;

@@ -450,7 +450,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
       {sidebarOpen && isMobileView && (
         <div
           onClick={toggleSidebar}
-          className="fixed inset-0 bg-black/45 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/45 z-10 lg:hidden"
         />
       )}
 
@@ -459,7 +459,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
       (sidebarOpen && isMobileView === true) ? (
         <motion.div
           ref={sidebarRef}
-          className={`bg-white w-72 fixed h-screen inset-y-0 left-0 lg:relative ${
+          className={`bg-white w-72 fixed h-screen inset-y-0 left-0 lg:relative lg:z-0 z-20 ${
             isMobileView ? "" : "translate-x-0"
           } ${
             sidebarOpen && isMobileView

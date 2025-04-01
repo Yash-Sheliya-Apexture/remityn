@@ -206,7 +206,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       />
       <div className="flex-1 flex flex-col overflow-hidden">
         <AdminHeader toggleSidebar={toggleSidebar} />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto">
           {" "}
           {/* Slightly lighter for main content */}
           <div className="container mx-auto">

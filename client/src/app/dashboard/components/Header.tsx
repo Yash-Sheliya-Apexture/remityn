@@ -157,45 +157,170 @@
 
 // export default Header;
 
+
+
+
+// // components/Header.tsx
+// "use client";
+// import React, { useEffect, useState } from "react";
+// import { FiMenu } from "react-icons/fi";
+// import { FaAngleRight } from "react-icons/fa6";
+// import { useRouter, usePathname } from "next/navigation";
+// import { HiArrowLeft } from "react-icons/hi";
+// import Link from "next/link";
+
+// interface HeaderProps {
+//   toggleSidebar: () => void;
+// }
+
+// const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
+//   const router = useRouter();
+//   const pathname = usePathname();
+//   const [showBackArrow, setShowBackArrow] = useState(false);
+//   const name = "rudra sutariya";
+//   const isOnline = true;
+
+//   useEffect(() => {
+//     // Determine if the back arrow should be shown
+//     setShowBackArrow(pathname !== "/dashboard"); // Show back arrow if not on base dashboard route
+//   }, [pathname]);
+
+//   const handleBack = () => {
+//     router.back();
+//   };
+
+//   return (
+//     <header className="bg-white">
+//       <div className="max-w-5xl mx-auto px-4">
+//         <div className="flex justify-between items-center lg:h-28 h-20">
+//           <div className="flex justify-center gap-4">
+//             {/* Menu button for conditionaly render sidebar below large screen */}
+//             <button
+//               onClick={toggleSidebar}
+//               className="text-gray focus:outline-none lg:hidden sm:block hidden"
+//             >
+//               <FiMenu size={24} />
+//             </button>
+
+//             {/* Back arrow button */}
+//             {showBackArrow && (
+//               <button
+//                 onClick={handleBack}
+//                 className="focus:outline-none p-4 bg-primary/10 rounded-full text-secondary"
+//               >
+//                 <HiArrowLeft className="size-5" />
+//               </button>
+//             )}
+//           </div>
+
+//           {/* Profile Picture */}
+//           <Link href="/dashboard/your-account">
+//             <div className="relative flex items-center group  border border-[#b8cddd] hover:bg-primary/8 rounded-full cursor-pointer gap-1.5">
+//               {/* user letter */}
+//               <span className="size-12 bg-primary/50 rounded-full flex items-center justify-center font-bold text-secondary capitalize">
+//                 rs
+//               </span>
+
+//               {/* User Name */}
+//               <div className="text-secondary capitalize hidden sm:block">
+//                 {name}
+//               </div>
+
+//               <FaAngleRight className="size-5 text-secondary me-3 hidden md:block group-hover:translate-x-2.5 transition-transform ease-in-out duration-300" />
+//             </div>
+//           </Link>
+//         </div>
+//       </div>
+//     </header>
+//   );
+// };
+
+// export default Header;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // components/Header.tsx
 "use client";
 import React, { useEffect, useState } from "react";
-import { FiMenu, FiBell, FiUser } from "react-icons/fi";
+import { FiMenu } from "react-icons/fi";
 import { FaAngleRight } from "react-icons/fa6";
 import { useRouter, usePathname } from "next/navigation";
-import { FaArrowLeftLong } from "react-icons/fa6";
 import { HiArrowLeft } from "react-icons/hi";
 import Link from "next/link";
+import { useAuth } from "../../hooks/useAuth"
 
 interface HeaderProps {
   toggleSidebar: () => void;
 }
 
+// Helper function to get initials from a full name
+const getInitials = (name: string | undefined): string => {
+  if (!name || typeof name !== 'string' || name.trim() === '') {
+    return "?"; // Return a default if name is missing or empty
+  }
+  const nameParts = name.trim().split(' ').filter(part => part.length > 0);
+  if (nameParts.length === 0) {
+    return "?";
+  }
+  if (nameParts.length === 1) {
+    return nameParts[0][0].toUpperCase();
+  }
+  // Use first letter of the first part and first letter of the last part
+  return (
+    `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`
+  ).toUpperCase();
+};
+
+
 const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const { user, loading } = useAuth(); // Get user data and loading state from context
   const [showBackArrow, setShowBackArrow] = useState(false);
-  const name = "rudra sutariya";
-  const isOnline = true;
+  // Remove hardcoded name and isOnline - these should come from context or other state
+  // const name = "rudra sutariya";
+  // const isOnline = true;
 
   useEffect(() => {
-    // Determine if the back arrow should be shown
-    setShowBackArrow(pathname !== "/dashboard"); // Show back arrow if not on base dashboard route
+    setShowBackArrow(pathname !== "/dashboard");
   }, [pathname]);
 
   const handleBack = () => {
     router.back();
   };
 
+  // Optionally handle loading state if needed, though AuthProvider might already handle this
+  // if (loading) {
+  //   return <header className="bg-white h-20 lg:h-28 animate-pulse"></header>; // Placeholder while loading
+  // }
+
+  // Get user's full name and initials, providing fallbacks
+  const userName = user?.fullName || "User";
+  const userInitials = getInitials(user?.fullName);
+
   return (
     <header className="bg-white">
       <div className="max-w-5xl mx-auto px-4">
         <div className="flex justify-between items-center lg:h-28 h-20">
-          <div className="flex justify-center gap-4">
-            {/* Menu button for conditionaly render sidebar below large screen */}
+          <div className="flex justify-center items-center gap-4"> {/* Added items-center */}
+            {/* Menu button */}
             <button
               onClick={toggleSidebar}
-              className="text-gray focus:outline-none lg:hidden sm:block hidden"
+              className="text-gray focus:outline-none lg:hidden" // Removed sm:block hidden - logic handled by lg:hidden
             >
               <FiMenu size={24} />
             </button>
@@ -204,29 +329,45 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
             {showBackArrow && (
               <button
                 onClick={handleBack}
-                className="focus:outline-none p-4 bg-primary/10 rounded-full text-secondary"
+                className="focus:outline-none p-3 bg-primary/10 rounded-full text-secondary hover:bg-primary/20 transition-colors" // Adjusted padding and added hover
               >
                 <HiArrowLeft className="size-5" />
               </button>
             )}
           </div>
 
-          {/* Profile Picture */}
-          <Link href="/dashboard/your-account">
-            <div className="relative flex items-center group  border border-[#b8cddd] hover:bg-primary/8 rounded-full cursor-pointer gap-1.5">
-              {/* user letter */}
-              <span className="size-12 bg-primary/50 rounded-full flex items-center justify-center font-bold text-secondary capitalize">
-                rs
-              </span>
+          {/* Profile Picture/Link */}
+          {/* Only show profile section if user data is available (or not loading) */}
+          {user && !loading && (
+            <Link href="/dashboard/your-account">
+              <div className="relative flex items-center group border border-[#b8cddd] hover:bg-primary/10 rounded-full cursor-pointer gap-2 pr-1 py-1 pl-1"> {/* Adjusted padding/gap */}
+                {/* User Initials */}
+                <span className="size-10 md:size-11 bg-primary/50 rounded-full flex items-center justify-center font-bold text-secondary capitalize text-sm md:text-base">
+                  {userInitials} {/* Use dynamic initials */}
+                </span>
 
-              {/* User Name */}
-              <div className="text-secondary capitalize hidden sm:block">
-                {name}
+                {/* User Name */}
+                <div className="text-secondary capitalize hidden sm:block font-medium text-sm md:text-base">
+                  {userName} {/* Use dynamic name */}
+                </div>
+
+                {/* Arrow Icon */}
+                <FaAngleRight className="size-4 md:size-5 text-secondary mr-1 md:mr-2 hidden md:block group-hover:translate-x-1 transition-transform ease-in-out duration-300" /> {/* Adjusted size/margin/translate */}
               </div>
+            </Link>
+          )}
 
-              <FaAngleRight className="size-5 text-secondary me-3 hidden md:block group-hover:translate-x-2.5 transition-transform ease-in-out duration-300" />
-            </div>
-          </Link>
+          {/* Optional: Show a login link or skeleton if user is null or loading */}
+          {/* {!user && !loading && (
+             <Link href="/auth/login">Login</Link>
+           )}
+           {loading && (
+             <div className="animate-pulse flex items-center gap-2">
+                 <div className="size-11 bg-gray-300 rounded-full"></div>
+                 <div className="h-4 w-24 bg-gray-300 rounded hidden sm:block"></div>
+             </div>
+           )} */}
+
         </div>
       </div>
     </header>
