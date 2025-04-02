@@ -2745,7 +2745,7 @@ const AdminCurrenciesPage: React.FC = () => {
           onClick={() => setIsCreateModalOpen(true)}
           className="flex items-center gap-2 bg-primary dark:bg-main dark:text-white cursor-pointer font-medium hover:bg-primary-hover text-secondary py-3 px-4 rounded-lg transition duration-300 focus:outline-none"
         >
-          <PlusCircle className="size-4" />
+          <PlusCircle className="size-5" />
           <span>Add Currency</span>
         </button>
 
@@ -2775,10 +2775,10 @@ const AdminCurrenciesPage: React.FC = () => {
       {/* Main Content */}
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
-          <Loader2 size={40} className="text-blue-600 animate-spin" />
+          <Loader2 size={40} className="text-blue-500 animate-spin" />
         </div>
       ) : filteredCurrencies.length === 0 ? (
-        <div className="bg-white p-8 text-center rounded-lg shadow-sm">
+        <div className="bg-white p-8 text-center rounded-lg shadow-sm border">
           <div className="mb-6 flex justify-center">
             <Image
               src="/assets/images/exclamation-mark-medium@2x.webp"
@@ -2812,7 +2812,7 @@ const AdminCurrenciesPage: React.FC = () => {
           {filteredCurrencies.map((currency) => (
             <div
               key={currency._id}
-              className="rounded-xl overflow-hidden transition-all duration-200 bg-white shadow-md hover:shadow-lg"
+              className="rounded-xl overflow-hidden transition-all duration-200 bg-white shadow-sm border"
             >
               <div className="px-4 py-8">
                 <div className="flex justify-between items-start mb-6">
@@ -3015,7 +3015,7 @@ const AdminCurrenciesPage: React.FC = () => {
                       !newCurrencyData.code ||
                       !newCurrencyData.currencyName
                     }
-                    className="flex-1 flex justify-center items-center lg:text-lg gap-2 bg-blue-600 text-white hover:bg-blue-700 font-medium py-2.5 focus:outline-none px-4 rounded-lg transition-colors ease-in-out duration-300 disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-blue-500"
+                    className="flex-1 cursor-pointer flex justify-center items-center lg:text-lg gap-2 bg-blue-600 text-white hover:bg-blue-700 font-medium py-2.5 focus:outline-none px-4 rounded-lg transition-colors ease-in-out duration-300 disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-blue-500"
                   >
                     {isSubmitting ? (
                       <Loader2 size={20} className="animate-spin" />
