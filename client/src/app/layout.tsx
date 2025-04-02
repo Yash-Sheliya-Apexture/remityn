@@ -108,7 +108,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 {/* Other head elements (meta tags, links, etc.) */}
             </head>
             {/* Apply base background colors and transitions */}
-            <body className="bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 transition-colors duration-200">
+            <body className="bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 transition-colors duration-200">
                 <AuthProvider>
                     {children}
                 </AuthProvider>

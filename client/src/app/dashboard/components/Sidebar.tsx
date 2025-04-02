@@ -127,7 +127,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
       (sidebarOpen && isMobileView === true) ? (
         <motion.div
           ref={sidebarRef}
-          className={`w-72 fixed h-screen inset-y-0 left-0 lg:relative lg:z-0 z-20 ${
+          className={`w-64 fixed h-screen inset-y-0 left-0 lg:relative lg:z-0 z-20 ${
             isMobileView ? "" : "translate-x-0"
           } ${
             sidebarOpen && isMobileView
@@ -141,19 +141,17 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
           exit={isMobileView ? { x: "-100%" } : {}}
           transition={isMobileView ? { duration: 0.3, ease: "easeInOut" } : {}}
         >
-          <div>
-            <div className="flex flex-col items-center justify-center lg:h-28 h-20">
-              <Link href="/dashboard">
-                <Image
-                  src="/assets/icon/logo.svg"
-                  alt="logo"
-                  width={100}
-                  height={100}
-                />
-              </Link>
-            </div>
+          <div className="flex flex-col items-center justify-center lg:h-28 h-20">
+            <Link href="/dashboard">
+              <Image
+                src="/assets/images/wise-logo.svg"
+                alt="logo"
+                width={100}
+                height={100}
+              />
+            </Link>
           </div>
-          <div className="p-2.5 pt-8 h-full overflow-y-auto">
+          <div className="h-[calc(100%-112px)] overflow-y-auto">
             <nav>
               {navLinksData.map((item: NavLink) => {
                 const IconComponent = icons[item.icon];
@@ -205,7 +203,9 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
               key={item.route}
               href={item.route}
               className={`flex flex-col items-center justify-center ${
-                isActive ? "text-primary" : "text-gray-500 hover:text-neutral-800"
+                isActive
+                  ? "text-primary"
+                  : "text-gray-500 hover:text-neutral-800"
               }`}
             >
               {IconComponent && <IconComponent className="size-5 mb-2" />}
