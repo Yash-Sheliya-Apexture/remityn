@@ -2229,6 +2229,528 @@
 
 // export default AdminEditCurrencyPage;
 
+// "use client";
+// import React, { useState, useEffect } from "react";
+// import { useParams, useRouter } from "next/navigation";
+// import axios from "axios";
+// import { useAuth } from "../../../hooks/useAuth";
+// import { motion, AnimatePresence } from "framer-motion";
+// import apiConfig from "../../../config/apiConfig";
+// import Link from "next/link";
+// import {
+//   FaArrowLeft,
+//   FaGlobe,
+//   FaMoneyBillWave,
+//   FaUniversity,
+//   FaCreditCard,
+//   FaPercentage,
+// } from "react-icons/fa";
+// import { TbPointFilled } from "react-icons/tb";
+
+// axios.defaults.baseURL = apiConfig.baseUrl;
+
+// interface Currency {
+//   _id: string;
+//   code: string;
+//   payeeName?: string;
+//   iban?: string;
+//   bicSwift?: string;
+//   bankAddress?: string;
+//   wiseFeePercentage?: number;
+//   bankTransferFee?: number;
+//   flagImage?: string;
+//   currencyName?: string;
+// }
+
+// const AdminEditCurrencyPage = () => {
+//   const params = useParams();
+//   const router = useRouter();
+//   const { currencyId } = params;
+//   const [currency, setCurrency] = useState<Currency | null>(null);
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [isSubmitting, setIsSubmitting] = useState(false);
+//   const [error, setError] = useState<string | null>(null);
+//   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+//   const { token } = useAuth();
+//   const [flagImageError, setFlagImageError] = useState<string | null>(null);
+
+//   useEffect(() => {
+//     const fetchCurrency = async () => {
+//       setIsLoading(true);
+//       setError(null);
+//       try {
+//         const response = await axios.get(`/admin/currencies/${currencyId}`, {
+//           headers: { Authorization: `Bearer ${token}` },
+//         });
+//         setCurrency(response.data);
+//         setIsLoading(false);
+//       } catch (err: any) {
+//         setError(
+//           err.response?.data?.message || "Failed to load currency details"
+//         );
+//         setIsLoading(false);
+//       }
+//     };
+
+//     if (currencyId) {
+//       fetchCurrency();
+//     }
+//   }, [currencyId, token]);
+
+//   const validateForm = () => {
+//     let isValid = true;
+//     setFlagImageError(null);
+
+//     if (!currency?.flagImage?.trim()) {
+//       setFlagImageError("Flag Image Path is required.");
+//       isValid = false;
+//     } else if (currency.flagImage.includes(" ")) {
+//       setFlagImageError("Flag Image Path should not contain spaces.");
+//       isValid = false;
+//     }
+
+//     return isValid;
+//   };
+
+//   const handleSubmit = async (event: React.FormEvent) => {
+//     event.preventDefault();
+
+//     if (!validateForm()) {
+//       return;
+//     }
+
+//     setIsSubmitting(true);
+//     setError(null);
+//     setSuccessMessage(null);
+//     try {
+//       await axios.put(`/admin/currencies/${currencyId}`, currency, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       setIsSubmitting(false);
+//       setSuccessMessage("Currency updated successfully!");
+
+//       setTimeout(() => {
+//         router.push("/admin/currencies");
+//       }, 2000);
+//     } catch (err: any) {
+//       setError(err.response?.data?.message || "Failed to update currency");
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   const handleChange = (
+//     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+//   ) => {
+//     const value = e.target.value;
+//     setCurrency((prev) => (prev ? { ...prev, [e.target.name]: value } : null));
+
+//     if (e.target.name === "flagImage") {
+//       setFlagImageError(null); // Clear error when user types
+//     }
+//   };
+
+//   // Skeleton loading component
+//   if (isLoading) {
+//     return (
+//       <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+//         <div className="max-w-5xl mx-auto">
+//           <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+//             <div className="h-20 bg-gray-200 animate-pulse"></div>
+//             <div className="p-8">
+//               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//                 {[...Array(6)].map((_, index) => (
+//                   <div key={index} className="space-y-2">
+//                     <div className="h-4 bg-gray-200 rounded w-1/3 animate-pulse"></div>
+//                     <div className="h-10 bg-gray-100 rounded animate-pulse"></div>
+//                   </div>
+//                 ))}
+//                 <div className="md:col-span-2 space-y-2">
+//                   <div className="h-4 bg-gray-200 rounded w-1/4 animate-pulse"></div>
+//                   <div className="h-32 bg-gray-100 rounded animate-pulse"></div>
+//                 </div>
+//               </div>
+//               <div className="mt-8">
+//                 <div className="h-12 bg-blue-100 rounded animate-pulse"></div>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   // Error state
+//   if (error) {
+//     return (
+//       <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+//         <div className="max-w-md w-full bg-white rounded-lg shadow-lg overflow-hidden">
+//           <div className="bg-red-500 h-2"></div>
+//           <div className="p-8 text-center">
+//             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 mb-6">
+//               <svg
+//                 className="w-8 h-8 text-red-500"
+//                 fill="currentColor"
+//                 viewBox="0 0 20 20"
+//               >
+//                 <path
+//                   fillRule="evenodd"
+//                   d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+//                   clipRule="evenodd"
+//                 ></path>
+//               </svg>
+//             </div>
+//             <h2 className="text-2xl font-bold text-gray-800 mb-2">Error</h2>
+//             <p className="text-gray-600 mb-6">{error}</p>
+//             <Link
+//               href="/admin/currencies"
+//               className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-7"
+//             >
+//               Return to Currencies
+//             </Link>
+//           </div>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   // Not found state
+//   if (!currency) {
+//     return (
+//       <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+//         <div className="max-w-md w-full bg-white rounded-lg shadow-lg overflow-hidden">
+//           <div className="bg-yellow-500 h-2"></div>
+//           <div className="p-8 text-center">
+//             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-yellow-100 mb-6">
+//               <svg
+//                 className="w-8 h-8 text-yellow-500"
+//                 fill="currentColor"
+//                 viewBox="0 0 20 20"
+//               >
+//                 <path
+//                   fillRule="evenodd"
+//                   d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+//                   clipRule="evenodd"
+//                 ></path>
+//               </svg>
+//             </div>
+//             <h2 className="text-2xl font-bold text-gray-800 mb-2">
+//               Currency Not Found
+//             </h2>
+//             <p className="text-gray-600 mb-6">
+//               The requested currency could not be found in our system.
+//             </p>
+//             <Link
+//               href="/admin/currencies"
+//               className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+//             >
+//               Return to Currencies
+//             </Link>
+//           </div>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="min-h-screen bg-gray-50">
+//       {/* Success Message */}
+//       <AnimatePresence>
+//         {successMessage && (
+//           <motion.div
+//             initial={{ opacity: 0, y: -100 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             exit={{ opacity: 0, y: -100 }}
+//             className="fixed top-0 left-0 right-0 z-50 flex justify-center"
+//           >
+//             <div className="mt-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center">
+//               <svg
+//                 className="w-5 h-5 mr-2"
+//                 fill="currentColor"
+//                 viewBox="0 0 20 20"
+//               >
+//                 <path
+//                   fillRule="evenodd"
+//                   d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+//                   clipRule="evenodd"
+//                 ></path>
+//               </svg>
+//               <span className="font-medium">{successMessage}</span>
+//             </div>
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+
+//       <div className="max-w-4xl mx-auto py-6 sm:px-6">
+//         {/* Navigation */}
+//         <div className="mb-6 px-4 sm:px-0">
+//           <Link
+//             href="/admin/currencies"
+//             className="group flex items-center  font-medium text-main transition-colors"
+//           >
+//             <FaArrowLeft className="mr-2 transition-transform group-hover:-translate-x-1" />
+//             Back to Currencies
+//           </Link>
+//         </div>
+
+//         {/* Main Content */}
+//         <div className="bg-white rounded-2xl shadow-md border border-gray-300 overflow-hidden">
+//           {/* Currency Header */}
+//           <div className="relative">
+//             <div className="h-26 flex items-end bg-primary/40">
+//               <div className="flex items-center mx-auto container px-4 relative z-10 pb-6">
+//                 <div className="flex items-center">
+//                   {currency.flagImage && (
+//                     <img
+//                       src={currency.flagImage}
+//                       alt={`${currency.code} flag`}
+//                       className="h-14 w-auto mr-4"
+//                     />
+//                   )}
+//                   <div className="text-main leading-relaxed">
+//                     <h1 className="font-bold text-2xl">{currency.code}</h1>
+//                     <p className="font-medium">
+//                       {currency.currencyName || "Currency Details"}
+//                     </p>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* Currency Form */}
+//           <div className="container mx-auto px-4">
+//             {/* General Details Section */}
+//             <h2 className="text-2xl flex items-center gap-2 font-medium text-main my-4">
+//               <TbPointFilled className="size-5" />
+//               General Details
+//             </h2>
+//             <div className="bg-white rounded-xl p-4">
+//               <form onSubmit={handleSubmit}>
+//                 <div className="space-y-8">
+//                   <div className="">
+//                     <div className="space-y-6">
+//                       {/* Code Field */}
+//                       <div className="General-Code">
+//                         <div className="flex items-center gap-2 mb-2">
+//                           <FaGlobe className="size-5 text-primary dark:text-main" />
+//                           <label className="inline-block font-medium text-main">
+//                             Currency Code
+//                           </label>
+//                         </div>
+//                         <input
+//                           type="text"
+//                           value={currency.code}
+//                           readOnly
+//                           className="w-full p-4 bg-gray-100 text-main border border-gray-300 rounded-lg focus:outline-none"
+//                         />
+//                         <p className="mt-1 capitalize text-sm text-main font-medium">
+//                           Currency code cannot be changed
+//                         </p>
+//                       </div>
+
+//                       {/* Currency Name */}
+//                       <div>
+//                         <div className="flex items-center mb-2 gap-2">
+//                           <FaMoneyBillWave className="h-5 w-5 text-primary dark:text-main" />
+//                           <label className="inline-block font-medium text-main">
+//                             Currency Name
+//                           </label>
+//                         </div>
+//                         <input
+//                           type="text"
+//                           name="currencyName"
+//                           value={currency.currencyName || ""}
+//                           onChange={handleChange}
+//                           placeholder="e.g. Euro, US Dollar"
+//                           className="w-full p-4 bg-white text-main font-medium border border-gray-300 rounded-lg focus:outline-none transition-all"
+//                         />
+//                       </div>
+
+//                       {/* Flag Image */}
+//                       <div>
+//                         <div className="flex items-center gap-2 mb-2">
+//                           <svg
+//                             className="size-6 text-primary dark:text-main"
+//                             fill="none"
+//                             viewBox="0 0 24 24"
+//                             stroke="currentColor"
+//                           >
+//                             <path
+//                               strokeLinecap="round"
+//                               strokeLinejoin="round"
+//                               strokeWidth={2}
+//                               d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+//                             />
+//                           </svg>
+//                           <label className="inline-block font-medium text-main">
+//                             Flag Image Path
+//                           </label>
+//                         </div>
+
+//                         <div className="flex flex-col">
+//                           <div className="flex-grow relative">
+//                             <input
+//                               type="text"
+//                               id="flagImage"
+//                               name="flagImage"
+//                               value={currency.flagImage || ""}
+//                               onChange={handleChange}
+//                               placeholder="/assets/flags/currency-code.png"
+//                               className={`w-full p-4 bg-white text-main font-medium border ${
+//                                 flagImageError
+//                                   ? "border-red-500"
+//                                   : "border-gray-300"
+//                               } rounded-lg focus:outline-none transition-all`}
+//                             />
+//                             {currency.flagImage && (
+//                               <div className="absolute top-1 right-1 size-12">
+//                                 <img
+//                                   src={currency.flagImage}
+//                                   alt="Flag preview"
+//                                   className="max-w-full max-h-full p-0.5"
+//                                 />
+//                               </div>
+//                             )}
+//                           </div>
+//                           {flagImageError && (
+//                             <p className="mt-1 text-sm text-red-500 font-medium">
+//                               {flagImageError}
+//                             </p>
+//                           )}
+//                         </div>
+//                       </div>
+//                     </div>
+//                   </div>
+
+//                   <div>
+//                     <h2 className="text-2xl flex items-center gap-2 -ml-4 font-medium text-main my-6">
+//                       <TbPointFilled className="size-5" />
+//                       Bank Details
+//                     </h2>
+//                     <div className="space-y-6">
+//                       {/* IBAN */}
+//                       <div>
+//                         <div className="flex items-center mb-2">
+//                           <FaCreditCard className="size-5 text-primary dark:text-main mr-2" />
+//                           <label className="inline-block font-medium text-main">
+//                             IBAN
+//                           </label>
+//                         </div>
+//                         <input
+//                           type="text"
+//                           name="iban"
+//                           value={currency.iban || ""}
+//                           onChange={handleChange}
+//                           placeholder="e.g. DE89370400440532013000"
+//                           className="w-full p-4 bg-white text-main font-medium border border-gray-300 rounded-lg focus:outline-none transition-all"
+//                         />
+//                       </div>
+
+//                       {/* BIC/SWIFT */}
+//                       <div>
+//                         <div className="flex items-center mb-2">
+//                           <svg
+//                             className="size-5 text-primary dark:text-main mr-2"
+//                             fill="none"
+//                             viewBox="0 0 24 24"
+//                             stroke="currentColor"
+//                           >
+//                             <path
+//                               strokeLinecap="round"
+//                               strokeLinejoin="round"
+//                               strokeWidth={2}
+//                               d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+//                             />
+//                           </svg>
+//                           <label className="inline-block font-medium text-main">
+//                             BIC/SWIFT
+//                           </label>
+//                         </div>
+//                         <input
+//                           type="text"
+//                           name="bicSwift"
+//                           value={currency.bicSwift || ""}
+//                           onChange={handleChange}
+//                           placeholder="e.g. DEUTDEFF"
+//                           className="w-full p-4 bg-white text-main font-medium border border-gray-300 rounded-lg focus:outline-none transition-all"
+//                         />
+//                       </div>
+
+//                       {/* Bank Address */}
+//                       <div>
+//                         <div className="flex items-center mb-2">
+//                           <FaUniversity className="h-5 w-5 text-primary  mr-2" />
+//                           <label className="inline-block font-medium text-main">
+//                             Bank Address
+//                           </label>
+//                         </div>
+//                         <textarea
+//                           name="bankAddress"
+//                           value={currency.bankAddress || ""}
+//                           onChange={handleChange}
+//                           cols={10}
+//                           rows={3}
+//                           placeholder="Enter complete bank address"
+//                           className="w-full p-4 bg-white text-main font-medium border border-gray-300 rounded-lg focus:outline-none transition-all"
+//                         />
+//                       </div>
+//                     </div>
+//                   </div>
+//                 </div>
+
+//                 {/* Action Buttons */}
+//                 <div className="mt-4 flex justify-end space-x-4">
+//                   <Link
+//                     href="/admin/currencies"
+//                     className="inline-flex justify-center py-3 px-10 border border-gray-300 font-medium rounded-lg text-main bg-white focus:outline-none"
+//                   >
+//                     Cancel
+//                   </Link>
+//                   <button
+//                     type="submit"
+//                     disabled={isSubmitting}
+//                     className="inline-flex justify-center cursor-pointer py-3 px-10 border border-transparent font-medium rounded-lg text-secondary bg-primary hover:bg-primary-hover transition-colors ease-in-out duration-300 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+//                   >
+//                     {isSubmitting ? (
+//                       <span className="flex items-center">
+//                         <svg
+//                           className="animate-spin -ml-1 mr-2 size-4 text-white"
+//                           xmlns="http://www.w3.org/2000/svg"
+//                           fill="none"
+//                           viewBox="0 0 24 24"
+//                         >
+//                           <circle
+//                             className="opacity-25"
+//                             cx="12"
+//                             cy="12"
+//                             r="10"
+//                             stroke="currentColor"
+//                             strokeWidth="4"
+//                           ></circle>
+//                           <path
+//                             className="opacity-75"
+//                             fill="currentColor"
+//                             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+//                           ></path>
+//                         </svg>
+//                         <span>Updating...</span>
+//                       </span>
+//                     ) : (
+//                       "Save Changes"
+//                     )}
+//                   </button>
+//                 </div>
+//               </form>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default AdminEditCurrencyPage;
+
 "use client";
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -2341,7 +2863,8 @@ const AdminEditCurrencyPage = () => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const value = e.target.value;
+    const value =
+      e.target.type === "number" ? parseFloat(e.target.value) : e.target.value;
     setCurrency((prev) => (prev ? { ...prev, [e.target.name]: value } : null));
 
     if (e.target.name === "flagImage") {
@@ -2518,230 +3041,315 @@ const AdminEditCurrencyPage = () => {
           </div>
 
           {/* Currency Form */}
-          <div className="container mx-auto px-4">
-            {/* General Details Section */}
-            <h2 className="text-2xl flex items-center gap-2 font-medium text-main my-4">
-              <TbPointFilled className="size-5" />
-              General Details
-            </h2>
-            <div className="bg-white rounded-xl p-4">
-              <form onSubmit={handleSubmit}>
-                <div className="space-y-8">
-                  <div className="">
-                    <div className="space-y-6">
-                      {/* Code Field */}
-                      <div className="General-Code">
-                        <div className="flex items-center gap-2 mb-2">
-                          <FaGlobe className="size-5 text-primary dark:text-main" />
-                          <label className="inline-block font-medium text-main">
-                            Currency Code
-                          </label>
-                        </div>
-                        <input
-                          type="text"
-                          value={currency.code}
-                          readOnly
-                          className="w-full p-4 bg-gray-100 text-main border border-gray-300 rounded-lg focus:outline-none"
-                        />
-                        <p className="mt-1 capitalize text-sm text-main font-medium">
-                          Currency code cannot be changed
-                        </p>
-                      </div>
-
-                      {/* Currency Name */}
-                      <div>
-                        <div className="flex items-center mb-2 gap-2">
-                          <FaMoneyBillWave className="h-5 w-5 text-primary dark:text-main" />
-                          <label className="inline-block font-medium text-main">
-                            Currency Name
-                          </label>
-                        </div>
-                        <input
-                          type="text"
-                          name="currencyName"
-                          value={currency.currencyName || ""}
-                          onChange={handleChange}
-                          placeholder="e.g. Euro, US Dollar"
-                          className="w-full p-4 bg-white text-main font-medium border border-gray-300 rounded-lg focus:outline-none transition-all"
-                        />
-                      </div>
-
-                      {/* Flag Image */}
-                      <div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <svg
-                            className="size-6 text-primary dark:text-main"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                            />
-                          </svg>
-                          <label className="inline-block font-medium text-main">
-                            Flag Image Path
-                          </label>
+          <div className="container mx-auto px-4 pb-8">
+            <form onSubmit={handleSubmit}>
+              {/* General Details Section */}
+              <section className="mt-6">
+                <h2 className="text-2xl flex items-center gap-2 font-medium text-main my-4">
+                  <TbPointFilled className="size-5" />
+                  General Details
+                </h2>
+                <div className="bg-white rounded-xl p-4 border border-gray-200">
+                  <div className="space-y-8">
+                    <div className="">
+                      <div className="space-y-6">
+                        {/* Code Field */}
+                        <div className="General-Code">
+                          <div className="flex items-center gap-2 mb-2">
+                            <FaGlobe className="size-5 text-primary dark:text-main" />
+                            <label className="inline-block font-medium text-main">
+                              Currency Code
+                            </label>
+                          </div>
+                          <input
+                            type="text"
+                            value={currency?.code}
+                            readOnly
+                            className="w-full p-4 bg-gray-100 text-main border border-gray-300 rounded-lg focus:outline-none"
+                          />
+                          <p className="mt-1 capitalize text-sm text-main font-medium">
+                            Currency code cannot be changed
+                          </p>
                         </div>
 
-                        <div className="flex flex-col">
-                          <div className="flex-grow relative">
-                            <input
-                              type="text"
-                              id="flagImage"
-                              name="flagImage"
-                              value={currency.flagImage || ""}
-                              onChange={handleChange}
-                              placeholder="/assets/flags/currency-code.png"
-                              className={`w-full p-4 bg-white text-main font-medium border ${
-                                flagImageError
-                                  ? "border-red-500"
-                                  : "border-gray-300"
-                              } rounded-lg focus:outline-none transition-all`}
-                            />
-                            {currency.flagImage && (
-                              <div className="absolute top-1 right-1 size-12">
-                                <img
-                                  src={currency.flagImage}
-                                  alt="Flag preview"
-                                  className="max-w-full max-h-full p-0.5"
-                                />
-                              </div>
+                        {/* Currency Name */}
+                        <div>
+                          <div className="flex items-center mb-2 gap-2">
+                            <FaMoneyBillWave className="h-5 w-5 text-primary dark:text-main" />
+                            <label className="inline-block font-medium text-main">
+                              Currency Name
+                            </label>
+                          </div>
+                          <input
+                            type="text"
+                            name="currencyName"
+                            value={currency?.currencyName || ""}
+                            onChange={handleChange}
+                            placeholder="e.g. Euro, US Dollar"
+                            className="w-full p-4 bg-white text-main font-medium border border-gray-300 rounded-lg focus:outline-none transition-all"
+                          />
+                        </div>
+
+                        {/* Flag Image */}
+                        <div>
+                          <div className="flex items-center gap-2 mb-2">
+                            <svg
+                              className="size-6 text-primary dark:text-main"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                              />
+                            </svg>
+                            <label className="inline-block font-medium text-main">
+                              Flag Image Path
+                            </label>
+                          </div>
+
+                          <div className="flex flex-col">
+                            <div className="flex-grow relative">
+                              <input
+                                type="text"
+                                id="flagImage"
+                                name="flagImage"
+                                value={currency?.flagImage || ""}
+                                onChange={handleChange}
+                                placeholder="/assets/flags/currency-code.png"
+                                className={`w-full p-4 bg-white text-main font-medium border ${
+                                  flagImageError
+                                    ? "border-red-500"
+                                    : "border-gray-300"
+                                } rounded-lg focus:outline-none transition-all`}
+                              />
+                              {currency?.flagImage && (
+                                <div className="absolute top-1 right-1 size-12">
+                                  <img
+                                    src={currency.flagImage}
+                                    alt="Flag preview"
+                                    className="max-w-full max-h-full p-0.5"
+                                  />
+                                </div>
+                              )}
+                            </div>
+                            {flagImageError && (
+                              <p className="mt-1 text-sm text-red-500 font-medium">
+                                {flagImageError}
+                              </p>
                             )}
                           </div>
-                          {flagImageError && (
-                            <p className="mt-1 text-sm text-red-500 font-medium">
-                              {flagImageError}
-                            </p>
-                          )}
                         </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <h2 className="text-2xl flex items-center gap-2 -ml-4 font-medium text-main my-6">
-                      <TbPointFilled className="size-5" />
-                      Bank Details
-                    </h2>
-                    <div className="space-y-6">
-                      {/* IBAN */}
-                      <div>
-                        <div className="flex items-center mb-2">
-                          <FaCreditCard className="size-5 text-primary dark:text-main mr-2" />
-                          <label className="inline-block font-medium text-main">
-                            IBAN
-                          </label>
-                        </div>
-                        <input
-                          type="text"
-                          name="iban"
-                          value={currency.iban || ""}
-                          onChange={handleChange}
-                          placeholder="e.g. DE89370400440532013000"
-                          className="w-full p-4 bg-white text-main font-medium border border-gray-300 rounded-lg focus:outline-none transition-all"
-                        />
-                      </div>
-
-                      {/* BIC/SWIFT */}
-                      <div>
-                        <div className="flex items-center mb-2">
-                          <svg
-                            className="size-5 text-primary dark:text-main mr-2"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                            />
-                          </svg>
-                          <label className="inline-block font-medium text-main">
-                            BIC/SWIFT
-                          </label>
-                        </div>
-                        <input
-                          type="text"
-                          name="bicSwift"
-                          value={currency.bicSwift || ""}
-                          onChange={handleChange}
-                          placeholder="e.g. DEUTDEFF"
-                          className="w-full p-4 bg-white text-main font-medium border border-gray-300 rounded-lg focus:outline-none transition-all"
-                        />
-                      </div>
-
-                      {/* Bank Address */}
-                      <div>
-                        <div className="flex items-center mb-2">
-                          <FaUniversity className="h-5 w-5 text-primary  mr-2" />
-                          <label className="inline-block font-medium text-main">
-                            Bank Address
-                          </label>
-                        </div>
-                        <textarea
-                          name="bankAddress"
-                          value={currency.bankAddress || ""}
-                          onChange={handleChange}
-                          cols={10}
-                          rows={3}
-                          placeholder="Enter complete bank address"
-                          className="w-full p-4 bg-white text-main font-medium border border-gray-300 rounded-lg focus:outline-none transition-all"
-                        />
                       </div>
                     </div>
                   </div>
                 </div>
+              </section>
 
-                {/* Action Buttons */}
-                <div className="mt-4 flex justify-end space-x-4">
-                  <Link
-                    href="/admin/currencies"
-                    className="inline-flex justify-center py-3 px-10 border border-gray-300 font-medium rounded-lg text-main bg-white focus:outline-none"
-                  >
-                    Cancel
-                  </Link>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="inline-flex justify-center cursor-pointer py-3 px-10 border border-transparent font-medium rounded-lg text-secondary bg-primary hover:bg-primary-hover transition-colors ease-in-out duration-300 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isSubmitting ? (
-                      <span className="flex items-center">
+              {/* Bank Details Section */}
+              <section className="mt-6">
+                <h2 className="text-2xl flex items-center gap-2 font-medium text-main my-4">
+                  <TbPointFilled className="size-5" />
+                  Bank Details
+                </h2>
+                <div className="bg-white rounded-xl p-4 border border-gray-200">
+                  <div className="space-y-6">
+                    {/* IBAN */}
+                    <div>
+                      <div className="flex items-center mb-2">
+                        <FaCreditCard className="size-5 text-primary dark:text-main mr-2" />
+                        <label className="inline-block font-medium text-main">
+                          IBAN
+                        </label>
+                      </div>
+                      <input
+                        type="text"
+                        name="iban"
+                        value={currency?.iban || ""}
+                        onChange={handleChange}
+                        placeholder="e.g. DE89370400440532013000"
+                        className="w-full p-4 bg-white text-main font-medium border border-gray-300 rounded-lg focus:outline-none transition-all"
+                      />
+                    </div>
+
+                    {/* BIC/SWIFT */}
+                    <div>
+                      <div className="flex items-center mb-2">
                         <svg
-                          className="animate-spin -ml-1 mr-2 size-4 text-white"
-                          xmlns="http://www.w3.org/2000/svg"
+                          className="size-5 text-primary dark:text-main mr-2"
                           fill="none"
                           viewBox="0 0 24 24"
+                          stroke="currentColor"
                         >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          ></circle>
                           <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          ></path>
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                          />
                         </svg>
-                        <span>Updating...</span>
-                      </span>
-                    ) : (
-                      "Save Changes"
-                    )}
-                  </button>
+                        <label className="inline-block font-medium text-main">
+                          BIC/SWIFT
+                        </label>
+                      </div>
+                      <input
+                        type="text"
+                        name="bicSwift"
+                        value={currency?.bicSwift || ""}
+                        onChange={handleChange}
+                        placeholder="e.g. DEUTDEFF"
+                        className="w-full p-4 bg-white text-main font-medium border border-gray-300 rounded-lg focus:outline-none transition-all"
+                      />
+                    </div>
+
+                    {/* Bank Address */}
+                    <div>
+                      <div className="flex items-center mb-2">
+                        <FaUniversity className="h-5 w-5 text-primary  mr-2" />
+                        <label className="inline-block font-medium text-main">
+                          Bank Address
+                        </label>
+                      </div>
+                      <textarea
+                        name="bankAddress"
+                        value={currency?.bankAddress || ""}
+                        onChange={handleChange}
+                        cols={10}
+                        rows={3}
+                        placeholder="Enter complete bank address"
+                        className="w-full p-4 bg-white text-main font-medium border border-gray-300 rounded-lg focus:outline-none transition-all"
+                      />
+                    </div>
+                  </div>
                 </div>
-              </form>
-            </div>
+              </section>
+
+              {/* Fees Section */}
+              <section className="mt-6">
+                <h2 className="text-2xl flex items-center gap-2 font-medium text-main my-4">
+                  <TbPointFilled className="size-5" />
+                  Fees
+                </h2>
+                <div className="bg-white rounded-xl p-4 border border-gray-200">
+                  <div className="space-y-6">
+                    {/* Wise Fee Percentage */}
+                    <div>
+                      <div className="flex items-center mb-2">
+                        <FaPercentage className="h-5 w-5 text-primary mr-2" />
+                        <label className="block font-medium text-main">
+                          Wise Fee Percentage
+                        </label>
+                      </div>
+                      <div className="relative">
+                        <input
+                          type="number"
+                          name="wiseFeePercentage"
+                          value={currency?.wiseFeePercentage || 0}
+                          onChange={handleChange}
+                          step="0.0001"
+                          placeholder="0.0000"
+                          className="w-full p-4 bg-white text-main font-medium border border-gray-300 rounded-lg focus:outline-none transition-all pr-12"
+                        />
+                        <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none">
+                          <span className="text-gray-500">%</span>
+                        </div>
+                      </div>
+                      <p className="mt-1 text-xs text-gray-500">
+                        The fee percentage charged by Wise for this currency
+                      </p>
+                    </div>
+
+                    {/* Bank Transfer Fee */}
+                    <div>
+                      <div className="flex items-center mb-2">
+                        <svg
+                          className="h-5 w-5 text-primary mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                        <label className="block font-medium text-main">
+                          Bank Transfer Fee
+                        </label>
+                      </div>
+                      <div className="relative">
+                        <input
+                          type="number"
+                          name="bankTransferFee"
+                          value={currency?.bankTransferFee || 0}
+                          onChange={handleChange}
+                          step="0.01"
+                          placeholder="0.00"
+                          className="w-full p-4 bg-white text-main font-medium border border-gray-300 rounded-lg focus:outline-none transition-all pr-16"
+                        />
+                        <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none">
+                          <span className="text-gray-500">
+                            {currency?.code}
+                          </span>
+                        </div>
+                      </div>
+                      <p className="mt-1 text-xs text-gray-500">
+                        The fixed fee charged for bank transfers in this
+                        currency
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Action Buttons */}
+              <div className="mt-8 flex justify-end space-x-4">
+                <Link
+                  href="/admin/currencies"
+                  className="inline-flex justify-center py-3 px-10 border border-gray-300 font-medium rounded-lg text-main bg-white focus:outline-none"
+                >
+                  Cancel
+                </Link>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="inline-flex justify-center cursor-pointer py-3 px-10 border border-transparent font-medium rounded-lg text-secondary bg-primary hover:bg-primary-hover transition-colors ease-in-out duration-300 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? (
+                    <span className="flex items-center">
+                      <svg
+                        className="animate-spin -ml-1 mr-2 size-4 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      <span>Updating...</span>
+                    </span>
+                  ) : (
+                    "Save Changes"
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
