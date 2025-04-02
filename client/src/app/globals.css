@@ -19,16 +19,21 @@ body {
     --color-gray: #454745;
     --color-green: #163300;
     /* Background-Color */
-    --color-primary: #3bcbff;
+    --color-primary: #adfa1d;
+    --color-primarybox: #ffffff1a;
     /* Background-Color-Hover */
     --color-primary-hover: #11a0d3;
     /* Text-color */
     --color-secondary: #002330;
     --color-lightgray: #f4f4f4;
     --color-error: #a8200d;
-    --shadow-color: inset 0 0 0 2px #6c6c6b;
+    --shadow-whitecolor: inset 0 0 0 2px #fff;
+    --shadow-darkcolor: inset 0 0 0 2px #171717;
+
     /* Border-Color */
     --color-lightborder: #e3e3e3;
+
+    --color-secondarybox: #525252;
 }
 
 @keyframes float {
@@ -71,9 +76,11 @@ body {
     --card-foreground: oklch(0.145 0 0);
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(78.94% 0.1381 227.44);
+    --primary: oklch(0.9 0.2334 128.99);
+    --primarybox: oklch(1 0 0 / 10.2%);
     --primary-foreground: oklch(0.985 0 0);
     --secondary: oklch(23.9% 0.0463 227.39);
+    --secondarybox: oklch(0.44 0 0);
     --secondary-foreground: oklch(0.205 0 0);
     --muted: oklch(0.97 0 0);
     --muted-foreground: oklch(0.556 0 0);
@@ -99,13 +106,16 @@ body {
 }
 
 .dark {
-    --background: oklch(0.145 0 0);
+    --background: oklch(0.22 0.0214 124.37);
     --foreground: oklch(0.985 0 0);
     --card: oklch(0.205 0 0);
     --card-foreground: oklch(0.985 0 0);
     --popover: oklch(0.205 0 0);
     --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
+    --primary: oklch(0.9 0.2334 128.99);
+    --primarybox: oklch(1 0 0 / 10.2%);
+    --secondarybox: oklch(0.44 0 0);
+
     --primary-foreground: oklch(0.205 0 0);
     --secondary: oklch(0.269 0 0);
     --secondary-foreground: oklch(0.985 0 0);

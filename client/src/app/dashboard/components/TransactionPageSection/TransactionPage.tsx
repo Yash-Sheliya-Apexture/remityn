@@ -2792,7 +2792,7 @@ const TransactionsPage: React.FC = () => {
             <div className="container mx-auto"> {/* Added container and padding */}
                 {/* Header and Actions */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-                    <h1 className="text-3xl font-semibold text-gray-800 dark:text-white">Transactions</h1>
+                    <h1 className="text-3xl font-semibold text-neutral-900 dark:text-white">Transactions</h1>
                     {/* Render Actions only when accounts are loaded (needed for Filter/Search) */}
                     {!loadingAccounts && userAccounts.length > 0 && (
                          <TransactionActions
@@ -2833,11 +2833,11 @@ const TransactionsPage: React.FC = () => {
                         {/* In Progress Section */}
                         {inProgressTransactions.length > 0 && (
                             <div>
-                                 <h2 className="font-medium text-gray-600 dark:text-gray-400 mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-gray-700 after:mt-1">In progress</h2>
+                                 <h3 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">In progress</h3>
                                 <div className="space-y-2">
                                     {inProgressTransactions.map((transaction) => {
                                         const isAddMoney = transaction.type === "Add Money";
-                                        const icon = isAddMoney ? <LuPlus size={22} className="text-main" /> : <GoArrowUp size={22} className="text-main" />;
+                                        const icon = isAddMoney ? <LuPlus size={22} className="text-neutral-900 dark:text-white" /> : <GoArrowUp size={22} className="text-neutral-900 dark:text-white" />;
                                         const description = isAddMoney ? "Waiting for your money" : "Sending money";
                                         const amount = isAddMoney ? (transaction.amountToAdd ?? 0) : (transaction.sendAmount ?? 0);
                                         // Display currency: For Add use balance currency, for Send use send currency
@@ -2852,15 +2852,15 @@ const TransactionsPage: React.FC = () => {
 
                                         return (
                                             <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} passHref legacyBehavior>
-                                                 <a className="block hover:bg-lightgray p-2 sm:p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer">
+                                                 <a className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer">
                                                     <div className="flex items-center gap-4">
-                                                        <div className="p-3 bg-lightborder rounded-full flex items-center justify-center border border-lightborder">{icon}</div>
+                                                        <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center">{icon}</div>
                                                         <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
                                                             <div className=" text-wrap">
-                                                                <h3 className="font-medium text-gray-800 dark:text-gray-100 text-sm md:text-base">{name}</h3>
-                                                                <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400">{description} <span className="italic">({transaction.status})</span></p>
+                                                                <h3 className="font-medium text-neutral-900 dark:text-white text-sm md:text-base">{name}</h3>
+                                                                <p className="text-xs md:text-sm text-gray-500 dark:text-gray-300">{description} <span className="italic">({transaction.status})</span></p>
                                                             </div>
-                                                            <div className={`font-medium text-gray-800 dark:text-gray-100 text-sm md:text-base whitespace-nowrap text-right sm:text-left`}>
+                                                            <div className={`font-medium text-neutral-900 dark:text-white text-sm md:text-base whitespace-nowrap text-right sm:text-left`}>
                                                                 {amountPrefix}
                                                                 {amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                                                 {" "} {displayCurrencyCode}
@@ -2880,13 +2880,13 @@ const TransactionsPage: React.FC = () => {
                             <div className="space-y-4">
                                 {Object.entries(groupedProcessedTransactions).map(([date, transactionsForDate]) => (
                                     <div key={date}>
-                                         <h3 className="font-medium text-gray-600 dark:text-gray-400 mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-gray-700 after:mt-1">{date}</h3>
+                                         <h3 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">{date}</h3>
                                         <div className="space-y-2">
                                             {transactionsForDate.map((transaction) => {
                                                 const isAddMoney = transaction.type === "Add Money";
-                                                const icon = isAddMoney ? <LuPlus size={22} className="text-main" /> : <GoArrowUp size={22} className="text-main" />;
+                                                const icon = isAddMoney ? <LuPlus size={22} className="text-neutral-900 dark:text-white" /> : <GoArrowUp size={22} className="text-neutral-900 dark:text-white" />;
                                                 let description = isAddMoney ? "Added by you" : `To ${transaction.name || 'Recipient'}`;
-                                                let amountClass = isAddMoney ? "text-green-600 dark:text-green-400" : "text-gray-800 dark:text-gray-100";
+                                                let amountClass = isAddMoney ? "text-green-600 dark:text-green-400" : "text-neutral-900  dark:text-white";
                                                 const amount = isAddMoney ? (transaction.amountToAdd ?? 0) : (transaction.sendAmount ?? 0);
                                                 const displayCurrencyCode = isAddMoney
                                                     ? (typeof transaction.balanceCurrency === 'object' && transaction.balanceCurrency?.code ? transaction.balanceCurrency.code : '')
@@ -2908,13 +2908,13 @@ const TransactionsPage: React.FC = () => {
 
                                                 return (
                                                     <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} passHref legacyBehavior>
-                                                         <a className="block hover:bg-lightgray p-2 sm:p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer">
+                                                         <a className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer">
                                                             <div className="flex items-center gap-4">
-                                                                <div className="p-3 bg-lightborder rounded-full flex items-center justify-center border border-lightborder">{icon}</div>
+                                                                <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center">{icon}</div>
                                                                 <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
                                                                     <div className=" text-wrap">
-                                                                        <h3 className="font-medium text-gray-800 dark:text-gray-100 text-sm md:text-base">{name}</h3>
-                                                                        <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400">{description}</p>
+                                                                        <h3 className="font-medium text-neutral-900 dark:text-white text-sm md:text-base">{name}</h3>
+                                                                        <p className="text-xs md:text-sm text-gray-500 dark:text-gray-300">{description}</p>
                                                                     </div>
                                                                     <div className={`font-medium ${amountClass} text-sm md:text-base whitespace-nowrap text-right sm:text-left`}>
                                                                         {amountPrefix}

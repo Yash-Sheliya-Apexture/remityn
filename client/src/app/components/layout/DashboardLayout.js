@@ -33,8 +33,7 @@ export default function DashboardLayout({ children }) {
 
   return (
     <div className="dashboard-layout">
-
-      <div className="bg-white max-w-[1440px] mx-auto">
+      <div className="max-w-[1440px] mx-auto">
         <div className="flex h-screen">
           <Sidebar
             sidebarOpen={isSidebarOpen}
