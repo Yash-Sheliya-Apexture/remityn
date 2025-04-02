@@ -196,7 +196,7 @@ const TransactionActions: React.FC<TransactionActionsProps> = ({
     onFiltersApply
 }) => {
     return (
-        <div className="flex items-center gap-4 flex-wrap"> {/* Added flex-wrap */}
+        <div className="flex items-center gap-4 "> {/* Added flex-wrap */}
             <Search
                 transactions={transactions}
                 onTransactionsChange={onTransactionsChange}
@@ -207,7 +207,7 @@ const TransactionActions: React.FC<TransactionActionsProps> = ({
                     userAccounts={userAccounts} // <-- Pass accounts here
                     onFiltersApply={onFiltersApply}
                 />
-                <Download />
+                {/* <Download /> */}
             </div>
         </div>
     );

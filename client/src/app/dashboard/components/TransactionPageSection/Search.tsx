@@ -120,12 +120,12 @@ const Search: React.FC<SearchProps> = ({ transactions, onTransactionsChange }) =
     return (
         <div className="relative w-full">
             <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                          <FiSearch className="h-5 w-5 text-gray" aria-hidden="true" />
+                          <FiSearch className="h-5 w-5 text-neutral-900 dark:text-white" aria-hidden="true" />
                         </div>
             <input
                 type="text"
                 placeholder="Search"
-                className="w-full rounded-full py-3 pl-12 pr-3 border transition-shadow ease-in-out duration-300 border-[#c9cbce] hover:shadow-color"
+                className="w-full rounded-full py-3 pl-12 pr-3 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white"
                 value={searchTerm}
                 onChange={handleSearchChange}
             />

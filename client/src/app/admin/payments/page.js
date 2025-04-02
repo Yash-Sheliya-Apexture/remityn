@@ -5999,18 +5999,18 @@ const AdminPaymentsPage = () => {
                             initial={{ y: 50, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             exit={{ y: 50, opacity: 0 }}
-                            className="bg-white rounded-lg p-8 shadow-xl w-full max-w-md"
+                            className="bg-white rounded-lg p-6 shadow-xl w-full max-w-md"
                         >
                             <div className="mb-6">
                                 <h2 className="text-xl font-semibold text-main">Edit Payment Status</h2>
                             </div>
 
                             <div className="space-y-4">
-                                <div className='bg-green/10 p-2'>
-                                    <label htmlFor="paymentId" className="block font-medium text-gray-700 mb-1">Payment ID</label>
+                                <div className='bg-green/10 p-3 rounded-md'>
+                                    <label htmlFor="paymentId" className="block font-semibold text-main mb-1">Payment ID : </label>
                                     <span className="font-medium text-gray-700">{selectedPaymentForEdit._id}</span>
                                 </div>
-                                <div>
+                                <div className='bg-green/10 p-3 rounded-md'>
                                     <label htmlFor="referenceCode" className="block font-medium text-gray-700 mb-1">Reference Code</label>
                                     <span className="font-medium text-gray-700">{selectedPaymentForEdit.referenceCode || 'N/A'}</span>
                                 </div>

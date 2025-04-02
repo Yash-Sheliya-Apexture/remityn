@@ -25,14 +25,14 @@ export default function Status({ selectedStatus, onStatusChange }: StatusProps) 
 
   return (
     <div>
-      <h4 className="text-gray font-medium relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-gray/20 after:mt-1">
+      <h4 className="text-gray font-medium relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
         Status
       </h4>
       <div className="pt-4 flex items-center gap-2">
         {statuses.map((status) => (
           <button
             key={status}
-            className={`font-medium border rounded-full px-4 py-1 flex items-center gap-2 ${
+            className={`font-medium border rounded-full px-4 py-1 flex items-center gap-2 cursor-pointer ${
               selectedStatus === status
                 ? "bg-secondary text-primary border-secondary" // Highlight if selected
                 : "border-secondary text-secondary bg-white"
@@ -46,7 +46,7 @@ export default function Status({ selectedStatus, onStatusChange }: StatusProps) 
                   e.stopPropagation(); // Prevent button click from re-selecting
                   handleClearStatus();
                 }}
-                className="inline-flex items-center justify-center cursor-pointer" // Added cursor-pointer to indicate it's clickable
+                className="inline-flex items-center justify-center" // Added cursor-pointer to indicate it's clickable
                 aria-label={`Clear status ${status}`}
               >
                 <IoIosCloseCircleOutline size={24} />

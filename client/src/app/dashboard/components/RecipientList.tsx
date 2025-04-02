@@ -353,7 +353,7 @@ export default function RecipientList({
       className="hover:bg-lightgray p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer"
       onClick={handleItemClick}
     >
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <div className="flex items-center">
           <div className="w-12 h-12 rounded-full bg-lightborder flex items-center justify-center relative">
             <span className="font-bold text-main">
@@ -370,11 +370,11 @@ export default function RecipientList({
               </div>
           </div>
           <div className="ml-4">
-            <h5 className="font-medium text-main ">
+            <h5 className="font-medium text-main  ">
               {recipient.accountHolderName}
             </h5>
             {recipient.accountNumber && (
-              <p className="text-sm text-gray-600">
+              <p className="sm:text-sm text-xs text-gray-600">
                 {recipient.currency.code} Account ending in {recipient.accountNumber.slice(-4)} {/* Use dynamic currency code */}
               </p>
             )}

@@ -257,11 +257,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { FiMenu } from "react-icons/fi";
-import { FaAngleRight } from "react-icons/fa6";
 import { useRouter, usePathname } from "next/navigation";
 import { HiArrowLeft } from "react-icons/hi";
 import Link from "next/link";
 import { useAuth } from "../../hooks/useAuth"
+import { IoIosArrowForward } from "react-icons/io";
+
 
 interface HeaderProps {
   toggleSidebar: () => void;
@@ -291,9 +292,6 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   const pathname = usePathname();
   const { user, loading } = useAuth(); // Get user data and loading state from context
   const [showBackArrow, setShowBackArrow] = useState(false);
-  // Remove hardcoded name and isOnline - these should come from context or other state
-  // const name = "rudra sutariya";
-  // const isOnline = true;
 
   useEffect(() => {
     setShowBackArrow(pathname !== "/dashboard");
@@ -303,17 +301,13 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
     router.back();
   };
 
-  // Optionally handle loading state if needed, though AuthProvider might already handle this
-  // if (loading) {
-  //   return <header className="bg-white h-20 lg:h-28 animate-pulse"></header>; // Placeholder while loading
-  // }
 
   // Get user's full name and initials, providing fallbacks
   const userName = user?.fullName || "User";
   const userInitials = getInitials(user?.fullName);
 
   return (
-    <header className="bg-white">
+    <header >
       <div className="max-w-5xl mx-auto px-4">
         <div className="flex justify-between items-center lg:h-28 h-20">
           <div className="flex justify-center items-center gap-4"> {/* Added items-center */}
@@ -329,44 +323,31 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
             {showBackArrow && (
               <button
                 onClick={handleBack}
-                className="focus:outline-none p-3 bg-primary/10 rounded-full text-secondary hover:bg-primary/20 transition-colors" // Adjusted padding and added hover
+                className="focus:outline-none cursor-pointer p-3 bg-lightborder dark:bg-primarybox rounded-full text-neutral-900 dark:text-white hover:bg-primary transition-colors" // Adjusted padding and added hover
               >
                 <HiArrowLeft className="size-5" />
               </button>
             )}
           </div>
-
-          {/* Profile Picture/Link */}
           {/* Only show profile section if user data is available (or not loading) */}
           {user && !loading && (
             <Link href="/dashboard/your-account">
-              <div className="relative flex items-center group hover:bg-primary/15 rounded-full cursor-pointer gap-2 pr-2 py-1.5 pl-1.5"> {/* Adjusted padding/gap */}
+              <div className="relative flex items-center group hover:bg-lightgray dark:hover:bg-primarybox rounded-full cursor-pointer gap-2 pr-2 py-1.5 pl-1.5 transition-colors duration-500 ease-in-out"> {/* Adjusted padding/gap */}
                 {/* User Initials */}
-                <span className="size-10 md:size-12 bg-primary/50 rounded-full flex items-center justify-center font-bold text-secondary capitalize text-sm md:text-base">
+                <span className="size-10 md:size-12 bg-lightborder dark:bg-primary rounded-full flex items-center justify-center font-bold text-neutral-900 dark:text-background capitalize text-sm md:text-base">
                   {userInitials} {/* Use dynamic initials */}
                 </span>
 
                 {/* User Name */}
-                <div className="text-secondary capitalize hidden sm:block font-medium text-sm md:text-base">
+                <div className="text-neutral-900 dark:text-white capitalize hidden sm:block font-medium text-sm md:text-base">
                   {userName} {/* Use dynamic name */}
                 </div>
 
                 {/* Arrow Icon */}
-                <FaAngleRight className="size-4 md:size-5 text-secondary mr-1 md:mr-2 hidden md:block group-hover:translate-x-1 transition-transform ease-in-out duration-300" /> {/* Adjusted size/margin/translate */}
+                <IoIosArrowForward className="size-4 md:size-5 text-neutral-900 dark:text-white mr-1 md:mr-2 hidden md:block transition-transform ease-in-out duration-300" /> {/* Adjusted size/margin/translate */}
               </div>
             </Link>
           )}
-
-          {/* Optional: Show a login link or skeleton if user is null or loading */}
-          {/* {!user && !loading && (
-             <Link href="/auth/login">Login</Link>
-           )}
-           {loading && (
-             <div className="animate-pulse flex items-center gap-2">
-                 <div className="size-11 bg-gray-300 rounded-full"></div>
-                 <div className="h-4 w-24 bg-gray-300 rounded hidden sm:block"></div>
-             </div>
-           )} */}
 
         </div>
       </div>
