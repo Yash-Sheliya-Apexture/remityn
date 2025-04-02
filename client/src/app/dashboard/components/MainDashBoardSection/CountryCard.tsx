@@ -610,7 +610,7 @@ const CountryCard = () => {
               {canScrollLeft && (
                 <button
                   onClick={scrollLeft}
-                  className={`absolute left-6 top-1/2 transform -translate-y-1/2 bg-primary shadow text-secondary p-2 rounded-full sm:block hidden cursor-pointer z-20 transition-opacity duration-300 ${
+                  className={`absolute left-6 top-1/2 transform -translate-y-1/2 bg-primary shadow text-neutral-900 dark:text-background p-2 rounded-full sm:block hidden cursor-pointer z-20 transition-opacity duration-300 ${
                     isHovering ? 'opacity-100' : 'opacity-0'
                   }`}
                   aria-label="Scroll left"
@@ -622,7 +622,7 @@ const CountryCard = () => {
               {canScrollRight && (
                 <button
                   onClick={scrollRight}
-                  className={`absolute right-6 top-1/2 transform -translate-y-1/2 bg-primary shadow text-secondary p-2 rounded-full sm:block hidden cursor-pointer z-20 transition-opacity duration-300 ${
+                  className={`absolute right-6 top-1/2 transform -translate-y-1/2 bg-primary shadow text-neutral-900 dark:text-background p-2 rounded-full sm:block hidden cursor-pointer z-20 transition-opacity duration-300 ${
                     isHovering ? 'opacity-100' : 'opacity-0'
                   }`}
                   aria-label="Scroll right"
@@ -649,7 +649,7 @@ const CountryCard = () => {
                 passHref
               >
                 <div
-                  className="p-6 bg-gray/10 rounded-2xl flex flex-col justify-between w-64 shrink-0 transition-colors duration-200 ease-linear cursor-pointer hover:bg-gray/20"
+                  className="p-6 bg-lightgray dark:bg-primarybox hover:dark:bg-secondarybox rounded-2xl flex flex-col justify-between w-64 shrink-0 transition-colors duration-200 ease-linear cursor-pointer hover:bg-neutral-200/70"
                   style={{ scrollSnapAlign: 'start' }}
                 >
                   <div className="flex items-center gap-4">
@@ -672,12 +672,12 @@ const CountryCard = () => {
                         )
                       }
                     />
-                    <span className="text-main text-xl font-semibold">
+                    <span className="text-neutral-900 dark:text-white text-xl font-semibold">
                       {account.currency?.code || "N/A"} {/* Display N/A if code is missing */}
                     </span>
                   </div>
                   <div className="pt-16">
-                    <span className="text-main text-2xl font-semibold">
+                    <span className="text-neutral-900 dark:text-white text-2xl font-semibold">
                       {parseFloat(account.balance).toFixed(2)}
                     </span>
                   </div>
@@ -687,13 +687,13 @@ const CountryCard = () => {
             {/* Add Currency Card */}
             <div
               onClick={() => setIsModalOpen(true)}
-              className="p-6 bg-gray/10 rounded-2xl flex flex-col justify-center items-center w-64 shrink-0 cursor-pointer hover:bg-gray/20 transition-colors duration-200 ease-linear border-2 border-dashed border-gray"
+              className="p-6 bg-lightgray dark:bg-primarybox/70 rounded-2xl flex flex-col justify-center items-center w-64 shrink-0 cursor-pointer hover:bg-neutral-200/70 transition-colors duration-200 ease-linear border-2 border-dashed border-neutral-900 dark:border-neutral-300"
               style={{ scrollSnapAlign: 'start' }}
             >
-              <div className="rounded-full border-2 border-secondary p-2 flex items-center justify-center mb-2">
-                <GoPlus size={30} className="text-secondary"/>
+              <div className="rounded-full border-2 border-neutral-900 dark:border-white p-2 flex items-center justify-center mb-2">
+                <GoPlus size={30} className="text-neutral-900 dark:text-white"/>
               </div>
-              <span className="text-center text-gray">
+              <span className="text-center text-neutral-500 dark:text-white">
                 Add another currency to your account.
               </span>
             </div>
