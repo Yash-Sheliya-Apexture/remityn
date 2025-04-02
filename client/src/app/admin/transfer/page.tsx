@@ -116,7 +116,6 @@
 
 // export default AdminTransfersPage;
 
-// jay dwarkadish
 
 // frontend/src/app/admin/transfers/page.tsx
 "use client";
