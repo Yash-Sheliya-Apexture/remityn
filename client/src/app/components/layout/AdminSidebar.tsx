@@ -1874,6 +1874,7 @@ import {
   FaMoon,
   FaSun,
 } from "react-icons/fa";
+import { IoMdAddCircleOutline } from "react-icons/io";
 
 interface AdminSidebarProps {
   isSidebarOpen: boolean;
@@ -2096,6 +2097,25 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
               </Link>
             </li>
 
+            {/* Add-Now */}
+            <li>
+              <Link
+                href="/admin/Add-Now"
+                onClick={() => toggleDropdown("transactions")}
+                className={`flex items-center justify-between w-full cursor-pointer px-4 py-3 rounded-lg transition-all duration-200
+                ${
+                  isDropdownActive("/admin/Add-Now")
+                    ? "bg-slate-200 dark:bg-slate-700 text-primary dark:text-indigo-400"
+                    : "hover:bg-slate-200/70 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <IoMdAddCircleOutline className="size-5" />
+                  <span className="font-medium">Add-Money</span>
+                </div>
+              </Link>
+            </li>
+
             {/* Transactions */}
             <li>
               <Link
@@ -2110,58 +2130,9 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
               >
                 <div className="flex items-center gap-3">
                   <FaMoneyBillWave className="size-5" />
-                  <span className="font-medium">Transactions</span>
+                  <span className="font-medium">Send-Money</span>
                 </div>
-                <FaChevronRight
-                  className={`size-3.5 transition-transform duration-200 ${
-                    activeDropdown === "transactions" ? "rotate-90" : ""
-                  }`}
-                />
               </Link>
-
-              {activeDropdown === "transactions" && (
-                <ul className="mt-1 ml-6 space-y-1 border-l-2 border-slate-200 dark:border-slate-700 pl-4">
-                  <li>
-                    <Link
-                      href="/admin/transfer/list"
-                      className={`block px-4 py-2 rounded-md transition-all duration-200
-                      ${
-                        isActive("/admin/transfer/list")
-                          ? "bg-indigo-100 dark:bg-indigo-900/30 text-primary dark:text-indigo-400"
-                          : "hover:bg-slate-200/70 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
-                      }`}
-                    >
-                      Transaction List
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/admin/transactions/view"
-                      className={`block px-4 py-2 rounded-md transition-all duration-200
-                      ${
-                        isActive("/admin/transfer/view")
-                          ? "bg-indigo-100 dark:bg-indigo-900/30 text-primary dark:text-indigo-400"
-                          : "hover:bg-slate-200/70 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
-                      }`}
-                    >
-                      View Transaction
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/admin/transactions/refund"
-                      className={`block px-4 py-2 rounded-md transition-all duration-200
-                      ${
-                        isActive("/admin/transfer/refund")
-                          ? "bg-indigo-100 dark:bg-indigo-900/30 text-primary dark:text-indigo-400"
-                          : "hover:bg-slate-200/70 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
-                      }`}
-                    >
-                      Refund Transaction
-                    </Link>
-                  </li>
-                </ul>
-              )}
             </li>
           </ul>
         </nav>
@@ -2169,7 +2140,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
         {/* Footer Actions */}
         <div className="p-4 border-t border-slate-200 dark:border-slate-700 space-y-2">
           {/* Dark Mode Toggle */}
-          <button
+          {/* <button
             onClick={toggleDarkMode}
             className="flex items-center justify-between w-full px-4 py-3 rounded-lg hover:bg-slate-200/70 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300 transition-all duration-200"
           >
@@ -2194,7 +2165,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 }`}
               ></div>
             </div>
-          </button>
+          </button> */}
 
           {/* Logout Button */}
           {user && (
