@@ -581,7 +581,7 @@ const CountryCard = () => {
 
   if (isLoading) {
     return (
-      <section className="Country-card pt-5">
+      <section className="Country-card pt-4">
         <div className="container mx-auto">Loading currency accounts...</div>
       </section>
     );
@@ -589,7 +589,7 @@ const CountryCard = () => {
 
   if (error) {
     return (
-      <section className="Country-card pt-5">
+      <section className="Country-card pt-4">
         <div className="container mx-auto text-red-500">
           Error loading accounts: {error}
         </div>
@@ -598,7 +598,7 @@ const CountryCard = () => {
   }
 
   return (
-    <section className="Country-card pt-5">
+    <section className="Country-card pt-4">
       <div className="container mx-auto relative z-10">
         <div
           onMouseEnter={() => setIsHovering(true)}
