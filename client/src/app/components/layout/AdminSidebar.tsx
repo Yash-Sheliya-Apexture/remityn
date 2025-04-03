@@ -1944,7 +1944,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
       {/* Sidebar */}
       <aside
-        className={`fixed lg:relative top-0 left-0 z-50 h-full transition-all duration-300 ease-in-out 
+        className={`fixed lg:relative top-0 left-0 z-40 h-full transition-all duration-300 ease-in-out 
         ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }
