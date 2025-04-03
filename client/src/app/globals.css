@@ -33,7 +33,10 @@ font-family: var(--font-Inter);
 /* Border-Color */
 --color-lightborder: #e3e3e3;
 
+--color-mainheading: #171717;
+--color-subheading: #171717;
 --color-secondarybox: #525252;
+--color-primaryhover: #bcf65f;
 }
 
 @keyframes float {

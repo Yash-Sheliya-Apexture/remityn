@@ -402,13 +402,13 @@ const AccountCard: React.FC<AccountCardProps> = ({ username }) => {
   return (
     <>
       {/* Main card container */}
-      <div className="bg-green/8 p-8 rounded-3xl overflow-hidden z-20 relative">
+      <div className="bg-lightgray dark:bg-primarybox p-8 rounded-3xl overflow-hidden z-20 relative">
         {/* Profile initials display */}
         <div className="flex flex-col items-center mb-4">
           {/* Removed the relative positioning and camera icon overlay */}
-          <div className="bg-green/8 rounded-full flex items-center justify-center size-20 overflow-hidden border-2 border-lightgreen">
+          <div className="bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center size-20 overflow-hidden">
             {/* Display Initials instead of Icon/Image */}
-            <span className="text-3xl font-semibold text-secondary select-none">
+            <span className="text-3xl font-semibold text-neutral-900 dark:text-white select-none">
               {initials}
             </span>
             {/* Removed FiUser icon fallback and uploadedImage img tag */}
@@ -416,22 +416,22 @@ const AccountCard: React.FC<AccountCardProps> = ({ username }) => {
         </div>
 
         {/* User details */}
-        <h1 className="text-4xl font-black tracking-tighter text-center mb-2">
+        <h1 className="text-4xl text-mainheading dark:text-white font-black tracking-tighter text-center mb-2">
           {username}
         </h1>
-        <p className="text-center font-medium capitalize mb-6">
+        <p className="text-center text-subheading dark:text-gray-300 font-medium capitalize mb-6">
           Your personal account
         </p>
-      </div>
 
-      {/* Logout button */}
-      <div className="text-center mt-6">
-        <button
-          onClick={handleLogout}
-          className="px-4 cursor-pointer bg-primary hover:bg-primary-hover rounded-full py-1.5 text-secondary transition-transform ease-in-out duration-300 font-medium"
-        >
-          Log Out
-        </button>
+        {/* Logout button */}
+        <div className="text-center mt-6">
+          <button
+            onClick={handleLogout}
+            className="px-4 cursor-pointer bg-primary hover:bg-primaryhover rounded-full py-1.5 text-neutral-900 transition-transform ease-in-out duration-300 font-medium"
+          >
+            Log Out
+          </button>
+        </div>
       </div>
 
       {/* Confirmation message (if needed for something else, otherwise remove) */}
