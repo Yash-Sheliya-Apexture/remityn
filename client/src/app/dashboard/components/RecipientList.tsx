@@ -350,13 +350,13 @@ export default function RecipientList({
 
   return (
     <div
-      className="hover:bg-lightgray p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer"
+      className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer"
       onClick={handleItemClick}
     >
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center">
-          <div className="w-12 h-12 rounded-full bg-lightborder flex items-center justify-center relative">
-            <span className="font-bold text-main">
+          <div className="w-12 h-12 rounded-full bg-lightborder dark:bg-secondarybox flex items-center justify-center relative">
+            <span className="font-bold text-neutral-900 dark:text-white">
               {getInitials(recipient.accountHolderName)}
             </span>
               <div className="absolute bottom-0 right-0 w-4 h-4 rounded-full overflow-hidden">
@@ -370,11 +370,11 @@ export default function RecipientList({
               </div>
           </div>
           <div className="ml-4">
-            <h5 className="font-medium text-main  ">
+            <h5 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg">
               {recipient.accountHolderName}
             </h5>
             {recipient.accountNumber && (
-              <p className="sm:text-sm text-xs text-gray-600">
+              <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
                 {recipient.currency.code} Account ending in {recipient.accountNumber.slice(-4)} {/* Use dynamic currency code */}
               </p>
             )}
@@ -382,7 +382,7 @@ export default function RecipientList({
         </div>
 
         {showCheckbox ? (
-          <div className="pt-1.5">
+          <div className="pt-1.5 ml-4">
             <input
               ref={checkboxRef}
               type="checkbox"
@@ -392,8 +392,8 @@ export default function RecipientList({
             />
           </div>
         ) : (
-          <div className="">
-            <IoIosArrowForward className="h-5 w-5 text-gray-500" />
+          <div className="ml-4">
+            <IoIosArrowForward className="h-5 w-5 text-neutral-900 dark:text-white" />
           </div>
         )}
       </div>

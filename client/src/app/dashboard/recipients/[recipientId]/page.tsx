@@ -1044,11 +1044,11 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
   return (
     <div className="RecipientDetailsPage py-10">
       <DashboardHeader title="Recipients" />
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto">
         {/* Profile Section */}
         <div className="flex flex-col mb-8 space-y-4">
-          <div className="relative w-20 h-20 rounded-full bg-lightborder flex items-center justify-center">
-            <span className="font-bold text-2xl text-gray-700">
+          <div className="relative w-20 h-20 rounded-full bg-lightborder dark:bg-secondarybox flex items-center justify-center">
+            <span className="font-bold text-2xl text-neutral-900 dark:text-white">
               {getInitials(
                 currentRecipient.nickname || currentRecipient.accountHolderName
               )}
@@ -1069,15 +1069,15 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
               </div>
             )}
           </div>
-          <h2 className="text-[26px] font-semibold text-main">
+          <h2 className="sm:text-[26px] text-xl font-semibold text-neutral-900 dark:text-white">
             {currentRecipient.nickname || currentRecipient.accountHolderName}
           </h2>
           <div className="flex items-center gap-4">
-            <button className="font-medium border rounded-full w-32 h-10 flex items-center justify-center border-secondary text-secondary bg-white cursor-pointer">
+            <button className="font-medium bg-primary text-neutral-900 rounded-full w-32 h-10 flex items-center justify-center cursor-pointer">
               Send
             </button>
             <button
-              className="font-medium border rounded-full w-32 h-10 flex items-center justify-center border-red-700 text-red-700 bg-white cursor-pointer"
+              className="font-medium bg-red-600 text-white rounded-full w-32 h-10 flex items-center justify-center cursor-pointer"
               onClick={handleDeleteRecipientClick}
             >
               Delete
@@ -1087,31 +1087,31 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
 
         {/* Account Details Section */}
         <div className="mb-6 pb-4">
-          <h3 className="text-gray text-lg font-semibold relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-gray/20 after:mt-1 mb-6">
+          <h3 className="text-lg font-medium text-gray-600 dark:text-white mb-6 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
             Account Details
           </h3>
           <div className="grid sm:grid-cols-2 gap-8 mb-8">
             <div className="">
-              <label className="block text-sm font-medium text-gray">
+              <label className="block text-sm font-semibold text-gray dark:text-white">
                 Account holder name
               </label>
-              <p className="mt-1 text-main font-medium ">
+              <p className="mt-1 text-main dark:text-gray-300">
                 {currentRecipient.accountHolderName}
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray">
+              <label className="block text-sm font-semibold text-gray dark:text-white">
                 Nickname
               </label>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 mt-1">
                 {currentRecipient.nickname ? (
                   <div className="flex items-center gap-2">
-                    <p className="text-main font-medium">
+                    <p className="text-main dark:text-gray-300">
                       {currentRecipient.nickname}
                     </p>
                     <button
-                      className="cursor-pointer text-sm underline text-secondary font-medium"
+                      className="cursor-pointer text-sm underline text-secondary font-medium dark:text-primary"
                       onClick={handleAddNicknameClick}
                     >
                       Edit
@@ -1119,7 +1119,7 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
                   </div>
                 ) : (
                   <button
-                    className="cursor-pointer text-sm underline text-secondary font-medium"
+                    className="cursor-pointer text-sm underline text-secondary font-medium dark:text-primary"
                     onClick={handleAddNicknameClick}
                   >
                     Add Nickname
@@ -1129,57 +1129,57 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
             </div>
 
             <div className="">
-              <label className="block text-sm font-medium text-gray">
+              <label className="block text-sm font-semibold text-gray dark:text-white">
                 Account type
               </label>
-              <p className="mt-1 text-main font-medium">
+              <p className="mt-1 text-main dark:text-gray-300">
                 {currentRecipient.accountType}
               </p>
             </div>
             <div className="">
-              <label className="block text-sm font-medium text-gray">
+              <label className="block text-sm font-semibold text-gray dark:text-white">
                 IFSC code
               </label>
-              <p className="mt-1 text-main font-medium">
+              <p className="mt-1 text-main dark:text-gray-300">
                 {currentRecipient.ifscCode}
               </p>
             </div>
 
             <div className="">
-              <label className="block text-sm font-medium text-gray">
+              <label className="block text-sm font-semibold text-gray dark:text-white">
                 Account number
               </label>
-              <p className="mt-1 text-main font-medium">
+              <p className="mt-1 text-main dark:text-gray-300">
                 {currentRecipient.accountNumber}
               </p>
             </div>
             {currentRecipient.email && (
               <div className="">
-                <label className="block text-sm font-medium text-gray">
+                <label className="block text-sm font-semibold text-gray dark:text-white">
                   Email (Optional)
                 </label>
-                <p className="mt-1 text-main font-medium">
+                <p className="mt-1 text-main dark:text-gray-300">
                   {currentRecipient.email}
                 </p>
               </div>
             )}
             <div>
-              <label className="block text-sm font-medium text-gray">
+              <label className="block text-sm font-semibold text-gray dark:text-white">
                 Bank name
               </label>
               {currentRecipient.bankName && ( // Conditionally render if bankName exists
-                <p className="mt-1 text-main font-medium">
+                <p className="mt-1 text-main dark:text-gray-300">
                   {currentRecipient.bankName}
                 </p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray">
+              <label className="block text-sm font-semibold text-gray dark:text-white">
                 Address
               </label>
               {currentRecipient.address && ( // Conditionally render if address exists
-                <p className="mt-1 text-main font-medium">
+                <p className="mt-1 text-main dark:text-gray-300">
                   {currentRecipient.address}
                 </p>
               )}
@@ -1197,25 +1197,25 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
           <div className="mb-4">
             <label
               htmlFor="nickname"
-              className="block text-sm font-semibold text-gray mb-1"
+              className="block text-sm font-semibold text-gray dark:text-gray-300 mb-1"
             >
               Account nickname
             </label>
             <input
               type="text"
               id="nickname"
-              className="bg-white text-main rounded-lg border border-lightborder focus:outline-none focus:ring-main focus:border-main block w-full py-3 px-4"
+              className="autofill:bg-transparent dark:bg-transparent w-full rounded-lg py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white"
               placeholder="Enter nickname"
               maxLength={40}
               value={nicknameInput}
               onChange={(e) => setNicknameInput(e.target.value)}
             />
-            <p className="mt-1 text-gray font-semibold text-xs">
+            <p className="mt-2 text-gray dark:text-gray-300 font-semibold text-xs">
               {nicknameInput.length}/40
             </p>
           </div>
           <button
-            className="bg-primary text-secondary font-medium rounded-full px-6 py-3 text-center w-full mt-4"
+            className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 text-center w-full mt-4 cursor-pointer transition-colors duration-500 ease-in-out"
             onClick={handleSaveNickname}
           >
             Save

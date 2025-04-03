@@ -388,11 +388,11 @@ export default function RecipientsPage() {
     <section className="Beneficiaries-Page py-10">
       <div className="container mx-auto">
         <div className="mb-8 flex items-center justify-between ">
-          <h1 className="text-3xl font-semibold text-main">Recipients</h1>
+          <h1 className="text-3xl font-semibold text-mainheading dark:text-white">Recipients</h1>
           {/* Conditionally render in small screen */}
           {isSmallScreen && ( // Conditionally render based on isSmallScreen state
             <button
-              className="bg-primary text-secondary font-medium px-4 py-1 rounded-full"
+              className="bg-primary text-neutral-900 font-medium px-4 py-1 rounded-full"
               onClick={handleAddRecipientClick} // Add onClick handler for small screen button
             >
               Add
@@ -403,11 +403,11 @@ export default function RecipientsPage() {
         <div className="flex items-center space-x-4 mb-6">
           <div className="relative flex-1">
             <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-              <FiSearch className="h-5 w-5 text-gray" aria-hidden="true" />
+              <FiSearch className="h-5 w-5 text-neutral-900 dark:text-white" aria-hidden="true" />
             </div>
             <input
               type="text"
-              className="w-full rounded-full py-3 pl-12 pr-3 border transition-shadow ease-in-out duration-300 border-[#c9cbce] hover:shadow-color" // Increased pr-10 to accommodate cancel icon
+              className="w-full rounded-full py-3 pl-12 pr-3 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white" // Increased pr-10 to accommodate cancel icon
               placeholder="Search existing recipients"
               value={searchTerm}
               onChange={handleSearchChange}
@@ -415,7 +415,7 @@ export default function RecipientsPage() {
             {searchTerm && ( // Conditionally render the cancel icon
               <button
                 onClick={clearSearchTerm}
-                className="absolute inset-y-0 right-3 flex items-center text-gray hover:text-main focus:outline-none" // Position cancel icon
+                className="absolute inset-y-0 right-3 flex items-center text-neutral-900 dark:text-primary focus:outline-none" // Position cancel icon
               >
                 <MdCancel size={24} aria-hidden="true" />
               </button>
@@ -424,7 +424,7 @@ export default function RecipientsPage() {
           {!isSmallScreen && (
             <button
               type="button"
-              className="inline-flex items-center px-10 py-3 border border-primary rounded-full font-medium text-primary focus:outline-none focus:ring-primary focus:border-primary cursor-pointer"
+              className="inline-flex items-center space-x-3 py-3 px-4 font-medium rounded-full transition duration-200 mb-2 bg-primary text-neutral-900"
               onClick={handleAddRecipientClick}
             >
               Add recipient
@@ -435,10 +435,10 @@ export default function RecipientsPage() {
         {filteredRecipients.length > 0 ? (
           <div>
             <div>
-              <h3 className="text-gray font-medium relative after:content-[''] after:block after:w-full after:h-[1px] after:rounded-full after:bg-gray/20 after:mt-1">
+              <h3 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
                 All
               </h3>
-              <div className="pt-4 space-y-2">
+              <div className="space-y-2">
                 {filteredRecipients.map((recipient) => (
                   <RecipientList
                     key={recipient._id}
@@ -453,33 +453,33 @@ export default function RecipientsPage() {
         ) : (
           <div>
             <div>
-              <h3 className="text-gray font-medium relative after:content-[''] after:block after:w-full after:h-[1px] after:rounded-full after:bg-gray/20 after:mt-1">
+              <h3 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
                 Can't find your recipient?
               </h3>
 
               <div
-                className="mt-4 hover:bg-lightgray p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer"
+                className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointerr"
                 onClick={handleAddRecipientClick}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <div className="w-12 h-12 rounded-full bg-lightborder flex items-center justify-center relative">
-                      <CiBank size={24} />
+                    <div className="w-12 h-12 rounded-full bg-lightborder dark:bg-secondarybox flex items-center justify-center relative">
+                      <CiBank size={24} className="text-neutral-900 dark:text-white"/>
                       <div className="absolute bottom-0 right-0 w-4 h-4 rounded-full overflow-hidden">
                         <FaCirclePlus className="text-green-400 bg-white" />
                       </div>
                     </div>
                     <div className="ml-4">
-                      <h5 className="font-medium text-main capitalize">
+                      <h5 className="font-medium text-neutral-900 dark:text-white text-sm md:text-base">
                         Enter their bank detials
                       </h5>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-xs md:text-sm text-gray-500 dark:text-gray-300">
                         you'll need their acoount information
                       </p>
                     </div>
                   </div>
                   <div className="">
-                    <IoIosArrowForward className="h-5 w-5 text-gray-500" />
+                    <IoIosArrowForward className="h-5 w-5 text-neutral-900 dark:text-white" />
                   </div>
                 </div>
               </div>

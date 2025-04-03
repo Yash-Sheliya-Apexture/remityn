@@ -66,17 +66,25 @@ const MenuItem: React.FC<MenuItemProps> = ({
   href, // Destructure the href prop
 }) => {
   const menuItemContent = (
-    <div className="flex items-center p-4 hover:bg-lightgray rounded-xl gap-4 cursor-pointer group">
-      <div className="bg-lightborder p-3 rounded-full">{icon}</div>
+    <div className="flex items-center gap-4 hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer group">
+      <div className="bg-lightborder dark:bg-secondarybox p-3 rounded-full">
+        {icon}
+      </div>
       <div className="flex-grow">
-        <div className="font-medium leading-relaxed lg:text-xl">{label}</div>
+        <div className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-xl">
+          {label}
+        </div>
         {description && (
-          <div className="text-sm text-gray-500">{description}</div>
+          <div className="text-sm text-gray-500 dark:text-gray-300 mt-1">
+            {description}
+          </div>
         )}
       </div>
 
       {hasChevron && (
-        <GoChevronRight className="size-6 text-gray group-hover:translate-x-2.5 font-medium transition-transform ease-in-out duration-300" />
+        <div className="ml-4">
+          <GoChevronRight size={24} className="text-neutral-900 dark:text-white group-hover:translate-x-2.5 font-medium transition-transform ease-in-out duration-300" />
+        </div>
       )}
     </div>
   );
@@ -84,10 +92,12 @@ const MenuItem: React.FC<MenuItemProps> = ({
   if (href) {
     // If href prop is provided, render MenuItem as a Link
     return (
-      <Link href={href} passHref>
-        {/* Wrap the menuItemContent with an <a> tag from Link */}
-        {menuItemContent}
-      </Link>
+      <div>
+        <Link href={href} passHref>
+          {/* Wrap the menuItemContent with an <a> tag from Link */}
+          {menuItemContent}
+        </Link>
+      </div>
     );
   } else {
     // If no href prop, render as a div with onClick handler if provided
