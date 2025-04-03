@@ -12718,7 +12718,7 @@ const CustomDropdown = ({ label, value, onChange, options }) => {
 
 // Copy to clipboard hook
 const useCopyToClipboard = () => {
-     const [isCopied, setIsCopied] = useState(false);
+    const [isCopied, setIsCopied] = useState(false);
 
     const copy = async (text) => {
         if (!navigator?.clipboard) {
@@ -13035,515 +13035,530 @@ const AdminPaymentsPage = () => {
                             </tbody>
                         </table>
                     </div>
-                 </div>
-             </div>
-         );
-     }
+                </div>
+            </div>
+        );
+    }
 
 
-     return (
-         <div className="container mx-auto px-4 py-8 max-w-7xl relative">
-             <div className="space-y-6">
-                 <div className="flex justify-between items-start">
-                     <h1 className="text-2xl font-bold text-main">Payment Management</h1>
-                     <div className="flex gap-3 items-start">
-                         {/* Payment Filter */}
-                         <div className="relative">
-                             <input
-                                 type="text"
-                                 value={searchTerm}
-                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                 placeholder="Search by User Name or Email..."
-                                 className="pl-10 pr-4 py-3 border border-gray-300 rounded-lg w-64"
-                             />
-                             <Search className="absolute left-3 top-3.5 text-gray-400" size={20} />
-                         </div>
-                         <div>
-                             <button
-                                 onClick={() => setShowFilterModal(true)}
-                                 className="flex items-center cursor-pointer gap-2 bg-primary text-secondary font-medium text-lg px-8 py-2 rounded-lg hover:bg-primary-hover transition-colors"
-                             >
-                                 <Filter size={18} />
-                                 Filters
-                             </button>
-                         </div>
-                     </div>
-                 </div>
+    return (
+        <div className="px-4 py-8 relative">
+            <div className="space-y-6">
+                <div className="flex justify-between items-start">
+                    <h1 className="text-2xl font-bold text-main">Payment Management</h1>
+                    <div className="flex gap-3 items-start">
+                        {/* Payment Filter */}
+                        <div className="relative">
+                            <input
+                                type="text"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                placeholder="Search by User Name or Email..."
+                                className="pl-10 pr-4 py-3 border border-gray-300 rounded-lg w-64"
+                            />
+                            <Search className="absolute left-3 top-3.5 text-gray-400" size={20} />
+                        </div>
+                        <div>
+                            <button
+                                onClick={() => setShowFilterModal(true)}
+                                className="flex items-center cursor-pointer gap-2 bg-primary text-secondary font-medium text-lg px-8 py-2 rounded-lg hover:bg-primary-hover transition-colors"
+                            >
+                                <Filter size={18} />
+                                Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
-                 {/* Success Message */}
-                 <AnimatePresence>
-                     {successMessage && (
-                         <motion.div
-                             initial={{ opacity: 0, y: -10 }}
-                             animate={{ opacity: 1, y: 0 }}
-                             exit={{ opacity: 0, y: -10 }}
-                             className="bg-green-50 border-l-4 border-green-500 p-4 rounded-md shadow"
-                         >
-                             <div className="flex items-start">
-                                 <div className="flex-shrink-0">
-                                     <Check className="h-5 w-5 text-green-500" />
-                                 </div>
-                                 <div className="ml-3">
-                                     <p className="text-sm text-green-700">{successMessage}</p>
-                                 </div>
-                                 <button
-                                     onClick={() => setSuccessMessage(null)}
-                                     className="ml-auto flex-shrink-0 text-green-500 hover:text-green-700"
-                                 >
-                                     <X size={18} />
-                                 </button>
-                             </div>
-                         </motion.div>
-                     )}
-                 </AnimatePresence>
+                {/* Success Message */}
+                <AnimatePresence>
+                    {successMessage && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="bg-green-50 border-l-4 border-green-500 p-4 rounded-md shadow"
+                        >
+                            <div className="flex items-start">
+                                <div className="flex-shrink-0">
+                                    <Check className="h-5 w-5 text-green-500" />
+                                </div>
+                                <div className="ml-3">
+                                    <p className="text-sm text-green-700">{successMessage}</p>
+                                </div>
+                                <button
+                                    onClick={() => setSuccessMessage(null)}
+                                    className="ml-auto flex-shrink-0 text-green-500 hover:text-green-700"
+                                >
+                                    <X size={18} />
+                                </button>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
-                 {/* Error Message */}
-                 <AnimatePresence>
-                     {error && (
-                         <motion.div
-                             initial={{ opacity: 0, y: -10 }}
-                             animate={{ opacity: 1, y: 0 }}
-                             exit={{ opacity: 0, y: -10 }}
-                             className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md shadow"
-                         >
-                             <div className="flex items-start">
-                                 <div className="flex-shrink-0">
-                                     <X className="h-5 w-5 text-red-500" />
-                                 </div>
-                                 <div className="ml-3">
-                                     <p className="text-sm text-red-700">{error}</p>
-                                 </div>
-                                 <button
-                                     onClick={() => setError(null)}
-                                     className="ml-auto flex-shrink-0 text-red-500 hover:text-red-700"
-                                 >
-                                     <X size={18} />
-                                 </button>
-                             </div>
-                         </motion.div>
-                     )}
-                 </AnimatePresence>
-
-
-                 {/* Payments Table */}
-                 <div
-                     className="bg-white rounded-xl shadow-lg border border-gray-300 overflow-hidden"
-                 >
-                     <div className="overflow-x-auto">
-                         <table className="min-w-full">
-                             <thead>
-                                 <tr className="bg-white border-b border-gray-300">
-                                     <th className="px-6 py-4 text-left font-medium text-gray-500 tracking-wider">
-                                         
-                                             <button
-                                                 onClick={() => toggleSort('_id')}
-                                                 className="flex items-center gap-1 hover:text-primary uppercase"
-                                             >
-                                                 Payment ID
-                                                 {sortField === '_id' && (
-                                                     <ArrowDownUp size={18} className={sortDirection === 'desc' ? 'rotate-180' : ''} />
-                                                 )}
-                                             </button>
-                                     </th>
-                                     <th className="px-6 py-4 text-left font-medium text-gray-500  tracking-wider">
-                                         
-                                             <button
-                                                 onClick={() => toggleSort('user')}
-                                                 className="flex items-center gap-1 hover:text-primary uppercase"
-                                             >
-                                                 User
-                                                 {sortField === 'user' && (
-                                                     <ArrowDownUp size={18} className={sortDirection === 'desc' ? 'rotate-180' : ''} />
-                                                 )}
-                                             </button>
-                                     </th>
-                                     <th className="px-6 py-4 text-left font-medium text-gray-500 tracking-wider">
-                                         
-                                             <button
-                                                 onClick={() => toggleSort('amount')}
-                                                 className="flex items-center gap-1 hover:text-primary uppercase"
-                                             >
-                                                 Amount
-                                                 {sortField === 'amount' && (
-                                                     <ArrowDownUp size={18} className={sortDirection === 'desc' ? 'rotate-180' : ''} />
-                                                 )}
-                                             </button>
-                                     </th>
-                                     <th className="px-6 py-4 text-left font-medium text-gray-500 uppercase tracking-wider">Currency</th>
-                                     <th className="px-6 py-4 text-left font-medium text-gray-500 uppercase tracking-wider">Reference</th>
-                                     <th className="px-6 py-4 text-left font-medium text-gray-500  tracking-wider">
-                                         
-                                             <button
-                                                 onClick={() => toggleSort('status')}
-                                                 className="flex items-center gap-1 hover:text-primary uppercase"
-                                             >
-                                                 Status
-                                                 {sortField === 'status' && (
-                                                     <ArrowDownUp size={18} className={sortDirection === 'desc' ? 'rotate-180' : ''} />
-                                                 )}
-                                             </button>
-                                     </th>
-                                     <th className="px-6 py-4 text-left font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                                 </tr>
-                             </thead>
-                             <tbody className="divide-y divide-gray-200">
-                                 {filteredPayments.length === 0 ? (
-                                     <tr>
-                                         <td colSpan="7" className="px-6 py-10 text-center text-gray-500">
-                                             No payments found matching your filters.
-                                         </td>
-                                     </tr>
-                                 ) : (
-                                     filteredPayments.map((payment, index) => (
-                                         <motion.tr
-                                             key={payment._id}
-                                             initial={{ opacity: 0, y: 20 }}
-                                             animate={{ opacity: 1, y: 0 }}
-                                             transition={{ delay: index * 0.05 }}
-                                         >
-                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                 <span className="font-medium text-main">{payment._id.substring(0, 10)}...</span>
-                                             </td>
-                                             <td className="px-6 py-4">
-                                                 <div className="flex flex-col">
-                                                     <span className="font-medium capitalize">{payment.user?.fullName || 'N/A'}</span>
-                                                     <span className="text-sm text-gray-500">{payment.user?.email || 'N/A'}</span>
-                                                 </div>
-                                             </td>
-                                             <td className="px-6 py-4 whitespace-nowrap font-medium">
-                                                 {payment.amountToAdd}
-                                             </td>
-                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                 {payment.payInCurrency?.code || 'N/A'}
-                                             </td>
-                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                 <span className="text-gray-600">{payment.referenceCode || 'N/A'}</span>
-                                             </td>
-                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                 <span className={`inline-flex items-center px-4 py-2 w-28 font-medium rounded-md capitalize ${getStatusColor(payment.status)}`}>
-                                                     {payment.status}
-                                                 </span>
-                                             </td>
-                                             <td className="px-6 py-4 whitespace-nowrap font-medium">
-                                                 <motion.button
-                                                     onClick={() => handleEditPayment(payment)}
-                                                     className="bg-white border border-error cursor-pointer rounded-md px-6 py-2 font-medium text-error focus:outline-none flex items-center"
-                                                 >
-                                                     <Edit size={18} className="mr-1" />
-                                                     Edit
-                                                 </motion.button>
-                                             </td>
-                                         </motion.tr>
-                                     ))
-                                 )}
-                             </tbody>
-                         </table>
-                     </div>
-                 </div>
-             </div>
-
-             {/* Edit Payment Modal */}
-             <AnimatePresence>
-                 {isEditModalOpen && selectedPaymentForEdit && (
-                     <motion.div
-                         ref={editModalRef}
-                         initial={{ opacity: 0 }}
-                         animate={{ opacity: 1 }}
-                         exit={{ opacity: 0 }}
-                         className="fixed inset-0 bg-black/50 backdrop-blur-xs flex justify-center items-center z-50"
-                     >
-                         <motion.div
-                             initial={{ y: 50, opacity: 0 }}
-                             animate={{ y: 0, opacity: 1 }}
-                             exit={{ y: 50, opacity: 0 }}
-                             className="bg-white rounded-lg p-6 shadow-xl w-full max-w-md"
-                         >
-                             <div className="mb-6">
-                                 <h2 className="text-xl font-semibold text-main">Edit Payment Status</h2>
-                             </div>
-
-                             <div className="space-y-4">
-                                 <div className='bg-green/10 p-3 rounded-md flex items-center justify-between'>
-                                     <div>
-                                         <label htmlFor="paymentId" className="block font-semibold text-main mb-1">Payment ID : </label>
-                                         <span className="font-medium text-gray-700">{selectedPaymentForEdit._id}</span>
-                                     </div>
-                                     <button
-                                         onClick={() => copyPaymentId(selectedPaymentForEdit._id)}
-                                         className="p-2 rounded hover:bg-gray-100 focus:outline-none"
-                                         aria-label="Copy Payment ID"
-                                     >
-                                         <Copy className="size-4 text-gray-500" />
-                                     </button>
-                                 </div>
-                                 {isPaymentIdCopied && <p className="text-sm text-green-500 mt-1">Payment ID copied!</p>}
-
-                                 <div className='bg-green/10 p-3 rounded-md flex items-center justify-between'>
-                                     <div>
-                                         <label htmlFor="referenceCode" className="block font-semibold text-main mb-1">Reference Code</label>
-                                         <span className="font-medium text-gray-700">{selectedPaymentForEdit.referenceCode || 'N/A'}</span>
-                                     </div>
-                                     <button
-                                         onClick={() => copyReferenceCode(selectedPaymentForEdit.referenceCode || '')}
-                                         className="p-2 rounded hover:bg-gray-100 focus:outline-none"
-                                         aria-label="Copy Reference Code"
-                                     >
-                                         <Copy className="size-4 text-gray-500" />
-                                     </button>
-                                 </div>
-                                 {isReferenceCodeCopied && <p className="text-sm text-green-500 mt-1">Reference Code copied!</p>}
-
-                                 <div className='bg-green/10 p-3 rounded-md'>
-                                     <label htmlFor="amountToAdd" className="block font-semibold text-main mb-1">Amount</label>
-                                     <span className="font-medium text-gray-700">{selectedPaymentForEdit.amountToAdd}</span>
-                                 </div>
-                                 <div className='bg-green/10 p-3 rounded-md flex items-center'>
-                                     <label htmlFor="currency" className="block font-semibold text-main mb-1 mr-2">Currency</label>
-                                     <span className="font-medium text-gray-700">{selectedPaymentForEdit.payInCurrency?.code || 'N/A'}</span>
-                                 </div>
-                                 <div>
-                                     <CustomDropdown
-                                         label="Status"
-                                         value={editFormData.status || null}
-                                         onChange={handleStatusDropdownChange}
-                                         options={statusOptions.filter(opt => opt !== 'all')}
-                                     />
-                                 </div>
-                             </div>
-
-                             <div className="mt-6 flex justify-end space-x-2">
-                                 <button
-                                     onClick={() => setIsEditModalOpen(false)}
-                                     className="px-4 w-full py-3 cursor-pointer bg-gray-300 text-gray-700 rounded-md focus:outline-none"
-                                 >
-                                     Cancel
-                                 </button>
-                                 <button
-                                     onClick={handleSaveEdit}
-                                     disabled={editLoading}
-                                     className={`px-4 py-3 w-full cursor-pointer bg-primary text-secondary rounded-md hover:bg-primary-hover focus:outline-none ${editLoading ? 'opacity-50 cursor-wait' : ''}`}
-                                 >
-                                     {editLoading ? 'Saving...' : 'Save'}
-                                 </button>
-                             </div>
-                         </motion.div>
-                     </motion.div>
-                 )}
-             </AnimatePresence>
+                {/* Error Message */}
+                <AnimatePresence>
+                    {error && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md shadow"
+                        >
+                            <div className="flex items-start">
+                                <div className="flex-shrink-0">
+                                    <X className="h-5 w-5 text-red-500" />
+                                </div>
+                                <div className="ml-3">
+                                    <p className="text-sm text-red-700">{error}</p>
+                                </div>
+                                <button
+                                    onClick={() => setError(null)}
+                                    className="ml-auto flex-shrink-0 text-red-500 hover:text-red-700"
+                                >
+                                    <X size={18} />
+                                </button>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
 
-             {/* Filter Sidebar */}
-             <AnimatePresence>
-                 {showFilterModal && (
-                     <motion.div
-                         ref={filterModalRef}
-                         initial={{ opacity: 0, x: '100%' }}
-                         animate={{ opacity: 1, x: '0%' }}
-                         exit={{ opacity: 0, x: '100%' }}
-                         transition={{ duration: 0.3 }}
-                         className="fixed top-0 right-0 h-full w-96 bg-white shadow-xl z-50 border-l border-gray-200 overflow-y-auto"
-                     >
-                         <div className="p-6 border-b border-gray-200">
-                             <div className="flex justify-between items-center">
-                                 <h3 className="text-lg font-medium text-gray-900">Filter Payments</h3>
-                                 <button
-                                     onClick={() => setShowFilterModal(false)}
-                                     className="text-gray-400 hover:text-gray-500"
-                                 >
-                                     <X size={20} />
-                                 </button>
-                             </div>
-                         </div>
+                {/* Payments Table */}
+                <div
+                    className="bg-white rounded-xl shadow-lg border border-gray-300 overflow-hidden"
+                >
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full">
+                            <thead>
+                                <tr className="bg-white border-b border-gray-300">
+                                    <th className="px-6 py-4 text-left font-medium text-gray-500 tracking-wider">
 
-                         <div className="p-6 space-y-6">
-                             {/* Payment ID Filter */}
-                             <div>
-                                 <label className="block font-medium text-gray-700 mb-1">
-                                     Payment ID
-                                 </label>
-                                 <input
-                                     type="text"
-                                     value={paymentIdFilter}
-                                     onChange={(e) => setPaymentIdFilter(e.target.value)}
-                                     placeholder="Filter by Payment ID"
-                                     className="mt-1 block px-4 focus:outline-none py-3 w-full border-gray-300 rounded-md border sm:text-sm"
-                                 />
-                             </div>
-                             {/* Amount Filter */}
-                             <div>
-                                 <label className="block font-medium text-gray-700 mb-1">
-                                     Amount
-                                 </label>
-                                 <input
-                                     type="number"
-                                     value={amountFilter}
-                                     onChange={(e) => setAmountFilter(e.target.value)}
-                                     placeholder="Filter by Amount"
-                                     className="mt-1 block px-4 py-3 focus:outline-none border w-full border-gray-300 rounded-md sm:text-sm"
-                                 />
-                             </div>
+                                        <button
+                                            onClick={() => toggleSort('_id')}
+                                            className="flex items-center gap-1 hover:text-primary uppercase"
+                                        >
+                                            Payment ID
+                                            {sortField === '_id' && (
+                                                <ArrowDownUp size={18} className={sortDirection === 'desc' ? 'rotate-180' : ''} />
+                                            )}
+                                        </button>
+                                    </th>
+                                    <th className="px-6 py-4 text-left font-medium text-gray-500  tracking-wider">
 
-                             {/* Currency Filter - Custom Dropdown */}
-                             <CustomDropdown
-                                 label="Currency"
-                                 value={currencyFilter === 'all' ? null : currencyFilter}
-                                 onChange={setCurrencyFilter}
-                                 options={currencyOptions}
-                             />
+                                        <button
+                                            onClick={() => toggleSort('user')}
+                                            className="flex items-center gap-1 hover:text-primary uppercase"
+                                        >
+                                            User
+                                            {sortField === 'user' && (
+                                                <ArrowDownUp size={18} className={sortDirection === 'desc' ? 'rotate-180' : ''} />
+                                            )}
+                                        </button>
+                                    </th>
+                                    <th className="px-6 py-4 text-left font-medium text-gray-500 tracking-wider">
 
-                             {/* Status Filter - Custom Dropdown */}
-                             <CustomDropdown
-                                 label="Status"
-                                 value={statusFilter === 'all' ? null : statusFilter}
-                                 onChange={setStatusFilter}
-                                 options={statusOptions}
-                             />
+                                        <button
+                                            onClick={() => toggleSort('amount')}
+                                            className="flex items-center gap-1 hover:text-primary uppercase"
+                                        >
+                                            Amount
+                                            {sortField === 'amount' && (
+                                                <ArrowDownUp size={18} className={sortDirection === 'desc' ? 'rotate-180' : ''} />
+                                            )}
+                                        </button>
+                                    </th>
+                                    <th className="px-6 py-4 text-left font-medium text-gray-500 uppercase tracking-wider">Currency</th>
+                                    <th className="px-6 py-4 text-left font-medium text-gray-500 uppercase tracking-wider">Reference</th>
+                                    <th className="px-6 py-4 text-left font-medium text-gray-500  tracking-wider">
+
+                                        <button
+                                            onClick={() => toggleSort('status')}
+                                            className="flex items-center gap-1 hover:text-primary uppercase"
+                                        >
+                                            Status
+                                            {sortField === 'status' && (
+                                                <ArrowDownUp size={18} className={sortDirection === 'desc' ? 'rotate-180' : ''} />
+                                            )}
+                                        </button>
+                                    </th>
+                                    <th className="px-6 py-4 text-left font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-200">
+                                {filteredPayments.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="7" className="px-6 py-10 text-center text-gray-500">
+                                            No payments found matching your filters.
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    filteredPayments.map((payment, index) => (
+                                        <motion.tr
+                                            key={payment._id}
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: index * 0.05 }}
+                                        >
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <span className="font-medium text-main">{payment._id.substring(0, 10)}...</span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex flex-col">
+                                                    <span className="font-medium capitalize">{payment.user?.fullName || 'N/A'}</span>
+                                                    <span className="text-sm text-gray-500">{payment.user?.email || 'N/A'}</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap font-medium">
+                                                {payment.amountToAdd}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                {payment.payInCurrency?.code || 'N/A'}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <span className="text-gray-600">{payment.referenceCode || 'N/A'}</span>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <span className={`inline-flex items-center px-4 py-2 w-28 font-medium rounded-md capitalize ${getStatusColor(payment.status)}`}>
+                                                    {payment.status}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap font-medium">
+                                                <motion.button
+                                                    onClick={() => handleEditPayment(payment)}
+                                                    className="bg-white border border-error cursor-pointer rounded-md px-6 py-2 font-medium text-error focus:outline-none flex items-center"
+                                                >
+                                                    <Edit size={18} className="mr-1" />
+                                                    Edit
+                                                </motion.button>
+                                            </td>
+                                        </motion.tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            {/* Edit Payment Modal */}
+            <AnimatePresence>
+                {isEditModalOpen && selectedPaymentForEdit && (
+                    <motion.div
+                        ref={editModalRef}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/50 backdrop-blur-xs flex justify-center items-center z-50"
+                    >
+                        <motion.div
+                            initial={{ y: 50, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            exit={{ y: 50, opacity: 0 }}
+                            className="bg-white rounded-lg p-6 shadow-xl w-full max-w-md"
+                        >
+                            <div className="mb-6">
+                                <h2 className="text-xl font-semibold text-main">Edit Payment Status</h2>
+                            </div>
+
+                            <div className="space-y-4">
+                                <div className='bg-green/10 p-3 rounded-md flex items-center justify-between'>
+                                    <div>
+                                        <label htmlFor="paymentId" className="block font-semibold text-main mb-1">Payment ID : </label>
+                                        <span className="font-medium text-gray-700">{selectedPaymentForEdit._id}</span>
+                                    </div>
+                                    <button
+                                        onClick={() => copyPaymentId(selectedPaymentForEdit._id)}
+                                        className="p-2 rounded hover:bg-gray-100 focus:outline-none"
+                                        aria-label="Copy Payment ID"
+                                    >
+                                        <Copy className="size-4 text-gray-500" />
+                                    </button>
+                                </div>
+                                {isPaymentIdCopied && <p className="text-sm text-green-500 mt-1">Payment ID copied!</p>}
+
+                                <div className='bg-green/10 p-3 rounded-md flex items-center justify-between'>
+                                    <div>
+                                        <label htmlFor="referenceCode" className="block font-semibold text-main mb-1">Reference Code</label>
+                                        <span className="font-medium text-gray-700">{selectedPaymentForEdit.referenceCode || 'N/A'}</span>
+                                    </div>
+                                    <button
+                                        onClick={() => copyReferenceCode(selectedPaymentForEdit.referenceCode || '')}
+                                        className="p-2 rounded hover:bg-gray-100 focus:outline-none"
+                                        aria-label="Copy Reference Code"
+                                    >
+                                        <Copy className="size-4 text-gray-500" />
+                                    </button>
+                                </div>
+                                {isReferenceCodeCopied && <p className="text-sm text-green-500 mt-1">Reference Code copied!</p>}
+
+                                <div className='bg-green/10 p-3 rounded-md'>
+                                    <label htmlFor="amountToAdd" className="block font-semibold text-main mb-1">Amount</label>
+                                    <span className="font-medium text-gray-700">{selectedPaymentForEdit.amountToAdd}</span>
+                                </div>
+                                <div className='bg-green/10 p-3 rounded-md flex items-center'>
+                                    <label htmlFor="currency" className="block font-semibold text-main mb-1 mr-2">Currency</label>
+                                    <span className="font-medium text-gray-700">{selectedPaymentForEdit.payInCurrency?.code || 'N/A'}</span>
+                                </div>
+                                <div>
+                                    <CustomDropdown
+                                        label="Status"
+                                        value={editFormData.status || null}
+                                        onChange={handleStatusDropdownChange}
+                                        options={statusOptions.filter(opt => opt !== 'all')}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="mt-6 flex justify-end space-x-2">
+                                <div
+                                    onClick={() => setIsEditModalOpen(false)}
+                                    className="px-4 w-full py-3 cursor-pointer bg-gray-300 text-gray-700 rounded-md focus:outline-none"
+                                >
+                                    Cancel
+                                </div>
+                                <div
+                                    onClick={handleSaveEdit}
+                                    disabled={editLoading}
+                                    className={`px-4 py-3 w-full cursor-pointer bg-primary text-secondary rounded-md hover:bg-primary-hover focus:outline-none ${editLoading ? 'opacity-50 cursor-wait' : ''}`}
+                                >
+                                    {editLoading ? 'Saving...' : 'Save'}
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
 
-                             {/* Date Range Filter */}
-                             <div>
-                                 <label className="block font-medium text-gray-700 mb-1">
-                                     Date Range
-                                 </label>
-                                 <div className="relative">
-                                     <button className='w-full'>
-                                         <button
-                                             type="button"
-                                             onClick={() => setShowCalendar(!showCalendar)}
-                                             className="flex items-center w-full justify-between border border-gray-300 rounded-md px-4 py-3 bg-white font-medium text-gray-700 focus:outline-none"
-                                         >
-                                             <span>
-                                                 {dateRange.from ? (
-                                                     dateRange.to ? (
-                                                         `${format(dateRange.from, 'MMM dd, yyyy')} - ${format(dateRange.to, 'MMM dd, yyyy')}`
-                                                     ) : (
-                                                         `From ${format(dateRange.from, 'MMM dd, yyyy')}`
-                                                     )
-                                                 ) : dateRange.to ? (
-                                                     `Until ${format(dateRange.to, 'MMM dd, yyyy')}`
-                                                 ) : (
-                                                     'Select date range'
-                                                 )}
-                                             </span>
-                                             <CalendarIcon className="size-5 text-gray-400" />
-                                         </button>
-                                     </button>
+            {/* Filter Sidebar Overlay */}
+            <AnimatePresence>
+                {showFilterModal && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 0.5 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.4 }}
+                        className="fixed inset-0 bg-black z-40 backdrop-blur-sm"
+                        onClick={() => setShowFilterModal(false)} // Close sidebar when clicking the overlay
+                    />
+                )}
+            </AnimatePresence>
 
-                                     <AnimatePresence>
-                                         {showCalendar && (
-                                             <motion.div
-                                                 initial={{ opacity: 0, y: 10 }}
-                                                 animate={{ opacity: 1, y: 0 }}
-                                                 exit={{ opacity: 0, y: 10 }}
-                                                 className="absolute mt-2 bg-white p-4 rounded-md shadow-lg z-10 border border-gray-300"
-                                             >
-                                                 <Calendar
-                                                     mode="range"
-                                                     selected={dateRange}
-                                                     onSelect={(range) => {
-                                                         setDateRange(range);
-                                                         setShowCalendar(false);
-                                                     }}
-                                                 />
-                                                 {(dateRange.from || dateRange.to) && (
-                                                     <div className="mt-2 flex justify-end">
-                                                         <button
-                                                             type="button"
-                                                             onClick={() => {
-                                                                 setDateRange({ from: null, to: null });
-                                                                 setShowCalendar(false);
-                                                             }}
-                                                             className="text-sm text-error"
-                                                         >
-                                                             Clear dates
-                                                         </button>
-                                                     </div>
-                                                 )}
-                                             </motion.div>
-                                         )}
-                                     </AnimatePresence>
-                                 </div>
-                             </div>
-                         </div>
 
-                         <div className="px-6 flex justify-end gap-3">
-                             <button
-                                 type="button"
-                                 onClick={clearFilters}
-                                 className="text-gray-700 bg-white border cursor-pointer border-gray-300 rounded-md px-6 py-3 font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                             >
-                                 Clear All
-                             </button>
-                             <button
-                                 type="button"
-                                 onClick={() => setShowFilterModal(false)}
-                                 className="inline-flex justify-center px-6 py-3  cursor-pointer text-secondary font-medium bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                             >
-                                 Apply Filters
-                             </button>
-                         </div>
-                         {/* Applied Filters Display inside Sidebar */}
-                         <div className="px-6 py-4">
-                             <h4 className="font-semibold text-gray-800 mb-3">Applied Filters</h4>
-                             <div className="space-y-2">
-                                 {searchTerm && (
-                                     <div className="bg-indigo-50 text-indigo-700 rounded-full px-3 py-1 text-sm flex items-center justify-between">
-                                         <span>User Search: {searchTerm}</span>
-                                         <button onClick={() => setSearchTerm('')} className="ml-2">
-                                             <X size={16} />
-                                         </button>
-                                     </div>
-                                 )}
-                                 {paymentIdFilter && (
-                                     <div className="bg-indigo-50 text-indigo-700 rounded-full px-3 py-1 text-sm flex items-center justify-between">
-                                         <span>Payment ID: {paymentIdFilter}</span>
-                                         <button onClick={() => setPaymentIdFilter('')} className="ml-2">
-                                             <X size={16} />
-                                         </button>
-                                     </div>
-                                 )}
-                                 {amountFilter && (
-                                     <div className="bg-indigo-50 text-indigo-700 rounded-full px-3 py-1 text-sm flex items-center justify-between">
-                                         <span>Amount: {amountFilter}</span>
-                                         <button onClick={() => setAmountFilter('')} className="ml-2">
-                                             <X size={16} />
-                                         </button>
-                                     </div>
-                                 )}
-                                 {currencyFilter && currencyFilter !== 'all' && (
-                                     <div className="bg-indigo-50 text-indigo-700 rounded-full px-3 py-1 text-sm flex items-center justify-between">
-                                         <span>Currency: {currencyFilter}</span>
-                                         <button onClick={() => setCurrencyFilter('all')} className="ml-2">
-                                             <X size={16} />
-                                         </button>
-                                     </div>
-                                 )}
-                                 {statusFilter !== 'all' && (
-                                     <div className="bg-indigo-50 text-indigo-700 rounded-full px-3 py-1 text-sm flex items-center justify-between">
-                                         <span>Status: {statusFilter}</span>
-                                         <button onClick={() => setStatusFilter('all')} className="ml-2">
-                                             <X size={16} />
-                                         </button>
-                                     </div>
-                                 )}
-                                 {(dateRange.from || dateRange.to) && (
-                                     <div className="bg-indigo-50 text-indigo-700 rounded-full px-3 py-1 text-sm flex items-center justify-between">
-                                         <span>Date: {dateRange.from ? format(dateRange.from, 'MMM dd') : ''}
-                                             {dateRange.from && dateRange.to ? ' - ' : ''}
-                                             {dateRange.to ? format(dateRange.to, 'MMM dd') : ''}
-                                         </span>
-                                         <button onClick={() => setDateRange({ from: null, to: null })} className="ml-2">
-                                             <X size={16} />
-                                         </button>
-                                     </div>
-                                 )}
-                             </div>
-                         </div>
-                     </motion.div>
-                 )}
-             </AnimatePresence>
-         </div >
-     );
- };
+            {/* Filter Sidebar */}
+            <div>
+                {showFilterModal && (
+                    <motion.div
+                        ref={filterModalRef}
+                        initial={{ opacity: 0, x: '100%' }}
+                        animate={{ opacity: 1, x: '0%' }}
+                        exit={{ opacity: 0, x: '100%' }}
+                        transition={{ duration: 0.3 }}
+                        className="fixed top-0 right-0 h-full w-96 bg-white shadow-xl z-50 border-l border-gray-200 overflow-y-auto"
+                    >
+                        <div className="p-6 border-b border-gray-200">
+                            <div className="flex justify-between items-center">
+                                <h3 className="text-lg font-medium text-gray-900">Filter Payments</h3>
+                                <button
+                                    onClick={() => setShowFilterModal(false)}
+                                    className="text-gray-400 hover:text-gray-500"
+                                >
+                                    <X size={20} />
+                                </button>
+                            </div>
+                        </div>
 
- export default AdminPaymentsPage;
+                        <div className="p-6 space-y-6">
+                            {/* Payment ID Filter */}
+                            <div>
+                                <label className="block font-medium text-gray-700 mb-1">
+                                    Payment ID
+                                </label>
+                                <input
+                                    type="text"
+                                    value={paymentIdFilter}
+                                    onChange={(e) => setPaymentIdFilter(e.target.value)}
+                                    placeholder="Filter by Payment ID"
+                                    className="mt-1 block px-4 focus:outline-none py-3 w-full border-gray-300 rounded-md border sm:text-sm"
+                                />
+                            </div>
+                            {/* Amount Filter */}
+                            <div>
+                                <label className="block font-medium text-gray-700 mb-1">
+                                    Amount
+                                </label>
+                                <input
+                                    type="number"
+                                    value={amountFilter}
+                                    onChange={(e) => setAmountFilter(e.target.value)}
+                                    placeholder="Filter by Amount"
+                                    className="mt-1 block px-4 py-3 focus:outline-none border w-full border-gray-300 rounded-md sm:text-sm"
+                                />
+                            </div>
+
+                            {/* Currency Filter - Custom Dropdown */}
+                            <CustomDropdown
+                                label="Currency"
+                                value={currencyFilter === 'all' ? null : currencyFilter}
+                                onChange={setCurrencyFilter}
+                                options={currencyOptions}
+                            />
+
+                            {/* Status Filter - Custom Dropdown */}
+                            <CustomDropdown
+                                label="Status"
+                                value={statusFilter === 'all' ? null : statusFilter}
+                                onChange={setStatusFilter}
+                                options={statusOptions}
+                            />
+
+
+                            {/* Date Range Filter */}
+                            <div>
+                                <label className="block font-medium text-gray-700 mb-1">
+                                    Date Range
+                                </label>
+                                <div className="relative">
+                                    <button className='w-full'>
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowCalendar(!showCalendar)}
+                                            className="flex items-center w-full justify-between border border-gray-300 rounded-md px-4 py-3 bg-white font-medium text-gray-700 focus:outline-none"
+                                        >
+                                            <span>
+                                                {dateRange.from ? (
+                                                    dateRange.to ? (
+                                                        `${format(dateRange.from, 'MMM dd, yyyy')} - ${format(dateRange.to, 'MMM dd, yyyy')}`
+                                                    ) : (
+                                                        `From ${format(dateRange.from, 'MMM dd, yyyy')}`
+                                                    )
+                                                ) : dateRange.to ? (
+                                                    `Until ${format(dateRange.to, 'MMM dd, yyyy')}`
+                                                ) : (
+                                                    'Select date range'
+                                                )}
+                                            </span>
+                                            <CalendarIcon className="size-5 text-gray-400" />
+                                        </button>
+                                    </button>
+
+                                    <AnimatePresence>
+                                        {showCalendar && (
+                                            <motion.div
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: 10 }}
+                                                className="absolute mt-2 bg-white p-4 rounded-md shadow-lg z-10 border border-gray-300"
+                                            >
+                                                <Calendar
+                                                    mode="range"
+                                                    selected={dateRange}
+                                                    onSelect={(range) => {
+                                                        setDateRange(range);
+                                                        setShowCalendar(false);
+                                                    }}
+                                                />
+                                                {(dateRange.from || dateRange.to) && (
+                                                    <div className="mt-2 flex justify-end">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                setDateRange({ from: null, to: null });
+                                                                setShowCalendar(false);
+                                                            }}
+                                                            className="text-sm text-error"
+                                                        >
+                                                            Clear dates
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="px-6 flex justify-end gap-3">
+                            <button
+                                type="button"
+                                onClick={clearFilters}
+                                className="text-gray-700 bg-white border cursor-pointer border-gray-300 rounded-md px-6 py-3 font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            >
+                                Clear All
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setShowFilterModal(false)}
+                                className="inline-flex justify-center px-6 py-3  cursor-pointer text-secondary font-medium bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            >
+                                Apply Filters
+                            </button>
+                        </div>
+                        {/* Applied Filters Display inside Sidebar */}
+                        <div className="px-6 py-4">
+                            <h4 className="font-semibold text-gray-800 mb-3">Applied Filters</h4>
+                            <div className="space-y-2">
+                                {searchTerm && (
+                                    <div className="bg-indigo-50 text-indigo-700 rounded-full px-3 py-1 text-sm flex items-center justify-between">
+                                        <span>User Search: {searchTerm}</span>
+                                        <button onClick={() => setSearchTerm('')} className="ml-2">
+                                            <X size={16} />
+                                        </button>
+                                    </div>
+                                )}
+                                {paymentIdFilter && (
+                                    <div className="bg-indigo-50 text-indigo-700 rounded-full px-3 py-1 text-sm flex items-center justify-between">
+                                        <span>Payment ID: {paymentIdFilter}</span>
+                                        <button onClick={() => setPaymentIdFilter('')} className="ml-2">
+                                            <X size={16} />
+                                        </button>
+                                    </div>
+                                )}
+                                {amountFilter && (
+                                    <div className="bg-indigo-50 text-indigo-700 rounded-full px-3 py-1 text-sm flex items-center justify-between">
+                                        <span>Amount: {amountFilter}</span>
+                                        <button onClick={() => setAmountFilter('')} className="ml-2">
+                                            <X size={16} />
+                                        </button>
+                                    </div>
+                                )}
+                                {currencyFilter && currencyFilter !== 'all' && (
+                                    <div className="bg-indigo-50 text-indigo-700 rounded-full px-3 py-1 text-sm flex items-center justify-between">
+                                        <span>Currency: {currencyFilter}</span>
+                                        <button onClick={() => setCurrencyFilter('all')} className="ml-2">
+                                            <X size={16} />
+                                        </button>
+                                    </div>
+                                )}
+                                {statusFilter !== 'all' && (
+                                    <div className="bg-indigo-50 text-indigo-700 rounded-full px-3 py-1 text-sm flex items-center justify-between">
+                                        <span>Status: {statusFilter}</span>
+                                        <button onClick={() => setStatusFilter('all')} className="ml-2">
+                                            <X size={16} />
+                                        </button>
+                                    </div>
+                                )}
+                                {(dateRange.from || dateRange.to) && (
+                                    <div className="bg-indigo-50 text-indigo-700 rounded-full px-3 py-1 text-sm flex items-center justify-between">
+                                        <span>Date: {dateRange.from ? format(dateRange.from, 'MMM dd') : ''}
+                                            {dateRange.from && dateRange.to ? ' - ' : ''}
+                                            {dateRange.to ? format(dateRange.to, 'MMM dd') : ''}
+                                        </span>
+                                        <button onClick={() => setDateRange({ from: null, to: null })} className="ml-2">
+                                            <X size={16} />
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </div>
+        </div >
+    );
+};
+
+export default AdminPaymentsPage;
