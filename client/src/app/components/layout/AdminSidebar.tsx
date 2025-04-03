@@ -1871,10 +1871,9 @@ import {
   FaSignOutAlt,
   FaBars,
   FaTimes,
-  FaMoon,
-  FaSun,
 } from "react-icons/fa";
 import { IoMdAddCircleOutline } from "react-icons/io";
+import ThemeToggle from "../../contexts/ThemeToggle"; // Import ThemeToggle
 
 interface AdminSidebarProps {
   isSidebarOpen: boolean;
@@ -1886,9 +1885,10 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
   toggleSidebar,
 }) => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [dashboardDropdownOpen, setDashboardDropdownOpen] =
+    useState<boolean>(false); // State for Dashboard dropdown
   const { user, logout } = useAuth();
   const pathname = usePathname();
-  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
     // Update dropdown state based on current path
@@ -1896,15 +1896,8 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
       setActiveDropdown("currencies");
     } else if (pathname?.startsWith("/admin/transactions")) {
       setActiveDropdown("transactions");
-    }
-
-    // Check system preference for dark mode
-    if (typeof window !== "undefined") {
-      const isDark = localStorage.getItem("darkMode") === "true";
-      setDarkMode(isDark);
-      if (isDark) {
-        document.documentElement.classList.add("dark");
-      }
+    } else if (pathname?.startsWith("/admin/dashboard")) {
+      setDashboardDropdownOpen(true); // Open dashboard dropdown if on a dashboard subpage
     }
   }, [pathname]);
 
@@ -1915,13 +1908,9 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
   const toggleDropdown = (dropdown: string) => {
     setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
-  };
-
-  const toggleDarkMode = () => {
-    const newMode = !darkMode;
-    setDarkMode(newMode);
-    localStorage.setItem("darkMode", String(newMode));
-    document.documentElement.classList.toggle("dark");
+    if (dropdown === "dashboard") {
+      setDashboardDropdownOpen(!dashboardDropdownOpen);
+    }
   };
 
   const isActive = (path: string): boolean => {
@@ -1930,6 +1919,14 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
   const isDropdownActive = (basePath: string): boolean => {
     return pathname?.startsWith(basePath) || false;
+  };
+
+  const isDashboardActive = (): boolean => {
+    return isActive("/admin"); // Modified to check for exact match of /admin
+  };
+
+  const isDashboardDropdownActive = (): boolean => {
+    return pathname?.startsWith("/admin/dashboard") || false; // Keep this for dropdown active state
   };
 
   return (
@@ -1944,13 +1941,9 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
       {/* Sidebar */}
       <aside
-        className={`fixed lg:relative top-0 left-0 z-50 h-full transition-all duration-300 ease-in-out 
-        ${
+        className={`fixed lg:relative top-0 left-0 z-50 h-full border-r transition-all duration-300 ease-in-out${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-        }
-        lg:translate-x-0 w-64 flex flex-col
-        bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900
-        border-r border-slate-200 dark:border-slate-700 shadow-lg`}
+        }lg:translate-x-0 w-64 flex flex-col`}
       >
         {/* Mobile Close Button */}
         <button
@@ -1961,27 +1954,29 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
         </button>
 
         {/* Logo Section */}
-        <div className="p-6 mt-2 border-b border-slate-200 dark:border-slate-700 flex justify-center items-center">
+        <div className="p-6 mt-2 border-b flex justify-center items-center">
           <Image
             src="/assets/images/wise-logo.svg"
             height={100}
             width={100}
             alt="Wise Admin Logo"
-            className="transition-opacity dark:invert"
+            className="transition-opacity"
           />
         </div>
 
         {/* User Profile Summary */}
         {user && (
-          <div className="flex items-center gap-3 p-4 border-b border-slate-200 dark:border-slate-700">
-            <div className="size-10 rounded-full bg-primary dark:bg-indigo-400 hover:bg-primary-hover flex items-center justify-center text-white font-semibold">
-              {user.name?.charAt(0) || "A"}
+          <div className="flex items-center gap-3 p-3 border-b">
+            <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center relative">
+              <span className="text-neutral-900 font-semibold uppercase">
+                {user.email?.charAt(0) || "A"}
+              </span>
             </div>
-            <div className="overflow-hidden space-y-1">
-              <p className="font-semibold text-slate-700 dark:text-slate-200 truncate">
+            <div className="overflow-hidden space-y-1 w-[calc(100%-60px)]">
+              <p className="font-semibold text-neutral-900 dark:text-white truncate">
                 {user.name || "Admin User"}
               </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+              <p className="text-xs text-gray-500 dark:text-gray-300 truncate">
                 {user.email || "admin@example.com"}
               </p>
             </div>
@@ -1991,7 +1986,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
         {/* Navigation */}
         <nav className="flex-1 py-4 overflow-y-auto scrollbar-hide">
           <div className="px-4 mb-4">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 px-4">
+            <span className="text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-white px-4">
               Main
             </span>
           </div>
@@ -2001,95 +1996,98 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
             <li>
               <Link
                 href="/admin"
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200
-                ${
-                  isActive("/admin")
-                    ? "bg-primary dark:bg-slate-700 text-white"
-                    : "hover:bg-slate-200/70 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
-                }`}
-              >
-                <FaChartPie className="size-5" />
-                <span className="font-medium">Dashboard</span>
-              </Link>
-            </li>
-
-            {/* Currencies */}
-            <li>
-              <Link
-                href="/admin/currencies"
-                onClick={() => toggleDropdown("currencies")}
-                className={`flex items-center justify-between w-full cursor-pointer px-4 py-3 rounded-lg transition-all duration-200
-                ${
-                  isDropdownActive("/admin/currencies")
-                    ? "bg-slate-200 dark:bg-slate-700 text-primary dark:text-indigo-400"
-                    : "hover:bg-slate-200/70 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
-                }`}
+                onClick={() => toggleDropdown("dashboard")}
+                className={`flex items-center justify-between w-full cursor-pointer px-4 py-3 rounded-4xl transition-all duration-200
+    ${
+      isDashboardActive() || isDashboardDropdownActive()
+        ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
+        : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
+    }`}
               >
                 <div className="flex items-center gap-3">
-                  <FaCoins className="size-5" />
-                  <span className="font-medium">Currencies</span>
+                  <FaChartPie className="size-5" />
+                  <span className="font-medium">Dashboard</span>
                 </div>
                 <FaChevronRight
                   className={`size-3.5 transition-transform duration-200 ${
-                    activeDropdown === "currencies" ? "rotate-90" : ""
+                    dashboardDropdownOpen ? "rotate-90" : ""
                   }`}
                 />
               </Link>
 
-              {activeDropdown === "currencies" && (
-                <ul className="mt-2 ml-6 space-y-1 border-l-2 border-slate-200 dark:border-slate-700 pl-4">
+              {dashboardDropdownOpen && (
+                <ul className="mt-2 ml-6 space-y-1 border-l-2 pl-4">
+                  {/* Demo 1 */}
                   <li>
                     <Link
-                      href="/admin/currencies/add"
+                      href="/admin/dashboard/demo1"
                       className={`block px-4 py-2.5 rounded-md transition-all duration-200
                       ${
-                        isActive("/admin/currencies/add")
-                          ? "bg-indigo-100 dark:bg-indigo-900/30 text-primary dark:text-indigo-400"
-                          : "hover:bg-slate-200/70 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
+                        isActive("/admin/dashboard/demo1")
+                          ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
+                          : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
                       }`}
                     >
-                      New Currency
+                      Demo 1
                     </Link>
                   </li>
+                  {/* Demo 2 */}
                   <li>
                     <Link
-                      href="/admin/currencies/list"
+                      href="/admin/dashboard/demo2"
                       className={`block px-4 py-2.5 rounded-md transition-all duration-200
                       ${
-                        isActive("/admin/currencies/list")
-                          ? "bg-indigo-100 dark:bg-indigo-900/30 text-primary dark:text-indigo-400"
-                          : "hover:bg-slate-200/70 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
+                        isActive("/admin/dashboard/demo2")
+                          ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
+                          : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
                       }`}
                     >
-                      Currency List
+                      Demo 2
                     </Link>
                   </li>
+                  {/* Demo 3 */}
                   <li>
                     <Link
-                      href="/admin/currencies/delete"
+                      href="/admin/dashboard/demo3"
                       className={`block px-4 py-2.5 rounded-md transition-all duration-200
                       ${
-                        isActive("/admin/currencies/delete")
-                          ? "bg-indigo-100 dark:bg-indigo-900/30 text-primary dark:text-indigo-400"
-                          : "hover:bg-slate-200/70 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
+                        isActive("/admin/dashboard/demo3")
+                          ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
+                          : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
                       }`}
                     >
-                      Delete Currency
+                      Demo 3
                     </Link>
                   </li>
                 </ul>
               )}
             </li>
 
+            {/* Currencies */}
+            <li>
+              <Link
+                href="/admin/currencies"
+                className={`flex items-center gap-3 px-4 py-3 rounded-4xl transition-all duration-200
+                ${
+                  isActive("/admin/currencies")
+                    ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
+                    : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
+                }`}
+              >
+                <FaCoins className="size-5" />
+                <span className="font-medium">Currencies</span>
+              </Link>
+            </li>
+
             {/* Users */}
             <li>
               <Link
                 href="/admin/users"
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200
+                className={`flex items-center gap-3 px-4 py-3 rounded-4xl transition-all duration-200
                 ${
                   isActive("/admin/users")
-                    ? "bg-primary text-white"
-                    : "hover:bg-slate-200/70 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
+                    ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
+                    : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
                 }`}
               >
                 <FaUsers className="size-5" />
@@ -2097,16 +2095,15 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
               </Link>
             </li>
 
-            {/* Add-Now */}
+            {/* Add-Money */}
             <li>
               <Link
                 href="/admin/Add-Now"
-                onClick={() => toggleDropdown("transactions")}
-                className={`flex items-center justify-between w-full cursor-pointer px-4 py-3 rounded-lg transition-all duration-200
+                className={`flex items-center justify-between w-full cursor-pointer px-4 py-3 rounded-4xl transition-all duration-200
                 ${
-                  isDropdownActive("/admin/Add-Now")
-                    ? "bg-slate-200 dark:bg-slate-700 text-primary dark:text-indigo-400"
-                    : "hover:bg-slate-200/70 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
+                  isActive("/admin/Add-Now")
+                    ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
+                    : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -2116,16 +2113,15 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
               </Link>
             </li>
 
-            {/* Transactions */}
+            {/* Send-Money */}
             <li>
               <Link
                 href="/admin/transfer"
-                onClick={() => toggleDropdown("transactions")}
-                className={`flex items-center justify-between w-full cursor-pointer px-4 py-3 rounded-lg transition-all duration-200
+                className={`flex items-center justify-between w-full cursor-pointer px-4 py-3 rounded-4xl transition-all duration-200
                 ${
-                  isDropdownActive("/admin/transfer")
-                    ? "bg-slate-200 dark:bg-slate-700 text-primary dark:text-indigo-400"
-                    : "hover:bg-slate-200/70 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
+                  isActive("/admin/transfer")
+                    ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
+                    : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -2139,39 +2135,15 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
         {/* Footer Actions */}
         <div className="p-4 border-t border-slate-200 dark:border-slate-700 space-y-2">
-          {/* Dark Mode Toggle */}
-          {/* <button
-            onClick={toggleDarkMode}
-            className="flex items-center justify-between w-full px-4 py-3 rounded-lg hover:bg-slate-200/70 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300 transition-all duration-200"
-          >
-            <div className="flex items-center gap-3">
-              {darkMode ? (
-                <FaSun className="size-5" />
-              ) : (
-                <FaMoon className="size-5" />
-              )}
-              <span className="font-medium">
-                {darkMode ? "Light Mode" : "Dark Mode"}
-              </span>
-            </div>
-            <div
-              className={`w-10 h-5 rounded-full flex items-center ${
-                darkMode ? "bg-indigo-400" : "bg-blue-400"
-              } p-0.5 transition-colors duration-200`}
-            >
-              <div
-                className={`w-4 h-4 rounded-full bg-primary transition-transform duration-200 ${
-                  darkMode ? "translate-x-5" : "translate-x-0"
-                }`}
-              ></div>
-            </div>
-          </button> */}
-
+          {/* Theme Toggle for Admin Sidebar */}
+          <div className="mb-2 flex justify-center">
+            <ThemeToggle location="admin" className="inline-block" />
+          </div>
           {/* Logout Button */}
           {user && (
             <button
               onClick={handleLogout}
-              className="flex items-center gap-3 w-full px-4 py-3 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 transition-all duration-200"
+              className="flex items-center gap-3 w-full px-4 py-3 rounded-4xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 transition-all duration-200"
             >
               <FaSignOutAlt className="size-5" />
               <span className="font-medium">Logout</span>
