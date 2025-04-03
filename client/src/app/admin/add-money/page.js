@@ -13134,7 +13134,7 @@ const AdminPaymentsPage = () => {
                              <thead>
                                  <tr className="bg-white border-b border-gray-300">
                                      <th className="px-6 py-4 text-left font-medium text-gray-500 tracking-wider">
-                                         <button>
+                                         
                                              <button
                                                  onClick={() => toggleSort('_id')}
                                                  className="flex items-center gap-1 hover:text-primary uppercase"
@@ -13144,10 +13144,9 @@ const AdminPaymentsPage = () => {
                                                      <ArrowDownUp size={18} className={sortDirection === 'desc' ? 'rotate-180' : ''} />
                                                  )}
                                              </button>
-                                         </button>
                                      </th>
                                      <th className="px-6 py-4 text-left font-medium text-gray-500  tracking-wider">
-                                         <button>
+                                         
                                              <button
                                                  onClick={() => toggleSort('user')}
                                                  className="flex items-center gap-1 hover:text-primary uppercase"
@@ -13157,10 +13156,9 @@ const AdminPaymentsPage = () => {
                                                      <ArrowDownUp size={18} className={sortDirection === 'desc' ? 'rotate-180' : ''} />
                                                  )}
                                              </button>
-                                         </button>
                                      </th>
                                      <th className="px-6 py-4 text-left font-medium text-gray-500 tracking-wider">
-                                         <button>
+                                         
                                              <button
                                                  onClick={() => toggleSort('amount')}
                                                  className="flex items-center gap-1 hover:text-primary uppercase"
@@ -13170,12 +13168,11 @@ const AdminPaymentsPage = () => {
                                                      <ArrowDownUp size={18} className={sortDirection === 'desc' ? 'rotate-180' : ''} />
                                                  )}
                                              </button>
-                                         </button>
                                      </th>
                                      <th className="px-6 py-4 text-left font-medium text-gray-500 uppercase tracking-wider">Currency</th>
                                      <th className="px-6 py-4 text-left font-medium text-gray-500 uppercase tracking-wider">Reference</th>
                                      <th className="px-6 py-4 text-left font-medium text-gray-500  tracking-wider">
-                                         <button>
+                                         
                                              <button
                                                  onClick={() => toggleSort('status')}
                                                  className="flex items-center gap-1 hover:text-primary uppercase"
@@ -13185,7 +13182,6 @@ const AdminPaymentsPage = () => {
                                                      <ArrowDownUp size={18} className={sortDirection === 'desc' ? 'rotate-180' : ''} />
                                                  )}
                                              </button>
-                                         </button>
                                      </th>
                                      <th className="px-6 py-4 text-left font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                  </tr>
