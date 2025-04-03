@@ -47,10 +47,10 @@ export default function LogoutEveryWhere() {
   return (
     <section className="kill-all-account py-10">
       <div className="container mx-auto">
-        <h2 className="text-3xl text-main font-semibold">Log out everywhere</h2>
+        <h2 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">Log out everywhere</h2>
 
-        <div className="max-w-md mt-10 ml-6">
-          <div className="text-sm text-gray space-y-6">
+        <div className="md:max-w-md mt-10 ">
+          <div className="text-gray-500 dark:text-gray-300 space-y-6">
             <p>
               Instantly protect yourself from scams, a stolen device or
               suspicious activity. This will:
@@ -66,7 +66,7 @@ export default function LogoutEveryWhere() {
             <p>After you’ve activated this, you will receive an email with the steps to recover your account securely.</p>
 
             <button
-              className="inline-flex items-center justify-center w-full px-6 py-3 text-base text-white bg-red-700 hover:bg-red-800 cursor-pointer font-semibold rounded-full border border-transparent transition-colors duration-150 ease-in-out"
+              className="inline-flex items-center justify-center w-full px-6 py-3 text-base text-white bg-red-600 hover:bg-red-700 cursor-pointer font-semibold rounded-full border border-transparent transition-colors duration-150 ease-in-out"
             //   onClick={handleLogoutEverywhere} // Attach the click handler
             >
               Log out everywhere

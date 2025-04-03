@@ -30,40 +30,40 @@ const AccountSettings: React.FC = () => {
 
   return (
     // Consider adjusting grid layout for better sticky behavior if needed:
-    <div className="max-w-2xl mx-auto grid grid-cols-1 md:grid-cols-[auto,1fr] gap-10 p-4 md:p-0"> {/* Example layout adjustment + padding */}
+    <div className="max-w-2xl mx-auto grid grid-cols-1 md:grid-cols-[auto,1fr] gap-10"> {/* Example layout adjustment + padding */}
 
       {/* Left Side: Potentially Sticky Account Card */}
-      <div className="md:sticky top-0 h-fit z-10 bg-white">
+      <div className="md:sticky top-0 h-fit z-10 bg-white dark:bg-background">
         {/* Pass the dynamic displayName to AccountCard */}
         <AccountCard username={displayName} />
       </div>
 
       {/* Right Side: Scrollable Menu Items */}
       <div className="flex flex-col w-full">
-        <h2 className="text-2xl capitalize font-bold mb-4">Your account</h2>
+        <h2 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white mb-4">Your account</h2>
         <div className="space-y-2 mb-6">
           <MenuItem
-            icon={<FaRegBell className="size-6" />}
+            icon={<FaRegBell className="size-6 text-neutral-900 dark:text-white" />}
             label="Inbox"
             href="your-account/inbox"
           />
           <MenuItem
-            icon={<RxQuestionMark className="size-6" />}
+            icon={<RxQuestionMark className="size-6 text-neutral-900 dark:text-white" />}
             label="Help"
             href="help"
           />
           <MenuItem
-            icon={<IoMdCopy className="size-6" />}
+            icon={<IoMdCopy className="size-6 text-neutral-900 dark:text-white" />}
             label="Statements and reports"
             href="statements"
           />
         </div>
 
-        <h2 className="text-2xl capitalize font-bold mb-4">Settings</h2>
+        <h2 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white mb-4">Settings</h2>
         <div className="space-y-2">
            {/* --- Start: Added Language and Appearance Item --- */}
            <MenuItem
-            icon={<IoMoonOutline className="size-6" />} // Use the moon icon
+            icon={<IoMoonOutline className="size-6 text-neutral-900 dark:text-white" />} // Use the moon icon
             label="Language and appearance"
             description="Customise language settings and which theme is used."
             href="your-account/language-and-appearance" // Link to the dedicated page
@@ -71,19 +71,19 @@ const AccountSettings: React.FC = () => {
           {/* --- End: Added Language and Appearance Item --- */}
 
           <MenuItem
-            icon={<RiShieldLine className="size-6" />}
+            icon={<RiShieldLine className="size-6 text-neutral-900 dark:text-white" />}
             label="Security and privacy"
             description="Change your security and privacy settings."
             href="your-account/security-and-privacy"
           />
           <MenuItem
-            icon={<FaRegBell className="size-6" />}
+            icon={<FaRegBell className="size-6 text-neutral-900 dark:text-white" />}
             label="Notifications"
             description="Customise how you get updates."
             href="your-account/notification-preferences"
           />
           <MenuItem
-            icon={<FiUser className="size-6" />}
+            icon={<FiUser className="size-6 text-neutral-900 dark:text-white" />}
             label="Personal details"
             description="Update your personal information."
             href="your-account/personal-details"
@@ -91,10 +91,10 @@ const AccountSettings: React.FC = () => {
         </div>
 
         <div className="text-center space-y-1.5 mt-10 pb-10">
-          <p className="text-gray">
+          <p className="text-subheading dark:text-white">
             We’ve made some changes to this area of the app.
           </p>
-          <span className="text-green font-medium underline underline-offset-1 cursor-pointer">
+          <span className="text-primary font-medium underline underline-offset-1 cursor-pointer">
             Give us feedback
           </span>
         </div>

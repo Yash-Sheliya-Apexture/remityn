@@ -3,8 +3,9 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { IoMoonOutline, IoSunnyOutline, IoLanguageOutline } from 'react-icons/io5';
-import { GoChevronLeft, GoChevronRight } from 'react-icons/go';
+import { GoChevronRight } from 'react-icons/go';
 import Link from 'next/link';
+import DashboardHeader from '@/app/components/layout/DashboardHeader';
 
 // --- Helper Function to get user-friendly language name ---
 const getLanguageName = (code: string): string => {
@@ -29,19 +30,32 @@ interface SettingsRowProps {
 const SettingsRow: React.FC<SettingsRowProps> = ({ icon, label, currentValue, onClick, href }) => {
    // ... (keep the SettingsRow component structure as before)
      const content = (
-         <div className={`flex items-center p-4 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-xl gap-4 ${onClick || href ? 'cursor-pointer' : ''} group`}>
-          <div className="bg-neutral-100 dark:bg-neutral-700 p-3 rounded-full text-neutral-800 dark:text-neutral-200">
-            {icon}
-          </div>
-          <div className="flex-grow">
-            <div className="font-medium text-neutral-800 dark:text-neutral-100">{label}</div>
-            <div className="text-sm text-neutral-500 dark:text-neutral-400">{currentValue}</div>
-          </div>
-          {(onClick || href) && (
-             <GoChevronRight className="size-5 text-neutral-400 dark:text-neutral-500 group-hover:translate-x-1 transition-transform ease-in-out duration-200" />
-          )}
-        </div>
-      );
+       <div
+         className={`flex items-center gap-4 hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-colors duration-500 ease-in-out ${
+           onClick || href ? "cursor-pointer" : ""
+         } group`}
+       >
+         <div className="bg-lightborder dark:bg-secondarybox p-3 rounded-full">
+           {icon}
+         </div>
+         <div className="flex-grow">
+           <div className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-xl">
+             {label}
+           </div>
+           <div className="text-sm text-gray-500 dark:text-gray-300 mt-1">
+             {currentValue}
+           </div>
+         </div>
+         {(onClick || href) && (
+           <div className='ml-4'>
+             <GoChevronRight
+               size={24}
+               className="text-neutral-900 dark:text-white group-hover:translate-x-2.5 font-medium transition-transform ease-in-out duration-300"
+             />
+           </div>
+         )}
+       </div>
+     );
 
       if (href) {
         // ** IMPORTANT: Wrap the content in Link **
@@ -120,24 +134,11 @@ const LanguageAndAppearancePage: React.FC = () => {
 
 
   return (
-    <div className="max-w-2xl mx-auto p-4 md:p-6 min-h-screen">
-      {/* Back Button and Title */}
-       <div className="flex items-center mb-6 relative">
-        <Link
-          href="/dashboard/your-account" // Link back to the main account settings page
-          className="absolute left-0 p-2 rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
-          aria-label="Back to Account Settings"
-        >
-          <GoChevronLeft className="size-6 text-neutral-600 dark:text-neutral-300" />
-        </Link>
-        <h1 className="text-xl md:text-2xl font-bold text-neutral-800 dark:text-neutral-100 text-center flex-grow">
-          Language and appearance
-        </h1>
-         <div className="w-8 h-8"></div>
-      </div>
+    <div>
+      <DashboardHeader title="Language and appearance" />
 
       {/* Settings Sections */}
-      <div className="space-y-3">
+      <div className="space-y-2">
         {/* --- MODIFIED: Use href for Navigation --- */}
         <SettingsRow
           icon={currentThemeIcon}
