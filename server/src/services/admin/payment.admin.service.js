@@ -13,7 +13,7 @@ const getPaymentByIdAdmin = async (paymentId) => {
 const updatePaymentStatusAdmin = async (paymentId, status) => {
     console.log(`Service: updatePaymentStatusAdmin - paymentId: ${paymentId}, status: ${status}`);
 
-    const payment = await Payment.findById(paymentId).populate(['user', 'balanceCurrency', 'payInCurrency']);
+    const payment = await Payment.findById(String(paymentId)).populate(['user', 'balanceCurrency', 'payInCurrency']);
     if (!payment) {
         console.log(`Service: updatePaymentStatusAdmin - Payment not found for id: ${paymentId}`);
         throw new Error('Payment not found.');

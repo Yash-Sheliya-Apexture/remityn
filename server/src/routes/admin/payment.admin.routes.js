@@ -11,5 +11,5 @@ router.get('/', authMiddleware.protect, authMiddleware.admin, paymentAdminContro
 router.get('/:paymentId', authMiddleware.protect, authMiddleware.admin, paymentAdminController.getPaymentByIdAdmin);
 
 // Update payment status (Admin only)
-router.put('/:paymentId/status', authMiddleware.protect, authMiddleware.admin, paymentAdminController.updatePaymentStatusAdmin);
+router.put('/:paymentId', authMiddleware.protect, authMiddleware.admin, paymentAdminController.updatePaymentStatusAdmin);
 export default router;
