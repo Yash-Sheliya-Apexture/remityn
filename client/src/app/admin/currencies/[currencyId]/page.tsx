@@ -4037,17 +4037,863 @@
 
 // export default AdminEditCurrencyPage;
 
+// "use client";
+// import React, { useState, useEffect } from "react";
+// import { useParams, useRouter } from "next/navigation";
+// import axios from "axios";
+// import { useAuth } from "../../../hooks/useAuth";
+// import { motion, AnimatePresence } from "framer-motion";
+// import apiConfig from "../../../config/apiConfig";
+// import Link from "next/link";
+// import {
+//   Loader2,
+//   ArrowLeft,
+//   Save,
+//   Globe,
+//   DollarSign,
+//   Building,
+//   Landmark,
+//   Hash,
+//   Percent,
+//   Image as ImageIcon,
+//   AlertTriangle,
+//   Check,
+//   X,
+//   ChevronRight,
+//   CreditCard,
+//   BarChart4,
+//   Trash2,
+//   RefreshCw,
+//   Lock,
+// } from "lucide-react";
+// import {
+//   FaArrowLeftLong,
+//   FaCreditCard,
+//   FaGlobe,
+//   FaIdCard,
+// } from "react-icons/fa6";
+// import { FaPercentage } from "react-icons/fa";
+
+// axios.defaults.baseURL = apiConfig.baseUrl;
+
+// interface Currency {
+//   _id: string;
+//   code: string;
+//   currencyName: string;
+//   flagImage?: string | null;
+//   payeeName?: string | null;
+//   iban?: string | null;
+//   bicSwift?: string | null;
+//   bankAddress?: string | null;
+//   wiseFeePercentage?: number | null;
+//   bankTransferFee?: number | null;
+//   rateAdjustmentPercentage?: number | null;
+//   createdAt?: string;
+//   updatedAt?: string;
+// }
+
+// interface CurrencyFormState {
+//   code: string;
+//   currencyName: string;
+//   flagImage: string;
+//   payeeName: string;
+//   iban: string;
+//   bicSwift: string;
+//   bankAddress: string;
+//   wiseFeePercentage: string;
+//   bankTransferFee: string;
+//   rateAdjustmentPercentage: string;
+// }
+
+// const AdminEditCurrencyPage = () => {
+//   const params = useParams();
+//   const router = useRouter();
+//   const { currencyId } = params;
+//   const { token } = useAuth();
+
+//   const [currency, setCurrency] = useState<Currency | null>(null);
+//   const [formState, setFormState] = useState<CurrencyFormState | null>(null);
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [isSubmitting, setIsSubmitting] = useState(false);
+//   const [error, setError] = useState<string | null>(null);
+//   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+//   const [activeTab, setActiveTab] = useState<"general" | "bank" | "fees">(
+//     "general"
+//   );
+//   const [formChanged, setFormChanged] = useState(false);
+
+//   // Animation variants
+//   const containerVariants = {
+//     hidden: { opacity: 0 },
+//     visible: {
+//       opacity: 1,
+//       transition: {
+//         staggerChildren: 0.1,
+//         delayChildren: 0.2,
+//       },
+//     },
+//   };
+
+//   const itemVariants = {
+//     hidden: { y: 20, opacity: 0 },
+//     visible: {
+//       y: 0,
+//       opacity: 1,
+//       transition: { type: "spring", stiffness: 100 },
+//     },
+//   };
+
+//   const tabVariants = {
+//     inactive: {
+//       color: "#6B7280",
+//       backgroundColor: "transparent",
+//       boxShadow: "none",
+//     },
+//     active: {
+//       color: "#FFFFFF",
+//       backgroundColor: "#1D4ED8",
+//       boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+//     },
+//   };
+
+//   // Fetch Currency Data
+//   useEffect(() => {
+//     const fetchCurrency = async () => {
+//       if (!token || !currencyId) {
+//         setIsLoading(false);
+//         setError("Missing token or currency ID.");
+//         if (!token) router.push("/auth/login");
+//         return;
+//       }
+//       setIsLoading(true);
+//       setError(null);
+//       try {
+//         const response = await axios.get<Currency>(
+//           `/admin/currencies/${currencyId}`,
+//           {
+//             headers: { Authorization: `Bearer ${token}` },
+//           }
+//         );
+//         setCurrency(response.data);
+//         // Initialize form state from fetched data
+//         setFormState({
+//           code: response.data.code || "",
+//           currencyName: response.data.currencyName || "",
+//           flagImage: response.data.flagImage || "",
+//           payeeName: response.data.payeeName || "",
+//           iban: response.data.iban || "",
+//           bicSwift: response.data.bicSwift || "",
+//           bankAddress: response.data.bankAddress || "",
+//           wiseFeePercentage: response.data.wiseFeePercentage?.toString() ?? "",
+//           bankTransferFee: response.data.bankTransferFee?.toString() ?? "",
+//           rateAdjustmentPercentage:
+//             response.data.rateAdjustmentPercentage?.toString() ?? "0",
+//         });
+//       } catch (err: any) {
+//         console.error("Fetch error:", err);
+//         if (err.response?.status === 404) {
+//           setError("Currency not found.");
+//         } else if (
+//           err.response?.status === 401 ||
+//           err.response?.status === 403
+//         ) {
+//           setError("Unauthorized. Redirecting to login...");
+//           setTimeout(() => router.push("/auth/login"), 2000);
+//         } else {
+//           setError(
+//             err.response?.data?.message || "Failed to load currency details"
+//           );
+//         }
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     };
+
+//     fetchCurrency();
+//   }, [currencyId, token, router]);
+
+//   // Track form changes
+//   useEffect(() => {
+//     if (!currency || !formState) return;
+
+//     const isChanged =
+//       formState.currencyName !== (currency.currencyName || "") ||
+//       formState.flagImage !== (currency.flagImage || "") ||
+//       formState.payeeName !== (currency.payeeName || "") ||
+//       formState.iban !== (currency.iban || "") ||
+//       formState.bicSwift !== (currency.bicSwift || "") ||
+//       formState.bankAddress !== (currency.bankAddress || "") ||
+//       formState.wiseFeePercentage !==
+//         (currency.wiseFeePercentage?.toString() ?? "") ||
+//       formState.bankTransferFee !==
+//         (currency.bankTransferFee?.toString() ?? "") ||
+//       formState.rateAdjustmentPercentage !==
+//         (currency.rateAdjustmentPercentage?.toString() ?? "0");
+
+//     setFormChanged(isChanged);
+//   }, [currency, formState]);
+
+//   // Handle Input Changes
+//   const handleChange = (
+//     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+//   ) => {
+//     const { name, value } = e.target;
+//     setFormState((prev) => (prev ? { ...prev, [name]: value } : null));
+//     setError(null);
+//     setSuccessMessage(null);
+//   };
+
+//   // Handle Form Submission
+//   const handleSubmit = async (event: React.FormEvent) => {
+//     event.preventDefault();
+//     if (!formState || !currencyId || !token) {
+//       setError("Form data or required parameters missing.");
+//       return;
+//     }
+
+//     setError(null);
+//     setSuccessMessage(null);
+//     setIsSubmitting(true);
+
+//     // Prepare payload, converting numbers and handling nulls/empty strings
+//     const payload: Partial<Currency> = {
+//       code: formState.code.toUpperCase().trim(),
+//       currencyName: formState.currencyName.trim(),
+//       flagImage: formState.flagImage.trim() || null,
+//       payeeName: formState.payeeName.trim() || null,
+//       iban: formState.iban.trim() || null,
+//       bicSwift: formState.bicSwift.trim() || null,
+//       bankAddress: formState.bankAddress.trim() || null,
+//       wiseFeePercentage:
+//         formState.wiseFeePercentage !== ""
+//           ? parseFloat(formState.wiseFeePercentage)
+//           : null,
+//       bankTransferFee:
+//         formState.bankTransferFee !== ""
+//           ? parseFloat(formState.bankTransferFee)
+//           : null,
+//       rateAdjustmentPercentage:
+//         formState.rateAdjustmentPercentage !== ""
+//           ? parseFloat(formState.rateAdjustmentPercentage)
+//           : 0,
+//     };
+
+//     // Validation
+//     if (
+//       payload.wiseFeePercentage !== null &&
+//       (isNaN(payload.wiseFeePercentage) || payload.wiseFeePercentage < 0)
+//     ) {
+//       setError("Wise Fee % must be non-negative.");
+//       setIsSubmitting(false);
+//       return;
+//     }
+//     if (
+//       payload.bankTransferFee !== null &&
+//       (isNaN(payload.bankTransferFee) || payload.bankTransferFee < 0)
+//     ) {
+//       setError("Bank Fee must be non-negative.");
+//       setIsSubmitting(false);
+//       return;
+//     }
+//     if (
+//       payload.rateAdjustmentPercentage !== null &&
+//       isNaN(payload.rateAdjustmentPercentage)
+//     ) {
+//       setError("Rate Adjustment must be a number.");
+//       setIsSubmitting(false);
+//       return;
+//     }
+
+//     try {
+//       const response = await axios.put<Currency>(
+//         `/admin/currencies/${currencyId}`,
+//         payload,
+//         {
+//           headers: { Authorization: `Bearer ${token}` },
+//         }
+//       );
+//       setCurrency(response.data);
+//       setFormState({
+//         code: response.data.code || "",
+//         currencyName: response.data.currencyName || "",
+//         flagImage: response.data.flagImage || "",
+//         payeeName: response.data.payeeName || "",
+//         iban: response.data.iban || "",
+//         bicSwift: response.data.bicSwift || "",
+//         bankAddress: response.data.bankAddress || "",
+//         wiseFeePercentage: response.data.wiseFeePercentage?.toString() ?? "",
+//         bankTransferFee: response.data.bankTransferFee?.toString() ?? "",
+//         rateAdjustmentPercentage:
+//           response.data.rateAdjustmentPercentage?.toString() ?? "0",
+//       });
+//       setSuccessMessage("Currency updated successfully!");
+//       setFormChanged(false);
+//     } catch (err: any) {
+//       console.error("Update error:", err);
+//       setError(err.response?.data?.message || "Failed to update currency");
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   // Reset form to initial values
+//   const handleReset = () => {
+//     if (!currency) return;
+
+//     setFormState({
+//       code: currency.code || "",
+//       currencyName: currency.currencyName || "",
+//       flagImage: currency.flagImage || "",
+//       payeeName: currency.payeeName || "",
+//       iban: currency.iban || "",
+//       bicSwift: currency.bicSwift || "",
+//       bankAddress: currency.bankAddress || "",
+//       wiseFeePercentage: currency.wiseFeePercentage?.toString() ?? "",
+//       bankTransferFee: currency.bankTransferFee?.toString() ?? "",
+//       rateAdjustmentPercentage:
+//         currency.rateAdjustmentPercentage?.toString() ?? "0",
+//     });
+
+//     setError(null);
+//     setSuccessMessage("Form reset to saved values");
+//     setTimeout(() => setSuccessMessage(null), 3000);
+//   };
+
+//   // Render tabs content
+//   const renderTabContent = () => {
+//     switch (activeTab) {
+//       case "general":
+//         return (
+//           <motion.div
+//             key="general"
+//             initial="hidden"
+//             animate="visible"
+//             variants={containerVariants}
+//             className="space-y-6"
+//           >
+//             <motion.div
+//               variants={itemVariants}
+//               className="rounded-xl bg-white border p-6 shadow-md"
+//             >
+//               <h3 className="border-b pb-2 text-lg font-semibold text-gray-800">
+//                 General Information
+//               </h3>
+//               <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+//                 {/* Code (Readonly) */}
+//                 <div>
+//                   <label
+//                     htmlFor="code"
+//                     className="mb-2 flex items-center gap-1.5 font-medium text-gray"
+//                   >
+//                     <Globe size={18} className="text-primary" />
+//                     Currency Code
+//                   </label>
+//                   <div className="relative mt-1">
+//                     <input
+//                       type="text"
+//                       id="code"
+//                       value={formState?.code}
+//                       readOnly
+//                       className="block w-full rounded-md border border-gray-300 py-3 px-4 text-main placeholder:text-gray-400 focus:outline-none font-medium"
+//                     />
+//                     <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+//                       <Lock size={18} />
+//                     </span>
+//                   </div>
+//                 </div>
+
+//                 {/* Currency Name */}
+//                 <div>
+//                   <label
+//                     htmlFor="currencyName"
+//                     className="mb-2 flex items-center gap-1.5 font-medium text-gray"
+//                   >
+//                     <DollarSign size={18} className="text-primary" />
+//                     Currency Name
+//                   </label>
+//                   <input
+//                     type="text"
+//                     name="currencyName"
+//                     id="currencyName"
+//                     value={formState?.currencyName}
+//                     onChange={handleChange}
+//                     required
+//                     className="block w-full rounded-md border border-gray-300 py-3 px-4 text-main placeholder:text-gray-400 focus:outline-none font-medium"
+//                   />
+//                 </div>
+
+//                 {/* Flag Image Path */}
+//                 <div className="md:col-span-2">
+//                   <label
+//                     htmlFor="flagImage"
+//                     className="mb-2 flex items-center gap-1.5 font-medium text-gray"
+//                   >
+//                     <ImageIcon size={18} className="text-primary" />
+//                     Flag Image Path
+//                   </label>
+//                   <div className="relative">
+//                     <input
+//                       type="text"
+//                       name="flagImage"
+//                       id="flagImage"
+//                       value={formState?.flagImage}
+//                       onChange={handleChange}
+//                       placeholder="/assets/icon/flags/eur.png"
+//                       className="block w-full rounded-md border border-gray-300 py-3 px-4 text-main placeholder:text-gray-400 focus:outline-none font-medium"
+//                     />
+//                     {formState?.flagImage && (
+//                       <div className="absolute right-3 top-1/2 -translate-y-1/2">
+//                         <img
+//                           src={formState.flagImage}
+//                           alt={`${formState.code} flag`}
+//                           className="h-10 w-auto object-cover"
+//                           onError={(e) => {
+//                             (e.target as HTMLImageElement).style.display =
+//                               "none";
+//                           }}
+//                         />
+//                       </div>
+//                     )}
+//                   </div>
+//                   <p className="mt-2 text-xs text-gray-500">
+//                     Provide the relative path to the flag image (e.g.,
+//                     /assets/icon/flags/eur.png)
+//                   </p>
+//                 </div>
+//               </div>
+//             </motion.div>
+
+//             <motion.div
+//               variants={itemVariants}
+//               className="rounded-xl bg-white border shadow-md"
+//             >
+//               <h3 className="border-b px-6 py-3 text-lg font-semibold text-gray-800">
+//                 Metadata
+//               </h3>
+//               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
+//                 <div>
+//                   <p className="font-medium text-gray">Created At :</p>
+//                   <div className="rounded-md bg-gray-50 py-2  text-gray-700">
+//                     {currency?.createdAt
+//                       ? new Date(currency.createdAt).toLocaleString()
+//                       : "N/A"}
+//                   </div>
+//                 </div>
+//                 <div>
+//                   <p className="font-medium text-gray">Last Updated :</p>
+//                   <div className="rounded-md bg-gray-50 py-2  text-gray-700">
+//                     {currency?.updatedAt
+//                       ? new Date(currency.updatedAt).toLocaleString()
+//                       : "N/A"}
+//                   </div>
+//                 </div>
+//               </div>
+//             </motion.div>
+//           </motion.div>
+//         );
+
+//       case "bank":
+//         return (
+//           <motion.div
+//             key="bank"
+//             initial="hidden"
+//             animate="visible"
+//             variants={containerVariants}
+//             className="space-y-6"
+//           >
+//             <motion.div
+//               variants={itemVariants}
+//               className="rounded-xl bg-white p-6 shadow-md"
+//             >
+//               <div className="mb-4 flex items-center justify-between border-b pb-2">
+//                 <h3 className="text-lg font-semibold text-gray-800">
+//                   Bank Details
+//                 </h3>
+//               </div>
+
+//               <div className="mt-4 grid grid-cols-1 gap-6">
+//                 {/* Payee Name */}
+//                 <div>
+//                   <label
+//                     htmlFor="payeeName"
+//                     className="mb-2 flex items-center gap-1.5 font-medium text-gray"
+//                   >
+//                     <Building size={18} className="text-primary" />
+//                     Payee Name
+//                   </label>
+//                   <input
+//                     type="text"
+//                     name="payeeName"
+//                     id="payeeName"
+//                     value={formState?.payeeName}
+//                     onChange={handleChange}
+//                     className="block w-full rounded-md border border-gray-300 py-3 px-4 text-main placeholder:text-gray-400 focus:outline-none font-medium"
+//                   />
+//                 </div>
+
+//                 {/* IBAN and BIC/SWIFT */}
+//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//                   <div>
+//                     <label
+//                       htmlFor="iban"
+//                       className="mb-2 flex items-center gap-1.5 font-medium text-gray"
+//                     >
+//                       <Hash size={18} className="text-primary" />
+//                       IBAN
+//                     </label>
+//                     <input
+//                       type="text"
+//                       name="iban"
+//                       id="iban"
+//                       value={formState?.iban}
+//                       onChange={handleChange}
+//                       className="block w-full rounded-md border border-gray-300 py-3 px-4 text-main placeholder:text-gray-400 focus:outline-none font-medium"
+//                     />
+//                   </div>
+
+//                   <div>
+//                     <label
+//                       htmlFor="bicSwift"
+//                       className="mb-2 flex items-center gap-1.5 font-medium text-gray"
+//                     >
+//                       <Hash size={18} className="text-primary" />
+//                       BIC/SWIFT
+//                     </label>
+//                     <input
+//                       type="text"
+//                       name="bicSwift"
+//                       id="bicSwift"
+//                       value={formState?.bicSwift}
+//                       onChange={handleChange}
+//                       className="block w-full rounded-md border border-gray-300 py-3 px-4 text-main placeholder:text-gray-400 focus:outline-none font-medium"
+//                     />
+//                   </div>
+//                 </div>
+
+//                 {/* Bank Address */}
+//                 <div>
+//                   <label
+//                     htmlFor="bankAddress"
+//                     className="mb-2 flex items-center gap-1.5 font-medium text-gray"
+//                   >
+//                     <Landmark size={18} className="text-primary" />
+//                     Bank Address
+//                   </label>
+//                   <textarea
+//                     id="bankAddress"
+//                     name="bankAddress"
+//                     rows={3}
+//                     value={formState?.bankAddress}
+//                     onChange={handleChange}
+//                     className="block w-full rounded-md border border-gray-300 py-3 px-4 text-main placeholder:text-gray-400 focus:outline-none font-medium"
+//                   ></textarea>
+//                 </div>
+//               </div>
+//             </motion.div>
+//           </motion.div>
+//         );
+
+//       case "fees":
+//         return (
+//           <motion.div
+//             key="fees"
+//             initial="hidden"
+//             animate="visible"
+//             variants={containerVariants}
+//             className="space-y-6"
+//           >
+//             <motion.div
+//               variants={itemVariants}
+//               className="rounded-xl bg-white p-6 shadow-md"
+//             >
+//               <h3 className="border-b pb-2 text-lg font-semibold text-gray-800">
+//                 Fees & Exchange Rate Settings
+//               </h3>
+
+//               <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+//                 {/* Wise Fee Percentage */}
+//                 <div>
+//                   <label
+//                     htmlFor="wiseFeePercentage"
+//                     className="mb-2 flex items-center gap-1.5 font-medium text-gray"
+//                   >
+//                     <Percent size={18} className="text-primary" />
+//                     Wise Fee Percentage
+//                   </label>
+//                   <div className="relative">
+//                     <input
+//                       type="number"
+//                       name="wiseFeePercentage"
+//                       id="wiseFeePercentage"
+//                       value={formState?.wiseFeePercentage}
+//                       onChange={handleChange}
+//                       step="any"
+//                       min="0"
+//                       className="block w-full rounded-md border border-gray-300 py-3 px-4 text-main placeholder:text-gray-400 focus:outline-none font-medium pr-12"
+//                       placeholder="0.00"
+//                     />
+//                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+//                       <span className="text-gray-500">%</span>
+//                     </div>
+//                   </div>
+//                   <p className="mt-2 text-xs text-gray-500">
+//                     Applicable fee percentage for Wise transfers
+//                   </p>
+//                 </div>
+
+//                 {/* Bank Transfer Fee */}
+//                 <div>
+//                   <label
+//                     htmlFor="bankTransferFee"
+//                     className="mb-2 flex items-center gap-1.5 font-medium text-gray"
+//                   >
+//                     <DollarSign size={18} className="text-primary" />
+//                     Bank Transfer Fee
+//                   </label>
+//                   <div className="relative">
+//                     <input
+//                       type="number"
+//                       name="bankTransferFee"
+//                       id="bankTransferFee"
+//                       value={formState?.bankTransferFee}
+//                       onChange={handleChange}
+//                       step="any"
+//                       min="0"
+//                       className="block w-full rounded-md border border-gray-300 py-3 px-4 text-main placeholder:text-gray-400 focus:outline-none font-medium pr-16"
+//                       placeholder="0.00"
+//                     />
+//                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+//                       <span className="text-gray-500">
+//                         {formState?.code || "CUR"}
+//                       </span>
+//                     </div>
+//                   </div>
+//                   <p className="mt-2 text-xs text-gray-500">
+//                     Fixed fee applied to bank transfers
+//                   </p>
+//                 </div>
+
+//                 {/* Rate Adjustment Percentage */}
+//                 <div>
+//                   <label
+//                     htmlFor="rateAdjustmentPercentage"
+//                     className="mb-2 flex items-center gap-1.5 font-medium text-gray"
+//                   >
+//                     <Percent size={18} className="text-primary" />
+//                     Rate Adjustment
+//                   </label>
+//                   <div className="relative">
+//                     <input
+//                       type="number"
+//                       name="rateAdjustmentPercentage"
+//                       id="rateAdjustmentPercentage"
+//                       value={formState?.rateAdjustmentPercentage}
+//                       onChange={handleChange}
+//                       step="any"
+//                       className="block w-full rounded-md border border-gray-300 py-3 px-4 text-main placeholder:text-gray-400 focus:outline-none font-medium pr-12"
+//                       placeholder="e.g., 0.5"
+//                     />
+//                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+//                       <span className="text-gray-500">%</span>
+//                     </div>
+//                   </div>
+//                   <p className="mt-2 text-xs text-gray-500">
+//                     Adjustment vs market rate (positive or negative)
+//                   </p>
+//                 </div>
+//               </div>
+
+//               <div className="mt-6 rounded-md bg-blue-50 p-4">
+//                 <h4 className="mb-4 flex items-center gap-1.5 font-bold text-main">
+//                   <BarChart4 size={20} />
+//                   Exchange Rate Info
+//                 </h4>
+//                 <p className="text-main">
+//                   The Rate Adjustment percentage modifies the market exchange
+//                   rate. A positive value increases the rate (favorable for
+//                   buyers), while a negative value decreases it (favorable for
+//                   sellers).
+//                 </p>
+//               </div>
+//             </motion.div>
+//           </motion.div>
+//         );
+//       default:
+//         return null;
+//     }
+//   };
+
+//   // Main component render
+//   return (
+//     <motion.div
+//       initial={{ opacity: 0 }}
+//       animate={{ opacity: 1 }}
+//       exit={{ opacity: 0 }}
+//       className="min-h-screen bg-gray-100 py-6"
+//     >
+//       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+//         <motion.div
+//           initial={{ y: -20, opacity: 0 }}
+//           animate={{ y: 0, opacity: 1 }}
+//           transition={{ duration: 0.5, ease: "easeOut" }}
+//           className="mb-4 flex justify-between items-center"
+//         >
+//           <Link
+//             href="/admin/currencies"
+//             className="inline-flex items-center font-medium text-base gap-2 text-main"
+//           >
+//             <FaArrowLeftLong size={20} /> Back to Currencies
+//           </Link>
+//           <h2 className="text-2xl text-main">
+//             Edit Currency:{" "}
+//             <span className="font-bold">
+//               {currency?.currencyName || "Loading..."}
+//             </span>
+//           </h2>
+//         </motion.div>
+
+//         {/* Loading, Error, Success States */}
+//         <AnimatePresence initial={false}>
+//           {error && (
+//             <motion.div
+//               key="error"
+//               initial={{ opacity: 0, y: -10 }}
+//               animate={{ opacity: 1, y: 0 }}
+//               exit={{ opacity: 0, y: -10 }}
+//               className="mb-6 rounded-md bg-red-50 p-4 ring-1 ring-red-200"
+//             >
+//               <div className="flex items-center justify-start gap-3">
+//                 <AlertTriangle className="text-red-500" />
+//                 <p className="text-sm text-red-700">{error}</p>
+//               </div>
+//             </motion.div>
+//           )}
+
+//           {successMessage && (
+//             <motion.div
+//               key="success"
+//               initial={{ opacity: 0, y: -10 }}
+//               animate={{ opacity: 1, y: 0 }}
+//               exit={{ opacity: 0, y: -10 }}
+//               transition={{ duration: 0.3 }}
+//               className="mb-6 rounded-md bg-green-50 p-4 ring-1 ring-green-200"
+//             >
+//               <div className="flex items-center justify-start gap-3">
+//                 <Check className="text-green-500" />
+//                 <p className="text-sm text-green-700">{successMessage}</p>
+//               </div>
+//             </motion.div>
+//           )}
+//         </AnimatePresence>
+
+//         {!isLoading && !error && formState && (
+//           <motion.form
+//             onSubmit={handleSubmit}
+//             className="space-y-8"
+//             variants={containerVariants}
+//             initial="hidden"
+//             animate="visible"
+//           >
+//             {/* Tabs Navigation */}
+//             <motion.nav
+//               variants={itemVariants}
+//               className="relative z-0 rounded-lg shadow-xs overflow-hidden flex divide-x divide-gray-300 bg-white border border-gray-200 mb-6"
+//             >
+//               <button
+//                 type="button"
+//                 onClick={() => setActiveTab("general")}
+//                 className={`relative min-w-0 flex-1 group py-4 px-6 text-center font-medium cursor-pointer transition-colors ${
+//                   activeTab === "general"
+//                     ? "bg-primary text-main"
+//                     : "bg-white text-gray-700"
+//                 } first:rounded-l-lg last:rounded-r-lg`}
+//               >
+//                 <FaGlobe size={20} className="mx-auto mb-1.5 " />
+//                 General
+//               </button>
+
+//               <button
+//                 type="button"
+//                 onClick={() => setActiveTab("bank")}
+//                 className={`relative min-w-0 flex-1 group py-4 px-6 text-center font-medium cursor-pointer transition-colors ${
+//                   activeTab === "bank"
+//                     ? "bg-primary text-main"
+//                     : "bg-white text-gray-700"
+//                 } first:rounded-l-lg last:rounded-r-lg`}
+//               >
+//                 <FaIdCard size={20} className="mx-auto mb-1.5 " />
+//                 Bank Details
+//               </button>
+
+//               <button
+//                 type="button"
+//                 onClick={() => setActiveTab("fees")}
+//                 className={`relative min-w-0 flex-1 group py-4 px-6 text-center font-medium cursor-pointer transition-colors ${
+//                   activeTab === "fees"
+//                     ? "bg-primary text-main"
+//                     : "bg-white text-gray-700"
+//                 } first:rounded-l-lg last:rounded-r-lg`}
+//               >
+//                 <FaPercentage size={20} className="mx-auto mb-1.5 " />
+//                 Fees & Rates
+//               </button>
+//             </motion.nav>
+
+//             {renderTabContent()}
+
+//             {/* Action Buttons */}
+//             <motion.div
+//               variants={itemVariants}
+//               className="flex justify-end gap-3"
+//             >
+//               <button
+//                 type="button"
+//                 onClick={handleReset}
+//                 disabled={isSubmitting || !formChanged}
+//                 className="rounded-md w-full bg-gray-300 cursor-pointer px-4 py-4 font-medium text-gray-700 hover:bg-gray-300 focus:outline-none disabled:opacity-50 transition-colors"
+//               >
+//                 <RefreshCw
+//                   size={20}
+//                   className="inline-block mr-2 align-middle"
+//                 />
+//                 Reset
+//               </button>
+//               <button
+//                 type="submit"
+//                 disabled={isSubmitting || !formChanged}
+//                 className="inline-flex w-full items-center cursor-pointer justify-center rounded-md bg-primary px-4 py-4 font-medium text-main focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+//               >
+//                 {isSubmitting ? (
+//                   <>
+//                     <Loader2 className="animate-spin mr-2" size={20} />{" "}
+//                     Saving...
+//                   </>
+//                 ) : (
+//                   <>
+//                     <Save size={20} className="mr-2" /> Save Changes
+//                   </>
+//                 )}
+//               </button>
+//             </motion.div>
+//           </motion.form>
+//         )}
+//       </div>
+//     </motion.div>
+//   );
+// };
+
+// export default AdminEditCurrencyPage;
+
 "use client";
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import { useAuth } from "../../../hooks/useAuth";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import apiConfig from "../../../config/apiConfig";
 import Link from "next/link";
 import {
   Loader2,
-  ArrowLeft,
   Save,
   Globe,
   DollarSign,
@@ -4056,18 +4902,14 @@ import {
   Hash,
   Percent,
   Image as ImageIcon,
-  AlertTriangle,
-  Check,
-  X,
-  ChevronRight,
-  CreditCard,
-  BarChart4,
-  Trash2,
   RefreshCw,
   Lock,
+  BarChart4,
 } from "lucide-react";
-import { FaArrowLeftLong, FaCreditCard, FaGlobe, FaIdCard } from "react-icons/fa6";
-import { FaPercentage } from "react-icons/fa";
+import { FaArrowLeftLong, FaIdCard } from "react-icons/fa6";
+import { FaGlobe, FaPercentage } from "react-icons/fa";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
@@ -4110,8 +4952,6 @@ const AdminEditCurrencyPage = () => {
   const [formState, setFormState] = useState<CurrencyFormState | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"general" | "bank" | "fees">(
     "general"
   );
@@ -4138,30 +4978,16 @@ const AdminEditCurrencyPage = () => {
     },
   };
 
-  const tabVariants = {
-    inactive: {
-      color: "#6B7280",
-      backgroundColor: "transparent",
-      boxShadow: "none",
-    },
-    active: {
-      color: "#FFFFFF",
-      backgroundColor: "#1D4ED8",
-      boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
-    },
-  };
-
   // Fetch Currency Data
   useEffect(() => {
     const fetchCurrency = async () => {
       if (!token || !currencyId) {
         setIsLoading(false);
-        setError("Missing token or currency ID.");
+        toast.error("Missing token or currency ID.");
         if (!token) router.push("/auth/login");
         return;
       }
       setIsLoading(true);
-      setError(null);
       try {
         const response = await axios.get<Currency>(
           `/admin/currencies/${currencyId}`,
@@ -4187,15 +5013,15 @@ const AdminEditCurrencyPage = () => {
       } catch (err: any) {
         console.error("Fetch error:", err);
         if (err.response?.status === 404) {
-          setError("Currency not found.");
+          toast.error("Currency not found.");
         } else if (
           err.response?.status === 401 ||
           err.response?.status === 403
         ) {
-          setError("Unauthorized. Redirecting to login...");
+          toast.error("Unauthorized. Redirecting to login...");
           setTimeout(() => router.push("/auth/login"), 2000);
         } else {
-          setError(
+          toast.error(
             err.response?.data?.message || "Failed to load currency details"
           );
         }
@@ -4234,20 +5060,16 @@ const AdminEditCurrencyPage = () => {
   ) => {
     const { name, value } = e.target;
     setFormState((prev) => (prev ? { ...prev, [name]: value } : null));
-    setError(null);
-    setSuccessMessage(null);
   };
 
   // Handle Form Submission
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!formState || !currencyId || !token) {
-      setError("Form data or required parameters missing.");
+      toast.error("Form data or required parameters missing.");
       return;
     }
 
-    setError(null);
-    setSuccessMessage(null);
     setIsSubmitting(true);
 
     // Prepare payload, converting numbers and handling nulls/empty strings
@@ -4278,7 +5100,7 @@ const AdminEditCurrencyPage = () => {
       payload.wiseFeePercentage !== null &&
       (isNaN(payload.wiseFeePercentage) || payload.wiseFeePercentage < 0)
     ) {
-      setError("Wise Fee % must be non-negative.");
+      toast.error("Wise Fee % must be non-negative.");
       setIsSubmitting(false);
       return;
     }
@@ -4286,7 +5108,7 @@ const AdminEditCurrencyPage = () => {
       payload.bankTransferFee !== null &&
       (isNaN(payload.bankTransferFee) || payload.bankTransferFee < 0)
     ) {
-      setError("Bank Fee must be non-negative.");
+      toast.error("Bank Fee must be non-negative.");
       setIsSubmitting(false);
       return;
     }
@@ -4294,7 +5116,7 @@ const AdminEditCurrencyPage = () => {
       payload.rateAdjustmentPercentage !== null &&
       isNaN(payload.rateAdjustmentPercentage)
     ) {
-      setError("Rate Adjustment must be a number.");
+      toast.error("Rate Adjustment must be a number.");
       setIsSubmitting(false);
       return;
     }
@@ -4321,11 +5143,16 @@ const AdminEditCurrencyPage = () => {
         rateAdjustmentPercentage:
           response.data.rateAdjustmentPercentage?.toString() ?? "0",
       });
-      setSuccessMessage("Currency updated successfully!");
+      toast.success("Currency updated successfully!");
       setFormChanged(false);
+
+      // Redirect to currencies page after successful update and toast display
+      setTimeout(() => {
+        router.push("/admin/currencies");
+      }, 1500); // Delay the redirection by 1.5 seconds (adjust as needed)
     } catch (err: any) {
       console.error("Update error:", err);
-      setError(err.response?.data?.message || "Failed to update currency");
+      toast.error(err.response?.data?.message || "Failed to update currency");
     } finally {
       setIsSubmitting(false);
     }
@@ -4349,9 +5176,7 @@ const AdminEditCurrencyPage = () => {
         currency.rateAdjustmentPercentage?.toString() ?? "0",
     });
 
-    setError(null);
-    setSuccessMessage("Form reset to saved values");
-    setTimeout(() => setSuccessMessage(null), 3000);
+    toast.success("Form reset to saved values");
   };
 
   // Render tabs content
@@ -4467,9 +5292,7 @@ const AdminEditCurrencyPage = () => {
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
                 <div>
-                  <p className="font-medium text-gray">
-                    Created At :
-                  </p>
+                  <p className="font-medium text-gray">Created At :</p>
                   <div className="rounded-md bg-gray-50 py-2  text-gray-700">
                     {currency?.createdAt
                       ? new Date(currency.createdAt).toLocaleString()
@@ -4477,9 +5300,7 @@ const AdminEditCurrencyPage = () => {
                   </div>
                 </div>
                 <div>
-                  <p className="font-medium text-gray">
-                    Last Updated :
-                  </p>
+                  <p className="font-medium text-gray">Last Updated :</p>
                   <div className="rounded-md bg-gray-50 py-2  text-gray-700">
                     {currency?.updatedAt
                       ? new Date(currency.updatedAt).toLocaleString()
@@ -4730,6 +5551,18 @@ const AdminEditCurrencyPage = () => {
       exit={{ opacity: 0 }}
       className="min-h-screen bg-gray-100 py-6"
     >
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ y: -20, opacity: 0 }}
@@ -4744,45 +5577,27 @@ const AdminEditCurrencyPage = () => {
             <FaArrowLeftLong size={20} /> Back to Currencies
           </Link>
           <h2 className="text-2xl text-main">
-            Edit Currency: <span className="font-bold">{currency?.currencyName || "Loading..."}</span>
+            Edit Currency:{" "}
+            <span className="font-bold">
+              {currency?.currencyName || "Loading..."}
+            </span>
           </h2>
         </motion.div>
 
-        {/* Loading, Error, Success States */}
-        <AnimatePresence initial={false}>
-          {error && (
-            <motion.div
-              key="error"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="mb-6 rounded-md bg-red-50 p-4 ring-1 ring-red-200"
-            >
-              <div className="flex items-center justify-start gap-3">
-                <AlertTriangle className="text-red-500" />
-                <p className="text-sm text-red-700">{error}</p>
-              </div>
-            </motion.div>
-          )}
+        {isLoading && !currency && (
+          <div className="text-center">
+            <Loader2 className="inline-block animate-spin mr-2" size={20} />{" "}
+            Loading currency details...
+          </div>
+        )}
 
-          {successMessage && (
-            <motion.div
-              key="success"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-              className="mb-6 rounded-md bg-green-50 p-4 ring-1 ring-green-200"
-            >
-              <div className="flex items-center justify-start gap-3">
-                <Check className="text-green-500" />
-                <p className="text-sm text-green-700">{successMessage}</p>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {!isLoading && !currency && !formState && (
+          <div className="text-center text-red-500">
+            Failed to load currency details.
+          </div>
+        )}
 
-        {!isLoading && !error && formState && (
+        {!isLoading && currency && formState && (
           <motion.form
             onSubmit={handleSubmit}
             className="space-y-8"
@@ -4817,7 +5632,7 @@ const AdminEditCurrencyPage = () => {
                     : "bg-white text-gray-700"
                 } first:rounded-l-lg last:rounded-r-lg`}
               >
-                <FaIdCard   size={20} className="mx-auto mb-1.5 " />
+                <FaIdCard size={20} className="mx-auto mb-1.5 " />
                 Bank Details
               </button>
 
@@ -4830,7 +5645,7 @@ const AdminEditCurrencyPage = () => {
                     : "bg-white text-gray-700"
                 } first:rounded-l-lg last:rounded-r-lg`}
               >
-                <FaPercentage  size={20} className="mx-auto mb-1.5 " />
+                <FaPercentage size={20} className="mx-auto mb-1.5 " />
                 Fees & Rates
               </button>
             </motion.nav>
@@ -4846,7 +5661,7 @@ const AdminEditCurrencyPage = () => {
                 type="button"
                 onClick={handleReset}
                 disabled={isSubmitting || !formChanged}
-                className="rounded-md w-full bg-gray-200 px-4 py-4 font-medium text-gray-700 hover:bg-gray-300 focus:outline-none disabled:opacity-50 transition-colors"
+                className="rounded-md w-full bg-gray-300 cursor-pointer px-4 py-4 font-medium text-gray-700 hover:bg-gray-300 focus:outline-none disabled:opacity-50 transition-colors"
               >
                 <RefreshCw
                   size={20}
@@ -4857,7 +5672,7 @@ const AdminEditCurrencyPage = () => {
               <button
                 type="submit"
                 disabled={isSubmitting || !formChanged}
-                className="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-4 font-medium text-main focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="inline-flex w-full items-center cursor-pointer justify-center rounded-md bg-primary px-4 py-4 font-medium text-main focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {isSubmitting ? (
                   <>
