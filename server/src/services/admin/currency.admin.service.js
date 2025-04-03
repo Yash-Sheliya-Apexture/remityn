@@ -82,7 +82,7 @@ const getCurrencyByIdAdmin = async (currencyId) => {
     return await Currency.findById(currencyId);
 };
 
-const createCurrencyAdmin = async ({ code, currencyName, flagImage, payeeName, iban, bicSwift, bankAddress, wiseFeePercentage, bankTransferFee, customRateToBase }) => {
+const createCurrencyAdmin = async ({ code, currencyName, flagImage, payeeName, iban, bicSwift, bankAddress, wiseFeePercentage, bankTransferFee, rateAdjustmentPercentage }) => {
     if (!code || !currencyName) {
         throw new Error('Currency code and name are required.');
     }
