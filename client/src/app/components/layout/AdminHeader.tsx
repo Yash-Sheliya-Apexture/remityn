@@ -307,7 +307,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ toggleSidebar }) => {
   };
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200">
+    <header className="bg-white shadow-xs border-b border-gray-200">
       {" "}
       {/* Subtle shadow and border */}
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
