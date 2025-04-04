@@ -1069,7 +1069,7 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
               </div>
             )}
           </div>
-          <h2 className="sm:text-[26px] text-xl font-semibold text-neutral-900 dark:text-white">
+          <h2 className="sm:text-[26px] text-xl font-semibold text-mainheading dark:text-white">
             {currentRecipient.nickname || currentRecipient.accountHolderName}
           </h2>
           <div className="flex items-center gap-4">
@@ -1204,7 +1204,7 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
             <input
               type="text"
               id="nickname"
-              className="autofill:bg-transparent dark:bg-transparent w-full rounded-lg py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white"
+              className="autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white"
               placeholder="Enter nickname"
               maxLength={40}
               value={nicknameInput}
@@ -1215,7 +1215,7 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
             </p>
           </div>
           <button
-            className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 text-center w-full mt-4 cursor-pointer transition-colors duration-500 ease-in-out"
+            className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full mt-4 cursor-pointer transition-all duration-75 ease-linear"
             onClick={handleSaveNickname}
           >
             Save

@@ -36,7 +36,7 @@ font-family: var(--font-Inter);
 --color-mainheading: #171717;
 --color-subheading: #171717;
 --color-secondarybox: #525252;
---color-primaryhover: #bcf65f;
+--color-primaryhover: #8de900;
 }
 
 @keyframes float {

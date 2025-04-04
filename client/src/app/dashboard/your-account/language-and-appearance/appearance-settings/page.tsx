@@ -182,7 +182,7 @@ const ThemeOption: React.FC<ThemeOptionProps> = ({
   return (
     <button
       onClick={() => onSelect(value)}
-      className="flex items-center justify-between w-full text-left hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer"
+      className="flex items-center justify-between w-full text-left hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer"
       aria-pressed={isSelected}
       role="radio"
       aria-checked={isSelected}

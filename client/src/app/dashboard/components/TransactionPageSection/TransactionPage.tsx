@@ -2851,8 +2851,8 @@ const TransactionsPage: React.FC = () => {
                                             : (transaction.name || "Recipient");
 
                                         return (
-                                            <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} passHref legacyBehavior>
-                                                 <a className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer">
+                                            <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} >
+                                                 <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer">
                                                     <div className="flex items-center gap-4">
                                                         <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center">{icon}</div>
                                                         <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
@@ -2867,7 +2867,7 @@ const TransactionsPage: React.FC = () => {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </a>
+                                                </div>
                                             </Link>
                                         );
                                     })}
@@ -2886,7 +2886,7 @@ const TransactionsPage: React.FC = () => {
                                                 const isAddMoney = transaction.type === "Add Money";
                                                 const icon = isAddMoney ? <LuPlus size={22} className="text-neutral-900 dark:text-white" /> : <GoArrowUp size={22} className="text-neutral-900 dark:text-white" />;
                                                 let description = isAddMoney ? "Added by you" : `To ${transaction.name || 'Recipient'}`;
-                                                let amountClass = isAddMoney ? "text-green-600 dark:text-green-400" : "text-neutral-900  dark:text-white";
+                                                let amountClass = isAddMoney ? "text-green-600 dark:text-green-500" : "text-neutral-900  dark:text-white";
                                                 const amount = isAddMoney ? (transaction.amountToAdd ?? 0) : (transaction.sendAmount ?? 0);
                                                 const displayCurrencyCode = isAddMoney
                                                     ? (typeof transaction.balanceCurrency === 'object' && transaction.balanceCurrency?.code ? transaction.balanceCurrency.code : '')
@@ -2898,17 +2898,17 @@ const TransactionsPage: React.FC = () => {
                                                 // Adjust appearance based on final status
                                                 if (transaction.status === "canceled" || transaction.status === "cancelled") {
                                                     description = "Cancelled";
-                                                    amountClass = "text-red-500 dark:text-red-400 line-through";
+                                                    amountClass = "text-red-600 line-through";
                                                 } else if (transaction.status === "failed") {
                                                     description = "Failed";
-                                                    amountClass = "text-red-500 dark:text-red-400";
+                                                    amountClass = "text-red-600 line-through";
                                                 } else if (transaction.status === "completed") {
                                                      description = isAddMoney ? "Added" : `Sent to ${transaction.name || 'Recipient'}`;
                                                 }
 
                                                 return (
-                                                    <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} passHref legacyBehavior>
-                                                         <a className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer">
+                                                    <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} >
+                                                         <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer">
                                                             <div className="flex items-center gap-4">
                                                                 <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center">{icon}</div>
                                                                 <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
@@ -2923,7 +2923,7 @@ const TransactionsPage: React.FC = () => {
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </a>
+                                                        </div>
                                                     </Link>
                                                 );
                                             })}

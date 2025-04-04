@@ -66,7 +66,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
   href, // Destructure the href prop
 }) => {
   const menuItemContent = (
-    <div className="flex items-center gap-4 hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer group">
+    <div className="flex items-center gap-4 hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer group">
       <div className="bg-lightborder dark:bg-secondarybox p-3 rounded-full">
         {icon}
       </div>
