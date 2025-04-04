@@ -387,12 +387,12 @@ export default function RecipientsPage() {
   return (
     <section className="Beneficiaries-Page py-10">
       <div className="container mx-auto">
-        <div className="mb-8 flex items-center justify-between ">
-          <h1 className="text-3xl font-semibold text-mainheading dark:text-white">Recipients</h1>
+        <div className="mb-6 flex items-center justify-between ">
+          <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">Recipients</h1>
           {/* Conditionally render in small screen */}
           {isSmallScreen && ( // Conditionally render based on isSmallScreen state
             <button
-              className="bg-primary text-neutral-900 font-medium px-4 py-1 rounded-full"
+              className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium px-4 py-1 rounded-full transition-all duration-75 ease-linear cursor-pointer"
               onClick={handleAddRecipientClick} // Add onClick handler for small screen button
             >
               Add
@@ -407,7 +407,7 @@ export default function RecipientsPage() {
             </div>
             <input
               type="text"
-              className="w-full rounded-full py-3 pl-12 pr-3 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white" // Increased pr-10 to accommodate cancel icon
+              className="w-full rounded-full h-12.5 py-3 pl-12 pr-3 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white" // Increased pr-10 to accommodate cancel icon
               placeholder="Search existing recipients"
               value={searchTerm}
               onChange={handleSearchChange}
@@ -415,7 +415,7 @@ export default function RecipientsPage() {
             {searchTerm && ( // Conditionally render the cancel icon
               <button
                 onClick={clearSearchTerm}
-                className="absolute inset-y-0 right-3 flex items-center text-neutral-900 dark:text-primary focus:outline-none" // Position cancel icon
+                className="absolute inset-y-0 right-3 flex items-center text-neutral-900 dark:text-primary focus:outline-none cursor-pointer" // Position cancel icon
               >
                 <MdCancel size={24} aria-hidden="true" />
               </button>
@@ -424,7 +424,7 @@ export default function RecipientsPage() {
           {!isSmallScreen && (
             <button
               type="button"
-              className="inline-flex items-center space-x-3 py-3 px-4 font-medium rounded-full transition duration-200 mb-2 bg-primary text-neutral-900"
+              className="inline-flex items-center bg-primary text-neutral-900 hover:bg-primaryhover space-x-3 py-3 px-4 h-12.5 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer"
               onClick={handleAddRecipientClick}
             >
               Add recipient
@@ -458,7 +458,7 @@ export default function RecipientsPage() {
               </h3>
 
               <div
-                className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointerr"
+                className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer"
                 onClick={handleAddRecipientClick}
               >
                 <div className="flex items-center justify-between">

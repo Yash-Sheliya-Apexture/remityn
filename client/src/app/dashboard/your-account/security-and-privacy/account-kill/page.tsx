@@ -66,7 +66,7 @@ export default function LogoutEveryWhere() {
             <p>After you’ve activated this, you will receive an email with the steps to recover your account securely.</p>
 
             <button
-              className="inline-flex items-center justify-center w-full px-6 py-3 text-base text-white bg-red-600 hover:bg-red-700 cursor-pointer font-semibold rounded-full border border-transparent transition-colors duration-150 ease-in-out"
+              className="inline-flex items-center justify-center w-full px-6 py-3 h-12.5 text-base text-white bg-red-600 hover:bg-red-700 cursor-pointer font-semibold rounded-full border border-transparent transition-colors duration-150 ease-in-out"
             //   onClick={handleLogoutEverywhere} // Attach the click handler
             >
               Log out everywhere

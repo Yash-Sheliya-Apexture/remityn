@@ -106,9 +106,14 @@ const NicknamePopup: React.FC<NicknamePopupProps> = ({
   };
 
   const desktopVariants = {
-    initial: { y: -50, opacity: 0 },
-    animate: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100 } },
-    exit: { y: -50, opacity: 0 },
+    initial: { y: -30, opacity: 0, scale: 0.95 },
+    animate: {
+      y: 0,
+      opacity: 1,
+      scale: 1,
+      transition: { type: "spring", stiffness: 100, damping: 15 },
+    },
+    exit: { y: -30, opacity: 0, scale: 0.95 },
   };
 
   const modalVariants = isMobile ? mobileVariants : desktopVariants;

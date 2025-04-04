@@ -383,7 +383,7 @@ const TransactionsSection: React.FC = () => {
   // --- Render Helper ---
   const renderTransactionRow = (transaction: Transaction) => {
     const isAddMoney = transaction.type === "Add Money";
-    const icon = isAddMoney ? <LuPlus size={24} className="text-main" /> : <GoArrowUp size={24} className="text-main" />;
+    const icon = isAddMoney ? <LuPlus size={24} className="text-neutral-900 dark:text-white" /> : <GoArrowUp size={24} className="text-neutral-900 dark:text-white" />;
     const name = isAddMoney ? `To your ${transaction.balanceCurrency?.code ?? ''} balance` : (transaction.name || "Recipient");
 
     let description = transaction.status; // Default description to status
@@ -402,45 +402,48 @@ const TransactionsSection: React.FC = () => {
     const amount = isAddMoney ? (transaction.amountToAdd ?? 0) : (transaction.sendAmount ?? 0);
     const currencyCode = isAddMoney ? (transaction.balanceCurrency?.code ?? '') : (transaction.sendCurrency?.code ?? '');
     const amountPrefix = isAddMoney ? "+ " : "- ";
-    let amountClass = "text-main"; // Default for Send Money or pending Add Money
+    let amountClass = "text-neutral-900  dark:text-white"; // Default for Send Money or pending Add Money
     if (isAddMoney && transaction.status === "completed") {
-        amountClass = "text-green-600";
+        amountClass = "text-green-600 dark:text-green-500";
     } else if (transaction.status === "canceled") {
-        amountClass = "text-red-500 line-through";
+        amountClass = "text-red-600 line-through";
     } else if (transaction.status === "failed") {
-         amountClass = "text-red-500";
+         amountClass = "text-red-600 line-through";
     }
 
 
     return (
       // Link to the specific transaction detail page
-      <div key={transaction._id}>
-        <Link href={`/dashboard/transactions/${transaction._id}`}>
-          <div className="hover:bg-lightgray p-2 sm:p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-lightborder rounded-full flex items-center justify-center border border-lightborder">
-                {icon}
+
+      <Link
+        href={`/dashboard/transactions/${transaction._id}`}
+        key={transaction._id}
+        className="block"
+      >
+        <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center">
+              {icon}
+            </div>
+            <div className="flex justify-between w-full items-center">
+              {" "}
+              {/* Use items-center */}
+              <div>
+                <h3 className="font-medium text-neutral-900 dark:text-white text-sm md:text-base">{name}</h3>
+                <p className="text-xs md:text-sm text-gray-500 dark:text-gray-300">{description} <span className="italic">({transaction.status})</span></p>
               </div>
-              <div className="flex justify-between w-full items-center">
-                {" "}
-                {/* Use items-center */}
-                <div>
-                  <h3 className="font-medium text-main">{name}</h3>
-                  <p className="text-sm text-gray-500">{description}</p>
-                </div>
-                <div className={`font-medium ${amountClass} whitespace-nowrap`}>
-                  {amountPrefix}
-                  {amount.toLocaleString(undefined, {
-                    minimumFractionDigits: 2, // Show 2 decimal places
-                    maximumFractionDigits: 2,
-                  })}{" "}
-                  {currencyCode}
-                </div>
+              <div className={`font-medium ${amountClass} text-sm md:text-base whitespace-nowrap text-right sm:text-left`}>
+                {amountPrefix}
+                {amount.toLocaleString(undefined, {
+                  minimumFractionDigits: 2, // Show 2 decimal places
+                  maximumFractionDigits: 2,
+                })}{" "}
+                {currencyCode}
               </div>
             </div>
           </div>
-        </Link>
-      </div>
+        </div>
+      </Link>
     );
   };
 
@@ -448,10 +451,10 @@ const TransactionsSection: React.FC = () => {
     <section className="Transactions py-10"> {/* Adjusted padding */}
       <div className="container mx-auto">
         <div className="flex justify-between items-center mb-6"> {/* Adjusted margin */}
-          <h1 className="text-2xl font-semibold text-main">Recent Transactions</h1> {/* Adjusted size */}
+          <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">Recent Transactions</h1> {/* Adjusted size */}
           <Link
             href="/dashboard/transactions" // Corrected path assuming it's directly under dashboard
-            className="text-secondary font-medium underline cursor-pointer hover:text-secondary/80"
+            className="text-primary font-medium underline cursor-pointer hover:text-primaryhover transition-all duration-75 ease-linear"
           >
             See all
           </Link>
@@ -459,7 +462,7 @@ const TransactionsSection: React.FC = () => {
 
         {/* Transaction History */}
         <div className="space-y-2">
-          {loading && <p className="text-center text-gray-500 py-4">Loading transactions...</p>}
+          {loading && <p className="text-center text-gray-500 dark:text-gray-300 py-4">Loading transactions...</p>}
           {!loading && error && <p className="text-center text-red-500 py-4">Error: {error}</p>}
           {!loading && !error && latestTransactions.length === 0 && (
             <p className="text-center text-gray-500 py-4">No recent transactions found.</p>

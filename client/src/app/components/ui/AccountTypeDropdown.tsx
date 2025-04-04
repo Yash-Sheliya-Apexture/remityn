@@ -62,15 +62,15 @@ const AccountTypeDropdown: React.FC<AccountTypeDropdownProps> = ({ value, onChan
     <div className="relative" ref={dropdownRef}>
       <button
         type="button"
-        className={`flex items-center justify-between mt-1 px-4 py-3 w-full border rounded-xl transition-shadow ease-in-out duration-300 ${
+        className={`flex items-center justify-between autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white ${
           error
             ? "border-error border-2 !shadow-none"
             : "border-[#c9cbce] hover:shadow-color"
         }`}
         onClick={toggleOpen}
       >
-        <span>{value || <span className="text-gray-400">Select account type</span>}</span>
-        {isOpen ? <IoChevronUp className="text-gray-500" /> : <IoChevronDown className="text-gray-500" />}
+        <span>{value || <span className="text-neutral-900 dark:text-white">Select account type</span>}</span>
+        {isOpen ? <IoChevronUp className="text-neutral-900 dark:text-white" /> : <IoChevronDown className="text-neutral-900 dark:text-white" />}
       </button>
       <AnimatePresence initial={false} > {/* AnimatePresence to handle mount/unmount animations */}
         {isOpen && ( // Conditionally render dropdown only when isOpen is true

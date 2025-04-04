@@ -190,7 +190,7 @@ interface SettingsRowProps {
 const SettingsRow: React.FC<SettingsRowProps> = ({ icon, label, currentValue, onClick, href }) => {
      const content = (
        <div
-         className={`flex items-center gap-4 hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-colors duration-500 ease-in-out ${
+         className={`flex items-center gap-4 hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear ${
            onClick || href ? "cursor-pointer" : ""
          } group`}
        >
