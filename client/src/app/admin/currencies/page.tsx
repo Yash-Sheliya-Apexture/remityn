@@ -531,7 +531,7 @@
 //           <div className="mb-4">
 //             <label
 //               htmlFor="code"
-//               className="inline-block lg:text-base text-sm text-main font-medium mb-1"
+//               className="inline-block lg:text-base text-sm text-neutral-900 font-medium mb-1"
 //             >
 //               Currency Code
 //             </label>
@@ -541,7 +541,7 @@
 //               name="code"
 //               value={newCurrencyData.code}
 //               onChange={handleInputChange}
-//               className="appearance-none w-full border rounded-md p-3.5 text-main leading-tight hover:shadow-color transition-shadow duration-300 ease-in-out focus:outline-none"
+//               className="appearance-none w-full border rounded-md p-3.5 text-neutral-900 leading-tight hover:shadow-color transition-shadow duration-300 ease-in-out focus:outline-none"
 //             />
 //           </div>
 //           <div className="mb-4">
@@ -4550,7 +4550,7 @@ const AdminCurrenciesPage: React.FC = () => {
           onClick={() => {
             setIsCreateModalOpen(true);
           }} // Clear error on open
-          className="flex items-center gap-2 bg-primary dark:bg-main dark:text-white cursor-pointer font-medium hover:bg-primary-hover text-main py-3 px-4 rounded-lg transition duration-300 focus:outline-none"
+          className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center flex items-center gap-2 cursor-pointer transition-all duration-75 ease-linear"
         >
           <PlusCircle className="size-5" />
           <span>Add Currency</span>
@@ -4561,18 +4561,18 @@ const AdminCurrenciesPage: React.FC = () => {
           <input
             type="text"
             placeholder="Search currencies..."
-            className="w-full px-4 py-3 ps-8 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white hover:shadow-darkcolor transition-shadow ease-in-out duration-300 sm:text-sm"
+            className="w-full px-6 py-3 ps-10 h-12.5 rounded-full text-neutral-900 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white hover:shadow-darkcolor dark:hover:shadow-whitecolor transition-shadow ease-in-out duration-300 sm:text-sm"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <CiSearch className="size-5 absolute top-3 left-2 text-gray" />
+          <CiSearch className="size-5 absolute top-3.5 left-3 text-neutral-900 dark:text-white" />
         </div>
       </div>
 
       {/* Currency List / Loading / Empty State */}
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
-          <Loader2 size={60} className="text-blue-600 animate-spin" />
+          <Loader2 size={60} className="text-neutral-900 animate-spin" />
         </div>
       ) : filteredCurrencies.length === 0 ? (
         <div className="bg-white dark:bg-gray-800 p-8 text-center rounded-lg shadow-sm border dark:border-gray-700">
@@ -4587,7 +4587,7 @@ const AdminCurrenciesPage: React.FC = () => {
           {filteredCurrencies.map((currency) => (
             <div
               key={currency._id}
-              className="rounded-xl overflow-hidden transition-all duration-300 bg-white dark:bg-gray-800 shadow-md hover:shadow-lg border border-gray-200 dark:border-gray-700 flex flex-col"
+              className="rounded-xl overflow-hidden transition-all duration-300 bg-white shadow-md hover:shadow-lg border border-gray-200 dark:border-gray-700 flex flex-col"
             >
               <div className="p-5 flex-grow">
                 {/* Top Section: Flag, Code, Name */}
@@ -4608,6 +4608,7 @@ const AdminCurrenciesPage: React.FC = () => {
                       No flag
                     </div>
                   )}
+                  
                   {/* Code and Name */}
                   <div className="flex-1">
                     {editingCurrencyId === currency._id ? (
@@ -4626,7 +4627,7 @@ const AdminCurrenciesPage: React.FC = () => {
                         {currency.code}{" "}
                       </h3>
                     )}
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                    <p className="text-sm text-gray-500 dark:text-gray-300 mt-0.5">
                       {" "}
                       {currency.currencyName}{" "}
                     </p>
@@ -4635,7 +4636,7 @@ const AdminCurrenciesPage: React.FC = () => {
 
                 {/* Rate Adjustment Section - UPDATED */}
                 <div className="p-3 space-y-2 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
-                  <label className="font-medium text-gray-500 dark:text-gray-400 mb-1 flex items-center gap-1">
+                  <label className="font-medium text-gray-500 dark:text-gray-300 mb-1 flex items-center gap-1">
                     Our Rates
                   </label>
 
@@ -4653,7 +4654,7 @@ const AdminCurrenciesPage: React.FC = () => {
                     <p
                       className={`text-lg font-bold ${
                         currency.rateAdjustmentPercentage != null
-                          ? "text-main font-medium dark:text-main-light"
+                          ? "text-neutral-900 font-medium dark:text-white"
                           : "text-gray-400 italic dark:text-gray-500"
                       }`}
                     >
@@ -4668,7 +4669,7 @@ const AdminCurrenciesPage: React.FC = () => {
                         : "Not Set"}
                     </p>
                   )}
-                  <p className="text-gray-500 dark:text-gray-400 mt-1">
+                  <p className="text-gray-500 dark:text-gray-300 mt-1">
                     Our Rates vs market rate.
                   </p>
                 </div>
@@ -4757,13 +4758,13 @@ const AdminCurrenciesPage: React.FC = () => {
                 onClick={() => setIsCreateModalOpen(false)}
                 aria-label="Close modal"
               >
-                <IoClose className="size-10 text-main p-2" />
+                <IoClose className="size-10 text-neutral-900 p-2" />
               </button>
 
               <div className="lg:p-6 p-4">
                 {/* Modal Header */}
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="lg:text-xl font-medium text-main dark:text-white">
+                  <h2 className="lg:text-xl font-medium text-neutral-900 dark:text-white">
                     {" "}
                     Add New Currency{" "}
                   </h2>
@@ -4874,7 +4875,7 @@ const AdminCurrenciesPage: React.FC = () => {
                       !newCurrencyData.code ||
                       !newCurrencyData.currencyName
                     }
-                    className="flex-1 flex justify-center cursor-pointer items-center gap-2 bg-primary text-main dark:bg-primaryDark dark:text-white font-medium py-3 px-4 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+                    className="flex-1 flex justify-center cursor-pointer items-center gap-2 bg-primary text-neutral-900 dark:bg-primaryDark dark:text-white font-medium py-3 px-4 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
                   >
                     {isSubmitting ? (
                       <Loader2 size={20} className="animate-spin" />
@@ -4897,62 +4898,73 @@ const AdminCurrenciesPage: React.FC = () => {
       </AnimatePresence>
 
       {/* Delete Confirmation Modal */}
-      {isDeleteConfirmationOpen && (
-        <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-          onClick={() => setIsDeleteConfirmationOpen(false)}
-        >
-          <div
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6 relative"
-            onClick={(e) => e.stopPropagation()}
+      <AnimatePresence>
+        {isDeleteConfirmationOpen && (
+          <motion.div
+            className="fixed inset-0 w-full h-full bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" // Added padding and inset-0
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsDeleteConfirmationOpen(false)}
           >
-            {/* Icon and Title */}
-            <div className="text-center">
-              <div className="mx-auto flex items-center justify-center mb-4">
-                <Image
-                  src="/assets/images/exclamation-mark-medium@2x.webp"
-                  width={200}
-                  height={200}
-                  alt="Picture of the author"
-                />
+            <motion.div
+              className="bg-white dark:bg-gray-800 rounded-2xl p-6 sm:p-8 md:p-10 w-full max-w-lg relative shadow-xl" // Added dark mode, padding adjustments, shadow
+              initial={{ y: -30, opacity: 0, scale: 0.95 }}
+              animate={{
+                y: 0,
+                opacity: 1,
+                scale: 1,
+                transition: { type: "spring", stiffness: 100, damping: 15 },
+              }}
+              exit={{ y: -30, opacity: 0, scale: 0.95 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Icon and Title */}
+              <div className="text-center">
+                <div className="mx-auto flex items-center justify-center mb-4">
+                  <Image
+                    src="/assets/images/exclamation-mark-medium@2x.webp"
+                    width={200}
+                    height={200}
+                    alt="Picture of the author"
+                  />
+                </div>
+                <h3 className="text-2xl leading-6 font-medium text-neutral-900 dark:text-white">
+                  Delete Currency
+                </h3>
+                <div className="mt-4">
+                  <p className="text-gray-500 text-lg leading-relaxed dark:text-gray-400">
+                    Are you sure you want to delete this currency? This action
+                    cannot be undone.
+                  </p>{" "}
+                </div>
               </div>
-              <h3 className="text-2xl leading-6 font-medium text-main dark:text-white">
-                Delete Currency
-              </h3>
-              <div className="mt-4">
-                <p className="text-gray-500 text-lg leading-relaxed dark:text-gray-400">
-                  Are you sure you want to delete this currency? This action
-                  cannot be undone.
-                </p>{" "}
+              {/* Buttons */}
+              <div className="mt-6 flex flex-col gap-3">
+                <button
+                  onClick={handleDeleteCurrency}
+                  disabled={isSubmitting}
+                  type="button"
+                  className="w-full inline-flex justify-center rounded-md border border-transparent px-4 py-3 cursor-pointer bg-red-600 font-medium text-white focus:outline-none sm:w-auto sm:text-sm disabled:opacity-50"
+                >
+                  {isSubmitting ? (
+                    <Loader2 size={20} className="animate-spin" />
+                  ) : (
+                    "Delete"
+                  )}
+                </button>
+                <button
+                  onClick={() => setIsDeleteConfirmationOpen(false)}
+                  type="button"
+                  className="w-full inline-flex justify-center rounded-md border border-gray-300 px-4 py-3 cursor-pointer bg-white dark:bg-gray-700 font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm"
+                >
+                  Cancel
+                </button>
               </div>
-            </div>
-            {/* Error within modal */}
-            {/* Error messages will be shown via react-toastify inside handleDeleteCurrency */}
-            {/* Buttons */}
-            <div className="mt-6 flex flex-col gap-3">
-              <button
-                onClick={handleDeleteCurrency}
-                disabled={isSubmitting}
-                type="button"
-                className="w-full inline-flex justify-center rounded-md border border-transparent px-4 py-3 cursor-pointer bg-red-600 font-medium text-white focus:outline-none sm:w-auto sm:text-sm disabled:opacity-50"
-              >
-                {isSubmitting ? (
-                  <Loader2 size={20} className="animate-spin" />
-                ) : (
-                  "Delete"
-                )}
-              </button>
-              <button
-                onClick={() => setIsDeleteConfirmationOpen(false)}
-                type="button"
-                className="w-full inline-flex justify-center rounded-md border border-gray-300 px-4 py-3 cursor-pointer bg-white dark:bg-gray-700 font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

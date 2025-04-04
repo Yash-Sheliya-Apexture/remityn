@@ -36,7 +36,10 @@ font-family: var(--font-Inter);
 --color-mainheading: #171717;
 --color-subheading: #171717;
 --color-secondarybox: #525252;
+/* Background-color Hover-Button */
 --color-primaryhover: #bcf65f;
+
+/* text-color : text-neutral-900 */
 
 }
 
