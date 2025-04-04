@@ -1954,14 +1954,16 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
         </button>
 
         {/* Logo Section */}
-        <div className="p-6 mt-2 border-b flex justify-center items-center">
-          <Image
-            src="/assets/images/wise-logo.svg"
-            height={100}
-            width={100}
-            alt="Wise Admin Logo"
-            className="transition-opacity"
-          />
+        <div className="p-3 border-b">
+          <div className="h-14 flex justify-center items-center">
+            <Image
+              src="/assets/images/wise-logo.svg"
+              height={100}
+              width={100}
+              alt="Wise Admin Logo"
+              className="transition-opacity"
+            />
+          </div>
         </div>
 
         {/* User Profile Summary */}
@@ -2098,10 +2100,10 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
             {/* Add-Money */}
             <li>
               <Link
-                href="/admin/Add-Now"
+                href="/admin/add-money"
                 className={`flex items-center justify-between w-full cursor-pointer px-4 py-3 rounded-4xl transition-all duration-200
                 ${
-                  isActive("/admin/Add-Now")
+                  isActive("/admin/add-money")
                     ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
                     : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
                 }`}
@@ -2134,7 +2136,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
         </nav>
 
         {/* Footer Actions */}
-        <div className="p-4 border-t border-slate-200 dark:border-slate-700 space-y-2">
+        <div className="p-4 border-t space-y-2">
           {/* Theme Toggle for Admin Sidebar */}
           <div className="mb-2 flex justify-center">
             <ThemeToggle location="admin" className="inline-block" />

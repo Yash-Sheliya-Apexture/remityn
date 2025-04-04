@@ -21,8 +21,6 @@ font-family: var(--font-Inter);
 /* Background-Color */
 --color-primary: #adfa1d;
 --color-primarybox: #ffffff1a;
-/* Background-Color-Hover */
---color-primary-hover: #11a0d3;
 /* Text-color */
 --color-secondary: #002330;
 --color-lightgray: #f4f4f4;
@@ -36,7 +34,7 @@ font-family: var(--font-Inter);
 --color-mainheading: #171717;
 --color-subheading: #171717;
 --color-secondarybox: #525252;
---color-primaryhover: #bcf65f;
+--color-primaryhover: #8de900;
 }
 
 @keyframes float {
