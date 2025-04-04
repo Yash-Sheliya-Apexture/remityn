@@ -111,31 +111,31 @@ export default function PersonalDetails() {
   return (
     <section className="Personal-Details py-10">
       <div className="container-mx-auto">
-        <h2 className="text-3xl text-main font-semibold">Personal details</h2>
+        <h2 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">Personal details</h2>
 
         <div className="mt-8 space-y-2">
           {/* user account */}
           <div>
             <Link href={isAccountComplete ? "change-personal-details" : "/dashboard"}>
               {/* Wrap with Link */}
-              <div className="flex items-center gap-4 hover:bg-lightgray p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer">
+              <div className="flex items-center gap-4 hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer group">
                 {/* Icon Container */}
-                <div className="bg-lightborder rounded-full p-3 ">
-                  <LuUser size={24} className="text-main" />
+                <div className="bg-lightborder dark:bg-secondarybox p-3 rounded-full">
+                  <LuUser size={24} className="text-neutral-900 dark:text-white" />
                 </div>
 
                 <div className="flex-grow">
-                  <p className="font-semibold text-main">
+                  <p className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-xl">
                     {isAccountComplete ? "Personal Information" : "Complete your account"}
                   </p>
-                  <p className=" text-gray text-sm">
+                  <p className=" text-sm text-gray-500 dark:text-gray-300 mt-1">
                     {isAccountComplete ? "Manage your personal information" : ""}
                   </p>
                 </div>
 
                 {/* Right Arrow Icon */}
                 <div>
-                  <IoIosArrowForward size={20} className="text-gray" />
+                  <IoIosArrowForward size={20} className="text-neutral-900 dark:text-white group-hover:translate-x-2.5 font-medium transition-transform ease-in-out duration-300" />
                 </div>
               </div>
             </Link>
@@ -145,22 +145,22 @@ export default function PersonalDetails() {
           <div>
             <Link href="change-email">
               {/* Wrap with Link */}
-              <div className="flex items-center gap-4 hover:bg-lightgray p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer">
+              <div className="flex items-center gap-4 hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer group">
                 {/* Icon Container */}
-                <div className="bg-lightborder rounded-full p-3 ">
-                  <LuMail size={24} className="text-main" />
+                <div className="bg-lightborder dark:bg-secondarybox p-3 rounded-full">
+                  <LuMail size={24} className="text-neutral-900 dark:text-white" />
                 </div>
 
                 <div className="flex-grow">
-                  <p className="font-semibold text-main">Email Address</p>
-                  <p className=" text-gray text-sm">
+                  <p className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-xl">Email Address</p>
+                  <p className=" text-sm text-gray-500 dark:text-gray-300 mt-1">
                     kartavyatech@gmail.com
                   </p>
                 </div>
 
                 {/* Right Arrow Icon */}
                 <div>
-                  <IoIosArrowForward size={20} className="text-gray" />
+                  <IoIosArrowForward size={20} className="text-neutral-900 dark:text-white group-hover:translate-x-2.5 font-medium transition-transform ease-in-out duration-300" />
                 </div>
               </div>
             </Link>
@@ -170,22 +170,22 @@ export default function PersonalDetails() {
           <div>
             <Link href="change-email">
               {/* Wrap with Link */}
-              <div className="flex items-center gap-4 hover:bg-lightgray p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer">
+              <div className="flex items-center gap-4 hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer group">
                 {/* Icon Container */}
-                <div className="bg-lightborder rounded-full p-3 ">
-                  <LuPhone size={24} className="text-main" />
+                <div className="bg-lightborder dark:bg-secondarybox p-3 rounded-full">
+                  <LuPhone size={24} className="text-neutral-900 dark:text-white" />
                 </div>
 
                 <div className="flex-grow">
-                  <p className="font-semibold text-main">Phone number</p>
-                  <p className=" text-gray text-sm">
+                  <p className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-xl">Phone number</p>
+                  <p className=" text-sm text-gray-500 dark:text-gray-300 mt-1">
                     +919265348797
                   </p>
                 </div>
 
                 {/* Right Arrow Icon */}
                 <div>
-                  <IoIosArrowForward size={20} className="text-gray" />
+                  <IoIosArrowForward size={20} className="text-neutral-900 dark:text-white group-hover:translate-x-2.5 font-medium transition-transform ease-in-out duration-300" />
                 </div>
               </div>
             </Link>

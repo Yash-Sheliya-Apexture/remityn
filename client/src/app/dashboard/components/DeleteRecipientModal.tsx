@@ -132,7 +132,7 @@ const DeleteRecipientModal: React.FC<DeleteRecipientModalProps> = ({
                     exit={{ opacity: 0 }}
                 >
                     <motion.div
-                        className="bg-white dark:bg-background sm:rounded-2xl rounded-t-2xl p-10 w-full sm:max-w-lg relative"
+                        className="bg-white dark:bg-background sm:rounded-2xl rounded-t-2xl sm:p-10 p-4 w-full sm:max-w-lg relative"
                         variants={modalVariants}
                         initial="initial"
                         animate="animate"
@@ -156,7 +156,7 @@ const DeleteRecipientModal: React.FC<DeleteRecipientModalProps> = ({
                                 Delete
                             </button>
                             <button
-                                className="bg-neutral-900 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center border border-gray w-full cursor-pointer transition-all duration-75 ease-linear"
+                                className="bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear"
                                 onClick={onClose}
                             >
                                 Cancel

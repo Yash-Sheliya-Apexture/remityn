@@ -3323,14 +3323,14 @@ const AddRecipientPage = () => {
 
                   {filteredComingSoonCurrencies.length > 0 && (
                     <div>
-                      <h3 className="text-gray font-medium relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-gray/20 after:mt-1 mb-3">
+                      <h3 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
                         Coming soon
                       </h3>
                       <div className="space-y-2">
                         {filteredComingSoonCurrencies.map((currency) => (
                           <div
                             key={currency.code}
-                            className={`hover:bg-lightgray p-4 rounded-xl cursor-no-drop transition-colors duration-200 ease-in-out opacity-50`}
+                            className={`hover:bg-lightgray dark:hover:bg-primarybox p-4 rounded-xl cursor-no-drop transition-colors duration-200 ease-in-out opacity-50`}
                           >
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-4">
@@ -3343,15 +3343,15 @@ const AddRecipientPage = () => {
                                   />
                                 )}
                                 <div>
-                                  <h4 className="font-semibold text-main">
+                                  <h4 className="font-medium text-neutral-900 dark:text-white text-sm md:text-base">
                                     {currency.code}
                                   </h4>
-                                  <p className="text-sm text-gray-600">
+                                  <p className="text-xs md:text-sm text-gray-500 dark:text-gray-300">
                                     {currency.currencyName}
                                   </p>
                                 </div>
                               </div>
-                              <span className="text-gray-500">Coming soon</span>
+                              <span className="text-gray-500 dark:text-gray-300">Coming soon</span>
                             </div>
                           </div>
                         ))}
@@ -3416,7 +3416,7 @@ const AddRecipientPage = () => {
                 <input
                   type="email"
                   id="email"
-                  className={`autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white`}
+                  className={`autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-600 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white`}
                   value={email}
                   placeholder="example@example.ex"
                   onChange={(e) => setEmail(e.target.value)}
@@ -3438,7 +3438,7 @@ const AddRecipientPage = () => {
                   <input
                     type="text"
                     id="accountHolderName"
-                    className={`autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white ${
+                    className={`autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-600 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white ${
                       accountHolderNameError
                         ? "border-error border-2 !shadow-none"
                         : "border-[#c9cbce] hover:shadow-color"
@@ -3467,7 +3467,7 @@ const AddRecipientPage = () => {
                   <input
                     type="text"
                     id="ifscCode"
-                    className={`autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white ${
+                    className={`autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-600 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white ${
                       ifscCodeError
                         ? "border-error border-2 !shadow-none"
                         : "border-[#c9cbce] hover:shadow-color"
@@ -3496,7 +3496,7 @@ const AddRecipientPage = () => {
                   <input
                     type="text"
                     id="accountNumber"
-                    className={`autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white ${
+                    className={`autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-600 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white ${
                       accountNumberError
                         ? "border-error border-2 !shadow-none"
                         : "border-[#c9cbce] hover:shadow-color"
@@ -3540,7 +3540,7 @@ const AddRecipientPage = () => {
                   <input
                     type="text"
                     id="bankName"
-                    className={`autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white ${
+                    className={`autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-600 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white ${
                       bankNameError
                         ? "border-error border-2 !shadow-none"
                         : "border-[#c9cbce] hover:shadow-color"
@@ -3571,7 +3571,7 @@ const AddRecipientPage = () => {
                   <input
                     type="text"
                     id="address"
-                    className={`autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white ${
+                    className={`autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-600 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white ${
                       addressError
                         ? "border-error border-2 !shadow-none"
                         : "border-[#c9cbce] hover:shadow-color"
@@ -3594,14 +3594,14 @@ const AddRecipientPage = () => {
               <div className="flex sm:flex-row flex-col justify-center items-center gap-4 mb-4 mt-8">
                 <button
                   type="button"
-                  className={`sm:order-1 order-2 bg-neutral-900 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear`}
+                  className={`sm:order-1 order-2 bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear`}
                   onClick={handleClearForm}
                 >
                   Clear All
                 </button>
                 <button
                   type="submit"
-                  className={`bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear`}
+                  className={`sm:order-2 order-1 bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear`}
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
