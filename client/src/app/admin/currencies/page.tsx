@@ -3582,6 +3582,688 @@
 
 // export default AdminCurrenciesPage;
 
+// "use client";
+// import React, { useState, useEffect, useMemo } from "react";
+// import { useAuth } from "../../hooks/useAuth";
+// import axios from "axios";
+// import { useRouter } from "next/navigation";
+// import Link from "next/link";
+// import apiConfig from "../../config/apiConfig";
+// import Image from "next/image";
+// import {
+//   Loader2,
+//   PlusCircle,
+//   Info,
+//   Edit,
+//   Trash2,
+//   Save,
+//   X,
+//   AlertTriangle,
+//   Check,
+//   Percent,
+//   Images, // Changed icon
+// } from "lucide-react";
+// import { FaRegSave } from "react-icons/fa";
+// import { MdCancel, MdError } from "react-icons/md";
+// import { IoClose, IoSearch, IoWarningOutline } from "react-icons/io5";
+// import { CiSearch } from "react-icons/ci";
+// import { IoMdCloseCircle } from "react-icons/io";
+// import { toast, ToastContainer } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+
+// axios.defaults.baseURL = apiConfig.baseUrl;
+
+// interface Currency {
+//   _id: string;
+//   code: string;
+//   currencyName: string;
+//   flagImage?: string;
+//   rateAdjustmentPercentage?: number; // Updated field name
+// }
+
+// // Interface for the form data
+// interface NewCurrencyData {
+//   code: string;
+//   currencyName: string;
+//   flagImage: string;
+//   rateAdjustmentPercentage: string; // Use string for input
+// }
+
+// const AdminCurrenciesPage: React.FC = () => {
+//   const [currencies, setCurrencies] = useState<Currency[]>([]);
+//   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
+//   const [newCurrencyData, setNewCurrencyData] = useState<NewCurrencyData>({
+//     code: "",
+//     currencyName: "",
+//     flagImage: "",
+//     rateAdjustmentPercentage: "",
+//   });
+//   const [editingCurrencyId, setEditingCurrencyId] = useState<string | null>(
+//     null
+//   );
+//   // State for inline editing - needs to use the new field name
+//   const [editingFields, setEditingFields] = useState<{
+//     code: string;
+//     rateAdjustmentPercentage: string;
+//   }>({ code: "", rateAdjustmentPercentage: "" });
+
+//   const [isLoading, setIsLoading] = useState<boolean>(true);
+//   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+//   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+//     useState<boolean>(false);
+//   const [currencyToDeleteId, setCurrencyToDeleteId] = useState<string | null>(
+//     null
+//   );
+//   const [searchTerm, setSearchTerm] = useState<string>("");
+//   const { token } = useAuth();
+//   const router = useRouter();
+
+//   // Memoized filtered currencies
+//   const filteredCurrencies = useMemo(() => {
+//     if (!searchTerm) return currencies;
+//     const lowerSearchTerm = searchTerm.toLowerCase();
+//     return currencies.filter(
+//       (currency) =>
+//         currency.code.toLowerCase().includes(lowerSearchTerm) ||
+//         currency.currencyName.toLowerCase().includes(lowerSearchTerm)
+//     );
+//   }, [currencies, searchTerm]);
+
+//   useEffect(() => {
+//     fetchCurrenciesList();
+//   }, [token]); // Removed router dependency unless needed for redirect logic inside fetch
+
+//   const fetchCurrenciesList = async () => {
+//     if (!token) {
+//       router.push("/auth/login"); // Redirect if no token early
+//       return;
+//     }
+//     setIsLoading(true);
+//     try {
+//       const response = await axios.get<Currency[]>("/admin/currencies", {
+//         // Expect array of Currency
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       setCurrencies(response.data);
+//     } catch (err: any) {
+//       console.error("Error fetching currencies:", err);
+//       if (err.response?.status === 403 || err.response?.status === 401) {
+//         router.push("/auth/login");
+//       } else {
+//         toast.error(err.response?.data?.message || "Failed to load currencies");
+//       }
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   const handleCreateInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const { name, value } = e.target;
+//     setNewCurrencyData((prev) => ({
+//       ...prev,
+//       // Convert code to uppercase immediately
+//       [name]: name === "code" ? value.toUpperCase() : value,
+//     }));
+//   };
+
+//   // handleCreateCurrency - updated validation and payload
+//   const handleCreateCurrency = async () => {
+//     if (!newCurrencyData.code || !newCurrencyData.currencyName) {
+//       toast.error("Currency code and name are required.");
+//       return;
+//     }
+//     if (newCurrencyData.code.length !== 3) {
+//       toast.error("Currency code must be 3 letters.");
+//       return;
+//     }
+
+//     let adjustmentValue: number = 0; // Default to 0
+//     if (newCurrencyData.rateAdjustmentPercentage.trim() !== "") {
+//       adjustmentValue = parseFloat(newCurrencyData.rateAdjustmentPercentage);
+//       if (isNaN(adjustmentValue)) {
+//         toast.error(
+//           "Rate Adjustment must be a valid number (e.g., 0.5 or -0.1)."
+//         );
+//         return;
+//       }
+//     }
+
+//     setIsSubmitting(true);
+//     try {
+//       const payload = {
+//         code: newCurrencyData.code,
+//         currencyName: newCurrencyData.currencyName,
+//         flagImage: newCurrencyData.flagImage.trim() || null,
+//         rateAdjustmentPercentage: adjustmentValue, // Send parsed number
+//       };
+//       await axios.post("/admin/currencies", payload, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       setNewCurrencyData({
+//         code: "",
+//         currencyName: "",
+//         flagImage: "",
+//         rateAdjustmentPercentage: "",
+//       });
+//       setIsCreateModalOpen(false);
+//       await fetchCurrenciesList();
+//       toast.success("Currency added successfully!");
+//     } catch (err: any) {
+//       toast.error(err.response?.data?.message || "Failed to create currency");
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   // --- Inline Editing Handlers ---
+//   const startEditing = (currency: Currency) => {
+//     setEditingCurrencyId(currency._id);
+//     setEditingFields({
+//       code: currency.code,
+//       rateAdjustmentPercentage:
+//         currency.rateAdjustmentPercentage?.toString() ?? "0", // Default to '0' string if null/undefined
+//     });
+//   };
+
+//   const handleEditingInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const { name, value } = e.target;
+//     setEditingFields((prev) => ({
+//       ...prev,
+//       [name]: name === "code" ? value.toUpperCase() : value,
+//     }));
+//   };
+
+//   const handleUpdateCurrency = async () => {
+//     if (!editingCurrencyId) return;
+
+//     if (!editingFields.code || editingFields.code.length !== 3) {
+//       toast.error("Currency code must be 3 letters.");
+//       return;
+//     }
+
+//     let adjustmentValue: number = 0;
+//     if (editingFields.rateAdjustmentPercentage.trim() !== "") {
+//       adjustmentValue = parseFloat(editingFields.rateAdjustmentPercentage);
+//       if (isNaN(adjustmentValue)) {
+//         toast.error("Rate Adjustment must be a valid number.");
+//         return;
+//       }
+//     }
+
+//     setIsSubmitting(true);
+//     try {
+//       const payload = {
+//         code: editingFields.code,
+//         rateAdjustmentPercentage: adjustmentValue,
+//       };
+//       await axios.put(`/admin/currencies/${editingCurrencyId}`, payload, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       setEditingCurrencyId(null);
+//       setEditingFields({ code: "", rateAdjustmentPercentage: "" });
+//       await fetchCurrenciesList();
+//       toast.success("Currency updated successfully!");
+//     } catch (err: any) {
+//       toast.error(err.response?.data?.message || "Failed to update currency");
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   const cancelEditing = () => {
+//     setEditingCurrencyId(null);
+//     setEditingFields({ code: "", rateAdjustmentPercentage: "" });
+//   };
+//   // --- End Inline Editing Handlers ---
+
+//   const handleDeleteCurrency = async () => {
+//     if (!currencyToDeleteId) return;
+//     setIsSubmitting(true);
+//     try {
+//       await axios.delete(`/admin/currencies/${currencyToDeleteId}`, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       // Close confirmation, reset ID, fetch list, show success
+//       setIsDeleteConfirmationOpen(false);
+//       setCurrencyToDeleteId(null);
+//       await fetchCurrenciesList();
+//       toast.success("Currency deleted successfully!");
+//     } catch (err: any) {
+//       toast.error(err.response?.data?.message || "Failed to delete currency");
+//       // Keep modal open on error to show message
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   // --- RENDER ---
+//   return (
+//     <div className="min-h-screen p-4 bg-gray-50 dark:bg-gray-900 dark:text-white">
+//       <ToastContainer
+//         position="top-right"
+//         autoClose={3000}
+//         hideProgressBar={false}
+//         newestOnTop
+//         closeOnClick
+//         rtl={false}
+//         pauseOnFocusLoss
+//         draggable
+//         pauseOnHover
+//         theme="light"
+//       />
+//       {/* Header Section */}
+//       <div className="py-6 mb-6 border-b border-gray-200 dark:border-gray-700">
+//         <h1 className="lg:text-3xl text-2xl font-bold text-gray-900 dark:text-white mb-2">
+//           Currency Management
+//         </h1>
+//         <p className="text-gray-700 dark:text-gray-300 capitalize">
+//           Manage currency options and custom rates for your application
+//         </p>
+//       </div>
+
+//       {/* Action Bar */}
+//       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+//         <button
+//           onClick={() => {
+//             setIsCreateModalOpen(true);
+//           }} // Clear error on open
+//           className="flex items-center gap-2 bg-primary dark:bg-main dark:text-white cursor-pointer font-medium hover:bg-primary-hover text-main py-3 px-4 rounded-lg transition duration-300 focus:outline-none"
+//         >
+//           <PlusCircle className="size-5" />
+//           <span>Add Currency</span>
+//         </button>
+
+//         {/* Search Bar */}
+//         <div className="relative w-full md:w-64">
+//           <input
+//             type="text"
+//             placeholder="Search currencies..."
+//             className="w-full px-4 py-3 ps-8 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white hover:shadow-darkcolor transition-shadow ease-in-out duration-300 sm:text-sm"
+//             value={searchTerm}
+//             onChange={(e) => setSearchTerm(e.target.value)}
+//           />
+//           <CiSearch className="size-5 absolute top-3 left-2 text-gray" />
+//         </div>
+//       </div>
+
+//       {/* Currency List / Loading / Empty State */}
+//       {isLoading ? (
+//         <div className="flex justify-center items-center h-64">
+//           <Loader2 size={60} className="text-blue-600 animate-spin" />
+//         </div>
+//       ) : filteredCurrencies.length === 0 ? (
+//         <div className="bg-white dark:bg-gray-800 p-8 text-center rounded-lg shadow-sm border dark:border-gray-700">
+//           <IoWarningOutline className="text-error size-20 mx-auto mb-3" />
+//           <p className="text-gray-600 dark:text-gray-400 text-xl capitalize">
+//             No currencies found You Can Choose Anthor currencies.
+//           </p>
+//         </div>
+//       ) : (
+//         // --- Currency Grid ---
+//         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+//           {filteredCurrencies.map((currency) => (
+//             <div
+//               key={currency._id}
+//               className="rounded-xl overflow-hidden transition-all duration-300 bg-white dark:bg-gray-800 shadow-md hover:shadow-lg border border-gray-200 dark:border-gray-700 flex flex-col"
+//             >
+//               <div className="p-5 flex-grow">
+//                 {/* Top Section: Flag, Code, Name */}
+//                 <div className="flex items-center gap-4 mb-4">
+//                   {/* Flag Image */}
+//                   {currency.flagImage ? (
+//                     <img
+//                       src={currency.flagImage}
+//                       alt={`${currency.currencyName} Flag`}
+//                       className="size-14 object-contain rounded-full"
+//                       onError={(e) => {
+//                         (e.target as HTMLImageElement).style.display =
+//                           "none"; /* Hide on error */
+//                       }}
+//                     />
+//                   ) : (
+//                     <div className="size-12 border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-900 rounded-full flex items-center justify-center text-xs text-gray-500 dark:text-gray-400">
+//                       No flag
+//                     </div>
+//                   )}
+//                   {/* Code and Name */}
+//                   <div className="flex-1">
+//                     {editingCurrencyId === currency._id ? (
+//                       <input
+//                         type="text"
+//                         name="code"
+//                         value={editingFields.code}
+//                         onChange={handleEditingInputChange}
+//                         className="text-lg font-bold text-main dark:text-white border-b border-primary focus:outline-none bg-primary/8 dark:bg-transparent px-1 py-0.5 w-20"
+//                         autoFocus
+//                         maxLength={3}
+//                       />
+//                     ) : (
+//                       <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+//                         {" "}
+//                         {currency.code}{" "}
+//                       </h3>
+//                     )}
+//                     <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+//                       {" "}
+//                       {currency.currencyName}{" "}
+//                     </p>
+//                   </div>
+//                 </div>
+
+//                 {/* Rate Adjustment Section - UPDATED */}
+//                 <div className="p-3 space-y-2 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
+//                   <label className="font-medium text-gray-500 dark:text-gray-400 mb-1 flex items-center gap-1">
+//                     Our Rates
+//                   </label>
+
+//                   {editingCurrencyId === currency._id ? (
+//                     <input
+//                       type="number"
+//                       name="rateAdjustmentPercentage" // Correct name
+//                       value={editingFields.rateAdjustmentPercentage}
+//                       onChange={handleEditingInputChange}
+//                       placeholder="e.g., 0.5 or +0.1"
+//                       step="any"
+//                       className="text-base font-semibold text-gray-800 dark:text-white border-b border-primary focus:outline-none bg-transparent w-full py-0.5"
+//                     />
+//                   ) : (
+//                     <p
+//                       className={`text-lg font-bold ${
+//                         currency.rateAdjustmentPercentage != null
+//                           ? "text-main font-medium dark:text-main-light"
+//                           : "text-gray-400 italic dark:text-gray-500"
+//                       }`}
+//                     >
+//                       {currency.rateAdjustmentPercentage != null
+//                         ? `${currency.rateAdjustmentPercentage.toLocaleString(
+//                             undefined,
+//                             {
+//                               minimumFractionDigits: 0,
+//                               maximumFractionDigits: 2,
+//                             }
+//                           )}%`
+//                         : "Not Set"}
+//                     </p>
+//                   )}
+//                   <p className="text-gray-500 dark:text-gray-400 mt-1">
+//                     Our Rates vs market rate.
+//                   </p>
+//                 </div>
+//               </div>
+
+//               {/* Actions Footer */}
+//               <div className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-4 py-3">
+//                 {editingCurrencyId === currency._id ? (
+//                   // --- Save/Cancel Buttons ---
+//                   <div className="flex gap-2">
+//                     <button
+//                       onClick={handleUpdateCurrency}
+//                       disabled={isSubmitting}
+//                       className="flex-1 flex justify-center cursor-pointer items-center gap-1.5 bg-blue-500 text-white font-medium px-4 py-3 rounded-md transition duration-200 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                     >
+//                       {isSubmitting ? (
+//                         <Loader2 size={20} className="animate-spin" />
+//                       ) : (
+//                         <Save size={20} />
+//                       )}{" "}
+//                       Save
+//                     </button>
+//                     <button
+//                       onClick={cancelEditing}
+//                       className="flex-1 flex justify-center cursor-pointer items-center gap-1.5 bg-error dark:bg-gray-700 dark:hover:bg-gray-600 text-white dark:text-gray-300 font-medium px-4 py-3 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500"
+//                     >
+//                       <IoMdCloseCircle size={20} /> Cancel
+//                     </button>
+//                   </div>
+//                 ) : (
+//                   // --- Details/Edit/Delete Buttons ---
+//                   <div className="flex flex-col sm:flex-row gap-2">
+//                     <Link
+//                       href={`/admin/currencies/${currency._id}`}
+//                       className="flex-1 flex justify-center items-center gap-1.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium p-3 rounded-md transition duration-200 focus:outline-none"
+//                     >
+//                       <Info size={20} /> Details
+//                     </Link>
+//                     <button
+//                       onClick={() => startEditing(currency)}
+//                       className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium p-3 rounded-md transition duration-200 focus:outline-none"
+//                     >
+//                       <Edit size={20} /> Edit
+//                     </button>
+//                     <button
+//                       onClick={() => {
+//                         setCurrencyToDeleteId(currency._id);
+//                         setIsDeleteConfirmationOpen(true);
+//                       }}
+//                       className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900 text-red-600 dark:text-red-400 font-medium p-3 rounded-md transition duration-200 focus:outline-none"
+//                     >
+//                       <Trash2 size={20} /> Delete
+//                     </button>
+//                   </div>
+//                 )}
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       )}
+
+//       {/* Add Currency Modal */}
+//       {isCreateModalOpen && (
+
+//         <div
+//           className="fixed inset-0 w-full h-full bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+//           onClick={() => setIsCreateModalOpen(false)}
+//         >
+//           <div
+//             className="bg-white dark:bg-gray-800 rounded-2xl max-w-lg w-full max-h-[95vh] overflow-y-auto scrollbar-hide relative shadow-xl"
+//             onClick={(e) => e.stopPropagation()}
+//           >
+//             <button
+//               className="absolute top-5 cursor-pointer right-3 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors duration-200 ease-in-out"
+//               onClick={() => setIsCreateModalOpen(false)}
+//               aria-label="Close modal"
+//             >
+//               <IoClose className="size-10 text-main p-2" />
+//             </button>
+
+//             <div className="lg:p-6 p-4">
+//               {/* Modal Header */}
+//               <div className="flex justify-between items-center mb-6">
+//                 <h2 className="lg:text-xl font-medium text-main dark:text-white">
+//                   {" "}
+//                   Add New Currency{" "}
+//                 </h2>
+//               </div>
+
+//               {/* Modal Error */}
+//               {/* Error messages will be shown via react-toastify inside handleCreateCurrency */}
+
+//               {/* Modal Form */}
+//               <div className="space-y-5">
+//                 {/* Code */}
+//                 <div>
+//                   <label
+//                     htmlFor="create-code"
+//                     className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+//                   >
+//                     {" "}
+//                     Currency Code <span className="text-red-500">*</span>{" "}
+//                   </label>
+//                   <input
+//                     type="text"
+//                     id="create-code"
+//                     name="code"
+//                     value={newCurrencyData.code}
+//                     onChange={handleCreateInputChange}
+//                     maxLength={3}
+//                     placeholder="e.g., USD"
+//                     className="w-full rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white px-4 py-3.5 hover:shadow-darkcolor focus:outline-none transition-shadow ease-in-out duration-300 sm:text-sm"
+//                   />
+//                   <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+//                     3-letter uppercase code.
+//                   </p>
+//                 </div>
+//                 {/* Name */}
+//                 <div>
+//                   <label
+//                     htmlFor="create-currencyName"
+//                     className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+//                   >
+//                     {" "}
+//                     Currency Name <span className="text-red-500">*</span>{" "}
+//                   </label>
+//                   <input
+//                     type="text"
+//                     id="create-currencyName"
+//                     name="currencyName"
+//                     value={newCurrencyData.currencyName}
+//                     onChange={handleCreateInputChange}
+//                     placeholder="e.g., US Dollar"
+//                     className="w-full rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white px-4 py-3.5 hover:shadow-darkcolor focus:outline-none transition-shadow ease-in-out duration-300 sm:text-sm"
+//                   />
+//                 </div>
+//                 {/* Flag Image Path */}
+//                 <div>
+//                   <label
+//                     htmlFor="create-flagImage"
+//                     className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+//                   >
+//                     {" "}
+//                     Flag Image Path{" "}
+//                   </label>
+//                   <input
+//                     type="text"
+//                     id="create-flagImage"
+//                     name="flagImage"
+//                     value={newCurrencyData.flagImage}
+//                     onChange={handleCreateInputChange}
+//                     placeholder="/assets/icon/flags/usd.png"
+//                     className="w-full rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white px-4 py-3.5 hover:shadow-darkcolor focus:outline-none transition-shadow ease-in-out duration-300 sm:text-sm"
+//                   />
+//                   <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+//                     Relative path to the image.
+//                   </p>
+//                 </div>
+//                 {/* Rate Adjustment Percentage - UPDATED */}
+//                 <div>
+//                   <label
+//                     htmlFor="create-rateAdjustmentPercentage"
+//                     className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center gap-1"
+//                   >
+//                     <Percent size={14} className="dark:text-gray-300" /> Rate
+//                     Adjustment
+//                   </label>
+//                   <input
+//                     type="number"
+//                     id="create-rateAdjustmentPercentage"
+//                     name="rateAdjustmentPercentage" // Correct name
+//                     value={newCurrencyData.rateAdjustmentPercentage}
+//                     onChange={handleCreateInputChange}
+//                     step="any"
+//                     placeholder="e.g., 0.5 (for +0.5%) or -0.1 (for -0.1%)"
+//                     className="w-full rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white px-4 py-3.5 hover:shadow-darkcolor focus:outline-none transition-shadow ease-in-out duration-300 sm:text-sm"
+//                   />
+//                   <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+//                     Enter percentage adjustment. Default is 0%.
+//                   </p>
+//                 </div>
+
+//                 {/* Add other fields here if needed (bank details, fees) */}
+//               </div>
+
+//               {/* Modal Actions */}
+//               <div className="flex flex-col sm:flex-row gap-3 mt-6">
+//                 <button
+//                   onClick={handleCreateCurrency}
+//                   disabled={
+//                     isSubmitting ||
+//                     !newCurrencyData.code ||
+//                     !newCurrencyData.currencyName
+//                   }
+//                   className="flex-1 flex justify-center cursor-pointer items-center gap-2 bg-primary text-main dark:bg-primaryDark dark:text-white font-medium py-3 px-4 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+//                 >
+//                   {isSubmitting ? (
+//                     <Loader2 size={20} className="animate-spin" />
+//                   ) : (
+//                     <PlusCircle size={20} />
+//                   )}
+//                   {isSubmitting ? "Adding..." : "Add Currency"}
+//                 </button>
+//                 <button
+//                   onClick={() => setIsCreateModalOpen(false)}
+//                   className="flex-1 cursor-pointer flex justify-center items-center gap-2 bg-error text-white font-medium py-2.5 px-4 rounded-lg transition focus:outline-none"
+//                 >
+//                   <MdCancel size={20} /> Cancel
+//                 </button>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+
+//       {/* Delete Confirmation Modal */}
+//       {isDeleteConfirmationOpen && (
+//         <div
+//           className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+//           onClick={() => setIsDeleteConfirmationOpen(false)}
+//         >
+//           <div
+//             className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6 relative"
+//             onClick={(e) => e.stopPropagation()}
+//           >
+//             {/* Icon and Title */}
+//             <div className="text-center">
+//               <div className="mx-auto flex items-center justify-center mb-4">
+//                 <Image
+//                   src="/assets/images/exclamation-mark-medium@2x.webp"
+//                   width={200}
+//                   height={200}
+//                   alt="Picture of the author"
+//                 />
+//               </div>
+//               <h3 className="text-2xl leading-6 font-medium text-main dark:text-white">
+//                 Delete Currency
+//               </h3>
+//               <div className="mt-4">
+//                 <p className="text-gray-500 text-lg leading-relaxed dark:text-gray-400">
+//                   Are you sure you want to delete this currency? This action
+//                   cannot be undone.
+//                 </p>{" "}
+//               </div>
+//             </div>
+//             {/* Error within modal */}
+//             {/* Error messages will be shown via react-toastify inside handleDeleteCurrency */}
+//             {/* Buttons */}
+//             <div className="mt-6 flex flex-col gap-3">
+//               <button
+//                 onClick={handleDeleteCurrency}
+//                 disabled={isSubmitting}
+//                 type="button"
+//                 className="w-full inline-flex justify-center rounded-md border border-transparent px-4 py-3 cursor-pointer bg-red-600 font-medium text-white focus:outline-none sm:w-auto sm:text-sm disabled:opacity-50"
+//               >
+//                 {isSubmitting ? (
+//                   <Loader2 size={20} className="animate-spin" />
+//                 ) : (
+//                   "Delete"
+//                 )}
+//               </button>
+//               <button
+//                 onClick={() => setIsDeleteConfirmationOpen(false)}
+//                 type="button"
+//                 className="w-full inline-flex justify-center rounded-md border border-gray-300 px-4 py-3 cursor-pointer bg-white dark:bg-gray-700 font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm"
+//               >
+//                 Cancel
+//               </button>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default AdminCurrenciesPage;
+
 "use client";
 import React, { useState, useEffect, useMemo } from "react";
 import { useAuth } from "../../hooks/useAuth";
@@ -3603,12 +4285,14 @@ import {
   Percent,
   Images, // Changed icon
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { FaRegSave } from "react-icons/fa";
 import { MdCancel, MdError } from "react-icons/md";
 import { IoClose, IoSearch, IoWarningOutline } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
 import { IoMdCloseCircle } from "react-icons/io";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { motion, AnimatePresence } from "framer-motion"; // Import framer-motion
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
@@ -3648,8 +4332,6 @@ const AdminCurrenciesPage: React.FC = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState<boolean>(false);
   const [currencyToDeleteId, setCurrencyToDeleteId] = useState<string | null>(
@@ -3674,20 +4356,12 @@ const AdminCurrenciesPage: React.FC = () => {
     fetchCurrenciesList();
   }, [token]); // Removed router dependency unless needed for redirect logic inside fetch
 
-  useEffect(() => {
-    if (successMessage) {
-      const timer = setTimeout(() => setSuccessMessage(null), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [successMessage]);
-
   const fetchCurrenciesList = async () => {
     if (!token) {
       router.push("/auth/login"); // Redirect if no token early
       return;
     }
     setIsLoading(true);
-    setError(null);
     try {
       const response = await axios.get<Currency[]>("/admin/currencies", {
         // Expect array of Currency
@@ -3699,7 +4373,7 @@ const AdminCurrenciesPage: React.FC = () => {
       if (err.response?.status === 403 || err.response?.status === 401) {
         router.push("/auth/login");
       } else {
-        setError(err.response?.data?.message || "Failed to load currencies");
+        toast.error(err.response?.data?.message || "Failed to load currencies");
       }
     } finally {
       setIsLoading(false);
@@ -3717,13 +4391,12 @@ const AdminCurrenciesPage: React.FC = () => {
 
   // handleCreateCurrency - updated validation and payload
   const handleCreateCurrency = async () => {
-    setError(null);
     if (!newCurrencyData.code || !newCurrencyData.currencyName) {
-      setError("Currency code and name are required.");
+      toast.error("Currency code and name are required.");
       return;
     }
     if (newCurrencyData.code.length !== 3) {
-      setError("Currency code must be 3 letters.");
+      toast.error("Currency code must be 3 letters.");
       return;
     }
 
@@ -3731,7 +4404,9 @@ const AdminCurrenciesPage: React.FC = () => {
     if (newCurrencyData.rateAdjustmentPercentage.trim() !== "") {
       adjustmentValue = parseFloat(newCurrencyData.rateAdjustmentPercentage);
       if (isNaN(adjustmentValue)) {
-        setError("Rate Adjustment must be a valid number (e.g., 0.5 or -0.1).");
+        toast.error(
+          "Rate Adjustment must be a valid number (e.g., 0.5 or -0.1)."
+        );
         return;
       }
     }
@@ -3755,9 +4430,9 @@ const AdminCurrenciesPage: React.FC = () => {
       });
       setIsCreateModalOpen(false);
       await fetchCurrenciesList();
-      setSuccessMessage("Currency added successfully!");
+      toast.success("Currency added successfully!");
     } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to create currency");
+      toast.error(err.response?.data?.message || "Failed to create currency");
     } finally {
       setIsSubmitting(false);
     }
@@ -3771,7 +4446,6 @@ const AdminCurrenciesPage: React.FC = () => {
       rateAdjustmentPercentage:
         currency.rateAdjustmentPercentage?.toString() ?? "0", // Default to '0' string if null/undefined
     });
-    setError(null);
   };
 
   const handleEditingInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -3784,10 +4458,9 @@ const AdminCurrenciesPage: React.FC = () => {
 
   const handleUpdateCurrency = async () => {
     if (!editingCurrencyId) return;
-    setError(null);
 
     if (!editingFields.code || editingFields.code.length !== 3) {
-      setError("Currency code must be 3 letters.");
+      toast.error("Currency code must be 3 letters.");
       return;
     }
 
@@ -3795,7 +4468,7 @@ const AdminCurrenciesPage: React.FC = () => {
     if (editingFields.rateAdjustmentPercentage.trim() !== "") {
       adjustmentValue = parseFloat(editingFields.rateAdjustmentPercentage);
       if (isNaN(adjustmentValue)) {
-        setError("Rate Adjustment must be a valid number.");
+        toast.error("Rate Adjustment must be a valid number.");
         return;
       }
     }
@@ -3812,9 +4485,9 @@ const AdminCurrenciesPage: React.FC = () => {
       setEditingCurrencyId(null);
       setEditingFields({ code: "", rateAdjustmentPercentage: "" });
       await fetchCurrenciesList();
-      setSuccessMessage("Currency updated successfully!");
+      toast.success("Currency updated successfully!");
     } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to update currency");
+      toast.error(err.response?.data?.message || "Failed to update currency");
     } finally {
       setIsSubmitting(false);
     }
@@ -3823,14 +4496,12 @@ const AdminCurrenciesPage: React.FC = () => {
   const cancelEditing = () => {
     setEditingCurrencyId(null);
     setEditingFields({ code: "", rateAdjustmentPercentage: "" });
-    setError(null);
   };
   // --- End Inline Editing Handlers ---
 
   const handleDeleteCurrency = async () => {
     if (!currencyToDeleteId) return;
     setIsSubmitting(true);
-    setError(null);
     try {
       await axios.delete(`/admin/currencies/${currencyToDeleteId}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -3839,9 +4510,9 @@ const AdminCurrenciesPage: React.FC = () => {
       setIsDeleteConfirmationOpen(false);
       setCurrencyToDeleteId(null);
       await fetchCurrenciesList();
-      setSuccessMessage("Currency deleted successfully!");
+      toast.success("Currency deleted successfully!");
     } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to delete currency");
+      toast.error(err.response?.data?.message || "Failed to delete currency");
       // Keep modal open on error to show message
     } finally {
       setIsSubmitting(false);
@@ -3851,6 +4522,18 @@ const AdminCurrenciesPage: React.FC = () => {
   // --- RENDER ---
   return (
     <div className="min-h-screen p-4 bg-gray-50 dark:bg-gray-900 dark:text-white">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       {/* Header Section */}
       <div className="py-6 mb-6 border-b border-gray-200 dark:border-gray-700">
         <h1 className="lg:text-3xl text-2xl font-bold text-gray-900 dark:text-white mb-2">
@@ -3861,55 +4544,11 @@ const AdminCurrenciesPage: React.FC = () => {
         </p>
       </div>
 
-      {/* Success Messages */}
-      <AnimatePresence>
-        {successMessage && (
-          <motion.div
-            className="mb-6 bg-green-50 border-l-4 border-green-500 p-4 rounded flex items-center"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-          >
-            <Check size={20} className="text-green-500 mr-3" />
-            <p className="text-green-800 dark:text-green-400">
-              {successMessage}
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Error Messages  */}
-      {error &&
-        !isCreateModalOpen &&
-        !isDeleteConfirmationOpen && ( // Only show general error if no modal is open
-          <motion.div
-            className="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded flex items-center"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-          >
-            <AlertTriangle
-              size={20}
-              className="text-red-500 mr-3 flex-shrink-0"
-            />
-            <p className="text-red-700 dark:text-red-400">{error}</p>
-            <button
-              onClick={() => setError(null)}
-              className="ml-auto text-red-500 hover:text-red-700"
-            >
-              <X size={20} />
-            </button>
-          </motion.div>
-        )}
-
       {/* Action Bar */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <button
           onClick={() => {
             setIsCreateModalOpen(true);
-            setError(null);
           }} // Clear error on open
           className="flex items-center gap-2 bg-primary dark:bg-main dark:text-white cursor-pointer font-medium hover:bg-primary-hover text-main py-3 px-4 rounded-lg transition duration-300 focus:outline-none"
         >
@@ -4078,7 +4717,6 @@ const AdminCurrenciesPage: React.FC = () => {
                       onClick={() => {
                         setCurrencyToDeleteId(currency._id);
                         setIsDeleteConfirmationOpen(true);
-                        setError(null);
                       }}
                       className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900 text-red-600 dark:text-red-400 font-medium p-3 rounded-md transition duration-200 focus:outline-none"
                     >
@@ -4104,6 +4742,7 @@ const AdminCurrenciesPage: React.FC = () => {
           >
             <motion.div
               className="bg-white dark:bg-gray-800 rounded-2xl max-w-lg w-full max-h-[95vh] overflow-y-auto scrollbar-hide relative shadow-xl"
+              onClick={(e) => e.stopPropagation()}
               initial={{ y: -30, opacity: 0, scale: 1 }}
               animate={{
                 y: 0,
@@ -4112,7 +4751,6 @@ const AdminCurrenciesPage: React.FC = () => {
                 transition: { type: "spring", stiffness: 100, damping: 15 },
               }}
               exit={{ y: -30, opacity: 0, scale: 1 }}
-              onClick={(e) => e.stopPropagation()}
             >
               <button
                 className="absolute top-5 cursor-pointer right-3 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors duration-200 ease-in-out"
@@ -4132,17 +4770,7 @@ const AdminCurrenciesPage: React.FC = () => {
                 </div>
 
                 {/* Modal Error */}
-                {error && isCreateModalOpen && (
-                  <div className="mb-4 bg-red-50 border border-red-200 p-3 rounded flex items-center">
-                    <AlertTriangle
-                      size={18}
-                      className="text-red-500 mr-2 flex-shrink-0"
-                    />
-                    <p className="text-red-700 dark:text-red-400 text-sm">
-                      {error}
-                    </p>
-                  </div>
-                )}
+                {/* Error messages will be shown via react-toastify inside handleCreateCurrency */}
 
                 {/* Modal Form */}
                 <div className="space-y-5">
@@ -4269,92 +4897,62 @@ const AdminCurrenciesPage: React.FC = () => {
       </AnimatePresence>
 
       {/* Delete Confirmation Modal */}
-      <AnimatePresence>
-        {isDeleteConfirmationOpen && (
-          <motion.div
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsDeleteConfirmationOpen(false)}
+      {isDeleteConfirmationOpen && (
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          onClick={() => setIsDeleteConfirmationOpen(false)}
+        >
+          <div
+            className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6 relative"
+            onClick={(e) => e.stopPropagation()}
           >
-            <motion.div
-              className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6 relative"
-              initial={{ y: -30, opacity: 0, scale: 0.95 }}
-              animate={{
-                y: 0,
-                opacity: 1,
-                scale: 1,
-                transition: { type: "spring", stiffness: 100, damping: 15 },
-              }}
-              exit={{ y: -30, opacity: 0, scale: 0.95 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* <button
-                className="absolute top-3 right-3 p-2 text-gray-500 dark:text-gray-400 dark:hover:bg-gray-700 rounded-full transition-colors duration-200 ease-in-out"
-                onClick={() => setIsDeleteConfirmationOpen(false)}
-                aria-label="Close modal"
+            {/* Icon and Title */}
+            <div className="text-center">
+              <div className="mx-auto flex items-center justify-center mb-4">
+                <Image
+                  src="/assets/images/exclamation-mark-medium@2x.webp"
+                  width={200}
+                  height={200}
+                  alt="Picture of the author"
+                />
+              </div>
+              <h3 className="text-2xl leading-6 font-medium text-main dark:text-white">
+                Delete Currency
+              </h3>
+              <div className="mt-4">
+                <p className="text-gray-500 text-lg leading-relaxed dark:text-gray-400">
+                  Are you sure you want to delete this currency? This action
+                  cannot be undone.
+                </p>{" "}
+              </div>
+            </div>
+            {/* Error within modal */}
+            {/* Error messages will be shown via react-toastify inside handleDeleteCurrency */}
+            {/* Buttons */}
+            <div className="mt-6 flex flex-col gap-3">
+              <button
+                onClick={handleDeleteCurrency}
+                disabled={isSubmitting}
+                type="button"
+                className="w-full inline-flex justify-center rounded-md border border-transparent px-4 py-3 cursor-pointer bg-red-600 font-medium text-white focus:outline-none sm:w-auto sm:text-sm disabled:opacity-50"
               >
-                <IoClose size={24} />
-              </button> */}
-              {/* Icon and Title */}
-              <div className="text-center">
-                <div className="mx-auto flex items-center justify-center mb-4">
-                  <Image
-                    src="/assets/images/exclamation-mark-medium@2x.webp"
-                    width={200}
-                    height={200}
-                    alt="Picture of the author"
-                  />
-                </div>
-                <h3 className="text-2xl leading-6 font-medium text-main dark:text-white">
-                  Delete Currency
-                </h3>
-                <div className="mt-4">
-                  <p className="text-gray-500 text-lg leading-relaxed dark:text-gray-400">
-                    Are you sure you want to delete this currency? This action
-                    cannot be undone.
-                  </p>{" "}
-                </div>
-              </div>
-              {/* Error within modal */}
-              {error && isDeleteConfirmationOpen && (
-                <div className="bg-red-50 border border-red-200 p-3 rounded flex items-center">
-                  <AlertTriangle
-                    size={18}
-                    className="text-red-500 mr-2 flex-shrink-0"
-                  />
-                  <p className="text-red-700 dark:text-red-400 text-sm">
-                    {error}
-                  </p>
-                </div>
-              )}
-              {/* Buttons */}
-              <div className="mt-6 flex flex-col gap-3">
-                <button
-                  onClick={handleDeleteCurrency}
-                  disabled={isSubmitting}
-                  type="button"
-                  className="w-full inline-flex justify-center rounded-md border border-transparent px-4 py-3 cursor-pointer bg-red-600 font-medium text-white focus:outline-none sm:w-auto sm:text-sm disabled:opacity-50"
-                >
-                  {isSubmitting ? (
-                    <Loader2 size={20} className="animate-spin" />
-                  ) : (
-                    "Delete"
-                  )}
-                </button>
-                <button
-                  onClick={() => setIsDeleteConfirmationOpen(false)}
-                  type="button"
-                  className="w-full inline-flex justify-center rounded-md border border-gray-300 px-4 py-3 cursor-pointer bg-white dark:bg-gray-700 font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm"
-                >
-                  Cancel
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                {isSubmitting ? (
+                  <Loader2 size={20} className="animate-spin" />
+                ) : (
+                  "Delete"
+                )}
+              </button>
+              <button
+                onClick={() => setIsDeleteConfirmationOpen(false)}
+                type="button"
+                className="w-full inline-flex justify-center rounded-md border border-gray-300 px-4 py-3 cursor-pointer bg-white dark:bg-gray-700 font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
