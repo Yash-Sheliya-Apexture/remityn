@@ -2,7 +2,6 @@ import HeroSection from "./components/Hero/HeroSection";
 import ProtectionSection from "./components/ProtectionSection";
 import SecuritySection from "./components/SecuritySection";
 import SocialTrustSection from "./components/SocialTrust";
-import FlagSection from "./components/FlagSection";
 import MissionSection from "./components/MissionSection";
 import AppSection from "./components/AppSection";
 
