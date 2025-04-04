@@ -31,7 +31,7 @@
 //       <div className="flex-1 flex flex-col overflow-hidden">
 //         <AdminHeader /> Include Header
 //         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200 p-6">
-//           {" "}
+//
 //           {/* Increased padding for main content */}
 //           <div className="container mx-auto">{children}</div>
 //         </main>
@@ -139,7 +139,7 @@
 
 //       {/* Main content area */}
 //       <div className="flex-1 flex flex-col overflow-hidden">
-//         <AdminHeader toggleSidebar={toggleSidebar} />{" "}
+//         <AdminHeader toggleSidebar={toggleSidebar} />
 //         {/* Include Header and pass toggle function */}
 //         <main className="flex-1 overflow-x-hidden overflow-y-auto">
 //           <div className="container mx-auto p-6">
@@ -198,7 +198,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <div className="flex h-screen">
-      {" "}
       {/* Light background for overall layout */}
       <AdminSidebar
         isSidebarOpen={isSidebarOpen}
@@ -207,13 +206,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       <div className="flex-1 flex flex-col overflow-hidden">
         <AdminHeader toggleSidebar={toggleSidebar} />
         <main className="flex-1 overflow-x-hidden overflow-y-auto">
-          {" "}
-          {/* Slightly lighter for main content */}
-          <div className="container mx-auto">
-            {" "}
-            {/* Increased padding for content area */}
-            {children}
-          </div>
+          {/* Increased padding for content area */}
+          {children}
         </main>
       </div>
       {isSidebarOpen && (
