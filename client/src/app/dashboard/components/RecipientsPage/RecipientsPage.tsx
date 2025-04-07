@@ -403,7 +403,7 @@ export default function RecipientsPage() {
         <div className="flex items-center space-x-4 mb-6">
           <div className="relative flex-1">
             <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-              <FiSearch className="h-5 w-5 text-neutral-900 dark:text-white" aria-hidden="true" />
+              <FiSearch className="size-5 text-neutral-900 dark:text-white" aria-hidden="true" />
             </div>
             <input
               type="text"

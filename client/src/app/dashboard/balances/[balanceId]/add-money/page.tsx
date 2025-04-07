@@ -176,7 +176,7 @@ const AddMoneyPage = () => {
             setError(err.response?.data?.message || "Failed to initiate payment");
             console.error("Error initiating payment:", err);
         } finally {
-            setIsLoading(false); // End loading after API call (success or failure)
+            setIsLoading(false); 
         }
     };
 
@@ -184,7 +184,6 @@ const AddMoneyPage = () => {
     if (isLoading) {
         return (
             <div className="max-w-xl mx-auto p-4 lg:p-8">
-                <Skeleton className="h-10 w-32 mb-4" />
                 <Skeleton className="h-8 w-48 mb-8 mx-auto" />
                 <Skeleton className="h-12 w-full mb-2" />
                 <Skeleton className="h-16 w-full mb-4" />
@@ -223,18 +222,14 @@ const AddMoneyPage = () => {
 
     return (
         <div className="max-w-xl mx-auto p-4 lg:p-8">
-            <Link href={`/dashboard/balances/${balanceId}`} className="mb-6 flex items-center gap-2 text-gray-600 hover:text-gray-800">
-                <IoIosArrowBack size={20} /> Pay another way
-            </Link>
-
-            <h2 className="lg:text-2xl text-xl text-center font-bold text-main mb-8 capitalize">
-                Add money
+            <h2 className="sm:text-3xl text-2xl text-center font-semibold text-mainheading mb-6 dark:text-white">
+                Add Money
             </h2>
 
             <div>
                 <label
                     htmlFor="amount"
-                    className="block text-base font-medium text-main"
+                    className="block text-base font-medium text-neutral-900 dark:text-white"
                 >
                     Amount to add to Wise
                 </label>
@@ -243,7 +238,7 @@ const AddMoneyPage = () => {
                     <input
                         name="amount"
                         id="amount"
-                        className="block w-full rounded-xl ps-5 font-bold md:text-lg text-base text-main focus:outline-none py-4 border border-gray-300 pr-20"
+                        className="block w-full text-xl rounded-xl ps-2 font-bold h-18 py-3 pl-5 pr-28 border border-gray-300 dark:border-lightgray/26 transition-shadow ease-in-out duration-300 hover:shadow-darkcolor dark:hover:shadow-whitecolor focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-400 dark:placeholder:text-neutral-700"
                         placeholder="0.00"
                         value={amountToAdd}
                         onChange={handleAmountChange}
@@ -257,10 +252,10 @@ const AddMoneyPage = () => {
                                     alt={`${balanceCurrency?.code} Flag`}
                                     height={25}
                                     width={25}
-                                    className="md:size-8 size-6"
+                                    className="md:size-7 size-6"
                                 />
                             </span>
-                            <span className="mr-2 text-gray font-medium md:text-xl text-lg">
+                            <span className="mr-2 text-neutral-700 dark:text-white font-bold md:text-xl text-lg">
                                 {balanceCurrency?.code}
                             </span>
                         </div>
@@ -268,50 +263,50 @@ const AddMoneyPage = () => {
                 </div>
 
                 <div className="mt-4">
-                    <label className="block text-base font-medium text-main">
+                    <label className="block text-base font-medium text-neutral-900 dark:text-white">
                         Paying with
                     </label>
-                    <div className="border border-gray-300 rounded-xl ps-5 py-4 flex items-center gap-4 mt-1">
-                        <div className="p-2 bg-green/10 rounded-full inline-block">
-                            <AiFillBank className="size-6 text-green-500" />
+                    <div className="border border-gray-300 dark:border-lightgray/26 rounded-xl ps-5 py-4 flex items-center gap-4 mt-1">
+                        <div className="p-2 bg-green-500/20 rounded-full inline-block">
+                            <AiFillBank className="size-7 text-green-500" />
                         </div>
-                        <span className="text-main font-semibold capitalize md:text-lg text-base">
+                        <span className="text-neutral-900 dark:text-white  font-semibold capitalize md:text-lg text-base">
                             Bank transfer
                         </span>
                     </div>
                 </div>
 
                 {/* currency calculation */}
-                <div className="mt-4 border border-gray-300 rounded-xl p-4">
+                <div className="mt-4 border border-gray-300 dark:border-lightgray/26 rounded-xl p-4">
                     <div className="py-2 flex justify-between text-sm text-gray">
-                        <dt className="text-gray-700">Currency to pay in</dt>
-                        <dd className="ml-6 text-secondary font-medium">
+                        <dt className="text-neutral-700 dark:text-gray-300 ">Currency to pay in</dt>
+                        <dd className="ml-6 text-secondary dark:text-gray-300 font-bold">
                             {payInCurrencyCode}
                         </dd>
                     </div>
                     <div className="py-2 flex justify-between text-sm text-gray">
-                        <dt className="text-gray-700">Bank transfer fee</dt>
-                        <dd className="ml-6 text-gray font-medium">
+                        <dt className="text-neutral-700 dark:text-gray-300 ">Bank transfer fee</dt>
+                        <dd className="ml-6 text-neutral-700 dark:text-gray-300  font-medium">
                             {isDetailsLoading ? <Skeleton className="h-4 w-16" /> : `${calculatedBankTransferFee} ${payInCurrencyCode}`}
                         </dd>
                     </div>
                     <div className="py-2 flex justify-between text-sm text-gray">
-                        <dt className="text-gray-700">Our fee</dt>
-                        <dd className="ml-6 text-gray font-medium">
+                        <dt className="text-neutral-700 dark:text-gray-300 ">Our fee</dt>
+                        <dd className="ml-6 text-neutral-700 dark:text-gray-300 font-medium">
                             {isDetailsLoading ? <Skeleton className="h-4 w-16" /> : `${calculatedWiseFee} ${payInCurrencyCode}`}
                         </dd>
                     </div>
                     <div className="py-2 flex justify-between text-sm text-gray">
-                        <dt className="text-gray-700 font-medium">Total included fees</dt>
-                        <dd className="ml-6 text-main font-bold">
+                        <dt className="text-neutral-700 dark:text-gray-300 font-medium">Total included fees</dt>
+                        <dd className="ml-6 text-neutral-900 dark:text-white font-bold">
                             {isDetailsLoading ? <Skeleton className="h-4 w-16" /> : `${totalFees} ${payInCurrencyCode}`}
                         </dd>
                     </div>
-                    <div className="py-3.5 flex justify-between text-sm text-gray border-t border-gray-300">
-                        <dt className="text-main font-bold capitalize">
+                    <div className="py-3.5 flex justify-between text-sm text-gray border-t dark:border-lightgray/26">
+                        <dt className="text-neutral-900 font-bold capitalize">
                             Total you'll pay
                         </dt>
-                        <dd className="ml-6 text-main font-bold">
+                        <dd className="ml-6 text-neutral-900 dark:text-white font-bold">
                             {isDetailsLoading ? <Skeleton className="h-4 w-16" /> : `${calculatedAmountToPay} ${payInCurrencyCode}`}
                         </dd>
                     </div>
@@ -321,7 +316,7 @@ const AddMoneyPage = () => {
                 <div className="mt-4">
                     <button
                         onClick={handleContinue}
-                        className="w-full bg-primary py-3 inline-block rounded-full font-medium text-lg text-secondary hover:bg-primary-hover cursor-pointer"
+                        className="w-full bg-primary text-neutral-900 hover:bg-primaryhover space-x-3 py-3 px-4 h-12.5 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer"
                         disabled={
                             isLoading || amountToAdd === "" || isNaN(Number(amountToAdd)) || isDetailsLoading
                         }

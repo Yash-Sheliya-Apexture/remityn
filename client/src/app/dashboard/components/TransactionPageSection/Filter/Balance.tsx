@@ -87,107 +87,199 @@
 
 // export default Balance;
 
+// components/Filter/Balance.tsx
+// import React, { useState, useEffect } from "react";
+// import Image from "next/image";
 
+// export interface CurrencyBalance {
+//   currencyCode: string;
+//   currencyName: string;
+//   currencySymbolPath: string; // Path to the currency symbol icon
+// }
 
+// export const currencyBalances: CurrencyBalance[] = [
+//   {
+//     currencyCode: "EUR",
+//     currencyName: "Euro Balance",
+//     currencySymbolPath: "/assets/icon/eur.svg",
+//   },
+//   {
+//     currencyCode: "USD",
+//     currencyName: "US Dollar Balance",
+//     currencySymbolPath: "/assets/icon/usd.svg",
+//   },
+//   // Add more currencies as needed
+//   {
+//     currencyCode: "GBP",
+//     currencyName: "British Pound Balance",
+//     currencySymbolPath: "/assets/icon/gbp.svg", // Example path, you might need to add this icon
+//   },
+//   {
+//     currencyCode: "CAD",
+//     currencyName: "Canadian Dollar Balance",
+//     currencySymbolPath: "/assets/icon/cad.svg", // Example path, you might need to add this icon
+//   },
+// ];
 
+// interface BalanceProps {
+//   currencyBalance: CurrencyBalance; // Now accepts a CurrencyBalance object
+//   isSelected?: boolean; // Indicate if this currency is selected
+//   onBalanceChange?: (isSelected: boolean, currencyCode: string) => void; // Pass currencyCode to callback
+// }
 
+// const BalanceComponent: React.FC<BalanceProps> = ({
+//   currencyBalance, // Use currencyBalance prop
+//   isSelected = false,
+//   onBalanceChange,
+// }) => {
+//   const [checked, setChecked] = useState(isSelected);
 
+//   useEffect(() => {
+//     setChecked(isSelected); // Sync checked state with isSelected prop
+//   }, [isSelected]);
 
+//   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+//     setChecked(event.target.checked);
+//     if (onBalanceChange) {
+//       onBalanceChange(event.target.checked, currencyBalance.currencyCode); // Pass currencyCode
+//     }
+//   };
 
+//   return (
+//     <div className="flex items-center justify-between dark:hover:bg-primarybox hover:bg-lightgray p-4 rounded-2xl transition-colors duration-500 ease-in-out">
+//       <div className="flex items-center">
+//         <div className="relative">
+//           <Image
+//             src={currencyBalance.currencySymbolPath}
+//             alt={`${currencyBalance.currencyName} Icon`}
+//             width={48}
+//             height={48}
+//           />
+//         </div>
+//         <div className="ml-4">
+//           <h5 className="font-medium text-neutral-900 dark:text-white capitalize">
+//             {currencyBalance.currencyName}
+//           </h5>
+//         </div>
+//       </div>
+//       <div className="pt-1.5">
+//         <input
+//           type="checkbox"
+//           className="rounded-sm size-5 border-gray-500 font-medium cursor-pointer
+//                accent-primary dark:border-gray-300 focus:ring-0 checked:bg-black checked:border-black"
+//           checked={checked}
+//           onChange={handleCheckboxChange}
+//         />
+//       </div>
+//     </div>
+//   );
+// };
 
-
-
-
+// export default BalanceComponent; // Rename the component to avoid confusion with data name
 
 
 // components/Filter/Balance.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 
 export interface CurrencyBalance {
-    currencyCode: string;
-    currencyName: string;
-    currencySymbolPath: string; // Path to the currency symbol icon
+  currencyCode: string;
+  currencyName: string;
+  currencySymbolPath: string; // Path to the currency symbol icon
 }
 
 export const currencyBalances: CurrencyBalance[] = [
-    {
-        currencyCode: "EUR",
-        currencyName: "Euro Balance",
-        currencySymbolPath: "/assets/icon/eur.svg",
-    },
-    {
-        currencyCode: "USD",
-        currencyName: "US Dollar Balance",
-        currencySymbolPath: "/assets/icon/usd.svg",
-    },
-    // Add more currencies as needed
-    {
-        currencyCode: "GBP",
-        currencyName: "British Pound Balance",
-        currencySymbolPath: "/assets/icon/gbp.svg", // Example path, you might need to add this icon
-    },
-    {
-        currencyCode: "CAD",
-        currencyName: "Canadian Dollar Balance",
-        currencySymbolPath: "/assets/icon/cad.svg", // Example path, you might need to add this icon
-    },
+  {
+    currencyCode: "EUR",
+    currencyName: "Euro Balance",
+    currencySymbolPath: "/assets/icon/eur.svg",
+  },
+  {
+    currencyCode: "USD",
+    currencyName: "US Dollar Balance",
+    currencySymbolPath: "/assets/icon/usd.svg",
+  },
+  // Add more currencies as needed
+  {
+    currencyCode: "GBP",
+    currencyName: "British Pound Balance",
+    currencySymbolPath: "/assets/icon/gbp.svg", // Example path, you might need to add this icon
+  },
+  {
+    currencyCode: "CAD",
+    currencyName: "Canadian Dollar Balance",
+    currencySymbolPath: "/assets/icon/cad.svg", // Example path, you might need to add this icon
+  },
 ];
 
-
 interface BalanceProps {
-    currencyBalance: CurrencyBalance; // Now accepts a CurrencyBalance object
-    isSelected?: boolean; // Indicate if this currency is selected
-    onBalanceChange?: (isSelected: boolean, currencyCode: string) => void; // Pass currencyCode to callback
+  currencyBalance: CurrencyBalance; // Now accepts a CurrencyBalance object
+  isSelected?: boolean; // Indicate if this currency is selected
+  onBalanceChange?: (isSelected: boolean, currencyCode: string) => void; // Pass currencyCode to callback
 }
 
 const BalanceComponent: React.FC<BalanceProps> = ({
-    currencyBalance, // Use currencyBalance prop
-    isSelected = false,
-    onBalanceChange,
+  currencyBalance, // Use currencyBalance prop
+  isSelected = false,
+  onBalanceChange,
 }) => {
-    const [checked, setChecked] = useState(isSelected);
+  const [checked, setChecked] = useState(isSelected);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        setChecked(isSelected); // Sync checked state with isSelected prop
-    }, [isSelected]);
+  useEffect(() => {
+    setChecked(isSelected); // Sync checked state with isSelected prop
+  }, [isSelected]);
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newChecked = event.target.checked;
+    setChecked(newChecked);
+    if (onBalanceChange) {
+      onBalanceChange(newChecked, currencyBalance.currencyCode); // Pass currencyCode
+    }
+  };
 
 
-    const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setChecked(event.target.checked);
-        if (onBalanceChange) {
-            onBalanceChange(event.target.checked, currencyBalance.currencyCode); // Pass currencyCode
-        }
-    };
+  const handleDivClick = () => {
+    const newChecked = !checked;
+    setChecked(newChecked);
+    if (onBalanceChange) {
+      onBalanceChange(newChecked, currencyBalance.currencyCode);
+    }
+  };
 
-
-    return (
-        <div className="flex items-center justify-between hover:bg-lightgray p-4 rounded-2xl transition-colors duration-500 ease-in-out">
-            <div className="flex items-center">
-                <div className="relative">
-                    <Image
-                        src={currencyBalance.currencySymbolPath}
-                        alt={`${currencyBalance.currencyName} Icon`}
-                        width={48}
-                        height={48}
-                    />
-                </div>
-                <div className="ml-4">
-                    <h5 className="font-medium text-main capitalize">
-                        {currencyBalance.currencyName}
-                    </h5>
-                </div>
-            </div>
-            <div className="pt-1.5">
-                <input
-                    type="checkbox"
-                    className="h-5 w-5 rounded border-gray-300 focus:ring-0 checked:bg-black checked:border-black"
-                    checked={checked}
-                    onChange={handleCheckboxChange}
-                />
-            </div>
+  return (
+    <div
+      className="flex items-center justify-between dark:hover:bg-primarybox hover:bg-lightgray p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer"
+      onClick={handleDivClick}
+      ref={containerRef}
+    >
+      <div className="flex items-center">
+        <div className="relative">
+          <Image
+            src={currencyBalance.currencySymbolPath}
+            alt={`${currencyBalance.currencyName} Icon`}
+            width={48}
+            height={48}
+          />
         </div>
-    );
+        <div className="ml-4">
+          <h5 className="font-medium text-neutral-900 dark:text-white capitalize">
+            {currencyBalance.currencyName}
+          </h5>
+        </div>
+      </div>
+      <div className="pt-1.5">
+        <input
+          type="checkbox"
+          className="rounded-sm size-5 border-gray-500 font-medium cursor-pointer
+               accent-primary dark:border-gray-300 focus:ring-0 checked:bg-black checked:border-black"
+          checked={checked}
+          onChange={handleCheckboxChange}
+          onClick={(e) => e.stopPropagation()} // Prevent div click when checkbox is clicked directly
+        />
+      </div>
+    </div>
+  );
 };
 
 export default BalanceComponent; // Rename the component to avoid confusion with data name

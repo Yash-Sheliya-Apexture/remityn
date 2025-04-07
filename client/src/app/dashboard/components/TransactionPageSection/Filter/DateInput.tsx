@@ -218,12 +218,12 @@ const DateInput: React.FC<DateInputProps> = ({ placeholder, value, onChange }) =
     return (
         <div className="relative">
             <div className="relative mt-1">
-                <div className="bg-white border border-main rounded-lg shadow-sm focus:ring-0">
-                    <div className=" flex items-center justify-between">
+                <div className="bg-white dark:bg-background border rounded-lg focus:ring-0">
+                    <div className="flex items-center justify-between">
                         <input
                            ref={inputRef}
                             type="text"
-                            className="block w-full px-3 py-3 text-gray-500 placeholder-gray-400 focus:outline-none focus:placeholder-gray-500 cursor-pointer"
+                            className="block w-full rounded-md py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 dark:placeholder:text-white focus:outline-none font-medium"
                             placeholder={placeholder}
                             value={displayValue}
                             onClick={toggleCalendar}

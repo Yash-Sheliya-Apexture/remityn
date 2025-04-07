@@ -2405,19 +2405,11 @@
 
 
 
-
-
-
 "use client"; // Essential for using hooks
-
 import React, { useState, useCallback, useEffect, useMemo } from "react";
 import Link from 'next/link';
-
-// Icons
 import { LuPlus } from "react-icons/lu";
 import { GoArrowUp } from "react-icons/go";
-
-// Components
 import TransactionActions from "./TransactionActions"; // Adjust path if needed
 
 // Hooks & Services
@@ -2953,7 +2945,7 @@ const TransactionsPage: React.FC = () => {
                         )}
                     </div>
                 )}
-            </div> {/* End Container */}
+            </div>
         </section>
     );
 };
