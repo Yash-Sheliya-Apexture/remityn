@@ -62,20 +62,20 @@ const AccountTypeDropdown: React.FC<AccountTypeDropdownProps> = ({ value, onChan
     <div className="relative" ref={dropdownRef}>
       <button
         type="button"
-        className={`flex items-center justify-between autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white ${
+        className={`flex items-center justify-between autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-600 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white ${
           error
             ? "border-error border-2 !shadow-none"
             : "border-[#c9cbce] hover:shadow-color"
         }`}
         onClick={toggleOpen}
       >
-        <span>{value || <span className="text-neutral-900 dark:text-white">Select account type</span>}</span>
-        {isOpen ? <IoChevronUp className="text-neutral-900 dark:text-white" /> : <IoChevronDown className="text-neutral-900 dark:text-white" />}
+        <span>{value || <span className="text-neutral-600 dark:text-white/80">Select account type</span>}</span>
+        {isOpen ? <IoChevronUp className="text-neutral-600 dark:text-white/80" /> : <IoChevronDown className="text-neutral-600 dark:text-white/80" />}
       </button>
       <AnimatePresence initial={false} > {/* AnimatePresence to handle mount/unmount animations */}
         {isOpen && ( // Conditionally render dropdown only when isOpen is true
           <motion.div
-            className="absolute z-0 mt-0.5 w-full rounded-xl shadow-lg bg-white border border-[#c9cbce]"
+            className="absolute z-0 mt-0.5 w-full rounded-xl shadow-lg bg-white dark:bg-background dark:border dark:border-white"
             variants={dropdownVariants}
             initial="closed"
             animate="open"
@@ -85,8 +85,8 @@ const AccountTypeDropdown: React.FC<AccountTypeDropdownProps> = ({ value, onChan
               {accountTypes.map((type) => (
                 <li
                   key={type}
-                  className={`block px-4 py-2 text-main cursor-pointer rounded-full transition-colors duration-300 ease-in-out ${
-                    value === type ? 'font-semibold bg-primary/30 text-secondary' : 'hover:bg-lightgray '
+                  className={`block px-4 py-2 cursor-pointer rounded-full transition-colors font-medium duration-300 ease-in-out ${
+                    value === type ? 'bg-lightgray text-neutral-900 dark:bg-primarybox dark:text-white' : 'hover:bg-lightgray dark:hover:bg-primarybox text-neutral-900 dark:text-white'
                   }`}
                   onClick={() => handleAccountTypeSelect(type)}
                 >

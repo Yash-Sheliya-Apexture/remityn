@@ -2787,12 +2787,12 @@ const TransactionsPage: React.FC = () => {
     const isLoading = loadingTransactions || loadingAccounts;
 
     return (
-        <section className="Transaction-Page py-8 md:py-10">
+        <section className="Transaction-Page pb-8 md:pb-10">
              {/* Removed extra div wrapper here */}
             <div className="container mx-auto"> {/* Added container and padding */}
                 {/* Header and Actions */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-                    <h1 className="text-3xl font-semibold text-neutral-900 dark:text-white">Transactions</h1>
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 sticky top-0 z-10 mb-6 bg-white dark:bg-background">
+                    <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">Transactions</h1>
                     {/* Render Actions only when accounts are loaded (needed for Filter/Search) */}
                     {!loadingAccounts && userAccounts.length > 0 && (
                          <TransactionActions
@@ -2851,8 +2851,8 @@ const TransactionsPage: React.FC = () => {
                                             : (transaction.name || "Recipient");
 
                                         return (
-                                            <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} >
-                                                 <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer">
+                                            <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} className="block">
+                                                 <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
                                                     <div className="flex items-center gap-4">
                                                         <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center">{icon}</div>
                                                         <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
@@ -2867,7 +2867,7 @@ const TransactionsPage: React.FC = () => {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div>  
                                             </Link>
                                         );
                                     })}
@@ -2907,8 +2907,8 @@ const TransactionsPage: React.FC = () => {
                                                 }
 
                                                 return (
-                                                    <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} >
-                                                         <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer">
+                                                    <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} className="block">
+                                                         <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
                                                             <div className="flex items-center gap-4">
                                                                 <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center">{icon}</div>
                                                                 <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">

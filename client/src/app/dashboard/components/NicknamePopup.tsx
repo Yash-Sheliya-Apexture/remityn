@@ -125,7 +125,7 @@ const NicknamePopup: React.FC<NicknamePopupProps> = ({
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="bg-white dark:bg-background sm:rounded-2xl rounded-t-2xl p-10 w-full sm:max-w-xl relative"
+            className="bg-white dark:bg-background sm:rounded-2xl rounded-t-2xl sm:p-10 p-4 w-full sm:max-w-xl relative"
             variants={modalVariants}
             initial="initial"
             animate="animate"
