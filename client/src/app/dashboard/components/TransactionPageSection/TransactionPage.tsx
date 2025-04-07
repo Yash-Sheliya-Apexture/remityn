@@ -2421,6 +2421,7 @@ import accountService from "../../../services/account"; // Adjust path
 // Types
 import { Transaction } from "@/types/transaction"; // Adjust path
 import { Account } from "@/types/account"; // Adjust path
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Helper function to parse date strings (assuming "dd-MM-yyyy" format from filter)
 // Consider making this more robust or using a library if formats vary widely
@@ -2779,176 +2780,308 @@ const TransactionsPage: React.FC = () => {
     const isLoading = loadingTransactions || loadingAccounts;
 
     return (
-        <section className="Transaction-Page pb-8 md:pb-10">
-             {/* Removed extra div wrapper here */}
-            <div className="container mx-auto"> {/* Added container and padding */}
-                {/* Header and Actions */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky top-0 z-10 bg-white dark:bg-background">
-                    <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">Transactions</h1>
-                    {/* Render Actions only when accounts are loaded (needed for Filter/Search) */}
-                    {!loadingAccounts && userAccounts.length > 0 && (
-                         <TransactionActions
-                            transactions={allTransactions} // Pass full list for Search/Filter base
-                            userAccounts={userAccounts} // Pass accounts for filter options
-                            onTransactionsChange={handleTransactionsChange} // Callback for search results
-                            onFiltersApply={handleFiltersApply} // Callback for filter application
-                        />
-                    )}
-                    {/* Show skeleton/placeholder while accounts load */}
-                    {loadingAccounts && (
-                        <div className="flex items-center gap-4 animate-pulse">
-                            <div className="h-10 w-32 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
-                            <div className="h-10 w-32 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
+      <section className="Transaction-Page pb-8 md:pb-10">
+        {/* Removed extra div wrapper here */}
+        <div className="container mx-auto">
+          {" "}
+          {/* Added container and padding */}
+          {/* Header and Actions */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky top-0 z-10 bg-white dark:bg-background">
+            <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
+              Transactions
+            </h1>
+            {/* Render Actions only when accounts are loaded (needed for Filter/Search) */}
+            {!loadingAccounts && userAccounts.length > 0 && (
+              <TransactionActions
+                transactions={allTransactions} // Pass full list for Search/Filter base
+                userAccounts={userAccounts} // Pass accounts for filter options
+                onTransactionsChange={handleTransactionsChange} // Callback for search results
+                onFiltersApply={handleFiltersApply} // Callback for filter application
+              />
+            )}
+            {/* Show skeleton/placeholder while accounts load */}
+            {loadingAccounts && (
+              <div className="flex items-center gap-4 animate-pulse">
+                <div className="h-10 w-32 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
+                <div className="h-10 w-32 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
+              </div>
+            )}
+            {/* Optional: Handle case where accounts loaded but are empty */}
+            {!loadingAccounts && userAccounts.length === 0 && !error && (
+              <p className="text-sm text-gray-500">
+                Create an account to start making transactions.
+              </p>
+            )}
+          </div>
+          {/* Loading State */}
+          {isLoading && (
+            <div className="space-y-2">
+              {Array(8)
+                .fill(0)
+                .map((_, index) => (
+                  <div key={index} className="block">
+                    <div className="block p-2 sm:p-4 rounded-2xl">
+                      <div className="flex items-center gap-4">
+                        {/* Icon Skeleton */}
+                        <div className="relative flex-shrink-0">
+                          <div className="flex items-center justify-center">
+                            <Skeleton className="h-12 w-12 rounded-full" />
+                          </div>
                         </div>
-                    )}
-                    {/* Optional: Handle case where accounts loaded but are empty */}
-                    {!loadingAccounts && userAccounts.length === 0 && !error && (
-                         <p className="text-sm text-gray-500">Create an account to start making transactions.</p>
+                        {/* Text and Button Skeletons */}
+                        <div className="flex-grow flex flex-row justify-between items-center gap-4">
+                          <div className="flex-grow">
+                            <Skeleton className="h-4 w-40 mb-2" />
+                            <Skeleton className="h-3 w-32" />
+                          </div>
+                          <div className="shrink-0">
+                            <Skeleton className="h-5 w-20 rounded-full" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          )}
+          {/* Error State */}
+          {!isLoading && error && (
+            <div className="text-center py-10 text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-900/20 p-4 rounded-md border border-red-200 dark:border-red-800/30">
+              <strong>Error:</strong> {error}
+            </div>
+          )}
+          {/* Transaction List & Empty States (only when not loading and no error) */}
+          {!isLoading && !error && (
+            <div className="space-y-4">
+              {/* In Progress Section */}
+              {inProgressTransactions.length > 0 && (
+                <div>
+                  <h3 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
+                    In progress
+                  </h3>
+                  <div className="space-y-2">
+                    {inProgressTransactions.map((transaction) => {
+                      const isAddMoney = transaction.type === "Add Money";
+                      const icon = isAddMoney ? (
+                        <LuPlus
+                          size={22}
+                          className="text-neutral-900 dark:text-white"
+                        />
+                      ) : (
+                        <GoArrowUp
+                          size={22}
+                          className="text-neutral-900 dark:text-white"
+                        />
+                      );
+                      const description = isAddMoney
+                        ? "Waiting for your money"
+                        : "Sending money";
+                      const amount = isAddMoney
+                        ? transaction.amountToAdd ?? 0
+                        : transaction.sendAmount ?? 0;
+                      // Display currency: For Add use balance currency, for Send use send currency
+                      const displayCurrencyCode = isAddMoney
+                        ? typeof transaction.balanceCurrency === "object" &&
+                          transaction.balanceCurrency?.code
+                          ? transaction.balanceCurrency.code
+                          : ""
+                        : typeof transaction.sendCurrency === "object" &&
+                          transaction.sendCurrency?.code
+                        ? transaction.sendCurrency.code
+                        : "";
+                      const amountPrefix = isAddMoney ? "+ " : "- ";
+                      // Name: For Add show target balance, for Send show recipient name
+                      const name = isAddMoney
+                        ? `To your ${displayCurrencyCode} balance`
+                        : transaction.name || "Recipient";
+
+                      return (
+                        <Link
+                          href={`/dashboard/transactions/${transaction._id}`}
+                          key={transaction._id}
+                          className="block"
+                        >
+                          <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
+                            <div className="flex items-center gap-4">
+                              <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center">
+                                {icon}
+                              </div>
+                              <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
+                                <div className=" text-wrap">
+                                  <h3 className="font-medium text-neutral-900 dark:text-white text-sm md:text-base">
+                                    {name}
+                                  </h3>
+                                  <p className="text-xs md:text-sm text-gray-500 dark:text-gray-300">
+                                    {description}{" "}
+                                    <span className="italic">
+                                      ({transaction.status})
+                                    </span>
+                                  </p>
+                                </div>
+                                <div
+                                  className={`font-medium text-neutral-900 dark:text-white text-sm md:text-base whitespace-nowrap text-right sm:text-left`}
+                                >
+                                  {amountPrefix}
+                                  {amount.toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                  })}{" "}
+                                  {displayCurrencyCode}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Processed Sections (Grouped by Date) */}
+              {Object.entries(groupedProcessedTransactions).length > 0 && (
+                <div className="space-y-4">
+                  {Object.entries(groupedProcessedTransactions).map(
+                    ([date, transactionsForDate]) => (
+                      <div key={date}>
+                        <h3 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
+                          {date}
+                        </h3>
+                        <div className="space-y-2">
+                          {transactionsForDate.map((transaction) => {
+                            const isAddMoney = transaction.type === "Add Money";
+                            const icon = isAddMoney ? (
+                              <LuPlus
+                                size={22}
+                                className="text-neutral-900 dark:text-white"
+                              />
+                            ) : (
+                              <GoArrowUp
+                                size={22}
+                                className="text-neutral-900 dark:text-white"
+                              />
+                            );
+                            let description = isAddMoney
+                              ? "Added by you"
+                              : `To ${transaction.name || "Recipient"}`;
+                            let amountClass = isAddMoney
+                              ? "text-green-600 dark:text-green-500"
+                              : "text-neutral-900  dark:text-white";
+                            const amount = isAddMoney
+                              ? transaction.amountToAdd ?? 0
+                              : transaction.sendAmount ?? 0;
+                            const displayCurrencyCode = isAddMoney
+                              ? typeof transaction.balanceCurrency ===
+                                  "object" && transaction.balanceCurrency?.code
+                                ? transaction.balanceCurrency.code
+                                : ""
+                              : typeof transaction.sendCurrency === "object" &&
+                                transaction.sendCurrency?.code
+                              ? transaction.sendCurrency.code
+                              : "";
+                            const amountPrefix = isAddMoney ? "+ " : "- ";
+                            // Clarify name for Add Money
+                            const name = isAddMoney
+                              ? `Added to ${displayCurrencyCode} balance`
+                              : transaction.name || "Recipient";
+
+                            // Adjust appearance based on final status
+                            if (
+                              transaction.status === "canceled" ||
+                              transaction.status === "cancelled"
+                            ) {
+                              description = "Cancelled";
+                              amountClass = "text-red-600 line-through";
+                            } else if (transaction.status === "failed") {
+                              description = "Failed";
+                              amountClass = "text-red-600 line-through";
+                            } else if (transaction.status === "completed") {
+                              description = isAddMoney
+                                ? "Added"
+                                : `Sent to ${transaction.name || "Recipient"}`;
+                            }
+
+                            return (
+                              <Link
+                                href={`/dashboard/transactions/${transaction._id}`}
+                                key={transaction._id}
+                                className="block"
+                              >
+                                <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
+                                  <div className="flex items-center gap-4">
+                                    <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center">
+                                      {icon}
+                                    </div>
+                                    <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
+                                      <div className=" text-wrap">
+                                        <h3 className="font-medium text-neutral-900 dark:text-white text-sm md:text-base">
+                                          {name}
+                                        </h3>
+                                        <p className="text-xs md:text-sm text-gray-500 dark:text-gray-300">
+                                          {description}
+                                        </p>
+                                      </div>
+                                      <div
+                                        className={`font-medium ${amountClass} text-sm md:text-base whitespace-nowrap text-right sm:text-left`}
+                                      >
+                                        {amountPrefix}
+                                        {amount.toLocaleString(undefined, {
+                                          minimumFractionDigits: 2,
+                                          maximumFractionDigits: 2,
+                                        })}{" "}
+                                        {displayCurrencyCode}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
+              )}
+
+              {/* Empty State (No transactions match filters or none exist at all) */}
+              {filteredTransactions.length === 0 && (
+                <div className="text-center flex flex-col text-lg px-4 text-gray-500 dark:text-gray-300 py-12 dark:bg-white/5 rounded-lg mt-6">
+                  {allTransactions.length === 0
+                    ? "You haven't made any transactions yet."
+                    : "No transactions match your current filter or search criteria."}
+                  {/* Optional: Add a button to clear filters if filters are active */}
+                  {(appliedRecipientFilters.length > 0 ||
+                    appliedDirectionFilter !== "all" ||
+                    appliedStatusFilter ||
+                    appliedBalanceFilter.length > 0 ||
+                    appliedFromDateFilter ||
+                    appliedToDateFilter) &&
+                    allTransactions.length > 0 && (
+                      <div className="flex justify-center ">
+                        <button
+                          onClick={() =>
+                            handleFiltersApply({
+                              selectedRecipients: [],
+                              selectedDirection: "all",
+                              selectedStatus: null,
+                              selectedBalance: [],
+                              fromDate: undefined,
+                              toDate: undefined,
+                            })
+                          }
+                          className="mt-4 px-6 cursor-pointer py-3 w-38 bg-primary text-mainheading rounded-full hover:bg-primaryhover transition-colors duration-500 ease-in-out"
+                        >
+                          Clear Filters
+                        </button>
+                      </div>
                     )}
                 </div>
-
-                {/* Loading State */}
-                {isLoading && (
-                    <div className="text-center py-10 text-gray-500 dark:text-gray-400">Loading transactions...</div>
-                )}
-
-                {/* Error State */}
-                {!isLoading && error && (
-                    <div className="text-center py-10 text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-900/20 p-4 rounded-md border border-red-200 dark:border-red-800/30">
-                        <strong>Error:</strong> {error}
-                    </div>
-                )}
-
-                {/* Transaction List & Empty States (only when not loading and no error) */}
-                {!isLoading && !error && (
-                    <div className="space-y-4">
-                        {/* In Progress Section */}
-                        {inProgressTransactions.length > 0 && (
-                            <div>
-                                 <h3 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">In progress</h3>
-                                <div className="space-y-2">
-                                    {inProgressTransactions.map((transaction) => {
-                                        const isAddMoney = transaction.type === "Add Money";
-                                        const icon = isAddMoney ? <LuPlus size={22} className="text-neutral-900 dark:text-white" /> : <GoArrowUp size={22} className="text-neutral-900 dark:text-white" />;
-                                        const description = isAddMoney ? "Waiting for your money" : "Sending money";
-                                        const amount = isAddMoney ? (transaction.amountToAdd ?? 0) : (transaction.sendAmount ?? 0);
-                                        // Display currency: For Add use balance currency, for Send use send currency
-                                        const displayCurrencyCode = isAddMoney
-                                            ? (typeof transaction.balanceCurrency === 'object' && transaction.balanceCurrency?.code ? transaction.balanceCurrency.code : '')
-                                            : (typeof transaction.sendCurrency === 'object' && transaction.sendCurrency?.code ? transaction.sendCurrency.code : '');
-                                        const amountPrefix = isAddMoney ? "+ " : "- ";
-                                        // Name: For Add show target balance, for Send show recipient name
-                                        const name = isAddMoney
-                                            ? `To your ${displayCurrencyCode} balance`
-                                            : (transaction.name || "Recipient");
-
-                                        return (
-                                            <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} className="block">
-                                                 <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
-                                                    <div className="flex items-center gap-4">
-                                                        <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center">{icon}</div>
-                                                        <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
-                                                            <div className=" text-wrap">
-                                                                <h3 className="font-medium text-neutral-900 dark:text-white text-sm md:text-base">{name}</h3>
-                                                                <p className="text-xs md:text-sm text-gray-500 dark:text-gray-300">{description} <span className="italic">({transaction.status})</span></p>
-                                                            </div>
-                                                            <div className={`font-medium text-neutral-900 dark:text-white text-sm md:text-base whitespace-nowrap text-right sm:text-left`}>
-                                                                {amountPrefix}
-                                                                {amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                                                {" "} {displayCurrencyCode}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>  
-                                            </Link>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Processed Sections (Grouped by Date) */}
-                        {Object.entries(groupedProcessedTransactions).length > 0 && (
-                            <div className="space-y-4">
-                                {Object.entries(groupedProcessedTransactions).map(([date, transactionsForDate]) => (
-                                    <div key={date}>
-                                         <h3 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">{date}</h3>
-                                        <div className="space-y-2">
-                                            {transactionsForDate.map((transaction) => {
-                                                const isAddMoney = transaction.type === "Add Money";
-                                                const icon = isAddMoney ? <LuPlus size={22} className="text-neutral-900 dark:text-white" /> : <GoArrowUp size={22} className="text-neutral-900 dark:text-white" />;
-                                                let description = isAddMoney ? "Added by you" : `To ${transaction.name || 'Recipient'}`;
-                                                let amountClass = isAddMoney ? "text-green-600 dark:text-green-500" : "text-neutral-900  dark:text-white";
-                                                const amount = isAddMoney ? (transaction.amountToAdd ?? 0) : (transaction.sendAmount ?? 0);
-                                                const displayCurrencyCode = isAddMoney
-                                                    ? (typeof transaction.balanceCurrency === 'object' && transaction.balanceCurrency?.code ? transaction.balanceCurrency.code : '')
-                                                    : (typeof transaction.sendCurrency === 'object' && transaction.sendCurrency?.code ? transaction.sendCurrency.code : '');
-                                                const amountPrefix = isAddMoney ? "+ " : "- ";
-                                                // Clarify name for Add Money
-                                                const name = isAddMoney ? `Added to ${displayCurrencyCode} balance` : (transaction.name || "Recipient");
-
-                                                // Adjust appearance based on final status
-                                                if (transaction.status === "canceled" || transaction.status === "cancelled") {
-                                                    description = "Cancelled";
-                                                    amountClass = "text-red-600 line-through";
-                                                } else if (transaction.status === "failed") {
-                                                    description = "Failed";
-                                                    amountClass = "text-red-600 line-through";
-                                                } else if (transaction.status === "completed") {
-                                                     description = isAddMoney ? "Added" : `Sent to ${transaction.name || 'Recipient'}`;
-                                                }
-
-                                                return (
-                                                    <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} className="block">
-                                                         <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
-                                                            <div className="flex items-center gap-4">
-                                                                <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center">{icon}</div>
-                                                                <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
-                                                                    <div className=" text-wrap">
-                                                                        <h3 className="font-medium text-neutral-900 dark:text-white text-sm md:text-base">{name}</h3>
-                                                                        <p className="text-xs md:text-sm text-gray-500 dark:text-gray-300">{description}</p>
-                                                                    </div>
-                                                                    <div className={`font-medium ${amountClass} text-sm md:text-base whitespace-nowrap text-right sm:text-left`}>
-                                                                        {amountPrefix}
-                                                                        {amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                                                        {" "} {displayCurrencyCode}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </Link>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-
-                        {/* Empty State (No transactions match filters or none exist at all) */}
-                        {filteredTransactions.length === 0 && (
-                            <div className="text-center flex flex-col text-lg px-4 text-gray-500 dark:text-gray-300 py-12 dark:bg-white/5 rounded-lg mt-6">
-                                {allTransactions.length === 0
-                                    ? "You haven't made any transactions yet."
-                                    : "No transactions match your current filter or search criteria."
-                                }
-                                {/* Optional: Add a button to clear filters if filters are active */}
-                                { (appliedRecipientFilters.length > 0 || appliedDirectionFilter !== 'all' || appliedStatusFilter || appliedBalanceFilter.length > 0 || appliedFromDateFilter || appliedToDateFilter) && allTransactions.length > 0 && (
-                                    <div className="flex justify-center ">
-                                    <button
-                                        onClick={() => handleFiltersApply({ selectedRecipients: [], selectedDirection: 'all', selectedStatus: null, selectedBalance: [], fromDate: undefined, toDate: undefined })}
-                                        className="mt-4 px-6 cursor-pointer py-3 w-38 bg-primary text-mainheading rounded-full hover:bg-primaryhover transition-colors duration-500 ease-in-out"
-                                    >
-                                        Clear Filters
-                                    </button>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </div>
-                )}
+              )}
             </div>
-        </section>
+          )}
+        </div>
+      </section>
     );
 };
 
