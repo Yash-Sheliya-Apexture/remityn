@@ -3324,37 +3324,6 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
     setSelectedStatus(status);
   };
 
-<<<<<<< HEAD
-    return (
-        <div>
-            <button
-                className="inline-flex items-center bg-primary text-neutral-900 hover:bg-primaryhover md:gap-3 py-3 px-6 h-12.5 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer" // Added gap and hover
-                onClick={toggleOpen}
-                aria-expanded={isOpen}  
-                aria-controls="filter-popup"
-            >
-                <LuSettings2 size={20} /> {/* Adjusted size */}
-                <span className="md:block hidden">Filters</span>
-            </button>
-            <AnimatePresence>
-                {isOpen && (
-                     <motion.div
-                        id="filter-popup"
-                        ref={popupRef}
-                        className={`fixed ${isMobile ? 'bottom-0 left-0 right-0 h-[100vh]' : 'top-0 right-0 sm:w-[600px] h-full'} bg-white shadow-lg ${isMobile ? 'rounded-t-2xl' : ''} border-gray-200 z-50 flex flex-col`} // Use flex column
-                        initial={isMobile ? { y: "100%", opacity: 0 } : { x: "100%", opacity: 0 }}
-                        animate={isMobile ? { y: "0%", opacity: 1 } : { x: "0%", opacity: 1 }}
-                        exit={isMobile ? { y: "100%", opacity: 0 } : { x: "100%", opacity: 0 }}
-                        transition={{ type: "tween", duration: 0.3 }}
-                    >
-                        {/* Header */}
-                        <div className="p-5 shadow-sm flex items-center justify-between flex-shrink-0 border-b border-gray-200">
-                            <h3 className="font-semibold text-gray-800 text-lg">Filters</h3>
-                            <button onClick={closePopup} className="p-1 text-gray-500 hover:text-gray-800">
-                                <FiX size={24} />
-                            </button>
-                        </div>
-=======
   // --- Updated Balance Change Handler ---
   const handleBalanceChange = (isSelected: boolean, currencyCode: string) => {
     setSelectedBalance((currentBalances) => {
@@ -3365,7 +3334,6 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
       return newBalances;
     });
   };
->>>>>>> d8791ed84a7c2d73f90ada236297712b1652eea6
 
   // --- Date range functions remain the same ---
   const getLastMonthRange = () => {
