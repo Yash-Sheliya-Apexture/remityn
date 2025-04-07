@@ -57,11 +57,6 @@
 // export default NicknamePopup;
 
 
-
-
-
-
-
 // components/NicknamePopup.tsx
 "use client";
 import React, { useState, useEffect } from "react";
@@ -119,6 +114,7 @@ const NicknamePopup: React.FC<NicknamePopupProps> = ({
   const modalVariants = isMobile ? mobileVariants : desktopVariants;
 
   return (
+    /* Delete recipient Model */
     <AnimatePresence>
       {isOpen && (
         <motion.div
@@ -128,19 +124,26 @@ const NicknamePopup: React.FC<NicknamePopupProps> = ({
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="bg-white dark:bg-background sm:rounded-2xl rounded-t-2xl sm:p-10 p-4 w-full sm:max-w-xl relative"
+            className="bg-white dark:bg-background sm:rounded-2xl rounded-t-2xl sm:p-8 p-4 w-full sm:max-w-lg relative"
             variants={modalVariants}
             initial="initial"
             animate="animate"
             exit="exit"
           >
-            <button
-              className="absolute top-4 right-4 p-3 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-colors duration-300 ease-in-out cursor-pointer"
-              onClick={onClose}
-            >
-              <IoClose size={28} className="text-neutral-900 dark:text-white"/>
-            </button>
-            <h3 className="text-3xl font-semibold text-mainheading dark:text-white my-6">{title}</h3>
+            <div className="w-full inline-flex justify-end">
+              <button
+                className="p-3 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
+                onClick={onClose}
+              >
+                <IoClose
+                  size={28}
+                  className="text-neutral-900 dark:text-white"
+                />
+              </button>
+            </div>
+            <h3 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white my-6">
+              {title}
+            </h3>
             {description && (
               <p className="text-gray dark:text-gray-300 font-medium mb-6">
                 {description}

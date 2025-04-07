@@ -2791,7 +2791,7 @@ const TransactionsPage: React.FC = () => {
              {/* Removed extra div wrapper here */}
             <div className="container mx-auto"> {/* Added container and padding */}
                 {/* Header and Actions */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 sticky top-0 z-10 mb-6 bg-white dark:bg-background">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky top-0 z-10 bg-white dark:bg-background">
                     <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">Transactions</h1>
                     {/* Render Actions only when accounts are loaded (needed for Filter/Search) */}
                     {!loadingAccounts && userAccounts.length > 0 && (
@@ -2935,7 +2935,7 @@ const TransactionsPage: React.FC = () => {
 
                         {/* Empty State (No transactions match filters or none exist at all) */}
                         {filteredTransactions.length === 0 && (
-                            <div className="text-center text-gray dark:text-gray-400 py-12 dark:bg-gray-800/50 rounded-lg mt-6 dark:border-gray-700/50">
+                            <div className="text-center text-gray-500 dark:text-gray-300 py-10 bg-white dark:bg-white/5 rounded-lg mt-6 border">
                                 {allTransactions.length === 0
                                     ? "You haven't made any transactions yet."
                                     : "No transactions match your current filter or search criteria."
