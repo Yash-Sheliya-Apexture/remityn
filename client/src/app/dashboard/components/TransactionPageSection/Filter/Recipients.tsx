@@ -685,7 +685,7 @@ const Recipients: React.FC<RecipientsProps> = ({
     <>
       {recipients.length > 0 && (
         <>
-          <h4 className="text-gray font-medium relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
+          <h4 className="text-gray-500 dark:text-gray-300 font-medium relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
             Recipients
           </h4>
           <div className="pt-4 space-y-2">
@@ -698,7 +698,7 @@ const Recipients: React.FC<RecipientsProps> = ({
               />
             ))}
             {selectedRecipientIds.length > 0 && (
-              <p className="mt-4 text-sm text-gray-500">
+              <p className="mt-4 text-sm dark:text-gray-300 text-gray-500">
                 {selectedRecipientIds.length} recipient(s) selected.
               </p>
             )}

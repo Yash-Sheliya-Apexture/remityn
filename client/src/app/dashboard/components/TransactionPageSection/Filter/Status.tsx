@@ -25,17 +25,17 @@ export default function Status({ selectedStatus, onStatusChange }: StatusProps) 
 
   return (
     <div>
-      <h4 className="text-gray font-medium relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
+      <h4 className="text-gray-500  dark:text-gray-300 font-medium relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
         Status
       </h4>
       <div className="pt-4 flex items-center gap-2">
         {statuses.map((status) => (
           <button
             key={status}
-            className={`font-medium border rounded-full px-4 py-1 flex items-center gap-2 cursor-pointer ${
+            className={`font-medium border rounded-full px-4 py-2 flex items-center gap-2 cursor-pointer ${
               selectedStatus === status
-                ? "bg-secondary text-primary border-secondary" // Highlight if selected
-                : "border-secondary text-secondary bg-white"
+                ? "bg-secondary text-primary" // Highlight if selected
+                : "text-mainheading dark:bg-background dark:text-white bg-white"
             }`}
             onClick={() => handleStatusButtonClick(status)}
           >
