@@ -365,7 +365,7 @@ export default function ChangePassword() {
       <div className="container mx-auto">
         <h2 className="text-3xl text-main font-semibold">Change password</h2>
 
-        <div className="space-y-4 w-full md:max-w-md">
+        <div className="space-y-4 w-full md:max-w-lg">
           <div className="bg-lightgray rounded-xl p-4 flex items-start gap-4 mt-8">
             <div className="p-3 bg-yellow-400 rounded-full">
               <BsExclamationLg size={24} className="text-main" />

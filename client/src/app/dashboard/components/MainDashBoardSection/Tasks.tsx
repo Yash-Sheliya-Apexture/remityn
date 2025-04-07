@@ -96,6 +96,178 @@
 //   };
 // };
 
+// "use client"; // Use client-side rendering for hooks
+
+// import React, { useState, useEffect } from "react";
+// import Link from "next/link";
+// import { MdErrorOutline } from "react-icons/md"; // Warning icon
+// import { LuPlus } from "react-icons/lu"; // Add money icon
+// import { useAuth } from "../../../hooks/useAuth"; // Adjust path as needed
+// import paymentService from "../../../services/payment"; // Adjust path as needed
+// import { Transaction } from "@/types/transaction"; // Adjust path as needed
+// import { Skeleton } from "@/components/ui/skeleton"; // Adjust path as needed
+
+// const TasksPage: React.FC = () => {
+//   // --- State ---
+//   const [pendingPayments, setPendingPayments] = useState<Transaction[]>([]);
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+//   const { token } = useAuth();
+
+//   // --- Data Fetching Effect ---
+//   useEffect(() => {
+//     console.log("TasksPage: useEffect triggered.");
+
+//     const fetchPendingPayments = async () => {
+//       if (!token) {
+//         console.log("TasksPage: No token found, skipping fetch.");
+//         setIsLoading(false);
+//         return;
+//       }
+
+//       setIsLoading(true);
+//       setError(null);
+//       setPendingPayments([]);
+//       console.log("TasksPage: Starting fetch for pending payments.");
+
+//       try {
+//         const allUserPayments = await paymentService.getUserPayments(token);
+//         console.log(
+//           `TasksPage: Received ${allUserPayments.length} raw payments from API.`
+//         );
+
+//         const pending = allUserPayments.filter(
+//           (payment): payment is Transaction => {
+//             const isPending = payment.status?.toLowerCase() === "pending";
+//             const isAddMoney = payment.type === "Add Money";
+//             return isPending && isAddMoney;
+//           }
+//         );
+//         console.log(
+//           `TasksPage: Filtered down to ${pending.length} pending 'Add Money' tasks.`
+//         );
+//         setPendingPayments(pending);
+//       } catch (err: any) {
+//         const errMsg =
+//           err.response?.data?.message || err.message || "Failed to load tasks.";
+//         setError(errMsg);
+//         console.error("TasksPage: Error fetching pending payments:", err);
+//       } finally {
+//         setIsLoading(false);
+//         console.log("TasksPage: Fetch finished.");
+//       }
+//     };
+
+//     fetchPendingPayments();
+//   }, [token]);
+
+//   // --- Early Return Condition ---
+//   // If loading is finished, there's no error, AND there are no pending payments, render nothing.
+//   if (!isLoading && !error && pendingPayments.length === 0) {
+//     console.log("TasksPage: No pending tasks found, rendering null.");
+//     return null; // Render absolutely nothing
+//   }
+
+//   // --- Render Logic (Only runs if loading, error, or tasks exist) ---
+//   return (
+//     <section className="Tasks pt-10">
+//       {/* --- Heading (Now only rendered if loading, error, or tasks exist) --- */}
+//       <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white mb-6">
+//         Tasks
+//       </h1>
+
+//       {/* --- Loading State --- */}
+//       {isLoading && (
+//         <div className="space-y-4">
+//           <Skeleton className="h-24 w-full rounded-lg bg-gray-200" />
+//           <Skeleton className="h-24 w-full rounded-lg bg-gray-200" />
+//         </div>
+//       )}
+
+//       {/* --- Error State --- */}
+//       {!isLoading && error && (
+//         <div
+//           className="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-md text-center"
+//           role="alert"
+//         >
+//           <strong className="font-bold">Error:</strong>
+//           <span className="block sm:inline ml-1">{error}</span>
+//         </div>
+//       )}
+
+//       {/* --- Task List (Only if not loading, no error, and tasks exist) --- */}
+//       {/* This condition is implicitly true if we reach here AND pendingPayments.length > 0 */}
+//       {!isLoading && !error && pendingPayments.length > 0 && (
+//         <div className="space-y-2">
+//           {pendingPayments.map((task) => {
+//             const amount = task.amountToAdd ?? task.amountToPay ?? 0;
+//             const currency =
+//               task.balanceCurrency?.code ?? task.payInCurrency?.code ?? "";
+
+//             return (
+//               <Link href={`/dashboard/transactions/${task._id}`} key={task._id} className="block">
+//                 <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer">
+//                   <div className="flex items-center gap-4">
+//                     {/* Icon */}
+//                     <div className="relative flex-shrink-0">
+//                       <div className="p-3 bg-yellow-100 dark:bg-yellow-800/60 rounded-full flex items-center justify-center">
+//                         <LuPlus
+//                           size={24}
+//                           className="text-yellow-700 dark:text-yellow-300"
+//                         />
+//                       </div>
+//                       <MdErrorOutline
+//                         size={20}
+//                         className="absolute -bottom-1 -right-1 text-orange-500 bg-white rounded-full p-0.5 shadow"
+//                       />
+//                     </div>
+//                     {/* Details & Action */}
+//                     <div className="flex-grow flex flex-row justify-between items-center gap-4">
+//                       {/* Text Details */}
+//                       <div className="flex-grow">
+//                         <p className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg">
+//                           {amount.toLocaleString(undefined, {
+//                             minimumFractionDigits: 2,
+//                             maximumFractionDigits: 2,
+//                           })}{" "}
+//                           {currency} to your {currency} balance
+//                         </p>
+//                         <p className="text-sm text-orange-600 font-semibold mt-1">
+//                           Waiting for you to pay
+//                         </p>
+//                       </div>
+//                       {/* Review Button */}
+//                       <button
+//                         tabIndex={-1}
+//                         className="shrink-0 bg-primary text-neutral-900 px-4 py-1.5 rounded-full text-xs font-semibold hover:bg-primaryhover transition-colors duration-500 ease-in-out focus:outline-none focus:ring-0 cursor-pointer"
+//                       >
+//                         Review
+//                       </button>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </Link>
+//             );
+//           })}
+//         </div>
+//       )}
+//     </section>
+//   );
+// };
+
+// export default TasksPage;
+
+
+
+
+
+
+
+
+
+
+
+
 "use client"; // Use client-side rendering for hooks
 
 import React, { useState, useEffect } from "react";
@@ -106,6 +278,7 @@ import { useAuth } from "../../../hooks/useAuth"; // Adjust path as needed
 import paymentService from "../../../services/payment"; // Adjust path as needed
 import { Transaction } from "@/types/transaction"; // Adjust path as needed
 import { Skeleton } from "@/components/ui/skeleton"; // Adjust path as needed
+import { motion, AnimatePresence } from "framer-motion"; // Import framer-motion
 
 const TasksPage: React.FC = () => {
   // --- State ---
@@ -113,6 +286,9 @@ const TasksPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { token } = useAuth();
+  const initialVisibleTaskCount = 3;
+  const [visibleTaskCount, setVisibleTaskCount] = useState(initialVisibleTaskCount);
+  const [allTasksVisible, setAllTasksVisible] = useState(false); // Track if all tasks are visible
 
   // --- Data Fetching Effect ---
   useEffect(() => {
@@ -128,6 +304,8 @@ const TasksPage: React.FC = () => {
       setIsLoading(true);
       setError(null);
       setPendingPayments([]);
+      setVisibleTaskCount(initialVisibleTaskCount); // Reset to initial count on refresh
+      setAllTasksVisible(false); // Reset allTasksVisible on refresh
       console.log("TasksPage: Starting fetch for pending payments.");
 
       try {
@@ -161,24 +339,56 @@ const TasksPage: React.FC = () => {
     fetchPendingPayments();
   }, [token]);
 
+  // --- Effect to Update allTasksVisible ---
+  useEffect(() => {
+    if (pendingPayments.length > 0) {
+      setAllTasksVisible(visibleTaskCount >= pendingPayments.length);
+    } else {
+      setAllTasksVisible(false); // No tasks, so not all visible
+    }
+  }, [visibleTaskCount, pendingPayments.length]);
+
+
   // --- Early Return Condition ---
-  // If loading is finished, there's no error, AND there are no pending payments, render nothing.
   if (!isLoading && !error && pendingPayments.length === 0) {
     console.log("TasksPage: No pending tasks found, rendering null.");
     return null; // Render absolutely nothing
   }
 
-  // --- Render Logic (Only runs if loading, error, or tasks exist) ---
+  const displayedTasks = pendingPayments.slice(0, visibleTaskCount);
+  const hasMoreTasksToLoad = visibleTaskCount < pendingPayments.length;
+  const showToggleButton = pendingPayments.length > initialVisibleTaskCount; // Only show button if there are potentially more tasks than initial
+
+  const handleToggleViewMoreLess = () => {
+    if (allTasksVisible) {
+      setVisibleTaskCount(initialVisibleTaskCount); // View Less - reset to initial
+      setAllTasksVisible(false);
+    } else {
+      setVisibleTaskCount((prevCount) => prevCount + 3); // View More - load more tasks
+    }
+  };
+
+  const buttonText = allTasksVisible ? "View Less" : "View More";
+
+  const taskItemVariants = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeInOut" } },
+    exit: { opacity: 0, y: 20, transition: { duration: 0.2, ease: "easeInOut" } },
+  };
+
+
+  // --- Render Logic ---
   return (
-    <section className="Tasks">
-      {/* --- Heading (Now only rendered if loading, error, or tasks exist) --- */}
-      <h1 className="text-2xl md:text-3xl font-semibold text-gray-800 mb-6">
+    <section className="Tasks pt-10">
+      {/* --- Heading --- */}
+      <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white mb-6">
         Tasks
       </h1>
 
       {/* --- Loading State --- */}
       {isLoading && (
         <div className="space-y-4">
+          <Skeleton className="h-24 w-full rounded-lg bg-gray-200" />
           <Skeleton className="h-24 w-full rounded-lg bg-gray-200" />
           <Skeleton className="h-24 w-full rounded-lg bg-gray-200" />
         </div>
@@ -195,59 +405,85 @@ const TasksPage: React.FC = () => {
         </div>
       )}
 
-      {/* --- Task List (Only if not loading, no error, and tasks exist) --- */}
-      {/* This condition is implicitly true if we reach here AND pendingPayments.length > 0 */}
-      {!isLoading && !error && pendingPayments.length > 0 && (
-        <div className="bg-white border border-gray-200 rounded-lg shadow-sm divide-y divide-gray-200">
-          {pendingPayments.map((task) => {
-            const amount = task.amountToAdd ?? task.amountToPay ?? 0;
-            const currency =
-              task.balanceCurrency?.code ?? task.payInCurrency?.code ?? "";
+      {/* --- Task List --- */}
+      {!isLoading && !error && displayedTasks.length > 0 && (
+        <motion.div
+          layout
+          className="space-y-2"
+        >
+          <AnimatePresence>
+            {displayedTasks.map((task) => {
+              const amount = task.amountToAdd ?? task.amountToPay ?? 0;
+              const currency =
+                task.balanceCurrency?.code ?? task.payInCurrency?.code ?? "";
 
-            return (
-              <Link
-                href={`/dashboard/transactions/${task._id}`}
-                key={task._id}
-                passHref
-              >
-                <div className="flex items-center gap-4 p-4 hover:bg-gray-50 cursor-pointer transition-colors duration-150">
-                  {/* Icon */}
-                  <div className="relative flex-shrink-0">
-                    <div className="p-3 bg-yellow-100 rounded-full flex items-center justify-center border border-yellow-200">
-                      <LuPlus size={24} className="text-yellow-700" />
+              return (
+                <motion.div
+                  key={task._id}
+                  variants={taskItemVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  layout
+                >
+                  <Link href={`/dashboard/transactions/${task._id}`} className="block">
+                    <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
+                      <div className="flex items-center gap-4">
+                        {/* Icon */}
+                        <div className="relative flex-shrink-0">
+                          <div className="p-3 bg-yellow-100 dark:bg-yellow-800/60 rounded-full flex items-center justify-center">
+                            <LuPlus
+                              size={24}
+                              className="text-yellow-700 dark:text-yellow-300"
+                            />
+                          </div>
+                          <MdErrorOutline
+                            size={20}
+                            className="absolute -bottom-1 -right-1 text-orange-500 bg-white rounded-full p-0.5 shadow"
+                          />
+                        </div>
+                        {/* Details & Action */}
+                        <div className="flex-grow flex flex-row justify-between items-center gap-4">
+                          {/* Text Details */}
+                          <div className="flex-grow">
+                            <p className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg">
+                              {amount.toLocaleString(undefined, {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              })}{" "}
+                              {currency} to your {currency} balance
+                            </p>
+                            <p className="text-sm text-orange-600 font-semibold mt-1">
+                              Waiting for you to pay
+                            </p>
+                          </div>
+                          {/* Review Button */}
+                          <button
+                            tabIndex={-1}
+                            className="shrink-0 bg-primary text-neutral-900 px-4 py-1.5 rounded-full text-xs font-semibold hover:bg-primaryhover transition-all duration-75 ease-linear focus:outline-none focus:ring-0 cursor-pointer"
+                          >
+                            Review
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                    <MdErrorOutline
-                      size={20}
-                      className="absolute -bottom-1 -right-1 text-orange-500 bg-white rounded-full p-0.5 shadow"
-                    />
-                  </div>
-                  {/* Details & Action */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full gap-2 flex-grow">
-                    {/* Text Details */}
-                    <div className="flex-grow">
-                      <p className="font-medium text-gray-800 text-sm md:text-base leading-tight">
-                        {amount.toLocaleString(undefined, {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })}{" "}
-                        {currency} to your {currency} balance
-                      </p>
-                      <p className="text-xs text-orange-600 font-semibold mt-0.5">
-                        Waiting for you to pay
-                      </p>
-                    </div>
-                    {/* Review Button */}
-                    <button
-                      tabIndex={-1}
-                      className="ml-auto sm:ml-4 shrink-0 bg-blue-600 text-white px-4 py-1.5 rounded-full text-xs font-semibold hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-                    >
-                      Review
-                    </button>
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        </motion.div>
+      )}
+
+      {/* --- View More/Less Button --- */}
+      {!isLoading && !error && showToggleButton && ( // Conditionally render button if needed
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={handleToggleViewMoreLess}
+            className="bg-lightgray dark:bg-primarybox hover:dark:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-gray-300 transition-all duration-75 ease-linear focus:outline-none focus:ring-0 cursor-pointer"
+          >
+            {buttonText}
+          </button>
         </div>
       )}
     </section>

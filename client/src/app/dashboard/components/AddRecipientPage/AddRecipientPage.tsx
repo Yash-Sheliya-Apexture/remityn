@@ -3045,7 +3045,7 @@ const AddRecipientPage = () => {
   // Separate currencies into available and coming soon arrays directly and then filter them
   const availableCurrenciesBase = useMemo(() => {
     return currencies.filter((currency) =>
-      ["INR", "CAD"].includes(currency.code)
+      ["INR"].includes(currency.code)
     );
   }, [currencies]);
 
@@ -3237,406 +3237,404 @@ const AddRecipientPage = () => {
   // --- Return JSX (keep the structure, no changes needed here) ---
   return (
     <div className="AddRecipientPage pt-6">
-        <DashboardHeader
-            title="Recipients"
-            onBack={handleBackStep} // Pass handleBackStep as onBack
-        />
-        <div className="">
-            {step === 1 && (
-            // ... Currency selection UI ...
-            <div key="currency-step" className=" bg-white p-6 md:p-8 relative">
-                <h2 className="text-2xl font-semibold text-main text-center mb-6">
-                Select their currency
-                </h2>
+      <DashboardHeader
+        title="Recipients"
+        onBack={handleBackStep} // Pass handleBackStep as onBack
+      />
+      <div className="container mx-auto">
+        {step === 1 && (
+          // ... Currency selection UI ...
+          <div
+            key="currency-step"
+            className=" bg-white dark:bg-background relative"
+          >
+            <h2 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white text-center mb-6">
+              Select their currency
+            </h2>
 
-                <div className="relative mb-6">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                    <FiSearch className="h-5 w-5 text-gray" aria-hidden="true" />
-                </div>
-                <input
-                    type="text"
-                    className="block w-full pl-14 pr-10 py-3 border border-lightborder rounded-full focus:outline-none focus:ring-main focus:border-main"
-                    placeholder="Search currency..."
-                    value={searchCurrency}
-                    onChange={(e) => setSearchCurrency(e.target.value)}
-                />
-                {searchCurrency && (
-                    <button
-                    onClick={clearSearchTerm}
-                    className="absolute inset-y-0 right-3 flex items-center text-gray hover:text-main focus:outline-none"
-                    >
-                    <MdCancel size={24} aria-hidden="true" />
-                    </button>
-                )}
-                </div>
-
-                <div className="space-y-3">
-                {isLoadingCurrencies ? (
-                    <>
-                    <Skeleton className="h-16 rounded-xl" />
-                    <Skeleton className="h-16 rounded-xl" />
-                    <Skeleton className="h-16 rounded-xl" />
-                    </>
-                ) : (
-                    <>
-                    {filteredAvailableCurrencies.length > 0 && (
-                        <div className="mb-6">
-                        <h3 className="text-gray font-medium relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-gray/20 after:mt-1 mb-3">
-                            All currencies
-                        </h3>
-                        <div className="space-y-2">
-                            {filteredAvailableCurrencies.map((currency) => (
-                            <div
-                                key={currency.code}
-                                className={`hover:bg-lightgray p-4 rounded-xl cursor-pointer transition-colors duration-200 ease-in-out`}
-                                onClick={() => handleCurrencySelect(currency.code)}
-                            >
-                                <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                    {currency.flagImage && (
-                                    <Image
-                                        src={currency.flagImage}
-                                        width={44}
-                                        height={44}
-                                        alt={`${currency.currencyName} Flag`}
-                                    />
-                                    )}
-                                    <div>
-                                    <h4 className="font-semibold text-main">
-                                        {currency.code}
-                                    </h4>
-                                    <p className="text-sm text-gray-600">
-                                        {currency.currencyName}
-                                    </p>
-                                    </div>
-                                </div>
-                                <IoArrowForward className="text-gray-500" />
-                                </div>
-                            </div>
-                            ))}
-                        </div>
-                        </div>
-                    )}
-
-                    {filteredComingSoonCurrencies.length > 0 && (
-                        <div>
-                        <h3 className="text-gray font-medium relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-gray/20 after:mt-1 mb-3">
-                            Coming soon
-                        </h3>
-                        <div className="space-y-2">
-                            {filteredComingSoonCurrencies.map((currency) => (
-                            <div
-                                key={currency.code}
-                                className={`hover:bg-lightgray p-4 rounded-xl cursor-no-drop transition-colors duration-200 ease-in-out opacity-50`}
-                            >
-                                <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                    {currency.flagImage && (
-                                    <Image
-                                        src={currency.flagImage}
-                                        width={44}
-                                        height={44}
-                                        alt={`${currency.currencyName} Flag`}
-                                    />
-                                    )}
-                                    <div>
-                                    <h4 className="font-semibold text-main">
-                                        {currency.code}
-                                    </h4>
-                                    <p className="text-sm text-gray-600">
-                                        {currency.currencyName}
-                                    </p>
-                                    </div>
-                                </div>
-                                <span className="text-gray-500">Coming soon</span>
-                                </div>
-                            </div>
-                            ))}
-                        </div>
-                        </div>
-                    )}
-
-                    {!isLoadingCurrencies &&
-                        filteredAvailableCurrencies.length === 0 &&
-                        filteredComingSoonCurrencies.length === 0 &&
-                        searchCurrency.trim() !== "" && (
-                        <div className="text-center text-gray-500 mt-6">
-                            No currencies found for "{searchCurrency}".
-                        </div>
-                        )}
-                    </>
-                )}
-                </div>
-            </div>
-            )}
-
-            {step === 2 && (
-            // ... Account details form UI ...
-             <div key="account-step" className=" bg-white p-6 md:p-8">
-                <h2 className="lg:text-3xl text-2xl text-center text-main font-semibold mb-4">
-                Enter their account details
-                </h2>
-
-                {formError && (
-                <div
-                    className="flex bg-green/8 lg:p-6 p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-6"
-                    role="alert"
+            <div className="relative mb-6">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                <FiSearch className="h-5 w-5 text-neutral-900 dark:text-white" aria-hidden="true" />
+              </div>
+              <input
+                type="text"
+                className="w-full rounded-full h-12.5 py-3 pl-12 pr-3 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white"
+                placeholder="Search currency..."
+                value={searchCurrency}
+                onChange={(e) => setSearchCurrency(e.target.value)}
+              />
+              {searchCurrency && (
+                <button
+                  onClick={clearSearchTerm}
+                  className="absolute inset-y-0 right-3 flex items-center text-neutral-900 dark:text-primary focus:outline-none cursor-pointer"
                 >
-                    <div className="flex bg-error justify-center rounded-full items-center lg:size-12">
-                    <IoMdCloseCircle className="p-0.5 text-white size-8" />
-                    </div>
-
-                    <div>
-                    <span className="text-gray block max-w-60">{formError}</span>
-                    </div>
-
-                    <button
-                    className="absolute cursor-pointer md:right-4 right-2 top-2 md:top-4"
-                    onClick={handleCloseFormError}
-                    >
-                    <IoCloseIcon
-                        className="p-1.5 rounded-full text-gray fill-current hover:bg-green/8 size-10"
-                        role="button"
-                    />
-                    </button>
-                </div>
-                )}
-
-                <form className="mt-2 space-y-6" onSubmit={handleSubmit}>
-                <div>
-                    <label
-                    htmlFor="email"
-                    className="text-gray text-sm block capitalize font-medium mb-1"
-                    >
-                    Their email (optional)
-                    </label>
-                    <input
-                    type="email"
-                    id="email"
-                    className={`mt-1 block px-4 py-3 w-full border rounded-xl transition-shadow ease-in-out duration-300 border-[#c9cbce] hover:shadow-color`}
-                    value={email}
-                    placeholder="example@example.ex"
-                    onChange={(e) => setEmail(e.target.value)}
-                    />
-                </div>
-
-                <h3 className="text-gray font-medium relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-gray/20 after:mt-1 mb-3">
-                    Recipient's bank details
-                </h3>
-                <div className="grid sm:grid-cols-2 gap-6">
-                    <div>
-                    <label
-                        htmlFor="accountHolderName"
-                        className="text-gray text-sm block capitalize font-medium mb-1"
-                    >
-                        Full name of the account holder{" "} {/* Adjusted label */}
-                        <span className="text-error">*</span>
-                    </label>
-                    <input
-                        type="text"
-                        id="accountHolderName"
-                        className={`mt-1 block px-4 py-3 w-full border rounded-xl transition-shadow ease-in-out duration-300 ${
-                        accountHolderNameError
-                            ? "border-error border-2 !shadow-none"
-                            : "border-[#c9cbce] hover:shadow-color"
-                        }`}
-                        value={accountHolderName}
-                        placeholder="e.g., John Doe" // Added placeholder
-                        onChange={(e) => setAccountHolderName(e.target.value)}
-                    />
-                    {accountHolderNameError && (
-                        <p className="flex text-error text-sm items-center mt-0.5">
-                        <span className="mr-1">
-                            <IoMdCloseCircle className="size-4" />
-                        </span>
-                        {accountHolderNameError}
-                        </p>
-                    )}
-                    </div>
-
-                    <div>
-                    <label
-                        htmlFor="ifscCode"
-                        className="text-gray text-sm block capitalize font-medium mb-1"
-                    >
-                        IFSC code <span className="text-error">*</span>
-                    </label>
-                    <input
-                        type="text"
-                        id="ifscCode"
-                        className={`mt-1 block px-4 py-3 w-full border rounded-xl transition-shadow ease-in-out duration-300 ${
-                        ifscCodeError
-                            ? "border-error border-2 !shadow-none"
-                            : "border-[#c9cbce] hover:shadow-color"
-                        }`}
-                        value={ifscCode}
-                        placeholder="e.g., YESB0236041" // Changed placeholder format
-                        onChange={(e) => setIfscCode(e.target.value)}
-                    />
-                    {ifscCodeError && (
-                        <p className="flex text-error text-sm items-center mt-0.5">
-                        <span className="mr-1">
-                            <IoMdCloseCircle className="size-4" />
-                        </span>
-                        {ifscCodeError}
-                        </p>
-                    )}
-                    </div>
-
-                    <div>
-                    <label
-                        htmlFor="accountNumber"
-                        className="text-gray text-sm block capitalize font-medium mb-1"
-                    >
-                        Account number <span className="text-error">*</span>
-                    </label>
-                    <input
-                        type="text"
-                        id="accountNumber"
-                        className={`mt-1 block px-4 py-3 w-full border rounded-xl transition-shadow ease-in-out duration-300 ${
-                        accountNumberError
-                            ? "border-error border-2 !shadow-none"
-                            : "border-[#c9cbce] hover:shadow-color"
-                        }`}
-                        value={accountNumber}
-                        placeholder="e.g., 678911234567891" // Changed placeholder format
-                        onChange={(e) => setAccountNumber(e.target.value)}
-                    />
-                    {accountNumberError && (
-                        <p className="flex text-error text-sm items-center mt-0.5">
-                        <span className="mr-1">
-                            <IoMdCloseCircle className="size-4" />
-                        </span>
-                        {accountNumberError}
-                        </p>
-                    )}
-                    </div>
-
-                    {/* Account Type */}
-                    <div>
-                    <label
-                        htmlFor="accountType"
-                        className="text-gray text-sm block capitalize font-medium mb-1"
-                    >
-                        Account type <span className="text-error">*</span>
-                    </label>
-                    <AccountTypeDropdown
-                        value={accountType}
-                        onChange={setAccountType}
-                        error={accountTypeError}
-                    />
-                    </div>
-
-                    <div>
-                    <label
-                        htmlFor="bankName"
-                        className="text-gray text-sm block capitalize font-medium mb-1"
-                    >
-                        Bank name <span className="text-error">*</span>
-                    </label>
-                    <input
-                        type="text"
-                        id="bankName"
-                        className={`mt-1 block px-4 py-3 w-full border rounded-xl transition-shadow ease-in-out duration-300 ${
-                        bankNameError
-                            ? "border-error border-2 !shadow-none"
-                            : "border-[#c9cbce] hover:shadow-color"
-                        }`}
-                        value={bankName}
-                        placeholder="e.g., Bank of Baroda" // Changed placeholder format
-                        onChange={(e) => setBankName(e.target.value)}
-                    />
-                    {bankNameError && (
-                        <p className="flex text-error text-sm items-center mt-0.5">
-                        <span className="mr-1">
-                            <IoMdCloseCircle className="size-4" />
-                        </span>
-                        {bankNameError}
-                        </p>
-                    )}
-                    </div>
-
-                    <div>
-                    <label
-                        htmlFor="address"
-                        className="text-gray text-sm block capitalize font-medium mb-1"
-                    >
-                        Recipient Address (Street, City, Postcode, Country){" "} {/* Adjusted label */}
-                        <span className="text-error">*</span>
-                    </label>
-                    <input
-                        type="text"
-                        id="address"
-                        className={`mt-1 block px-4 py-3 w-full border rounded-xl transition-shadow ease-in-out duration-300 ${
-                        addressError
-                            ? "border-error border-2 !shadow-none"
-                            : "border-[#c9cbce] hover:shadow-color"
-                        }`}
-                        value={address}
-                        placeholder="e.g., 123 Main St, Anytown, 12345, USA" // Changed placeholder format
-                        onChange={(e) => setAddress(e.target.value)}
-                    />
-                    {addressError && (
-                        <p className="flex text-error text-sm items-center mt-0.5">
-                        <span className="mr-1">
-                            <IoMdCloseCircle className="size-4" />
-                        </span>
-                        {addressError}
-                        </p>
-                    )}
-                    </div>
-                </div>
-
-                <div className="flex sm:flex-row flex-col justify-center items-center gap-4 mb-4 mt-8">
-                    <button
-                    type="button"
-                    className={`rounded-full sm:order-1 order-2 text-gray-600 text-lg md:w-64 w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium py-2.5 transition-colors border border-gray-300 hover:bg-gray-100`}
-                    onClick={handleClearForm}
-                    >
-                    Clear All
-                    </button>
-                    <button
-                    type="submit"
-                    className={`rounded-full sm:order-2 order-1 text-green text-lg md:w-64 w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium py-2.5 transition-colors
-                                            ${
-                                            isSubmitting
-                                                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                                                : "bg-primary hover:bg-primary-hover text-secondary"
-                                            }
-                                        `}
-                    disabled={isSubmitting}
-                    >
-                    {isSubmitting ? (
-                        <div className="flex justify-center items-center">
-                        <svg
-                            className="h-5 text-green w-5 animate-spin mr-3"
-                            viewBox="0 0 24 24"
-                        >
-                            <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                            ></circle>
-                            <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                            ></path>
-                        </svg>
-                        Confirming...
-                        </div>
-                    ) : (
-                        "Confirm"
-                    )}
-                    </button>
-                </div>
-                </form>
+                  <MdCancel size={24} aria-hidden="true" />
+                </button>
+              )}
             </div>
+
+            <div className="space-y-3">
+              {isLoadingCurrencies ? (
+                <>
+                  <Skeleton className="h-16 rounded-xl" />
+                  <Skeleton className="h-16 rounded-xl" />
+                  <Skeleton className="h-16 rounded-xl" />
+                </>
+              ) : (
+                <>
+                  {filteredAvailableCurrencies.length > 0 && (
+                    <div className="mb-6">
+                      <h3 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
+                        All currencies
+                      </h3>
+                      <div className="space-y-2">
+                        {filteredAvailableCurrencies.map((currency) => (
+                          <div
+                            key={currency.code}
+                            className={`block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer`}
+                            onClick={() => handleCurrencySelect(currency.code)}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-4">
+                                {currency.flagImage && (
+                                  <Image
+                                    src={currency.flagImage}
+                                    width={44}
+                                    height={44}
+                                    alt={`${currency.currencyName} Flag`}
+                                  />
+                                )}
+                                <div>
+                                  <h4 className="font-medium text-neutral-900 dark:text-white text-sm md:text-base">
+                                    {currency.code}
+                                  </h4>
+                                  <p className="text-xs md:text-sm text-gray-500 dark:text-gray-300">
+                                    {currency.currencyName}
+                                  </p>
+                                </div>
+                              </div>
+                              <IoArrowForward className="h-5 w-5 text-neutral-900 dark:text-white" />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {filteredComingSoonCurrencies.length > 0 && (
+                    <div>
+                      <h3 className="text-gray font-medium relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-gray/20 after:mt-1 mb-3">
+                        Coming soon
+                      </h3>
+                      <div className="space-y-2">
+                        {filteredComingSoonCurrencies.map((currency) => (
+                          <div
+                            key={currency.code}
+                            className={`hover:bg-lightgray p-4 rounded-xl cursor-no-drop transition-colors duration-200 ease-in-out opacity-50`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-4">
+                                {currency.flagImage && (
+                                  <Image
+                                    src={currency.flagImage}
+                                    width={44}
+                                    height={44}
+                                    alt={`${currency.currencyName} Flag`}
+                                  />
+                                )}
+                                <div>
+                                  <h4 className="font-semibold text-main">
+                                    {currency.code}
+                                  </h4>
+                                  <p className="text-sm text-gray-600">
+                                    {currency.currencyName}
+                                  </p>
+                                </div>
+                              </div>
+                              <span className="text-gray-500">Coming soon</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {!isLoadingCurrencies &&
+                    filteredAvailableCurrencies.length === 0 &&
+                    filteredComingSoonCurrencies.length === 0 &&
+                    searchCurrency.trim() !== "" && (
+                      <div className="text-center text-gray-500 mt-6">
+                        No currencies found for "{searchCurrency}".
+                      </div>
+                    )}
+                </>
+              )}
+            </div>
+          </div>
+        )}
+
+        {step === 2 && (
+          // ... Account details form UI ...
+          <div key="account-step" className=" bg-white dark:bg-background w-full lg:max-w-lg ">
+            <h2 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white mb-6">
+              Enter their account details
+            </h2>
+
+            {formError && (
+              <div
+                className="flex bg-green/8 lg:p-6 p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-6"
+                role="alert"
+              >
+                <div className="flex bg-error justify-center rounded-full items-center lg:size-12">
+                  <IoMdCloseCircle className="p-0.5 text-white size-8" />
+                </div>
+
+                <div>
+                  <span className="text-gray block max-w-60">{formError}</span>
+                </div>
+
+                <button
+                  className="absolute cursor-pointer md:right-4 right-2 top-2 md:top-4"
+                  onClick={handleCloseFormError}
+                >
+                  <IoCloseIcon
+                    className="p-1.5 rounded-full text-gray fill-current hover:bg-green/8 size-10"
+                    role="button"
+                  />
+                </button>
+              </div>
             )}
-        </div>
+
+            <form className="mt-2 space-y-6" onSubmit={handleSubmit}>
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-semibold text-gray dark:text-gray-300 mb-1"
+                >
+                  Their email (optional)
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  className={`autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white`}
+                  value={email}
+                  placeholder="example@example.ex"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+
+              <h3 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
+                Recipient's bank details
+              </h3>
+              <div className="space-y-6">
+                <div>
+                  <label
+                    htmlFor="accountHolderName"
+                    className="block text-sm font-semibold text-gray dark:text-gray-300 mb-1"
+                  >
+                    Full name of the account holder {/* Adjusted label */}
+                    <span className="text-error">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="accountHolderName"
+                    className={`autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white ${
+                      accountHolderNameError
+                        ? "border-error border-2 !shadow-none"
+                        : "border-[#c9cbce] hover:shadow-color"
+                    }`}
+                    value={accountHolderName}
+                    placeholder="e.g., John Doe" // Added placeholder
+                    onChange={(e) => setAccountHolderName(e.target.value)}
+                  />
+                  {accountHolderNameError && (
+                    <p className="flex text-error text-sm items-center mt-0.5">
+                      <span className="mr-1">
+                        <IoMdCloseCircle className="size-4" />
+                      </span>
+                      {accountHolderNameError}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="ifscCode"
+                    className="block text-sm font-semibold text-gray dark:text-gray-300 mb-1"
+                  >
+                    IFSC code <span className="text-error">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="ifscCode"
+                    className={`autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white ${
+                      ifscCodeError
+                        ? "border-error border-2 !shadow-none"
+                        : "border-[#c9cbce] hover:shadow-color"
+                    }`}
+                    value={ifscCode}
+                    placeholder="e.g., YESB0236041" // Changed placeholder format
+                    onChange={(e) => setIfscCode(e.target.value)}
+                  />
+                  {ifscCodeError && (
+                    <p className="flex text-error text-sm items-center mt-0.5">
+                      <span className="mr-1">
+                        <IoMdCloseCircle className="size-4" />
+                      </span>
+                      {ifscCodeError}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="accountNumber"
+                    className="block text-sm font-semibold text-gray dark:text-gray-300 mb-1"
+                  >
+                    Account number <span className="text-error">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="accountNumber"
+                    className={`autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white ${
+                      accountNumberError
+                        ? "border-error border-2 !shadow-none"
+                        : "border-[#c9cbce] hover:shadow-color"
+                    }`}
+                    value={accountNumber}
+                    placeholder="e.g., 678911234567891" // Changed placeholder format
+                    onChange={(e) => setAccountNumber(e.target.value)}
+                  />
+                  {accountNumberError && (
+                    <p className="flex text-error text-sm items-center mt-0.5">
+                      <span className="mr-1">
+                        <IoMdCloseCircle className="size-4" />
+                      </span>
+                      {accountNumberError}
+                    </p>
+                  )}
+                </div>
+
+                {/* Account Type */}
+                <div>
+                  <label
+                    htmlFor="accountType"
+                    className="block text-sm font-semibold text-gray dark:text-gray-300 mb-1"
+                  >
+                    Account type <span className="text-error">*</span>
+                  </label>
+                  <AccountTypeDropdown
+                    value={accountType}
+                    onChange={setAccountType}
+                    error={accountTypeError}
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="bankName"
+                    className="block text-sm font-semibold text-gray dark:text-gray-300 mb-1"
+                  >
+                    Bank name <span className="text-error">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="bankName"
+                    className={`autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white ${
+                      bankNameError
+                        ? "border-error border-2 !shadow-none"
+                        : "border-[#c9cbce] hover:shadow-color"
+                    }`}
+                    value={bankName}
+                    placeholder="e.g., Bank of Baroda" // Changed placeholder format
+                    onChange={(e) => setBankName(e.target.value)}
+                  />
+                  {bankNameError && (
+                    <p className="flex text-error text-sm items-center mt-0.5">
+                      <span className="mr-1">
+                        <IoMdCloseCircle className="size-4" />
+                      </span>
+                      {bankNameError}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="address"
+                    className="block text-sm font-semibold text-gray dark:text-gray-300 mb-1"
+                  >
+                    Recipient Address (Street, City, Postcode, Country){" "}
+                    {/* Adjusted label */}
+                    <span className="text-error">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="address"
+                    className={`autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white ${
+                      addressError
+                        ? "border-error border-2 !shadow-none"
+                        : "border-[#c9cbce] hover:shadow-color"
+                    }`}
+                    value={address}
+                    placeholder="e.g., 123 Main St, Anytown, 12345, USA" // Changed placeholder format
+                    onChange={(e) => setAddress(e.target.value)}
+                  />
+                  {addressError && (
+                    <p className="flex text-error text-sm items-center mt-0.5">
+                      <span className="mr-1">
+                        <IoMdCloseCircle className="size-4" />
+                      </span>
+                      {addressError}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex sm:flex-row flex-col justify-center items-center gap-4 mb-4 mt-8">
+                <button
+                  type="button"
+                  className={`sm:order-1 order-2 bg-neutral-900 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear`}
+                  onClick={handleClearForm}
+                >
+                  Clear All
+                </button>
+                <button
+                  type="submit"
+                  className={`bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear`}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <div className="flex justify-center items-center">
+                      <svg
+                        className="h-5 text-green w-5 animate-spin mr-3"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Confirming...
+                    </div>
+                  ) : (
+                    "Confirm"
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

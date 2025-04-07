@@ -649,7 +649,7 @@ const CountryCard = () => {
                 passHref
               >
                 <div
-                  className="p-6 bg-lightgray dark:bg-primarybox hover:dark:bg-secondarybox rounded-2xl flex flex-col justify-between w-64 shrink-0 transition-colors duration-200 ease-linear cursor-pointer hover:bg-neutral-200/70"
+                  className="p-6 bg-lightgray dark:bg-primarybox hover:dark:bg-secondarybox rounded-2xl flex flex-col justify-between w-64 shrink-0 transition-all duration-75 ease-linear cursor-pointer hover:bg-neutral-200/70"
                   style={{ scrollSnapAlign: 'start' }}
                 >
                   <div className="flex items-center gap-4">
@@ -687,7 +687,7 @@ const CountryCard = () => {
             {/* Add Currency Card */}
             <div
               onClick={() => setIsModalOpen(true)}
-              className="p-6 bg-lightgray dark:bg-primarybox/70 rounded-2xl flex flex-col justify-center items-center w-64 shrink-0 cursor-pointer hover:bg-neutral-200/70 transition-colors duration-200 ease-linear border-2 border-dashed border-neutral-900 dark:border-neutral-300"
+              className="p-6 bg-lightgray dark:bg-primarybox/70 hover:dark:bg-secondarybox rounded-2xl flex flex-col justify-center items-center w-64 shrink-0 cursor-pointer hover:bg-neutral-200/70 transition-all duration-75 ease-linear border-2 border-dashed border-neutral-900 dark:border-neutral-300"
               style={{ scrollSnapAlign: 'start' }}
             >
               <div className="rounded-full border-2 border-neutral-900 dark:border-white p-2 flex items-center justify-center mb-2">

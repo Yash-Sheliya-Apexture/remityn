@@ -20,7 +20,7 @@ export default function SecurityAndPrivacyPage() {
             <div>
               <Link href="security-and-privacy/change-password">
                 {/* Wrap with Link */}
-                <div className="flex items-center gap-4 hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer">
+                <div className="flex items-center gap-4 hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer group">
                   {/* Icon Container */}
                   <div className="bg-lightborder dark:bg-secondarybox p-3 rounded-full">
                     <FiShield size={24} className="text-neutral-900 dark:text-white" />
@@ -44,7 +44,7 @@ export default function SecurityAndPrivacyPage() {
             {/* Log out */}
             <div>
               <Link href="security-and-privacy/account-kill">
-                <div className="flex items-center gap-4 hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer">
+                <div className="flex items-center gap-4 hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer group">
                   {/* Icon Container */}
                   <div className="bg-lightborder dark:bg-secondarybox p-3 rounded-full">
                     <GrLogout size={24} className="text-neutral-900 dark:text-white" />
@@ -75,7 +75,7 @@ export default function SecurityAndPrivacyPage() {
           <h4 className="text-2xl font-semibold text-mainheading dark:text-white mb-3">Privacy</h4>
 
           <div className="space-y-2">
-            <div className="flex items-center gap-4 hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer">
+            <div className="flex items-center gap-4 hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer group">
               {/* Icon Container */}
               <div className="bg-lightborder dark:bg-secondarybox p-3 rounded-full">
                 <ImInfo size={24} className="text-neutral-900 dark:text-white" />

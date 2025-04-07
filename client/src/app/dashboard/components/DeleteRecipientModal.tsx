@@ -110,9 +110,14 @@ const DeleteRecipientModal: React.FC<DeleteRecipientModalProps> = ({
     };
 
     const desktopVariants = {
-        initial: { y: -50, opacity: 0 },
-        animate: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100 } },
-        exit: { y: -50, opacity: 0 },
+      initial: { y: -30, opacity: 0, scale: 0.95 },
+      animate: {
+        y: 0,
+        opacity: 1,
+        scale: 1,
+        transition: { type: "spring", stiffness: 100, damping: 15 },
+      },
+      exit: { y: -30, opacity: 0, scale: 0.95 },
     };
 
     const modalVariants = isMobile ? mobileVariants : desktopVariants;
@@ -134,7 +139,7 @@ const DeleteRecipientModal: React.FC<DeleteRecipientModalProps> = ({
                         exit="exit"
                     >
                         <button
-                            className="absolute top-4 right-4 p-3 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-colors duration-300 ease-in-out cursor-pointer"
+                            className="absolute top-4 right-4 p-3 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
                             onClick={onClose}
                         >
                             <IoClose size={28} className="text-neutral-900 dark:text-white" />
@@ -145,13 +150,13 @@ const DeleteRecipientModal: React.FC<DeleteRecipientModalProps> = ({
                         </p>
                         <div className="flex flex-col justify-center gap-4 mt-8">
                             <button
-                                className="bg-primary text-neutral-900 hover:bg-primary/50 font-medium rounded-full px-6 py-3 text-center w-full cursor-pointer transition-colors duration-500 ease-in-out"
+                                className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear"
                                 onClick={onConfirmDelete}
                             >
                                 Delete
                             </button>
                             <button
-                                className="bg-white text-neutral-900 hover:bg-lightgray font-medium rounded-full px-6 py-3 text-center border border-gray w-full cursor-pointer transition-colors duration-500 ease-in-out"
+                                className="bg-neutral-900 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center border border-gray w-full cursor-pointer transition-all duration-75 ease-linear"
                                 onClick={onClose}
                             >
                                 Cancel
