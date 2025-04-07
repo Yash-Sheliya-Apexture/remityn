@@ -1215,7 +1215,7 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
             </p>
           </div>
           <button
-            className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full mt-4 cursor-pointer transition-all duration-75 ease-linear"
+            className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear"
             onClick={handleSaveNickname}
           >
             Save
