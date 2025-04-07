@@ -1599,7 +1599,7 @@ const AdminPaymentsPage: React.FC = () => {
                         <button
                             onClick={refreshData}
                             disabled={isRefreshing}
-                            className="flex items-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 h-12.5 rounded-3xl shadow-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex items-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 h-12.5 rounded-3xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             <RefreshCw
                                 className={`size-5 ${isRefreshing ? "animate-spin" : ""}`}

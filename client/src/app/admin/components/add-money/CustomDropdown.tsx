@@ -32,15 +32,15 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({ label, value, onChange,
 
     return (
         <div>
-            <label className="block font-medium text-gray mb-1">{label}</label>
+            <label className="block font-medium text-neutral-900 dark:text-white mb-1">{label}</label>
             <div className="relative">
                 <button
                     type="button"
                     onClick={() => setIsOpen(!isOpen)}
-                    className="flex items-center justify-between capitalize cursor-pointer w-full border border-gray-300 rounded-md px-4 py-3 bg-white font-medium text-main focus:outline-none"
+                    className="flex items-center justify-between cursor-pointer autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-600 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white"
                 >
                     <span>{value || `All ${label}s`}</span>
-                    <ChevronDown className="size-6 text-gray-400" />
+                    <ChevronDown className="size-6 text-neutral-600 dark:text-white/80" />
                 </button>
                 <AnimatePresence>
                     {isOpen && (
@@ -49,16 +49,16 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({ label, value, onChange,
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 10 }}
-                            className="absolute mt-2 w-full capitalize bg-white rounded-md shadow-lg z-10 border border-gray-300 overflow-hidden"
+                            className="absolute z-0 mt-2 w-full rounded-xl shadow-lg bg-white dark:bg-background dark:border dark:border-white overflow-hidden p-2"
                         >
                             {options.map((option) => (
                                 <motion.li
                                     key={option}
                                     onClick={() => { onChange(option); setIsOpen(false); }}
-                                    className="px-4 py-3 text-gray-700 hover:bg-gray-100 font-medium cursor-pointer flex justify-between items-center"
+                                    className="px-4 py-2 cursor-pointer rounded-full transition-colors font-medium duration-300 ease-in-out flex justify-between items-center hover:bg-lightgray dark:hover:bg-primarybox text-gray-500 dark:text-gray-300"
                                 >
                                     {option === 'all' ? `All ${label}s` : option}
-                                    {value === option && <GiCheckMark className="text-gray" size={20} />}
+                                    {value === option && <GiCheckMark className="text-gray-500 dark:text-gray-300" size={20} />}
                                 </motion.li>
                             ))}
                         </motion.ul>
