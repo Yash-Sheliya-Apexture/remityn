@@ -31,10 +31,11 @@ body {
   /* Border-Color */
   --color-lightborder: #e3e3e3;
 
-  --color-mainheading: #171717;
-  --color-subheading: #171717;
-  --color-secondarybox: #525252;
-  --color-primaryhover: #8de900;
+--color-mainheading: #171717;
+--color-subheading: #171717;
+--color-secondarybox: #525252;
+--color-primaryhover: #8de900;
+--color-dropdowncolor: #2e2e2e
 }
 
 @keyframes float {

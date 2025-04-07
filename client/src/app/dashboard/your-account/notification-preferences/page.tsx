@@ -110,6 +110,7 @@ import React, { useState, useRef } from "react"; // Removed useEffect as it's no
 import PropTypes from "prop-types";
 import { FaRegBell } from "react-icons/fa6";
 import { LuMail } from "react-icons/lu";
+import DashboardHeader from "@/app/components/layout/DashboardHeader";
 
 // --- Reusable Components Defined Locally ---
 
@@ -175,10 +176,10 @@ function NotificationItem({ icon: IconComponent, label, checked, onChange, disab
     <div
       // Add onClick handler to the entire div
       onClick={handleItemClick}
-      className={`flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 ease-in-out // Use transition-all for opacity/cursor
+      className={`flex items-center gap-4 sm:p-4 p-2 rounded-2xl transition-all duration-75 ease-linear 
                   ${disabled
                      ? 'opacity-60 cursor-not-allowed bg-transparent' // Ensure no hover effect when disabled
-                     : 'hover:bg-lightgray cursor-pointer' // Style for enabled item
+                     : 'hover:bg-lightgray dark:hover:bg-primarybox cursor-pointer' // Style for enabled item
                   }`}
       // Add ARIA roles for better accessibility
       role="button" // Indicate it's clickable
@@ -193,14 +194,14 @@ function NotificationItem({ icon: IconComponent, label, checked, onChange, disab
     >
       {/* Icon Container */}
       {IconComponent && (
-        <div className={`bg-lightborder rounded-full p-3 ${disabled ? 'opacity-70' : ''}`}>
-          <IconComponent size={24} className="text-main" />
+        <div className={`bg-lightborder dark:bg-secondarybox rounded-full p-3 ${disabled ? 'opacity-70' : ''}`}>
+          <IconComponent size={24} className="text-neutral-900 dark:text-white" />
         </div>
       )}
 
       {/* Label */}
       <div className="flex-grow">
-        <p className={`font-semibold ${disabled ? 'text-gray-500' : 'text-main'}`}>
+        <p className={`font-medium leading-relaxed sm:text-xl ${disabled ? 'text-gray-500 dark:text-gray-300' : 'text-neutral-900 dark:text-white'}`}>
            {label}
         </p>
       </div>
@@ -224,14 +225,14 @@ NotificationItem.propTypes = {
 // 3. Reusable Notification Section Component (No changes needed)
 function NotificationSection({ title, description, children }) {
   return (
-    <div className="px-4 mt-8">
+    <div className="sm:px-4 px-2 mt-8">
       {(title || description) && (
         <div className="mb-3">
           {title && (
-            <h4 className="text-xl text-main font-semibold">{title}</h4>
+            <h4 className="sm:text-xl text-lg text-mainheading dark:text-white font-semibold">{title}</h4>
           )}
           {description && (
-            <p className="text-sm text-gray">{description}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-300">{description}</p>
           )}
         </div>
       )}
@@ -301,10 +302,11 @@ export default function Notifications() {
   return (
     <section className="Notifications py-10">
       <div className="container mx-auto">
-        <h2 className="text-3xl text-main font-semibold mb-8 px-4">Notifications</h2>
+        {/* <h2 className="text-3xl text-main font-semibold mb-8 px-4">Notifications</h2> */}
+        <DashboardHeader title="Notifications" />
 
         {/* --- Main Notification --- */}
-        <div className="px-4">
+        <div className="sm:px-4 px-2">
            <NotificationItem
             icon={FaRegBell}
             label="Allow notifications"

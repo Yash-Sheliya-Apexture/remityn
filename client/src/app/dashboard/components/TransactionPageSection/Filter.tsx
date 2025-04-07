@@ -2792,9 +2792,9 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
     return (
         <div>
             <button
-                className="bg-primary text-secondary font-medium py-3 px-6 rounded-full flex items-center gap-2 hover:bg-primary/90 transition-colors" // Added gap and hover
+                className="inline-flex items-center bg-primary text-neutral-900 hover:bg-primaryhover space-x-3 py-3 px-6 h-12.5 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer" // Added gap and hover
                 onClick={toggleOpen}
-                aria-expanded={isOpen}
+                aria-expanded={isOpen}  
                 aria-controls="filter-popup"
             >
                 <LuSettings2 size={20} /> {/* Adjusted size */}
