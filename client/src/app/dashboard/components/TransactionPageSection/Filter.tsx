@@ -3677,14 +3677,14 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
                 <div className="flex items-center gap-3">
                   <button
                     type="button"
-                    className="w-full bg-white border text-main font-medium cursor-pointer py-3 px-4 rounded-full hover:bg-gray-50 text-sm"
+                    className="w-full bg-white border text-main font-medium cursor-pointer py-3 px-4 rounded-full hover:bg-gray-50"
                     onClick={handleClearAllFilters}
                   >
                     Clear all
                   </button>
                   <button
                     type="button"
-                    className="w-full bg-primary text-main font-medium py-3 px-4 cursor-pointer rounded-full hover:bg-primary/90 text-sm"
+                    className="w-full bg-primary text-main font-medium py-3 px-4 cursor-pointer rounded-full hover:bg-primary/90"
                     onClick={handleApplyFilters}
                   >
                     Apply
