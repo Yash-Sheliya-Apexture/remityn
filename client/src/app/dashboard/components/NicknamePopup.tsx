@@ -57,11 +57,6 @@
 // export default NicknamePopup;
 
 
-
-
-
-
-
 // components/NicknamePopup.tsx
 "use client";
 import React, { useState, useEffect } from "react";
@@ -119,6 +114,8 @@ const NicknamePopup: React.FC<NicknamePopupProps> = ({
   const modalVariants = isMobile ? mobileVariants : desktopVariants;
 
   return (
+
+    /* Delete recipient Model */
     <AnimatePresence>
       {isOpen && (
         <motion.div
