@@ -363,16 +363,16 @@ export default function ChangePassword() {
   return (
     <section className="ChangePasswor py-10">
       <div className="container mx-auto">
-        <h2 className="text-3xl text-main font-semibold">Change password</h2>
+        <h2 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">Change password</h2>
 
         <div className="space-y-4 w-full md:max-w-lg">
-          <div className="bg-lightgray rounded-xl p-4 flex items-start gap-4 mt-8">
+          <div className="bg-lightgray dark:bg-primarybox rounded-xl p-4 flex items-start gap-4 mt-8">
             <div className="p-3 bg-yellow-400 rounded-full">
               <BsExclamationLg size={24} className="text-main" />
             </div>
 
             <div className="flex flex-col gap-3">
-              <p className="text-gray">
+              <p className="text-gray-500 dark:text-gray-300">
                 We will never send you a temporary password by phone, email or
                 text message. When changing your password, always use something
                 that’s only known by you.
@@ -380,7 +380,7 @@ export default function ChangePassword() {
 
               <Link
                 href={""}
-                className="text-secondary w-fit font-semibold relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-secondary after:mt-1"
+                className="text-neutral-900 dark:text-white w-fit font-semibold relative after:content-[''] after:block after:w-full after:h-0.5 after:rounded-full after:bg-neutral-900 dark:after:bg-white after:mt-1"
               >
                 Learn how to keep your account safe
               </Link>
@@ -415,32 +415,32 @@ export default function ChangePassword() {
               <div className="">
                 <label
                   htmlFor="currentPassword"
-                  className="text-main text-sm block capitalize font-semibold mb-1"
+                  className="block text-sm font-semibold text-gray dark:text-gray-300 mb-1"
                 >
                   Current password
                 </label>
                 <input
                   type="password"
                   id="currentPassword"
-                  className="mt-1 block px-4 py-3 w-full border rounded-xl transition-shadow ease-in-out duration-300 border-[#c9cbce] hover:shadow-color"
+                  className="autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-600 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-600 dark:placeholder:text-white/80"
                   placeholder="Enter a current password"
                   value={currentPassword}
                   onChange={handleCurrentPasswordChange}
-                />
+                />  
               </div>
 
               {/* New Password */}
               <div className="relative"> {/* Make position relative for icon positioning */}
                 <label
                   htmlFor="newPassword"
-                  className="text-main text-sm block capitalize font-semibold mb-1"
+                  className="block text-sm font-semibold text-gray dark:text-gray-300 mb-1"
                 >
                   Your new password
                 </label>
                 <input
                   type={isNewPasswordVisible ? "text" : "password"} // Conditional type
                   id="newPassword"
-                  className="mt-1 block px-4 py-3 w-full border rounded-xl transition-shadow ease-in-out duration-300 border-[#c9cbce] hover:shadow-color"
+                  className="autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-600 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-600 dark:placeholder:text-white/80"
                   placeholder="Enter a new password"
                   value={newPassword}
                   onChange={handleNewPasswordChange}
@@ -453,9 +453,9 @@ export default function ChangePassword() {
                   onClick={toggleNewPasswordVisibility}
                 >
                   {isNewPasswordVisible ? (
-                    <LuEyeClosed size={20} className="text-gray-500" />
+                    <LuEye size={20} className="text-gray-500 dark:text-gray-300" />
                   ) : (
-                    <LuEye size={20} className="text-gray-500" />
+                    <LuEyeClosed size={20} className="text-gray-500 dark:text-gray-300" />
                   )}
                 </button>
               </div>
@@ -464,10 +464,10 @@ export default function ChangePassword() {
               {showPasswordMessage && (
                 <div className="flex items-start gap-4 mt-4">
                   <div className="p-1 bg-yellow-400 rounded-full">
-                    <BsExclamationLg size={12} className="text-main" />
+                    <BsExclamationLg size={14} className="text-main" />
                   </div>
 
-                  <p className="text-gray text-sm">
+                  <p className="text-neutral-900 dark:text-white text-sm">
                     Password must contain a{" "}
                     <span className="line-through font-semibold">
                        letter 
@@ -482,10 +482,10 @@ export default function ChangePassword() {
               {/* Sorted Message */}
               {showSortedMessage && (
                 <div className="flex items-start gap-4">
-                  <div className="p-1 bg-green rounded-full">
-                    <LuCheck size={12} className="text-lightgray" />
+                  <div className="p-1 bg-green dark:bg-green-600/20 rounded-full">
+                    <LuCheck size={14} className="text-lightgray dark:text-green-600 " />
                   </div>
-                  <p className="text-gray text-sm">
+                  <p className="text-neutral-900 dark:text-white text-sm">
                     That’s your password sorted.
                   </p>
                 </div>
@@ -496,10 +496,10 @@ export default function ChangePassword() {
                 <button
                   type="submit"
                   disabled={isSaveButtonDisabled}
-                  className={`inline-flex items-center justify-center w-full px-6 py-3 text-secondary font-medium rounded-full border border-transparent transition-colors duration-150 ease-in-out ${
+                  className={`inline-flex items-center justify-center w-full px-6 py-3 h-12.5 text-secondary font-medium rounded-full border border-transparent transition-colors duration-150 ease-in-out ${
                     isSaveButtonDisabled
-                      ? "bg-lightgray cursor-not-allowed"
-                      : "bg-primary hover:bg-primary/80 cursor-pointer"
+                      ? "bg-lightborder cursor-not-allowed opacity-60"
+                      : "bg-primary text-neutral-900 hover:bg-primaryhover cursor-pointer"
                   }`}
                 >
                   Save

@@ -1,0 +1,12 @@
+
+Main Button Color :- bg-primary text-neutral-900 hover:bg-primaryhover 
+
+Other Button Color ( Cancle , Clear etc.. ) :- bg-neutral-900 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary 
+
+
+Card Color :- bg-lightgray hover:bg-neutral-200/70 dark:bg-primarybox hover:dark:bg-secondarybox
+
+
+Heading :- text-neutral-900 dark:text-white
+Sm text :- text-gray-500 dark:text-gray-300
+
