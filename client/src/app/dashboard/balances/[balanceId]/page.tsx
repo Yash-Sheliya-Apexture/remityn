@@ -4604,7 +4604,7 @@ const BalanceDetailPage = () => {
       <BalanceHeader
           balanceDetail={balanceDetail} // Already checked for null above
           isLoading={isLoading} // Pass loading state for internal skeleton
-          onBackClick={handleBackClick}
+          
           onSendClick={handleSendClick}
           canSendMoney={canSendMoney}
           marketRateAgainstINR={marketRateAgainstINR}
