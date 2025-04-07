@@ -4936,8 +4936,8 @@ const BalanceDetailPage = () => {
             {/* Loading skeleton for actions while transactions load */}
             {isTransactionsLoading && (
                  <div className="flex items-center gap-2 animate-pulse w-full md:w-auto justify-end">
-                     <Skeleton className="h-9 w-24 rounded-full bg-gray-200 dark:bg-gray-700" />
-                     <Skeleton className="h-9 w-24 rounded-full bg-gray-200 dark:bg-gray-700" />
+                     <Skeleton className="h-9 w-24 rounded-full" />
+                     <Skeleton className="h-9 w-24 rounded-full" />
                  </div>
               )}
          </div>
