@@ -4909,7 +4909,7 @@ const BalanceDetailPage = () => {
 
   // --- Main Render Structure ---
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto py-8">
       <BalanceHeader
           balanceDetail={balanceDetail} // Already checked for null above
           isLoading={isLoading} // Pass loading state for internal skeleton
@@ -4921,8 +4921,8 @@ const BalanceDetailPage = () => {
 
       {/* --- Transactions Section --- */}
       <div className="mt-10">
-         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-            <h3 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">Transactions</h3>
+         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky top-0 z-10 bg-white dark:bg-background">
+            <h3 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">Transactions</h3>
             {/* Render Actions only when transactions *could* exist */}
             {!isTransactionsLoading && balanceSpecificTransactions.length > 0 && (
                <TransactionActions

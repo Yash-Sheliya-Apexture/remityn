@@ -278,6 +278,212 @@
 
 
 
+// // components/MainDashBoardSection/TransactionsSection.tsx
+// "use client"; // Required for hooks like useState, useEffect, useAuth
+
+// import React, { useState, useEffect, useCallback } from "react";
+// import Link from "next/link";
+// import { LuPlus } from "react-icons/lu";
+// import { GoArrowUp } from "react-icons/go";
+
+// import { useAuth } from "../../../hooks/useAuth"; // Adjust path if needed
+// import paymentService from "../../../services/payment"; // Adjust path if needed
+// import transferService from "../../../services/transfer"; // Adjust path if needed
+// import { Transaction } from "@/types/transaction"; // Adjust path if needed
+
+// const TransactionsSection: React.FC = () => {
+//   const [latestTransactions, setLatestTransactions] = useState<Transaction[]>([]);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+//   const { token } = useAuth();
+
+//   const fetchAndProcessTransactions = useCallback(async () => {
+//     if (!token) {
+//       setError("Not authenticated.");
+//       setLoading(false);
+//       return;
+//     }
+
+//     setLoading(true);
+//     setError(null);
+//     setLatestTransactions([]); // Clear previous data
+
+//     try {
+//       // Fetch both payments and transfers concurrently
+//       const [paymentsData, transfersData] = await Promise.all([
+//         paymentService.getUserPayments(token),
+//         transferService.getUserTransfers(token),
+//       ]);
+
+//       // Map payments to the common Transaction structure
+//       const mappedPayments: Transaction[] = paymentsData.map((payment) => ({
+//         _id: payment._id,
+//         type: "Add Money",
+//         amountToAdd: payment.amountToAdd, // Amount relevant for display
+//         balanceCurrency: payment.balanceCurrency, // For currency code
+//         createdAt: payment.createdAt,
+//         updatedAt: payment.updatedAt,
+//         status: payment.status,
+//         // Add other fields from Transaction type if needed, initialized appropriately
+//         payInCurrency: payment.payInCurrency,
+//         account: payment.account,
+//         amountToPay: payment.amountToPay, // Keep if needed elsewhere, but amountToAdd is primary for display
+//       }));
+
+//       // Map transfers to the common Transaction structure
+//       const mappedTransfers: Transaction[] = transfersData.map((transfer) => ({
+//         _id: transfer._id,
+//         type: "Send Money",
+//         name:
+//           typeof transfer.recipient === "object" && transfer.recipient !== null
+//             ? transfer.recipient.accountHolderName
+//             : "Recipient", // Use recipient name
+//         sendAmount: transfer.sendAmount, // Amount relevant for display
+//         sendCurrency: transfer.sendCurrency, // For currency code
+//         createdAt: transfer.createdAt,
+//         updatedAt: transfer.updatedAt,
+//         status: transfer.status,
+//         recipient: transfer.recipient, // Keep recipient details if needed
+//         sourceAccountId: typeof transfer.sourceAccount === 'string' ? transfer.sourceAccount : transfer.sourceAccount?._id,
+//         // Add other fields from Transaction type if needed
+//         receiveAmount: transfer.receiveAmount,
+//         receiveCurrency: transfer.receiveCurrency,
+//       }));
+
+//       // Combine both types of transactions
+//       const allTransactions = [...mappedPayments, ...mappedTransfers];
+
+//       // Sort all transactions by date (use updatedAt falling back to createdAt)
+//       const sortedTransactions = allTransactions.sort((a, b) => {
+//         const dateA = a.updatedAt || a.createdAt;
+//         const dateB = b.updatedAt || b.createdAt;
+//         // Handle potentially missing dates
+//         if (!dateA && !dateB) return 0;
+//         if (!dateA) return 1; // Put transactions without date last
+//         if (!dateB) return -1; // Put transactions without date last
+//         // Sort descending (newest first)
+//         return new Date(dateB).getTime() - new Date(dateA).getTime();
+//       });
+
+//       // Get the latest 3 transactions
+//       setLatestTransactions(sortedTransactions.slice(0, 3));
+
+//     } catch (err: any) {
+//       console.error("Failed to fetch transactions:", err);
+//       setError(err.message || "Could not load recent transactions.");
+//     } finally {
+//       setLoading(false);
+//     }
+//   }, [token]); // Dependency: run when token changes
+
+//   useEffect(() => {
+//     fetchAndProcessTransactions();
+//   }, [fetchAndProcessTransactions]); // Run fetch logic
+
+//   // --- Render Helper ---
+//   const renderTransactionRow = (transaction: Transaction) => {
+//     const isAddMoney = transaction.type === "Add Money";
+//     const icon = isAddMoney ? <LuPlus size={24} className="text-neutral-900 dark:text-white" /> : <GoArrowUp size={24} className="text-neutral-900 dark:text-white" />;
+//     const name = isAddMoney ? `To your ${transaction.balanceCurrency?.code ?? ''} balance` : (transaction.name || "Recipient");
+
+//     let description = transaction.status; // Default description to status
+//     if (isAddMoney) {
+//         description = transaction.status === "completed" ? "Added by you" :
+//                       transaction.status === 'pending' || transaction.status === 'in progress' ? "Waiting for your money" :
+//                       transaction.status === 'canceled' ? "Cancelled" :
+//                       transaction.status === 'failed' ? "Failed" : "Processing";
+//     } else { // Send Money
+//          description = transaction.status === "completed" ? "Sent by you" :
+//                        transaction.status === 'pending' || transaction.status === 'in progress' || transaction.status === 'processing' ? "Sending your money" :
+//                        transaction.status === 'canceled' ? "Cancelled" :
+//                        transaction.status === 'failed' ? "Failed" : "Processing";
+//     }
+
+//     const amount = isAddMoney ? (transaction.amountToAdd ?? 0) : (transaction.sendAmount ?? 0);
+//     const currencyCode = isAddMoney ? (transaction.balanceCurrency?.code ?? '') : (transaction.sendCurrency?.code ?? '');
+//     const amountPrefix = isAddMoney ? "+ " : "- ";
+//     let amountClass = "text-neutral-900  dark:text-white"; // Default for Send Money or pending Add Money
+//     if (isAddMoney && transaction.status === "completed") {
+//         amountClass = "text-green-600 dark:text-green-500";
+//     } else if (transaction.status === "canceled") {
+//         amountClass = "text-red-600 line-through";
+//     } else if (transaction.status === "failed") {
+//          amountClass = "text-red-600 line-through";
+//     }
+
+
+//     return (
+//       // Link to the specific transaction detail page
+
+//       <Link
+//         href={`/dashboard/transactions/${transaction._id}`}
+//         key={transaction._id}
+//         className="block"
+//       >
+//         <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
+//           <div className="flex items-center gap-4">
+//             <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center">
+//               {icon}
+//             </div>
+//             <div className="flex justify-between w-full items-center">
+//               {" "}
+//               {/* Use items-center */}
+//               <div>
+//                 <h3 className="font-medium text-neutral-900 dark:text-white text-sm md:text-base">{name}</h3>
+//                 <p className="text-xs md:text-sm text-gray-500 dark:text-gray-300">{description} <span className="italic">({transaction.status})</span></p>
+//               </div>
+//               <div className={`font-medium ${amountClass} text-sm md:text-base whitespace-nowrap text-right sm:text-left`}>
+//                 {amountPrefix}
+//                 {amount.toLocaleString(undefined, {
+//                   minimumFractionDigits: 2, // Show 2 decimal places
+//                   maximumFractionDigits: 2,
+//                 })}{" "}
+//                 {currencyCode}
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </Link>
+//     );
+//   };
+
+//   return (
+//     <section className="Transactions py-10"> {/* Adjusted padding */}
+//       <div className="container mx-auto">
+//         <div className="flex justify-between items-center mb-6"> {/* Adjusted margin */}
+//           <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">Recent Transactions</h1> {/* Adjusted size */}
+//           <Link
+//             href="/dashboard/transactions" // Corrected path assuming it's directly under dashboard
+//             className="text-primary font-medium underline cursor-pointer hover:text-primaryhover transition-all duration-75 ease-linear"
+//           >
+//             See all
+//           </Link>
+//         </div>
+
+//         {/* Transaction History */}
+//         <div className="space-y-2">
+//           {loading && <p className="text-center text-gray-500 dark:text-gray-300 py-4">Loading transactions...</p>}
+//           {!loading && error && <p className="text-center text-red-500 py-4">Error: {error}</p>}
+//           {!loading && !error && latestTransactions.length === 0 && (
+//             <p className="text-center text-gray-500 py-4">No recent transactions found.</p>
+//           )}
+//           {!loading && !error && latestTransactions.length > 0 && (
+//             latestTransactions.map(renderTransactionRow)
+//           )}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default TransactionsSection;
+
+
+
+
+
+
+
 // components/MainDashBoardSection/TransactionsSection.tsx
 "use client"; // Required for hooks like useState, useEffect, useAuth
 
@@ -290,6 +496,7 @@ import { useAuth } from "../../../hooks/useAuth"; // Adjust path if needed
 import paymentService from "../../../services/payment"; // Adjust path if needed
 import transferService from "../../../services/transfer"; // Adjust path if needed
 import { Transaction } from "@/types/transaction"; // Adjust path if needed
+import { Skeleton } from "@/components/ui/skeleton" // Assuming Skeleton is in "@/components/ui/skeleton" or adjust path accordingly.
 
 const TransactionsSection: React.FC = () => {
   const [latestTransactions, setLatestTransactions] = useState<Transaction[]>([]);
@@ -462,7 +669,30 @@ const TransactionsSection: React.FC = () => {
 
         {/* Transaction History */}
         <div className="space-y-2">
-          {loading && <p className="text-center text-gray-500 dark:text-gray-300 py-4">Loading transactions...</p>}
+          {loading && (
+            <div className="space-y-2"> {/* Keep space-y-2 for skeleton spacing */}
+              {Array(3).fill(0).map((_, index) => (
+                <div key={index} className="block">
+                  <div className="block p-2 sm:p-4 rounded-2xl"> {/* Match padding and rounded corners */}
+                    <div className="flex items-center gap-4"> {/* Match flex layout */}
+                      <div className="flex items-center justify-center"> {/* Match icon container */}
+                        <Skeleton className="h-12 w-12 rounded-full" />
+                      </div>
+                      <div className="flex justify-between w-full items-center"> {/* Match text and amount container */}
+                        <div>
+                          <Skeleton className="h-4 w-40 mb-2" /> {/* Skeleton for name */}
+                          <Skeleton className="h-3 w-32" /> {/* Skeleton for description */}
+                        </div>
+                        <div className="text-right sm:text-left">
+                          <Skeleton className="h-5 w-20" /> {/* Skeleton for amount */}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
           {!loading && error && <p className="text-center text-red-500 py-4">Error: {error}</p>}
           {!loading && !error && latestTransactions.length === 0 && (
             <p className="text-center text-gray-500 py-4">No recent transactions found.</p>
