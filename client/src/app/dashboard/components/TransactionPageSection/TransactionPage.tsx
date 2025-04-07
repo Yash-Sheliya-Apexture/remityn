@@ -2927,19 +2927,21 @@ const TransactionsPage: React.FC = () => {
 
                         {/* Empty State (No transactions match filters or none exist at all) */}
                         {filteredTransactions.length === 0 && (
-                            <div className="text-center text-gray dark:text-gray-400 py-12 dark:bg-gray-800/50 rounded-lg mt-6 dark:border-gray-700/50">
+                            <div className="text-center flex flex-col text-lg px-4 text-gray-500 dark:text-gray-300 py-12 dark:bg-white/5 rounded-lg mt-6">
                                 {allTransactions.length === 0
                                     ? "You haven't made any transactions yet."
                                     : "No transactions match your current filter or search criteria."
                                 }
                                 {/* Optional: Add a button to clear filters if filters are active */}
                                 { (appliedRecipientFilters.length > 0 || appliedDirectionFilter !== 'all' || appliedStatusFilter || appliedBalanceFilter.length > 0 || appliedFromDateFilter || appliedToDateFilter) && allTransactions.length > 0 && (
+                                    <div className="flex justify-center ">
                                     <button
                                         onClick={() => handleFiltersApply({ selectedRecipients: [], selectedDirection: 'all', selectedStatus: null, selectedBalance: [], fromDate: undefined, toDate: undefined })}
-                                        className="mt-4 px-4 py-2 bg-blue-500 text-white text-sm rounded-md hover:bg-blue-600 transition-colors"
+                                        className="mt-4 px-6 cursor-pointer py-3 w-38 bg-primary text-mainheading rounded-full hover:bg-primaryhover transition-colors duration-500 ease-in-out"
                                     >
                                         Clear Filters
                                     </button>
+                                    </div>
                                 )}
                             </div>
                         )}
