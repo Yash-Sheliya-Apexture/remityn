@@ -385,12 +385,33 @@ const TasksPage: React.FC = () => {
         Tasks
       </h1>
 
-      {/* --- Loading State --- */}
+      {/* --- Loading State with Skeleton --- */}
       {isLoading && (
-        <div className="space-y-4">
-          <Skeleton className="h-24 w-full rounded-lg bg-gray-200" />
-          <Skeleton className="h-24 w-full rounded-lg bg-gray-200" />
-          <Skeleton className="h-24 w-full rounded-lg bg-gray-200" />
+        <div className="space-y-2">
+          {Array(3).fill(0).map((_, index) => (
+            <div key={index} className="block">
+              <div className="block p-2 sm:p-4 rounded-2xl">
+                <div className="flex items-center gap-4">
+                  {/* Icon Skeleton */}
+                  <div className="relative flex-shrink-0">
+                    <div className="flex items-center justify-center">
+                      <Skeleton className="h-12 w-12 rounded-full" />
+                    </div>
+                  </div>
+                  {/* Text and Button Skeletons */}
+                  <div className="flex-grow flex flex-row justify-between items-center gap-4">
+                    <div className="flex-grow">
+                      <Skeleton className="h-4 w-40 mb-2" />
+                      <Skeleton className="h-3 w-32" />
+                    </div>
+                    <div className="shrink-0">
+                      <Skeleton className="h-5 w-20 rounded-full" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
