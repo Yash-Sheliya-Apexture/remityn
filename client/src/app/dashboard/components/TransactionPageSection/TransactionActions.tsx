@@ -240,7 +240,7 @@ const TransactionActions: React.FC<TransactionActionsProps> = ({
     onFiltersApply
 }) => {
     return (
-        <div className="flex flex-wrap items-center gap-4 "> {/* Added flex-wrap */}
+        <div className="flex justify-between items-center gap-4 sm:w-auto w-full"> {/* Added flex-wrap */}
             <Search
                 transactions={transactions}
                 onTransactionsChange={onTransactionsChange}

@@ -121,7 +121,7 @@
 
 // components/CustomCalendar.tsx
 import React, { useState, useEffect } from 'react';
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, getDaysInMonth, getMonth, getYear, isSameDay, isSameMonth, isToday, subMonths, addMonths, getDate } from 'date-fns';
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, getMonth, getYear, isSameDay, isSameMonth, isToday, subMonths, addMonths, getDate } from 'date-fns';
 
 interface CustomCalendarProps {
     onDateSelect: (date: Date) => void;

@@ -216,6 +216,164 @@
 
 
 
+// "use client";
+// import React, { useState, useEffect } from "react";
+// import Image from "next/image"; // Import Image component
+// import { motion, AnimatePresence } from "framer-motion";
+// import { IoClose } from "react-icons/io5";
+
+// interface InsufficientBalanceModalProps {
+//     isOpen: boolean;
+//     onClose: () => void;
+//     onAddMoney: () => void; // Action to navigate to add money
+//     currencyCode: string; // To display the currency
+// }
+
+// const InsufficientBalanceModal: React.FC<InsufficientBalanceModalProps> = ({
+//     isOpen,
+//     onClose,
+//     onAddMoney,
+//     currencyCode,
+// }) => {
+//     const mobileVariants = {
+//         initial: { y: 50, opacity: 0 },
+//         animate: { y: 0, opacity: 1, transition: { stiffness: 100 } },
+//         exit: { y: 50, opacity: 0 },
+//     };
+
+//     const desktopVariants = {
+//         initial: { y: -30, opacity: 0, scale: 0.95 },
+//         animate: {
+//             y: 0,
+//             opacity: 1,
+//             scale: 1,
+//             transition: { type: "spring", stiffness: 100, damping: 15 },
+//         },
+//         exit: { y: -30, opacity: 0, scale: 0.95 },
+//     };
+
+//     const [isMobile, setIsMobile] = useState(false);
+
+//     useEffect(() => {
+//         const handleResize = () => {
+//             setIsMobile(window.innerWidth < 640); // Example breakpoint, adjust as needed
+//         };
+
+//         handleResize(); // Initial check
+//         window.addEventListener('resize', handleResize);
+//         return () => window.removeEventListener('resize', handleResize);
+//     }, []);
+
+//     const modalVariants = isMobile ? mobileVariants : desktopVariants;
+
+
+//     return (
+//       <AnimatePresence>
+//         {isOpen && ( // <<<--- Renders based on isOpen prop
+//           <motion.div
+//             className="fixed inset-0 w-full h-full bg-black/50 dark:bg-white/30 z-50 flex sm:items-center items-end justify-center" // Added padding for smaller screens
+//             initial={{ opacity: 0 }}
+//             animate={{ opacity: 1 }}
+//             exit={{ opacity: 0 }}
+//             onClick={onClose} // Close on overlay click
+//           >
+//             <motion.div
+//               className="bg-white dark:bg-background sm:rounded-2xl rounded-t-2xl sm:p-8 p-4 w-full sm:max-w-lg relative text-center" // Added dark mode and shadow
+//               variants={modalVariants} // Apply variants here
+//               initial="initial"
+//               animate="animate"
+//               exit="exit"
+//               onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
+//             >
+//               {/* Close Button */}
+//               <div className="w-full inline-flex justify-end">
+//                 <button
+//                   className="p-3 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
+//                   onClick={onClose}
+//                   aria-label="Close modal"
+//                 >
+//                   <IoClose
+//                     size={28}
+//                     className="text-neutral-900 dark:text-white"
+//                   />
+//                 </button>
+//               </div>
+
+//               {/* Image */}
+//               <div className="flex justify-center">
+//                 <Image
+//                   src="/assets/images/exclamation-mark-small.png" // <<<--- Make sure this image path is correct in your public folder
+//                   alt="Warning"
+//                   width={80}
+//                   height={80}
+//                   className="object-contain" // Use contain to prevent distortion
+//                   onError={(e) => {
+//                     (e.target as HTMLImageElement).style.display = "none";
+//                   }} // Hide if image fails
+//                 />
+//                 {/* Basic Fallback (Hidden if image loads) */}
+//                 <div
+//                   className="w-20 h-20 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center text-yellow-500 dark:text-yellow-400 border-4 border-yellow-200 dark:border-yellow-700/50"
+//                   style={{ display: "none" }}
+//                 >
+//                   {" "}
+//                   {/* Initially hidden */}
+//                   <svg
+//                     xmlns="http://www.w3.org/2000/svg"
+//                     fill="none"
+//                     viewBox="0 0 24 24"
+//                     strokeWidth={1.5}
+//                     stroke="currentColor"
+//                     className="w-10 h-10"
+//                   >
+//                     <path
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                       d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.008v.008H12v-.008Z"
+//                     />
+//                   </svg>
+//                 </div>
+//               </div>
+
+//               {/* Title */}
+//               <h3 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white my-6">
+//                 Insufficient Balance
+//               </h3>
+
+//               {/* Description */}
+//               <p className="text-gray dark:text-gray-300 font-medium mb-6">
+//                 You don't have enough funds in your {currencyCode} balance to
+//                 send money. Please add funds first.
+//               </p>
+
+//               {/* Action Buttons */}
+//               <div className="flex flex-col sm:flex-row justify-center gap-3">
+//                 {" "}
+//                 {/* Row layout on larger screens */}
+//                 <button
+//                   className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear" // Added focus styles
+//                   onClick={onAddMoney}
+//                 >
+//                   Add Money
+//                 </button>
+//                 <button
+//                   className="bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear" // Added dark mode and focus styles
+//                   onClick={onClose}
+//                 >
+//                   Got It
+//                 </button>
+//               </div>
+//             </motion.div>
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+//     );
+// };
+
+// export default InsufficientBalanceModal;
+
+
+
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image"; // Import Image component
@@ -259,9 +417,12 @@ const InsufficientBalanceModal: React.FC<InsufficientBalanceModalProps> = ({
             setIsMobile(window.innerWidth < 640); // Example breakpoint, adjust as needed
         };
 
-        handleResize(); // Initial check
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
+        // Ensure window is defined (for SSR safety, though less critical with "use client")
+        if (typeof window !== "undefined") {
+            handleResize(); // Initial check
+            window.addEventListener('resize', handleResize);
+            return () => window.removeEventListener('resize', handleResize);
+        }
     }, []);
 
     const modalVariants = isMobile ? mobileVariants : desktopVariants;
@@ -278,7 +439,7 @@ const InsufficientBalanceModal: React.FC<InsufficientBalanceModalProps> = ({
             onClick={onClose} // Close on overlay click
           >
             <motion.div
-              className="bg-white dark:bg-background sm:rounded-2xl rounded-t-2xl sm:p-8 p-4 w-full sm:max-w-lg relative text-center" // Added dark mode and shadow
+              className="bg-white dark:bg-background sm:rounded-2xl rounded-t-2xl sm:p-8 p-4 w-full sm:max-w-lg relative text-center shadow-xl dark:shadow-2xl" // Added dark mode and shadow
               variants={modalVariants} // Apply variants here
               initial="initial"
               animate="animate"
@@ -288,7 +449,7 @@ const InsufficientBalanceModal: React.FC<InsufficientBalanceModalProps> = ({
               {/* Close Button */}
               <div className="w-full inline-flex justify-end">
                 <button
-                  className="p-3 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
+                  className="p-3 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background" // Added focus styles
                   onClick={onClose}
                   aria-label="Close modal"
                 >
@@ -299,25 +460,34 @@ const InsufficientBalanceModal: React.FC<InsufficientBalanceModalProps> = ({
                 </button>
               </div>
 
-              {/* Image */}
-              <div className="flex justify-center">
+              {/* Image & Fallback Container */}
+              <div className="flex justify-center w-20 h-20 mx-auto mb-4 relative">
+                {/* Image */}
                 <Image
                   src="/assets/images/exclamation-mark-small.png" // <<<--- Make sure this image path is correct in your public folder
-                  alt="Warning"
-                  width={80}
-                  height={80}
-                  className="object-contain" // Use contain to prevent distortion
+                  alt="" // Alt text is empty as the fallback provides context if image fails
+                  fill // Use fill to make image cover the container
+                  sizes="(max-width: 640px) 80px, 80px" // Specify sizes for optimization
+                  className="object-contain absolute inset-0" // Use contain and position absolutely
                   onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = "none";
-                  }} // Hide if image fails
+                     // Hide broken image icon if it fails, reveal fallback
+                     const target = e.target as HTMLImageElement;
+                     target.style.display = "none"; // Hide the img element itself
+                     // Find the sibling fallback div and make it visible
+                     const fallback = target.nextElementSibling;
+                     if (fallback) {
+                       (fallback as HTMLElement).style.display = "flex";
+                     }
+                  }}
+                  // Hide image initially if JS is disabled, fallback will show
+                  // Optional: Add priority if this modal appears above the fold often
+                  // priority
                 />
-                {/* Basic Fallback (Hidden if image loads) */}
+                {/* SVG Fallback (Initially hidden by class, shown via onError) */}
                 <div
-                  className="w-20 h-20 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center text-yellow-500 dark:text-yellow-400 border-4 border-yellow-200 dark:border-yellow-700/50"
-                  style={{ display: "none" }}
+                  className="w-full h-full bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center text-yellow-500 dark:text-yellow-400 border-4 border-yellow-200 dark:border-yellow-700/50 hidden" // Use 'hidden' class
+                  aria-hidden="true" // Hide from screen readers as it's decorative/redundant with text
                 >
-                  {" "}
-                  {/* Initially hidden */}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -333,20 +503,6 @@ const InsufficientBalanceModal: React.FC<InsufficientBalanceModalProps> = ({
                     />
                   </svg>
                 </div>
-                {/* Simple script to show fallback if image fails - add this script tag somewhere in your layout or page */}
-                {/*
-                             <script dangerouslySetInnerHTML={{ __html: `
-                                const img = document.querySelector('img[alt="Warning"]');
-                                const fallback = document.querySelector('.w-20.h-20.bg-yellow-100');
-                                if (img && fallback) {
-                                    img.onerror = () => { img.style.display='none'; fallback.style.display='flex'; };
-                                    // Also check if src is empty or invalid initially
-                                    if (!img.getAttribute('src') || img.naturalWidth === 0) {
-                                         img.style.display='none'; fallback.style.display='flex';
-                                    }
-                                }
-                             `}} />
-                             */}
               </div>
 
               {/* Title */}
@@ -356,22 +512,23 @@ const InsufficientBalanceModal: React.FC<InsufficientBalanceModalProps> = ({
 
               {/* Description */}
               <p className="text-gray dark:text-gray-300 font-medium mb-6">
+                {/* Corrected the apostrophe */}
                 You don't have enough funds in your {currencyCode} balance to
                 send money. Please add funds first.
               </p>
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row justify-center gap-3">
-                {" "}
-                {/* Row layout on larger screens */}
+                {/* Added focus styles */}
                 <button
-                  className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear" // Added focus styles
+                  className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background"
                   onClick={onAddMoney}
                 >
                   Add Money
                 </button>
+                 {/* Added dark mode and focus styles */}
                 <button
-                  className="bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear" // Added dark mode and focus styles
+                  className="bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 dark:focus:ring-offset-background"
                   onClick={onClose}
                 >
                   Got It
