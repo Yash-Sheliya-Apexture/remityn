@@ -654,30 +654,159 @@
 
 
 
+// // components/MobileMenu.tsx
+// "use client";
+// import React, { useState } from "react";
+// import Link from "next/link";
+// import FeatureDropdown from "@/app/components/ui/FeatureDropdown"; // Import FeatureDropdown, adjust path
+
+// interface MobileMenuProps {
+//   isOpen: boolean;
+//   onClose: () => void;
+//   featureLinks: { href: string; text: string }[];
+// }
+
+// const MobileMenu: React.FC<MobileMenuProps> = ({
+//   isOpen,
+//   onClose,
+//   featureLinks
+// }) => {
+//   const [isFeaturesOpen, setIsFeaturesOpen] = useState(false); // State for Features dropdown
+
+//   const toggleFeaturesDropdown = () => {
+//     setIsFeaturesOpen(!isFeaturesOpen);
+//   };
+
+//   return (
+//     <div
+//       className={`fixed w-full h-[calc(100vh-5rem)] bg-white z-50 overflow-y-auto transition-transform duration-300 ${
+//         isOpen ? "translate-x-0" : "translate-x-full"
+//       }`}
+//     >
+//       <div className="flex flex-col justify-between h-full">
+//         <div className="p-6 space-y-4">
+//           {/*  Navigation Links */}
+//           <div className="flex items-center gap-4">
+//             <Link
+//               href="/personal"
+//               passHref
+//               className="block bg-lightgreen px-4 py-1 rounded-full font-medium"
+//               onClick={onClose}
+//             >
+//               Personal
+//             </Link>
+//             <Link
+//               href="/business"
+//               passHref
+//               className="block px-4 py-1 rounded-full  font-medium hover:bg-gray-200"
+//               onClick={onClose}
+//             >
+//               Business
+//             </Link>
+//             <Link
+//               href="/platform"
+//               passHref
+//               className="block px-4 py-1 rounded-full  font-medium hover:bg-gray-200"
+//               onClick={onClose}
+//             >
+//               Platform
+//             </Link>
+//           </div>
+
+//           <div>
+//             {/* Features (with dropdown) */}
+//             <FeatureDropdown
+//               buttonText="Features"
+//               links={featureLinks}
+//               buttonClassName="block w-full text-left py-2  font-medium text-lg"
+//               isMobile={true}
+//               isOpen={isFeaturesOpen}
+//               toggleDropdown={toggleFeaturesDropdown}
+//               onLinkClick={onClose}
+//             />
+
+//             <Link
+//               href="/pricing"
+//               passHref
+//               className="block py-2  font-medium text-lg"
+//               onClick={onClose}
+//             >
+//               Pricing
+//             </Link>
+//             <Link
+//               href="/help"
+//               passHref
+//               className="block py-2  font-medium text-lg"
+//               onClick={onClose}
+//             >
+//               Help
+//             </Link>
+//             <Link href="/en" passHref onClick={onClose}>
+//               <div className="flex items-center  py-2  font-medium text-lg">
+//                 <img
+//                   src="https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/1200px-Flag_of_India.svg.png"
+//                   alt="Indian Flag"
+//                   className="h-5 w-5 rounded-full mr-1 object-cover"
+//                 />
+//                 <span>EN</span>
+//               </div>
+//             </Link>
+//           </div>
+//         </div>
+
+//         <div className="p-6 flex sm:flex-row flex-col items-center gap-2">
+//           {/*  Login and Register */}
+//           <Link
+//             href="/login"
+//             passHref
+//             className="block w-full p-2 bg-white hover:bg-green/10 border border-green rounded-full font-medium text-lg text-center"
+//             onClick={onClose}
+//           >
+//             Log in
+//           </Link>
+//           <Link
+//             href="/register"
+//             passHref
+//             className="block w-full p-2 bg-lightgreen hover:bg-lightgreen-hover rounded-full font-medium text-lg text-center"
+//             onClick={onClose}
+//           >
+//             Register
+//           </Link>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default MobileMenu;
+
+
 // components/MobileMenu.tsx
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image"; // Import next/image
 import FeatureDropdown from "@/app/components/ui/FeatureDropdown"; // Import FeatureDropdown, adjust path
 
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
   featureLinks: { href: string; text: string }[];
-  topContent: React.ReactNode; //  <--- Receive topContent
 }
 
 const MobileMenu: React.FC<MobileMenuProps> = ({
   isOpen,
   onClose,
-  featureLinks,
-  topContent, //  <--- Destructure topContent
+  featureLinks
 }) => {
   const [isFeaturesOpen, setIsFeaturesOpen] = useState(false); // State for Features dropdown
 
   const toggleFeaturesDropdown = () => {
     setIsFeaturesOpen(!isFeaturesOpen);
   };
+
+  // Define image dimensions based on className w-5 h-5 (assuming default Tailwind base font size 16px, 1.25rem = 20px)
+  const flagSize = 20;
 
   return (
     <div
@@ -744,11 +873,16 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
               Help
             </Link>
             <Link href="/en" passHref onClick={onClose}>
-              <div className="flex items-center  py-2  font-medium text-lg">
-                <img
+              <div className="flex items-center py-2 font-medium text-lg">
+                {/* Use next/image component */}
+                <Image
+                  // The comment below disables the specific eslint rule for the next line.
+                  // eslint-disable-next-line @next/next/no-img-element
                   src="https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/1200px-Flag_of_India.svg.png"
                   alt="Indian Flag"
-                  className="h-5 w-5 rounded-full mr-1 object-cover"
+                  width={flagSize} // Required prop
+                  height={flagSize} // Required prop
+                  className="rounded-full mr-1 object-cover" // Removed h-5 w-5 as dimensions are handled by props
                 />
                 <span>EN</span>
               </div>

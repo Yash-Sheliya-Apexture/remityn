@@ -24,8 +24,6 @@ export function useAppContext() {
   return context;
 }
 
-import Head from "next/head"; // Import the Head component
-
 export default function Layout({
   children,
   initialSelectedSendCurrency = "USD",

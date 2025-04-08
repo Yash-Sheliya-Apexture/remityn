@@ -1079,6 +1079,376 @@
 
 
 
+// "use client";
+// import React, { useState, useEffect } from 'react';
+// import { useParams, useRouter, useSearchParams } from 'next/navigation';
+// import { useAuth } from '../../../../hooks/useAuth'; // Adjust path
+// import paymentService from '../../../../services/payment'; // Adjust path
+// import { Skeleton } from '@/components/ui/skeleton'; // Adjust path
+// import { Button } from '@/components/ui/button'; // Adjust path
+// // import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"; // Optional Card structure
+// import { Copy, HelpCircle, Download, AlertTriangle, Loader2, Check } from 'lucide-react'; // Added Check icon
+// import { Toaster, toast } from 'sonner'; // Toast notifications
+
+// // --- PaymentDetails Interface (keep as before) ---
+// interface PaymentDetails {
+//     _id: string;
+//     user: string;
+//     balanceCurrency: { _id: string; code: string; };
+//     payInCurrency: { _id: string; code: string; };
+//     amountToAdd: number;
+//     amountToPay: number;
+//     exchangeRate: number;
+//     wiseFee: number;
+//     bankTransferFee: number;
+//     referenceCode: string;
+//     paymentMethod: string;
+//     status: string;
+//     bankDetails: {
+//         payeeName?: string;
+//         iban?: string;
+//         bicSwift?: string;
+//         bankAddress?: string;
+//     };
+//     createdAt: string;
+//     updatedAt?: string;
+//     __v?: number;
+// }
+
+// // --- PaymentDetailsPageParams Interface (keep as before) ---
+// interface PaymentDetailsPageParams {
+//     balanceId: string;
+// }
+
+
+// // --- DetailItem Component (Updated as above) ---
+// interface DetailItemProps {
+//     label: string;
+//     value: string | undefined | null;
+//     fieldName: string;
+//     isMono?: boolean;
+//     className?: string;
+// }
+
+// const DetailItem: React.FC<DetailItemProps> = ({ label, value, fieldName, isMono = false, className = '' }) => {
+//     const displayValue = value || 'N/A';
+//     const [isCopied, setIsCopied] = useState(false); // State for button change
+
+//     const handleCopyToClipboard = (text: string) => {
+//         if (!text || text === 'N/A') {
+//             return;
+//         }
+//         if (isCopied) return;
+
+//         navigator.clipboard.writeText(text).then(() => {
+//             setIsCopied(true);
+//             const timer = setTimeout(() => {
+//                 setIsCopied(false);
+//             }, 1500);
+//             // If using in useEffect, return () => clearTimeout(timer);
+//         }).catch(err => {
+//             console.error('DetailItem: Failed to copy text: ', err);
+//             setIsCopied(false);
+//         });
+//     };
+
+//     return (
+//         <div className={`bg-lightgray dark:bg-primarybox p-4 rounded-lg flex justify-between items-center gap-4 ${className}`}>
+//             <div className="flex-1 min-w-0">
+//                 <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{label}</p>
+//                 <p className={`font-semibold text-foreground break-words ${isMono ? 'font-mono' : ''}`}>
+//                     {displayValue}
+//                 </p>
+//             </div>
+//             {value && value !== 'N/A' && (
+//                  <button
+//                     onClick={() => handleCopyToClipboard(displayValue)}
+//                     aria-label={`Copy ${fieldName}`}
+//                     // Custom classes for the specific dark button look
+//                     className={`
+//                         flex justify-center items-center shrink-0 h-8 px-3 py-1 text-xs sm:text-sm font-medium rounded-md transition-colors duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50
+//                         ${isCopied
+//                             ? 'bg-secondarybox/26 hover:bg-secondarybox/50 text-neutral-700 dark:bg-secondarybox dark:hover:bg-[#727272] dark:text-zinc-100 cursor-pointer' // Success state style
+//                             : 'bg-secondarybox/26 hover:bg-secondarybox/50 text-neutral-700 dark:bg-secondarybox dark:hover:bg-[#727272] dark:text-zinc-100 cursor-pointer' // Default dark button style
+//                         }
+//                     `}
+//                     disabled={isCopied} // Disable briefly during "Copied!" state
+//                 >
+//                     {isCopied ? (
+//                         <Check className="h-3.5 w-3.5 mr-1.5" />
+//                     ) : (
+//                         <Copy className="h-3.5 w-3.5 mr-1.5" />
+//                     )}
+//                     {isCopied ? 'Copied!' : 'Copy'}
+//                 </button>
+//             )}
+//         </div>
+//     );
+// };
+// // --- End DetailItem Component ---
+
+
+// const PaymentDetailsPage = () => {
+//     // --- Hooks (keep as before) ---
+//     const params = useParams<PaymentDetailsPageParams>();
+//     const searchParams = useSearchParams();
+//     const router = useRouter();
+//     const { token } = useAuth();
+
+//     // --- State (keep as before) ---
+//     const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(null);
+//     const [isLoading, setIsLoading] = useState(true);
+//     const [isSubmitting, setIsSubmitting] = useState(false);
+//     const [error, setError] = useState<string | null>(null);
+
+//     // --- Vars (keep as before) ---
+//     const { balanceId } = params;
+//     const paymentId = searchParams.get('paymentId');
+
+//     // --- Data Fetching Effect (keep as before) ---
+//     useEffect(() => {
+//         const fetchPaymentDetails = async () => {
+//             setIsLoading(true);
+//             setError(null);
+//             console.log("PaymentDetailsPage: Fetching details for paymentId:", paymentId);
+
+//             if (!paymentId) {
+//                 setError("Payment ID is missing from URL.");
+//                 setIsLoading(false);
+//                 console.error("PaymentDetailsPage: No paymentId found.");
+//                 router.push('/dashboard/transactions');
+//                 return;
+//             }
+//             if (!token) {
+//                  setError("Authentication required. Please log in.");
+//                  setIsLoading(false);
+//                  router.push('/auth/login');
+//                  return;
+//             }
+
+//             try {
+//                 const details = await paymentService.getPaymentDetails(paymentId, token);
+//                 setPaymentDetails(details);
+//             } catch (err: any) {
+//                 const errMsg = err.response?.data?.message || err.message || 'Failed to load payment details';
+//                 setError(errMsg);
+//                 console.error("PaymentDetailsPage: Error fetching payment details:", err);
+//                 if (err.response?.status === 404) {
+//                     setError(`Payment with ID ${paymentId} not found or you don't have access.`);
+//                 } else if (err.response?.status === 401 || err.response?.status === 403) {
+//                      setError("Unauthorized to view this payment.");
+//                 }
+//             } finally {
+//                 setIsLoading(false);
+//             }
+//         };
+
+//         fetchPaymentDetails();
+//     }, [paymentId, token, router]);
+
+//     // --- Action Handlers (keep as before) ---
+//      const handleIvePaid = async () => {
+//         console.log("PaymentDetailsPage: handleIvePaid triggered");
+//         setError(null);
+
+//         if (!paymentId || !token || !balanceId) {
+//             const missing = [!paymentId && "Payment ID", !token && "Token", !balanceId && "Balance ID"].filter(Boolean).join(", ");
+//             const errorMsg = `Cannot proceed: Missing ${missing}.`;
+//             setError(errorMsg);
+//             console.error("PaymentDetailsPage: Missing critical data for handleIvePaid:", { paymentId, token, balanceId });
+//             toast.error(errorMsg);
+//             return;
+//         }
+
+//         setIsSubmitting(true);
+//         console.log("PaymentDetailsPage: Submitting... paymentId:", paymentId, "balanceId:", balanceId);
+
+//         try {
+//             try {
+//                 console.log("PaymentDetailsPage: Attempting paymentService.confirmUserTransfer");
+//                 await paymentService.confirmUserTransfer(paymentId, token);
+//                 console.log("PaymentDetailsPage: confirmUserTransfer successful");
+//             } catch (confirmErr: any) {
+//                  const confirmErrMsg = confirmErr.response?.data?.message || confirmErr.message;
+//                  console.error("PaymentDetailsPage: Failed to update payment status via confirmUserTransfer:", confirmErrMsg);
+//                  toast.warning(`Couldn't immediately confirm payment initiation${confirmErrMsg ? `: ${confirmErrMsg}`: '.'} Redirecting...`);
+//             }
+
+//             const successUrl = `/dashboard/balances/${balanceId}/payment-success?paymentId=${paymentId}`;
+//             console.log("PaymentDetailsPage: Navigating to success page:", successUrl);
+//             router.push(successUrl);
+
+//         } catch (err: any) {
+//             const errMsg = err.response?.data?.message || err.message || 'An unexpected error occurred.';
+//             setError(`Failed to proceed: ${errMsg}`);
+//             console.error("PaymentDetailsPage: Error during handleIvePaid (outer catch):", err);
+//             toast.error(`Failed to proceed: ${errMsg}`);
+//             setIsSubmitting(false);
+//         }
+//     };
+
+//     const handlePayLater = () => {
+//         console.log("PaymentDetailsPage: handlePayLater triggered, navigating to /dashboard/transactions");
+//         toast.info("You can find this payment later in your transactions list.");
+//         router.push('/dashboard/transactions');
+//     };
+//     // --- END Action Handlers ---
+
+
+//     // --- Render Logic ---
+
+//     // Loading State (Skeleton - adjusted slightly for new button height)
+//     if (isLoading) {
+//         return (
+//              <div className="container mx-auto px-4 py-8 max-w-lg">
+//                  <Skeleton className="h-8 w-3/5 mb-2" />
+//                  <Skeleton className="h-4 w-4/5 mb-6" />
+//                  <Skeleton className="h-6 w-1/3 mb-5" />
+//                  <div className="space-y-4 mb-6">
+//                       <Skeleton className="h-[72px] w-full rounded-lg" /> {/* Approx height with p-4 and sm button */}
+//                       <Skeleton className="h-[72px] w-full rounded-lg" />
+//                       <Skeleton className="h-[72px] w-full rounded-lg" />
+//                       <Skeleton className="h-[72px] w-full rounded-lg" />
+//                       <Skeleton className="h-[72px] w-full rounded-lg" />
+//                       <Skeleton className="h-[90px] w-full rounded-lg" />
+//                  </div>
+//                  <Skeleton className="h-6 w-1/4 mb-4" />
+//                  <Skeleton className="h-[88px] w-full rounded-lg mb-8" />
+//                  <div className="space-y-3">
+//                     <Skeleton className="h-12 w-full rounded-md" />
+//                     <Skeleton className="h-12 w-full rounded-md" />
+//                  </div>
+//              </div>
+//          );
+//     }
+
+//     // Error State (keep as before)
+//      if (!isLoading && error && !paymentDetails) {
+//          return (
+//              <div className="container mx-auto px-4 py-8 text-center max-w-lg">
+//                  <div className="bg-destructive/10 border border-destructive/30 text-destructive p-4 rounded-lg flex flex-col items-center space-y-2">
+//                      <AlertTriangle className="w-6 h-6" />
+//                      <p className="font-semibold">Error Loading Payment Details</p>
+//                      <p className="text-sm">{error}</p>
+//                  </div>
+//                   <Button onClick={() => router.back()} variant="outline" className="mt-6">
+//                      Go Back
+//                  </Button>
+//              </div>
+//          );
+//      }
+
+//     // Not Found State (keep as before)
+//     if (!isLoading && !error && !paymentDetails) {
+//         return (
+//             <div className="container mx-auto px-4 py-8 text-center text-muted-foreground max-w-lg">
+//                 <p className="mb-4">Payment details could not be found or are no longer valid.</p>
+//                 <Button onClick={() => router.push('/dashboard/transactions')} variant="outline">
+//                      View Transactions
+//                  </Button>
+//             </div>
+//         );
+//     }
+
+//     // --- Render Payment Details (Main Structure - keep as before) ---
+//     const payInCurrencyCode = paymentDetails.payInCurrency?.code || 'N/A';
+//     const amountValue = typeof paymentDetails.amountToPay === 'number'
+//         ? paymentDetails.amountToPay
+//         : parseFloat(paymentDetails.amountToPay?.toString() || '0');
+//     const amountToPayFormatted = isNaN(amountValue) ? 'N/A' : amountValue.toFixed(2);
+
+//     const bankDetails = paymentDetails.bankDetails || {};
+//     const referenceCode = paymentDetails.referenceCode || 'N/A';
+//     const defaultBankAddress = 'Wise Europe SA/NV\nRue du Trône 100, box 3\nBrussels 1050\nBelgium';
+//     const bankAddress = bankDetails.bankAddress || defaultBankAddress;
+
+//     return (
+//         <div className="container mx-auto px-4 py-8">
+//             {/* Header */}
+//             <h1 className="sm:text-3xl text-2xl text-center font-semibold text-mainheading mb-6 dark:text-white">Use your bank to make a payment to Wise</h1>
+//             <p className="text-sm text-gray-500 dark:text-gray-300 mb-8 text-center">Make a {`${payInCurrencyCode}`} payment — not an international one — using the details below.</p>
+
+//             {/* Details Section */}
+//             <div className="mb-8 border p-6 rounded-xl">
+//                 <h2 className="text-lg font-medium mb-4 text-neutral-900 dark:text-white">Details you'll need to make this transfer</h2>
+//                 {/* Use the updated DetailItem component */}
+//                 <div className="space-y-4">
+//                     <DetailItem label="Payee name" value={bankDetails.payeeName || 'Wise Europe SA'} fieldName="Payee name" />
+
+//                     <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center"> {/* Adjusted alignment */}
+//                         <div className="flex-1 w-full sm:w-auto"> {/* Ensure DetailItem takes space */}
+//                             <DetailItem label="Reference code" value={referenceCode} fieldName="Reference code" isMono={true} />
+//                         </div>
+//                         <p className="text-xs text-gray-500 dark:text-gray-400 sm:max-w-65 flex-shrink-0 mt-1 sm:mt-0"> {/* Prevent text from pushing button */}
+//                             To ensure Wise is able to link this transfer please enter <strong className="text-foreground">{referenceCode}</strong> in the field for the transfer's reason.
+//                         </p>
+//                     </div>
+
+//                     <DetailItem label="IBAN" value={bankDetails.iban} fieldName="IBAN" isMono={true} />
+//                     <DetailItem label="Bank code (BIC/SWIFT)" value={bankDetails.bicSwift} fieldName="BIC/SWIFT" isMono={true} />
+//                     <DetailItem
+//                         label={`Amount to send (${payInCurrencyCode})`}
+//                         value={amountToPayFormatted === 'N/A' ? 'N/A' : `${amountToPayFormatted}`}
+//                         fieldName="Amount to send"
+//                     />
+//                      <div className="bg-lightgray dark:bg-primarybox p-4 rounded-lg">
+//                          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Our bank's address</p>
+//                          <p className="text-foreground break-words">
+//                             {bankAddress}
+//                          </p>
+//                      </div>
+//                 </div>
+//             </div>
+
+//             {/* Need more help? Section (keep as before) */}
+//             <div className="border border-border rounded-lg p-4 mb-8 flex items-start gap-4 bg-card">
+//                 <HelpCircle className="h-6 w-6 text-neutral-900 dark:text-white mt-0.5 shrink-0" />
+//                 <div>
+//                     <h3 className="font-medium text-neutral-900 dark:text-white mb-1">Need more help?</h3>
+//                     <p className="text-sm text-gray-500 dark:text-gray-300 mb-3">
+//                         To make things easy, you can download these instructions as a PDF document. Then simply print the document out and hand it to your advisor at the bank.
+//                     </p>
+//                     <Button variant="link" className="p-0 h-auto text-green-600 hover:text-green-700" onClick={() => toast.info("PDF download not implemented yet.")}>
+//                          Download PDF <Download className="h-4 w-4 ml-1" />
+//                      </Button>
+//                 </div>
+//             </div>
+
+//             {/* Non-critical Error Display (keep as before) */}
+//             {error && !isLoading && paymentDetails && (
+//                  <div className="bg-destructive/10 border border-destructive/30 text-destructive p-3 rounded-lg mb-6 text-sm flex items-center gap-2">
+//                     <AlertTriangle className="h-5 w-5" />
+//                     <span>{error}</span>
+//                 </div>
+//              )}
+
+//             {/* Action Buttons (keep as before) */}
+//             <div className='space-y-3'>
+//                 <button
+//                     onClick={handleIvePaid}
+//                     disabled={isSubmitting || isLoading}
+//                     className="w-full bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center cursor-pointer transition-all duration-75 ease-linear disabled:opacity-70"
+//                 >
+//                     {isSubmitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
+//                     {isSubmitting ? 'Processing...' : 'I’ve made my bank transfer'}
+//                 </button>
+//                 <button
+//                     onClick={handlePayLater}
+//                     disabled={isSubmitting || isLoading}
+//                     className="w-full bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center cursor-pointer transition-all duration-75 ease-linear disabled:opacity-70"
+//                 >
+//                     I’ll transfer my money later
+//                 </button>
+//             </div>
+//         </div>
+//     );
+// };
+
+// export default PaymentDetailsPage;
+
+
+
+
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
@@ -1088,9 +1458,9 @@ import { Skeleton } from '@/components/ui/skeleton'; // Adjust path
 import { Button } from '@/components/ui/button'; // Adjust path
 // import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"; // Optional Card structure
 import { Copy, HelpCircle, Download, AlertTriangle, Loader2, Check } from 'lucide-react'; // Added Check icon
-import { Toaster, toast } from 'sonner'; // Toast notifications
+import { Toaster, toast } from 'sonner'; // Toast notifications - Keep Toaster import
 
-// --- PaymentDetails Interface (keep as before) ---
+// --- PaymentDetails Interface ---
 interface PaymentDetails {
     _id: string;
     user: string;
@@ -1115,13 +1485,13 @@ interface PaymentDetails {
     __v?: number;
 }
 
-// --- PaymentDetailsPageParams Interface (keep as before) ---
+// --- PaymentDetailsPageParams Interface ---
 interface PaymentDetailsPageParams {
     balanceId: string;
 }
 
 
-// --- DetailItem Component (Updated as above) ---
+// --- DetailItem Component ---
 interface DetailItemProps {
     label: string;
     value: string | undefined | null;
@@ -1142,13 +1512,14 @@ const DetailItem: React.FC<DetailItemProps> = ({ label, value, fieldName, isMono
 
         navigator.clipboard.writeText(text).then(() => {
             setIsCopied(true);
-            const timer = setTimeout(() => {
+            // No need to store timer if not clearing it
+            setTimeout(() => {
                 setIsCopied(false);
             }, 1500);
-            // If using in useEffect, return () => clearTimeout(timer);
         }).catch(err => {
             console.error('DetailItem: Failed to copy text: ', err);
-            setIsCopied(false);
+            toast.error("Could not copy to clipboard."); // Add user feedback
+            setIsCopied(false); // Ensure state resets on error
         });
     };
 
@@ -1164,7 +1535,6 @@ const DetailItem: React.FC<DetailItemProps> = ({ label, value, fieldName, isMono
                  <button
                     onClick={() => handleCopyToClipboard(displayValue)}
                     aria-label={`Copy ${fieldName}`}
-                    // Custom classes for the specific dark button look
                     className={`
                         flex justify-center items-center shrink-0 h-8 px-3 py-1 text-xs sm:text-sm font-medium rounded-md transition-colors duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50
                         ${isCopied
@@ -1189,23 +1559,23 @@ const DetailItem: React.FC<DetailItemProps> = ({ label, value, fieldName, isMono
 
 
 const PaymentDetailsPage = () => {
-    // --- Hooks (keep as before) ---
+    // --- Hooks ---
     const params = useParams<PaymentDetailsPageParams>();
     const searchParams = useSearchParams();
     const router = useRouter();
     const { token } = useAuth();
 
-    // --- State (keep as before) ---
+    // --- State ---
     const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // --- Vars (keep as before) ---
+    // --- Vars ---
     const { balanceId } = params;
     const paymentId = searchParams.get('paymentId');
 
-    // --- Data Fetching Effect (keep as before) ---
+    // --- Data Fetching Effect ---
     useEffect(() => {
         const fetchPaymentDetails = async () => {
             setIsLoading(true);
@@ -1216,12 +1586,14 @@ const PaymentDetailsPage = () => {
                 setError("Payment ID is missing from URL.");
                 setIsLoading(false);
                 console.error("PaymentDetailsPage: No paymentId found.");
+                toast.error("Payment ID missing. Redirecting...");
                 router.push('/dashboard/transactions');
                 return;
             }
             if (!token) {
                  setError("Authentication required. Please log in.");
                  setIsLoading(false);
+                 toast.error("Authentication required. Redirecting to login...");
                  router.push('/auth/login');
                  return;
             }
@@ -1229,14 +1601,30 @@ const PaymentDetailsPage = () => {
             try {
                 const details = await paymentService.getPaymentDetails(paymentId, token);
                 setPaymentDetails(details);
-            } catch (err: any) {
-                const errMsg = err.response?.data?.message || err.message || 'Failed to load payment details';
+            } catch (err: unknown) { // Use unknown instead of any
+                let errMsg = 'Failed to load payment details';
+                let statusCode: number | undefined;
+
+                // Type guard for Axios-like error structure
+                if (typeof err === 'object' && err !== null && 'response' in err) {
+                    const response = (err as { response?: { data?: { message?: string }, status?: number } }).response;
+                    errMsg = response?.data?.message || errMsg;
+                    statusCode = response?.status;
+                } else if (err instanceof Error) {
+                    errMsg = err.message;
+                }
+
                 setError(errMsg);
                 console.error("PaymentDetailsPage: Error fetching payment details:", err);
-                if (err.response?.status === 404) {
+
+                if (statusCode === 404) {
                     setError(`Payment with ID ${paymentId} not found or you don't have access.`);
-                } else if (err.response?.status === 401 || err.response?.status === 403) {
+                } else if (statusCode === 401 || statusCode === 403) {
                      setError("Unauthorized to view this payment.");
+                     toast.error("Unauthorized. Redirecting...");
+                     router.push('/dashboard'); // Or login
+                } else {
+                    toast.error(`Error: ${errMsg}`);
                 }
             } finally {
                 setIsLoading(false);
@@ -1246,7 +1634,7 @@ const PaymentDetailsPage = () => {
         fetchPaymentDetails();
     }, [paymentId, token, router]);
 
-    // --- Action Handlers (keep as before) ---
+    // --- Action Handlers ---
      const handleIvePaid = async () => {
         console.log("PaymentDetailsPage: handleIvePaid triggered");
         setError(null);
@@ -1268,23 +1656,42 @@ const PaymentDetailsPage = () => {
                 console.log("PaymentDetailsPage: Attempting paymentService.confirmUserTransfer");
                 await paymentService.confirmUserTransfer(paymentId, token);
                 console.log("PaymentDetailsPage: confirmUserTransfer successful");
-            } catch (confirmErr: any) {
-                 const confirmErrMsg = confirmErr.response?.data?.message || confirmErr.message;
-                 console.error("PaymentDetailsPage: Failed to update payment status via confirmUserTransfer:", confirmErrMsg);
-                 toast.warning(`Couldn't immediately confirm payment initiation${confirmErrMsg ? `: ${confirmErrMsg}`: '.'} Redirecting...`);
+                // Toast for immediate feedback, even though redirecting
+                toast.success("Payment marked as initiated!");
+            } catch (confirmErr: unknown) { // Use unknown
+                 let confirmErrMsg = 'Could not confirm payment initiation';
+                 // Type guard for Axios-like error structure
+                 if (typeof confirmErr === 'object' && confirmErr !== null && 'response' in confirmErr) {
+                     const response = (confirmErr as { response?: { data?: { message?: string } } }).response;
+                     confirmErrMsg = response?.data?.message || confirmErrMsg;
+                 } else if (confirmErr instanceof Error) {
+                    confirmErrMsg = confirmErr.message;
+                 }
+                 console.error("PaymentDetailsPage: Failed to update payment status via confirmUserTransfer:", confirmErrMsg, confirmErr);
+                 // Use warning toast as it's non-blocking for redirection
+                 toast.warning(`Couldn't immediately confirm payment status: ${confirmErrMsg}. Redirecting...`);
             }
 
+            // Proceed with redirection regardless of the confirmUserTransfer outcome (as per original logic)
             const successUrl = `/dashboard/balances/${balanceId}/payment-success?paymentId=${paymentId}`;
             console.log("PaymentDetailsPage: Navigating to success page:", successUrl);
             router.push(successUrl);
 
-        } catch (err: any) {
-            const errMsg = err.response?.data?.message || err.message || 'An unexpected error occurred.';
+        } catch (err: unknown) { // Use unknown
+            let errMsg = 'An unexpected error occurred.';
+             // Type guard for Axios-like error structure
+             if (typeof err === 'object' && err !== null && 'response' in err) {
+                 const response = (err as { response?: { data?: { message?: string } } }).response;
+                 errMsg = response?.data?.message || errMsg;
+             } else if (err instanceof Error) {
+                errMsg = err.message;
+             }
             setError(`Failed to proceed: ${errMsg}`);
             console.error("PaymentDetailsPage: Error during handleIvePaid (outer catch):", err);
             toast.error(`Failed to proceed: ${errMsg}`);
-            setIsSubmitting(false);
+            setIsSubmitting(false); // Only set submitting false on outer catch failure
         }
+        // Do not set setIsSubmitting(false) here if redirecting successfully
     };
 
     const handlePayLater = () => {
@@ -1297,7 +1704,7 @@ const PaymentDetailsPage = () => {
 
     // --- Render Logic ---
 
-    // Loading State (Skeleton - adjusted slightly for new button height)
+    // Loading State
     if (isLoading) {
         return (
              <div className="container mx-auto px-4 py-8 max-w-lg">
@@ -1305,15 +1712,15 @@ const PaymentDetailsPage = () => {
                  <Skeleton className="h-4 w-4/5 mb-6" />
                  <Skeleton className="h-6 w-1/3 mb-5" />
                  <div className="space-y-4 mb-6">
-                      <Skeleton className="h-[72px] w-full rounded-lg" /> {/* Approx height with p-4 and sm button */}
+                      <Skeleton className="h-[72px] w-full rounded-lg" /> {/* Adjusted height */}
                       <Skeleton className="h-[72px] w-full rounded-lg" />
                       <Skeleton className="h-[72px] w-full rounded-lg" />
                       <Skeleton className="h-[72px] w-full rounded-lg" />
                       <Skeleton className="h-[72px] w-full rounded-lg" />
-                      <Skeleton className="h-[90px] w-full rounded-lg" />
+                      <Skeleton className="h-[90px] w-full rounded-lg" /> {/* Bank address */}
                  </div>
                  <Skeleton className="h-6 w-1/4 mb-4" />
-                 <Skeleton className="h-[88px] w-full rounded-lg mb-8" />
+                 <Skeleton className="h-[88px] w-full rounded-lg mb-8" /> {/* Help section */}
                  <div className="space-y-3">
                     <Skeleton className="h-12 w-full rounded-md" />
                     <Skeleton className="h-12 w-full rounded-md" />
@@ -1322,10 +1729,11 @@ const PaymentDetailsPage = () => {
          );
     }
 
-    // Error State (keep as before)
+    // Error State (when details couldn't be fetched at all)
      if (!isLoading && error && !paymentDetails) {
          return (
              <div className="container mx-auto px-4 py-8 text-center max-w-lg">
+                <Toaster richColors position="top-center" /> {/* Add Toaster for errors */}
                  <div className="bg-destructive/10 border border-destructive/30 text-destructive p-4 rounded-lg flex flex-col items-center space-y-2">
                      <AlertTriangle className="w-6 h-6" />
                      <p className="font-semibold">Error Loading Payment Details</p>
@@ -1338,10 +1746,11 @@ const PaymentDetailsPage = () => {
          );
      }
 
-    // Not Found State (keep as before)
+    // Not Found State
     if (!isLoading && !error && !paymentDetails) {
         return (
             <div className="container mx-auto px-4 py-8 text-center text-muted-foreground max-w-lg">
+                <Toaster richColors position="top-center" /> {/* Add Toaster */}
                 <p className="mb-4">Payment details could not be found or are no longer valid.</p>
                 <Button onClick={() => router.push('/dashboard/transactions')} variant="outline">
                      View Transactions
@@ -1350,8 +1759,22 @@ const PaymentDetailsPage = () => {
         );
     }
 
-    // --- Render Payment Details (Main Structure - keep as before) ---
+    // --- Render Payment Details (Main Structure) ---
+    // Ensure paymentDetails is not null before accessing properties
+    if (!paymentDetails) {
+        // This case should theoretically be covered by the checks above, but added for safety
+        return (
+             <div className="container mx-auto px-4 py-8 text-center text-muted-foreground max-w-lg">
+                 <p>Something went wrong. Please try again later.</p>
+                  <Button onClick={() => router.push('/dashboard/transactions')} variant="outline">
+                     View Transactions
+                 </Button>
+             </div>
+        );
+    }
+
     const payInCurrencyCode = paymentDetails.payInCurrency?.code || 'N/A';
+    // Safely parse amountToPay, handle potential string values
     const amountValue = typeof paymentDetails.amountToPay === 'number'
         ? paymentDetails.amountToPay
         : parseFloat(paymentDetails.amountToPay?.toString() || '0');
@@ -1363,24 +1786,27 @@ const PaymentDetailsPage = () => {
     const bankAddress = bankDetails.bankAddress || defaultBankAddress;
 
     return (
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-8 max-w-2xl"> {/* Adjusted max-width */}
+            <Toaster richColors position="top-center" /> {/* Add Toaster for general use */}
             {/* Header */}
             <h1 className="sm:text-3xl text-2xl text-center font-semibold text-mainheading mb-6 dark:text-white">Use your bank to make a payment to Wise</h1>
             <p className="text-sm text-gray-500 dark:text-gray-300 mb-8 text-center">Make a {`${payInCurrencyCode}`} payment — not an international one — using the details below.</p>
 
             {/* Details Section */}
-            <div className="mb-8 border p-6 rounded-xl">
+            <div className="mb-8 border p-4 sm:p-6 rounded-xl bg-card"> {/* Added bg-card */}
+                {/* Escaped apostrophe */}
                 <h2 className="text-lg font-medium mb-4 text-neutral-900 dark:text-white">Details you'll need to make this transfer</h2>
-                {/* Use the updated DetailItem component */}
                 <div className="space-y-4">
                     <DetailItem label="Payee name" value={bankDetails.payeeName || 'Wise Europe SA'} fieldName="Payee name" />
 
-                    <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center"> {/* Adjusted alignment */}
-                        <div className="flex-1 w-full sm:w-auto"> {/* Ensure DetailItem takes space */}
+                    {/* Reference Code Row */}
+                    <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+                        <div className="flex-1 w-full sm:w-auto">
                             <DetailItem label="Reference code" value={referenceCode} fieldName="Reference code" isMono={true} />
                         </div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 sm:max-w-65 flex-shrink-0 mt-1 sm:mt-0"> {/* Prevent text from pushing button */}
-                            To ensure Wise is able to link this transfer please enter <strong className="text-foreground">{referenceCode}</strong> in the field for the transfer's reason.
+                        <p className="text-xs text-gray-500 dark:text-gray-400 sm:max-w-[200px] flex-shrink-0 mt-1 sm:mt-0"> {/* Adjusted max-width */}
+                             {/* Escaped apostrophe */}
+                            Include <strong className="text-foreground">{referenceCode}</strong> as the reference or reason for your transfer.
                         </p>
                     </div>
 
@@ -1391,43 +1817,45 @@ const PaymentDetailsPage = () => {
                         value={amountToPayFormatted === 'N/A' ? 'N/A' : `${amountToPayFormatted}`}
                         fieldName="Amount to send"
                     />
+                     {/* Bank Address Block */}
                      <div className="bg-lightgray dark:bg-primarybox p-4 rounded-lg">
+                         {/* Escaped apostrophe */}
                          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Our bank's address</p>
-                         <p className="text-foreground break-words">
+                         <p className="text-foreground break-words whitespace-pre-line"> {/* Use pre-line for newlines */}
                             {bankAddress}
                          </p>
                      </div>
                 </div>
             </div>
 
-            {/* Need more help? Section (keep as before) */}
+            {/* Need more help? Section */}
             <div className="border border-border rounded-lg p-4 mb-8 flex items-start gap-4 bg-card">
                 <HelpCircle className="h-6 w-6 text-neutral-900 dark:text-white mt-0.5 shrink-0" />
                 <div>
                     <h3 className="font-medium text-neutral-900 dark:text-white mb-1">Need more help?</h3>
                     <p className="text-sm text-gray-500 dark:text-gray-300 mb-3">
-                        To make things easy, you can download these instructions as a PDF document. Then simply print the document out and hand it to your advisor at the bank.
+                        You can download these instructions as a PDF. Print it out and show it to your bank teller if you need assistance.
                     </p>
-                    <Button variant="link" className="p-0 h-auto text-green-600 hover:text-green-700" onClick={() => toast.info("PDF download not implemented yet.")}>
+                    <Button variant="link" className="p-0 h-auto text-green-600 hover:text-green-700 dark:text-green-500 dark:hover:text-green-600" onClick={() => toast.info("PDF download feature coming soon!")}>
                          Download PDF <Download className="h-4 w-4 ml-1" />
                      </Button>
                 </div>
             </div>
 
-            {/* Non-critical Error Display (keep as before) */}
+            {/* Non-critical Error Display (e.g., if confirmUserTransfer failed but page loaded) */}
             {error && !isLoading && paymentDetails && (
-                 <div className="bg-destructive/10 border border-destructive/30 text-destructive p-3 rounded-lg mb-6 text-sm flex items-center gap-2">
+                 <div className="bg-warning/10 border border-warning/30 text-warning-foreground p-3 rounded-lg mb-6 text-sm flex items-center gap-2"> {/* Use warning variant */}
                     <AlertTriangle className="h-5 w-5" />
-                    <span>{error}</span>
+                    <span>{error}</span> {/* Display non-critical error here */}
                 </div>
              )}
 
-            {/* Action Buttons (keep as before) */}
+            {/* Action Buttons */}
             <div className='space-y-3'>
                 <button
                     onClick={handleIvePaid}
                     disabled={isSubmitting || isLoading}
-                    className="w-full bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center cursor-pointer transition-all duration-75 ease-linear disabled:opacity-70"
+                    className="w-full flex justify-center items-center bg-primary text-primary-foreground hover:bg-primary/90 font-medium rounded-full px-6 py-3 h-12 text-center cursor-pointer transition-colors duration-150 ease-linear disabled:opacity-70 disabled:cursor-not-allowed" // Adjusted styling to match Button component feel
                 >
                     {isSubmitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
                     {isSubmitting ? 'Processing...' : 'I’ve made my bank transfer'}
@@ -1435,7 +1863,7 @@ const PaymentDetailsPage = () => {
                 <button
                     onClick={handlePayLater}
                     disabled={isSubmitting || isLoading}
-                    className="w-full bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center cursor-pointer transition-all duration-75 ease-linear disabled:opacity-70"
+                     className="w-full flex justify-center items-center bg-secondary text-secondary-foreground hover:bg-secondary/80 font-medium rounded-full px-6 py-3 h-12 text-center cursor-pointer transition-colors duration-150 ease-linear disabled:opacity-70 disabled:cursor-not-allowed" // Adjusted styling
                 >
                     I’ll transfer my money later
                 </button>

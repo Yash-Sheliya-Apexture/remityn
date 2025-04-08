@@ -4,7 +4,7 @@
 import Image from "next/image";
 import React, { useState, useRef, useEffect } from "react";
 import { IoPersonOutline } from "react-icons/io5";
-import { FaCog, FaTag } from "react-icons/fa";
+import { FaCog } from "react-icons/fa";
 import { BiLogOut } from "react-icons/bi";
 
 export interface UserProfileProps {

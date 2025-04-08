@@ -4661,6 +4661,316 @@
 // export default BalanceDetailPage;
 
 
+// // frontend/src/app/dashboard/balances/[balanceId]/page.tsx
+// "use client";
+
+// import React, { useState, useCallback, useMemo, useEffect } from "react";
+// import { useParams, useRouter } from "next/navigation";
+
+// // Hooks and Services
+// import { useAuth } from "../../../hooks/useAuth"; // Adjust path
+// import { useBalanceDetailData, BalanceDetail } from "../../../hooks/useBalanceDetailData"; // Adjust path
+// import { parseISO } from "date-fns"; // Keep for filter parsing
+
+// // Components and Types
+// import BalanceHeader from "../../components/BalanceHeader"; // Adjust path
+// import TransactionActions from "../../components/TransactionPageSection/TransactionActions"; // Adjust path
+// import TransactionList from "../../components/TransactionList"; // Adjust path
+// import { Transaction } from "@/types/transaction"; // Adjust path
+// import InsufficientBalanceModal from "../../components/InsufficientBalanceModal"; // Adjust path
+// import { Skeleton } from "@/components/ui/skeleton"; // Adjust path
+// import { Button } from "@/components/ui/button"; // Adjust path
+// import exchangeRateService from '../../../services/exchangeRate'; // Import exchange rate service
+
+// // --- Interfaces --- (Keep params interface here)
+// interface BalanceDetailPageParams {
+//   balanceId: string;
+// }
+
+// // --- Utility Function --- (Keep or move to utils)
+// function parseDateString(dateString: string | undefined): Date | null {
+//     if (!dateString) return null;
+//     try {
+//         const isoDate = parseISO(dateString);
+//         if (!isNaN(isoDate.getTime())) { return isoDate; }
+//     } catch {}
+//     const parts = dateString.split('-');
+//     if (parts.length === 3) {
+//         const day = parseInt(parts[0], 10);
+//         const month = parseInt(parts[1], 10) - 1;
+//         const year = parseInt(parts[2], 10);
+//         if (!isNaN(day) && !isNaN(month) && !isNaN(year)) { return new Date(year, month, day); }
+//     }
+//     console.warn("Could not parse date string:", dateString);
+//     return null;
+// }
+
+// // --- Component ---
+// const BalanceDetailPage = () => {
+//   const params = useParams<BalanceDetailPageParams>();
+//   const router = useRouter();
+//   const { balanceId } = params;
+//   const { token } = useAuth(); // Needed for the hook
+
+//   // --- Data Fetching using Custom Hook ---
+//   const {
+//       balanceDetail,
+//       balanceSpecificTransactions, // Base list fetched by the hook
+//       isLoading, // Loading state for balance detail
+//       isTransactionsLoading, // Loading state for transactions
+//       error, // Combined error from hook
+//       // fetchData, // Can expose fetchData if manual refetch is needed
+//   } = useBalanceDetailData(balanceId);
+
+//   // --- State for UI Interaction ---
+//   const [displayTransactions, setDisplayTransactions] = useState<Transaction[]>([]); // Filtered/Searched list for UI display
+//   const [isInsufficientBalanceModalOpen, setIsInsufficientBalanceModalOpen] = useState(false); // <<<--- STATE FOR MODAL
+
+//   // --- Derived State ---
+//   const canSendMoney = useMemo(() => (balanceDetail?.balance ?? 0) > 0, [balanceDetail]); // <<<--- CONDITION CHECKED HERE
+//   const currencyCode = useMemo(() => balanceDetail?.currency?.code ?? 'N/A', [balanceDetail]);
+//   const wasInitiallyEmpty = useMemo(() => !isTransactionsLoading && balanceSpecificTransactions.length === 0, [isTransactionsLoading, balanceSpecificTransactions]);
+
+//   const [marketRateAgainstINR, setMarketRateAgainstINR] = useState<number | null>(null);
+//   const [ourRateAgainstINR, setOurRateAgainstINR] = useState<number | null>(null);
+
+//   // --- Effect to Initialize/Reset Display Transactions ---
+//   useEffect(() => {
+//       // When the base list from the hook changes (initial load, refetch), reset the display list
+//       setDisplayTransactions(balanceSpecificTransactions);
+//   }, [balanceSpecificTransactions]);
+
+
+//   // --- Callbacks for TransactionActions (Search/Filter) ---
+//   const handleSearchChange = useCallback((searchResults: Transaction[]) => {
+//       setDisplayTransactions(searchResults); // Update display list based on search
+//   }, []);
+
+//   const handleFiltersApply = useCallback((filters: { /* ... filter types ... */
+//       selectedDirection?: string;
+//       selectedStatus?: string | null;
+//       fromDate?: string;
+//       toDate?: string;
+//   }) => {
+//       console.log(`BalanceDetailPage: Applying filters:`, filters);
+//       let tempFiltered = [...balanceSpecificTransactions]; // Start with the base list for this balance
+
+//       // --- Apply Filters (Copied logic from original) ---
+//         // Apply Direction Filter
+//         const direction = filters.selectedDirection;
+//         if (direction && direction !== 'all') { /* ... filter logic ... */
+//             tempFiltered = tempFiltered.filter(tx =>
+//                  (direction === 'add' && tx.type === 'Add Money') ||
+//                  (direction === 'send' && tx.type === 'Send Money')
+//              );
+//         }
+
+//         // Apply Status Filter
+//         const statusFilter = filters.selectedStatus?.toLowerCase();
+//         if (statusFilter) { /* ... filter logic ... */
+//              tempFiltered = tempFiltered.filter(tx => {
+//                  const txStatus = tx.status; // Already normalized in hook
+//                  if (!txStatus) return false;
+//                  if (statusFilter === 'needs attention') return tx.type === 'Add Money' && txStatus === 'pending';
+//                  if (statusFilter === 'completed') return txStatus === 'completed';
+//                  if (statusFilter === 'cancelled') return txStatus === 'canceled' || txStatus === 'cancelled';
+//                  if (statusFilter === 'in process') return (tx.type === 'Add Money' && txStatus === 'in progress') || (tx.type === 'Send Money' && (txStatus === 'pending' || txStatus === 'processing'));
+//                  if (statusFilter === 'failed') return txStatus === 'failed';
+//                  return false;
+//               });
+//         }
+
+//         // Apply Date Filter
+//         const fromDateObj = parseDateString(filters.fromDate);
+//         const toDateObj = parseDateString(filters.toDate);
+//         if (fromDateObj) fromDateObj.setHours(0, 0, 0, 0);
+//         if (toDateObj) toDateObj.setHours(23, 59, 59, 999);
+//         if (fromDateObj || toDateObj) { /* ... filter logic ... */
+//              tempFiltered = tempFiltered.filter(tx => {
+//                  const transactionDateStr = tx.updatedAt || tx.createdAt;
+//                  if (!transactionDateStr) return false;
+//                  try {
+//                      const transactionDateObj = new Date(transactionDateStr);
+//                      if (isNaN(transactionDateObj.getTime())) return false;
+//                      let include = true;
+//                      if (fromDateObj && transactionDateObj < fromDateObj) include = false;
+//                      if (toDateObj && transactionDateObj > toDateObj) include = false;
+//                      return include;
+//                  } catch (e) { return false; }
+//              });
+//         }
+//       // --- End Filter Logic ---
+
+//       setDisplayTransactions(tempFiltered); // Update display list based on filters
+
+//   }, [balanceSpecificTransactions]); // Recalculate if the base list changes
+
+
+//   // --- Modal Handlers ---
+//   const handleOpenInsufficientBalanceModal = () => { setIsInsufficientBalanceModalOpen(true); }; // <<<--- FUNCTION TO OPEN MODAL
+//   const handleCloseInsufficientBalanceModal = () => { setIsInsufficientBalanceModalOpen(false); };
+//   const handleAddMoneyFromModal = () => { router.push(`/dashboard/balances/${balanceId}/add-money`); };
+
+//    // --- Send/Back Click Handlers ---
+//     const handleSendClick = () => {
+//         // DEBUGGING: Log the values right before the check
+//         console.log("handleSendClick triggered. canSendMoney:", canSendMoney, "Balance:", balanceDetail?.balance);
+//         if (canSendMoney) {
+//             router.push(`/dashboard/balances/${balanceId}/send/select-recipient`);
+//         } else {
+//             handleOpenInsufficientBalanceModal(); // <<<--- MODAL IS TRIGGERED HERE IF canSendMoney is false
+//         }
+//     };
+//     const handleBackClick = () => router.back();
+
+//     // --- Fetch Market and Our Rate against INR ---
+//     useEffect(() => {
+//         const fetchRatesAgainstINR = async () => {
+//             if (!balanceDetail || !currencyCode || currencyCode === 'N/A') return; // Added check for N/A
+//             try {
+//                 const ratesData = await exchangeRateService.getExchangeRatesForCurrencies();
+//                 const liveRates = ratesData.rates?.rates;
+//                 const baseCurrency = ratesData.rates?.base || 'USD'; // Assuming base is USD if not provided
+
+//                 // Check if INR and the specific currency code exist
+//                 if (liveRates && liveRates[currencyCode] && liveRates['INR']) {
+//                     // Calculate rate relative to base first, then to INR
+//                     // Example: (INR / BASE) / (CUR / BASE) = INR / CUR
+//                     const rateToBase = liveRates[currencyCode];
+//                     const inrToBase = liveRates['INR'];
+
+//                     if (rateToBase === 0) {
+//                          console.warn(`Exchange rate for ${currencyCode} against base (${baseCurrency}) is zero.`);
+//                          setMarketRateAgainstINR(null);
+//                          setOurRateAgainstINR(null);
+//                          return;
+//                     }
+
+//                     const liveRateToINR = inrToBase / rateToBase; // Rate: 1 unit of balance currency to INR (Market Rate)
+//                     setMarketRateAgainstINR(liveRateToINR);
+
+//                     // Simulate "Our Rate" calculation - using adjustment percentage from balanceDetail
+//                     // Ensure rateAdjustmentPercentage exists and is a number
+//                     const adjustmentPercent = typeof balanceDetail.currency.rateAdjustmentPercentage === 'number'
+//                                                 ? balanceDetail.currency.rateAdjustmentPercentage
+//                                                 : 0;
+
+//                     // Our rate applies the adjustment. Example: If adjustment is -1 (-1%), multiplier is 0.99
+//                     const adjustedRateMultiplier = (1 + (adjustmentPercent / 100));
+//                     const ourRateToINR = liveRateToINR * adjustedRateMultiplier; // Our Rate
+//                     setOurRateAgainstINR(ourRateToINR);
+
+//                 } else {
+//                     console.warn(`Could not find live exchange rates for ${currencyCode} or INR in API response. Base: ${baseCurrency}`, liveRates);
+//                     setMarketRateAgainstINR(null); // Reset if rates aren't available
+//                     setOurRateAgainstINR(null);
+//                 }
+
+//             } catch (error) {
+//                 console.error("Error fetching exchange rates for INR comparison:", error);
+//                 setMarketRateAgainstINR(null); // Reset on error
+//                 setOurRateAgainstINR(null);
+//             }
+//         };
+//         fetchRatesAgainstINR();
+//     }, [balanceDetail, currencyCode]); // currencyCode dependency is correct
+
+
+//   // --- Render Logic ---
+
+//   // Loading state before balance detail is available (or critical error)
+//   if (isLoading && !balanceDetail && !error) {
+//      // Show a more comprehensive initial skeleton maybe? Or keep BalanceHeader's skeleton
+//      return (
+//         <div className="container mx-auto px-4 py-8 animate-pulse">
+//              {/* Minimal Page Skeleton */}
+//              <Skeleton className="h-6 w-20 mb-4" />
+//              <Skeleton className="h-48 w-full mb-8 rounded-lg" /> {/* Placeholder for BalanceHeader */}
+//              <Skeleton className="h-8 w-40 mb-6" /> {/* Transactions title */}
+//              <Skeleton className="h-10 w-full md:w-auto mb-6 ml-auto rounded-full" /> {/* Actions Placeholder */}
+//              <Skeleton className="h-40 w-full rounded-lg" /> {/* Placeholder for transactions */}
+//         </div>
+//      );
+//   }
+
+//   // Error State or Balance Not Found
+//   if ((error && !balanceDetail) || (!isLoading && !balanceDetail)) {
+//     const message = typeof error === 'string' ? error : "Balance details not found or you may not have access."; // Ensure message is string
+//     return (
+//         <div className="container mx-auto px-4 py-8 text-center">
+//             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/40 text-red-700 dark:text-red-300 p-4 rounded-md max-w-lg mx-auto">
+//                  <p className="font-semibold">Error Loading Balance</p>
+//                  <p className="text-sm mt-1">{message}</p>
+//             </div>
+//             <Button onClick={handleBackClick} variant="outline" className="mt-6">Go Back</Button>
+//         </div>
+//      );
+//    }
+
+//   // --- Main Render Structure ---
+//   return (
+//     <div className="container mx-auto py-8">
+//       <BalanceHeader
+//           balanceDetail={balanceDetail} // Already checked for null above
+//           isLoading={isLoading} // Pass loading state for internal skeleton
+//           onSendClick={handleSendClick} // <<<--- PASSING THE HANDLER
+//           canSendMoney={canSendMoney} // <<<--- PASSING THE CONDITION
+//           marketRateAgainstINR={marketRateAgainstINR}
+//           ourRateAgainstINR={ourRateAgainstINR}
+//       />
+
+//       {/* --- Transactions Section --- */}
+//       <div className="mt-10">
+//          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky top-0 z-10 bg-white dark:bg-background">
+//             <h3 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">Transactions</h3>
+//             {/* Render Actions only when transactions *could* exist */}
+//             {!isTransactionsLoading && balanceSpecificTransactions.length > 0 && (
+//                <TransactionActions
+//                   transactions={balanceSpecificTransactions} // Base list for filtering/searching
+//                   onTransactionsChange={handleSearchChange}
+//                   onFiltersApply={handleFiltersApply}
+//                   // userAccounts={...} // Pass if needed - NOTE: TransactionActions expects userAccounts prop now
+//                   userAccounts={[]} // TODO: Pass actual user accounts if filter needs them
+//                />
+//             )}
+//             {/* Loading skeleton for actions while transactions load */}
+//             {isTransactionsLoading && (
+//                  <div className="flex items-center gap-2 animate-pulse w-full md:w-auto justify-end">
+//                      <Skeleton className="h-9 w-24 rounded-full" />
+//                      <Skeleton className="h-9 w-24 rounded-full" />
+//                  </div>
+//               )}
+//          </div>
+
+//          {/* Transaction List Component handles its own loading/error/empty states */}
+//          <TransactionList
+//              transactions={displayTransactions} // Pass the potentially filtered/searched list
+//              isLoading={isTransactionsLoading}
+//              error={error && (error.includes('payment history') || error.includes('transfer history')) ? error : null} // Pass only transaction-specific errors
+//              currencyCode={currencyCode}
+//              balanceId={balanceId!} // We know balanceId exists if we reach here
+//              onSendClick={handleSendClick} // Needed for empty state
+//              canSendMoney={canSendMoney}   // Needed for empty state
+//              wasInitiallyEmpty={wasInitiallyEmpty} // Pass flag for correct empty message
+//          />
+
+//       </div> {/* End Transactions Section Div */}
+
+//       {/* Insufficient Balance Modal */}
+//       <InsufficientBalanceModal
+//           isOpen={isInsufficientBalanceModalOpen} // <<<--- CONTROLLED BY STATE
+//           onClose={handleCloseInsufficientBalanceModal}
+//           onAddMoney={handleAddMoneyFromModal}
+//           currencyCode={currencyCode}
+//       />
+//     </div> // End Main Container Div
+//   );
+// };
+
+// export default BalanceDetailPage;
+
+
+
 // frontend/src/app/dashboard/balances/[balanceId]/page.tsx
 "use client";
 
@@ -4669,7 +4979,7 @@ import { useParams, useRouter } from "next/navigation";
 
 // Hooks and Services
 import { useAuth } from "../../../hooks/useAuth"; // Adjust path
-import { useBalanceDetailData, BalanceDetail } from "../../../hooks/useBalanceDetailData"; // Adjust path
+import { useBalanceDetailData } from "../../../hooks/useBalanceDetailData"; // Adjust path
 import { parseISO } from "date-fns"; // Keep for filter parsing
 
 // Components and Types
@@ -4693,7 +5003,9 @@ function parseDateString(dateString: string | undefined): Date | null {
     try {
         const isoDate = parseISO(dateString);
         if (!isNaN(isoDate.getTime())) { return isoDate; }
-    } catch {}
+    } catch (e) { // fix: use e to log the error
+        console.warn("Could not parse date string:", dateString, e);
+    }
     const parts = dateString.split('-');
     if (parts.length === 3) {
         const day = parseInt(parts[0], 10);
@@ -4710,7 +5022,7 @@ const BalanceDetailPage = () => {
   const params = useParams<BalanceDetailPageParams>();
   const router = useRouter();
   const { balanceId } = params;
-  const { token } = useAuth(); // Needed for the hook
+  const { token } = useAuth(); // Needed for the hook // fix: token is likely used in useAuth hook, keep it
 
   // --- Data Fetching using Custom Hook ---
   const {
@@ -4720,7 +5032,7 @@ const BalanceDetailPage = () => {
       isTransactionsLoading, // Loading state for transactions
       error, // Combined error from hook
       // fetchData, // Can expose fetchData if manual refetch is needed
-  } = useBalanceDetailData(balanceId);
+  } = useBalanceDetailData(balanceId); // BalanceDetail is used as type in hook definition, keep import
 
   // --- State for UI Interaction ---
   const [displayTransactions, setDisplayTransactions] = useState<Transaction[]>([]); // Filtered/Searched list for UI display
