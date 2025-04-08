@@ -229,7 +229,7 @@ const AddMoneyPage = () => {
             <div>
                 <label
                     htmlFor="amount"
-                    className="block text-base font-medium text-neutral-900 dark:text-white"
+                    className="block text-base font-medium text-mainheading dark:text-white"
                 >
                     Amount to add to Wise
                 </label>
@@ -303,7 +303,7 @@ const AddMoneyPage = () => {
                         </dd>
                     </div>
                     <div className="py-3.5 flex justify-between text-sm text-gray border-t dark:border-lightgray/26">
-                        <dt className="text-neutral-900 font-bold capitalize">
+                        <dt className="text-neutral-900 dark:text-white font-bold capitalize">
                             Total you'll pay
                         </dt>
                         <dd className="ml-6 text-neutral-900 dark:text-white font-bold">
