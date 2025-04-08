@@ -86,26 +86,28 @@ const RateDisplay: React.FC<RateDisplayProps> = ({ rateContext, apiError }) => {
     const rateAdjustmentDisplay = rateContext?.rateAdjustmentApplied?.toFixed(2) ?? '0';
 
     return (
-        <div className="text-right mb-4 min-h-[50px] space-y-1 flex flex-col items-end">
+        <div className="text-right mb-4 min-h-[50px] space-y-2 flex flex-col items-end">
             {showRates && rateContext && (
                 <>
                     {adjustedRateDisplay && (
-                        <div className="text-xs sm:text-sm font-medium p-1.5 px-2.5 rounded-md bg-blue-50 border border-blue-200 text-blue-800 inline-flex items-center gap-1.5 cursor-default" title={`Rate includes adjustment of ${rateAdjustmentDisplay}%. This is the rate applied to your transfer.`}>
-                            <FaLock size={10} /> Our Rate: {adjustedRateDisplay}
+                        <div className="font-semibold p-2 px-5 rounded-md bg-primary text-mainheading inline-flex items-center gap-1.5 cursor-default" title={`Rate includes adjustment of ${rateAdjustmentDisplay}%. This is the rate applied to your transfer.`}>
+                            <FaLock size={16} /> Our Rate: {adjustedRateDisplay}
                         </div>
                     )}
                     {liveRateDisplay && (
-                        <div className="text-xs font-normal p-1.5 px-2.5 rounded-md bg-gray-100 border border-gray-200 text-gray-600 inline-flex items-center gap-1.5 cursor-help" title="Current market rate for comparison only.">
-                            <FaInfoCircle size={10} /> Market Rate: {liveRateDisplay}
+                        <div className="font-medium text-sm p-1.5  rounded-md bg-lightgray text-gray-500 dark:text-mainheading inline-flex items-center gap-1.5 cursor-help" title="Current market rate for comparison only.">
+                            <FaInfoCircle size={16} /> Market Rate: {liveRateDisplay}
                         </div>
                     )}
                 </>
             )}
+
             {apiError && apiError === "Failed to load initial exchange rates." && !rateContext && (
                 <div className="text-xs p-1.5 px-2.5 rounded-md bg-red-50 border border-red-200 text-red-700 inline-flex items-center gap-1.5">
                     <AlertTriangle size={12} /> Error loading rates.
                 </div>
             )}
+            
             {!showRates && !(apiError === "Failed to load initial exchange rates.") && (
                 <div className="h-[50px]"></div> // Placeholder for consistent spacing
             )}
