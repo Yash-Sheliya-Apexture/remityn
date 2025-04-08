@@ -31,13 +31,7 @@ const AccountSettings: React.FC = () => {
   return (
     // Consider adjusting grid layout for better sticky behavior if needed:
     <div className="max-w-2xl mx-auto grid grid-cols-1 md:grid-cols-[auto,1fr] gap-10"> {/* Example layout adjustment + padding */}
-
-      {/* Left Side: Potentially Sticky Account Card */}
-      <div className="md:sticky top-0 h-fit z-10 bg-white dark:bg-background">
-        {/* Pass the dynamic displayName to AccountCard */}
         <AccountCard username={displayName} />
-      </div>
-
       {/* Right Side: Scrollable Menu Items */}
       <div className="flex flex-col w-full">
         <h2 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white mb-4">Your account</h2>
