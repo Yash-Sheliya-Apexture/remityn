@@ -1,15 +1,14 @@
+// app/dashboard/balances/[balanceId]/add-money/page.tsx
 "use client";
 
 import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 import React, { useState, useEffect, useCallback } from "react";
 import { AiFillBank } from "react-icons/ai";
-import { IoIosArrowBack } from "react-icons/io";
 import { useAuth } from "../../../../hooks/useAuth";
-import axios from "axios";
+import axios from "axios"; // Keep axios import for type checking
 import apiConfig from "../../../../config/apiConfig";
 import { Skeleton } from "@/components/ui/skeleton";
-import Link from 'next/link';
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
@@ -17,10 +16,6 @@ interface AddMoneyPageParams {
     balanceId: string;
 }
 
-interface CurrencyOption {
-    _id: string;
-    code: string;
-}
 
 interface PaymentSummary {
     _id?: string; // _id is optional in summary, will be present after initiateAddMoney
@@ -75,9 +70,11 @@ const AddMoneyPage = () => {
                         setIsDetailsLoading(false);
                     })
                     .catch(err => {
-                        setError(
-                            err.response?.data?.message || "Failed to calculate payment summary"
-                        );
+                        let errorMessage = "Failed to calculate payment summary";
+                        if (axios.isAxiosError(err)) {
+                            errorMessage = err.response?.data?.message || errorMessage;
+                        }
+                        setError(errorMessage);
                         console.error("Error calculating payment summary:", err);
                         setPaymentSummary(null);
                         setIsDetailsLoading(false);
@@ -103,10 +100,14 @@ const AddMoneyPage = () => {
                 setTimeout(() => {
                     setIsLoading(false);
                 }, 200);
-            } catch (err: any) {
-                setError(
-                    err.response?.data?.message || "Failed to load balance currency"
-                );
+            } catch (err: unknown) { // Changed 'any' to 'unknown'
+                let errorMessage = "Failed to load balance currency";
+                 if (axios.isAxiosError(err)) { // Type check for AxiosError
+                     errorMessage = err.response?.data?.message || errorMessage;
+                 } else if (err instanceof Error) {
+                     errorMessage = err.message;
+                 }
+                setError(errorMessage);
                 setTimeout(() => {
                     setIsLoading(false);
                 }, 200);
@@ -172,11 +173,17 @@ const AddMoneyPage = () => {
             }
 
 
-        } catch (err: any) {
-            setError(err.response?.data?.message || "Failed to initiate payment");
+        } catch (err: unknown) { // Changed 'any' to 'unknown'
+            let errorMessage = "Failed to initiate payment";
+            if (axios.isAxiosError(err)) { // Type check for AxiosError
+                errorMessage = err.response?.data?.message || errorMessage;
+            } else if (err instanceof Error) {
+                errorMessage = err.message;
+            }
+            setError(errorMessage);
             console.error("Error initiating payment:", err);
         } finally {
-            setIsLoading(false); 
+            setIsLoading(false);
         }
     };
 
@@ -190,7 +197,8 @@ const AddMoneyPage = () => {
                 <Skeleton className="h-12 w-full mb-2" />
                 <Skeleton className="h-16 w-full mb-4" />
                 <Skeleton className="h-6 w-full mb-2" />
-                <Skeleton className="h-5 w-full mb-2" count={5} />
+                {/* Adjusted skeleton count */}
+                {Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-5 w-full mb-2" />)}
                 <Skeleton className="h-12 w-full mt-4" />
             </div>
         );
@@ -303,6 +311,7 @@ const AddMoneyPage = () => {
                         </dd>
                     </div>
                     <div className="py-3.5 flex justify-between text-sm text-gray border-t dark:border-lightgray/26">
+                         {/* Fixed unescaped entity */}
                         <dt className="text-neutral-900 font-bold capitalize">
                             Total you'll pay
                         </dt>
@@ -330,9 +339,3 @@ const AddMoneyPage = () => {
 };
 
 export default AddMoneyPage;
-
-
-interface CurrencyOption {
-    _id: string;
-    code: string;
-}

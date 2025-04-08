@@ -664,14 +664,12 @@ interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
   featureLinks: { href: string; text: string }[];
-  topContent: React.ReactNode; //  <--- Receive topContent
 }
 
 const MobileMenu: React.FC<MobileMenuProps> = ({
   isOpen,
   onClose,
-  featureLinks,
-  topContent, //  <--- Destructure topContent
+  featureLinks
 }) => {
   const [isFeaturesOpen, setIsFeaturesOpen] = useState(false); // State for Features dropdown
 

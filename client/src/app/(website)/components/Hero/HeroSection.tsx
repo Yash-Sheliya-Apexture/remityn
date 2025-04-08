@@ -3240,8 +3240,290 @@
 
 
 
-// New Latest Code
-// app/components/Home/HeroSection.tsx
+// // New Latest Code
+// // app/components/Home/HeroSection.tsx
+// "use client";
+// import { SlLock } from "react-icons/sl";
+// import { IoIosArrowForward } from "react-icons/io";
+// import { CiBank } from "react-icons/ci";
+// import { useState, useEffect } from "react";
+// import CountryDropdown from "../../../components/ui/CountryDropdown"; //correct path
+// import HeroText from "./HeroText";
+// import Image from "next/image";
+// import inr from "../../../../../public/assets/icon/inr.svg";
+// import { useAppContext } from "../../layout"; // Import the context hook.
+// import exchangeRateService from '../../../services/exchangeRate'; // Import the service
+
+// interface ExchangeRates {
+//   [key: string]: { [key: string]: number };
+// }
+
+// interface ApiResponse {
+//   rates: {
+//     date: string;
+//     base: string;
+//     rates: { [key: string]: number };
+//   }
+// }
+
+// const HeroSection: React.FC = () => {
+//     const { selectedSendCurrency, setSelectedSendCurrency } = useAppContext(); //get context
+//     const [sendAmount, setSendAmount] = useState("");
+
+//   const [receiveAmount, setReceiveAmount] = useState("");
+//   const [selectedReceiveCurrency, setSelectedReceiveCurrency] = useState("INR"); // Fixed to INR
+//   const [exchangeRates, setExchangeRates] = useState<ExchangeRates>({});
+//   const [loadingRates, setLoadingRates] = useState(true);
+//   const [rate, setRate] = useState(0);
+//   const [sendFee, setSendFee] = useState(0);
+//   const [gst, setGst] = useState(0);
+//   const [arrivalDate, setArrivalDate] = useState<string | null>(null);
+
+
+//   useEffect(() => {
+//     const fetchExchangeRates = async () => {
+//       setLoadingRates(true);
+//       try {
+//         const response = await exchangeRateService.getExchangeRatesForCurrencies();
+//         const data = response.rates; // Access the rates from the service response
+
+//         if (data && data.rates) {
+//           const transformedRates: ExchangeRates = {};
+//           const baseRate = data.rates;
+
+
+//           // Build the exchange rates object in the desired format.
+//           for (const baseCurrency of Object.keys(baseRate)) {
+//             transformedRates[baseCurrency] = {};
+//             for (const targetCurrency of Object.keys(baseRate)) {
+//               transformedRates[baseCurrency][targetCurrency] =
+//                 baseRate[targetCurrency] / baseRate[baseCurrency];
+//             }
+//             transformedRates[baseCurrency][baseCurrency] = 1; // 1:1 for same currency
+//           }
+
+//             //Corrected USD to INR Initialization
+//           const initialRate = transformedRates[selectedSendCurrency]?.["INR"] || 87.2; // Default to a reasonable value if INR is missing.  Use the correct data structure.
+//           setRate(initialRate);
+//           setExchangeRates(transformedRates);
+//         } else {
+//           console.error("Failed to fetch exchange rates: No rates data in response", data); // More specific error log
+//         }
+//       } catch (error) {
+//         console.error("Error fetching exchange rates:", JSON.stringify(error, null, 2)); // Log full error object
+//       } finally {
+//         setLoadingRates(false);
+//       }
+//     };
+
+//     fetchExchangeRates();
+//   }, [selectedSendCurrency]);  // Add selectedSendCurrency as a dependency
+
+
+
+//   const convertAndFormat = (amount: string, rate: number) => {
+//     const numericAmount = parseFloat(amount.replace(/,/g, ""));
+//     if (isNaN(numericAmount)) {
+//       return "";
+//     }
+//     const convertedAmount = numericAmount * rate;
+//     return convertedAmount.toFixed(2);
+//   };
+
+//   const handleSendAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+//     const newSendAmount = event.target.value;
+
+//     // Remove non-numeric characters except for the decimal point
+//         const sanitizedAmount = newSendAmount.replace(/[^0-9.]/g, '');
+//         setSendAmount(sanitizedAmount);
+
+
+//     if (!loadingRates) {
+//        const currentRate = exchangeRates[selectedSendCurrency]?.["INR"] || 1; // Always convert to INR
+//       setReceiveAmount(convertAndFormat(sanitizedAmount, currentRate));
+//     }
+//   };
+
+//   const handleCurrencyChange = (isSendCurrency: boolean, newCurrency: string) => {
+//     if (isSendCurrency) {
+//       setSelectedSendCurrency(newCurrency);  //Use the setter from context
+
+//       if (!loadingRates) {
+//         // Only update send currency and recalculate
+//         const newRate = exchangeRates[newCurrency]?.["INR"] || 1;  // Always INR
+//         setRate(newRate);
+//         setReceiveAmount(convertAndFormat(sendAmount, newRate));
+//       }
+//     }
+//     // No else needed, receive currency is fixed
+//   };
+
+
+
+//   useEffect(() => {
+//     // Example: Arrives in 1-3 business days
+//     const today = new Date();
+//     const arrival = new Date(today);
+//     arrival.setDate(today.getDate() + 2); // +2 for "Wednesday" example
+
+//     const options: Intl.DateTimeFormatOptions = { weekday: 'long' };
+//     setArrivalDate(arrival.toLocaleDateString(undefined, options));
+//   }, []); // Run only once on mount
+
+//   const displayRate = () => {
+//     if (loadingRates) {
+//       return "Loading...";
+//     }
+//     return `1 ${selectedSendCurrency} = ${rate.toFixed(4)} INR`; // Always show INR
+//   };
+
+
+//   return (
+//     <section className="Hero-Section py-12 bg-white">
+//       <div className="container mx-auto px-4">
+//         <div className="flex flex-col lg:flex-row items-center gap-12">
+//           {/* Left Column: Text Content */}
+//           <div className="lg:w-1/2 space-y-5 p-4">
+//             <HeroText />
+//           </div>
+
+//           {/* Right Column: card */}
+//           <div className="lg:w-xl lg:ml-auto">
+//             <div className="bg-white rounded-3xl shadow-lg md:p-8 p-4 border border-gray-50">
+//               {/* Rate Guaranteed */}
+//               <div className="flex flex-col justify-center items-center gap-1 text-green font-medium text-center mb-4 ">
+//                 <div className="flex justify-center items-center gap-2">
+//                   <SlLock size={22} className="" />
+//                   <span>Rate guaranteed (24h)</span>
+//                 </div>
+//                 <span className="bg-green/10 rounded-full py-1 px-2 inline-block mt-1">
+//                   {displayRate()}
+//                 </span>
+//               </div>
+
+//               {/* You Send */}
+//               <div className="mb-3">
+//                 <label className="block font-medium text-main mb-1">
+//                   You send exactly
+//                 </label>
+//                 <div>
+//                   <div className="w-full border border-gray-300 rounded-xl shadow-sm flex items-center justify-between">
+//                     <input
+//                       type="text"
+//                       placeholder="0"
+//                       value={sendAmount}
+//                       onChange={handleSendAmountChange}
+//                       className="block w-full h-16 p-3 text-main text-xl font-semibold focus:outline-none"
+//                     />
+//                     {/* Country Part :- For Change Country */}
+
+//                     <CountryDropdown  //CountryDropdown is not defined in this file its in down of this page
+//                       selectedCurrency={selectedSendCurrency}
+//                       onCurrencyChange={(newCurrency) =>
+//                         handleCurrencyChange(true, newCurrency)
+//                       }
+//                     />
+//                   </div>
+//                 </div>
+//                 <p className="text-cyan-900 mt-1 text-sm bg-cyan-100/30 rounded-lg px-2 py-1">
+//                   Sending over 20,000 GBP or equivalent?{" "}
+//                   <button className="underline cursor-pointer font-medium">
+//                     We'll discount our fee
+//                   </button>
+//                 </p>
+//               </div>
+
+//               {/* Recipient Gets */}
+//               <div className="mb-3">
+//                 <label className="block font-medium text-main mb-1">
+//                   Recipient gets
+//                 </label>
+//                 <div className="w-full border border-gray-300 rounded-xl shadow-sm flex items-center justify-between">
+//                   <input
+//                     type="text"
+//                     placeholder="0"
+//                     value={receiveAmount}
+//                     readOnly // Make the input read-only
+//                     className="block w-full h-16 p-3 text-main text-xl font-semibold focus:outline-none"
+//                   />
+//                   {/* Fixed INR Display */}
+//                   <div className="flex items-center gap-2 w-24 pr-2">
+//                     <Image src={inr} alt="INR-Flag" width={24} height={24} />
+//                     <p className="text-main font-semibold">INR</p>
+//                   </div>
+//                 </div>
+//               </div>
+
+//               {/* Paying With */}
+//               <div className="mb-4">
+//                 <label className="block font-medium text-main mb-1">
+//                   Paying with
+//                 </label>
+//                 <div className="hover:bg-green/10 p-3 h-16 border border-green hover:border-green rounded-xl flex items-center justify-between transition-colors duration-200 ease-in-out">
+//                   <div className="flex items-center gap-2">
+//                     <CiBank size={24} />
+//                     <span className="text-main font-semibold">Bank transfer</span>
+//                   </div>
+//                   <button className="text-green font-medium bg-green/10 px-3 py-2 rounded-full text-sm inline-flex items-center gap-2">
+//                     Change
+//                     <IoIosArrowForward size={18} />
+//                   </button>
+//                 </div>
+//               </div>
+
+//               {/* Fee Details */}
+//               <div className="text-sm border border-gray-300 rounded-xl p-4 space-y-2.5">
+//                 <div className="flex justify-between text-">
+//                   <span className="text-main ">
+//                     Bank transfer fee
+//                   </span>
+//                   <span className="text-gray">0 {selectedSendCurrency}</span>
+//                 </div>
+//                 <div className="flex justify-between">
+//                   <span className="text-main ">Our fee</span>
+//                   <span className="text-gray">{sendFee.toFixed(2)} {selectedSendCurrency} </span>
+//                 </div>
+//                 <div className="flex justify-between">
+//                   <span className="text-main ">GST</span>
+//                   <span className="text-gray">{gst.toFixed(2)} {selectedSendCurrency}</span>
+//                 </div>
+//                 <hr className="my-2 text-gray-300" />
+//                 <div className="flex justify-between text-main font-semibold">
+//                   <span>Total included fees (0%)</span>
+//                   <span>{(sendFee + gst).toFixed(2)} {selectedSendCurrency}</span>
+//                 </div>
+//               </div>
+
+//               {/* Savings & Arrival */}
+//               <div className="mt-2 text-sm text-gray">
+//                 <p>You could save<span className="text-main font-bold"> 2.2% </span>on the payment you make.</p>
+//                 <p>
+//                   Should arrive{" "}
+//                   <span className="text-main font-medium">{arrivalDate}</span>
+//                 </p>
+//               </div>
+
+//               {/* Actions */}
+//               <div className="mt-4 flex sm:flex-row flex-col items-center gap-2">
+//                 <button className="w-full inline-flex items-center justify-center px-6 py-3 border hover:bg-lightgreen hover:border-transparent font-medium rounded-full text-green bg-white hover:bg-button transition-colors duration-150 ease-in-out">
+//                   Compare fees
+//                 </button>
+//                 <button className="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent font-medium rounded-full text-green bg-lightgreen hover:bg-lightgreen-hover transition-colors duration-150 ease-in-out">
+//                   Send money
+//                 </button>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default HeroSection;
+
+
+// app/(website)/components/Hero/HeroSection.tsx
 "use client";
 import { SlLock } from "react-icons/sl";
 import { IoIosArrowForward } from "react-icons/io";
@@ -3258,25 +3540,19 @@ interface ExchangeRates {
   [key: string]: { [key: string]: number };
 }
 
-interface ApiResponse {
-  rates: {
-    date: string;
-    base: string;
-    rates: { [key: string]: number };
-  }
-}
+// Removed unused ApiResponse interface
 
 const HeroSection: React.FC = () => {
     const { selectedSendCurrency, setSelectedSendCurrency } = useAppContext(); //get context
     const [sendAmount, setSendAmount] = useState("");
 
   const [receiveAmount, setReceiveAmount] = useState("");
-  const [selectedReceiveCurrency, setSelectedReceiveCurrency] = useState("INR"); // Fixed to INR
+  // Removed unused selectedReceiveCurrency state and its setter
   const [exchangeRates, setExchangeRates] = useState<ExchangeRates>({});
   const [loadingRates, setLoadingRates] = useState(true);
   const [rate, setRate] = useState(0);
-  const [sendFee, setSendFee] = useState(0);
-  const [gst, setGst] = useState(0);
+  const [sendFee] = useState(0); // Removed unused setSendFee
+  const [gst] = useState(0); // Removed unused setGst
   const [arrivalDate, setArrivalDate] = useState<string | null>(null);
 
 
@@ -3417,7 +3693,7 @@ const HeroSection: React.FC = () => {
                     />
                     {/* Country Part :- For Change Country */}
 
-                    <CountryDropdown  //CountryDropdown is not defined in this file its in down of this page
+                    <CountryDropdown
                       selectedCurrency={selectedSendCurrency}
                       onCurrencyChange={(newCurrency) =>
                         handleCurrencyChange(true, newCurrency)
@@ -3427,6 +3703,7 @@ const HeroSection: React.FC = () => {
                 </div>
                 <p className="text-cyan-900 mt-1 text-sm bg-cyan-100/30 rounded-lg px-2 py-1">
                   Sending over 20,000 GBP or equivalent?{" "}
+                  {/* Fixed unescaped entity */}
                   <button className="underline cursor-pointer font-medium">
                     We'll discount our fee
                   </button>
