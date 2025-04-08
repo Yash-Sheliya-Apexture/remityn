@@ -314,7 +314,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
             {/* Menu button */}
             <button
               onClick={toggleSidebar}
-              className="text-gray focus:outline-none lg:hidden" // Removed sm:block hidden - logic handled by lg:hidden
+              className="text-gray focus:outline-none lg:hidden sm:block hidden" // Removed sm:block hidden - logic handled by lg:hidden
             >
               <FiMenu size={24} />
             </button>
@@ -323,7 +323,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
             {showBackArrow && (
               <button
                 onClick={handleBack}
-                className="focus:outline-none cursor-pointer p-3 bg-lightborder dark:bg-primarybox rounded-full text-neutral-900 dark:text-white hover:bg-primary transition-colors" // Adjusted padding and added hover
+                className="focus:outline-none cursor-pointer p-3 bg-lightborder dark:bg-primarybox rounded-full text-neutral-900 dark:text-white hover:bg-primary dark:hover:bg-secondarybox transition-all duration-75 ease-linear" // Adjusted padding and added hover
               >
                 <HiArrowLeft className="size-5" />
               </button>

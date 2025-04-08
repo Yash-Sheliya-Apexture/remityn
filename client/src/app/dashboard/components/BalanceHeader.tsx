@@ -269,18 +269,19 @@ const BalanceHeader: React.FC<BalanceHeaderProps> = ({
                 </button>
                 Add
               </Link>
+              
               <div className="send text-center cursor-pointer" onClick={onSendClick}>
                 <button
                   // onClick={onSendClick}
-                  className={`bg-primary cursor-pointer mb-1 -z-1 relative text-neutral-900 w-14 h-14 flex justify-center items-center rounded-full ${
+                  className={`bg-primary cursor-pointer mb-1 text-neutral-900 w-14 h-14 flex justify-center items-center rounded-full ${
                     !canSendMoney
                       ? "opacity-50 bg-primary hover:bg-primaryhover cursor-not-allowed"
-                      : "hover:bg-primaryhover "
+                      : "hover:bg-primaryhover"
                   }`}
                   title={
                     !canSendMoney ? "Add funds to send money" : "Send money"
                   }
-                  disabled={!canSendMoney} // Explicitly disable for accessibility
+                  // disabled={!canSendMoney} 
                 >
                   <GoArrowUp size={24} />
                 </button>
