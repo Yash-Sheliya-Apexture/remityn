@@ -867,12 +867,179 @@
 // }
 
 
+// // frontend/src/app/dashboard/components/RecipientList.tsx
+// "use client";
+// import Image from "next/image";
+// import React, { useRef } from "react";
+// import { IoIosArrowForward } from "react-icons/io";
+// import { useRouter } from "next/navigation";
+// import { Checkbox } from "@/components/ui/checkbox";
+
+// // Define a Recipient interface based on usage
+// interface Recipient {
+//   _id: string;
+//   accountHolderName: string; // Required based on usage
+//   currency?: { // Make currency optional if it might be missing
+//     code: string;
+//   };
+//   accountNumber?: string;
+//   // Add other fields from your recipient data if needed
+// }
+
+// interface RecipientListProps {
+//   recipient?: Recipient | null; // Allow recipient to be potentially undefined or null
+//   isSelected: boolean;
+//   onCheckboxChange?: (recipientId: string, isChecked: boolean) => void;
+//   showCheckbox?: boolean;
+// }
+
+// export default function RecipientList({
+//   recipient,
+//   isSelected,
+//   onCheckboxChange,
+//   showCheckbox = true,
+// }: RecipientListProps) {
+
+//   // --- !! Add this check at the beginning !! ---
+//   if (!recipient || !recipient._id || !recipient.accountHolderName) {
+//     // If the recipient data is incomplete or missing, don't render the item.
+//     // You could also return a placeholder or log an error.
+//     console.warn("RecipientList received invalid recipient prop:", recipient);
+//     return null;
+//   }
+//   // --- End of check ---
+
+//   // Ensure currency exists before accessing code, provide fallback
+//   const currencyCode = recipient.currency?.code?.toLowerCase() || 'unknown';
+//   const currencyCodeDisplay = recipient.currency?.code || 'N/A';
+
+//   const getInitials = (accountHolderName: string = ""): string => {
+//     // (Your existing getInitials logic - seems okay)
+//     const trimmedName = accountHolderName.trim();
+//     if (!trimmedName) return "?";
+//     const nameParts = trimmedName.toUpperCase().split(" ");
+//     let initials = "";
+//     if (nameParts.length >= 1 && nameParts[0] !== "") {
+//       initials += nameParts[0][0];
+//       if (nameParts.length > 1 && nameParts[nameParts.length - 1] !== "") {
+//         const lastNameInitial = nameParts[nameParts.length - 1][0];
+//         if (initials !== lastNameInitial) {
+//           initials += lastNameInitial;
+//         } else if (initials.length === 1 && nameParts.length === 1) {
+//              return initials;
+//         }
+//       } else if (initials.length === 1 && nameParts[0].length > 1) {
+//            initials += nameParts[0][1];
+//       }
+//     }
+//     return initials || "?";
+//   };
+
+
+//   const checkboxRef = useRef<HTMLButtonElement>(null);
+//   const router = useRouter();
+
+//   const handleItemClick = (e: React.MouseEvent<HTMLDivElement>) => {
+//      const target = e.target as HTMLElement;
+//      if (target.closest('[role="checkbox"]')) {
+//          return;
+//      }
+
+//     if (!showCheckbox) {
+//       // Ensure recipient._id exists (checked above)
+//       router.push(`/dashboard/recipients/${recipient._id}`);
+//       return;
+//     }
+
+//     if (onCheckboxChange) {
+//       const newCheckedState = !isSelected;
+//       // Ensure recipient._id exists (checked above)
+//       onCheckboxChange(recipient._id, newCheckedState);
+//     }
+//   };
+
+//   const handleCheckboxStateChange = (checked: boolean | 'indeterminate') => {
+//       // Ensure recipient._id exists (checked above)
+//       if (typeof checked === 'boolean' && onCheckboxChange) {
+//           onCheckboxChange(recipient._id, checked);
+//       }
+//   };
+
+
+//   return (
+//     <div
+//       className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer"
+//       onClick={handleItemClick}
+//       role="listitem"
+//     >
+//       <div className="flex items-center justify-between gap-4">
+//         <div className="flex items-center flex-grow min-w-0">
+//           <div className="w-12 h-12 rounded-full bg-lightborder dark:bg-secondarybox flex items-center justify-center relative shrink-0">
+//             <span className="font-bold text-neutral-900 dark:text-white">
+//               {/* Already checked recipient.accountHolderName exists */}
+//               {getInitials(recipient.accountHolderName)}
+//             </span>
+//             {recipient.currency?.code && ( // Check if currency code exists
+//               <div className="absolute bottom-0 right-0 w-4 h-4 rounded-full overflow-hidden border-2 border-white dark:border-primarybox">
+//                 <Image
+//                   src={`/assets/icon/${currencyCode}.svg`} // Use safe currencyCode
+//                   alt={`${currencyCodeDisplay} flag`} // Use safe currencyCodeDisplay
+//                   width={16}
+//                   height={16}
+//                   onError={(e) => {
+//                      console.error(`Error loading image for ${currencyCodeDisplay}`);
+//                      (e.target as HTMLImageElement).style.display = 'none';
+//                   }}
+//                 />
+//               </div>
+//             )}
+//           </div>
+//           <div className="ml-4 overflow-hidden">
+//             <h5
+//               className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg truncate"
+//               title={recipient.accountHolderName}
+//             >
+//               {recipient.accountHolderName}
+//             </h5>
+//             {recipient.accountNumber && (
+//               <p className="text-sm text-gray-500 dark:text-gray-300 mt-1 truncate">
+//                 {currencyCodeDisplay} Account ending in{" "}
+//                 {recipient.accountNumber.slice(-4)}{" "}
+//               </p>
+//             )}
+//           </div>
+//         </div>
+
+//         {showCheckbox ? (
+//           <div className="pt-1.5 pl-2 shrink-0">
+//             <Checkbox
+//               id={`recipient-checkbox-${recipient._id}`}
+//               ref={checkboxRef}
+//               checked={isSelected}
+//               onCheckedChange={handleCheckboxStateChange}
+//               aria-labelledby={`recipient-name-${recipient._id}`}
+//             />
+//              <span id={`recipient-name-${recipient._id}`} className="sr-only">
+//                 Select {recipient.accountHolderName}
+//             </span>
+//           </div>
+//         ) : (
+//           <div className="ml-4 shrink-0">
+//             <IoIosArrowForward className="size-5 text-neutral-900 dark:text-white" />
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+
+
 // frontend/src/app/dashboard/components/RecipientList.tsx
 "use client";
 import Image from "next/image";
-import React, { useRef } from "react";
+import React, { useRef } from "react"; // Keep useRef import
 import { IoIosArrowForward } from "react-icons/io";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"; // Keep useRouter import
 import { Checkbox } from "@/components/ui/checkbox";
 
 // Define a Recipient interface based on usage
@@ -900,12 +1067,17 @@ export default function RecipientList({
   showCheckbox = true,
 }: RecipientListProps) {
 
-  // --- !! Add this check at the beginning !! ---
+  // --- !! Call Hooks unconditionally at the top level !! ---
+  const checkboxRef = useRef<HTMLButtonElement>(null);
+  const router = useRouter();
+  // --- End of Hook calls ---
+
+  // --- Now perform the check ---
   if (!recipient || !recipient._id || !recipient.accountHolderName) {
     // If the recipient data is incomplete or missing, don't render the item.
     // You could also return a placeholder or log an error.
     console.warn("RecipientList received invalid recipient prop:", recipient);
-    return null;
+    return null; // Early return is now okay because hooks were already called
   }
   // --- End of check ---
 
@@ -935,12 +1107,9 @@ export default function RecipientList({
     return initials || "?";
   };
 
-
-  const checkboxRef = useRef<HTMLButtonElement>(null);
-  const router = useRouter();
-
   const handleItemClick = (e: React.MouseEvent<HTMLDivElement>) => {
      const target = e.target as HTMLElement;
+     // Prevent triggering item click when clicking the checkbox itself
      if (target.closest('[role="checkbox"]')) {
          return;
      }
@@ -951,6 +1120,7 @@ export default function RecipientList({
       return;
     }
 
+    // Trigger checkbox change when clicking the list item if checkbox is shown
     if (onCheckboxChange) {
       const newCheckedState = !isSelected;
       // Ensure recipient._id exists (checked above)
@@ -971,11 +1141,14 @@ export default function RecipientList({
       className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer"
       onClick={handleItemClick}
       role="listitem"
+      // Add aria-selected for better accessibility when checkboxes are shown
+      aria-selected={showCheckbox ? isSelected : undefined}
     >
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center flex-grow min-w-0">
           <div className="w-12 h-12 rounded-full bg-lightborder dark:bg-secondarybox flex items-center justify-center relative shrink-0">
-            <span className="font-bold text-neutral-900 dark:text-white">
+            {/* Use a unique ID for the recipient name element for accessibility */}
+            <span id={`recipient-name-${recipient._id}`} className="font-bold text-neutral-900 dark:text-white">
               {/* Already checked recipient.accountHolderName exists */}
               {getInitials(recipient.accountHolderName)}
             </span>
@@ -998,6 +1171,8 @@ export default function RecipientList({
             <h5
               className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg truncate"
               title={recipient.accountHolderName}
+              // Associate heading with checkbox via aria-labelledby if checkbox exists
+              id={showCheckbox ? `recipient-heading-${recipient._id}` : undefined}
             >
               {recipient.accountHolderName}
             </h5>
@@ -1017,11 +1192,13 @@ export default function RecipientList({
               ref={checkboxRef}
               checked={isSelected}
               onCheckedChange={handleCheckboxStateChange}
-              aria-labelledby={`recipient-name-${recipient._id}`}
+              // Use aria-labelledby to link checkbox to the recipient name heading
+              aria-labelledby={`recipient-heading-${recipient._id}`}
             />
-             <span id={`recipient-name-${recipient._id}`} className="sr-only">
+             {/* Screen reader text moved to be associated with the checkbox via aria-labelledby */}
+             {/* <span id={`recipient-name-${recipient._id}`} className="sr-only">
                 Select {recipient.accountHolderName}
-            </span>
+            </span> */}
           </div>
         ) : (
           <div className="ml-4 shrink-0">

@@ -95,8 +95,6 @@ const DashboardHeader: React.FC = () => {
             {/* Online Status Indicator */}
             {isOnline && (
               <div className="absolute top-0 left-7 size-3.5 bg-green-500 rounded-full border-2 border-white"></div>
-              {/* Changed color to green for online status, adjust as needed */}
-              {/* Adjusted positioning slightly if needed (left-7 depends on the 40px size) */}
             )}
 
             {/* User Name */}
