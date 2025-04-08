@@ -1795,7 +1795,7 @@ const PaymentDetailsPage = () => {
             {/* Details Section */}
             <div className="mb-8 border p-4 sm:p-6 rounded-xl bg-card"> {/* Added bg-card */}
                 {/* Escaped apostrophe */}
-                <h2 className="text-lg font-medium mb-4 text-neutral-900 dark:text-white">Details you'll need to make this transfer</h2>
+                <h2 className="text-lg font-medium mb-4 text-neutral-900 dark:text-white">Details you&apos;ll need to make this transfer</h2>
                 <div className="space-y-4">
                     <DetailItem label="Payee name" value={bankDetails.payeeName || 'Wise Europe SA'} fieldName="Payee name" />
 
@@ -1820,7 +1820,7 @@ const PaymentDetailsPage = () => {
                      {/* Bank Address Block */}
                      <div className="bg-lightgray dark:bg-primarybox p-4 rounded-lg">
                          {/* Escaped apostrophe */}
-                         <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Our bank's address</p>
+                         <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Our bank&apos;s address</p>
                          <p className="text-foreground break-words whitespace-pre-line"> {/* Use pre-line for newlines */}
                             {bankAddress}
                          </p>

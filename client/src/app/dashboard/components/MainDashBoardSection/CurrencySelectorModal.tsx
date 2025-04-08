@@ -538,7 +538,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
                  ))
                : !isLoading && searchQuery && ( // Show "No results" only if not loading and a search query exists
                    <p className="text-gray-500 dark:text-gray-300 text-center py-4">
-                     No results found for "{searchQuery}".
+                     No results found for &quot;{searchQuery}&quot;.
                    </p>
                  )}
                {/* Consider adding a message if currencies array is empty initially after load */}

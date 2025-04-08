@@ -748,7 +748,7 @@ export default function RecipientsPage() {
             <div>
               <h3 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
                 {/* Fixed unescaped entity */}
-                Can't find your recipient?
+                Can&apos;t find your recipient?
               </h3>
 
               <div
@@ -769,7 +769,7 @@ export default function RecipientsPage() {
                       </h5>
                       <p className="text-xs md:text-sm text-gray-500 dark:text-gray-300">
                         {/* Fixed unescaped entity and typo */}
-                        you'll need their account information
+                        you&apos;ll need their account information
                       </p>
                     </div>
                   </div>

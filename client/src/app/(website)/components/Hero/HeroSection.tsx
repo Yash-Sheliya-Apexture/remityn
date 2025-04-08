@@ -3810,7 +3810,7 @@ import CountryDropdown from "../../../components/ui/CountryDropdown"; //correct 
 import HeroText from "./HeroText";
 import Image from "next/image";
 import inr from "../../../../../public/assets/icon/inr.svg";
-import { useAppContext } from "../../layout"; // Import the context hook.
+import { useAppContext } from "../../../contexts/AppContext"; // Import the context hook.
 import exchangeRateService from '../../../services/exchangeRate'; // Import the service
 
 interface ExchangeRates {
@@ -3982,7 +3982,7 @@ const HeroSection: React.FC = () => {
                   Sending over 20,000 GBP or equivalent?{" "}
                   {/* Fixed unescaped entity */}
                   <button className="underline cursor-pointer font-medium">
-                    We'll discount our fee {/* Changed ' to ' */}
+                    We&apos;ll discount our fee {/* Changed ' to ' */}
                   </button>
                 </p>
               </div>

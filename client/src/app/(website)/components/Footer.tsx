@@ -792,7 +792,7 @@ import { TiArrowSortedDown } from "react-icons/ti";
 
 import { IconType } from "react-icons";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAppContext } from "../layout";
+import { useAppContext } from "../../contexts/AppContext";
 import { useRouter } from "next/navigation";
 import ThemeToggle from '../../contexts/ThemeToggle'; // Import ThemeToggle
 

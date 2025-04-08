@@ -404,7 +404,7 @@ export default function ChangePassword() {
                 <FiX size={24} className="text-lightgray" />
               </div>
               <p className="text-gray">
-                Your new password can't be the same as the current one.
+                Your new password can&apos;t be the same as the current one.
               </p>
             </div>
           )}

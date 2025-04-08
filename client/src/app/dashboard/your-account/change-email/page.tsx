@@ -296,7 +296,6 @@
 
 "use client"
 import React, { useState } from "react";
-import FullyReusableHeader from "../../../header/page";
 import { ChangeEvent, FormEvent } from 'react';
 import { BsExclamationLg } from "react-icons/bs";
 import { LuCheck } from "react-icons/lu";
@@ -365,12 +364,6 @@ export default function ChangeEmail() {
 
   return (
     <>
-      <FullyReusableHeader
-        title="Change Email"
-        showProgressBar={true}
-        progressSteps={progressSteps}
-        currentStepIndex={step - 1}
-      />
       <section className="chagepassword py-12">
         <div className="container mx-auto">
           {/* Step-1 */}
@@ -381,7 +374,7 @@ export default function ChangeEmail() {
                   Enter your new email address
                 </h2>
                 <p className="text-gray text-sm">
-                  Before your change is confirmed, we'll ask you to enter your
+                  Before your change is confirmed, we&apos;ll ask you to enter your
                   password and verify your new email address. Please ensure that
                   only you have access to this email to keep your account
                   secure.
@@ -421,7 +414,7 @@ export default function ChangeEmail() {
                           <LuCheck size={12} className="text-white" />
                         </div>
                         <p className="text-gray text-sm">
-                          Now that's a proper e-mail!
+                          Now that&apos;s a proper e-mail!
                         </p>
                       </div>
                     )}
@@ -505,7 +498,7 @@ export default function ChangeEmail() {
             </div>
           )}
 
-          {/* Step-3 (Example - You'll need to implement actual email verification) */}
+          {/* Step-3 (Example - You&apos;ll need to implement actual email verification) */}
           {step === 3 && (
             <div>
               <div className="max-w-lg mx-auto text-center space-y-6">
@@ -513,7 +506,7 @@ export default function ChangeEmail() {
                   Verify your new email
                 </h2>
                 <p className="text-gray text-sm">
-                  We've sent a verification link to your new email address (
+                  We&apos;ve sent a verification link to your new email address (
                   {newEmail}). Please click on the link in that email to
                   complete the email change process.
                 </p>

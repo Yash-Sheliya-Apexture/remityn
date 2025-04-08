@@ -1778,7 +1778,7 @@ const ReviewSendPage = () => {
               className="block w-full border bg-white dark:bg-background dark:border-gray-700 hover:shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-all duration-200 ease-in-out rounded-lg p-3 text-mainheading dark:text-white"
               aria-label="Reference for recipient"
             />
-             <p className="text-xs text-gray-400 mt-1">Max 35 characters. This may appear on the recipient's statement.</p>
+             <p className="text-xs text-gray-400 mt-1">Max 35 characters. This may appear on the recipient&apos;s statement.</p>
           </div>
         </div>
 

@@ -4060,7 +4060,7 @@ const AddRecipientPage = () => {
                     searchCurrency.trim() !== "" && (
                       <div className="text-center text-gray-500 mt-6">
                         {/* Escaped double quotes */}
-                        No currencies found for "{searchCurrency}".
+                        No currencies found for &quot;{searchCurrency}&quot;.
                       </div>
                     )}
                 </>
@@ -4120,7 +4120,7 @@ const AddRecipientPage = () => {
 
               <h3 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
                 {/* Escaped apostrophe */}
-                Recipient's bank details
+                Recipient&apos;s bank details
               </h3>
               <div className="space-y-6">
                 <div>

@@ -205,7 +205,7 @@ const PaymentSuccessPage = () => {
             <div className="text-center">
                 {/* Fixed unescaped entity */}
                 <h1 className="text-3xl md:text-4xl font-bold mb-4 uppercase tracking-wide">
-                    Your Money's on the Move
+                    Your Money&apos;s on the Move
                 </h1>
 
                 {isLoading && <Skeleton className="h-5 w-64 mx-auto mb-8" />}
