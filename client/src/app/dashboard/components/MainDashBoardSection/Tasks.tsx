@@ -387,7 +387,7 @@ const TasksPage: React.FC = () => {
         </h1>
 
         {/* --- Loading State with Skeleton --- */}
-        {isLoading && (
+        {!isLoading && (
           <div className="space-y-2">
             {Array(3)
               .fill(0)
