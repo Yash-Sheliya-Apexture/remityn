@@ -3238,6 +3238,474 @@
 
 // export default Filter;
 
+// // frontend/src/components/Filter.tsx
+// import React, { useState, useEffect, useRef } from "react";
+// import { LuSettings2 } from "react-icons/lu";
+// import { motion, AnimatePresence } from "framer-motion";
+// import DateInput from "./Filter/DateInput";
+// import Recipients from "./Filter/Recipients";
+// import DirectionFilter from "./Filter/DirectionFilter";
+// import Status from "./Filter/Status";
+// // Remove BalanceComponent import if not needed separately, or keep if Account structure matches CurrencyBalance
+// import BalanceComponent, { CurrencyBalance } from "./Filter/Balance";
+// import { Account } from "@/types/account"; // Import Account type
+// import { IoClose } from "react-icons/io5";
+// import { IoIosCloseCircleOutline } from "react-icons/io";
+
+// interface FilterProps {
+//   userAccounts: Account[]; // <-- Accept userAccounts instead of hardcoded data
+//   onFiltersApply: (filters: {
+//     selectedRecipients: (string | number)[];
+//     selectedDirection: string;
+//     selectedStatus: string | null;
+//     selectedBalance: string[];
+//     fromDate: string;
+//     toDate: string;
+//   }) => void;
+// }
+
+// const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
+//   const [isOpen, setIsOpen] = useState(false);
+//   const popupRef = useRef<HTMLDivElement>(null);
+//   // ... other state variables (fromDate, toDate, selectedRecipients, etc.) ...
+//   const [fromDate, setFromDate] = useState("");
+//   const [toDate, setToDate] = useState("");
+//   const [selectedRecipients, setSelectedRecipients] = useState<
+//     (string | number)[]
+//   >([]);
+//   const [selectedDirection, setSelectedDirection] = useState<string>("all");
+//   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+//   const [selectedBalance, setSelectedBalance] = useState<string[]>([]);
+//   const [selectedDateRange, setSelectedDateRange] = useState<string | null>(
+//     null
+//   );
+//   const [isMobile, setIsMobile] = useState(false);
+
+//   // State to track if specific filters are active
+//   const [isLastMonthActive, setIsLastMonthActive] = useState(false);
+//   const [isLastQuarterActive, setIsLastQuarterActive] = useState(false);
+//   const [isLastYearActive, setIsLastYearActive] = useState(false);
+
+//   const toggleOpen = () => setIsOpen(!isOpen);
+//   const closePopup = () => setIsOpen(false);
+
+//   // --- useEffect for outside click and resize remains the same ---
+//   useEffect(() => {
+//     const handleClickOutside = (event: MouseEvent) => {
+//       if (
+//         popupRef.current &&
+//         !popupRef.current.contains(event.target as Node) &&
+//         isOpen
+//       ) {
+//         closePopup();
+//       }
+//     };
+//     document.addEventListener("mousedown", handleClickOutside);
+//     return () => document.removeEventListener("mousedown", handleClickOutside);
+//   }, [isOpen]);
+
+//   useEffect(() => {
+//     const handleResize = () => setIsMobile(window.innerWidth < 640);
+//     handleResize();
+//     window.addEventListener("resize", handleResize);
+//     return () => window.removeEventListener("resize", handleResize);
+//   }, []);
+
+//   // --- Handlers for recipients, direction, status remain the same ---
+//   const handleRecipientSelectionChange = (
+//     recipientIds: (string | number)[]
+//   ) => {
+//     setSelectedRecipients(recipientIds);
+//   };
+//   const handleDirectionChange = (direction: string) => {
+//     setSelectedDirection(direction);
+//   };
+//   const handleStatusChange = (status: string | null) => {
+//     setSelectedStatus(status);
+//   };
+
+//   // --- Updated Balance Change Handler ---
+//   const handleBalanceChange = (isSelected: boolean, currencyCode: string) => {
+//     setSelectedBalance((currentBalances) => {
+//       const newBalances = isSelected
+//         ? [...currentBalances, currencyCode]
+//         : currentBalances.filter((code) => code !== currencyCode);
+//       console.log("Selected Balances in Filter:", newBalances); // Log updated state
+//       return newBalances;
+//     });
+//   };
+
+//   // --- Date range functions remain the same ---
+//   const getLastMonthRange = () => {
+//     setSelectedDateRange("month");
+//     const now = new Date();
+//     const lastMonth = new Date(now);
+//     lastMonth.setMonth(now.getMonth() - 1);
+//     const startOfMonth = new Date(
+//       lastMonth.getFullYear(),
+//       lastMonth.getMonth(),
+//       1
+//     );
+//     const endOfMonth = new Date(
+//       lastMonth.getFullYear(),
+//       lastMonth.getMonth() + 1,
+//       0
+//     );
+//     const formatDate = (date: Date): string =>
+//       `${String(date.getDate()).padStart(2, "0")}-${String(
+//         date.getMonth() + 1
+//       ).padStart(2, "0")}-${date.getFullYear()}`;
+//     setFromDate(formatDate(startOfMonth));
+//     setToDate(formatDate(endOfMonth));
+//     setIsLastMonthActive(true);
+//     setIsLastQuarterActive(false);
+//     setIsLastYearActive(false);
+//   };
+
+//   const getLastQuarterRange = () => {
+//     setSelectedDateRange("quarter");
+//     const now = new Date();
+//     const currentQuarter = Math.floor(now.getMonth() / 3);
+//     const startMonthOfLastQuarter = (currentQuarter - 1) * 3; // Can be negative for Q1 -> prev year Q4
+//     const startOfLastQuarter = new Date(
+//       now.getFullYear(),
+//       startMonthOfLastQuarter,
+//       1
+//     );
+//     // Adjust year if startMonthOfLastQuarter is negative
+//     if (startMonthOfLastQuarter < 0) {
+//       startOfLastQuarter.setFullYear(now.getFullYear() - 1);
+//     }
+//     // End of the last quarter is the day before the start of the current quarter
+//     const endOfLastQuarter = new Date(now.getFullYear(), currentQuarter * 3, 0);
+//     if (currentQuarter === 0) {
+//       // If currently in Q1, end of last quarter is end of previous year
+//       endOfLastQuarter.setFullYear(now.getFullYear() - 1);
+//     }
+//     const formatDate = (date: Date): string =>
+//       `${String(date.getDate()).padStart(2, "0")}-${String(
+//         date.getMonth() + 1
+//       ).padStart(2, "0")}-${date.getFullYear()}`;
+//     setFromDate(formatDate(startOfLastQuarter));
+//     setToDate(formatDate(endOfLastQuarter));
+//     setIsLastMonthActive(false);
+//     setIsLastQuarterActive(true);
+//     setIsLastYearActive(false);
+//   };
+
+//   const getLastYearRange = () => {
+//     setSelectedDateRange("year");
+//     const now = new Date();
+//     const lastYear = now.getFullYear() - 1;
+//     const startOfYear = new Date(lastYear, 0, 1); // Jan 1st of last year
+//     const endOfYear = new Date(lastYear, 11, 31); // Dec 31st of last year
+//     const formatDate = (date: Date): string =>
+//       `${String(date.getDate()).padStart(2, "0")}-${String(
+//         date.getMonth() + 1
+//       ).padStart(2, "0")}-${date.getFullYear()}`;
+//     setFromDate(formatDate(startOfYear));
+//     setToDate(formatDate(endOfYear));
+//     setIsLastMonthActive(false);
+//     setIsLastQuarterActive(false);
+//     setIsLastYearActive(true);
+//   };
+
+//   const handleClearDateRange = (rangeType: "month" | "quarter" | "year") => {
+//     switch (rangeType) {
+//       case "month":
+//         setIsLastMonthActive(false);
+//         break;
+//       case "quarter":
+//         setIsLastQuarterActive(false);
+//         break;
+//       case "year":
+//         setIsLastYearActive(false);
+//         break;
+//     }
+//     setFromDate("");
+//     setToDate("");
+//     setSelectedDateRange(null);
+//   };
+
+//   // --- Apply and Clear Filters handlers remain the same ---
+//   const handleApplyFilters = () => {
+//     onFiltersApply({
+//       selectedRecipients,
+//       selectedDirection,
+//       selectedStatus,
+//       selectedBalance,
+//       fromDate,
+//       toDate,
+//     });
+//     closePopup();
+//   };
+
+//   const handleClearAllFilters = () => {
+//     setFromDate("");
+//     setToDate("");
+//     setSelectedRecipients([]);
+//     setSelectedDirection("all");
+//     setSelectedStatus(null);
+//     setSelectedBalance([]); // Clear selected balances
+//     setSelectedDateRange(null);
+//     setIsLastMonthActive(false);
+//     setIsLastQuarterActive(false);
+//     setIsLastYearActive(false);
+//     onFiltersApply({
+//       // Apply cleared filters
+//       selectedRecipients: [],
+//       selectedDirection: "all",
+//       selectedStatus: null,
+//       selectedBalance: [],
+//       fromDate: "",
+//       toDate: "",
+//     });
+//     closePopup();
+//   };
+
+//   return (
+//     <div>
+//       <button
+//         className="inline-flex items-center justify-center gap-3 bg-primary text-neutral-900 hover:bg-primaryhover h-12.5 md:w-36 w-12.5 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer" // Added gap and hover
+//         onClick={toggleOpen}
+//         aria-expanded={isOpen}
+//         aria-controls="filter-popup"
+//       >
+//         <LuSettings2 size={20} /> {/* Adjusted size */}
+//         <span className="md:block hidden">Filters</span>
+//       </button>
+//       <AnimatePresence>
+//         {isOpen && (
+//           <>
+//             {/* Backdrop */}
+//             <motion.div
+//               initial={{ opacity: 0 }}
+//               animate={{ opacity: 0.5 }}
+//               exit={{ opacity: 0 }}
+//               transition={{ duration: 0.2 }}
+//               className="fixed inset-0 bg-black/50 dark:bg-white/30 z-50"
+//               onClick={closePopup} // Close popup when backdrop is clicked
+//             />
+
+//             {/* Filter Popup */}
+//             <motion.div
+//               id="filter-popup"
+//               ref={popupRef}
+//               className={`fixed ${
+//                 isMobile
+//                   ? "bottom-0 left-0 right-0 h-[100vh]"
+//                   : "top-0 right-0 sm:w-[600px] h-full"
+//               } bg-white dark:bg-background  ${
+//                 isMobile ? "rounded-t-2xl" : ""
+//               } z-50 flex flex-col`} // Use flex column
+//               initial={
+//                 isMobile ? { y: "100%", opacity: 0 } : { x: "100%", opacity: 0 }
+//               }
+//               animate={
+//                 isMobile ? { y: "0%", opacity: 1 } : { x: "0%", opacity: 1 }
+//               }
+//               exit={
+//                 isMobile ? { y: "100%", opacity: 0 } : { x: "100%", opacity: 0 }
+//               }
+//               transition={{ type: "tween", duration: 0.3 }}
+//             >
+//               {/* Header */}
+//               <div className="p-5 flex items-center justify-between flex-shrink-0 border-b relative">
+//                 <h3 className="font-semibold text-mainheading dark:text-white text-lg">
+//                   Filters
+//                 </h3>
+//                 <button
+//                   onClick={closePopup}
+//                   className="absolute top-2 right-4 p-2 mt-1 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
+//                 >
+//                   <IoClose className="text-neutral-900 dark:text-white size-7" />
+//                 </button>
+//               </div>
+
+//               {/* Scrollable Content Area */}
+//               <div className="p-6 flex-grow overflow-y-auto scrollbar-hide space-y-6">
+//                 {" "}
+//                 {/* Use space-y */}
+//                 <div>
+//                   <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
+//                     Date
+//                   </h4>
+//                   {/* Date tab */}
+//                   <div className="flex items-center flex-wrap gap-2 mb-4">
+//                     <button
+//                       className={`font-medium border flex items-center gap-2 rounded-full px-4 py-2 cursor-pointer ${
+//                         isLastMonthActive
+//                           ? "bg-secondary text-primary"
+//                           : "text-mainheading dark:bg-background dark:text-white  bg-white"
+//                       }`}
+//                       onClick={getLastMonthRange}
+//                     >
+//                       Last month
+//                       {isLastMonthActive && (
+//                         <IoIosCloseCircleOutline
+//                           size={24}
+//                           onClick={(e) => {
+//                             e.stopPropagation(); // Prevent button click
+//                             handleClearDateRange("month");
+//                           }}
+//                         />
+//                       )}
+//                     </button>
+//                     <button
+//                       className={`font-medium border flex items-center gap-2 rounded-full px-4 py-2 cursor-pointer ${
+//                         isLastQuarterActive
+//                           ? "bg-secondary text-primary "
+//                           : "text-mainheading dark:bg-background dark:text-white bg-white"
+//                       }`}
+//                       onClick={getLastQuarterRange}
+//                     >
+//                       Last quarter
+//                       {isLastQuarterActive && (
+//                         <IoIosCloseCircleOutline
+//                           size={24}
+//                           onClick={(e) => {
+//                             e.stopPropagation(); // Prevent button click
+//                             handleClearDateRange("quarter");
+//                           }}
+//                         />
+//                       )}
+//                     </button>
+//                     <button
+//                       className={`font-medium border flex items-center gap-2 rounded-full px-4 py-2 cursor-pointer ${
+//                         isLastYearActive
+//                           ? "bg-secondary text-primary "
+//                           : "text-mainheading dark:bg-background dark:text-white bg-white"
+//                       }`}
+//                       onClick={getLastYearRange}
+//                     >
+//                       Last year
+//                       {isLastYearActive && (
+//                         <IoIosCloseCircleOutline
+//                           size={24}
+//                           onClick={(e) => {
+//                             e.stopPropagation(); // Prevent button click
+//                             handleClearDateRange("year");
+//                           }}
+//                         />
+//                       )}
+//                     </button>
+//                   </div>
+//                   <div className="space-y-3">
+//                     <DateInput
+//                       placeholder="From date"
+//                       value={fromDate}
+//                       onChange={(date) => {
+//                         setFromDate(date);
+//                         setSelectedDateRange(null);
+//                         setIsLastMonthActive(false);
+//                         setIsLastQuarterActive(false);
+//                         setIsLastYearActive(false);
+//                       }}
+//                     />
+//                     <DateInput
+//                       placeholder="To date"
+//                       value={toDate}
+//                       onChange={(date) => {
+//                         setToDate(date);
+//                         setSelectedDateRange(null);
+//                         setIsLastMonthActive(false);
+//                         setIsLastQuarterActive(false);
+//                         setIsLastYearActive(false);
+//                       }}
+//                     />
+//                   </div>
+//                 </div>
+//                 {/* Recipients Section */}
+//                 <div>
+//                   {" "}
+//                   {/* Wrap each section for spacing */}
+//                   <Recipients
+//                     onRecipientSelectionChange={handleRecipientSelectionChange}
+//                     selectedRecipientIds={selectedRecipients}
+//                   />
+//                 </div>
+//                 {/* Status Section */}
+//                 <div>
+//                   <Status
+//                     selectedStatus={selectedStatus}
+//                     onStatusChange={handleStatusChange}
+//                   />
+//                 </div>
+//                 {/* Direction Section */}
+//                 <div>
+//                   <DirectionFilter
+//                     selectedDirection={selectedDirection}
+//                     onDirectionChange={handleDirectionChange}
+//                   />
+//                 </div>
+//                 {/* Balance Section - Dynamic */}
+//                 {userAccounts &&
+//                   userAccounts.length > 0 && ( // Only show if accounts exist
+//                     <div>
+//                       <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
+//                         Balance
+//                       </h4>
+//                       <div className="space-y-2">
+//                         {userAccounts.map((account) => {
+//                           // Create a CurrencyBalance object for the component
+//                           const currencyBalanceProps: CurrencyBalance = {
+//                             currencyCode: account.currency.code,
+//                             currencyName:
+//                               account.currency.currencyName ||
+//                               `${account.currency.code} Balance`, // Fallback name
+//                             currencySymbolPath:
+//                               account.currency.flagImage?.trim() ||
+//                               `/assets/icon/${account.currency.code.toLowerCase()}.svg`, // Use flagImage or generate fallback path
+//                           };
+//                           return (
+//                             <BalanceComponent
+//                               key={account.currency.code} // Use currency code as key
+//                               currencyBalance={currencyBalanceProps}
+//                               onBalanceChange={handleBalanceChange}
+//                               isSelected={selectedBalance.includes(
+//                                 account.currency.code
+//                               )}
+//                             />
+//                           );
+//                         })}
+//                       </div>
+//                     </div>
+//                   )}
+//               </div>
+
+//               {/* Footer */}
+//               <div className="p-4 border-t bg-white dark:bg-background flex-shrink-0">
+//                 <div className="flex items-center gap-3">
+//                   <button
+//                     type="button"
+//                     className="w-full bg-white border text-main font-medium cursor-pointer py-3 px-4 rounded-full hover:bg-gray-50 text-sm"
+//                     onClick={handleClearAllFilters}
+//                   >
+//                     Clear all
+//                   </button>
+//                   <button
+//                     type="button"
+//                     className="w-full bg-primary text-main font-medium py-3 px-4 cursor-pointer rounded-full hover:bg-primary/90 text-sm"
+//                     onClick={handleApplyFilters}
+//                   >
+//                     Apply
+//                   </button>
+//                 </div>
+//               </div>
+//             </motion.div>
+//           </>
+//         )}
+//       </AnimatePresence>
+//     </div>
+//   );
+// };
+
+// export default Filter;
+
+
+
+
+
 // frontend/src/components/Filter.tsx
 import React, { useState, useEffect, useRef } from "react";
 import { LuSettings2 } from "react-icons/lu";
@@ -3335,79 +3803,91 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
     });
   };
 
-  // --- Date range functions remain the same ---
+  // --- Date range functions remain the same, with toggle logic ---
   const getLastMonthRange = () => {
-    setSelectedDateRange("month");
-    const now = new Date();
-    const lastMonth = new Date(now);
-    lastMonth.setMonth(now.getMonth() - 1);
-    const startOfMonth = new Date(
-      lastMonth.getFullYear(),
-      lastMonth.getMonth(),
-      1
-    );
-    const endOfMonth = new Date(
-      lastMonth.getFullYear(),
-      lastMonth.getMonth() + 1,
-      0
-    );
-    const formatDate = (date: Date): string =>
-      `${String(date.getDate()).padStart(2, "0")}-${String(
-        date.getMonth() + 1
-      ).padStart(2, "0")}-${date.getFullYear()}`;
-    setFromDate(formatDate(startOfMonth));
-    setToDate(formatDate(endOfMonth));
-    setIsLastMonthActive(true);
-    setIsLastQuarterActive(false);
-    setIsLastYearActive(false);
+    if (isLastMonthActive) {
+      handleClearDateRange("month");
+    } else {
+      setSelectedDateRange("month");
+      const now = new Date();
+      const lastMonth = new Date(now);
+      lastMonth.setMonth(now.getMonth() - 1);
+      const startOfMonth = new Date(
+        lastMonth.getFullYear(),
+        lastMonth.getMonth(),
+        1
+      );
+      const endOfMonth = new Date(
+        lastMonth.getFullYear(),
+        lastMonth.getMonth() + 1,
+        0
+      );
+      const formatDate = (date: Date): string =>
+        `${String(date.getDate()).padStart(2, "0")}-${String(
+          date.getMonth() + 1
+        ).padStart(2, "0")}-${date.getFullYear()}`;
+      setFromDate(formatDate(startOfMonth));
+      setToDate(formatDate(endOfMonth));
+      setIsLastMonthActive(true);
+      setIsLastQuarterActive(false);
+      setIsLastYearActive(false);
+    }
   };
 
   const getLastQuarterRange = () => {
-    setSelectedDateRange("quarter");
-    const now = new Date();
-    const currentQuarter = Math.floor(now.getMonth() / 3);
-    const startMonthOfLastQuarter = (currentQuarter - 1) * 3; // Can be negative for Q1 -> prev year Q4
-    const startOfLastQuarter = new Date(
-      now.getFullYear(),
-      startMonthOfLastQuarter,
-      1
-    );
-    // Adjust year if startMonthOfLastQuarter is negative
-    if (startMonthOfLastQuarter < 0) {
-      startOfLastQuarter.setFullYear(now.getFullYear() - 1);
+    if (isLastQuarterActive) {
+      handleClearDateRange("quarter");
+    } else {
+      setSelectedDateRange("quarter");
+      const now = new Date();
+      const currentQuarter = Math.floor(now.getMonth() / 3);
+      const startMonthOfLastQuarter = (currentQuarter - 1) * 3; // Can be negative for Q1 -> prev year Q4
+      const startOfLastQuarter = new Date(
+        now.getFullYear(),
+        startMonthOfLastQuarter,
+        1
+      );
+      // Adjust year if startMonthOfLastQuarter is negative
+      if (startMonthOfLastQuarter < 0) {
+        startOfLastQuarter.setFullYear(now.getFullYear() - 1);
+      }
+      // End of the last quarter is the day before the start of the current quarter
+      const endOfLastQuarter = new Date(now.getFullYear(), currentQuarter * 3, 0);
+      if (currentQuarter === 0) {
+        // If currently in Q1, end of last quarter is end of previous year
+        endOfLastQuarter.setFullYear(now.getFullYear() - 1);
+      }
+      const formatDate = (date: Date): string =>
+        `${String(date.getDate()).padStart(2, "0")}-${String(
+          date.getMonth() + 1
+        ).padStart(2, "0")}-${date.getFullYear()}`;
+      setFromDate(formatDate(startOfLastQuarter));
+      setToDate(formatDate(endOfLastQuarter));
+      setIsLastMonthActive(false);
+      setIsLastQuarterActive(true);
+      setIsLastYearActive(false);
     }
-    // End of the last quarter is the day before the start of the current quarter
-    const endOfLastQuarter = new Date(now.getFullYear(), currentQuarter * 3, 0);
-    if (currentQuarter === 0) {
-      // If currently in Q1, end of last quarter is end of previous year
-      endOfLastQuarter.setFullYear(now.getFullYear() - 1);
-    }
-    const formatDate = (date: Date): string =>
-      `${String(date.getDate()).padStart(2, "0")}-${String(
-        date.getMonth() + 1
-      ).padStart(2, "0")}-${date.getFullYear()}`;
-    setFromDate(formatDate(startOfLastQuarter));
-    setToDate(formatDate(endOfLastQuarter));
-    setIsLastMonthActive(false);
-    setIsLastQuarterActive(true);
-    setIsLastYearActive(false);
   };
 
   const getLastYearRange = () => {
-    setSelectedDateRange("year");
-    const now = new Date();
-    const lastYear = now.getFullYear() - 1;
-    const startOfYear = new Date(lastYear, 0, 1); // Jan 1st of last year
-    const endOfYear = new Date(lastYear, 11, 31); // Dec 31st of last year
-    const formatDate = (date: Date): string =>
-      `${String(date.getDate()).padStart(2, "0")}-${String(
-        date.getMonth() + 1
-      ).padStart(2, "0")}-${date.getFullYear()}`;
-    setFromDate(formatDate(startOfYear));
-    setToDate(formatDate(endOfYear));
-    setIsLastMonthActive(false);
-    setIsLastQuarterActive(false);
-    setIsLastYearActive(true);
+    if (isLastYearActive) {
+      handleClearDateRange("year");
+    } else {
+      setSelectedDateRange("year");
+      const now = new Date();
+      const lastYear = now.getFullYear() - 1;
+      const startOfYear = new Date(lastYear, 0, 1); // Jan 1st of last year
+      const endOfYear = new Date(lastYear, 11, 31); // Dec 31st of last year
+      const formatDate = (date: Date): string =>
+        `${String(date.getDate()).padStart(2, "0")}-${String(
+          date.getMonth() + 1
+        ).padStart(2, "0")}-${date.getFullYear()}`;
+      setFromDate(formatDate(startOfYear));
+      setToDate(formatDate(endOfYear));
+      setIsLastMonthActive(false);
+      setIsLastQuarterActive(false);
+      setIsLastYearActive(true);
+    }
   };
 
   const handleClearDateRange = (rangeType: "month" | "quarter" | "year") => {
@@ -3466,7 +3946,7 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
   return (
     <div>
       <button
-        className="inline-flex items-center bg-primary text-neutral-900 hover:bg-primaryhover space-x-3 py-3 px-6 h-12.5 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer" // Added gap and hover
+        className="inline-flex items-center justify-center gap-3 bg-primary text-neutral-900 hover:bg-primaryhover h-12.5 md:w-36 w-12.5 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer" // Added gap and hover
         onClick={toggleOpen}
         aria-expanded={isOpen}
         aria-controls="filter-popup"
@@ -3496,7 +3976,7 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
                   ? "bottom-0 left-0 right-0 h-[100vh]"
                   : "top-0 right-0 sm:w-[600px] h-full"
               } bg-white dark:bg-background  ${
-                isMobile ? "rounded-t-2xl" : ""
+                isMobile ? "" : ""
               } z-50 flex flex-col`} // Use flex column
               initial={
                 isMobile ? { y: "100%", opacity: 0 } : { x: "100%", opacity: 0 }
@@ -3530,6 +4010,7 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
                   <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
                     Date
                   </h4>
+                  {/* Date tab */}
                   <div className="flex items-center flex-wrap gap-2 mb-4">
                     <button
                       className={`font-medium border flex items-center gap-2 rounded-full px-4 py-2 cursor-pointer ${

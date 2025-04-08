@@ -636,10 +636,10 @@ const TransactionsSection: React.FC = () => {
               {" "}
               {/* Use items-center */}
               <div>
-                <h3 className="font-medium text-neutral-900 dark:text-white text-sm md:text-base">{name}</h3>
-                <p className="text-xs md:text-sm text-gray-500 dark:text-gray-300">{description} <span className="italic">({transaction.status})</span></p>
+                <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg">{name}</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">{description} <span className="italic">({transaction.status})</span></p>
               </div>
-              <div className={`font-medium ${amountClass} text-sm md:text-base whitespace-nowrap text-right sm:text-left`}>
+              <div className={`font-medium ${amountClass} whitespace-nowrap`}>
                 {amountPrefix}
                 {amount.toLocaleString(undefined, {
                   minimumFractionDigits: 2, // Show 2 decimal places

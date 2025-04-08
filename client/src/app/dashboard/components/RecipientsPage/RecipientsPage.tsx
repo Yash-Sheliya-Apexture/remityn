@@ -303,6 +303,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "../../../hooks/useAuth";
 import recipientService from "../../../services/recipient";
 import { MdCancel } from "react-icons/md"; // Import MdCancel icon
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function RecipientsPage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -368,9 +369,46 @@ export default function RecipientsPage() {
 
   if (loadingRecipients) {
     return (
-      <section className="Beneficiaries-Page py-10">
-        <div className="container mx-auto">Loading recipients...</div>
-      </section>
+      <>
+        <div className="flex justify-between">
+          <Skeleton className="h-8 w-36 mb-4 rounded-full" />
+          <Skeleton className="h-8 w-16 mb-4 rounded-full md:hidden block" />
+        </div>
+
+        <div className="mb-8 flex justify-between gap-4">
+          <Skeleton className="h-10 w-full rounded-full" />
+
+          <Skeleton className="h-10 w-40 rounded-full md:block hidden" />
+        </div>
+        <div className="space-y-2">
+          {Array(3)
+            .fill(0)
+            .map((_, index) => (
+              <div key={index} className="block">
+                <div className="block p-2 sm:p-4 rounded-2xl">
+                  <div className="flex items-center gap-4">
+                    {/* Icon Skeleton */}
+                    <div className="relative flex-shrink-0">
+                      <div className="flex items-center justify-center">
+                        <Skeleton className="h-12 w-12 rounded-full" />
+                      </div>
+                    </div>
+                    {/* Text and Button Skeletons */}
+                    <div className="flex-grow flex flex-row justify-between items-center gap-4">
+                      <div className="flex-grow">
+                        <Skeleton className="h-4 w-40 mb-2" />
+                        <Skeleton className="h-3 w-32" />
+                      </div>
+                      <div className="shrink-0">
+                        <Skeleton className="h-5 w-10 rounded-full" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+        </div>
+      </>
     );
   }
 
