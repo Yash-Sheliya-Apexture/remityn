@@ -251,6 +251,7 @@ const AmountInput: React.FC<AmountInputProps> = ({
       >
         {labelPrefix} {label} {labelSuffix}
       </label>
+
       <div
         className={`flex items-center p-2 bg-white dark:bg-background relative min-h-[72px] transition-shadow ${
           isFocused ? "border-b" : ""
@@ -258,7 +259,7 @@ const AmountInput: React.FC<AmountInputProps> = ({
       >
         {" "}
         {/* Added conditional border class here */}
-        <div className="flex items-center bg-lightborder dark:bg-background border px-2 py-1.5 rounded-full gap-2. pr-5 flex-shrink-0">
+        <div className="flex items-center bg-lightborder dark:bg-background border px-2 py-1.5 rounded-full gap-2.5 pr-5 flex-shrink-0">
           <Image
             src={flagImage || "/assets/icon/generic.svg"}
             alt={`${currencyCode} flag`}
@@ -269,7 +270,7 @@ const AmountInput: React.FC<AmountInputProps> = ({
               e.currentTarget.src = "/assets/icon/generic.svg";
             }}
           />
-          <span className="font-semibold text-base text-gray-500 dark:text-gray-300">
+          <span className="font-bold text-base text-mainheading dark:text-white">
             {currencyCode}
           </span>
         </div>

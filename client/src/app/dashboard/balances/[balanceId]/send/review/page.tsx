@@ -1,347 +1,1260 @@
-// frontend/src/app/dashboard/balances/[balanceId]/send/review/page.tsx
+// // frontend/src/app/dashboard/balances/[balanceId]/send/review/page.tsx
+// "use client";
+// import React, { useState, useEffect } from 'react';
+// import { useParams, useRouter, useSearchParams } from 'next/navigation';
+// import { IoIosArrowBack } from 'react-icons/io';
+// import { useAuth } from '../../../../../hooks/useAuth'; // Adjust path
+// import axios from 'axios';
+// import apiConfig from '../../../../../config/apiConfig'; // Adjust path
+// import Link from 'next/link';
+// import { Skeleton } from "@/components/ui/skeleton"; // For loading
+// import DashboardHeader from '../../../../components/layout/DashboardHeader';
+
+// axios.defaults.baseURL = apiConfig.baseUrl;
+
+// // --- Interfaces (NO FEES/ARRIVAL) ---
+// interface ReviewParams {
+//     balanceId: string;
+// }
+// interface SendSummary { // Structure from localStorage (NO FEES/ARRIVAL)
+//      userId?: string;
+//      sourceAccountId: string;
+//      recipientId: string;
+//      sendAmount: number;
+//      receiveAmount: number;
+//      sendCurrencyCode: string;
+//      receiveCurrencyCode: string;
+//      exchangeRate: number;
+//      availableBalance?: number; // Optional from summary
+//      reason?: string;
+// }
+// interface RecipientDetails { // Structure expected from /recipients/:id
+//     _id: string;
+//     accountHolderName: string;
+//     ifscCode: string;
+//     accountNumber: string;
+//     bankName: string;
+//     address?: string; // Address might be optional depending on backend model
+//     nickname?: string;
+//     currency: { code: string };
+// }
+
+// // --- Component Definition ---
+// const steps = ['Recipient', 'Amount', 'Review', 'Pay']; // Steps for header
+
+// const ReviewSendPage = () => {
+//     // --- Hooks ---
+//     const router = useRouter();
+//     const params = useParams<ReviewParams>();
+//     const searchParams = useSearchParams();
+//     const { balanceId } = params;
+//     const recipientId = searchParams.get('recipientId');
+//     const { token } = useAuth();
+
+//     // --- State ---
+//     const [summary, setSummary] = useState<SendSummary | null>(null);
+//     const [recipientDetails, setRecipientDetails] = useState<RecipientDetails | null>(null);
+//     const [userReference, setUserReference] = useState(''); // Optional reference input
+//     const [isSubmitting, setIsSubmitting] = useState(false); // Loading state for confirmation
+//     const [error, setError] = useState<string | null>(null); // Error display
+//     const [isLoadingDetails, setIsLoadingDetails] = useState(true); // Loading state for recipient details
+
+//     // --- Previous Step Link Logic ---
+//      const getPreviousStepLink = () => {
+//          // Check if the summary indicates a reason was likely required (based on recipient currency)
+//          const needsReason = summary?.receiveCurrencyCode === 'INR';
+//          if (needsReason) {
+//              return `/dashboard/balances/${balanceId}/send/reason?recipientId=${recipientId}`;
+//          } else {
+//              return `/dashboard/balances/${balanceId}/send/amount?recipientId=${recipientId}`;
+//          }
+//      };
+
+//     // --- Effect: Load Summary from localStorage and Fetch Recipient Details ---
+//     useEffect(() => {
+//          // Load summary data passed from previous step
+//          const storedSummary = localStorage.getItem('sendTransferSummary');
+//          if (storedSummary) {
+//              setSummary(JSON.parse(storedSummary));
+//          } else {
+//              // If summary is missing, something went wrong in the flow
+//              setError("Transfer details are missing. Please start the transfer again.");
+//              setIsLoadingDetails(false);
+//              return; // Stop further execution
+//          }
+
+//          // Fetch full recipient details required for display on the review page
+//          const fetchRecipient = async () => {
+//              setIsLoadingDetails(true);
+//              if (!recipientId || !token) {
+//                   // Should ideally not happen if summary is present, but good check
+//                   setError("Recipient ID or authentication token is missing.");
+//                   setIsLoadingDetails(false);
+//                   return;
+//               };
+//              try {
+//                  const response = await axios.get<RecipientDetails>(`/recipients/${recipientId}`, { headers: { Authorization: `Bearer ${token}` } });
+//                  setRecipientDetails(response.data);
+//              } catch (err: any) {
+//                  console.error("Error fetching recipient details for review:", err);
+//                  setError(err.response?.data?.message || "Failed to load recipient details.");
+//              } finally {
+//                  setIsLoadingDetails(false);
+//              }
+//          };
+
+//          // Only fetch recipient if summary was loaded successfully
+//          if (storedSummary) {
+//              fetchRecipient();
+//          }
+
+//     }, [recipientId, token]); // Dependencies: recipientId and token
+
+//     // --- Confirm and Send Handler ---
+//     const handleConfirmAndSend = async () => {
+//         // Ensure all necessary data is available
+//         if (!summary || !recipientDetails || !token) {
+//             setError("Cannot proceed. Missing transfer or recipient information.");
+//             return;
+//         }
+//         setIsSubmitting(true); // Indicate submission process start
+//         setError(null); // Clear previous errors
+
+//         try {
+//             // Construct the payload for the backend, excluding fees/arrival
+//             const payload = {
+//                  userId: summary.userId, // Include if backend requires it
+//                  sourceAccountId: summary.sourceAccountId,
+//                  recipientId: summary.recipientId,
+//                  sendAmount: summary.sendAmount,
+//                  receiveAmount: summary.receiveAmount,
+//                  sendCurrencyCode: summary.sendCurrencyCode,
+//                  receiveCurrencyCode: summary.receiveCurrencyCode,
+//                  exchangeRate: summary.exchangeRate,
+//                  reason: summary.reason, // Include reason if present
+//                  reference: userReference.trim() || null, // Send trimmed reference or null
+//              };
+
+//             // Make the API call to execute the transfer
+//             const response = await axios.post(
+//                 '/transfers/execute', // Backend endpoint
+//                 payload,
+//                 { headers: { Authorization: `Bearer ${token}` } }
+//             );
+
+//             // Transfer initiated successfully
+//             console.log("Transfer execution response:", response.data);
+//             localStorage.removeItem('sendTransferSummary'); // Clean up stored summary
+//             // Redirect to a success page or dashboard, optionally passing transfer ID
+//             router.push(`/dashboard?transferSuccess=true&transferId=${response.data?._id || ''}`);
+
+//         } catch (err: any) {
+//             // Handle errors during transfer execution
+//             console.error("Error executing transfer:", err);
+//             setError(err.response?.data?.message || "Failed to send money. Please try again later.");
+//             setIsSubmitting(false); // Allow user to retry if applicable
+//         }
+//         // No finally block needed here because we redirect on success
+//     };
+
+//     // --- Render Logic ---
+
+//     // Loading State
+//     if (isLoadingDetails) {
+//          return (
+//             <div className='ReviewSend-Page pb-10'>
+//                 <DashboardHeader title="Send Money" currentStep={3} totalSteps={steps.length} steps={steps} />
+//                 <div className="container mx-auto max-w-2xl p-4 lg:p-8">
+//                    <Skeleton className="h-8 w-32 mb-6" /> {/* Back link */}
+//                    <Skeleton className="h-10 w-48 mb-8" /> {/* Title */}
+//                    <div className="space-y-6 border rounded-lg p-6"> {/* Main content box */}
+//                        <Skeleton className="h-6 w-3/4 mb-4" /> {/* Detail line */}
+//                        <Skeleton className="h-4 w-1/2" />
+//                        <Skeleton className="h-4 w-1/2" />
+//                        <Skeleton className="h-4 w-1/2" />
+//                        <Skeleton className="h-4 w-1/2" />
+//                        <hr className="my-4"/>
+//                         <Skeleton className="h-6 w-3/4 mb-4" /> {/* Detail line */}
+//                        <Skeleton className="h-4 w-1/2" />
+//                        <Skeleton className="h-4 w-1/2" />
+//                        <Skeleton className="h-4 w-1/2" />
+//                        <hr className="my-4"/>
+//                        <Skeleton className="h-10 w-full" /> {/* Reference Input */}
+//                        <Skeleton className="h-12 w-full rounded-full mt-6" /> {/* Button */}
+//                    </div>
+//                 </div>
+//             </div>
+//         );
+//     }
+
+//     // Error State (if initial loading failed)
+//     if (error && !isSubmitting) {
+//         return (
+//              <div className='ReviewSend-Page pb-10'>
+//                   <DashboardHeader title="Send Money" currentStep={3} totalSteps={steps.length} steps={steps} />
+//                   <div className="container mx-auto max-w-2xl p-4 lg:p-8 text-center">
+//                        <p className="text-red-600 mb-4">Error: {error}</p>
+//                        <Link href={getPreviousStepLink()} className='text-blue-600 underline ml-2'>Go back</Link>
+//                   </div>
+//              </div>
+//          );
+//     }
+
+//     // Data Missing State (Should ideally be caught by error state above)
+//     if (!summary || !recipientDetails) {
+//         return (
+//             <div className='ReviewSend-Page pb-10'>
+//                 <DashboardHeader title="Send Money" currentStep={3} totalSteps={steps.length} steps={steps} />
+//                 <div className="container mx-auto max-w-2xl p-4 lg:p-8 text-center">
+//                     <p className="text-red-500 mb-4">Error: Missing required transfer or recipient details.</p>
+//                     <Link href={`/dashboard/balances/${balanceId}/send/select-recipient`} className='text-blue-600 underline ml-2'>Start Transfer Again</Link>
+//                 </div>
+//             </div>
+//         );
+//     }
+
+//     // Main Render - Display Review Details
+//     return (
+//          <div className='ReviewSend-Page pb-10'>
+//               <DashboardHeader title="Send Money" currentStep={3} totalSteps={steps.length} steps={steps} />
+//              <div className="container mx-auto max-w-2xl p-4 lg:p-8">
+
+//                  {/* Title */}
+//                 <h1 className="text-2xl lg:text-3xl font-semibold text-main mb-6">Confirm and send</h1>
+
+//                  {/* Submission Error Display */}
+//                  {error && isSubmitting && <p className="text-red-600 text-sm mb-4 p-3 bg-red-100 rounded border border-red-200">{error}</p>}
+
+//                  {/* Main Review Box */}
+//                  <div className="border rounded-lg p-6 bg-white shadow-sm space-y-5">
+
+//                      {/* Transfer Details Section */}
+//                      <div>
+//                          <h3 className='text-sm font-medium text-gray-500 mb-3'>Transfer details</h3>
+//                          <div className='space-y-2 text-sm'>
+//                              <div className='flex justify-between'>
+//                                  <span>You send exactly</span>
+//                                  <span className='font-semibold'>{summary.sendAmount.toFixed(2)} {summary.sendCurrencyCode}</span>
+//                              </div>
+//                              {/* Fee line is removed */}
+//                              {/* Amount to convert line is removed */}
+//                              <div className='flex justify-between'>
+//                                  <span>Guaranteed rate</span>
+//                                  <span className='font-semibold'>1 {summary.sendCurrencyCode} = {summary.exchangeRate.toFixed(5)} {summary.receiveCurrencyCode}</span>
+//                              </div>
+//                              <div className='flex justify-between font-bold text-base mt-1'> {/* Slightly larger font for final amount */}
+//                                  <span>{recipientDetails.nickname || recipientDetails.accountHolderName} gets</span>
+//                                  <span>{summary.receiveAmount.toFixed(2)} {summary.receiveCurrencyCode}</span>
+//                              </div>
+//                          </div>
+//                      </div>
+//                      <hr/>
+
+//                      {/* Recipient Details Section */}
+//                      <div>
+//                           <h3 className='text-sm font-medium text-gray-500 mb-3'>Recipient details</h3>
+//                           <div className='space-y-2 text-sm'>
+//                               <div className='flex justify-between'>
+//                                   <span>Account holder name</span>
+//                                   <span className='font-semibold capitalize'>{recipientDetails.accountHolderName}</span>
+//                               </div>
+//                              <div className='flex justify-between'>
+//                                  <span>IFSC code</span>
+//                                  <span className='font-semibold'>{recipientDetails.ifscCode}</span>
+//                              </div>
+//                              <div className='flex justify-between'>
+//                                  <span>Account number</span>
+//                                  {/* Mask account number */}
+//                                  <span className='font-semibold'>**** **** {recipientDetails.accountNumber.slice(-4)}</span>
+//                              </div>
+//                              <div className='flex justify-between'>
+//                                  <span>Bank name</span>
+//                                  <span className='font-semibold'>{recipientDetails.bankName}</span>
+//                              </div>
+//                              {/* Address can be omitted on review if not critical */}
+//                              {/* {recipientDetails.address && <div className='flex justify-between'><span>Address</span><span className='font-semibold'>{recipientDetails.address}</span></div>} */}
+//                          </div>
+//                      </div>
+//                      <hr/>
+
+//                      {/* --- REMOVED Schedule Details Section --- */}
+
+//                      {/* Reason Section (Conditional) */}
+//                       {summary.reason && (
+//                           <>
+//                              <hr/>
+//                              <div>
+//                                   <h3 className='text-sm font-medium text-gray-500 mb-2'>Reason for transfer</h3>
+//                                  <p className='text-sm font-semibold'>{summary.reason}</p>
+//                              </div>
+//                          </>
+//                      )}
+//                     <hr/>
+
+//                      {/* Reference Input Section */}
+//                      <div>
+//                          <label htmlFor="reference" className='block text-sm font-medium text-gray-500 mb-2'>Reference for recipient (optional)</label>
+//                          <input
+//                             type="text"
+//                             id="reference"
+//                             value={userReference}
+//                             onChange={(e) => setUserReference(e.target.value)}
+//                             maxLength={35} // Example length limit
+//                             placeholder={`e.g., Invoice payment, Gift`}
+//                             className="block w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-primary focus:border-primary"
+//                             aria-label="Reference for recipient"
+//                         />
+//                      </div>
+
+//                  </div>
+
+//                  {/* Disclaimer Text */}
+//                  <p className='text-xs text-gray-500 my-4'>
+//                      You can cancel for a full refund within 30 minutes of payment, unless the funds have been picked up or deposited. Make sure you're sending money to someone you know and trust, and that their information is correct. Fraudulent transactions may result in the loss of money with no recourse.
+//                  </p>
+
+//                  {/* Confirm Button */}
+//                  <button
+//                      onClick={handleConfirmAndSend}
+//                      disabled={isSubmitting} // Disable while submitting
+//                      className="w-full bg-green-600 text-white font-semibold py-3 rounded-full disabled:opacity-50 disabled:cursor-wait hover:bg-green-700 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+//                      data-testid="confirm-send-button"
+//                  >
+//                      {isSubmitting ? (
+//                          // Loading indicator inside button
+//                          <div className="flex justify-center items-center">
+//                              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+//                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+//                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+//                              </svg>
+//                              Processing...
+//                          </div>
+//                      ) : (
+//                         'Confirm and send' // Default button text
+//                      )}
+//                  </button>
+
+//              </div>
+//          </div>
+//     );
+// };
+
+// export default ReviewSendPage;
+
+// "use client";
+// import React, { useState, useEffect } from "react";
+// import { useParams, useRouter, useSearchParams } from "next/navigation";
+// import { FiArrowLeft, FiCheckCircle, FiAlertTriangle } from "react-icons/fi";
+// import { useAuth } from "../../../../../hooks/useAuth";
+// import axios from "axios";
+// import apiConfig from "../../../../../config/apiConfig";
+// import Link from "next/link";
+// import { Skeleton } from "@/components/ui/skeleton";
+// import DashboardHeader from "../../../../components/layout/DashboardHeader";
+
+// axios.defaults.baseURL = apiConfig.baseUrl;
+
+// // Interfaces
+// interface ReviewParams {
+//   balanceId: string;
+// }
+
+// interface SendSummary {
+//   userId?: string;
+//   sourceAccountId: string;
+//   recipientId: string;
+//   sendAmount: number;
+//   receiveAmount: number;
+//   sendCurrencyCode: string;
+//   receiveCurrencyCode: string;
+//   exchangeRate: number;
+//   availableBalance?: number;
+//   reason?: string;
+// }
+
+// interface RecipientDetails {
+//   _id: string;
+//   accountHolderName: string;
+//   ifscCode: string;
+//   accountNumber: string;
+//   bankName: string;
+//   address?: string;
+//   nickname?: string;
+//   currency: { code: string };
+// }
+
+// // Component Definition
+// const steps = ["Recipient", "Amount", "Review", "Pay"];
+
+// const ReviewSendPage = () => {
+//   // Hooks
+//   const router = useRouter();
+//   const params = useParams<ReviewParams>();
+//   const searchParams = useSearchParams();
+//   const { balanceId } = params;
+//   const recipientId = searchParams.get("recipientId");
+//   const { token } = useAuth();
+
+//   // State
+//   const [summary, setSummary] = useState<SendSummary | null>(null);
+//   const [recipientDetails, setRecipientDetails] =
+//     useState<RecipientDetails | null>(null);
+//   const [userReference, setUserReference] = useState("");
+//   const [isSubmitting, setIsSubmitting] = useState(false);
+//   const [error, setError] = useState<string | null>(null);
+//   const [isLoadingDetails, setIsLoadingDetails] = useState(true);
+
+//   // Previous Step Link Logic
+//   const getPreviousStepLink = () => {
+//     const needsReason = summary?.receiveCurrencyCode === "INR";
+//     if (needsReason) {
+//       return `/dashboard/balances/${balanceId}/send/reason?recipientId=${recipientId}`;
+//     } else {
+//       return `/dashboard/balances/${balanceId}/send/amount?recipientId=${recipientId}`;
+//     }
+//   };
+
+//   // Load Summary from localStorage and Fetch Recipient Details
+//   useEffect(() => {
+//     const storedSummary = localStorage.getItem("sendTransferSummary");
+//     if (storedSummary) {
+//       setSummary(JSON.parse(storedSummary));
+//     } else {
+//       setError(
+//         "Transfer details are missing. Please start the transfer again."
+//       );
+//       setIsLoadingDetails(false);
+//       return;
+//     }
+
+//     const fetchRecipient = async () => {
+//       setIsLoadingDetails(true);
+//       if (!recipientId || !token) {
+//         setError("Recipient ID or authentication token is missing.");
+//         setIsLoadingDetails(false);
+//         return;
+//       }
+//       try {
+//         const response = await axios.get<RecipientDetails>(
+//           `/recipients/${recipientId}`,
+//           {
+//             headers: { Authorization: `Bearer ${token}` },
+//           }
+//         );
+//         setRecipientDetails(response.data);
+//       } catch (err: any) {
+//         console.error("Error fetching recipient details for review:", err);
+//         setError(
+//           err.response?.data?.message || "Failed to load recipient details."
+//         );
+//       } finally {
+//         setIsLoadingDetails(false);
+//       }
+//     };
+
+//     if (storedSummary) {
+//       fetchRecipient();
+//     }
+//   }, [recipientId, token]);
+
+//   // Confirm and Send Handler
+//   const handleConfirmAndSend = async () => {
+//     if (!summary || !recipientDetails || !token) {
+//       setError("Cannot proceed. Missing transfer or recipient information.");
+//       return;
+//     }
+//     setIsSubmitting(true);
+//     setError(null);
+
+//     try {
+//       const payload = {
+//         userId: summary.userId,
+//         sourceAccountId: summary.sourceAccountId,
+//         recipientId: summary.recipientId,
+//         sendAmount: summary.sendAmount,
+//         receiveAmount: summary.receiveAmount,
+//         sendCurrencyCode: summary.sendCurrencyCode,
+//         receiveCurrencyCode: summary.receiveCurrencyCode,
+//         exchangeRate: summary.exchangeRate,
+//         reason: summary.reason,
+//         reference: userReference.trim() || null,
+//       };
+
+//       const response = await axios.post("/transfers/execute", payload, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+
+//       console.log("Transfer execution response:", response.data);
+//       localStorage.removeItem("sendTransferSummary");
+//       router.push(
+//         `/dashboard?transferSuccess=true&transferId=${response.data?._id || ""}`
+//       );
+//     } catch (err: any) {
+//       console.error("Error executing transfer:", err);
+//       setError(
+//         err.response?.data?.message ||
+//           "Failed to send money. Please try again later."
+//       );
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   // Loading State
+//   if (isLoadingDetails) {
+//     return (
+//       <div className="min-h-screen ">
+//         <DashboardHeader
+//           title="Send Money"
+//           currentStep={3}
+//           totalSteps={steps.length}
+//           steps={steps}
+//         />
+//         <div className="container mx-auto max-w-2xl px-4 py-8">
+//           <Skeleton className="h-8 w-32 mb-6" />
+//           <Skeleton className="h-10 w-48 mb-8" />
+//           <div className="space-y-6 rounded-xl p-6">
+//             <Skeleton className="h-6 w-3/4 mb-4" />
+//             <Skeleton className="h-4 w-1/2" />
+//             <Skeleton className="h-4 w-1/2" />
+//             <Skeleton className="h-4 w-1/2" />
+//             <hr className="my-4" />
+//             <Skeleton className="h-6 w-3/4 mb-4" />
+//             <Skeleton className="h-4 w-1/2" />
+//             <Skeleton className="h-4 w-1/2" />
+//             <Skeleton className="h-4 w-1/2" />
+//             <hr className="my-4" />
+//             <Skeleton className="h-10 w-full rounded-lg" />
+//             <Skeleton className="h-12 w-full rounded-full mt-6" />
+//           </div>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   // Error State
+//   if (error && !isSubmitting) {
+//     return (
+//       <div className="min-h-screen">
+//         <DashboardHeader
+//           title="Send Money"
+//           currentStep={3}
+//           totalSteps={steps.length}
+//           steps={steps}
+//         />
+//         <div className="container mx-auto max-w-2xl px-4 py-8">
+//           <div className="bg-white dark:bg-background rounded-xl p-8 text-center">
+//             <FiAlertTriangle className="text-red-500 text-4xl mx-auto mb-4" />
+//             <h2 className="text-xl font-medium mb-4">Something went wrong</h2>
+//             <p className="text-red-600 mb-6">{error}</p>
+//             <Link
+//               href={getPreviousStepLink()}
+//               className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+//             >
+//               <FiArrowLeft className="mr-2" /> Go back
+//             </Link>
+//           </div>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   // Data Missing State
+//   if (!summary || !recipientDetails) {
+//     return (
+//       <div className="min-h-screen">
+//         <DashboardHeader
+//           title="Send Money"
+//           currentStep={3}
+//           totalSteps={steps.length}
+//           steps={steps}
+//         />
+//         <div className="container mx-auto max-w-2xl px-4 py-8">
+//           <div className="bg-white dark:bg-background rounded-xl p-8 text-center">
+//             <FiAlertTriangle className="text-red-500 size-10 mx-auto mb-4" />
+//             <h2 className="text-xl font-medium mb-4">Missing Information</h2>
+//             <p className="text-gray-500 dark:text-gray-300 mb-6">
+//               Required transfer or recipient details are missing.
+//             </p>
+//             <Link
+//               href={`/dashboard/balances/${balanceId}/send/select-recipient`}
+//               className="inline-flex items-center px-6 py-3 bg-primary  hover:bg-primaryhover text-mainheading font-medium rounded-lg transition-colors"
+//             >
+//               Start Transfer Again
+//             </Link>
+//           </div>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   // Main Render
+//   return (
+//     <div className="min-h-screen ">
+//       <DashboardHeader
+//         title="Send Money"
+//         currentStep={3}
+//         totalSteps={steps.length}
+//         steps={steps}
+//       />
+//       <div className="container mx-auto max-w-2xl px-4 py-8">
+
+//         {/* Title */}
+//         <h1 className="text-xl md:text-2xl font-bold text-neutral-900 dark:text-white mb-6">
+//           Confirm and send
+//         </h1>
+
+//         {/* Submission Error Display */}
+//         {error && isSubmitting && (
+//           <div className="border-l-4 border-red-500 p-4 mb-6 rounded-lg">
+//             <div className="flex items-start">
+//               <FiAlertTriangle className="text-red-500 mt-0.5 mr-3" />
+//               <p className="text-red-700">{error}</p>
+//             </div>
+//           </div>
+//         )}
+
+
+//         {/* Main Review Card */}
+//         <div className="bg-white dark:bg-background border rounded-xl overflow-hidden mb-6">
+//           {/* Summary Header */}
+//           <div className="px-6 py-4 bg-lightborder dark:bg-primarybox">
+//             <h2 className="font-medium text-lg text-mainheading dark:text-white">Transaction Summary</h2>
+//           </div>
+
+//           {/* Transfer Details Section */}
+//           <div className="p-6 border-b">
+//             <h3 className="text-sm font-medium text-mainheading dark:text-gray-500 uppercase tracking-wider mb-4">
+//              Transfer details
+//             </h3>
+//             <div className="space-y-3">
+//               <div className="flex justify-between items-center">
+//                 <span className="text-gray-500 dark:text-gray-300">You send exactly</span>
+//                 <span className="font-semibold text-mainheading">
+//                   {summary.sendAmount.toFixed(2)} {summary.sendCurrencyCode}
+//                 </span>
+//               </div>
+//               <div className="flex justify-between items-center">
+//                 <span className="text-gray-500 dark:text-gray-300">Guaranteed rate</span>
+//                 <span className="font-semibold text-mainheading bg-primary p-1.5 px-2 rounded-md">
+//                   1 {summary.sendCurrencyCode} ={" "}
+//                   {summary.exchangeRate.toFixed(5)}{" "}
+//                   {summary.receiveCurrencyCode}
+//                 </span>
+//               </div>
+//               <div className="flex justify-between items-center mt-2 rounded-md">
+//                 <span className="text-gray-500 dark:text-gray-300 capitalize">
+//                   {recipientDetails.nickname ||
+//                     recipientDetails.accountHolderName}{" "}
+//                   gets
+//                 </span>
+//                 <span className="font-bold text-white dark:text-mainheading px-5 py-1.5 bg-green-500 rounded-md">
+//                   {summary.receiveAmount.toFixed(2)}{" "}
+//                   {summary.receiveCurrencyCode}
+//                 </span>
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* Recipient Details Section */}
+//           <div className="p-6 border-b">
+//             <h3 className="text-sm font-medium text-mainheading dark:text-gray-500 uppercase tracking-wider mb-4">
+//               Recipient details
+//             </h3>
+//             <div className="space-y-3">
+//               <div className="grid grid-cols-2 gap-2">
+//                 <span className="text-gray-500 dark:text-gray-300">Account holder</span>
+//                 <span className="font-semibold text-mainheading dark:text-white text-right capitalize">
+//                   {recipientDetails.accountHolderName}
+//                 </span>
+//               </div>
+//               <div className="grid grid-cols-2 gap-2">
+//                 <span className="text-gray-500 dark:text-gray-300">IFSC code</span>
+//                 <span className="font-semibold text-mainheading dark:text-white text-right">
+//                   {recipientDetails.ifscCode}
+//                 </span>
+//               </div>
+//               <div className="grid grid-cols-2 gap-2">
+//                 <span className="text-gray-500 dark:text-gray-300">Account number</span>
+//                 <span className="font-semibold text-mainheading dark:text-white text-right">
+//                   **** **** {recipientDetails.accountNumber.slice(-4)}
+//                 </span>
+//               </div>
+//               <div className="grid grid-cols-2 gap-2">
+//                 <span className="text-gray-500 dark:text-gray-300">Bank name</span>
+//                 <span className="font-semibold text-mainheading dark:text-white text-right capitalize">
+//                   {recipientDetails.bankName}
+//                 </span>
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* Reason Section (Conditional) */}
+//           {summary.reason && (
+//             <div className="p-6 border-b ">
+//               <h3 className="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider mb-2">
+//                 Reason for transfer
+//               </h3>
+//               <p className="font-medium text-mainheading dark:text-white p-2.5 bg-lightgray dark:bg-primarybox rounded-md">
+//                 {summary.reason}
+//               </p>
+//             </div>
+//           )}
+
+//           {/* Reference Input Section */}
+//           <div className="p-6">
+//             <label
+//               htmlFor="reference"
+//               className="font-medium text-gray-500 dark:text-gray-300  block mb-2"
+//             >
+//               Reference for recipient (optional)
+//             </label>
+//             <input
+//               type="text"
+//               id="reference"
+//               value={userReference}
+//               onChange={(e) => setUserReference(e.target.value)}
+//               maxLength={35}
+//               placeholder="e.g., Invoice payment, Gift"
+//               className="block w-full border hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow duration-300 ease-in-out rounded-lg p-3 text-mainheading dark:text-white"
+//               aria-label="Reference for recipient"
+//             />
+//           </div>
+//         </div>
+
+
+//         {/* Confirm Button */}
+//         <button
+//           onClick={handleConfirmAndSend}
+//           disabled={isSubmitting}
+//           className="w-full flex justify-center items-center cursor-pointer py-4 px-6 bg-primary hover:bg-primaryhover text-mainheading font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors ease-in-out duration-300 focus:outline-none"
+//           data-testid="confirm-send-button"
+//         >
+//           {isSubmitting ? (
+//             <>
+//               <svg
+//                 className="animate-spin -ml-1 mr-3 size-5 text-mainheading"
+//                 xmlns="http://www.w3.org/2000/svg"
+//                 fill="none"
+//                 viewBox="0 0 24 24"
+//               >
+//                 <circle
+//                   className="opacity-25"
+//                   cx="12"
+//                   cy="12"
+//                   r="10"
+//                   stroke="currentColor"
+//                   strokeWidth="4"
+//                 ></circle>
+//                 <path
+//                   className="opacity-75"
+//                   fill="currentColor"
+//                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+//                 ></path>
+//               </svg>
+//               Processing...
+//             </>
+//           ) : (
+//             <>
+//               <FiCheckCircle className="mr-2" size={20} />
+//               Confirm and send
+//             </>
+//           )}
+//         </button>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ReviewSendPage;
+
+
 "use client";
-import React, { useState, useEffect } from 'react';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { IoIosArrowBack } from 'react-icons/io';
-import { useAuth } from '../../../../../hooks/useAuth'; // Adjust path
-import axios from 'axios';
-import apiConfig from '../../../../../config/apiConfig'; // Adjust path
-import Link from 'next/link';
-import { Skeleton } from "@/components/ui/skeleton"; // For loading
-import DashboardHeader from '../../../../components/layout/DashboardHeader';
+import React, { useState, useEffect } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { FiArrowLeft, FiCheckCircle, FiAlertTriangle } from "react-icons/fi";
+import { useAuth } from "../../../../../hooks/useAuth";
+import axios from "axios";
+import apiConfig from "../../../../../config/apiConfig";
+import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton";
+import DashboardHeader from "../../../../components/layout/DashboardHeader";
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
-// --- Interfaces (NO FEES/ARRIVAL) ---
+// Interfaces
 interface ReviewParams {
-    balanceId: string;
-}
-interface SendSummary { // Structure from localStorage (NO FEES/ARRIVAL)
-     userId?: string;
-     sourceAccountId: string;
-     recipientId: string;
-     sendAmount: number;
-     receiveAmount: number;
-     sendCurrencyCode: string;
-     receiveCurrencyCode: string;
-     exchangeRate: number;
-     availableBalance?: number; // Optional from summary
-     reason?: string;
-}
-interface RecipientDetails { // Structure expected from /recipients/:id
-    _id: string;
-    accountHolderName: string;
-    ifscCode: string;
-    accountNumber: string;
-    bankName: string;
-    address?: string; // Address might be optional depending on backend model
-    nickname?: string;
-    currency: { code: string };
+  balanceId: string;
 }
 
-// --- Component Definition ---
-const steps = ['Recipient', 'Amount', 'Review', 'Pay']; // Steps for header
+interface SendSummary {
+  userId?: string;
+  sourceAccountId: string;
+  recipientId: string;
+  sendAmount: number;
+  receiveAmount: number;
+  sendCurrencyCode: string;
+  receiveCurrencyCode: string;
+  exchangeRate: number;
+  availableBalance?: number;
+  reason?: string;
+}
+
+interface RecipientDetails {
+  _id: string;
+  accountHolderName: string;
+  ifscCode: string;
+  accountNumber: string;
+  bankName: string;
+  address?: string;
+  nickname?: string;
+  currency: { code: string };
+}
+
+// Component Definition
+const steps = ["Recipient", "Amount", "Review", "Pay"];
 
 const ReviewSendPage = () => {
-    // --- Hooks ---
-    const router = useRouter();
-    const params = useParams<ReviewParams>();
-    const searchParams = useSearchParams();
-    const { balanceId } = params;
-    const recipientId = searchParams.get('recipientId');
-    const { token } = useAuth();
+  // Hooks
+  const router = useRouter();
+  const params = useParams<ReviewParams>();
+  const searchParams = useSearchParams();
+  const { balanceId } = params;
+  const recipientId = searchParams.get("recipientId");
+  const { token } = useAuth();
 
-    // --- State ---
-    const [summary, setSummary] = useState<SendSummary | null>(null);
-    const [recipientDetails, setRecipientDetails] = useState<RecipientDetails | null>(null);
-    const [userReference, setUserReference] = useState(''); // Optional reference input
-    const [isSubmitting, setIsSubmitting] = useState(false); // Loading state for confirmation
-    const [error, setError] = useState<string | null>(null); // Error display
-    const [isLoadingDetails, setIsLoadingDetails] = useState(true); // Loading state for recipient details
+  // State
+  const [summary, setSummary] = useState<SendSummary | null>(null);
+  const [recipientDetails, setRecipientDetails] =
+    useState<RecipientDetails | null>(null);
+  const [userReference, setUserReference] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoadingDetails, setIsLoadingDetails] = useState(true);
 
-    // --- Previous Step Link Logic ---
-     const getPreviousStepLink = () => {
-         // Check if the summary indicates a reason was likely required (based on recipient currency)
-         const needsReason = summary?.receiveCurrencyCode === 'INR';
-         if (needsReason) {
-             return `/dashboard/balances/${balanceId}/send/reason?recipientId=${recipientId}`;
-         } else {
-             return `/dashboard/balances/${balanceId}/send/amount?recipientId=${recipientId}`;
-         }
-     };
+  // Previous Step Link Logic
+  const getPreviousStepLink = () => {
+    const needsReason = summary?.receiveCurrencyCode === "INR";
+    if (needsReason) {
+      return `/dashboard/balances/${balanceId}/send/reason?recipientId=${recipientId}`;
+    } else {
+      return `/dashboard/balances/${balanceId}/send/amount?recipientId=${recipientId}`;
+    }
+  };
 
-    // --- Effect: Load Summary from localStorage and Fetch Recipient Details ---
-    useEffect(() => {
-         // Load summary data passed from previous step
-         const storedSummary = localStorage.getItem('sendTransferSummary');
-         if (storedSummary) {
-             setSummary(JSON.parse(storedSummary));
-         } else {
-             // If summary is missing, something went wrong in the flow
-             setError("Transfer details are missing. Please start the transfer again.");
-             setIsLoadingDetails(false);
-             return; // Stop further execution
-         }
+  // Load Summary from localStorage and Fetch Recipient Details
+  useEffect(() => {
+    const storedSummary = localStorage.getItem("sendTransferSummary");
+    if (storedSummary) {
+      setSummary(JSON.parse(storedSummary));
+    } else {
+      setError(
+        "Transfer details are missing. Please start the transfer again."
+      );
+      setIsLoadingDetails(false);
+      return;
+    }
 
-         // Fetch full recipient details required for display on the review page
-         const fetchRecipient = async () => {
-             setIsLoadingDetails(true);
-             if (!recipientId || !token) {
-                  // Should ideally not happen if summary is present, but good check
-                  setError("Recipient ID or authentication token is missing.");
-                  setIsLoadingDetails(false);
-                  return;
-              };
-             try {
-                 const response = await axios.get<RecipientDetails>(`/recipients/${recipientId}`, { headers: { Authorization: `Bearer ${token}` } });
-                 setRecipientDetails(response.data);
-             } catch (err: any) {
-                 console.error("Error fetching recipient details for review:", err);
-                 setError(err.response?.data?.message || "Failed to load recipient details.");
-             } finally {
-                 setIsLoadingDetails(false);
-             }
-         };
-
-         // Only fetch recipient if summary was loaded successfully
-         if (storedSummary) {
-             fetchRecipient();
-         }
-
-    }, [recipientId, token]); // Dependencies: recipientId and token
-
-
-    // --- Confirm and Send Handler ---
-    const handleConfirmAndSend = async () => {
-        // Ensure all necessary data is available
-        if (!summary || !recipientDetails || !token) {
-            setError("Cannot proceed. Missing transfer or recipient information.");
-            return;
-        }
-        setIsSubmitting(true); // Indicate submission process start
-        setError(null); // Clear previous errors
-
-        try {
-            // Construct the payload for the backend, excluding fees/arrival
-            const payload = {
-                 userId: summary.userId, // Include if backend requires it
-                 sourceAccountId: summary.sourceAccountId,
-                 recipientId: summary.recipientId,
-                 sendAmount: summary.sendAmount,
-                 receiveAmount: summary.receiveAmount,
-                 sendCurrencyCode: summary.sendCurrencyCode,
-                 receiveCurrencyCode: summary.receiveCurrencyCode,
-                 exchangeRate: summary.exchangeRate,
-                 reason: summary.reason, // Include reason if present
-                 reference: userReference.trim() || null, // Send trimmed reference or null
-             };
-
-            // Make the API call to execute the transfer
-            const response = await axios.post(
-                '/transfers/execute', // Backend endpoint
-                payload,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-
-            // Transfer initiated successfully
-            console.log("Transfer execution response:", response.data);
-            localStorage.removeItem('sendTransferSummary'); // Clean up stored summary
-            // Redirect to a success page or dashboard, optionally passing transfer ID
-            router.push(`/dashboard?transferSuccess=true&transferId=${response.data?._id || ''}`);
-
-        } catch (err: any) {
-            // Handle errors during transfer execution
-            console.error("Error executing transfer:", err);
-            setError(err.response?.data?.message || "Failed to send money. Please try again later.");
-            setIsSubmitting(false); // Allow user to retry if applicable
-        }
-        // No finally block needed here because we redirect on success
+    const fetchRecipient = async () => {
+      setIsLoadingDetails(true);
+      if (!recipientId || !token) {
+        setError("Recipient ID or authentication token is missing.");
+        setIsLoadingDetails(false);
+        return;
+      }
+      try {
+        const response = await axios.get<RecipientDetails>(
+          `/recipients/${recipientId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setRecipientDetails(response.data);
+      } catch (err: any) {
+        console.error("Error fetching recipient details for review:", err);
+        setError(
+          err.response?.data?.message || "Failed to load recipient details."
+        );
+      } finally {
+        setIsLoadingDetails(false);
+      }
     };
 
-    // --- Render Logic ---
-
-    // Loading State
-    if (isLoadingDetails) {
-         return (
-            <div className='ReviewSend-Page pb-10'>
-                <DashboardHeader title="Send Money" currentStep={3} totalSteps={steps.length} steps={steps} />
-                <div className="container mx-auto max-w-2xl p-4 lg:p-8">
-                   <Skeleton className="h-8 w-32 mb-6" /> {/* Back link */}
-                   <Skeleton className="h-10 w-48 mb-8" /> {/* Title */}
-                   <div className="space-y-6 border rounded-lg p-6"> {/* Main content box */}
-                       <Skeleton className="h-6 w-3/4 mb-4" /> {/* Detail line */}
-                       <Skeleton className="h-4 w-1/2" />
-                       <Skeleton className="h-4 w-1/2" />
-                       <Skeleton className="h-4 w-1/2" />
-                       <Skeleton className="h-4 w-1/2" />
-                       <hr className="my-4"/>
-                        <Skeleton className="h-6 w-3/4 mb-4" /> {/* Detail line */}
-                       <Skeleton className="h-4 w-1/2" />
-                       <Skeleton className="h-4 w-1/2" />
-                       <Skeleton className="h-4 w-1/2" />
-                       <hr className="my-4"/>
-                       <Skeleton className="h-10 w-full" /> {/* Reference Input */}
-                       <Skeleton className="h-12 w-full rounded-full mt-6" /> {/* Button */}
-                   </div>
-                </div>
-            </div>
-        );
+    if (storedSummary) {
+      fetchRecipient();
     }
+  }, [recipientId, token]);
 
-    // Error State (if initial loading failed)
-    if (error && !isSubmitting) {
-        return (
-             <div className='ReviewSend-Page pb-10'>
-                  <DashboardHeader title="Send Money" currentStep={3} totalSteps={steps.length} steps={steps} />
-                  <div className="container mx-auto max-w-2xl p-4 lg:p-8 text-center">
-                       <p className="text-red-600 mb-4">Error: {error}</p>
-                       <Link href={getPreviousStepLink()} className='text-blue-600 underline ml-2'>Go back</Link>
-                  </div>
-             </div>
-         );
+  // Confirm and Send Handler
+  const handleConfirmAndSend = async () => {
+    if (!summary || !recipientDetails || !token) {
+      setError("Cannot proceed. Missing transfer or recipient information.");
+      return;
     }
+    setIsSubmitting(true);
+    setError(null);
 
-    // Data Missing State (Should ideally be caught by error state above)
-    if (!summary || !recipientDetails) {
-        return (
-            <div className='ReviewSend-Page pb-10'>
-                <DashboardHeader title="Send Money" currentStep={3} totalSteps={steps.length} steps={steps} />
-                <div className="container mx-auto max-w-2xl p-4 lg:p-8 text-center">
-                    <p className="text-red-500 mb-4">Error: Missing required transfer or recipient details.</p>
-                    <Link href={`/dashboard/balances/${balanceId}/send/select-recipient`} className='text-blue-600 underline ml-2'>Start Transfer Again</Link>
-                </div>
-            </div>
-        );
+    try {
+      const payload = {
+        userId: summary.userId,
+        sourceAccountId: summary.sourceAccountId,
+        recipientId: summary.recipientId,
+        sendAmount: summary.sendAmount,
+        receiveAmount: summary.receiveAmount,
+        sendCurrencyCode: summary.sendCurrencyCode,
+        receiveCurrencyCode: summary.receiveCurrencyCode,
+        exchangeRate: summary.exchangeRate,
+        reason: summary.reason,
+        reference: userReference.trim() || null,
+      };
+
+      const response = await axios.post("/transfers/execute", payload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      console.log("Transfer execution response:", response.data);
+      localStorage.removeItem("sendTransferSummary");
+      router.push(
+        `/dashboard?transferSuccess=true&transferId=${response.data?._id || ""}`
+      );
+    } catch (err: any) {
+      console.error("Error executing transfer:", err);
+      setError(
+        err.response?.data?.message ||
+          "Failed to send money. Please try again later."
+      );
+      setIsSubmitting(false);
     }
+  };
 
-    // Main Render - Display Review Details
+  // Loading State with Skeletons
+  if (isLoadingDetails) {
     return (
-         <div className='ReviewSend-Page pb-10'>
-              <DashboardHeader title="Send Money" currentStep={3} totalSteps={steps.length} steps={steps} />
-             <div className="container mx-auto max-w-2xl p-4 lg:p-8">
-                 {/* Back Link */}
-                 <Link href={getPreviousStepLink()} className="inline-flex items-center gap-1 mb-6 text-gray-600 hover:text-gray-900">
-                     <IoIosArrowBack size={20}/> Back
-                 </Link>
-
-                 {/* Title */}
-                <h1 className="text-2xl lg:text-3xl font-semibold text-main mb-6">Confirm and send</h1>
-
-                 {/* Submission Error Display */}
-                 {error && isSubmitting && <p className="text-red-600 text-sm mb-4 p-3 bg-red-100 rounded border border-red-200">{error}</p>}
-
-                 {/* Main Review Box */}
-                 <div className="border rounded-lg p-6 bg-white shadow-sm space-y-5">
-
-                     {/* Transfer Details Section */}
-                     <div>
-                         <h3 className='text-sm font-medium text-gray-500 mb-3'>Transfer details</h3>
-                         <div className='space-y-2 text-sm'>
-                             <div className='flex justify-between'>
-                                 <span>You send exactly</span>
-                                 <span className='font-semibold'>{summary.sendAmount.toFixed(2)} {summary.sendCurrencyCode}</span>
-                             </div>
-                             {/* Fee line is removed */}
-                             {/* Amount to convert line is removed */}
-                             <div className='flex justify-between'>
-                                 <span>Guaranteed rate</span>
-                                 <span className='font-semibold'>1 {summary.sendCurrencyCode} = {summary.exchangeRate.toFixed(5)} {summary.receiveCurrencyCode}</span>
-                             </div>
-                             <div className='flex justify-between font-bold text-base mt-1'> {/* Slightly larger font for final amount */}
-                                 <span>{recipientDetails.nickname || recipientDetails.accountHolderName} gets</span>
-                                 <span>{summary.receiveAmount.toFixed(2)} {summary.receiveCurrencyCode}</span>
-                             </div>
-                         </div>
-                     </div>
-                     <hr/>
-
-                     {/* Recipient Details Section */}
-                     <div>
-                          <h3 className='text-sm font-medium text-gray-500 mb-3'>Recipient details</h3>
-                          <div className='space-y-2 text-sm'>
-                              <div className='flex justify-between'>
-                                  <span>Account holder name</span>
-                                  <span className='font-semibold capitalize'>{recipientDetails.accountHolderName}</span>
-                              </div>
-                             <div className='flex justify-between'>
-                                 <span>IFSC code</span>
-                                 <span className='font-semibold'>{recipientDetails.ifscCode}</span>
-                             </div>
-                             <div className='flex justify-between'>
-                                 <span>Account number</span>
-                                 {/* Mask account number */}
-                                 <span className='font-semibold'>**** **** {recipientDetails.accountNumber.slice(-4)}</span>
-                             </div>
-                             <div className='flex justify-between'>
-                                 <span>Bank name</span>
-                                 <span className='font-semibold'>{recipientDetails.bankName}</span>
-                             </div>
-                             {/* Address can be omitted on review if not critical */}
-                             {/* {recipientDetails.address && <div className='flex justify-between'><span>Address</span><span className='font-semibold'>{recipientDetails.address}</span></div>} */}
-                         </div>
-                     </div>
-                     <hr/>
-
-                     {/* --- REMOVED Schedule Details Section --- */}
-
-                     {/* Reason Section (Conditional) */}
-                      {summary.reason && (
-                          <>
-                             <hr/>
-                             <div>
-                                  <h3 className='text-sm font-medium text-gray-500 mb-2'>Reason for transfer</h3>
-                                 <p className='text-sm font-semibold'>{summary.reason}</p>
-                             </div>
-                         </>
-                     )}
-                    <hr/>
-
-                     {/* Reference Input Section */}
-                     <div>
-                         <label htmlFor="reference" className='block text-sm font-medium text-gray-500 mb-2'>Reference for recipient (optional)</label>
-                         <input
-                            type="text"
-                            id="reference"
-                            value={userReference}
-                            onChange={(e) => setUserReference(e.target.value)}
-                            maxLength={35} // Example length limit
-                            placeholder={`e.g., Invoice payment, Gift`}
-                            className="block w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-primary focus:border-primary"
-                            aria-label="Reference for recipient"
-                        />
-                     </div>
-
-                 </div>
-
-                 {/* Disclaimer Text */}
-                 <p className='text-xs text-gray-500 my-4'>
-                     You can cancel for a full refund within 30 minutes of payment, unless the funds have been picked up or deposited. Make sure you're sending money to someone you know and trust, and that their information is correct. Fraudulent transactions may result in the loss of money with no recourse.
-                 </p>
-
-                 {/* Confirm Button */}
-                 <button
-                     onClick={handleConfirmAndSend}
-                     disabled={isSubmitting} // Disable while submitting
-                     className="w-full bg-green-600 text-white font-semibold py-3 rounded-full disabled:opacity-50 disabled:cursor-wait hover:bg-green-700 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                     data-testid="confirm-send-button"
-                 >
-                     {isSubmitting ? (
-                         // Loading indicator inside button
-                         <div className="flex justify-center items-center">
-                             <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                             </svg>
-                             Processing...
-                         </div>
-                     ) : (
-                        'Confirm and send' // Default button text
-                     )}
-                 </button>
-
-             </div>
-         </div>
+      <div className="min-h-screen ">
+        <DashboardHeader
+          title="Send Money"
+          currentStep={3}
+          totalSteps={steps.length}
+          steps={steps}
+        />
+        <div className="container mx-auto max-w-2xl px-4 py-8">
+          <div className="bg-white dark:bg-background border rounded-xl overflow-hidden mb-6">
+            <div className="px-6 py-4 bg-lightborder dark:bg-primarybox">
+            </div>
+            <div className="p-6 border-b">
+              <h3 className="text-sm font-medium text-mainheading dark:text-gray-500 uppercase tracking-wider mb-4">
+                <Skeleton className="h-6 w-32" />
+              </h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500 dark:text-gray-300">
+                    <Skeleton className="h-6 w-48" />
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500 dark:text-gray-300">
+                    <Skeleton className="h-6 w-48" />
+                  </span>
+                  <span className="font-semibold text-mainheading">
+                    <Skeleton className="h-6 w-32" />
+                  </span>
+                </div>
+                <div className="flex justify-between items-center mt-2 rounded-md">
+                  <span className="text-gray-500 dark:text-gray-300 capitalize">
+                    <Skeleton className="h-6 w-64" />
+                  </span>
+                  <span className="font-bold text-white dark:text-mainheading py-1.5 rounded-md">
+                    <Skeleton className="h-6 w-32" />
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="p-6 border-b">
+              <h3 className="text-sm font-medium text-mainheading dark:text-gray-500 uppercase tracking-wider mb-4">
+                <Skeleton className="h-6 w-32" />
+              </h3>
+              <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-2">
+                  <span className="text-gray-500 dark:text-gray-300">
+                    <Skeleton className="h-6 w-24" />
+                  </span>
+                  <span className="font-semibold text-mainheading dark:text-white text-right">
+                    <Skeleton className="h-6 w-32" />
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <span className="text-gray-500 dark:text-gray-300">
+                    <Skeleton className="h-6 w-24" />
+                  </span>
+                  <span className="font-semibold text-mainheading dark:text-white text-right">
+                    <Skeleton className="h-6 w-32" />
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <span className="text-gray-500 dark:text-gray-300">
+                    <Skeleton className="h-6 w-24" />
+                  </span>
+                  <span className="font-semibold text-mainheading dark:text-white text-right">
+                    <Skeleton className="h-6 w-32" />
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <span className="text-gray-500 dark:text-gray-300">
+                    <Skeleton className="h-6 w-24" />
+                  </span>
+                  <span className="font-semibold text-mainheading dark:text-white text-right">
+                    <Skeleton className="h-6 w-32" />
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="p-6">
+              <label
+                htmlFor="reference"
+                className="font-medium text-gray-500 dark:text-gray-300  block mb-2"
+              >
+                <Skeleton className="h-6 w-48" />
+              </label>
+              <Skeleton className="h-12 w-full rounded-lg" />
+            </div>
+          </div>
+          <Skeleton className="h-12 w-full rounded-full mt-6" />
+        </div>
+      </div>
     );
+  }
+
+  // Error State
+  if (error && !isSubmitting) {
+    return (
+      <div className="min-h-screen">
+        <DashboardHeader
+          title="Send Money"
+          currentStep={3}
+          totalSteps={steps.length}
+          steps={steps}
+        />
+        <div className="container mx-auto max-w-2xl px-4 py-8">
+          <div className="bg-white dark:bg-background rounded-xl p-8 text-center">
+            <FiAlertTriangle className="text-red-500 text-4xl mx-auto mb-4" />
+            <h2 className="text-xl font-medium mb-4">Something went wrong</h2>
+            <p className="text-red-600 mb-6">{error}</p>
+            <Link
+              href={getPreviousStepLink()}
+              className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <FiArrowLeft className="mr-2" /> Go back
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Data Missing State
+  if (!summary || !recipientDetails) {
+    return (
+      <div className="min-h-screen">
+        <DashboardHeader
+          title="Send Money"
+          currentStep={3}
+          totalSteps={steps.length}
+          steps={steps}
+        />
+        <div className="container mx-auto max-w-2xl px-4 py-8">
+          <div className="bg-white dark:bg-background rounded-xl p-8 text-center">
+            <FiAlertTriangle className="text-red-500 size-10 mx-auto mb-4" />
+            <h2 className="text-xl font-medium mb-4">Missing Information</h2>
+            <p className="text-gray-500 dark:text-gray-300 mb-6">
+              Required transfer or recipient details are missing.
+            </p>
+            <Link
+              href={`/dashboard/balances/${balanceId}/send/select-recipient`}
+              className="inline-flex items-center px-6 py-3 bg-primary  hover:bg-primaryhover text-mainheading font-medium rounded-lg transition-colors"
+            >
+              Start Transfer Again
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Main Render
+  return (
+    <div className="min-h-screen ">
+      <DashboardHeader
+        title="Send Money"
+        currentStep={3}
+        totalSteps={steps.length}
+        steps={steps}
+      />
+      <div className="container mx-auto max-w-2xl px-4 py-8">
+
+        {/* Title */}
+        <h1 className="text-xl md:text-2xl font-bold text-neutral-900 dark:text-white mb-6">
+          Confirm and send
+        </h1>
+
+        {/* Submission Error Display */}
+        {error && isSubmitting && (
+          <div className="border-l-4 border-red-500 p-4 mb-6 rounded-lg">
+            <div className="flex items-start">
+              <FiAlertTriangle className="text-red-500 mt-0.5 mr-3" />
+              <p className="text-red-700">{error}</p>
+            </div>
+          </div>
+        )}
+
+
+        {/* Main Review Card */}
+        <div className="bg-white dark:bg-background border rounded-xl overflow-hidden mb-6">
+          {/* Summary Header */}
+          <div className="px-6 py-4 bg-lightborder dark:bg-primarybox">
+            <h2 className="font-medium text-lg text-mainheading dark:text-white">Transaction Summary</h2>
+          </div>
+
+          {/* Transfer Details Section */}
+          <div className="p-6 border-b">
+            <h3 className="text-sm font-medium text-mainheading dark:text-gray-500 uppercase tracking-wider mb-4">
+             Transfer details
+            </h3>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-500 dark:text-gray-300">You send exactly</span>
+                <span className="font-semibold text-mainheading">
+                  {summary.sendAmount.toFixed(2)} {summary.sendCurrencyCode}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-500 dark:text-gray-300">Guaranteed rate</span>
+                <span className="font-semibold text-mainheading bg-primary p-1.5 px-2 rounded-md">
+                  1 {summary.sendCurrencyCode} ={" "}
+                  {summary.exchangeRate.toFixed(5)}{" "}
+                  {summary.receiveCurrencyCode}
+                </span>
+              </div>
+              <div className="flex justify-between items-center mt-2 rounded-md">
+                <span className="text-gray-500 dark:text-gray-300 capitalize">
+                  {recipientDetails.nickname ||
+                    recipientDetails.accountHolderName}{" "}
+                  gets
+                </span>
+                <span className="font-bold text-white dark:text-mainheading px-5 py-1.5 bg-green-500 rounded-md">
+                  {summary.receiveAmount.toFixed(2)}{" "}
+                  {summary.receiveCurrencyCode}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Recipient Details Section */}
+          <div className="p-6 border-b">
+            <h3 className="text-sm font-medium text-mainheading dark:text-gray-500 uppercase tracking-wider mb-4">
+              Recipient details
+            </h3>
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-2">
+                <span className="text-gray-500 dark:text-gray-300">Account holder</span>
+                <span className="font-semibold text-mainheading dark:text-white text-right capitalize">
+                  {recipientDetails.accountHolderName}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <span className="text-gray-500 dark:text-gray-300">IFSC code</span>
+                <span className="font-semibold text-mainheading dark:text-white text-right">
+                  {recipientDetails.ifscCode}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <span className="text-gray-500 dark:text-gray-300">Account number</span>
+                <span className="font-semibold text-mainheading dark:text-white text-right">
+                  **** **** {recipientDetails.accountNumber.slice(-4)}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <span className="text-gray-500 dark:text-gray-300">Bank name</span>
+                <span className="font-semibold text-mainheading dark:text-white text-right capitalize">
+                  {recipientDetails.bankName}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Reason Section (Conditional) */}
+          {summary.reason && (
+            <div className="p-6 border-b ">
+              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider mb-2">
+                Reason for transfer
+              </h3>
+              <p className="font-medium text-mainheading dark:text-white p-2.5 bg-lightgray dark:bg-primarybox rounded-md">
+                {summary.reason}
+              </p>
+            </div>
+          )}
+
+          {/* Reference Input Section */}
+          <div className="p-6">
+            <label
+              htmlFor="reference"
+              className="font-medium text-gray-500 dark:text-gray-300  block mb-2"
+            >
+              Reference for recipient (optional)
+            </label>
+            <input
+              type="text"
+              id="reference"
+              value={userReference}
+              onChange={(e) => setUserReference(e.target.value)}
+              maxLength={35}
+              placeholder="e.g., Invoice payment, Gift"
+              className="block w-full border hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow duration-300 ease-in-out rounded-lg p-3 text-mainheading dark:text-white"
+              aria-label="Reference for recipient"
+            />
+          </div>
+        </div>
+
+
+        {/* Confirm Button */}
+        <button
+          onClick={handleConfirmAndSend}
+          disabled={isSubmitting}
+          className="w-full flex justify-center items-center cursor-pointer py-4 px-6 bg-primary hover:bg-primaryhover text-mainheading font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors ease-in-out duration-300 focus:outline-none"
+          data-testid="confirm-send-button" 
+        >
+          {isSubmitting ? (
+            <>
+              <svg
+                className="animate-spin -ml-1 mr-3 size-5 text-mainheading"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              Processing...
+            </>
+          ) : (
+            <>
+              <FiCheckCircle className="mr-2" size={20} />
+              Confirm and send
+            </>
+          )}
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default ReviewSendPage;

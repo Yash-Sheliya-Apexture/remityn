@@ -45,15 +45,15 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
                 // --- Dynamic Classes ---
                 const circleBaseClasses =
-                  "w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center border-2 transition-colors duration-300 ease-in-out";
+                  "w-6 h-6 md:size-8  rounded-full flex items-center justify-center border-2 transition-colors duration-300 ease-in-out";
                 const circleCompletedClasses =
-                  "bg-primary border-primary text-white";
+                  "bg-primary border-primary text-mainheading";
                 const circleActiveClasses =
                   "border-primary text-primary font-bold";
-                const circleUpcomingClasses = "border-gray-300 text-gray-400";
+                const circleUpcomingClasses = "border-gray-300 text-white";
 
                 const textBaseClasses =
-                  "text-xs md:text-sm transition-colors duration-300 ease-in-out hidden sm:block ml-2"; // Hide text on very small screens
+                  "text-xs md:text-lg transition-colors duration-300 ease-in-out hidden sm:block ml-2"; // Hide text on very small screens
                 const textCompletedClasses = "text-primary font-medium";
                 const textActiveClasses = "text-primary font-bold";
                 const textUpcomingClasses = "text-gray-400";
@@ -113,6 +113,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 };
 
 export default DashboardHeader;
+
 
 // import React, { useEffect, useState } from "react";
 // import { motion, AnimatePresence } from "framer-motion";

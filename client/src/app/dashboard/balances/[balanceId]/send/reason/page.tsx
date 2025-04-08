@@ -121,6 +121,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import Link from "next/link";
 import DashboardHeader from "../../../../components/layout/DashboardHeader";
 import { IoChevronDownOutline } from "react-icons/io5";
+import { GiCheckMark } from "react-icons/gi";
 
 interface ReasonParams {
   balanceId: string;
@@ -220,14 +221,14 @@ const TransferReasonPage = () => {
         <div className="mb-6" ref={dropdownRef}>
           <label
             htmlFor="transfer-reason"
-            className="block text-sm font-medium text-gray-500 dark:text-gray-300 mb-2"
+            className="block text-sm text-gray-500 dark:text-gray-300 mb-2"
           >
             Select an option that best describes the reason
           </label>
           <div className="relative">
             <button
               type="button"
-              className={`flex justify-between items-center w-full border dark:hover:shadow-whitecolor hover:shadow-darkcolor transition-shadow duration-300 ease-in-out rounded-md p-3 text-left ${
+              className={`flex justify-between items-center cursor-pointer w-full border dark:hover:shadow-whitecolor hover:shadow-darkcolor transition-shadow duration-300 ease-in-out rounded-md p-3 text-left ${
                 error ? "" : ""
               }`}
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -235,14 +236,14 @@ const TransferReasonPage = () => {
               aria-haspopup="listbox"
             >
               {selectedReason || (
-                <span className="text-gray-500 dark:text-gray-400">
+                <span className="text-gray-500 dark:text-white">
                   Select an option
                 </span>
               )}
               <IoChevronDownOutline
-                className={`h-5 w-5 ${
+                className={`size-6 text-gray-500 dark:text-gray-300 ${
                   isDropdownOpen ? "rotate-180" : ""
-                } transition-transform duration-200`}
+                } transition-transform duration-300`}
               />
             </button>
 
@@ -253,43 +254,30 @@ const TransferReasonPage = () => {
                 aria-activedescendant="listbox-item-3" // You might need to dynamically manage this for accessibility
               >
                 <ul
-                  className="py-1 rounded-md overflow-auto max-h-56 focus:outline-none"
+                  className="py-1 rounded-md overflow-auto max-h-70 focus:outline-none"
                   tabIndex={-1}
                   role="listbox"
                 >
                   {reasons.map((reason) => (
                     <li
                       key={reason}
-                      className={`text-neutral-900 dark:text-white cursor-pointer select-none relative py-2 pl-3 pr-9  dark:hover:bg-gray-700 ${
+                      className={`text-neutral-900 dark:text-white cursor-pointer select-none relative py-3 pl-3 pr-9 transition-colors ease-in-out duration-300  ${
                         selectedReason === reason
-                          ? "font-semibold bg-primary"
-                          : "font-normal"
+                          ? "font-semibold bg-primary dark:bg-background "
+                          : "font-normal hover:bg-lightgray dark:hover:bg-background hover:text-subheading"
                       }`}
                       id="listbox-item-0"
                       role="option"
                       onClick={() => handleReasonSelect(reason)}
                     >
                       <div className="flex items-center">
-                        <span className="font-normal ml-2 block truncate">
+                        <span className="font-medium ml-2 block truncate">
                           {reason}
                         </span>
                       </div>
                       {selectedReason === reason && (
                         <span className="absolute inset-y-0 right-0 flex items-center pr-4">
-                          {/* Heroicon name: solid/check */}
-                          <svg
-                            className="h-5 w-5"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            aria-hidden="true"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
+                        <GiCheckMark className="text-main dark:text-gray-300 size-5"/>
                         </span>
                       )}
                     </li>
@@ -303,7 +291,7 @@ const TransferReasonPage = () => {
 
         <button
           onClick={handleSubmit}
-          className="w-full bg-primary text-secondary font-semibold py-3 rounded-full disabled:opacity-50 hover:bg-primary-hover transition-colors"
+          className="w-full bg-primary  hover:bg-primaryhover text-mainheading cursor-pointer h-14 font-medium py-3 rounded-full disabled:opacity-50 hover:bg-primary-hover transition-colors duration-300 ease-in-out"
           disabled={!summary} // Disable if summary is missing
         >
           Continue
