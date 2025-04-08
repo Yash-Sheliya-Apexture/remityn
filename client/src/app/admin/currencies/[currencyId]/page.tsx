@@ -948,7 +948,7 @@
 //               <div className="absolute inset-0 flex items-center justify-center">
 //                 <div className="bg-white px-8 py-3 rounded-full shadow-md">
 //                   <h1 className="text-xl font-semibold text-slate-800">
-//                     Edit Currency:{" "}
+//                     Edit Currency:
 //                     <span className="text-cyan-600">{currency.code}</span>
 //                   </h1>
 //                 </div>
@@ -3686,7 +3686,7 @@
 //               exit={{ opacity: 0 }}
 //               className="mb-6 bg-green-50 border-l-4 border-green-500 p-4 rounded-md shadow-sm flex items-center"
 //             >
-//               <Check size={20} className="text-green-600 mr-3" />{" "}
+//               <Check size={20} className="text-green-600 mr-3" />
 //               <p className="text-sm font-medium text-green-800">
 //                 {successMessage}
 //               </p>
@@ -3694,8 +3694,8 @@
 //                 onClick={() => setSuccessMessage(null)}
 //                 className="ml-auto text-green-500 hover:text-green-700"
 //               >
-//                 {" "}
-//                 <X size={18} />{" "}
+//                 
+//                 <X size={18} />
 //               </button>
 //             </motion.div>
 //           )}
@@ -3706,14 +3706,14 @@
 //               exit={{ opacity: 0 }}
 //               className="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-md shadow-sm flex items-center"
 //             >
-//               <AlertTriangle size={20} className="text-red-600 mr-3" />{" "}
+//               <AlertTriangle size={20} className="text-red-600 mr-3" />
 //               <p className="text-sm font-medium text-red-800">{error}</p>
 //               <button
 //                 onClick={() => setError(null)}
 //                 className="ml-auto text-red-500 hover:text-red-700"
 //               >
-//                 {" "}
-//                 <X size={18} />{" "}
+//                 
+//                 <X size={18} />
 //               </button>
 //             </motion.div>
 //           )}
@@ -3733,8 +3733,8 @@
 //               />
 //             )}
 //             <h2 className="text-lg font-semibold text-gray-900">
-//               {" "}
-//               Edit Currency: {formState.code} - {formState.currencyName}{" "}
+//               
+//               Edit Currency: {formState.code} - {formState.currencyName}
 //             </h2>
 //           </div>
 
@@ -3755,8 +3755,8 @@
 //                     htmlFor="code"
 //                     className="text-sm font-medium leading-6 text-gray-900 flex items-center gap-1.5"
 //                   >
-//                     {" "}
-//                     <Globe size={18} /> Code{" "}
+//                     
+//                     <Globe size={18} /> Code
 //                   </label>
 //                   <div className="mt-1">
 //                     <input
@@ -3774,8 +3774,8 @@
 //                     htmlFor="currencyName"
 //                     className="text-sm font-medium leading-6 text-gray-900 flex items-center gap-1.5"
 //                   >
-//                     {" "}
-//                     <DollarSign size={18} /> Currency Name{" "}
+//                     
+//                     <DollarSign size={18} /> Currency Name
 //                   </label>
 //                   <div className="mt-1">
 //                     <input
@@ -3795,8 +3795,8 @@
 //                     htmlFor="flagImage"
 //                     className="text-sm font-medium leading-6 text-gray-900 flex items-center gap-1.5"
 //                   >
-//                     {" "}
-//                     <ImageIcon size={18} /> Flag Image Path{" "}
+//                     
+//                     <ImageIcon size={18} /> Flag Image Path
 //                   </label>
 //                   <div className="mt-1">
 //                     <input
@@ -3828,8 +3828,8 @@
 //                     htmlFor="payeeName"
 //                     className="text-sm font-medium leading-6 text-gray-900 flex items-center gap-1.5"
 //                   >
-//                     {" "}
-//                     <Building size={18} /> Payee Name{" "}
+//                     
+//                     <Building size={18} /> Payee Name
 //                   </label>
 //                   <div className="mt-1">
 //                     <input
@@ -3848,8 +3848,8 @@
 //                     htmlFor="iban"
 //                     className="text-sm font-medium leading-6 text-gray-900 flex items-center gap-1.5"
 //                   >
-//                     {" "}
-//                     <Hash size={18} /> IBAN{" "}
+//                     
+//                     <Hash size={18} /> IBAN
 //                   </label>
 //                   <div className="mt-1">
 //                     <input
@@ -3868,8 +3868,8 @@
 //                     htmlFor="bicSwift"
 //                     className="text-sm font-medium leading-6 text-gray-900 flex items-center gap-1.5"
 //                   >
-//                     {" "}
-//                     <Hash size={18} /> BIC/SWIFT{" "}
+//                     
+//                     <Hash size={18} /> BIC/SWIFT
 //                   </label>
 //                   <div className="mt-1">
 //                     <input
@@ -3888,8 +3888,8 @@
 //                     htmlFor="bankAddress"
 //                     className="text-sm font-medium leading-6 text-gray-900 flex items-center gap-1.5"
 //                   >
-//                     {" "}
-//                     <Landmark size={18} /> Bank Address{" "}
+//                     
+//                     <Landmark size={18} /> Bank Address
 //                   </label>
 //                   <div className="mt-1">
 //                     <textarea
@@ -3917,8 +3917,8 @@
 //                     htmlFor="wiseFeePercentage"
 //                     className="text-sm font-medium leading-6 text-gray-900 flex items-center gap-1.5"
 //                   >
-//                     {" "}
-//                     <Percent size={18} /> Wise Fee %{" "}
+//                     
+//                     <Percent size={18} /> Wise Fee %
 //                   </label>
 //                   <div className="relative mt-1 rounded-md shadow-sm">
 //                     <input
@@ -3933,8 +3933,8 @@
 //                       placeholder="0.00"
 //                     />
 //                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-//                       {" "}
-//                       <span className="text-gray-500 sm:text-sm">%</span>{" "}
+//                       
+//                       <span className="text-gray-500 sm:text-sm">%</span>
 //                     </div>
 //                   </div>
 //                 </div>
@@ -3944,8 +3944,8 @@
 //                     htmlFor="bankTransferFee"
 //                     className="text-sm font-medium leading-6 text-gray-900 flex items-center gap-1.5"
 //                   >
-//                     {" "}
-//                     <DollarSign size={18} /> Bank Fee{" "}
+//                     
+//                     <DollarSign size={18} /> Bank Fee
 //                   </label>
 //                   <div className="relative mt-1 rounded-md shadow-sm">
 //                     <input
@@ -3960,10 +3960,10 @@
 //                       placeholder="0.00"
 //                     />
 //                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-//                       {" "}
+//                       
 //                       <span className="text-gray-500 sm:text-sm">
 //                         {formState.code || "CUR"}
-//                       </span>{" "}
+//                       </span>
 //                     </div>
 //                   </div>
 //                 </div>
@@ -3987,8 +3987,8 @@
 //                       placeholder="e.g., 0.5"
 //                     />
 //                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-//                       {" "}
-//                       <span className="text-gray-500 sm:text-sm">%</span>{" "}
+//                       
+//                       <span className="text-gray-500 sm:text-sm">%</span>
 //                     </div>
 //                   </div>
 //                   <p className="mt-1 text-xs text-gray-500">
@@ -4745,7 +4745,7 @@
 //             <FaArrowLeftLong size={20} /> Back to Currencies
 //           </Link>
 //           <h2 className="text-2xl text-main">
-//             Edit Currency:{" "}
+//             Edit Currency:
 //             <span className="font-bold">
 //               {currency?.currencyName || "Loading..."}
 //             </span>
@@ -4865,7 +4865,7 @@
 //               >
 //                 {isSubmitting ? (
 //                   <>
-//                     <Loader2 className="animate-spin mr-2" size={20} />{" "}
+//                     <Loader2 className="animate-spin mr-2" size={20} />
 //                     Saving...
 //                   </>
 //                 ) : (
@@ -5578,7 +5578,7 @@ const AdminEditCurrencyPage = () => {
             <FaArrowLeftLong className="size-4" /> Back to Currencies
           </Link>
           <h2 className="md:text-xl text-sm text-neutral-900 dark:text-white hidden md:block">
-            Edit Currency:{" "}
+            Edit Currency:
             <span>
               {currency?.currencyName || "Loading..."}
             </span>
@@ -5662,7 +5662,7 @@ const AdminEditCurrencyPage = () => {
                 type="button"
                 onClick={handleReset}
                 disabled={isSubmitting || !formChanged}
-                className="bg-neutral-900 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center border border-gray w-full cursor-pointer transition-all duration-75 ease-linear"
+                className="bg-neutral-900 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear"
               >
                 <RefreshCw
                   size={20}
@@ -5677,7 +5677,7 @@ const AdminEditCurrencyPage = () => {
               >
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="animate-spin mr-2" size={20} />{" "}
+                    <Loader2 className="animate-spin mr-2" size={20} />
                     Saving...
                   </>
                 ) : (
