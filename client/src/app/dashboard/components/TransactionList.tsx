@@ -324,8 +324,8 @@ const TransactionList: React.FC<TransactionListProps> = ({
                         />
                       </div>
                       {/* Details */}
-                      <div className="flex-grow flex flex-row justify-between items-center gap-4">
-                        <div className="flex-grow">
+                      <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
+                        <div className="text-wrap">
                           <h3
                             className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg"
                             title={name}
@@ -338,7 +338,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
                         </div>
                         {/* Amount added */}
                         <div
-                          className={`font-medium text-neutral-900 dark:text-white text-sm md:text-base whitespace-nowrap text-right sm:text-left`}
+                          className={`font-medium text-neutral-900 dark:text-white whitespace-nowrap`}
                         >
                           +{" "}
                           {amount.toLocaleString(undefined, {
@@ -409,12 +409,12 @@ const TransactionList: React.FC<TransactionListProps> = ({
                       <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
                         <div className="text-wrap">
                           <h3
-                            className="font-medium text-neutral-900 dark:text-white text-sm md:text-base"
+                            className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg"
                             title={name}
                           >
                             {name}
                           </h3>
-                          <p className="text-xs md:text-sm text-gray-500 dark:text-gray-300">
+                          <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
                             {description}{" "}
                             <span className="italic">
                               ({transaction.status})
@@ -422,7 +422,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
                           </p>
                         </div>
                         <div
-                          className={`font-medium text-neutral-900 dark:text-white text-sm md:text-base whitespace-nowrap text-right sm:text-left`}
+                          className={`font-medium text-neutral-900 dark:text-white whitespace-nowrap`}
                         >
                           {amountPrefix}
                           {amount.toLocaleString(undefined, {
@@ -521,17 +521,17 @@ const TransactionList: React.FC<TransactionListProps> = ({
                               <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
                                 <div className="text-wrap">
                                   <h3
-                                    className="font-medium text-neutral-900 dark:text-white text-sm md:text-base"
+                                    className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg"
                                     title={name}
                                   >
                                     {name}
                                   </h3>
-                                  <p className="text-xs md:text-sm text-gray-500 dark:text-gray-300">
+                                  <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
                                     {description}
                                   </p>
                                 </div>
                                 <div
-                                  className={`font-medium ${amountClass} text-sm md:text-base whitespace-nowrap text-right sm:text-left`}
+                                  className={`font-medium ${amountClass} whitespace-nowrap`}
                                 >
                                   {amountPrefix}
                                   {amount.toLocaleString(undefined, {
@@ -568,9 +568,10 @@ const TransactionList: React.FC<TransactionListProps> = ({
               add money
             </Link>{" "}
             or{" "}
+            {/* Send money button */}
             <button
               onClick={onSendClick}
-              disabled={!canSendMoney}
+              // disabled={!canSendMoney}
               className={`text-primary hover:underline font-medium ${
                 !canSendMoney ? "opacity-50 cursor-not-allowed" : ""
               }`}

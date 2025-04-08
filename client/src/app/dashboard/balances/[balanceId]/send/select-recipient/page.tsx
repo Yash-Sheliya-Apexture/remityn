@@ -90,7 +90,7 @@ export default function SelectRecipientPage() {
   return (
     <section className="SelectRecipient-Page py-10">
       {/* <DashboardHeader title="Send Money" /> Optional Header */}
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto">
 
         <h1 className="text-2xl lg:text-3xl font-semibold text-mainheading  dark:text-white mb-6">
           Who are you sending money to?
@@ -156,7 +156,7 @@ export default function SelectRecipientPage() {
           </div>
         ) : (
           searchTerm && (
-            <p className="text-center text-gray-500 dark:text-gray-300 text-lg mt-10">
+            <p className="text-center text-gray-500  rounded-2xl dark:text-gray-300 text-lg dark:bg-white/8 py-10">
               No recipients found matching '{searchTerm}'.
             </p>
           )

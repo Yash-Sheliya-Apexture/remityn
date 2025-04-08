@@ -380,133 +380,139 @@ const TasksPage: React.FC = () => {
   // --- Render Logic ---
   return (
     <section className="Tasks pt-10">
-      {/* --- Heading --- */}
-      <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white mb-6">
-        Tasks
-      </h1>
+      <div className="container mx-auto">
+        {/* --- Heading --- */}
+        <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white mb-6">
+          Tasks
+        </h1>
 
-      {/* --- Loading State with Skeleton --- */}
-      {isLoading && (
-        <div className="space-y-2">
-          {Array(3).fill(0).map((_, index) => (
-            <div key={index} className="block">
-              <div className="block p-2 sm:p-4 rounded-2xl">
-                <div className="flex items-center gap-4">
-                  {/* Icon Skeleton */}
-                  <div className="relative flex-shrink-0">
-                    <div className="flex items-center justify-center">
-                      <Skeleton className="h-12 w-12 rounded-full" />
-                    </div>
-                  </div>
-                  {/* Text and Button Skeletons */}
-                  <div className="flex-grow flex flex-row justify-between items-center gap-4">
-                    <div className="flex-grow">
-                      <Skeleton className="h-4 w-40 mb-2" />
-                      <Skeleton className="h-3 w-32" />
-                    </div>
-                    <div className="shrink-0">
-                      <Skeleton className="h-5 w-20 rounded-full" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* --- Error State --- */}
-      {!isLoading && error && (
-        <div
-          className="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-md text-center"
-          role="alert"
-        >
-          <strong className="font-bold">Error:</strong>
-          <span className="block sm:inline ml-1">{error}</span>
-        </div>
-      )}
-
-      {/* --- Task List --- */}
-      {!isLoading && !error && displayedTasks.length > 0 && (
-        <motion.div
-          layout
-          className="space-y-2"
-        >
-          <AnimatePresence>
-            {displayedTasks.map((task) => {
-              const amount = task.amountToAdd ?? task.amountToPay ?? 0;
-              const currency =
-                task.balanceCurrency?.code ?? task.payInCurrency?.code ?? "";
-
-              return (
-                <motion.div
-                  key={task._id}
-                  variants={taskItemVariants}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  layout
-                >
-                  <Link href={`/dashboard/transactions/${task._id}`} className="block">
-                    <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
-                      <div className="flex items-center gap-4">
-                        {/* Icon */}
-                        <div className="relative flex-shrink-0">
-                          <div className="p-3 bg-yellow-100 dark:bg-yellow-800/60 rounded-full flex items-center justify-center">
-                            <LuPlus
-                              size={24}
-                              className="text-yellow-700 dark:text-yellow-300"
-                            />
-                          </div>
-                          <MdErrorOutline
-                            size={20}
-                            className="absolute -bottom-1 -right-1 text-orange-500 bg-white rounded-full p-0.5 shadow"
-                          />
+        {/* --- Loading State with Skeleton --- */}
+        {isLoading && (
+          <div className="space-y-2">
+            {Array(3)
+              .fill(0)
+              .map((_, index) => (
+                <div key={index} className="block">
+                  <div className="block p-2 sm:p-4 rounded-2xl">
+                    <div className="flex items-center gap-4">
+                      {/* Icon Skeleton */}
+                      <div className="relative flex-shrink-0">
+                        <div className="flex items-center justify-center">
+                          <Skeleton className="h-12 w-12 rounded-full" />
                         </div>
-                        {/* Details & Action */}
-                        <div className="flex-grow flex flex-row justify-between items-center gap-4">
-                          {/* Text Details */}
-                          <div className="flex-grow">
-                            <p className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg">
-                              {amount.toLocaleString(undefined, {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2,
-                              })}{" "}
-                              {currency} to your {currency} balance
-                            </p>
-                            <p className="text-sm text-orange-600 font-semibold mt-1">
-                              Waiting for you to pay
-                            </p>
-                          </div>
-                          {/* Review Button */}
-                          <button
-                            tabIndex={-1}
-                            className="shrink-0 bg-primary text-neutral-900 px-4 py-1.5 rounded-full text-xs font-semibold hover:bg-primaryhover transition-all duration-75 ease-linear focus:outline-none focus:ring-0 cursor-pointer"
-                          >
-                            Review
-                          </button>
+                      </div>
+                      {/* Text and Button Skeletons */}
+                      <div className="flex-grow flex flex-row justify-between items-center gap-4">
+                        <div className="flex-grow">
+                          <Skeleton className="h-4 w-40 mb-2" />
+                          <Skeleton className="h-3 w-32" />
+                        </div>
+                        <div className="shrink-0">
+                          <Skeleton className="h-5 w-20 rounded-full" />
                         </div>
                       </div>
                     </div>
-                  </Link>
-                </motion.div>
-              );
-            })}
-          </AnimatePresence>
-        </motion.div>
-      )}
+                  </div>
+                </div>
+              ))}
+          </div>
+        )}
 
-      {/* --- View More/Less Button --- */}
-      {!isLoading && !error && showToggleButton && ( // Conditionally render button if needed
-        <div className="flex justify-center mt-4">
-          <button
-            onClick={handleToggleViewMoreLess}
-            className="bg-lightgray dark:bg-primarybox hover:dark:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-gray-300 transition-all duration-75 ease-linear focus:outline-none focus:ring-0 cursor-pointer"
+        {/* --- Error State --- */}
+        {!isLoading && error && (
+          <div
+            className="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-md text-center"
+            role="alert"
           >
-            {buttonText}
-          </button>
-        </div>
-      )}
+            <strong className="font-bold">Error:</strong>
+            <span className="block sm:inline ml-1">{error}</span>
+          </div>
+        )}
+
+        {/* --- Task List --- */}
+        {!isLoading && !error && displayedTasks.length > 0 && (
+          <motion.div layout className="space-y-2">
+            <AnimatePresence>
+              {displayedTasks.map((task) => {
+                const amount = task.amountToAdd ?? task.amountToPay ?? 0;
+                const currency =
+                  task.balanceCurrency?.code ?? task.payInCurrency?.code ?? "";
+
+                return (
+                  <motion.div
+                    key={task._id}
+                    variants={taskItemVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    layout
+                  >
+                    <Link
+                      href={`/dashboard/transactions/${task._id}`}
+                      className="block"
+                    >
+                      <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
+                        <div className="flex items-center gap-4">
+                          {/* Icon */}
+                          <div className="relative flex-shrink-0">
+                            <div className="p-3 bg-yellow-100 dark:bg-yellow-800/60 rounded-full flex items-center justify-center">
+                              <LuPlus
+                                size={24}
+                                className="text-yellow-700 dark:text-yellow-300"
+                              />
+                            </div>
+                            <MdErrorOutline
+                              size={20}
+                              className="absolute -bottom-1 -right-1 text-orange-500 bg-white rounded-full p-0.5 shadow"
+                            />
+                          </div>
+                          {/* Details & Action */}
+                          <div className="flex-grow flex flex-row justify-between items-center gap-4">
+                            {/* Text Details */}
+                            <div className="flex-grow">
+                              <p className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg">
+                                {amount.toLocaleString(undefined, {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                })}{" "}
+                                {currency} to your {currency} balance
+                              </p>
+                              <p className="text-sm text-orange-600 font-semibold mt-1">
+                                Waiting for you to pay
+                              </p>
+                            </div>
+                            {/* Review Button */}
+                            <button
+                              tabIndex={-1}
+                              className="shrink-0 bg-primary text-neutral-900 px-4 py-1.5 rounded-full text-xs font-semibold hover:bg-primaryhover transition-all duration-75 ease-linear focus:outline-none focus:ring-0 cursor-pointer"
+                            >
+                              Review
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </motion.div>
+        )}
+
+        {/* --- View More/Less Button --- */}
+        {!isLoading &&
+          !error &&
+          showToggleButton && ( // Conditionally render button if needed
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={handleToggleViewMoreLess}
+                className="bg-lightgray dark:bg-primarybox hover:dark:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-gray-300 transition-all duration-75 ease-linear focus:outline-none focus:ring-0 cursor-pointer"
+              >
+                {buttonText}
+              </button>
+            </div>
+          )}
+      </div>
     </section>
   );
 };
