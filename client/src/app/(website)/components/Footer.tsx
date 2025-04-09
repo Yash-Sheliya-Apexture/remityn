@@ -792,7 +792,7 @@ import { TiArrowSortedDown } from "react-icons/ti";
 
 import { IconType } from "react-icons";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAppContext } from "../layout";
+import { useAppContext } from "../../contexts/WebsiteAppContext";
 import { useRouter } from "next/navigation";
 import ThemeToggle from '../../contexts/ThemeToggle'; // Import ThemeToggle
 
@@ -992,7 +992,7 @@ const Footer: React.FC = () => {
         </div>
         {/* Theme Toggle in Footer - Right Side */}
         <div className="md:ml-auto mt-6 md:mt-0">
-          <ThemeToggle location="footer" className="justify-end" />
+          <ThemeToggle location="dashboard" className="justify-end" />
         </div>
       </div>
 
