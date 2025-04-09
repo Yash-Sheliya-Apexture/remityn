@@ -2354,6 +2354,578 @@
 
 
 
+// // frontend/src/app/admin/payments/page.tsx
+// 'use client';
+// import React, { useState, useEffect, useCallback, useMemo } from 'react'; // Added useMemo
+// import { useAuth } from '../../contexts/AuthContext';
+// import axios, { AxiosError } from 'axios';
+// import apiConfig from '../../config/apiConfig';
+// import { motion, AnimatePresence } from 'framer-motion';
+// import { Check, X, Search, Filter, RefreshCw } from 'lucide-react';
+
+// // Import components
+// import PaymentTable from '../components/add-money/PaymentTable';
+// import PaymentFilters from '../components/add-money/PaymentFilters';
+// import PaymentEditModal from '../components/add-money/PaymentEditModal';
+// import Pagination from '../components/Pagination';
+
+// // Import Shared Types
+// import { Payment, PaymentStatus } from '../../../types/payment'; // Adjust path as needed
+
+// axios.defaults.baseURL = apiConfig.baseUrl;
+
+// // Define a type for API error responses if known
+// interface ApiErrorResponse {
+//     message: string;
+// }
+
+// const AdminPaymentsPage: React.FC = () => {
+//     const [payments, setPayments] = useState<Payment[]>([]);
+//     const [filteredPayments, setFilteredPayments] = useState<Payment[]>([]);
+//     const [loadingPayments, setLoadingPayments] = useState<boolean>(true);
+//     const [error, setError] = useState<string | null>(null);
+//     const [successMessage, setSuccessMessage] = useState<string | null>(null);
+//     const { token } = useAuth();
+//     const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+
+//     // Filter state
+//     const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
+//     const [searchTerm, setSearchTerm] = useState<string>('');
+//     const [dateRange, setDateRange] = useState<{ from: Date | null, to: Date | null }>({ from: null, to: null });
+//     // Use the specific PaymentStatus type for state
+//     const [statusFilter, setStatusFilter] = useState<PaymentStatus>('all');
+//     const [paymentIdFilter, setPaymentIdFilter] = useState<string>('');
+//     const [amountFilter, setAmountFilter] = useState<string>('');
+//     const [currencyFilter, setCurrencyFilter] = useState<'all' | string>('all');
+
+//     // Edit Modal State
+//     const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+//     const [selectedPaymentForEdit, setSelectedPaymentForEdit] = useState<Payment | null>(null);
+//     // Edit form data should reflect the possible status values for saving
+//     const [editFormData, setEditFormData] = useState<{ status: string }>({ // Keep as string here if API expects any string
+//         status: ''
+//     });
+//     const [editLoading, setEditLoading] = useState<boolean>(false);
+
+//     // Sorting
+//     const [sortField, setSortField] = useState<string | null>(null);
+//     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+
+//     // Pagination State
+//     const [currentPage, setCurrentPage] = useState<number>(1);
+//     const [paymentsPerPage, setPaymentsPerPage] = useState<number>(10);
+//     const pageSizeOptions: number[] = [10, 25, 50];
+
+//     const handlePageSizeChange = (size: number) => {
+//         setPaymentsPerPage(size);
+//         setCurrentPage(1);
+//     };
+
+//     const fetchPayments = useCallback(async () => {
+//         setLoadingPayments(true);
+//         setIsRefreshing(true);
+//         setError(null);
+//         setSuccessMessage(null);
+//         try {
+//             // Use the imported Payment type for the expected response structure
+//             const response = await axios.get<{ data: Payment[] } | Payment[]>('/admin/payments', { // Allow for both structures
+//                 headers: { Authorization: `Bearer ${token}` },
+//             });
+
+//             let paymentData: Payment[] = [];
+//             // Check common API response structures
+//             if (Array.isArray(response.data)) {
+//                 paymentData = response.data;
+//             } else if (response.data && Array.isArray((response.data as any).data)) {
+//                 paymentData = (response.data as any).data;
+//             } else {
+//                 console.warn("API response format unexpected:", response.data);
+//                  throw new Error("Invalid data structure received from API");
+//             }
+
+//             // Ensure data conforms to Payment type (optional, good for safety)
+//             // const validatedData = paymentData.map(p => ({ ...p, amountToAdd: String(p.amountToAdd) })); // Example validation/transformation if needed
+//              setPayments(paymentData);
+//              setFilteredPayments(paymentData);
+
+//         } catch (err: unknown) {
+//              let errorMessage = 'Failed to load payments';
+//              if (axios.isAxiosError(err)) {
+//                  const axiosError = err as AxiosError<ApiErrorResponse>;
+//                  errorMessage = axiosError.response?.data?.message || axiosError.message || errorMessage;
+//              } else if (err instanceof Error) {
+//                  errorMessage = err.message;
+//              }
+//              setError(errorMessage);
+//             console.error("Error fetching payments:", err);
+//         } finally {
+//             setLoadingPayments(false);
+//             setIsRefreshing(false);
+//         }
+//     }, [token]);
+
+//     useEffect(() => {
+//         if (token) {
+//              fetchPayments();
+//         }
+//     }, [token, fetchPayments]);
+
+//     // Apply filters when any filter changes (useEffect remains largely the same)
+//     useEffect(() => {
+//         let results: Payment[] = [...payments];
+
+//         // Apply search filter
+//         if (searchTerm) {
+//             const lowerSearchTerm = searchTerm.toLowerCase();
+//             results = results.filter(payment =>
+//                 payment._id.toLowerCase().includes(lowerSearchTerm) ||
+//                 payment.user?.fullName?.toLowerCase().includes(lowerSearchTerm) ||
+//                 payment.user?.email?.toLowerCase().includes(lowerSearchTerm)
+//             );
+//         }
+
+//         // Apply Payment ID filter
+//         if (paymentIdFilter) {
+//              results = results.filter(payment =>
+//                  payment._id.toLowerCase().includes(paymentIdFilter.toLowerCase())
+//              );
+//         }
+
+//         // Apply Amount filter
+//         if (amountFilter) {
+//              try {
+//                 const amount = parseFloat(amountFilter);
+//                 if (!isNaN(amount)) {
+//                      results = results.filter(payment => {
+//                          try {
+//                             // Compare string amount with parsed filter amount
+//                             return parseFloat(payment.amountToAdd) === amount;
+//                          } catch {
+//                              return false;
+//                          }
+//                      });
+//                 }
+//              } catch { /* Ignore invalid amount input */ }
+//         }
+
+
+//         // Apply Currency filter
+//         if (currencyFilter !== 'all') {
+//             results = results.filter(payment => payment.payInCurrency?.code === currencyFilter);
+//         }
+
+
+//         // Apply status filter
+//         if (statusFilter !== 'all') {
+//             results = results.filter(payment => payment.status === statusFilter);
+//         }
+
+//         // Apply date range filter
+//         if (dateRange.from) {
+//             const fromDate = new Date(dateRange.from);
+//             fromDate.setHours(0, 0, 0, 0);
+//             results = results.filter(payment => {
+//                 try {
+//                     const paymentDate = new Date(payment.createdAt);
+//                     return !isNaN(paymentDate.getTime()) && paymentDate >= fromDate;
+//                 } catch { return false; }
+//             });
+//         }
+//         if (dateRange.to) {
+//             const toDate = new Date(dateRange.to);
+//             toDate.setHours(23, 59, 59, 999);
+//             results = results.filter(payment => {
+//                  try {
+//                      const paymentDate = new Date(payment.createdAt);
+//                      return !isNaN(paymentDate.getTime()) && paymentDate <= toDate;
+//                  } catch { return false; }
+//             });
+//         }
+
+//          // Apply sorting (remains the same logic, uses the unified Payment type)
+//          if (sortField) {
+//              results.sort((a, b) => {
+//                  let valueA: unknown;
+//                  let valueB: unknown;
+
+//                  switch (sortField) {
+//                      case 'user':
+//                          valueA = a.user?.fullName?.toLowerCase() || '';
+//                          valueB = b.user?.fullName?.toLowerCase() || '';
+//                          break;
+//                      case 'email':
+//                          valueA = a.user?.email?.toLowerCase() || '';
+//                          valueB = b.user?.email?.toLowerCase() || '';
+//                          break;
+//                      case 'amount':
+//                          // Parse string amounts for comparison
+//                          valueA = parseFloat(a.amountToAdd) || 0;
+//                          valueB = parseFloat(b.amountToAdd) || 0;
+//                          break;
+//                      case 'currency':
+//                           valueA = a.payInCurrency?.code?.toLowerCase() || '';
+//                           valueB = b.payInCurrency?.code?.toLowerCase() || '';
+//                           break;
+//                       case 'createdAt':
+//                           try {
+//                               valueA = new Date(a.createdAt);
+//                               valueB = new Date(b.createdAt);
+//                               if (isNaN((valueA as Date).getTime())) valueA = new Date(0);
+//                               if (isNaN((valueB as Date).getTime())) valueB = new Date(0);
+//                           } catch {
+//                               valueA = new Date(0);
+//                               valueB = new Date(0);
+//                           }
+//                           break;
+//                      case '_id':
+//                      case 'status': // Access status directly
+//                      case 'referenceCode': // Add if sorting by referenceCode is needed
+//                          valueA = (a[sortField as keyof Payment] as string)?.toLowerCase() ?? '';
+//                          valueB = (b[sortField as keyof Payment] as string)?.toLowerCase() ?? '';
+//                          break;
+//                      default:
+//                          valueA = a[sortField as keyof Payment];
+//                          valueB = b[sortField as keyof Payment];
+//                  }
+
+//                   const comparison = () => {
+//                      if (valueA === valueB) return 0;
+//                      if (valueA === null || valueA === undefined || valueA === '') return -1; // Treat empty/null as less
+//                      if (valueB === null || valueB === undefined || valueB === '') return 1;
+
+//                      if (typeof valueA === 'number' && typeof valueB === 'number') {
+//                          return valueA > valueB ? 1 : -1;
+//                      }
+//                      if (valueA instanceof Date && valueB instanceof Date) {
+//                          return valueA.getTime() > valueB.getTime() ? 1 : -1;
+//                      }
+//                      return String(valueA).localeCompare(String(valueB));
+//                  };
+
+//                  return sortDirection === 'asc' ? comparison() : comparison() * -1;
+//              });
+//          }
+
+
+//         setFilteredPayments(results);
+//         // Reset page only if filters might have changed the total item count or order
+//         // A simple check is if the filtered results length differs from the base or if sorting/filtering is active
+//         if (results.length !== filteredPayments.length || searchTerm || statusFilter !== 'all' || dateRange.from || dateRange.to || sortField || paymentIdFilter || amountFilter || currencyFilter !== 'all') {
+//              if (currentPage !== 1) setCurrentPage(1); // Reset page to 1 only if not already on page 1
+//         }
+
+//     // Ensure filteredPayments itself is not in the dependency array to avoid infinite loops
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//     }, [payments, searchTerm, statusFilter, dateRange, sortField, sortDirection, paymentIdFilter, amountFilter, currencyFilter, currentPage]); // Added currentPage
+
+
+//     const toggleSort = (field: string) => {
+//         // If already sorting by this field, reverse direction
+//         if (sortField === field) {
+//             setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+//         } else {
+//             // Otherwise, set the new field and default to ascending
+//             setSortField(field);
+//             setSortDirection('asc');
+//         }
+//         setCurrentPage(1); // Reset to page 1 when sorting changes
+//     };
+
+
+//     const clearFilters = () => {
+//         setSearchTerm('');
+//         setDateRange({ from: null, to: null });
+//         setStatusFilter('all');
+//         setPaymentIdFilter('');
+//         setAmountFilter('');
+//         setCurrencyFilter('all');
+//         // Optionally reset sorting
+//         // setSortField(null);
+//         // setSortDirection('asc');
+//         setCurrentPage(1); // Reset page when clearing filters
+//     };
+
+//     const getStatusColor = (status: string): string => {
+//         switch (status?.toLowerCase()) {
+//             case 'completed': return 'text-green-600 bg-green-600/20 ';
+//             case 'pending': return 'text-yellow-600 bg-yellow-600/20 ';
+//             case 'in progress': return 'text-blue-600 bg-blue-600/20 ';
+//             case 'canceled': case 'cancelled': return 'text-red-600 bg-red-600/20 ';
+//             default: return 'text-gray-600 bg-gray-600/20 ';
+//         }
+//     };
+
+//     // Use useMemo for currency options
+//     const currencyOptions = useMemo(() => {
+//         const codes = payments
+//             .map(p => p.payInCurrency?.code)
+//             .filter((code): code is string => Boolean(code));
+//         return ['all', ...Array.from(new Set(codes))];
+//     }, [payments]);
+
+//     // Use the imported PaymentStatus type for status options
+//     const statusOptions: PaymentStatus[] = ['all', 'pending', 'in progress', 'completed', 'canceled'];
+
+//     const handleEditPayment = (payment: Payment) => {
+//         setSelectedPaymentForEdit(payment);
+//         setEditFormData({
+//             status: payment.status || '' // Initialize with current status
+//         });
+//         setIsEditModalOpen(true);
+//     };
+
+
+//     const handleSaveEdit = async () => {
+//         if (!selectedPaymentForEdit) return;
+//         setEditLoading(true);
+//         setError(null);
+//         setSuccessMessage(null);
+
+//         try {
+//             const payload = { status: editFormData.status };
+
+//             await axios.put(`/admin/payments/${selectedPaymentForEdit._id}`, payload, {
+//                 headers: { Authorization: `Bearer ${token}` },
+//             });
+
+//              // Update local state *after* successful API call
+//              const updatedPayments = payments.map(p =>
+//                  p._id === selectedPaymentForEdit._id
+//                      ? { ...p, status: editFormData.status } // Update status using the unified Payment type structure
+//                      : p
+//              );
+//              setPayments(updatedPayments); // Update the base list which triggers the filter useEffect
+
+//             setSuccessMessage('Payment status updated successfully!');
+//             setIsEditModalOpen(false);
+//             setSelectedPaymentForEdit(null);
+//         } catch (err: unknown) {
+//              let errorMessage = 'Failed to update payment status';
+//              if (axios.isAxiosError(err)) {
+//                  const axiosError = err as AxiosError<ApiErrorResponse>;
+//                  errorMessage = axiosError.response?.data?.message || axiosError.message || errorMessage;
+//              } else if (err instanceof Error) {
+//                  errorMessage = err.message;
+//              }
+//              setError(errorMessage);
+//             console.error("Error updating payment status:", err);
+//         } finally {
+//             setEditLoading(false);
+//         }
+//     };
+
+//     const refreshData = () => {
+//         fetchPayments();
+//     };
+
+//     // Pagination logic (remains the same)
+//     const indexOfLastPayment = currentPage * paymentsPerPage;
+//     const indexOfFirstPayment = indexOfLastPayment - paymentsPerPage;
+//     const currentPayments = filteredPayments.slice(indexOfFirstPayment, indexOfLastPayment);
+//     const totalPages = Math.ceil(filteredPayments.length / paymentsPerPage);
+//     const paginate = (pageNumber: number) => {
+//         if (pageNumber >= 1 && pageNumber <= totalPages) {
+//              setCurrentPage(pageNumber);
+//         }
+//     };
+//     const goToPreviousPage = () => setCurrentPage(prev => Math.max(1, prev - 1));
+//     const goToNextPage = () => setCurrentPage(prev => Math.min(totalPages, prev + 1));
+
+
+//     // --- JSX REMAINS THE SAME FROM HERE DOWN ---
+//     // No changes needed in the return/JSX structure based on the errors.
+//     // The props passed to child components will now have the correct types.
+
+//     return (
+//         <div className="container mx-auto px-4 py-8 relative">
+//             <div className="space-y-6">
+//                 {/* Header and Search/Filter Buttons */}
+//                 <div className="flex flex-wrap justify-between items-center gap-4">
+//                     <h1 className="text-2xl font-bold text-mainheading dark:text-white">Payment Management</h1>
+//                     <div className="flex flex-wrap gap-3 items-center">
+//                         <div className="relative">
+//                             <input
+//                                 type="text"
+//                                 value={searchTerm}
+//                                 onChange={(e) => setSearchTerm(e.target.value)}
+//                                 placeholder="Search Payments..."
+//                                 className="w-full sm:w-64 rounded-full py-2 pl-10 pr-3 h-12 border transition-shadow ease-in-out duration-300 border-neutral-900/30 dark:border-white/30 hover:shadow-md dark:hover:shadow-white/20 focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary placeholder:text-neutral-500 dark:placeholder:text-neutral-400 bg-white dark:bg-primarybox"
+//                             />
+//                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+//                         </div>
+//                         <button
+//                             onClick={() => setShowFilterModal(true)}
+//                             className="flex items-center justify-center cursor-pointer gap-2 bg-primary text-secondary font-medium text-base px-6 py-2 h-12 rounded-full hover:bg-primaryhover transition-colors"
+//                         >
+//                             <Filter size={18} />
+//                             Filters
+//                         </button>
+//                         <button
+//                             onClick={refreshData}
+//                             disabled={isRefreshing || loadingPayments}
+//                             className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 h-12 rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+//                         >
+//                             <RefreshCw
+//                                 className={`size-5 ${isRefreshing ? "animate-spin" : ""}`}
+//                             />
+//                             <span>Refresh</span>
+//                         </button>
+//                     </div>
+//                 </div>
+
+//                 {/* Success Message */}
+//                 <AnimatePresence>
+//                     {successMessage && (
+//                         <motion.div
+//                             initial={{ opacity: 0, y: -10 }}
+//                             animate={{ opacity: 1, y: 0 }}
+//                             exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
+//                             className="bg-green-50 border border-green-300 dark:bg-green-900/30 dark:border-green-700 p-4 rounded-md shadow-sm"
+//                         >
+//                             <div className="flex items-start">
+//                                 <div className="flex-shrink-0 pt-0.5">
+//                                     <Check className="h-5 w-5 text-green-500 dark:text-green-400" />
+//                                 </div>
+//                                 <div className="ml-3 flex-1">
+//                                     <p className="text-sm font-medium text-green-800 dark:text-green-300">{successMessage}</p>
+//                                 </div>
+//                                 <button
+//                                     aria-label="Dismiss success message"
+//                                     onClick={() => setSuccessMessage(null)}
+//                                     className="ml-auto flex-shrink-0 text-green-500 hover:text-green-700 dark:text-green-400 dark:hover:text-green-200 p-1 rounded-full hover:bg-green-100 dark:hover:bg-green-800/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 dark:focus:ring-offset-primarybox"
+//                                 >
+//                                     <X size={18} />
+//                                 </button>
+//                             </div>
+//                         </motion.div>
+//                     )}
+//                 </AnimatePresence>
+
+//                 {/* Error Message */}
+//                 <AnimatePresence>
+//                     {error && (
+//                         <motion.div
+//                              initial={{ opacity: 0, y: -10 }}
+//                              animate={{ opacity: 1, y: 0 }}
+//                              exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
+//                              className="bg-red-50 border border-red-300 dark:bg-red-900/30 dark:border-red-700 p-4 rounded-md shadow-sm"
+//                         >
+//                             <div className="flex items-start">
+//                                  <div className="flex-shrink-0 pt-0.5">
+//                                      <X className="h-5 w-5 text-red-500 dark:text-red-400" />
+//                                 </div>
+//                                 <div className="ml-3 flex-1">
+//                                     <p className="text-sm font-medium text-red-800 dark:text-red-300">{error}</p>
+//                                 </div>
+//                                 <button
+//                                      aria-label="Dismiss error message"
+//                                      onClick={() => setError(null)}
+//                                      className="ml-auto flex-shrink-0 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-200 p-1 rounded-full hover:bg-red-100 dark:hover:bg-red-800/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-primarybox"
+//                                 >
+//                                     <X size={18} />
+//                                 </button>
+//                             </div>
+//                         </motion.div>
+//                     )}
+//                 </AnimatePresence>
+
+//                  {/* Pagination and Page Size Controls */}
+//                 <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
+//                     <div className="flex items-center gap-2">
+//                         <label htmlFor="paymentsPerPage" className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Show entries:</label>
+//                         <select
+//                             id="paymentsPerPage"
+//                             value={paymentsPerPage}
+//                             onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+//                             className="block w-auto pl-3 pr-8 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary bg-white dark:bg-primarybox dark:text-white"
+//                         >
+//                             {pageSizeOptions.map(size => (
+//                                 <option key={size} value={size}>{size}</option>
+//                             ))}
+//                         </select>
+//                     </div>
+//                     <p className="text-sm text-gray-600 dark:text-gray-400">
+//                         Showing {filteredPayments.length > 0 ? indexOfFirstPayment + 1 : 0} - {Math.min(indexOfLastPayment, filteredPayments.length)} of {filteredPayments.length} results
+//                         {totalPages > 0 && ` (Page ${currentPage} of ${totalPages})`}
+//                     </p>
+//                 </div>
+
+//                 {/* Payments Table */}
+//                 <PaymentTable
+//                     filteredPayments={currentPayments} // Pass paginated data using shared Payment type
+//                     loadingPayments={loadingPayments}
+//                     getStatusColor={getStatusColor}
+//                     toggleSort={toggleSort} // Type is string, handled internally
+//                     sortField={sortField}
+//                     sortDirection={sortDirection}
+//                     handleEditPayment={handleEditPayment} // Prop now expects shared Payment type
+//                 />
+
+//                  {/* Pagination */}
+//                 {totalPages > 1 && (
+//                     <Pagination
+//                         currentPage={currentPage}
+//                         totalPages={totalPages}
+//                         paginate={paginate}
+//                         goToPreviousPage={goToPreviousPage}
+//                         goToNextPage={goToNextPage}
+//                     />
+//                 )}
+//                  {/* No Results Message */}
+//                  {!loadingPayments && filteredPayments.length === 0 && payments.length > 0 && ( // Only show if initial load is done and filters applied
+//                      <div className="text-center py-10 text-gray-500 dark:text-gray-400">
+//                          No payments found matching your criteria.
+//                      </div>
+//                  )}
+//                   {!loadingPayments && payments.length === 0 && ( // Show if no payments loaded at all
+//                      <div className="text-center py-10 text-gray-500 dark:text-gray-400">
+//                          No payments available.
+//                      </div>
+//                  )}
+//             </div>
+
+//             {/* Edit Payment Modal */}
+//             <PaymentEditModal
+//                 isEditModalOpen={isEditModalOpen}
+//                 setIsEditModalOpen={setIsEditModalOpen}
+//                 selectedPaymentForEdit={selectedPaymentForEdit} // Prop now expects shared Payment type or null
+//                 editFormData={editFormData}
+//                 setEditFormData={setEditFormData}
+//                 editLoading={editLoading}
+//                 handleSaveEdit={handleSaveEdit}
+//                 // Provide the status options excluding 'all'
+//                 statusOptions={statusOptions.filter(s => s !== 'all')}
+//             />
+
+//             {/* Filter Sidebar */}
+//             <PaymentFilters
+//                 showFilterModal={showFilterModal}
+//                 setShowFilterModal={setShowFilterModal}
+//                 searchTerm={searchTerm}
+//                 setSearchTerm={setSearchTerm}
+//                 dateRange={dateRange}
+//                 setDateRange={setDateRange} // Pass the state setter directly
+//                 statusFilter={statusFilter} // Pass the state value (PaymentStatus)
+//                 setStatusFilter={setStatusFilter} // Pass the state setter (Dispatch<SetStateAction<PaymentStatus>>)
+//                 currencyFilter={currencyFilter}
+//                 setCurrencyFilter={setCurrencyFilter} // Pass the state setter directly
+//                 paymentIdFilter={paymentIdFilter}
+//                 setPaymentIdFilter={setPaymentIdFilter} // Pass the state setter directly
+//                 amountFilter={amountFilter}
+//                 setAmountFilter={setAmountFilter} // Pass the state setter directly
+//                 currencyOptions={currencyOptions} // Pass string[]
+//                 statusOptions={statusOptions} // Pass PaymentStatus[]
+//                 clearFilters={clearFilters}
+//             />
+//         </div >
+//     );
+// };
+
+// export default AdminPaymentsPage;
+
+
+
+
 // frontend/src/app/admin/payments/page.tsx
 'use client';
 import React, { useState, useEffect, useCallback, useMemo } from 'react'; // Added useMemo
@@ -2393,7 +2965,7 @@ const AdminPaymentsPage: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [dateRange, setDateRange] = useState<{ from: Date | null, to: Date | null }>({ from: null, to: null });
     // Use the specific PaymentStatus type for state
-    const [statusFilter, setStatusFilter] = useState<PaymentStatus>('all');
+    const [statusFilter, setStatusFilter] = useState<PaymentStatus>('all'); // Correctly typed state
     const [paymentIdFilter, setPaymentIdFilter] = useState<string>('');
     const [amountFilter, setAmountFilter] = useState<string>('');
     const [currencyFilter, setCurrencyFilter] = useState<'all' | string>('all');
@@ -2402,7 +2974,7 @@ const AdminPaymentsPage: React.FC = () => {
     const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
     const [selectedPaymentForEdit, setSelectedPaymentForEdit] = useState<Payment | null>(null);
     // Edit form data should reflect the possible status values for saving
-    const [editFormData, setEditFormData] = useState<{ status: string }>({ // Keep as string here if API expects any string
+    const [editFormData, setEditFormData] = useState<{ status: string }>({ // Keep as string here if API expects any string or input is generic
         status: ''
     });
     const [editLoading, setEditLoading] = useState<boolean>(false);
@@ -2443,10 +3015,16 @@ const AdminPaymentsPage: React.FC = () => {
                  throw new Error("Invalid data structure received from API");
             }
 
-            // Ensure data conforms to Payment type (optional, good for safety)
-            // const validatedData = paymentData.map(p => ({ ...p, amountToAdd: String(p.amountToAdd) })); // Example validation/transformation if needed
-             setPayments(paymentData);
-             setFilteredPayments(paymentData);
+            // Optional: Validate/transform data if needed
+            // Ensure amountToAdd is treated as string if necessary, though often better handled in display
+            const validatedData = paymentData.map(p => ({
+                ...p,
+                amountToAdd: String(p.amountToAdd), // Ensure it's string for consistency if needed
+                createdAt: p.createdAt || new Date(0).toISOString() // Provide default if missing
+            }));
+
+             setPayments(validatedData);
+             setFilteredPayments(validatedData);
 
         } catch (err: unknown) {
              let errorMessage = 'Failed to load payments';
@@ -2470,7 +3048,7 @@ const AdminPaymentsPage: React.FC = () => {
         }
     }, [token, fetchPayments]);
 
-    // Apply filters when any filter changes (useEffect remains largely the same)
+    // Apply filters when any filter changes
     useEffect(() => {
         let results: Payment[] = [...payments];
 
@@ -2498,7 +3076,6 @@ const AdminPaymentsPage: React.FC = () => {
                 if (!isNaN(amount)) {
                      results = results.filter(payment => {
                          try {
-                            // Compare string amount with parsed filter amount
                             return parseFloat(payment.amountToAdd) === amount;
                          } catch {
                              return false;
@@ -2515,7 +3092,7 @@ const AdminPaymentsPage: React.FC = () => {
         }
 
 
-        // Apply status filter
+        // Apply status filter (uses PaymentStatus type)
         if (statusFilter !== 'all') {
             results = results.filter(payment => payment.status === statusFilter);
         }
@@ -2542,7 +3119,7 @@ const AdminPaymentsPage: React.FC = () => {
             });
         }
 
-         // Apply sorting (remains the same logic, uses the unified Payment type)
+         // Apply sorting
          if (sortField) {
              results.sort((a, b) => {
                  let valueA: unknown;
@@ -2558,7 +3135,6 @@ const AdminPaymentsPage: React.FC = () => {
                          valueB = b.user?.email?.toLowerCase() || '';
                          break;
                      case 'amount':
-                         // Parse string amounts for comparison
                          valueA = parseFloat(a.amountToAdd) || 0;
                          valueB = parseFloat(b.amountToAdd) || 0;
                          break;
@@ -2568,18 +3144,19 @@ const AdminPaymentsPage: React.FC = () => {
                           break;
                       case 'createdAt':
                           try {
-                              valueA = new Date(a.createdAt);
-                              valueB = new Date(b.createdAt);
-                              if (isNaN((valueA as Date).getTime())) valueA = new Date(0);
-                              if (isNaN((valueB as Date).getTime())) valueB = new Date(0);
+                              // Ensure createdAt is a valid date string or handle errors
+                              const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
+                              const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
+                              valueA = !isNaN(dateA.getTime()) ? dateA : new Date(0);
+                              valueB = !isNaN(dateB.getTime()) ? dateB : new Date(0);
                           } catch {
                               valueA = new Date(0);
                               valueB = new Date(0);
                           }
                           break;
                      case '_id':
-                     case 'status': // Access status directly
-                     case 'referenceCode': // Add if sorting by referenceCode is needed
+                     case 'status':
+                     case 'referenceCode':
                          valueA = (a[sortField as keyof Payment] as string)?.toLowerCase() ?? '';
                          valueB = (b[sortField as keyof Payment] as string)?.toLowerCase() ?? '';
                          break;
@@ -2590,15 +3167,19 @@ const AdminPaymentsPage: React.FC = () => {
 
                   const comparison = () => {
                      if (valueA === valueB) return 0;
-                     if (valueA === null || valueA === undefined || valueA === '') return -1; // Treat empty/null as less
+                     if (valueA === null || valueA === undefined || valueA === '') return -1;
                      if (valueB === null || valueB === undefined || valueB === '') return 1;
 
                      if (typeof valueA === 'number' && typeof valueB === 'number') {
                          return valueA > valueB ? 1 : -1;
                      }
                      if (valueA instanceof Date && valueB instanceof Date) {
-                         return valueA.getTime() > valueB.getTime() ? 1 : -1;
+                        // Ensure valid dates before comparing times
+                        if (isNaN(valueA.getTime())) return -1;
+                        if (isNaN(valueB.getTime())) return 1;
+                        return valueA.getTime() > valueB.getTime() ? 1 : -1;
                      }
+                     // Ensure comparison values are strings
                      return String(valueA).localeCompare(String(valueB));
                  };
 
@@ -2608,41 +3189,37 @@ const AdminPaymentsPage: React.FC = () => {
 
 
         setFilteredPayments(results);
-        // Reset page only if filters might have changed the total item count or order
-        // A simple check is if the filtered results length differs from the base or if sorting/filtering is active
-        if (results.length !== filteredPayments.length || searchTerm || statusFilter !== 'all' || dateRange.from || dateRange.to || sortField || paymentIdFilter || amountFilter || currencyFilter !== 'all') {
-             if (currentPage !== 1) setCurrentPage(1); // Reset page to 1 only if not already on page 1
+        // Reset page only if necessary and not already on page 1
+        const filtersApplied = searchTerm || statusFilter !== 'all' || dateRange.from || dateRange.to || paymentIdFilter || amountFilter || currencyFilter !== 'all';
+        const sortingApplied = !!sortField;
+        if ((filtersApplied || sortingApplied) && currentPage !== 1) {
+            setCurrentPage(1);
         }
 
-    // Ensure filteredPayments itself is not in the dependency array to avoid infinite loops
+    // Removed filteredPayments from dependencies
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [payments, searchTerm, statusFilter, dateRange, sortField, sortDirection, paymentIdFilter, amountFilter, currencyFilter, currentPage]); // Added currentPage
 
 
     const toggleSort = (field: string) => {
-        // If already sorting by this field, reverse direction
         if (sortField === field) {
             setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
         } else {
-            // Otherwise, set the new field and default to ascending
             setSortField(field);
             setSortDirection('asc');
         }
-        setCurrentPage(1); // Reset to page 1 when sorting changes
+        // No need to reset page here, the useEffect handles it
     };
 
 
     const clearFilters = () => {
         setSearchTerm('');
         setDateRange({ from: null, to: null });
-        setStatusFilter('all');
+        setStatusFilter('all'); // Reset to 'all' (PaymentStatus type)
         setPaymentIdFilter('');
         setAmountFilter('');
         setCurrencyFilter('all');
-        // Optionally reset sorting
-        // setSortField(null);
-        // setSortDirection('asc');
-        setCurrentPage(1); // Reset page when clearing filters
+        // No need to reset page here, the useEffect handles it when filters change
     };
 
     const getStatusColor = (status: string): string => {
@@ -2655,7 +3232,6 @@ const AdminPaymentsPage: React.FC = () => {
         }
     };
 
-    // Use useMemo for currency options
     const currencyOptions = useMemo(() => {
         const codes = payments
             .map(p => p.payInCurrency?.code)
@@ -2669,7 +3245,7 @@ const AdminPaymentsPage: React.FC = () => {
     const handleEditPayment = (payment: Payment) => {
         setSelectedPaymentForEdit(payment);
         setEditFormData({
-            status: payment.status || '' // Initialize with current status
+            status: payment.status || '' // Initialize with current status (string ok for form)
         });
         setIsEditModalOpen(true);
     };
@@ -2682,6 +3258,7 @@ const AdminPaymentsPage: React.FC = () => {
         setSuccessMessage(null);
 
         try {
+            // Ensure the status being sent matches an expected value if API is strict
             const payload = { status: editFormData.status };
 
             await axios.put(`/admin/payments/${selectedPaymentForEdit._id}`, payload, {
@@ -2691,10 +3268,10 @@ const AdminPaymentsPage: React.FC = () => {
              // Update local state *after* successful API call
              const updatedPayments = payments.map(p =>
                  p._id === selectedPaymentForEdit._id
-                     ? { ...p, status: editFormData.status } // Update status using the unified Payment type structure
+                     ? { ...p, status: editFormData.status as PaymentStatus } // Cast to PaymentStatus for local state consistency
                      : p
              );
-             setPayments(updatedPayments); // Update the base list which triggers the filter useEffect
+             setPayments(updatedPayments); // Update the base list
 
             setSuccessMessage('Payment status updated successfully!');
             setIsEditModalOpen(false);
@@ -2714,11 +3291,11 @@ const AdminPaymentsPage: React.FC = () => {
         }
     };
 
-    const refreshData = () => {
+    const refreshData = useCallback(() => {
         fetchPayments();
-    };
+    }, [fetchPayments]); // Ensure fetchPayments is stable or included
 
-    // Pagination logic (remains the same)
+    // Pagination logic
     const indexOfLastPayment = currentPage * paymentsPerPage;
     const indexOfFirstPayment = indexOfLastPayment - paymentsPerPage;
     const currentPayments = filteredPayments.slice(indexOfFirstPayment, indexOfLastPayment);
@@ -2732,10 +3309,7 @@ const AdminPaymentsPage: React.FC = () => {
     const goToNextPage = () => setCurrentPage(prev => Math.min(totalPages, prev + 1));
 
 
-    // --- JSX REMAINS THE SAME FROM HERE DOWN ---
-    // No changes needed in the return/JSX structure based on the errors.
-    // The props passed to child components will now have the correct types.
-
+    // --- JSX ---
     return (
         <div className="container mx-auto px-4 py-8 relative">
             <div className="space-y-6">
@@ -2852,13 +3426,13 @@ const AdminPaymentsPage: React.FC = () => {
 
                 {/* Payments Table */}
                 <PaymentTable
-                    filteredPayments={currentPayments} // Pass paginated data using shared Payment type
+                    filteredPayments={currentPayments} // Pass paginated data
                     loadingPayments={loadingPayments}
                     getStatusColor={getStatusColor}
-                    toggleSort={toggleSort} // Type is string, handled internally
+                    toggleSort={toggleSort}
                     sortField={sortField}
                     sortDirection={sortDirection}
-                    handleEditPayment={handleEditPayment} // Prop now expects shared Payment type
+                    handleEditPayment={handleEditPayment}
                 />
 
                  {/* Pagination */}
@@ -2872,12 +3446,12 @@ const AdminPaymentsPage: React.FC = () => {
                     />
                 )}
                  {/* No Results Message */}
-                 {!loadingPayments && filteredPayments.length === 0 && payments.length > 0 && ( // Only show if initial load is done and filters applied
+                 {!loadingPayments && filteredPayments.length === 0 && payments.length > 0 && (
                      <div className="text-center py-10 text-gray-500 dark:text-gray-400">
                          No payments found matching your criteria.
                      </div>
                  )}
-                  {!loadingPayments && payments.length === 0 && ( // Show if no payments loaded at all
+                  {!loadingPayments && payments.length === 0 && !error && ( // Only show if no payments and no error
                      <div className="text-center py-10 text-gray-500 dark:text-gray-400">
                          No payments available.
                      </div>
@@ -2888,12 +3462,12 @@ const AdminPaymentsPage: React.FC = () => {
             <PaymentEditModal
                 isEditModalOpen={isEditModalOpen}
                 setIsEditModalOpen={setIsEditModalOpen}
-                selectedPaymentForEdit={selectedPaymentForEdit} // Prop now expects shared Payment type or null
+                selectedPaymentForEdit={selectedPaymentForEdit}
                 editFormData={editFormData}
                 setEditFormData={setEditFormData}
                 editLoading={editLoading}
                 handleSaveEdit={handleSaveEdit}
-                // Provide the status options excluding 'all'
+                // Provide the status options excluding 'all' for editing
                 statusOptions={statusOptions.filter(s => s !== 'all')}
             />
 
@@ -2904,17 +3478,17 @@ const AdminPaymentsPage: React.FC = () => {
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
                 dateRange={dateRange}
-                setDateRange={setDateRange} // Pass the state setter directly
-                statusFilter={statusFilter} // Pass the state value (PaymentStatus)
-                setStatusFilter={setStatusFilter} // Pass the state setter (Dispatch<SetStateAction<PaymentStatus>>)
+                setDateRange={setDateRange}
+                statusFilter={statusFilter} // Pass PaymentStatus value
+                setStatusFilter={setStatusFilter} // Pass Dispatch<SetStateAction<PaymentStatus>>
                 currencyFilter={currencyFilter}
-                setCurrencyFilter={setCurrencyFilter} // Pass the state setter directly
+                setCurrencyFilter={setCurrencyFilter}
                 paymentIdFilter={paymentIdFilter}
-                setPaymentIdFilter={setPaymentIdFilter} // Pass the state setter directly
+                setPaymentIdFilter={setPaymentIdFilter}
                 amountFilter={amountFilter}
-                setAmountFilter={setAmountFilter} // Pass the state setter directly
-                currencyOptions={currencyOptions} // Pass string[]
-                statusOptions={statusOptions} // Pass PaymentStatus[]
+                setAmountFilter={setAmountFilter}
+                currencyOptions={currencyOptions}
+                statusOptions={statusOptions} // Pass PaymentStatus[] for display in dropdown
                 clearFilters={clearFilters}
             />
         </div >

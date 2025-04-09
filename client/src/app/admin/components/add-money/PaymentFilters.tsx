@@ -1202,15 +1202,333 @@
 
 
 
+// // components/admin/payments/PaymentFilters.tsx
+// 'use client';
+// import React, { useState, useRef, useEffect } from 'react';
+// import { motion, AnimatePresence } from 'framer-motion';
+// import { Calendar } from '@/components/ui/calendar';
+// import { format } from 'date-fns';
+// import { Calendar as CalendarIcon, X } from 'lucide-react';
+// import CustomDropdown from './CustomDropdown';
+// import { IoClose } from "react-icons/io5"; // Import IoClose icon
+
+// interface PaymentFiltersProps {
+//     showFilterModal: boolean;
+//     setShowFilterModal: React.Dispatch<React.SetStateAction<boolean>>;
+//     searchTerm: string;
+//     setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+//     dateRange: { from: Date | null; to: Date | null };
+//     setDateRange: React.Dispatch<React.SetStateAction<{ from: Date | null; to: Date | null }>>;
+//     statusFilter: string;
+//     setStatusFilter: React.Dispatch<React.SetStateAction<string>>;
+//     currencyFilter: string;
+//     setCurrencyFilter: React.Dispatch<React.SetStateAction<string>>;
+//     paymentIdFilter: string;
+//     setPaymentIdFilter: React.Dispatch<React.SetStateAction<string>>;
+//     amountFilter: string;
+//     setAmountFilter: React.Dispatch<React.SetStateAction<string>>;
+//     currencyOptions: string[];
+//     statusOptions: string[];
+//     clearFilters: () => void;
+// }
+
+// const PaymentFilters: React.FC<PaymentFiltersProps> = ({
+//     showFilterModal,
+//     setShowFilterModal,
+//     searchTerm,
+//     setSearchTerm,
+//     dateRange,
+//     setDateRange,
+//     statusFilter,
+//     setStatusFilter,
+//     currencyFilter,
+//     setCurrencyFilter,
+//     paymentIdFilter,
+//     setPaymentIdFilter,
+//     amountFilter,
+//     setAmountFilter,
+//     currencyOptions,
+//     statusOptions,
+//     clearFilters,
+// }) => {
+//     const filterModalRef = useRef(null);
+//     const [showCalendar, setShowCalendar] = useState(false);
+//     const [isMobile, setIsMobile] = useState(false); // State to track mobile view
+
+//     // --- Temporary filter states ---
+//     const [tempSearchTerm, setTempSearchTerm] = useState(searchTerm);
+//     const [tempDateRange, setTempDateRange] = useState(dateRange);
+//     const [tempStatusFilter, setTempStatusFilter] = useState(statusFilter);
+//     const [tempCurrencyFilter, setTempCurrencyFilter] = useState(currencyFilter);
+//     const [tempPaymentIdFilter, setTempPaymentIdFilter] = useState(paymentIdFilter);
+//     const [tempAmountFilter, setTempAmountFilter] = useState(amountFilter);
+
+//     useEffect(() => {
+//         const handleClickOutside = (event) => {
+//             if (showFilterModal && filterModalRef.current && !filterModalRef.current.contains(event.target) && !event.target.closest('[id^="radix-ui-popper-"]')) {
+//                 setShowFilterModal(false);
+//             }
+//         };
+
+//         document.addEventListener('mousedown', handleClickOutside);
+//         return () => {
+//             document.removeEventListener('mousedown', handleClickOutside);
+//         };
+//     }, [showFilterModal, setShowFilterModal]);
+
+//     useEffect(() => {
+//         const handleResize = () => setIsMobile(window.innerWidth < 640);
+//         handleResize();
+//         window.addEventListener("resize", handleResize);
+//         return () => window.removeEventListener("resize", handleResize);
+//     }, []);
+
+//     // Sync props to temp state when modal opens
+//     useEffect(() => {
+//         if (showFilterModal) {
+//             setTempSearchTerm(searchTerm);
+//             setTempDateRange(dateRange);
+//             setTempStatusFilter(statusFilter);
+//             setTempCurrencyFilter(currencyFilter);
+//             setTempPaymentIdFilter(paymentIdFilter);
+//             setTempAmountFilter(amountFilter);
+//         }
+//     }, [showFilterModal, searchTerm, dateRange, statusFilter, currencyFilter, paymentIdFilter, amountFilter]);
+
+
+//     const closePopup = () => setShowFilterModal(false);
+
+//     const applyFilters = () => {
+//         setSearchTerm(tempSearchTerm);
+//         setDateRange(tempDateRange);
+//         setStatusFilter(tempStatusFilter);
+//         setCurrencyFilter(tempCurrencyFilter);
+//         setPaymentIdFilter(tempPaymentIdFilter);
+//         setAmountFilter(tempAmountFilter);
+//         setShowFilterModal(false);
+//     };
+
+//     const handleClearAllFilters = () => {
+//         setTempSearchTerm('');
+//         setTempDateRange({ from: null, to: null });
+//         setTempStatusFilter('all');
+//         setTempCurrencyFilter('all');
+//         setTempPaymentIdFilter('');
+//         setTempAmountFilter('');
+//         clearFilters(); // Call parent clearFilters to reset external state
+//         setShowFilterModal(false); // Close modal after clearing
+//     };
+
+
+//     return (
+//         <AnimatePresence>
+//             {showFilterModal && (
+//                 <>
+//                     {/* Backdrop */}
+//                     <motion.div
+//                         initial={{ opacity: 0 }}
+//                         animate={{ opacity: 0.5 }}
+//                         exit={{ opacity: 0 }}
+//                         transition={{ duration: 0.2 }}
+//                         className="fixed inset-0 bg-black/50 dark:bg-white/30 z-50"
+//                         onClick={closePopup}
+//                     />
+
+//                     <motion.div
+//                         ref={filterModalRef}
+//                         initial={isMobile ? { y: "100%", opacity: 0 } : { x: "100%", opacity: 0 }}
+//                         animate={isMobile ? { y: "0%", opacity: 1 } : { x: "0%", opacity: 1 }}
+//                         exit={isMobile ? { y: "100%", opacity: 0 } : { x: "100%", opacity: 0 }}
+//                         transition={{ type: "tween", duration: 0.3 }}
+//                         className={`fixed ${
+//                             isMobile
+//                               ? "bottom-0 left-0 right-0 h-[100vh]"
+//                               : "top-0 right-0 sm:w-[600px] h-full border-l border-gray-200"
+//                           } bg-white dark:bg-background z-50 flex flex-col shadow-xl overflow-y-auto`} // Apply similar popup styles and scrollable
+//                     >
+//                         {/* Header */}
+//                         <div className="p-5 flex items-center justify-between flex-shrink-0 border-b relative">
+//                             <h3 className="font-semibold text-mainheading dark:text-white text-lg">
+//                                 Filter Payments
+//                             </h3>
+//                             <button
+//                                 onClick={() => setShowFilterModal(false)}
+//                                 className="absolute top-2 right-4 p-2 mt-1 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
+//                             >
+//                                 <IoClose className="text-neutral-900 dark:text-white size-7" />
+//                             </button>
+//                         </div>
+
+//                         {/* Scrollable Content Area */}
+//                         <div className="p-6 space-y-6 flex-grow overflow-y-auto scrollbar-hide"> {/* Apply scrollable content styles */}
+//                             {/* Payment ID Filter */}
+//                             <div className="mb-4">
+//                                 <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
+//                                     Payment ID
+//                                 </h4>
+//                                 <input
+//                                     type="text"
+//                                     id="paymentIdFilter"
+//                                     value={tempPaymentIdFilter}
+//                                     onChange={(e) => setTempPaymentIdFilter(e.target.value)}
+//                                     placeholder="Filter by Payment ID"
+//                                     className="mt-1 block px-4 focus:outline-none py-3 w-full border-gray-300 rounded-md border sm:text-sm"
+//                                 />
+//                             </div>
+//                             {/* Amount Filter */}
+//                             <div className="mb-4">
+//                                 <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
+//                                     Amount
+//                                 </h4>
+//                                 <input
+//                                     type="number"
+//                                     id="amountFilter"
+//                                     value={tempAmountFilter}
+//                                     onChange={(e) => setTempAmountFilter(e.target.value)}
+//                                     placeholder="Filter by Amount"
+//                                     className="mt-1 block px-4 py-3 focus:outline-none border w-full border-gray-300 rounded-md sm:text-sm"
+//                                 />
+//                             </div>
+
+//                             {/* Currency Filter - Custom Dropdown */}
+//                             <div className="mb-4">
+//                                 <CustomDropdown
+//                                     label={
+//                                         <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
+//                                             Currency
+//                                         </h4>
+//                                     }
+//                                     value={tempCurrencyFilter === 'all' ? null : tempCurrencyFilter}
+//                                     onChange={setTempCurrencyFilter}
+//                                     options={currencyOptions}
+//                                 />
+//                             </div>
+
+//                             {/* Status Filter - Custom Dropdown */}
+//                             <div className="mb-4">
+//                                 <CustomDropdown
+//                                     label={
+//                                         <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
+//                                             Status
+//                                         </h4>
+//                                     }
+//                                     value={tempStatusFilter === 'all' ? null : tempStatusFilter}
+//                                     onChange={setTempStatusFilter}
+//                                     options={statusOptions}
+//                                 />
+//                             </div>
+
+
+//                             {/* Date Range Filter */}
+//                             <div className="mb-4">
+//                                 <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1"> {/* Styled Date Label */}
+//                                     Date Range
+//                                 </h4>
+//                                 <div className="relative">
+//                                     <button className='w-full'>
+//                                         <button
+//                                             type="button"
+//                                             onClick={() => setShowCalendar(!showCalendar)}
+//                                             className="flex items-center w-full justify-between border border-gray-300 rounded-md px-4 py-3 bg-white font-medium text-gray-700 focus:outline-none"
+//                                         >
+//                                             <span>
+//                                                 {tempDateRange.from ? (
+//                                                     tempDateRange.to ? (
+//                                                         `${format(tempDateRange.from, 'MMM dd, yyyy')} - ${format(tempDateRange.to, 'MMM dd, yyyy')}`
+//                                                     ) : (
+//                                                         `From ${format(tempDateRange.from, 'MMM dd, yyyy')}`
+//                                                     )
+//                                                 ) : tempDateRange.to ? (
+//                                                     `Until ${format(tempDateRange.to, 'MMM dd, yyyy')}`
+//                                                 ) : (
+//                                                     'Select date range'
+//                                                 )}
+//                                             </span>
+//                                             <CalendarIcon className="size-5 text-gray-400" />
+//                                         </button>
+//                                     </button>
+
+//                                     <AnimatePresence>
+//                                         {showCalendar && (
+//                                             <motion.div
+//                                                 initial={{ opacity: 0, y: 10 }}
+//                                                 animate={{ opacity: 1, y: 0 }}
+//                                                 exit={{ opacity: 0, y: 10 }}
+//                                                 className="absolute mt-2 bg-white p-4 rounded-md shadow-lg z-10 border border-gray-300"
+//                                             >
+//                                                 <Calendar
+//                                                     mode="range"
+//                                                     selected={tempDateRange}
+//                                                     onSelect={(range) => {
+//                                                         setTempDateRange(range);
+//                                                         setShowCalendar(false);
+//                                                     }}
+//                                                 />
+//                                                 {(tempDateRange.from || tempDateRange.to) && (
+//                                                     <div className="mt-2 flex justify-end">
+//                                                         <button
+//                                                             type="button"
+//                                                             onClick={() => {
+//                                                                 setTempDateRange({ from: null, to: null });
+//                                                                 setShowCalendar(false);
+//                                                             }}
+//                                                             className="text-sm text-error"
+//                                                         >
+//                                                             Clear dates
+//                                                         </button>
+//                                                     </div>
+//                                                 )}
+//                                             </motion.div>
+//                                         )}
+//                                     </AnimatePresence>
+//                                 </div>
+//                             </div>
+//                         </div>
+
+//                         {/* Footer */}
+//                         <div className="p-4 border-t bg-white dark:bg-background flex-shrink-0"> {/* Apply footer styles */}
+//                             <div className="flex items-center gap-3">
+//                                 {/* Clear all Button */}
+//                                 <button
+//                                     type="button"
+//                                     onClick={handleClearAllFilters}
+//                                     className="w-full bg-white border text-main font-medium cursor-pointer py-3 px-4 rounded-full hover:bg-gray-50"
+//                                 >
+//                                     Clear all
+//                                 </button>
+//                                 {/* Apply Filters Button */}
+//                                 <button
+//                                     type="button"
+//                                     onClick={applyFilters}
+//                                     className="w-full bg-primary text-main font-medium py-3 px-4 cursor-pointer rounded-full hover:bg-primary/90"
+//                                 >
+//                                     Apply Filters
+//                                 </button>
+//                             </div>
+//                         </div>
+//                     </motion.div>
+//                 </>
+//             )}
+//         </AnimatePresence>
+//     );
+// };
+
+// export default PaymentFilters;
+
+
+
+
 // components/admin/payments/PaymentFilters.tsx
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
-import { Calendar as CalendarIcon, X } from 'lucide-react';
+import { Calendar as CalendarIcon } from 'lucide-react'; // Removed X import as IoClose is used
 import CustomDropdown from './CustomDropdown';
 import { IoClose } from "react-icons/io5"; // Import IoClose icon
+import { DateRange } from 'react-day-picker'; // Import DateRange type
+import { PaymentStatus } from '../../../../types/payment'; // Import shared PaymentStatus type
 
 interface PaymentFiltersProps {
     showFilterModal: boolean;
@@ -1219,16 +1537,16 @@ interface PaymentFiltersProps {
     setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
     dateRange: { from: Date | null; to: Date | null };
     setDateRange: React.Dispatch<React.SetStateAction<{ from: Date | null; to: Date | null }>>;
-    statusFilter: string;
-    setStatusFilter: React.Dispatch<React.SetStateAction<string>>;
-    currencyFilter: string;
+    statusFilter: PaymentStatus; // Use PaymentStatus type
+    setStatusFilter: React.Dispatch<React.SetStateAction<PaymentStatus>>; // Use PaymentStatus type
+    currencyFilter: string; // Keep as string ('all' or specific code)
     setCurrencyFilter: React.Dispatch<React.SetStateAction<string>>;
     paymentIdFilter: string;
     setPaymentIdFilter: React.Dispatch<React.SetStateAction<string>>;
     amountFilter: string;
     setAmountFilter: React.Dispatch<React.SetStateAction<string>>;
     currencyOptions: string[];
-    statusOptions: string[];
+    statusOptions: PaymentStatus[]; // Use PaymentStatus type
     clearFilters: () => void;
 }
 
@@ -1251,21 +1569,27 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
     statusOptions,
     clearFilters,
 }) => {
-    const filterModalRef = useRef(null);
+    const filterModalRef = useRef<HTMLDivElement>(null); // Added correct ref type
     const [showCalendar, setShowCalendar] = useState(false);
-    const [isMobile, setIsMobile] = useState(false); // State to track mobile view
+    const [isMobile, setIsMobile] = useState(false);
 
     // --- Temporary filter states ---
     const [tempSearchTerm, setTempSearchTerm] = useState(searchTerm);
     const [tempDateRange, setTempDateRange] = useState(dateRange);
-    const [tempStatusFilter, setTempStatusFilter] = useState(statusFilter);
+    const [tempStatusFilter, setTempStatusFilter] = useState<PaymentStatus>(statusFilter); // Use PaymentStatus
     const [tempCurrencyFilter, setTempCurrencyFilter] = useState(currencyFilter);
     const [tempPaymentIdFilter, setTempPaymentIdFilter] = useState(paymentIdFilter);
     const [tempAmountFilter, setTempAmountFilter] = useState(amountFilter);
 
+    // Click outside handler
     useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (showFilterModal && filterModalRef.current && !filterModalRef.current.contains(event.target) && !event.target.closest('[id^="radix-ui-popper-"]')) {
+        const handleClickOutside = (event: MouseEvent) => { // Added MouseEvent type
+            if (
+                showFilterModal &&
+                filterModalRef.current &&
+                !filterModalRef.current.contains(event.target as Node) && // Check if contains exists before calling
+                !(event.target as Element).closest('[id^="radix-ui-popper-"]') // Keep Radix check
+            ) {
                 setShowFilterModal(false);
             }
         };
@@ -1274,8 +1598,9 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [showFilterModal, setShowFilterModal]);
+    }, [showFilterModal, setShowFilterModal]); // Added setShowFilterModal dependency
 
+    // Mobile check
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth < 640);
         handleResize();
@@ -1288,7 +1613,7 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
         if (showFilterModal) {
             setTempSearchTerm(searchTerm);
             setTempDateRange(dateRange);
-            setTempStatusFilter(statusFilter);
+            setTempStatusFilter(statusFilter); // Sync PaymentStatus
             setTempCurrencyFilter(currencyFilter);
             setTempPaymentIdFilter(paymentIdFilter);
             setTempAmountFilter(amountFilter);
@@ -1301,7 +1626,7 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
     const applyFilters = () => {
         setSearchTerm(tempSearchTerm);
         setDateRange(tempDateRange);
-        setStatusFilter(tempStatusFilter);
+        setStatusFilter(tempStatusFilter); // Apply PaymentStatus
         setCurrencyFilter(tempCurrencyFilter);
         setPaymentIdFilter(tempPaymentIdFilter);
         setAmountFilter(tempAmountFilter);
@@ -1311,7 +1636,7 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
     const handleClearAllFilters = () => {
         setTempSearchTerm('');
         setTempDateRange({ from: null, to: null });
-        setTempStatusFilter('all');
+        setTempStatusFilter('all'); // Reset to 'all' (PaymentStatus)
         setTempCurrencyFilter('all');
         setTempPaymentIdFilter('');
         setTempAmountFilter('');
@@ -1319,6 +1644,15 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
         setShowFilterModal(false); // Close modal after clearing
     };
 
+    // Handler for CustomDropdown (assuming it returns string)
+    const handleStatusChange = (value: string | null) => {
+        // Ensure 'all' or a valid status is set. Cast to PaymentStatus.
+        setTempStatusFilter((value as PaymentStatus) ?? 'all');
+    };
+
+    const handleCurrencyChange = (value: string | null) => {
+        setTempCurrencyFilter(value ?? 'all');
+    }
 
     return (
         <AnimatePresence>
@@ -1332,6 +1666,7 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
                         transition={{ duration: 0.2 }}
                         className="fixed inset-0 bg-black/50 dark:bg-white/30 z-50"
                         onClick={closePopup}
+                        aria-hidden="true" // Add for accessibility
                     />
 
                     <motion.div
@@ -1342,17 +1677,21 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
                         transition={{ type: "tween", duration: 0.3 }}
                         className={`fixed ${
                             isMobile
-                              ? "bottom-0 left-0 right-0 h-[100vh]"
-                              : "top-0 right-0 sm:w-[600px] h-full border-l border-gray-200"
-                          } bg-white dark:bg-background z-50 flex flex-col shadow-xl overflow-y-auto`} // Apply similar popup styles and scrollable
+                              ? "bottom-0 left-0 right-0 h-[100vh]" // Consider max-h-screen or similar if full height isn't always needed
+                              : "top-0 right-0 sm:w-[600px] h-full border-l border-gray-200 dark:border-neutral-700" // Dark mode border
+                          } bg-white dark:bg-background z-50 flex flex-col shadow-xl overflow-y-auto`}
+                        role="dialog" // Add role
+                        aria-modal="true" // Add aria-modal
+                        aria-labelledby="filter-payments-heading" // Add label reference
                     >
                         {/* Header */}
-                        <div className="p-5 flex items-center justify-between flex-shrink-0 border-b relative">
-                            <h3 className="font-semibold text-mainheading dark:text-white text-lg">
+                        <div className="p-5 flex items-center justify-between flex-shrink-0 border-b border-gray-200 dark:border-neutral-700 relative">
+                            <h3 id="filter-payments-heading" className="font-semibold text-mainheading dark:text-white text-lg">
                                 Filter Payments
                             </h3>
                             <button
-                                onClick={() => setShowFilterModal(false)}
+                                onClick={closePopup}
+                                aria-label="Close filter panel" // Add aria-label
                                 className="absolute top-2 right-4 p-2 mt-1 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
                             >
                                 <IoClose className="text-neutral-900 dark:text-white size-7" />
@@ -1360,33 +1699,41 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
                         </div>
 
                         {/* Scrollable Content Area */}
-                        <div className="p-6 space-y-6 flex-grow overflow-y-auto scrollbar-hide"> {/* Apply scrollable content styles */}
+                        <div className="p-6 space-y-6 flex-grow overflow-y-auto scrollbar-hide">
                             {/* Payment ID Filter */}
                             <div className="mb-4">
-                                <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
+                                <label htmlFor="paymentIdFilter" className="text-gray-500 dark:text-gray-300 font-medium mb-3 block relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
                                     Payment ID
-                                </h4>
+                                </label>
                                 <input
                                     type="text"
                                     id="paymentIdFilter"
                                     value={tempPaymentIdFilter}
                                     onChange={(e) => setTempPaymentIdFilter(e.target.value)}
                                     placeholder="Filter by Payment ID"
-                                    className="mt-1 block px-4 focus:outline-none py-3 w-full border-gray-300 rounded-md border sm:text-sm"
+                                    className="mt-1 block px-4 focus:outline-none py-3 w-full border-gray-300 dark:border-neutral-600 rounded-md border sm:text-sm bg-white dark:bg-primarybox dark:text-white dark:placeholder:text-neutral-400" // Dark mode styles
                                 />
                             </div>
                             {/* Amount Filter */}
                             <div className="mb-4">
-                                <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
+                                <label htmlFor="amountFilter" className="text-gray-500 dark:text-gray-300 font-medium mb-3 block relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
                                     Amount
-                                </h4>
+                                </label>
                                 <input
                                     type="number"
                                     id="amountFilter"
                                     value={tempAmountFilter}
                                     onChange={(e) => setTempAmountFilter(e.target.value)}
                                     placeholder="Filter by Amount"
-                                    className="mt-1 block px-4 py-3 focus:outline-none border w-full border-gray-300 rounded-md sm:text-sm"
+                                    className="mt-1 block px-4 py-3 focus:outline-none border w-full border-gray-300 dark:border-neutral-600 rounded-md sm:text-sm bg-white dark:bg-primarybox dark:text-white dark:placeholder:text-neutral-400" // Dark mode styles
+                                    // Hide number input spinners (optional styling)
+                                    style={{ appearance: 'textfield' }} // For Firefox
+                                    // For Chrome, Safari, Edge, Opera: add CSS in a global file or style block
+                                    // input[type=number]::-webkit-inner-spin-button,
+                                    // input[type=number]::-webkit-outer-spin-button {
+                                    //   -webkit-appearance: none;
+                                    //   margin: 0;
+                                    // }
                                 />
                             </div>
 
@@ -1394,13 +1741,13 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
                             <div className="mb-4">
                                 <CustomDropdown
                                     label={
-                                        <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
+                                        <span className="text-gray-500 dark:text-gray-300 font-medium mb-3 block relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
                                             Currency
-                                        </h4>
+                                        </span>
                                     }
                                     value={tempCurrencyFilter === 'all' ? null : tempCurrencyFilter}
-                                    onChange={setTempCurrencyFilter}
-                                    options={currencyOptions}
+                                    onChange={handleCurrencyChange} // Use specific handler
+                                    options={currencyOptions} // Pass string[]
                                 />
                             </div>
 
@@ -1408,44 +1755,47 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
                             <div className="mb-4">
                                 <CustomDropdown
                                     label={
-                                        <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
+                                        <span className="text-gray-500 dark:text-gray-300 font-medium mb-3 block relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
                                             Status
-                                        </h4>
+                                        </span>
                                     }
+                                    // CustomDropdown expects string|null, 'all' is mapped to null
                                     value={tempStatusFilter === 'all' ? null : tempStatusFilter}
-                                    onChange={setTempStatusFilter}
-                                    options={statusOptions}
+                                    onChange={handleStatusChange} // Use specific handler
+                                    options={statusOptions} // Pass PaymentStatus[] (dropdown should handle displaying them)
                                 />
                             </div>
 
 
                             {/* Date Range Filter */}
                             <div className="mb-4">
-                                <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1"> {/* Styled Date Label */}
+                                <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
                                     Date Range
                                 </h4>
                                 <div className="relative">
-                                    <button className='w-full'>
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowCalendar(!showCalendar)}
-                                            className="flex items-center w-full justify-between border border-gray-300 rounded-md px-4 py-3 bg-white font-medium text-gray-700 focus:outline-none"
-                                        >
-                                            <span>
-                                                {tempDateRange.from ? (
-                                                    tempDateRange.to ? (
-                                                        `${format(tempDateRange.from, 'MMM dd, yyyy')} - ${format(tempDateRange.to, 'MMM dd, yyyy')}`
-                                                    ) : (
-                                                        `From ${format(tempDateRange.from, 'MMM dd, yyyy')}`
-                                                    )
-                                                ) : tempDateRange.to ? (
-                                                    `Until ${format(tempDateRange.to, 'MMM dd, yyyy')}`
+                                     {/* The inner button was redundant, keep only one trigger */}
+                                    <button
+                                        type="button"
+                                        id="date-range-picker-button"
+                                        onClick={() => setShowCalendar(!showCalendar)}
+                                        className="flex items-center w-full justify-between border border-gray-300 dark:border-neutral-600 rounded-md px-4 py-3 bg-white dark:bg-primarybox font-medium text-gray-700 dark:text-white focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary"
+                                        aria-haspopup="dialog" // Indicate it opens a dialog/calendar
+                                        aria-expanded={showCalendar} // Indicate expanded state
+                                    >
+                                        <span>
+                                            {tempDateRange.from ? (
+                                                tempDateRange.to ? (
+                                                    `${format(tempDateRange.from, 'MMM dd, yyyy')} - ${format(tempDateRange.to, 'MMM dd, yyyy')}`
                                                 ) : (
-                                                    'Select date range'
-                                                )}
-                                            </span>
-                                            <CalendarIcon className="size-5 text-gray-400" />
-                                        </button>
+                                                    `From ${format(tempDateRange.from, 'MMM dd, yyyy')}`
+                                                )
+                                            ) : tempDateRange.to ? (
+                                                `Until ${format(tempDateRange.to, 'MMM dd, yyyy')}`
+                                            ) : (
+                                                'Select date range'
+                                            )}
+                                        </span>
+                                        <CalendarIcon className="size-5 text-gray-400 dark:text-gray-500" />
                                     </button>
 
                                     <AnimatePresence>
@@ -1454,30 +1804,52 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
                                                 initial={{ opacity: 0, y: 10 }}
                                                 animate={{ opacity: 1, y: 0 }}
                                                 exit={{ opacity: 0, y: 10 }}
-                                                className="absolute mt-2 bg-white p-4 rounded-md shadow-lg z-10 border border-gray-300"
+                                                className="absolute mt-2 bg-white dark:bg-secondarybox p-4 rounded-md shadow-lg z-10 border border-gray-300 dark:border-neutral-700"
+                                                role="dialog" // Role for calendar popup
+                                                aria-label="Date range selection" // Aria label
                                             >
                                                 <Calendar
                                                     mode="range"
-                                                    selected={tempDateRange}
-                                                    onSelect={(range) => {
-                                                        setTempDateRange(range);
-                                                        setShowCalendar(false);
+                                                    // Fix: Pass undefined instead of null to 'selected'
+                                                    selected={{
+                                                        from: tempDateRange.from ?? undefined,
+                                                        to: tempDateRange.to ?? undefined,
                                                     }}
+                                                    // Fix: Handle DateRange | undefined from onSelect
+                                                    onSelect={(range: DateRange | undefined) => {
+                                                        setTempDateRange({
+                                                            from: range?.from ?? null, // Map undefined back to null
+                                                            to: range?.to ?? null,   // Map undefined back to null
+                                                        });
+                                                        // Optionally close calendar on selection, or keep it open
+                                                        // Consider adding a button within the calendar div to confirm selection if keeping it open
+                                                        // setShowCalendar(false); // Uncomment if you want it to close immediately
+                                                    }}
+                                                    className="dark:bg-secondarybox dark:text-white" // Basic dark mode for calendar
+                                                    // Add styles for dark mode calendar selection etc. if needed
+                                                    // e.g., using classNames prop from react-day-picker
                                                 />
-                                                {(tempDateRange.from || tempDateRange.to) && (
-                                                    <div className="mt-2 flex justify-end">
+                                                <div className="mt-4 flex justify-between gap-2 border-t pt-3 dark:border-neutral-600">
+                                                     {(tempDateRange.from || tempDateRange.to) && (
                                                         <button
                                                             type="button"
                                                             onClick={() => {
                                                                 setTempDateRange({ from: null, to: null });
-                                                                setShowCalendar(false);
+                                                                // Don't close calendar here, let user confirm or close manually
                                                             }}
-                                                            className="text-sm text-error"
+                                                            className="text-sm text-error dark:text-red-400 hover:underline"
                                                         >
                                                             Clear dates
                                                         </button>
-                                                    </div>
-                                                )}
+                                                    )}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setShowCalendar(false)}
+                                                        className="text-sm text-primary dark:text-blue-400 hover:underline ml-auto"
+                                                    >
+                                                        Done
+                                                    </button>
+                                                </div>
                                             </motion.div>
                                         )}
                                     </AnimatePresence>
@@ -1486,13 +1858,13 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
                         </div>
 
                         {/* Footer */}
-                        <div className="p-4 border-t bg-white dark:bg-background flex-shrink-0"> {/* Apply footer styles */}
+                        <div className="p-4 border-t border-gray-200 dark:border-neutral-700 bg-white dark:bg-background flex-shrink-0">
                             <div className="flex items-center gap-3">
                                 {/* Clear all Button */}
                                 <button
                                     type="button"
                                     onClick={handleClearAllFilters}
-                                    className="w-full bg-white border text-main font-medium cursor-pointer py-3 px-4 rounded-full hover:bg-gray-50"
+                                    className="w-full bg-white dark:bg-secondarybox border border-gray-300 dark:border-neutral-600 text-mainheading dark:text-white font-medium cursor-pointer py-3 px-4 rounded-full hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors"
                                 >
                                     Clear all
                                 </button>
@@ -1500,7 +1872,7 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
                                 <button
                                     type="button"
                                     onClick={applyFilters}
-                                    className="w-full bg-primary text-main font-medium py-3 px-4 cursor-pointer rounded-full hover:bg-primary/90"
+                                    className="w-full bg-primary text-white dark:text-black font-medium py-3 px-4 cursor-pointer rounded-full hover:bg-primary/90 transition-colors"
                                 >
                                     Apply Filters
                                 </button>
