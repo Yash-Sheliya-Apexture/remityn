@@ -2104,7 +2104,7 @@ import { MdErrorOutline } from "react-icons/md"; // Error/Warning icon for timel
 import { FaCheck, FaRegClock } from "react-icons/fa"; // Checkmark and Clock icons
 
 // Custom Hooks & Services
-import { useAuth } from "../../../hooks/useAuth"; // Adjust path if necessary
+import { useAuth } from "../../../contexts/AuthContext"; // Adjust path if necessary
 // apiConfig import removed as it was unused
 import paymentService from "../../../services/payment"; // Adjust path
 import transferService from "../../../services/transfer"; // Adjust path

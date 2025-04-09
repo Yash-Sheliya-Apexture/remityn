@@ -719,7 +719,7 @@ import Link from "next/link";
 import { LuPlus } from "react-icons/lu";
 import { GoArrowUp } from "react-icons/go";
 
-import { useAuth } from "../../../hooks/useAuth"; // Adjust path if needed
+import { useAuth } from "../../../contexts/AuthContext"; // Adjust path if needed
 import paymentService from "../../../services/payment"; // Adjust path if needed
 import transferService from "../../../services/transfer"; // Adjust path if needed
 import { Transaction } from "@/types/transaction"; // Adjust path if needed

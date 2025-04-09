@@ -787,7 +787,7 @@
 // frontend/src/app/admin/transfers/page.tsx
 'use client';
 import React, { useState, useEffect, useCallback } from 'react'; // Import useCallback
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../../contexts/AuthContext';
 import axios, { AxiosError } from 'axios'; // Import AxiosError for type checking
 import apiConfig from '../../config/apiConfig';
 import { motion, AnimatePresence } from 'framer-motion';

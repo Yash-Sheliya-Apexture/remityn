@@ -266,7 +266,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios, { AxiosError } from "axios"; // Import AxiosError
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../contexts/AuthContext";
 import {
   Dialog,
   DialogContent,

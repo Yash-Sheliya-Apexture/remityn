@@ -3651,7 +3651,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 // Import useSearchParams
 import { useRouter, useSearchParams } from 'next/navigation';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
-import { useAuth } from '../../../hooks/useAuth';
+import { useAuth } from '../../../contexts/AuthContext';
 import recipientService from '../../../services/recipient';
 import currencyService from '../../../services/currency';
 import { IoMdCloseCircle } from 'react-icons/io';

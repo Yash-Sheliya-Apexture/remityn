@@ -1266,7 +1266,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { FiArrowLeft, FiCheckCircle, FiAlertTriangle } from "react-icons/fi";
-import { useAuth } from "../../../../../hooks/useAuth";
+import { useAuth } from "../../../../../contexts/AuthContext";
 // Import AxiosError for type safety in catch blocks
 import axios, { AxiosError } from "axios";
 import apiConfig from "../../../../../config/apiConfig";

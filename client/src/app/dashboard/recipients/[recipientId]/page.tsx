@@ -1652,7 +1652,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import NicknamePopup from "@/app/dashboard/components/NicknamePopup";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../contexts/AuthContext";
 import recipientService from "../../../services/recipient";
 import DashboardHeader from "../../../components/layout/DashboardHeader";
 import DeleteRecipientModal from "@/app/dashboard/components/DeleteRecipientModal";

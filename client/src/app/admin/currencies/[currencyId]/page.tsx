@@ -5702,7 +5702,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios"; // Import AxiosError
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../contexts/AuthContext";
 import { motion } from "framer-motion";
 import apiConfig from "../../../config/apiConfig";
 import Link from "next/link";

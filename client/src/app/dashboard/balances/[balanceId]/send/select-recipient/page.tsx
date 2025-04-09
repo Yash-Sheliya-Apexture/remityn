@@ -176,7 +176,7 @@ import RecipientList from "@/app/dashboard/components/RecipientList"; // Re-use 
 import { FaCirclePlus } from "react-icons/fa6";
 import { IoIosArrowForward } from "react-icons/io"; // Kept this, removed IoIosArrowBack
 import { useParams, useRouter } from "next/navigation";
-import { useAuth } from "../../../../../hooks/useAuth"; // Adjust path
+import { useAuth } from "../../../../../contexts/AuthContext"; // Adjust path
 import recipientService from "../../../../../services/recipient"; // Adjust path
 import { MdCancel } from "react-icons/md";
 // Removed unused imports: IoIosArrowBack, Link
