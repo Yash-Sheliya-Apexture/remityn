@@ -261,6 +261,8 @@ export interface InitiatePaymentPayload {
 
 // Response containing details of a specific payment
 export interface PaymentDetailsResponse {
+    type: string;
+    accountId: any;
     _id: string; // Or ObjectId type
     status: string; // e.g., 'PENDING_PAYMENT', 'PROCESSING', 'COMPLETED', 'CANCELLED'
     amountToPay?: number; // Optional if not always present
