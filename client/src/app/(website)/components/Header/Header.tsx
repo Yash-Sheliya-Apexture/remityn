@@ -1580,11 +1580,14 @@ const Header: React.FC = () => {
                       Help
                     </Link>
                     <Link href="/en">
-                      <button className="flex items-center px-2.5 py-1.5 rounded-full hover:bg-lightgray dark:hover:bg-primarybox">
-                        <img
-                          src="https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/1200px-Flag_of_India.svg.png"
+                      <button className="flex items-center px-2.5 py-1.5 rounded-full hover:bg-gray-200">
+                        <Image
+                          src="/assets/icon/flags/inr.svg" // Keep the same source
                           alt="Indian Flag"
-                          className="h-5 w-5 rounded-full mr-2 object-cover"
+                          className="h-5 w-5 rounded-full mr-1 object-cover"
+                          width={500} // REQUIRED: Replace with the actual width of image.png in pixels
+                          height={300} // REQUIRED: Replace with the actual height of image.png in pixels
+                          priority
                         />
                         <span className="font-medium">EN</span>
                       </button>

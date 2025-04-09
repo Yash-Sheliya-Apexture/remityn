@@ -1,7 +1,6 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import playstore from "../../../public/assets/images/play-store-logo.png";
 
 const AppStore = () => {
   return (

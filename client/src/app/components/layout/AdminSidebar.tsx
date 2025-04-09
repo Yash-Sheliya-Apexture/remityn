@@ -2182,7 +2182,6 @@ import {
   FaMoneyBillWave,
   FaChevronRight,
   FaSignOutAlt,
-  FaBars,
   FaTimes,
 } from "react-icons/fa";
 import { IoMdAddCircleOutline } from "react-icons/io";
@@ -2228,10 +2227,6 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
   const isActive = (path: string): boolean => {
     return pathname === path;
-  };
-
-  const isDropdownActive = (basePath: string): boolean => {
-    return pathname?.startsWith(basePath) || false;
   };
 
   const isDashboardActive = (): boolean => {

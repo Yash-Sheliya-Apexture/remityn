@@ -334,7 +334,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
             <Link href="/dashboard/your-account">
               <div className="relative flex items-center group hover:bg-lightgray dark:hover:bg-primarybox rounded-full cursor-pointer gap-2 pr-2 py-1.5 pl-1.5 transition-colors duration-500 ease-in-out"> {/* Adjusted padding/gap */}
                 {/* User Initials */}
-                <span className="size-10 md:size-12 bg-lightborder dark:bg-primary rounded-full flex items-center justify-center font-bold text-neutral-900 dark:text-background capitalize text-sm md:text-base">
+                <span className="size-11 md:size-12 bg-lightborder dark:bg-primary rounded-full flex items-center justify-center font-bold text-neutral-900 dark:text-background capitalize text-sm md:text-base">
                   {userInitials} {/* Use dynamic initials */}
                 </span>
 

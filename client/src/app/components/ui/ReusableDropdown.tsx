@@ -19,7 +19,6 @@ interface ReusableDropdownProps {
   options: Option[];
   value?: string; // Optional initial value
   onChange: (value: string) => void;
-  label?: string;
   placeholder?: string;
   disabled?: boolean;
   size?: "sm" | "default";
@@ -31,7 +30,6 @@ const ReusableDropdown: React.FC<ReusableDropdownProps> = ({
   options,
   value,
   onChange,
-  label,
   placeholder = "Select an option",
   disabled,
   size = "default",

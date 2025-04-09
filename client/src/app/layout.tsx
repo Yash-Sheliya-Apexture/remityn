@@ -99,21 +99,18 @@ const ThemeInitializerScript = `
 `;
 
 export default function RootLayout({ children }: RootLayoutProps) {
-    return (
-        // Add suppressHydrationWarning because the script modifies the class before React hydrates
-        <html lang="en" suppressHydrationWarning>
-            <head>
-                {/* Execute the theme setting script immediately in the head */}
-                <script dangerouslySetInnerHTML={{ __html: ThemeInitializerScript }} />
-                {/* Other head elements (meta tags, links, etc.) */}
-            </head>
-            {/* Apply base background colors and transitions */}
-            <body className="bg-white dark:bg-background text-neutral-900 dark:text-neutral-100 transition-colors duration-200">
-                <AuthProvider>
-                    {children}
-                </AuthProvider>
-                <div id="portal-root"></div>
-            </body>
-        </html>
-    );
+  return (
+      <html lang="en" suppressHydrationWarning>
+          <head>
+              <script dangerouslySetInnerHTML={{ __html: ThemeInitializerScript }} />
+          </head>
+          <body className="bg-white dark:bg-background text-neutral-900 dark:text-neutral-100 transition-colors duration-200">
+              {/* AuthProvider wraps everything */}
+              <AuthProvider>
+                  {children} {/* This is where nested layouts like (website)/layout.tsx render */}
+              </AuthProvider>
+              <div id="portal-root"></div>
+          </body>
+      </html>
+  );
 }

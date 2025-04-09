@@ -83,7 +83,6 @@
 // frontend/src/components/layout/DashboardHeader.tsx
 'use client';
 import React from 'react';
-import { useRouter } from 'next/navigation'; // Import useRouter
 
 interface DashboardHeaderProps {
     title: string;
@@ -91,7 +90,6 @@ interface DashboardHeaderProps {
 }
 
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({ title}) => {
-    const router = useRouter(); // Initialize useRouter
 
     return (
       <header className="DashboardHeader py-4 sticky top-0 z-10 mb-6 bg-white dark:bg-background">

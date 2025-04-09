@@ -28,7 +28,7 @@ export default function NotFound() {
 
           {/* Subtitle */}
           <p className="text-gray font-medium mb-8 text-center">
-            Let's get you back on track.
+            Let’s get you back on track.
           </p>
 
           {/* Go to Home Button */}

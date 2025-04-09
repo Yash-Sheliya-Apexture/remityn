@@ -353,9 +353,106 @@
 
 // export default AccountCard;
 
+
+
+// // src/app/components/AccountCard.tsx
+// "use client";
+// import React, { useState } from "react";
+// import { useRouter } from "next/navigation";
+// import { useAuth } from "@/app/hooks/useAuth";
+
+// type AccountCardProps = {
+//   username: string;
+// };
+
+// // Helper function to get initials
+// const getInitials = (name: string): string => {
+//   if (!name) return "??"; // Handle empty or null name
+
+//   const nameParts = name.trim().split(/\s+/); // Split by one or more spaces, handles multiple spaces
+
+//   if (nameParts.length === 1 && nameParts[0].length > 0) {
+//     // If only one name, take the first two letters if possible
+//     return nameParts[0].substring(0, 2).toUpperCase();
+//   } else if (nameParts.length > 1) {
+//     // If multiple names, take the first letter of the first and last name part
+//     const firstInitial = nameParts[0][0] || "";
+//     const lastInitial = nameParts[nameParts.length - 1][0] || "";
+//     return (firstInitial + lastInitial).toUpperCase();
+//   }
+
+//   return "??"; // Fallback for unexpected cases
+// };
+
+// const AccountCard: React.FC<AccountCardProps> = ({ username }) => {
+//   const [copyConfirmation, setCopyConfirmation] = useState(false); // Keep or remove based on actual need
+
+//   const router = useRouter();
+//   // const pathname = usePathname(); // Removed if not used
+//   const { logout } = useAuth();
+
+//   // Removed refs related to photo upload: fileInputRef, popupRef
+
+//   const handleLogout = () => {
+//     logout();
+//     router.push("/auth/login");
+//   };
+
+//   // Calculate initials
+//   const initials = getInitials(username);
+
+//   return (
+//     <>
+//       {/* Main card container */}
+//       <div className="bg-lightgray dark:bg-primarybox p-8 rounded-3xl overflow-hidden z-20 relative">
+//         {/* Profile initials display */}
+//         <div className="flex flex-col items-center mb-4">
+//           {/* Removed the relative positioning and camera icon overlay */}
+//           <div className="bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center size-20 overflow-hidden">
+//             {/* Display Initials instead of Icon/Image */}
+//             <span className="text-3xl font-semibold text-neutral-900 dark:text-white select-none">
+//               {initials}
+//             </span>
+//             {/* Removed FiUser icon fallback and uploadedImage img tag */}
+//           </div>
+//         </div>
+
+//         {/* User details */}
+//         <h1 className="text-4xl text-mainheading dark:text-white font-black tracking-tighter text-center mb-2">
+//           {username}
+//         </h1>
+//         <p className="text-center text-subheading dark:text-gray-300 font-medium capitalize mb-6">
+//           Your personal account
+//         </p>
+
+//         {/* Logout button */}
+//         <div className="text-center mt-6">
+//           <button
+//             onClick={handleLogout}
+//             className="bg-primary hover:bg-primaryhover text-neutral-900 px-4 py-1.5 rounded-full font-semibold transition-all duration-75 ease-linear cursor-pointer"
+//           >
+//             Log Out
+//           </button>
+//         </div>
+//       </div>
+
+//       {/* Confirmation message (if needed for something else, otherwise remove) */}
+//       {copyConfirmation && (
+//         <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white py-2 px-4 rounded-md shadow-lg">
+//           Membership number copied! {/* Adjust text if needed */}
+//         </div>
+//       )}
+//     </>
+//   );
+// };
+
+// export default AccountCard;
+
+
+
 // src/app/components/AccountCard.tsx
 "use client";
-import React, { useState } from "react";
+import React from "react"; // Removed useState as it's no longer needed
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks/useAuth";
 
@@ -383,13 +480,15 @@ const getInitials = (name: string): string => {
 };
 
 const AccountCard: React.FC<AccountCardProps> = ({ username }) => {
-  const [copyConfirmation, setCopyConfirmation] = useState(false); // Keep or remove based on actual need
+  // Removed: const [copyConfirmation, setCopyConfirmation] = useState(false);
+  // The state setter `setCopyConfirmation` was never used.
+  // The state variable `copyConfirmation` was used for a confirmation message,
+  // but there was no logic to trigger it (set it to true).
+  // If this confirmation message is needed later for a different feature (like copying something),
+  // re-add the useState hook and implement the logic to call setCopyConfirmation.
 
   const router = useRouter();
-  // const pathname = usePathname(); // Removed if not used
   const { logout } = useAuth();
-
-  // Removed refs related to photo upload: fileInputRef, popupRef
 
   const handleLogout = () => {
     logout();
@@ -405,13 +504,11 @@ const AccountCard: React.FC<AccountCardProps> = ({ username }) => {
       <div className="bg-lightgray dark:bg-primarybox p-8 rounded-3xl overflow-hidden z-20 relative">
         {/* Profile initials display */}
         <div className="flex flex-col items-center mb-4">
-          {/* Removed the relative positioning and camera icon overlay */}
           <div className="bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center size-20 overflow-hidden">
             {/* Display Initials instead of Icon/Image */}
             <span className="text-3xl font-semibold text-neutral-900 dark:text-white select-none">
               {initials}
             </span>
-            {/* Removed FiUser icon fallback and uploadedImage img tag */}
           </div>
         </div>
 
@@ -434,12 +531,14 @@ const AccountCard: React.FC<AccountCardProps> = ({ username }) => {
         </div>
       </div>
 
-      {/* Confirmation message (if needed for something else, otherwise remove) */}
+      {/* Removed the unused confirmation message block */}
+      {/*
       {copyConfirmation && (
         <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white py-2 px-4 rounded-md shadow-lg">
-          Membership number copied! {/* Adjust text if needed */}
+          Membership number copied!
         </div>
       )}
+      */}
     </>
   );
 };

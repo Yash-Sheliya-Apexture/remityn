@@ -2411,8 +2411,239 @@
 
 
 
+// "use client";
+// import React, { useState, useEffect } from "react";
+// import adminTransferService from "../../../services/admin/transfer"; // Adjust path
+// import adminCurrencyService from "../../../services/admin/currency"; // Adjust path
+// import { useAuth } from "../../../hooks/useAuth"; // Adjust path
+// import { useParams, useRouter } from "next/navigation";
+// import { Skeleton } from "@/components/ui/skeleton";
+// import { Button } from "@/components/ui/button"; // Assuming Shadcn UI Button
+// import { XCircle, RefreshCw, ArrowLeft, AlertCircle } from "lucide-react";
+// import Link from "next/link";
+// import { Toaster } from "@/components/ui/sonner"; // Import Toaster for notifications
+
+// // Import the new components
+// import TransferHeader from "../../components/transfers/TransferHeader"; // Adjust path
+// import TransferOverviewCard from "../../components/transfers/TransferOverviewCard"; // Adjust path
+// import TransferStatusSection from "../../components/transfers/TransferStatusSection"; // Adjust path
+// import TransferInfoCard from "../../components/transfers/TransferInfoCard"; // Adjust path
+// import SenderInfoCard from "../../components/transfers/SenderInfoCard"; // Adjust path
+// import RecipientInfoCard from "../../components/transfers/RecipientInfoCard"; // Adjust path
+// import TransactionDetailsCard from "../../components/transfers/TransactionDetailsCard"; // Adjust path
+
+
+// interface AdminTransferDetailPageParams {
+//   transferId: string;
+// }
+
+// // --- Loading Skeleton Component ---
+// const LoadingSkeleton = () => (
+//   <div className="container mx-auto p-6 py-8">
+//     {/* Header Skeleton */}
+//     <div className="flex items-center mb-8">
+//       <Skeleton className="h-10 w-40" />
+//       <Skeleton className="h-8 w-32 ml-auto rounded" />
+//     </div>
+
+//     {/* Overview Skeleton */}
+//     <Skeleton className="h-28 w-full rounded-xl mb-8" />
+
+//     {/* Main Grid Skeleton */}
+//     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+//       <div className="lg:col-span-1 space-y-6">
+//         <Skeleton className="h-96 w-full rounded-xl" />
+//         <Skeleton className="h-64 w-full rounded-xl" />
+//       </div>
+//       <div className="lg:col-span-2">
+//         <Skeleton className="h-[700px] w-full rounded-xl" />
+//       </div>
+//     </div>
+//   </div>
+// );
+
+// // --- Error Display Component ---
+// const ErrorDisplay = ({ error, onRetry }: { error: string | null, onRetry: () => void }) => (
+//   <div className="container mx-auto p-8">
+//     <div className="bg-white shadow-sm rounded-xl p-8 text-center">
+//       <div className="mx-auto w-16 h-16 flex items-center justify-center rounded-full bg-rose-100 mb-6">
+//         <XCircle className="h-8 w-8 text-rose-600" />
+//       </div>
+//       <h2 className="text-2xl font-semibold mb-3 text-slate-900">
+//         Unable to Load Transfer
+//       </h2>
+//       <p className="text-slate-600 text-lg mb-6 max-w-lg mx-auto">
+//         {error || "The requested transfer details could not be found or accessed."}
+//       </p>
+//       <div className="flex flex-wrap justify-center gap-4">
+//         <Button onClick={onRetry} variant="default">
+//           <RefreshCw className="size-4 mr-2" />
+//           Retry
+//         </Button>
+//         <Button asChild variant="outline">
+//           <Link href="/admin/transfer">
+//             <ArrowLeft className="size-4 mr-2" />
+//             Back to Transfers
+//           </Link>
+//         </Button>
+//       </div>
+//     </div>
+//   </div>
+// );
+
+// // --- Access Restricted Component ---
+// const AccessRestrictedDisplay = () => (
+//      <div className="container mx-auto p-8">
+//         <div className="bg-white shadow-sm rounded-xl p-8 text-center">
+//           <div className="mx-auto w-16 h-16 flex items-center justify-center rounded-full bg-amber-100 mb-6">
+//             <AlertCircle className="h-8 w-8 text-amber-600" />
+//           </div>
+//           <h2 className="text-2xl font-semibold mb-3 text-slate-900">
+//             Access Restricted
+//           </h2>
+//           <p className="text-slate-600 mb-6 max-w-lg mx-auto">
+//             This page requires administrator privileges. You do not have the
+//             necessary permissions to view this content.
+//           </p>
+//           <Button asChild variant="secondary">
+//             <Link href="/dashboard">
+//               <ArrowLeft className="size-4 mr-2" />
+//               Return to Dashboard
+//             </Link>
+//           </Button>
+//         </div>
+//       </div>
+// );
+
+
+// const AdminTransferDetailPage = () => {
+//   const params = useParams<AdminTransferDetailPageParams>();
+//   const { transferId } = params;
+//   const [transfer, setTransfer] = useState<any>(null);
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+//   const { token, isAdmin, loadingAuth } = useAuth();
+//   const router = useRouter();
+//   const [currenciesMap, setCurrenciesMap] = useState<{ [key: string]: any }>({});
+
+//   const fetchData = async () => {
+//     if (!token || !transferId) return;
+//     setIsLoading(true);
+//     setError(null);
+//     try {
+//       const [transferData, currenciesData] = await Promise.all([
+//         adminTransferService.getAdminTransferById(transferId, token),
+//         adminCurrencyService.getAllCurrenciesAdmin(token),
+//       ]);
+
+//       setTransfer(transferData);
+
+//       const map: { [key: string]: any } = {};
+//       currenciesData.forEach((currency: any) => {
+//         map[currency._id] = currency;
+//       });
+//       setCurrenciesMap(map);
+
+//     } catch (err: any) {
+//       const errorMessage = err.response?.data?.message || err.message || "Failed to load transfer details.";
+//       setError(errorMessage);
+//       console.error("Error fetching transfer details:", err);
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+
+//   useEffect(() => {
+//     if (loadingAuth) return; // Wait for auth check
+
+//     if (!token) {
+//       router.push("/login?redirect=/admin/transfer/" + transferId); // Redirect to login if not authenticated
+//       return;
+//     }
+//     if (!isAdmin) {
+//       // Don't set error here, let the component render the AccessRestrictedDisplay
+//       setIsLoading(false); // Stop loading as we know the status
+//       return;
+//     }
+
+//     fetchData(); // Fetch data if authenticated and admin
+
+//   }, [transferId, token, isAdmin, loadingAuth, router]);
+
+
+//   const handleStatusUpdated = () => {
+//     fetchData(); // Re-fetch details after status update
+//   };
+
+//   // --- Render Logic ---
+
+//   if (loadingAuth || (isLoading && !error && isAdmin)) {
+//     return <LoadingSkeleton />;
+//   }
+
+//   if (!isAdmin && !loadingAuth) {
+//       return <AccessRestrictedDisplay />;
+//   }
+
+//   if (error) {
+//     return <ErrorDisplay error={error} onRetry={fetchData} />;
+//   }
+
+//   if (!transfer) {
+//     // This case might happen briefly or if fetch fails without error state set properly
+//     return (
+//          <div className="container mx-auto p-8 text-center text-slate-600">
+//             Transfer data not found.
+//          </div>
+//      )
+//   }
+
+//   // --- Main Content Render ---
+//   return (
+//     <div className="min-h-screen">
+//       <Toaster richColors position="top-right" />
+//       <div className="container mx-auto p-6 py-8">
+//         <TransferHeader transferId={transfer._id} />
+//         <TransferOverviewCard transfer={transfer} />
+
+//         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+//           {/* Left Column */}
+//           <div className="lg:col-span-1 space-y-6">
+//             <TransferStatusSection
+//               transfer={transfer}
+//               token={token}
+//               onStatusUpdated={handleStatusUpdated}
+//             />
+//             <TransferInfoCard transfer={transfer} />
+//           </div>
+
+//           {/* Right Column */}
+//           <div className="lg:col-span-2">
+//              <div className="rounded-xl bg-white dark:bg-primarybox border overflow-hidden">
+//               <div className="bg-lightgray dark:bg-secondarybox px-6 py-4">
+//                 <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">
+//                   Detailed Information
+//                 </h3>
+//               </div>
+//               <div className="p-6 space-y-8">
+//                  <SenderInfoCard user={transfer.user} />
+//                  <RecipientInfoCard recipient={transfer.recipient} />
+//                  <TransactionDetailsCard transfer={transfer} currenciesMap={currenciesMap} />
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default AdminTransferDetailPage;
+
+
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react"; // Import useCallback
 import adminTransferService from "../../../services/admin/transfer"; // Adjust path
 import adminCurrencyService from "../../../services/admin/currency"; // Adjust path
 import { useAuth } from "../../../hooks/useAuth"; // Adjust path
@@ -2432,6 +2663,57 @@ import SenderInfoCard from "../../components/transfers/SenderInfoCard"; // Adjus
 import RecipientInfoCard from "../../components/transfers/RecipientInfoCard"; // Adjust path
 import TransactionDetailsCard from "../../components/transfers/TransactionDetailsCard"; // Adjust path
 
+// --- Define Interfaces ---
+
+// Basic User structure (adjust based on actual data)
+interface User {
+  _id: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  // Add other relevant user fields
+}
+
+// Basic Recipient structure (adjust based on actual data)
+interface Recipient {
+  _id: string;
+  name?: string;
+  email?: string;
+  accountNumber?: string;
+  bankName?: string;
+  // Add other relevant recipient fields
+}
+
+// Basic Currency structure (adjust based on actual data)
+interface Currency {
+  _id: string;
+  name: string;
+  code: string;
+  symbol: string;
+  // Add other relevant currency fields
+}
+
+// Transfer structure (adjust based on actual data)
+interface Transfer {
+  _id: string;
+  user: User; // Use the User interface
+  recipient: Recipient; // Use the Recipient interface
+  sourceCurrency: string; // Assuming currency IDs are strings
+  targetCurrency: string; // Assuming currency IDs are strings
+  sourceAmount: number;
+  targetAmount: number;
+  status: string; // e.g., 'pending', 'completed', 'failed'
+  exchangeRate?: number;
+  fee?: number;
+  createdAt: string; // Or Date if you parse it
+  updatedAt: string; // Or Date
+  // Add any other fields present in your transfer object
+  reference?: string;
+  paymentMethod?: string;
+  transferPurpose?: string;
+  // ... other fields
+}
+
 
 interface AdminTransferDetailPageParams {
   transferId: string;
@@ -2439,7 +2721,8 @@ interface AdminTransferDetailPageParams {
 
 // --- Loading Skeleton Component ---
 const LoadingSkeleton = () => (
-  <div className="container mx-auto p-6 py-8">
+    // ... (Skeleton code remains the same)
+    <div className="container mx-auto p-6 py-8">
     {/* Header Skeleton */}
     <div className="flex items-center mb-8">
       <Skeleton className="h-10 w-40" />
@@ -2464,7 +2747,8 @@ const LoadingSkeleton = () => (
 
 // --- Error Display Component ---
 const ErrorDisplay = ({ error, onRetry }: { error: string | null, onRetry: () => void }) => (
-  <div className="container mx-auto p-8">
+    // ... (ErrorDisplay code remains the same)
+      <div className="container mx-auto p-8">
     <div className="bg-white shadow-sm rounded-xl p-8 text-center">
       <div className="mx-auto w-16 h-16 flex items-center justify-center rounded-full bg-rose-100 mb-6">
         <XCircle className="h-8 w-8 text-rose-600" />
@@ -2493,6 +2777,7 @@ const ErrorDisplay = ({ error, onRetry }: { error: string | null, onRetry: () =>
 
 // --- Access Restricted Component ---
 const AccessRestrictedDisplay = () => (
+    // ... (AccessRestrictedDisplay code remains the same)
      <div className="container mx-auto p-8">
         <div className="bg-white shadow-sm rounded-xl p-8 text-center">
           <div className="mx-auto w-16 h-16 flex items-center justify-center rounded-full bg-amber-100 mb-6">
@@ -2519,91 +2804,143 @@ const AccessRestrictedDisplay = () => (
 const AdminTransferDetailPage = () => {
   const params = useParams<AdminTransferDetailPageParams>();
   const { transferId } = params;
-  const [transfer, setTransfer] = useState<any>(null);
+  // Use the defined Transfer interface for state
+  const [transfer, setTransfer] = useState<Transfer | null>(null); // FIX: Use Transfer type
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { token, isAdmin, loadingAuth } = useAuth();
   const router = useRouter();
-  const [currenciesMap, setCurrenciesMap] = useState<{ [key: string]: any }>({});
+  // Use the defined Currency interface for the map values
+  const [currenciesMap, setCurrenciesMap] = useState<{ [key: string]: Currency }>({}); // FIX: Use Currency type
 
-  const fetchData = async () => {
-    if (!token || !transferId) return;
+  // Wrap fetchData in useCallback
+  const fetchData = useCallback(async () => { // FIX: Wrap in useCallback
+    // Guard clauses remain the same
+    if (!token || !transferId) {
+        console.log("FetchData aborted: Missing token or transferId");
+        return;
+    }
+    if (!isAdmin) { // Added this check inside fetchData as well for safety, although useEffect handles redirection
+        console.log("FetchData aborted: User is not admin");
+        setIsLoading(false); // Ensure loading stops if called somehow when not admin
+        return;
+    }
+
+    console.log(`Fetching data for transferId: ${transferId} with token...`);
     setIsLoading(true);
     setError(null);
     try {
-      const [transferData, currenciesData] = await Promise.all([
+      // Assume service functions return appropriately typed data
+      // If not, you might need to cast or adjust service function return types
+      const [transferData, currenciesData]: [Transfer, Currency[]] = await Promise.all([
         adminTransferService.getAdminTransferById(transferId, token),
         adminCurrencyService.getAllCurrenciesAdmin(token),
       ]);
 
+       console.log("Fetched Transfer Data:", transferData);
+       console.log("Fetched Currencies Data:", currenciesData);
+
       setTransfer(transferData);
 
-      const map: { [key: string]: any } = {};
-      currenciesData.forEach((currency: any) => {
+      // Build the currencies map with the correct type
+      const map: { [key: string]: Currency } = {};
+      currenciesData.forEach((currency: Currency) => { // FIX: Use Currency type
         map[currency._id] = currency;
       });
       setCurrenciesMap(map);
+       console.log("Built Currencies Map:", map);
 
-    } catch (err: any) {
-      const errorMessage = err.response?.data?.message || err.message || "Failed to load transfer details.";
+    } catch (err: unknown) { // FIX: Use unknown for caught error
+      // Type-safe error handling
+      let errorMessage = "Failed to load transfer details.";
+      if (typeof err === 'object' && err !== null) {
+           // Check for common error structures (e.g., Axios error)
+           // Using 'as any' here is a pragmatic choice if the structure is known
+           // but complex to type guard fully, but ideally use specific error types
+           // if available from the library.
+           const potentialError = err as any;
+           errorMessage = potentialError.response?.data?.message || potentialError.message || errorMessage;
+      } else if (err instanceof Error) {
+         errorMessage = err.message;
+      } else if (typeof err === 'string') {
+         errorMessage = err;
+      }
+
       setError(errorMessage);
-      console.error("Error fetching transfer details:", err);
+      console.error("Error fetching transfer details:", err); // Log the original error too
     } finally {
       setIsLoading(false);
+      console.log("Fetching process finished.");
     }
-  };
+  // Add dependencies for useCallback
+  }, [token, transferId, isAdmin]); // FIX: Add dependencies
 
 
   useEffect(() => {
-    if (loadingAuth) return; // Wait for auth check
+    if (loadingAuth) {
+        console.log("useEffect waiting: Auth loading");
+        return; // Wait for auth check
+    }
 
     if (!token) {
-      router.push("/login?redirect=/admin/transfer/" + transferId); // Redirect to login if not authenticated
-      return;
+        console.log("useEffect redirecting: No token found");
+        router.push("/login?redirect=/admin/transfer/" + transferId); // Redirect to login if not authenticated
+        return;
     }
     if (!isAdmin) {
       // Don't set error here, let the component render the AccessRestrictedDisplay
+      console.log("useEffect stopped: User is not admin");
       setIsLoading(false); // Stop loading as we know the status
       return;
     }
 
+    console.log("useEffect triggering fetchData");
     fetchData(); // Fetch data if authenticated and admin
 
-  }, [transferId, token, isAdmin, loadingAuth, router]);
+  // Add fetchData to the dependency array
+  }, [transferId, token, isAdmin, loadingAuth, router, fetchData]); // FIX: Add fetchData dependency
 
 
   const handleStatusUpdated = () => {
+    console.log("Status updated, re-fetching data...");
     fetchData(); // Re-fetch details after status update
   };
 
   // --- Render Logic ---
 
   if (loadingAuth || (isLoading && !error && isAdmin)) {
+     console.log("Rendering: Loading Skeleton");
     return <LoadingSkeleton />;
   }
 
-  if (!isAdmin && !loadingAuth) {
+  // Check for admin status *after* auth loading is complete
+  if (!loadingAuth && !isAdmin) {
+      console.log("Rendering: Access Restricted");
       return <AccessRestrictedDisplay />;
   }
 
   if (error) {
+     console.log("Rendering: Error Display");
     return <ErrorDisplay error={error} onRetry={fetchData} />;
   }
 
   if (!transfer) {
     // This case might happen briefly or if fetch fails without error state set properly
+     console.log("Rendering: Transfer Not Found (after loading/error checks)");
     return (
          <div className="container mx-auto p-8 text-center text-slate-600">
-            Transfer data not found.
+            Transfer data not found or could not be loaded. Please try refreshing.
          </div>
      )
   }
 
   // --- Main Content Render ---
+  console.log("Rendering: Main Content for Transfer ID:", transfer._id);
   return (
     <div className="min-h-screen">
       <Toaster richColors position="top-right" />
       <div className="container mx-auto p-6 py-8">
+        {/* Pass typed data to components */}
         <TransferHeader transferId={transfer._id} />
         <TransferOverviewCard transfer={transfer} />
 
@@ -2612,7 +2949,7 @@ const AdminTransferDetailPage = () => {
           <div className="lg:col-span-1 space-y-6">
             <TransferStatusSection
               transfer={transfer}
-              token={token}
+              token={token!} // Assert token is not null here as checks are done above
               onStatusUpdated={handleStatusUpdated}
             />
             <TransferInfoCard transfer={transfer} />

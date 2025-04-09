@@ -51,7 +51,6 @@ type MenuItemProps = {
   label: string;
   hasChevron?: boolean;
   description?: string;
-  badge?: number;
   onClick?: () => void;
   href?: string; // Optional href prop for links
 };
@@ -61,7 +60,6 @@ const MenuItem: React.FC<MenuItemProps> = ({
   label,
   hasChevron = true,
   description,
-  badge,
   onClick,
   href, // Destructure the href prop
 }) => {
