@@ -5,7 +5,7 @@ import Image from "next/image";
 
 const MissionSection: React.FC = () => {
   return (
-    <section className="mission-section lg:pt-30 pt-12 pb-12 relative">
+    <section className="mission-section lg:pt-52 pt-12 pb-12 relative">
       <div className="container mx-auto px-4">
         <div className="inline-flex justify-center items-center w-full">
           <Image
@@ -17,18 +17,18 @@ const MissionSection: React.FC = () => {
             priority
           />
         </div>
-        <div className="p-10 bg-green rounded-4xl text-lightgreen">
+        <div className="p-10 bg-green dark:bg-background rounded-4xl text-lightgreen dark:text-primary">
           <div className="text-center max-w-5xl mx-auto space-y-6 lg:mt-50 mt-30">
             <h1 className="text-3xl md:text-6xl xl:text-8xl font-black font-mont uppercase tracking-tight">
               Meet money without borders
             </h1>
-            <p className="text-white font-medium lg:text-xl text-lg">
+            <p className="text-white dark:text-gray-300 font-medium lg:text-xl text-lg">
               We’re building the best way to move and manage the world’s money.
               Min fees. Max ease. Full speed.
             </p>
           </div>
           <div className="text-center mt-8">
-            <button className="bg-lightgreen rounded-full px-6 py-3 transition-colors duration-150 ease-in-out">
+            <button className="bg-primary hover:bg-primaryhover text-mainheading text-lg font-medium rounded-full px-6 py-3 h-14 transition-colors duration-300 ease-in-out">
               <Link href="/" className="text-green font-medium">
                 Learn about our mission
               </Link>

@@ -275,21 +275,21 @@ const AppSection: React.FC<Props> = ({ videoSrc, posterSrc }) => {
           poster={posterSrc}
         >
           <source src={videoSrc} type="video/mp4" />
-          Your browser does not support the video tag.
+          Your browser does not support the video tag
         </video>
       </div>
       <div className="container mx-auto px-4 relative z-10">
-        <div className="md:p-12 p-6 bg-white/85 shadow rounded-4xl flex flex-col items-center justify-center space-y-6 backdrop-blur-sm">
+        <div className="md:p-12 p-6 bg-transparent rounded-4xl flex flex-col items-center justify-center space-y-6 backdrop-blur-xs">
           <AppStore />
           <div className="text-center">
-            <h1 className="text-3xl md:text-6xl xl:text-8xl text-main font-black font-mont uppercase tracking-tight">
+            <h1 className="text-3xl md:text-6xl xl:text-8xl text-mainheading  dark:text-white font-black font-mont uppercase tracking-tight">
               Get the app for managing money everywhere
             </h1>
           </div>
 
           {/* App Button */}
           <button
-            className="flex items-center gap-4 bg-main px-4 py-2 rounded-full cursor-pointer"
+            className="flex items-center gap-4 bg-mainheading  dark:bg-transparent dark:border-4  px-4 py-2 rounded-full cursor-pointer"
             onClick={togglePopup} // Toggle the popup on click
           >
             <Image
@@ -314,7 +314,7 @@ const AppSection: React.FC<Props> = ({ videoSrc, posterSrc }) => {
             {/* Wrap with AnimatePresence for exit animations */}
             {isPopupOpen && (
               <motion.div
-                className="bg-white md:p-8 p-6 rounded-3xl"
+                className="bg-white dark:bg-background md:p-8 p-6 rounded-3xl"
                 variants={popupVariants}
                 initial="hidden" // Initial state
                 animate="visible" // Animation to perform
@@ -322,10 +322,10 @@ const AppSection: React.FC<Props> = ({ videoSrc, posterSrc }) => {
                 key="popup" // Key is important for AnimatePresence
               >
                 <div className=" flex justify-center items-center flex-col gap-6">
-                  <span className="text-main md:text-4xl text-2xl font-bold">
+                  <span className="text-main dark:text-white md:text-4xl text-2xl font-bold">
                     Get the Wise app
                   </span>
-                  <span className="text-main text-center text-xl">
+                  <span className="text-main dark:text-white text-center text-xl">
                     Scan this QR code to download the app
                   </span>
                   <Image
