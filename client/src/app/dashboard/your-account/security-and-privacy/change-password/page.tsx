@@ -389,21 +389,21 @@ export default function ChangePassword() {
 
           {/* Error Message :- Current Password */}
           {showInvalidCurrentPasswordError && (
-            <div className="bg-lightgray rounded-xl p-4 flex items-center gap-4">
+            <div className="bg-lightgray dark:bg-red-600/20 border rounded-xl p-4 flex items-center gap-4">
               <div className="p-1 bg-red-700 rounded-full">
                 <FiX size={24} className="text-lightgray" />
               </div>
-              <p className="text-gray">Invalid current password</p>
+              <p className="text-gray-500 dark:text-white">Invalid current password</p>
             </div>
           )}
 
           {/* Error Message :- Don't allow same password */}
           {showSamePasswordError && (
-            <div className="bg-lightgray rounded-xl p-4 flex items-center gap-4">
+            <div className="bg-lightgray dark:bg-red-600/20 border rounded-xl p-4 flex items-center gap-4">
               <div className="p-1 bg-red-700 rounded-full">
                 <FiX size={24} className="text-lightgray" />
               </div>
-              <p className="text-gray">
+              <p className="text-gray-500 dark:text-white">
                 Your new password can't be the same as the current one.
               </p>
             </div>

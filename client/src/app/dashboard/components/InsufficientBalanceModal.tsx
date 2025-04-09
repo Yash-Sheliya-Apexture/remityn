@@ -271,14 +271,14 @@ const InsufficientBalanceModal: React.FC<InsufficientBalanceModalProps> = ({
       <AnimatePresence>
         {isOpen && ( // <<<--- Renders based on isOpen prop
           <motion.div
-            className="fixed inset-0 w-full h-full bg-black/50 dark:bg-white/30 z-50 flex sm:items-center items-end justify-center" // Added padding for smaller screens
+            className="fixed inset-0 w-full h-full bg-black/50 dark:bg-white/30 z-80 flex sm:items-center items-end justify-center" // Added padding for smaller screens
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose} // Close on overlay click
           >
             <motion.div
-              className="bg-white dark:bg-background sm:rounded-2xl rounded-t-2xl sm:p-8 p-4 w-full sm:max-w-lg relative text-center" // Added dark mode and shadow
+              className="bg-white dark:bg-background sm:rounded-3xl rounded-t-3xl sm:p-8 p-4 w-full sm:max-w-lg relative text-center" // Added dark mode and shadow
               variants={modalVariants} // Apply variants here
               initial="initial"
               animate="animate"
@@ -286,7 +286,7 @@ const InsufficientBalanceModal: React.FC<InsufficientBalanceModalProps> = ({
               onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
             >
               {/* Close Button */}
-              <div className="w-full inline-flex justify-end">
+              <div className="absolute sm:top-2 sm:right-2 top-1 right-1">
                 <button
                   className="p-3 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
                   onClick={onClose}
