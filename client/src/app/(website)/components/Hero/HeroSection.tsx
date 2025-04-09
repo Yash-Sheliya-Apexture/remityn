@@ -4657,7 +4657,7 @@ const HeroSection: React.FC = () => {
                 <p className="text-cyan-900 mt-1 text-sm bg-cyan-100/30 rounded-lg px-2 py-1">
                   Sending over 20,000 GBP or equivalent?
                   <button type="button" className="underline cursor-pointer font-medium ml-1">
-                    We'll discount our fee
+                    We&apos;ll discount our fee
                   </button>
                 </p>
               </div>
@@ -4727,7 +4727,7 @@ const HeroSection: React.FC = () => {
               <div className="mt-3 text-sm text-gray-600 space-y-1">
                 <p>You could save<span className="text-main font-bold mx-1">2.2%</span>on the payment you make.</p>
                 <p>
-                  Should arrive by{' '} {/* Add space */}
+                  Should arrive by
                   <span className="text-main font-medium">{arrivalDate || 'calculating...'}</span>
                 </p>
               </div>
