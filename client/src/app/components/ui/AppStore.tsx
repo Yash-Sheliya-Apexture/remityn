@@ -21,8 +21,8 @@ const AppStore = () => {
               className=" rounded-full"
             />
           </div>
-          <span className="text-sm font-medium text-green ml-2">
-            4.8 ★ on App Store <span className="text-gray">1.5L reviews</span>
+          <span className="text-sm font-medium text-primary ml-2">
+            4.8 ★ on App Store <span className="text-gray-500 dark:text-gray-300">1.5L reviews</span>
           </span>
         </Link>
         <Link
@@ -40,8 +40,8 @@ const AppStore = () => {
               className="rounded-full"
             />
           </div>
-          <span className="text-sm font-medium text-green ml-2">
-            4.8 ★ on Google Play <span className="text-gray">11L reviews</span>
+          <span className="text-sm font-medium text-primary ml-2">
+            4.8 ★ on Google Play <span className="text-gray dark:text-gray-300">11L reviews</span>
           </span>
         </Link>
       </div>

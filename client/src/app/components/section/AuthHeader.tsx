@@ -92,9 +92,9 @@ const AuthHeader: React.FC = () => {
   }, []); // Empty dependency array ensures this runs only on mount and unmount
 
   return (
-    <div className="p-4 border-b border-gray-300">
+    <div className="p-4 border-b ">
       <div className="container mx-auto flex justify-between items-center max-w-6xl">
-        <Link href="/" className="text-xl font-semibold text-primary-500">
+        <Link href="/" className="text-xl font-semibold text-primary">
           {isMobile ? (
             <Image
               src="/assets/images/mobile-wise-logo.svg" // Replace with your mobile logo
@@ -111,8 +111,8 @@ const AuthHeader: React.FC = () => {
             />
           )}
         </Link>
-        <Link href="/" className="text-neutral-500 cursor-pointer">
-          <IoClose className="size-10 text-green p-1.5 rounded-full hover:bg-[#16330021]" />
+        <Link href="/" className="text-neutral-900 cursor-pointer">
+          <IoClose className="size-10 hover:bg-gray-300 text-mainheading dark:text-white hover:dark:bg-primarybox p-1.5 rounded-full transition-colors duration-300 ease-in-out" />
         </Link>
       </div>
     </div>

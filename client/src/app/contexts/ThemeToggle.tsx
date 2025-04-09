@@ -184,6 +184,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { IoMoonOutline, IoSunnyOutline, IoContrastOutline } from 'react-icons/io5';
 import { HiChevronDown } from 'react-icons/hi'; // Icon for dropdown arrow
+import { GoChevronDown } from 'react-icons/go';
 
 type ThemePreference = 'light' | 'dark' | 'system';
 
@@ -295,7 +296,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ location, className }) => {
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="flex items-center px-2.5 py-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-primarybox"
+          className="flex items-center px-3 py-2 cursor-pointer rounded-full hover:bg-lightgray dark:hover:bg-primarybox"
           aria-label="Toggle Theme Dropdown"
           aria-expanded={isDropdownOpen} // Add aria-expanded for accessibility
           aria-controls="theme-menu" // Add aria-controls for accessibility
@@ -303,7 +304,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ location, className }) => {
           {theme === 'light' && <IoSunnyOutline className="size-5 text-neutral-900 dark:text-white" />}
           {theme === 'dark' && <IoMoonOutline className="size-5 text-neutral-900 dark:text-white" />}
           {theme === 'system' && <IoContrastOutline className="size-5 text-neutral-900 dark:text-white" />}
-          <HiChevronDown className="size-4 ml-1 text-neutral-900 dark:text-white" />
+          <GoChevronDown  className="size-5 ml-1 mt-0.5 text-neutral-900 dark:text-white" />
         </button>
 
         {isDropdownOpen && (

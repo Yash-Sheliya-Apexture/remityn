@@ -1303,10 +1303,13 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { IoMdCloseCircle, IoMdCheckmark } from "react-icons/io";
 import authService from "../../services/auth"; // Correct import path using alias
+import { Check } from "lucide-react";
+import { FaCheck } from "react-icons/fa6";
+import { motion, AnimatePresence } from "framer-motion"; // Import Framer Motion
 
 const ResetPasswordForm = () => {
   const [email, setEmail] = useState<string>("");
@@ -1318,9 +1321,9 @@ const ResetPasswordForm = () => {
   // const [emailResent, setEmailResent] = useState<boolean>(false); // REMOVED: Not used
   const [showCheckAgainMessage, setShowCheckAgainMessage] =
     useState<boolean>(false);
-  const [resendError, setResendError] = useState<string>(""); // State for resend error message
+  const [resendError, setResendError] = useState<string>("");
   const [resendAttemptFailed, setResendAttemptFailed] =
-    useState<boolean>(false); // Track if resend has already failed
+    useState<boolean>(false);
 
   const isValidEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -1333,7 +1336,7 @@ const ResetPasswordForm = () => {
     let isValid = true;
     setError("");
     setSuccessMessage("");
-    setEmailSent(false); // Reset emailSent on new submission
+    setEmailSent(false);
 
     if (!email) {
       setEmailError("Please fill email address field");
@@ -1370,13 +1373,13 @@ const ResetPasswordForm = () => {
 
   const handleSendAgain = async () => {
     if (resendAttemptFailed) {
-      return; // Prevent further resend attempts if already failed
+      return;
     }
 
     // setEmailResent(true); // REMOVED: Not used
     setIsLoading(true);
-    setShowCheckAgainMessage(false);
-    setResendError(""); // Clear any previous resend errors
+    setShowCheckAgainMessage(false); // Reset before potentially showing again
+    setResendError("");
 
     try {
       await authService.forgotPassword({ email });
@@ -1404,7 +1407,7 @@ const ResetPasswordForm = () => {
   if (emailSent) {
     return (
       <div className="flex flex-col justify-center items-center lg:h-[calc(100vh-73px)] px-4">
-        <div className="bg-white w-full max-w-md">
+        <div className="bg-white dark:bg-background w-full max-w-lg">
           <div className="flex justify-center mb-6">
             <Image
               src="/assets/images/email-small@1x.webp"
@@ -1431,18 +1434,26 @@ const ResetPasswordForm = () => {
             Alternatively, you can also request the email again:
           </p>
 
-          {showCheckAgainMessage && (
-            <div className="flex bg-green/8 lg:p-6 p-4 rounded-2xl cursor-pointer lg:gap-4 gap-2 items-center mb-4">
-              <div className="flex bg-green justify-center rounded-full items-center lg:size-12 size-8">
-                <IoMdCheckmark className="text-white size-6" />
-              </div>
-              <p className="text-gray lg:text-lg text-base">
-                Please check your email inbox again.
-              </p>
-            </div>
-          )}
+          <AnimatePresence>
+            {showCheckAgainMessage && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+                className="flex bg-lightborder dark:bg-green-600/20 lg:p-6 p-4 rounded-2xl cursor-pointer lg:gap-4 gap-2 items-center mb-4"
+              >
+                <div className="flex bg-white justify-center rounded-full items-center lg:size-12 size-8">
+                  <FaCheck className="text-mainheading size-6" />
+                </div>
+                <p className="text-gray-500 dark:text-white lg:text-lg text-base">
+                  Please check your email inbox again.
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-          {resendError && ( // Display resend error message
+          {resendError && (
             <div
               className="flex bg-red-100 border border-red-400 p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4" // Adjusted styling slightly for consistency
               role="alert"
@@ -1458,8 +1469,8 @@ const ResetPasswordForm = () => {
 
           <button
             onClick={handleSendAgain}
-            disabled={isLoading || resendAttemptFailed} // Disable button if loading or resend failed
-            className={`bg-primary hover:bg-primary-hover cursor-pointer rounded-full text-secondary text-lg w-full block duration-300 ease-in-out focus:outline-none focus:shadow-outline font-medium mb-3 mx-auto py-3 transition-colors
+            disabled={isLoading || resendAttemptFailed}
+            className={`bg-primary hover:bg-primaryhover cursor-pointer capitalize h-14 rounded-full text-mainheading text-lg w-full block duration-300 ease-in-out focus:outline-none focus:shadow-outline font-medium mx-auto py-3 transition-colors
                             ${
                               isLoading || resendAttemptFailed
                                 ? "opacity-50 cursor-not-allowed"
@@ -1469,7 +1480,7 @@ const ResetPasswordForm = () => {
             {isLoading ? "Sending..." : "Send email again"}
           </button>
 
-          {resendAttemptFailed && ( // Show message if resend failed
+          {resendAttemptFailed && (
             <p className="text-center text-red-500 text-sm mt-2">
               {/* FIXED: Escaped apostrophe */}
               Couldn&apos;t send email again. Please try again later.
@@ -1480,7 +1491,7 @@ const ResetPasswordForm = () => {
             Still need help?
             <a
               href="#"
-              className="text-secondary underline font-medium underline-offset-4"
+              className="text-primary underline font-medium underline-offset-4"
             >
               Read this article.
             </a>
@@ -1491,7 +1502,7 @@ const ResetPasswordForm = () => {
   }
 
   return (
-    <div className="flex flex-col bg-white justify-center items-center lg:h-[calc(100vh-73px)] px-4 pt-10">
+    <div className="flex flex-col bg-white dark:bg-background justify-center items-center lg:h-[calc(100vh-73px)] px-4 pt-10">
       <div className="max-w-lg mb-8">
         <Image
           src="/assets/images/key-medium@1x.webp"
@@ -1532,7 +1543,10 @@ const ResetPasswordForm = () => {
 
       <form onSubmit={handleSubmit} className="w-full max-w-lg mt-2 lg:mt-5">
         <div className="mb-4">
-          <label htmlFor="email" className="text-sm text-gray block capitalize">
+          <label
+            htmlFor="email"
+            className=" text-gray-500 dark:text-gray-300 block capitalize"
+          >
             Enter your email address
           </label>
           <input
@@ -1541,14 +1555,14 @@ const ResetPasswordForm = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={isLoading}
-            className={`mt-1 block px-4 py-3 w-full border rounded-lg transition-shadow ease-in-out duration-300 ${
+            className={`mt-1 block px-4 py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
               emailError
-                ? "border-red-500 border-2 !shadow-none"
-                : "border-[#c9cbce] hover:shadow-color"
+                ? "border-red-700 border-2 !shadow-none"
+                : "dark:hover:shadow-whitecolor hover:shadow-darkcolor"
             }`}
           />
           {emailError && (
-            <p className="flex text-[#a8200d] text-base items-center mt-2.5">
+            <p className="flex text-red-700 text-base items-center mt-2.5">
               <span className="mr-1">
                 <IoMdCloseCircle className="size-5" />
               </span>
@@ -1559,7 +1573,7 @@ const ResetPasswordForm = () => {
 
         <div className="flex justify-between items-center">
           <button
-            className={`bg-primary hover:bg-primary-hover cursor-pointer text-secondary font-medium text-lg py-3 w-full px-4 rounded-full transition-colors duration-300 ease-in-out focus:outline-none focus:shadow-outline ${
+            className={`bg-primary hover:bg-primaryhover cursor-pointer text-mainheading font-medium text-lg py-3 h-14 w-full px-4 rounded-full transition-colors duration-300 ease-in-out focus:outline-none focus:shadow-outline ${
               isLoading ? "opacity-50 cursor-not-allowed" : ""
             }`}
             type="submit"
@@ -1574,7 +1588,7 @@ const ResetPasswordForm = () => {
         Need help? Read this
         <a
           href="#"
-          className="text-secondary font-medium underline underline-offset-4"
+          className="text-primary font-medium underline underline-offset-4"
         >
           Help Centre article.
         </a>

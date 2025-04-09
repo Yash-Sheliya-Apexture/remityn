@@ -308,6 +308,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 const SocialCard = ({ index }: { index: number }) => {
+
   const cardData = [
     {
       imageSrc: "/assets/icon/usd.svg",
@@ -317,10 +318,10 @@ const SocialCard = ({ index }: { index: number }) => {
         "They make our life split between two continents possible. Transfers are simple and very, very fast.",
       authorName: "Stuart",
       authorLink: "",
-      bgColor: "bg-lightgreen",
-      textColor: "text-green",
-      buttonBgColor: "bg-green",
-      buttonTextColor: "text-lightgreen",
+      bgColor: "bg-lightgreen dark:bg-background",
+      textColor: "text-green dark:text-white",
+      buttonBgColor: "bg-green dark:bg-primary",
+      buttonTextColor: "text-lightgreen dark:text-subheading",
     },
     {
       imageSrc: "/assets/icon/huf.svg",
@@ -384,7 +385,7 @@ const SocialCard = ({ index }: { index: number }) => {
 
   return (
     <div
-      className={`lg:p-10 p-6 ${card.bgColor} rounded-4xl h-full flex flex-col justify-between`}
+      className={`lg:p-10 p-6 ${card.bgColor} border rounded-4xl h-full flex flex-col justify-between`}
     >
       <div className="w-full lg:pb-20 pb-6">
         <Image

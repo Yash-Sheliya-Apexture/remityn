@@ -1657,7 +1657,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '../../hooks/useAuth'; // Import useAuth
 import Link from "next/link";
 import Image from "next/image";
-import { IoMdCloseCircle } from "react-icons/io";
+import { IoMdCheckmarkCircleOutline, IoMdCloseCircle } from "react-icons/io";
 import { RiEyeCloseLine } from "react-icons/ri";
 import { VscEye } from "react-icons/vsc";
 import { IoClose } from 'react-icons/io5';
@@ -1682,6 +1682,7 @@ export default function RegisterPage() {
     const [passwordError, setPasswordError] = useState('');
     const [confirmPasswordError, setConfirmPasswordError] = useState('');
     const [registerSuccess, setRegisterSuccess] = useState(false); // State for successful registration
+    const [isErrorVisible, setIsErrorVisible] = useState(false); // State to control error visibility for animation
 
     // Redirect if user is already logged in
     useEffect(() => {
@@ -1699,6 +1700,14 @@ export default function RegisterPage() {
              // window.history.replaceState({}, document.title, window.location.pathname);
         }
     }, []); // Run only once on mount
+
+    useEffect(() => {
+        if (error) {
+            setIsErrorVisible(true);
+        } else {
+            setIsErrorVisible(false);
+        }
+    }, [error]);
 
 
     const validateForm = () => {
@@ -1789,7 +1798,7 @@ export default function RegisterPage() {
     };
 
     const toggleConfirmPasswordVisibility = () => {
-        setShowConfirmPassword(!showConfirmPassword);
+        setShowConfirmPassword(!setShowConfirmPassword);
     };
 
     if (loading) {
@@ -1803,13 +1812,21 @@ export default function RegisterPage() {
 
     const handleCloseLoginError = () => {
         setError("");
+        setIsErrorVisible(false); // Hide error when close button is clicked
+    };
+
+    // Framer Motion variants for animation
+    const errorVariants = {
+        initial: { opacity: 0, y: -20,  },
+        animate: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } },
+        exit: { opacity: 0, y: -20, transition: { duration: 0.2, ease: "easeIn" } }
     };
 
 
     return (
         <div className="flex justify-center items-center lg:h-[calc(100vh-73px)] px-4 py-8"> {/* Added padding */}
             <div className="w-full max-w-md">
-                <h2 className="lg:text-3xl text-2xl text-center text-main font-semibold mt-5 mb-4">
+                <h2 className="lg:text-3xl text-2xl text-center text-mainheading dark:text-white font-semibold mt-5 mb-4">
                     Create your Wise account
                 </h2>
 
@@ -1817,7 +1834,7 @@ export default function RegisterPage() {
                     Already have an account?{' '} {/* Added space */}
                     <Link
                         href="/auth/login"
-                        className="text-secondary font-medium underline underline-offset-4"
+                        className="text-primary font-medium underline underline-offset-4"
                     >
                         Log in
                     </Link>
@@ -1976,9 +1993,9 @@ export default function RegisterPage() {
                                 aria-label={showPassword ? "Hide password" : "Show password"}
                             >
                                 {showPassword ? (
-                                    <RiEyeCloseLine className="text-secondary size-5" />
+                                    <RiEyeCloseLine className="text-mainheading dark:text-white size-5" />
                                 ) : (
-                                    <VscEye className="text-secondary size-5" />
+                                    <VscEye className="text-mainheading dark:text-white size-5" />
                                 )}
                             </button>
                         </div>
@@ -2020,9 +2037,9 @@ export default function RegisterPage() {
                                 aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
                             >
                                 {showConfirmPassword ? (
-                                    <RiEyeCloseLine className="text-secondary size-5" />
+                                    <RiEyeCloseLine className="text-mainheading dark:text-white size-5" />
                                 ) : (
-                                    <VscEye className="text-secondary size-5" />
+                                    <VscEye className="text-mainheading dark:text-white size-5" />
                                 )}
                             </button>
                         </div>

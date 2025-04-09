@@ -260,7 +260,7 @@
 //       </div>
 
 //       {isOpen && (
-//         <div className="absolute z-10 mt-2 w-[300px] bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+//         <div className="absolute z-10 mt-2 w-[300px] bg-white rounded-xl shadow-lg border overflow-hidden">
 //           {/* Search Input */}
 //           <div className="sticky top-0 bg-white p-2 border-b border-gray-200">
 //             <div className="relative">
@@ -1611,6 +1611,7 @@ import cad from "../../../../public/assets/icon/cad.svg";
 import eur from "../../../../public/assets/icon/eur.svg";
 import inr from "../../../../public/assets/icon/inr.svg"; // Keep this, but we'll filter it out
 import usd from "../../../../public/assets/icon/usd.svg";
+import { GiCheckMark } from "react-icons/gi";
 
 interface Currency {
   code: string;
@@ -1705,7 +1706,7 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
               className="rounded-full" // Added rounded-full for consistency
             />
           )}
-          <p className="text-main font-semibold">{selectedCurrency}</p>
+          <p className="text-mainheading dark:text-white font-semibold">{selectedCurrency}</p>
         </div>
         {isOpen ? <IoIosArrowUp size={18} /> : <IoIosArrowDown size={18} />}
       </button>
@@ -1713,7 +1714,7 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
       {isOpen && (
         <div className="absolute z-10 w-[400px] top-full mt-1 right-0 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
           {/* Search Input */}
-          <div className="sticky top-0 bg-white p-2 border-b border-gray-200">
+          <div className="sticky top-0 bg-white dark:bg-background p-2 border-b">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <BiSearch className="h-5 w-5 text-gray-400" />
@@ -1721,7 +1722,7 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
               <input
                 type="text"
                 placeholder="Type a currency / country"
-                className="bg-gray-50 shadow-inner border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green focus:border-green block w-full pl-10 p-2.5"
+                className=" shadow-inner border text-mainheading dark:text-white text-sm rounded-lg focus:outline-none block w-full pl-10 px-4 py-3 hover:shadow-darkcolor dark:hover:shadow-whitecolor transition-shadow ease-in-out duration-300"
                 value={searchQuery}
                 onChange={handleSearchChange}
                 aria-label="Search Currencies" // Added aria-label
@@ -1735,7 +1736,7 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
           >
             {/*  Currencies */}
             {filteredCurrencies.length > 0 && (
-              <ul>
+              <ul className="space-y-2">
                 {filteredCurrencies.map((currency) => (
                   <li // Changed to button for better interaction
                     key={currency.code}
@@ -1751,7 +1752,7 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
                         }
                     }}
                   >
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2.5">
                       <Image
                         src={currency.flag}
                         alt={`${currency.code}-Flag`}
@@ -1760,12 +1761,12 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
                         className="rounded-full"
                       />
                       <span>{currency.code}</span>
-                      <span className="text-gray-500 text-sm ml-1">
+                      <span className="text-gray-500 dark:text-gray-300 text-sm ml-1">
                         {currency.name}
                       </span>
                     </div>
                     {selectedCurrency === currency.code && (
-                      <AiOutlineCheck className="text-main" />
+                      <GiCheckMark  className="text-mainheading dark:text-white size-5" />
                     )}
                   </li>
                 ))}

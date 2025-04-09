@@ -292,11 +292,11 @@
 
 //               {/* You Send */}
 //               <div className="mb-3">
-//                 <label className="block font-medium text-main mb-1">
+//                 <label className="block font-medium text-gray-500 dark:text-gray-300 mb-1">
 //                   You send exactly
 //                 </label>
 //                 <div className="relative">
-//                   <div className="w-full h-16 p-3 border border-gray-300 rounded-lg shadow-sm flex items-center justify-between focus:outline-none focus:ring-green focus:border-main">
+//                   <div className="w-full h-16 p-3 border rounded-lg shadow-sm flex items-center justify-between focus:outline-none focus:ring-green focus:border-main">
 //                     <input
 //                       type="text"
 //                       value={sendAmount}
@@ -4280,7 +4280,7 @@ const HeroSection: React.FC = () => {
 
 
   return (
-    <section className="Hero-Section py-12 bg-white">
+    <section className="Hero-Section py-12 bg-white dark:bg-background">
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row items-center gap-12">
           {/* Left Column: Text Content */}
@@ -4292,7 +4292,7 @@ const HeroSection: React.FC = () => {
           <div className="lg:w-xl lg:ml-auto"> {/* Consider max-w-xl instead of w-xl */}
             <div className="bg-white rounded-3xl shadow-lg md:p-8 p-4 border border-gray-50">
               {/* Rate Guaranteed */}
-              <div className="flex flex-col justify-center items-center gap-1 text-green font-medium text-center mb-4 ">
+              <div className="flex flex-col justify-center items-center gap-2 text-primary font-medium text-center mb-4 ">
                 <div className="flex justify-center items-center gap-2">
                   <SlLock size={22} />
                   <span>Rate guaranteed (24h)</span>
@@ -4358,13 +4358,13 @@ const HeroSection: React.FC = () => {
 
               {/* Paying With */}
               <div className="mb-4">
-                <label className="block font-medium text-main mb-1">
+                <label className="block font-medium text-gray-500 dark:text-gray-300 mb-1">
                   Paying with
                 </label>
-                <div className="hover:bg-green/10 p-3 h-16 border border-green hover:border-green rounded-xl flex items-center justify-between transition-colors duration-200 ease-in-out">
+                <div className="bg-lightgray dark:bg-background p-3 h-16 border rounded-xl flex items-center justify-between transition-colors duration-200 ease-in-out">
                   <div className="flex items-center gap-2">
                     <CiBank size={24} />
-                    <span className="text-main font-semibold">Bank transfer</span>
+                    <span className="text-mainheading dark:text-white font-semibold">Bank transfer</span>
                   </div>
                   <button type="button" className="text-green font-medium bg-green/10 hover:bg-green/20 px-3 py-2 rounded-full text-sm inline-flex items-center gap-1 transition-colors"> {/* Adjusted gap */}
                     Change
