@@ -771,7 +771,7 @@ const TasksPage: React.FC = () => {
             <div className="flex justify-center mt-4">
               <button
                 onClick={handleToggleViewMoreLess}
-                className="bg-lightgray dark:bg-primarybox hover:dark:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-all duration-75 ease-linear focus:outline-none focus:ring-0 cursor-pointer" // Adjusted hover for dark mode
+                className="bg-lightgray dark:bg-primarybox hover:dark:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-gray-300 transition-all duration-75 ease-linear focus:outline-none focus:ring-0 cursor-pointer" // Adjusted hover for dark mode
               >
                 {buttonText}
               </button>
