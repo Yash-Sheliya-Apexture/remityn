@@ -654,24 +654,286 @@
 
 
 
+// // components/MobileMenu.tsx
+// "use client";
+// import React, { useState } from "react";
+// import Link from "next/link";
+// import FeatureDropdown from "@/app/components/ui/FeatureDropdown"; // Import FeatureDropdown, adjust path
+
+// interface MobileMenuProps {
+//   isOpen: boolean;
+//   onClose: () => void;
+//   featureLinks: { href: string; text: string }[];
+// }
+
+// const MobileMenu: React.FC<MobileMenuProps> = ({
+//   isOpen,
+//   onClose,
+//   featureLinks
+// }) => {
+//   const [isFeaturesOpen, setIsFeaturesOpen] = useState(false); // State for Features dropdown
+
+//   const toggleFeaturesDropdown = () => {
+//     setIsFeaturesOpen(!isFeaturesOpen);
+//   };
+
+//   return (
+//     <div
+//       className={`fixed w-full h-[calc(100vh-5rem)] bg-white z-50 overflow-y-auto transition-transform duration-300 ${
+//         isOpen ? "translate-x-0" : "translate-x-full"
+//       }`}
+//     >
+//       <div className="flex flex-col justify-between h-full">
+//         <div className="p-6 space-y-4">
+//           {/*  Navigation Links */}
+//           <div className="flex items-center gap-4">
+//             <Link
+//               href="/personal"
+//               passHref
+//               className="block bg-lightgreen px-4 py-1 rounded-full font-medium"
+//               onClick={onClose}
+//             >
+//               Personal
+//             </Link>
+//             <Link
+//               href="/business"
+//               passHref
+//               className="block px-4 py-1 rounded-full  font-medium hover:bg-gray-200"
+//               onClick={onClose}
+//             >
+//               Business
+//             </Link>
+//             <Link
+//               href="/platform"
+//               passHref
+//               className="block px-4 py-1 rounded-full  font-medium hover:bg-gray-200"
+//               onClick={onClose}
+//             >
+//               Platform
+//             </Link>
+//           </div>
+
+//           <div>
+//             {/* Features (with dropdown) */}
+//             <FeatureDropdown
+//               buttonText="Features"
+//               links={featureLinks}
+//               buttonClassName="block w-full text-left py-2  font-medium text-lg"
+//               isMobile={true}
+//               isOpen={isFeaturesOpen}
+//               toggleDropdown={toggleFeaturesDropdown}
+//               onLinkClick={onClose}
+//             />
+
+//             <Link
+//               href="/pricing"
+//               passHref
+//               className="block py-2  font-medium text-lg"
+//               onClick={onClose}
+//             >
+//               Pricing
+//             </Link>
+//             <Link
+//               href="/help"
+//               passHref
+//               className="block py-2  font-medium text-lg"
+//               onClick={onClose}
+//             >
+//               Help
+//             </Link>
+//             <Link href="/en" passHref onClick={onClose}>
+//               <div className="flex items-center  py-2  font-medium text-lg">
+//                 <img
+//                   src="https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/1200px-Flag_of_India.svg.png"
+//                   alt="Indian Flag"
+//                   className="h-5 w-5 rounded-full mr-1 object-cover"
+//                 />
+//                 <span>EN</span>
+//               </div>
+//             </Link>
+//           </div>
+//         </div>
+
+//         <div className="p-6 flex sm:flex-row flex-col items-center gap-2">
+//           {/*  Login and Register */}
+//           <Link
+//             href="/login"
+//             passHref
+//             className="block w-full p-2 bg-white hover:bg-green/10 border border-green rounded-full font-medium text-lg text-center"
+//             onClick={onClose}
+//           >
+//             Log in
+//           </Link>
+//           <Link
+//             href="/register"
+//             passHref
+//             className="block w-full p-2 bg-lightgreen hover:bg-lightgreen-hover rounded-full font-medium text-lg text-center"
+//             onClick={onClose}
+//           >
+//             Register
+//           </Link>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default MobileMenu;
+
+
+// // components/MobileMenu.tsx
+// "use client";
+// import React, { useState } from "react";
+// import Link from "next/link";
+// import Image from "next/image"; // Import next/image
+// import FeatureDropdown from "@/app/components/ui/FeatureDropdown"; // Import FeatureDropdown, adjust path
+
+// interface MobileMenuProps {
+//   isOpen: boolean;
+//   onClose: () => void;
+//   featureLinks: { href: string; text: string }[];
+// }
+
+// const MobileMenu: React.FC<MobileMenuProps> = ({
+//   isOpen,
+//   onClose,
+//   featureLinks
+// }) => {
+//   const [isFeaturesOpen, setIsFeaturesOpen] = useState(false); // State for Features dropdown
+
+//   const toggleFeaturesDropdown = () => {
+//     setIsFeaturesOpen(!isFeaturesOpen);
+//   };
+
+//   // Define image dimensions based on className w-5 h-5 (assuming default Tailwind base font size 16px, 1.25rem = 20px)
+//   const flagSize = 20;
+
+//   return (
+//     <div
+//       className={`fixed w-full h-[calc(100vh-5rem)] bg-white z-50 overflow-y-auto transition-transform duration-300 ${
+//         isOpen ? "translate-x-0" : "translate-x-full"
+//       }`}
+//     >
+//       <div className="flex flex-col justify-between h-full">
+//         <div className="p-6 space-y-4">
+//           {/*  Navigation Links */}
+//           <div className="flex items-center gap-4">
+//             <Link
+//               href="/personal"
+//               passHref
+//               className="block bg-lightgreen px-4 py-1 rounded-full font-medium"
+//               onClick={onClose}
+//             >
+//               Personal
+//             </Link>
+//             <Link
+//               href="/business"
+//               passHref
+//               className="block px-4 py-1 rounded-full  font-medium hover:bg-gray-200"
+//               onClick={onClose}
+//             >
+//               Business
+//             </Link>
+//             <Link
+//               href="/platform"
+//               passHref
+//               className="block px-4 py-1 rounded-full  font-medium hover:bg-gray-200"
+//               onClick={onClose}
+//             >
+//               Platform
+//             </Link>
+//           </div>
+
+//           <div>
+//             {/* Features (with dropdown) */}
+//             <FeatureDropdown
+//               buttonText="Features"
+//               links={featureLinks}
+//               buttonClassName="block w-full text-left py-2  font-medium text-lg"
+//               isMobile={true}
+//               isOpen={isFeaturesOpen}
+//               toggleDropdown={toggleFeaturesDropdown}
+//               onLinkClick={onClose}
+//             />
+
+//             <Link
+//               href="/pricing"
+//               passHref
+//               className="block py-2  font-medium text-lg"
+//               onClick={onClose}
+//             >
+//               Pricing
+//             </Link>
+//             <Link
+//               href="/help"
+//               passHref
+//               className="block py-2  font-medium text-lg"
+//               onClick={onClose}
+//             >
+//               Help
+//             </Link>
+//             <Link href="/en" passHref onClick={onClose}>
+//               <div className="flex items-center py-2 font-medium text-lg">
+//                 {/* Use next/image component */}
+//                 <Image
+//                   src="/assets/icon/flags/inr.svg" // Keep the same source
+//                   alt="Indian Flag"
+//                   width={flagSize} // Required prop
+//                   height={flagSize} // Required prop
+//                   className="rounded-full mr-1 object-cover" // Removed h-5 w-5 as dimensions are handled by props
+//                 />
+//                 <span>EN</span>
+//               </div>
+//             </Link>
+//           </div>
+//         </div>
+
+//         <div className="p-6 flex sm:flex-row flex-col items-center gap-2">
+//           {/*  Login and Register */}
+//           <Link
+//             href="/login"
+//             passHref
+//             className="block w-full p-2 bg-white hover:bg-green/10 border border-green rounded-full font-medium text-lg text-center"
+//             onClick={onClose}
+//           >
+//             Log in
+//           </Link>
+//           <Link
+//             href="/register"
+//             passHref
+//             className="block w-full p-2 bg-lightgreen hover:bg-lightgreen-hover rounded-full font-medium text-lg text-center"
+//             onClick={onClose}
+//           >
+//             Register
+//           </Link>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default MobileMenu;
+
+
 // components/MobileMenu.tsx
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image"; // Import next/image
 import FeatureDropdown from "@/app/components/ui/FeatureDropdown"; // Import FeatureDropdown, adjust path
 
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
   featureLinks: { href: string; text: string }[];
-  topContent: React.ReactNode; //  <--- Receive topContent
+  topContent?: React.ReactNode; // <-- Add this line (make it optional '?' or required based on need)
 }
 
 const MobileMenu: React.FC<MobileMenuProps> = ({
   isOpen,
   onClose,
   featureLinks,
-  topContent, //  <--- Destructure topContent
+  topContent // <-- Destructure the prop here
 }) => {
   const [isFeaturesOpen, setIsFeaturesOpen] = useState(false); // State for Features dropdown
 
@@ -679,20 +941,28 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
     setIsFeaturesOpen(!isFeaturesOpen);
   };
 
+  // Define image dimensions based on className w-5 h-5 (assuming default Tailwind base font size 16px, 1.25rem = 20px)
+  const flagSize = 20;
+
   return (
     <div
-      className={`fixed w-full h-[calc(100vh-5rem)] bg-white z-50 overflow-y-auto transition-transform duration-300 ${
-        isOpen ? "translate-x-0" : "translate-x-full"
+      // Using template literal for cleaner conditional class application
+      className={`fixed top-20 left-0 w-full h-[calc(100vh-5rem)] bg-white dark:bg-gray-900 z-40 overflow-y-auto transition-transform duration-300 ease-in-out ${
+        isOpen ? "translate-x-0" : "-translate-x-full" // Correct transform for slide-in
       }`}
+      // Add aria attributes for accessibility
+      aria-hidden={!isOpen}
+      role="dialog"
+      aria-modal="true"
     >
       <div className="flex flex-col justify-between h-full">
         <div className="p-6 space-y-4">
-          {/*  Navigation Links */}
-          <div className="flex items-center gap-4">
+          {/* Navigation Links */}
+          <div className="flex items-center gap-4 mb-4"> {/* Added margin-bottom */}
             <Link
               href="/personal"
               passHref
-              className="block bg-lightgreen px-4 py-1 rounded-full font-medium"
+              className="block bg-lightgreen px-4 py-1 rounded-full font-medium dark:text-black" // Added dark mode text color
               onClick={onClose}
             >
               Personal
@@ -700,7 +970,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             <Link
               href="/business"
               passHref
-              className="block px-4 py-1 rounded-full  font-medium hover:bg-gray-200"
+              className="block px-4 py-1 rounded-full font-medium hover:bg-gray-200 dark:hover:bg-gray-700" // Added dark mode hover
               onClick={onClose}
             >
               Business
@@ -708,29 +978,30 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             <Link
               href="/platform"
               passHref
-              className="block px-4 py-1 rounded-full  font-medium hover:bg-gray-200"
+              className="block px-4 py-1 rounded-full font-medium hover:bg-gray-200 dark:hover:bg-gray-700" // Added dark mode hover
               onClick={onClose}
             >
               Platform
             </Link>
           </div>
 
-          <div>
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-4"> {/* Added divider */}
             {/* Features (with dropdown) */}
             <FeatureDropdown
               buttonText="Features"
               links={featureLinks}
-              buttonClassName="block w-full text-left py-2  font-medium text-lg"
+              topContent={topContent} // <-- Pass the prop down here
+              buttonClassName="block w-full text-left py-2 font-medium text-lg hover:bg-gray-100 dark:hover:bg-gray-800 rounded" // Added hover and rounded
               isMobile={true}
               isOpen={isFeaturesOpen}
               toggleDropdown={toggleFeaturesDropdown}
-              onLinkClick={onClose}
+              onLinkClick={onClose} // Close main menu when a feature link is clicked
             />
 
             <Link
               href="/pricing"
               passHref
-              className="block py-2  font-medium text-lg"
+              className="block py-2 font-medium text-lg hover:bg-gray-100 dark:hover:bg-gray-800 rounded" // Added hover and rounded
               onClick={onClose}
             >
               Pricing
@@ -738,17 +1009,19 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             <Link
               href="/help"
               passHref
-              className="block py-2  font-medium text-lg"
+              className="block py-2 font-medium text-lg hover:bg-gray-100 dark:hover:bg-gray-800 rounded" // Added hover and rounded
               onClick={onClose}
             >
               Help
             </Link>
             <Link href="/en" passHref onClick={onClose}>
-              <div className="flex items-center  py-2  font-medium text-lg">
-                <img
-                  src="https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/1200px-Flag_of_India.svg.png"
+              <div className="flex items-center py-2 font-medium text-lg hover:bg-gray-100 dark:hover:bg-gray-800 rounded"> {/* Added hover and rounded */}
+                <Image
+                  src="/assets/icon/flags/inr.svg"
                   alt="Indian Flag"
-                  className="h-5 w-5 rounded-full mr-1 object-cover"
+                  width={flagSize}
+                  height={flagSize}
+                  className="rounded-full mr-2 object-cover" // Added margin-right
                 />
                 <span>EN</span>
               </div>
@@ -756,24 +1029,27 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
           </div>
         </div>
 
-        <div className="p-6 flex sm:flex-row flex-col items-center gap-2">
-          {/*  Login and Register */}
-          <Link
-            href="/login"
-            passHref
-            className="block w-full p-2 bg-white hover:bg-green/10 border border-green rounded-full font-medium text-lg text-center"
-            onClick={onClose}
-          >
-            Log in
-          </Link>
-          <Link
-            href="/register"
-            passHref
-            className="block w-full p-2 bg-lightgreen hover:bg-lightgreen-hover rounded-full font-medium text-lg text-center"
-            onClick={onClose}
-          >
-            Register
-          </Link>
+        {/* Ensure bottom buttons are sticky or at the bottom */}
+        <div className="p-6 mt-auto border-t border-gray-200 dark:border-gray-700"> {/* Added divider */}
+           <div className="flex flex-col sm:flex-row items-center gap-2">
+             {/* Login and Register */}
+             <Link
+                href="/auth/login" // Corrected path based on Header
+                passHref
+                className="block w-full p-2 bg-white dark:bg-gray-800 hover:bg-green/10 dark:hover:bg-green/20 border border-green rounded-full font-medium text-lg text-center text-green dark:text-green"
+                onClick={onClose}
+              >
+                Log in
+              </Link>
+              <Link
+                href="/auth/register" // Corrected path based on Header
+                passHref
+                className="block w-full p-2 bg-lightgreen hover:bg-lightgreen-hover rounded-full font-medium text-lg text-center text-black" // Assuming lightgreen requires black text
+                onClick={onClose}
+              >
+                Register
+              </Link>
+           </div>
         </div>
       </div>
     </div>

@@ -1,0 +1,2070 @@
+// // 'use client';
+
+// // import { useState, useEffect } from 'react';
+// // import authService from '../../services/auth'; // Correct import path using alias
+// // import { useRouter } from 'next/navigation';
+// // import { FaEye, FaEyeSlash } from 'react-icons/fa';
+// // import { useAuth } from '../../hooks/useAuth'; // Import useAuth
+// // import Link from "next/link";
+// // import Image from "next/image";
+// // import { IoMdCloseCircle } from "react-icons/io";
+// // import { FaExclamation } from "react-icons/fa6";
+// // import { RiEyeCloseLine } from "react-icons/ri";
+// // import { VscEye } from "react-icons/vsc";
+
+// // export default function RegisterPage() {
+// //     const [fullName, setFullName] = useState('');
+// //     const [email, setEmail] = useState('');
+// //     const [password, setPassword] = useState('');
+// //     const [confirmPassword, setConfirmPassword] = useState('');
+// //     const [error, setError] = useState('');
+// //     const [showPassword, setShowPassword] = useState(false);
+// //     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+// //     const router = useRouter();
+// //     const { user, loading } = useAuth(); // Get user and loading from AuthContext
+
+// //     // Redirect if user is already logged in
+// //     useEffect(() => {
+// //         if (!loading && user) {
+// //             router.push('/dashboard');
+// //         }
+// //     }, [user, loading, router]);
+
+// //     const handleSubmit = async (e) => {
+// //         e.preventDefault();
+// //         setError('');
+
+// //         if (password !== confirmPassword) {
+// //             setError("Passwords do not match.");
+// //             return;
+// //         }
+
+// //         try {
+// //             await authService.register({ fullName, email, password });
+// //             router.push('/auth/login?registerSuccess=true');
+// //         } catch (err) {
+// //             setError(err);
+// //         }
+// //     };
+
+// //     const togglePasswordVisibility = () => {
+// //         setShowPassword(!showPassword);
+// //     };
+
+// //     const toggleConfirmPasswordVisibility = () => {
+// //         setShowConfirmPassword(!showConfirmPassword);
+// //     };
+
+// //     if (loading) { // Add loading state handling
+// //         return <p>Loading...</p>; // Or a loading spinner
+// //     }
+
+// //     if (user) { // User is already logged in
+// //         return null; // Redirect is handled by useEffect
+// //     }
+
+
+// //     return (
+// //         <div className="flex justify-center items-center min-h-screen px-4">
+// //             <div className="w-full max-w-md mt-10">
+// //                 <h2 className="text-3xl text-center text-main font-semibold mb-4">
+// //                     Create your Wise account
+// //                 </h2>
+
+// //                 <p className="text-base text-center text-gray mb-4">
+// //                     Already have an account?
+// //                     <Link
+// //                         href="/login"
+// //                         className="text-green font-medium underline underline-offset-4"
+// //                     >
+// //                         Log in
+// //                     </Link>
+// //                 </p>
+
+
+// //                 {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
+
+
+// //                 <form onSubmit={handleSubmit} className="mt-10 space-y-4">
+// //                     <div>
+// //                         <label
+// //                             htmlFor="fullName"
+// //                             className="text-base text-gray block capitalize"
+// //                         >
+// //                             Full Name
+// //                         </label>
+// //                         <input
+// //                             type="text"
+// //                             id="fullName"
+// //                             className="border border-[#c9cbce] rounded-lg w-full block duration-300 ease-in-out hover:outline-none hover:shadow-color mt-1 px-4 py-3 transition-shadow"
+// //                             value={fullName}
+// //                             onChange={(e) => setFullName(e.target.value)}
+// //                         />
+// //                     </div>
+
+// //                     <div>
+// //                         <label
+// //                             htmlFor="email"
+// //                             className="text-base text-gray block capitalize"
+// //                         >
+// //                             Email Address
+// //                         </label>
+// //                         <input
+// //                             type="email"
+// //                             id="email"
+// //                             className="border border-[#c9cbce] rounded-lg w-full block duration-300 ease-in-out hover:outline-none hover:shadow-color mt-1 px-4 py-3 transition-shadow"
+// //                             value={email}
+// //                             onChange={(e) => setEmail(e.target.value)}
+// //                         />
+// //                     </div>
+
+// //                     <div>
+// //                         <label
+// //                             htmlFor="password"
+// //                             className="text-base text-gray block capitalize"
+// //                         >
+// //                             Password
+// //                         </label>
+// //                         <div className="relative">
+// //                             <input
+// //                                 type={showPassword ? "text" : "password"}
+// //                                 id="password"
+// //                                 className="border border-[#c9cbce] rounded-lg w-full block duration-300 ease-in-out hover:outline-none hover:shadow-color mt-1 px-4 py-3 transition-shadow"
+// //                                 value={password}
+// //                                 onChange={(e) => setPassword(e.target.value)}
+// //                             />
+// //                             <button
+// //                                 type="button"
+// //                                 className="text-gray-500 -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-3 top-1/2 transform"
+// //                                 onClick={togglePasswordVisibility}
+// //                             >
+// //                                 {showPassword ? (
+// //                                     <RiEyeCloseLine className="text-green size-5" />
+// //                                 ) : (
+// //                                     <VscEye className="text-green size-5" />
+// //                                 )}
+// //                             </button>
+// //                         </div>
+// //                     </div>
+
+
+
+// //                     <div>
+// //                         <label
+// //                             htmlFor="confirmPassword"
+// //                             className="text-base text-gray block capitalize"
+// //                         >
+// //                             Confirm Password
+// //                         </label>
+// //                         <div className="relative">
+// //                             <input
+// //                                 type={showConfirmPassword ? "text" : "password"}
+// //                                 id="confirmPassword"
+// //                                 className="border border-[#c9cbce] rounded-lg w-full block duration-300 ease-in-out hover:outline-none hover:shadow-color mt-1 px-4 py-3 transition-shadow"
+// //                                 value={confirmPassword}
+// //                                 onChange={(e) => setConfirmPassword(e.target.value)}
+// //                             />
+// //                             <button
+// //                                 type="button"
+// //                                 className="text-gray-500 -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-3 top-1/2 transform"
+// //                                 onClick={toggleConfirmPasswordVisibility}
+// //                             >
+// //                                 {showConfirmPassword ? (
+// //                                     <RiEyeCloseLine className="text-green size-5" />
+// //                                 ) : (
+// //                                     <VscEye className="text-green size-5" />
+// //                                 )}
+// //                             </button>
+// //                         </div>
+// //                     </div>
+
+
+// //                     {/* Next Button */}
+// //                     <button
+// //                         type="submit"
+// //                         className="bg-lightgreen rounded-full text-green text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium hover:bg-lightgreen-hover py-2.5 transition-colors"
+// //                     >
+// //                         Next
+// //                     </button>
+// //                 </form>
+
+// //                 <div className="mt-4">
+// //                     <p className="text-base text-gray mb-3">Or log in with</p>
+// //                     <div className="mt-4">
+// //                         <button className="flex bg-white border border-gray justify-center rounded-full text-gray text-md w-full cursor-pointer font-medium gap-4 hover:bg-gray-100 items-center px-4 py-2">
+// //                             <Image
+// //                                 src="/assets/icon/google.svg"
+// //                                 width={30}
+// //                                 height={30}
+// //                                 alt="Continue with Google"
+// //                             />
+// //                             Continue with Google
+// //                         </button>
+// //                     </div>
+// //                 </div>
+
+// //                 <p className="text-center text-gray my-5">
+// //                     By registering, you accept our
+// //                     <Link
+// //                         href="/terms-and-conditions"
+// //                         className="text-green font-medium underline underline-offset-4"
+// //                     >
+// //                         Terms of use
+// //                     </Link>
+// //                     and
+// //                     <Link
+// //                         href="/privacy-policy-en"
+// //                         className="text-green font-medium underline underline-offset-4"
+// //                     >
+// //                         Privacy Policy
+// //                     </Link>
+// //                 </p>
+
+// //             </div>
+// //         </div>
+// //     );
+// // }
+
+
+// // 'use client';
+
+// // import { useState, useEffect } from 'react';
+// // import authService from '../../services/auth'; // Correct import path using alias
+// // import { useRouter } from 'next/navigation';
+// // import { FaEye, FaEyeSlash } from 'react-icons/fa';
+// // import { useAuth } from '../../hooks/useAuth'; // Import useAuth
+// // import Link from "next/link";
+// // import Image from "next/image";
+// // import { IoMdCloseCircle } from "react-icons/io";
+// // import { FaExclamation } from "react-icons/fa6";
+// // import { RiEyeCloseLine } from "react-icons/ri";
+// // import { VscEye } from "react-icons/vsc";
+
+// // export default function RegisterPage() {
+// //     const [fullName, setFullName] = useState('');
+// //     const [email, setEmail] = useState('');
+// //     const [password, setPassword] = useState('');
+// //     const [confirmPassword, setConfirmPassword] = useState('');
+// //     const [error, setError] = useState('');
+// //     const [showPassword, setShowPassword] = useState(false);
+// //     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+// //     const router = useRouter();
+// //     const { user, loading } = useAuth(); // Get user and loading from AuthContext
+
+// //     const [fullNameError, setFullNameError] = useState('');
+// //     const [emailError, setEmailError] = useState('');
+// //     const [passwordError, setPasswordError] = useState('');
+// //     const [confirmPasswordError, setConfirmPasswordError] = useState('');
+
+
+// //     // Redirect if user is already logged in
+// //     useEffect(() => {
+// //         if (!loading && user) {
+// //             router.push('/dashboard');
+// //         }
+// //     }, [user, loading, router]);
+
+// //     const validateForm = () => {
+// //         let isValid = true;
+
+// //         if (!fullName.trim()) {
+// //             setFullNameError('Full Name is required');
+// //             isValid = false;
+// //         } else {
+// //             setFullNameError('');
+// //         }
+
+// //         if (!email.trim()) {
+// //             setEmailError('Email is required');
+// //             isValid = false;
+// //         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+// //             setEmailError('Invalid email format');
+// //             isValid = false;
+// //         } else {
+// //             setEmailError('');
+// //         }
+
+// //         if (!password.trim()) {
+// //             setPasswordError('Password is required');
+// //             isValid = false;
+// //         } else if (password.length < 6) {
+// //             setPasswordError('Password must be at least 6 characters');
+// //             isValid = false;
+// //         } else {
+// //             setPasswordError('');
+// //         }
+
+// //         if (!confirmPassword.trim()) {
+// //             setConfirmPasswordError('Confirm Password is required');
+// //             isValid = false;
+// //         } else if (password !== confirmPassword) {
+// //             setConfirmPasswordError('Passwords do not match');
+// //             isValid = false;
+// //         } else {
+// //             setConfirmPasswordError('');
+// //         }
+
+// //         return isValid;
+// //     };
+
+
+// //     const handleSubmit = async (e) => {
+// //         e.preventDefault();
+// //         setError('');
+
+// //         if (!validateForm()) {
+// //             return;
+// //         }
+
+
+// //         try {
+// //             await authService.register({ fullName, email, password });
+// //             router.push('/auth/login?registerSuccess=true');
+// //         } catch (err) {
+// //             setError(err);
+// //         }
+// //     };
+
+// //     const togglePasswordVisibility = () => {
+// //         setShowPassword(!showPassword);
+// //     };
+
+// //     const toggleConfirmPasswordVisibility = () => {
+// //         setShowConfirmPassword(!showConfirmPassword);
+// //     };
+
+// //     if (loading) { // Add loading state handling
+// //         return <p>Loading...</p>; // Or a loading spinner
+// //     }
+
+// //     if (user) { // User is already logged in
+// //         return null; // Redirect is handled by useEffect
+// //     }
+
+
+// //     return (
+// //         <div className="flex justify-center items-center min-h-screen px-4">
+// //             <div className="w-full max-w-md mt-10">
+// //                 <h2 className="text-3xl text-center text-main font-semibold mb-4">
+// //                     Create your Wise account
+// //                 </h2>
+
+// //                 <p className="text-base text-center text-gray mb-4">
+// //                     Already have an account?
+// //                     <Link
+// //                         href="/login"
+// //                         className="text-green font-medium underline underline-offset-4"
+// //                     >
+// //                         Log in
+// //                     </Link>
+// //                 </p>
+
+
+// //                 {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
+
+
+// //                 <form onSubmit={handleSubmit} className="mt-5 space-y-4">
+// //                     <div>
+// //                         <label
+// //                             htmlFor="fullName"
+// //                             className="text-base text-gray block capitalize"
+// //                         >
+// //                             Full Name
+// //                         </label>
+// //                         <input
+// //                             type="text"
+// //                             id="fullName"
+// //                             className={`mt-1 block px-4 py-3 w-full border rounded-lg ${fullNameError ? 'border-error' : 'border-[#c9cbce]'} hover:shadow-color hover:outline-none transition-shadow ease-in-out duration-300`}
+// //                             value={fullName}
+// //                             onChange={(e) => setFullName(e.target.value)}
+// //                         />
+// //                         {fullNameError && (
+// //                             <p className="flex text-error text-base items-center mt-0.5">
+// //                                 <span className="mr-1">
+// //                                     <IoMdCloseCircle className="size-5" />
+// //                                 </span>
+// //                                 {fullNameError}
+// //                             </p>
+// //                         )}
+// //                     </div>
+
+// //                     <div>
+// //                         <label
+// //                             htmlFor="email"
+// //                             className="text-base text-gray block capitalize"
+// //                         >
+// //                             Email Address
+// //                         </label>
+// //                         <input
+// //                             type="email"
+// //                             id="email"
+// //                             className={`mt-1 block px-4 py-3 w-full border rounded-lg ${emailError ? 'border-error' : 'border-[#c9cbce]'} hover:shadow-color hover:outline-none transition-shadow ease-in-out duration-300`}
+// //                             value={email}
+// //                             onChange={(e) => setEmail(e.target.value)}
+// //                         />
+// //                         {emailError && (
+// //                             <p className="flex text-error text-base items-center mt-0.5">
+// //                                 <span className="mr-1">
+// //                                     <IoMdCloseCircle className="size-5" />
+// //                                 </span>
+// //                                 {emailError}
+// //                             </p>
+// //                         )}
+// //                     </div>
+
+// //                     <div>
+// //                         <label
+// //                             htmlFor="password"
+// //                             className="text-base text-gray block capitalize"
+// //                         >
+// //                             Password
+// //                         </label>
+// //                         <div className="relative">
+// //                             <input
+// //                                 type={showPassword ? "text" : "password"}
+// //                                 id="password"
+// //                                 className={`mt-1 block px-4 py-3 w-full border rounded-lg ${passwordError ? 'border-error' : 'border-[#c9cbce]'} hover:shadow-color hover:outline-none transition-shadow ease-in-out duration-300`}
+// //                                 value={password}
+// //                                 onChange={(e) => setPassword(e.target.value)}
+// //                             />
+// //                             <button
+// //                                 type="button"
+// //                                 className="text-gray-500 -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-3 top-1/2 transform"
+// //                                 onClick={togglePasswordVisibility}
+// //                             >
+// //                                 {showPassword ? (
+// //                                     <RiEyeCloseLine className="text-green size-5" />
+// //                                 ) : (
+// //                                     <VscEye className="text-green size-5" />
+// //                                 )}
+// //                             </button>
+// //                         </div>
+// //                         {passwordError && (
+// //                             <p className="flex text-error text-base items-center mt-0.5">
+// //                                 <span className="mr-1">
+// //                                     <IoMdCloseCircle className="size-5" />
+// //                                 </span>
+// //                                 {passwordError}
+// //                             </p>
+// //                         )}
+// //                     </div>
+
+// //                     <div>
+// //                         <label
+// //                             htmlFor="confirmPassword"
+// //                             className="text-base text-gray block capitalize"
+// //                         >
+// //                             Confirm Password
+// //                         </label>
+// //                         <div className="relative">
+// //                             <input
+// //                                 type={showConfirmPassword ? "text" : "password"}
+// //                                 id="confirmPassword"
+// //                                 className={`mt-1 block px-4 py-3 w-full border rounded-lg ${confirmPasswordError ? 'border-error' : 'border-[#c9cbce]'} hover:shadow-color hover:outline-none transition-shadow ease-in-out duration-300`}
+// //                                 value={confirmPassword}
+// //                                 onChange={(e) => setConfirmPassword(e.target.value)}
+// //                             />
+// //                             <button
+// //                                 type="button"
+// //                                 className="text-gray-500 -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-3 top-1/2 transform"
+// //                                 onClick={toggleConfirmPasswordVisibility}
+// //                             >
+// //                                 {showConfirmPassword ? (
+// //                                     <RiEyeCloseLine className="text-green size-5" />
+// //                                 ) : (
+// //                                     <VscEye className="text-green size-5" />
+// //                                 )}
+// //                             </button>
+// //                         </div>
+// //                         {confirmPasswordError && (
+// //                             <p className="flex text-error text-base items-center mt-0.5">
+// //                                 <span className="mr-1">
+// //                                     <IoMdCloseCircle className="size-5" />
+// //                                 </span>
+// //                                 {confirmPasswordError}
+// //                             </p>
+// //                         )}
+// //                     </div>
+
+
+// //                     {/* Next Button */}
+// //                     <button
+// //                         type="submit"
+// //                         className="bg-lightgreen rounded-full text-green text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium hover:bg-lightgreen-hover py-2.5 transition-colors"
+// //                     >
+// //                         Next
+// //                     </button>
+// //                 </form>
+
+// //                 <div className="mt-4">
+// //                     <p className="text-base text-gray mb-3">Or log in with</p>
+// //                     <div className="mt-4">
+// //                         <button className="flex bg-white border border-gray justify-center rounded-full text-gray text-md w-full cursor-pointer font-medium gap-4 hover:bg-gray-100 items-center px-4 py-2">
+// //                             <Image
+// //                                 src="/assets/icon/google.svg"
+// //                                 width={30}
+// //                                 height={30}
+// //                                 alt="Continue with Google"
+// //                             />
+// //                             Continue with Google
+// //                         </button>
+// //                     </div>
+// //                 </div>
+
+// //                 <p className="text-center text-gray my-5">
+// //                     By registering, you accept our
+// //                     <Link
+// //                         href="/terms-and-conditions"
+// //                         className="text-green font-medium underline underline-offset-4"
+// //                     >
+// //                         Terms of use
+// //                     </Link>
+// //                     and
+// //                     <Link
+// //                         href="/privacy-policy-en"
+// //                         className="text-green font-medium underline underline-offset-4"
+// //                     >
+// //                         Privacy Policy
+// //                     </Link>
+// //                 </p>
+
+// //             </div>
+// //         </div>
+// //     );
+// // }
+
+
+// 'use client';
+
+// import { useState, useEffect } from 'react';
+// import authService from '../../services/auth'; // Correct import path using alias
+// import { useRouter } from 'next/navigation';
+// import { FaEye, FaEyeSlash } from 'react-icons/fa';
+// import { useAuth } from '../../hooks/useAuth'; // Import useAuth
+// import Link from "next/link";
+// import Image from "next/image";
+// import { IoMdCloseCircle } from "react-icons/io";
+// import { FaExclamation } from "react-icons/fa6";
+// import { RiEyeCloseLine } from "react-icons/ri";
+// import { VscEye } from "react-icons/vsc";
+// import { IoClose } from 'react-icons/io5';
+
+// export default function RegisterPage() {
+//     const [fullName, setFullName] = useState('');
+//     const [email, setEmail] = useState('');
+//     const [password, setPassword] = useState('');
+//     const [confirmPassword, setConfirmPassword] = useState('');
+//     const [error, setError] = useState('');
+//     const [showPassword, setShowPassword] = useState(false);
+//     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+//     const router = useRouter();
+//     const { user, loading } = useAuth(); // Get user and loading from AuthContext
+
+//     const [fullNameError, setFullNameError] = useState('');
+//     const [emailError, setEmailError] = useState('');
+//     const [passwordError, setPasswordError] = useState('');
+//     const [confirmPasswordError, setConfirmPasswordError] = useState('');
+
+//     const inputBaseClasses = "mt-1 block px-4 py-3 w-full border rounded-lg hover:shadow-color hover:outline-none transition-shadow ease-in-out duration-300";
+
+
+//     // Redirect if user is already logged in
+//     useEffect(() => {
+//         if (!loading && user) {
+//             router.push('/dashboard');
+//         }
+//     }, [user, loading, router]);
+
+//     const validateForm = () => {
+//         let isValid = true;
+
+//         if (!fullName.trim()) {
+//             setFullNameError('Full Name is required');
+//             isValid = false;
+//         } else {
+//             setFullNameError('');
+//         }
+
+//         if (!email.trim()) {
+//             setEmailError('Email is required');
+//             isValid = false;
+//         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+//             setEmailError('Invalid email format');
+//             isValid = false;
+//         } else {
+//             setEmailError('');
+//         }
+
+//         if (!password.trim()) {
+//             setPasswordError('Password is required');
+//             isValid = false;
+//         } else if (password.length < 8) {
+//             setPasswordError('Password must be at least 8 characters');
+//             isValid = false;
+//         } else {
+//             setPasswordError('');
+//         }
+
+//         if (!confirmPassword.trim()) {
+//             setConfirmPasswordError('Confirm Password is required');
+//             isValid = false;
+//         } else if (password !== confirmPassword) {
+//             setConfirmPasswordError('Passwords do not match');
+//             isValid = false;
+//         } else {
+//             setConfirmPasswordError('');
+//         }
+
+//         return isValid;
+//     };
+
+
+//     const handleSubmit = async (e) => {
+//         e.preventDefault();
+//         setError('');
+
+//         if (!validateForm()) {
+//             return;
+//         }
+
+
+//         try {
+//             await authService.register({ fullName, email, password });
+//             router.push('/auth/login?registerSuccess=true');
+//         } catch (err) {
+//             setError(err);
+//         }
+//     };
+
+//     const togglePasswordVisibility = () => {
+//         setShowPassword(!showPassword);
+//     };
+
+//     const toggleConfirmPasswordVisibility = () => {
+//         setShowConfirmPassword(!showConfirmPassword);
+//     };
+
+//     if (loading) { // Add loading state handling
+//         return <p>Loading...</p>; // Or a loading spinner
+//     }
+
+//     if (user) { // User is already logged in
+//         return null; // Redirect is handled by useEffect
+//     }
+
+//     const handleCloseLoginError = () => {
+//         setLoginError("");
+//     };
+
+
+//     return (
+//         <div className="flex justify-center items-center lg:h-[calc(100vh-73px)] px-4">
+//             <div className="w-full max-w-md">
+//                 <h2 className="lg:text-3xl text-2xl text-center text-main font-semibold mt-5 mb-4">
+//                     Create your Wise account
+//                 </h2>
+
+//                 <p className="text-base text-center text-gray mb-4">
+//                     Already have an account?
+//                     <Link
+//                         href="/auth/login"
+//                         className="text-secondary font-medium underline underline-offset-4"
+//                     >
+//                         Log in
+//                     </Link>
+//                 </p>
+
+//                 {error && (
+//                     <div
+//                         className="flex bg-green/8 p-4 rounded-2xl gap-4 items-center lg:gap-6 relative"
+//                         role="alert"
+//                     >
+//                         <div className="flex bg-error justify-center rounded-full items-center size-12">
+//                             <IoClose className="p-0.5 text-white size-8" />
+//                         </div>
+
+//                         <div>
+//                             <span className="text-gray block max-w-60">{error}</span>
+//                         </div>
+
+//                         <button
+//                             className="absolute cursor-pointer right-4 top-4"
+//                             onClick={handleCloseLoginError}
+//                         >
+//                             <IoClose
+//                                 className="p-1.5 rounded-full text-gray fill-current hover:bg-green/8 size-10"
+//                                 role="button"
+//                             />
+//                         </button>
+//                     </div>
+//                 )}
+
+
+//                 <form onSubmit={handleSubmit} className="mt-10 space-y-4">
+//                     <div>
+//                         <div className="mt-4">
+//                             <a className="flex bg-white border border-gray justify-center rounded-lg text-gray text-md w-full cursor-pointer font-medium gap-4 hover:bg-gray-100 items-center px-4 py-2">
+//                                 <Image
+//                                     src="/assets/icon/google.svg"
+//                                     width={30}
+//                                     height={30}
+//                                     alt="Continue with Google"
+//                                 />
+//                                 Continue with Google
+//                             </a>
+//                         </div>
+//                     </div>
+//                     <div>
+//                         <label
+//                             htmlFor="fullName"
+//                             className="text-gray text-sm block capitalize"
+//                         >
+//                             Full Name <span className="text-error">*</span>
+//                         </label>
+//                         <input
+//                             type="text"
+//                             id="fullName"
+//                             className={`mt-1 block px-4 py-3 w-full border rounded-lg hover:outline-none transition-shadow ease-in-out duration-300 ${fullNameError
+//                                 ? "border-error border-2"
+//                                 : "border-[#c9cbce] hover:shadow-color"
+//                                 }`}
+//                             value={fullName}
+//                             onChange={(e) => setFullName(e.target.value)}
+//                         />
+//                         {fullNameError && (
+//                             <p className="flex text-error text-base items-center mt-0.5">
+//                                 <span className="mr-1">
+//                                     <IoMdCloseCircle className="size-5" />
+//                                 </span>
+//                                 {fullNameError}
+//                             </p>
+//                         )}
+//                     </div>
+
+//                     <div>
+//                         <label
+//                             htmlFor="email"
+//                             className="text-gray text-sm block capitalize"
+//                         >
+//                             Email Address <span className="text-error">*</span>
+//                         </label>
+//                         <input
+//                             type="email"
+//                             id="email"
+//                             className={`mt-1 block px-4 py-3 w-full border rounded-lg hover:outline-none transition-shadow ease-in-out duration-300 ${emailError
+//                                 ? "border-error border-2"
+//                                 : "border-[#c9cbce] hover:shadow-color"
+//                                 }`}
+//                             value={email}
+//                             onChange={(e) => setEmail(e.target.value)}
+//                         />
+//                         {emailError && (
+//                             <p className="flex text-error text-base items-center mt-0.5">
+//                                 <span className="mr-1">
+//                                     <IoMdCloseCircle className="size-5" />
+//                                 </span>
+//                                 {emailError}
+//                             </p>
+//                         )}
+//                     </div>
+
+//                     <div>
+//                         <label
+//                             htmlFor="password"
+//                             className="text-gray text-sm block capitalize"
+//                         >
+//                             Password <span className="text-error">*</span>
+//                         </label>
+//                         <div className="relative">
+//                             <input
+//                                 type={showPassword ? "text" : "password"}
+//                                 id="password"
+//                                 className={`mt-1 block px-4 py-3 w-full border rounded-lg hover:outline-none transition-shadow ease-in-out duration-300 ${passwordError
+//                                     ? "border-error border-2"
+//                                     : "border-[#c9cbce] hover:shadow-color"
+//                                     }`}
+//                                 value={password}
+//                                 onChange={(e) => setPassword(e.target.value)}
+//                             />
+//                             <button
+//                                 type="button"
+//                                 className="text-gray-500 -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-1 top-1/2 transform bg-white p-3 rounded-md"
+//                                 onClick={togglePasswordVisibility}
+//                             >
+//                                 {showPassword ? (
+//                                     <RiEyeCloseLine className="text-secondary size-5" />
+//                                 ) : (
+//                                     <VscEye className="text-secondary size-5" />
+//                                 )}
+//                             </button>
+//                         </div>
+//                         {passwordError && (
+//                             <p className="flex text-error text-base items-center mt-0.5">
+//                                 <span className="mr-1">
+//                                     <IoMdCloseCircle className="size-5" />
+//                                 </span>
+//                                 {passwordError}
+//                             </p>
+//                         )}
+//                     </div>
+
+//                     <div>
+//                         <label
+//                             htmlFor="confirmPassword"
+//                             className="text-gray text-sm block capitalize"
+//                         >
+//                             Confirm Password <span className="text-error">*</span>
+//                         </label>
+//                         <div className="relative">
+//                             <input
+//                                 type={showConfirmPassword ? "text" : "password"}
+//                                 id="confirmPassword"
+//                                 className={`mt-1 block px-4 py-3 w-full border rounded-lg hover:outline-none transition-shadow ease-in-out duration-300 ${confirmPasswordError
+//                                     ? "border-error border-2"
+//                                     : "border-[#c9cbce] hover:shadow-color"
+//                                     }`}
+//                                 value={confirmPassword}
+//                                 onChange={(e) => setConfirmPassword(e.target.value)}
+//                             />
+//                             <button
+//                                 type="button"
+//                                 className="text-gray-500 -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-1 top-1/2 transform bg-white p-3 rounded-md"
+//                                 onClick={toggleConfirmPasswordVisibility}
+//                             >
+//                                 {showConfirmPassword ? (
+//                                     <RiEyeCloseLine className="text-secondary size-5" />
+//                                 ) : (
+//                                     <VscEye className="text-secondary size-5" />
+//                                 )}
+//                             </button>
+//                         </div>
+//                         {confirmPasswordError && (
+//                             <p className="flex text-error text-base items-center mt-0.5">
+//                                 <span className="mr-1">
+//                                     <IoMdCloseCircle className="size-5" />
+//                                 </span>
+//                                 {confirmPasswordError}
+//                             </p>
+//                         )}
+//                     </div>
+
+
+//                     {/* Next Button */}
+//                     <button
+//                         type="submit"
+//                         className="bg-primary hover:bg-primary-hover rounded-full text-secondary text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium py-2.5 transition-colors"
+//                     >
+//                         Next
+//                     </button>
+//                 </form>
+
+//                 <p className="text-center text-gray my-3 text-sm">
+//                     By registering, you accept our
+//                     <Link
+//                         href="/terms-and-conditions"
+//                         className="text-secondary font-medium underline underline-offset-4"
+//                     >
+//                         Terms of use
+//                     </Link>
+//                     and
+//                     <Link
+//                         href="/privacy-policy-en"
+//                         className="text-secondary font-medium underline underline-offset-4"
+//                     >
+//                         Privacy Policy
+//                     </Link>
+//                 </p>
+
+//             </div>
+//         </div>
+//     );
+// }
+
+
+
+// // frontend/src/pages/auth/register/page.tsx
+// 'use client';
+
+// import { useState, useEffect } from 'react';
+// import authService from '../../services/auth'; // Correct import path using alias
+// import { useRouter } from 'next/navigation';
+// import { useAuth } from '../../hooks/useAuth'; // Import useAuth
+// import Link from "next/link";
+// import Image from "next/image";
+// import { IoMdCloseCircle } from "react-icons/io";
+// import { RiEyeCloseLine } from "react-icons/ri";
+// import { VscEye } from "react-icons/vsc";
+// import { IoClose } from 'react-icons/io5';
+
+// export default function RegisterPage() {
+//     const [fullName, setFullName] = useState('');
+//     const [email, setEmail] = useState('');
+//     const [password, setPassword] = useState('');
+//     const [confirmPassword, setConfirmPassword] = useState('');
+//     const [error, setError] = useState('');
+//     const [showPassword, setShowPassword] = useState(false);
+//     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+//     const router = useRouter();
+//     const { user, loading } = useAuth(); // Get user and loading from AuthContext
+
+//     const [fullNameError, setFullNameError] = useState('');
+//     const [emailError, setEmailError] = useState('');
+//     const [passwordError, setPasswordError] = useState('');
+//     const [confirmPasswordError, setConfirmPasswordError] = useState('');
+//     const [registerSuccess, setRegisterSuccess] = useState(false); // State for successful registration
+
+//     const inputBaseClasses = "mt-1 block px-4 py-3 w-full border rounded-lg hover:shadow-color hover:outline-none transition-shadow ease-in-out duration-300";
+
+
+//     // Redirect if user is already logged in
+//     useEffect(() => {
+//         if (!loading && user) {
+//             router.push('/dashboard');
+//         }
+//     }, [user, loading, router]);
+
+//     // Redirect to login page with success message after registration
+//     useEffect(() => {
+//         const params = new URLSearchParams(window.location.search);
+//         if (params.get('registerSuccess') === 'true') {
+//             setRegisterSuccess(true);
+//             // Optionally clear the param from URL
+//             // window.history.replaceState({}, document.title, window.location.pathname);
+//         }
+//     }, []);
+
+
+//     const validateForm = () => {
+//         let isValid = true;
+
+//         if (!fullName.trim()) {
+//             setFullNameError('Full Name is required');
+//             isValid = false;
+//         } else {
+//             setFullNameError('');
+//         }
+
+//         if (!email.trim()) {
+//             setEmailError('Email is required');
+//             isValid = false;
+//         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+//             setEmailError('Invalid email format');
+//             isValid = false;
+//         } else {
+//             setEmailError('');
+//         }
+
+//         if (!password.trim()) {
+//             setPasswordError('Password is required');
+//             isValid = false;
+//         } else if (password.length < 8) {
+//             setPasswordError('Password must be at least 8 characters');
+//             isValid = false;
+//         } else {
+//             setPasswordError('');
+//         }
+
+//         if (!confirmPassword.trim()) {
+//             setConfirmPasswordError('Confirm Password is required');
+//             isValid = false;
+//         } else if (password !== confirmPassword) {
+//             setConfirmPasswordError('Passwords do not match');
+//             isValid = false;
+//         } else {
+//             setConfirmPasswordError('');
+//         }
+
+//         return isValid;
+//     };
+
+
+//     const handleSubmit = async (e) => {
+//         e.preventDefault();
+//         setError('');
+
+//         if (!validateForm()) {
+//             return;
+//         }
+
+
+//         try {
+//             await authService.register({ fullName, email, password });
+//             setRegisterSuccess(true); // Set success state to true
+//             // Optionally redirect immediately or show a success message for a few seconds then redirect
+//             setTimeout(() => {
+//                 router.push('/auth/login?registerSuccess=true'); // Redirect after successful registration
+//             }, 2000); // Delay for showing success message (adjust as needed)
+
+//         } catch (err) {
+//             setError(err.errors?.message || err.message || 'Registration failed'); // Handle backend validation errors if structured that way
+//         }
+//     };
+
+//     const togglePasswordVisibility = () => {
+//         setShowPassword(!showPassword);
+//     };
+
+//     const toggleConfirmPasswordVisibility = () => {
+//         setShowConfirmPassword(!showConfirmPassword);
+//     };
+
+//     if (loading) { // Add loading state handling
+//         return <p>Loading...</p>; // Or a loading spinner
+//     }
+
+//     if (user) { // User is already logged in
+//         return null; // Redirect is handled by useEffect
+//     }
+
+//     const handleCloseLoginError = () => {
+//         setError("");
+//     };
+
+
+//     return (
+//         <div className="flex justify-center items-center lg:h-[calc(100vh-73px)] px-4">
+//             <div className="w-full max-w-md">
+//                 <h2 className="lg:text-3xl text-2xl text-center text-main font-semibold mt-5 mb-4">
+//                     Create your Wise account
+//                 </h2>
+
+//                 <p className="text-base text-center text-gray mb-4">
+//                     Already have an account?
+//                     <Link
+//                         href="/auth/login"
+//                         className="text-secondary font-medium underline underline-offset-4"
+//                     >
+//                         Log in
+//                     </Link>
+//                 </p>
+
+//                 {error && (
+//                     <div
+//                         className="flex bg-green/8 p-4 rounded-2xl gap-4 items-center lg:gap-6 relative"
+//                         role="alert"
+//                     >
+//                         <div className="flex bg-error justify-center rounded-full items-center size-12">
+//                             <IoClose className="p-0.5 text-white size-8" />
+//                         </div>
+
+//                         <div>
+//                             <span className="text-gray block max-w-60">{error}</span>
+//                         </div>
+
+//                         <button
+//                             className="absolute cursor-pointer right-4 top-4"
+//                             onClick={handleCloseLoginError}
+//                         >
+//                             <IoClose
+//                                 className="p-1.5 rounded-full text-gray fill-current hover:bg-green/8 size-10"
+//                                 role="button"
+//                             />
+//                         </button>
+//                     </div>
+//                 )}
+
+//                 {registerSuccess && (
+//                     <div className="flex bg-green/8 p-6 rounded-2xl gap-4 items-center lg:gap-6 relative">
+//                         <div className="flex bg-green justify-center rounded-full items-center size-12">
+//                             <IoMdCheckmarkCircleOutline className="p-0.5 text-white size-8" />
+//                         </div>
+//                         <div>
+//                             <span className="text-gray block max-w-60">Registration successful! Redirecting to login...</span>
+//                         </div>
+//                     </div>
+//                 )}
+
+
+//                 <form onSubmit={handleSubmit} className="mt-10 space-y-4">
+//                     <div>
+//                         <div className="mt-4">
+//                             <a className="flex bg-white border border-gray justify-center rounded-lg text-gray text-md w-full cursor-pointer font-medium gap-4 hover:bg-gray-100 items-center px-4 py-2">
+//                                 <Image
+//                                     src="/assets/icon/google.svg"
+//                                     width={30}
+//                                     height={30}
+//                                     alt="Continue with Google"
+//                                 />
+//                                 Continue with Google
+//                             </a>
+//                         </div>
+//                     </div>
+//                     <div>
+//                         <label
+//                             htmlFor="fullName"
+//                             className="text-gray text-sm block capitalize"
+//                         >
+//                             Full Name <span className="text-error">*</span>
+//                         </label>
+//                         <input
+//                             type="text"
+//                             id="fullName"
+//                             className={`mt-1 block px-4 py-3 w-full border rounded-lg hover:outline-none transition-shadow ease-in-out duration-300 ${fullNameError
+//                                 ? "border-error border-2"
+//                                 : "border-[#c9cbce] hover:shadow-color"
+//                                 }`}
+//                             value={fullName}
+//                             onChange={(e) => setFullName(e.target.value)}
+//                         />
+//                         {fullNameError && (
+//                             <p className="flex text-error text-base items-center mt-0.5">
+//                                 <span className="mr-1">
+//                                     <IoMdCloseCircle className="size-5" />
+//                                 </span>
+//                                 {fullNameError}
+//                             </p>
+//                         )}
+//                     </div>
+
+//                     <div>
+//                         <label
+//                             htmlFor="email"
+//                             className="text-gray text-sm block capitalize"
+//                         >
+//                             Email Address <span className="text-error">*</span>
+//                         </label>
+//                         <input
+//                             type="email"
+//                             id="email"
+//                             className={`mt-1 block px-4 py-3 w-full border rounded-lg hover:outline-none transition-shadow ease-in-out duration-300 ${emailError
+//                                 ? "border-error border-2"
+//                                 : "border-[#c9cbce] hover:shadow-color"
+//                                 }`}
+//                             value={email}
+//                             onChange={(e) => setEmail(e.target.value)}
+//                         />
+//                         {emailError && (
+//                             <p className="flex text-error text-base items-center mt-0.5">
+//                                 <span className="mr-1">
+//                                     <IoMdCloseCircle className="size-5" />
+//                                 </span>
+//                                 {emailError}
+//                             </p>
+//                         )}
+//                     </div>
+
+//                     <div>
+//                         <label
+//                             htmlFor="password"
+//                             className="text-gray text-sm block capitalize"
+//                         >
+//                             Password <span className="text-error">*</span>
+//                         </label>
+//                         <div className="relative">
+//                             <input
+//                                 type={showPassword ? "text" : "password"}
+//                                 id="password"
+//                                 className={`mt-1 block px-4 py-3 w-full border rounded-lg hover:outline-none transition-shadow ease-in-out duration-300 ${passwordError
+//                                     ? "border-error border-2"
+//                                     : "border-[#c9cbce] hover:shadow-color"
+//                                     }`}
+//                                 value={password}
+//                                 onChange={(e) => setPassword(e.target.value)}
+//                             />
+//                             <button
+//                                 type="button"
+//                                 className="text-gray-500 -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-1 top-1/2 transform bg-white p-3 rounded-md"
+//                                 onClick={togglePasswordVisibility}
+//                             >
+//                                 {showPassword ? (
+//                                     <RiEyeCloseLine className="text-secondary size-5" />
+//                                 ) : (
+//                                     <VscEye className="text-secondary size-5" />
+//                                 )}
+//                             </button>
+//                         </div>
+//                         {passwordError && (
+//                             <p className="flex text-error text-base items-center mt-0.5">
+//                                 <span className="mr-1">
+//                                     <IoMdCloseCircle className="size-5" />
+//                                 </span>
+//                                 {passwordError}
+//                             </p>
+//                         )}
+//                     </div>
+
+//                     <div>
+//                         <label
+//                             htmlFor="confirmPassword"
+//                             className="text-gray text-sm block capitalize"
+//                         >
+//                             Confirm Password <span className="text-error">*</span>
+//                         </label>
+//                         <div className="relative">
+//                             <input
+//                                 type={showConfirmPassword ? "text" : "password"}
+//                                 id="confirmPassword"
+//                                 className={`mt-1 block px-4 py-3 w-full border rounded-lg hover:outline-none transition-shadow ease-in-out duration-300 ${confirmPasswordError
+//                                     ? "border-error border-2"
+//                                     : "border-[#c9cbce] hover:shadow-color"
+//                                     }`}
+//                                 value={confirmPassword}
+//                                 onChange={(e) => setConfirmPassword(e.target.value)}
+//                             />
+//                             <button
+//                                 type="button"
+//                                 className="text-gray-500 -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-1 top-1/2 transform bg-white p-3 rounded-md"
+//                                 onClick={toggleConfirmPasswordVisibility}
+//                             >
+//                                 {showConfirmPassword ? (
+//                                     <RiEyeCloseLine className="text-secondary size-5" />
+//                                 ) : (
+//                                     <VscEye className="text-secondary size-5" />
+//                                 )}
+//                             </button>
+//                         </div>
+//                         {confirmPasswordError && (
+//                             <p className="flex text-error text-base items-center mt-0.5">
+//                                 <span className="mr-1">
+//                                     <IoMdCloseCircle className="size-5" />
+//                                 </span>
+//                                 {confirmPasswordError}
+//                             </p>
+//                         )}
+//                     </div>
+
+
+//                     {/* Next Button */}
+//                     <button
+//                         type="submit"
+//                         className="bg-primary hover:bg-primary-hover rounded-full text-secondary text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium py-2.5 transition-colors"
+//                     >
+//                         Next
+//                     </button>
+//                 </form>
+
+//                 <p className="text-center text-gray my-3 text-sm">
+//                     By registering, you accept our
+//                     <Link
+//                         href="/terms-and-conditions"
+//                         className="text-secondary font-medium underline underline-offset-4"
+//                     >
+//                         Terms of use
+//                     </Link>
+//                     and
+//                     <Link
+//                         href="/privacy-policy-en"
+//                         className="text-secondary font-medium underline underline-offset-4"
+//                     >
+//                         Privacy Policy
+//                     </Link>
+//                 </p>
+
+//             </div>
+//         </div>
+//     );
+// }
+
+
+// // frontend/src/app/auth/register/page.tsx
+// 'use client';
+
+// import { useState, useEffect } from 'react';
+// import authService from '../../services/auth'; // Correct import path using alias
+// import { useRouter } from 'next/navigation';
+// import { useAuth } from '../../hooks/useAuth'; // Import useAuth
+// import Link from "next/link";
+// import Image from "next/image";
+// import { IoMdCloseCircle } from "react-icons/io";
+// import { RiEyeCloseLine } from "react-icons/ri";
+// import { VscEye } from "react-icons/vsc";
+// import { IoClose } from 'react-icons/io5';
+// import { IoMdCheckmarkCircleOutline } from "react-icons/io"; // <-- Import the missing icon
+
+// export default function RegisterPage() {
+//     const [fullName, setFullName] = useState('');
+//     const [email, setEmail] = useState('');
+//     const [password, setPassword] = useState('');
+//     const [confirmPassword, setConfirmPassword] = useState('');
+//     const [error, setError] = useState('');
+//     const [showPassword, setShowPassword] = useState(false);
+//     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+//     const router = useRouter();
+//     const { user, loading } = useAuth(); // Get user and loading from AuthContext
+
+//     const [fullNameError, setFullNameError] = useState('');
+//     const [emailError, setEmailError] = useState('');
+//     const [passwordError, setPasswordError] = useState('');
+//     const [confirmPasswordError, setConfirmPasswordError] = useState('');
+//     const [registerSuccess, setRegisterSuccess] = useState(false); // State for successful registration
+
+//     // Removed unused inputBaseClasses variable
+
+
+//     // Redirect if user is already logged in
+//     useEffect(() => {
+//         if (!loading && user) {
+//             router.push('/dashboard');
+//         }
+//     }, [user, loading, router]);
+
+//     // Redirect to login page with success message after registration
+//     useEffect(() => {
+//         const params = new URLSearchParams(window.location.search);
+//         if (params.get('registerSuccess') === 'true') {
+//             setRegisterSuccess(true);
+//             // Optionally clear the param from URL
+//             // window.history.replaceState({}, document.title, window.location.pathname);
+//         }
+//     }, []);
+
+
+//     const validateForm = () => {
+//         let isValid = true;
+
+//         setFullNameError(''); // Reset errors on validation
+//         setEmailError('');
+//         setPasswordError('');
+//         setConfirmPasswordError('');
+
+//         if (!fullName.trim()) {
+//             setFullNameError('Full Name is required');
+//             isValid = false;
+//         }
+
+//         if (!email.trim()) {
+//             setEmailError('Email is required');
+//             isValid = false;
+//         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+//             setEmailError('Invalid email format');
+//             isValid = false;
+//         }
+
+//         if (!password.trim()) {
+//             setPasswordError('Password is required');
+//             isValid = false;
+//         } else if (password.length < 8) {
+//             setPasswordError('Password must be at least 8 characters');
+//             isValid = false;
+//         }
+
+//         if (!confirmPassword.trim()) {
+//             setConfirmPasswordError('Confirm Password is required');
+//             isValid = false;
+//         } else if (password !== confirmPassword) {
+//             setConfirmPasswordError('Passwords do not match');
+//             isValid = false;
+//         }
+
+//         return isValid;
+//     };
+
+
+//     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => { // Added type for event
+//         e.preventDefault();
+//         setError('');
+
+//         if (!validateForm()) {
+//             return;
+//         }
+
+
+//         try {
+//             await authService.register({ fullName, email, password });
+//             setRegisterSuccess(true); // Set success state to true
+//             // Optionally redirect immediately or show a success message for a few seconds then redirect
+//             setTimeout(() => {
+//                 router.push('/auth/login?registerSuccess=true'); // Redirect after successful registration
+//             }, 2000); // Delay for showing success message (adjust as needed)
+
+//         } catch (err: any) { // Keep 'any' for now or define a specific error type from your service
+//             setError(err.response?.data?.message || err.message || 'Registration failed'); // Handle backend validation errors if structured that way
+//         }
+//     };
+
+//     const togglePasswordVisibility = () => {
+//         setShowPassword(!showPassword);
+//     };
+
+//     const toggleConfirmPasswordVisibility = () => {
+//         setShowConfirmPassword(!showConfirmPassword);
+//     };
+
+//     if (loading) { // Add loading state handling
+//         return <p>Loading...</p>; // Or a loading spinner
+//     }
+
+//     if (user && !loading) { // Ensure not loading before checking user
+//         return null; // Redirect is handled by useEffect
+//     }
+
+//     const handleCloseLoginError = () => {
+//         setError("");
+//     };
+
+
+//     return (
+//         <div className="flex justify-center items-center lg:h-[calc(100vh-73px)] px-4 py-8"> {/* Added padding */}
+//             <div className="w-full max-w-md">
+//                 <h2 className="lg:text-3xl text-2xl text-center text-main font-semibold mt-5 mb-4">
+//                     Create your Wise account
+//                 </h2>
+
+//                 <p className="text-base text-center text-gray mb-4">
+//                     Already have an account?
+//                     <Link
+//                         href="/auth/login"
+//                         className="text-secondary font-medium underline underline-offset-4"
+//                     >
+//                         Log in
+//                     </Link>
+//                 </p>
+
+//                 {error && (
+//                     <div
+//                         className="flex bg-red-100 p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4" // Changed background, added margin
+//                         role="alert"
+//                     >
+//                         <div className="flex bg-error justify-center rounded-full items-center size-12 shrink-0"> {/* Added shrink-0 */}
+//                             <IoClose className="p-0.5 text-white size-8" />
+//                         </div>
+
+//                         <div className="flex-grow"> {/* Added flex-grow */}
+//                             <span className="text-error block">{error}</span> {/* Changed text color */}
+//                         </div>
+
+//                         <button
+//                             className="absolute cursor-pointer right-4 top-4 p-1 rounded-full text-error hover:bg-red-200" // Adjusted styles
+//                             onClick={handleCloseLoginError}
+//                             aria-label="Close error message" // Added aria-label
+//                         >
+//                             <IoClose
+//                                 className="size-6" // Adjusted size
+//                                 role="button"
+//                             />
+//                         </button>
+//                     </div>
+//                 )}
+
+//                 {registerSuccess && (
+//                     <div className="flex bg-green/8 p-6 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4"> {/* Added margin */}
+//                         <div className="flex bg-green justify-center rounded-full items-center size-12 shrink-0"> {/* Added shrink-0 */}
+//                             {/* Use the imported icon */}
+//                             <IoMdCheckmarkCircleOutline className="p-0.5 text-white size-8" />
+//                         </div>
+//                         <div className="flex-grow"> {/* Added flex-grow */}
+//                             <span className="text-gray block">Registration successful! Redirecting to login...</span>
+//                         </div>
+//                     </div>
+//                 )}
+
+
+//                 <form onSubmit={handleSubmit} className="mt-10 space-y-4">
+//                     <div>
+//                         <div className="mt-4">
+//                             <a className="flex bg-white border border-gray justify-center rounded-lg text-gray text-md w-full cursor-pointer font-medium gap-4 hover:bg-gray-100 items-center px-4 py-2">
+//                                 <Image
+//                                     src="/assets/icon/google.svg"
+//                                     width={30}
+//                                     height={30}
+//                                     alt="Continue with Google"
+//                                 />
+//                                 Continue with Google
+//                             </a>
+//                         </div>
+//                     </div>
+//                     <div className="text-center my-4 text-gray-500">OR</div> {/* Added OR separator */}
+//                     <div>
+//                         <label
+//                             htmlFor="fullName"
+//                             className="text-gray text-sm block capitalize"
+//                         >
+//                             Full Name <span className="text-error">*</span>
+//                         </label>
+//                         <input
+//                             type="text"
+//                             id="fullName"
+//                             aria-required="true" // Added aria-required
+//                             aria-invalid={!!fullNameError} // Added aria-invalid
+//                             aria-describedby={fullNameError ? "fullName-error" : undefined} // Added aria-describedby
+//                             className={`mt-1 block px-4 py-3 w-full border rounded-lg hover:outline-none transition-shadow ease-in-out duration-300 ${fullNameError
+//                                 ? "border-error border-2"
+//                                 : "border-[#c9cbce] hover:shadow-color"
+//                                 }`}
+//                             value={fullName}
+//                             onChange={(e) => setFullName(e.target.value)}
+//                         />
+//                         {fullNameError && (
+//                             <p id="fullName-error" className="flex text-error text-sm items-center mt-1"> {/* Changed to text-sm, added id */}
+//                                 <span className="mr-1">
+//                                     <IoMdCloseCircle className="size-4" /> {/* Adjusted size */}
+//                                 </span>
+//                                 {fullNameError}
+//                             </p>
+//                         )}
+//                     </div>
+
+//                     <div>
+//                         <label
+//                             htmlFor="email"
+//                             className="text-gray text-sm block capitalize"
+//                         >
+//                             Email Address <span className="text-error">*</span>
+//                         </label>
+//                         <input
+//                             type="email"
+//                             id="email"
+//                             aria-required="true"
+//                             aria-invalid={!!emailError}
+//                             aria-describedby={emailError ? "email-error" : undefined}
+//                             className={`mt-1 block px-4 py-3 w-full border rounded-lg hover:outline-none transition-shadow ease-in-out duration-300 ${emailError
+//                                 ? "border-error border-2"
+//                                 : "border-[#c9cbce] hover:shadow-color"
+//                                 }`}
+//                             value={email}
+//                             onChange={(e) => setEmail(e.target.value)}
+//                         />
+//                         {emailError && (
+//                             <p id="email-error" className="flex text-error text-sm items-center mt-1">
+//                                 <span className="mr-1">
+//                                     <IoMdCloseCircle className="size-4" />
+//                                 </span>
+//                                 {emailError}
+//                             </p>
+//                         )}
+//                     </div>
+
+//                     <div>
+//                         <label
+//                             htmlFor="password"
+//                             className="text-gray text-sm block capitalize"
+//                         >
+//                             Password <span className="text-error">*</span>
+//                         </label>
+//                         <div className="relative">
+//                             <input
+//                                 type={showPassword ? "text" : "password"}
+//                                 id="password"
+//                                 aria-required="true"
+//                                 aria-invalid={!!passwordError}
+//                                 aria-describedby={passwordError ? "password-error" : undefined}
+//                                 className={`mt-1 block px-4 py-3 w-full border rounded-lg hover:outline-none transition-shadow ease-in-out duration-300 ${passwordError
+//                                     ? "border-error border-2"
+//                                     : "border-[#c9cbce] hover:shadow-color"
+//                                     }`}
+//                                 value={password}
+//                                 onChange={(e) => setPassword(e.target.value)}
+//                             />
+//                             <button
+//                                 type="button"
+//                                 className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 focus:outline-none hover:text-gray-700" // Adjusted positioning
+//                                 onClick={togglePasswordVisibility}
+//                                 aria-label={showPassword ? "Hide password" : "Show password"} // Added aria-label
+//                             >
+//                                 {showPassword ? (
+//                                     <RiEyeCloseLine className="text-secondary size-5" />
+//                                 ) : (
+//                                     <VscEye className="text-secondary size-5" />
+//                                 )}
+//                             </button>
+//                         </div>
+//                         {passwordError && (
+//                             <p id="password-error" className="flex text-error text-sm items-center mt-1">
+//                                 <span className="mr-1">
+//                                     <IoMdCloseCircle className="size-4" />
+//                                 </span>
+//                                 {passwordError}
+//                             </p>
+//                         )}
+//                     </div>
+
+//                     <div>
+//                         <label
+//                             htmlFor="confirmPassword"
+//                             className="text-gray text-sm block capitalize"
+//                         >
+//                             Confirm Password <span className="text-error">*</span>
+//                         </label>
+//                         <div className="relative">
+//                             <input
+//                                 type={showConfirmPassword ? "text" : "password"}
+//                                 id="confirmPassword"
+//                                 aria-required="true"
+//                                 aria-invalid={!!confirmPasswordError}
+//                                 aria-describedby={confirmPasswordError ? "confirmPassword-error" : undefined}
+//                                 className={`mt-1 block px-4 py-3 w-full border rounded-lg hover:outline-none transition-shadow ease-in-out duration-300 ${confirmPasswordError
+//                                     ? "border-error border-2"
+//                                     : "border-[#c9cbce] hover:shadow-color"
+//                                     }`}
+//                                 value={confirmPassword}
+//                                 onChange={(e) => setConfirmPassword(e.target.value)}
+//                             />
+//                             <button
+//                                 type="button"
+//                                 className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 focus:outline-none hover:text-gray-700" // Adjusted positioning
+//                                 onClick={toggleConfirmPasswordVisibility}
+//                                 aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"} // Added aria-label
+//                             >
+//                                 {showConfirmPassword ? (
+//                                     <RiEyeCloseLine className="text-secondary size-5" />
+//                                 ) : (
+//                                     <VscEye className="text-secondary size-5" />
+//                                 )}
+//                             </button>
+//                         </div>
+//                         {confirmPasswordError && (
+//                             <p id="confirmPassword-error" className="flex text-error text-sm items-center mt-1">
+//                                 <span className="mr-1">
+//                                     <IoMdCloseCircle className="size-4" />
+//                                 </span>
+//                                 {confirmPasswordError}
+//                             </p>
+//                         )}
+//                     </div>
+
+
+//                     {/* Next Button */}
+//                     <button
+//                         type="submit"
+//                         className="bg-primary hover:bg-primary-hover rounded-full text-secondary text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium py-2.5 transition-colors mt-6" // Added margin-top
+//                     >
+//                         Register
+//                     </button>
+//                 </form>
+
+//                 <p className="text-center text-gray my-5 text-sm"> {/* Adjusted margin */}
+//                     By registering, you accept our
+//                     <Link
+//                         href="/terms-and-conditions"
+//                         className="text-secondary font-medium underline underline-offset-4"
+//                     >
+//                         Terms of use
+//                     </Link>
+//                     and
+//                     <Link
+//                         href="/privacy-policy-en"
+//                         className="text-secondary font-medium underline underline-offset-4"
+//                     >
+//                         Privacy Policy
+//                     </Link>
+//                 </p>
+
+//             </div>
+//         </div>
+//     );
+// }
+
+
+
+// frontend/src/app/auth/register/page.tsx
+'use client';
+
+import { useState, useEffect } from 'react';
+import authService from '../../services/auth'; // Correct import path using alias
+import { useRouter } from 'next/navigation';
+import { useAuth } from '../../hooks/useAuth'; // Import useAuth
+import Link from "next/link";
+import Image from "next/image";
+import { IoMdCloseCircle } from "react-icons/io";
+import { RiEyeCloseLine } from "react-icons/ri";
+import { VscEye } from "react-icons/vsc";
+import { IoClose } from 'react-icons/io5';
+import { IoMdCheckmarkCircleOutline } from "react-icons/io";
+
+// Import AxiosError if your authService likely throws it for HTTP errors
+// import { AxiosError } from 'axios'; // Uncomment if using Axios
+
+export default function RegisterPage() {
+    const [fullName, setFullName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const router = useRouter();
+    const { user, loading } = useAuth(); // Get user and loading from AuthContext
+
+    const [fullNameError, setFullNameError] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [confirmPasswordError, setConfirmPasswordError] = useState('');
+    const [registerSuccess, setRegisterSuccess] = useState(false); // State for successful registration
+
+    // Redirect if user is already logged in
+    useEffect(() => {
+        if (!loading && user) {
+            router.push('/dashboard');
+        }
+    }, [user, loading, router]);
+
+    // Check for success message on mount (e.g., after redirection from register)
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('registerSuccess') === 'true') {
+            setRegisterSuccess(true);
+            // Optionally clear the param from URL if you want it shown only once
+             // window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    }, []); // Run only once on mount
+
+
+    const validateForm = () => {
+        let isValid = true;
+
+        setFullNameError(''); // Reset errors on validation
+        setEmailError('');
+        setPasswordError('');
+        setConfirmPasswordError('');
+
+        if (!fullName.trim()) {
+            setFullNameError('Full Name is required');
+            isValid = false;
+        }
+
+        if (!email.trim()) {
+            setEmailError('Email is required');
+            isValid = false;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            setEmailError('Invalid email format');
+            isValid = false;
+        }
+
+        if (!password.trim()) {
+            setPasswordError('Password is required');
+            isValid = false;
+        } else if (password.length < 8) {
+            setPasswordError('Password must be at least 8 characters');
+            isValid = false;
+        }
+
+        if (!confirmPassword.trim()) {
+            setConfirmPasswordError('Confirm Password is required');
+            isValid = false;
+        } else if (password !== confirmPassword) {
+            setConfirmPasswordError('Passwords do not match');
+            isValid = false;
+        }
+
+        return isValid;
+    };
+
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setError('');
+        setRegisterSuccess(false); // Reset success state on new submission
+
+        if (!validateForm()) {
+            return;
+        }
+
+        try {
+            await authService.register({ fullName, email, password });
+            setRegisterSuccess(true); // Set success state to true
+            // Redirect to login page with a success indicator after a short delay
+            setTimeout(() => {
+                router.push('/auth/login?registerSuccess=true');
+            }, 2000); // Delay allows user to see the success message
+
+        } catch (err: unknown) { // <-- Use unknown instead of any
+            let errorMessage = 'Registration failed. Please try again.'; // Default error message
+
+            // Check if the error object has a structure typical of Axios errors
+            // (or similar HTTP client errors) where the backend message is nested.
+            if (typeof err === 'object' && err !== null) {
+                 // Type assertion to check for nested properties safely
+                const potentialError = err as { response?: { data?: { message?: string } }, message?: string };
+
+                if (potentialError.response?.data?.message) {
+                    errorMessage = potentialError.response.data.message;
+                 } else if (potentialError.message) {
+                    // Fallback to the top-level message property if response.data.message doesn't exist
+                     errorMessage = potentialError.message;
+                 }
+            }
+            // Optional: Handle cases where a plain string might be thrown (less common)
+            // else if (typeof err === 'string') {
+            //    errorMessage = err;
+            // }
+
+            setError(errorMessage);
+        }
+    };
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const toggleConfirmPasswordVisibility = () => {
+        setShowConfirmPassword(!showConfirmPassword);
+    };
+
+    if (loading) {
+        return <p>Loading...</p>; // Or a loading spinner
+    }
+
+    // Redirect is handled by useEffect, no need to render anything here if logged in
+    // if (user && !loading) {
+    //     return null;
+    // }
+
+    const handleCloseLoginError = () => {
+        setError("");
+    };
+
+
+    return (
+        <div className="flex justify-center items-center lg:h-[calc(100vh-73px)] px-4 py-8"> {/* Added padding */}
+            <div className="w-full max-w-md">
+                <h2 className="lg:text-3xl text-2xl text-center text-main font-semibold mt-5 mb-4">
+                    Create your Wise account
+                </h2>
+
+                <p className="text-base text-center text-gray mb-4">
+                    Already have an account?{' '} {/* Added space */}
+                    <Link
+                        href="/auth/login"
+                        className="text-secondary font-medium underline underline-offset-4"
+                    >
+                        Log in
+                    </Link>
+                </p>
+
+                 {/* Error Message Display */}
+                {error && (
+                    <div
+                        className="flex bg-red-100 p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4" // Changed background, added margin
+                        role="alert"
+                    >
+                        <div className="flex bg-error justify-center rounded-full items-center size-12 shrink-0">
+                            <IoClose className="p-0.5 text-white size-8" />
+                        </div>
+
+                        <div className="flex-grow">
+                            <span className="text-error block">{error}</span>
+                        </div>
+
+                        <button
+                            className="absolute cursor-pointer right-4 top-4 p-1 rounded-full text-error hover:bg-red-200"
+                            onClick={handleCloseLoginError}
+                            aria-label="Close error message"
+                        >
+                            <IoClose
+                                className="size-6"
+                                role="button"
+                                aria-hidden="true" // Hide decorative icon from screen readers
+                            />
+                        </button>
+                    </div>
+                )}
+
+                 {/* Success Message Display */}
+                {registerSuccess && !error && ( // Show success only if there's no error from a subsequent attempt
+                    <div className="flex bg-green/10 p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4"> {/* Adjusted background/padding */}
+                        <div className="flex bg-green justify-center rounded-full items-center size-12 shrink-0">
+                            <IoMdCheckmarkCircleOutline className="p-0.5 text-white size-8" />
+                        </div>
+                        <div className="flex-grow">
+                            <span className="text-green block font-medium">Registration successful!</span> {/* Improved text */}
+                            <span className="text-gray block text-sm">Redirecting to login...</span>
+                        </div>
+                         {/* Optionally add a close button if needed, though auto-redirect is common */}
+                    </div>
+                )}
+
+
+                <form onSubmit={handleSubmit} className="mt-10 space-y-4">
+                     {/* Google Button */}
+                    <div>
+                        {/* Consider making this a button or handling the click properly */}
+                        <a className="flex bg-white border border-gray/50 hover:border-gray/80 justify-center rounded-lg text-gray-700 text-md w-full cursor-pointer font-medium gap-4 hover:bg-gray-50 items-center px-4 py-2.5 transition-colors duration-200">
+                            <Image
+                                src="/assets/icon/google.svg"
+                                width={24} // Adjusted size
+                                height={24} // Adjusted size
+                                alt="Google icon"
+                            />
+                            Continue with Google
+                        </a>
+                    </div>
+                    <div className="relative flex items-center my-6"> {/* Adjusted margin */}
+                        <div className="flex-grow border-t border-gray-300"></div>
+                        <span className="flex-shrink mx-4 text-gray-500 text-sm">OR</span>
+                        <div className="flex-grow border-t border-gray-300"></div>
+                    </div>
+
+                    {/* Full Name Input */}
+                    <div>
+                        <label
+                            htmlFor="fullName"
+                            className="text-gray-700 text-sm font-medium block mb-1" // Adjusted styling
+                        >
+                            Full Name <span className="text-error">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="fullName"
+                            autoComplete="name" // Added autocomplete
+                            aria-required="true"
+                            aria-invalid={!!fullNameError}
+                            aria-describedby={fullNameError ? "fullName-error" : undefined}
+                            className={`block px-4 py-3 w-full border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all ease-in-out duration-200 ${fullNameError
+                                ? "border-error ring-error/50" // Simplified error state
+                                : "border-gray-300 hover:border-gray-400 focus:border-primary" // Adjusted normal/focus states
+                                }`}
+                            value={fullName}
+                            onChange={(e) => { setFullName(e.target.value); if (fullNameError) setFullNameError(''); }} // Clear error on change
+                        />
+                        {fullNameError && (
+                            <p id="fullName-error" className="flex text-error text-xs items-center mt-1.5" role="alert"> {/* Adjusted style/role */}
+                                <IoMdCloseCircle className="size-3.5 mr-1 flex-shrink-0" /> {/* Adjusted size/margin */}
+                                {fullNameError}
+                            </p>
+                        )}
+                    </div>
+
+                     {/* Email Input */}
+                    <div>
+                        <label
+                            htmlFor="email"
+                            className="text-gray-700 text-sm font-medium block mb-1"
+                        >
+                            Email Address <span className="text-error">*</span>
+                        </label>
+                        <input
+                            type="email"
+                            id="email"
+                            autoComplete="email" // Added autocomplete
+                            aria-required="true"
+                            aria-invalid={!!emailError}
+                            aria-describedby={emailError ? "email-error" : undefined}
+                            className={`block px-4 py-3 w-full border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all ease-in-out duration-200 ${emailError
+                                ? "border-error ring-error/50"
+                                : "border-gray-300 hover:border-gray-400 focus:border-primary"
+                                }`}
+                            value={email}
+                            onChange={(e) => { setEmail(e.target.value); if (emailError) setEmailError(''); }} // Clear error on change
+                        />
+                        {emailError && (
+                            <p id="email-error" className="flex text-error text-xs items-center mt-1.5" role="alert">
+                                <IoMdCloseCircle className="size-3.5 mr-1 flex-shrink-0" />
+                                {emailError}
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Password Input */}
+                    <div>
+                        <label
+                            htmlFor="password"
+                            className="text-gray-700 text-sm font-medium block mb-1"
+                        >
+                            Password <span className="text-error">*</span>
+                        </label>
+                        <div className="relative">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                id="password"
+                                autoComplete="new-password" // Important for password managers
+                                aria-required="true"
+                                aria-invalid={!!passwordError}
+                                aria-describedby={passwordError ? "password-error" : undefined}
+                                className={`block px-4 py-3 w-full border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all ease-in-out duration-200 ${passwordError
+                                    ? "border-error ring-error/50"
+                                    : "border-gray-300 hover:border-gray-400 focus:border-primary"
+                                    }`}
+                                value={password}
+                                onChange={(e) => { setPassword(e.target.value); if (passwordError) setPasswordError(''); }} // Clear error on change
+                            />
+                            <button
+                                type="button"
+                                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/30 rounded-full" // Adjusted focus style
+                                onClick={togglePasswordVisibility}
+                                aria-label={showPassword ? "Hide password" : "Show password"}
+                            >
+                                {showPassword ? (
+                                    <RiEyeCloseLine className="text-secondary size-5" />
+                                ) : (
+                                    <VscEye className="text-secondary size-5" />
+                                )}
+                            </button>
+                        </div>
+                        {passwordError && (
+                            <p id="password-error" className="flex text-error text-xs items-center mt-1.5" role="alert">
+                                <IoMdCloseCircle className="size-3.5 mr-1 flex-shrink-0" />
+                                {passwordError}
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Confirm Password Input */}
+                    <div>
+                        <label
+                            htmlFor="confirmPassword"
+                            className="text-gray-700 text-sm font-medium block mb-1"
+                        >
+                            Confirm Password <span className="text-error">*</span>
+                        </label>
+                        <div className="relative">
+                            <input
+                                type={showConfirmPassword ? "text" : "password"}
+                                id="confirmPassword"
+                                autoComplete="new-password"
+                                aria-required="true"
+                                aria-invalid={!!confirmPasswordError}
+                                aria-describedby={confirmPasswordError ? "confirmPassword-error" : undefined}
+                                className={`block px-4 py-3 w-full border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all ease-in-out duration-200 ${confirmPasswordError
+                                    ? "border-error ring-error/50"
+                                    : "border-gray-300 hover:border-gray-400 focus:border-primary"
+                                    }`}
+                                value={confirmPassword}
+                                onChange={(e) => { setConfirmPassword(e.target.value); if (confirmPasswordError) setConfirmPasswordError(''); }} // Clear error on change
+                            />
+                            <button
+                                type="button"
+                                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/30 rounded-full"
+                                onClick={toggleConfirmPasswordVisibility}
+                                aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+                            >
+                                {showConfirmPassword ? (
+                                    <RiEyeCloseLine className="text-secondary size-5" />
+                                ) : (
+                                    <VscEye className="text-secondary size-5" />
+                                )}
+                            </button>
+                        </div>
+                        {confirmPasswordError && (
+                            <p id="confirmPassword-error" className="flex text-error text-xs items-center mt-1.5" role="alert">
+                                <IoMdCloseCircle className="size-3.5 mr-1 flex-shrink-0" />
+                                {confirmPasswordError}
+                            </p>
+                        )}
+                    </div>
+
+
+                    {/* Register Button */}
+                    <button
+                        type="submit"
+                        disabled={registerSuccess} // Disable button after successful registration to prevent double clicks
+                        className={`bg-primary hover:bg-primary-hover rounded-full text-white text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary font-semibold py-3 transition-colors mt-6 disabled:opacity-70 disabled:cursor-not-allowed`} // Adjusted styles, disabled state
+                    >
+                        {registerSuccess ? 'Registered!' : 'Register'}
+                    </button>
+                </form>
+
+                 {/* Terms and Policy Links */}
+                <p className="text-center text-gray-600 my-6 text-xs px-4"> {/* Adjusted styles */}
+                    By registering, you accept our{' '}
+                    <Link
+                        href="/terms-and-conditions"
+                        className="text-secondary font-medium underline underline-offset-2 hover:text-secondary-dark" // Adjusted offset/hover
+                    >
+                        Terms of use
+                    </Link>
+                    {' '}and{' '}
+                    <Link
+                        href="/privacy-policy-en"
+                        className="text-secondary font-medium underline underline-offset-2 hover:text-secondary-dark"
+                    >
+                        Privacy Policy
+                    </Link>
+                    .
+                </p>
+
+            </div>
+        </div>
+    );
+}
