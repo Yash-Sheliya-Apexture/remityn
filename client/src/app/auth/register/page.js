@@ -885,6 +885,372 @@
 
 
 // frontend/src/pages/auth/register/page.tsx
+// 'use client';
+
+// import { useState, useEffect } from 'react';
+// import authService from '../../services/auth'; // Correct import path using alias
+// import { useRouter } from 'next/navigation';
+// import { useAuth } from '../../hooks/useAuth'; // Import useAuth
+// import Link from "next/link";
+// import Image from "next/image";
+// import { IoMdCloseCircle } from "react-icons/io";
+// import { RiEyeCloseLine } from "react-icons/ri";
+// import { VscEye } from "react-icons/vsc";
+// import { IoClose } from 'react-icons/io5';
+// import { FiX } from 'react-icons/fi';
+
+
+// export default function RegisterPage() {
+//     const [fullName, setFullName] = useState('');
+//     const [email, setEmail] = useState('');
+//     const [password, setPassword] = useState('');
+//     const [confirmPassword, setConfirmPassword] = useState('');
+//     const [error, setError] = useState('');
+//     const [showPassword, setShowPassword] = useState(false);
+//     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+//     const router = useRouter();
+//     const { user, loading } = useAuth(); // Get user and loading from AuthContext
+
+//     const [fullNameError, setFullNameError] = useState('');
+//     const [emailError, setEmailError] = useState('');
+//     const [passwordError, setPasswordError] = useState('');
+//     const [confirmPasswordError, setConfirmPasswordError] = useState('');
+//     const [registerSuccess, setRegisterSuccess] = useState(false); // State for successful registration
+
+//     const inputBaseClasses = "mt-1 block px-4 py-3 w-full border rounded-lg hover:shadow-color hover:outline-none transition-shadow ease-in-out duration-300";
+
+
+//     // Redirect if user is already logged in
+//     useEffect(() => {
+//         if (!loading && user) {
+//             router.push('/dashboard');
+//         }
+//     }, [user, loading, router]);
+
+//     // Redirect to login page with success message after registration
+//     useEffect(() => {
+//         const params = new URLSearchParams(window.location.search);
+//         if (params.get('registerSuccess') === 'true') {
+//             setRegisterSuccess(true);
+//             // Optionally clear the param from URL
+//             // window.history.replaceState({}, document.title, window.location.pathname);
+//         }
+//     }, []);
+
+
+//     const validateForm = () => {
+//         let isValid = true;
+
+//         if (!fullName.trim()) {
+//             setFullNameError('Full Name is required');
+//             isValid = false;
+//         } else {
+//             setFullNameError('');
+//         }
+
+//         if (!email.trim()) {
+//             setEmailError('Email is required');
+//             isValid = false;
+//         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+//             setEmailError('Invalid email format');
+//             isValid = false;
+//         } else {
+//             setEmailError('');
+//         }
+
+//         if (!password.trim()) {
+//             setPasswordError('Password is required');
+//             isValid = false;
+//         } else if (password.length < 8) {
+//             setPasswordError('Password must be at least 8 characters');
+//             isValid = false;
+//         } else {
+//             setPasswordError('');
+//         }
+
+//         if (!confirmPassword.trim()) {
+//             setConfirmPasswordError('Confirm Password is required');
+//             isValid = false;
+//         } else if (password !== confirmPassword) {
+//             setConfirmPasswordError('Passwords do not match');
+//             isValid = false;
+//         } else {
+//             setConfirmPasswordError('');
+//         }
+
+//         return isValid;
+//     };
+
+
+//     const handleSubmit = async (e) => {
+//         e.preventDefault();
+//         setError('');
+
+//         if (!validateForm()) {
+//             return;
+//         }
+
+
+//         try {
+//             await authService.register({ fullName, email, password });
+//             setRegisterSuccess(true); // Set success state to true
+//             // Optionally redirect immediately or show a success message for a few seconds then redirect
+//             setTimeout(() => {
+//                 router.push('/auth/login?registerSuccess=true'); // Redirect after successful registration
+//             }, 2000); // Delay for showing success message (adjust as needed)
+
+//         } catch (err) {
+//             setError(err.errors?.message || err.message || 'Registration failed'); // Handle backend validation errors if structured that way
+//         }
+//     };
+
+//     const togglePasswordVisibility = () => {
+//         setShowPassword(!showPassword);
+//     };
+
+//     const toggleConfirmPasswordVisibility = () => {
+//         setShowConfirmPassword(!showConfirmPassword);
+//     };
+
+//     if (loading) { // Add loading state handling
+//         return <p>Loading...</p>; // Or a loading spinner
+//     }
+
+//     if (user) { // User is already logged in
+//         return null; // Redirect is handled by useEffect
+//     }
+
+//     const handleCloseLoginError = () => {
+//         setError("");
+//     };
+
+
+//     return (
+//         <div className="flex justify-center items-center lg:h-[calc(100vh-73px)] px-4">
+//             <div className="w-full max-w-md">
+//                 <h2 className="lg:text-3xl text-2xl text-center text-mainheading dark:text-white font-semibold mt-5 mb-4">
+//                     Create your Wise account
+//                 </h2>
+
+//                 <p className="text-base text-center text-gray-500 dark:text-gray-300 mb-4">
+//                     Already have an account?{" "}
+//                     <Link
+//                         href="/auth/login"
+//                         className="text-primary font-medium underline underline-offset-4"
+//                     >
+//                         Log in
+//                     </Link>
+//                 </p>
+
+
+//                 {error && (
+//                     <div
+//                         className="bg-lightgray dark:bg-red-600/20 border rounded-xl p-4 flex items-center gap-4 relative"
+//                         role="alert"
+//                     >
+//                         <div className="p-1 bg-red-700 rounded-full">
+//                             <FiX size={24} className="text-lightgray" />
+//                         </div>
+
+//                         <div>
+//                             <span className="text-gray-500 dark:text-white  block max-w-60">{error}</span>
+//                         </div>
+//                     </div>
+//                 )}
+
+//                 {registerSuccess && (
+//                     <div className="flex bg-green/8 p-6 rounded-2xl gap-4 items-center lg:gap-6 relative">
+//                         <div className="flex bg-green justify-center rounded-full items-center size-12">
+//                             <IoMdCheckmarkCircleOutline className="p-0.5 text-white size-8" />
+//                         </div>
+//                         <div>
+//                             <span className="text-gray block max-w-60">Registration successful! Redirecting to login...</span>
+//                         </div>
+//                     </div>
+//                 )}
+
+
+//                 <form onSubmit={handleSubmit} className="mt-10 space-y-4">
+//                     <div>
+//                         <div className="mt-4">
+//                             <a className="flex bg-white dark:bg-background border justify-center rounded-lg text-mainheading dark:text-white  text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 h-14">
+//                                 <Image
+//                                     src="/assets/icon/google.svg"
+//                                     width={30}
+//                                     height={30}
+//                                     alt="Continue with Google"
+//                                 />
+//                                 Continue with Google
+//                             </a>
+//                         </div>
+//                     </div>
+//                     <div>
+//                         <label
+//                             htmlFor="fullName"
+//                             className="text-gray-500 dark:text-gray-300  block capitalize"
+//                         >
+//                             Full Name <span className="text-error">*</span>
+//                         </label>
+//                         <input
+//                             type="text"
+//                             id="fullName"
+//                             className={`mt-1 block px-4 py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${fullNameError
+//                                 ? "border-error border-2"
+//                                 : " dark:hover:shadow-whitecolor hover:shadow-darkcolor"
+//                                 }`}
+//                             value={fullName}
+//                             onChange={(e) => setFullName(e.target.value)}
+//                         />
+//                         {fullNameError && (
+//                             <p className="flex text-error text-base items-center mt-0.5">
+//                                 <span className="mr-1">
+//                                     <IoMdCloseCircle className="size-5" />
+//                                 </span>
+//                                 {fullNameError}
+//                             </p>
+//                         )}
+//                     </div>
+
+//                     <div>
+//                         <label
+//                             htmlFor="email"
+//                             className="text-gray-500 dark:text-gray-300  block capitalize"
+//                         >
+//                             Email Address <span className="text-error">*</span>
+//                         </label>
+//                         <input
+//                             type="email"
+//                             id="email"
+//                             className={`mt-1 block px-4 py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${emailError
+//                                 ? "border-error border-2"
+//                                 : " dark:hover:shadow-whitecolor hover:shadow-darkcolor"
+//                                 }`}
+//                             value={email}
+//                             onChange={(e) => setEmail(e.target.value)}
+//                         />
+//                         {emailError && (
+//                             <p className="flex text-error text-base items-center mt-0.5">
+//                                 <span className="mr-1">
+//                                     <IoMdCloseCircle className="size-5" />
+//                                 </span>
+//                                 {emailError}
+//                             </p>
+//                         )}
+//                     </div>
+
+//                     <div>
+//                         <label
+//                             htmlFor="password"
+//                             className="text-gray-500 dark:text-gray-300  block capitalize"
+//                         >
+//                             Password <span className="text-error">*</span>
+//                         </label>
+//                         <div className="relative">
+//                             <input
+//                                 type={showPassword ? "text" : "password"}
+//                                 id="password"
+//                                 className={`mt-1 block px-4 py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${passwordError
+//                                     ? "border-error border-2"
+//                                     : " dark:hover:shadow-whitecolor hover:shadow-darkcolor"
+//                                     }`}
+//                                 value={password}
+//                                 onChange={(e) => setPassword(e.target.value)}
+//                             />
+//                             <button
+//                                 type="button"
+//                                 className="text-gray-500 dark:text-white -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-1 top-1/2 transform bg-white dark:bg-background p-3 rounded-md"
+//                                 onClick={togglePasswordVisibility}
+//                             >
+//                                 {showPassword ? (
+//                                     <RiEyeCloseLine className="text-mainheading dark:text-white size-5" />
+//                                 ) : (
+//                                     <VscEye className="text-mainheading dark:text-white size-5" />
+//                                 )}
+//                             </button>
+//                         </div>
+//                         {passwordError && (
+//                             <p className="flex text-error text-base items-center mt-0.5">
+//                                 <span className="mr-1">
+//                                     <IoMdCloseCircle className="size-5" />
+//                                 </span>
+//                                 {passwordError}
+//                             </p>
+//                         )}
+//                     </div>
+
+//                     <div>
+//                         <label
+//                             htmlFor="confirmPassword"
+//                             className="text-gray-500 dark:text-gray-300  block capitalize"
+//                         >
+//                             Confirm Password <span className="text-error">*</span>
+//                         </label>
+//                         <div className="relative">
+//                             <input
+//                                 type={showConfirmPassword ? "text" : "password"}
+//                                 id="confirmPassword"
+//                                 className={`mt-1 block px-4 py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${confirmPasswordError
+//                                     ? "border-error border-2"
+//                                     : " dark:hover:shadow-whitecolor hover:shadow-darkcolor"
+//                                     }`}
+//                                 value={confirmPassword}
+//                                 onChange={(e) => setConfirmPassword(e.target.value)}
+//                             />
+//                             <button
+//                                 type="button"
+//                                 className="text-gray-500 dark:text-white -translate-y-1/2 absolute hover:text-gray-700 right-1 top-1/2 transform bg-white dark:bg-background p-3 rounded-md"
+//                                 onClick={toggleConfirmPasswordVisibility}
+//                             >
+//                                 {showConfirmPassword ? (
+//                                     <RiEyeCloseLine className="text-mainheading dark:text-white size-5" />
+//                                 ) : (
+//                                     <VscEye className="text-mainheading dark:text-white size-5" />
+//                                 )}
+//                             </button>
+//                         </div>
+//                         {confirmPasswordError && (
+//                             <p className="flex text-error text-base items-center mt-0.5">
+//                                 <span className="mr-1">
+//                                     <IoMdCloseCircle className="size-5" />
+//                                 </span>
+//                                 {confirmPasswordError}
+//                             </p>
+//                         )}
+//                     </div>
+
+
+//                     {/* Next Button */}
+//                     <button
+//                         type="submit"
+//                         className="bg-primary hover:bg-primaryhover rounded-full text-mainheading text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium py-3 h-14 transition-colors"
+//                     >
+//                         Next
+//                     </button>
+//                 </form>
+
+//                 <p className="text-center text-gray-500 dark:text-gray-300 my-3 text-sm">
+//                     By registering, you accept our{" "}
+//                     <Link
+//                         href="/terms-and-conditions"
+//                         className="text-primary font-medium underline underline-offset-4"
+//                     >
+//                         Terms of use
+//                     </Link>{" "}
+//                     and{" "}
+//                     <Link
+//                         href="/privacy-policy-en"
+//                         className="text-primary font-medium underline underline-offset-4"
+//                     >
+//                         Privacy Policy
+//                     </Link>
+//                 </p>
+
+//             </div>
+//         </div>
+//     );
+// }
+
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -893,10 +1259,13 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '../../hooks/useAuth'; // Import useAuth
 import Link from "next/link";
 import Image from "next/image";
-import { IoMdCloseCircle } from "react-icons/io";
+import { IoMdCheckmarkCircleOutline, IoMdCloseCircle } from "react-icons/io";
 import { RiEyeCloseLine } from "react-icons/ri";
 import { VscEye } from "react-icons/vsc";
 import { IoClose } from 'react-icons/io5';
+import { FiX } from 'react-icons/fi';
+import { motion, AnimatePresence } from 'framer-motion'; // Import Framer Motion
+
 
 export default function RegisterPage() {
     const [fullName, setFullName] = useState('');
@@ -914,6 +1283,7 @@ export default function RegisterPage() {
     const [passwordError, setPasswordError] = useState('');
     const [confirmPasswordError, setConfirmPasswordError] = useState('');
     const [registerSuccess, setRegisterSuccess] = useState(false); // State for successful registration
+    const [isErrorVisible, setIsErrorVisible] = useState(false); // State to control error visibility for animation
 
     const inputBaseClasses = "mt-1 block px-4 py-3 w-full border rounded-lg hover:shadow-color hover:outline-none transition-shadow ease-in-out duration-300";
 
@@ -934,6 +1304,14 @@ export default function RegisterPage() {
             // window.history.replaceState({}, document.title, window.location.pathname);
         }
     }, []);
+
+    useEffect(() => {
+        if (error) {
+            setIsErrorVisible(true);
+        } else {
+            setIsErrorVisible(false);
+        }
+    }, [error]);
 
 
     const validateForm = () => {
@@ -983,6 +1361,7 @@ export default function RegisterPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setIsErrorVisible(false); // Hide error before submission
 
         if (!validateForm()) {
             return;
@@ -1007,7 +1386,7 @@ export default function RegisterPage() {
     };
 
     const toggleConfirmPasswordVisibility = () => {
-        setShowConfirmPassword(!showConfirmPassword);
+        setShowConfirmPassword(!setShowConfirmPassword);
     };
 
     if (loading) { // Add loading state handling
@@ -1020,50 +1399,56 @@ export default function RegisterPage() {
 
     const handleCloseLoginError = () => {
         setError("");
+        setIsErrorVisible(false); // Hide error when close button is clicked
+    };
+
+    // Framer Motion variants for animation
+    const errorVariants = {
+        initial: { opacity: 0, y: -20,  },
+        animate: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } },
+        exit: { opacity: 0, y: -20, transition: { duration: 0.2, ease: "easeIn" } }
     };
 
 
     return (
         <div className="flex justify-center items-center lg:h-[calc(100vh-73px)] px-4">
             <div className="w-full max-w-md">
-                <h2 className="lg:text-3xl text-2xl text-center text-main font-semibold mt-5 mb-4">
+                <h2 className="lg:text-3xl text-2xl text-center text-mainheading dark:text-white font-semibold mt-5 mb-4">
                     Create your Wise account
                 </h2>
 
-                <p className="text-base text-center text-gray mb-4">
+                <p className="text-base text-center text-gray-500 dark:text-gray-300 mb-4">
                     Already have an account?{" "}
                     <Link
                         href="/auth/login"
-                        className="text-secondary font-medium underline underline-offset-4"
+                        className="text-primary font-medium underline underline-offset-4"
                     >
                         Log in
                     </Link>
                 </p>
 
-                {error && (
-                    <div
-                        className="flex bg-green/8 p-4 rounded-2xl gap-4 items-center lg:gap-6 relative"
-                        role="alert"
-                    >
-                        <div className="flex bg-error justify-center rounded-full items-center size-12">
-                            <IoClose className="p-0.5 text-white size-8" />
-                        </div>
 
-                        <div>
-                            <span className="text-gray block max-w-60">{error}</span>
-                        </div>
-
-                        <button
-                            className="absolute cursor-pointer right-4 top-4"
-                            onClick={handleCloseLoginError}
+                <AnimatePresence>
+                    {isErrorVisible && error && (
+                        <motion.div
+                            className="bg-lightgray dark:bg-red-600/20 border rounded-xl p-4 flex items-center gap-4 relative"
+                            role="alert"
+                            initial="initial"
+                            animate="animate"
+                            exit="exit"
+                            variants={errorVariants}
                         >
-                            <IoClose
-                                className="p-1.5 rounded-full text-gray fill-current hover:bg-green/8 size-10"
-                                role="button"
-                            />
-                        </button>
-                    </div>
-                )}
+                            <div className="p-1 bg-red-700 rounded-full">
+                                <FiX size={24} className="text-lightgray" />
+                            </div>
+
+                            <div>
+                                <span className="text-gray-500 dark:text-white  block max-w-60">{error}</span>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
 
                 {registerSuccess && (
                     <div className="flex bg-green/8 p-6 rounded-2xl gap-4 items-center lg:gap-6 relative">
@@ -1080,7 +1465,7 @@ export default function RegisterPage() {
                 <form onSubmit={handleSubmit} className="mt-10 space-y-4">
                     <div>
                         <div className="mt-4">
-                            <a className="flex bg-white border border-gray justify-center rounded-lg text-gray text-md w-full cursor-pointer font-medium gap-4 hover:bg-gray-100 items-center px-4 py-2">
+                            <a className="flex bg-white dark:bg-background border justify-center rounded-lg text-mainheading dark:text-white  text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 h-14">
                                 <Image
                                     src="/assets/icon/google.svg"
                                     width={30}
@@ -1094,22 +1479,22 @@ export default function RegisterPage() {
                     <div>
                         <label
                             htmlFor="fullName"
-                            className="text-gray text-sm block capitalize"
+                            className="text-gray-500 dark:text-gray-300  block capitalize"
                         >
                             Full Name <span className="text-error">*</span>
                         </label>
                         <input
                             type="text"
                             id="fullName"
-                            className={`mt-1 block px-4 py-3 w-full border rounded-lg hover:outline-none transition-shadow ease-in-out duration-300 ${fullNameError
-                                ? "border-error border-2"
-                                : "border-[#c9cbce] hover:shadow-color"
+                            className={`mt-1 block px-4 py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${fullNameError
+                                ? "border-red-700 border-2"
+                                : " dark:hover:shadow-whitecolor hover:shadow-darkcolor"
                                 }`}
                             value={fullName}
                             onChange={(e) => setFullName(e.target.value)}
                         />
                         {fullNameError && (
-                            <p className="flex text-error text-base items-center mt-0.5">
+                            <p className="flex text-red-700 text-base items-center mt-0.5">
                                 <span className="mr-1">
                                     <IoMdCloseCircle className="size-5" />
                                 </span>
@@ -1121,22 +1506,22 @@ export default function RegisterPage() {
                     <div>
                         <label
                             htmlFor="email"
-                            className="text-gray text-sm block capitalize"
+                            className="text-gray-500 dark:text-gray-300  block capitalize"
                         >
                             Email Address <span className="text-error">*</span>
                         </label>
                         <input
                             type="email"
                             id="email"
-                            className={`mt-1 block px-4 py-3 w-full border rounded-lg hover:outline-none transition-shadow ease-in-out duration-300 ${emailError
-                                ? "border-error border-2"
-                                : "border-[#c9cbce] hover:shadow-color"
+                            className={`mt-1 block px-4 py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${emailError
+                                ? "border-red-700 border-2"
+                                : " dark:hover:shadow-whitecolor hover:shadow-darkcolor"
                                 }`}
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
                         {emailError && (
-                            <p className="flex text-error text-base items-center mt-0.5">
+                            <p className="flex text-red-700 text-base items-center mt-0.5">
                                 <span className="mr-1">
                                     <IoMdCloseCircle className="size-5" />
                                 </span>
@@ -1148,7 +1533,7 @@ export default function RegisterPage() {
                     <div>
                         <label
                             htmlFor="password"
-                            className="text-gray text-sm block capitalize"
+                            className="text-gray-500 dark:text-gray-300  block capitalize"
                         >
                             Password <span className="text-error">*</span>
                         </label>
@@ -1156,27 +1541,27 @@ export default function RegisterPage() {
                             <input
                                 type={showPassword ? "text" : "password"}
                                 id="password"
-                                className={`mt-1 block px-4 py-3 w-full border rounded-lg hover:outline-none transition-shadow ease-in-out duration-300 ${passwordError
-                                    ? "border-error border-2"
-                                    : "border-[#c9cbce] hover:shadow-color"
+                                className={`mt-1 block px-4 py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${passwordError
+                                    ? "border-red-700 border-2"
+                                    : " dark:hover:shadow-whitecolor hover:shadow-darkcolor"
                                     }`}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                             <button
                                 type="button"
-                                className="text-gray-500 -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-1 top-1/2 transform bg-white p-3 rounded-md"
+                                className="text-gray-500 dark:text-white -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-1 top-1/2 transform bg-white dark:bg-background p-3 rounded-md"
                                 onClick={togglePasswordVisibility}
                             >
                                 {showPassword ? (
-                                    <RiEyeCloseLine className="text-secondary size-5" />
+                                    <RiEyeCloseLine className="text-mainheading dark:text-white size-5" />
                                 ) : (
-                                    <VscEye className="text-secondary size-5" />
+                                    <VscEye className="text-mainheading dark:text-white size-5" />
                                 )}
                             </button>
                         </div>
                         {passwordError && (
-                            <p className="flex text-error text-base items-center mt-0.5">
+                            <p className="flex text-red-700 text-base items-center mt-0.5">
                                 <span className="mr-1">
                                     <IoMdCloseCircle className="size-5" />
                                 </span>
@@ -1188,7 +1573,7 @@ export default function RegisterPage() {
                     <div>
                         <label
                             htmlFor="confirmPassword"
-                            className="text-gray text-sm block capitalize"
+                            className="text-gray-500 dark:text-gray-300  block capitalize"
                         >
                             Confirm Password <span className="text-error">*</span>
                         </label>
@@ -1196,27 +1581,27 @@ export default function RegisterPage() {
                             <input
                                 type={showConfirmPassword ? "text" : "password"}
                                 id="confirmPassword"
-                                className={`mt-1 block px-4 py-3 w-full border rounded-lg hover:outline-none transition-shadow ease-in-out duration-300 ${confirmPasswordError
-                                    ? "border-error border-2"
-                                    : "border-[#c9cbce] hover:shadow-color"
+                                className={`mt-1 block px-4 py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${confirmPasswordError
+                                    ? "border-red-700 border-2"
+                                    : " dark:hover:shadow-whitecolor hover:shadow-darkcolor"
                                     }`}
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                             />
                             <button
                                 type="button"
-                                className="text-gray-500 -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-1 top-1/2 transform bg-white p-3 rounded-md"
+                                className="text-gray-500 dark:text-white -translate-y-1/2 absolute hover:text-gray-700 right-1 top-1/2 transform bg-white dark:bg-background p-3 rounded-md"
                                 onClick={toggleConfirmPasswordVisibility}
                             >
                                 {showConfirmPassword ? (
-                                    <RiEyeCloseLine className="text-secondary size-5" />
+                                    <RiEyeCloseLine className="text-mainheading dark:text-white size-5" />
                                 ) : (
-                                    <VscEye className="text-secondary size-5" />
+                                    <VscEye className="text-mainheading dark:text-white size-5" />
                                 )}
                             </button>
                         </div>
                         {confirmPasswordError && (
-                            <p className="flex text-error text-base items-center mt-0.5">
+                            <p className="flex text-red-700 text-base items-center mt-0.5">
                                 <span className="mr-1">
                                     <IoMdCloseCircle className="size-5" />
                                 </span>
@@ -1229,24 +1614,24 @@ export default function RegisterPage() {
                     {/* Next Button */}
                     <button
                         type="submit"
-                        className="bg-primary hover:bg-primary-hover rounded-full text-secondary text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium py-2.5 transition-colors"
+                        className="bg-primary hover:bg-primaryhover rounded-full text-mainheading text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium py-3 h-14 transition-colors"
                     >
                         Next
                     </button>
                 </form>
 
-                <p className="text-center text-gray my-3 text-sm">
+                <p className="text-center text-gray-500 dark:text-gray-300 my-3 text-sm">
                     By registering, you accept our{" "}
                     <Link
                         href="/terms-and-conditions"
-                        className="text-secondary font-medium underline underline-offset-4"
+                        className="text-primary font-medium underline underline-offset-4"
                     >
                         Terms of use
                     </Link>{" "}
                     and{" "}
                     <Link
                         href="/privacy-policy-en"
-                        className="text-secondary font-medium underline underline-offset-4"
+                        className="text-primary font-medium underline underline-offset-4"
                     >
                         Privacy Policy
                     </Link>

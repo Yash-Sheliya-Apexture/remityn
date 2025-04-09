@@ -1438,6 +1438,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import MobileMenu from "./MobileMenu"; // Ensure MobileMenu has proper TypeScript definitions
 import FeatureDropdown from "@/app/components/ui/FeatureDropdown"; // Ensure FeatureDropdown has proper TypeScript definitions
 import ThemeToggle from "../../../contexts/ThemeToggle"; // Import ThemeToggle
+import { IoClose } from "react-icons/io5";
 
 // Define a type for the feature links
 interface FeatureLink {
@@ -1492,7 +1493,7 @@ const Header: React.FC = () => {
   };
 
   const featureLinks: FeatureLink[] = [
-    { href: "/sendmoney", text: "Send Money" },
+    { href: "/dashboard", text: "Send Money" },
     { href: "/sendlargeamount", text: "Send Large Amounts" },
     // Add more features here as needed
   ];
@@ -1502,11 +1503,12 @@ const Header: React.FC = () => {
       <Image
         src="/assets/images/plane.webp"
         alt="Plane"
-        width={56}
-        height={56}
+        width={100}
+        height={100}
+        className="size-16"
       />
       <div>
-        <p className="font-light text-gray">
+        <p className="font-light text-gray-500 dark:text-gray-300 mt-5">
           Learn how millions of customers move their money globally
         </p>
       </div>
@@ -1515,7 +1517,7 @@ const Header: React.FC = () => {
 
   return (
     <header className="header">
-      <div className="shadow drop-shadow-xs">
+      <div className="shadow border">
         <div className="container mx-auto px-4">
           <nav className="flex items-center gap-6 h-20" aria-label="Global">
             {/* Logo */}
@@ -1533,22 +1535,22 @@ const Header: React.FC = () => {
             <div className="flex justify-end items-center w-full">
               {/* Desktop Links */}
               {isLargeScreen && (
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-2">
                   <Link
                     href="/personal"
-                    className="bg-[#d3f2c0] px-4 py-1 rounded-full font-medium"
+                    className="bg-[#d3f2c0] dark:text-mainheading px-4 py-1.5 rounded-full font-medium"
                   >
                     Personal
                   </Link>
                   <Link
                     href="/business"
-                    className="px-4 py-1 rounded-full font-medium hover:bg-gray-200"
+                    className="px-4 py-1.5 rounded-full font-medium hover:bg-lightgray dark:hover:bg-primarybox"
                   >
                     Business
                   </Link>
                   <Link
                     href="/platform"
-                    className="px-4 py-1 rounded-full font-medium hover:bg-gray-200"
+                    className="px-4 py-1.5 rounded-full font-medium hover:bg-lightgray dark:hover:bg-primarybox"
                   >
                     Platform
                   </Link>
@@ -1567,22 +1569,22 @@ const Header: React.FC = () => {
 
                     <Link
                       href="/pricing"
-                      className="px-2.5 py-1.5 rounded-full font-medium hover:bg-gray-200"
+                      className="px-2.5 py-1.5 rounded-full font-medium hover:bg-lightgray dark:hover:bg-primarybox"
                     >
                       Pricing
                     </Link>
                     <Link
                       href="/help"
-                      className="px-2.5 py-1.5 rounded-full font-medium hover:bg-gray-200"
+                      className="px-2.5 py-1.5 rounded-full font-medium hover:bg-lightgray dark:hover:bg-primarybox"
                     >
                       Help
                     </Link>
                     <Link href="/en">
-                      <button className="flex items-center px-2.5 py-1.5 rounded-full hover:bg-gray-200">
+                      <button className="flex items-center px-2.5 py-1.5 rounded-full hover:bg-lightgray dark:hover:bg-primarybox">
                         <img
                           src="https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/1200px-Flag_of_India.svg.png"
                           alt="Indian Flag"
-                          className="h-5 w-5 rounded-full mr-1 object-cover"
+                          className="h-5 w-5 rounded-full mr-2 object-cover"
                         />
                         <span className="font-medium">EN</span>
                       </button>
@@ -1600,7 +1602,7 @@ const Header: React.FC = () => {
                 {isLargeScreen && (
                   <Link
                     href="/auth/register"
-                    className="px-4 py-2 rounded-full font-medium hover:bg-gray-200"
+                    className="px-4 py-2 rounded-full font-medium hover:bg-lightgray dark:hover:bg-primarybox"
                   >
                     Register
                   </Link>
@@ -1611,7 +1613,7 @@ const Header: React.FC = () => {
                   <>
                     <Link
                       href="/auth/login"
-                      className="bg-primary px-5 py-1.5 rounded-full font-medium hover:bg-lightgreen-hover"
+                      className="bg-primary px-5 py-2 text-nowrap font-medium rounded-full hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading"
                     >
                       Log in
                     </Link>
@@ -1619,10 +1621,10 @@ const Header: React.FC = () => {
                     {!isLargeScreen && (
                       <button
                         onClick={toggleMobileMenu}
-                        className="text-green p-2"
+                        className="text-primary p-2 cursor-pointer"
                         aria-label="Open Mobile Menu"
                       >
-                        <GiHamburgerMenu size={24} />
+                        <GiHamburgerMenu size={26}/>
                       </button>
                     )}
                   </>
@@ -1632,10 +1634,10 @@ const Header: React.FC = () => {
                 {isMobileMenuOpen && !isLargeScreen && (
                   <button
                     onClick={closeMobileMenu}
-                    className="text-2xl p-2 bg-green/20 rounded-full"
                     aria-label="Close Mobile Menu"
+                    className="text-neutral-900 cursor-pointer"
                   >
-                    <FiX className="text-green" />
+                    <IoClose className="size-10 hover:bg-gray-300 text-mainheading dark:text-white hover:dark:bg-primarybox p-1.5 rounded-full transition-colors duration-300 ease-in-out" />
                   </button>
                 )}
               </div>

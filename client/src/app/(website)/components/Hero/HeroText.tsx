@@ -14,27 +14,27 @@ const HeroText = () => {
       <AppStore />
 
       <div>
-        <h1 className="text-3xl md:text-6xl xl:text-8xl font-black font-mont text-main uppercase tracking-tight">
+        <h1 className="text-3xl md:text-6xl xl:text-8xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
           Send Money Globally For Less
         </h1>
       </div>
 
       <div className="">
-        <p className="text-lg font-semibold text-gray leading-relaxed tracking-wider text-wrap ">
+        <p className="text-lg font-semibold text-gray-500 dark:text-gray-300 leading-relaxed tracking-wider text-wrap ">
           Join over 12.8 million people sending money everywhere —
-          <button className="text-green underline cursor-pointer">
+          <button className="text-primary underline cursor-pointer">
             &nbsp;with fees as low as 0.1%.
           </button>
         </p>
         <div className="flex flex-col gap-4 mt-6">
-          <div className="flex items-center text-gray gap-2 text-lg">
-            <PiCurrencyCircleDollar size={22} className="text-green" />
-            <span className="font-medium text-main">Low fees</span>
+          <div className="flex items-center text-gray-500 dark:text-gray-300 gap-2 text-lg">
+            <PiCurrencyCircleDollar size={22} className="text-primary" />
+            <span className="font-medium text-mainheading dark:text-white">Low fees</span>
             <span className="">- fees get cheaper the more you send</span>
           </div>
-          <div className="flex items-center text-gray gap-2 text-lg">
-            <AiOutlineThunderbolt size={22} className="text-green " />
-            <span className="font-medium text-main">Lightning fast</span>
+          <div className="flex items-center text-gray-500 dark:text-gray-300 gap-2 text-lg">
+            <AiOutlineThunderbolt size={22} className="text-primary " />
+            <span className="font-medium text-mainheading dark:text-white">Lightning fast</span>
             <span className="">
               - money typically arrives in seconds{" "}
               <IoIosInformationCircleOutline
@@ -43,9 +43,9 @@ const HeroText = () => {
               />
             </span>
           </div>
-          <div className="flex items-center text-gray gap-2 text-lg">
-            <SlLock size={22} className="text-green" />
-            <span className="font-medium text-main">Perfectly predictable</span>
+          <div className="flex items-center text-gray-500 dark:text-gray-300 gap-2 text-lg">
+            <SlLock size={22} className="text-primary" />
+            <span className="font-medium text-mainheading dark:text-white">Perfectly predictable</span>
             <span className="">
               - lock in an exchange rate for up to 48 hours
             </span>
@@ -56,7 +56,7 @@ const HeroText = () => {
       <div className="mt-8">
         <Link
           href="/signup"
-          className="inline-flex items-center justify-center px-6 py-3 border border-transparent font-medium rounded-full text-green bg-lightgreen hover:bg-lightgreen-hover transition-colors duration-150 ease-in-out"
+          className="inline-flex items-center justify-center px-6 py-3 h-14 border border-transparent font-medium rounded-full text-lg text-mainheading bg-primary hover:bg-primaryhover transition-colors duration-300 ease-in-out"
         >
           Open an account in minutes
         </Link>

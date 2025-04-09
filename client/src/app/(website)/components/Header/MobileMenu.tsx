@@ -649,11 +649,6 @@
 
 
 
-
-
-
-
-
 // components/MobileMenu.tsx
 "use client";
 import React, { useState } from "react";
@@ -681,8 +676,8 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
 
   return (
     <div
-      className={`fixed w-full h-[calc(100vh-5rem)] bg-white z-50 overflow-y-auto transition-transform duration-300 ${
-        isOpen ? "translate-x-0" : "translate-x-full"
+      className={`fixed w-full h-[calc(100vh-5rem)] bg-white dark:bg-background z-50 overflow-y-auto transition-transform duration-300 ${
+        isOpen ? "translate-x-0" : "translate-x-full  "
       }`}
     >
       <div className="flex flex-col justify-between h-full">
@@ -692,7 +687,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             <Link
               href="/personal"
               passHref
-              className="block bg-lightgreen px-4 py-1 rounded-full font-medium"
+              className="block bg-primary text-mainheading px-4 py-1.5 rounded-full font-medium"
               onClick={onClose}
             >
               Personal
@@ -700,7 +695,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             <Link
               href="/business"
               passHref
-              className="block px-4 py-1 rounded-full  font-medium hover:bg-gray-200"
+              className="block px-4 py-1.5 text-mainheading dark:text-white rounded-full  font-medium bg-lightgray dark:bg-primarybox"
               onClick={onClose}
             >
               Business
@@ -708,7 +703,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             <Link
               href="/platform"
               passHref
-              className="block px-4 py-1 rounded-full  font-medium hover:bg-gray-200"
+              className="block px-4 py-1.5 text-mainheading dark:text-white rounded-full  font-medium bg-lightgray dark:bg-primarybox"
               onClick={onClose}
             >
               Platform
@@ -761,7 +756,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
           <Link
             href="/login"
             passHref
-            className="block w-full p-2 bg-white hover:bg-green/10 border border-green rounded-full font-medium text-lg text-center"
+            className="block w-full px-4 py-3 bg-white dark:bg-background dark:text-white text-mainheading border rounded-full font-medium text-lg text-center"
             onClick={onClose}
           >
             Log in
@@ -769,7 +764,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
           <Link
             href="/register"
             passHref
-            className="block w-full p-2 bg-lightgreen hover:bg-lightgreen-hover rounded-full font-medium text-lg text-center"
+            className="block w-full px-4 py-3 bg-primary hover:bg-primaryhover text-mainheading transition-colors duration-300 ease-in-out rounded-full font-medium text-lg text-center"
             onClick={onClose}
           >
             Register

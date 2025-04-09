@@ -260,7 +260,7 @@
 //       </div>
 
 //       {isOpen && (
-//         <div className="absolute z-10 mt-2 w-[300px] bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+//         <div className="absolute z-10 mt-2 w-[300px] bg-white rounded-xl shadow-lg border overflow-hidden">
 //           {/* Search Input */}
 //           <div className="sticky top-0 bg-white p-2 border-b border-gray-200">
 //             <div className="relative">
@@ -1247,6 +1247,7 @@ import cad from "../../../../public/assets/icon/cad.svg";
 import eur from "../../../../public/assets/icon/eur.svg";
 import inr from "../../../../public/assets/icon/inr.svg"; // Keep this, but we'll filter it out
 import usd from "../../../../public/assets/icon/usd.svg";
+import { GiCheckMark } from "react-icons/gi";
 
 interface Currency {
   code: string;
@@ -1336,15 +1337,15 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
               height={24}
             />
           )}
-          <p className="text-main font-semibold">{selectedCurrency}</p>
+          <p className="text-mainheading dark:text-white font-semibold">{selectedCurrency}</p>
         </div>
-        {isOpen ? <IoIosArrowUp size={18} /> : <IoIosArrowDown size={18} />}
+        {isOpen ? <IoIosArrowUp size={18} className="text-mainheading dark:text-white" /> : <IoIosArrowDown size={18} className="text-mainheading dark:text-white" />}
       </div>
 
       {isOpen && (
-        <div className="absolute z-10 w-[400px] top-12 right-0 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
+        <div className="absolute z-10 w-[400px] top-12 right-0 bg-white dark:bg-background rounded-lg  border overflow-hidden">
           {/* Search Input */}
-          <div className="sticky top-0 bg-white p-2 border-b border-gray-200">
+          <div className="sticky top-0 bg-white dark:bg-background p-2 border-b">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <BiSearch className="h-5 w-5 text-gray-400" />
@@ -1352,7 +1353,7 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
               <input
                 type="text"
                 placeholder="Type a currency / country"
-                className="bg-gray-50 shadow-inner border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green focus:border-green block w-full pl-10 p-2.5"
+                className=" shadow-inner border text-mainheading dark:text-white text-sm rounded-lg focus:outline-none block w-full pl-10 px-4 py-3 hover:shadow-darkcolor dark:hover:shadow-whitecolor transition-shadow ease-in-out duration-300"
                 value={searchQuery}
                 onChange={handleSearchChange}
               />
@@ -1362,27 +1363,28 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
           <div className="p-2 pb-4 max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
             {/*  Currencies */}
             {filteredCurrencies.length > 0 && (
-              <ul>
+              <ul className="space-y-2">
                 {filteredCurrencies.map((currency) => (
                   <li
                     key={currency.code}
                     onClick={() => handleCurrencyChange(currency.code)}
-                    className="flex items-center justify-between p-2 rounded-md hover:bg-gray-100 cursor-pointer"
+                    className="flex items-center justify-between p-2 rounded-md cursor-pointer hover:bg-gray-100 hover:dark:bg-white/5"
                   >
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2.5">
                       <Image
                         src={currency.flag}
                         alt={`${currency.code}-Flag`}
-                        width={20}
-                        height={20}
+                        width={100}
+                        height={100}
+                        className="size-8"
                       />
                       <span>{currency.code}</span>
-                      <span className="text-gray-500 text-sm ml-1">
+                      <span className="text-gray-500 dark:text-gray-300 text-sm ml-1">
                         {currency.name}
                       </span>
                     </div>
                     {selectedCurrency === currency.code && (
-                      <AiOutlineCheck className="text-main" />
+                      <GiCheckMark  className="text-mainheading dark:text-white size-5" />
                     )}
                   </li>
                 ))}
@@ -1390,7 +1392,7 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
             )}
 
             {filteredCurrencies.length === 0 && searchQuery && (
-              <div className="p-4 text-center text-gray-500">
+              <div className="p-3 text-center text-gray-500 dark:text-gray-300">
                 No currencies found for "{searchQuery}"
               </div>
             )}

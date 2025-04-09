@@ -521,14 +521,184 @@
 // export default FeatureDropdown;
 
 
+// // components/FeatureDropdown/FeatureDropdown.tsx
+// "use client";
+// import React, { useState, useRef, useEffect } from "react";
+// import Link from "next/link";
+// import { IoIosArrowForward } from "react-icons/io";
+// import { motion, AnimatePresence } from "framer-motion";
+
+// interface FeatureDropdownProps {
+//   buttonText: string;
+//   buttonClassName?: string;
+//   dropdownClassName?: string;
+//   linkClassName?: string;       //  <--- Add linkClassName
+//   topContentClassName?: string; // <--- Add topContentClassName
+//   onLinkClick?: () => void;
+//   isOpen?: boolean;
+//   toggleDropdown?: () => void;
+//   isMobile?: boolean;
+//   links: { href: string; text: string }[];
+//   topContent?: React.ReactNode;
+// }
+
+// const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
+//   buttonText,
+//   buttonClassName,
+//   dropdownClassName,
+//   linkClassName, //  <---  Use linkClassName
+//   topContentClassName, // <---  Use topContentClassName
+//   onLinkClick,
+//   isOpen = false,
+//   toggleDropdown,
+//   isMobile = false,
+//   links,
+//   topContent,
+// }) => {
+//   const [internalIsOpen, setInternalIsOpen] = useState(false);
+//   const dropdownRef = useRef<HTMLDivElement>(null);
+//   const myIsOpen = isMobile ? isOpen : internalIsOpen;
+//   const myToggleDropdown = isMobile ? toggleDropdown : () => setInternalIsOpen(!internalIsOpen);
+
+//   useEffect(() => {
+//     const handleClickOutside = (event: MouseEvent) => {
+//       if (
+//         dropdownRef.current &&
+//         !dropdownRef.current.contains(event.target as Node)
+//       ) {
+//         setInternalIsOpen(false);
+//       }
+//     };
+
+//     if (myIsOpen) {
+//       document.addEventListener("mousedown", handleClickOutside);
+//     }
+
+//     return () => {
+//       document.removeEventListener("mousedown", handleClickOutside);
+//     };
+//   }, [myIsOpen]);
+
+//   const dropdownVariants = {
+//     open: {
+//       opacity: 1,
+//       y: 0,
+//       display: "block",
+//       transition: {
+//         type: "tween",
+//         duration: 0.2,
+//       },
+//     },
+//     closed: {
+//       opacity: 0,
+//       y: -10,
+//       transition: {
+//         type: "tween",
+//         duration: 0.2,
+//       },
+//       transitionEnd: {
+//         display: "none",
+//       },
+//     },
+//   };
+
+//   const mobileDropdownVariants = {
+//     open: {
+//       opacity: 1,
+//       height: "auto",
+//       display: "block",
+//       transition: {
+//         type: "tween",
+//         duration: 0.2,
+//       },
+//     },
+//     closed: {
+//       opacity: 0,
+//       height: 0,
+//       transition: {
+//         type: "tween",
+//         duration: 0.2,
+//       },
+//       transitionEnd: {
+//         display: "none",
+//       },
+//     },
+//   };
+
+//     const dropdownContent = (
+//         <div >
+//             {/* Top Content (Optional) */}
+//             {topContent && (
+//                 <div className={`p-8 flex flex-col rounded-t-2xl justify-start bg-lightgray dark:bg-background mt-2 ${topContentClassName || ""}`}>
+//                     {topContent}
+//                 </div>
+//             )}
+
+//             {/* Links */}
+//             <div className="p-8 flex flex-col gap-4 dark:bg-background bg-white border-t">
+//                 {links.map((link, index) => (
+//                   <div className="w-fit">
+//                     <Link
+//                         key={index}
+//                         href={link.href}
+//                         passHref
+//                         className={`group relative inline-flex items-center gap-2 text-primary dark:text-white font-medium cursor-pointer ${linkClassName || ""}`} // Apply linkClassName here
+//                         onClick={() => {
+//                             if (!isMobile) {
+//                                 setInternalIsOpen(false);
+//                             }
+//                             onLinkClick?.();
+//                         }}
+//                     >
+//                         <p>{link.text}</p>
+//                         <IoIosArrowForward
+//                             size={18}
+//                             className="opacity-100 translate-x-0 transition-all duration-300  group-hover:translate-x-3"
+//                         />
+//                         <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full"></span>
+//                     </Link>
+//                   </div>
+//                 ))}
+//             </div>
+//         </div>
+//     );
+
+//   return (
+//     <div className="relative" ref={dropdownRef}>
+//       <button
+//         onClick={myToggleDropdown}
+//         className={`rounded-full font-medium  cursor-pointer px-2.5 py-1.5 hover:bg-lightgray dark:hover:bg-primarybox ${buttonClassName || ""}`}
+//       >
+//         {buttonText}
+//       </button>
+
+//       <AnimatePresence>
+//         {myIsOpen && (
+//           <motion.div
+//             variants={isMobile ? mobileDropdownVariants : dropdownVariants}
+//             initial="closed"
+//             animate="open"
+//             exit="closed"
+//             className={
+//               isMobile
+//                 ? `mt-2 pl-4`
+//                 : `absolute right-0 top-16 w-md bg-white dark:bg-background rounded-xl overflow-hidden shadow-lg z-50 ${
+//                     dropdownClassName || ""
+//                   }`
+//             }
+//           >
+//             {dropdownContent}
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+//     </div>
+//   );
+// };
+
+// export default FeatureDropdown;
 
 
 
-
-
-
-
-// components/FeatureDropdown/FeatureDropdown.tsx
 // components/FeatureDropdown/FeatureDropdown.tsx
 "use client";
 import React, { useState, useRef, useEffect } from "react";
@@ -540,8 +710,8 @@ interface FeatureDropdownProps {
   buttonText: string;
   buttonClassName?: string;
   dropdownClassName?: string;
-  linkClassName?: string;       //  <--- Add linkClassName
-  topContentClassName?: string; // <--- Add topContentClassName
+  linkClassName?: string;
+  topContentClassName?: string;
   onLinkClick?: () => void;
   isOpen?: boolean;
   toggleDropdown?: () => void;
@@ -554,8 +724,8 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
   buttonText,
   buttonClassName,
   dropdownClassName,
-  linkClassName, //  <---  Use linkClassName
-  topContentClassName, // <---  Use topContentClassName
+  linkClassName,
+  topContentClassName,
   onLinkClick,
   isOpen = false,
   toggleDropdown,
@@ -634,22 +804,22 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
   };
 
     const dropdownContent = (
-        <div>
+        <div >
             {/* Top Content (Optional) */}
             {topContent && (
-                <div className={`p-8 flex flex-col justify-start bg-green/10 ${topContentClassName || ""}`}>
+                <div className={`p-8 flex flex-col rounded-t-2xl justify-start bg-lightgray dark:bg-background mt-2 ${topContentClassName || ""}`}>
                     {topContent}
                 </div>
             )}
 
             {/* Links */}
-            <div className="p-8 flex flex-col gap-4">
+            <div className="px-4 py-6 flex flex-col gap-4 dark:bg-background bg-white border-t">
                 {links.map((link, index) => (
+                  <div key={index} className="w-fit"> {/* Added key here to the wrapping div */}
                     <Link
-                        key={index}
                         href={link.href}
                         passHref
-                        className={`group relative inline-flex items-center gap-2 text-green font-medium cursor-pointer ${linkClassName || ""}`} // Apply linkClassName here
+                        className={`group relative inline-flex items-center gap-2 text-primary dark:text-white font-medium cursor-pointer ${linkClassName || ""}`}
                         onClick={() => {
                             if (!isMobile) {
                                 setInternalIsOpen(false);
@@ -660,10 +830,11 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
                         <p>{link.text}</p>
                         <IoIosArrowForward
                             size={18}
-                            className="opacity-0 translate-x-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-3"
+                            className="opacity-100 translate-x-0 transition-all duration-300  group-hover:translate-x-3"
                         />
-                        <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-green transition-all duration-300 group-hover:w-full"></span>
+                        <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full"></span>
                     </Link>
+                  </div>
                 ))}
             </div>
         </div>
@@ -673,7 +844,7 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={myToggleDropdown}
-        className={`rounded-full font-medium ${buttonClassName || ""}`}
+        className={`rounded-full font-medium  cursor-pointer px-2.5 py-1.5 hover:bg-white dark:hover:bg-primarybox ${buttonClassName || ""}`}
       >
         {buttonText}
       </button>
@@ -688,7 +859,7 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
             className={
               isMobile
                 ? `mt-2 pl-4`
-                : `absolute right-0 top-13 w-md bg-white rounded-xl overflow-hidden shadow-lg z-50 ${
+                : `absolute right-0 top-16 w-md bg-white border dark:bg-background rounded-xl overflow-hidden shadow-lg z-50 ${
                     dropdownClassName || ""
                   }`
             }

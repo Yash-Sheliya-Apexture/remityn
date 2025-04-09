@@ -292,11 +292,11 @@
 
 //               {/* You Send */}
 //               <div className="mb-3">
-//                 <label className="block font-medium text-main mb-1">
+//                 <label className="block font-medium text-gray-500 dark:text-gray-300 mb-1">
 //                   You send exactly
 //                 </label>
 //                 <div className="relative">
-//                   <div className="w-full h-16 p-3 border border-gray-300 rounded-lg shadow-sm flex items-center justify-between focus:outline-none focus:ring-green focus:border-main">
+//                   <div className="w-full h-16 p-3 border rounded-lg shadow-sm flex items-center justify-between focus:outline-none focus:ring-green focus:border-main">
 //                     <input
 //                       type="text"
 //                       value={sendAmount}
@@ -3229,17 +3229,6 @@
 
 // export default HeroSection;
 
-
-
-
-
-
-
-
-
-
-
-
 // New Latest Code
 // app/components/Home/HeroSection.tsx
 "use client";
@@ -3379,7 +3368,7 @@ const HeroSection: React.FC = () => {
 
 
   return (
-    <section className="Hero-Section py-12 bg-white">
+    <section className="Hero-Section py-12 bg-white dark:bg-background">
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row items-center gap-12">
           {/* Left Column: Text Content */}
@@ -3389,31 +3378,31 @@ const HeroSection: React.FC = () => {
 
           {/* Right Column: card */}
           <div className="lg:w-xl lg:ml-auto">
-            <div className="bg-white rounded-3xl shadow-lg md:p-8 p-4 border border-gray-50">
+            <div className="bg-white dark:bg-background rounded-3xl shadow-sm md:p-8 p-4 border">
               {/* Rate Guaranteed */}
-              <div className="flex flex-col justify-center items-center gap-1 text-green font-medium text-center mb-4 ">
+              <div className="flex flex-col justify-center items-center gap-2 text-primary font-medium text-center mb-4 ">
                 <div className="flex justify-center items-center gap-2">
                   <SlLock size={22} className="" />
                   <span>Rate guaranteed (24h)</span>
                 </div>
-                <span className="bg-green/10 rounded-full py-1 px-2 inline-block mt-1">
+                <span className="bg-primary text-mainheading  rounded-full py-1 px-2 inline-block mt-1">
                   {displayRate()}
                 </span>
               </div>
 
               {/* You Send */}
               <div className="mb-3">
-                <label className="block font-medium text-main mb-1">
+                <label className="block font-medium text-gray-500 dark:text-gray-300 mb-1">
                   You send exactly
                 </label>
                 <div>
-                  <div className="w-full border border-gray-300 rounded-xl shadow-sm flex items-center justify-between">
+                  <div className="w-full border rounded-xl  flex items-center justify-between">
                     <input
                       type="text"
                       placeholder="0"
                       value={sendAmount}
                       onChange={handleSendAmountChange}
-                      className="block w-full h-16 p-3 text-main text-xl font-semibold focus:outline-none"
+                      className="block w-full h-14 p-3 text-mainheading dark:text-white text-2xl font-black focus:outline-none"
                     />
                     {/* Country Part :- For Change Country */}
 
@@ -3425,9 +3414,9 @@ const HeroSection: React.FC = () => {
                     />
                   </div>
                 </div>
-                <p className="text-cyan-900 mt-1 text-sm bg-cyan-100/30 rounded-lg px-2 py-1">
+                <p className="text-mainheading dark:text-white mt-1 text-sm rounded-lg px-2 py-1">
                   Sending over 20,000 GBP or equivalent?{" "}
-                  <button className="underline cursor-pointer font-medium">
+                  <button className="underline cursor-pointer text-primary font-medium">
                     We'll discount our fee
                   </button>
                 </p>
@@ -3435,36 +3424,36 @@ const HeroSection: React.FC = () => {
 
               {/* Recipient Gets */}
               <div className="mb-3">
-                <label className="block font-medium text-main mb-1">
+                <label className="block font-medium text-gray-500 dark:text-gray-300 mb-1">
                   Recipient gets
                 </label>
-                <div className="w-full border border-gray-300 rounded-xl shadow-sm flex items-center justify-between">
+                <div className="w-full border rounded-xl flex items-center justify-between">
                   <input
                     type="text"
                     placeholder="0"
                     value={receiveAmount}
                     readOnly // Make the input read-only
-                    className="block w-full h-16 p-3 text-main text-xl font-semibold focus:outline-none"
+                    className="block w-full h-14 p-3 text-mainheading dark:text-white text-2xl font-black focus:outline-none"
                   />
                   {/* Fixed INR Display */}
                   <div className="flex items-center gap-2 w-24 pr-2">
                     <Image src={inr} alt="INR-Flag" width={24} height={24} />
-                    <p className="text-main font-semibold">INR</p>
+                    <p className="text-mainheading dark:text-white  font-semibold">INR</p>
                   </div>
                 </div>
               </div>
 
               {/* Paying With */}
               <div className="mb-4">
-                <label className="block font-medium text-main mb-1">
+                <label className="block font-medium text-gray-500 dark:text-gray-300 mb-1">
                   Paying with
                 </label>
-                <div className="hover:bg-green/10 p-3 h-16 border border-green hover:border-green rounded-xl flex items-center justify-between transition-colors duration-200 ease-in-out">
+                <div className="bg-lightgray dark:bg-background p-3 h-16 border rounded-xl flex items-center justify-between transition-colors duration-200 ease-in-out">
                   <div className="flex items-center gap-2">
                     <CiBank size={24} />
-                    <span className="text-main font-semibold">Bank transfer</span>
+                    <span className="text-mainheading dark:text-white font-semibold">Bank transfer</span>
                   </div>
-                  <button className="text-green font-medium bg-green/10 px-3 py-2 rounded-full text-sm inline-flex items-center gap-2">
+                  <button className="text-mainheading dark:text-white bg-green/10 dark:bg-secondary font-medium px-3 py-2 rounded-full text-sm inline-flex items-center gap-2">
                     Change
                     <IoIosArrowForward size={18} />
                   </button>
@@ -3472,43 +3461,43 @@ const HeroSection: React.FC = () => {
               </div>
 
               {/* Fee Details */}
-              <div className="text-sm border border-gray-300 rounded-xl p-4 space-y-2.5">
+              <div className="text-sm border rounded-xl p-4 space-y-2.5">
                 <div className="flex justify-between text-">
-                  <span className="text-main ">
+                  <span className="text-mainheading dark:text-white">
                     Bank transfer fee
                   </span>
-                  <span className="text-gray">0 {selectedSendCurrency}</span>
+                  <span className="text-gray-500 dark:text-gray-300">0 {selectedSendCurrency}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-main ">Our fee</span>
-                  <span className="text-gray">{sendFee.toFixed(2)} {selectedSendCurrency} </span>
+                  <span className="text-mainheading dark:text-white ">Our fee</span>
+                  <span className="text-gray-500 dark:text-gray-300">{sendFee.toFixed(2)} {selectedSendCurrency} </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-main ">GST</span>
-                  <span className="text-gray">{gst.toFixed(2)} {selectedSendCurrency}</span>
+                  <span className="text-mainheading dark:text-white ">GST</span>
+                  <span className="text-gray-500 dark:text-gray-300">{gst.toFixed(2)} {selectedSendCurrency}</span>
                 </div>
-                <hr className="my-2 text-gray-300" />
-                <div className="flex justify-between text-main font-semibold">
+                <hr className="my-2" />
+                <div className="flex justify-between text-mainheading dark:text-white font-semibold">
                   <span>Total included fees (0%)</span>
                   <span>{(sendFee + gst).toFixed(2)} {selectedSendCurrency}</span>
                 </div>
               </div>
 
               {/* Savings & Arrival */}
-              <div className="mt-2 text-sm text-gray">
-                <p>You could save<span className="text-main font-bold"> 2.2% </span>on the payment you make.</p>
+              <div className="mt-2 text-sm text-gray-500 dark:text-gray-300">
+                <p>You could save<span className="text-primary font-bold"> 2.2% </span>on the payment you make.</p>
                 <p>
                   Should arrive{" "}
-                  <span className="text-main font-medium">{arrivalDate}</span>
+                  <span className="text-primary font-medium">{arrivalDate}</span>
                 </p>
               </div>
 
               {/* Actions */}
               <div className="mt-4 flex sm:flex-row flex-col items-center gap-2">
-                <button className="w-full inline-flex items-center justify-center px-6 py-3 border hover:bg-lightgreen hover:border-transparent font-medium rounded-full text-green bg-white hover:bg-button transition-colors duration-150 ease-in-out">
+                <button className="w-full inline-flex items-center justify-center px-6 py-3 h-14 cursor-pointer border dark:text-white font-medium rounded-full text-mainheading  hover:bg-button transition-colors duration-300 ease-in-out">
                   Compare fees
                 </button>
-                <button className="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent font-medium rounded-full text-green bg-lightgreen hover:bg-lightgreen-hover transition-colors duration-150 ease-in-out">
+                <button className="w-full inline-flex items-center justify-center px-6 py-3 h-14 cursor-pointer border border-transparent font-medium rounded-full text-mainheading bg-primary hover:bg-primaryhover transition-colors duration-300 ease-in-out">
                   Send money
                 </button>
               </div>

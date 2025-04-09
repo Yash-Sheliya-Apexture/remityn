@@ -37,6 +37,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { IoMoonOutline, IoSunnyOutline, IoContrastOutline } from 'react-icons/io5';
 import { HiChevronDown } from 'react-icons/hi'; // Icon for dropdown arrow
+import { GoChevronDown } from 'react-icons/go';
 
 type ThemePreference = 'light' | 'dark' | 'system';
 
@@ -138,31 +139,31 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ location, className }) => {
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="flex items-center px-2.5 py-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-primarybox"
+          className="flex items-center px-3 py-2 cursor-pointer rounded-full hover:bg-lightgray dark:hover:bg-primarybox"
           aria-label="Toggle Theme Dropdown"
         >
           {theme === 'light' && <IoSunnyOutline className="size-5 text-neutral-900 dark:text-white" />}
           {theme === 'dark' && <IoMoonOutline className="size-5 text-neutral-900 dark:text-white" />}
           {theme === 'system' && <IoContrastOutline className="size-5 text-neutral-900 dark:text-white" />}
-          <HiChevronDown className="size-4 ml-1 text-neutral-900 dark:text-white" />
+          <GoChevronDown  className="size-5 ml-1 mt-0.5 text-neutral-900 dark:text-white" />
         </button>
 
         {isDropdownOpen && (
-          <div className="absolute right-0 mt-2 w-36 rounded-md shadow-lg bg-white dark:bg-secondarybox ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="theme-menu-button" tabIndex={-1}>
-            <div className="py-1" role="none">
+          <div className="absolute right-0 mt-7 w-36 rounded-md bg-white border dark:bg-background focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="theme-menu-button" tabIndex={-1}>
+            <div className="py-2" role="none">
               <button
                 onClick={() => handleThemeChange('system')}
-                className={`block px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-lightgray dark:hover:bg-primarybox w-full text-left ${theme === 'system' ? 'bg-lightgray dark:bg-primarybox' : ''}`} role="menuitem" tabIndex={-1}>
+                className={`block px-4 py-2 text-sm text-neutral-900 cursor-pointer dark:text-white hover:bg-lightgray dark:hover:bg-white/5 w-full text-left ${theme === 'system' ? 'bg-white dark:bg-background' : ''}`} role="menuitem" tabIndex={-1}>
                 System
               </button>
               <button
                 onClick={() => handleThemeChange('light')}
-                className={`block px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-lightgray dark:hover:bg-primarybox w-full text-left ${theme === 'light' ? 'bg-lightgray dark:bg-primarybox' : ''}`} role="menuitem" tabIndex={-1}>
+                className={`block px-4 py-2 text-sm text-neutral-900 cursor-pointer dark:text-white hover:bg-lightgray dark:hover:bg-white/5 w-full text-left ${theme === 'light' ? 'bg-white dark:bg-background' : ''}`} role="menuitem" tabIndex={-1}>
                 Light
               </button>
               <button
                 onClick={() => handleThemeChange('dark')}
-                className={`block px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-lightgray dark:hover:bg-primarybox w-full text-left ${theme === 'dark' ? 'bg-lightgray dark:bg-primarybox' : ''}`} role="menuitem" tabIndex={-1}>
+                className={`block px-4 py-2 text-sm text-neutral-900 cursor-pointer dark:text-white hover:bg-lightgray dark:hover:bg-white/5 w-full text-left ${theme === 'dark' ? 'bg-white dark:bg-background' : ''}`} role="menuitem" tabIndex={-1}>
                 Dark
               </button>
             </div>

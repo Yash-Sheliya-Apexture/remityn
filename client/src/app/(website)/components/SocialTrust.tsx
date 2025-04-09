@@ -530,7 +530,7 @@ const SocialTrustSection = () => {
             <div className="space-y-5">
               <AppStore />
               <div>
-                <h1 className="text-3xl md:text-6xl xl:text-8xl font-black text-main font-mont uppercase tracking-tight">
+                <h1 className="text-3xl md:text-6xl xl:text-8xl font-black text-mainheading dark:text-white font-mont uppercase tracking-tight">
                   For people going places
                 </h1>
               </div>
@@ -540,25 +540,25 @@ const SocialTrustSection = () => {
               <button
                 onClick={handlePrev}
                 disabled={startIndex === 0}
-                className={`inline-flex items-center justify-center lg:w-16 lg:h-16 w-12 h-12 bg-green/10 rounded-full transition-colors cursor-pointer ${
+                className={`inline-flex items-center justify-center lg:w-16 lg:h-16 w-12 h-12 bg-lightborder dark:bg-secondary rounded-full transition-colors cursor-pointer ${
                   startIndex === 0
                     ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-green/20"
+                    : "hover:bg-primaryhover"
                 }`}
               >
-                <GoArrowLeft className="text-green lg:size-9 size-6" />
+                <GoArrowLeft className="text-mainheading dark:text-primary lg:size-9 size-6" />
               </button>
               {/* Right arrow button */}
               <button
                 onClick={handleNext}
                 disabled={startIndex === numberOfCards - 1}
-                className={`inline-flex items-center justify-center lg:w-16 lg:h-16 w-12 h-12 bg-green/10 rounded-full transition-colors cursor-pointer ${
+                className={`inline-flex items-center justify-center lg:w-16 lg:h-16 w-12 h-12 bg-lightborder dark:bg-secondary rounded-full transition-colors cursor-pointer ${
                   startIndex === numberOfCards - 1
                     ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-green/20"
+                    : "hover:bg-primaryhover"
                 }`}
               >
-                <GoArrowRight className="text-green lg:size-9 size-6" />
+                <GoArrowRight className="text-mainheading dark:text-primary lg:size-9 size-6" />
               </button>
             </div>
           </div>
