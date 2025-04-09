@@ -2087,11 +2087,696 @@
 
 
 
+// // frontend/app/dashboard/transactions/[transactionId]/page.tsx
+
+// "use client"; // Essential for client-side hooks and interactivity
+
+// import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
+// import { useParams, useRouter } from "next/navigation"; // Hooks for routing and params
+// import { format, parseISO } from 'date-fns'; // For date formatting
+
+// // Icons
+// import { LuPlus } from "react-icons/lu"; // Icon for Add Money
+// import { GoArrowUp } from "react-icons/go"; // Icon for Send Money
+// import { MdErrorOutline } from "react-icons/md"; // Error/Warning icon for timeline
+// import { FaCheck, FaRegClock } from "react-icons/fa"; // Checkmark and Clock icons
+
+// // Custom Hooks & Services
+// import { useAuth } from "../../../contexts/AuthContext"; // Adjust path if necessary
+// // apiConfig import removed as it was unused
+// import paymentService from "../../../services/payment"; // Adjust path
+// import transferService from "../../../services/transfer"; // Adjust path
+
+// // UI Components & Utils
+// import { cn } from "@/lib/utils"; // Adjust path
+// import { Button } from "@/components/ui/button"; // Adjust path
+// import CancelTransferModal from "../../components/CancelTransferModal"; // Adjust path
+// import { Skeleton } from "@/components/ui/skeleton"; // Adjust path
+
+// // --- TypeScript Interfaces ---
+// interface PaymentDetails {
+//     _id: string;
+//     type: 'payment';
+//     user: { _id: string; email?: string; fullName?: string };
+//     balanceCurrency: { _id: string; code: string; flagImage?: string };
+//     payInCurrency: { _id: string; code: string; flagImage?: string };
+//     amountToAdd: number;
+//     amountToPay: number;
+//     exchangeRate: number;
+//     wiseFee: number;
+//     bankTransferFee: number;
+//     referenceCode?: string;
+//     paymentMethod: string;
+//     status: 'pending' | 'completed' | 'failed' | 'in progress' | 'canceled' | string; // Allow other strings for robustness
+//     bankDetails?: {
+//         payeeName?: string;
+//         iban?: string;
+//         bicSwift?: string;
+//         bankAddress?: string;
+//     };
+//     createdAt: string;
+//     updatedAt: string;
+//     note?: string;
+//     failureReason?: string;
+// }
+// interface TransferDetails {
+//     _id: string;
+//     type: 'transfer';
+//     user: { _id: string; email?: string; fullName?: string };
+//     sourceAccount: { _id: string; currency: { _id: string; code: string; flagImage?: string } };
+//     recipient: {
+//         _id: string;
+//         accountHolderName: string;
+//         nickname?: string;
+//         currency: { _id: string; code: string; flagImage?: string };
+//         accountNumber: string; // Assuming required for transfer display
+//         bankName: string; // Assuming required for transfer display
+//     };
+//     sendAmount: number;
+//     receiveAmount: number;
+//     sendCurrency: { _id: string; code: string; flagImage?: string };
+//     receiveCurrency: { _id: string; code: string; flagImage?: string };
+//     exchangeRate: number;
+//     fees: number; // Even if 0, keep for consistency
+//     reason?: string;
+//     reference?: string;
+//     status: 'pending' | 'processing' | 'completed' | 'failed' | 'canceled' | string;
+//     failureReason?: string;
+//     createdAt: string;
+//     updatedAt: string;
+//     note?: string;
+// }
+// type TransactionDetails = PaymentDetails | TransferDetails;
+// interface TransactionDetailsPageParams { transactionId: string; }
+// type TimelineStatus = 'completed' | 'active' | 'pending' | 'failed' | 'cancelled';
+// interface TimelineStep {
+//     id: string;
+//     label: string;
+//     status: TimelineStatus;
+//     date?: string;
+//     info?: string | null;
+//     showCancelAction?: boolean; // Flag for inline cancel button
+// }
+// // --- End Interfaces ---
+
+
+// // --- Component Definition ---
+// const TransactionDetailsPage = () => {
+//     // --- Hooks ---
+//     const params = useParams<TransactionDetailsPageParams>();
+//     const router = useRouter();
+//     const { transactionId } = params;
+//     const { token } = useAuth();
+
+//     // --- State Variables ---
+//     const [transactionDetails, setTransactionDetails] = useState<TransactionDetails | null>(null);
+//     const [isLoading, setIsLoading] = useState(true);
+//     const [error, setError] = useState<string | null>(null); // General page error
+//     const [submissionError, setSubmissionError] = useState<string | null>(null); // Action-specific error
+//     const [activeTab, setActiveTab] = useState<"Updates" | "Details">("Updates");
+//     const [noteText, setNoteText] = useState(""); // Note state
+//     const [isSubmitting, setIsSubmitting] = useState(false); // Loading state for actions
+//     const [isCancelModalOpen, setIsCancelModalOpen] = useState(false); // Modal visibility
+//     const [showAwaitingVerificationView, setShowAwaitingVerificationView] = useState(false); // Custom view flag
+//     const [copySuccess, setCopySuccess] = useState<string | null>(null); // Copy feedback state
+
+//     // --- Refs ---
+//     const updatesTabRef = useRef<HTMLButtonElement>(null);
+//     const detailsTabRef = useRef<HTMLButtonElement>(null);
+//     const underlineRef = useRef<HTMLSpanElement>(null);
+
+//     // --- Data Fetching ---
+//     const fetchTransactionDetails = useCallback(async (showLoading = true) => {
+//         if (!transactionId || !token) {
+//             setError("Missing transaction ID or authentication token.");
+//             setIsLoading(false);
+//             return;
+//         }
+//         if (showLoading) setIsLoading(true);
+//         setError(null); setSubmissionError(null);
+//         console.log("Fetching details for:", transactionId);
+
+//         try {
+//             let found = false;
+//             // Try fetching Transfer first
+//             try {
+//                 const transferData = await transferService.getTransferDetails(transactionId, token);
+//                 setTransactionDetails({ ...transferData, type: 'transfer' });
+//                 setNoteText(transferData.note || "");
+//                 setShowAwaitingVerificationView(false); // Reset custom view if it was a transfer
+//                 found = true;
+//                 console.log("Found as Transfer");
+//             } catch (transferErr: unknown) { // Changed from 'any' to 'unknown'
+//                 // Type guard or assertion needed to access properties safely
+//                 let message = 'Unknown error fetching transfer details';
+//                 let status = 0;
+//                  if (typeof transferErr === 'object' && transferErr !== null) {
+//                      // Check for common error structures (like AxiosError)
+//                     const errObj = transferErr as { response?: { status?: number; data?: { message?: string } }; message?: string };
+//                     message = errObj.response?.data?.message || errObj.message || message;
+//                     status = errObj.response?.status || 0;
+//                  } else if (transferErr instanceof Error) {
+//                      message = transferErr.message;
+//                  }
+
+//                 const isNotFoundError = status === 404 || message?.toLowerCase().includes('not found') || message?.toLowerCase().includes('invalid id');
+//                 if (!isNotFoundError) throw transferErr; // Rethrow if it's not a 'not found' error
+//                 console.warn(`Transfer ${transactionId} not found or error:`, message);
+//             }
+
+//             // If not found as Transfer, try fetching Payment
+//             if (!found) {
+//                 try {
+//                     const paymentData = await paymentService.getPaymentDetails(transactionId, token);
+//                     setTransactionDetails({ ...paymentData, type: 'payment' });
+//                     setNoteText(paymentData.note || "");
+//                     // Don't reset custom view if status is pending after clicking "I've paid"
+//                     if (paymentData.status !== 'pending') {
+//                         setShowAwaitingVerificationView(false);
+//                     }
+//                     found = true;
+//                     console.log("Found as Payment with status:", paymentData.status);
+//                 } catch (paymentErr: unknown) { // Changed from 'any' to 'unknown'
+//                     let message = 'Unknown error fetching payment details';
+//                     let status = 0;
+//                      if (typeof paymentErr === 'object' && paymentErr !== null) {
+//                         const errObj = paymentErr as { response?: { status?: number; data?: { message?: string } }; message?: string };
+//                         message = errObj.response?.data?.message || errObj.message || message;
+//                         status = errObj.response?.status || 0;
+//                     } else if (paymentErr instanceof Error) {
+//                         message = paymentErr.message;
+//                     }
+
+//                     if (status === 404 || message?.toLowerCase().includes('not found')) {
+//                         setError(`Transaction with ID ${transactionId} not found.`);
+//                         setTransactionDetails(null);
+//                     } else { throw paymentErr; } // Rethrow other errors
+//                     console.error(`Payment ${transactionId} not found or error:`, message);
+//                 }
+//             }
+//              if (!found && !error) { // Added error to dependency array, so it's safe to use here
+//                 setError(`Transaction with ID ${transactionId} could not be found or accessed.`);
+//                 setTransactionDetails(null);
+//              }
+//         } catch (err: unknown) { // Changed from 'any' to 'unknown'
+//              let message = "Failed to load transaction details";
+//              if (typeof err === 'object' && err !== null) {
+//                 const errObj = err as { response?: { data?: { message?: string } }; message?: string };
+//                 message = errObj.response?.data?.message || errObj.message || message;
+//              } else if (err instanceof Error) {
+//                  message = err.message;
+//              }
+//              setError(message);
+//              setTransactionDetails(null);
+//              console.error("Unhandled error fetching transaction details:", err);
+//         } finally { if (showLoading) setIsLoading(false); }
+//     }, [transactionId, token, error]); // Added 'error' to dependency array
+
+//     // Effect to run fetch data on mount and when ID/token change
+//     useEffect(() => { fetchTransactionDetails(); }, [fetchTransactionDetails]); // Now depends on the stable useCallback version
+
+//     // --- Tab Underline Animation Effect ---
+//     useEffect(() => {
+//         const updatesTab = updatesTabRef.current;
+//         const detailsTab = detailsTabRef.current;
+//         const underline = underlineRef.current;
+
+//         if (underline && updatesTab && detailsTab) {
+//             const updateUnderlinePosition = () => {
+//                 if (activeTab === "Updates") {
+//                     underline.style.width = `${updatesTab.offsetWidth}px`;
+//                     underline.style.transform = `translateX(${updatesTab.offsetLeft}px)`;
+//                 } else if (activeTab === "Details") {
+//                     underline.style.width = `${detailsTab.offsetWidth}px`;
+//                     underline.style.transform = `translateX(${detailsTab.offsetLeft}px)`;
+//                 }
+//             };
+
+//             updateUnderlinePosition();
+//             window.addEventListener('resize', updateUnderlinePosition); // Update on window resize
+
+//             return () => window.removeEventListener('resize', updateUnderlinePosition); // Cleanup on unmount
+//         }
+//     }, [activeTab]);
+
+//     // --- Helper Functions & Derived Data ---
+//     const isPayment = transactionDetails?.type === 'payment';
+//     const isTransfer = transactionDetails?.type === 'transfer';
+
+//     const formatDisplayDate = (dateString: string | undefined): string => {
+//         if (!dateString) return "Date not available";
+//         try { return format(parseISO(dateString), "MMM d 'at' h:mm a"); }
+//         catch (e) { console.error("Date formatting error:", e, "Input:", dateString); return "Invalid Date"; }
+//     };
+
+//     // --- Timeline Logic ---
+//     const getTimelineSteps = (): TimelineStep[] => {
+//         if (!transactionDetails) return [];
+
+//         if (isPayment) {
+//             const payment = transactionDetails as PaymentDetails;
+//             const createdDate = formatDisplayDate(payment.createdAt);
+//             const finalDate = formatDisplayDate(payment.updatedAt);
+//             const isPending = payment.status === 'pending';
+//             const isInProgress = payment.status === 'in progress';
+//             const isComplete = payment.status === 'completed';
+//             const isCancelled = payment.status === 'canceled';
+//             const hasFailed = payment.status === 'failed';
+
+//             let steps: TimelineStep[] = [
+//                 { id: 'setup', label: "You set up this payment", status: 'completed', date: createdDate, info: null, showCancelAction: false },
+//                 { id: 'waiting', label: `We're waiting for you to pay`, status: 'pending', date: undefined, info: `Check the 'Details' tab for bank information.`, showCancelAction: false },
+//                 { id: 'receive', label: `We receive your ${payment.payInCurrency?.code || 'money'}`, status: 'pending', date: undefined, info: null, showCancelAction: false },
+//                 { id: 'add_balance', label: `We add it to your ${payment.balanceCurrency?.code || ''} balance`, status: 'pending', date: undefined, info: null, showCancelAction: false },
+//                 { id: 'done', label: "All done!", status: 'pending', date: undefined, info: null, showCancelAction: false },
+//             ];
+
+//             if (isPending) {
+//                 steps[1].status = 'active';
+//                 steps[1].showCancelAction = true; // Show inline "I've not paid" button
+//             } else if (isInProgress) {
+//                  steps[1].status = 'completed'; steps[1].date = finalDate; steps[1].info = null;
+//                  steps[2].status = 'active'; steps[2].date = finalDate; // Use update time for receive step
+//                  steps[2].info = `We're processing your payment of ${payment.amountToPay.toFixed(2)} ${payment.payInCurrency?.code}.`;
+//             } else if (isComplete) {
+//                 steps = steps.map((step, index) => ({ ...step, status: 'completed', date: index === 0 ? createdDate : finalDate, info: null, showCancelAction: false }));
+//             } else if (isCancelled || hasFailed) {
+//                 const finalStatus: TimelineStatus = isCancelled ? 'cancelled' : 'failed';
+//                 const finalInfo = isCancelled ? 'This payment was cancelled.' : `This payment failed. ${payment.failureReason || 'Unknown reason'}`;
+//                  const failedStepIndex = steps.findIndex(step => step.status !== 'completed');
+//                 if (failedStepIndex >= 0) {
+//                      for(let i = 1; i < failedStepIndex; i++) { steps[i].status = 'completed'; steps[i].date = finalDate; steps[i].info = null; }
+//                      steps[failedStepIndex].status = finalStatus; steps[failedStepIndex].date = finalDate; steps[failedStepIndex].info = finalInfo;
+//                      for(let i = failedStepIndex + 1; i < steps.length; i++){ steps[i].status = 'pending'; steps[i].date = undefined; steps[i].info = null; }
+//                  } else { steps[steps.length - 1].status = finalStatus; steps[steps.length - 1].date = finalDate; steps[steps.length - 1].info = finalInfo; }
+//                  steps = steps.map(step => ({ ...step, showCancelAction: false }));
+//             }
+//             return steps;
+//         }
+//         else if (isTransfer) {
+//              // Keep existing transfer timeline logic
+//             const transfer = transactionDetails as TransferDetails;
+//             const createdDate = formatDisplayDate(transfer.createdAt); const updatedDate = formatDisplayDate(transfer.updatedAt); const isProcessing = transfer.status === 'processing' || transfer.status === 'pending'; const isComplete = transfer.status === 'completed'; const isCancelled = transfer.status === 'canceled'; const hasFailed = transfer.status === 'failed'; const finalStepStatus: TimelineStatus = isCancelled ? 'cancelled' : (hasFailed ? 'failed' : 'pending');
+//             let steps: TimelineStep[] = [ { id: 'setup', label: "You set up your transfer", status: 'completed', date: createdDate, info: null, showCancelAction: false }, { id: 'funded', label: `We've taken funds from your ${transfer.sendCurrency?.code || 'account'}`, status: (isComplete || isProcessing) ? 'completed' : 'pending', date: (isComplete || isProcessing) ? createdDate : undefined, info: null, showCancelAction: false }, { id: 'paid_out', label: `We pay out your ${transfer.receiveCurrency?.code || 'money'}`, status: isComplete ? 'completed' : (isProcessing ? 'active' : finalStepStatus), date: isComplete ? updatedDate : (isProcessing ? updatedDate : undefined), info: isProcessing ? `We're processing the payment to your recipient's bank.` : (hasFailed ? `Failed to pay out: ${transfer.failureReason || 'Unknown reason'}` : (isCancelled ? 'Transfer cancelled.' : null)), showCancelAction: false }, { id: 'delivered', label: `Sent to recipient's bank`, status: isComplete ? 'completed' : 'pending', date: isComplete ? updatedDate : undefined, info: null, showCancelAction: false }, ];
+//             if (isCancelled || hasFailed) { const failedStepIndex = steps.findIndex(step => step.id === 'paid_out'); if (failedStepIndex > 0) { steps[failedStepIndex].status = finalStepStatus; steps[failedStepIndex].date = updatedDate; for (let i = failedStepIndex + 1; i < steps.length; i++) { steps[i].status = 'pending'; } } steps = steps.map(step => ({ ...step, showCancelAction: false })); }
+//             return steps;
+//         }
+//         return [];
+//     };
+//     const timelineSteps = getTimelineSteps();
+
+//     // --- Event Handlers ---
+
+//     // Handles clicking the main "I've now paid" button for PENDING payments
+//     const handleConfirmPaymentSubmit = async () => {
+//         if (!transactionId || !token || !isPayment) return;
+//         setIsSubmitting(true); setSubmissionError(null);
+//         try {
+//             await paymentService.confirmUserTransfer(transactionId, token);
+//             setShowAwaitingVerificationView(true); // Show the custom view
+//             // Do not refresh data immediately
+//         } catch (err: unknown) { // Changed from 'any' to 'unknown'
+//             let message = `Failed to confirm payment`;
+//             let status = 0;
+//             if (typeof err === 'object' && err !== null) {
+//                 const errObj = err as { response?: { status?: number; data?: { message?: string } }; message?: string };
+//                 message = errObj.response?.data?.message || errObj.message || message;
+//                 status = errObj.response?.status || 0;
+//             } else if (err instanceof Error) {
+//                 message = err.message;
+//             }
+
+//             if (message.includes('not in pending state') || status === 400) {
+//                  setError("Payment status may have already updated. Refreshing...");
+//                  await fetchTransactionDetails(false); // Refresh without main loading indicator
+//             } else { setSubmissionError(message); } // Show specific error
+//             console.error(`Error confirming payment (ID: ${transactionId}):`, err);
+//         } finally { setIsSubmitting(false); }
+//     };
+
+//     // Handles clicking the cancel button in the modal
+//     const handleConfirmCancel = async () => {
+//         if (!transactionId || !token || !transactionDetails) { setSubmissionError("Cannot proceed."); return; }
+//         setIsSubmitting(true); setSubmissionError(null);
+//         try {
+//             let cancelPromise;
+//             if (isPayment) { cancelPromise = paymentService.cancelPayment(transactionId, token); }
+//             else if (isTransfer) { cancelPromise = transferService.cancelTransfer(transactionId, token); }
+//             else { throw new Error("Unknown transaction type."); }
+//             await cancelPromise;
+//             setIsCancelModalOpen(false);
+//             await fetchTransactionDetails(); // Refresh data after successful cancel
+//         } catch (err: unknown) { // Changed from 'any' to 'unknown'
+//              let message = `Failed to cancel ${isPayment ? 'payment' : 'transfer'}`;
+//              if (typeof err === 'object' && err !== null) {
+//                 const errObj = err as { response?: { data?: { message?: string } }; message?: string };
+//                 message = errObj.response?.data?.message || errObj.message || message;
+//              } else if (err instanceof Error) {
+//                  message = err.message;
+//              }
+//              setSubmissionError(message);
+//              console.error(`Error cancelling ${transactionDetails.type} (ID: ${transactionId}):`, err);
+//              setIsCancelModalOpen(false); // Close modal even on error
+//         } finally { setIsSubmitting(false); }
+//     };
+
+//     const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => { setNoteText(e.target.value); };
+
+//      const handleCopyToClipboard = (text: string | undefined, fieldName: string) => {
+//         if (!text) { console.warn(`Attempted to copy empty field: ${fieldName}`); return; }
+//         navigator.clipboard.writeText(text).then(() => {
+//             setCopySuccess(`${fieldName} copied!`);
+//             setTimeout(() => setCopySuccess(null), 1500); // Clear message after 1.5s
+//         }).catch(err => { console.error('Failed to copy text: ', err); alert(`Failed to copy ${fieldName}.`); });
+//     };
+
+//     // --- Determine Cancel Button Visibility ---
+//     const canCancelTransaction = useMemo(() => {
+//         if (!transactionDetails) return false;
+//         if (isPayment) return transactionDetails.status === 'pending' || transactionDetails.status === 'in progress';
+//         if (isTransfer) return transactionDetails.status === 'pending' || transactionDetails.status === 'processing';
+//         return false;
+//     }, [transactionDetails, isPayment, isTransfer]);
+
+
+//     // --- Render Logic ---
+//     if (isLoading && !transactionDetails) { return (
+//          <div className="container mx-auto px-4 py-8 animate-pulse">
+//              <Skeleton className="h-6 w-40 mb-4" />
+//              <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm mx-auto max-w-4xl">
+//                  <Skeleton className="h-20 w-full" /> {/* Header */}
+//                  <Skeleton className="h-12 w-full border-y border-gray-200 dark:border-gray-700" /> {/* Tabs */}
+//                  <div className="p-6 space-y-6">
+//                      <Skeleton className="h-6 w-1/2" /> {/* Ref/ID */}
+//                      <Skeleton className="h-40 w-full" /> {/* Timeline */}
+//                      <Skeleton className="h-12 w-full" /> {/* Button Area */}
+//                  </div>
+//              </div>
+//          </div>
+//      ); }
+//     if (error && !transactionDetails) { return (
+//          <div className="container mx-auto px-4 py-8 text-center">
+//              <p className="text-red-600 bg-red-100 dark:bg-red-900/20 p-4 rounded-md border border-red-200 dark:border-red-700/40">Error: {error}</p>
+//              <Button onClick={() => router.back()} variant="outline" className="mt-4">Go Back</Button>
+//          </div>
+//     ); }
+//     if (!transactionDetails) { return (
+//          <div className="container mx-auto px-4 py-8 text-center text-gray-500">
+//              Transaction details not found.
+//              <Button onClick={() => router.push('/dashboard/transactions')} variant="outline" className="mt-4">View Transactions</Button>
+//          </div>
+//      ); }
+
+//     // Header details calculation
+//     const headerIcon = isPayment ? <LuPlus size={24} className="text-neutral-900 dark:text-white"/> : <GoArrowUp size={24} className="text-neutral-900 dark:text-white"/>;
+//     const headerTitle = isPayment ? `To your ${(transactionDetails as PaymentDetails).balanceCurrency?.code ?? ''} balance` : (transactionDetails as TransferDetails).recipient?.accountHolderName || "Recipient";
+//     const headerAmountRaw = isPayment ? (transactionDetails as PaymentDetails).amountToAdd : (transactionDetails as TransferDetails).sendAmount;
+//     const headerCurrencyCode = isPayment ? (transactionDetails as PaymentDetails).balanceCurrency?.code : (transactionDetails as TransferDetails).sendCurrency?.code;
+//     const headerAmount = `${headerAmountRaw?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? '0.00'} ${headerCurrencyCode ?? ''}`;
+//     const headerAmountSign = isPayment ? "+" : "-";
+//     let headerStatusText = "Status unknown"; let headerStatusColorClass = 'text-gray-600 dark:text-gray-400';
+//     // Determine header status text and color based on the *actual* transaction status
+//     switch (transactionDetails.status) {
+//         case 'pending': headerStatusText = isPayment ? "Waiting for you to pay" : "Transfer initiated"; headerStatusColorClass = 'text-orange-600 dark:text-orange-400'; break;
+//         case 'in progress': headerStatusText = "Processing payment"; headerStatusColorClass = 'text-blue-600 dark:text-blue-400'; break;
+//         case 'processing': headerStatusText = "Transfer processing"; headerStatusColorClass = 'text-blue-600 dark:text-blue-400'; break;
+//         case 'completed': headerStatusText = isPayment ? "Money added" : "Transfer completed"; headerStatusColorClass = 'text-green-600 dark:text-green-400'; break;
+//         case 'canceled': headerStatusText = "Transaction cancelled"; headerStatusColorClass = 'text-red-600 dark:text-red-400'; break;
+//         case 'failed': headerStatusText = "Transaction failed"; headerStatusColorClass = 'text-red-600 dark:text-red-400'; break;
+//     }
+//     // Override header status text if showing the custom view
+//     if (isPayment && transactionDetails.status === 'pending' && showAwaitingVerificationView) {
+//         headerStatusText = "Verifying Payment";
+//         headerStatusColorClass = 'text-blue-600 dark:text-blue-400'; // Use 'in progress' color visually
+//     }
+
+//     return (
+//         <> {/* Fragment for page and modal */}
+//             <div className="container mx-auto">
+//                 {/* Main Content Card */}
+//                 <div className="bg-white dark:bg-background rounded-2xl border shadow-sm mx-auto max-w-4xl">
+//                     {/* Card Header */}
+//                     <div className="sm:p-6 p-4 flex items-start gap-4 border-b">
+//                          <div className={cn("p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center", isPayment ? '' : '' )}> {headerIcon} </div>
+
+//                          <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
+
+//                          <div className="text-wrap">
+//                             <h2 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg">{headerTitle}</h2>
+//                             <p className={cn("text-sm mt-1", headerStatusColorClass)}> {headerStatusText} </p> </div>
+//                          <div className={cn("font-medium whitespace-nowrap", isPayment ? 'text-green-600 dark:text-green-500' : 'text-neutral-900  dark:text-white' )}> {headerAmountSign} {headerAmount} </div>
+//                          </div>
+
+//                     </div>
+
+//                     {/* Tabs Navigation */}
+//                     <div className="border-b px-6">
+//                         <nav className="-mb-px flex gap-4 relative" aria-label="Tabs">
+//                              <button
+//                                 ref={updatesTabRef}
+//                                 onClick={() => setActiveTab("Updates")}
+//                                 className={cn(
+//                                     "whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium",
+//                                     activeTab === "Updates" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:border-gray-700 hover:text-gray-700 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:text-gray-300"
+//                                 )}
+//                                 aria-current={activeTab === "Updates" ? "page" : undefined}
+//                             >
+//                                 Updates
+//                             </button>
+//                             <button
+//                                 ref={detailsTabRef}
+//                                 onClick={() => setActiveTab("Details")}
+//                                 className={cn(
+//                                     "whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium",
+//                                     activeTab === "Details" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:border-gray-700 hover:text-gray-700 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:text-gray-300"
+//                                 )}
+//                                 aria-current={activeTab === "Details" ? "page" : undefined}
+//                             >
+//                                 Details
+//                             </button>
+//                             <span ref={underlineRef} className="absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300 block" />
+//                         </nav>
+//                     </div>
+
+//                     {/* Tab Content Area */}
+//                     <div className="p-6">
+//                         {/* --- Updates Tab Content --- */}
+//                         {activeTab === "Updates" && (
+//                             <div>
+//                                 {/* Transaction ID / Reference Code */}
+//                                 <div className="flex items-center mb-6 text-sm gap-2">
+//                                     <span className="text-neutral-900 dark:text-white w-28 flex-shrink-0">
+//                                         {isPayment ? "Reference Code" : "Transfer ID"}
+//                                     </span>
+//                                     <span className="font-medium text-gray-500 dark:text-gray-300 break-all">
+//                                         {isPayment ? (transactionDetails as PaymentDetails).referenceCode || 'N/A' : transactionDetails._id}
+//                                     </span>
+//                                 </div>
+
+//                                 {/* --- Conditional Rendering based on showAwaitingVerificationView --- */}
+//                                 {isPayment && transactionDetails.status === 'pending' && showAwaitingVerificationView ? ( // Fixed typo: 'cancle' to 'pending'
+//                                     // --- Render Awaiting Verification View ---
+//                                     <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
+//                                         <FaRegClock className="text-4xl text-blue-500 mx-auto mb-4 animate-pulse" />
+//                                         <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Thanks! We&apos;re checking your payment</h3>
+//                                         <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 max-w-md mx-auto">
+//                                             We received your confirmation and are now verifying the bank transfer. This usually takes a few hours, but can sometimes take up to 19 hours depending on your bank. We&apos;ll update the status here automatically once confirmed.
+//                                         </p>
+//                                         <p className="text-xs text-gray-500 dark:text-gray-400">
+//                                             Reference: {transactionDetails.referenceCode || 'N/A'}
+//                                         </p>
+//                                          <Button variant="outline" size="sm" onClick={() => fetchTransactionDetails(false)} className="mt-6" disabled={isSubmitting}>
+//                                              Refresh Status
+//                                          </Button>
+//                                     </div>
+//                                 ) : (
+//                                     // --- Render Standard Timeline and Actions ---
+//                                     <>
+//                                         {/* Timeline Visualization */}
+//                                         <div className="relative mt-6">
+//                                             {timelineSteps.length > 0 ? (
+//                                                 <ul className="space-y-2"> {/* Increased vertical spacing between steps */}
+//                                                     {timelineSteps.map((step, index) => (
+//                                                         <li key={step.id || index} className="flex items-start space-x-4 pb-6 last:pb-0"> {/* Increased horizontal spacing, vertical padding */}
+//                                                             {/* Marker & Line - Redesigned */}
+//                                                             <div className="relative flex flex-col items-center flex-shrink-0">
+//                                                                 <div className={cn(
+//                                                                     "h-6 w-6 rounded-full flex items-center justify-center ring-4 z-10", // Refined ring appearance
+//                                                                     step.status === "completed" && "bg-green-600 ring-green-600/40 text-white",
+//                                                                     step.status === "active" && "bg-green-500 ring-green-600/30 text-white animate-pulse", // Active with pulse
+//                                                                     step.status === "pending" && "bg-green-400  ring-green-600/20 text-white", // Pending state styling
+//                                                                     step.status === "failed" && "bg-rose-600 ring-rose-600/20 text-white",
+//                                                                     step.status === "cancelled" && "bg-red-600 ring-red-600/20 text-white"
+//                                                                 )}>
+//                                                                     {step.status === "completed" && <FaCheck className="h-3 w-3" />}
+//                                                                     {step.status === "active" && <div className="h-2 w-2 bg-white rounded-full"></div>}
+//                                                                     {(step.status === "failed" || step.status === "cancelled") && <MdErrorOutline className="h-4 w-4 text-white" />}
+//                                                                     {step.status === "pending" && <div className="h-2 w-2 bg-white rounded-full"></div>}
+//                                                                 </div>
+//                                                                 {index < timelineSteps.length - 1 && (
+//                                                                     <div className={cn(
+//                                                                         "absolute top-6 left-1/2 transform -translate-x-1/2 h-[calc(100%_+_0.75rem)] w-0.5", // Adjusted line height
+//                                                                         step.status === "completed" ? "bg-green-600" : "bg-gray-300 dark:bg-gray-500" // Line color based on step status
+//                                                                     )} aria-hidden="true"></div>
+//                                                                 )}
+//                                                             </div>
+                                                            
+//                                                             {/* Step Content */}
+//                                                             <div className="flex-1 pt-px min-w-0">
+//                                                                 <h4 className={cn(
+//                                                                     "text-sm font-semibold",
+//                                                                     step.status === 'pending' ? 'text-gray-500 dark:text-gray-300' : step.status === 'failed' ? 'text-rose-600 dark:text-rose-400' : step.status === 'cancelled' ? 'text-red-600' : 'text-neutral-900 dark:text-white'
+//                                                                 )}> {step.label} </h4>
+//                                                                 {step.date && (<p className="text-xs text-gray-500 dark:text-gray-300 mt-1">{step.date}</p>)} {/* Increased margin-top for date */}
+//                                                                 {step.info && (<div className={cn(
+//                                                                     "mt-2 text-sm p-3 rounded-md border",
+//                                                                     step.status === 'active' ? 'bg-blue-600/20 border-blue-600/80 text-blue-600 dark:text-blue-400' : step.status === 'failed' ? 'bg-rose-600/10 border-rose-600/80 text-rose-600 dark:text-rose-300' : step.status === 'cancelled' ? 'bg-red-600/20 border-red-600/60 text-red-600 dark:text-red-400' : 'bg-gray-600/20 border-gray-600/60 text-gray-600 dark:text-gray-300'
+//                                                                 )}> <p>{step.info}</p> </div>)}
+//                                                                 {/* Inline "I've not paid" Button (for pending payments) */}
+//                                                                 {step.showCancelAction && (
+//                                                                     <Button variant="outline" size="sm" className="mt-3 text-red-600 border-red-300 hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:border-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-300 h-8 px-3" onClick={() => setIsCancelModalOpen(true)} disabled={isSubmitting}> I&apos;ve not paid </Button>
+//                                                                 )}
+//                                                             </div>
+//                                                         </li>
+//                                                     ))}
+//                                                 </ul>
+//                                             ) : ( <p className="text-gray-500 dark:text-gray-400 text-sm">Status updates could not be loaded.</p> )}
+//                                         </div>
+
+//                                         {/* Conditional Bottom Action Area for PENDING Payments */}
+//                                         {isPayment && transactionDetails.status === 'pending' && !showAwaitingVerificationView && (
+//                                             <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+//                                                 <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Ready to pay?</h3>
+//                                                 <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+//                                                     Find the bank details in the <button onClick={() => setActiveTab('Details')} className="text-primary hover:underline font-medium">Details tab</button>. Once you&apos;ve sent the money from your bank, click below.
+//                                                 </p>
+//                                                 {submissionError && <p className="mb-4 text-sm text-red-600 dark:text-red-400 text-center bg-red-50 dark:bg-red-900/20 p-2 rounded border border-red-200 dark:border-red-700/40">{submissionError}</p>}
+//                                                 <div className="flex flex-col sm:flex-row sm:justify-end gap-2">
+//                                                     <button onClick={() => setIsCancelModalOpen(true)} disabled={isSubmitting} className="order-2 sm:order-1 px-4 py-2 bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary rounded-full transition-all duration-75 ease-linear"> Cancel transfer </button>
+//                                                     <button onClick={handleConfirmPaymentSubmit} disabled={isSubmitting} className="order-1 sm:order-2 px-4 py-2 w-full sm:w-auto bg-primary text-neutral-900 hover:bg-primaryhover rounded-full transition-all duration-75 ease-linear"> {isSubmitting ? 'Processing...' : "I've now paid"} </button>
+//                                                 </div>
+//                                             </div>
+//                                         )}
+
+//                                         {/* General Cancel Button (if cancelable and NOT the pending payment case handled above) */}
+//                                         {canCancelTransaction && !(isPayment && transactionDetails.status === 'pending') && (
+//                                             <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-3">
+//                                                 <button onClick={() => setIsCancelModalOpen(true)} disabled={isSubmitting} className="text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-full transition-all duration-75 ease-linear">
+//                                                     {isSubmitting ? 'Processing...' : `Cancel ${isPayment ? 'Payment' : 'Transfer'}`}
+//                                                 </button>
+//                                             </div>
+//                                         )}
+//                                         {/* Display general submission error if needed */}
+//                                         {submissionError && activeTab === 'Updates' && !(isPayment && transactionDetails.status === 'pending') && <p className="mt-4 text-sm text-red-600 dark:text-red-400 text-right">{submissionError}</p>}
+//                                     </>
+//                                 )}
+//                                 {/* --- End Conditional Rendering --- */}
+//                             </div>
+//                         )}
+
+//                         {/* --- Details Tab Content --- */}
+//                         {activeTab === "Details" && (
+//                              <div className="space-y-6">
+//                                 {/* Transaction Breakdown */}
+//                                 <div>
+//                                     <h3 className="text-md font-semibold mb-3 text-neutral-900 dark:text-white border-b pb-2">Transaction details</h3>
+//                                     <dl className="space-y-3 text-sm">
+//                                          {/* Payment Specific Details */}
+//                                         {isPayment && (
+//                                              <>
+//                                                 <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Amount to add</dt> <dd className="font-medium text-neutral-900 dark:text-white">{`${(transactionDetails as PaymentDetails).amountToAdd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} ${(transactionDetails as PaymentDetails).balanceCurrency?.code}`}</dd> </div>
+//                                                 <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Total fees included</dt> <dd className="font-medium text-neutral-900 dark:text-white">{`${((transactionDetails as PaymentDetails).wiseFee + (transactionDetails as PaymentDetails).bankTransferFee).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} ${(transactionDetails as PaymentDetails).payInCurrency?.code}`}</dd> </div>
+//                                                 <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Total amount to pay</dt> <dd className="font-medium text-neutral-900 dark:text-white">{`${(transactionDetails as PaymentDetails).amountToPay.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} ${(transactionDetails as PaymentDetails).payInCurrency?.code}`}</dd> </div>
+//                                                 <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Exchange rate</dt> <dd className="font-medium text-neutral-900 dark:text-white">1 {(transactionDetails as PaymentDetails).payInCurrency?.code} = {(transactionDetails as PaymentDetails).exchangeRate.toFixed(2)} {(transactionDetails as PaymentDetails).balanceCurrency?.code}</dd> </div>
+//                                                 {(transactionDetails as PaymentDetails).failureReason && <div className="flex justify-between text-red-600 dark:text-red-400"> <dt>Failure Reason</dt> <dd>{(transactionDetails as PaymentDetails).failureReason}</dd> </div>}
+//                                              </>
+//                                          )}
+//                                          {/* Transfer Specific Details */}
+//                                         {isTransfer && (
+//                                              <>
+//                                                 <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">You sent</dt> <dd className="font-medium text-neutral-900 dark:text-white">{`${(transactionDetails as TransferDetails).sendAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} ${(transactionDetails as TransferDetails).sendCurrency?.code}`}</dd> </div>
+//                                                 <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Fees</dt> <dd className="font-medium text-neutral-900 dark:text-white">{`${(transactionDetails as TransferDetails).fees.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} ${(transactionDetails as TransferDetails).sendCurrency?.code}`}</dd> </div>
+//                                                 <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Exchange rate</dt> <dd className="font-medium text-neutral-900 dark:text-white">1 {(transactionDetails as TransferDetails).sendCurrency?.code} = {(transactionDetails as TransferDetails).exchangeRate.toFixed(2)} {(transactionDetails as TransferDetails).receiveCurrency?.code}</dd> </div>
+//                                                 <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Recipient gets</dt> <dd className="font-medium text-neutral-900 dark:text-white">{`${(transactionDetails as TransferDetails).receiveAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} ${(transactionDetails as TransferDetails).receiveCurrency?.code}`}</dd> </div>
+//                                                 {(transactionDetails as TransferDetails).failureReason && <div className="flex justify-between text-red-600 dark:text-red-400"> <dt>Failure Reason</dt> <dd>{(transactionDetails as TransferDetails).failureReason}</dd> </div>}
+//                                              </>
+//                                          )}
+//                                          {/* Common Details */}
+//                                         <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Date Initiated</dt> <dd className="font-medium text-neutral-900 dark:text-white">{formatDisplayDate(transactionDetails.createdAt)}</dd> </div>
+//                                         <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Last Updated</dt> <dd className="font-medium text-neutral-900 dark:text-white">{formatDisplayDate(transactionDetails.updatedAt)}</dd> </div>
+//                                         <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">{isPayment ? 'Reference Code' : 'Transfer ID'}</dt> <dd className="font-medium text-neutral-900 dark:text-white break-all">{isPayment ? (transactionDetails as PaymentDetails).referenceCode || 'N/A' : transactionDetails._id}</dd> </div>
+//                                     </dl>
+//                                 </div>
+
+//                                 {/* Pay-in Bank Details / Recipient Details */}
+//                                 <div>
+//                                     <h3 className="text-md font-semibold mb-3 text-neutral-900 dark:text-white border-b pb-2">
+//                                         {isPayment ? 'Pay-in Bank Details (Wise)' : 'Recipient Details'}
+//                                     </h3>
+//                                      {/* Payment Bank Details */}
+//                                     {isPayment && (transactionDetails as PaymentDetails).bankDetails && (
+//                                         <div className="space-y-3 text-sm">
+//                                             <div className="bg-white dark:bg-white/5 border p-3 rounded-md flex justify-between items-center"> <div> <p className="text-xs text-gray-500 dark:text-gray-300 mb-0.5">Payee name</p> <p className="font-semibold text-neutral-900 dark:text-white">{(transactionDetails as PaymentDetails).bankDetails?.payeeName || 'N/A'}</p> </div> <Button variant="ghost" size="sm" onClick={() => handleCopyToClipboard((transactionDetails as PaymentDetails).bankDetails?.payeeName, 'Payee name')} className="text-primary hover:text-primaryhover dark:hover:bg-primaryhover/20 px-2 py-0.5 h-auto">Copy</Button> </div>
+//                                             <div className="bg-white dark:bg-white/5 border p-3 rounded-md flex justify-between items-center"> <div> <p className="text-xs text-gray-500 dark:text-gray-300 mb-0.5">IBAN</p> <p className="font-semibold text-neutral-900 dark:text-white break-all">{(transactionDetails as PaymentDetails).bankDetails?.iban || 'N/A'}</p> </div> <Button variant="ghost" size="sm" onClick={() => handleCopyToClipboard((transactionDetails as PaymentDetails).bankDetails?.iban, 'IBAN')} className="text-primary hover:text-primaryhover dark:hover:bg-primaryhover/20 px-2 py-0.5 h-auto">Copy</Button> </div>
+//                                             <div className="bg-white dark:bg-white/5 border p-3 rounded-md flex justify-between items-center"> <div> <p className="text-xs text-gray-500 dark:text-gray-300 mb-0.5">Bank code (BIC/SWIFT)</p> <p className="font-semibold text-neutral-900 dark:text-white">{(transactionDetails as PaymentDetails).bankDetails?.bicSwift || 'N/A'}</p> </div> <Button variant="ghost" size="sm" onClick={() => handleCopyToClipboard((transactionDetails as PaymentDetails).bankDetails?.bicSwift, 'BIC/SWIFT')} className="text-primary hover:text-primaryhover dark:hover:bg-primaryhover/20 px-2 py-0.5 h-auto">Copy</Button> </div>
+//                                             <div className="bg-white dark:bg-white/5 border p-3 rounded-md"> <p className="text-xs text-gray-500 dark:text-gray-300 mb-0.5">Bank address</p> <p className="font-semibold text-neutral-900 dark:text-white whitespace-pre-line">{(transactionDetails as PaymentDetails).bankDetails?.bankAddress || 'N/A'}</p> </div>
+//                                         </div>
+//                                      )}
+                                     
+//                                      {/* Transfer Recipient Details */}
+//                                     {isTransfer && (transactionDetails as TransferDetails).recipient && (
+//                                         <dl className="space-y-2 text-sm">
+//                                              <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Name</dt> <dd className="font-medium text-neutral-900 dark:text-white">{(transactionDetails as TransferDetails).recipient.accountHolderName}</dd> </div>
+//                                              <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Account Number</dt> <dd className="font-medium text-neutral-900 dark:text-white">**** {(transactionDetails as TransferDetails).recipient.accountNumber?.slice(-4)}</dd> </div>
+//                                              <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Bank</dt> <dd className="font-medium text-neutral-900 dark:text-white">{(transactionDetails as TransferDetails).recipient.bankName}</dd> </div>
+//                                              {/* Add other recipient details like BIC/IFSC if relevant */}
+//                                         </dl>
+//                                      )}
+//                                      {/* Message if no details applicable */}
+//                                      {!isPayment && !isTransfer && <p className="text-sm text-gray-500 dark:text-gray-300">Details not applicable for this transaction type.</p>}
+
+//                                      {/* Copy Feedback */}
+//                                      {copySuccess && activeTab === 'Details' && <p className="text-sm text-center text-green-600 dark:text-green-400 mt-3">{copySuccess}</p>}
+//                                 </div>
+
+//                                 {/* Note Section */}
+//                                 <div>
+//                                      <h3 className="text-md font-semibold mb-2 text-neutral-900 dark:text-white">Note (for your reference)</h3>
+//                                      <textarea id="note" className="w-full bg-white dark:bg-white/5 rounded-md p-3 text-sm text-neutral-600 focus:ring-0 focus:outline-2 focus:outline-neutral-600 dark:focus:outline-white dark:text-gray-300 border dark:placeholder-gray-300" placeholder="Add notes about this transaction..." value={noteText} onChange={handleNoteChange} rows={3} aria-label="Transaction Note" />
+//                                      {/* TODO: Add save note functionality if needed */}
+//                                 </div>
+//                              </div>
+//                          )}
+//                     </div> {/* End Tab Content Area */}
+//                 </div> {/* End Main Content Card */}
+//             </div> {/* End Container */}
+
+//             {/* --- Cancellation Modal --- */}
+//             {transactionDetails && (
+//                 <CancelTransferModal
+//                     isOpen={isCancelModalOpen}
+//                     onClose={() => setIsCancelModalOpen(false)}
+//                     transactionId={transactionId}
+//                     transactionType={transactionDetails.type}
+//                     onConfirmCancel={handleConfirmCancel}
+//                     isSubmitting={isSubmitting}
+//                 />
+//             )}
+//         </> // End Fragment
+//     );
+// };
+
+// export default TransactionDetailsPage;
+
+
+
 // frontend/app/dashboard/transactions/[transactionId]/page.tsx
 
 "use client"; // Essential for client-side hooks and interactivity
 
 import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
+// useParams type issue might require specific handling based on Next.js/React versions
+// Using explicit type with index signature to satisfy constraint, or assertion later.
 import { useParams, useRouter } from "next/navigation"; // Hooks for routing and params
 import { format, parseISO } from 'date-fns'; // For date formatting
 
@@ -2114,68 +2799,81 @@ import CancelTransferModal from "../../components/CancelTransferModal"; // Adjus
 import { Skeleton } from "@/components/ui/skeleton"; // Adjust path
 
 // --- TypeScript Interfaces ---
+
+// Interface for route parameters, ensuring compatibility with useParams constraint
+interface TransactionDetailsPageParams extends Record<string, string | string[] | undefined> {
+    transactionId: string;
+}
+
+// Define the structure for Payment details
 interface PaymentDetails {
     _id: string;
-    type: 'payment';
+    type: 'payment'; // Discriminator property
     user: { _id: string; email?: string; fullName?: string };
-    balanceCurrency: { _id: string; code: string; flagImage?: string };
-    payInCurrency: { _id: string; code: string; flagImage?: string };
-    amountToAdd: number;
-    amountToPay: number;
+    balanceCurrency: { _id: string; code: string; flagImage?: string }; // Currency being added to
+    payInCurrency: { _id: string; code: string; flagImage?: string }; // Currency user pays with
+    amountToAdd: number; // Amount credited to balance
+    amountToPay: number; // Amount user needs to send
     exchangeRate: number;
-    wiseFee: number;
-    bankTransferFee: number;
-    referenceCode?: string;
-    paymentMethod: string;
-    status: 'pending' | 'completed' | 'failed' | 'in progress' | 'canceled' | string; // Allow other strings for robustness
-    bankDetails?: {
+    wiseFee: number; // Fee charged by Wise
+    bankTransferFee: number; // Any specific fee for the bank transfer method
+    referenceCode?: string; // Reference for the bank transfer
+    paymentMethod: string; // e.g., 'bank_transfer', 'card'
+    status: 'pending' | 'completed' | 'failed' | 'in progress' | 'canceled' | string; // Robust status handling
+    bankDetails?: { // Details of the bank account to pay into (e.g., Wise's account)
         payeeName?: string;
         iban?: string;
         bicSwift?: string;
         bankAddress?: string;
     };
-    createdAt: string;
-    updatedAt: string;
-    note?: string;
-    failureReason?: string;
+    createdAt: string; // ISO Date string
+    updatedAt: string; // ISO Date string
+    note?: string; // User-added note
+    failureReason?: string; // Reason if status is 'failed'
 }
+
+// Define the structure for Transfer details
 interface TransferDetails {
     _id: string;
-    type: 'transfer';
+    type: 'transfer'; // Discriminator property
     user: { _id: string; email?: string; fullName?: string };
-    sourceAccount: { _id: string; currency: { _id: string; code: string; flagImage?: string } };
-    recipient: {
-        _id: string;
+    sourceAccount: { _id: string; currency: { _id: string; code: string; flagImage?: string } }; // Account money is sent FROM
+    recipient: { // Details of the recipient
+        _id: string; // Recipient ID in the system
         accountHolderName: string;
         nickname?: string;
-        currency: { _id: string; code: string; flagImage?: string };
-        accountNumber: string; // Assuming required for transfer display
-        bankName: string; // Assuming required for transfer display
+        currency: { _id: string; code: string; flagImage?: string }; // Currency recipient receives
+        accountNumber: string; // Essential for display/verification
+        bankName: string; // Essential for display/verification
+        // Potentially add other details like IBAN, BIC/SWIFT if needed for display
     };
-    sendAmount: number;
-    receiveAmount: number;
+    sendAmount: number; // Amount debited from source account
+    receiveAmount: number; // Amount recipient gets after conversion/fees
     sendCurrency: { _id: string; code: string; flagImage?: string };
     receiveCurrency: { _id: string; code: string; flagImage?: string };
     exchangeRate: number;
-    fees: number; // Even if 0, keep for consistency
-    reason?: string;
-    reference?: string;
-    status: 'pending' | 'processing' | 'completed' | 'failed' | 'canceled' | string;
-    failureReason?: string;
-    createdAt: string;
-    updatedAt: string;
-    note?: string;
+    fees: number; // Total fees for the transfer
+    reason?: string; // Purpose of the transfer
+    reference?: string; // Reference for the recipient
+    status: 'pending' | 'processing' | 'completed' | 'failed' | 'canceled' | string; // Robust status handling
+    failureReason?: string; // Reason if status is 'failed'
+    createdAt: string; // ISO Date string
+    updatedAt: string; // ISO Date string
+    note?: string; // User-added note
 }
+
+// Union type for any transaction
 type TransactionDetails = PaymentDetails | TransferDetails;
-interface TransactionDetailsPageParams { transactionId: string; }
+
+// Define timeline step structure
 type TimelineStatus = 'completed' | 'active' | 'pending' | 'failed' | 'cancelled';
 interface TimelineStep {
     id: string;
     label: string;
     status: TimelineStatus;
-    date?: string;
-    info?: string | null;
-    showCancelAction?: boolean; // Flag for inline cancel button
+    date?: string; // Formatted display date
+    info?: string | null; // Additional context for the step
+    showCancelAction?: boolean; // Flag for inline cancel button (e.g., "I've not paid")
 }
 // --- End Interfaces ---
 
@@ -2183,22 +2881,23 @@ interface TimelineStep {
 // --- Component Definition ---
 const TransactionDetailsPage = () => {
     // --- Hooks ---
+    // Use the corrected interface for params
     const params = useParams<TransactionDetailsPageParams>();
     const router = useRouter();
-    const { transactionId } = params;
+    const { transactionId } = params; // transactionId is guaranteed by the interface
     const { token } = useAuth();
 
     // --- State Variables ---
     const [transactionDetails, setTransactionDetails] = useState<TransactionDetails | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null); // General page error
-    const [submissionError, setSubmissionError] = useState<string | null>(null); // Action-specific error
+    const [submissionError, setSubmissionError] = useState<string | null>(null); // Action-specific error (e.g., confirm payment, cancel)
     const [activeTab, setActiveTab] = useState<"Updates" | "Details">("Updates");
-    const [noteText, setNoteText] = useState(""); // Note state
-    const [isSubmitting, setIsSubmitting] = useState(false); // Loading state for actions
-    const [isCancelModalOpen, setIsCancelModalOpen] = useState(false); // Modal visibility
-    const [showAwaitingVerificationView, setShowAwaitingVerificationView] = useState(false); // Custom view flag
-    const [copySuccess, setCopySuccess] = useState<string | null>(null); // Copy feedback state
+    const [noteText, setNoteText] = useState(""); // State for the user note textarea
+    const [isSubmitting, setIsSubmitting] = useState(false); // Loading state for actions like confirm/cancel
+    const [isCancelModalOpen, setIsCancelModalOpen] = useState(false); // Controls the cancel confirmation modal
+    const [showAwaitingVerificationView, setShowAwaitingVerificationView] = useState(false); // Custom view flag after clicking "I've paid"
+    const [copySuccess, setCopySuccess] = useState<string | null>(null); // Feedback message after copying details
 
     // --- Refs ---
     const updatesTabRef = useRef<HTMLButtonElement>(null);
@@ -2220,18 +2919,17 @@ const TransactionDetailsPage = () => {
             let found = false;
             // Try fetching Transfer first
             try {
-                const transferData = await transferService.getTransferDetails(transactionId, token);
+                // Assert the type returned by the service matches the expected structure (excluding 'type')
+                const transferData = await transferService.getTransferDetails(transactionId, token) as Omit<TransferDetails, 'type'>;
                 setTransactionDetails({ ...transferData, type: 'transfer' });
-                setNoteText(transferData.note || "");
-                setShowAwaitingVerificationView(false); // Reset custom view if it was a transfer
+                setNoteText(transferData.note || ""); // Access note safely
+                setShowAwaitingVerificationView(false); // Reset custom view for transfers
                 found = true;
                 console.log("Found as Transfer");
-            } catch (transferErr: unknown) { // Changed from 'any' to 'unknown'
-                // Type guard or assertion needed to access properties safely
+            } catch (transferErr: unknown) {
                 let message = 'Unknown error fetching transfer details';
                 let status = 0;
                  if (typeof transferErr === 'object' && transferErr !== null) {
-                     // Check for common error structures (like AxiosError)
                     const errObj = transferErr as { response?: { status?: number; data?: { message?: string } }; message?: string };
                     message = errObj.response?.data?.message || errObj.message || message;
                     status = errObj.response?.status || 0;
@@ -2240,23 +2938,33 @@ const TransactionDetailsPage = () => {
                  }
 
                 const isNotFoundError = status === 404 || message?.toLowerCase().includes('not found') || message?.toLowerCase().includes('invalid id');
-                if (!isNotFoundError) throw transferErr; // Rethrow if it's not a 'not found' error
-                console.warn(`Transfer ${transactionId} not found or error:`, message);
+                if (!isNotFoundError) {
+                    console.error("Error fetching transfer details:", transferErr); // Log non-404 errors
+                    // Don't throw here, allow falling back to payment check unless it's a critical error
+                } else {
+                    console.warn(`Transfer ${transactionId} not found or error:`, message);
+                }
+                 // Only throw if it's definitely not a 404, otherwise let it try payment
+                 if (!isNotFoundError && status !== 0 && status !== 404) {
+                     throw transferErr;
+                 }
             }
 
             // If not found as Transfer, try fetching Payment
             if (!found) {
                 try {
-                    const paymentData = await paymentService.getPaymentDetails(transactionId, token);
+                    // Assert the type returned by the service matches the expected structure (excluding 'type')
+                    const paymentData = await paymentService.getPaymentDetails(transactionId, token) as unknown as Omit<PaymentDetails, 'type'>;
                     setTransactionDetails({ ...paymentData, type: 'payment' });
-                    setNoteText(paymentData.note || "");
-                    // Don't reset custom view if status is pending after clicking "I've paid"
+                    setNoteText(paymentData.note || ""); // Access note safely
+
+                    // Maintain custom view if status is still pending after a refresh
                     if (paymentData.status !== 'pending') {
                         setShowAwaitingVerificationView(false);
                     }
                     found = true;
                     console.log("Found as Payment with status:", paymentData.status);
-                } catch (paymentErr: unknown) { // Changed from 'any' to 'unknown'
+                } catch (paymentErr: unknown) {
                     let message = 'Unknown error fetching payment details';
                     let status = 0;
                      if (typeof paymentErr === 'object' && paymentErr !== null) {
@@ -2267,18 +2975,26 @@ const TransactionDetailsPage = () => {
                         message = paymentErr.message;
                     }
 
+                    // If transfer wasn't found AND payment wasn't found, set the error.
                     if (status === 404 || message?.toLowerCase().includes('not found')) {
                         setError(`Transaction with ID ${transactionId} not found.`);
                         setTransactionDetails(null);
-                    } else { throw paymentErr; } // Rethrow other errors
+                    } else {
+                        // If transfer attempt failed for other reasons, and payment fails, throw payment error.
+                        console.error(`Error fetching payment details (ID: ${transactionId}):`, paymentErr);
+                        throw paymentErr; // Rethrow the payment error
+                    }
                     console.error(`Payment ${transactionId} not found or error:`, message);
                 }
             }
-             if (!found && !error) { // Added error to dependency array, so it's safe to use here
+
+            // If neither attempt succeeded and no specific error was set (e.g. both 404'd)
+            if (!found && !error) {
                 setError(`Transaction with ID ${transactionId} could not be found or accessed.`);
                 setTransactionDetails(null);
-             }
-        } catch (err: unknown) { // Changed from 'any' to 'unknown'
+            }
+
+        } catch (err: unknown) { // Catch errors re-thrown from inner blocks
              let message = "Failed to load transaction details";
              if (typeof err === 'object' && err !== null) {
                 const errObj = err as { response?: { data?: { message?: string } }; message?: string };
@@ -2289,11 +3005,17 @@ const TransactionDetailsPage = () => {
              setError(message);
              setTransactionDetails(null);
              console.error("Unhandled error fetching transaction details:", err);
-        } finally { if (showLoading) setIsLoading(false); }
-    }, [transactionId, token, error]); // Added 'error' to dependency array
+        } finally {
+            if (showLoading) setIsLoading(false);
+        }
+    // Include 'error' in dependency array if decisions depend on it, but be cautious of loops. Here it seems safe.
+    }, [transactionId, token, error]);
 
     // Effect to run fetch data on mount and when ID/token change
-    useEffect(() => { fetchTransactionDetails(); }, [fetchTransactionDetails]); // Now depends on the stable useCallback version
+    useEffect(() => {
+        fetchTransactionDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [transactionId, token]); // fetchTransactionDetails is memoized with useCallback
 
     // --- Tab Underline Animation Effect ---
     useEffect(() => {
@@ -2303,99 +3025,211 @@ const TransactionDetailsPage = () => {
 
         if (underline && updatesTab && detailsTab) {
             const updateUnderlinePosition = () => {
+                 // Ensure elements are still mounted before accessing properties
+                 const currentUpdatesTab = updatesTabRef.current;
+                 const currentDetailsTab = detailsTabRef.current;
+                 const currentUnderline = underlineRef.current;
+
+                 if (!currentUpdatesTab || !currentDetailsTab || !currentUnderline) return;
+
+
                 if (activeTab === "Updates") {
-                    underline.style.width = `${updatesTab.offsetWidth}px`;
-                    underline.style.transform = `translateX(${updatesTab.offsetLeft}px)`;
+                    currentUnderline.style.width = `${currentUpdatesTab.offsetWidth}px`;
+                    currentUnderline.style.transform = `translateX(${currentUpdatesTab.offsetLeft}px)`;
                 } else if (activeTab === "Details") {
-                    underline.style.width = `${detailsTab.offsetWidth}px`;
-                    underline.style.transform = `translateX(${detailsTab.offsetLeft}px)`;
+                    currentUnderline.style.width = `${currentDetailsTab.offsetWidth}px`;
+                    currentUnderline.style.transform = `translateX(${currentDetailsTab.offsetLeft}px)`;
                 }
             };
 
-            updateUnderlinePosition();
-            window.addEventListener('resize', updateUnderlinePosition); // Update on window resize
+            // Use requestAnimationFrame for smoother updates, especially during resize
+            let rafId: number | null = null;
+            const handleResize = () => {
+                if (rafId) cancelAnimationFrame(rafId);
+                rafId = requestAnimationFrame(updateUnderlinePosition);
+            };
 
-            return () => window.removeEventListener('resize', updateUnderlinePosition); // Cleanup on unmount
+
+            updateUnderlinePosition(); // Initial position
+            window.addEventListener('resize', handleResize); // Update on window resize
+
+            // Cleanup function
+            return () => {
+                window.removeEventListener('resize', handleResize);
+                if (rafId) cancelAnimationFrame(rafId);
+            };
         }
-    }, [activeTab]);
+    }, [activeTab]); // Re-run effect when activeTab changes
 
     // --- Helper Functions & Derived Data ---
     const isPayment = transactionDetails?.type === 'payment';
     const isTransfer = transactionDetails?.type === 'transfer';
 
+    // Safely format dates, handling potential invalid input
     const formatDisplayDate = (dateString: string | undefined): string => {
         if (!dateString) return "Date not available";
-        try { return format(parseISO(dateString), "MMM d 'at' h:mm a"); }
-        catch (e) { console.error("Date formatting error:", e, "Input:", dateString); return "Invalid Date"; }
+        try {
+            const parsedDate = parseISO(dateString);
+            // Check if parsing was successful before formatting
+            if (isNaN(parsedDate.getTime())) {
+                throw new Error("Invalid date value after parsing");
+            }
+            return format(parsedDate, "MMM d 'at' h:mm a");
+        } catch (e) {
+            console.error("Date formatting error:", e, "Input:", dateString);
+            return "Invalid Date";
+        }
     };
 
     // --- Timeline Logic ---
-    const getTimelineSteps = (): TimelineStep[] => {
+    // Using useMemo to prevent recalculating timeline steps on every render unless dependencies change
+    const timelineSteps = useMemo((): TimelineStep[] => {
         if (!transactionDetails) return [];
+
+        const createdAt = transactionDetails.createdAt;
+        const updatedAt = transactionDetails.updatedAt;
+        const status = transactionDetails.status;
+        const failureReason = transactionDetails.failureReason;
 
         if (isPayment) {
             const payment = transactionDetails as PaymentDetails;
-            const createdDate = formatDisplayDate(payment.createdAt);
-            const finalDate = formatDisplayDate(payment.updatedAt);
-            const isPending = payment.status === 'pending';
-            const isInProgress = payment.status === 'in progress';
-            const isComplete = payment.status === 'completed';
-            const isCancelled = payment.status === 'canceled';
-            const hasFailed = payment.status === 'failed';
+            const createdDate = formatDisplayDate(createdAt);
+            const finalDate = formatDisplayDate(updatedAt); // Use updatedAt for steps completed after creation
+            const isPending = status === 'pending';
+            const isInProgress = status === 'in progress';
+            const isComplete = status === 'completed';
+            const isCancelled = status === 'canceled';
+            const hasFailed = status === 'failed';
 
             let steps: TimelineStep[] = [
-                { id: 'setup', label: "You set up this payment", status: 'completed', date: createdDate, info: null, showCancelAction: false },
-                { id: 'waiting', label: `We're waiting for you to pay`, status: 'pending', date: undefined, info: `Check the 'Details' tab for bank information.`, showCancelAction: false },
-                { id: 'receive', label: `We receive your ${payment.payInCurrency?.code || 'money'}`, status: 'pending', date: undefined, info: null, showCancelAction: false },
-                { id: 'add_balance', label: `We add it to your ${payment.balanceCurrency?.code || ''} balance`, status: 'pending', date: undefined, info: null, showCancelAction: false },
-                { id: 'done', label: "All done!", status: 'pending', date: undefined, info: null, showCancelAction: false },
+                { id: 'setup', label: "You set up this payment", status: 'completed', date: createdDate, info: null },
+                { id: 'waiting', label: `We're waiting for you to pay`, status: 'pending', date: undefined, info: `Check the 'Details' tab for bank information.`, showCancelAction: false }, // Initial status pending
+                { id: 'receive', label: `We receive your ${payment.payInCurrency?.code || 'money'}`, status: 'pending', date: undefined, info: null },
+                { id: 'add_balance', label: `We add it to your ${payment.balanceCurrency?.code || ''} balance`, status: 'pending', date: undefined, info: null },
+                { id: 'done', label: "All done!", status: 'pending', date: undefined, info: null },
             ];
 
+            // Update statuses based on the actual transaction status
             if (isPending) {
-                steps[1].status = 'active';
-                steps[1].showCancelAction = true; // Show inline "I've not paid" button
+                steps[1].status = 'active'; // This is the current active step
+                steps[1].showCancelAction = true; // Allow cancelling from this step if user hasn't paid
             } else if (isInProgress) {
-                 steps[1].status = 'completed'; steps[1].date = finalDate; steps[1].info = null;
-                 steps[2].status = 'active'; steps[2].date = finalDate; // Use update time for receive step
-                 steps[2].info = `We're processing your payment of ${payment.amountToPay.toFixed(2)} ${payment.payInCurrency?.code}.`;
+                steps[1].status = 'completed'; steps[1].date = finalDate; steps[1].info = null; // Assumed user paid if 'in progress'
+                steps[2].status = 'active'; steps[2].date = finalDate; // Receiving is now active
+                steps[2].info = `We're processing your payment of ${payment.amountToPay.toFixed(2)} ${payment.payInCurrency?.code}.`;
             } else if (isComplete) {
-                steps = steps.map((step, index) => ({ ...step, status: 'completed', date: index === 0 ? createdDate : finalDate, info: null, showCancelAction: false }));
+                // Mark all steps as completed
+                steps = steps.map((step, index) => ({
+                    ...step,
+                    status: 'completed',
+                    date: index === 0 ? createdDate : finalDate, // Use created for setup, final for others
+                    info: null,
+                    showCancelAction: false
+                }));
             } else if (isCancelled || hasFailed) {
                 const finalStatus: TimelineStatus = isCancelled ? 'cancelled' : 'failed';
-                const finalInfo = isCancelled ? 'This payment was cancelled.' : `This payment failed. ${payment.failureReason || 'Unknown reason'}`;
-                 const failedStepIndex = steps.findIndex(step => step.status !== 'completed');
-                if (failedStepIndex >= 0) {
-                     for(let i = 1; i < failedStepIndex; i++) { steps[i].status = 'completed'; steps[i].date = finalDate; steps[i].info = null; }
-                     steps[failedStepIndex].status = finalStatus; steps[failedStepIndex].date = finalDate; steps[failedStepIndex].info = finalInfo;
-                     for(let i = failedStepIndex + 1; i < steps.length; i++){ steps[i].status = 'pending'; steps[i].date = undefined; steps[i].info = null; }
-                 } else { steps[steps.length - 1].status = finalStatus; steps[steps.length - 1].date = finalDate; steps[steps.length - 1].info = finalInfo; }
-                 steps = steps.map(step => ({ ...step, showCancelAction: false }));
+                const finalInfo = isCancelled ? 'This payment was cancelled.' : `This payment failed. ${failureReason || 'Unknown reason'}`;
+
+                // Find the first step that wasn't completed before failure/cancellation
+                const failedStepIndex = steps.findIndex(step => step.status !== 'completed' && step.id !== 'setup'); // Start check from step 1
+
+                if (failedStepIndex > 0) { // If failure happened after setup
+                    // Mark steps before the failed one as completed (if applicable, e.g., maybe 'waiting' was completed)
+                    // This logic might need refinement based on exact state transitions
+                    for (let i = 1; i < failedStepIndex; i++) {
+                        steps[i].status = 'completed';
+                        steps[i].date = finalDate; // Use final date for intermediate steps too
+                        steps[i].info = null;
+                    }
+                    // Mark the step where it failed/was cancelled
+                    steps[failedStepIndex].status = finalStatus;
+                    steps[failedStepIndex].date = finalDate;
+                    steps[failedStepIndex].info = finalInfo;
+                    // Keep subsequent steps as pending (or potentially remove them)
+                    for (let i = failedStepIndex + 1; i < steps.length; i++) {
+                        steps[i].status = 'pending'; // Or maybe a different status like 'skipped'?
+                        steps[i].date = undefined;
+                        steps[i].info = null;
+                    }
+                } else { // If it failed/cancelled very early (e.g., right after setup, maybe at 'waiting')
+                    steps[1].status = finalStatus; // Mark the 'waiting' step
+                    steps[1].date = finalDate;
+                    steps[1].info = finalInfo;
+                    // Keep subsequent steps pending
+                    for (let i = 2; i < steps.length; i++) {
+                       steps[i].status = 'pending';
+                       steps[i].date = undefined;
+                       steps[i].info = null;
+                    }
+                }
+                // Ensure no cancel actions are shown on failed/cancelled transactions
+                steps = steps.map(step => ({ ...step, showCancelAction: false }));
             }
             return steps;
-        }
-        else if (isTransfer) {
-             // Keep existing transfer timeline logic
+
+        } else if (isTransfer) {
             const transfer = transactionDetails as TransferDetails;
-            const createdDate = formatDisplayDate(transfer.createdAt); const updatedDate = formatDisplayDate(transfer.updatedAt); const isProcessing = transfer.status === 'processing' || transfer.status === 'pending'; const isComplete = transfer.status === 'completed'; const isCancelled = transfer.status === 'canceled'; const hasFailed = transfer.status === 'failed'; const finalStepStatus: TimelineStatus = isCancelled ? 'cancelled' : (hasFailed ? 'failed' : 'pending');
-            let steps: TimelineStep[] = [ { id: 'setup', label: "You set up your transfer", status: 'completed', date: createdDate, info: null, showCancelAction: false }, { id: 'funded', label: `We've taken funds from your ${transfer.sendCurrency?.code || 'account'}`, status: (isComplete || isProcessing) ? 'completed' : 'pending', date: (isComplete || isProcessing) ? createdDate : undefined, info: null, showCancelAction: false }, { id: 'paid_out', label: `We pay out your ${transfer.receiveCurrency?.code || 'money'}`, status: isComplete ? 'completed' : (isProcessing ? 'active' : finalStepStatus), date: isComplete ? updatedDate : (isProcessing ? updatedDate : undefined), info: isProcessing ? `We're processing the payment to your recipient's bank.` : (hasFailed ? `Failed to pay out: ${transfer.failureReason || 'Unknown reason'}` : (isCancelled ? 'Transfer cancelled.' : null)), showCancelAction: false }, { id: 'delivered', label: `Sent to recipient's bank`, status: isComplete ? 'completed' : 'pending', date: isComplete ? updatedDate : undefined, info: null, showCancelAction: false }, ];
-            if (isCancelled || hasFailed) { const failedStepIndex = steps.findIndex(step => step.id === 'paid_out'); if (failedStepIndex > 0) { steps[failedStepIndex].status = finalStepStatus; steps[failedStepIndex].date = updatedDate; for (let i = failedStepIndex + 1; i < steps.length; i++) { steps[i].status = 'pending'; } } steps = steps.map(step => ({ ...step, showCancelAction: false })); }
+            const createdDate = formatDisplayDate(createdAt);
+            const updatedDate = formatDisplayDate(updatedAt); // Use updatedAt for subsequent steps
+            const isPendingOrProcessing = status === 'pending' || status === 'processing';
+            const isComplete = status === 'completed';
+            const isCancelled = status === 'canceled';
+            const hasFailed = status === 'failed';
+            const finalStepStatus: TimelineStatus = isCancelled ? 'cancelled' : (hasFailed ? 'failed' : 'pending'); // Fallback shouldn't happen
+
+            let steps: TimelineStep[] = [
+                { id: 'setup', label: "You set up your transfer", status: 'completed', date: createdDate, info: null },
+                { id: 'funded', label: `We've taken funds from your ${transfer.sendCurrency?.code || 'account'}`, status: 'pending', date: undefined, info: null },
+                { id: 'paid_out', label: `We pay out your ${transfer.receiveCurrency?.code || 'money'}`, status: 'pending', date: undefined, info: null },
+                { id: 'delivered', label: `Sent to recipient's bank`, status: 'pending', date: undefined, info: null },
+            ];
+
+            if (isPendingOrProcessing) {
+                steps[1].status = 'completed'; // Funded assumed complete if processing
+                steps[1].date = updatedDate; // Or potentially createdAt if funding is instant? Use updated for safety.
+                steps[2].status = 'active'; // Payout is the active step
+                steps[2].date = updatedDate;
+                steps[2].info = `We're processing the payment to your recipient's bank.`;
+            } else if (isComplete) {
+                steps = steps.map((step, index) => ({
+                    ...step,
+                    status: 'completed',
+                    date: index === 0 ? createdDate : updatedDate, // Use created for setup, updated for others
+                    info: null
+                }));
+            } else if (isCancelled || hasFailed) {
+                const finalInfo = isCancelled ? 'Transfer cancelled.' : `Failed to pay out: ${failureReason || 'Unknown reason'}`;
+                // Determine where it failed
+                // Simple approach: assume failure happens at 'paid_out' step if not completed
+                steps[1].status = 'completed'; // Assume funded if it got to this state
+                steps[1].date = updatedDate;
+                steps[2].status = finalStepStatus;
+                steps[2].date = updatedDate;
+                steps[2].info = finalInfo;
+                // Keep 'delivered' as pending
+                steps[3].status = 'pending';
+            }
+             // Ensure no cancel actions are shown on completed/failed/cancelled transfers in timeline
+             steps = steps.map(step => ({ ...step, showCancelAction: false }));
             return steps;
         }
-        return [];
-    };
-    const timelineSteps = getTimelineSteps();
+        return []; // Should not happen if transactionDetails is valid
+    }, [transactionDetails, isPayment, isTransfer]); // Dependencies for recalculating timeline
+
 
     // --- Event Handlers ---
 
     // Handles clicking the main "I've now paid" button for PENDING payments
     const handleConfirmPaymentSubmit = async () => {
-        if (!transactionId || !token || !isPayment) return;
+        if (!transactionId || !token || !isPayment || transactionDetails?.status !== 'pending') return;
         setIsSubmitting(true); setSubmissionError(null);
         try {
+            // Call the API endpoint that marks the payment as 'user has paid'
             await paymentService.confirmUserTransfer(transactionId, token);
-            setShowAwaitingVerificationView(true); // Show the custom view
-            // Do not refresh data immediately
-        } catch (err: unknown) { // Changed from 'any' to 'unknown'
+            setShowAwaitingVerificationView(true); // Show the custom "awaiting verification" view immediately
+            // Optionally, refetch details after a short delay or let the user refresh manually
+            // await fetchTransactionDetails(false); // Or maybe not refetch immediately to show the custom view first
+        } catch (err: unknown) {
             let message = `Failed to confirm payment`;
             let status = 0;
             if (typeof err === 'object' && err !== null) {
@@ -2406,27 +3240,50 @@ const TransactionDetailsPage = () => {
                 message = err.message;
             }
 
+            // Handle specific errors, e.g., if payment is no longer pending
             if (message.includes('not in pending state') || status === 400) {
                  setError("Payment status may have already updated. Refreshing...");
-                 await fetchTransactionDetails(false); // Refresh without main loading indicator
-            } else { setSubmissionError(message); } // Show specific error
+                 await fetchTransactionDetails(false); // Refresh data without showing main loading spinner
+            } else {
+                // Show error specific to this action
+                setSubmissionError(message);
+            }
             console.error(`Error confirming payment (ID: ${transactionId}):`, err);
-        } finally { setIsSubmitting(false); }
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
-    // Handles clicking the cancel button in the modal
+    // Handles clicking the confirm button in the cancellation modal
     const handleConfirmCancel = async () => {
-        if (!transactionId || !token || !transactionDetails) { setSubmissionError("Cannot proceed."); return; }
+        if (!transactionId || !token || !transactionDetails) {
+             setSubmissionError("Cannot proceed: Missing required information.");
+             return;
+        }
+        // Double check if cancellable based on current status before proceeding
+        if (!canCancelTransaction) {
+            setSubmissionError("This transaction can no longer be cancelled. Refreshing...");
+            await fetchTransactionDetails(false);
+            setIsCancelModalOpen(false);
+            return;
+        }
+
         setIsSubmitting(true); setSubmissionError(null);
         try {
             let cancelPromise;
-            if (isPayment) { cancelPromise = paymentService.cancelPayment(transactionId, token); }
-            else if (isTransfer) { cancelPromise = transferService.cancelTransfer(transactionId, token); }
-            else { throw new Error("Unknown transaction type."); }
+            if (isPayment) {
+                cancelPromise = paymentService.cancelPayment(transactionId, token);
+            } else if (isTransfer) {
+                cancelPromise = transferService.cancelTransfer(transactionId, token);
+            } else {
+                // Should not happen with current logic, but good practice
+                throw new Error("Cannot cancel: Unknown transaction type.");
+            }
             await cancelPromise;
-            setIsCancelModalOpen(false);
-            await fetchTransactionDetails(); // Refresh data after successful cancel
-        } catch (err: unknown) { // Changed from 'any' to 'unknown'
+            setIsCancelModalOpen(false); // Close modal on success
+            await fetchTransactionDetails(false); // Refresh data to show 'cancelled' status without full page reload
+            // Optionally show a success message toast/notification here
+        } catch (err: unknown) {
              let message = `Failed to cancel ${isPayment ? 'payment' : 'transfer'}`;
              if (typeof err === 'object' && err !== null) {
                 const errObj = err as { response?: { data?: { message?: string } }; message?: string };
@@ -2434,110 +3291,198 @@ const TransactionDetailsPage = () => {
              } else if (err instanceof Error) {
                  message = err.message;
              }
-             setSubmissionError(message);
+             // Display error message within the modal or on the page
+             setSubmissionError(message); // Show error near the action area
              console.error(`Error cancelling ${transactionDetails.type} (ID: ${transactionId}):`, err);
-             setIsCancelModalOpen(false); // Close modal even on error
-        } finally { setIsSubmitting(false); }
+             // Keep modal open on error? Or close and show error on page? Closing is simpler.
+             setIsCancelModalOpen(false);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
-    const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => { setNoteText(e.target.value); };
+    // Handles changes in the note textarea
+    const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setNoteText(e.target.value);
+        // TODO: Implement auto-save or a save button for the note if needed
+        // Example: Debounce saving or add a button
+    };
 
-     const handleCopyToClipboard = (text: string | undefined, fieldName: string) => {
-        if (!text) { console.warn(`Attempted to copy empty field: ${fieldName}`); return; }
+    // Handles copying text to clipboard and showing feedback
+    const handleCopyToClipboard = (text: string | undefined | null, fieldName: string) => {
+        if (!text) {
+            console.warn(`Attempted to copy empty field: ${fieldName}`);
+            // Optionally show a different message like "Nothing to copy"
+            setCopySuccess(`${fieldName} is empty.`);
+             setTimeout(() => setCopySuccess(null), 1500);
+            return;
+        }
         navigator.clipboard.writeText(text).then(() => {
             setCopySuccess(`${fieldName} copied!`);
-            setTimeout(() => setCopySuccess(null), 1500); // Clear message after 1.5s
-        }).catch(err => { console.error('Failed to copy text: ', err); alert(`Failed to copy ${fieldName}.`); });
+            setTimeout(() => setCopySuccess(null), 1500); // Clear message after 1.5 seconds
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+            // Provide user feedback if copy fails (e.g., due to browser restrictions)
+            alert(`Could not copy ${fieldName}. You may need to copy it manually.`);
+        });
     };
 
     // --- Determine Cancel Button Visibility ---
+    // Use useMemo for this derived state based on transactionDetails
     const canCancelTransaction = useMemo(() => {
         if (!transactionDetails) return false;
-        if (isPayment) return transactionDetails.status === 'pending' || transactionDetails.status === 'in progress';
-        if (isTransfer) return transactionDetails.status === 'pending' || transactionDetails.status === 'processing';
-        return false;
+        // Allow cancellation only in specific pending/processing states
+        if (isPayment) {
+            return transactionDetails.status === 'pending' || transactionDetails.status === 'in progress';
+        }
+        if (isTransfer) {
+            // Typically transfers are only cancellable very early
+            return transactionDetails.status === 'pending' || transactionDetails.status === 'processing';
+        }
+        return false; // Unknown type cannot be cancelled
     }, [transactionDetails, isPayment, isTransfer]);
 
 
     // --- Render Logic ---
+
+    // Loading State (Initial Load)
     if (isLoading && !transactionDetails) { return (
          <div className="container mx-auto px-4 py-8 animate-pulse">
-             <Skeleton className="h-6 w-40 mb-4" />
+             <Skeleton className="h-6 w-1/3 mb-4" /> {/* Page title placeholder */}
              <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm mx-auto max-w-4xl">
-                 <Skeleton className="h-20 w-full" /> {/* Header */}
-                 <Skeleton className="h-12 w-full border-y border-gray-200 dark:border-gray-700" /> {/* Tabs */}
-                 <div className="p-6 space-y-6">
-                     <Skeleton className="h-6 w-1/2" /> {/* Ref/ID */}
-                     <Skeleton className="h-40 w-full" /> {/* Timeline */}
-                     <Skeleton className="h-12 w-full" /> {/* Button Area */}
+                 <Skeleton className="h-24 sm:h-20 w-full rounded-t-2xl" /> {/* Header */}
+                 <Skeleton className="h-14 w-full border-y border-gray-200 dark:border-gray-700" /> {/* Tabs */}
+                 <div className="p-6 space-y-8"> {/* Increased spacing */}
+                     <Skeleton className="h-6 w-3/4" /> {/* Ref/ID placeholder */}
+                     <Skeleton className="h-48 w-full" /> {/* Timeline placeholder */}
+                     <Skeleton className="h-12 w-full" /> {/* Button Area placeholder */}
                  </div>
              </div>
          </div>
      ); }
+
+    // Error State (Failed to load initial data)
     if (error && !transactionDetails) { return (
          <div className="container mx-auto px-4 py-8 text-center">
-             <p className="text-red-600 bg-red-100 dark:bg-red-900/20 p-4 rounded-md border border-red-200 dark:border-red-700/40">Error: {error}</p>
-             <Button onClick={() => router.back()} variant="outline" className="mt-4">Go Back</Button>
+             <div className="bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700/50 text-red-700 dark:text-red-300 px-4 py-3 rounded-md shadow-sm max-w-md mx-auto">
+                <p className="font-medium">Error Loading Transaction</p>
+                <p className="text-sm mt-1">{error}</p>
+             </div>
+             <Button onClick={() => router.back()} variant="outline" className="mt-6">Go Back</Button>
+             <Button onClick={() => fetchTransactionDetails()} variant="secondary" className="mt-6 ml-2">Try Again</Button>
          </div>
     ); }
+
+    // Not Found State (API returned 404 or similar)
     if (!transactionDetails) { return (
-         <div className="container mx-auto px-4 py-8 text-center text-gray-500">
-             Transaction details not found.
-             <Button onClick={() => router.push('/dashboard/transactions')} variant="outline" className="mt-4">View Transactions</Button>
+         <div className="container mx-auto px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+             <p className="text-lg">Transaction details not found.</p>
+             <p className="text-sm mt-1">The transaction ID might be incorrect, or it may no longer exist.</p>
+             <Button onClick={() => router.push('/dashboard/transactions')} variant="outline" className="mt-6">View All Transactions</Button>
          </div>
      ); }
 
-    // Header details calculation
+    // --- Derived Data for Rendering (Ensure transactionDetails is non-null here) ---
     const headerIcon = isPayment ? <LuPlus size={24} className="text-neutral-900 dark:text-white"/> : <GoArrowUp size={24} className="text-neutral-900 dark:text-white"/>;
-    const headerTitle = isPayment ? `To your ${(transactionDetails as PaymentDetails).balanceCurrency?.code ?? ''} balance` : (transactionDetails as TransferDetails).recipient?.accountHolderName || "Recipient";
+    const headerTitle = isPayment
+        ? `To your ${(transactionDetails as PaymentDetails).balanceCurrency?.code ?? 'Balance'}`
+        : (transactionDetails as TransferDetails).recipient?.accountHolderName || "Outgoing Transfer";
     const headerAmountRaw = isPayment ? (transactionDetails as PaymentDetails).amountToAdd : (transactionDetails as TransferDetails).sendAmount;
     const headerCurrencyCode = isPayment ? (transactionDetails as PaymentDetails).balanceCurrency?.code : (transactionDetails as TransferDetails).sendCurrency?.code;
     const headerAmount = `${headerAmountRaw?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? '0.00'} ${headerCurrencyCode ?? ''}`;
     const headerAmountSign = isPayment ? "+" : "-";
-    let headerStatusText = "Status unknown"; let headerStatusColorClass = 'text-gray-600 dark:text-gray-400';
+
     // Determine header status text and color based on the *actual* transaction status
-    switch (transactionDetails.status) {
-        case 'pending': headerStatusText = isPayment ? "Waiting for you to pay" : "Transfer initiated"; headerStatusColorClass = 'text-orange-600 dark:text-orange-400'; break;
-        case 'in progress': headerStatusText = "Processing payment"; headerStatusColorClass = 'text-blue-600 dark:text-blue-400'; break;
-        case 'processing': headerStatusText = "Transfer processing"; headerStatusColorClass = 'text-blue-600 dark:text-blue-400'; break;
-        case 'completed': headerStatusText = isPayment ? "Money added" : "Transfer completed"; headerStatusColorClass = 'text-green-600 dark:text-green-400'; break;
-        case 'canceled': headerStatusText = "Transaction cancelled"; headerStatusColorClass = 'text-red-600 dark:text-red-400'; break;
-        case 'failed': headerStatusText = "Transaction failed"; headerStatusColorClass = 'text-red-600 dark:text-red-400'; break;
-    }
-    // Override header status text if showing the custom view
+    let headerStatusText = "Status Unknown";
+    let headerStatusColorClass = 'text-gray-500 dark:text-gray-400'; // Default color
+
+    // Special handling for the "Awaiting Verification" custom UI state
     if (isPayment && transactionDetails.status === 'pending' && showAwaitingVerificationView) {
         headerStatusText = "Verifying Payment";
-        headerStatusColorClass = 'text-blue-600 dark:text-blue-400'; // Use 'in progress' color visually
+        headerStatusColorClass = 'text-blue-600 dark:text-blue-400 animate-pulse'; // Use 'in progress' color + pulse
+    } else {
+        // Standard status mapping
+        switch (transactionDetails.status) {
+            case 'pending':
+                headerStatusText = isPayment ? "Waiting for you to pay" : "Transfer initiated";
+                headerStatusColorClass = 'text-orange-600 dark:text-orange-400';
+                break;
+            case 'in progress': // Payment specific
+                headerStatusText = "Processing Payment";
+                headerStatusColorClass = 'text-blue-600 dark:text-blue-400';
+                break;
+            case 'processing': // Transfer specific
+                headerStatusText = "Transfer Processing";
+                headerStatusColorClass = 'text-blue-600 dark:text-blue-400';
+                break;
+            case 'completed':
+                headerStatusText = isPayment ? "Money Added" : "Transfer Completed";
+                headerStatusColorClass = 'text-green-600 dark:text-green-400';
+                break;
+            case 'canceled':
+                headerStatusText = "Transaction Cancelled";
+                headerStatusColorClass = 'text-red-600 dark:text-red-400';
+                break;
+            case 'failed':
+                headerStatusText = "Transaction Failed";
+                headerStatusColorClass = 'text-red-600 dark:text-red-400';
+                break;
+            default: // Handle any unexpected status strings gracefully
+                headerStatusText = `Status: ${transactionDetails.status}`;
+                headerStatusColorClass = 'text-gray-500 dark:text-gray-400';
+                break;
+        }
     }
 
+
+    // --- Main Component Return ---
     return (
-        <> {/* Fragment for page and modal */}
-            <div className="container mx-auto">
+        <> {/* Fragment wrapping page content and modal */}
+            <div className="container mx-auto px-4 py-8">
                 {/* Main Content Card */}
-                <div className="bg-white dark:bg-background rounded-2xl border shadow-sm mx-auto max-w-4xl">
+                <div className="bg-white dark:bg-background rounded-2xl border dark:border-border shadow-sm mx-auto max-w-4xl">
                     {/* Card Header */}
-                    <div className="sm:p-6 p-4 flex items-start gap-4 border-b">
-                         <div className={cn("p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center", isPayment ? '' : '' )}> {headerIcon} </div>
-
-                         <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
-
-                         <div className="text-wrap">
-                            <h2 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg">{headerTitle}</h2>
-                            <p className={cn("text-sm mt-1", headerStatusColorClass)}> {headerStatusText} </p> </div>
-                         <div className={cn("font-medium whitespace-nowrap", isPayment ? 'text-green-600 dark:text-green-500' : 'text-neutral-900  dark:text-white' )}> {headerAmountSign} {headerAmount} </div>
+                    <div className="sm:p-6 p-4 flex items-start gap-4 border-b dark:border-border">
+                         {/* Icon container */}
+                         <div className={cn(
+                            "p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center shrink-0",
+                            isPayment ? 'text-green-600' : 'text-blue-600' // Example coloring
+                         )}>
+                            {headerIcon}
                          </div>
 
+                         {/* Text content container */}
+                         <div className="flex-grow flex flex-col sm:flex-row justify-between sm:items-center gap-1 sm:gap-4">
+                            {/* Left side: Title and Status */}
+                            <div className="text-wrap mr-2">
+                                <h2 className="font-medium leading-tight text-neutral-900 dark:text-white sm:text-lg break-words">
+                                    {headerTitle}
+                                </h2>
+                                <p className={cn("text-sm mt-0.5", headerStatusColorClass)}>
+                                    {headerStatusText}
+                                </p>
+                            </div>
+                            {/* Right side: Amount */}
+                            <div className={cn(
+                                "font-medium text-lg sm:text-xl whitespace-nowrap text-right sm:text-left",
+                                isPayment ? 'text-green-600 dark:text-green-500' : 'text-neutral-900 dark:text-white'
+                            )}>
+                                {headerAmountSign} {headerAmount}
+                            </div>
+                         </div>
                     </div>
 
                     {/* Tabs Navigation */}
-                    <div className="border-b px-6">
-                        <nav className="-mb-px flex gap-4 relative" aria-label="Tabs">
+                    <div className="border-b dark:border-border px-4 sm:px-6">
+                        <nav className="-mb-px flex gap-4 sm:gap-6 relative" aria-label="Tabs">
                              <button
                                 ref={updatesTabRef}
                                 onClick={() => setActiveTab("Updates")}
                                 className={cn(
-                                    "whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium",
-                                    activeTab === "Updates" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:border-gray-700 hover:text-gray-700 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:text-gray-300"
+                                    "whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium transition-colors duration-200 ease-in-out",
+                                    activeTab === "Updates"
+                                        ? "border-primary text-primary"
+                                        : "border-transparent text-gray-500 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                                 )}
                                 aria-current={activeTab === "Updates" ? "page" : undefined}
                             >
@@ -2547,219 +3492,361 @@ const TransactionDetailsPage = () => {
                                 ref={detailsTabRef}
                                 onClick={() => setActiveTab("Details")}
                                 className={cn(
-                                    "whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium",
-                                    activeTab === "Details" ? "border-primary text-primary" : "border-transparent text-gray-500 hover:border-gray-700 hover:text-gray-700 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:text-gray-300"
+                                    "whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium transition-colors duration-200 ease-in-out",
+                                    activeTab === "Details"
+                                        ? "border-primary text-primary"
+                                        : "border-transparent text-gray-500 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                                 )}
                                 aria-current={activeTab === "Details" ? "page" : undefined}
                             >
                                 Details
                             </button>
-                            <span ref={underlineRef} className="absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300 block" />
+                            {/* Animated underline */}
+                            <span
+                                ref={underlineRef}
+                                className="absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300 ease-out block"
+                                style={{ width: 0, transform: 'translateX(0px)' }} // Initial state set by JS effect
+                            />
                         </nav>
                     </div>
 
                     {/* Tab Content Area */}
-                    <div className="p-6">
+                    <div className="p-4 sm:p-6">
                         {/* --- Updates Tab Content --- */}
                         {activeTab === "Updates" && (
                             <div>
-                                {/* Transaction ID / Reference Code */}
+                                {/* Transaction ID / Reference Code (Consistent placement) */}
                                 <div className="flex items-center mb-6 text-sm gap-2">
-                                    <span className="text-neutral-900 dark:text-white w-28 flex-shrink-0">
+                                    <span className="text-gray-500 dark:text-gray-400 w-28 flex-shrink-0">
                                         {isPayment ? "Reference Code" : "Transfer ID"}
                                     </span>
-                                    <span className="font-medium text-gray-500 dark:text-gray-300 break-all">
+                                    <span className="font-medium text-gray-700 dark:text-gray-300 break-all">
                                         {isPayment ? (transactionDetails as PaymentDetails).referenceCode || 'N/A' : transactionDetails._id}
                                     </span>
+                                    {/* Optional: Add copy button here */}
                                 </div>
 
-                                {/* --- Conditional Rendering based on showAwaitingVerificationView --- */}
-                                {isPayment && transactionDetails.status === 'pending' && showAwaitingVerificationView ? ( // Fixed typo: 'cancle' to 'pending'
+                                {/* --- Conditional Rendering: Awaiting Verification View vs. Standard Timeline --- */}
+                                {isPayment && transactionDetails.status === 'pending' && showAwaitingVerificationView ? (
                                     // --- Render Awaiting Verification View ---
                                     <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
-                                        <FaRegClock className="text-4xl text-blue-500 mx-auto mb-4 animate-pulse" />
-                                        <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Thanks! We&apos;re checking your payment</h3>
-                                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 max-w-md mx-auto">
-                                            We received your confirmation and are now verifying the bank transfer. This usually takes a few hours, but can sometimes take up to 19 hours depending on your bank. We&apos;ll update the status here automatically once confirmed.
+                                        <FaRegClock className="text-5xl text-blue-500 mx-auto mb-5 animate-spin-slow" /> {/* Slower spin */}
+                                        <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Thanks! We're checking your payment</h3>
+                                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-6 max-w-md mx-auto">
+                                            We received your confirmation and are now verifying the bank transfer. This usually takes a few hours, but can sometimes take up to 1-2 business days depending on your bank and the payment method. We'll update the status here automatically once confirmed.
                                         </p>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">
-                                            Reference: {transactionDetails.referenceCode || 'N/A'}
+                                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-6">
+                                            Reference Code: {(transactionDetails as PaymentDetails).referenceCode || 'N/A'}
                                         </p>
-                                         <Button variant="outline" size="sm" onClick={() => fetchTransactionDetails(false)} className="mt-6" disabled={isSubmitting}>
-                                             Refresh Status
+                                         <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => fetchTransactionDetails(false)} // Refresh without full spinner
+                                            className="mt-2"
+                                            disabled={isSubmitting} // Disable if any submission is in progress? Maybe not needed here.
+                                         >
+                                             Check for Updates
                                          </Button>
                                     </div>
                                 ) : (
                                     // --- Render Standard Timeline and Actions ---
                                     <>
                                         {/* Timeline Visualization */}
-                                        <div className="relative mt-6">
+                                        <div className="relative mt-2"> {/* Reduced top margin */}
                                             {timelineSteps.length > 0 ? (
-                                                <ul className="space-y-2"> {/* Increased vertical spacing between steps */}
+                                                <ul className="space-y-1"> {/* Reduced vertical space between items slightly */}
                                                     {timelineSteps.map((step, index) => (
-                                                        <li key={step.id || index} className="flex items-start space-x-4 pb-6 last:pb-0"> {/* Increased horizontal spacing, vertical padding */}
-                                                            {/* Marker & Line - Redesigned */}
-                                                            <div className="relative flex flex-col items-center flex-shrink-0">
+                                                        <li key={step.id || index} className="flex items-start space-x-4 py-3 last:pb-0"> {/* Adjusted padding */}
+                                                            {/* Marker & Line */}
+                                                            <div className="relative flex flex-col items-center flex-shrink-0 pt-1"> {/* Align marker better */}
                                                                 <div className={cn(
-                                                                    "h-6 w-6 rounded-full flex items-center justify-center ring-4 z-10", // Refined ring appearance
-                                                                    step.status === "completed" && "bg-green-600 ring-green-600/40 text-white",
-                                                                    step.status === "active" && "bg-green-500 ring-green-600/30 text-white animate-pulse", // Active with pulse
-                                                                    step.status === "pending" && "bg-green-400  ring-green-600/20 text-white", // Pending state styling
-                                                                    step.status === "failed" && "bg-rose-600 ring-rose-600/20 text-white",
-                                                                    step.status === "cancelled" && "bg-red-600 ring-red-600/20 text-white"
+                                                                    "h-5 w-5 rounded-full flex items-center justify-center ring-4 z-10", // Smaller marker
+                                                                    step.status === "completed" && "bg-green-600 ring-green-100 dark:ring-green-900/50 text-white",
+                                                                    step.status === "active" && "bg-blue-500 ring-blue-100 dark:ring-blue-900/50 text-white animate-pulse", // Use blue for active
+                                                                    step.status === "pending" && "bg-gray-300 dark:bg-gray-600 ring-gray-100 dark:ring-gray-700/50 text-gray-600 dark:text-gray-300", // Gray for pending
+                                                                    (step.status === "failed" || step.status === "cancelled") && "bg-red-600 ring-red-100 dark:ring-red-900/50 text-white"
                                                                 )}>
-                                                                    {step.status === "completed" && <FaCheck className="h-3 w-3" />}
-                                                                    {step.status === "active" && <div className="h-2 w-2 bg-white rounded-full"></div>}
-                                                                    {(step.status === "failed" || step.status === "cancelled") && <MdErrorOutline className="h-4 w-4 text-white" />}
-                                                                    {step.status === "pending" && <div className="h-2 w-2 bg-white rounded-full"></div>}
+                                                                    {/* Icons inside marker */}
+                                                                    {step.status === "completed" && <FaCheck className="h-2.5 w-2.5" />}
+                                                                    {step.status === "active" && <FaRegClock className="h-2.5 w-2.5" />}
+                                                                    {(step.status === "failed" || step.status === "cancelled") && <MdErrorOutline className="h-3 w-3" />}
+                                                                    {step.status === "pending" && <div className="h-1.5 w-1.5 bg-gray-500 dark:bg-gray-400 rounded-full"></div>} {/* Small dot for pending */}
                                                                 </div>
+                                                                {/* Connecting Line */}
                                                                 {index < timelineSteps.length - 1 && (
                                                                     <div className={cn(
-                                                                        "absolute top-6 left-1/2 transform -translate-x-1/2 h-[calc(100%_+_0.75rem)] w-0.5", // Adjusted line height
-                                                                        step.status === "completed" ? "bg-green-600" : "bg-gray-300 dark:bg-gray-500" // Line color based on step status
+                                                                        "absolute top-5 left-1/2 transform -translate-x-1/2 h-[calc(100%_+_0.25rem)] w-0.5", // Adjusted line height/pos
+                                                                        step.status === "completed" || step.status === "active" ? "bg-blue-500" : "bg-gray-300 dark:bg-gray-600" // Line color based on step completion/active status
                                                                     )} aria-hidden="true"></div>
                                                                 )}
                                                             </div>
-                                                            
+
                                                             {/* Step Content */}
-                                                            <div className="flex-1 pt-px min-w-0">
+                                                            <div className="flex-1 min-w-0 pb-1"> {/* Ensure content aligns well */}
                                                                 <h4 className={cn(
-                                                                    "text-sm font-semibold",
-                                                                    step.status === 'pending' ? 'text-gray-500 dark:text-gray-300' : step.status === 'failed' ? 'text-rose-600 dark:text-rose-400' : step.status === 'cancelled' ? 'text-red-600' : 'text-neutral-900 dark:text-white'
-                                                                )}> {step.label} </h4>
-                                                                {step.date && (<p className="text-xs text-gray-500 dark:text-gray-300 mt-1">{step.date}</p>)} {/* Increased margin-top for date */}
+                                                                    "text-sm font-medium", // Slightly reduced font weight for non-active
+                                                                    step.status === 'pending' ? 'text-gray-500 dark:text-gray-400' :
+                                                                    step.status === 'active' ? 'text-blue-600 dark:text-blue-400 font-semibold' : // Highlight active
+                                                                    (step.status === 'failed' || step.status === 'cancelled') ? 'text-red-600 dark:text-red-400 font-semibold' : // Highlight failure
+                                                                    'text-neutral-800 dark:text-neutral-200' // Default completed/other text
+                                                                )}>
+                                                                    {step.label}
+                                                                </h4>
+                                                                {step.date && (<p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{step.date}</p>)}
+                                                                {/* Step Info Box */}
                                                                 {step.info && (<div className={cn(
                                                                     "mt-2 text-sm p-3 rounded-md border",
-                                                                    step.status === 'active' ? 'bg-blue-600/20 border-blue-600/80 text-blue-600 dark:text-blue-400' : step.status === 'failed' ? 'bg-rose-600/10 border-rose-600/80 text-rose-600 dark:text-rose-300' : step.status === 'cancelled' ? 'bg-red-600/20 border-red-600/60 text-red-600 dark:text-red-400' : 'bg-gray-600/20 border-gray-600/60 text-gray-600 dark:text-gray-300'
-                                                                )}> <p>{step.info}</p> </div>)}
-                                                                {/* Inline "I've not paid" Button (for pending payments) */}
-                                                                {step.showCancelAction && (
-                                                                    <Button variant="outline" size="sm" className="mt-3 text-red-600 border-red-300 hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:border-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-300 h-8 px-3" onClick={() => setIsCancelModalOpen(true)} disabled={isSubmitting}> I&apos;ve not paid </Button>
+                                                                    step.status === 'active' ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700/50 text-blue-700 dark:text-blue-300' :
+                                                                    step.status === 'failed' ? 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-700/50 text-red-700 dark:text-red-300' :
+                                                                    step.status === 'cancelled' ? 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-700/50 text-red-700 dark:text-red-300' : // Same style for cancelled
+                                                                    'bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700/50 text-gray-600 dark:text-gray-300' // Default info box style
+                                                                )}>
+                                                                    <p>{step.info}</p>
+                                                                </div>)}
+                                                                {/* Inline "I've not paid" Button (only for specific step in pending payments) */}
+                                                                {step.showCancelAction && isPayment && transactionDetails.status === 'pending' && (
+                                                                    <Button
+                                                                        variant="link" // Use link style for less emphasis
+                                                                        size="sm"
+                                                                        className="mt-2 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 h-auto px-0 py-0" // Minimal styling
+                                                                        onClick={() => setIsCancelModalOpen(true)}
+                                                                        disabled={isSubmitting}
+                                                                    >
+                                                                        I haven't paid / Cancel
+                                                                    </Button>
                                                                 )}
                                                             </div>
                                                         </li>
                                                     ))}
                                                 </ul>
-                                            ) : ( <p className="text-gray-500 dark:text-gray-400 text-sm">Status updates could not be loaded.</p> )}
+                                            ) : (
+                                                <p className="text-gray-500 dark:text-gray-400 text-sm py-4">
+                                                    Status updates are currently unavailable.
+                                                </p>
+                                            )}
                                         </div>
 
-                                        {/* Conditional Bottom Action Area for PENDING Payments */}
+                                        {/* --- Action Area at the bottom --- */}
+
+                                        {/* Action: Confirm Payment (Only for PENDING payments, not in 'awaiting' view) */}
                                         {isPayment && transactionDetails.status === 'pending' && !showAwaitingVerificationView && (
                                             <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-                                                <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Ready to pay?</h3>
+                                                <h3 className="text-base font-semibold mb-2 text-gray-800 dark:text-gray-100">Have you sent the payment?</h3>
                                                 <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-                                                    Find the bank details in the <button onClick={() => setActiveTab('Details')} className="text-primary hover:underline font-medium">Details tab</button>. Once you've sent the money from your bank, click below.
+                                                    Please find the bank details in the <button onClick={() => setActiveTab('Details')} className="text-primary hover:underline font-medium">Details tab</button>. Once you've completed the bank transfer, click the button below to let us know.
                                                 </p>
-                                                {submissionError && <p className="mb-4 text-sm text-red-600 dark:text-red-400 text-center bg-red-50 dark:bg-red-900/20 p-2 rounded border border-red-200 dark:border-red-700/40">{submissionError}</p>}
-                                                <div className="flex flex-col sm:flex-row sm:justify-end gap-2">
-                                                    <button onClick={() => setIsCancelModalOpen(true)} disabled={isSubmitting} className="order-2 sm:order-1 px-4 py-2 bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary rounded-full transition-all duration-75 ease-linear"> Cancel transfer </button>
-                                                    <button onClick={handleConfirmPaymentSubmit} disabled={isSubmitting} className="order-1 sm:order-2 px-4 py-2 w-full sm:w-auto bg-primary text-neutral-900 hover:bg-primaryhover rounded-full transition-all duration-75 ease-linear"> {isSubmitting ? 'Processing...' : "I've now paid"} </button>
+                                                {/* Error message specifically for this action */}
+                                                {submissionError && activeTab === 'Updates' && <p className="mb-4 text-sm text-red-600 dark:text-red-400 text-center bg-red-50 dark:bg-red-900/20 p-2 rounded border border-red-200 dark:border-red-700/40">{submissionError}</p>}
+                                                <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
+                                                     {/* Cancel button is always an option if pending */}
+                                                     <Button
+                                                        variant="outline"
+                                                        onClick={() => setIsCancelModalOpen(true)}
+                                                        disabled={isSubmitting}
+                                                        className="order-2 sm:order-1"
+                                                     >
+                                                         Cancel Payment
+                                                     </Button>
+                                                     <Button
+                                                        onClick={handleConfirmPaymentSubmit}
+                                                        disabled={isSubmitting}
+                                                        className="order-1 sm:order-2 w-full sm:w-auto" // Full width on mobile
+                                                     >
+                                                        {isSubmitting ? 'Processing...' : "Yes, I've Paid"}
+                                                     </Button>
                                                 </div>
                                             </div>
                                         )}
 
-                                        {/* General Cancel Button (if cancelable and NOT the pending payment case handled above) */}
+                                        {/* Action: General Cancel Button (If cancelable and NOT the pending payment case handled above) */}
+                                        {/* This applies to 'in progress' payments or 'pending'/'processing' transfers */}
                                         {canCancelTransaction && !(isPayment && transactionDetails.status === 'pending') && (
-                                            <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-3">
-                                                <button onClick={() => setIsCancelModalOpen(true)} disabled={isSubmitting} className="text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-full transition-all duration-75 ease-linear">
-                                                    {isSubmitting ? 'Processing...' : `Cancel ${isPayment ? 'Payment' : 'Transfer'}`}
-                                                </button>
+                                            <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 flex justify-end">
+                                                {/* General Submission Error (e.g., from failed cancel) */}
+                                                {submissionError && activeTab === 'Updates' && <p className="text-sm text-red-600 dark:text-red-400 mr-4 self-center">{submissionError}</p>}
+                                                <Button
+                                                    variant="destructive" // Use destructive variant for cancel
+                                                    onClick={() => setIsCancelModalOpen(true)}
+                                                    disabled={isSubmitting}
+                                                >
+                                                    {isSubmitting ? 'Cancelling...' : `Cancel ${isPayment ? 'Payment' : 'Transfer'}`}
+                                                </Button>
                                             </div>
                                         )}
-                                        {/* Display general submission error if needed */}
-                                        {submissionError && activeTab === 'Updates' && !(isPayment && transactionDetails.status === 'pending') && <p className="mt-4 text-sm text-red-600 dark:text-red-400 text-right">{submissionError}</p>}
+
+                                        {/* Display general submission error if it occurred but wasn't shown elsewhere */}
+                                        {submissionError && activeTab === 'Updates' && !canCancelTransaction && !(isPayment && transactionDetails.status === 'pending') && (
+                                             <p className="mt-4 text-sm text-red-600 dark:text-red-400 text-right">{submissionError}</p>
+                                        )}
                                     </>
                                 )}
                                 {/* --- End Conditional Rendering --- */}
                             </div>
-                        )}
+                        )} {/* End Updates Tab */}
 
                         {/* --- Details Tab Content --- */}
                         {activeTab === "Details" && (
-                             <div className="space-y-6">
-                                {/* Transaction Breakdown */}
+                             <div className="space-y-8"> {/* Increased spacing */}
+                                {/* Section 1: Transaction Breakdown */}
                                 <div>
-                                    <h3 className="text-md font-semibold mb-3 text-neutral-900 dark:text-white border-b pb-2">Transaction details</h3>
+                                    <h3 className="text-base font-semibold mb-4 text-neutral-900 dark:text-white border-b dark:border-border pb-2">
+                                        Transaction Breakdown
+                                    </h3>
                                     <dl className="space-y-3 text-sm">
                                          {/* Payment Specific Details */}
                                         {isPayment && (
                                              <>
-                                                <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Amount to add</dt> <dd className="font-medium text-neutral-900 dark:text-white">{`${(transactionDetails as PaymentDetails).amountToAdd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} ${(transactionDetails as PaymentDetails).balanceCurrency?.code}`}</dd> </div>
-                                                <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Total fees included</dt> <dd className="font-medium text-neutral-900 dark:text-white">{`${((transactionDetails as PaymentDetails).wiseFee + (transactionDetails as PaymentDetails).bankTransferFee).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} ${(transactionDetails as PaymentDetails).payInCurrency?.code}`}</dd> </div>
-                                                <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Total amount to pay</dt> <dd className="font-medium text-neutral-900 dark:text-white">{`${(transactionDetails as PaymentDetails).amountToPay.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} ${(transactionDetails as PaymentDetails).payInCurrency?.code}`}</dd> </div>
-                                                <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Exchange rate</dt> <dd className="font-medium text-neutral-900 dark:text-white">1 {(transactionDetails as PaymentDetails).payInCurrency?.code} = {(transactionDetails as PaymentDetails).exchangeRate.toFixed(2)} {(transactionDetails as PaymentDetails).balanceCurrency?.code}</dd> </div>
-                                                {(transactionDetails as PaymentDetails).failureReason && <div className="flex justify-between text-red-600 dark:text-red-400"> <dt>Failure Reason</dt> <dd>{(transactionDetails as PaymentDetails).failureReason}</dd> </div>}
+                                                <div className="flex justify-between items-center"> <dt className="text-gray-500 dark:text-gray-400">Amount to Add</dt> <dd className="font-medium text-neutral-800 dark:text-neutral-200">{`${(transactionDetails as PaymentDetails).amountToAdd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} ${(transactionDetails as PaymentDetails).balanceCurrency?.code}`}</dd> </div>
+                                                <div className="flex justify-between items-center"> <dt className="text-gray-500 dark:text-gray-400">Wise Fee</dt> <dd className="font-medium text-neutral-800 dark:text-neutral-200">{`${(transactionDetails as PaymentDetails).wiseFee.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} ${(transactionDetails as PaymentDetails).payInCurrency?.code}`}</dd> </div>
+                                                <div className="flex justify-between items-center"> <dt className="text-gray-500 dark:text-gray-400">Bank Transfer Fee</dt> <dd className="font-medium text-neutral-800 dark:text-neutral-200">{`${(transactionDetails as PaymentDetails).bankTransferFee.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} ${(transactionDetails as PaymentDetails).payInCurrency?.code}`}</dd> </div>
+                                                <div className="flex justify-between items-center border-t dark:border-border pt-3 mt-2"> <dt className="text-gray-500 dark:text-gray-400 font-semibold">Total Amount to Pay</dt> <dd className="font-semibold text-neutral-900 dark:text-white">{`${(transactionDetails as PaymentDetails).amountToPay.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} ${(transactionDetails as PaymentDetails).payInCurrency?.code}`}</dd> </div>
+                                                <div className="flex justify-between items-center mt-2"> <dt className="text-gray-500 dark:text-gray-400">Guaranteed Rate</dt> <dd className="font-medium text-neutral-800 dark:text-neutral-200">1 {(transactionDetails as PaymentDetails).payInCurrency?.code} = {(transactionDetails as PaymentDetails).exchangeRate.toFixed(4)} {(transactionDetails as PaymentDetails).balanceCurrency?.code}</dd> </div>
+                                                {(transactionDetails as PaymentDetails).failureReason && <div className="flex justify-between items-start text-red-600 dark:text-red-400 pt-3 border-t dark:border-border mt-3"> <dt className="font-medium">Failure Reason</dt> <dd className="text-right ml-4">{(transactionDetails as PaymentDetails).failureReason}</dd> </div>}
                                              </>
                                          )}
                                          {/* Transfer Specific Details */}
                                         {isTransfer && (
                                              <>
-                                                <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">You sent</dt> <dd className="font-medium text-neutral-900 dark:text-white">{`${(transactionDetails as TransferDetails).sendAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} ${(transactionDetails as TransferDetails).sendCurrency?.code}`}</dd> </div>
-                                                <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Fees</dt> <dd className="font-medium text-neutral-900 dark:text-white">{`${(transactionDetails as TransferDetails).fees.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} ${(transactionDetails as TransferDetails).sendCurrency?.code}`}</dd> </div>
-                                                <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Exchange rate</dt> <dd className="font-medium text-neutral-900 dark:text-white">1 {(transactionDetails as TransferDetails).sendCurrency?.code} = {(transactionDetails as TransferDetails).exchangeRate.toFixed(2)} {(transactionDetails as TransferDetails).receiveCurrency?.code}</dd> </div>
-                                                <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Recipient gets</dt> <dd className="font-medium text-neutral-900 dark:text-white">{`${(transactionDetails as TransferDetails).receiveAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} ${(transactionDetails as TransferDetails).receiveCurrency?.code}`}</dd> </div>
-                                                {(transactionDetails as TransferDetails).failureReason && <div className="flex justify-between text-red-600 dark:text-red-400"> <dt>Failure Reason</dt> <dd>{(transactionDetails as TransferDetails).failureReason}</dd> </div>}
+                                                <div className="flex justify-between items-center"> <dt className="text-gray-500 dark:text-gray-400">You Sent</dt> <dd className="font-medium text-neutral-800 dark:text-neutral-200">{`${(transactionDetails as TransferDetails).sendAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} ${(transactionDetails as TransferDetails).sendCurrency?.code}`}</dd> </div>
+                                                <div className="flex justify-between items-center"> <dt className="text-gray-500 dark:text-gray-400">Total Fees</dt> <dd className="font-medium text-neutral-800 dark:text-neutral-200">{`${(transactionDetails as TransferDetails).fees.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} ${(transactionDetails as TransferDetails).sendCurrency?.code}`}</dd> </div>
+                                                <div className="flex justify-between items-center"> <dt className="text-gray-500 dark:text-gray-400">Amount Converted</dt> <dd className="font-medium text-neutral-800 dark:text-neutral-200">{`${((transactionDetails as TransferDetails).sendAmount - (transactionDetails as TransferDetails).fees).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} ${(transactionDetails as TransferDetails).sendCurrency?.code}`}</dd> </div>
+                                                <div className="flex justify-between items-center"> <dt className="text-gray-500 dark:text-gray-400">Guaranteed Rate</dt> <dd className="font-medium text-neutral-800 dark:text-neutral-200">1 {(transactionDetails as TransferDetails).sendCurrency?.code} = {(transactionDetails as TransferDetails).exchangeRate.toFixed(4)} {(transactionDetails as TransferDetails).receiveCurrency?.code}</dd> </div>
+                                                <div className="flex justify-between items-center border-t dark:border-border pt-3 mt-2"> <dt className="text-gray-500 dark:text-gray-400 font-semibold">Recipient Gets</dt> <dd className="font-semibold text-neutral-900 dark:text-white">{`${(transactionDetails as TransferDetails).receiveAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} ${(transactionDetails as TransferDetails).receiveCurrency?.code}`}</dd> </div>
+                                                {(transactionDetails as TransferDetails).failureReason && <div className="flex justify-between items-start text-red-600 dark:text-red-400 pt-3 border-t dark:border-border mt-3"> <dt className="font-medium">Failure Reason</dt> <dd className="text-right ml-4">{(transactionDetails as TransferDetails).failureReason}</dd> </div>}
                                              </>
                                          )}
                                          {/* Common Details */}
-                                        <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Date Initiated</dt> <dd className="font-medium text-neutral-900 dark:text-white">{formatDisplayDate(transactionDetails.createdAt)}</dd> </div>
-                                        <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Last Updated</dt> <dd className="font-medium text-neutral-900 dark:text-white">{formatDisplayDate(transactionDetails.updatedAt)}</dd> </div>
-                                        <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">{isPayment ? 'Reference Code' : 'Transfer ID'}</dt> <dd className="font-medium text-neutral-900 dark:text-white break-all">{isPayment ? (transactionDetails as PaymentDetails).referenceCode || 'N/A' : transactionDetails._id}</dd> </div>
+                                        <div className="flex justify-between items-center pt-3 border-t dark:border-border mt-3"> <dt className="text-gray-500 dark:text-gray-400">Date Initiated</dt> <dd className="font-medium text-neutral-800 dark:text-neutral-200">{formatDisplayDate(transactionDetails.createdAt)}</dd> </div>
+                                        <div className="flex justify-between items-center"> <dt className="text-gray-500 dark:text-gray-400">Last Updated</dt> <dd className="font-medium text-neutral-800 dark:text-neutral-200">{formatDisplayDate(transactionDetails.updatedAt)}</dd> </div>
+                                        <div className="flex justify-between items-center">
+                                            <dt className="text-gray-500 dark:text-gray-400">{isPayment ? 'Reference Code' : 'Transfer ID'}</dt>
+                                            <dd className="font-medium text-neutral-800 dark:text-neutral-200 break-all text-right ml-4">
+                                                {isPayment ? (transactionDetails as PaymentDetails).referenceCode || 'N/A' : transactionDetails._id}
+                                            </dd>
+                                        </div>
+                                        {/* Optional: Show user who initiated if relevant */}
+                                        {/* <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-400">User</dt> <dd className="font-medium text-neutral-800 dark:text-neutral-200">{transactionDetails.user?.email || transactionDetails.user?._id}</dd> </div> */}
                                     </dl>
                                 </div>
 
-                                {/* Pay-in Bank Details / Recipient Details */}
+                                {/* Section 2: Pay-in Bank Details (for Payments) / Recipient Details (for Transfers) */}
                                 <div>
-                                    <h3 className="text-md font-semibold mb-3 text-neutral-900 dark:text-white border-b pb-2">
-                                        {isPayment ? 'Pay-in Bank Details (Wise)' : 'Recipient Details'}
+                                    <h3 className="text-base font-semibold mb-4 text-neutral-900 dark:text-white border-b dark:border-border pb-2">
+                                        {isPayment ? 'Pay-in Bank Details (Send Payment Here)' : 'Recipient Details'}
                                     </h3>
-                                     {/* Payment Bank Details */}
+                                     {/* Payment Bank Details Section */}
                                     {isPayment && (transactionDetails as PaymentDetails).bankDetails && (
                                         <div className="space-y-3 text-sm">
-                                            <div className="bg-white dark:bg-white/5 border p-3 rounded-md flex justify-between items-center"> <div> <p className="text-xs text-gray-500 dark:text-gray-300 mb-0.5">Payee name</p> <p className="font-semibold text-neutral-900 dark:text-white">{(transactionDetails as PaymentDetails).bankDetails?.payeeName || 'N/A'}</p> </div> <Button variant="ghost" size="sm" onClick={() => handleCopyToClipboard((transactionDetails as PaymentDetails).bankDetails?.payeeName, 'Payee name')} className="text-primary hover:text-primaryhover dark:hover:bg-primaryhover/20 px-2 py-0.5 h-auto">Copy</Button> </div>
-                                            <div className="bg-white dark:bg-white/5 border p-3 rounded-md flex justify-between items-center"> <div> <p className="text-xs text-gray-500 dark:text-gray-300 mb-0.5">IBAN</p> <p className="font-semibold text-neutral-900 dark:text-white break-all">{(transactionDetails as PaymentDetails).bankDetails?.iban || 'N/A'}</p> </div> <Button variant="ghost" size="sm" onClick={() => handleCopyToClipboard((transactionDetails as PaymentDetails).bankDetails?.iban, 'IBAN')} className="text-primary hover:text-primaryhover dark:hover:bg-primaryhover/20 px-2 py-0.5 h-auto">Copy</Button> </div>
-                                            <div className="bg-white dark:bg-white/5 border p-3 rounded-md flex justify-between items-center"> <div> <p className="text-xs text-gray-500 dark:text-gray-300 mb-0.5">Bank code (BIC/SWIFT)</p> <p className="font-semibold text-neutral-900 dark:text-white">{(transactionDetails as PaymentDetails).bankDetails?.bicSwift || 'N/A'}</p> </div> <Button variant="ghost" size="sm" onClick={() => handleCopyToClipboard((transactionDetails as PaymentDetails).bankDetails?.bicSwift, 'BIC/SWIFT')} className="text-primary hover:text-primaryhover dark:hover:bg-primaryhover/20 px-2 py-0.5 h-auto">Copy</Button> </div>
-                                            <div className="bg-white dark:bg-white/5 border p-3 rounded-md"> <p className="text-xs text-gray-500 dark:text-gray-300 mb-0.5">Bank address</p> <p className="font-semibold text-neutral-900 dark:text-white whitespace-pre-line">{(transactionDetails as PaymentDetails).bankDetails?.bankAddress || 'N/A'}</p> </div>
+                                            {/* Payee Name */}
+                                            <div className="bg-gray-50 dark:bg-white/5 border dark:border-border p-3 rounded-md flex justify-between items-center gap-2">
+                                                <div>
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">Payee Name</p>
+                                                    <p className="font-semibold text-neutral-800 dark:text-neutral-200">{(transactionDetails as PaymentDetails).bankDetails?.payeeName || 'N/A'}</p>
+                                                </div>
+                                                <Button variant="ghost" size="sm" onClick={() => handleCopyToClipboard((transactionDetails as PaymentDetails).bankDetails?.payeeName, 'Payee name')} className="text-primary hover:text-primaryhover dark:hover:bg-primaryhover/10 px-2 py-1 h-auto text-xs shrink-0">Copy</Button>
+                                            </div>
+                                            {/* IBAN */}
+                                            <div className="bg-gray-50 dark:bg-white/5 border dark:border-border p-3 rounded-md flex justify-between items-center gap-2">
+                                                <div>
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">IBAN</p>
+                                                    <p className="font-semibold text-neutral-800 dark:text-neutral-200 break-all">{(transactionDetails as PaymentDetails).bankDetails?.iban || 'N/A'}</p>
+                                                </div>
+                                                <Button variant="ghost" size="sm" onClick={() => handleCopyToClipboard((transactionDetails as PaymentDetails).bankDetails?.iban, 'IBAN')} className="text-primary hover:text-primaryhover dark:hover:bg-primaryhover/10 px-2 py-1 h-auto text-xs shrink-0">Copy</Button>
+                                            </div>
+                                            {/* BIC/SWIFT */}
+                                            <div className="bg-gray-50 dark:bg-white/5 border dark:border-border p-3 rounded-md flex justify-between items-center gap-2">
+                                                <div>
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">Bank code (BIC/SWIFT)</p>
+                                                    <p className="font-semibold text-neutral-800 dark:text-neutral-200">{(transactionDetails as PaymentDetails).bankDetails?.bicSwift || 'N/A'}</p>
+                                                </div>
+                                                <Button variant="ghost" size="sm" onClick={() => handleCopyToClipboard((transactionDetails as PaymentDetails).bankDetails?.bicSwift, 'BIC/SWIFT')} className="text-primary hover:text-primaryhover dark:hover:bg-primaryhover/10 px-2 py-1 h-auto text-xs shrink-0">Copy</Button>
+                                            </div>
+                                            {/* Reference Code - CRUCIAL for Payments */}
+                                            {(transactionDetails as PaymentDetails).referenceCode && (
+                                                <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700/50 p-3 rounded-md flex justify-between items-center gap-2">
+                                                    <div>
+                                                        <p className="text-xs text-blue-600 dark:text-blue-300 mb-0.5 font-semibold">IMPORTANT: Reference Code</p>
+                                                        <p className="font-bold text-blue-800 dark:text-blue-200 text-base break-all">{(transactionDetails as PaymentDetails).referenceCode}</p>
+                                                        <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">You MUST include this code as the payment reference/description when sending money from your bank.</p>
+                                                    </div>
+                                                    <Button variant="ghost" size="sm" onClick={() => handleCopyToClipboard((transactionDetails as PaymentDetails).referenceCode, 'Reference Code')} className="text-primary hover:text-primaryhover dark:hover:bg-primaryhover/10 px-2 py-1 h-auto text-xs shrink-0 self-start mt-1">Copy</Button>
+                                                </div>
+                                            )}
+                                            {/* Bank Address */}
+                                            <div className="bg-gray-50 dark:bg-white/5 border dark:border-border p-3 rounded-md">
+                                                <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">Bank Address</p>
+                                                <p className="font-semibold text-neutral-800 dark:text-neutral-200 whitespace-pre-line">{(transactionDetails as PaymentDetails).bankDetails?.bankAddress || 'N/A'}</p>
+                                            </div>
                                         </div>
                                      )}
-                                     
-                                     {/* Transfer Recipient Details */}
+                                     {/* Message if Payment Details are missing */}
+                                     {isPayment && !(transactionDetails as PaymentDetails).bankDetails && (
+                                         <p className="text-sm text-gray-500 dark:text-gray-400">Bank details for payment are not available for this transaction.</p>
+                                     )}
+
+                                     {/* Transfer Recipient Details Section */}
                                     {isTransfer && (transactionDetails as TransferDetails).recipient && (
                                         <dl className="space-y-2 text-sm">
-                                             <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Name</dt> <dd className="font-medium text-neutral-900 dark:text-white">{(transactionDetails as TransferDetails).recipient.accountHolderName}</dd> </div>
-                                             <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Account Number</dt> <dd className="font-medium text-neutral-900 dark:text-white">**** {(transactionDetails as TransferDetails).recipient.accountNumber?.slice(-4)}</dd> </div>
-                                             <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Bank</dt> <dd className="font-medium text-neutral-900 dark:text-white">{(transactionDetails as TransferDetails).recipient.bankName}</dd> </div>
-                                             {/* Add other recipient details like BIC/IFSC if relevant */}
+                                             <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-400">Name</dt> <dd className="font-medium text-neutral-800 dark:text-neutral-200 text-right">{(transactionDetails as TransferDetails).recipient.accountHolderName}</dd> </div>
+                                             {(transactionDetails as TransferDetails).recipient.nickname && <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-400">Nickname</dt> <dd className="font-medium text-neutral-800 dark:text-neutral-200 text-right">{(transactionDetails as TransferDetails).recipient.nickname}</dd> </div>}
+                                             <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-400">Receiving Currency</dt> <dd className="font-medium text-neutral-800 dark:text-neutral-200 text-right">{(transactionDetails as TransferDetails).recipient.currency?.code}</dd> </div>
+                                             <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-400">Account Number</dt> <dd className="font-mono text-neutral-800 dark:text-neutral-200 text-right">**** **** {(transactionDetails as TransferDetails).recipient.accountNumber?.slice(-4)}</dd> </div>
+                                             <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-400">Bank Name</dt> <dd className="font-medium text-neutral-800 dark:text-neutral-200 text-right">{(transactionDetails as TransferDetails).recipient.bankName}</dd> </div>
+                                             {/* TODO: Add other relevant recipient details if available in TransferDetails (e.g., BIC/SWIFT, Sort Code, IFSC) */}
+                                             {(transactionDetails as TransferDetails).reference && <div className="flex justify-between pt-2 border-t dark:border-border mt-2"> <dt className="text-gray-500 dark:text-gray-400">Reference for Recipient</dt> <dd className="font-medium text-neutral-800 dark:text-neutral-200 text-right ml-4">{(transactionDetails as TransferDetails).reference}</dd> </div>}
+                                             {(transactionDetails as TransferDetails).reason && <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-400">Reason for Transfer</dt> <dd className="font-medium text-neutral-800 dark:text-neutral-200 text-right ml-4">{(transactionDetails as TransferDetails).reason}</dd> </div>}
                                         </dl>
                                      )}
-                                     {/* Message if no details applicable */}
-                                     {!isPayment && !isTransfer && <p className="text-sm text-gray-500 dark:text-gray-300">Details not applicable for this transaction type.</p>}
+                                     {/* Message if Recipient Details are missing */}
+                                      {isTransfer && !(transactionDetails as TransferDetails).recipient && (
+                                         <p className="text-sm text-gray-500 dark:text-gray-400">Recipient details are not available for this transfer.</p>
+                                     )}
 
-                                     {/* Copy Feedback */}
-                                     {copySuccess && activeTab === 'Details' && <p className="text-sm text-center text-green-600 dark:text-green-400 mt-3">{copySuccess}</p>}
+                                     {/* Copy Feedback Message Area */}
+                                     <div className="h-5 mt-2 text-center"> {/* Reserve space to prevent layout shifts */}
+                                        {copySuccess && activeTab === 'Details' && (
+                                            <p className="text-sm text-green-600 dark:text-green-400 transition-opacity duration-300 ease-in-out">
+                                                {copySuccess}
+                                            </p>
+                                        )}
+                                     </div>
                                 </div>
 
-                                {/* Note Section */}
+                                {/* Section 3: Note Section */}
                                 <div>
-                                     <h3 className="text-md font-semibold mb-2 text-neutral-900 dark:text-white">Note (for your reference)</h3>
-                                     <textarea id="note" className="w-full bg-white dark:bg-white/5 rounded-md p-3 text-sm text-neutral-600 focus:ring-0 focus:outline-2 focus:outline-neutral-600 dark:focus:outline-white dark:text-gray-300 border dark:placeholder-gray-300" placeholder="Add notes about this transaction..." value={noteText} onChange={handleNoteChange} rows={3} aria-label="Transaction Note" />
-                                     {/* TODO: Add save note functionality if needed */}
+                                     <h3 className="text-base font-semibold mb-2 text-neutral-900 dark:text-white">Note (for your reference only)</h3>
+                                     <textarea
+                                        id="transactionNote"
+                                        className="w-full bg-white dark:bg-white/5 rounded-md p-3 text-sm text-neutral-700 dark:text-gray-300 border dark:border-border focus:ring-1 focus:ring-primary focus:border-primary dark:focus:ring-primary dark:focus:border-primary dark:placeholder-gray-500 transition duration-150 ease-in-out"
+                                        placeholder="Add personal notes about this transaction..."
+                                        value={noteText}
+                                        onChange={handleNoteChange}
+                                        rows={3}
+                                        aria-label="Transaction Note"
+                                    />
+                                     {/* Consider adding a small 'Save Note' button if auto-saving isn't implemented */}
+                                     {/* <Button size="sm" variant="outline" className="mt-2">Save Note</Button> */}
                                 </div>
                              </div>
-                         )}
+                         )} {/* End Details Tab */}
                     </div> {/* End Tab Content Area */}
                 </div> {/* End Main Content Card */}
             </div> {/* End Container */}
 
             {/* --- Cancellation Modal --- */}
+            {/* Render modal only if transaction details are loaded */}
             {transactionDetails && (
                 <CancelTransferModal
                     isOpen={isCancelModalOpen}
                     onClose={() => setIsCancelModalOpen(false)}
-                    transactionId={transactionId}
-                    transactionType={transactionDetails.type}
-                    onConfirmCancel={handleConfirmCancel}
-                    isSubmitting={isSubmitting}
+                    transactionId={transactionId} // Pass the ID
+                    // Provide more context to the modal based on type
+                    transactionType={transactionDetails.type} // 'payment' or 'transfer'
+                    // Pass amount/currency if needed for display in modal
+                    // amount={isPayment ? (transactionDetails as PaymentDetails).amountToPay : (transactionDetails as TransferDetails).sendAmount}
+                    // currency={isPayment ? (transactionDetails as PaymentDetails).payInCurrency?.code : (transactionDetails as TransferDetails).sendCurrency?.code}
+                    onConfirmCancel={handleConfirmCancel} // The function to call when user confirms
+                    isSubmitting={isSubmitting} // Pass loading state
                 />
             )}
         </> // End Fragment

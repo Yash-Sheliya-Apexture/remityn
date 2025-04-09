@@ -2803,6 +2803,412 @@
 
 
 
+// // frontend/src/app/dashboard/balances/[balanceId]/send/amount/page.tsx
+// "use client";
+// import React, { useState, useCallback, useMemo, useEffect } from "react";
+// import { useParams, useRouter, useSearchParams } from "next/navigation";
+// import Link from "next/link";
+// import { IoIosArrowBack, IoIosInformationCircleOutline } from "react-icons/io";
+// import { Loader2 } from "lucide-react"; // Removed AlertTriangle as IoClose is used
+
+// // Hooks & Logic
+// import {
+//   useSendAmountLogic,
+//   // Removed unused SendSummary interface import here as it's likely defined in the hook file
+// } from "../../../../../hooks/useSendAmountLogic"; // Adjust path
+
+// // Components
+// import DashboardHeader from "@/app/dashboard/components/layout/DashboardHeader"; // Adjust path
+// import RateDisplay from "../../../../components/send/RateDisplay"; // Adjust path
+// import AmountInput from "../../../../components/send/AmountInput"; // Adjust path
+// import PayingWithDisplay from "../../../../components/send/PayingWithDisplay"; // Adjust path
+// import { Skeleton } from "@/components/ui/skeleton"; // Adjust path
+// import { IoClose } from "react-icons/io5";
+
+// // --- Component Definition ---
+// const steps = ["Recipient", "Amount", "Review", "Pay"];
+
+// interface SendAmountParams {
+//   balanceId: string;
+// }
+
+// // Simplified Skeleton for Amount Input area
+// const SkeletonAmountSection = () => (
+//   <div className="space-y-4 mb-4">
+//     {/* Mimic Rate Display area */}
+//     <Skeleton className="h-16 w-full rounded-lg mb-4" />
+//     {/* Mimic First Amount Input + available balance */}
+//     <div className="space-y-1 mb-2">
+//       <Skeleton className="h-6 w-1/4" />
+//       <Skeleton className="h-12 w-full rounded-lg" />
+//       <Skeleton className="h-5 w-1/3 ml-auto" />
+//     </div>
+//     {/* Mimic Second Amount Input + account details */}
+//      <div className="space-y-1 mb-2">
+//       <Skeleton className="h-6 w-1/3" />
+//       <Skeleton className="h-12 w-full rounded-lg" />
+//       <Skeleton className="h-5 w-1/2 ml-auto" />
+//     </div>
+//   </div>
+// );
+
+
+// export default function SendAmountPage() {
+//   // --- Hooks ---
+//   const router = useRouter();
+//   const params = useParams<SendAmountParams>();
+//   const searchParams = useSearchParams();
+//   const { balanceId } = params;
+//   const recipientId = searchParams.get("recipientId");
+
+//   // --- Custom Hook for Data and Logic ---
+//   const {
+//     sourceAccount,
+//     recipient,
+//     summary, // Latest calculated summary
+//     initialRateSummary, // Rate context before input
+//     isLoading, // Initial data loading
+//     isCalculating, // Debounced calculation active
+//     error: logicError, // User-facing errors from hook (validation, balance)
+//     apiError, // API errors from hook
+//     calculateSummary, // Debounced calculation function
+//     cancelCalculation, // Function to cancel pending calculation
+//     setError: setLogicError, // Function to set error in the hook
+//   } = useSendAmountLogic(balanceId, recipientId);
+
+//   // --- UI State ---
+//   const [sendAmount, setSendAmount] = useState<string>("");
+//   const [receiveAmount, setReceiveAmount] = useState<string>("");
+//   const [lastEdited, setLastEdited] = useState<"send" | "receive" | null>(null);
+//   const [isSendFocused, setIsSendFocused] = useState(false);
+//   const [isReceiveFocused, setIsReceiveFocused] = useState(false);
+
+//   // --- Derived State for UI ---
+//   const rateContext = summary ?? initialRateSummary; // Use calculated summary if available, else initial context
+//   const isInsufficientBalanceError = logicError === "Insufficient balance.";
+//   const displayError = logicError || apiError; // Combine errors for display
+
+//   // Effect to sync hook summary changes back to the *other* input field
+//   useEffect(() => {
+//       // Only proceed if we have a calculated summary
+//       if (!summary) return;
+
+//       const newSend = summary.sendAmount.toFixed(2);
+//       const newReceive = summary.receiveAmount.toFixed(2);
+
+//       // Update the field that wasn't the last one edited.
+//       // React's setState handles not re-rendering if the value is the same.
+//       // No need to compare with current sendAmount/receiveAmount state here.
+//       if (lastEdited === "send") {
+//           setReceiveAmount(newReceive);
+//       } else if (lastEdited === "receive") {
+//           setSendAmount(newSend);
+//       }
+//       // If lastEdited is null (initial load/reset), this won't update fields, which is fine.
+//   }, [summary, lastEdited]); // Dependencies are correct now
+
+
+//   // --- Input Handlers ---
+//   const handleAmountChange = useCallback(
+//     (value: string, type: "send" | "receive") => {
+//       setLastEdited(type); // Track last edited field
+
+//       if (type === "send") setSendAmount(value);
+//       else setReceiveAmount(value);
+
+//       const amountNum = parseFloat(value);
+//       const isValidAmount = !isNaN(amountNum) && amountNum > 0;
+
+//       // Clear non-balance related errors immediately on valid input attempt
+//        if (isValidAmount && logicError && !isInsufficientBalanceError) {
+//            setLogicError(null);
+//        }
+
+//       if (isValidAmount) {
+//         // Trigger calculation via the hook
+//         calculateSummary(amountNum, type === "send");
+//       } else {
+//         // Cancel pending calculation, clear other field
+//         cancelCalculation();
+//         if (type === "send") setReceiveAmount("");
+//         else setSendAmount("");
+//         // Trigger calc with 0 to clear summary/rate state in the hook
+//         calculateSummary(0, true);
+//          // Set error only if input is explicitly invalid (not just empty)
+//          if (value && isNaN(amountNum)) {
+//             setLogicError("Please enter a valid number.");
+//          } else if (logicError === "Please enter a valid number.") {
+//              // Clear the specific 'valid number' error if field becomes empty
+//              setLogicError(null);
+//          }
+//       }
+//     },
+//     // Added isInsufficientBalanceError to prevent clearing that specific error
+//     [calculateSummary, cancelCalculation, setLogicError, logicError, isInsufficientBalanceError]
+//   );
+
+//   const handleFocus = useCallback((type: "send" | "receive") => {
+//     if (type === "send") setIsSendFocused(true);
+//     else setIsReceiveFocused(true);
+//   }, []);
+
+//   const handleBlur = useCallback((type: "send" | "receive") => {
+//     if (type === "send") setIsSendFocused(false);
+//     else setIsReceiveFocused(false);
+//     // Optional: If field is empty on blur, maybe set error?
+//     // if (type === 'send' && !sendAmount) setLogicError("Please enter an amount.");
+//     // else if (type === 'receive' && !receiveAmount) setLogicError("Please enter an amount.");
+//   }, []);
+
+//   const handleAvailableBalanceClick = useCallback(() => {
+//     if (sourceAccount) {
+//       const availableBalance = sourceAccount.balance.toFixed(2);
+//       setSendAmount(availableBalance); // Directly set state
+//       setLastEdited("send"); // Mark as edited
+//       // Manually trigger calculation after state update
+//       handleAmountChange(availableBalance, "send");
+//       // Focus is handled via state now, no need to imperatively focus
+//       setIsSendFocused(true); // Set focus state for styling
+//     }
+//   }, [sourceAccount, handleAmountChange]); // Depends on handleAmountChange
+
+//   // --- Continue Logic ---
+//   const handleContinue = useCallback(() => {
+//     // Use summary directly as source of truth for amounts
+//     if (!summary || !(summary.sendAmount > 0) || !(summary.receiveAmount > 0)) {
+//       setLogicError("Please enter a valid amount and wait for calculation.");
+//       return;
+//     }
+//     if (isCalculating) {
+//       return; // Button should be disabled, but double-check
+//     }
+//     if (isInsufficientBalanceError) {
+//       return; // Button disabled
+//     }
+//      // Check for *any* API error state (could be rate fetch or other issues)
+//     if (apiError) {
+//         // Use the existing apiError message
+//         setLogicError(`There was an issue: ${apiError}`);
+//         return;
+//     }
+//     // Final balance check using the definitive summary data
+//     if (sourceAccount && summary.sendAmount > sourceAccount.balance) {
+//       setLogicError("Insufficient balance."); // Should be caught earlier, but safeguard
+//       return;
+//     }
+
+//     // If we pass all checks, clear any residual non-blocking errors
+//     setLogicError(null);
+
+//     console.log("Saving transfer summary:", summary);
+//     localStorage.setItem("sendTransferSummary", JSON.stringify(summary));
+
+//     const needsReason = recipient?.currency.code === "INR";
+//     const nextPath = needsReason
+//       ? `/dashboard/balances/${balanceId}/send/reason?recipientId=${recipientId}`
+//       : `/dashboard/balances/${balanceId}/send/review?recipientId=${recipientId}`;
+//     router.push(nextPath);
+//   }, [
+//     summary, // Use summary directly
+//     isCalculating,
+//     apiError, // Check any API error
+//     sourceAccount,
+//     recipient,
+//     balanceId,
+//     recipientId,
+//     router,
+//     setLogicError,
+//     isInsufficientBalanceError, // Depends on this derived state
+//     // logicError removed as per lint rule, isInsufficientBalanceError covers the relevant part
+//     // sendAmount/receiveAmount (local state) removed, rely on summary
+//   ]); // Dependencies updated
+
+//   // Enable continue button logic
+//   const canContinue = useMemo(
+//     () =>
+//       !!summary &&
+//       summary.sendAmount > 0 &&
+//       summary.receiveAmount > 0 &&
+//       !isCalculating &&
+//       !isInsufficientBalanceError && // Check specific balance error
+//       !apiError, // Ensure no API errors block continuation
+//     [summary, isCalculating, isInsufficientBalanceError, apiError] // Dependencies updated
+//   );
+
+//   // --- Render Logic ---
+
+//   // Initial Loading Skeleton
+//   if (isLoading) {
+//     return (
+//       <div className="min-h-screen animate-pulse">
+//          <DashboardHeader title="Send Money" steps={steps} currentStep={2} />
+//           <div className="container mx-auto max-w-xl p-4 lg:pt-8 border rounded-2xl pb-10 mt-4">
+//             <SkeletonAmountSection />
+//             {/* Paying With Skeleton */}
+//             <Skeleton className="h-16 w-full rounded-lg mb-4" />
+//             {/* Button Skeleton */}
+//             <Skeleton className="h-14 w-full rounded-full mt-6" />
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   // Critical Error State (Account/Recipient Fetch Failed)
+//   const criticalError = (!sourceAccount || !recipient) ? (logicError || apiError || "Error loading essential page details.") : null;
+//   if (criticalError) {
+//     return (
+//       <div className="min-h-screen">
+//         <DashboardHeader title="Send Money" steps={steps} currentStep={2} />
+//         <div className="p-10 text-center">
+//           <div
+//             className="bg-red-100 border border-red-400 text-red-800 px-4 py-3 rounded-lg relative max-w-md mx-auto mt-10 shadow-md"
+//             role="alert"
+//           >
+//             <strong className="font-bold mr-2">Error!</strong>
+//             <span className="block sm:inline">{criticalError}</span>
+//           </div>
+//           <Link
+//             href={
+//               balanceId
+//                 ? `/dashboard/balances/${balanceId}/send/select-recipient`
+//                 : "/dashboard" // Fallback to general dashboard if balanceId somehow lost
+//             }
+//              className="mt-6 inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+//           >
+//             <IoIosArrowBack size={20} className="-ml-1 mr-1" /> Go back
+//           </Link>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   // --- Main Render ---
+//   // Now we are sure sourceAccount and recipient exist
+//   return (
+//     <div className="SendAmount-Page pb-20 min-h-screen">
+//       <DashboardHeader title="Send Money" steps={steps} currentStep={2} />
+//       {/* Added mt-4 for spacing below header */}
+//       <div className="container mx-auto max-w-xl p-4 lg:px-6 lg:pt-6 border dark:border-gray-700 rounded-2xl pb-10 mt-4 bg-white dark:bg-background shadow-sm">
+//         {/* Rate Display */}
+//         <RateDisplay rateContext={rateContext} apiError={apiError && !logicError ? apiError : null} /> {/* Show API error here only if no logicError */}
+
+//         {/* Main Content Area */}
+//         <div className="space-y-4 mt-4"> {/* Added mt-4 */}
+//           {/* You Send Section */}
+//           <AmountInput
+//             label="You send"
+//              labelSuffix={summary?.sendAmount && !isCalculating ? "exactly" : ""}
+//             currencyCode={sourceAccount.currency.code}
+//             flagImage={sourceAccount.currency.flagImage}
+//             value={sendAmount}
+//             onValueChange={(val) => handleAmountChange(val, "send")}
+//             onFocus={() => handleFocus("send")}
+//             onBlur={() => handleBlur("send")}
+//             isFocused={isSendFocused}
+//             isDimmed={lastEdited === "receive"}
+//             hasError={isInsufficientBalanceError} // Highlight field on this specific error
+//             inputId="send-amount"
+//             data-testid="send-amount-input"
+//             // Consider adding aria-describedby pointing to error/balance if needed
+//           />
+//           {/* Available Balance */}
+//           <div className="text-right -mt-2 pr-1"> {/* Adjusted positioning */}
+//              <span className="text-sm text-gray-600 dark:text-gray-400">
+//                 Available: </span>
+//               <button
+//                 onClick={handleAvailableBalanceClick}
+//                 className="text-sm font-medium text-primary dark:text-primary-foreground hover:underline focus:outline-none focus:underline"
+//                 aria-label={`Use available balance: ${sourceAccount.balance.toFixed(2)} ${sourceAccount.currency.code}`}
+//               >
+//                 {sourceAccount.balance.toLocaleString(undefined, {
+//                   minimumFractionDigits: 2,
+//                   maximumFractionDigits: 2,
+//                 })} {sourceAccount.currency.code}
+//               </button>
+//           </div>
+
+//           {/* Recipient Gets Section */}
+//           <AmountInput
+//             // Using nickname or name, ensuring fallback if somehow both are empty
+//             label={recipient.nickname || recipient.accountHolderName || "Recipient"}
+//             labelPrefix=""
+//             labelSuffix={
+//               summary?.receiveAmount && !isCalculating
+//                 ? "gets exactly"
+//                 : "gets approx." // Abbreviated for space
+//             }
+//             currencyCode={recipient.currency.code}
+//             flagImage={recipient.currency.flagImage}
+//             value={receiveAmount}
+//             onValueChange={(val) => handleAmountChange(val, "receive")}
+//             onFocus={() => handleFocus("receive")}
+//             onBlur={() => handleBlur("receive")}
+//             isFocused={isReceiveFocused}
+//             isDimmed={lastEdited === "send"}
+//             inputId="receive-amount"
+//             data-testid="receive-amount-input"
+//           />
+//            {/* Recipient Account Info (Optional) */}
+//           {recipient.accountNumber && (
+//              <p className="text-sm text-gray-600 dark:text-gray-400 text-right -mt-2 pr-1">
+//                 Account ending in {recipient.accountNumber.slice(-4)}
+//             </p>
+//           )}
+
+//           {/* Paying With Section */}
+//           <PayingWithDisplay sourceAccount={sourceAccount} />
+
+//           {/* Error Display Section */}
+//           {/* Show combined error state, prioritize logicError */}
+//           {displayError && (
+//              <div className={`relative p-4 rounded-lg border ${isInsufficientBalanceError ? 'bg-red-50 border-red-300 text-red-800 dark:bg-red-900/20 dark:border-red-700 dark:text-red-300' : 'bg-yellow-50 border-yellow-300 text-yellow-800 dark:bg-yellow-900/20 dark:border-yellow-700 dark:text-yellow-300'}`} role="alert">
+//                  <div className="flex items-center">
+//                     <IoIosInformationCircleOutline className={`w-5 h-5 mr-2 ${isInsufficientBalanceError ? 'text-red-600 dark:text-red-400' : 'text-yellow-600 dark:text-yellow-400'}`} />
+//                     <span className="flex-1 text-sm">{displayError}</span>
+//                     <button
+//                         onClick={() => {
+//                             setLogicError(null);
+//                             // Optionally clear apiError too, or let it persist if it's from initial load
+//                         }}
+//                         className="absolute top-1.5 right-1.5 p-1 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-400"
+//                         aria-label="Dismiss error message"
+//                     >
+//                         <IoClose size={18} />
+//                     </button>
+//                  </div>
+//              </div>
+//           )}
+
+//           {/* Continue Button */}
+//           <button
+//             onClick={handleContinue}
+//             disabled={!canContinue || isCalculating}
+//             className={`w-full font-semibold py-3 h-14 rounded-full mt-6 transition-all duration-300 ease-in-out text-lg flex items-center justify-center
+//                             ${
+//                               canContinue && !isCalculating
+//                                 ? "bg-primary text-secondary hover:bg-primary-hover shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+//                                 : "bg-gray-200 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+//                             }`}
+//             data-testid="continue-button"
+//           >
+//             {/* Show loader only when actively calculating */}
+//             {isCalculating ? (
+//               <>
+//                 <Loader2 size={20} className="animate-spin mr-2" />
+//                 Calculating...
+//               </>
+//             ) : (
+//               "Continue"
+//             )}
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
 // frontend/src/app/dashboard/balances/[balanceId]/send/amount/page.tsx
 "use client";
 import React, { useState, useCallback, useMemo, useEffect } from "react";
@@ -2828,7 +3234,9 @@ import { IoClose } from "react-icons/io5";
 // --- Component Definition ---
 const steps = ["Recipient", "Amount", "Review", "Pay"];
 
-interface SendAmountParams {
+// Type for URL parameters expected by this page
+// Adjusted to satisfy the constraint used by next/navigation's useParams
+interface SendAmountPageParams extends Record<string, string | string[]> {
   balanceId: string;
 }
 
@@ -2856,7 +3264,8 @@ const SkeletonAmountSection = () => (
 export default function SendAmountPage() {
   // --- Hooks ---
   const router = useRouter();
-  const params = useParams<SendAmountParams>();
+  // Use the adjusted type for useParams
+  const params = useParams<SendAmountPageParams>();
   const searchParams = useSearchParams();
   const { balanceId } = params;
   const recipientId = searchParams.get("recipientId");
@@ -2898,14 +3307,13 @@ export default function SendAmountPage() {
 
       // Update the field that wasn't the last one edited.
       // React's setState handles not re-rendering if the value is the same.
-      // No need to compare with current sendAmount/receiveAmount state here.
       if (lastEdited === "send") {
           setReceiveAmount(newReceive);
       } else if (lastEdited === "receive") {
           setSendAmount(newSend);
       }
       // If lastEdited is null (initial load/reset), this won't update fields, which is fine.
-  }, [summary, lastEdited]); // Dependencies are correct now
+  }, [summary, lastEdited]);
 
 
   // --- Input Handlers ---
@@ -2943,7 +3351,6 @@ export default function SendAmountPage() {
          }
       }
     },
-    // Added isInsufficientBalanceError to prevent clearing that specific error
     [calculateSummary, cancelCalculation, setLogicError, logicError, isInsufficientBalanceError]
   );
 
@@ -2967,10 +3374,9 @@ export default function SendAmountPage() {
       setLastEdited("send"); // Mark as edited
       // Manually trigger calculation after state update
       handleAmountChange(availableBalance, "send");
-      // Focus is handled via state now, no need to imperatively focus
       setIsSendFocused(true); // Set focus state for styling
     }
-  }, [sourceAccount, handleAmountChange]); // Depends on handleAmountChange
+  }, [sourceAccount, handleAmountChange]);
 
   // --- Continue Logic ---
   const handleContinue = useCallback(() => {
@@ -2992,6 +3398,7 @@ export default function SendAmountPage() {
         return;
     }
     // Final balance check using the definitive summary data
+    // Added check for sourceAccount just in case, though it should be defined here
     if (sourceAccount && summary.sendAmount > sourceAccount.balance) {
       setLogicError("Insufficient balance."); // Should be caught earlier, but safeguard
       return;
@@ -3003,25 +3410,24 @@ export default function SendAmountPage() {
     console.log("Saving transfer summary:", summary);
     localStorage.setItem("sendTransferSummary", JSON.stringify(summary));
 
+    // Added check for recipient just in case, though it should be defined here
     const needsReason = recipient?.currency.code === "INR";
     const nextPath = needsReason
       ? `/dashboard/balances/${balanceId}/send/reason?recipientId=${recipientId}`
       : `/dashboard/balances/${balanceId}/send/review?recipientId=${recipientId}`;
     router.push(nextPath);
   }, [
-    summary, // Use summary directly
+    summary,
     isCalculating,
-    apiError, // Check any API error
+    apiError,
     sourceAccount,
-    recipient,
+    recipient, // Added recipient as dependency
     balanceId,
     recipientId,
     router,
     setLogicError,
-    isInsufficientBalanceError, // Depends on this derived state
-    // logicError removed as per lint rule, isInsufficientBalanceError covers the relevant part
-    // sendAmount/receiveAmount (local state) removed, rely on summary
-  ]); // Dependencies updated
+    isInsufficientBalanceError,
+  ]);
 
   // Enable continue button logic
   const canContinue = useMemo(
@@ -3030,9 +3436,9 @@ export default function SendAmountPage() {
       summary.sendAmount > 0 &&
       summary.receiveAmount > 0 &&
       !isCalculating &&
-      !isInsufficientBalanceError && // Check specific balance error
-      !apiError, // Ensure no API errors block continuation
-    [summary, isCalculating, isInsufficientBalanceError, apiError] // Dependencies updated
+      !isInsufficientBalanceError &&
+      !apiError,
+    [summary, isCalculating, isInsufficientBalanceError, apiError]
   );
 
   // --- Render Logic ---
@@ -3054,6 +3460,7 @@ export default function SendAmountPage() {
   }
 
   // Critical Error State (Account/Recipient Fetch Failed)
+  // This check ensures sourceAccount and recipient are non-null in the main render below
   const criticalError = (!sourceAccount || !recipient) ? (logicError || apiError || "Error loading essential page details.") : null;
   if (criticalError) {
     return (
@@ -3071,7 +3478,7 @@ export default function SendAmountPage() {
             href={
               balanceId
                 ? `/dashboard/balances/${balanceId}/send/select-recipient`
-                : "/dashboard" // Fallback to general dashboard if balanceId somehow lost
+                : "/dashboard"
             }
              className="mt-6 inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
           >
@@ -3083,62 +3490,61 @@ export default function SendAmountPage() {
   }
 
   // --- Main Render ---
-  // Now we are sure sourceAccount and recipient exist
+  // At this point, sourceAccount and recipient are guaranteed to be non-null due to the criticalError check above.
+  // We can safely use non-null assertions (!) where needed by TypeScript.
   return (
     <div className="SendAmount-Page pb-20 min-h-screen">
       <DashboardHeader title="Send Money" steps={steps} currentStep={2} />
-      {/* Added mt-4 for spacing below header */}
-      <div className="container mx-auto max-w-xl p-4 lg:px-6 lg:pt-6 border dark:border-gray-700 rounded-2xl pb-10 mt-4 bg-white dark:bg-background shadow-sm">
+      <div className="container mx-auto max-w-xl p-4 lg:px-6 lg:pt-6 border rounded-2xl pb-10 mt-4 bg-white dark:bg-background shadow-sm">
         {/* Rate Display */}
-        <RateDisplay rateContext={rateContext} apiError={apiError && !logicError ? apiError : null} /> {/* Show API error here only if no logicError */}
+        <RateDisplay rateContext={rateContext} apiError={apiError && !logicError ? apiError : null} />
 
         {/* Main Content Area */}
-        <div className="space-y-4 mt-4"> {/* Added mt-4 */}
+        <div className="space-y-4 mt-4">
           {/* You Send Section */}
           <AmountInput
             label="You send"
              labelSuffix={summary?.sendAmount && !isCalculating ? "exactly" : ""}
-            currencyCode={sourceAccount.currency.code}
-            flagImage={sourceAccount.currency.flagImage}
+            currencyCode={sourceAccount!.currency.code} // Use ! assertion
+            flagImage={sourceAccount!.currency.flagImage} // Use ! assertion
             value={sendAmount}
             onValueChange={(val) => handleAmountChange(val, "send")}
             onFocus={() => handleFocus("send")}
             onBlur={() => handleBlur("send")}
             isFocused={isSendFocused}
             isDimmed={lastEdited === "receive"}
-            hasError={isInsufficientBalanceError} // Highlight field on this specific error
+            hasError={isInsufficientBalanceError}
             inputId="send-amount"
             data-testid="send-amount-input"
-            // Consider adding aria-describedby pointing to error/balance if needed
           />
           {/* Available Balance */}
-          <div className="text-right -mt-2 pr-1"> {/* Adjusted positioning */}
+          <div className="text-right -mt-2 pr-1">
              <span className="text-sm text-gray-600 dark:text-gray-400">
                 Available: </span>
               <button
                 onClick={handleAvailableBalanceClick}
                 className="text-sm font-medium text-primary dark:text-primary-foreground hover:underline focus:outline-none focus:underline"
-                aria-label={`Use available balance: ${sourceAccount.balance.toFixed(2)} ${sourceAccount.currency.code}`}
+                aria-label={`Use available balance: ${sourceAccount!.balance.toFixed(2)} ${sourceAccount!.currency.code}`} // Use ! assertion
               >
-                {sourceAccount.balance.toLocaleString(undefined, {
+                {sourceAccount!.balance.toLocaleString(undefined, { // Use ! assertion
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
-                })} {sourceAccount.currency.code}
+                })} {sourceAccount!.currency.code} {/* Use ! assertion */}
               </button>
           </div>
 
           {/* Recipient Gets Section */}
           <AmountInput
-            // Using nickname or name, ensuring fallback if somehow both are empty
-            label={recipient.nickname || recipient.accountHolderName || "Recipient"}
+            // Use ! assertion for recipient properties
+            label={recipient!.nickname || recipient!.accountHolderName || "Recipient"}
             labelPrefix=""
             labelSuffix={
               summary?.receiveAmount && !isCalculating
                 ? "gets exactly"
-                : "gets approx." // Abbreviated for space
+                : "gets approx."
             }
-            currencyCode={recipient.currency.code}
-            flagImage={recipient.currency.flagImage}
+            currencyCode={recipient!.currency.code} // Use ! assertion
+            flagImage={recipient!.currency.flagImage} // Use ! assertion
             value={receiveAmount}
             onValueChange={(val) => handleAmountChange(val, "receive")}
             onFocus={() => handleFocus("receive")}
@@ -3149,17 +3555,18 @@ export default function SendAmountPage() {
             data-testid="receive-amount-input"
           />
            {/* Recipient Account Info (Optional) */}
-          {recipient.accountNumber && (
+           {/* Use optional chaining ?. just in case accountNumber isn't always present */}
+          {recipient?.accountNumber && (
              <p className="text-sm text-gray-600 dark:text-gray-400 text-right -mt-2 pr-1">
                 Account ending in {recipient.accountNumber.slice(-4)}
             </p>
           )}
 
           {/* Paying With Section */}
-          <PayingWithDisplay sourceAccount={sourceAccount} />
+          {/* Use ! assertion as sourceAccount is guaranteed non-null here */}
+          <PayingWithDisplay sourceAccount={sourceAccount!} />
 
           {/* Error Display Section */}
-          {/* Show combined error state, prioritize logicError */}
           {displayError && (
              <div className={`relative p-4 rounded-lg border ${isInsufficientBalanceError ? 'bg-red-50 border-red-300 text-red-800 dark:bg-red-900/20 dark:border-red-700 dark:text-red-300' : 'bg-yellow-50 border-yellow-300 text-yellow-800 dark:bg-yellow-900/20 dark:border-yellow-700 dark:text-yellow-300'}`} role="alert">
                  <div className="flex items-center">
@@ -3168,7 +3575,7 @@ export default function SendAmountPage() {
                     <button
                         onClick={() => {
                             setLogicError(null);
-                            // Optionally clear apiError too, or let it persist if it's from initial load
+                            // Clear only the logicError, API errors might persist from load
                         }}
                         className="absolute top-1.5 right-1.5 p-1 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-400"
                         aria-label="Dismiss error message"
@@ -3191,7 +3598,6 @@ export default function SendAmountPage() {
                             }`}
             data-testid="continue-button"
           >
-            {/* Show loader only when actively calculating */}
             {isCalculating ? (
               <>
                 <Loader2 size={20} className="animate-spin mr-2" />

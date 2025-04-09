@@ -394,7 +394,7 @@ const AmountInput: React.FC<AmountInputProps> = ({
 
       <div
         className={clsx(
-          "flex items-center p-2 bg-white dark:bg-background relative min-h-[72px] transition-shadow border", // Add base border
+          "flex items-center p-2 bg-white dark:bg-background relative min-h-[72px] transition-shadow", // Add base border
           {
             "border-b border-gray-300 dark:border-gray-600": isFocused && !hasError, // Bottom border on focus (only if no error)
             "border-red-500 dark:border-red-400 rounded-md": hasError, // Red border on error (overrides focus border)

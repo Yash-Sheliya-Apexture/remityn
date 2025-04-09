@@ -831,60 +831,370 @@
 // export { AuthContext }; // Export context for direct use if needed
 
 
-'use client'; // THIS LINE IS CRUCIAL - Mark this as a client component
+// 'use client'; // THIS LINE IS CRUCIAL - Mark this as a client component
+
+// import React, { createContext, useState, useEffect, useContext, useCallback, useRef, useMemo } from 'react';
+// // Remove useRouter import if using window.location.href for redirects
+// // import { useRouter } from 'next/navigation';
+// import { debounce } from 'lodash';
+// import axios from 'axios'; // Import axios
+
+// // Define a type for the User object
+// interface User {
+//     // Ensure your user object matches the structure returned by your backend login
+//     _id: string; // Changed id to _id to match backend model typically
+//     fullName: string;
+//     email: string;
+//     role: string;
+// }
+
+// interface AuthContextType {
+//     user: User | null;
+//     token: string | null;
+//     loading: boolean;
+//     login: (userData: User, authToken: string) => void;
+//     logout: (reason?: 'inactivity' | 'sessionExpired' | 'manual') => void; // Add reason parameter
+//     isAdmin: boolean;
+// }
+
+// const AuthContext = createContext<AuthContextType | undefined>(undefined);
+// const INACTIVITY_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes for inactivity logout
+// const BROADCAST_CHANNEL_NAME = 'wise-auth-channel';
+// const DEBOUNCE_WAIT_MS = 500;
+
+// export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+//     const [user, setUser] = useState<User | null>(null);
+//     const [token, setToken] = useState<string | null>(null);
+//     const [loading, setLoading] = useState<boolean>(true);
+//     // const router = useRouter(); // Remove if using window.location.href
+//     const logoutTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+//     // --- START OF FIX 1: Memoize broadcastChannel ---
+//     // Memoize the broadcast channel initialization to prevent it from causing
+//     // dependency changes in useCallback/useEffect hooks on every render.
+//     const broadcastChannel = useMemo(() => {
+//         if (typeof window !== 'undefined') {
+//             console.log('Initializing BroadcastChannel:', BROADCAST_CHANNEL_NAME);
+//             return new BroadcastChannel(BROADCAST_CHANNEL_NAME);
+//         }
+//         return null;
+//     }, []); // Empty dependency array ensures it's created only once client-side
+//     // --- END OF FIX 1 ---
+
+//     // Use a ref for logout to avoid stale closures in interceptors/timers
+//     const logoutRef = useRef<AuthContextType['logout']>(() => {});
+
+//     // --- START OF FIX 1 (Explanation): The `logout` function depends on `broadcastChannel`.
+//     // By memoizing `broadcastChannel` above, this useCallback hook now has stable dependencies.
+//     const logout = useCallback((reason: 'inactivity' | 'sessionExpired' | 'manual' = 'manual', isBroadcastLogout = false) => {
+//         console.log(`Logging out. Reason: ${reason}, Is Broadcast: ${isBroadcastLogout}`);
+//         setUser(null);
+//         setToken(null);
+//         localStorage.removeItem('token');
+//         localStorage.removeItem('user');
+//         if (logoutTimerRef.current) clearTimeout(logoutTimerRef.current);
+//         logoutTimerRef.current = null;
+//         delete axios.defaults.headers.common['Authorization']; // Clear auth header on logout
+
+//         if (!isBroadcastLogout && broadcastChannel) {
+//             console.log('Broadcasting logout message');
+//             broadcastChannel.postMessage('logout');
+//         }
+
+//         // Redirect to login page - only if not triggered by broadcast
+//         if (typeof window !== 'undefined' && !isBroadcastLogout) {
+//             console.log('Redirection block entered.'); // Debugging log
+//             let redirectUrl = '/auth/login';
+//             if (reason === 'sessionExpired') {
+//                 redirectUrl += '?sessionExpired=true';
+//             } else if (reason === 'inactivity') {
+//                  redirectUrl += '?autoLogout=true';
+//             }
+//             console.log(`Redirecting to: ${redirectUrl}`);
+//             // Use window.location.assign for redirection
+//             window.location.assign(redirectUrl);
+//         }
+//     }, [broadcastChannel]); // Dependency on broadcastChannel is now stable
+//     // --- END OF FIX 1 (Explanation) ---
+
+
+//     // Keep the ref updated with the latest logout function
+//     useEffect(() => {
+//         logoutRef.current = logout;
+//     }, [logout]);
+
+//     const logoutDueToInactivity = useCallback(() => {
+//         console.log('Inactivity timeout reached. Logging out due to inactivity.'); // Debugging log
+//         logoutRef.current('inactivity');
+//     }, []); // Dependency on logoutRef is implicit via the ref itself
+
+//      // Debounced timer reset function using a ref
+//      const resetInactivityTimerDebounced = useRef(
+//         debounce(() => {
+//             if (logoutTimerRef.current) clearTimeout(logoutTimerRef.current);
+//             // Only set timer if user is logged in
+//             if (localStorage.getItem('token')) { // Check localStorage directly
+//                 console.log(`Resetting inactivity timer (${INACTIVITY_TIMEOUT_MS / 1000}s)`);
+//                 logoutTimerRef.current = setTimeout(logoutDueToInactivity, INACTIVITY_TIMEOUT_MS);
+//             }
+//         }, DEBOUNCE_WAIT_MS)
+//     ).current;
+
+
+//     const login = useCallback((userData: User, authToken: string) => {
+//         console.log('Logging in user:', userData.email);
+//         setUser(userData);
+//         setToken(authToken);
+//         localStorage.setItem('token', authToken);
+//         localStorage.setItem('user', JSON.stringify(userData));
+//         axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`; // Set auth header on login
+//         resetInactivityTimerDebounced(); // Start inactivity timer on login
+//     }, [resetInactivityTimerDebounced]);
+
+//     // Effect to load initial state from localStorage
+//     useEffect(() => {
+//         console.log('AuthProvider mounting. Checking localStorage...');
+//         const storedToken = localStorage.getItem('token');
+//         const storedUser = localStorage.getItem('user');
+
+//         if (storedToken && storedUser) {
+//             console.log('Found token and user in localStorage.');
+//             setToken(storedToken);
+//             try {
+//                 const parsedUser = JSON.parse(storedUser);
+//                 setUser(parsedUser);
+//                 axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`; // Set auth header on initial load
+//                 resetInactivityTimerDebounced(); // Start timer if logged in from storage
+//             // --- START OF FIX 2: Use the error variable in catch block ---
+//             } catch (error) { // Changed 'e' to 'error' and log it
+//                 console.error('Failed to parse stored user. Clearing auth state.', error);
+//             // --- END OF FIX 2 ---
+//                 logoutRef.current('manual', true); // Logout without redirect if user data is corrupted
+//             }
+//         } else {
+//             console.log('No token/user found in localStorage.');
+//             // Ensure auth state is cleared if nothing found
+//             setUser(null);
+//             setToken(null);
+//             delete axios.defaults.headers.common['Authorization'];
+//         }
+//         setLoading(false);
+//     }, [resetInactivityTimerDebounced]); // Add reset timer dependency
+
+
+//     // Effect for Axios interceptor
+//     useEffect(() => {
+//         console.log('Setting up Axios response interceptor.');
+//         const responseInterceptor = axios.interceptors.response.use(
+//             (response) => response, // Pass through successful responses
+//             (error) => {
+//                 // Check specifically for 401 Unauthorized
+//                 if (error.response && error.response.status === 401) {
+//                     const errorMessage = error.response.data?.message || '';
+//                     console.log(`Axios interceptor caught 401. Message: "${errorMessage}"`);
+
+//                     // Check if we actually have a token stored. If not, it's not a session expiry issue.
+//                     const currentToken = localStorage.getItem('token');
+//                     if (!currentToken) {
+//                         console.log('Caught 401, but no token was stored. Likely accessing protected route while logged out.');
+//                          // Don't automatically logout here, let the route handler manage redirection.
+//                          // Or, if preferred, redirect manually:
+//                          // if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/auth/login')) {
+//                          //    window.location.assign('/auth/login?unauthorized=true');
+//                          // }
+//                     }
+//                     // If a token *is* present, then a 401 likely means it's invalid/expired
+//                     else if (errorMessage.includes('token failed') || errorMessage.includes('User not found') || errorMessage.includes('Invalid token')) {
+//                        console.log('Detected token failure or invalid token with 401. Logging out.');
+//                        logoutRef.current('sessionExpired'); // Use ref to call logout with reason
+//                     }
+//                      // Handle 'no token' case specifically if backend sends it despite interceptor checking `currentToken`
+//                      else if (errorMessage.includes('no token')) {
+//                           console.log('Caught 401 with "no token" message, but a token might exist locally? Logging out to be safe.');
+//                           logoutRef.current('sessionExpired');
+//                      }
+//                     else {
+//                         console.log('401 error, but not a recognized token failure message. Passing error along.');
+//                     }
+//                 } else if (error.message === 'Network Error') {
+//                      console.error('Network Error caught by interceptor. Could not connect to the server.');
+//                      // Optionally handle network errors (e.g., show a notification)
+//                 }
+//                  else {
+//                      console.log('Axios interceptor caught non-401 error or error without response.', error);
+//                 }
+//                 return Promise.reject(error); // Pass the error along
+//             }
+//         );
+
+//         return () => {
+//             console.log('Ejecting Axios response interceptor.');
+//             axios.interceptors.response.eject(responseInterceptor);
+//         };
+//     }, []); // Run only once on mount
+
+
+//     // Effect for broadcast channel listener
+//     // --- START OF FIX 1 (Explanation): This useEffect depends on `broadcastChannel`.
+//     // By memoizing `broadcastChannel`, this hook now has stable dependencies.
+//     useEffect(() => {
+//         if (!broadcastChannel) return;
+
+//         const handleBroadcastMessage = (event: MessageEvent) => {
+//             if (event.data === 'logout') {
+//                 console.log('Received logout message via BroadcastChannel.');
+//                 // Call logout directly, marking it as a broadcast event
+//                 logoutRef.current('manual', true);
+//             } else if (event.data === 'login') {
+//                  // Optional: Handle login broadcast if needed (e.g., refresh data in other tabs)
+//                  console.log('Received login message via BroadcastChannel. Reloading state from localStorage.');
+//                  // Force reload from localStorage to sync state (might cause brief flicker)
+//                  const storedToken = localStorage.getItem('token');
+//                  const storedUser = localStorage.getItem('user');
+//                  if (storedToken && storedUser) {
+//                      try {
+//                         const parsedUser = JSON.parse(storedUser);
+//                         setUser(parsedUser);
+//                         setToken(storedToken);
+//                         axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
+//                         resetInactivityTimerDebounced(); // Start timer in this tab too
+//                      } catch (error) {
+//                         console.error('Failed to parse stored user after broadcast login.', error);
+//                         logoutRef.current('manual', true);
+//                      }
+//                  }
+//             }
+//         };
+
+//         console.log('Adding BroadcastChannel message listener.');
+//         broadcastChannel.addEventListener('message', handleBroadcastMessage);
+//         return () => {
+//             console.log('Removing BroadcastChannel message listener.');
+//             broadcastChannel.removeEventListener('message', handleBroadcastMessage);
+//             // Avoid closing the channel here, as other instances might still use it.
+//             // It will be garbage collected when all references are gone.
+//         };
+//     }, [broadcastChannel, resetInactivityTimerDebounced]); // Dependency now stable. Added reset timer dependency.
+//     // --- END OF FIX 1 (Explanation) ---
+
+
+//     // Effect for user activity listeners
+//     useEffect(() => {
+//         // Only add listeners if the user is logged in
+//         if (!user || !token) {
+//              if (logoutTimerRef.current) {
+//                  clearTimeout(logoutTimerRef.current);
+//                  logoutTimerRef.current = null; // Clear timer ref
+//                  console.log('Cleared inactivity timer because user is not logged in.');
+//              }
+//             return; // No need for listeners or timer if not logged in
+//         };
+
+//         console.log('Setting up user activity listeners.');
+//         const events: (keyof WindowEventMap)[] = ['mousemove', 'mousedown', 'keypress', 'scroll', 'touchstart', 'visibilitychange'];
+
+//         // Handler that resets the debounced timer function
+//         const handleActivity = () => {
+//             // console.log('User activity detected. Resetting inactivity timer.'); // Keep commented unless debugging noise
+//             resetInactivityTimerDebounced();
+//         };
+
+//         // Initial timer start when listeners are added (covers page load/login)
+//         resetInactivityTimerDebounced();
+
+//         events.forEach(event => window.addEventListener(event, handleActivity, { passive: true }));
+
+//         // Clean up listeners and the timer itself
+//         return () => {
+//             console.log('Removing user activity listeners.');
+//             events.forEach(event => window.removeEventListener(event, handleActivity));
+//              resetInactivityTimerDebounced.cancel(); // Cancel any pending debounced call
+//              if (logoutTimerRef.current) {
+//                 clearTimeout(logoutTimerRef.current); // Clear the active timer
+//                 logoutTimerRef.current = null; // Clear timer ref
+//                 console.log('Cleared inactivity timer on activity listener cleanup.');
+//             }
+//         };
+//     }, [user, token, resetInactivityTimerDebounced]); // Rerun if user/token state changes
+
+
+//     const isAdmin = useMemo(() => user?.role === 'admin', [user]);
+
+//     const contextValue: AuthContextType = useMemo(() => ({
+//         user,
+//         token,
+//         loading,
+//         login,
+//         logout: logoutRef.current, // Provide the ref's current function
+//         isAdmin,
+//     }), [user, token, loading, login, isAdmin]); // Include login and isAdmin
+
+//     // Render children only when not loading initial state
+//     return (
+//         <AuthContext.Provider value={contextValue}>
+//             {!loading && children}
+//         </AuthContext.Provider>
+//     );
+// };
+
+// // Custom hook to use the auth context
+// export const useAuth = (): AuthContextType => {
+//     const context = useContext(AuthContext);
+//     if (!context) {
+//         throw new Error("useAuth must be used within an AuthProvider");
+//     }
+//     return context;
+// };
+
+// export { AuthContext }; // Export context for direct use if needed
+
+
+
+'use client';
 
 import React, { createContext, useState, useEffect, useContext, useCallback, useRef, useMemo } from 'react';
-// Remove useRouter import if using window.location.href for redirects
-// import { useRouter } from 'next/navigation';
 import { debounce } from 'lodash';
-import axios from 'axios'; // Import axios
+import axios from 'axios';
 
 // Define a type for the User object
 interface User {
-    // Ensure your user object matches the structure returned by your backend login
-    _id: string; // Changed id to _id to match backend model typically
-    fullName: string;
+    _id: string;
+    fullName: string; // Assuming this field exists based on previous context
     email: string;
-    role: string;
+    role: string; // 'admin' or other roles
 }
 
 interface AuthContextType {
     user: User | null;
     token: string | null;
-    loading: boolean;
+    loading: boolean; // Renamed from loadingAuth if that was intended
     login: (userData: User, authToken: string) => void;
-    logout: (reason?: 'inactivity' | 'sessionExpired' | 'manual') => void; // Add reason parameter
+    logout: (reason?: 'inactivity' | 'sessionExpired' | 'manual') => void;
     isAdmin: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-const INACTIVITY_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes for inactivity logout
+const INACTIVITY_TIMEOUT_MS = 15 * 60 * 1000; // 15 minutes for inactivity logout
 const BROADCAST_CHANNEL_NAME = 'wise-auth-channel';
-const DEBOUNCE_WAIT_MS = 500;
+const DEBOUNCE_WAIT_MS = 500; // Debounce activity checks
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
-    // const router = useRouter(); // Remove if using window.location.href
+    const [loading, setLoading] = useState<boolean>(true); // This is the loading state
     const logoutTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-    // --- START OF FIX 1: Memoize broadcastChannel ---
-    // Memoize the broadcast channel initialization to prevent it from causing
-    // dependency changes in useCallback/useEffect hooks on every render.
+
+    // Memoize BroadcastChannel to stabilize dependencies
     const broadcastChannel = useMemo(() => {
         if (typeof window !== 'undefined') {
             console.log('Initializing BroadcastChannel:', BROADCAST_CHANNEL_NAME);
             return new BroadcastChannel(BROADCAST_CHANNEL_NAME);
         }
         return null;
-    }, []); // Empty dependency array ensures it's created only once client-side
-    // --- END OF FIX 1 ---
+    }, []);
 
-    // Use a ref for logout to avoid stale closures in interceptors/timers
+    // Use a ref for logout to avoid stale closures
     const logoutRef = useRef<AuthContextType['logout']>(() => {});
 
-    // --- START OF FIX 1 (Explanation): The `logout` function depends on `broadcastChannel`.
-    // By memoizing `broadcastChannel` above, this useCallback hook now has stable dependencies.
     const logout = useCallback((reason: 'inactivity' | 'sessionExpired' | 'manual' = 'manual', isBroadcastLogout = false) => {
         console.log(`Logging out. Reason: ${reason}, Is Broadcast: ${isBroadcastLogout}`);
         setUser(null);
@@ -893,52 +1203,51 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         localStorage.removeItem('user');
         if (logoutTimerRef.current) clearTimeout(logoutTimerRef.current);
         logoutTimerRef.current = null;
-        delete axios.defaults.headers.common['Authorization']; // Clear auth header on logout
+        delete axios.defaults.headers.common['Authorization'];
 
+        // Broadcast logout to other tabs
         if (!isBroadcastLogout && broadcastChannel) {
             console.log('Broadcasting logout message');
             broadcastChannel.postMessage('logout');
         }
 
-        // Redirect to login page - only if not triggered by broadcast
+        // Redirect only if not a broadcast logout and running in browser
         if (typeof window !== 'undefined' && !isBroadcastLogout) {
-            console.log('Redirection block entered.'); // Debugging log
-            let redirectUrl = '/auth/login';
+            console.log('Redirection block entered for logout.');
+            let redirectUrl = '/auth/login'; // Ensure this path is correct
             if (reason === 'sessionExpired') {
                 redirectUrl += '?sessionExpired=true';
             } else if (reason === 'inactivity') {
                  redirectUrl += '?autoLogout=true';
             }
             console.log(`Redirecting to: ${redirectUrl}`);
-            // Use window.location.assign for redirection
-            window.location.assign(redirectUrl);
+            window.location.assign(redirectUrl); // Use assign for redirection
         }
-    }, [broadcastChannel]); // Dependency on broadcastChannel is now stable
-    // --- END OF FIX 1 (Explanation) ---
+    }, [broadcastChannel]); // Stable dependency
 
-
-    // Keep the ref updated with the latest logout function
+    // Keep logoutRef updated
     useEffect(() => {
         logoutRef.current = logout;
     }, [logout]);
 
     const logoutDueToInactivity = useCallback(() => {
-        console.log('Inactivity timeout reached. Logging out due to inactivity.'); // Debugging log
+        console.log('Inactivity timeout reached. Logging out due to inactivity.');
         logoutRef.current('inactivity');
-    }, []); // Dependency on logoutRef is implicit via the ref itself
+    }, []); // No external dependencies needed here
 
-     // Debounced timer reset function using a ref
-     const resetInactivityTimerDebounced = useRef(
+    // Debounced timer reset function
+    const resetInactivityTimerDebounced = useRef(
         debounce(() => {
             if (logoutTimerRef.current) clearTimeout(logoutTimerRef.current);
-            // Only set timer if user is logged in
-            if (localStorage.getItem('token')) { // Check localStorage directly
-                console.log(`Resetting inactivity timer (${INACTIVITY_TIMEOUT_MS / 1000}s)`);
+            // Only set timer if user is actually logged in (check state or localStorage)
+            if (localStorage.getItem('token')) { // More reliable check
+                console.log(`Resetting inactivity timer (${INACTIVITY_TIMEOUT_MS / 1000 / 60} min)`);
                 logoutTimerRef.current = setTimeout(logoutDueToInactivity, INACTIVITY_TIMEOUT_MS);
+            } else {
+                 console.log('Attempted to reset inactivity timer, but user is not logged in.');
             }
         }, DEBOUNCE_WAIT_MS)
-    ).current;
-
+    ).current; // .current gives the debounced function
 
     const login = useCallback((userData: User, authToken: string) => {
         console.log('Logging in user:', userData.email);
@@ -946,13 +1255,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setToken(authToken);
         localStorage.setItem('token', authToken);
         localStorage.setItem('user', JSON.stringify(userData));
-        axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`; // Set auth header on login
-        resetInactivityTimerDebounced(); // Start inactivity timer on login
-    }, [resetInactivityTimerDebounced]);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
+
+        // Broadcast login to other tabs
+        if (broadcastChannel) {
+            console.log('Broadcasting login message');
+            broadcastChannel.postMessage('login');
+        }
+
+        resetInactivityTimerDebounced(); // Start/reset inactivity timer on login
+    }, [broadcastChannel, resetInactivityTimerDebounced]); // Add dependencies
 
     // Effect to load initial state from localStorage
     useEffect(() => {
         console.log('AuthProvider mounting. Checking localStorage...');
+        setLoading(true); // Start loading
         const storedToken = localStorage.getItem('token');
         const storedUser = localStorage.getItem('user');
 
@@ -960,69 +1277,53 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             console.log('Found token and user in localStorage.');
             setToken(storedToken);
             try {
-                const parsedUser = JSON.parse(storedUser);
+                const parsedUser: User = JSON.parse(storedUser);
                 setUser(parsedUser);
-                axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`; // Set auth header on initial load
-                resetInactivityTimerDebounced(); // Start timer if logged in from storage
-            // --- START OF FIX 2: Use the error variable in catch block ---
-            } catch (error) { // Changed 'e' to 'error' and log it
+                axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
+                resetInactivityTimerDebounced(); // Start timer
+            } catch (error) {
                 console.error('Failed to parse stored user. Clearing auth state.', error);
-            // --- END OF FIX 2 ---
-                logoutRef.current('manual', true); // Logout without redirect if user data is corrupted
+                // Call logout directly to clear state, mark as broadcast to prevent redirect loop if other tabs exist
+                logoutRef.current('manual', true);
             }
         } else {
             console.log('No token/user found in localStorage.');
-            // Ensure auth state is cleared if nothing found
+            // Ensure clean state if nothing found
             setUser(null);
             setToken(null);
             delete axios.defaults.headers.common['Authorization'];
         }
-        setLoading(false);
-    }, [resetInactivityTimerDebounced]); // Add reset timer dependency
+        setLoading(false); // Finish loading
+    // Include resetInactivityTimerDebounced in dependency array
+    }, [resetInactivityTimerDebounced]);
 
 
-    // Effect for Axios interceptor
+    // Effect for Axios response interceptor
     useEffect(() => {
         console.log('Setting up Axios response interceptor.');
         const responseInterceptor = axios.interceptors.response.use(
-            (response) => response, // Pass through successful responses
+            (response) => response,
             (error) => {
-                // Check specifically for 401 Unauthorized
                 if (error.response && error.response.status === 401) {
-                    const errorMessage = error.response.data?.message || '';
+                    const errorMessage = error.response.data?.message || error.message || '';
                     console.log(`Axios interceptor caught 401. Message: "${errorMessage}"`);
-
-                    // Check if we actually have a token stored. If not, it's not a session expiry issue.
                     const currentToken = localStorage.getItem('token');
+
                     if (!currentToken) {
-                        console.log('Caught 401, but no token was stored. Likely accessing protected route while logged out.');
-                         // Don't automatically logout here, let the route handler manage redirection.
-                         // Or, if preferred, redirect manually:
-                         // if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/auth/login')) {
-                         //    window.location.assign('/auth/login?unauthorized=true');
-                         // }
-                    }
-                    // If a token *is* present, then a 401 likely means it's invalid/expired
-                    else if (errorMessage.includes('token failed') || errorMessage.includes('User not found') || errorMessage.includes('Invalid token')) {
-                       console.log('Detected token failure or invalid token with 401. Logging out.');
-                       logoutRef.current('sessionExpired'); // Use ref to call logout with reason
-                    }
-                     // Handle 'no token' case specifically if backend sends it despite interceptor checking `currentToken`
-                     else if (errorMessage.includes('no token')) {
-                          console.log('Caught 401 with "no token" message, but a token might exist locally? Logging out to be safe.');
-                          logoutRef.current('sessionExpired');
-                     }
-                    else {
-                        console.log('401 error, but not a recognized token failure message. Passing error along.');
+                        console.log('Caught 401, but no token was stored locally. User likely needs to log in.');
+                        // Decide if redirection is needed here or handled by page/component logic
+                    } else {
+                        // If a token exists, 401 strongly implies it's invalid/expired
+                        console.log('Detected likely token failure (401 with existing local token). Logging out.');
+                        logoutRef.current('sessionExpired'); // Use ref for logout
                     }
                 } else if (error.message === 'Network Error') {
-                     console.error('Network Error caught by interceptor. Could not connect to the server.');
-                     // Optionally handle network errors (e.g., show a notification)
+                     console.error('Network Error caught by interceptor. Server connection failed.');
+                     // Potentially show a global notification about connection issues
+                } else {
+                     console.log('Axios interceptor caught non-401 error or error without response:', error);
                 }
-                 else {
-                     console.log('Axios interceptor caught non-401 error or error without response.', error);
-                }
-                return Promise.reject(error); // Pass the error along
+                return Promise.reject(error);
             }
         );
 
@@ -1030,38 +1331,40 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             console.log('Ejecting Axios response interceptor.');
             axios.interceptors.response.eject(responseInterceptor);
         };
-    }, []); // Run only once on mount
-
+    }, []); // Run only once
 
     // Effect for broadcast channel listener
-    // --- START OF FIX 1 (Explanation): This useEffect depends on `broadcastChannel`.
-    // By memoizing `broadcastChannel`, this hook now has stable dependencies.
     useEffect(() => {
         if (!broadcastChannel) return;
 
         const handleBroadcastMessage = (event: MessageEvent) => {
             if (event.data === 'logout') {
                 console.log('Received logout message via BroadcastChannel.');
-                // Call logout directly, marking it as a broadcast event
+                // Logout this tab without causing another broadcast or redirect
                 logoutRef.current('manual', true);
             } else if (event.data === 'login') {
-                 // Optional: Handle login broadcast if needed (e.g., refresh data in other tabs)
-                 console.log('Received login message via BroadcastChannel. Reloading state from localStorage.');
-                 // Force reload from localStorage to sync state (might cause brief flicker)
+                 console.log('Received login message via BroadcastChannel. Reloading state.');
+                 // Reload state from localStorage to sync
                  const storedToken = localStorage.getItem('token');
                  const storedUser = localStorage.getItem('user');
+                 setLoading(true); // Indicate loading during sync
                  if (storedToken && storedUser) {
                      try {
                         const parsedUser = JSON.parse(storedUser);
                         setUser(parsedUser);
                         setToken(storedToken);
                         axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
-                        resetInactivityTimerDebounced(); // Start timer in this tab too
+                        resetInactivityTimerDebounced(); // Start timer in this tab
                      } catch (error) {
                         console.error('Failed to parse stored user after broadcast login.', error);
-                        logoutRef.current('manual', true);
+                        logoutRef.current('manual', true); // Logout if sync fails
                      }
+                 } else {
+                     // If login broadcast received but no data found, logout this tab
+                     console.warn("Login broadcast received, but no auth data found in localStorage. Logging out this tab.");
+                     logoutRef.current('manual', true);
                  }
+                 setLoading(false);
             }
         };
 
@@ -1070,65 +1373,64 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return () => {
             console.log('Removing BroadcastChannel message listener.');
             broadcastChannel.removeEventListener('message', handleBroadcastMessage);
-            // Avoid closing the channel here, as other instances might still use it.
-            // It will be garbage collected when all references are gone.
         };
-    }, [broadcastChannel, resetInactivityTimerDebounced]); // Dependency now stable. Added reset timer dependency.
-    // --- END OF FIX 1 (Explanation) ---
-
+        // Add resetInactivityTimerDebounced as dependency
+    }, [broadcastChannel, resetInactivityTimerDebounced]);
 
     // Effect for user activity listeners
     useEffect(() => {
-        // Only add listeners if the user is logged in
-        if (!user || !token) {
-             if (logoutTimerRef.current) {
-                 clearTimeout(logoutTimerRef.current);
-                 logoutTimerRef.current = null; // Clear timer ref
-                 console.log('Cleared inactivity timer because user is not logged in.');
-             }
-            return; // No need for listeners or timer if not logged in
-        };
+        // Only attach listeners and timer if logged in
+        if (!token || !user) {
+            // Clear any existing timer if user logs out
+            if (logoutTimerRef.current) {
+                clearTimeout(logoutTimerRef.current);
+                logoutTimerRef.current = null;
+                console.log('Cleared inactivity timer (user logged out).');
+            }
+            return;
+        }
 
         console.log('Setting up user activity listeners.');
         const events: (keyof WindowEventMap)[] = ['mousemove', 'mousedown', 'keypress', 'scroll', 'touchstart', 'visibilitychange'];
 
-        // Handler that resets the debounced timer function
         const handleActivity = () => {
-            // console.log('User activity detected. Resetting inactivity timer.'); // Keep commented unless debugging noise
+            // console.log('Activity detected'); // Reduce console noise
             resetInactivityTimerDebounced();
         };
 
-        // Initial timer start when listeners are added (covers page load/login)
+        // Start the timer initially when listeners are added
         resetInactivityTimerDebounced();
 
         events.forEach(event => window.addEventListener(event, handleActivity, { passive: true }));
 
-        // Clean up listeners and the timer itself
         return () => {
             console.log('Removing user activity listeners.');
             events.forEach(event => window.removeEventListener(event, handleActivity));
-             resetInactivityTimerDebounced.cancel(); // Cancel any pending debounced call
-             if (logoutTimerRef.current) {
+            resetInactivityTimerDebounced.cancel(); // Cancel any pending debounced call
+            if (logoutTimerRef.current) {
                 clearTimeout(logoutTimerRef.current); // Clear the active timer
-                logoutTimerRef.current = null; // Clear timer ref
-                console.log('Cleared inactivity timer on activity listener cleanup.');
+                logoutTimerRef.current = null;
+                console.log('Cleared inactivity timer on cleanup.');
             }
         };
-    }, [user, token, resetInactivityTimerDebounced]); // Rerun if user/token state changes
+        // Rerun when login state changes or the debounced function ref changes (should be stable)
+    }, [user, token, resetInactivityTimerDebounced]);
 
 
+    // Memoize isAdmin check
     const isAdmin = useMemo(() => user?.role === 'admin', [user]);
 
+    // Memoize context value
     const contextValue: AuthContextType = useMemo(() => ({
         user,
         token,
-        loading,
+        loading, // Use the correct 'loading' state
         login,
-        logout: logoutRef.current, // Provide the ref's current function
+        logout: logoutRef.current, // Provide the stable logout function via ref
         isAdmin,
-    }), [user, token, loading, login, isAdmin]); // Include login and isAdmin
+    }), [user, token, loading, login, isAdmin]); // Add dependencies
 
-    // Render children only when not loading initial state
+    // Don't render children until initial loading from localStorage is complete
     return (
         <AuthContext.Provider value={contextValue}>
             {!loading && children}
@@ -1139,10 +1441,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 // Custom hook to use the auth context
 export const useAuth = (): AuthContextType => {
     const context = useContext(AuthContext);
-    if (!context) {
+    if (context === undefined) { // Check for undefined specifically
         throw new Error("useAuth must be used within an AuthProvider");
     }
     return context;
 };
 
-export { AuthContext }; // Export context for direct use if needed
+// Export context for potential direct use (though hook is preferred)
+export { AuthContext };
