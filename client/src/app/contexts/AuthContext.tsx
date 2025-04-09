@@ -1462,6 +1462,7 @@ import axios from 'axios';
 
 // Define a type for the User object
 interface User {
+    name: string;
     _id: string;
     fullName: string; // Assuming this field exists based on previous context
     email: string;

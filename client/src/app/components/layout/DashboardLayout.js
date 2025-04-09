@@ -1,7 +1,7 @@
 // layout.tsx
 "use client";
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import Sidebar from "../../dashboard/components/Sidebar"; // Import Sidebar component
 import Header from "../../dashboard/components/Header";
