@@ -4978,7 +4978,7 @@ import React, { useState, useCallback, useMemo, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 
 // Hooks and Services
-import { useAuth } from "../../../hooks/useAuth"; // Adjust path
+import { useAuth } from "../../../contexts/AuthContext"; // Adjust path
 import { useBalanceDetailData } from "../../../hooks/useBalanceDetailData"; // Adjust path
 import { parseISO } from "date-fns"; // Keep for filter parsing
 

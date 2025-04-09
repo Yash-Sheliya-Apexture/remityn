@@ -1427,7 +1427,7 @@ const ResetPasswordForm = () => {
 
           <p className="lg:text-base  text-sm text-center text-gray mb-6">
             {/* FIXED: Escaped apostrophe */}
-            If the email hasn't arrived yet, please check your spam folder.
+            If the email hasn&apos;t arrived yet, please check your spam folder.
             Alternatively, you can also request the email again:
           </p>
 
@@ -1472,7 +1472,7 @@ const ResetPasswordForm = () => {
           {resendAttemptFailed && ( // Show message if resend failed
             <p className="text-center text-red-500 text-sm mt-2">
               {/* FIXED: Escaped apostrophe */}
-              Couldn't send email again. Please try again later.
+              Couldn&apos;t send email again. Please try again later.
             </p>
           )}
 
@@ -1507,7 +1507,7 @@ const ResetPasswordForm = () => {
       </h2>
       <p className="text-center text-gray lg:text-lg text-base max-w-lg mb-4">
         {/* FIXED: Escaped apostrophe */}
-        Just enter the email address you registered with and we'll send you a
+        Just enter the email address you registered with and we&apos;ll send you a
         link to reset your password.
       </p>
 

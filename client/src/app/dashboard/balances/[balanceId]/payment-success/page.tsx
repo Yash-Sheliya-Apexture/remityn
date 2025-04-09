@@ -244,7 +244,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 // Removed unused: import Link from 'next/link';
 // Removed unused: import { useParams } from 'next/navigation';
 import WiseLogo from '../../../../../../public/assets/images/plane-medium.png'; // Adjust path as needed
-import { useAuth } from '../../../../hooks/useAuth'; // Adjust path as needed
+import { useAuth } from '../../../../contexts/AuthContext'; // Adjust path as needed
 import paymentService from '../../../../services/payment'; // Adjust path as needed
 import { Skeleton } from '@/components/ui/skeleton'; // For loading state
 
@@ -328,7 +328,7 @@ const PaymentSuccessPage = () => {
             <div className="text-center">
                 {/* Fixed unescaped entity */}
                 <h1 className="text-3xl md:text-4xl font-bold mb-4 uppercase tracking-wide">
-                    Your Money's on the Move
+                    Your Money&apos;s on the Move
                 </h1>
 
                 {/* Loading state for the dynamic paragraph content */}
@@ -338,7 +338,7 @@ const PaymentSuccessPage = () => {
                 {!isLoading && (
                     <p className="text-lg mb-8">
                         {/* Fixed unescaped entity */}
-                        Your money should arrive {estimatedArrivalTime}. We'll keep you posted.
+                        Your money should arrive {estimatedArrivalTime}. We&apos;ll keep you posted.
                         {/* Conditionally display details only if available */}
                         {paymentDetails ? ` Adding ${paymentDetails.amountToAdd} ${paymentDetails.balanceCurrency.code}.` : ''}
                     </p>

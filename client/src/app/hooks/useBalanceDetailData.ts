@@ -162,7 +162,7 @@
 // src/app/hooks/useBalanceDetailData.ts
 import { useState, useEffect, useCallback } from 'react';
 import axios, { isAxiosError } from 'axios'; // Import isAxiosError
-import { useAuth } from './useAuth'; // Adjust path
+import { useAuth } from '../contexts/AuthContext'; // Adjust path
 import paymentService from '../services/payment'; // Adjust path
 import transferService from '../services/transfer'; // Adjust path
 import apiConfig from '../config/apiConfig'; // Adjust path

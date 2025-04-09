@@ -2104,7 +2104,7 @@ import { MdErrorOutline } from "react-icons/md"; // Error/Warning icon for timel
 import { FaCheck, FaRegClock } from "react-icons/fa"; // Checkmark and Clock icons
 
 // Custom Hooks & Services
-import { useAuth } from "../../../hooks/useAuth"; // Adjust path if necessary
+import { useAuth } from "../../../contexts/AuthContext"; // Adjust path if necessary
 // apiConfig import removed as it was unused
 import paymentService from "../../../services/payment"; // Adjust path
 import transferService from "../../../services/transfer"; // Adjust path
@@ -2535,9 +2535,9 @@ const TransactionDetailsPage = () => {
                                     // --- Render Awaiting Verification View ---
                                     <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
                                         <FaRegClock className="text-4xl text-blue-500 mx-auto mb-4 animate-pulse" />
-                                        <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Thanks! We're checking your payment</h3>
+                                        <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Thanks! We&apos;re checking your payment</h3>
                                         <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 max-w-md mx-auto">
-                                            We received your confirmation and are now verifying the bank transfer. This usually takes a few hours, but can sometimes take up to 19 hours depending on your bank. We'll update the status here automatically once confirmed.
+                                            We received your confirmation and are now verifying the bank transfer. This usually takes a few hours, but can sometimes take up to 19 hours depending on your bank. We&apos;ll update the status here automatically once confirmed.
                                         </p>
                                         <p className="text-xs text-gray-500 dark:text-gray-400">
                                             Reference: {transactionDetails.referenceCode || 'N/A'}
@@ -2572,7 +2572,7 @@ const TransactionDetailsPage = () => {
                                                                 {step.info && (<div className={cn( "mt-2 text-sm p-3 rounded-md border", step.status === 'active' ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-700/40 dark:text-blue-300' : step.status === 'failed' ? 'bg-red-50 border-red-200 text-red-700 dark:bg-red-900/30 dark:border-red-700/40 dark:text-red-300' : step.status === 'cancelled' ? 'bg-gray-100 border-gray-200 text-gray-600 dark:bg-gray-700/30 dark:border-gray-600/40 dark:text-gray-300' : 'bg-gray-50 border-gray-200 text-gray-600 dark:bg-gray-700/30 dark:border-gray-600/40 dark:text-gray-300' )}> <p>{step.info}</p> </div>)}
                                                                 {/* Inline "I've not paid" Button (for pending payments) */}
                                                                 {step.showCancelAction && (
-                                                                    <Button variant="outline" size="sm" className="mt-3 text-red-600 border-red-300 hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:border-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-300 h-8 px-3" onClick={() => setIsCancelModalOpen(true)} disabled={isSubmitting}> I've not paid </Button>
+                                                                    <Button variant="outline" size="sm" className="mt-3 text-red-600 border-red-300 hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:border-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-300 h-8 px-3" onClick={() => setIsCancelModalOpen(true)} disabled={isSubmitting}> I&apos;ve not paid </Button>
                                                                 )}
                                                             </div>
                                                         </li>
@@ -2586,7 +2586,7 @@ const TransactionDetailsPage = () => {
                                             <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
                                                 <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Ready to pay?</h3>
                                                 <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-                                                    Find the bank details in the <button onClick={() => setActiveTab('Details')} className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium">Details tab</button>. Once you've sent the money from your bank, click below.
+                                                    Find the bank details in the <button onClick={() => setActiveTab('Details')} className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium">Details tab</button>. Once you&apos;ve sent the money from your bank, click below.
                                                 </p>
                                                 {submissionError && <p className="mb-4 text-sm text-red-600 dark:text-red-400 text-center bg-red-50 dark:bg-red-900/20 p-2 rounded border border-red-200 dark:border-red-700/40">{submissionError}</p>}
                                                 <div className="flex flex-col sm:flex-row sm:justify-end sm:space-x-3 space-y-2 sm:space-y-0">

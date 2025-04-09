@@ -176,7 +176,7 @@ import RecipientList from "@/app/dashboard/components/RecipientList"; // Re-use 
 import { FaCirclePlus } from "react-icons/fa6";
 import { IoIosArrowForward } from "react-icons/io"; // Kept this, removed IoIosArrowBack
 import { useParams, useRouter } from "next/navigation";
-import { useAuth } from "../../../../../hooks/useAuth"; // Adjust path
+import { useAuth } from "../../../../../contexts/AuthContext"; // Adjust path
 import recipientService from "../../../../../services/recipient"; // Adjust path
 import { MdCancel } from "react-icons/md";
 // Removed unused imports: IoIosArrowBack, Link
@@ -332,7 +332,7 @@ export default function SelectRecipientPage() {
         {/* Recipient List */}
         {recipients.length === 0 && !searchTerm ? (
             <p className="text-center text-gray-500 rounded-2xl dark:text-gray-300 text-lg dark:bg-white/8 py-10">
-                You haven't added any recipients yet. Click 'Add a recipient' to get started.
+                You haven&apos;t added any recipients yet. Click &apos;Add a recipient&apos; to get started.
             </p>
         ) : filteredRecipients.length > 0 ? (
           <div>
@@ -364,7 +364,7 @@ export default function SelectRecipientPage() {
           searchTerm && (
             <p className="text-center text-gray-500 rounded-2xl dark:text-gray-300 text-lg dark:bg-white/8 py-10">
               {/* Escaped single quotes */}
-              No recipients found matching '{searchTerm}'.
+              No recipients found matching &apos;{searchTerm}&apos;.
             </p>
           )
         )}
