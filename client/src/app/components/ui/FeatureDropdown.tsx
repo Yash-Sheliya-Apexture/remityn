@@ -811,7 +811,7 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
         <div >
             {/* Top Content (Optional) */}
             {topContent && (
-                <div className={`p-8 flex flex-col rounded-t-2xl justify-start bg-lightgray dark:bg-background mt-2 ${topContentClassName || ""}`}>
+                <div className={`p-8 flex flex-col rounded-t-2xl justify-start bg-white dark:bg-background mt-2 ${topContentClassName || ""}`}>
                     {topContent}
                 </div>
             )}
@@ -848,7 +848,7 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={myToggleDropdown}
-        className={`rounded-full font-medium  cursor-pointer px-2.5 py-1.5 hover:bg-white dark:hover:bg-primarybox ${buttonClassName || ""}`}
+        className={`rounded-full font-medium  cursor-pointer px-2.5 py-1.5 hover:bg-lightgray dark:hover:bg-primarybox ${buttonClassName || ""}`}
       >
         {buttonText}
       </button>

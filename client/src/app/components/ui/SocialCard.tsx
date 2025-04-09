@@ -318,9 +318,9 @@ const SocialCard = ({ index }: { index: number }) => {
         "They make our life split between two continents possible. Transfers are simple and very, very fast.",
       authorName: "Stuart",
       authorLink: "",
-      bgColor: "bg-lightgreen dark:bg-background",
+      bgColor: "bg-lightgreen dark:bg-secondary",
       textColor: "text-green dark:text-white",
-      buttonBgColor: "bg-green dark:bg-primary",
+      buttonBgColor: "bg-green dark:bg-primary dark:hover:bg-primaryhover",
       buttonTextColor: "text-lightgreen dark:text-subheading",
     },
     {
@@ -328,52 +328,52 @@ const SocialCard = ({ index }: { index: number }) => {
       imageAlt: "USD Flag",
       // Escape inner quotes with HTML entities
       testimonialText:
-        `"Always fast transactions and good fees. An invaluable online bank for those who live outside their own country or are frequent travellers."`,
+        `Always fast transactions and good fees. An invaluable online bank for those who live outside their own country or are frequent travellers.`,
       authorName: "Megan",
       authorLink: "",
-      bgColor: "bg-green",
-      textColor: "text-lightgreen",
-      buttonBgColor: "bg-lightgreen",
-      buttonTextColor: "text-green",
+      bgColor: "bg-green dark:bg-secondary",
+      textColor: "text-lightgreen dark:text-white",
+      buttonBgColor: "bg-lightgreen dark:bg-primary dark:hover:bg-primaryhover",
+      buttonTextColor: "text-subheading",
     },
     {
       imageSrc: "/assets/icon/gbp.svg",
       imageAlt: "USD Flag",
       // Escape inner quotes with HTML entities
       testimonialText:
-        `"I use Wise to pay a mortgage in a different country each month. Superb. That simple."`,
+        `I use Wise to pay a mortgage in a different country each month. Superb. That simple.`,
       authorName: "Gerald",
       authorLink: "",
-      bgColor: "bg-lightgreen",
-      textColor: "text-green",
-      buttonBgColor: "bg-green",
-      buttonTextColor: "text-lightgreen",
+      bgColor: "bg-lightgreen dark:bg-secondary",
+      textColor: "text-green dark:text-white",
+      buttonBgColor: "bg-green dark:bg-primary dark:hover:bg-primaryhover",
+      buttonTextColor: "text-lightgreen dark:text-subheading",
     },
     {
       imageSrc: "/assets/icon/usd.svg",
       imageAlt: "USD Flag",
       // Escape inner quotes with HTML entities
       testimonialText:
-        `"The best money travel buddy! Wise makes finances easier to deal with instantly."`,
+        `The best money travel buddy! Wise makes finances easier to deal with instantly.`,
       authorName: "Gemma",
       authorLink: "",
-      bgColor: "bg-green",
-      textColor: "text-lightgreen",
-      buttonBgColor: "bg-lightgreen",
-      buttonTextColor: "text-green",
+      bgColor: "bg-green dark:bg-secondary",
+      textColor: "text-lightgreen dark:text-white",
+      buttonBgColor: "bg-lightgreen dark:bg-primary dark:hover:bg-primaryhover",
+      buttonTextColor: "text-subheading",
     },
     {
       imageSrc: "/assets/icon/dkk.svg",
       imageAlt: "USD Flag",
       // Escape inner quotes with HTML entities
       testimonialText:
-        `"Wise has been a lifesaver for me as a student in a foreign country."`,
+        `Wise has been a lifesaver for me as a student in a foreign country.`,
       authorName: "Stefani",
       authorLink: "",
-      bgColor: "bg-lightgreen",
-      textColor: "text-green",
-      buttonBgColor: "bg-green",
-      buttonTextColor: "text-lightgreen",
+      bgColor: "bg-lightgreen dark:bg-secondary",
+      textColor: "text-green dark:text-white",
+      buttonBgColor: "bg-green dark:bg-primary dark:hover:bg-primaryhover",
+      buttonTextColor: "text-lightgreen dark:text-subheading",
     },
   ];
 
@@ -385,7 +385,7 @@ const SocialCard = ({ index }: { index: number }) => {
 
   return (
     <div
-      className={`lg:p-10 p-6 ${card.bgColor} border rounded-4xl h-full flex flex-col justify-between`}
+      className={`lg:p-10 p-6 ${card.bgColor} border rounded-4xl  h-full flex flex-col justify-between`}
     >
       <div className="w-full lg:pb-20 pb-6">
         <Image
@@ -410,7 +410,7 @@ const SocialCard = ({ index }: { index: number }) => {
         >
           <Link
             href={card.authorLink}
-            className={`text-xl font-medium ${card.buttonTextColor}`}
+            className={`text-xl font-medium h-14 transition-colors duration-300 ease-in-out ${card.buttonTextColor}`}
           >
             {card.authorName} on Trustpilot
           </Link>

@@ -2542,19 +2542,19 @@ export default function RegisterPage() {
         {/* Terms and Policy Links */}
         <p className="text-center text-gray-500 dark:text-gray-300 my-3 text-sm">
           {/* Adjusted styles */}
-          By registering, you accept our
+          By registering, you accept our  &nbsp;
           <Link
             href="/terms-and-conditions"
             className="text-primary font-medium underline underline-offset-4" // Adjusted offset/hover
           >
-            Terms of use
+            Terms of use  &nbsp;
           </Link>
           and
           <Link
             href="/privacy-policy-en"
             className="text-primary font-medium underline underline-offset-4"
           >
-            Privacy Policy
+             &nbsp; Privacy Policy
           </Link>
           .
         </p>
