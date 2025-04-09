@@ -4077,37 +4077,384 @@
 // export default HeroSection;
 
 
+// // app/(website)/components/Hero/HeroSection.tsx
+// "use client";
+// import { SlLock } from "react-icons/sl";
+// import { IoIosArrowForward } from "react-icons/io";
+// import { CiBank } from "react-icons/ci";
+// import { useState, useEffect } from "react";
+// import CountryDropdown from "../../../components/ui/CountryDropdown";
+// import HeroText from "./HeroText";
+// import Image from "next/image";
+// import inr from "../../../../../public/assets/icon/inr.svg";
+// import { useAppContext } from "../../../contexts/WebsiteAppContext";
+// import exchangeRateService from '../../../services/exchangeRate'; // Corrected path assuming it's in src/app/services
+
+// // Define an interface for the expected structure of the rates object
+// interface RatesMap {
+//   [key: string]: number;
+// }
+
+// // Define an interface for the expected service response structure
+// interface ExchangeRateResponse {
+//   // Adjust this based on the actual structure returned by your service
+//   // Common examples include: base, date, success, timestamp etc.
+//   // The crucial part is the 'rates' property.
+//   rates: RatesMap;
+//   // Add other properties if they exist, e.g., base?: string;
+// }
+
+
+// interface ExchangeRates {
+//   [key: string]: { [key: string]: number };
+// }
+
+// const HeroSection: React.FC = () => {
+//   const { selectedSendCurrency, setSelectedSendCurrency } = useAppContext();
+//   const [sendAmount, setSendAmount] = useState("");
+//   const [receiveAmount, setReceiveAmount] = useState("");
+//   const [exchangeRates, setExchangeRates] = useState<ExchangeRates>({});
+//   const [loadingRates, setLoadingRates] = useState(true);
+//   const [rate, setRate] = useState(0); // Rate: 1 SendCurrency = X INR
+//   const [sendFee] = useState(0);
+//   const [gst] = useState(0);
+//   const [arrivalDate, setArrivalDate] = useState<string | null>(null);
+
+
+//   useEffect(() => {
+//     const fetchExchangeRates = async () => {
+//       setLoadingRates(true);
+//       try {
+//         // Assume the service returns an object like { rates: { USD: 1, INR: 83.5, ... } }
+//         // Adding a type assertion here helps TypeScript, but ideally, the service function
+//         // should have a specific return type (Promise<ExchangeRateResponse>).
+//         const response = await exchangeRateService.getExchangeRatesForCurrencies() as ExchangeRateResponse; // Type assertion
+
+//         // Access the rates map directly
+//         const fetchedRates = response?.rates; // Use optional chaining for safety
+
+//         if (fetchedRates && typeof fetchedRates === 'object' && Object.keys(fetchedRates).length > 0) {
+//           const transformedRates: ExchangeRates = {};
+//           const baseCurrencyRates = fetchedRates; // This is the map like { "USD": 1, "EUR": 0.9, "INR": 83 }
+
+//           // Build the cross-rates object
+//           // This assumes the fetchedRates are relative to a single base (e.g., USD or EUR)
+//           // Let's find the base currency if not explicitly provided (often it's USD or EUR in free APIs)
+//           // For simplicity, let's assume the API gives rates relative to USD or you know the base.
+//           // If the API provides rates relative to EUR, adjust calculations accordingly.
+
+//           // Example: Assuming fetchedRates are relative to a base (like USD)
+//           // We want to calculate rate from ANY currency to ANY OTHER currency
+//           const allCurrencies = Object.keys(baseCurrencyRates);
+
+//           for (const fromCurrency of allCurrencies) {
+//             transformedRates[fromCurrency] = {};
+//             for (const toCurrency of allCurrencies) {
+//                 // Rate formula: (Rate of ToCurrency / Rate of FromCurrency)
+//                 // Example: USD to INR = (INR rate / USD rate)
+//                 // Example: GBP to INR = (INR rate / GBP rate)
+//                 transformedRates[fromCurrency][toCurrency] =
+//                     (baseCurrencyRates[toCurrency] || 0) / (baseCurrencyRates[fromCurrency] || 1); // Avoid division by zero
+//             }
+//             transformedRates[fromCurrency][fromCurrency] = 1; // 1:1 for same currency
+//           }
+
+//           setExchangeRates(transformedRates);
+
+//           // Set the initial rate based on the *selected* send currency to INR
+//           const initialRateToINR = transformedRates[selectedSendCurrency]?.["INR"];
+
+//           if (initialRateToINR) {
+//              setRate(initialRateToINR);
+//              // Recalculate receive amount if send amount already exists
+//               if (sendAmount) {
+//                  setReceiveAmount(convertAndFormat(sendAmount, initialRateToINR));
+//               }
+//           } else {
+//              console.warn(`Rate from ${selectedSendCurrency} to INR not found. Defaulting.`);
+//              // Provide a fallback or handle the error appropriately
+//              setRate(87.2); // Fallback default
+//              if (sendAmount) {
+//                  setReceiveAmount(convertAndFormat(sendAmount, 87.2));
+//              }
+//           }
+
+//         } else {
+//           console.error("Failed to fetch exchange rates: 'rates' property missing or invalid in response", response);
+//           // Handle error state, maybe set a default rate
+//            setRate(87.2); // Fallback default on error
+//         }
+//       } catch (error) {
+//         console.error("Error fetching exchange rates:", error); // Log the actual error
+//         // Handle error state
+//          setRate(87.2); // Fallback default on error
+//       } finally {
+//         setLoadingRates(false);
+//       }
+//     };
+
+//     fetchExchangeRates();
+//     // Re-fetch when selectedSendCurrency changes
+//   }, [selectedSendCurrency]); // Dependency array is correct
+
+
+//   const convertAndFormat = (amount: string, conversionRate: number) => {
+//     const numericAmount = parseFloat(amount.replace(/,/g, ""));
+//     if (isNaN(numericAmount) || !conversionRate) { // Also check if rate is valid
+//       return "0.00"; // Return formatted zero or empty string
+//     }
+//     const convertedAmount = numericAmount * conversionRate;
+//     return convertedAmount.toFixed(2);
+//   };
+
+//   const handleSendAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+//     const newSendAmount = event.target.value;
+//     const sanitizedAmount = newSendAmount.replace(/[^0-9.]/g, ''); // Allow only numbers and one dot
+//     // Prevent multiple dots
+//     if (sanitizedAmount.split('.').length > 2) {
+//         return;
+//     }
+//     setSendAmount(sanitizedAmount);
+
+//     if (!loadingRates && exchangeRates[selectedSendCurrency]) {
+//        const currentRateToINR = exchangeRates[selectedSendCurrency]?.["INR"] || 0; // Get rate to INR
+//        setRate(currentRateToINR); // Update the displayed rate
+//        setReceiveAmount(convertAndFormat(sanitizedAmount, currentRateToINR));
+//     } else if (!loadingRates) {
+//         // Handle case where rates are loaded but the specific currency pair isn't available
+//         console.warn(`Rate for ${selectedSendCurrency} to INR not available.`);
+//         setReceiveAmount("0.00");
+//         setRate(0); // Reset rate display
+//     }
+//   };
+
+//  const handleCurrencyChange = (isSendCurrency: boolean, newCurrency: string) => {
+//     if (isSendCurrency && newCurrency !== selectedSendCurrency) { // Prevent unnecessary updates
+//       setSelectedSendCurrency(newCurrency); // Update context
+
+//       // Recalculation will happen automatically via the useEffect hook
+//       // triggered by the change in selectedSendCurrency.
+//       // We can also update the rate display immediately if rates are available:
+//       if (!loadingRates && exchangeRates[newCurrency]) {
+//           const newRateToINR = exchangeRates[newCurrency]?.["INR"] || 0;
+//           setRate(newRateToINR);
+//           setReceiveAmount(convertAndFormat(sendAmount, newRateToINR)); // Recalculate with new rate
+//       } else if (!loadingRates) {
+//            console.warn(`Rates not loaded or rate for ${newCurrency} to INR not available.`);
+//            setRate(0); // Reset rate display
+//            setReceiveAmount("0.00"); // Reset receive amount
+//       }
+//     }
+//     // Receive currency is fixed to INR, so no 'else' block needed.
+//   };
+
+
+//   useEffect(() => {
+//     const today = new Date();
+//     const arrival = new Date(today);
+//     // Basic estimate: add 2 business days (skipping weekends)
+//     let daysToAdd = 2;
+//     let currentDay = today.getDay(); // 0 = Sunday, 6 = Saturday
+//     while (daysToAdd > 0) {
+//         arrival.setDate(arrival.getDate() + 1);
+//         currentDay = arrival.getDay();
+//         if (currentDay !== 0 && currentDay !== 6) { // If not Sunday or Saturday
+//             daysToAdd--;
+//         }
+//     }
+
+//     const options: Intl.DateTimeFormatOptions = { weekday: 'long' };
+//     setArrivalDate(arrival.toLocaleDateString(undefined, options));
+//   }, []); // Run only once on mount
+
+//   const displayRate = () => {
+//     if (loadingRates) {
+//       return "Loading...";
+//     }
+//     if (rate > 0) {
+//         // Show rate from selected Send Currency to INR
+//         return `1 ${selectedSendCurrency} = ${rate.toFixed(4)} INR`;
+//     }
+//     return "Rate unavailable"; // Handle case where rate couldn't be determined
+//   };
+
+
+//   return (
+//     <section className="Hero-Section py-12 bg-white dark:bg-background">
+//       <div className="container mx-auto px-4">
+//         <div className="flex flex-col lg:flex-row items-center gap-12">
+//           {/* Left Column: Text Content */}
+//           <div className="lg:w-1/2 space-y-5 p-4">
+//             <HeroText />
+//           </div>
+
+//           {/* Right Column: card */}
+//           <div className="lg:w-xl lg:ml-auto"> {/* Consider max-w-xl instead of w-xl */}
+//             <div className="bg-white rounded-3xl shadow-lg md:p-8 p-4 border border-gray-50">
+//               {/* Rate Guaranteed */}
+//               <div className="flex flex-col justify-center items-center gap-2 text-primary font-medium text-center mb-4 ">
+//                 <div className="flex justify-center items-center gap-2">
+//                   <SlLock size={22} />
+//                   <span>Rate guaranteed (24h)</span>
+//                 </div>
+//                 <span className="bg-green/10 rounded-full py-1 px-2 inline-block mt-1 text-sm"> {/* Adjusted text size */}
+//                   {displayRate()}
+//                 </span>
+//               </div>
+
+//               {/* You Send */}
+//               <div className="mb-3">
+//                 <label htmlFor="sendAmountInput" className="block font-medium text-main mb-1">
+//                   You send exactly
+//                 </label>
+//                 <div>
+//                   <div className="w-full border border-gray-300 rounded-xl shadow-sm flex items-center justify-between focus-within:border-green focus-within:ring-1 focus-within:ring-green"> {/* Added focus styles */}
+//                     <input
+//                       id="sendAmountInput"
+//                       type="text" // Use text to allow formatting, validation handles numbers
+//                       inputMode="decimal" // Hint for mobile keyboards
+//                       placeholder="0"
+//                       value={sendAmount}
+//                       onChange={handleSendAmountChange}
+//                       className="block w-full h-16 p-3 text-main text-xl font-semibold focus:outline-none bg-transparent rounded-l-xl" // Ensure input bg is transparent
+//                     />
+//                     <CountryDropdown
+//                       selectedCurrency={selectedSendCurrency}
+//                       onCurrencyChange={(newCurrency) =>
+//                         handleCurrencyChange(true, newCurrency)
+//                       }
+//                     />
+//                   </div>
+//                 </div>
+//                 <p className="text-cyan-900 mt-1 text-sm bg-cyan-100/30 rounded-lg px-2 py-1">
+//                   Sending over 20,000 GBP or equivalent?
+//                   <button type="button" className="underline cursor-pointer font-medium">
+//                     We&apos;ll discount our fee
+//                   </button>
+//                 </p>
+//               </div>
+
+//               {/* Recipient Gets */}
+//               <div className="mb-3">
+//                 <label htmlFor="receiveAmountInput" className="block font-medium text-main mb-1">
+//                   Recipient gets
+//                 </label>
+//                 <div className="w-full border border-gray-300 rounded-xl shadow-sm flex items-center justify-between bg-gray-50"> {/* Added subtle bg for readonly */}
+//                   <input
+//                     id="receiveAmountInput"
+//                     type="text" // Display only, so text is fine
+//                     placeholder="0.00" // Show decimal format
+//                     value={receiveAmount || "0.00"} // Display 0.00 if empty
+//                     readOnly
+//                     className="block w-full h-16 p-3 text-main text-xl font-semibold focus:outline-none bg-transparent rounded-l-xl" // Ensure input bg is transparent
+//                   />
+//                   {/* Fixed INR Display */}
+//                   <div className="flex items-center gap-2 min-w-[7rem] justify-center pr-3 pl-1"> {/* Adjusted padding/width */}
+//                     <Image src={inr} alt="INR Flag" width={24} height={24} className="flex-shrink-0" />
+//                     <p className="text-main font-semibold">INR</p>
+//                   </div>
+//                 </div>
+//               </div>
+
+//               {/* Paying With */}
+//               <div className="mb-4">
+//                 <label className="block font-medium text-gray-500 dark:text-gray-300 mb-1">
+//                   Paying with
+//                 </label>
+//                 <div className="bg-lightgray dark:bg-background p-3 h-16 border rounded-xl flex items-center justify-between transition-colors duration-200 ease-in-out">
+//                   <div className="flex items-center gap-2">
+//                     <CiBank size={24} />
+//                     <span className="text-mainheading dark:text-white font-semibold">Bank transfer</span>
+//                   </div>
+//                   <button type="button" className="text-green font-medium bg-green/10 hover:bg-green/20 px-3 py-2 rounded-full text-sm inline-flex items-center gap-1 transition-colors"> {/* Adjusted gap */}
+//                     Change
+//                     <IoIosArrowForward size={18} />
+//                   </button>
+//                 </div>
+//               </div>
+
+//               {/* Fee Details */}
+//               <div className="text-sm border border-gray-300 rounded-xl p-4 space-y-2.5">
+//                 <div className="flex justify-between"> {/* Removed text- alignment */}
+//                   <span className="text-main ">
+//                     Bank transfer fee
+//                   </span>
+//                   <span className="text-gray-600">0 {selectedSendCurrency}</span> {/* Adjusted color */}
+//                 </div>
+//                 <div className="flex justify-between">
+//                   <span className="text-main ">Our fee</span>
+//                   <span className="text-gray-600">{sendFee.toFixed(2)} {selectedSendCurrency} </span>
+//                 </div>
+//                 <div className="flex justify-between">
+//                   <span className="text-main ">GST</span>
+//                   <span className="text-gray-600">{gst.toFixed(2)} {selectedSendCurrency}</span>
+//                 </div>
+//                 <hr className="my-2 border-gray-200" /> {/* Adjusted color */}
+//                 <div className="flex justify-between text-main font-semibold">
+//                   <span>Total included fees (0%)</span>
+//                   <span>{(sendFee + gst).toFixed(2)} {selectedSendCurrency}</span>
+//                 </div>
+//               </div>
+
+//               {/* Savings & Arrival */}
+//                <div className="mt-3 text-sm text-gray-600 space-y-1"> {/* Adjusted margin/color/spacing */}
+//                 <p>You could save<span className="text-main font-bold mx-1">2.2%</span>on the payment you make.</p> {/* Use mx-1 for spacing */}
+//                 <p>
+//                   Should arrive by
+//                   <span className="text-main font-medium">{arrivalDate || '...'}</span> {/* Fallback for arrival date */}
+//                 </p>
+//               </div>
+
+//               {/* Actions */}
+//               <div className="mt-4 flex sm:flex-row flex-col items-center gap-3"> {/* Adjusted gap */}
+//                 <button type="button" className="w-full inline-flex items-center justify-center px-6 py-3 border border-green font-medium rounded-full text-green bg-white hover:bg-green/10 transition-colors duration-150 ease-in-out"> {/* Adjusted hover */}
+//                   Compare fees
+//                 </button>
+//                 <button type="button" className="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent font-medium rounded-full text-white bg-green hover:bg-green-dark transition-colors duration-150 ease-in-out"> {/* Standard green button */}
+//                   Send money
+//                 </button>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default HeroSection;
+
+
+
 // app/(website)/components/Hero/HeroSection.tsx
 "use client";
 import { SlLock } from "react-icons/sl";
 import { IoIosArrowForward } from "react-icons/io";
 import { CiBank } from "react-icons/ci";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react"; // Added useCallback
 import CountryDropdown from "../../../components/ui/CountryDropdown";
 import HeroText from "./HeroText";
 import Image from "next/image";
 import inr from "../../../../../public/assets/icon/inr.svg";
 import { useAppContext } from "../../../contexts/WebsiteAppContext";
-import exchangeRateService from '../../../services/exchangeRate'; // Corrected path assuming it's in src/app/services
+import exchangeRateService from '../../../services/exchangeRate';
 
-// Define an interface for the expected structure of the rates object
+// --- Interfaces (keep as they are) ---
 interface RatesMap {
   [key: string]: number;
 }
 
-// Define an interface for the expected service response structure
 interface ExchangeRateResponse {
-  // Adjust this based on the actual structure returned by your service
-  // Common examples include: base, date, success, timestamp etc.
-  // The crucial part is the 'rates' property.
   rates: RatesMap;
-  // Add other properties if they exist, e.g., base?: string;
+  // Add other potential properties if needed, e.g., base?: string;
 }
-
 
 interface ExchangeRates {
   [key: string]: { [key: string]: number };
 }
+
+// --- Default Fallback Rate ---
+const DEFAULT_FALLBACK_RATE_INR = 87.2; // Define as a constant
 
 const HeroSection: React.FC = () => {
   const { selectedSendCurrency, setSelectedSendCurrency } = useAppContext();
@@ -4116,169 +4463,149 @@ const HeroSection: React.FC = () => {
   const [exchangeRates, setExchangeRates] = useState<ExchangeRates>({});
   const [loadingRates, setLoadingRates] = useState(true);
   const [rate, setRate] = useState(0); // Rate: 1 SendCurrency = X INR
-  const [sendFee] = useState(0);
-  const [gst] = useState(0);
+  const [sendFee] = useState(0); // Assuming these are placeholders for now
+  const [gst] = useState(0);     // Assuming these are placeholders for now
   const [arrivalDate, setArrivalDate] = useState<string | null>(null);
 
+  // --- Helper Function for Conversion (using useCallback for stability if passed down) ---
+  const convertAndFormat = useCallback((amount: string, conversionRate: number): string => {
+    const numericAmount = parseFloat(amount.replace(/,/g, ""));
+    // Ensure rate is valid and numericAmount is a number
+    if (isNaN(numericAmount) || !conversionRate || conversionRate <= 0) {
+      return "0.00";
+    }
+    const convertedAmount = numericAmount * conversionRate;
+    return convertedAmount.toFixed(2);
+  }, []); // No dependencies, pure function
 
+  // --- Effect 1: Fetch Exchange Rates on Currency Change ---
   useEffect(() => {
     const fetchExchangeRates = async () => {
       setLoadingRates(true);
+      setRate(0); // Reset rate while loading new currency
       try {
-        // Assume the service returns an object like { rates: { USD: 1, INR: 83.5, ... } }
-        // Adding a type assertion here helps TypeScript, but ideally, the service function
-        // should have a specific return type (Promise<ExchangeRateResponse>).
-        const response = await exchangeRateService.getExchangeRatesForCurrencies() as ExchangeRateResponse; // Type assertion
-
-        // Access the rates map directly
-        const fetchedRates = response?.rates; // Use optional chaining for safety
+        const response = await exchangeRateService.getExchangeRatesForCurrencies() as ExchangeRateResponse;
+        const fetchedRates = response?.rates;
 
         if (fetchedRates && typeof fetchedRates === 'object' && Object.keys(fetchedRates).length > 0) {
           const transformedRates: ExchangeRates = {};
-          const baseCurrencyRates = fetchedRates; // This is the map like { "USD": 1, "EUR": 0.9, "INR": 83 }
-
-          // Build the cross-rates object
-          // This assumes the fetchedRates are relative to a single base (e.g., USD or EUR)
-          // Let's find the base currency if not explicitly provided (often it's USD or EUR in free APIs)
-          // For simplicity, let's assume the API gives rates relative to USD or you know the base.
-          // If the API provides rates relative to EUR, adjust calculations accordingly.
-
-          // Example: Assuming fetchedRates are relative to a base (like USD)
-          // We want to calculate rate from ANY currency to ANY OTHER currency
+          const baseCurrencyRates = fetchedRates;
           const allCurrencies = Object.keys(baseCurrencyRates);
 
+          // Build the cross-rates object (assuming rates relative to a common base)
           for (const fromCurrency of allCurrencies) {
             transformedRates[fromCurrency] = {};
             for (const toCurrency of allCurrencies) {
-                // Rate formula: (Rate of ToCurrency / Rate of FromCurrency)
-                // Example: USD to INR = (INR rate / USD rate)
-                // Example: GBP to INR = (INR rate / GBP rate)
-                transformedRates[fromCurrency][toCurrency] =
-                    (baseCurrencyRates[toCurrency] || 0) / (baseCurrencyRates[fromCurrency] || 1); // Avoid division by zero
+              const fromRateToBase = baseCurrencyRates[fromCurrency];
+              const toRateToBase = baseCurrencyRates[toCurrency];
+              // Avoid division by zero or invalid rates
+              if (fromRateToBase && toRateToBase && fromRateToBase !== 0) {
+                 transformedRates[fromCurrency][toCurrency] = toRateToBase / fromRateToBase;
+              } else {
+                 transformedRates[fromCurrency][toCurrency] = 0; // Mark as unavailable
+              }
             }
-            transformedRates[fromCurrency][fromCurrency] = 1; // 1:1 for same currency
+            transformedRates[fromCurrency][fromCurrency] = 1;
           }
 
           setExchangeRates(transformedRates);
 
-          // Set the initial rate based on the *selected* send currency to INR
+          // Set the specific rate for the *selected* send currency to INR
           const initialRateToINR = transformedRates[selectedSendCurrency]?.["INR"];
-
-          if (initialRateToINR) {
-             setRate(initialRateToINR);
-             // Recalculate receive amount if send amount already exists
-              if (sendAmount) {
-                 setReceiveAmount(convertAndFormat(sendAmount, initialRateToINR));
-              }
+          if (initialRateToINR && initialRateToINR > 0) {
+            setRate(initialRateToINR);
+            // Note: receiveAmount recalculation is handled by the second useEffect
           } else {
-             console.warn(`Rate from ${selectedSendCurrency} to INR not found. Defaulting.`);
-             // Provide a fallback or handle the error appropriately
-             setRate(87.2); // Fallback default
-             if (sendAmount) {
-                 setReceiveAmount(convertAndFormat(sendAmount, 87.2));
-             }
+            console.warn(`Rate from ${selectedSendCurrency} to INR not found or invalid. Using fallback.`);
+            setRate(DEFAULT_FALLBACK_RATE_INR); // Use fallback
           }
 
         } else {
-          console.error("Failed to fetch exchange rates: 'rates' property missing or invalid in response", response);
-          // Handle error state, maybe set a default rate
-           setRate(87.2); // Fallback default on error
+          console.error("Failed to fetch exchange rates: Invalid response structure", response);
+          setRate(DEFAULT_FALLBACK_RATE_INR); // Use fallback on structure error
         }
       } catch (error) {
-        console.error("Error fetching exchange rates:", error); // Log the actual error
-        // Handle error state
-         setRate(87.2); // Fallback default on error
+        console.error("Error fetching exchange rates:", error);
+        setRate(DEFAULT_FALLBACK_RATE_INR); // Use fallback on fetch error
       } finally {
         setLoadingRates(false);
       }
     };
 
     fetchExchangeRates();
-    // Re-fetch when selectedSendCurrency changes
-  }, [selectedSendCurrency]); // Dependency array is correct
+    // Dependency: Only re-run when the selected send currency changes.
+  }, [selectedSendCurrency]);
 
+  // --- Effect 2: Calculate Receive Amount when Send Amount or Rate changes ---
+  useEffect(() => {
+    // This effect is now responsible for updating the receive amount
+    // whenever the inputs for the calculation change.
+    setReceiveAmount(convertAndFormat(sendAmount, rate));
+    // Dependencies: Re-run calculation if sendAmount or rate changes.
+  }, [sendAmount, rate, convertAndFormat]); // Include convertAndFormat due to useCallback
 
-  const convertAndFormat = (amount: string, conversionRate: number) => {
-    const numericAmount = parseFloat(amount.replace(/,/g, ""));
-    if (isNaN(numericAmount) || !conversionRate) { // Also check if rate is valid
-      return "0.00"; // Return formatted zero or empty string
-    }
-    const convertedAmount = numericAmount * conversionRate;
-    return convertedAmount.toFixed(2);
-  };
+  // --- Effect 3: Calculate Arrival Date (runs once on mount) ---
+  useEffect(() => {
+    const calculateArrival = () => {
+        const today = new Date();
+        const arrival = new Date(today);
+        let daysToAdd = 2; // Estimate: 2 business days
+        let currentDay = today.getDay();
 
+        while (daysToAdd > 0) {
+            arrival.setDate(arrival.getDate() + 1);
+            currentDay = arrival.getDay();
+            // Skip weekends (Sunday=0, Saturday=6)
+            if (currentDay !== 0 && currentDay !== 6) {
+                daysToAdd--;
+            }
+        }
+
+        const options: Intl.DateTimeFormatOptions = { weekday: 'long' }; // Example format
+        setArrivalDate(arrival.toLocaleDateString(undefined, options));
+    };
+    calculateArrival();
+  }, []); // Empty dependency array: runs only once
+
+  // --- Event Handlers ---
   const handleSendAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newSendAmount = event.target.value;
-    const sanitizedAmount = newSendAmount.replace(/[^0-9.]/g, ''); // Allow only numbers and one dot
-    // Prevent multiple dots
-    if (sanitizedAmount.split('.').length > 2) {
-        return;
+    // Basic validation: allow numbers and at most one decimal point
+    let sanitizedAmount = newSendAmount.replace(/[^0-9.]/g, '');
+    const parts = sanitizedAmount.split('.');
+    if (parts.length > 2) {
+      // If more than one dot, keep only the first part and the part after the first dot
+      sanitizedAmount = `${parts[0]}.${parts.slice(1).join('')}`;
     }
-    setSendAmount(sanitizedAmount);
+    // Only update state if sanitized value is different to prevent infinite loops if validation modifies it
+    if (sanitizedAmount !== sendAmount) {
+      setSendAmount(sanitizedAmount);
+    }
+    // No need to setReceiveAmount here, the useEffect [sendAmount, rate] handles it.
+  };
 
-    if (!loadingRates && exchangeRates[selectedSendCurrency]) {
-       const currentRateToINR = exchangeRates[selectedSendCurrency]?.["INR"] || 0; // Get rate to INR
-       setRate(currentRateToINR); // Update the displayed rate
-       setReceiveAmount(convertAndFormat(sanitizedAmount, currentRateToINR));
-    } else if (!loadingRates) {
-        // Handle case where rates are loaded but the specific currency pair isn't available
-        console.warn(`Rate for ${selectedSendCurrency} to INR not available.`);
-        setReceiveAmount("0.00");
-        setRate(0); // Reset rate display
+  const handleCurrencyChange = (newCurrency: string) => {
+    // Update context only if the currency actually changed
+    if (newCurrency !== selectedSendCurrency) {
+      setSelectedSendCurrency(newCurrency);
+      // The fetch useEffect will trigger automatically due to selectedSendCurrency change
+      // It will update the rate, and then the calculation useEffect will update receiveAmount.
     }
   };
 
- const handleCurrencyChange = (isSendCurrency: boolean, newCurrency: string) => {
-    if (isSendCurrency && newCurrency !== selectedSendCurrency) { // Prevent unnecessary updates
-      setSelectedSendCurrency(newCurrency); // Update context
-
-      // Recalculation will happen automatically via the useEffect hook
-      // triggered by the change in selectedSendCurrency.
-      // We can also update the rate display immediately if rates are available:
-      if (!loadingRates && exchangeRates[newCurrency]) {
-          const newRateToINR = exchangeRates[newCurrency]?.["INR"] || 0;
-          setRate(newRateToINR);
-          setReceiveAmount(convertAndFormat(sendAmount, newRateToINR)); // Recalculate with new rate
-      } else if (!loadingRates) {
-           console.warn(`Rates not loaded or rate for ${newCurrency} to INR not available.`);
-           setRate(0); // Reset rate display
-           setReceiveAmount("0.00"); // Reset receive amount
-      }
-    }
-    // Receive currency is fixed to INR, so no 'else' block needed.
-  };
-
-
-  useEffect(() => {
-    const today = new Date();
-    const arrival = new Date(today);
-    // Basic estimate: add 2 business days (skipping weekends)
-    let daysToAdd = 2;
-    let currentDay = today.getDay(); // 0 = Sunday, 6 = Saturday
-    while (daysToAdd > 0) {
-        arrival.setDate(arrival.getDate() + 1);
-        currentDay = arrival.getDay();
-        if (currentDay !== 0 && currentDay !== 6) { // If not Sunday or Saturday
-            daysToAdd--;
-        }
-    }
-
-    const options: Intl.DateTimeFormatOptions = { weekday: 'long' };
-    setArrivalDate(arrival.toLocaleDateString(undefined, options));
-  }, []); // Run only once on mount
-
+  // --- Display Functions ---
   const displayRate = () => {
     if (loadingRates) {
-      return "Loading...";
+      return "Loading rate...";
     }
-    if (rate > 0) {
-        // Show rate from selected Send Currency to INR
-        return `1 ${selectedSendCurrency} = ${rate.toFixed(4)} INR`;
+    if (rate && rate > 0) {
+      // Display rate from selected Send Currency to INR
+      return `1 ${selectedSendCurrency} ≈ ${rate.toFixed(4)} INR`; // Use ≈ for approximation
     }
     return "Rate unavailable"; // Handle case where rate couldn't be determined
   };
 
-
+  // --- JSX ---
   return (
     <section className="Hero-Section py-12 bg-white dark:bg-background">
       <div className="container mx-auto px-4">
@@ -4288,8 +4615,8 @@ const HeroSection: React.FC = () => {
             <HeroText />
           </div>
 
-          {/* Right Column: card */}
-          <div className="lg:w-xl lg:ml-auto"> {/* Consider max-w-xl instead of w-xl */}
+          {/* Right Column: Calculator Card */}
+          <div className="lg:max-w-xl lg:ml-auto w-full"> {/* Use max-w-xl and w-full */}
             <div className="bg-white rounded-3xl shadow-lg md:p-8 p-4 border border-gray-50">
               {/* Rate Guaranteed */}
               <div className="flex flex-col justify-center items-center gap-2 text-primary font-medium text-center mb-4 ">
@@ -4297,66 +4624,67 @@ const HeroSection: React.FC = () => {
                   <SlLock size={22} />
                   <span>Rate guaranteed (24h)</span>
                 </div>
-                <span className="bg-green/10 rounded-full py-1 px-2 inline-block mt-1 text-sm"> {/* Adjusted text size */}
+                <span className="bg-green/10 rounded-full py-1 px-2 inline-block mt-1 text-sm min-h-[24px]"> {/* Added min-height */}
                   {displayRate()}
                 </span>
               </div>
 
-              {/* You Send */}
+              {/* You Send Input */}
               <div className="mb-3">
                 <label htmlFor="sendAmountInput" className="block font-medium text-main mb-1">
                   You send exactly
                 </label>
                 <div>
-                  <div className="w-full border border-gray-300 rounded-xl shadow-sm flex items-center justify-between focus-within:border-green focus-within:ring-1 focus-within:ring-green"> {/* Added focus styles */}
+                  <div className="w-full border border-gray-300 rounded-xl shadow-sm flex items-center justify-between focus-within:border-green focus-within:ring-1 focus-within:ring-green transition-colors">
                     <input
                       id="sendAmountInput"
-                      type="text" // Use text to allow formatting, validation handles numbers
-                      inputMode="decimal" // Hint for mobile keyboards
+                      type="text"
+                      inputMode="decimal"
                       placeholder="0"
                       value={sendAmount}
                       onChange={handleSendAmountChange}
-                      className="block w-full h-16 p-3 text-main text-xl font-semibold focus:outline-none bg-transparent rounded-l-xl" // Ensure input bg is transparent
+                      className="block w-full h-16 p-3 text-main text-xl font-semibold focus:outline-none bg-transparent rounded-l-xl appearance-none" // Added appearance-none
+                      autoComplete="off" // Prevent browser autocomplete
                     />
+                    {/* Pass only necessary props to CountryDropdown */}
                     <CountryDropdown
                       selectedCurrency={selectedSendCurrency}
-                      onCurrencyChange={(newCurrency) =>
-                        handleCurrencyChange(true, newCurrency)
-                      }
+                      onCurrencyChange={handleCurrencyChange} // Simplified handler call
                     />
                   </div>
                 </div>
+                {/* Optional: Discount message */}
                 <p className="text-cyan-900 mt-1 text-sm bg-cyan-100/30 rounded-lg px-2 py-1">
                   Sending over 20,000 GBP or equivalent?
-                  <button type="button" className="underline cursor-pointer font-medium">
-                    We&apos;ll discount our fee
+                  <button type="button" className="underline cursor-pointer font-medium ml-1">
+                    We'll discount our fee
                   </button>
                 </p>
               </div>
 
-              {/* Recipient Gets */}
+              {/* Recipient Gets Display */}
               <div className="mb-3">
                 <label htmlFor="receiveAmountInput" className="block font-medium text-main mb-1">
                   Recipient gets
                 </label>
-                <div className="w-full border border-gray-300 rounded-xl shadow-sm flex items-center justify-between bg-gray-50"> {/* Added subtle bg for readonly */}
+                <div className="w-full border border-gray-300 rounded-xl shadow-sm flex items-center justify-between bg-gray-50">
                   <input
                     id="receiveAmountInput"
-                    type="text" // Display only, so text is fine
-                    placeholder="0.00" // Show decimal format
-                    value={receiveAmount || "0.00"} // Display 0.00 if empty
+                    type="text"
+                    placeholder="0.00"
+                    value={receiveAmount} // Directly use state
                     readOnly
-                    className="block w-full h-16 p-3 text-main text-xl font-semibold focus:outline-none bg-transparent rounded-l-xl" // Ensure input bg is transparent
+                    className="block w-full h-16 p-3 text-main text-xl font-semibold focus:outline-none bg-transparent rounded-l-xl appearance-none" // Added appearance-none
                   />
                   {/* Fixed INR Display */}
-                  <div className="flex items-center gap-2 min-w-[7rem] justify-center pr-3 pl-1"> {/* Adjusted padding/width */}
+                  <div className="flex items-center gap-2 min-w-[7rem] justify-center pr-3 pl-1 flex-shrink-0"> {/* Added flex-shrink-0 */}
                     <Image src={inr} alt="INR Flag" width={24} height={24} className="flex-shrink-0" />
                     <p className="text-main font-semibold">INR</p>
                   </div>
                 </div>
               </div>
 
-              {/* Paying With */}
+              {/* Paying With Section */}
               <div className="mb-4">
                 <label className="block font-medium text-gray-500 dark:text-gray-300 mb-1">
                   Paying with
@@ -4366,51 +4694,50 @@ const HeroSection: React.FC = () => {
                     <CiBank size={24} />
                     <span className="text-mainheading dark:text-white font-semibold">Bank transfer</span>
                   </div>
-                  <button type="button" className="text-green font-medium bg-green/10 hover:bg-green/20 px-3 py-2 rounded-full text-sm inline-flex items-center gap-1 transition-colors"> {/* Adjusted gap */}
+                  <button type="button" className="text-green font-medium bg-green/10 hover:bg-green/20 px-3 py-2 rounded-full text-sm inline-flex items-center gap-1 transition-colors">
                     Change
                     <IoIosArrowForward size={18} />
                   </button>
                 </div>
               </div>
 
-              {/* Fee Details */}
+              {/* Fee Details Section */}
               <div className="text-sm border border-gray-300 rounded-xl p-4 space-y-2.5">
-                <div className="flex justify-between"> {/* Removed text- alignment */}
-                  <span className="text-main ">
-                    Bank transfer fee
-                  </span>
-                  <span className="text-gray-600">0 {selectedSendCurrency}</span> {/* Adjusted color */}
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-main ">Our fee</span>
-                  <span className="text-gray-600">{sendFee.toFixed(2)} {selectedSendCurrency} </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-main ">GST</span>
-                  <span className="text-gray-600">{gst.toFixed(2)} {selectedSendCurrency}</span>
-                </div>
-                <hr className="my-2 border-gray-200" /> {/* Adjusted color */}
-                <div className="flex justify-between text-main font-semibold">
-                  <span>Total included fees (0%)</span>
-                  <span>{(sendFee + gst).toFixed(2)} {selectedSendCurrency}</span>
-                </div>
+                 {/* Fee details remain the same */}
+                 <div className="flex justify-between">
+                   <span className="text-main ">Bank transfer fee</span>
+                   <span className="text-gray-600">0 {selectedSendCurrency}</span>
+                 </div>
+                 <div className="flex justify-between">
+                   <span className="text-main ">Our fee</span>
+                   <span className="text-gray-600">{sendFee.toFixed(2)} {selectedSendCurrency}</span>
+                 </div>
+                 <div className="flex justify-between">
+                   <span className="text-main ">GST</span>
+                   <span className="text-gray-600">{gst.toFixed(2)} {selectedSendCurrency}</span>
+                 </div>
+                 <hr className="my-2 border-gray-200" />
+                 <div className="flex justify-between text-main font-semibold">
+                   <span>Total included fees (0%)</span>
+                   <span>{(sendFee + gst).toFixed(2)} {selectedSendCurrency}</span>
+                 </div>
               </div>
 
-              {/* Savings & Arrival */}
-               <div className="mt-3 text-sm text-gray-600 space-y-1"> {/* Adjusted margin/color/spacing */}
-                <p>You could save<span className="text-main font-bold mx-1">2.2%</span>on the payment you make.</p> {/* Use mx-1 for spacing */}
+              {/* Savings & Arrival Info */}
+              <div className="mt-3 text-sm text-gray-600 space-y-1">
+                <p>You could save<span className="text-main font-bold mx-1">2.2%</span>on the payment you make.</p>
                 <p>
-                  Should arrive by
-                  <span className="text-main font-medium">{arrivalDate || '...'}</span> {/* Fallback for arrival date */}
+                  Should arrive by{' '} {/* Add space */}
+                  <span className="text-main font-medium">{arrivalDate || 'calculating...'}</span>
                 </p>
               </div>
 
-              {/* Actions */}
-              <div className="mt-4 flex sm:flex-row flex-col items-center gap-3"> {/* Adjusted gap */}
-                <button type="button" className="w-full inline-flex items-center justify-center px-6 py-3 border border-green font-medium rounded-full text-green bg-white hover:bg-green/10 transition-colors duration-150 ease-in-out"> {/* Adjusted hover */}
+              {/* Action Buttons */}
+              <div className="mt-4 flex sm:flex-row flex-col items-center gap-3">
+                <button type="button" className="w-full inline-flex items-center justify-center px-6 py-3 border border-green font-medium rounded-full text-green bg-white hover:bg-green/10 transition-colors duration-150 ease-in-out">
                   Compare fees
                 </button>
-                <button type="button" className="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent font-medium rounded-full text-white bg-green hover:bg-green-dark transition-colors duration-150 ease-in-out"> {/* Standard green button */}
+                <button type="button" className="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent font-medium rounded-full text-white bg-green hover:bg-green-dark transition-colors duration-150 ease-in-out">
                   Send money
                 </button>
               </div>
