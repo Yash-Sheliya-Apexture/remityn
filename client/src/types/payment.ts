@@ -1,27 +1,28 @@
-// src/types/payment.ts
+// src/types/index.ts (or src/types/payments.ts)
 
 export interface User {
-    fullName?: string; // Optional as it might not always be populated
-    email?: string;    // Optional
+    fullName?: string;
+    email?: string;
 }
 
 export interface Currency {
-    code?: string;     // Optional
+    code?: string;
 }
 
+// Define the specific status union type
+export type PaymentStatus = 'all' | 'pending' | 'in progress' | 'completed' | 'canceled';
+
+// Define the canonical Payment type
 export interface Payment {
     _id: string;
-    user?: User;        // User can be optional
-    amountToAdd: string | number; // Amount might be string or number from API
+    user?: User; // Keep optional as it might not always be populated fully
+    amountToAdd: string; // Keep as string as fetched from API in page.tsx
     payInCurrency?: Currency; // Optional
-    status: string;
-    createdAt: string;    // Required as per the original definition in AdminPaymentsPage
-    referenceCode?: string; // Optional, but used in the modal/table
-    // Add any other relevant properties your Payment object might have
+    // Use a more specific type for status if possible, otherwise string is okay
+    // but we know the potential values, so let's try to be more specific, excluding 'all' here.
+    status: 'pending' | 'in progress' | 'completed' | 'canceled' | string; // Allow string for flexibility if API returns other values
+    createdAt: string; // Essential for sorting/filtering in page.tsx
+    referenceCode?: string; // Used in Modal and Table
 }
 
-// Define a type for API error responses if known (Optional but good practice)
-export interface ApiErrorResponse {
-    message: string;
-    // Add other potential error properties
-}
+// You might want other shared types here as well

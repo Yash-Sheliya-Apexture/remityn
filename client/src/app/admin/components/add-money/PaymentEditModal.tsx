@@ -143,19 +143,6 @@
 
 // export default PaymentEditModal;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 // // components/admin/payments/PaymentEditModal.tsx
 // 'use client';
 // import React, { useEffect, useRef } from 'react';
@@ -204,9 +191,9 @@
 //   useEffect(() => {
 //     const handleClickOutside = (event: MouseEvent) => {
 //       if (
-//         isEditModalOpen && 
-//         modalRef.current && 
-//         !modalRef.current.contains(event.target as Node) && 
+//         isEditModalOpen &&
+//         modalRef.current &&
+//         !modalRef.current.contains(event.target as Node) &&
 //         !(event.target as Element).closest('[id^="radix-ui-popper-"]')
 //       ) {
 //         setIsEditModalOpen(false);
@@ -378,18 +365,6 @@
 
 // export default PaymentEditModal;
 
-
-
-
-
-
-
-
-
-
-
-
-
 // // frontend/src/app/dashboard/components/PaymentEditModal.tsx
 // "use client";
 // import React, { useState, useEffect, useRef } from 'react'; // Import useState and useEffect
@@ -473,7 +448,6 @@
 
 //   const modalVariants = isMobile ? mobileVariants : desktopVariants;
 
-
 //   useEffect(() => {
 //     const handleClickOutside = (event: MouseEvent) => {
 //       if (
@@ -527,7 +501,6 @@
 
 //             {/* Content */}
 //             <div className="p-6 space-y-5">
-
 
 //                 {/* Status Dropdown */}
 //               <div className="pt-2">
@@ -622,7 +595,6 @@
 //                 </div>
 //               </div>
 
-              
 //             </div>
 
 //             {/* Footer */}
@@ -650,35 +622,29 @@
 
 // export default PaymentEditModal;
 
-
+// frontend/src/app/admin/components/add-money/PaymentEditModal.tsx
 "use client";
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { IoClose as X } from "react-icons/io5"; // Using react-icons for consistency if preferred
-import { Copy, CreditCard, DollarSign, Globe, Hash } from 'lucide-react';
+import { IoClose as X } from "react-icons/io5";
+import { Copy, CreditCard, DollarSign, Globe, Hash } from "lucide-react";
 
-// Assuming CustomDropdown is in the same folder or accessible path
-import CustomDropdown from './CustomDropdown';
-// Assuming useCopyToClipboard hook is defined elsewhere (e.g., hooks folder)
-import { useCopyToClipboard } from '@/hooks/useCopyToClipboard'; // Example path
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-
-// Import shared type <-- *** CHANGED ***
-import { Payment } from '@/types/payment'; // Adjust path if needed
-
-// *** REMOVED Local Interface (Payment) ***
+// Assume CustomDropdown is correctly imported from its actual location
+import CustomDropdown from "./CustomDropdown"; // Or adjust path
+import { useCopyToClipboard } from "./useCopyToClipboard"; // Adjust path if needed
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Payment } from "../../../../types/payment"; // Import shared Payment type - Adjust path if needed
 
 interface PaymentEditModalProps {
   isEditModalOpen: boolean;
   setIsEditModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  selectedPaymentForEdit: Payment | null; // Use imported Payment type
-  editFormData: { status: string };
+  selectedPaymentForEdit: Payment | null; // Use shared Payment type
+  editFormData: { status: string }; // Keep as string if the input/API expects generic string
   setEditFormData: React.Dispatch<React.SetStateAction<{ status: string }>>;
   editLoading: boolean;
   handleSaveEdit: () => Promise<void>;
-  // Expecting only the valid status options here, excluding 'all'
-  statusOptions: ('pending' | 'in progress' | 'completed' | 'canceled')[];
+  statusOptions: string[];
 }
 
 const PaymentEditModal: React.FC<PaymentEditModalProps> = ({
@@ -689,210 +655,219 @@ const PaymentEditModal: React.FC<PaymentEditModalProps> = ({
   setEditFormData,
   editLoading,
   handleSaveEdit,
-  statusOptions, // Receive the filtered options
+  statusOptions, // Receives filtered statuses
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
-  const { copy: copyPaymentId, isCopied: isPaymentIdCopied } = useCopyToClipboard();
-  const { copy: copyReferenceCode, isCopied: isReferenceCodeCopied } = useCopyToClipboard();
+  const { copy: copyPaymentId, isCopied: isPaymentIdCopied } =
+    useCopyToClipboard();
+  const { copy: copyReferenceCode, isCopied: isReferenceCodeCopied } =
+    useCopyToClipboard();
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-      const checkMobileScreen = () => setIsMobile(window.innerWidth < 640);
-      checkMobileScreen();
-      window.addEventListener('resize', checkMobileScreen);
-      return () => window.removeEventListener('resize', checkMobileScreen);
+    const checkMobileScreen = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkMobileScreen();
+    window.addEventListener("resize", checkMobileScreen);
+    return () => {
+      window.removeEventListener("resize", checkMobileScreen);
+    };
   }, []);
 
-    const mobileVariants = {
-      initial: { y: "100%", opacity: 0 },
-      animate: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 120, damping: 20 } },
-      exit: { y: "100%", opacity: 0, transition: { duration: 0.2 } },
-    };
+  const mobileVariants = {
+    initial: { y: 50, opacity: 0 },
+    animate: { y: 0, opacity: 1, transition: { stiffness: 100 } },
+    exit: { y: 50, opacity: 0 },
+  };
 
-    const desktopVariants = {
-        initial: { y: -30, opacity: 0, scale: 0.95 },
-        animate: { y: 0, opacity: 1, scale: 1, transition: { type: "spring", stiffness: 100, damping: 15 } },
-        exit: { y: -30, opacity: 0, scale: 0.95, transition: { duration: 0.2 } },
-    };
-
+  const desktopVariants = {
+    initial: { y: -30, opacity: 0, scale: 0.95 },
+    animate: {
+      y: 0,
+      opacity: 1,
+      scale: 1,
+      transition: { type: "spring", stiffness: 100, damping: 15 },
+    },
+    exit: { y: -30, opacity: 0, scale: 0.95 },
+  };
   const modalVariants = isMobile ? mobileVariants : desktopVariants;
 
-  // Close modal on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Node;
-      // Check if the click is outside the modal AND not on a radix-ui dropdown/popover element
       if (
         isEditModalOpen &&
         modalRef.current &&
-        !modalRef.current.contains(target) &&
-        !(target instanceof Element && target.closest('[id^="radix-"],[data-radix-popper-content-wrapper]'))
+        !modalRef.current.contains(event.target as Node) &&
+        !(event.target as Element).closest('[id^="radix-ui-popper-"]') // Keep Radix check
       ) {
         setIsEditModalOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isEditModalOpen, setIsEditModalOpen]);
 
   const handleStatusChange = (status: string) => {
-    // Ensure the status selected is one of the valid options
-    if (statusOptions.includes(status as any)) {
-        setEditFormData(prev => ({ ...prev, status }));
-    }
+    setEditFormData((prev) => ({ ...prev, status }));
   };
 
-  // No need to return null if selectedPaymentForEdit is null, AnimatePresence handles it
-  // if (!selectedPaymentForEdit) return null;
+  // No changes needed inside the return/JSX logic itself, as it uses properties
+  // that are present in the shared Payment type. `amountToAdd` is displayed as string.
+  if (!selectedPaymentForEdit) return null;
 
   return (
     <AnimatePresence>
-      {isEditModalOpen && selectedPaymentForEdit && ( // Ensure selectedPayment exists
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }} // Backdrop transition
-          className="fixed inset-0 bg-black/60 dark:bg-black/70 z-50 flex justify-center sm:items-center items-end backdrop-blur-sm"
-        >
+      {isEditModalOpen &&
+        selectedPaymentForEdit && ( // selectedPaymentForEdit is now correctly typed
           <motion.div
-            ref={modalRef}
-            variants={modalVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            className="bg-white dark:bg-background sm:rounded-2xl rounded-t-2xl w-full sm:max-w-lg max-h-[90vh] flex flex-col" // Added max-h and flex-col
+            // ... backdrop div ...
+            className="fixed top-0 left-0 w-full h-full bg-black/50 dark:bg-white/30 z-50 flex justify-center sm:items-center items-end"
           >
-            {/* Header */}
-            <div className="p-5 sm:p-6 flex items-center justify-between border-b border-gray-200 dark:border-neutral-800 flex-shrink-0">
-              <h2 className="text-lg sm:text-xl font-semibold flex items-center text-neutral-900 dark:text-white">
-                <CreditCard className="mr-2 size-5 sm:size-6 text-primary" />
-                Edit Payment Status
-              </h2>
-              <button
-                onClick={() => setIsEditModalOpen(false)}
-                className="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors rounded-full p-1 -mr-1" // Improved button style
-              >
-                <X className="size-5 sm:size-6" />
-              </button>
-            </div>
-
-            {/* Content - Make scrollable */}
-            <div className="p-5 sm:p-6 space-y-5 overflow-y-auto flex-grow">
-              {/* Status Dropdown */}
-              <div> {/* Removed pt-2 */}
-                <CustomDropdown
-                  label="Payment Status"
-                  value={editFormData.status}
-                  onChange={handleStatusChange}
-                  options={statusOptions} // Pass the valid status options
-                />
+            <motion.div
+              ref={modalRef}
+              variants={modalVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="bg-white dark:bg-background sm:rounded-2xl rounded-t-2xl w-full sm:max-w-lg "
+            >
+              {/* Header */}
+              <div className="p-6 rounded-t-2xl flex items-center justify-between border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-xl font-bold flex items-center text-neutral-900 dark:text-white">
+                  <CreditCard className="mr-2 size-6 text-primary" />
+                  Edit Payment Status
+                </h2>
+                <button
+                  onClick={() => setIsEditModalOpen(false)}
+                  className="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary"
+                >
+                  <X size={24} />
+                </button>
               </div>
 
-              {/* Payment ID Field */}
-              <div className="bg-lightgray dark:bg-white/5 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-neutral-800">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1 min-w-0"> {/* Added min-w-0 for wrap */}
-                    <div className="flex items-center mb-1">
-                      <Hash className="size-4 text-primary mr-1.5 flex-shrink-0" />
-                      <span className="text-sm font-medium text-neutral-900 dark:text-white">
-                        Payment ID
-                      </span>
-                    </div>
-                    <p className="text-xs sm:text-sm break-words text-gray-600 dark:text-gray-400">
-                      {selectedPaymentForEdit._id}
-                    </p>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => copyPaymentId(selectedPaymentForEdit._id)}
-                    className="shrink-0 h-8 px-2.5 text-xs dark:border-neutral-700 dark:text-gray-300 dark:hover:bg-neutral-700"
-                  >
-                    <Copy className="size-3.5 mr-1" />
-                    {isPaymentIdCopied ? "Copied" : "Copy"}
-                  </Button>
+              {/* Content */}
+              <div className="p-6 space-y-5">
+                {/* Status Dropdown */}
+                <div className="pt-2">
+                  <CustomDropdown
+                    label="Payment Status"
+                    value={editFormData.status} // Current selected status for editing
+                    onChange={handleStatusChange} // Updates editFormData
+                    options={statusOptions} // Use the filtered options passed as props
+                  />
                 </div>
-              </div>
 
-              {/* Reference Code Field */}
-              {selectedPaymentForEdit.referenceCode && ( // Only show if ref code exists
-                <div className="bg-lightgray dark:bg-white/5 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-neutral-800">
+                {/* Payment ID Field */}
+                <div className="bg-lightgray dark:bg-white/5 rounded-lg p-4 transition-all border border-gray-200 dark:border-gray-700">
                   <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center mb-1">
-                        <Hash className="size-4 text-primary mr-1.5 flex-shrink-0" />
-                        <span className="text-sm font-medium text-neutral-900 dark:text-white">
-                          Reference Code
+                    <div className="flex-1">
+                      <div className="flex items-center mb-1.5">
+                        <Hash className="size-4 text-primary mr-2" />
+                        <span className="font-medium text-neutral-900 dark:text-white">
+                          Payment ID
                         </span>
                       </div>
-                      <p className="text-xs sm:text-sm break-words text-gray-600 dark:text-gray-400">
-                        {selectedPaymentForEdit.referenceCode}
+                      <p className="text-sm break-all text-gray-500 dark:text-gray-300">
+                        {selectedPaymentForEdit._id}
                       </p>
                     </div>
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => copyReferenceCode(selectedPaymentForEdit.referenceCode || "")}
-                      disabled={!selectedPaymentForEdit.referenceCode}
-                     className="shrink-0 h-8 px-2.5 text-xs dark:border-neutral-700 dark:text-gray-300 dark:hover:bg-neutral-700"
+                      onClick={() => copyPaymentId(selectedPaymentForEdit._id)}
+                      className="shrink-0 h-8 text-xs cursor-pointer hover:bg-lightborder"
                     >
-                      <Copy className="size-3.5 mr-1" />
-                      {isReferenceCodeCopied ? "Copied" : "Copy"}
+                      <Copy className="size-3.5 mr-1 text-neutral-900 dark:text-white" />{" "}
+                      {isPaymentIdCopied ? "Copied!" : "Copy"}
                     </Button>
                   </div>
                 </div>
-              )}
 
-              {/* Amount and Currency */}
-              <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                <div className="bg-lightgray dark:bg-white/5 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-neutral-800">
-                  <div className="flex items-center mb-1">
-                    <DollarSign className="size-4 text-primary mr-1.5 flex-shrink-0" />
-                    <span className="text-sm font-medium text-neutral-900 dark:text-white">
-                      Amount
-                    </span>
+                {/* Reference Code Field */}
+                <div className="bg-lightgray dark:bg-white/5 rounded-lg p-4 transition-all border border-gray-200 dark:border-gray-700">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1">
+                      <div className="flex items-center mb-1.5">
+                        <Hash className="size-4 text-primary mr-2" />
+                        <span className="font-medium text-neutral-900 dark:text-white">
+                          Reference Code
+                        </span>
+                      </div>
+                      <p className="text-sm break-all text-gray-500 dark:text-gray-300">
+                        {selectedPaymentForEdit.referenceCode || "N/A"}{" "}
+                        {/* Use optional chaining */}
+                      </p>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        copyReferenceCode(
+                          selectedPaymentForEdit.referenceCode || ""
+                        )
+                      }
+                      disabled={!selectedPaymentForEdit.referenceCode}
+                      className="shrink-0 h-8 text-xs cursor-pointer hover:bg-lightborder disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <Copy className="size-3.5 mr-1 text-neutral-900 dark:text-white" />{" "}
+                      {isReferenceCodeCopied ? "Copied!" : "Copy"}
+                    </Button>
                   </div>
-                  <p className="font-semibold text-base sm:text-lg text-gray-700 dark:text-gray-300">
-                    {/* Consider formatting amount */}
-                    {String(selectedPaymentForEdit.amountToAdd)}
-                  </p>
                 </div>
 
-                <div className="bg-lightgray dark:bg-white/5 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-neutral-800">
-                  <div className="flex items-center mb-1">
-                    <Globe className="size-4 text-primary mr-1.5 flex-shrink-0" />
-                    <span className="text-sm font-medium text-neutral-900 dark:text-white">
-                      Currency
-                    </span>
+                {/* Amount and Currency */}
+                <div className="flex gap-4">
+                  <div className="bg-lightgray dark:bg-white/5 rounded-lg p-4 flex-1 transition-all border border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center mb-1.5">
+                      <DollarSign className="size-4 text-primary mr-2" />
+                      <span className="font-medium text-neutral-900 dark:text-white">
+                        Amount
+                      </span>
+                    </div>
+                    {/* Display amount (string) */}
+                    <p className="font-semibold text-lg text-gray-700 dark:text-gray-300">
+                      {selectedPaymentForEdit.amountToAdd}
+                    </p>
                   </div>
-                  <Badge variant="secondary" className="text-sm font-medium dark:bg-neutral-700 dark:text-gray-300">
-                    {selectedPaymentForEdit.payInCurrency?.code || "N/A"}
-                  </Badge>
+
+                  <div className="bg-lightgray dark:bg-white/5 rounded-lg p-4 flex-1 transition-all border border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center mb-1.5">
+                      <Globe className="size-4 text-primary mr-2" />
+                      <span className="font-medium text-neutral-900 dark:text-white">
+                        Currency
+                      </span>
+                    </div>
+                    <Badge
+                      variant="outline"
+                      className="text-sm font-medium text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600"
+                    >
+                      {selectedPaymentForEdit.payInCurrency?.code || "N/A"}
+                    </Badge>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Footer */}
-            <div className="p-5 sm:p-6 flex justify-end gap-3 border-t border-gray-200 dark:border-neutral-800 flex-shrink-0">
-              <Button
-                variant="ghost" // Use ghost for cancel
-                onClick={() => setIsEditModalOpen(false)}
-                className="dark:text-gray-300 dark:hover:bg-neutral-800 w-full sm:w-auto"
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={handleSaveEdit}
-                disabled={editLoading || editFormData.status === selectedPaymentForEdit.status} // Disable if no change or loading
-                className="bg-primary text-secondary hover:bg-primaryhover w-full sm:w-auto"
-              >
-                {editLoading ? "Saving..." : "Update Status"}
-              </Button>
-            </div>
+              {/* Footer */}
+              <div className="border-t border-gray-200 dark:border-gray-700 p-6 flex justify-end gap-3">
+                <Button
+                  variant="secondary" // Use a secondary variant for cancel
+                  onClick={() => setIsEditModalOpen(false)}
+                  className="w-full sm:w-auto" // Adjust width for mobile/desktop
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleSaveEdit}
+                  disabled={editLoading}
+                  className="w-full sm:w-auto" // Adjust width for mobile/desktop
+                >
+                  {editLoading ? "Saving..." : "Update Status"}
+                </Button>
+              </div>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
+        )}
     </AnimatePresence>
   );
 };

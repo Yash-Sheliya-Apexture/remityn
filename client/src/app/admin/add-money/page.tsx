@@ -2341,30 +2341,32 @@
 
 
 
-
+// frontend/src/app/admin/payments/page.tsx
 'use client';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react'; // Added useMemo
 import { useAuth } from '../../contexts/AuthContext';
 import axios, { AxiosError } from 'axios';
 import apiConfig from '../../config/apiConfig';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, X, Search, Filter, RefreshCw } from 'lucide-react';
 
-// Import shared types <-- *** CHANGED ***
-import { Payment, ApiErrorResponse } from '@/types/payment'; // Adjust path if needed
-
 // Import components
 import PaymentTable from '../components/add-money/PaymentTable';
 import PaymentFilters from '../components/add-money/PaymentFilters';
-import PaymentEditModal from '../components/add-money/PaymentEditModal'; // Path corrected based on usage
+import PaymentEditModal from '../components/add-money/PaymentEditModal';
 import Pagination from '../components/Pagination';
+
+// Import Shared Types
+import { Payment, PaymentStatus } from '../../../types/payment'; // Adjust path as needed
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
-// *** REMOVED Local Interfaces (User, Currency, Payment, ApiErrorResponse) ***
+// Define a type for API error responses if known
+interface ApiErrorResponse {
+    message: string;
+}
 
 const AdminPaymentsPage: React.FC = () => {
-    // Use the imported Payment type
     const [payments, setPayments] = useState<Payment[]>([]);
     const [filteredPayments, setFilteredPayments] = useState<Payment[]>([]);
     const [loadingPayments, setLoadingPayments] = useState<boolean>(true);
@@ -2377,16 +2379,17 @@ const AdminPaymentsPage: React.FC = () => {
     const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [dateRange, setDateRange] = useState<{ from: Date | null, to: Date | null }>({ from: null, to: null });
-    const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'in progress' | 'completed' | 'canceled'>('all');
+    // Use the specific PaymentStatus type for state
+    const [statusFilter, setStatusFilter] = useState<PaymentStatus>('all');
     const [paymentIdFilter, setPaymentIdFilter] = useState<string>('');
     const [amountFilter, setAmountFilter] = useState<string>('');
     const [currencyFilter, setCurrencyFilter] = useState<'all' | string>('all');
 
     // Edit Modal State
     const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
-    // Use the imported Payment type
     const [selectedPaymentForEdit, setSelectedPaymentForEdit] = useState<Payment | null>(null);
-    const [editFormData, setEditFormData] = useState<{ status: string }>({
+    // Edit form data should reflect the possible status values for saving
+    const [editFormData, setEditFormData] = useState<{ status: string }>({ // Keep as string here if API expects any string
         status: ''
     });
     const [editLoading, setEditLoading] = useState<boolean>(false);
@@ -2411,27 +2414,26 @@ const AdminPaymentsPage: React.FC = () => {
         setError(null);
         setSuccessMessage(null);
         try {
-            // Assume API returns { data: Payment[] } or just Payment[]
-            const response = await axios.get<{ data?: Payment[], message?: string } | Payment[]>('/admin/payments', {
+            // Use the imported Payment type for the expected response structure
+            const response = await axios.get<{ data: Payment[] } | Payment[]>('/admin/payments', { // Allow for both structures
                 headers: { Authorization: `Bearer ${token}` },
             });
 
             let paymentData: Payment[] = [];
+            // Check common API response structures
             if (Array.isArray(response.data)) {
                 paymentData = response.data;
-            } else if (response.data && Array.isArray(response.data.data)) {
-                 // Handle nested structure like { data: [...] }
-                paymentData = response.data.data;
+            } else if (response.data && Array.isArray((response.data as any).data)) {
+                paymentData = (response.data as any).data;
             } else {
                 console.warn("API response format unexpected:", response.data);
                  throw new Error("Invalid data structure received from API");
             }
 
-             // Ensure all items match the Payment structure (optional, for safety)
-            // paymentData = paymentData.filter(p => p && typeof p === 'object' && p._id);
-
-            setPayments(paymentData);
-            setFilteredPayments(paymentData); // Initialize filtered payments
+            // Ensure data conforms to Payment type (optional, good for safety)
+            // const validatedData = paymentData.map(p => ({ ...p, amountToAdd: String(p.amountToAdd) })); // Example validation/transformation if needed
+             setPayments(paymentData);
+             setFilteredPayments(paymentData);
 
         } catch (err: unknown) {
              let errorMessage = 'Failed to load payments';
@@ -2455,11 +2457,11 @@ const AdminPaymentsPage: React.FC = () => {
         }
     }, [token, fetchPayments]);
 
-    // Apply filters when any filter changes
+    // Apply filters when any filter changes (useEffect remains largely the same)
     useEffect(() => {
         let results: Payment[] = [...payments];
 
-        // Apply search filter (user name, email, and payment ID)
+        // Apply search filter
         if (searchTerm) {
             const lowerSearchTerm = searchTerm.toLowerCase();
             results = results.filter(payment =>
@@ -2483,20 +2485,22 @@ const AdminPaymentsPage: React.FC = () => {
                 if (!isNaN(amount)) {
                      results = results.filter(payment => {
                          try {
-                             // Compare numbers, handle potential string amounts from API
-                            return parseFloat(String(payment.amountToAdd)) === amount;
+                            // Compare string amount with parsed filter amount
+                            return parseFloat(payment.amountToAdd) === amount;
                          } catch {
                              return false;
                          }
                      });
                 }
-             } catch { /* Ignore invalid amountFilter */ }
+             } catch { /* Ignore invalid amount input */ }
         }
+
 
         // Apply Currency filter
         if (currencyFilter !== 'all') {
             results = results.filter(payment => payment.payInCurrency?.code === currencyFilter);
         }
+
 
         // Apply status filter
         if (statusFilter !== 'all') {
@@ -2525,89 +2529,95 @@ const AdminPaymentsPage: React.FC = () => {
             });
         }
 
-        // Apply sorting
-        if (sortField) {
-            results.sort((a, b) => {
-                let valueA: unknown;
-                let valueB: unknown;
+         // Apply sorting (remains the same logic, uses the unified Payment type)
+         if (sortField) {
+             results.sort((a, b) => {
+                 let valueA: unknown;
+                 let valueB: unknown;
 
-                switch (sortField) {
-                    case 'user':
-                        valueA = a.user?.fullName?.toLowerCase() || '';
-                        valueB = b.user?.fullName?.toLowerCase() || '';
-                        break;
-                    case 'email':
-                        valueA = a.user?.email?.toLowerCase() || '';
-                        valueB = b.user?.email?.toLowerCase() || '';
-                        break;
-                    case 'amount':
-                        valueA = parseFloat(String(a.amountToAdd)) || 0;
-                        valueB = parseFloat(String(b.amountToAdd)) || 0;
-                        break;
-                    case 'currency':
-                         valueA = a.payInCurrency?.code?.toLowerCase() || '';
-                         valueB = b.payInCurrency?.code?.toLowerCase() || '';
+                 switch (sortField) {
+                     case 'user':
+                         valueA = a.user?.fullName?.toLowerCase() || '';
+                         valueB = b.user?.fullName?.toLowerCase() || '';
                          break;
-                     case 'createdAt':
-                         try { valueA = new Date(a.createdAt); } catch { valueA = new Date(0); }
-                         try { valueB = new Date(b.createdAt); } catch { valueB = new Date(0); }
-                         if (isNaN((valueA as Date).getTime())) valueA = new Date(0);
-                         if (isNaN((valueB as Date).getTime())) valueB = new Date(0);
+                     case 'email':
+                         valueA = a.user?.email?.toLowerCase() || '';
+                         valueB = b.user?.email?.toLowerCase() || '';
                          break;
-                    case '_id':
-                    case 'status':
-                    case 'referenceCode': // Add other direct fields if needed
-                        valueA = (a[sortField as keyof Payment] as string)?.toLowerCase() ?? '';
-                        valueB = (b[sortField as keyof Payment] as string)?.toLowerCase() ?? '';
-                        break;
-                    default:
-                        valueA = a[sortField as keyof Payment];
-                        valueB = b[sortField as keyof Payment];
-                }
+                     case 'amount':
+                         // Parse string amounts for comparison
+                         valueA = parseFloat(a.amountToAdd) || 0;
+                         valueB = parseFloat(b.amountToAdd) || 0;
+                         break;
+                     case 'currency':
+                          valueA = a.payInCurrency?.code?.toLowerCase() || '';
+                          valueB = b.payInCurrency?.code?.toLowerCase() || '';
+                          break;
+                      case 'createdAt':
+                          try {
+                              valueA = new Date(a.createdAt);
+                              valueB = new Date(b.createdAt);
+                              if (isNaN((valueA as Date).getTime())) valueA = new Date(0);
+                              if (isNaN((valueB as Date).getTime())) valueB = new Date(0);
+                          } catch {
+                              valueA = new Date(0);
+                              valueB = new Date(0);
+                          }
+                          break;
+                     case '_id':
+                     case 'status': // Access status directly
+                     case 'referenceCode': // Add if sorting by referenceCode is needed
+                         valueA = (a[sortField as keyof Payment] as string)?.toLowerCase() ?? '';
+                         valueB = (b[sortField as keyof Payment] as string)?.toLowerCase() ?? '';
+                         break;
+                     default:
+                         valueA = a[sortField as keyof Payment];
+                         valueB = b[sortField as keyof Payment];
+                 }
 
-                const comparison = () => {
-                    if (valueA === valueB) return 0;
-                    if (valueA === null || valueA === undefined) return -1;
-                    if (valueB === null || valueB === undefined) return 1;
-                    if (valueA instanceof Date && valueB instanceof Date) {
-                        return valueA.getTime() > valueB.getTime() ? 1 : -1;
-                    }
+                  const comparison = () => {
+                     if (valueA === valueB) return 0;
+                     if (valueA === null || valueA === undefined || valueA === '') return -1; // Treat empty/null as less
+                     if (valueB === null || valueB === undefined || valueB === '') return 1;
+
                      if (typeof valueA === 'number' && typeof valueB === 'number') {
-                        return valueA > valueB ? 1 : -1;
-                    }
-                    return String(valueA).localeCompare(String(valueB));
-                };
+                         return valueA > valueB ? 1 : -1;
+                     }
+                     if (valueA instanceof Date && valueB instanceof Date) {
+                         return valueA.getTime() > valueB.getTime() ? 1 : -1;
+                     }
+                     return String(valueA).localeCompare(String(valueB));
+                 };
 
-                return sortDirection === 'asc' ? comparison() : comparison() * -1;
-            });
-        }
+                 return sortDirection === 'asc' ? comparison() : comparison() * -1;
+             });
+         }
+
 
         setFilteredPayments(results);
-        // Avoid resetting page if only sorting changes
-        if (
-            searchTerm !== '' ||
-            paymentIdFilter !== '' ||
-            amountFilter !== '' ||
-            currencyFilter !== 'all' ||
-            statusFilter !== 'all' ||
-            dateRange.from || dateRange.to
-        ) {
-             if(currentPage !== 1) setCurrentPage(1); // Reset only if filters applied and not on page 1
+        // Reset page only if filters might have changed the total item count or order
+        // A simple check is if the filtered results length differs from the base or if sorting/filtering is active
+        if (results.length !== filteredPayments.length || searchTerm || statusFilter !== 'all' || dateRange.from || dateRange.to || sortField || paymentIdFilter || amountFilter || currencyFilter !== 'all') {
+             if (currentPage !== 1) setCurrentPage(1); // Reset page to 1 only if not already on page 1
         }
 
-    // Only depend on filter values, not `payments` directly to avoid loop on update
+    // Ensure filteredPayments itself is not in the dependency array to avoid infinite loops
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [payments, searchTerm, statusFilter, dateRange.from, dateRange.to, sortField, sortDirection, paymentIdFilter, amountFilter, currencyFilter]);
+    }, [payments, searchTerm, statusFilter, dateRange, sortField, sortDirection, paymentIdFilter, amountFilter, currencyFilter, currentPage]); // Added currentPage
 
 
     const toggleSort = (field: string) => {
+        // If already sorting by this field, reverse direction
         if (sortField === field) {
-            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+            setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
         } else {
+            // Otherwise, set the new field and default to ascending
             setSortField(field);
             setSortDirection('asc');
         }
+        setCurrentPage(1); // Reset to page 1 when sorting changes
     };
+
 
     const clearFilters = () => {
         setSearchTerm('');
@@ -2616,10 +2626,10 @@ const AdminPaymentsPage: React.FC = () => {
         setPaymentIdFilter('');
         setAmountFilter('');
         setCurrencyFilter('all');
-        // Don't reset sorting on clear filters
+        // Optionally reset sorting
         // setSortField(null);
         // setSortDirection('asc');
-        setCurrentPage(1); // Reset page on clear
+        setCurrentPage(1); // Reset page when clearing filters
     };
 
     const getStatusColor = (status: string): string => {
@@ -2632,40 +2642,46 @@ const AdminPaymentsPage: React.FC = () => {
         }
     };
 
-    const currencyOptions = React.useMemo(() => {
+    // Use useMemo for currency options
+    const currencyOptions = useMemo(() => {
         const codes = payments
             .map(p => p.payInCurrency?.code)
             .filter((code): code is string => Boolean(code));
-        return ['all', ...Array.from(new Set(codes)).sort()]; // Sort currencies
+        return ['all', ...Array.from(new Set(codes))];
     }, [payments]);
 
-    const statusOptions: ('all' | 'pending' | 'in progress' | 'completed' | 'canceled')[] = ['all', 'pending', 'in progress', 'completed', 'canceled'];
+    // Use the imported PaymentStatus type for status options
+    const statusOptions: PaymentStatus[] = ['all', 'pending', 'in progress', 'completed', 'canceled'];
 
-    // Use imported Payment type
     const handleEditPayment = (payment: Payment) => {
         setSelectedPaymentForEdit(payment);
-        setEditFormData({ status: payment.status || '' });
+        setEditFormData({
+            status: payment.status || '' // Initialize with current status
+        });
         setIsEditModalOpen(true);
     };
+
 
     const handleSaveEdit = async () => {
         if (!selectedPaymentForEdit) return;
         setEditLoading(true);
         setError(null);
         setSuccessMessage(null);
+
         try {
             const payload = { status: editFormData.status };
+
             await axios.put(`/admin/payments/${selectedPaymentForEdit._id}`, payload, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-             // Update local state immediately
+             // Update local state *after* successful API call
              const updatedPayments = payments.map(p =>
                  p._id === selectedPaymentForEdit._id
-                     ? { ...p, status: editFormData.status }
+                     ? { ...p, status: editFormData.status } // Update status using the unified Payment type structure
                      : p
              );
-             setPayments(updatedPayments); // Update base list, useEffect will refilter
+             setPayments(updatedPayments); // Update the base list which triggers the filter useEffect
 
             setSuccessMessage('Payment status updated successfully!');
             setIsEditModalOpen(false);
@@ -2689,12 +2705,11 @@ const AdminPaymentsPage: React.FC = () => {
         fetchPayments();
     };
 
-    // Pagination logic
+    // Pagination logic (remains the same)
     const indexOfLastPayment = currentPage * paymentsPerPage;
     const indexOfFirstPayment = indexOfLastPayment - paymentsPerPage;
     const currentPayments = filteredPayments.slice(indexOfFirstPayment, indexOfLastPayment);
     const totalPages = Math.ceil(filteredPayments.length / paymentsPerPage);
-
     const paginate = (pageNumber: number) => {
         if (pageNumber >= 1 && pageNumber <= totalPages) {
              setCurrentPage(pageNumber);
@@ -2703,10 +2718,15 @@ const AdminPaymentsPage: React.FC = () => {
     const goToPreviousPage = () => setCurrentPage(prev => Math.max(1, prev - 1));
     const goToNextPage = () => setCurrentPage(prev => Math.min(totalPages, prev + 1));
 
+
+    // --- JSX REMAINS THE SAME FROM HERE DOWN ---
+    // No changes needed in the return/JSX structure based on the errors.
+    // The props passed to child components will now have the correct types.
+
     return (
         <div className="container mx-auto px-4 py-8 relative">
             <div className="space-y-6">
-                {/* Header & Actions */}
+                {/* Header and Search/Filter Buttons */}
                 <div className="flex flex-wrap justify-between items-center gap-4">
                     <h1 className="text-2xl font-bold text-mainheading dark:text-white">Payment Management</h1>
                     <div className="flex flex-wrap gap-3 items-center">
@@ -2715,7 +2735,7 @@ const AdminPaymentsPage: React.FC = () => {
                                 type="text"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                placeholder="Search ID, Name, Email..."
+                                placeholder="Search Payments..."
                                 className="w-full sm:w-64 rounded-full py-2 pl-10 pr-3 h-12 border transition-shadow ease-in-out duration-300 border-neutral-900/30 dark:border-white/30 hover:shadow-md dark:hover:shadow-white/20 focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary placeholder:text-neutral-500 dark:placeholder:text-neutral-400 bg-white dark:bg-primarybox"
                             />
                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
@@ -2732,37 +2752,63 @@ const AdminPaymentsPage: React.FC = () => {
                             disabled={isRefreshing || loadingPayments}
                             className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 h-12 rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            <RefreshCw className={`size-5 ${isRefreshing ? "animate-spin" : ""}`} />
+                            <RefreshCw
+                                className={`size-5 ${isRefreshing ? "animate-spin" : ""}`}
+                            />
                             <span>Refresh</span>
                         </button>
                     </div>
                 </div>
 
-                {/* Messages */}
+                {/* Success Message */}
                 <AnimatePresence>
                     {successMessage && (
-                         <motion.div
-                            initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
                             className="bg-green-50 border border-green-300 dark:bg-green-900/30 dark:border-green-700 p-4 rounded-md shadow-sm"
                         >
                             <div className="flex items-start">
-                                <Check className="h-5 w-5 flex-shrink-0 pt-0.5 text-green-500 dark:text-green-400" />
-                                <p className="ml-3 flex-1 text-sm font-medium text-green-800 dark:text-green-300">{successMessage}</p>
-                                <button aria-label="Dismiss success message" onClick={() => setSuccessMessage(null)} className="ml-auto flex-shrink-0 text-green-500 hover:text-green-700 dark:text-green-400 dark:hover:text-green-200 p-1 rounded-full hover:bg-green-100 dark:hover:bg-green-800/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 dark:focus:ring-offset-primarybox">
+                                <div className="flex-shrink-0 pt-0.5">
+                                    <Check className="h-5 w-5 text-green-500 dark:text-green-400" />
+                                </div>
+                                <div className="ml-3 flex-1">
+                                    <p className="text-sm font-medium text-green-800 dark:text-green-300">{successMessage}</p>
+                                </div>
+                                <button
+                                    aria-label="Dismiss success message"
+                                    onClick={() => setSuccessMessage(null)}
+                                    className="ml-auto flex-shrink-0 text-green-500 hover:text-green-700 dark:text-green-400 dark:hover:text-green-200 p-1 rounded-full hover:bg-green-100 dark:hover:bg-green-800/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 dark:focus:ring-offset-primarybox"
+                                >
                                     <X size={18} />
                                 </button>
                             </div>
                         </motion.div>
                     )}
+                </AnimatePresence>
+
+                {/* Error Message */}
+                <AnimatePresence>
                     {error && (
                         <motion.div
-                            initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
-                            className="bg-red-50 border border-red-300 dark:bg-red-900/30 dark:border-red-700 p-4 rounded-md shadow-sm"
+                             initial={{ opacity: 0, y: -10 }}
+                             animate={{ opacity: 1, y: 0 }}
+                             exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
+                             className="bg-red-50 border border-red-300 dark:bg-red-900/30 dark:border-red-700 p-4 rounded-md shadow-sm"
                         >
                             <div className="flex items-start">
-                                <X className="h-5 w-5 flex-shrink-0 pt-0.5 text-red-500 dark:text-red-400" />
-                                <p className="ml-3 flex-1 text-sm font-medium text-red-800 dark:text-red-300">{error}</p>
-                                <button aria-label="Dismiss error message" onClick={() => setError(null)} className="ml-auto flex-shrink-0 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-200 p-1 rounded-full hover:bg-red-100 dark:hover:bg-red-800/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-primarybox">
+                                 <div className="flex-shrink-0 pt-0.5">
+                                     <X className="h-5 w-5 text-red-500 dark:text-red-400" />
+                                </div>
+                                <div className="ml-3 flex-1">
+                                    <p className="text-sm font-medium text-red-800 dark:text-red-300">{error}</p>
+                                </div>
+                                <button
+                                     aria-label="Dismiss error message"
+                                     onClick={() => setError(null)}
+                                     className="ml-auto flex-shrink-0 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-200 p-1 rounded-full hover:bg-red-100 dark:hover:bg-red-800/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-primarybox"
+                                >
                                     <X size={18} />
                                 </button>
                             </div>
@@ -2793,16 +2839,16 @@ const AdminPaymentsPage: React.FC = () => {
 
                 {/* Payments Table */}
                 <PaymentTable
-                    filteredPayments={currentPayments} // Pass paginated data
+                    filteredPayments={currentPayments} // Pass paginated data using shared Payment type
                     loadingPayments={loadingPayments}
                     getStatusColor={getStatusColor}
-                    toggleSort={toggleSort} // Pass the flexible toggleSort
+                    toggleSort={toggleSort} // Type is string, handled internally
                     sortField={sortField}
                     sortDirection={sortDirection}
-                    handleEditPayment={handleEditPayment} // Pass the correctly typed handler
+                    handleEditPayment={handleEditPayment} // Prop now expects shared Payment type
                 />
 
-                 {/* Pagination Component */}
+                 {/* Pagination */}
                 {totalPages > 1 && (
                     <Pagination
                         currentPage={currentPage}
@@ -2812,14 +2858,15 @@ const AdminPaymentsPage: React.FC = () => {
                         goToNextPage={goToNextPage}
                     />
                 )}
-                 {!loadingPayments && filteredPayments.length === 0 && payments.length > 0 && (
+                 {/* No Results Message */}
+                 {!loadingPayments && filteredPayments.length === 0 && payments.length > 0 && ( // Only show if initial load is done and filters applied
                      <div className="text-center py-10 text-gray-500 dark:text-gray-400">
                          No payments found matching your criteria.
                      </div>
                  )}
-                 {!loadingPayments && payments.length === 0 && (
+                  {!loadingPayments && payments.length === 0 && ( // Show if no payments loaded at all
                      <div className="text-center py-10 text-gray-500 dark:text-gray-400">
-                         No payments found.
+                         No payments available.
                      </div>
                  )}
             </div>
@@ -2828,34 +2875,33 @@ const AdminPaymentsPage: React.FC = () => {
             <PaymentEditModal
                 isEditModalOpen={isEditModalOpen}
                 setIsEditModalOpen={setIsEditModalOpen}
-                selectedPaymentForEdit={selectedPaymentForEdit} // Uses imported Payment type
+                selectedPaymentForEdit={selectedPaymentForEdit} // Prop now expects shared Payment type or null
                 editFormData={editFormData}
                 setEditFormData={setEditFormData}
                 editLoading={editLoading}
                 handleSaveEdit={handleSaveEdit}
-                // Pass only valid status options for editing
-                statusOptions={statusOptions.filter(s => s !== 'all') as ('pending' | 'in progress' | 'completed' | 'canceled')[]}
+                // Provide the status options excluding 'all'
+                statusOptions={statusOptions.filter(s => s !== 'all')}
             />
 
             {/* Filter Sidebar */}
             <PaymentFilters
                 showFilterModal={showFilterModal}
                 setShowFilterModal={setShowFilterModal}
-                // Pass search term state (it's managed here, not directly in filters)
                 searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm} // Allow filters to clear/modify search maybe? Usually search is separate.
+                setSearchTerm={setSearchTerm} // Pass the state setter directly
                 dateRange={dateRange}
-                setDateRange={setDateRange}
-                statusFilter={statusFilter}
-                setStatusFilter={setStatusFilter}
+                setDateRange={setDateRange} // Pass the state setter directly
+                statusFilter={statusFilter} // Pass the state value (PaymentStatus)
+                setStatusFilter={setStatusFilter} // Pass the state setter (Dispatch<SetStateAction<PaymentStatus>>)
                 currencyFilter={currencyFilter}
-                setCurrencyFilter={setCurrencyFilter}
+                setCurrencyFilter={setCurrencyFilter} // Pass the state setter directly
                 paymentIdFilter={paymentIdFilter}
-                setPaymentIdFilter={setPaymentIdFilter}
+                setPaymentIdFilter={setPaymentIdFilter} // Pass the state setter directly
                 amountFilter={amountFilter}
-                setAmountFilter={setAmountFilter}
-                currencyOptions={currencyOptions} // Pass derived options
-                statusOptions={statusOptions} // Pass all status options including 'all'
+                setAmountFilter={setAmountFilter} // Pass the state setter directly
+                currencyOptions={currencyOptions} // Pass string[]
+                statusOptions={statusOptions} // Pass PaymentStatus[]
                 clearFilters={clearFilters}
             />
         </div >

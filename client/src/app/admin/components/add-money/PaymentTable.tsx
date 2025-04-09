@@ -398,27 +398,24 @@
 // export default PaymentTable;
 
 
+// components/admin/payments/PaymentTable.tsx
 'use client';
 import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { motion } from 'framer-motion';
 import { Edit } from 'lucide-react';
-import PaymentTableHeader from './PaymentTableHeader'; // Assuming this exists in the same folder
-
-// Import shared type <-- *** CHANGED ***
-import { Payment } from '@/types/payment'; // Adjust path if needed
-
-// *** REMOVED Local Interface (Payment) ***
+import PaymentTableHeader from './PaymentTableHeader';
+import { Payment } from '../../../../types/payment'; // Import shared Payment type - Adjust path if needed
 
 interface PaymentTableProps {
-    filteredPayments: Payment[]; // Use imported Payment type
+    filteredPayments: Payment[]; // Use shared Payment type
     loadingPayments: boolean;
     getStatusColor: (status: string) => string;
-    // Use a general string type for field, validation happens in the parent component
+    // Keep toggleSort field as string, as the implementation handles nested keys
     toggleSort: (field: string) => void;
     sortField: string | null;
     sortDirection: 'asc' | 'desc';
-    handleEditPayment: (payment: Payment) => void; // Use imported Payment type
+    handleEditPayment: (payment: Payment) => void; // Use shared Payment type
 }
 
 const PaymentTable: React.FC<PaymentTableProps> = ({
@@ -432,11 +429,12 @@ const PaymentTable: React.FC<PaymentTableProps> = ({
 }) => {
 
     if (loadingPayments) {
+        // Skeleton remains the same
         return (
             <div className="rounded-xl border overflow-hidden dark:border-neutral-800">
                 <table className="min-w-full">
                     <PaymentTableHeader
-                        toggleSort={toggleSort} // Pass the function directly
+                        toggleSort={toggleSort}
                         sortField={sortField}
                         sortDirection={sortDirection}
                     />
@@ -459,74 +457,64 @@ const PaymentTable: React.FC<PaymentTableProps> = ({
     }
 
     return (
+        // Table structure remains the same
         <div className="rounded-xl border overflow-hidden dark:border-neutral-800">
             <div className="overflow-x-auto">
                 <table className="min-w-full overflow-hidden">
                     <PaymentTableHeader
-                        toggleSort={toggleSort} // Pass the function directly
+                        toggleSort={toggleSort}
                         sortField={sortField}
                         sortDirection={sortDirection}
                     />
                     <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800 overflow-hidden">
                         {filteredPayments.length === 0 ? (
                             <tr>
-                                {/* Ensure colSpan matches the number of columns in PaymentTableHeader */}
                                 <td colSpan={7} className="px-4 py-10 text-center text-gray-500 dark:text-gray-400">
-                                    No payments found.
+                                    No payments found. {/* Simpler message */}
                                 </td>
                             </tr>
                         ) : (
-                            filteredPayments.map((payment, index) => ( // payment is now the imported Payment type
+                            filteredPayments.map((payment, index) => ( // payment is now the shared Payment type
                                 <motion.tr
                                     key={payment._id}
-                                    initial={{ opacity: 0, y: 10 }}
+                                    initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0 }} // Add exit animation if needed within AnimatePresence
-                                    transition={{ duration: 0.2, delay: index * 0.03 }}
+                                    transition={{ delay: index * 0.05 }}
                                     className="hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors duration-100"
                                 >
-                                    {/* Payment ID */}
+                                    {/* Cells use properties from the shared Payment type */}
                                     <td className="px-4 py-3 whitespace-nowrap">
-                                        <span className="font-medium text-neutral-900 dark:text-white text-xs">
-                                            {payment._id}
-                                        </span>
+                                        <span className="font-medium text-neutral-900 dark:text-white">{payment._id.substring(0, 10)}...</span>
                                     </td>
-                                    {/* User Info */}
                                     <td className="px-4 py-3">
                                         <div className="flex flex-col">
                                             <span className="font-medium capitalize text-neutral-900 dark:text-white">{payment.user?.fullName || 'N/A'}</span>
                                             <span className="text-sm text-gray-500 dark:text-gray-400">{payment.user?.email || 'N/A'}</span>
                                         </div>
                                     </td>
-                                    {/* Amount */}
                                     <td className="px-4 py-3 whitespace-nowrap font-medium text-neutral-900 dark:text-white">
-                                        {/* Consider formatting the amount */}
-                                        {String(payment.amountToAdd)}
+                                        {/* Display amount (string) */}
+                                        {payment.amountToAdd}
                                     </td>
-                                    {/* Currency */}
                                     <td className="px-4 py-3 whitespace-nowrap text-neutral-900 dark:text-white">
                                         {payment.payInCurrency?.code || 'N/A'}
                                     </td>
-                                    {/* Reference Code */}
-                                    <td className="px-4 py-3 whitespace-nowrap">
-                                        <span className="text-neutral-900 dark:text-white text-xs">
-                                            {payment.referenceCode || 'N/A'}
-                                        </span>
+                                     <td className="px-4 py-3 whitespace-nowrap">
+                                        {/* Use optional chaining for referenceCode */}
+                                        <span className="text-neutral-900 dark:text-white">{payment.referenceCode || 'N/A'}</span>
                                     </td>
-                                    {/* Status */}
                                     <td className="px-4 py-3 whitespace-nowrap">
-                                        <span className={`inline-flex justify-center items-center px-3 py-1 min-w-[90px] text-xs font-medium rounded-full capitalize ${getStatusColor(payment.status)}`}>
+                                        <span className={`inline-flex justify-center items-center px-4 py-1 w-28 font-medium rounded-3xl capitalize ${getStatusColor(payment.status)}`}>
                                             {payment.status}
                                         </span>
                                     </td>
-                                    {/* Actions */}
                                     <td className="px-4 py-3 whitespace-nowrap font-medium">
                                         <motion.button
                                             whileTap={{ scale: 0.95 }}
-                                            onClick={() => handleEditPayment(payment)} // Pass the correctly typed payment object
-                                            className="bg-primary hover:bg-primaryhover dark:bg-primarybox hover:dark:bg-secondarybox transition-all duration-75 ease-linear cursor-pointer rounded-full px-4 py-2 text-sm font-medium text-neutral-900 dark:text-primary focus:outline-none flex items-center"
+                                            onClick={() => handleEditPayment(payment)} // Passes the correctly typed payment
+                                            className="bg-primary hover:bg-primaryhover dark:bg-primarybox hover:dark:bg-secondarybox transition-all duration-75 ease-linear cursor-pointer rounded-3xl px-4 py-2 font-medium text-neutral-900 dark:text-primary focus:outline-none flex items-center"
                                         >
-                                            <Edit size={16} className="mr-1" />
+                                            <Edit size={18} className="mr-1" />
                                             Edit
                                         </motion.button>
                                     </td>
