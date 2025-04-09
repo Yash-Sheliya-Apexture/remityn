@@ -764,7 +764,7 @@ import { GoArrowUp } from "react-icons/go";
 import { VscSignOut } from "react-icons/vsc";
 import Image from "next/image";
 import Link from "next/link";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../contexts/AuthContext";
 
 interface SidebarProps {
   sidebarOpen: boolean;

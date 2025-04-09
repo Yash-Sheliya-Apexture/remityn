@@ -260,7 +260,7 @@ import { FiMenu } from "react-icons/fi";
 import { useRouter, usePathname } from "next/navigation";
 import { HiArrowLeft } from "react-icons/hi";
 import Link from "next/link";
-import { useAuth } from "../../hooks/useAuth"
+import { useAuth } from "../../contexts/AuthContext"
 import { IoIosArrowForward } from "react-icons/io";
 
 

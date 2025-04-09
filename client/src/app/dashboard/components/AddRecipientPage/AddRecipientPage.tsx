@@ -5013,7 +5013,7 @@ const AddRecipientPage = () => {
                      className={`autofill:!bg-transparent dark:autofill:!bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white bg-white dark:bg-background ${
                       bankNameError
                         ? "border-error border-2 !shadow-none focus:!ring-error"
-                        : "border-neutral-600 dark:border-neutral-600 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-none"
+                        : "border-neutral-600 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-none"
                     }`}
                     value={bankName}
                     placeholder="e.g., State Bank of India"
@@ -5045,7 +5045,7 @@ const AddRecipientPage = () => {
                     className={`autofill:!bg-transparent dark:autofill:!bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white bg-white dark:bg-background ${
                       addressError
                         ? "border-error border-2 !shadow-none focus:!ring-error"
-                        : "border-neutral-600 dark:border-neutral-600 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-none"
+                        : "border-neutral-600 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-none"
                     }`}
                     value={address}
                     placeholder="e.g., 123 Main St, Anytown, 12345, India"
