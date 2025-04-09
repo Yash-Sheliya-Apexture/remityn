@@ -503,14 +503,15 @@
 // }
 
 
-
 // frontend/src/app/dashboard/components/RecipientList.tsx
 "use client";
 import Image from "next/image";
-import React, { useRef } from "react";
+// No longer needed if ref is removed: import React, { useRef } from "react";
+import React from "react"; // Keep React import
 import { IoIosArrowForward } from "react-icons/io";
 import { useRouter } from "next/navigation";
 import { Checkbox } from "@/components/ui/checkbox"; // Import Shadcn Checkbox
+import { Button } from "@/components/ui/button"; // Needed for correct ref type if kept
 
 interface RecipientListProps {
   recipient: any; // Type this properly with your Recipient type from backend if possible
@@ -540,7 +541,15 @@ export default function RecipientList({
     return initials;
   };
 
-  const checkboxRef = useRef<HTMLInputElement>(null);
+  // --- SOLUTION 1: Remove the ref if not needed ---
+  // If you don't actually need to interact with the Checkbox's DOM element directly
+  // (e.g., for focusing), you can simply remove the ref.
+  // const checkboxRef = useRef<HTMLInputElement>(null); // REMOVE THIS LINE
+
+  // --- SOLUTION 2: Use the correct ref type if needed ---
+  // If you *do* need the ref for some reason, change the type to HTMLButtonElement
+  // const checkboxRef = useRef<HTMLButtonElement>(null); // Use HTMLButtonElement
+
   const router = useRouter();
 
   const handleItemClick = () => {
@@ -556,9 +565,19 @@ export default function RecipientList({
     }
   };
 
-  const handleCheckboxInputChange = (checked: boolean) => { // Changed event type to boolean from Shadcn Checkbox
-    onCheckboxChange && onCheckboxChange(recipient._id, checked); // Use recipient._id and checked value
+  const handleCheckboxInputChange = (checked: boolean | 'indeterminate') => { // Shadcn onCheckedChange provides boolean or 'indeterminate'
+    // Ensure we only pass boolean to our handler if that's what it expects
+    if (typeof checked === 'boolean' && onCheckboxChange) {
+       onCheckboxChange(recipient._id, checked); // Use recipient._id and checked value
+    }
   };
+
+  // Prevent the click event on the checkbox itself from propagating to the parent div,
+  // otherwise handleItemClick would run *after* handleCheckboxInputChange,
+  // effectively toggling the state twice.
+  const handleCheckboxClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+  }
 
   return (
     <div
@@ -572,40 +591,50 @@ export default function RecipientList({
               {getInitials(recipient.accountHolderName)}
             </span>
             <div className="absolute bottom-0 right-0 w-4 h-4 rounded-full overflow-hidden">
-              <Image
-                src={`/assets/icon/${recipient.currency.code.toLowerCase()}.svg`} // Use dynamic icon path
-                alt={`${recipient.currency.code} flag`}
-                width={20}
-                height={20}
-                onError={() =>
-                  console.error(
-                    `Error loading image for ${recipient.currency.code}`
-                  )
-                }
-              />
+              {recipient.currency?.code && ( // Add check for currency code existence
+                 <Image
+                 src={`/assets/icon/${recipient.currency.code.toLowerCase()}.svg`} // Use dynamic icon path
+                 alt={`${recipient.currency.code} flag`}
+                 width={20}
+                 height={20}
+                 onError={(e) => {
+                    // Optional: Hide image container or show placeholder on error
+                    console.error(`Error loading image for ${recipient.currency.code}`);
+                    // e.currentTarget.style.display = 'none'; // Example: hide broken image icon
+                 }}
+               />
+              )}
             </div>
           </div>
           <div className="ml-4">
             <h5 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg">
               {recipient.accountHolderName}
             </h5>
-            {recipient.accountNumber && (
+            {recipient.accountNumber && recipient.currency?.code && ( // Add check for currency code
               <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
                 {recipient.currency.code} Account ending in{" "}
                 {recipient.accountNumber.slice(-4)}{" "}
                 {/* Use dynamic currency code */}
               </p>
             )}
+             {/* Optional: Handle cases where account number might be missing but currency exists */}
+             {!recipient.accountNumber && recipient.currency?.code && (
+                <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
+                  {recipient.currency.code} Recipient
+                </p>
+             )}
           </div>
         </div>
 
         {showCheckbox ? (
-          <div className="pt-1.5">
+          // Add onClick handler with stopPropagation to the Checkbox container
+          <div className="pt-1.5" onClick={(e) => e.stopPropagation()}>
             <Checkbox
               id={`recipient-checkbox-${recipient._id}`} // Added id for accessibility
-              ref={checkboxRef}
+              // ref={checkboxRef} // Remove or keep based on Solution 1 or 2 above
               checked={isSelected}
               onCheckedChange={handleCheckboxInputChange} // Use onCheckedChange and pass boolean value
+              aria-label={`Select recipient ${recipient.accountHolderName}`} // Add accessibility label
             />
           </div>
         ) : (

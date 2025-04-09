@@ -734,7 +734,6 @@ export default function RecipientsPage() {
                 {filteredRecipients.map((recipient) => (
                   <RecipientList
                     key={recipient._id}
-                    // Assuming RecipientList component accepts a prop named 'recipient' of type Recipient
                     recipient={recipient}
                     isSelected={false} // These props seem static, confirm if needed
                     showCheckbox={false} // These props seem static, confirm if needed

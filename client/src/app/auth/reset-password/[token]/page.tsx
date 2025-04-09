@@ -411,10 +411,9 @@
 
 
 
-
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { useRouter, useParams } from "next/navigation";
 import authService from "../../../services/auth";
 import { IoMdCloseCircle, IoIosCheckmarkCircle } from "react-icons/io";
@@ -423,18 +422,13 @@ import { RiEyeCloseLine } from "react-icons/ri";
 import { IoClose } from "react-icons/io5";
 import Link from "next/link";
 
-// Interface definition remains useful for understanding page structure,
-// even if not used directly as props in this client component.
-interface ResetPasswordPageProps {
-  params: { token: string };
-}
+// Interface definition removed as it's not used for props in this client component.
 
-// Remove the unused 'params' prop from the component signature.
-// The token is obtained via the `useParams` hook.
 const NewPasswordPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordError, setPasswordError] = useState<string[]>([]);
+  // Store only the primary password error message (like "required")
+  const [passwordRequiredError, setPasswordRequiredError] = useState<string | null>(null);
   const [confirmPasswordError, setConfirmPasswordError] = useState<string>("");
   const [resetError, setResetError] = useState("");
   const [resetSuccess, setResetSuccess] = useState("");
@@ -442,79 +436,63 @@ const NewPasswordPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-  const { token: tokenFromParams } = useParams(); // Correctly gets token via hook
+  const params = useParams(); // Get params object
+  // Safely access token, handle potential array or undefined
+  const tokenFromParams = params?.token;
+  const token = typeof tokenFromParams === 'string' ? tokenFromParams : undefined;
+
   const [validationCriteria, setValidationCriteria] = useState({
     hasLetter: false,
     hasNumber: false,
     hasMinLength: false,
   });
 
-  const token = tokenFromParams as string; // Type assertion is fine here as useParams can return string | string[]
-
   useEffect(() => {
     if (!token) {
-      // This might happen if the route param isn't captured correctly, though usually Next.js handles this.
       setResetError("Invalid reset link or token missing.");
     }
   }, [token]);
 
+  // Function to check if all validation criteria are met
+  const areAllCriteriaMet = (criteria: typeof validationCriteria) => {
+    return criteria.hasLetter && criteria.hasNumber && criteria.hasMinLength;
+  };
+
   const validatePassword = (pw: string) => {
-    const errors: string[] = []; // Keep errors array for potential future detailed messages
     let hasLetter = false;
     let hasNumber = false;
     let hasMinLength = false;
 
     if (!pw) {
-      // Return initial state if password is empty
       return {
-        errors: [],
         hasLetter: false,
         hasNumber: false,
         hasMinLength: false,
       };
     }
 
-    // Check criteria
-    if (pw.length >= 9) {
-      hasMinLength = true;
-    }
-    if (/[a-zA-Z]/.test(pw)) {
-      hasLetter = true;
-    }
-    if (/\d/.test(pw)) {
-      hasNumber = true;
-    }
+    if (pw.length >= 9) { hasMinLength = true; }
+    if (/[a-zA-Z]/.test(pw)) { hasLetter = true; }
+    if (/\d/.test(pw)) { hasNumber = true; }
 
-    // Populate errors array if needed (though currently just using boolean criteria state)
-    // Example: if (!hasMinLength) errors.push("Password must be at least 9 characters.");
-    // Example: if (!hasLetter) errors.push("Password must contain a letter.");
-    // Example: if (!hasNumber) errors.push("Password must contain a number.");
-
-    return { errors, hasLetter, hasNumber, hasMinLength };
+    return { hasLetter, hasNumber, hasMinLength };
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setPasswordError([]); // Reset errors
+    setPasswordRequiredError(null);
     setConfirmPasswordError("");
     setResetError("");
     setResetSuccess("");
-    setIsSubmitting(true); // Set submitting early
+    setIsSubmitting(true);
 
     let formIsValid = true;
-    const currentValidation = validatePassword(password); // Validate the current password
+    const currentCriteriaMet = areAllCriteriaMet(validationCriteria);
 
-    // Check required fields first
     if (!password) {
-      setPasswordError(["New Password is required."]);
+      setPasswordRequiredError("New Password is required.");
       formIsValid = false;
-    } else if (
-      !currentValidation.hasLetter ||
-      !currentValidation.hasNumber ||
-      !currentValidation.hasMinLength
-    ) {
-      // Password exists but doesn't meet criteria (UI already shows this, but double-check)
-      // No need to set passwordError here as the criteria list handles the feedback
+    } else if (!currentCriteriaMet) {
       formIsValid = false;
     }
 
@@ -522,38 +500,36 @@ const NewPasswordPage = () => {
       setConfirmPasswordError("Confirm New Password is required.");
       formIsValid = false;
     } else if (password && password !== confirmPassword) {
-      // Check match only if both fields are potentially valid
       setConfirmPasswordError("Passwords do not match.");
       formIsValid = false;
     }
 
-    if (!formIsValid) {
-      setIsSubmitting(false); // Stop submission if form is invalid
+    if (!formIsValid || !token) {
+       if (!token && !resetError) {
+         setResetError("Invalid reset link or token missing.");
+       }
+      setIsSubmitting(false);
       return;
     }
 
-    // If form is valid, proceed with API call
     try {
       await authService.resetPassword({ token, password });
       setResetSuccess("Password reset successful! Redirecting to login...");
       setTimeout(() => {
-        router.push("/auth/login?forgotPasswordSuccess=true");
+        router.push("/auth/login?resetSuccess=true"); // Changed query param for clarity
       }, 2000);
-    } catch (err: unknown) { // Use 'unknown' instead of 'any' for type safety
-      let errorMessage = "Password reset failed. Please try again."; // Default error
-      if (err instanceof Error) { // Type check: ensure err is an Error object
-        if (err.message === "Invalid or expired password reset token.") {
-          errorMessage = "This password reset link has expired. Please request a new password reset link.";
+    } catch (err: unknown) {
+      let errorMessage = "Password reset failed. Please try again.";
+      if (err instanceof Error) {
+        if (err.message.includes("Invalid or expired")) {
+          errorMessage = "This password reset link is invalid or has expired. Please request a new password reset link.";
         } else if (err.message) {
-            errorMessage = err.message; // Use message from Error object
+            errorMessage = err.message;
         }
       }
-      // Handle cases where err might not be an Error object (less common)
-      // else if (typeof err === 'string') { errorMessage = err; }
-
       setResetError(errorMessage);
     } finally {
-      setIsSubmitting(false); // Ensure submitting state is reset
+      setIsSubmitting(false);
     }
   };
 
@@ -569,101 +545,98 @@ const NewPasswordPage = () => {
     setResetError("");
   };
 
-  // Removed the unused 'validationResult' variable declaration here.
-  // The necessary validation happens within handlePasswordChange and handleSubmit.
-
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newPassword = e.target.value;
     setPassword(newPassword);
     const currentValidation = validatePassword(newPassword);
-    setValidationCriteria({ // Update criteria state on password change
-      hasLetter: currentValidation.hasLetter,
-      hasNumber: currentValidation.hasNumber,
-      hasMinLength: currentValidation.hasMinLength,
-    });
+    setValidationCriteria(currentValidation);
 
-    // Update error state based on input presence
     if (newPassword === "") {
-      setPasswordError(["New Password is required."]);
+      setPasswordRequiredError("New Password is required.");
     } else {
-      setPasswordError([]); // Clear the "required" error if user starts typing
-      // Note: We don't set specific criteria errors here anymore,
-      // as the criteria list handles showing unmet requirements.
+      setPasswordRequiredError(null);
     }
 
-     // Also clear confirm password mismatch error if password changes
      if (confirmPassword && newPassword !== confirmPassword) {
-        // Optional: If you want immediate feedback on mismatch while typing password
-        // setConfirmPasswordError("Passwords do not match.");
+        setConfirmPasswordError("Passwords do not match.");
      } else if (confirmPassword && newPassword === confirmPassword) {
-         setConfirmPasswordError(""); // Clear mismatch if they now match
+         setConfirmPasswordError("");
      }
   };
 
-   // Effect to clear confirm password *specific* errors when confirm password changes
-   useEffect(() => {
-    if (confirmPassword && password && password !== confirmPassword) {
+  const handleConfirmPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const newConfirmPassword = e.target.value;
+    setConfirmPassword(newConfirmPassword);
+
+    if (!newConfirmPassword && !passwordRequiredError) {
+        setConfirmPasswordError("");
+    } else if (password && newConfirmPassword !== password) {
       setConfirmPasswordError("Passwords do not match.");
-    } else if (confirmPassword === "" && !password) {
-         // If both are empty, clear errors potentially set by submit
-         setConfirmPasswordError("");
     } else {
-        // Clear error if they match or if confirm is empty (but password might exist)
         setConfirmPasswordError("");
     }
-  }, [confirmPassword, password]);
-
+  };
 
   // Determines if the criteria list should be shown
   const shouldShowCriteriaList = () => {
-    // Show if password has content but doesn't meet all criteria,
-    // AND there isn't a "password required" error already showing.
     return (
       password &&
-      !passwordError.includes("New Password is required.") &&
-      !(
-        validationCriteria.hasLetter &&
-        validationCriteria.hasNumber &&
-        validationCriteria.hasMinLength
-      )
+      !passwordRequiredError &&
+      !areAllCriteriaMet(validationCriteria)
     );
   };
 
+  // Determine if the password input itself is invalid (for styling/aria)
+  const isPasswordInputInvalid = !!passwordRequiredError || shouldShowCriteriaList();
+  // Determine if the confirm password input is invalid
+  const isConfirmPasswordInputInvalid = !!confirmPasswordError;
+
+  // Determine if the submit button should be disabled
+  const isSubmitDisabled =
+      isSubmitting ||
+      !token ||
+      !!passwordRequiredError ||
+      (password && !areAllCriteriaMet(validationCriteria)) ||
+      !confirmPassword || // Disable if confirm password empty
+      !!confirmPasswordError;
+
   return (
+    // --- Original Layout Structure ---
     <div className="flex flex-col justify-center items-center lg:h-[calc(100vh-73px)] px-4">
       <div className="w-full max-w-md mt-10">
+        {/* --- Original bg-white Wrapper --- */}
         <div className="bg-white">
+           {/* --- Original py-3 Wrapper --- */}
           <div className="py-3">
             <h2 className="lg:text-3xl text-2xl text-center text-main font-semibold mb-4">
               Set your new password
             </h2>
 
-            {/* Reset Error Display */}
+            {/* Reset Error Display (Original Styling) */}
             {resetError && (
               <div
-                className="flex bg-red-100 border border-red-400 text-red-700 p-4 rounded-lg gap-4 items-center relative mb-4" // Adjusted styling for clarity
+                className="flex bg-red-100 border border-red-400 text-red-700 p-4 rounded-lg gap-4 items-center relative mb-4" // Original padding/gap
                 role="alert"
               >
-                <div className="flex bg-error justify-center rounded-full items-center size-8 flex-shrink-0"> {/* Adjusted size */}
-                  <IoClose className="text-white size-6" /> {/* Adjusted size */}
+                <div className="flex bg-error justify-center rounded-full items-center size-8 flex-shrink-0"> {/* Original size */}
+                  <IoClose className="text-white size-6" /> {/* Original size */}
                 </div>
-                <div className="flex-grow"> {/* Allow text to take space */}
-                  <span className="block text-sm">{resetError}</span> {/* Adjusted text size */}
+                <div className="flex-grow">
+                  <span className="block text-sm">{resetError}</span> {/* Original size */}
                 </div>
                 <button
-                  className="absolute cursor-pointer right-2 top-2 p-1" // Adjusted position/padding
+                  className="absolute cursor-pointer right-2 top-2 p-1" // Original position/padding
                   onClick={handleCloseResetError}
-                  aria-label="Close error message" // Added aria-label
+                  aria-label="Close error message"
                 >
                   <IoClose
-                    className="text-red-700 hover:text-red-900 size-6" // Adjusted size/color
-                    role="button"
+                    className="text-red-700 hover:text-red-900 size-6" // Original size/color
                   />
                 </button>
               </div>
             )}
 
-            {/* Reset Success Display */}
+            {/* Reset Success Display (Original Styling) */}
             {resetSuccess && (
               <div
                 className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
@@ -674,193 +647,208 @@ const NewPasswordPage = () => {
               </div>
             )}
 
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="mt-10 space-y-5">
-              {/* New Password Field */}
-              <div>
-                <label
-                  htmlFor="password"
-                  className="text-gray text-sm block capitalize font-medium"
-                >
-                  New Password <span className="text-error">*</span>
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    id="password"
-                    className={`mt-1 block px-4 py-3 border w-full rounded-lg transition-shadow ease-in-out duration-300 ${
-                      // Show error border if "required" error exists OR if criteria list is shown (meaning it's invalid)
-                      passwordError.includes("New Password is required.") || shouldShowCriteriaList()
-                        ? "border-error border-2 !shadow-none"
-                        : "border-[#c9cbce] hover:shadow-color"
-                    }`}
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={handlePasswordChange}
-                    aria-describedby={shouldShowCriteriaList() ? "password-criteria" : undefined} // Link input to criteria list for accessibility
-                    aria-invalid={passwordError.includes("New Password is required.") || shouldShowCriteriaList()} // Indicate invalid state
-                  />
-                  <button
-                    type="button"
-                    className="text-gray-500 -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-1 top-1/2 transform bg-white p-3 rounded-md"
-                    onClick={togglePasswordVisibility}
-                    aria-label={showPassword ? "Hide password" : "Show password"} // Accessibility
-                  >
-                    {showPassword ? (
-                      <RiEyeCloseLine className="text-secondary size-5" />
-                    ) : (
-                      <VscEye className="text-secondary size-5" />
-                    )}
-                  </button>
-                </div>
-                {/* Password Required Error */}
-                {passwordError.includes("New Password is required.") && (
-                  <p className="flex text-error text-sm items-center mt-1"> {/* Adjusted size/margin */}
-                    <IoMdCloseCircle className="size-4 mr-1" /> {/* Adjusted size */}
-                    {passwordError[0]}
-                  </p>
-                )}
-                {/* Password Criteria List */}
-                {shouldShowCriteriaList() && (
-                  <ul id="password-criteria" className="mt-2 text-sm space-y-1 list-none pl-0"> {/* Adjusted size/spacing */}
-                    <li className={`flex items-center ${validationCriteria.hasLetter ? 'text-green-600' : 'text-error'}`}>
-                      {validationCriteria.hasLetter ? (
-                        <IoIosCheckmarkCircle className="mr-1 size-4" />
-                      ) : (
-                        <IoMdCloseCircle className="mr-1 size-4" />
-                      )}
-                      Contains a letter
-                    </li>
-                    <li className={`flex items-center ${validationCriteria.hasNumber ? 'text-green-600' : 'text-error'}`}>
-                      {validationCriteria.hasNumber ? (
-                        <IoIosCheckmarkCircle className="mr-1 size-4" />
-                      ) : (
-                        <IoMdCloseCircle className="mr-1 size-4" />
-                      )}
-                      Contains a number
-                    </li>
-                    <li className={`flex items-center ${validationCriteria.hasMinLength ? 'text-green-600' : 'text-error'}`}>
-                      {validationCriteria.hasMinLength ? (
-                        <IoIosCheckmarkCircle className="mr-1 size-4" />
-                      ) : (
-                        <IoMdCloseCircle className="mr-1 size-4" />
-                      )}
-                      Has 9 or more characters
-                    </li>
-                  </ul>
-                )}
-              </div>
-
-              {/* Confirm New Password Field */}
-              <div>
-                <label
-                  htmlFor="confirm-password"
-                  className="text-gray text-sm block capitalize font-medium"
-                >
-                  Confirm New Password <span className="text-error">*</span>
-                </label>
-                <div className="relative">
-                  <input
-                    type={showConfirmPassword ? "text" : "password"}
-                    id="confirm-password"
-                    className={`mt-1 block px-4 py-3 border w-full rounded-lg transition-shadow ease-in-out duration-300 ${
-                      confirmPasswordError
-                        ? "border-error border-2 !shadow-none"
-                        : "border-[#c9cbce] hover:shadow-color"
-                    }`}
-                    placeholder="••••••••"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                     aria-invalid={!!confirmPasswordError} // Indicate invalid state
-                     aria-describedby={confirmPasswordError ? "confirm-password-error" : undefined}
-                  />
-                  <button
-                    type="button"
-                    className="text-gray-500 -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-1 top-1/2 transform bg-white p-3 rounded-md" // Fixed typo rounded-mdc -> rounded-md
-                    onClick={toggleConfirmPasswordVisibility}
-                     aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"} // Accessibility
-                  >
-                    {showConfirmPassword ? (
-                      <RiEyeCloseLine className="text-secondary size-5" />
-                    ) : (
-                      <VscEye className="text-secondary size-5" />
-                    )}
-                  </button>
-                </div>
-                {/* Confirm Password Error */}
-                {confirmPasswordError && (
-                  <p id="confirm-password-error" className="flex text-error text-sm items-center mt-1"> {/* Adjusted size/margin */}
-                    <IoMdCloseCircle className="size-4 mr-1" /> {/* Adjusted size */}
-                    {confirmPasswordError}
-                  </p>
-                )}
-                {/* This redundant check is handled by the useEffect now */}
-                {/* {confirmPasswordError === "" &&
-                  confirmPassword &&
-                  password !== confirmPassword && (
-                    <p className="flex text-error items-center mt-0.5">
-                      <span className="mr-1">
-                        <IoMdCloseCircle className="size-5" />
-                      </span>
-                      Passwords do not match.
-                    </p>
-                  )} */}
-              </div>
-
-              {/* Submit Button */}
-              <div className="pt-2"> {/* Added padding-top for spacing */}
-                <button
-                  type="submit"
-                  className={`rounded-full text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium py-3 transition-colors ${ // Adjusted padding
-                    // Disable button if submitting OR if password is required OR if criteria not met OR if passwords don't match and confirm pass exists
-                     isSubmitting || passwordError.includes("New Password is required.") || shouldShowCriteriaList() || confirmPasswordError
-                       ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                       : "bg-primary hover:bg-primary-hover text-secondary"
-                   }`}
-                  disabled={isSubmitting || passwordError.includes("New Password is required.") || shouldShowCriteriaList() || !!confirmPasswordError}
-                >
-                  {isSubmitting ? (
-                    <div className="flex justify-center items-center">
-                      <svg
-                        className="h-5 w-5 animate-spin mr-3 text-gray-500" // Adjusted color
-                        viewBox="0 0 24 24"
-                        fill="none" // Added fill none for spinner outline
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
-                      Resetting...
+            {/* Form (Conditionally rendered based on token) */}
+            {token ? (
+                // --- Original Form Structure ---
+                <form onSubmit={handleSubmit} className="mt-10 space-y-5">
+                {/* New Password Field */}
+                <div>
+                    <label
+                    htmlFor="password"
+                    className="text-gray text-sm block capitalize font-medium"
+                    >
+                    New Password <span className="text-error">*</span>
+                    </label>
+                    <div className="relative">
+                    <input
+                        type={showPassword ? "text" : "password"}
+                        id="password"
+                        // --- Original Input Classes + Dynamic Error Class ---
+                        className={`mt-1 block px-4 py-3 border w-full rounded-lg transition-shadow ease-in-out duration-300 ${
+                        isPasswordInputInvalid
+                            ? "border-error border-2 !shadow-none" // Keep error state visual
+                            : "border-[#c9cbce] hover:shadow-color" // Original normal/hover
+                        }`}
+                        placeholder="••••••••" // --- Original Placeholder ---
+                        value={password}
+                        onChange={handlePasswordChange}
+                        aria-describedby={shouldShowCriteriaList() ? "password-criteria" : passwordRequiredError ? "password-required-error" : undefined}
+                        // --- Fixed aria-invalid ---
+                        aria-invalid={isPasswordInputInvalid ? "true" : undefined}
+                    />
+                    <button
+                        type="button"
+                         // --- Original Button Classes ---
+                        className="text-gray-500 -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-1 top-1/2 transform bg-white p-3 rounded-md"
+                        onClick={togglePasswordVisibility}
+                        aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
+                        {/* --- Original Icon Size --- */}
+                        {showPassword ? (
+                        <RiEyeCloseLine className="text-secondary size-5" />
+                        ) : (
+                        <VscEye className="text-secondary size-5" />
+                        )}
+                    </button>
                     </div>
-                  ) : (
-                    "Reset password"
-                  )}
-                </button>
-              </div>
-            </form>
+                    {/* Password Required Error (Original Styling) */}
+                    {passwordRequiredError && (
+                    <p id="password-required-error" className="flex text-error text-sm items-center mt-1"> {/* Original size/margin */}
+                        <IoMdCloseCircle className="size-4 mr-1" /> {/* Original size */}
+                        {passwordRequiredError}
+                    </p>
+                    )}
+                    {/* Password Criteria List (Original Styling) */}
+                    {shouldShowCriteriaList() && (
+                    <ul id="password-criteria" className="mt-2 text-sm space-y-1 list-none pl-0"> {/* Original size/spacing */}
+                        <li className={`flex items-center ${validationCriteria.hasMinLength ? 'text-green-600' : 'text-error'}`}>
+                        {validationCriteria.hasMinLength ? (
+                            <IoIosCheckmarkCircle className="mr-1 size-4" /> // Original size
+                        ) : (
+                            <IoMdCloseCircle className="mr-1 size-4" /> // Original size
+                        )}
+                        Has 9 or more characters
+                        </li>
+                        <li className={`flex items-center ${validationCriteria.hasLetter ? 'text-green-600' : 'text-error'}`}>
+                        {validationCriteria.hasLetter ? (
+                            <IoIosCheckmarkCircle className="mr-1 size-4" /> // Original size
+                        ) : (
+                            <IoMdCloseCircle className="mr-1 size-4" /> // Original size
+                        )}
+                        Contains a letter
+                        </li>
+                         <li className={`flex items-center ${validationCriteria.hasNumber ? 'text-green-600' : 'text-error'}`}>
+                        {validationCriteria.hasNumber ? (
+                            <IoIosCheckmarkCircle className="mr-1 size-4" /> // Original size
+                        ) : (
+                            <IoMdCloseCircle className="mr-1 size-4" /> // Original size
+                        )}
+                        Contains a number
+                        </li>
+                    </ul>
+                    )}
+                </div>
 
-            {/* Back to Login Link */}
-            <div className="text-center mt-6">
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Go back to{" "}
-                <Link
-                  href="/auth/login"
-                  className="text-secondary font-medium hover:underline dark:text-primary-500"
-                >
-                  Login
-                </Link>
-              </p>
-            </div>
+                {/* Confirm New Password Field */}
+                <div>
+                    <label
+                    htmlFor="confirm-password"
+                    className="text-gray text-sm block capitalize font-medium"
+                    >
+                    Confirm New Password <span className="text-error">*</span>
+                    </label>
+                    <div className="relative">
+                    <input
+                        type={showConfirmPassword ? "text" : "password"}
+                        id="confirm-password"
+                        // --- Original Input Classes + Dynamic Error Class ---
+                         className={`mt-1 block px-4 py-3 border w-full rounded-lg transition-shadow ease-in-out duration-300 ${
+                         isConfirmPasswordInputInvalid
+                            ? "border-error border-2 !shadow-none" // Keep error state visual
+                            : "border-[#c9cbce] hover:shadow-color" // Original normal/hover
+                        }`}
+                        placeholder="••••••••" // --- Original Placeholder ---
+                        value={confirmPassword}
+                        onChange={handleConfirmPasswordChange}
+                        // --- Fixed aria-invalid ---
+                        aria-invalid={isConfirmPasswordInputInvalid ? "true" : undefined}
+                        aria-describedby={confirmPasswordError ? "confirm-password-error" : undefined}
+                    />
+                    <button
+                        type="button"
+                         // --- Original Button Classes ---
+                        className="text-gray-500 -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-1 top-1/2 transform bg-white p-3 rounded-md" // Restored original rounded-md
+                        onClick={toggleConfirmPasswordVisibility}
+                        aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+                    >
+                         {/* --- Original Icon Size --- */}
+                        {showConfirmPassword ? (
+                        <RiEyeCloseLine className="text-secondary size-5" />
+                        ) : (
+                        <VscEye className="text-secondary size-5" />
+                        )}
+                    </button>
+                    </div>
+                    {/* Confirm Password Error (Original Styling) */}
+                    {confirmPasswordError && (
+                    <p id="confirm-password-error" className="flex text-error text-sm items-center mt-1"> {/* Original size/margin */}
+                        <IoMdCloseCircle className="size-4 mr-1" /> {/* Original size */}
+                        {confirmPasswordError}
+                    </p>
+                    )}
+                </div>
+
+                {/* Submit Button */}
+                {/* --- Original Button Wrapper --- */}
+                <div className="pt-2">
+                    <button
+                    type="submit"
+                     // --- Original Button Classes + Dynamic Disabled State ---
+                    className={`rounded-full text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium py-3 transition-colors ${
+                        isSubmitDisabled
+                        ? "bg-gray-300 text-gray-500 cursor-not-allowed" // Original disabled style
+                        : "bg-primary hover:bg-primary-hover text-secondary" // Original enabled style
+                    }`}
+                    disabled={isSubmitDisabled} // Use combined disabled logic
+                    >
+                    {isSubmitting ? (
+                        <div className="flex justify-center items-center">
+                        <svg
+                             // --- Original Spinner Style ---
+                            className="h-5 w-5 animate-spin mr-3 text-gray-500"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg" // Added xmlns
+                        >
+                            <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                            ></circle>
+                            <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                        </svg>
+                        Resetting...
+                        </div>
+                    ) : (
+                        "Reset password"
+                    )}
+                    </button>
+                </div>
+                </form>
+            ) : (
+                // Show message if token is missing and not already showing success
+                !resetSuccess && (
+                    <div className="mt-8 text-center">
+                        {/* Error message (resetError) is displayed above */}
+                         <p className="text-sm text-gray-500">
+                            Please request a new password reset link.
+                         </p>
+                    </div>
+                )
+            )}
+
+
+            {/* Back to Login Link (Original Structure/Styling) */}
+            {!resetSuccess && (
+                 <div className="text-center mt-6">
+                    <p className="text-sm text-gray-500 dark:text-gray-400"> {/* Kept dark mode class if it was there */}
+                        Go back to{" "}
+                        <Link
+                        href="/auth/login"
+                        className="text-secondary font-medium hover:underline dark:text-primary-500" // Kept dark mode class
+                        >
+                        Login
+                        </Link>
+                    </p>
+                </div>
+            )}
           </div>
         </div>
       </div>

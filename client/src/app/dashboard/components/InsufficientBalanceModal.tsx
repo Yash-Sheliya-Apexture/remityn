@@ -485,7 +485,7 @@ const InsufficientBalanceModal: React.FC<InsufficientBalanceModalProps> = ({
                 />
                 {/* SVG Fallback (Initially hidden by class, shown via onError) */}
                 <div
-                  className="w-full h-full bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center text-yellow-500 dark:text-yellow-400 border-4 border-yellow-200 dark:border-yellow-700/50 hidden" // Use 'hidden' class
+                  className="w-full h-full bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center text-yellow-500 dark:text-yellow-400 border-4 border-yellow-200 dark:border-yellow-700/50" // Use 'hidden' class
                   aria-hidden="true" // Hide from screen readers as it's decorative/redundant with text
                 >
                   <svg
