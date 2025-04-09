@@ -276,7 +276,7 @@ const DeleteRecipientModal: React.FC<DeleteRecipientModalProps> = ({
               </h3>
               <p className="text-gray dark:text-gray-300 font-medium mb-6">
                 {/* Escaped the apostrophe in "You'll" */}
-                You'll have to add {recipientName} again as a recipient to send
+                You&apos;ll have to add {recipientName} again as a recipient to send
                 money to them.
               </p>
               <div className="flex flex-col justify-center gap-4 mt-8">

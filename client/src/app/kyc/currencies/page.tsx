@@ -443,10 +443,10 @@ const CurrenciesKYCPage = () => {
             </h1>
             <p className="text-gray text-sm">
               These are the currencies you can request money in. Choose the ones
-              you'd like to use now - you can always add more later. {/* Changed ' to ' */}
+              you&apos;d like to use now - you can always add more later. {/* Changed ' to ' */}
             </p>
             <p className="text-gray text-sm">
-              You get one Wise account for all these currencies. It's managed {/* Changed ' to ' */}
+              You get one Wise account for all these currencies. It&apos;s managed {/* Changed ' to ' */}
               and protected by Wise in your region.
             </p>
           </div>

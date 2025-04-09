@@ -1775,7 +1775,7 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
             {filteredCurrencies.length === 0 && searchQuery && (
               <div className="p-4 text-center text-gray-500">
                  {/* FIXED: Replaced literal quotes with HTML entities */}
-                No currencies found for "{searchQuery}"
+                No currencies found for &quot;{searchQuery}&quot;
               </div>
             )}
           </div>

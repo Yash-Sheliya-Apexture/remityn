@@ -665,7 +665,7 @@ export default function ChangePassword() {
               </div>
               <p className="text-red-700 dark:text-red-400">
                 {/* Fixed: Replaced ' with ' */}
-                Your new password can't be the same as the current one.
+                Your new password can&apos;t be the same as the current one.
               </p>
             </div>
           )}
