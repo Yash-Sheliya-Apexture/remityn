@@ -986,7 +986,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../contexts/AuthContext";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import CurrencySelectorModal from "./CurrencySelectorModal";

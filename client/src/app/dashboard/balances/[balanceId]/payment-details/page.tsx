@@ -1452,7 +1452,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { useAuth } from '../../../../hooks/useAuth'; // Adjust path
+import { useAuth } from '../../../../contexts/AuthContext'; // Adjust path
 import paymentService from '../../../../services/payment'; // Adjust path
 import { Skeleton } from '@/components/ui/skeleton'; // Adjust path
 import { Button } from '@/components/ui/button'; // Adjust path
@@ -1795,7 +1795,7 @@ const PaymentDetailsPage = () => {
             {/* Details Section */}
             <div className="mb-8 border p-4 sm:p-6 rounded-xl bg-card"> {/* Added bg-card */}
                 {/* Escaped apostrophe */}
-                <h2 className="text-lg font-medium mb-4 text-neutral-900 dark:text-white">Details you'll need to make this transfer</h2>
+                <h2 className="text-lg font-medium mb-4 text-neutral-900 dark:text-white">Details you&apos;ll need to make this transfer</h2>
                 <div className="space-y-4">
                     <DetailItem label="Payee name" value={bankDetails.payeeName || 'Wise Europe SA'} fieldName="Payee name" />
 
@@ -1820,7 +1820,7 @@ const PaymentDetailsPage = () => {
                      {/* Bank Address Block */}
                      <div className="bg-lightgray dark:bg-primarybox p-4 rounded-lg">
                          {/* Escaped apostrophe */}
-                         <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Our bank's address</p>
+                         <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Our bank&apos;s address</p>
                          <p className="text-foreground break-words whitespace-pre-line"> {/* Use pre-line for newlines */}
                             {bankAddress}
                          </p>
@@ -1855,7 +1855,7 @@ const PaymentDetailsPage = () => {
                 <button
                     onClick={handleIvePaid}
                     disabled={isSubmitting || isLoading}
-                    className="w-full flex justify-center items-center bg-primary text-primary-foreground hover:bg-primary/90 font-medium rounded-full px-6 py-3 h-12 text-center cursor-pointer transition-colors duration-150 ease-linear disabled:opacity-70 disabled:cursor-not-allowed" // Adjusted styling to match Button component feel
+                    className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-70 disabled:cursor-not-allowed" // Adjusted styling to match Button component feel
                 >
                     {isSubmitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
                     {isSubmitting ? 'Processing...' : 'I’ve made my bank transfer'}
@@ -1863,7 +1863,7 @@ const PaymentDetailsPage = () => {
                 <button
                     onClick={handlePayLater}
                     disabled={isSubmitting || isLoading}
-                     className="w-full flex justify-center items-center bg-secondary text-secondary-foreground hover:bg-secondary/80 font-medium rounded-full px-6 py-3 h-12 text-center cursor-pointer transition-colors duration-150 ease-linear disabled:opacity-70 disabled:cursor-not-allowed" // Adjusted styling
+                     className="bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-70 disabled:cursor-not-allowed" // Adjusted styling
                 >
                     I’ll transfer my money later
                 </button>

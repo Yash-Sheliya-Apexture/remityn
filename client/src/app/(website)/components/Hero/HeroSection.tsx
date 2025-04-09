@@ -4329,7 +4329,7 @@ const HeroSection: React.FC = () => {
                 <p className="text-cyan-900 mt-1 text-sm bg-cyan-100/30 rounded-lg px-2 py-1">
                   Sending over 20,000 GBP or equivalent?
                   <button type="button" className="underline cursor-pointer font-medium">
-                    We'll discount our fee
+                    We&apos;ll discount our fee
                   </button>
                 </p>
               </div>

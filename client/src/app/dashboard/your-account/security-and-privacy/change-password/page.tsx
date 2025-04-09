@@ -663,8 +663,14 @@ export default function ChangePassword() {
               <div className="p-1 bg-red-700 rounded-full">
                 <FiX size={24} className="text-lightgray" />
               </div>
+<<<<<<< HEAD
               <p className="text-gray-500 dark:text-white">
                 Your new password can't be the same as the current one.
+=======
+              <p className="text-red-700 dark:text-red-400">
+                {/* Fixed: Replaced ' with ' */}
+                Your new password can&apos;t be the same as the current one.
+>>>>>>> f7176d72ea51ccea16bbeaa02f67a1a93595e63a
               </p>
             </div>
           )}

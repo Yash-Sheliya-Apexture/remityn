@@ -528,7 +528,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { MdErrorOutline } from "react-icons/md"; // Warning icon
 import { LuPlus } from "react-icons/lu"; // Add money icon
-import { useAuth } from "../../../hooks/useAuth"; // Adjust path as needed
+import { useAuth } from "../../../contexts/AuthContext"; // Adjust path as needed
 import paymentService from "../../../services/payment"; // Adjust path as needed
 import { Transaction } from "@/types/transaction"; // Adjust path as needed
 import { Skeleton } from "@/components/ui/skeleton"; // Adjust path as needed

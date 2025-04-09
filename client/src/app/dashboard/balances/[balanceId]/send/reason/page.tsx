@@ -439,7 +439,7 @@ const TransferReasonPage = () => {
       <div className="container mx-auto max-w-lg p-4 lg:p-8">
         {/* Escaped apostrophe */}
         <h1 className="text-xl lg:text-2xl font-bold capitalize text-main dark:text-white mb-4">
-          What's the reason for your transfer?
+          What&apos;s the reason for your transfer?
         </h1>
         {/* Add note about India transfers if needed */}
         {summary?.receiveCurrencyCode === "INR" && (

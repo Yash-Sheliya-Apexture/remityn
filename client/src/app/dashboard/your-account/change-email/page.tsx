@@ -609,7 +609,7 @@ export default function ChangeEmail() {
                 </h2>
                 {/* FIX: Replaced ' with ' */}
                 <p className="text-gray text-sm">
-                  Before your change is confirmed, we'll ask you to enter your
+                  Before your change is confirmed, we&apos;ll ask you to enter your
                   password and verify your new email address. Please ensure that
                   only you have access to this email to keep your account
                   secure.
@@ -650,7 +650,7 @@ export default function ChangeEmail() {
                         </div>
                          {/* FIX: Replaced ' with ' */}
                         <p className="text-gray text-sm">
-                          Now that's a proper e-mail!
+                          Now that&apos;s a proper e-mail!
                         </p>
                       </div>
                     )}
@@ -743,7 +743,7 @@ export default function ChangeEmail() {
                 </h2>
                  {/* FIX: Replaced ' with ' */}
                 <p className="text-gray text-sm">
-                  We've sent a verification link to your new email address (
+                  We&apos;ve sent a verification link to your new email address (
                   {newEmail}). Please click on the link in that email to
                   complete the email change process.
                 </p>

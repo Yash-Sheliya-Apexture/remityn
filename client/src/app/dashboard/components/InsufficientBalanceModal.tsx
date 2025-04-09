@@ -513,7 +513,7 @@ const InsufficientBalanceModal: React.FC<InsufficientBalanceModalProps> = ({
               {/* Description */}
               <p className="text-gray dark:text-gray-300 font-medium mb-6">
                 {/* Corrected the apostrophe */}
-                You don't have enough funds in your {currencyCode} balance to
+                You don&apos;t have enough funds in your {currencyCode} balance to
                 send money. Please add funds first.
               </p>
 

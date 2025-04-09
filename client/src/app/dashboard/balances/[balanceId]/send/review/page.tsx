@@ -1266,7 +1266,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { FiArrowLeft, FiCheckCircle, FiAlertTriangle } from "react-icons/fi";
-import { useAuth } from "../../../../../hooks/useAuth";
+import { useAuth } from "../../../../../contexts/AuthContext";
 // Import AxiosError for type safety in catch blocks
 import axios, { AxiosError } from "axios";
 import apiConfig from "../../../../../config/apiConfig";
@@ -1778,7 +1778,7 @@ const ReviewSendPage = () => {
               className="block w-full border bg-white dark:bg-background dark:border-gray-700 hover:shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-all duration-200 ease-in-out rounded-lg p-3 text-mainheading dark:text-white"
               aria-label="Reference for recipient"
             />
-             <p className="text-xs text-gray-400 mt-1">Max 35 characters. This may appear on the recipient's statement.</p>
+             <p className="text-xs text-gray-400 mt-1">Max 35 characters. This may appear on the recipient&apos;s statement.</p>
           </div>
         </div>
 

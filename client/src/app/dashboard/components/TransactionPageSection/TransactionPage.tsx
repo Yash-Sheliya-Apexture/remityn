@@ -3098,7 +3098,7 @@ import { GoArrowUp } from "react-icons/go";
 import TransactionActions from "./TransactionActions"; // Adjust path if needed
 
 // Hooks & Services
-import { useAuth } from "../../../hooks/useAuth"; // Adjust path
+import { useAuth } from "../../../contexts/AuthContext"; // Adjust path
 import paymentService from "../../../services/payment"; // Adjust path
 import transferService from "../../../services/transfer"; // Adjust path
 import accountService from "../../../services/account"; // Adjust path

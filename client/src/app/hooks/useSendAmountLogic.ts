@@ -204,7 +204,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import axios, { AxiosError } from 'axios'; // Import AxiosError
 import { debounce } from 'lodash';
-import { useAuth } from './useAuth'; // Adjust path
+import { useAuth } from '../contexts/AuthContext'; // Adjust path
 import apiConfig from '../config/apiConfig'; // Adjust path
 
 axios.defaults.baseURL = apiConfig.baseUrl;
