@@ -63,7 +63,6 @@
 // //         return null; // Redirect is handled by useEffect
 // //     }
 
-
 // //     return (
 // //         <div className="flex justify-center items-center min-h-screen px-4">
 // //             <div className="w-full max-w-md mt-10">
@@ -81,10 +80,7 @@
 // //                     </Link>
 // //                 </p>
 
-
 // //                 {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-
-
 
 // //                 <form onSubmit={handleSubmit} className="mt-10 space-y-4">
 // //                     <div>
@@ -148,8 +144,6 @@
 // //                         </div>
 // //                     </div>
 
-
-
 // //                     <div>
 // //                         <label
 // //                             htmlFor="confirmPassword"
@@ -178,7 +172,6 @@
 // //                             </button>
 // //                         </div>
 // //                     </div>
-
 
 // //                     {/* Next Button */}
 // //                     <button
@@ -226,7 +219,6 @@
 // //     );
 // // }
 
-
 // // 'use client';
 
 // // import { useState, useEffect } from 'react';
@@ -256,7 +248,6 @@
 // //     const [emailError, setEmailError] = useState('');
 // //     const [passwordError, setPasswordError] = useState('');
 // //     const [confirmPasswordError, setConfirmPasswordError] = useState('');
-
 
 // //     // Redirect if user is already logged in
 // //     useEffect(() => {
@@ -308,7 +299,6 @@
 // //         return isValid;
 // //     };
 
-
 // //     const handleSubmit = async (e) => {
 // //         e.preventDefault();
 // //         setError('');
@@ -316,7 +306,6 @@
 // //         if (!validateForm()) {
 // //             return;
 // //         }
-
 
 // //         try {
 // //             await authService.register({ fullName, email, password });
@@ -342,7 +331,6 @@
 // //         return null; // Redirect is handled by useEffect
 // //     }
 
-
 // //     return (
 // //         <div className="flex justify-center items-center min-h-screen px-4">
 // //             <div className="w-full max-w-md mt-10">
@@ -360,10 +348,7 @@
 // //                     </Link>
 // //                 </p>
 
-
 // //                 {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-
-
 
 // //                 <form onSubmit={handleSubmit} className="mt-5 space-y-4">
 // //                     <div>
@@ -488,7 +473,6 @@
 // //                         )}
 // //                     </div>
 
-
 // //                     {/* Next Button */}
 // //                     <button
 // //                         type="submit"
@@ -535,7 +519,6 @@
 // //     );
 // // }
 
-
 // 'use client';
 
 // import { useState, useEffect } from 'react';
@@ -568,7 +551,6 @@
 //     const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
 //     const inputBaseClasses = "mt-1 block px-4 py-3 w-full border rounded-lg hover:shadow-color hover:outline-none transition-shadow ease-in-out duration-300";
-
 
 //     // Redirect if user is already logged in
 //     useEffect(() => {
@@ -620,7 +602,6 @@
 //         return isValid;
 //     };
 
-
 //     const handleSubmit = async (e) => {
 //         e.preventDefault();
 //         setError('');
@@ -628,7 +609,6 @@
 //         if (!validateForm()) {
 //             return;
 //         }
-
 
 //         try {
 //             await authService.register({ fullName, email, password });
@@ -657,7 +637,6 @@
 //     const handleCloseLoginError = () => {
 //         setLoginError("");
 //     };
-
 
 //     return (
 //         <div className="flex justify-center items-center lg:h-[calc(100vh-73px)] px-4">
@@ -700,7 +679,6 @@
 //                         </button>
 //                     </div>
 //                 )}
-
 
 //                 <form onSubmit={handleSubmit} className="mt-10 space-y-4">
 //                     <div>
@@ -850,7 +828,6 @@
 //                         )}
 //                     </div>
 
-
 //                     {/* Next Button */}
 //                     <button
 //                         type="submit"
@@ -881,8 +858,6 @@
 //         </div>
 //     );
 // }
-
-
 
 // // frontend/src/pages/auth/register/page.tsx
 // 'use client';
@@ -917,7 +892,6 @@
 
 //     const inputBaseClasses = "mt-1 block px-4 py-3 w-full border rounded-lg hover:shadow-color hover:outline-none transition-shadow ease-in-out duration-300";
 
-
 //     // Redirect if user is already logged in
 //     useEffect(() => {
 //         if (!loading && user) {
@@ -934,7 +908,6 @@
 //             // window.history.replaceState({}, document.title, window.location.pathname);
 //         }
 //     }, []);
-
 
 //     const validateForm = () => {
 //         let isValid = true;
@@ -979,7 +952,6 @@
 //         return isValid;
 //     };
 
-
 //     const handleSubmit = async (e) => {
 //         e.preventDefault();
 //         setError('');
@@ -987,7 +959,6 @@
 //         if (!validateForm()) {
 //             return;
 //         }
-
 
 //         try {
 //             await authService.register({ fullName, email, password });
@@ -1021,7 +992,6 @@
 //     const handleCloseLoginError = () => {
 //         setError("");
 //     };
-
 
 //     return (
 //         <div className="flex justify-center items-center lg:h-[calc(100vh-73px)] px-4">
@@ -1076,7 +1046,6 @@
 //                     </div>
 //                 )}
 
-
 //                 <form onSubmit={handleSubmit} className="mt-10 space-y-4">
 //                     <div>
 //                         <div className="mt-4">
@@ -1225,7 +1194,6 @@
 //                         )}
 //                     </div>
 
-
 //                     {/* Next Button */}
 //                     <button
 //                         type="submit"
@@ -1256,7 +1224,6 @@
 //         </div>
 //     );
 // }
-
 
 // // frontend/src/app/auth/register/page.tsx
 // 'use client';
@@ -1292,7 +1259,6 @@
 
 //     // Removed unused inputBaseClasses variable
 
-
 //     // Redirect if user is already logged in
 //     useEffect(() => {
 //         if (!loading && user) {
@@ -1309,7 +1275,6 @@
 //             // window.history.replaceState({}, document.title, window.location.pathname);
 //         }
 //     }, []);
-
 
 //     const validateForm = () => {
 //         let isValid = true;
@@ -1351,7 +1316,6 @@
 //         return isValid;
 //     };
 
-
 //     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => { // Added type for event
 //         e.preventDefault();
 //         setError('');
@@ -1359,7 +1323,6 @@
 //         if (!validateForm()) {
 //             return;
 //         }
-
 
 //         try {
 //             await authService.register({ fullName, email, password });
@@ -1393,7 +1356,6 @@
 //     const handleCloseLoginError = () => {
 //         setError("");
 //     };
-
 
 //     return (
 //         <div className="flex justify-center items-center lg:h-[calc(100vh-73px)] px-4 py-8"> {/* Added padding */}
@@ -1449,7 +1411,6 @@
 //                         </div>
 //                     </div>
 //                 )}
-
 
 //                 <form onSubmit={handleSubmit} className="mt-10 space-y-4">
 //                     <div>
@@ -1614,7 +1575,6 @@
 //                         )}
 //                     </div>
 
-
 //                     {/* Next Button */}
 //                     <button
 //                         type="submit"
@@ -1646,442 +1606,965 @@
 //     );
 // }
 
+// // frontend/src/app/auth/register/page.tsx
+// "use client";
 
+// import { useState, useEffect } from "react";
+// import authService from "../../services/auth"; // Correct import path using alias
+// import { useRouter } from "next/navigation";
+// import { useAuth } from "../../contexts/AuthContext"; // Import useAuth
+// import Link from "next/link";
+// import Image from "next/image";
+// import { IoMdCheckmarkCircleOutline, IoMdCloseCircle } from "react-icons/io";
+// import { RiEyeCloseLine } from "react-icons/ri";
+// import { VscEye } from "react-icons/vsc";
+// import { IoClose } from "react-icons/io5";
+
+// // Import AxiosError if your authService likely throws it for HTTP errors
+// // import { AxiosError } from 'axios'; // Uncomment if using Axios
+
+// export default function RegisterPage() {
+//   const [fullName, setFullName] = useState("");
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [confirmPassword, setConfirmPassword] = useState("");
+//   const [error, setError] = useState("");
+//   const [showPassword, setShowPassword] = useState(false);
+//   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+//   const router = useRouter();
+//   const { user, loading } = useAuth(); // Get user and loading from AuthContext
+
+//   const [fullNameError, setFullNameError] = useState("");
+//   const [emailError, setEmailError] = useState("");
+//   const [passwordError, setPasswordError] = useState("");
+//   const [confirmPasswordError, setConfirmPasswordError] = useState("");
+//   const [registerSuccess, setRegisterSuccess] = useState(false); // State for successful registration
+//   const [isErrorVisible, setIsErrorVisible] = useState(false); // State to control error visibility for animation
+
+//   // Redirect if user is already logged in
+//   useEffect(() => {
+//     if (!loading && user) {
+//       router.push("/dashboard");
+//     }
+//   }, [user, loading, router]);
+
+//   // Check for success message on mount (e.g., after redirection from register)
+//   useEffect(() => {
+//     const params = new URLSearchParams(window.location.search);
+//     if (params.get("registerSuccess") === "true") {
+//       setRegisterSuccess(true);
+//       // Optionally clear the param from URL if you want it shown only once
+//       // window.history.replaceState({}, document.title, window.location.pathname);
+//     }
+//   }, []); // Run only once on mount
+
+//   useEffect(() => {
+//     if (error) {
+//       setIsErrorVisible(true);
+//     } else {
+//       setIsErrorVisible(false);
+//     }
+//   }, [error]);
+
+//   const validateForm = () => {
+//     let isValid = true;
+
+//     setFullNameError(""); // Reset errors on validation
+//     setEmailError("");
+//     setPasswordError("");
+//     setConfirmPasswordError("");
+
+//     if (!fullName.trim()) {
+//       setFullNameError("Full Name is required");
+//       isValid = false;
+//     }
+
+//     if (!email.trim()) {
+//       setEmailError("Email is required");
+//       isValid = false;
+//     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+//       setEmailError("Invalid email format");
+//       isValid = false;
+//     }
+
+//     if (!password.trim()) {
+//       setPasswordError("Password is required");
+//       isValid = false;
+//     } else if (password.length < 8) {
+//       setPasswordError("Password must be at least 8 characters");
+//       isValid = false;
+//     }
+
+//     if (!confirmPassword.trim()) {
+//       setConfirmPasswordError("Confirm Password is required");
+//       isValid = false;
+//     } else if (password !== confirmPassword) {
+//       setConfirmPasswordError("Passwords do not match");
+//       isValid = false;
+//     }
+
+//     return isValid;
+//   };
+
+//   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+//     e.preventDefault();
+//     setError("");
+//     setRegisterSuccess(false); // Reset success state on new submission
+
+//     if (!validateForm()) {
+//       return;
+//     }
+
+//     try {
+//       await authService.register({ fullName, email, password });
+//       setRegisterSuccess(true); // Set success state to true
+//       // Redirect to login page with a success indicator after a short delay
+//       setTimeout(() => {
+//         router.push("/auth/login?registerSuccess=true");
+//       }, 2000); // Delay allows user to see the success message
+//     } catch (err: unknown) {
+//       // <-- Use unknown instead of any
+//       let errorMessage = "Registration failed. Please try again."; // Default error message
+
+//       // Check if the error object has a structure typical of Axios errors
+//       // (or similar HTTP client errors) where the backend message is nested.
+//       if (typeof err === "object" && err !== null) {
+//         // Type assertion to check for nested properties safely
+//         const potentialError = err as {
+//           response?: { data?: { message?: string } };
+//           message?: string;
+//         };
+
+//         if (potentialError.response?.data?.message) {
+//           errorMessage = potentialError.response.data.message;
+//         } else if (potentialError.message) {
+//           // Fallback to the top-level message property if response.data.message doesn't exist
+//           errorMessage = potentialError.message;
+//         }
+//       }
+//       // Optional: Handle cases where a plain string might be thrown (less common)
+//       // else if (typeof err === 'string') {
+//       //    errorMessage = err;
+//       // }
+
+//       setError(errorMessage);
+//     }
+//   };
+
+//   const togglePasswordVisibility = () => {
+//     setShowPassword(!showPassword);
+//   };
+
+//   const toggleConfirmPasswordVisibility = () => {
+//     setShowConfirmPassword(!setShowConfirmPassword);
+//   };
+
+//   if (loading) {
+//     return <p>Loading...</p>; // Or a loading spinner
+//   }
+
+//   // Redirect is handled by useEffect, no need to render anything here if logged in
+//   // if (user && !loading) {
+//   //     return null;
+//   // }
+
+//   const handleCloseLoginError = () => {
+//     setError("");
+//     setIsErrorVisible(false); // Hide error when close button is clicked
+//   };
+
+//   // Framer Motion variants for animation
+//   const errorVariants = {
+//     initial: { opacity: 0, y: -20 },
+//     animate: {
+//       opacity: 1,
+//       y: 0,
+//       transition: { duration: 0.3, ease: "easeOut" },
+//     },
+//     exit: { opacity: 0, y: -20, transition: { duration: 0.2, ease: "easeIn" } },
+//   };
+
+//   return (
+//     <div className="flex justify-center items-center lg:h-[calc(100vh-73px)] px-4 py-8">
+//
+//       {/* Added padding */}
+//       <div className="w-full max-w-md">
+//         <h2 className="lg:text-3xl text-2xl text-center text-mainheading dark:text-white font-semibold mt-5 mb-4">
+//           Create your Wise account
+//         </h2>
+
+//         <p className="text-base text-center text-gray-500 dark:text-gray-300 mb-4">
+//           Already have an account? {/* Added space */}
+//           <Link
+//             href="/auth/login"
+//             className="text-primary font-medium underline underline-offset-4"
+//           >
+//             Log in
+//           </Link>
+//         </p>
+
+//         {/* Error Message Display */}
+//         {error && (
+//           <div
+//             className="flex bg-red-100 p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4" // Changed background, added margin
+//             role="alert"
+//           >
+//             <div className="flex bg-error justify-center rounded-full items-center size-12 shrink-0">
+//               <IoClose className="p-0.5 text-white size-8" />
+//             </div>
+
+//             <div className="flex-grow">
+//               <span className="text-error block">{error}</span>
+//             </div>
+
+//             <button
+//               className="absolute cursor-pointer right-4 top-4 p-1 rounded-full text-error hover:bg-red-200"
+//               onClick={handleCloseLoginError}
+//               aria-label="Close error message"
+//             >
+//               <IoClose
+//                 className="size-6"
+//                 role="button"
+//                 aria-hidden="true" // Hide decorative icon from screen readers
+//               />
+//             </button>
+//           </div>
+//         )}
+
+//         {/* Success Message Display */}
+//         {registerSuccess &&
+//           !error && ( // Show success only if there's no error from a subsequent attempt
+//             <div className="flex bg-green/10 p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4">
+//
+//               {/* Adjusted background/padding */}
+//               <div className="flex bg-green justify-center rounded-full items-center size-12 shrink-0">
+//                 <IoMdCheckmarkCircleOutline className="p-0.5 text-white size-8" />
+//               </div>
+//               <div className="flex-grow">
+//                 <span className="text-green block font-medium">
+//                   Registration successful!
+//                 </span>
+//                 {/* Improved text */}
+//                 <span className="text-gray block text-sm">
+//                   Redirecting to login...
+//                 </span>
+//               </div>
+//             </div>
+//           )}
+
+//         <form onSubmit={handleSubmit} className="mt-10 space-y-4">
+//           {/* Google Button */}
+//           <div>
+//             {/* Consider making this a button or handling the click properly */}
+//             <a className="flex bg-white dark:bg-background border justify-center rounded-lg text-mainheading dark:text-white  text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 h-14">
+//               <Image
+//                 src="/assets/icon/google.svg"
+//                 width={24} // Adjusted size
+//                 height={24} // Adjusted size
+//                 alt="Google icon"
+//               />
+//               Continue with Google
+//             </a>
+//           </div>
+
+//           {/* Full Name Input */}
+//           <div>
+//             <label
+//               htmlFor="fullName"
+//               className="text-gray-500 dark:text-gray-300 font-medium block mb-1" // Adjusted styling
+//             >
+//               Full Name <span className="text-error">*</span>
+//             </label>
+//             <input
+//               type="text"
+//               id="fullName"
+//               autoComplete="name" // Added autocomplete
+//               aria-required="true"
+//               aria-invalid={!!fullNameError}
+//               aria-describedby={fullNameError ? "fullName-error" : undefined}
+//               className={`mt-1 block px-4 py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
+//                 fullNameError
+//                   ? "border-red-700 border-2" // Simplified error state
+//                   : "dark:hover:shadow-whitecolor hover:shadow-darkcolor" // Adjusted normal/focus states
+//               }`}
+//               value={fullName}
+//               onChange={(e) => {
+//                 setFullName(e.target.value);
+//                 if (fullNameError) setFullNameError("");
+//               }} // Clear error on change
+//             />
+//             {fullNameError && (
+//               <p
+//                 id="fullName-error"
+//                 className="flex text-red-700 text-base items-center mt-0.5"
+//                 role="alert"
+//               >
+//
+//                 {/* Adjusted style/role */}
+//                 <span className="mr-1">
+//                   <IoMdCloseCircle className="size-5" />
+//                 </span>
+//                 {fullNameError}
+//               </p>
+//             )}
+//           </div>
+
+//           {/* Email Input */}
+//           <div>
+//             <label
+//               htmlFor="email"
+//               className="text-gray-500 dark:text-gray-300 font-medium block mb-1"
+//             >
+//               Email Address <span className="text-error">*</span>
+//             </label>
+//             <input
+//               type="email"
+//               id="email"
+//               autoComplete="email" // Added autocomplete
+//               aria-required="true"
+//               aria-invalid={!!emailError}
+//               aria-describedby={emailError ? "email-error" : undefined}
+//               className={`mt-1 block px-4 py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
+//                 emailError
+//                   ? "border-red-700 border-2"
+//                   : "dark:hover:shadow-whitecolor hover:shadow-darkcolor"
+//               }`}
+//               value={email}
+//               onChange={(e) => {
+//                 setEmail(e.target.value);
+//                 if (emailError) setEmailError("");
+//               }} // Clear error on change
+//             />
+//             {emailError && (
+//               <p className="flex text-red-700 text-base items-center mt-0.5">
+//                 <span className="mr-1">
+//                   <IoMdCloseCircle className="size-5" />
+//                 </span>
+//                 {emailError}
+//               </p>
+//             )}
+//           </div>
+
+//           {/* Password Input */}
+//           <div>
+//             <label
+//               htmlFor="password"
+//               className="text-gray-500 dark:text-gray-300 font-medium block mb-1"
+//             >
+//               Password <span className="text-error">*</span>
+//             </label>
+//             <div className="relative">
+//               <input
+//                 type={showPassword ? "text" : "password"}
+//                 id="password"
+//                 autoComplete="new-password" // Important for password managers
+//                 aria-required="true"
+//                 aria-invalid={!!passwordError}
+//                 aria-describedby={passwordError ? "password-error" : undefined}
+//                 className={`mt-1 block px-4 py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
+//                   passwordError
+//                     ? "border-red-700 border-2"
+//                     : "dark:hover:shadow-whitecolor hover:shadow-darkcolor"
+//                 }`}
+//                 value={password}
+//                 onChange={(e) => {
+//                   setPassword(e.target.value);
+//                   if (passwordError) setPasswordError("");
+//                 }} // Clear error on change
+//               />
+//               <button
+//                 type="button"
+//                 className="text-gray-500 dark:text-white -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-1 top-1/2 transform bg-white dark:bg-background p-3 rounded-md" // Adjusted focus style
+//                 onClick={togglePasswordVisibility}
+//                 aria-label={showPassword ? "Hide password" : "Show password"}
+//               >
+//                 {showPassword ? (
+//                   <RiEyeCloseLine className="text-mainheading dark:text-white size-5" />
+//                 ) : (
+//                   <VscEye className="text-mainheading dark:text-white size-5" />
+//                 )}
+//               </button>
+//             </div>
+//             {passwordError && (
+//               <p className="flex text-red-700 text-base items-center mt-0.5">
+//                 <span className="mr-1">
+//                   <IoMdCloseCircle className="size-5" />
+//                 </span>
+//                 {passwordError}
+//               </p>
+//             )}
+//           </div>
+
+//           {/* Confirm Password Input */}
+//           <div>
+//             <label
+//               htmlFor="confirmPassword"
+//               className="text-gray-500 dark:text-gray-300 font-medium block mb-1"
+//             >
+//               Confirm Password <span className="text-error">*</span>
+//             </label>
+//             <div className="relative">
+//               <input
+//                 type={showConfirmPassword ? "text" : "password"}
+//                 id="confirmPassword"
+//                 autoComplete="new-password"
+//                 aria-required="true"
+//                 aria-invalid={!!confirmPasswordError}
+//                 aria-describedby={
+//                   confirmPasswordError ? "confirmPassword-error" : undefined
+//                 }
+//                 className={`mt-1 block px-4 py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
+//                   confirmPasswordError
+//                     ? "border-red-700 border-2"
+//                     : "dark:hover:shadow-whitecolor hover:shadow-darkcolor"
+//                 }`}
+//                 value={confirmPassword}
+//                 onChange={(e) => {
+//                   setConfirmPassword(e.target.value);
+//                   if (confirmPasswordError) setConfirmPasswordError("");
+//                 }} // Clear error on change
+//               />
+//               <button
+//                 type="button"
+//                 className="text-gray-500 dark:text-white -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-1 top-1/2 transform bg-white dark:bg-background p-3 rounded-md"
+//                 onClick={toggleConfirmPasswordVisibility}
+//                 aria-label={
+//                   showConfirmPassword
+//                     ? "Hide confirm password"
+//                     : "Show confirm password"
+//                 }
+//               >
+//                 {showConfirmPassword ? (
+//                   <RiEyeCloseLine className="text-mainheading dark:text-white size-5" />
+//                 ) : (
+//                   <VscEye className="text-mainheading dark:text-white size-5" />
+//                 )}
+//               </button>
+//             </div>
+//             {confirmPasswordError && (
+//               <p className="flex text-red-700 text-base items-center mt-0.5">
+//                 <span className="mr-1">
+//                   <IoMdCloseCircle className="size-5" />
+//                 </span>
+//                 {confirmPasswordError}
+//               </p>
+//             )}
+//           </div>
+
+//           {/* Register Button */}
+//           <button
+//             type="submit"
+//             disabled={registerSuccess} // Disable button after successful registration to prevent double clicks
+//             className={`bg-primary hover:bg-primaryhover rounded-full text-mainheading text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium py-3 h-14 transition-colors`} // Adjusted styles, disabled state
+//           >
+//             {registerSuccess ? "Registered!" : "Register"}
+//           </button>
+//         </form>
+
+//         {/* Terms and Policy Links */}
+//         <p className="text-center text-gray-500 dark:text-gray-300 my-3 text-sm">
+//
+//           {/* Adjusted styles */}
+//           By registering, you accept our{" "}
+//           <Link
+//             href="/terms-and-conditions"
+//             className="text-primary font-medium underline underline-offset-4" // Adjusted offset/hover
+//           >
+//             Terms of use
+//           </Link>{" "}
+//           and{" "}
+//           <Link
+//             href="/privacy-policy-en"
+//             className="text-primary font-medium underline underline-offset-4"
+//           >
+//             Privacy Policy
+//           </Link>
+//           .
+//         </p>
+//       </div>
+//     </div>
+//   );
+// }
 
 // frontend/src/app/auth/register/page.tsx
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import authService from '../../services/auth'; // Correct import path using alias
-import { useRouter } from 'next/navigation';
-import { useAuth } from '../../hooks/useAuth'; // Import useAuth
+import { useState, useEffect } from "react";
+import authService from "../../services/auth"; // Correct import path using alias
+import { useRouter } from "next/navigation";
+import { useAuth } from "../../contexts/AuthContext"; // Import useAuth
 import Link from "next/link";
 import Image from "next/image";
 import { IoMdCheckmarkCircleOutline, IoMdCloseCircle } from "react-icons/io";
 import { RiEyeCloseLine } from "react-icons/ri";
 import { VscEye } from "react-icons/vsc";
-import { IoClose } from 'react-icons/io5';
-import { IoMdCheckmarkCircleOutline } from "react-icons/io";
+import { IoClose } from "react-icons/io5";
+import { motion, AnimatePresence } from "framer-motion"; // Import Framer Motion
+import { FiX } from "react-icons/fi";
 
 // Import AxiosError if your authService likely throws it for HTTP errors
 // import { AxiosError } from 'axios'; // Uncomment if using Axios
 
 export default function RegisterPage() {
-    const [fullName, setFullName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [error, setError] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const router = useRouter();
-    const { user, loading } = useAuth(); // Get user and loading from AuthContext
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const router = useRouter();
+  const { user, loading } = useAuth(); // Get user and loading from AuthContext
 
-    const [fullNameError, setFullNameError] = useState('');
-    const [emailError, setEmailError] = useState('');
-    const [passwordError, setPasswordError] = useState('');
-    const [confirmPasswordError, setConfirmPasswordError] = useState('');
-    const [registerSuccess, setRegisterSuccess] = useState(false); // State for successful registration
-    const [isErrorVisible, setIsErrorVisible] = useState(false); // State to control error visibility for animation
+  const [fullNameError, setFullNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [registerSuccess, setRegisterSuccess] = useState(false); // State for successful registration
+  const [isErrorVisible, setIsErrorVisible] = useState(false); // State to control error visibility for animation
 
-    // Redirect if user is already logged in
-    useEffect(() => {
-        if (!loading && user) {
-            router.push('/dashboard');
-        }
-    }, [user, loading, router]);
+  // Redirect if user is already logged in
+  useEffect(() => {
+    if (!loading && user) {
+      router.push("/dashboard");
+    }
+  }, [user, loading, router]);
 
-    // Check for success message on mount (e.g., after redirection from register)
-    useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('registerSuccess') === 'true') {
-            setRegisterSuccess(true);
-            // Optionally clear the param from URL if you want it shown only once
-             // window.history.replaceState({}, document.title, window.location.pathname);
-        }
-    }, []); // Run only once on mount
+  // Check for success message on mount (e.g., after redirection from register)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("registerSuccess") === "true") {
+      setRegisterSuccess(true);
+      // Optionally clear the param from URL if you want it shown only once
+      // window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []); // Run only once on mount
 
-    useEffect(() => {
-        if (error) {
-            setIsErrorVisible(true);
-        } else {
-            setIsErrorVisible(false);
-        }
-    }, [error]);
+  useEffect(() => {
+    if (error) {
+      setIsErrorVisible(true);
+    } else {
+      setIsErrorVisible(false);
+    }
+  }, [error]);
 
+  const validateForm = () => {
+    let isValid = true;
 
-    const validateForm = () => {
-        let isValid = true;
+    setFullNameError(""); // Reset errors on validation
+    setEmailError("");
+    setPasswordError("");
+    setConfirmPasswordError("");
 
-        setFullNameError(''); // Reset errors on validation
-        setEmailError('');
-        setPasswordError('');
-        setConfirmPasswordError('');
-
-        if (!fullName.trim()) {
-            setFullNameError('Full Name is required');
-            isValid = false;
-        }
-
-        if (!email.trim()) {
-            setEmailError('Email is required');
-            isValid = false;
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            setEmailError('Invalid email format');
-            isValid = false;
-        }
-
-        if (!password.trim()) {
-            setPasswordError('Password is required');
-            isValid = false;
-        } else if (password.length < 8) {
-            setPasswordError('Password must be at least 8 characters');
-            isValid = false;
-        }
-
-        if (!confirmPassword.trim()) {
-            setConfirmPasswordError('Confirm Password is required');
-            isValid = false;
-        } else if (password !== confirmPassword) {
-            setConfirmPasswordError('Passwords do not match');
-            isValid = false;
-        }
-
-        return isValid;
-    };
-
-
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setError('');
-        setRegisterSuccess(false); // Reset success state on new submission
-
-        if (!validateForm()) {
-            return;
-        }
-
-        try {
-            await authService.register({ fullName, email, password });
-            setRegisterSuccess(true); // Set success state to true
-            // Redirect to login page with a success indicator after a short delay
-            setTimeout(() => {
-                router.push('/auth/login?registerSuccess=true');
-            }, 2000); // Delay allows user to see the success message
-
-        } catch (err: unknown) { // <-- Use unknown instead of any
-            let errorMessage = 'Registration failed. Please try again.'; // Default error message
-
-            // Check if the error object has a structure typical of Axios errors
-            // (or similar HTTP client errors) where the backend message is nested.
-            if (typeof err === 'object' && err !== null) {
-                 // Type assertion to check for nested properties safely
-                const potentialError = err as { response?: { data?: { message?: string } }, message?: string };
-
-                if (potentialError.response?.data?.message) {
-                    errorMessage = potentialError.response.data.message;
-                 } else if (potentialError.message) {
-                    // Fallback to the top-level message property if response.data.message doesn't exist
-                     errorMessage = potentialError.message;
-                 }
-            }
-            // Optional: Handle cases where a plain string might be thrown (less common)
-            // else if (typeof err === 'string') {
-            //    errorMessage = err;
-            // }
-
-            setError(errorMessage);
-        }
-    };
-
-    const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
-    };
-
-    const toggleConfirmPasswordVisibility = () => {
-        setShowConfirmPassword(!setShowConfirmPassword);
-    };
-
-    if (loading) {
-        return <p>Loading...</p>; // Or a loading spinner
+    if (!fullName.trim()) {
+      setFullNameError("Full Name is required");
+      isValid = false;
     }
 
-    // Redirect is handled by useEffect, no need to render anything here if logged in
-    // if (user && !loading) {
-    //     return null;
-    // }
+    if (!email.trim()) {
+      setEmailError("Email is required");
+      isValid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setEmailError("Invalid email format");
+      isValid = false;
+    }
 
-    const handleCloseLoginError = () => {
-        setError("");
-        setIsErrorVisible(false); // Hide error when close button is clicked
-    };
+    if (!password.trim()) {
+      setPasswordError("Password is required");
+      isValid = false;
+    } else if (password.length < 8) {
+      setPasswordError("Password must be at least 8 characters");
+      isValid = false;
+    }
 
-    // Framer Motion variants for animation
-    const errorVariants = {
-        initial: { opacity: 0, y: -20,  },
-        animate: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } },
-        exit: { opacity: 0, y: -20, transition: { duration: 0.2, ease: "easeIn" } }
-    };
+    if (!confirmPassword.trim()) {
+      setConfirmPasswordError("Confirm Password is required");
+      isValid = false;
+    } else if (password !== confirmPassword) {
+      setConfirmPasswordError("Passwords do not match");
+      isValid = false;
+    }
 
+    return isValid;
+  };
 
-    return (
-        <div className="flex justify-center items-center lg:h-[calc(100vh-73px)] px-4 py-8"> {/* Added padding */}
-            <div className="w-full max-w-md">
-                <h2 className="lg:text-3xl text-2xl text-center text-mainheading dark:text-white font-semibold mt-5 mb-4">
-                    Create your Wise account
-                </h2>
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
+    setRegisterSuccess(false); // Reset success state on new submission
 
-                <p className="text-base text-center text-gray mb-4">
-                    Already have an account?{' '} {/* Added space */}
-                    <Link
-                        href="/auth/login"
-                        className="text-primary font-medium underline underline-offset-4"
-                    >
-                        Log in
-                    </Link>
-                </p>
+    if (!validateForm()) {
+      return;
+    }
 
-                 {/* Error Message Display */}
-                {error && (
-                    <div
-                        className="flex bg-red-100 p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4" // Changed background, added margin
-                        role="alert"
-                    >
-                        <div className="flex bg-error justify-center rounded-full items-center size-12 shrink-0">
-                            <IoClose className="p-0.5 text-white size-8" />
-                        </div>
+    try {
+      await authService.register({ fullName, email, password });
+      setRegisterSuccess(true); // Set success state to true
+      // Redirect to login page with a success indicator after a short delay
+      setTimeout(() => {
+        router.push("/auth/login?registerSuccess=true");
+      }, 1000); // Delay allows user to see the success message
+    } catch (err: unknown) {
+      // <-- Use unknown instead of any
+      let errorMessage = "Registration failed. Please try again."; // Default error message
 
-                        <div className="flex-grow">
-                            <span className="text-error block">{error}</span>
-                        </div>
+      // Check if the error object has a structure typical of Axios errors
+      // (or similar HTTP client errors) where the backend message is nested.
+      if (typeof err === "object" && err !== null) {
+        // Type assertion to check for nested properties safely
+        const potentialError = err as {
+          response?: { data?: { message?: string } };
+          message?: string;
+        };
 
-                        <button
-                            className="absolute cursor-pointer right-4 top-4 p-1 rounded-full text-error hover:bg-red-200"
-                            onClick={handleCloseLoginError}
-                            aria-label="Close error message"
-                        >
-                            <IoClose
-                                className="size-6"
-                                role="button"
-                                aria-hidden="true" // Hide decorative icon from screen readers
-                            />
-                        </button>
-                    </div>
+        if (potentialError.response?.data?.message) {
+          errorMessage = potentialError.response.data.message;
+        } else if (potentialError.message) {
+          // Fallback to the top-level message property if response.data.message doesn't exist
+          errorMessage = potentialError.message;
+        }
+      }
+      // Optional: Handle cases where a plain string might be thrown (less common)
+      // else if (typeof err === 'string') {
+      //    errorMessage = err;
+      // }
+
+      setError(errorMessage);
+    }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
+  if (loading) {
+    return <p>Loading...</p>; // Or a loading spinner
+  }
+
+  // Redirect is handled by useEffect, no need to render anything here if logged in
+  // if (user && !loading) {
+  //     return null;
+  // }
+
+  const handleCloseLoginError = () => {
+    setError("");
+    setIsErrorVisible(false); // Hide error when close button is clicked
+  };
+
+  // Framer Motion variants for animation
+  const errorVariants = {
+    initial: { opacity: 0, y: -20 },
+    animate: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.3, ease: "easeOut" },
+    },
+    exit: { opacity: 0, y: -20, transition: { duration: 0.2, ease: "easeIn" } },
+  };
+
+  return (
+    <div className="flex justify-center items-center lg:h-[calc(100vh-73px)] px-4 py-8">
+      {/* Added padding */}
+      <div className="w-full max-w-md">
+        <h2 className="lg:text-3xl text-2xl text-center text-mainheading dark:text-white font-semibold mt-5 mb-4">
+          Create your Wise account
+        </h2>
+
+        <p className="text-base text-center text-gray-500 dark:text-gray-300 mb-4">
+          Already have an account? {/* Added space */}
+          <Link
+            href="/auth/login"
+            className="text-primary font-medium underline underline-offset-4"
+          >
+            Log in
+          </Link>
+        </p>
+
+        {/* Error Message Display */}
+        <AnimatePresence>
+          {isErrorVisible && error && (
+            <motion.div
+              className="bg-lightgray dark:bg-red-600/20 border rounded-xl p-4 flex items-center gap-4 relative mb-5"
+              role="alert"
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              variants={errorVariants}
+            >
+              <div className="p-1 bg-red-700 rounded-full">
+                <FiX size={24} className="text-lightgray" />
+              </div>
+
+              <div>
+                <span className="text-gray-500 dark:text-white  block max-w-60">
+                  {error}
+                </span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Success Message Display */}
+        <AnimatePresence>
+          {registerSuccess &&
+            !error && ( // Show success only if there's no error from a subsequent attempt
+              <motion.div
+                className="flex bg-lightgray dark:bg-secondary p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4"
+                role="alert"
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                variants={errorVariants}
+              >
+                {/* Adjusted background/padding */}
+                <div className="flex bg-primary justify-center rounded-full items-center size-12 shrink-0">
+                  <IoMdCheckmarkCircleOutline className="p-0.5 text-mainheading size-8" />
+                </div>
+                <div className="flex-grow space-y-0.5">
+                  <span className="text-mainheading dark:text-primary block font-medium">
+                    Registration successful!
+                  </span>
+                  {/* Improved text */}
+                  <span className="text-gray-500 dark:text-gray-300 block text-sm">
+                    Redirecting to login...
+                  </span>
+                </div>
+              </motion.div>
+            )}
+        </AnimatePresence>
+
+        <form onSubmit={handleSubmit} className="mt-0 space-y-4">
+          {/* Google Button */}
+          <div>
+            {/* Consider making this a button or handling the click properly */}
+            <a className="flex bg-white dark:bg-background border justify-center rounded-lg text-mainheading dark:text-white  text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 h-14">
+              <Image
+                src="/assets/icon/google.svg"
+                width={24} // Adjusted size
+                height={24} // Adjusted size
+                alt="Google icon"
+              />
+              Continue with Google
+            </a>
+          </div>
+
+          {/* Full Name Input */}
+          <div>
+            <label
+              htmlFor="fullName"
+              className="text-gray-500 dark:text-gray-300 font-medium block mb-1" // Adjusted styling
+            >
+              Full Name <span className="text-error">*</span>
+            </label>
+            <input
+              type="text"
+              id="fullName"
+              autoComplete="name" // Added autocomplete
+              aria-required="true"
+              aria-invalid={!!fullNameError}
+              aria-describedby={fullNameError ? "fullName-error" : undefined}
+              className={`mt-1 block px-4 py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
+                fullNameError
+                  ? "border-red-700 border-2" // Simplified error state
+                  : "dark:hover:shadow-whitecolor hover:shadow-darkcolor" // Adjusted normal/focus states
+              }`}
+              value={fullName}
+              onChange={(e) => {
+                setFullName(e.target.value);
+                if (fullNameError) setFullNameError("");
+              }} // Clear error on change
+            />
+            {fullNameError && (
+              <p
+                id="fullName-error"
+                className="flex text-red-700 text-base items-center mt-0.5"
+                role="alert"
+              >
+                {/* Adjusted style/role */}
+                <span className="mr-1">
+                  <IoMdCloseCircle className="size-5" />
+                </span>
+                {fullNameError}
+              </p>
+            )}
+          </div>
+
+          {/* Email Input */}
+          <div>
+            <label
+              htmlFor="email"
+              className="text-gray-500 dark:text-gray-300 font-medium block mb-1"
+            >
+              Email Address <span className="text-error">*</span>
+            </label>
+            <input
+              type="email"
+              id="email"
+              autoComplete="email" // Added autocomplete
+              aria-required="true"
+              aria-invalid={!!emailError}
+              aria-describedby={emailError ? "email-error" : undefined}
+              className={`mt-1 block px-4 py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
+                emailError
+                  ? "border-red-700 border-2"
+                  : "dark:hover:shadow-whitecolor hover:shadow-darkcolor"
+              }`}
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (emailError) setEmailError("");
+              }} // Clear error on change
+            />
+            {emailError && (
+              <p className="flex text-red-700 text-base items-center mt-0.5">
+                <span className="mr-1">
+                  <IoMdCloseCircle className="size-5" />
+                </span>
+                {emailError}
+              </p>
+            )}
+          </div>
+
+          {/* Password Input */}
+          <div>
+            <label
+              htmlFor="password"
+              className="text-gray-500 dark:text-gray-300 font-medium block mb-1"
+            >
+              Password <span className="text-error">*</span>
+            </label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                autoComplete="new-password" // Important for password managers
+                aria-required="true"
+                aria-invalid={!!passwordError}
+                aria-describedby={passwordError ? "password-error" : undefined}
+                className={`mt-1 block px-4 py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
+                  passwordError
+                    ? "border-red-700 border-2"
+                    : "dark:hover:shadow-whitecolor hover:shadow-darkcolor"
+                }`}
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (passwordError) setPasswordError("");
+                }} // Clear error on change
+              />
+              <button
+                type="button"
+                className="text-gray-500 dark:text-white cursor-pointer -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-1 top-1/2 transform bg-white dark:bg-background p-3 rounded-md" // Adjusted focus style
+                onClick={togglePasswordVisibility}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <RiEyeCloseLine className="text-mainheading dark:text-white size-5" />
+                ) : (
+                  <VscEye className="text-mainheading dark:text-white size-5" />
                 )}
-
-                 {/* Success Message Display */}
-                {registerSuccess && !error && ( // Show success only if there's no error from a subsequent attempt
-                    <div className="flex bg-green/10 p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4"> {/* Adjusted background/padding */}
-                        <div className="flex bg-green justify-center rounded-full items-center size-12 shrink-0">
-                            <IoMdCheckmarkCircleOutline className="p-0.5 text-white size-8" />
-                        </div>
-                        <div className="flex-grow">
-                            <span className="text-green block font-medium">Registration successful!</span> {/* Improved text */}
-                            <span className="text-gray block text-sm">Redirecting to login...</span>
-                        </div>
-                         {/* Optionally add a close button if needed, though auto-redirect is common */}
-                    </div>
-                )}
-
-
-                <form onSubmit={handleSubmit} className="mt-10 space-y-4">
-                     {/* Google Button */}
-                    <div>
-                        {/* Consider making this a button or handling the click properly */}
-                        <a className="flex bg-white border border-gray/50 hover:border-gray/80 justify-center rounded-lg text-gray-700 text-md w-full cursor-pointer font-medium gap-4 hover:bg-gray-50 items-center px-4 py-2.5 transition-colors duration-200">
-                            <Image
-                                src="/assets/icon/google.svg"
-                                width={24} // Adjusted size
-                                height={24} // Adjusted size
-                                alt="Google icon"
-                            />
-                            Continue with Google
-                        </a>
-                    </div>
-                    <div className="relative flex items-center my-6"> {/* Adjusted margin */}
-                        <div className="flex-grow border-t border-gray-300"></div>
-                        <span className="flex-shrink mx-4 text-gray-500 text-sm">OR</span>
-                        <div className="flex-grow border-t border-gray-300"></div>
-                    </div>
-
-                    {/* Full Name Input */}
-                    <div>
-                        <label
-                            htmlFor="fullName"
-                            className="text-gray-700 text-sm font-medium block mb-1" // Adjusted styling
-                        >
-                            Full Name <span className="text-error">*</span>
-                        </label>
-                        <input
-                            type="text"
-                            id="fullName"
-                            autoComplete="name" // Added autocomplete
-                            aria-required="true"
-                            aria-invalid={!!fullNameError}
-                            aria-describedby={fullNameError ? "fullName-error" : undefined}
-                            className={`block px-4 py-3 w-full border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all ease-in-out duration-200 ${fullNameError
-                                ? "border-error ring-error/50" // Simplified error state
-                                : "border-gray-300 hover:border-gray-400 focus:border-primary" // Adjusted normal/focus states
-                                }`}
-                            value={fullName}
-                            onChange={(e) => { setFullName(e.target.value); if (fullNameError) setFullNameError(''); }} // Clear error on change
-                        />
-                        {fullNameError && (
-                            <p id="fullName-error" className="flex text-error text-xs items-center mt-1.5" role="alert"> {/* Adjusted style/role */}
-                                <IoMdCloseCircle className="size-3.5 mr-1 flex-shrink-0" /> {/* Adjusted size/margin */}
-                                {fullNameError}
-                            </p>
-                        )}
-                    </div>
-
-                     {/* Email Input */}
-                    <div>
-                        <label
-                            htmlFor="email"
-                            className="text-gray-700 text-sm font-medium block mb-1"
-                        >
-                            Email Address <span className="text-error">*</span>
-                        </label>
-                        <input
-                            type="email"
-                            id="email"
-                            autoComplete="email" // Added autocomplete
-                            aria-required="true"
-                            aria-invalid={!!emailError}
-                            aria-describedby={emailError ? "email-error" : undefined}
-                            className={`block px-4 py-3 w-full border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all ease-in-out duration-200 ${emailError
-                                ? "border-error ring-error/50"
-                                : "border-gray-300 hover:border-gray-400 focus:border-primary"
-                                }`}
-                            value={email}
-                            onChange={(e) => { setEmail(e.target.value); if (emailError) setEmailError(''); }} // Clear error on change
-                        />
-                        {emailError && (
-                            <p id="email-error" className="flex text-error text-xs items-center mt-1.5" role="alert">
-                                <IoMdCloseCircle className="size-3.5 mr-1 flex-shrink-0" />
-                                {emailError}
-                            </p>
-                        )}
-                    </div>
-
-                    {/* Password Input */}
-                    <div>
-                        <label
-                            htmlFor="password"
-                            className="text-gray-700 text-sm font-medium block mb-1"
-                        >
-                            Password <span className="text-error">*</span>
-                        </label>
-                        <div className="relative">
-                            <input
-                                type={showPassword ? "text" : "password"}
-                                id="password"
-                                autoComplete="new-password" // Important for password managers
-                                aria-required="true"
-                                aria-invalid={!!passwordError}
-                                aria-describedby={passwordError ? "password-error" : undefined}
-                                className={`block px-4 py-3 w-full border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all ease-in-out duration-200 ${passwordError
-                                    ? "border-error ring-error/50"
-                                    : "border-gray-300 hover:border-gray-400 focus:border-primary"
-                                    }`}
-                                value={password}
-                                onChange={(e) => { setPassword(e.target.value); if (passwordError) setPasswordError(''); }} // Clear error on change
-                            />
-                            <button
-                                type="button"
-                                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/30 rounded-full" // Adjusted focus style
-                                onClick={togglePasswordVisibility}
-                                aria-label={showPassword ? "Hide password" : "Show password"}
-                            >
-                                {showPassword ? (
-                                    <RiEyeCloseLine className="text-mainheading dark:text-white size-5" />
-                                ) : (
-                                    <VscEye className="text-mainheading dark:text-white size-5" />
-                                )}
-                            </button>
-                        </div>
-                        {passwordError && (
-                            <p id="password-error" className="flex text-error text-xs items-center mt-1.5" role="alert">
-                                <IoMdCloseCircle className="size-3.5 mr-1 flex-shrink-0" />
-                                {passwordError}
-                            </p>
-                        )}
-                    </div>
-
-                    {/* Confirm Password Input */}
-                    <div>
-                        <label
-                            htmlFor="confirmPassword"
-                            className="text-gray-700 text-sm font-medium block mb-1"
-                        >
-                            Confirm Password <span className="text-error">*</span>
-                        </label>
-                        <div className="relative">
-                            <input
-                                type={showConfirmPassword ? "text" : "password"}
-                                id="confirmPassword"
-                                autoComplete="new-password"
-                                aria-required="true"
-                                aria-invalid={!!confirmPasswordError}
-                                aria-describedby={confirmPasswordError ? "confirmPassword-error" : undefined}
-                                className={`block px-4 py-3 w-full border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all ease-in-out duration-200 ${confirmPasswordError
-                                    ? "border-error ring-error/50"
-                                    : "border-gray-300 hover:border-gray-400 focus:border-primary"
-                                    }`}
-                                value={confirmPassword}
-                                onChange={(e) => { setConfirmPassword(e.target.value); if (confirmPasswordError) setConfirmPasswordError(''); }} // Clear error on change
-                            />
-                            <button
-                                type="button"
-                                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/30 rounded-full"
-                                onClick={toggleConfirmPasswordVisibility}
-                                aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
-                            >
-                                {showConfirmPassword ? (
-                                    <RiEyeCloseLine className="text-mainheading dark:text-white size-5" />
-                                ) : (
-                                    <VscEye className="text-mainheading dark:text-white size-5" />
-                                )}
-                            </button>
-                        </div>
-                        {confirmPasswordError && (
-                            <p id="confirmPassword-error" className="flex text-error text-xs items-center mt-1.5" role="alert">
-                                <IoMdCloseCircle className="size-3.5 mr-1 flex-shrink-0" />
-                                {confirmPasswordError}
-                            </p>
-                        )}
-                    </div>
-
-
-                    {/* Register Button */}
-                    <button
-                        type="submit"
-                        disabled={registerSuccess} // Disable button after successful registration to prevent double clicks
-                        className={`bg-primary hover:bg-primary-hover rounded-full text-white text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary font-semibold py-3 transition-colors mt-6 disabled:opacity-70 disabled:cursor-not-allowed`} // Adjusted styles, disabled state
-                    >
-                        {registerSuccess ? 'Registered!' : 'Register'}
-                    </button>
-                </form>
-
-                 {/* Terms and Policy Links */}
-                <p className="text-center text-gray-600 my-6 text-xs px-4"> {/* Adjusted styles */}
-                    By registering, you accept our{' '}
-                    <Link
-                        href="/terms-and-conditions"
-                        className="text-secondary font-medium underline underline-offset-2 hover:text-secondary-dark" // Adjusted offset/hover
-                    >
-                        Terms of use
-                    </Link>
-                    {' '}and{' '}
-                    <Link
-                        href="/privacy-policy-en"
-                        className="text-secondary font-medium underline underline-offset-2 hover:text-secondary-dark"
-                    >
-                        Privacy Policy
-                    </Link>
-                    .
-                </p>
-
+              </button>
             </div>
-        </div>
-    );
+            {passwordError && (
+              <p className="flex text-red-700 text-base items-center mt-0.5">
+                <span className="mr-1">
+                  <IoMdCloseCircle className="size-5" />
+                </span>
+                {passwordError}
+              </p>
+            )}
+          </div>
+
+          {/* Confirm Password Input */}
+          <div>
+            <label
+              htmlFor="confirmPassword"
+              className="text-gray-500 dark:text-gray-300 font-medium block mb-1"
+            >
+              Confirm Password <span className="text-error">*</span>
+            </label>
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                id="confirmPassword"
+                autoComplete="new-password"
+                aria-required="true"
+                aria-invalid={!!confirmPasswordError}
+                aria-describedby={
+                  confirmPasswordError ? "confirmPassword-error" : undefined
+                }
+                className={`mt-1 block px-4 py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
+                  confirmPasswordError
+                    ? "border-red-700 border-2"
+                    : "dark:hover:shadow-whitecolor hover:shadow-darkcolor"
+                }`}
+                value={confirmPassword}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                  if (confirmPasswordError) setConfirmPasswordError("");
+                }} // Clear error on change
+              />
+              <button
+                type="button"
+                className="text-gray-500 dark:text-white cursor-pointer -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-1 top-1/2 transform bg-white dark:bg-background p-3 rounded-md"
+                onClick={toggleConfirmPasswordVisibility}
+                aria-label={
+                  showConfirmPassword
+                    ? "Hide confirm password"
+                    : "Show confirm password"
+                }
+              >
+                {showConfirmPassword ? (
+                  <RiEyeCloseLine className="text-mainheading dark:text-white size-5" />
+                ) : (
+                  <VscEye className="text-mainheading dark:text-white size-5" />
+                )}
+              </button>
+            </div>
+            {confirmPasswordError && (
+              <p className="flex text-red-700 text-base items-center mt-0.5">
+                <span className="mr-1">
+                  <IoMdCloseCircle className="size-5" />
+                </span>
+                {confirmPasswordError}
+              </p>
+            )}
+          </div>
+
+          {/* Register Button */}
+          <button
+            type="submit"
+            disabled={registerSuccess} // Disable button after successful registration to prevent double clicks
+            className={`bg-primary hover:bg-primaryhover rounded-full text-mainheading text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium py-3 h-14 transition-colors`} // Adjusted styles, disabled state
+          >
+            {registerSuccess ? "Registered!" : "Register"}
+          </button>
+        </form>
+
+        {/* Terms and Policy Links */}
+        <p className="text-center text-gray-500 dark:text-gray-300 my-3 text-sm">
+          {/* Adjusted styles */}
+          By registering, you accept our
+          <Link
+            href="/terms-and-conditions"
+            className="text-primary font-medium underline underline-offset-4" // Adjusted offset/hover
+          >
+            Terms of use
+          </Link>
+          and
+          <Link
+            href="/privacy-policy-en"
+            className="text-primary font-medium underline underline-offset-4"
+          >
+            Privacy Policy
+          </Link>
+          .
+        </p>
+      </div>
+    </div>
+  );
 }
