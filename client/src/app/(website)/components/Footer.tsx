@@ -885,14 +885,14 @@ const Footer: React.FC = () => {
   }, []);
 
   const renderLinkList = (links: FooterLink[] | undefined) => (
-    <ul className="space-y-3 text-gray font-light">
+    <ul className="space-y-3 text-gray-500 dark:text-white inline-block">
       {links?.map((link) => (
         <li key={link.label}>
           <div className="relative group w-fit">
             <Link href={link.href} className="relative z-10">
               {link.label}
             </Link>
-            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-green transform scale-x-0 origin-right transition-transform duration-500 ease-in-out group-hover:origin-left group-hover:scale-x-100"></span>
+            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-green dark:bg-primary transform scale-x-0 origin-right transition-transform duration-500 ease-in-out group-hover:origin-left group-hover:scale-x-100"></span>
           </div>
         </li>
       ))}
@@ -902,13 +902,13 @@ const Footer: React.FC = () => {
   const renderSocialLinks = (socialLinks: SocialLink[] | undefined) => (
     <ul className="flex items-center gap-4 mt-4">
       {socialLinks?.map((link) => (
-        <li key={link.label} className="p-2 bg-green/10 rounded-full">
+        <li key={link.label} className="p-2 bg-green/10 dark:bg-secondary rounded-full">
           <Link
             href={link.href}
-            className="text-gray font-light"
+            className="text-gray-500 dark:text-gray-300"
             aria-label={link.label}
           >
-            <link.icon size={18} className="text-main" />
+            <link.icon size={18} className="text-mainheading dark:text-white dark:hover:text-primary" />
           </Link>
         </li>
       ))}
@@ -923,12 +923,12 @@ const Footer: React.FC = () => {
 
   return (
     <footer className="py-12">
-      <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-start md:items-center">
-        <div className="inline-flex items-center w-full mb-12 md:mb-0">
-          <Image src="/assets/images/wise-logo.svg" alt="logo" height={100} width={100} />
+      <div className="container mx-auto flex flex-col md:flex-row justify-between items-start">
+        <div className="inline-flex w-full mb-12 md:mb-0">
+          <Image src="/assets/images/wise-logo.svg" alt="logo" height={100} width={100} className="size-28" />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-14">
           {footerData.sections.map((section) => (
             <div key={section.title}>
               <div
@@ -941,7 +941,7 @@ const Footer: React.FC = () => {
                   isMobile ? () => toggleDropdown(section.title) : undefined
                 }
               >
-                <h3 className="text-green md:text-2xl text-xl font-semibold">
+                <h3 className="text-green dark:text-primary md:text-2xl text-xl font-medium text-nowrap">
                   {section.title}
                 </h3>
                 {isMobile && (
@@ -998,13 +998,13 @@ const Footer: React.FC = () => {
 
       <hr className="my-6 container mx-auto px-4" />
       <div className="container mx-auto px-4">
-        <h3 className="text-green text-lg font-semibold pb-4">
+        <h3 className="text-green dark:text-primary text-lg font-semibold pb-4">
           Currency Converters
         </h3>
 
         <div className="flex flex-wrap">
           {footerData.currencyConverters.map((pair, index) => (
-            <div className="text-gray font-light" key={pair}>
+            <div className="text-gray-500 dark:text-white" key={pair}>
               <div className="relative group w-fit inline-block">
                 <button
                   className="relative z-10"
@@ -1012,7 +1012,7 @@ const Footer: React.FC = () => {
                 >
                   {pair}
                 </button>
-                <span className="absolute bottom-0 left-0 w-full h-[2px] bg-green transform scale-x-0 origin-right transition-transform duration-500 ease-in-out group-hover:origin-left group-hover:scale-x-100"></span>
+                <span className="absolute bottom-0 left-0 w-full h-[2px] bg-green dark:bg-primary transform scale-x-0 origin-right transition-transform duration-500 ease-in-out group-hover:origin-left group-hover:scale-x-100"></span>
                 </div>
               {index !== footerData.currencyConverters.length - 1 && (
                 <span className="mx-4">|</span>
@@ -1024,10 +1024,9 @@ const Footer: React.FC = () => {
 
 
       <hr className="my-6 container mx-auto px-4" />
-
       <div className="space-y-4 text-center container mx-auto px-4">
-        <p className="text-green font-medium">{footerData.copyright}</p>
-        <p className="text-gray font-light">{footerData.disclaimer}</p>
+        <p className="text-green dark:text-primary font-medium">{footerData.copyright}</p>
+        <p className="text-gray-500 dark:text-gray-300 font-light">{footerData.disclaimer}</p>
       </div>
     </footer>
   );

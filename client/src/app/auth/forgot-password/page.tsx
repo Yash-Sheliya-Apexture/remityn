@@ -1410,12 +1410,12 @@ const ResetPasswordForm = () => {
         <div className="bg-white dark:bg-background w-full max-w-lg">
           <div className="flex justify-center mb-6">
             <Image
-              src="/assets/images/email-small@1x.webp"
-              width={400}
-              height={400}
+              src="/assets/images/massage.png"
+              width={500}
+              height={500}
               alt="Email Icon"
               priority
-              className="lg:size-48 size-40"
+              className="lg:size-60 size-40"
             />
           </div>
 
@@ -1423,12 +1423,12 @@ const ResetPasswordForm = () => {
             Check your email
           </h2>
 
-          <p className="lg:text-base text-sm text-center text-gray text-nowrap mb-6">
+          <p className="text-center text-lg text-gray-500 dark:text-gray-300 text-nowrap mb-6">
             We sent an email to &nbsp;
             <span className="font-semibold text-primary">{email}</span>
           </p>
 
-          <p className="lg:text-base  text-sm text-center text-gray-500 dark:text-gray-300 mb-6">
+          <p className="text-center text-lg  text-gray-500 dark:text-gray-300 mb-6">
             If the email hasn&apos;t arrived yet, please check your spam folder.
             Alternatively, you can also request the email again:
           </p>
@@ -1436,9 +1436,9 @@ const ResetPasswordForm = () => {
           <AnimatePresence>
             {showCheckAgainMessage && (
               <motion.div
-                initial={{ opacity: 0, y: -10 }}
+                initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
+                exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
                 className="flex bg-lightborder dark:bg-green-600/20 lg:p-6 p-4 rounded-2xl cursor-pointer lg:gap-4 gap-2 items-center mb-4"
               >
@@ -1486,8 +1486,8 @@ const ResetPasswordForm = () => {
             </p>
           )}
 
-          <p className="text-base text-center text-gray mt-5">
-            Still need help?
+          <p className="text-base text-center text-gray-500 dark:text-gray-300 mt-5">
+            Still need help? &nbsp;
             <a
               href="#"
               className="text-primary underline font-medium underline-offset-4"
@@ -1504,11 +1504,11 @@ const ResetPasswordForm = () => {
     <div className="flex flex-col bg-white dark:bg-background justify-center items-center lg:h-[calc(100vh-73px)] px-4 pt-10">
       <div className="max-w-lg mb-8">
         <Image
-          src="/assets/images/key-medium@1x.webp"
-          width={250}
-          height={250}
+          src="/assets/images/resetpassword.png"
+          width={500}
+          height={500}
           alt="Key Icon"
-          className="lg:size-48 size-40"
+          className="lg:size-60 size-40"
         />
       </div>
 
@@ -1516,7 +1516,6 @@ const ResetPasswordForm = () => {
         Reset password
       </h2>
       <p className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base max-w-lg mb-4">
-        {/* FIXED: Escaped apostrophe */}
         Just enter the email address you registered with and we&apos;ll send you a
         link to reset your password.
       </p>

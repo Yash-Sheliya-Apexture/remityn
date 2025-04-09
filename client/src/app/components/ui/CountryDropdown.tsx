@@ -1691,7 +1691,7 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
     <div className="relative" ref={dropdownRef}>
       <button // Changed div to button for better accessibility
         type="button"
-        className="flex items-center gap-2 w-24 cursor-pointer p-1 rounded hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green"
+        className="flex items-center gap-2 w-24 cursor-pointer"
         onClick={toggleDropdown}
         aria-haspopup="listbox" // Added aria attributes
         aria-expanded={isOpen}
@@ -1708,11 +1708,11 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
           )}
           <p className="text-mainheading dark:text-white font-semibold">{selectedCurrency}</p>
         </div>
-        {isOpen ? <IoIosArrowUp size={18} /> : <IoIosArrowDown size={18} />}
+        {isOpen ? <IoIosArrowUp size={18} className="text-mainheading dark:text-white"/> : <IoIosArrowDown size={18} className="text-mainheading dark:text-white"/>}
       </button>
 
       {isOpen && (
-        <div className="absolute z-10 w-[400px] top-full mt-1 right-0 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
+        <div className="absolute z-10 w-[400px] top-12 right-0 bg-white dark:bg-background rounded-lg  border overflow-hidden">
           {/* Search Input */}
           <div className="sticky top-0 bg-white dark:bg-background p-2 border-b">
             <div className="relative">
@@ -1741,7 +1741,7 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
                   <li // Changed to button for better interaction
                     key={currency.code}
                     onClick={() => handleCurrencyChange(currency.code)}
-                    className="flex items-center justify-between p-2 rounded-md hover:bg-gray-100 cursor-pointer focus:outline-none focus:bg-gray-100"
+                    className="flex items-center justify-between p-2 rounded-md dark:hover:bg-secondary hover:bg-lightgray  cursor-pointer focus:outline-none focus:bg-gray-100"
                     role="option" // Added role
                     aria-selected={selectedCurrency === currency.code} // Added aria-selected
                     tabIndex={0} // Make focusable
@@ -1756,9 +1756,9 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
                       <Image
                         src={currency.flag}
                         alt={`${currency.code}-Flag`}
-                        width={20}
-                        height={20}
-                        className="rounded-full"
+                        width={100}
+                        height={100}
+                        className="size-8"
                       />
                       <span>{currency.code}</span>
                       <span className="text-gray-500 dark:text-gray-300 text-sm ml-1">
@@ -1774,7 +1774,7 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
             )}
 
             {filteredCurrencies.length === 0 && searchQuery && (
-              <div className="p-4 text-center text-gray-500">
+              <div className="p-3 text-center text-gray-500 dark:text-gray-300">
                  {/* FIXED: Replaced literal quotes with HTML entities */}
                 No currencies found for &quot;{searchQuery}&quot;
               </div>
