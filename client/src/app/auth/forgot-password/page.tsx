@@ -1424,12 +1424,11 @@ const ResetPasswordForm = () => {
           </h2>
 
           <p className="lg:text-base text-sm text-center text-gray text-nowrap mb-6">
-            We sent an email to
-            <span className="font-semibold text-secondary">{email}</span>
+            We sent an email to &nbsp;
+            <span className="font-semibold text-primary">{email}</span>
           </p>
 
-          <p className="lg:text-base  text-sm text-center text-gray mb-6">
-            {/* FIXED: Escaped apostrophe */}
+          <p className="lg:text-base  text-sm text-center text-gray-500 dark:text-gray-300 mb-6">
             If the email hasn&apos;t arrived yet, please check your spam folder.
             Alternatively, you can also request the email again:
           </p>
@@ -1516,7 +1515,7 @@ const ResetPasswordForm = () => {
       <h2 className="lg:text-5xl text-3xl capitalize font-black mb-4">
         Reset password
       </h2>
-      <p className="text-center text-gray lg:text-lg text-base max-w-lg mb-4">
+      <p className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base max-w-lg mb-4">
         {/* FIXED: Escaped apostrophe */}
         Just enter the email address you registered with and we&apos;ll send you a
         link to reset your password.
@@ -1584,8 +1583,8 @@ const ResetPasswordForm = () => {
         </div>
       </form>
 
-      <p className="text-base text-gray my-6">
-        Need help? Read this
+      <p className="text-base text-gray-500 dark:text-gray-300 my-6">
+        Need help? Read this &nbsp;
         <a
           href="#"
           className="text-primary font-medium underline underline-offset-4"
