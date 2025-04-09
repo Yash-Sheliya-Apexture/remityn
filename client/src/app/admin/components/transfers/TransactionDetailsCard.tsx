@@ -314,22 +314,22 @@
 // export default TransactionDetailsCard;
 
 
-// FILE: src/app/admin/components/transfers/TransactionDetailsCard.tsx
-// No changes needed based on the errors provided for this file.
-// Keeping the optimized version from the prompt.
 "use client";
 import React from "react";
-import Image from "next/image"; // Import next/image
+import Image from "next/image";
 import { GrTransaction } from "react-icons/gr";
 import { formatCurrency } from "../../../utils/helpers"; // Adjust path if needed
 
 // --- Type Definitions ---
 
+// Reference to a currency, potentially just an ID or a basic object
+// Make _id optional as it might not always be present in Ref objects
 interface CurrencyRef {
-  _id?: string; // Allow _id to be optional if sometimes missing
+  _id?: string;
   code: string;
 }
 
+// Full currency information from the map
 interface CurrencyInfo {
   _id: string;
   code: string;
@@ -337,17 +337,27 @@ interface CurrencyInfo {
   flagImage?: string | null;
 }
 
+// Updated Transfer interface for this component's props
+// Allows currency fields to be string IDs OR CurrencyRef objects
 interface Transfer {
-  sendAmount?: number | null;
-  fees?: number | null; // Use 'fees' if that's the actual API field name
-  receiveAmount?: number | null;
-  sendCurrency?: CurrencyRef | null; // Use this field name if matching API
-  receiveCurrency?: CurrencyRef | null; // Use this field name if matching API
-  sourceCurrency?: CurrencyRef | null; // Alternative field name
-  targetCurrency?: CurrencyRef | null; // Alternative field name
+  // Amounts and Fees (use names consistent with API response passed)
+  sourceAmount?: number | null; // From parent component
+  targetAmount?: number | null; // From parent component
+  sendAmount?: number | null;   // Potentially alternative name in data
+  receiveAmount?: number | null; // Potentially alternative name in data
+  fee?: number | null;          // From parent component
+  fees?: number | null;         // Potentially alternative name in data
+
+  // Currency identifiers (string ID or object)
+  sourceCurrency?: string | CurrencyRef | null; // From parent component
+  targetCurrency?: string | CurrencyRef | null; // From parent component
+  sendCurrency?: string | CurrencyRef | null;   // Potentially alternative name
+  receiveCurrency?: string | CurrencyRef | null; // Potentially alternative name
+
   exchangeRate?: number | null;
 }
 
+// Map of currency ID -> CurrencyInfo
 type CurrenciesMap = Record<string, CurrencyInfo>;
 
 // --- Prop Interfaces ---
@@ -357,30 +367,62 @@ interface TransactionDetailsCardProps {
   currenciesMap: CurrenciesMap;
 }
 
+// Props for the internal CurrencyDisplay component
 interface CurrencyDisplayProps {
-  currency: CurrencyRef | null | undefined;
+  currencyIdentifier: string | CurrencyRef | null | undefined; // ID string or Ref object
   currenciesMap: CurrenciesMap;
 }
 
+// --- Helper Function to get Currency Code ---
+const getCurrencyCode = (
+    identifier: string | CurrencyRef | null | undefined,
+    map: CurrenciesMap
+): string => {
+    if (!identifier) return '';
+    if (typeof identifier === 'string') {
+        return map[identifier]?.code ?? ''; // Lookup code using ID from map
+    }
+    // If it's an object (CurrencyRef), return its code directly
+    return identifier.code ?? '';
+};
+
 // --- Components ---
 
-const CurrencyDisplay: React.FC<CurrencyDisplayProps> = ({ currency, currenciesMap }) => {
-  // Early return if currency or its _id or code is missing
-  if (!currency?._id || !currency.code) return <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">N/A</span>;
+const CurrencyDisplay: React.FC<CurrencyDisplayProps> = ({ currencyIdentifier, currenciesMap }) => {
+  let currencyInfo: CurrencyInfo | undefined = undefined;
+  let currencyCode: string = '';
+  let currencyId: string | undefined = undefined;
 
-  // Access currency info safely using _id
-  const currencyInfo = currenciesMap[currency._id];
+  if (typeof currencyIdentifier === 'string') {
+    // It's an ID, look up in the map
+    currencyId = currencyIdentifier;
+    currencyInfo = currenciesMap[currencyId];
+    currencyCode = currencyInfo?.code ?? 'N/A';
+  } else if (currencyIdentifier?.code) {
+    // It's a CurrencyRef object
+    currencyCode = currencyIdentifier.code;
+    currencyId = currencyIdentifier._id;
+    if (currencyId) {
+        currencyInfo = currenciesMap[currencyId]; // Try to get full info from map using _id
+    }
+    // If full info not found via _id, we still have the code from the Ref object
+  }
+
+  if (!currencyCode || currencyCode === 'N/A') {
+    return <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">N/A</span>;
+  }
 
   return (
     <div className="flex items-center text-sm">
-      <span className="text-gray-600 dark:text-gray-300 font-medium mr-1.5">{currency.code}</span>
-      {/* Check if currencyInfo and flagImage exist */}
+      <span className="text-gray-600 dark:text-gray-300 font-medium mr-1.5">{currencyCode}</span>
+      {/* Use flagImage from the full currencyInfo if found */}
       {currencyInfo?.flagImage && (
-        <div className="relative w-6 h-6 rounded-full overflow-hidden border"> {/* Adjusted size */}
+        <div className="relative w-6 h-6 rounded-full overflow-hidden border dark:border-neutral-600">
           <Image
             src={currencyInfo.flagImage}
-            alt={`${currency.code} flag`}
+            alt={`${currencyCode} flag`}
             fill
+            sizes="24px" // Provide sizes prop
             className="object-cover"
           />
         </div>
@@ -395,16 +437,18 @@ const TransactionDetailsCard: React.FC<TransactionDetailsCardProps> = ({
 }) => {
   if (!transfer) return null;
 
-  // Use the correct field names based on the Transfer interface & API response
-  const actualSendAmount = transfer.sendAmount;
-  const actualReceiveAmount = transfer.receiveAmount;
-  const actualFees = transfer.fees; // Assuming 'fees' is correct field
-  const actualSendCurrency = transfer.sendCurrency || transfer.sourceCurrency;
-  const actualReceiveCurrency = transfer.receiveCurrency || transfer.targetCurrency;
+  // Determine the correct fields to use, prioritizing specific names if available
+  const actualSendAmount = transfer.sendAmount ?? transfer.sourceAmount;
+  const actualReceiveAmount = transfer.receiveAmount ?? transfer.targetAmount;
+  const actualFees = transfer.fees ?? transfer.fee;
+  const actualSendCurrencyIdentifier = transfer.sendCurrency ?? transfer.sourceCurrency;
+  const actualReceiveCurrencyIdentifier = transfer.receiveCurrency ?? transfer.targetCurrency;
 
   const totalDebit = (actualSendAmount || 0) + (actualFees || 0);
-  const sendCurrencyCode = actualSendCurrency?.code || '';
-  const receiveCurrencyCode = actualReceiveCurrency?.code || '';
+
+  // Get currency codes using the helper function
+  const sendCurrencyCode = getCurrencyCode(actualSendCurrencyIdentifier, currenciesMap);
+  const receiveCurrencyCode = getCurrencyCode(actualReceiveCurrencyIdentifier, currenciesMap);
 
   return (
     <div>
@@ -413,38 +457,41 @@ const TransactionDetailsCard: React.FC<TransactionDetailsCardProps> = ({
         Transaction Details
       </h4>
 
-      <div className="rounded-xl border overflow-hidden">
+      <div className="rounded-xl border dark:border-secondarybox overflow-hidden bg-white dark:bg-primarybox shadow-sm"> {/* Added background/shadow */}
         {/* Exchange Information */}
-        <div className="p-5 ">
+        <div className="p-5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             {/* Sent Amount */}
-            <div className="bg-lightgray dark:bg-secondarybox rounded-lg p-4 border">
+            <div className="bg-lightgray dark:bg-secondarybox rounded-lg p-4 border dark:border-neutral-700"> {/* Added border */}
               <p className="text-gray-500 dark:text-gray-300 text-sm font-medium mb-1">
                 Sent Amount
               </p>
               <div className="flex items-baseline">
                 <div className="text-2xl font-bold text-neutral-900 dark:text-white mr-2">
-                  {/* Pass undefined for currency code if formatCurrency uses default locale */}
-                  {formatCurrency(actualSendAmount, undefined, 2)}
+                  {/* Format using amount and CODE */}
+                  {formatCurrency(actualSendAmount, sendCurrencyCode || undefined, 2)}
                 </div>
+                {/* Pass the identifier directly */}
                 <CurrencyDisplay
-                    currency={actualSendCurrency}
+                    currencyIdentifier={actualSendCurrencyIdentifier}
                     currenciesMap={currenciesMap}
                 />
               </div>
             </div>
 
             {/* Received Amount */}
-            <div className="bg-lightgray dark:bg-secondarybox rounded-lg p-4 border">
+            <div className="bg-lightgray dark:bg-secondarybox rounded-lg p-4 border dark:border-neutral-700"> {/* Added border */}
               <p className="text-gray-500 dark:text-gray-300 text-sm font-medium mb-1">
                 Recipient Gets (approx)
               </p>
               <div className="flex items-baseline">
                 <div className="text-2xl font-bold text-neutral-900 dark:text-white mr-2">
-                  {formatCurrency(actualReceiveAmount, undefined, 2)}
+                   {/* Format using amount and CODE */}
+                  {formatCurrency(actualReceiveAmount, receiveCurrencyCode || undefined, 2)}
                 </div>
+                 {/* Pass the identifier directly */}
                  <CurrencyDisplay
-                    currency={actualReceiveCurrency}
+                    currencyIdentifier={actualReceiveCurrencyIdentifier}
                     currenciesMap={currenciesMap}
                 />
               </div>
@@ -453,10 +500,11 @@ const TransactionDetailsCard: React.FC<TransactionDetailsCardProps> = ({
         </div>
 
         {/* Additional Info */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x border-t">
+        <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x border-t dark:divide-neutral-700 dark:border-neutral-700"> {/* Added dark mode styles */}
           <div className="p-4">
             <p className="text-sm text-gray-500 dark:text-gray-300 mb-1">Exchange Rate</p>
             <p className="text-neutral-900 dark:text-white font-medium text-sm">
+              {/* Use the extracted codes */}
               {sendCurrencyCode && receiveCurrencyCode && transfer.exchangeRate ? (
                 <>
                   1 {sendCurrencyCode} ≈{' '}
@@ -474,20 +522,20 @@ const TransactionDetailsCard: React.FC<TransactionDetailsCardProps> = ({
           <div className="p-4">
             <p className="text-sm text-gray-500 dark:text-gray-300 mb-1">Fee</p>
             <p className="text-neutral-900 dark:text-white font-medium text-sm">
-              {/* Pass the send currency code */}
+              {/* Format using fee amount and SEND currency code */}
               {formatCurrency(actualFees, sendCurrencyCode || undefined, 2)}
             </p>
           </div>
         </div>
 
         {/* Summary */}
-        <div className="p-4 border-t ">
+        <div className="p-4 border-t dark:border-neutral-700"> {/* Added dark mode styles */}
           <div className="flex items-center justify-between">
             <p className="text-sm font-medium text-gray-500 dark:text-gray-300">
               Total Debit Amount
             </p>
             <p className="font-semibold text-lg text-neutral-900 dark:text-white">
-              {/* Pass the send currency code */}
+              {/* Format using total and SEND currency code */}
               {formatCurrency(totalDebit, sendCurrencyCode || undefined, 2)}
             </p>
           </div>
