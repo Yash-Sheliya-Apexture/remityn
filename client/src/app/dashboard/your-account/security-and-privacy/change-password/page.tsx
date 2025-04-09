@@ -649,23 +649,28 @@ export default function ChangePassword() {
 
           {/* Error Message: Invalid Current Password */}
           {showInvalidCurrentPasswordError && (
-            <div className="bg-lightgray dark:bg-red-900/20 dark:border dark:border-red-700 rounded-xl p-4 flex items-center gap-4">
-              <div className="p-1 bg-red-700 rounded-full flex-shrink-0">
-                <FiX size={20} className="text-white" /> {/* Adjusted icon color */}
+            <div className="bg-lightgray dark:bg-red-600/20 border rounded-xl p-4 flex items-center gap-4">
+              <div className="p-1 bg-red-700 rounded-full">
+                <FiX size={24} className="text-lightgray" />
               </div>
-              <p className="text-red-700 dark:text-red-400">Invalid current password</p>
+              <p className="text-gray-500 dark:text-white">Invalid current password</p>
             </div>
           )}
 
           {/* Error Message: Same Password */}
           {showSamePasswordError && (
-            <div className="bg-lightgray dark:bg-red-900/20 dark:border dark:border-red-700 rounded-xl p-4 flex items-center gap-4">
-              <div className="p-1 bg-red-700 rounded-full flex-shrink-0">
-                <FiX size={20} className="text-white" /> {/* Adjusted icon color */}
+            <div className="bg-lightgray dark:bg-red-600/20 border rounded-xl p-4 flex items-center gap-4">
+              <div className="p-1 bg-red-700 rounded-full">
+                <FiX size={24} className="text-lightgray" />
               </div>
+<<<<<<< HEAD
+              <p className="text-gray-500 dark:text-white">
+                Your new password can't be the same as the current one.
+=======
               <p className="text-red-700 dark:text-red-400">
                 {/* Fixed: Replaced ' with ' */}
                 Your new password can&apos;t be the same as the current one.
+>>>>>>> f7176d72ea51ccea16bbeaa02f67a1a93595e63a
               </p>
             </div>
           )}

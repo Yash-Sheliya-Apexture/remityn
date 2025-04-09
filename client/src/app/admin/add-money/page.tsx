@@ -1748,7 +1748,7 @@
 // // frontend/src/app/admin/payments/page.tsx
 // 'use client';
 // import React, { useState, useEffect, useCallback } from 'react'; // Import useCallback
-// import { useAuth } from '../../contexts/AuthContext';
+// import { useAuth } from '../../hooks/useAuth';
 // import axios, { AxiosError } from 'axios'; // Import AxiosError for better error typing
 // import apiConfig from '../../config/apiConfig';
 // import { motion, AnimatePresence } from 'framer-motion';
@@ -1786,12 +1786,12 @@
 // }
 
 // const AdminPaymentsPage: React.FC = () => {
+//     const { token } = useAuth();
 //     const [payments, setPayments] = useState<Payment[]>([]);
 //     const [filteredPayments, setFilteredPayments] = useState<Payment[]>([]);
 //     const [loadingPayments, setLoadingPayments] = useState<boolean>(true);
 //     const [error, setError] = useState<string | null>(null);
 //     const [successMessage, setSuccessMessage] = useState<string | null>(null);
-//     const { token } = useAuth();
 //     // Removed unused state: statusUpdateLoading, setStatusUpdateLoading
 //     const [isRefreshing, setIsRefreshing] = useState<boolean>(false); // State for refresh animation
 
@@ -2338,6 +2338,19 @@
 // };
 
 // export default AdminPaymentsPage;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2889,7 +2902,7 @@ const AdminPaymentsPage: React.FC = () => {
                 showFilterModal={showFilterModal}
                 setShowFilterModal={setShowFilterModal}
                 searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm} // Pass the state setter directly
+                setSearchTerm={setSearchTerm}
                 dateRange={dateRange}
                 setDateRange={setDateRange} // Pass the state setter directly
                 statusFilter={statusFilter} // Pass the state value (PaymentStatus)

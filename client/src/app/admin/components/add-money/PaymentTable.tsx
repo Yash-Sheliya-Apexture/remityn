@@ -440,7 +440,7 @@ const PaymentTable: React.FC<PaymentTableProps> = ({
                     />
                     <tbody>
                         {Array(10).fill(0).map((_, i) => (
-                            <tr key={i} className="dark:border-neutral-800">
+                            <tr key={i} className="dark:border-neutral-800"> 
                                 <td className="px-4 py-3 whitespace-nowrap"><Skeleton className="h-4 w-24" /></td>
                                 <td className="px-4 py-3"><Skeleton className="h-4 w-32" /></td>
                                 <td className="px-4 py-3 whitespace-nowrap"><Skeleton className="h-4 w-16" /></td>

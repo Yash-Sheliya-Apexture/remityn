@@ -245,21 +245,21 @@ const DeleteRecipientModal: React.FC<DeleteRecipientModalProps> = ({
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed top-0 left-0 w-full h-full bg-black/50 dark:bg-white/30 z-50 flex sm:items-center items-end justify-center"
+            className="fixed top-0 left-0 w-full h-full bg-black/50 dark:bg-white/30 z-80 flex sm:items-center items-end justify-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose} // Close modal on backdrop click
           >
             <motion.div
-              className="bg-white dark:bg-background sm:rounded-2xl rounded-t-2xl sm:p-8 p-4 w-full sm:max-w-lg relative"
+              className="bg-white dark:bg-background sm:rounded-3xl rounded-t-3xl sm:p-8 p-4 w-full sm:max-w-lg relative"
               variants={modalVariants}
               initial="initial"
               animate="animate"
               exit="exit"
               onClick={(e) => e.stopPropagation()} // Prevent closing modal when clicking inside it
             >
-              <div className="w-full inline-flex justify-end">
+              <div className="absolute sm:top-2 sm:right-2 top-1 right-1">
                 <button
                   className="p-3 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
                   onClick={onClose}
