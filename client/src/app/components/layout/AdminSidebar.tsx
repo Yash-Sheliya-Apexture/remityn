@@ -2172,7 +2172,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../contexts/AuthContext";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import {
