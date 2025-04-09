@@ -2098,12 +2098,8 @@ import Image from "next/image";
 import { IoMdCheckmarkCircleOutline, IoMdCloseCircle } from "react-icons/io";
 import { RiEyeCloseLine } from "react-icons/ri";
 import { VscEye } from "react-icons/vsc";
-import { IoClose } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion"; // Import Framer Motion
 import { FiX } from "react-icons/fi";
-
-// Import AxiosError if your authService likely throws it for HTTP errors
-// import { AxiosError } from 'axios'; // Uncomment if using Axios
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
@@ -2135,8 +2131,6 @@ export default function RegisterPage() {
     const params = new URLSearchParams(window.location.search);
     if (params.get("registerSuccess") === "true") {
       setRegisterSuccess(true);
-      // Optionally clear the param from URL if you want it shown only once
-      // window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, []); // Run only once on mount
 

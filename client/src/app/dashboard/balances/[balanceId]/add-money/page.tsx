@@ -1045,7 +1045,7 @@ const AddMoneyPage = () => {
                      )}
                     <div className="py-3.5 flex justify-between text-sm text-gray border-t dark:border-lightgray/26">
                         <dt className="text-neutral-900 dark:text-white font-bold capitalize">
-                            Total you'll pay
+                            Total you&apos;ll pay
                         </dt>
                         <dd className="ml-6 text-neutral-900 dark:text-white font-bold">
                             {isDetailsLoading ? <Skeleton className="h-4 w-16 inline-block" /> : `${calculatedAmountToPay} ${payInCurrencyCode}`}

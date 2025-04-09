@@ -2648,7 +2648,7 @@ const TransactionDetailsPage = () => {
                                             <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
                                                 <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Ready to pay?</h3>
                                                 <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-                                                    Find the bank details in the <button onClick={() => setActiveTab('Details')} className="text-primary hover:underline font-medium">Details tab</button>. Once you've sent the money from your bank, click below.
+                                                    Find the bank details in the <button onClick={() => setActiveTab('Details')} className="text-primary hover:underline font-medium">Details tab</button>. Once you&apos;ve sent the money from your bank, click below.
                                                 </p>
                                                 {submissionError && <p className="mb-4 text-sm text-red-600 dark:text-red-400 text-center bg-red-50 dark:bg-red-900/20 p-2 rounded border border-red-200 dark:border-red-700/40">{submissionError}</p>}
                                                 <div className="flex flex-col sm:flex-row sm:justify-end gap-2">
