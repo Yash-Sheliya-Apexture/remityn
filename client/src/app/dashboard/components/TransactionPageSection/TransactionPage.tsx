@@ -3805,6 +3805,7 @@
 // export default TransactionsPage;
 
 
+
 "use client"; // Essential for using hooks
 import React, { useState, useCallback, useEffect, useMemo } from "react";
 import Link from 'next/link';
@@ -3819,71 +3820,56 @@ import transferService from "../../../services/transfer"; // Adjust path
 import accountService from "../../../services/account"; // Adjust path
 
 // Types
-import { Transaction, Currency } from "@/types/transaction"; // Adjust path, Import Currency type
+// ***** FIX 1: Import TransactionStatus *****
+import { Transaction, TransactionStatus } from "@/types/transaction"; // Adjust path
 import { Account } from "@/types/account"; // Adjust path
-
 import { Skeleton } from "@/components/ui/skeleton";
 
-
+// Define a type for potential API errors
 interface ApiError extends Error {
     response?: {
         data?: {
             message?: string;
-            // other potential properties from error response body
         };
         status?: number;
-        // other potential response properties
     };
 }
 
-
-// Helper function to parse date strings (assuming "dd-MM-yyyy" format from filter)
-// Consider making this more robust or using a library if formats vary widely
+// Helper function to parse date strings
 function parseDateString(dateString: string | undefined): Date | null {
     if (!dateString) return null;
-
-    // Try dd-MM-yyyy first (adjust if filter format differs)
+    // Try dd-MM-yyyy first
     const parts = dateString.split('-');
     if (parts.length === 3) {
         const day = parseInt(parts[0], 10);
         const month = parseInt(parts[1], 10) - 1; // Month is 0-indexed
         const year = parseInt(parts[2], 10);
         if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
-             // Use local time based on user's system if dates are local
-             return new Date(year, month, day);
-             // Or use UTC if dates should be timezone-agnostic:
-             // return new Date(Date.UTC(year, month, day));
+             return new Date(year, month, day); // Use local time
         }
     }
-
-     // Fallback for ISO-like strings (e.g., from date pickers that output YYYY-MM-DD)
+     // Fallback for ISO-like strings
      try {
         const date = new Date(dateString);
-        // Check if the parsed date is valid
         if (!isNaN(date.getTime())) {
             return date;
         }
      } catch (e) {
          console.warn("Could not parse date string with new Date():", dateString, e);
      }
-
     console.warn("Could not parse date string:", dateString);
     return null;
 }
 
-// Helper function to create a placeholder Currency object
-// IMPORTANT: This is a workaround if the backend doesn't provide the currency _id.
-// Ideally, the backend (paymentService.getUserPayments) should populate the full currency object.
-const createPlaceholderCurrency = (code: string | undefined): Currency => {
-    const validCode = code ?? 'UNK'; // Use 'UNK' or similar if code is undefined
-    return {
-        _id: validCode, // Using code as a placeholder ID - THIS IS NOT IDEAL
-        code: validCode,
-        // Add other default properties if your Currency type requires them (e.g., name, symbol)
-        // name: 'Unknown',
-        // symbol: '?'
-    };
-};
+// ***** FIX 3: Define specific filter type *****
+interface AppliedFilters {
+    selectedRecipients: (string | number)[];
+    selectedDirection?: string;
+    selectedStatus?: string | null;
+    selectedBalance?: string[];
+    fromDate?: string;
+    toDate?: string;
+}
 
 
 const TransactionsPage: React.FC = () => {
@@ -3899,8 +3885,6 @@ const TransactionsPage: React.FC = () => {
     const [appliedBalanceFilter, setAppliedBalanceFilter] = useState<string[]>([]);
     const [appliedFromDateFilter, setAppliedFromDateFilter] = useState<string | undefined>(undefined);
     const [appliedToDateFilter, setAppliedToDateFilter] = useState<string | undefined>(undefined);
-    // Optional: Add state for search query if search needs to be combined with filters more tightly
-    // const [searchQuery, setSearchQuery] = useState<string>('');
 
     // Loading and Error states
     const [loadingTransactions, setLoadingTransactions] = useState(true);
@@ -3922,7 +3906,6 @@ const TransactionsPage: React.FC = () => {
         setLoadingTransactions(true);
         setLoadingAccounts(true);
         setError(null);
-        // Reset data states to prevent stale data flashing
         setAllTransactions([]);
         setFilteredTransactions([]);
         setUserAccounts([]);
@@ -3935,31 +3918,22 @@ const TransactionsPage: React.FC = () => {
             ]);
 
             // Process Payments (Add Money)
-            // Assuming PaymentDetailsResponse has: _id, amountToPay, balanceCurrencyCode, payInCurrencyCode, accountId, createdAt, updatedAt, status
-            const mappedPayments: Transaction[] = paymentsData.map(payment => {
-                 // FIX: Create Currency objects including a placeholder _id
-                 const balanceCurrency = createPlaceholderCurrency(payment.balanceCurrencyCode);
-                 const payInCurrency = createPlaceholderCurrency(payment.payInCurrencyCode);
-
-                 return {
-                     _id: payment._id,
-                     type: "Add Money",
-                     amountToAdd: payment.amountToPay, // Assuming amountToPay represents the added amount
-                     amountToPay: payment.amountToPay,
-                     balanceCurrency: balanceCurrency, // Use the created Currency object
-                     payInCurrency: payInCurrency,     // Use the created Currency object
-                     account: payment.accountId,       // Assuming accountId maps to the 'account' field
-                     createdAt: payment.createdAt,
-                     updatedAt: payment.updatedAt,
-                     // Cast status after normalization
-                     status: (payment.status?.toLowerCase() ?? 'unknown') as Transaction['status'],
-                     // Ensure all required fields from Transaction type are present
-                 };
-            });
-
+            const mappedPayments: Transaction[] = paymentsData.map(payment => ({
+                _id: payment._id,
+                type: "Add Money",
+                amountToAdd: payment.amountToAdd,
+                amountToPay: payment.amountToPay,
+                balanceCurrency: payment.balanceCurrency,
+                payInCurrency: payment.payInCurrency,
+                account: payment.account,
+                createdAt: payment.createdAt,
+                updatedAt: payment.updatedAt,
+                // ***** FIX 1: Cast status to TransactionStatus *****
+                // Assumes 'unknown' is a valid TransactionStatus or should be handled differently
+                status: (payment.status?.toLowerCase() ?? 'unknown') as TransactionStatus,
+            }));
 
             // Process Transfers (Send Money)
-            // Assuming TransferDetailsResponse has populated currency objects and necessary fields
             const mappedTransfers: Transaction[] = transfersData.map(transfer => ({
                 _id: transfer._id,
                 type: "Send Money",
@@ -3968,25 +3942,22 @@ const TransactionsPage: React.FC = () => {
                       : 'Recipient',
                 sendAmount: transfer.sendAmount,
                 receiveAmount: transfer.receiveAmount,
-                // Assuming these are already correctly typed Currency objects from the service
-                sendCurrency: transfer.sendCurrency as Currency,
-                receiveCurrency: transfer.receiveCurrency as Currency,
+                sendCurrency: transfer.sendCurrency,
+                receiveCurrency: transfer.receiveCurrency,
                 createdAt: transfer.createdAt,
                 updatedAt: transfer.updatedAt,
-                // Cast status after normalization
-                status: (transfer.status?.toLowerCase() ?? 'unknown') as Transaction['status'],
+                 // ***** FIX 1: Cast status to TransactionStatus *****
+                 // Assumes 'unknown' is a valid TransactionStatus or should be handled differently
+                status: (transfer.status?.toLowerCase() ?? 'unknown') as TransactionStatus,
                 recipient: transfer.recipient,
                 sourceAccountId: typeof transfer.sourceAccount === 'string'
                                 ? transfer.sourceAccount
                                 : transfer.sourceAccount?._id,
-                // Ensure all required fields from Transaction type are present
             }));
 
-            // FIX: Combine the correctly typed arrays
-            const combinedTransactions: Transaction[] = [...mappedPayments, ...mappedTransfers];
-
+            const combinedTransactions = [...mappedPayments, ...mappedTransfers];
             setAllTransactions(combinedTransactions);
-            setFilteredTransactions(combinedTransactions); // Initialize filtered list
+            setFilteredTransactions(combinedTransactions);
             setLoadingTransactions(false);
 
             setUserAccounts(accountsData);
@@ -3994,9 +3965,7 @@ const TransactionsPage: React.FC = () => {
 
         } catch (err: unknown) {
             console.error("Data fetch error in TransactionsPage:", err);
-
-            let errorMessage = "Failed to fetch data. Please try again."; // Default message
-
+            let errorMessage = "Failed to fetch data. Please try again.";
             if (err instanceof Error) {
                 errorMessage = err.message;
                 const apiError = err as ApiError;
@@ -4006,17 +3975,15 @@ const TransactionsPage: React.FC = () => {
             } else if (typeof err === 'string') {
                 errorMessage = err;
             }
-
             setError(errorMessage);
             setLoadingTransactions(false);
             setLoadingAccounts(false);
         }
-    }, [token]); // Dependency: token
+    }, [token]);
 
-    // Effect to fetch data on mount or when token changes
     useEffect(() => {
         fetchData();
-    }, [fetchData]); // fetchData includes token in its dependency array
+    }, [fetchData]);
 
     // --- Callback from Search Component ---
     const handleTransactionsChange = useCallback((searchResults: Transaction[]) => {
@@ -4025,17 +3992,10 @@ const TransactionsPage: React.FC = () => {
     }, []);
 
     // --- Callback from Filter Component ---
-    const handleFiltersApply = useCallback((filters: {
-        selectedRecipients?: (string | number)[],
-        selectedDirection?: string,
-        selectedStatus?: string | null,
-        selectedBalance?: string[], // Currency codes
-        fromDate?: string,
-        toDate?: string
-    }) => {
+    // Function signature now implicitly matches AppliedFilters type
+    const handleFiltersApply = useCallback((filters: AppliedFilters) => {
         console.log("Applying filters:", filters);
 
-        // 1. Update state tracking the applied filters
         setAppliedRecipientFilters(filters.selectedRecipients || []);
         setAppliedDirectionFilter(filters.selectedDirection || 'all');
         setAppliedStatusFilter(filters.selectedStatus || null);
@@ -4043,10 +4003,7 @@ const TransactionsPage: React.FC = () => {
         setAppliedFromDateFilter(filters.fromDate);
         setAppliedToDateFilter(filters.toDate);
 
-        // 2. Start with the full list of transactions
         let tempFiltered = [...allTransactions];
-
-        // --- Apply Filters Sequentially ---
 
         // Apply Direction Filter
         const direction = filters.selectedDirection;
@@ -4062,12 +4019,12 @@ const TransactionsPage: React.FC = () => {
         if (statusFilter) {
             const lowerCaseStatusFilter = statusFilter.toLowerCase();
             tempFiltered = tempFiltered.filter(tx => {
-                const txStatus = tx.status;
-                if (!txStatus) return false;
+                const txStatus = tx.status; // Already normalized or casted to TransactionStatus
 
                 if (lowerCaseStatusFilter === 'completed') return txStatus === 'completed';
+                // ***** FIX 2: Remove redundant 'cancelled' check *****
                 if (lowerCaseStatusFilter === 'cancelled') return txStatus === 'canceled';
-                if (lowerCaseStatusFilter === 'in process') return txStatus === 'in progress' || txStatus === 'pending' || txStatus === 'processing';
+                if (lowerCaseStatusFilter === 'in process') return txStatus === 'in progress' || txStatus === 'pending';
                 if (lowerCaseStatusFilter === 'failed') return txStatus === 'failed';
                 return false;
             });
@@ -4079,16 +4036,17 @@ const TransactionsPage: React.FC = () => {
             tempFiltered = tempFiltered.filter(tx => {
                 let currencyCodeToCheck: string | undefined;
                 if (tx.type === 'Add Money') {
-                     // Ensure balanceCurrency exists and has a code
-                     currencyCodeToCheck = tx.balanceCurrency?.code;
+                    currencyCodeToCheck = typeof tx.balanceCurrency === 'object' && tx.balanceCurrency !== null
+                        ? tx.balanceCurrency.code
+                        : undefined;
                 } else if (tx.type === 'Send Money') {
-                     // Ensure sendCurrency exists and has a code
-                     currencyCodeToCheck = tx.sendCurrency?.code;
+                    currencyCodeToCheck = typeof tx.sendCurrency === 'object' && tx.sendCurrency !== null
+                        ? tx.sendCurrency.code
+                        : undefined;
                 }
                 return currencyCodeToCheck ? balanceFilters.includes(currencyCodeToCheck) : false;
             });
         }
-
 
         // Apply Recipient Filter
         const recipientFilters = filters.selectedRecipients;
@@ -4098,13 +4056,9 @@ const TransactionsPage: React.FC = () => {
                 if (tx.type !== "Send Money") {
                     return true;
                 }
-                // Check recipient object ID or recipient string ID
-                const recipientId = typeof tx.recipient === 'object' && tx.recipient?._id
+                const recipientId = (typeof tx.recipient === 'object' && tx.recipient?._id)
                                     ? String(tx.recipient._id)
-                                    : typeof tx.recipient === 'string'
-                                    ? tx.recipient
-                                    : null;
-
+                                    : (typeof tx.recipient === 'string' ? tx.recipient : null);
                 return recipientId ? recipientFilterIds.includes(recipientId) : false;
             });
         }
@@ -4112,7 +4066,6 @@ const TransactionsPage: React.FC = () => {
         // Apply Date Filter
         const fromDateObj = parseDateString(filters.fromDate);
         const toDateObj = parseDateString(filters.toDate);
-
         if (fromDateObj) fromDateObj.setHours(0, 0, 0, 0);
         if (toDateObj) toDateObj.setHours(23, 59, 59, 999);
 
@@ -4120,21 +4073,15 @@ const TransactionsPage: React.FC = () => {
             tempFiltered = tempFiltered.filter(tx => {
                 const transactionDateStr = tx.updatedAt || tx.createdAt;
                 if (!transactionDateStr) return false;
-
                 try {
                     const transactionDateObj = new Date(transactionDateStr);
                     if (isNaN(transactionDateObj.getTime())) {
                          console.warn("Invalid transaction date string:", transactionDateStr);
                          return false;
                     }
-
                     let include = true;
-                    if (fromDateObj && transactionDateObj < fromDateObj) {
-                        include = false;
-                    }
-                    if (toDateObj && transactionDateObj > toDateObj) {
-                        include = false;
-                    }
+                    if (fromDateObj && transactionDateObj < fromDateObj) include = false;
+                    if (toDateObj && transactionDateObj > toDateObj) include = false;
                     return include;
                 } catch (e) {
                     console.error("Error parsing transaction date for filtering:", transactionDateStr, e);
@@ -4143,22 +4090,21 @@ const TransactionsPage: React.FC = () => {
             });
         }
 
-        // 3. Update the state holding the transactions to be displayed
         setFilteredTransactions(tempFiltered);
 
-    }, [allTransactions]); // Dependency: Re-run filter logic if the base list changes
+    }, [allTransactions]);
 
      // --- Transaction Grouping Logic (Optimized with useMemo) ---
     const { inProgressTransactions, groupedProcessedTransactions } = useMemo(() => {
         const inProgress = filteredTransactions.filter(
-            (tx) => tx.status === "in progress" || tx.status === "pending" || tx.status === "processing"
+            (tx) => tx.status === "in progress" || tx.status === "pending"
         );
 
+        // ***** FIX 2: Remove redundant 'cancelled' check *****
         const processed = filteredTransactions.filter(
             (tx) => tx.status === "completed" || tx.status === "canceled" || tx.status === "failed"
         );
 
-        // Sort processed transactions by date (newest first)
         const sortedProcessed = [...processed].sort((a, b) => {
             const dateA = a.updatedAt || a.createdAt;
             const dateB = b.updatedAt || b.createdAt;
@@ -4173,7 +4119,6 @@ const TransactionsPage: React.FC = () => {
             }
         });
 
-        // Group sorted processed transactions by date string
         const grouped = sortedProcessed.reduce(
             (groups: { [date: string]: Transaction[] }, tx) => {
                 const groupDateStr = tx.updatedAt || tx.createdAt;
@@ -4185,9 +4130,7 @@ const TransactionsPage: React.FC = () => {
                 }
                 try {
                     const dateKey = new Date(groupDateStr).toLocaleDateString('en-US', {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
+                        year: "numeric", month: "long", day: "numeric",
                     });
                     if (!groups[dateKey]) groups[dateKey] = [];
                     groups[dateKey].push(tx);
@@ -4202,17 +4145,11 @@ const TransactionsPage: React.FC = () => {
         );
 
         return { inProgressTransactions: inProgress, groupedProcessedTransactions: grouped };
-    }, [filteredTransactions]); // Recalculate only when filteredTransactions changes
+    }, [filteredTransactions]);
 
 
     // --- Render Logic ---
     const isLoading = loadingTransactions || loadingAccounts;
-
-    // Helper to safely get currency code (using optional chaining)
-    const getCurrencyCode = (currency?: Currency): string => {
-       return currency?.code ?? ""; // Default empty string if currency or code is missing
-    };
-
 
     return (
       <section className="Transaction-Page pb-8 md:pb-10">
@@ -4222,23 +4159,21 @@ const TransactionsPage: React.FC = () => {
             <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
               Transactions
             </h1>
-            {/* Render Actions only when accounts are loaded */}
             {!loadingAccounts && userAccounts.length > 0 && (
               <TransactionActions
                 transactions={allTransactions}
                 userAccounts={userAccounts}
                 onTransactionsChange={handleTransactionsChange}
+                // ***** FIX 3: Pass the correctly typed handler *****
                 onFiltersApply={handleFiltersApply}
               />
             )}
-            {/* Show skeleton/placeholder while accounts load */}
             {loadingAccounts && (
               <div className="flex items-center gap-4 animate-pulse">
                 <div className="h-10 w-32 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
                 <div className="h-10 w-32 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
               </div>
             )}
-            {/* Optional: Handle case where accounts loaded but are empty */}
             {!loadingAccounts && userAccounts.length === 0 && !error && (
               <p className="text-sm text-gray-500">
                 Create an account to start making transactions.
@@ -4248,31 +4183,23 @@ const TransactionsPage: React.FC = () => {
 
           {/* Loading State */}
           {isLoading && (
-            <div className="space-y-2">
-              {Array(8)
-                .fill(0)
-                .map((_, index) => (
-                  <div key={index} className="block">
-                    <div className="block p-2 sm:p-4 rounded-2xl">
+             <div className="space-y-2">
+              {Array(8).fill(0).map((_, index) => (
+                  <div key={index} className="block p-2 sm:p-4 rounded-2xl">
                       <div className="flex items-center gap-4">
-                        <div className="relative flex-shrink-0">
-                          <div className="flex items-center justify-center">
-                            <Skeleton className="h-12 w-12 rounded-full" />
+                          <Skeleton className="h-12 w-12 rounded-full flex-shrink-0" />
+                          <div className="flex-grow flex flex-row justify-between items-center gap-4">
+                              <div className="flex-grow">
+                                  <Skeleton className="h-4 w-40 mb-2" />
+                                  <Skeleton className="h-3 w-32" />
+                              </div>
+                              <div className="shrink-0">
+                                  <Skeleton className="h-5 w-20 rounded-full" />
+                              </div>
                           </div>
-                        </div>
-                        <div className="flex-grow flex flex-row justify-between items-center gap-4">
-                          <div className="flex-grow">
-                            <Skeleton className="h-4 w-40 mb-2" />
-                            <Skeleton className="h-3 w-32" />
-                          </div>
-                          <div className="shrink-0">
-                            <Skeleton className="h-5 w-20 rounded-full" />
-                          </div>
-                        </div>
                       </div>
-                    </div>
                   </div>
-                ))}
+              ))}
             </div>
           )}
 
@@ -4298,8 +4225,9 @@ const TransactionsPage: React.FC = () => {
                       const icon = isAddMoney ? <LuPlus size={22} className="text-neutral-900 dark:text-white" /> : <GoArrowUp size={22} className="text-neutral-900 dark:text-white" />;
                       const description = isAddMoney ? "Waiting for your money" : "Sending money";
                       const amount = isAddMoney ? transaction.amountToAdd ?? 0 : transaction.sendAmount ?? 0;
-                      // Use helper to safely get code
-                      const displayCurrencyCode = getCurrencyCode(isAddMoney ? transaction.balanceCurrency : transaction.sendCurrency);
+                      const displayCurrencyCode = isAddMoney
+                        ? typeof transaction.balanceCurrency === "object" && transaction.balanceCurrency?.code ? transaction.balanceCurrency.code : ""
+                        : typeof transaction.sendCurrency === "object" && transaction.sendCurrency?.code ? transaction.sendCurrency.code : "";
                       const amountPrefix = isAddMoney ? "+ " : "- ";
                       const name = isAddMoney ? `To your ${displayCurrencyCode} balance` : transaction.name || "Recipient";
 
@@ -4307,14 +4235,14 @@ const TransactionsPage: React.FC = () => {
                         <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} className="block">
                           <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
                             <div className="flex items-center gap-4">
-                              <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center">{icon}</div>
+                              <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center"> {icon} </div>
                               <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
                                 <div className=" text-wrap">
-                                  <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg">{name}</h3>
-                                  <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">{description} <span className="italic">({transaction.status})</span></p>
+                                  <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg"> {name} </h3>
+                                  <p className="text-sm text-gray-500 dark:text-gray-300 mt-1"> {description}{" "} <span className="italic"> ({transaction.status}) </span> </p>
                                 </div>
                                 <div className={`font-medium text-neutral-900 dark:text-white whitespace-nowrap`}>
-                                  {amountPrefix}{amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {displayCurrencyCode}
+                                  {amountPrefix} {amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2, })} {" "} {displayCurrencyCode}
                                 </div>
                               </div>
                             </div>
@@ -4329,7 +4257,8 @@ const TransactionsPage: React.FC = () => {
               {/* Processed Sections (Grouped by Date) */}
               {Object.entries(groupedProcessedTransactions).length > 0 && (
                 <div className="space-y-4">
-                  {Object.entries(groupedProcessedTransactions).map(([date, transactionsForDate]) => (
+                  {Object.entries(groupedProcessedTransactions).map(
+                    ([date, transactionsForDate]) => (
                       <div key={date}>
                         <h3 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
                           {date}
@@ -4338,41 +4267,38 @@ const TransactionsPage: React.FC = () => {
                           {transactionsForDate.map((transaction) => {
                             const isAddMoney = transaction.type === "Add Money";
                             const icon = isAddMoney ? <LuPlus size={22} className="text-neutral-900 dark:text-white" /> : <GoArrowUp size={22} className="text-neutral-900 dark:text-white" />;
-                            let description = "";
-                            let amountClass = "";
+                            let description = isAddMoney ? "Added by you" : `To ${transaction.name || "Recipient"}`;
+                            let amountClass = isAddMoney ? "text-green-600 dark:text-green-500" : "text-neutral-900  dark:text-white";
                             const amount = isAddMoney ? transaction.amountToAdd ?? 0 : transaction.sendAmount ?? 0;
-                            // Use helper to safely get code
-                            const displayCurrencyCode = getCurrencyCode(isAddMoney ? transaction.balanceCurrency : transaction.sendCurrency);
+                            const displayCurrencyCode = isAddMoney
+                              ? typeof transaction.balanceCurrency === "object" && transaction.balanceCurrency?.code ? transaction.balanceCurrency.code : ""
+                              : typeof transaction.sendCurrency === "object" && transaction.sendCurrency?.code ? transaction.sendCurrency.code : "";
                             const amountPrefix = isAddMoney ? "+ " : "- ";
                             const name = isAddMoney ? `Added to ${displayCurrencyCode} balance` : transaction.name || "Recipient";
 
-                            // Adjust appearance based on final status
+                            // ***** FIX 2: Remove redundant 'cancelled' check *****
                             if (transaction.status === "canceled") {
-                                description = "Cancelled";
-                                amountClass = "text-red-600 line-through dark:text-red-500";
+                              description = "Cancelled";
+                              amountClass = "text-red-600 line-through";
                             } else if (transaction.status === "failed") {
-                                description = "Failed";
-                                amountClass = "text-red-600 line-through dark:text-red-500";
+                              description = "Failed";
+                              amountClass = "text-red-600 line-through";
                             } else if (transaction.status === "completed") {
-                                description = isAddMoney ? "Added" : `Sent to ${transaction.name || "Recipient"}`;
-                                amountClass = isAddMoney ? "text-green-600 dark:text-green-500" : "text-neutral-900 dark:text-white";
-                            } else {
-                                description = `Status: ${transaction.status}`; // Fallback
-                                amountClass = "text-gray-500 dark:text-gray-400";
+                              description = isAddMoney ? "Added" : `Sent to ${transaction.name || "Recipient"}`;
                             }
 
                             return (
                               <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} className="block">
                                 <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
                                   <div className="flex items-center gap-4">
-                                    <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center">{icon}</div>
+                                    <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center"> {icon} </div>
                                     <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
                                       <div className=" text-wrap">
-                                        <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg">{name}</h3>
-                                        <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">{description}</p>
+                                        <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg"> {name} </h3>
+                                        <p className="text-sm text-gray-500 dark:text-gray-300 mt-1"> {description} </p>
                                       </div>
                                       <div className={`font-medium ${amountClass} whitespace-nowrap`}>
-                                        {amountPrefix}{amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {displayCurrencyCode}
+                                        {amountPrefix} {amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2, })} {" "} {displayCurrencyCode}
                                       </div>
                                     </div>
                                   </div>
@@ -4390,12 +4316,29 @@ const TransactionsPage: React.FC = () => {
               {/* Empty State */}
               {filteredTransactions.length === 0 && (
                 <div className="text-center flex flex-col text-lg px-4 text-gray-500 dark:text-gray-300 py-12 dark:bg-white/5 rounded-lg mt-6">
-                  {allTransactions.length === 0 ? "You haven't made any transactions yet." : "No transactions match your current filter or search criteria."}
-                  {(appliedRecipientFilters.length > 0 || appliedDirectionFilter !== "all" || appliedStatusFilter || appliedBalanceFilter.length > 0 || appliedFromDateFilter || appliedToDateFilter) && allTransactions.length > 0 && (
+                  {allTransactions.length === 0
+                    ? "You haven't made any transactions yet."
+                    : "No transactions match your current filter or search criteria."}
+                  {(appliedRecipientFilters.length > 0 ||
+                    appliedDirectionFilter !== "all" ||
+                    appliedStatusFilter ||
+                    appliedBalanceFilter.length > 0 ||
+                    appliedFromDateFilter ||
+                    appliedToDateFilter) &&
+                    allTransactions.length > 0 && (
                       <div className="flex justify-center ">
                         <button
-                          onClick={() => handleFiltersApply({ /* Reset filters */ })}
-                          className="mt-4 px-6 cursor-pointer py-3 w-auto bg-primary text-mainheading rounded-full hover:bg-primaryhover transition-colors duration-500 ease-in-out"
+                          onClick={() =>
+                            handleFiltersApply({ // Ensure this object matches AppliedFilters
+                              selectedRecipients: [],
+                              selectedDirection: "all",
+                              selectedStatus: null,
+                              selectedBalance: [],
+                              fromDate: undefined,
+                              toDate: undefined,
+                            })
+                          }
+                          className="mt-4 px-6 cursor-pointer py-3 w-38 bg-primary text-mainheading rounded-full hover:bg-primaryhover transition-colors duration-500 ease-in-out"
                         >
                           Clear Filters
                         </button>
@@ -4411,3 +4354,1246 @@ const TransactionsPage: React.FC = () => {
 };
 
 export default TransactionsPage;
+
+
+
+
+// "use client"; // Essential for using hooks
+// import React, { useState, useCallback, useEffect, useMemo } from "react";
+// import Link from 'next/link';
+// import { LuPlus } from "react-icons/lu";
+// import { GoArrowUp } from "react-icons/go";
+// import TransactionActions from "./TransactionActions"; // Adjust path if needed
+
+// // Hooks & Services
+// import { useAuth } from "../../../contexts/AuthContext"; // Adjust path
+// import paymentService from "../../../services/payment"; // Adjust path
+// import transferService from "../../../services/transfer"; // Adjust path
+// import accountService from "../../../services/account"; // Adjust path
+
+// // Types
+// import { Transaction, Currency } from "@/types/transaction"; // Adjust path, Import Currency type
+// import { Account } from "@/types/account"; // Adjust path
+
+// import { Skeleton } from "@/components/ui/skeleton";
+
+
+// interface ApiError extends Error {
+//     response?: {
+//         data?: {
+//             message?: string;
+//             // other potential properties from error response body
+//         };
+//         status?: number;
+//         // other potential response properties
+//     };
+// }
+
+
+// // Helper function to parse date strings (assuming "dd-MM-yyyy" format from filter)
+// // Consider making this more robust or using a library if formats vary widely
+// function parseDateString(dateString: string | undefined): Date | null {
+//     if (!dateString) return null;
+
+//     // Try dd-MM-yyyy first (adjust if filter format differs)
+//     const parts = dateString.split('-');
+//     if (parts.length === 3) {
+//         const day = parseInt(parts[0], 10);
+//         const month = parseInt(parts[1], 10) - 1; // Month is 0-indexed
+//         const year = parseInt(parts[2], 10);
+//         if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+//              // Use local time based on user's system if dates are local
+//              return new Date(year, month, day);
+//              // Or use UTC if dates should be timezone-agnostic:
+//              // return new Date(Date.UTC(year, month, day));
+//         }
+//     }
+
+//      // Fallback for ISO-like strings (e.g., from date pickers that output YYYY-MM-DD)
+//      try {
+//         const date = new Date(dateString);
+//         // Check if the parsed date is valid
+//         if (!isNaN(date.getTime())) {
+//             return date;
+//         }
+//      } catch (e) {
+//          console.warn("Could not parse date string with new Date():", dateString, e);
+//      }
+
+//     console.warn("Could not parse date string:", dateString);
+//     return null;
+// }
+
+// // Helper function to create a placeholder Currency object
+// // IMPORTANT: This is a workaround if the backend doesn't provide the currency _id.
+// // Ideally, the backend (paymentService.getUserPayments) should populate the full currency object.
+// const createPlaceholderCurrency = (code: string | undefined): Currency => {
+//     const validCode = code ?? 'UNK'; // Use 'UNK' or similar if code is undefined
+//     return {
+//         _id: validCode, // Using code as a placeholder ID - THIS IS NOT IDEAL
+//         code: validCode,
+//         // Add other default properties if your Currency type requires them (e.g., name, symbol)
+//         // name: 'Unknown',
+//         // symbol: '?'
+//     };
+// };
+
+
+// const TransactionsPage: React.FC = () => {
+//     // --- State Declarations ---
+//     const [allTransactions, setAllTransactions] = useState<Transaction[]>([]);
+//     const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
+//     const [userAccounts, setUserAccounts] = useState<Account[]>([]);
+
+//     // State to hold the currently applied filters
+//     const [appliedRecipientFilters, setAppliedRecipientFilters] = useState<(string | number)[]>([]);
+//     const [appliedDirectionFilter, setAppliedDirectionFilter] = useState<string>('all');
+//     const [appliedStatusFilter, setAppliedStatusFilter] = useState<string | null>(null);
+//     const [appliedBalanceFilter, setAppliedBalanceFilter] = useState<string[]>([]);
+//     const [appliedFromDateFilter, setAppliedFromDateFilter] = useState<string | undefined>(undefined);
+//     const [appliedToDateFilter, setAppliedToDateFilter] = useState<string | undefined>(undefined);
+//     // Optional: Add state for search query if search needs to be combined with filters more tightly
+//     // const [searchQuery, setSearchQuery] = useState<string>('');
+
+//     // Loading and Error states
+//     const [loadingTransactions, setLoadingTransactions] = useState(true);
+//     const [loadingAccounts, setLoadingAccounts] = useState(true);
+//     const [error, setError] = useState<string | null>(null);
+
+//     // Authentication context
+//     const { token } = useAuth();
+
+//     // --- Data Fetching ---
+//     const fetchData = useCallback(async () => {
+//         if (!token) {
+//             setError("Authentication token is missing. Please log in.");
+//             setLoadingTransactions(false);
+//             setLoadingAccounts(false);
+//             return;
+//         }
+
+//         setLoadingTransactions(true);
+//         setLoadingAccounts(true);
+//         setError(null);
+//         // Reset data states to prevent stale data flashing
+//         setAllTransactions([]);
+//         setFilteredTransactions([]);
+//         setUserAccounts([]);
+
+//         try {
+//             const [paymentsData, transfersData, accountsData] = await Promise.all([
+//                 paymentService.getUserPayments(token),
+//                 transferService.getUserTransfers(token),
+//                 accountService.getUserAccounts(token)
+//             ]);
+
+//             // Process Payments (Add Money)
+//             // Assuming PaymentDetailsResponse has: _id, amountToPay, balanceCurrencyCode, payInCurrencyCode, accountId, createdAt, updatedAt, status
+//             const mappedPayments: Transaction[] = paymentsData.map(payment => {
+//                  // FIX: Create Currency objects including a placeholder _id
+//                  const balanceCurrency = createPlaceholderCurrency(payment.balanceCurrencyCode);
+//                  const payInCurrency = createPlaceholderCurrency(payment.payInCurrencyCode);
+
+//                  return {
+//                      _id: payment._id,
+//                      type: "Add Money",
+//                      amountToAdd: payment.amountToPay, // Assuming amountToPay represents the added amount
+//                      amountToPay: payment.amountToPay,
+//                      balanceCurrency: balanceCurrency, // Use the created Currency object
+//                      payInCurrency: payInCurrency,     // Use the created Currency object
+//                      account: payment.accountId,       // Assuming accountId maps to the 'account' field
+//                      createdAt: payment.createdAt,
+//                      updatedAt: payment.updatedAt,
+//                      // Cast status after normalization
+//                      status: (payment.status?.toLowerCase() ?? 'unknown') as Transaction['status'],
+//                      // Ensure all required fields from Transaction type are present
+//                  };
+//             });
+
+
+//             // Process Transfers (Send Money)
+//             // Assuming TransferDetailsResponse has populated currency objects and necessary fields
+//             const mappedTransfers: Transaction[] = transfersData.map(transfer => ({
+//                 _id: transfer._id,
+//                 type: "Send Money",
+//                 name: (typeof transfer.recipient === 'object' && transfer.recipient !== null)
+//                       ? transfer.recipient.accountHolderName ?? 'Recipient'
+//                       : 'Recipient',
+//                 sendAmount: transfer.sendAmount,
+//                 receiveAmount: transfer.receiveAmount,
+//                 // Assuming these are already correctly typed Currency objects from the service
+//                 sendCurrency: transfer.sendCurrency as Currency,
+//                 receiveCurrency: transfer.receiveCurrency as Currency,
+//                 createdAt: transfer.createdAt,
+//                 updatedAt: transfer.updatedAt,
+//                 // Cast status after normalization
+//                 status: (transfer.status?.toLowerCase() ?? 'unknown') as Transaction['status'],
+//                 recipient: transfer.recipient,
+//                 sourceAccountId: typeof transfer.sourceAccount === 'string'
+//                                 ? transfer.sourceAccount
+//                                 : transfer.sourceAccount?._id,
+//                 // Ensure all required fields from Transaction type are present
+//             }));
+
+//             // FIX: Combine the correctly typed arrays
+//             const combinedTransactions: Transaction[] = [...mappedPayments, ...mappedTransfers];
+
+//             setAllTransactions(combinedTransactions);
+//             setFilteredTransactions(combinedTransactions); // Initialize filtered list
+//             setLoadingTransactions(false);
+
+//             setUserAccounts(accountsData);
+//             setLoadingAccounts(false);
+
+//         } catch (err: unknown) {
+//             console.error("Data fetch error in TransactionsPage:", err);
+
+//             let errorMessage = "Failed to fetch data. Please try again."; // Default message
+
+//             if (err instanceof Error) {
+//                 errorMessage = err.message;
+//                 const apiError = err as ApiError;
+//                 if (apiError.response?.data?.message) {
+//                     errorMessage = apiError.response.data.message;
+//                 }
+//             } else if (typeof err === 'string') {
+//                 errorMessage = err;
+//             }
+
+//             setError(errorMessage);
+//             setLoadingTransactions(false);
+//             setLoadingAccounts(false);
+//         }
+//     }, [token]); // Dependency: token
+
+//     // Effect to fetch data on mount or when token changes
+//     useEffect(() => {
+//         fetchData();
+//     }, [fetchData]); // fetchData includes token in its dependency array
+
+//     // --- Callback from Search Component ---
+//     const handleTransactionsChange = useCallback((searchResults: Transaction[]) => {
+//          console.log("Applying search results:", searchResults.length);
+//          setFilteredTransactions(searchResults);
+//     }, []);
+
+//     // --- Callback from Filter Component ---
+//     const handleFiltersApply = useCallback((filters: {
+//         selectedRecipients?: (string | number)[],
+//         selectedDirection?: string,
+//         selectedStatus?: string | null,
+//         selectedBalance?: string[], // Currency codes
+//         fromDate?: string,
+//         toDate?: string
+//     }) => {
+//         console.log("Applying filters:", filters);
+
+//         // 1. Update state tracking the applied filters
+//         setAppliedRecipientFilters(filters.selectedRecipients || []);
+//         setAppliedDirectionFilter(filters.selectedDirection || 'all');
+//         setAppliedStatusFilter(filters.selectedStatus || null);
+//         setAppliedBalanceFilter(filters.selectedBalance || []);
+//         setAppliedFromDateFilter(filters.fromDate);
+//         setAppliedToDateFilter(filters.toDate);
+
+//         // 2. Start with the full list of transactions
+//         let tempFiltered = [...allTransactions];
+
+//         // --- Apply Filters Sequentially ---
+
+//         // Apply Direction Filter
+//         const direction = filters.selectedDirection;
+//         if (direction && direction !== 'all') {
+//             tempFiltered = tempFiltered.filter(tx =>
+//                 (direction === 'add' && tx.type === 'Add Money') ||
+//                 (direction === 'send' && tx.type === 'Send Money')
+//             );
+//         }
+
+//         // Apply Status Filter
+//         const statusFilter = filters.selectedStatus;
+//         if (statusFilter) {
+//             const lowerCaseStatusFilter = statusFilter.toLowerCase();
+//             tempFiltered = tempFiltered.filter(tx => {
+//                 const txStatus = tx.status;
+//                 if (!txStatus) return false;
+
+//                 if (lowerCaseStatusFilter === 'completed') return txStatus === 'completed';
+//                 if (lowerCaseStatusFilter === 'cancelled') return txStatus === 'canceled';
+//                 if (lowerCaseStatusFilter === 'in process') return txStatus === 'in progress' || txStatus === 'pending' || txStatus === 'processing';
+//                 if (lowerCaseStatusFilter === 'failed') return txStatus === 'failed';
+//                 return false;
+//             });
+//         }
+
+//         // Apply Balance (Currency) Filter
+//         const balanceFilters = filters.selectedBalance;
+//         if (balanceFilters && balanceFilters.length > 0) {
+//             tempFiltered = tempFiltered.filter(tx => {
+//                 let currencyCodeToCheck: string | undefined;
+//                 if (tx.type === 'Add Money') {
+//                      // Ensure balanceCurrency exists and has a code
+//                      currencyCodeToCheck = tx.balanceCurrency?.code;
+//                 } else if (tx.type === 'Send Money') {
+//                      // Ensure sendCurrency exists and has a code
+//                      currencyCodeToCheck = tx.sendCurrency?.code;
+//                 }
+//                 return currencyCodeToCheck ? balanceFilters.includes(currencyCodeToCheck) : false;
+//             });
+//         }
+
+
+//         // Apply Recipient Filter
+//         const recipientFilters = filters.selectedRecipients;
+//         if (recipientFilters && recipientFilters.length > 0) {
+//              const recipientFilterIds = recipientFilters.map(String);
+//              tempFiltered = tempFiltered.filter(tx => {
+//                 if (tx.type !== "Send Money") {
+//                     return true;
+//                 }
+//                 // Check recipient object ID or recipient string ID
+//                 const recipientId = typeof tx.recipient === 'object' && tx.recipient?._id
+//                                     ? String(tx.recipient._id)
+//                                     : typeof tx.recipient === 'string'
+//                                     ? tx.recipient
+//                                     : null;
+
+//                 return recipientId ? recipientFilterIds.includes(recipientId) : false;
+//             });
+//         }
+
+//         // Apply Date Filter
+//         const fromDateObj = parseDateString(filters.fromDate);
+//         const toDateObj = parseDateString(filters.toDate);
+
+//         if (fromDateObj) fromDateObj.setHours(0, 0, 0, 0);
+//         if (toDateObj) toDateObj.setHours(23, 59, 59, 999);
+
+//         if (fromDateObj || toDateObj) {
+//             tempFiltered = tempFiltered.filter(tx => {
+//                 const transactionDateStr = tx.updatedAt || tx.createdAt;
+//                 if (!transactionDateStr) return false;
+
+//                 try {
+//                     const transactionDateObj = new Date(transactionDateStr);
+//                     if (isNaN(transactionDateObj.getTime())) {
+//                          console.warn("Invalid transaction date string:", transactionDateStr);
+//                          return false;
+//                     }
+
+//                     let include = true;
+//                     if (fromDateObj && transactionDateObj < fromDateObj) {
+//                         include = false;
+//                     }
+//                     if (toDateObj && transactionDateObj > toDateObj) {
+//                         include = false;
+//                     }
+//                     return include;
+//                 } catch (e) {
+//                     console.error("Error parsing transaction date for filtering:", transactionDateStr, e);
+//                     return false;
+//                 }
+//             });
+//         }
+
+//         // 3. Update the state holding the transactions to be displayed
+//         setFilteredTransactions(tempFiltered);
+
+//     }, [allTransactions]); // Dependency: Re-run filter logic if the base list changes
+
+//      // --- Transaction Grouping Logic (Optimized with useMemo) ---
+//     const { inProgressTransactions, groupedProcessedTransactions } = useMemo(() => {
+//         const inProgress = filteredTransactions.filter(
+//             (tx) => tx.status === "in progress" || tx.status === "pending" || tx.status === "processing"
+//         );
+
+//         const processed = filteredTransactions.filter(
+//             (tx) => tx.status === "completed" || tx.status === "canceled" || tx.status === "failed"
+//         );
+
+//         // Sort processed transactions by date (newest first)
+//         const sortedProcessed = [...processed].sort((a, b) => {
+//             const dateA = a.updatedAt || a.createdAt;
+//             const dateB = b.updatedAt || b.createdAt;
+//             if (!dateA && !dateB) return 0;
+//             if (!dateA) return 1;
+//             if (!dateB) return -1;
+//             try {
+//                return new Date(dateB).getTime() - new Date(dateA).getTime();
+//             } catch (e) {
+//                 console.error("Error comparing dates during sort:", dateA, dateB, e);
+//                 return 0;
+//             }
+//         });
+
+//         // Group sorted processed transactions by date string
+//         const grouped = sortedProcessed.reduce(
+//             (groups: { [date: string]: Transaction[] }, tx) => {
+//                 const groupDateStr = tx.updatedAt || tx.createdAt;
+//                 if (!groupDateStr) {
+//                     const unknownDateKey = 'Unknown Date';
+//                     if (!groups[unknownDateKey]) groups[unknownDateKey] = [];
+//                     groups[unknownDateKey].push(tx);
+//                     return groups;
+//                 }
+//                 try {
+//                     const dateKey = new Date(groupDateStr).toLocaleDateString('en-US', {
+//                         year: "numeric",
+//                         month: "long",
+//                         day: "numeric",
+//                     });
+//                     if (!groups[dateKey]) groups[dateKey] = [];
+//                     groups[dateKey].push(tx);
+//                 } catch (e) {
+//                     console.error("Error formatting date for grouping:", groupDateStr, e);
+//                     const errorKey = 'Date Error';
+//                     if (!groups[errorKey]) groups[errorKey] = [];
+//                     groups[errorKey].push(tx);
+//                 }
+//                 return groups;
+//             }, {}
+//         );
+
+//         return { inProgressTransactions: inProgress, groupedProcessedTransactions: grouped };
+//     }, [filteredTransactions]); // Recalculate only when filteredTransactions changes
+
+
+//     // --- Render Logic ---
+//     const isLoading = loadingTransactions || loadingAccounts;
+
+//     // Helper to safely get currency code (using optional chaining)
+//     const getCurrencyCode = (currency?: Currency): string => {
+//        return currency?.code ?? ""; // Default empty string if currency or code is missing
+//     };
+
+
+//     return (
+//       <section className="Transaction-Page pb-8 md:pb-10">
+//         <div className="container mx-auto">
+//           {/* Header and Actions */}
+//           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky top-0 z-10 bg-white dark:bg-background">
+//             <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
+//               Transactions
+//             </h1>
+//             {/* Render Actions only when accounts are loaded */}
+//             {!loadingAccounts && userAccounts.length > 0 && (
+//               <TransactionActions
+//                 transactions={allTransactions}
+//                 userAccounts={userAccounts}
+//                 onTransactionsChange={handleTransactionsChange}
+//                 onFiltersApply={handleFiltersApply}
+//               />
+//             )}
+//             {/* Show skeleton/placeholder while accounts load */}
+//             {loadingAccounts && (
+//               <div className="flex items-center gap-4 animate-pulse">
+//                 <div className="h-10 w-32 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
+//                 <div className="h-10 w-32 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
+//               </div>
+//             )}
+//             {/* Optional: Handle case where accounts loaded but are empty */}
+//             {!loadingAccounts && userAccounts.length === 0 && !error && (
+//               <p className="text-sm text-gray-500">
+//                 Create an account to start making transactions.
+//               </p>
+//             )}
+//           </div>
+
+//           {/* Loading State */}
+//           {isLoading && (
+//             <div className="space-y-2">
+//               {Array(8)
+//                 .fill(0)
+//                 .map((_, index) => (
+//                   <div key={index} className="block">
+//                     <div className="block p-2 sm:p-4 rounded-2xl">
+//                       <div className="flex items-center gap-4">
+//                         <div className="relative flex-shrink-0">
+//                           <div className="flex items-center justify-center">
+//                             <Skeleton className="h-12 w-12 rounded-full" />
+//                           </div>
+//                         </div>
+//                         <div className="flex-grow flex flex-row justify-between items-center gap-4">
+//                           <div className="flex-grow">
+//                             <Skeleton className="h-4 w-40 mb-2" />
+//                             <Skeleton className="h-3 w-32" />
+//                           </div>
+//                           <div className="shrink-0">
+//                             <Skeleton className="h-5 w-20 rounded-full" />
+//                           </div>
+//                         </div>
+//                       </div>
+//                     </div>
+//                   </div>
+//                 ))}
+//             </div>
+//           )}
+
+//           {/* Error State */}
+//           {!isLoading && error && (
+//             <div className="text-center py-10 text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-900/20 p-4 rounded-md border border-red-200 dark:border-red-800/30">
+//               <strong>Error:</strong> {error}
+//             </div>
+//           )}
+
+//           {/* Transaction List & Empty States */}
+//           {!isLoading && !error && (
+//             <div className="space-y-4">
+//               {/* In Progress Section */}
+//               {inProgressTransactions.length > 0 && (
+//                 <div>
+//                   <h3 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
+//                     In progress
+//                   </h3>
+//                   <div className="space-y-2">
+//                     {inProgressTransactions.map((transaction) => {
+//                       const isAddMoney = transaction.type === "Add Money";
+//                       const icon = isAddMoney ? <LuPlus size={22} className="text-neutral-900 dark:text-white" /> : <GoArrowUp size={22} className="text-neutral-900 dark:text-white" />;
+//                       const description = isAddMoney ? "Waiting for your money" : "Sending money";
+//                       const amount = isAddMoney ? transaction.amountToAdd ?? 0 : transaction.sendAmount ?? 0;
+//                       // Use helper to safely get code
+//                       const displayCurrencyCode = getCurrencyCode(isAddMoney ? transaction.balanceCurrency : transaction.sendCurrency);
+//                       const amountPrefix = isAddMoney ? "+ " : "- ";
+//                       const name = isAddMoney ? `To your ${displayCurrencyCode} balance` : transaction.name || "Recipient";
+
+//                       return (
+//                         <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} className="block">
+//                           <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
+//                             <div className="flex items-center gap-4">
+//                               <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center">{icon}</div>
+//                               <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
+//                                 <div className=" text-wrap">
+//                                   <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg">{name}</h3>
+//                                   <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">{description} <span className="italic">({transaction.status})</span></p>
+//                                 </div>
+//                                 <div className={`font-medium text-neutral-900 dark:text-white whitespace-nowrap`}>
+//                                   {amountPrefix}{amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {displayCurrencyCode}
+//                                 </div>
+//                               </div>
+//                             </div>
+//                           </div>
+//                         </Link>
+//                       );
+//                     })}
+//                   </div>
+//                 </div>
+//               )}
+
+//               {/* Processed Sections (Grouped by Date) */}
+//               {Object.entries(groupedProcessedTransactions).length > 0 && (
+//                 <div className="space-y-4">
+//                   {Object.entries(groupedProcessedTransactions).map(([date, transactionsForDate]) => (
+//                       <div key={date}>
+//                         <h3 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
+//                           {date}
+//                         </h3>
+//                         <div className="space-y-2">
+//                           {transactionsForDate.map((transaction) => {
+//                             const isAddMoney = transaction.type === "Add Money";
+//                             const icon = isAddMoney ? <LuPlus size={22} className="text-neutral-900 dark:text-white" /> : <GoArrowUp size={22} className="text-neutral-900 dark:text-white" />;
+//                             let description = "";
+//                             let amountClass = "";
+//                             const amount = isAddMoney ? transaction.amountToAdd ?? 0 : transaction.sendAmount ?? 0;
+//                             // Use helper to safely get code
+//                             const displayCurrencyCode = getCurrencyCode(isAddMoney ? transaction.balanceCurrency : transaction.sendCurrency);
+//                             const amountPrefix = isAddMoney ? "+ " : "- ";
+//                             const name = isAddMoney ? `Added to ${displayCurrencyCode} balance` : transaction.name || "Recipient";
+
+//                             // Adjust appearance based on final status
+//                             if (transaction.status === "canceled") {
+//                                 description = "Cancelled";
+//                                 amountClass = "text-red-600 line-through dark:text-red-500";
+//                             } else if (transaction.status === "failed") {
+//                                 description = "Failed";
+//                                 amountClass = "text-red-600 line-through dark:text-red-500";
+//                             } else if (transaction.status === "completed") {
+//                                 description = isAddMoney ? "Added" : `Sent to ${transaction.name || "Recipient"}`;
+//                                 amountClass = isAddMoney ? "text-green-600 dark:text-green-500" : "text-neutral-900 dark:text-white";
+//                             } else {
+//                                 description = `Status: ${transaction.status}`; // Fallback
+//                                 amountClass = "text-gray-500 dark:text-gray-400";
+//                             }
+
+//                             return (
+//                               <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} className="block">
+//                                 <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
+//                                   <div className="flex items-center gap-4">
+//                                     <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center">{icon}</div>
+//                                     <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
+//                                       <div className=" text-wrap">
+//                                         <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg">{name}</h3>
+//                                         <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">{description}</p>
+//                                       </div>
+//                                       <div className={`font-medium ${amountClass} whitespace-nowrap`}>
+//                                         {amountPrefix}{amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {displayCurrencyCode}
+//                                       </div>
+//                                     </div>
+//                                   </div>
+//                                 </div>
+//                               </Link>
+//                             );
+//                           })}
+//                         </div>
+//                       </div>
+//                     )
+//                   )}
+//                 </div>
+//               )}
+
+//               {/* Empty State */}
+//               {filteredTransactions.length === 0 && (
+//                 <div className="text-center flex flex-col text-lg px-4 text-gray-500 dark:text-gray-300 py-12 dark:bg-white/5 rounded-lg mt-6">
+//                   {allTransactions.length === 0 ? "You haven't made any transactions yet." : "No transactions match your current filter or search criteria."}
+//                   {(appliedRecipientFilters.length > 0 || appliedDirectionFilter !== "all" || appliedStatusFilter || appliedBalanceFilter.length > 0 || appliedFromDateFilter || appliedToDateFilter) && allTransactions.length > 0 && (
+//                       <div className="flex justify-center ">
+//                         <button
+//                           onClick={() => handleFiltersApply({ /* Reset filters */ })}
+//                           className="mt-4 px-6 cursor-pointer py-3 w-auto bg-primary text-mainheading rounded-full hover:bg-primaryhover transition-colors duration-500 ease-in-out"
+//                         >
+//                           Clear Filters
+//                         </button>
+//                       </div>
+//                     )}
+//                 </div>
+//               )}
+//             </div>
+//           )}
+//         </div>
+//       </section>
+//     );
+// };
+
+// export default TransactionsPage;
+
+
+
+// "use client"; // Essential for using hooks
+// import React, { useState, useCallback, useEffect, useMemo } from "react";
+// import Link from 'next/link';
+// import { LuPlus } from "react-icons/lu";
+// import { GoArrowUp } from "react-icons/go";
+// import TransactionActions from "./TransactionActions"; // Adjust path if needed
+
+// // Hooks & Services
+// import { useAuth } from "../../../contexts/AuthContext"; // Adjust path
+// import paymentService from "../../../services/payment"; // Adjust path
+// import transferService from "../../../services/transfer"; // Adjust path
+// import accountService from "../../../services/account"; // Adjust path
+
+// // Types
+// import { Transaction, Currency } from "@/types/transaction"; // Adjust path, Import Currency type
+// import { Account } from "@/types/account"; // Adjust path
+
+// import { Skeleton } from "@/components/ui/skeleton";
+
+// interface ApiError extends Error {
+//     response?: {
+//         data?: {
+//             message?: string;
+//             // other potential properties from error response body
+//         };
+//         status?: number;
+//         // other potential response properties
+//     };
+// }
+
+// // Helper function to parse date strings (assuming "dd-MM-yyyy" format from filter)
+// // Consider making this more robust or using a library if formats vary widely
+// function parseDateString(dateString: string | undefined): Date | null {
+//     if (!dateString) return null;
+
+//     // Try dd-MM-yyyy first (adjust if filter format differs)
+//     const parts = dateString.split('-');
+//     if (parts.length === 3) {
+//         const day = parseInt(parts[0], 10);
+//         const month = parseInt(parts[1], 10) - 1; // Month is 0-indexed
+//         const year = parseInt(parts[2], 10);
+//         if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+//              // Use local time based on user's system if dates are local
+//              return new Date(year, month, day);
+//              // Or use UTC if dates should be timezone-agnostic:
+//              // return new Date(Date.UTC(year, month, day));
+//         }
+//     }
+
+//      // Fallback for ISO-like strings (e.g., from date pickers that output YYYY-MM-DD)
+//      try {
+//         const date = new Date(dateString);
+//         // Check if the parsed date is valid
+//         if (!isNaN(date.getTime())) {
+//             return date;
+//         }
+//      } catch (e) {
+//          console.warn("Could not parse date string with new Date():", dateString, e);
+//      }
+
+//     console.warn("Could not parse date string:", dateString);
+//     return null;
+// }
+
+// // --- FIXED: Correctly define and place the helper function ---
+// // Helper function to create a placeholder Currency object
+// // IMPORTANT: This is a workaround if the backend doesn't provide the currency _id.
+// // Ideally, the backend (paymentService.getUserPayments) should populate the full currency object.
+// const createPlaceholderCurrency = (code: string | undefined): Currency => {
+//     const validCode = code ?? 'UNK'; // Use 'UNK' or similar if code is undefined
+//     return {
+//         _id: validCode, // Using code as a placeholder ID - THIS IS NOT IDEAL
+//         code: validCode,
+//         // Add other default properties if your Currency type requires them (e.g., name, symbol)
+//         // currencyName: 'Unknown',
+//         // Add other fields matching your Currency type definition
+//     };
+// };
+
+// // Helper to safely get currency code (using optional chaining)
+// const getCurrencyCode = (currency?: Currency): string => {
+//     return currency?.code ?? ""; // Default empty string if currency or code is missing
+//  };
+
+// const TransactionsPage: React.FC = () => {
+//     // --- State Declarations ---
+//     const [allTransactions, setAllTransactions] = useState<Transaction[]>([]);
+//     const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
+//     const [userAccounts, setUserAccounts] = useState<Account[]>([]);
+
+//     // State to hold the currently applied filters
+//     const [appliedRecipientFilters, setAppliedRecipientFilters] = useState<(string | number)[]>([]);
+//     const [appliedDirectionFilter, setAppliedDirectionFilter] = useState<string>('all');
+//     const [appliedStatusFilter, setAppliedStatusFilter] = useState<string | null>(null);
+//     const [appliedBalanceFilter, setAppliedBalanceFilter] = useState<string[]>([]);
+//     const [appliedFromDateFilter, setAppliedFromDateFilter] = useState<string | undefined>(undefined);
+//     const [appliedToDateFilter, setAppliedToDateFilter] = useState<string | undefined>(undefined);
+//     // Optional: Add state for search query if search needs to be combined with filters more tightly
+//     // const [searchQuery, setSearchQuery] = useState<string>('');
+
+//     // Loading and Error states
+//     const [loadingTransactions, setLoadingTransactions] = useState(true);
+//     const [loadingAccounts, setLoadingAccounts] = useState(true);
+//     const [error, setError] = useState<string | null>(null);
+
+//     // Authentication context
+//     const { token } = useAuth();
+
+//     // --- Data Fetching ---
+//     const fetchData = useCallback(async () => {
+//         if (!token) {
+//             setError("Authentication token is missing. Please log in.");
+//             setLoadingTransactions(false);
+//             setLoadingAccounts(false);
+//             return;
+//         }
+
+//         setLoadingTransactions(true);
+//         setLoadingAccounts(true);
+//         setError(null);
+//         // Reset data states to prevent stale data flashing
+//         setAllTransactions([]);
+//         setFilteredTransactions([]);
+//         setUserAccounts([]);
+
+//         try {
+//             const [paymentsData, transfersData, accountsData] = await Promise.all([
+//                 paymentService.getUserPayments(token),
+//                 transferService.getUserTransfers(token),
+//                 accountService.getUserAccounts(token)
+//             ]);
+
+//             // Process Payments (Add Money)
+//             // Assuming PaymentDetailsResponse has: _id, amountToPay, balanceCurrencyCode, payInCurrencyCode, accountId, createdAt, updatedAt, status
+//             const mappedPayments: Transaction[] = paymentsData.map(payment => {
+//                  // FIX: Use the defined helper function
+//                  const balanceCurrency = createPlaceholderCurrency(payment.balanceCurrencyCode);
+//                  const payInCurrency = createPlaceholderCurrency(payment.payInCurrencyCode);
+
+//                  return {
+//                      _id: payment._id,
+//                      type: "Add Money",
+//                      amountToAdd: payment.amountToPay, // Assuming amountToPay represents the added amount
+//                      amountToPay: payment.amountToPay,
+//                      balanceCurrency: balanceCurrency, // Use the created Currency object
+//                      payInCurrency: payInCurrency,     // Use the created Currency object
+//                      account: payment.accountId,       // Assuming accountId maps to the 'account' field
+//                      createdAt: payment.createdAt,
+//                      updatedAt: payment.updatedAt,
+//                      // Cast status after normalization
+//                      status: (payment.status?.toLowerCase() ?? 'unknown') as Transaction['status'],
+//                      // Ensure all required fields from Transaction type are present
+//                  };
+//             });
+
+
+//             // Process Transfers (Send Money)
+//             // Assuming TransferDetailsResponse has populated currency objects and necessary fields
+//             const mappedTransfers: Transaction[] = transfersData.map(transfer => ({
+//                 _id: transfer._id,
+//                 type: "Send Money",
+//                 name: (typeof transfer.recipient === 'object' && transfer.recipient !== null)
+//                       ? transfer.recipient.accountHolderName ?? 'Recipient'
+//                       : 'Recipient',
+//                 sendAmount: transfer.sendAmount,
+//                 receiveAmount: transfer.receiveAmount,
+//                 // Assuming these are already correctly typed Currency objects from the service
+//                 sendCurrency: transfer.sendCurrency as Currency,
+//                 receiveCurrency: transfer.receiveCurrency as Currency,
+//                 createdAt: transfer.createdAt,
+//                 updatedAt: transfer.updatedAt,
+//                 // Cast status after normalization
+//                 status: (transfer.status?.toLowerCase() ?? 'unknown') as Transaction['status'],
+//                 recipient: transfer.recipient,
+//                 sourceAccountId: typeof transfer.sourceAccount === 'string'
+//                                 ? transfer.sourceAccount
+//                                 : transfer.sourceAccount?._id,
+//                 // Ensure all required fields from Transaction type are present
+//             }));
+
+//             // FIX: Combine the correctly typed arrays
+//             const combinedTransactions: Transaction[] = [...mappedPayments, ...mappedTransfers];
+
+//             setAllTransactions(combinedTransactions);
+//             setFilteredTransactions(combinedTransactions); // Initialize filtered list
+//             setLoadingTransactions(false);
+
+//             setUserAccounts(accountsData);
+//             setLoadingAccounts(false);
+
+//         } catch (err: unknown) {
+//             console.error("Data fetch error in TransactionsPage:", err);
+
+//             let errorMessage = "Failed to fetch data. Please try again."; // Default message
+
+//             if (err instanceof Error) {
+//                 errorMessage = err.message;
+//                 const apiError = err as ApiError;
+//                 if (apiError.response?.data?.message) {
+//                     errorMessage = apiError.response.data.message;
+//                 }
+//             } else if (typeof err === 'string') {
+//                 errorMessage = err;
+//             }
+
+//             setError(errorMessage);
+//             setLoadingTransactions(false);
+//             setLoadingAccounts(false);
+//         }
+//     }, [token]); // Dependency: token
+
+//     // Effect to fetch data on mount or when token changes
+//     useEffect(() => {
+//         fetchData();
+//     }, [fetchData]); // fetchData includes token in its dependency array
+
+//     // --- Callback from Search Component ---
+//     const handleTransactionsChange = useCallback((searchResults: Transaction[]) => {
+//          console.log("Applying search results:", searchResults.length);
+//          setFilteredTransactions(searchResults);
+//     }, []);
+
+//     // --- Callback from Filter Component ---
+//     const handleFiltersApply = useCallback((filters: {
+//         selectedRecipients?: (string | number)[],
+//         selectedDirection?: string,
+//         selectedStatus?: string | null,
+//         selectedBalance?: string[], // Currency codes
+//         fromDate?: string,
+//         toDate?: string
+//     }) => {
+//         console.log("Applying filters:", filters);
+
+//         // 1. Update state tracking the applied filters
+//         setAppliedRecipientFilters(filters.selectedRecipients || []);
+//         setAppliedDirectionFilter(filters.selectedDirection || 'all');
+//         setAppliedStatusFilter(filters.selectedStatus || null);
+//         setAppliedBalanceFilter(filters.selectedBalance || []);
+//         setAppliedFromDateFilter(filters.fromDate);
+//         setAppliedToDateFilter(filters.toDate);
+
+//         // 2. Start with the full list of transactions
+//         let tempFiltered = [...allTransactions];
+
+//         // --- Apply Filters Sequentially ---
+
+//         // Apply Direction Filter
+//         const direction = filters.selectedDirection;
+//         if (direction && direction !== 'all') {
+//             tempFiltered = tempFiltered.filter(tx =>
+//                 (direction === 'add' && tx.type === 'Add Money') ||
+//                 (direction === 'send' && tx.type === 'Send Money')
+//             );
+//         }
+
+//         // Apply Status Filter
+//         const statusFilter = filters.selectedStatus;
+//         if (statusFilter) {
+//             const lowerCaseStatusFilter = statusFilter.toLowerCase();
+//             tempFiltered = tempFiltered.filter(tx => {
+//                 const txStatus = tx.status;
+//                 if (!txStatus) return false;
+
+//                 // Normalize status filter slightly (map UI 'in process' to backend statuses)
+//                 if (lowerCaseStatusFilter === 'completed') return txStatus === 'completed';
+//                 if (lowerCaseStatusFilter === 'cancelled') return txStatus === 'canceled';
+//                 if (lowerCaseStatusFilter === 'in process') return txStatus === 'in progress' || txStatus === 'pending' || txStatus === 'processing';
+//                 if (lowerCaseStatusFilter === 'failed') return txStatus === 'failed';
+//                 // Add other explicit mappings if needed
+//                 return false; // If filter doesn't match known statuses
+//             });
+//         }
+
+
+//         // Apply Balance (Currency) Filter
+//         const balanceFilters = filters.selectedBalance;
+//         if (balanceFilters && balanceFilters.length > 0) {
+//             tempFiltered = tempFiltered.filter(tx => {
+//                 let currencyCodeToCheck: string | undefined;
+//                 if (tx.type === 'Add Money') {
+//                      // Ensure balanceCurrency exists and has a code
+//                      currencyCodeToCheck = tx.balanceCurrency?.code;
+//                 } else if (tx.type === 'Send Money') {
+//                      // Ensure sendCurrency exists and has a code
+//                      currencyCodeToCheck = tx.sendCurrency?.code;
+//                 }
+//                 // Check if the relevant currency code is in the selected filter list
+//                 return currencyCodeToCheck ? balanceFilters.includes(currencyCodeToCheck) : false;
+//             });
+//         }
+
+
+//         // Apply Recipient Filter
+//         const recipientFilters = filters.selectedRecipients;
+//         if (recipientFilters && recipientFilters.length > 0) {
+//              const recipientFilterIds = recipientFilters.map(String); // Ensure IDs are strings for comparison
+//              tempFiltered = tempFiltered.filter(tx => {
+//                 // Only apply this filter to 'Send Money' transactions
+//                 if (tx.type !== "Send Money") {
+//                     return true; // Keep non-send-money transactions if recipient filter is active
+//                 }
+//                 // Determine the recipient ID from the transaction data
+//                 const recipientId = typeof tx.recipient === 'object' && tx.recipient?._id
+//                                     ? String(tx.recipient._id) // Get ID from object
+//                                     : typeof tx.recipient === 'string'
+//                                     ? tx.recipient // Use ID if it's already a string
+//                                     : null; // No recipient ID found
+
+//                 // Check if the transaction's recipient ID is included in the filter list
+//                 return recipientId ? recipientFilterIds.includes(recipientId) : false;
+//             });
+//         }
+
+//         // Apply Date Filter
+//         const fromDateObj = parseDateString(filters.fromDate);
+//         const toDateObj = parseDateString(filters.toDate);
+
+//         // Set time to start/end of day for inclusive filtering
+//         if (fromDateObj) fromDateObj.setHours(0, 0, 0, 0);
+//         if (toDateObj) toDateObj.setHours(23, 59, 59, 999);
+
+//         if (fromDateObj || toDateObj) {
+//             tempFiltered = tempFiltered.filter(tx => {
+//                 // Prefer updatedAt, fallback to createdAt for date comparison
+//                 const transactionDateStr = tx.updatedAt || tx.createdAt;
+//                 if (!transactionDateStr) return false; // Cannot filter if no date
+
+//                 try {
+//                     const transactionDateObj = new Date(transactionDateStr);
+//                     // Validate the parsed date
+//                     if (isNaN(transactionDateObj.getTime())) {
+//                          console.warn("Invalid transaction date string during filtering:", transactionDateStr);
+//                          return false;
+//                     }
+
+//                     let include = true;
+//                     // Check against 'from' date (if provided)
+//                     if (fromDateObj && transactionDateObj < fromDateObj) {
+//                         include = false;
+//                     }
+//                     // Check against 'to' date (if provided)
+//                     if (toDateObj && transactionDateObj > toDateObj) {
+//                         include = false;
+//                     }
+//                     return include;
+//                 } catch (e) {
+//                     console.error("Error parsing transaction date for filtering:", transactionDateStr, e);
+//                     return false; // Exclude if date parsing fails
+//                 }
+//             });
+//         }
+
+//         // 3. Update the state holding the transactions to be displayed
+//         console.log("Filtered down to:", tempFiltered.length);
+//         setFilteredTransactions(tempFiltered);
+
+//     }, [allTransactions]); // Dependency: Re-run filter logic if the base list changes
+
+//      // --- Transaction Grouping Logic (Optimized with useMemo) ---
+//     const { inProgressTransactions, groupedProcessedTransactions } = useMemo(() => {
+//         console.log("Recalculating grouped transactions based on filtered:", filteredTransactions.length);
+//         const inProgress = filteredTransactions.filter(
+//             (tx) => tx.status === "in progress" || tx.status === "pending" || tx.status === "processing"
+//         );
+
+//         const processed = filteredTransactions.filter(
+//             (tx) => tx.status === "completed" || tx.status === "canceled" || tx.status === "failed"
+//         );
+
+//         // Sort processed transactions by date (newest first)
+//         const sortedProcessed = [...processed].sort((a, b) => {
+//             const dateA = a.updatedAt || a.createdAt;
+//             const dateB = b.updatedAt || b.createdAt;
+//             if (!dateA && !dateB) return 0; // Both dates missing
+//             if (!dateA) return 1; // Put items without date B last
+//             if (!dateB) return -1; // Put items without date A last
+//             try {
+//                // Sort descending (newest first)
+//                return new Date(dateB).getTime() - new Date(dateA).getTime();
+//             } catch (e) {
+//                 console.error("Error comparing dates during sort:", dateA, dateB, e);
+//                 return 0; // Don't change order if comparison fails
+//             }
+//         });
+
+//         // Group sorted processed transactions by date string
+//         const grouped = sortedProcessed.reduce(
+//             (groups: { [date: string]: Transaction[] }, tx) => {
+//                 // Use updatedAt or createdAt for grouping date
+//                 const groupDateStr = tx.updatedAt || tx.createdAt;
+//                 let dateKey = 'Unknown Date'; // Default key if date is missing or invalid
+
+//                 if (groupDateStr) {
+//                     try {
+//                         // Format the date consistently for grouping
+//                         dateKey = new Date(groupDateStr).toLocaleDateString('en-US', { // Use a locale or format consistently
+//                             year: "numeric",
+//                             month: "long",
+//                             day: "numeric",
+//                         });
+//                         if (dateKey === 'Invalid Date') { // Check output of toLocaleDateString
+//                             console.warn("Formatted date is invalid:", groupDateStr);
+//                             dateKey = 'Invalid Date Entry';
+//                         }
+//                     } catch (e) {
+//                         console.error("Error formatting date for grouping:", groupDateStr, e);
+//                         dateKey = 'Date Formatting Error';
+//                     }
+//                 }
+
+//                 // Add the transaction to the appropriate group
+//                 if (!groups[dateKey]) {
+//                     groups[dateKey] = [];
+//                 }
+//                 groups[dateKey].push(tx);
+//                 return groups;
+//             }, {}
+//         );
+
+//         return { inProgressTransactions: inProgress, groupedProcessedTransactions: grouped };
+//     }, [filteredTransactions]); // Recalculate only when filteredTransactions changes
+
+
+//     // --- Render Logic ---
+//     const isLoading = loadingTransactions || loadingAccounts;
+
+//     // No need for separate getCurrencyCode helper here as it's defined outside
+
+//     return (
+//       <section className="Transaction-Page pb-8 md:pb-10">
+//         <div className="container mx-auto">
+//           {/* Header and Actions */}
+//           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky top-0 z-10 bg-white dark:bg-background border-b border-gray-200 dark:border-gray-700"> {/* Added border */}
+//             <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
+//               Transactions
+//             </h1>
+//             {/* Render Actions only when accounts are loaded */}
+//             {!loadingAccounts && userAccounts.length > 0 && (
+//               <TransactionActions
+//                 transactions={allTransactions} // Pass all transactions for filter options
+//                 userAccounts={userAccounts}
+//                 onTransactionsChange={handleTransactionsChange} // For search
+//                 onFiltersApply={handleFiltersApply} // For filters
+//               />
+//             )}
+//             {/* Show skeleton/placeholder while accounts load */}
+//             {loadingAccounts && (
+//               <div className="flex items-center gap-4 animate-pulse">
+//                 <Skeleton className="h-10 w-32 rounded-full" />
+//                 <Skeleton className="h-10 w-32 rounded-full" />
+//                 {/* Match structure of TransactionActions if possible */}
+//               </div>
+//             )}
+//             {/* Optional: Handle case where accounts loaded but are empty */}
+//             {!loadingAccounts && userAccounts.length === 0 && !error && (
+//               <p className="text-sm text-gray-500 dark:text-gray-400">
+//                 Create an account to start making transactions.
+//               </p>
+//             )}
+//           </div>
+
+//           {/* Loading State */}
+//           {isLoading && (
+//             <div className="space-y-2 pt-6"> {/* Added padding top */}
+//               {Array(8)
+//                 .fill(0)
+//                 .map((_, index) => (
+//                   <div key={index} className="block">
+//                     <div className="block p-2 sm:p-4 rounded-2xl"> {/* Removed hover effect for skeleton */}
+//                       <div className="flex items-center gap-4">
+//                         <Skeleton className="h-12 w-12 rounded-full flex-shrink-0" />
+//                         <div className="flex-grow flex flex-row justify-between items-center gap-4">
+//                           <div className="flex-grow space-y-2"> {/* Added space-y */}
+//                             <Skeleton className="h-4 w-3/4" /> {/* Adjusted width */}
+//                             <Skeleton className="h-3 w-1/2" /> {/* Adjusted width */}
+//                           </div>
+//                           <div className="shrink-0">
+//                             <Skeleton className="h-5 w-20 rounded-md" /> {/* Changed shape */}
+//                           </div>
+//                         </div>
+//                       </div>
+//                     </div>
+//                   </div>
+//                 ))}
+//             </div>
+//           )}
+
+//           {/* Error State */}
+//           {!isLoading && error && (
+//             <div className="text-center py-10 mt-6 text-red-700 bg-red-100 dark:text-red-400 dark:bg-red-900/30 p-4 rounded-lg border border-red-200 dark:border-red-800/30">
+//               <strong>Error:</strong> {error}
+//             </div>
+//           )}
+
+//           {/* Transaction List & Empty States */}
+//           {!isLoading && !error && (
+//             <div className="space-y-6 pt-6"> {/* Added padding top and increased space */}
+//               {/* In Progress Section */}
+//               {inProgressTransactions.length > 0 && (
+//                 <div>
+//                   <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-3 px-2 sm:px-0"> {/* Adjusted style */}
+//                     In progress
+//                   </h3>
+//                   <div className="space-y-1"> {/* Reduced space between items */}
+//                     {inProgressTransactions.map((transaction) => {
+//                       const isAddMoney = transaction.type === "Add Money";
+//                       const icon = isAddMoney ? <LuPlus size={20} /> : <GoArrowUp size={20} />; // Slightly smaller icon
+//                       const description = isAddMoney ? "Waiting for your money" : "Sending money";
+//                       const amount = isAddMoney ? transaction.amountToAdd ?? 0 : transaction.sendAmount ?? 0;
+//                       const displayCurrencyCode = getCurrencyCode(isAddMoney ? transaction.balanceCurrency : transaction.sendCurrency);
+//                       const amountPrefix = isAddMoney ? "+ " : "- ";
+//                       const name = isAddMoney ? `To your ${displayCurrencyCode || '...'} balance` : transaction.name || "Recipient"; // Added fallback for currency code
+
+//                       return (
+//                         <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} className="block group"> {/* Added group for hover effect */}
+//                           <div className="block group-hover:bg-lightgray dark:group-hover:bg-primarybox p-3 sm:p-4 rounded-lg transition-colors duration-150 ease-linear cursor-pointer"> {/* Adjusted padding/radius */}
+//                             <div className="flex items-center gap-3 sm:gap-4">
+//                               <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center flex-shrink-0 text-neutral-700 dark:text-neutral-300">{icon}</div>
+//                               <div className="flex-grow flex flex-col sm:flex-row justify-between sm:items-center gap-1 sm:gap-4 overflow-hidden"> {/* Added overflow-hidden */}
+//                                 <div className="flex-grow text-wrap min-w-0"> {/* Added min-w-0 */}
+//                                   <h3 className="font-medium text-neutral-900 dark:text-white truncate">{name}</h3> {/* Added truncate */}
+//                                   <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{description} <span className="italic">({transaction.status})</span></p>
+//                                 </div>
+//                                 <div className={`font-medium text-neutral-700 dark:text-neutral-200 whitespace-nowrap text-right text-sm sm:text-base shrink-0`}> {/* Adjusted colors/size */}
+//                                   {amountPrefix}{amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {displayCurrencyCode}
+//                                 </div>
+//                               </div>
+//                             </div>
+//                           </div>
+//                         </Link>
+//                       );
+//                     })}
+//                   </div>
+//                 </div>
+//               )}
+
+//               {/* Processed Sections (Grouped by Date) */}
+//               {Object.entries(groupedProcessedTransactions).length > 0 && (
+//                  Object.entries(groupedProcessedTransactions).map(([date, transactionsForDate]) => (
+//                       <div key={date}>
+//                         <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-3 px-2 sm:px-0"> {/* Adjusted style */}
+//                           {date} {/* Already formatted */}
+//                         </h3>
+//                         <div className="space-y-1"> {/* Reduced space */}
+//                           {transactionsForDate.map((transaction) => {
+//                             const isAddMoney = transaction.type === "Add Money";
+//                             const icon = isAddMoney ? <LuPlus size={20}/> : <GoArrowUp size={20}/>;
+//                             let description = "";
+//                             let amountClass = "";
+//                             const amount = isAddMoney ? transaction.amountToAdd ?? 0 : transaction.sendAmount ?? 0;
+//                             const displayCurrencyCode = getCurrencyCode(isAddMoney ? transaction.balanceCurrency : transaction.sendCurrency);
+//                             const amountPrefix = isAddMoney ? "+ " : "- ";
+//                             const name = isAddMoney ? `Added to ${displayCurrencyCode || '...'} balance` : transaction.name || "Recipient";
+
+//                             // Adjust appearance based on final status
+//                             if (transaction.status === "canceled") {
+//                                 description = "Cancelled";
+//                                 amountClass = "text-red-600 line-through dark:text-red-500";
+//                             } else if (transaction.status === "failed") {
+//                                 description = "Failed";
+//                                 amountClass = "text-red-600 line-through dark:text-red-500";
+//                             } else if (transaction.status === "completed") {
+//                                 description = isAddMoney ? "Added" : `Sent`; // Simpler description
+//                                 amountClass = isAddMoney ? "text-green-600 dark:text-green-500" : "text-neutral-700 dark:text-neutral-200"; // Adjusted send color
+//                             } else {
+//                                 description = `Status: ${transaction.status}`; // Fallback
+//                                 amountClass = "text-gray-500 dark:text-gray-400";
+//                             }
+
+//                             return (
+//                               <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} className="block group">
+//                                 <div className="block group-hover:bg-lightgray dark:group-hover:bg-primarybox p-3 sm:p-4 rounded-lg transition-colors duration-150 ease-linear cursor-pointer">
+//                                   <div className="flex items-center gap-3 sm:gap-4">
+//                                      <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center flex-shrink-0 text-neutral-700 dark:text-neutral-300">{icon}</div>
+//                                     <div className="flex-grow flex flex-col sm:flex-row justify-between sm:items-center gap-1 sm:gap-4 overflow-hidden">
+//                                        <div className="flex-grow text-wrap min-w-0">
+//                                          <h3 className="font-medium text-neutral-900 dark:text-white truncate">{name}</h3>
+//                                          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{description}</p>
+//                                       </div>
+//                                       <div className={`font-medium ${amountClass} whitespace-nowrap text-right text-sm sm:text-base shrink-0`}>
+//                                         {amountPrefix}{amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {displayCurrencyCode}
+//                                       </div>
+//                                     </div>
+//                                   </div>
+//                                 </div>
+//                               </Link>
+//                             );
+//                           })}
+//                         </div>
+//                       </div>
+//                     )
+//                   )
+//               )}
+
+//               {/* Empty State */}
+//               {filteredTransactions.length === 0 && inProgressTransactions.length === 0 && Object.keys(groupedProcessedTransactions).length === 0 && ( // Ensure no transactions are displayed at all
+//                 <div className="text-center flex flex-col items-center text-base px-4 text-gray-500 dark:text-gray-400 py-16 bg-gray-50 dark:bg-white/5 rounded-lg mt-6"> {/* Adjusted styles */}
+//                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12 text-gray-400 dark:text-gray-500 mb-4">
+//                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75h7.5M8.25 12h7.5m-7.5 5.25h7.5M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+//                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 3v18h18V3H3Z" />
+//                   </svg>
+
+//                   <p className="font-medium text-lg mb-1 text-gray-700 dark:text-gray-300">
+//                      {allTransactions.length === 0 ? "No transactions yet" : "No matching transactions"}
+//                   </p>
+//                    <p className="text-sm max-w-md mx-auto">
+//                      {allTransactions.length === 0 ? "Your payments and transfers will appear here." : "Try adjusting your search or filter criteria, or clear filters to see all transactions."}
+//                    </p>
+
+//                   {/* Show Clear Filters button only if filters are actually applied */}
+//                   {(appliedRecipientFilters.length > 0 || appliedDirectionFilter !== "all" || appliedStatusFilter || appliedBalanceFilter.length > 0 || appliedFromDateFilter || appliedToDateFilter) && allTransactions.length > 0 && (
+//                       <div className="mt-6">
+//                         <button
+//                           onClick={() => handleFiltersApply({ /* Reset filters by passing empty object */ })}
+//                           className="px-5 py-2 text-sm font-medium bg-primary text-white rounded-full hover:bg-primaryhover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
+//                         >
+//                           Clear Filters
+//                         </button>
+//                       </div>
+//                     )}
+//                 </div>
+//               )}
+//             </div>
+//           )}
+//         </div>
+//       </section>
+//     );
+// };
+
+// export default TransactionsPage;

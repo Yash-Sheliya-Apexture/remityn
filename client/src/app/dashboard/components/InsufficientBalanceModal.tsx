@@ -376,7 +376,6 @@
 
 "use client";
 import React, { useState, useEffect } from "react";
-import Image from "next/image"; // Import Image component
 import { motion, AnimatePresence } from "framer-motion";
 import { IoClose } from "react-icons/io5";
 
@@ -462,27 +461,6 @@ const InsufficientBalanceModal: React.FC<InsufficientBalanceModalProps> = ({
 
               {/* Image & Fallback Container */}
               <div className="flex justify-center w-20 h-20 mx-auto mb-4 relative">
-                {/* Image */}
-                <Image
-                  src="/assets/images/exclamation-mark-small.png" // <<<--- Make sure this image path is correct in your public folder
-                  alt="" // Alt text is empty as the fallback provides context if image fails
-                  fill // Use fill to make image cover the container
-                  sizes="(max-width: 640px) 80px, 80px" // Specify sizes for optimization
-                  className="object-contain absolute inset-0" // Use contain and position absolutely
-                  onError={(e) => {
-                     // Hide broken image icon if it fails, reveal fallback
-                     const target = e.target as HTMLImageElement;
-                     target.style.display = "none"; // Hide the img element itself
-                     // Find the sibling fallback div and make it visible
-                     const fallback = target.nextElementSibling;
-                     if (fallback) {
-                       (fallback as HTMLElement).style.display = "flex";
-                     }
-                  }}
-                  // Hide image initially if JS is disabled, fallback will show
-                  // Optional: Add priority if this modal appears above the fold often
-                  // priority
-                />
                 {/* SVG Fallback (Initially hidden by class, shown via onError) */}
                 <div
                   className="w-full h-full bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center text-yellow-500 dark:text-yellow-400 border-4 border-yellow-200 dark:border-yellow-700/50" // Use 'hidden' class
