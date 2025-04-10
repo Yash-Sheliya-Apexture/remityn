@@ -1301,11 +1301,10 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
-import { IoMdCloseCircle, IoMdCheckmark } from "react-icons/io";
+import { IoMdCloseCircle } from "react-icons/io";
 import authService from "../../services/auth"; // Correct import path using alias
-import { Check } from "lucide-react";
 import { FaCheck } from "react-icons/fa6";
 import { motion, AnimatePresence } from "framer-motion"; // Import Framer Motion
 
@@ -1473,12 +1472,11 @@ const ResetPasswordForm = () => {
               role="alert"
             >
               <div className="flex bg-[#a8200d] justify-center rounded-full items-center size-12 shrink-0">
-                {" "}
                 {/* Added shrink-0 */}
                 <IoMdCloseCircle className="p-0.5 text-white size-8" />
               </div>
               <div>
-                <span className="text-red-700 block">{resendError}</span>{" "}
+                <span className="text-red-700 block">{resendError}</span>
                 {/* Adjusted text color */}
               </div>
             </div>
@@ -1546,16 +1544,6 @@ const ResetPasswordForm = () => {
           <span className="block sm:inline">{error}</span>
         </div>
       )}
-
-      {/* This success message seems to only be relevant after resending, which is handled in the emailSent block. Keeping it here might be confusing unless there's another flow not shown. */}
-      {/* {successMessage && (
-        <div
-          className="bg-green-100 border border-green-400 rounded text-green-700 mb-4 px-4 py-3 relative w-full max-w-lg" // Added width constraint
-          role="alert"
-        >
-          <span className="block sm:inline">{successMessage}</span>
-        </div>
-      )} */}
 
       <form onSubmit={handleSubmit} className="w-full max-w-lg mt-2 lg:mt-5">
         <div className="mb-4">

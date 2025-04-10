@@ -418,11 +418,9 @@ import authService from "../../../services/auth";
 import {
   IoMdCloseCircle,
   IoIosCheckmarkCircle,
-  IoMdCheckmarkCircleOutline,
 } from "react-icons/io";
 import { VscEye } from "react-icons/vsc";
 import { RiEyeCloseLine } from "react-icons/ri";
-import { IoClose } from "react-icons/io5";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion"; // Import Framer Motion
 import { FiX } from "react-icons/fi";
@@ -532,7 +530,7 @@ const NewPasswordPage = () => {
       setResetSuccess("Password reset successful! Redirecting to login...");
       setTimeout(() => {
         router.push("/auth/login?resetSuccess=true"); // Changed query param for clarity
-      }, 1500);
+      }, 300);
     } catch (err: unknown) {
       let errorMessage = "Password reset failed. Please try again.";
       if (err instanceof Error) {
@@ -555,10 +553,6 @@ const NewPasswordPage = () => {
 
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
-  };
-
-  const handleCloseResetError = () => {
-    setResetError("");
   };
 
   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -616,17 +610,6 @@ const NewPasswordPage = () => {
     (password && !areAllCriteriaMet(validationCriteria)) ||
     !confirmPassword || // Disable if confirm password empty
     !!confirmPasswordError;
-
-  // Framer Motion variants for animation
-  // const errorVariants = {
-  //   initial: { opacity: 0, y: -20 },
-  //   animate: {
-  //     opacity: 1,
-  //     y: 0,
-  //     transition: { duration: 0.4, ease: "easeOut" },
-  //   },
-  //   exit: { opacity: 0, y: -20, transition: { duration: 0.3, ease: "easeIn" } },
-  // };
 
   const errorVariants = {
     initial: {

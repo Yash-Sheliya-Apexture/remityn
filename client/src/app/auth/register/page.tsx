@@ -2095,7 +2095,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "../../contexts/AuthContext"; // Import useAuth
 import Link from "next/link";
 import Image from "next/image";
-import { IoMdCheckmarkCircleOutline, IoMdCloseCircle } from "react-icons/io";
+import { IoMdCloseCircle } from "react-icons/io";
 import { RiEyeCloseLine } from "react-icons/ri";
 import { VscEye } from "react-icons/vsc";
 import { motion, AnimatePresence } from "framer-motion"; // Import Framer Motion
@@ -2198,7 +2198,7 @@ export default function RegisterPage() {
       // Redirect to login page with a success indicator after a short delay
       setTimeout(() => {
         router.push("/auth/login?registerSuccess=true");
-      }, 1000); // Delay allows user to see the success message
+      }, 300); // Delay allows user to see the success message
     } catch (err: unknown) {
       // <-- Use unknown instead of any
       let errorMessage = "Registration failed. Please try again."; // Default error message
@@ -2219,10 +2219,6 @@ export default function RegisterPage() {
           errorMessage = potentialError.message;
         }
       }
-      // Optional: Handle cases where a plain string might be thrown (less common)
-      // else if (typeof err === 'string') {
-      //    errorMessage = err;
-      // }
 
       setError(errorMessage);
     }
@@ -2240,26 +2236,6 @@ export default function RegisterPage() {
     return <p>Loading...</p>; // Or a loading spinner
   }
 
-  // Redirect is handled by useEffect, no need to render anything here if logged in
-  // if (user && !loading) {
-  //     return null;
-  // }
-
-  const handleCloseLoginError = () => {
-    setError("");
-    setIsErrorVisible(false); // Hide error when close button is clicked
-  };
-
-  // // Framer Motion variants for animation
-  // const errorVariants = {
-  //   initial: { opacity: 0, y: -20 },
-  //   animate: {
-  //     opacity: 1,
-  //     y: 0,
-  //     transition: { duration: 0.3, ease: "easeOut" },
-  //   },
-  //   exit: { opacity: 0, y: -20, transition: { duration: 0.2, ease: "easeIn" } },
-  // };
 
   const errorVariants = {
     initial: {
@@ -2366,18 +2342,17 @@ export default function RegisterPage() {
 
         <form onSubmit={handleSubmit} className="mt-0 space-y-4">
           {/* Google Button */}
-          <div>
-            {/* Consider making this a button or handling the click properly */}
+          {/* <div>
             <a className="flex bg-white dark:bg-background border justify-center rounded-lg text-mainheading dark:text-white  text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 h-14">
               <Image
                 src="/assets/icon/google.svg"
-                width={24} // Adjusted size
-                height={24} // Adjusted size
+                width={24} 
+                height={24} 
                 alt="Google icon"
               />
               Continue with Google
             </a>
-          </div>
+          </div> */}
 
           {/* Full Name Input */}
           <div>
