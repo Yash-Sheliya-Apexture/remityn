@@ -528,13 +528,18 @@ const SocialTrustSection = () => {
         <div className="flex lg:flex-row flex-col gap-6">
           <div className="lg:w-1/2 w-full">
             <div className="space-y-5">
-              <AppStore />
+              {/* <AppStore /> */}
               <div>
-                <h1 className="text-3xl md:text-6xl xl:text-8xl font-black text-mainheading dark:text-white font-mont uppercase tracking-tight">
+                {/* <h1 className="text-3xl md:text-6xl xl:text-8xl font-black text-mainheading dark:text-white font-mont uppercase tracking-tight">
                   For people going places
+                </h1> */}
+                <h1 className="text-5xl md:text-6xl xl:text-8xl leading-14 lg:leading-24 font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+                  See Why People 
+                  <span className="text-primary"> Trust Us </span>
                 </h1>
               </div>
             </div>
+
             <div className="flex items-center gap-4 pt-15">
               {/* Left arrow button */}
               <button

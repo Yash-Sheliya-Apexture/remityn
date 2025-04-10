@@ -31,17 +31,16 @@ body {
   /* Border-Color */
   --color-lightborder: #e3e3e3;
 
---color-mainheading: #171717;
---color-subheading: #171717;
---color-secondarybox: #525252;
-/* Background-color Hover-Button */
---color-primaryhover: #bcf65f;
+  --color-mainheading: #171717;
+  --color-subheading: #171717;
+  --color-secondarybox: #525252;
+  /* Background-color Hover-Button */
+  --color-primaryhover: #bcf65f;
 
-/* text-color : text-neutral-900 */
+  /* text-color : text-neutral-900 */
 
---color-primaryhover: #8de900;
---color-dropdowncolor: #2e2e2e
-
+  --color-primaryhover: #8de900;
+  --color-dropdowncolor: #2e2e2e;
 
 }
 

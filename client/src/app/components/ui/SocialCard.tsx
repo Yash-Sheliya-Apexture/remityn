@@ -301,19 +301,15 @@
 
 // export default SocialCard;
 
-
-
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
 const SocialCard = ({ index }: { index: number }) => {
-
   const cardData = [
     {
       imageSrc: "/assets/icon/usd.svg",
       imageAlt: "USD Flag",
-      // No quotes needed within the data itself unless they are part of the actual testimonial text
       testimonialText:
         "They make our life split between two continents possible. Transfers are simple and very, very fast.",
       authorName: "Stuart",
@@ -326,9 +322,7 @@ const SocialCard = ({ index }: { index: number }) => {
     {
       imageSrc: "/assets/icon/huf.svg",
       imageAlt: "USD Flag",
-      // Escape inner quotes with HTML entities
-      testimonialText:
-        `Always fast transactions and good fees. An invaluable online bank for those who live outside their own country or are frequent travellers.`,
+      testimonialText: `Always fast transactions and good fees. An invaluable online bank for those who live outside their own country or are frequent travellers.`,
       authorName: "Megan",
       authorLink: "",
       bgColor: "bg-green dark:bg-secondary",
@@ -339,9 +333,7 @@ const SocialCard = ({ index }: { index: number }) => {
     {
       imageSrc: "/assets/icon/gbp.svg",
       imageAlt: "USD Flag",
-      // Escape inner quotes with HTML entities
-      testimonialText:
-        `I use Wise to pay a mortgage in a different country each month. Superb. That simple.`,
+      testimonialText: `I use Wise to pay a mortgage in a different country each month. Superb. That simple.`,
       authorName: "Gerald",
       authorLink: "",
       bgColor: "bg-lightgreen dark:bg-secondary",
@@ -352,9 +344,7 @@ const SocialCard = ({ index }: { index: number }) => {
     {
       imageSrc: "/assets/icon/usd.svg",
       imageAlt: "USD Flag",
-      // Escape inner quotes with HTML entities
-      testimonialText:
-        `The best money travel buddy! Wise makes finances easier to deal with instantly.`,
+      testimonialText: `The best money travel buddy! Wise makes finances easier to deal with instantly.`,
       authorName: "Gemma",
       authorLink: "",
       bgColor: "bg-green dark:bg-secondary",
@@ -365,9 +355,7 @@ const SocialCard = ({ index }: { index: number }) => {
     {
       imageSrc: "/assets/icon/dkk.svg",
       imageAlt: "USD Flag",
-      // Escape inner quotes with HTML entities
-      testimonialText:
-        `Wise has been a lifesaver for me as a student in a foreign country.`,
+      testimonialText: `Wise has been a lifesaver for me as a student in a foreign country.`,
       authorName: "Stefani",
       authorLink: "",
       bgColor: "bg-lightgreen dark:bg-secondary",
@@ -401,8 +389,6 @@ const SocialCard = ({ index }: { index: number }) => {
         <div
           className={`${card.textColor} font-medium text-xl md:text-3xl pb-10`}
         >
-          {/* Use typographic quotes (“ ”) or standard quotes (") for wrapping */}
-          {/* Also, ensure inner quotes within testimonialText are already escaped */}
           <p>“{card.testimonialText}”</p>
         </div>
         <button

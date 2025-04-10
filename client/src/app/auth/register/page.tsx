@@ -2095,11 +2095,12 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "../../contexts/AuthContext"; // Import useAuth
 import Link from "next/link";
 import Image from "next/image";
-import { IoMdCheckmarkCircleOutline, IoMdCloseCircle } from "react-icons/io";
+import { IoMdCloseCircle } from "react-icons/io";
 import { RiEyeCloseLine } from "react-icons/ri";
 import { VscEye } from "react-icons/vsc";
 import { motion, AnimatePresence } from "framer-motion"; // Import Framer Motion
 import { FiX } from "react-icons/fi";
+import { FaCheck } from "react-icons/fa6";
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
@@ -2197,7 +2198,7 @@ export default function RegisterPage() {
       // Redirect to login page with a success indicator after a short delay
       setTimeout(() => {
         router.push("/auth/login?registerSuccess=true");
-      }, 1000); // Delay allows user to see the success message
+      }, 300); // Delay allows user to see the success message
     } catch (err: unknown) {
       // <-- Use unknown instead of any
       let errorMessage = "Registration failed. Please try again."; // Default error message
@@ -2218,10 +2219,6 @@ export default function RegisterPage() {
           errorMessage = potentialError.message;
         }
       }
-      // Optional: Handle cases where a plain string might be thrown (less common)
-      // else if (typeof err === 'string') {
-      //    errorMessage = err;
-      // }
 
       setError(errorMessage);
     }
@@ -2239,25 +2236,37 @@ export default function RegisterPage() {
     return <p>Loading...</p>; // Or a loading spinner
   }
 
-  // Redirect is handled by useEffect, no need to render anything here if logged in
-  // if (user && !loading) {
-  //     return null;
-  // }
 
-  const handleCloseLoginError = () => {
-    setError("");
-    setIsErrorVisible(false); // Hide error when close button is clicked
-  };
-
-  // Framer Motion variants for animation
   const errorVariants = {
-    initial: { opacity: 0, y: -20 },
+    initial: {
+      opacity: 0.5,
+      y: 10, // Start slightly below to gently rise up
+      scale: 0.95, // Start slightly smaller to subtly scale up
+      rotate: "2deg", // A very slight initial rotation for a soft lean-in
+    },
     animate: {
       opacity: 1,
-      y: 0,
-      transition: { duration: 0.3, ease: "easeOut" },
+      y: 0, // Move to its natural position
+      scale: 1, // Scale to its normal size
+      rotate: "0deg", // Rotate to straight position
+      transition: {
+        duration: 0.3, // Slightly longer duration for a smoother feel
+        ease: "easeInOut", // Smooth start and end
+        type: "spring", // Use spring for a gentle, bouncy settle
+        stiffness: 95, // Adjust stiffness for desired bounce
+        damping: 10, // Adjust damping to control oscillation
+      },
     },
-    exit: { opacity: 0, y: -20, transition: { duration: 0.2, ease: "easeIn" } },
+    exit: {
+      opacity: 0,
+      y: 10, // Move down slightly as it fades out
+      scale: 0.95, // Scale down slightly as it fades out
+      rotate: "-2deg", // Rotate slightly in the opposite direction for exit
+      transition: {
+        duration: 0.2, // Slightly faster exit
+        ease: "easeIn", // Ease in for a smooth fade out
+      },
+    },
   };
 
   return (
@@ -2282,19 +2291,19 @@ export default function RegisterPage() {
         <AnimatePresence>
           {isErrorVisible && error && (
             <motion.div
-              className="bg-lightgray dark:bg-red-600/20 border rounded-xl p-4 flex items-center gap-4 relative mb-5"
+              className="bg-lightgray dark:bg-white/5 rounded-2xl p-4 flex items-center gap-4 relative mb-4"
               role="alert"
               initial="initial"
               animate="animate"
               exit="exit"
               variants={errorVariants}
             >
-              <div className="p-1 bg-red-700 rounded-full">
-                <FiX size={24} className="text-lightgray" />
+              <div className="flex bg-red-600/20 justify-center rounded-full items-center size-12 shrink-0">
+                <FiX className="p-0.5 text-lightgray dark:text-red-600 size-8" />
               </div>
 
               <div>
-                <span className="text-gray-500 dark:text-white  block max-w-60">
+                <span className="text-gray-500 dark:text-white block max-w-60 leading-relaxed">
                   {error}
                 </span>
               </div>
@@ -2315,8 +2324,8 @@ export default function RegisterPage() {
                 variants={errorVariants}
               >
                 {/* Adjusted background/padding */}
-                <div className="flex bg-primary justify-center rounded-full items-center size-12 shrink-0">
-                  <IoMdCheckmarkCircleOutline className="p-0.5 text-mainheading size-8" />
+                <div className="flex bg-primary/20 justify-center rounded-full items-center size-12 shrink-0">
+                  <FaCheck className="p-0.5 text-mainheading dark:text-primary size-8" />
                 </div>
                 <div className="flex-grow space-y-0.5">
                   <span className="text-mainheading dark:text-primary block font-medium">
@@ -2333,18 +2342,17 @@ export default function RegisterPage() {
 
         <form onSubmit={handleSubmit} className="mt-0 space-y-4">
           {/* Google Button */}
-          <div>
-            {/* Consider making this a button or handling the click properly */}
+          {/* <div>
             <a className="flex bg-white dark:bg-background border justify-center rounded-lg text-mainheading dark:text-white  text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 h-14">
               <Image
                 src="/assets/icon/google.svg"
-                width={24} // Adjusted size
-                height={24} // Adjusted size
+                width={24} 
+                height={24} 
                 alt="Google icon"
               />
               Continue with Google
             </a>
-          </div>
+          </div> */}
 
           {/* Full Name Input */}
           <div>
@@ -2542,19 +2550,19 @@ export default function RegisterPage() {
         {/* Terms and Policy Links */}
         <p className="text-center text-gray-500 dark:text-gray-300 my-3 text-sm">
           {/* Adjusted styles */}
-          By registering, you accept our  &nbsp;
+          By registering, you accept our &nbsp;
           <Link
             href="/terms-and-conditions"
             className="text-primary font-medium underline underline-offset-4" // Adjusted offset/hover
           >
-            Terms of use  &nbsp;
+            Terms of use &nbsp;
           </Link>
           and
           <Link
             href="/privacy-policy-en"
             className="text-primary font-medium underline underline-offset-4"
           >
-             &nbsp; Privacy Policy
+            &nbsp; Privacy Policy
           </Link>
           .
         </p>
