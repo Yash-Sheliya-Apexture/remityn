@@ -231,7 +231,8 @@ if (process.env.NODE_ENV === 'development') {
 
 // CORS Configuration - Cross-Origin Resource Sharing setup.
 const allowedOrigins = [
-    'http://localhost:3000', // Your frontend development URL - adjust if needed
+    'http://localhost:3000',
+    'https://wise-lime.vercel.app' // Your frontend development URL - adjust if needed
     // Add your production frontend URL here to allow access from your domain
 ];
 
