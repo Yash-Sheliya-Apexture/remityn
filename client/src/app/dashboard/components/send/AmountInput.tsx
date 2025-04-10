@@ -402,7 +402,7 @@ const AmountInput: React.FC<AmountInputProps> = ({
           }
         )}
       >
-        <div className="flex items-center bg-lightborder dark:bg-background border px-2 py-1.5 rounded-full gap-2.5 pr-5 flex-shrink-0">
+        <div className="flex items-center bg-lightborder dark:bg-primarybox border px-2 py-1.5 rounded-full gap-2.5 pr-5 flex-shrink-0">
           <Image
             src={flagImage || "/assets/icon/generic.svg"}
             alt={`${currencyCode} flag`}

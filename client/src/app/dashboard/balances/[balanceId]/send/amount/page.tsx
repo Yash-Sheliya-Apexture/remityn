@@ -3523,7 +3523,7 @@ export default function SendAmountPage() {
                 Available: </span>
               <button
                 onClick={handleAvailableBalanceClick}
-                className="text-sm font-medium text-primary dark:text-primary-foreground hover:underline focus:outline-none focus:underline"
+                className="text-sm font-medium text-primary dark:text-primary cursor-pointer hover:underline focus:outline-none focus:underline"
                 aria-label={`Use available balance: ${sourceAccount!.balance.toFixed(2)} ${sourceAccount!.currency.code}`} // Use ! assertion
               >
                 {sourceAccount!.balance.toLocaleString(undefined, { // Use ! assertion
@@ -3593,8 +3593,8 @@ export default function SendAmountPage() {
             className={`w-full font-semibold py-3 h-14 rounded-full mt-6 transition-all duration-300 ease-in-out text-lg flex items-center justify-center
                             ${
                               canContinue && !isCalculating
-                                ? "bg-primary text-secondary hover:bg-primary-hover shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                                : "bg-gray-200 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                                ? "bg-primary text-neutral-900 hover:bg-primary-hover shadow-md hover:shadow-lg focus:outline-none cursor-pointer"
+                                : "bg-gray-200 dark:bg-secondarybox text-gray-500 dark:text-gray-400 cursor-not-allowed"
                             }`}
             data-testid="continue-button"
           >
