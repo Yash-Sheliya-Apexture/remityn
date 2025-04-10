@@ -1580,7 +1580,7 @@ const Header: React.FC = () => {
                       Help
                     </Link>
                     <Link href="/en">
-                      <button className="flex items-center px-2.5 py-1.5 rounded-full hover:bg-gray-200">
+                      <button className="flex items-center gap-1 px-2.5 py-1.5 rounded-full cursor-pointer hover:bg-lightgray dark:hover:bg-secondary">
                         <Image
                           src="/assets/icon/flags/inr.svg" // Keep the same source
                           alt="Indian Flag"

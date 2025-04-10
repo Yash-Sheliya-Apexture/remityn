@@ -788,7 +788,7 @@
 'use client';
 import React, { useState, useEffect, useCallback } from 'react'; // Import useCallback
 import { useAuth } from '../../contexts/AuthContext';
-import axios, { AxiosError } from 'axios'; // Import AxiosError for type checking
+import axios from 'axios'; // Import AxiosError for type checking
 import apiConfig from '../../config/apiConfig';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, X, Search, Filter, RefreshCw } from 'lucide-react';
@@ -800,28 +800,28 @@ import Pagination from '../components/Pagination'; // Import Pagination componen
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
-interface TransferUser {
-    fullName?: string;
-    email?: string;
-}
-
-interface TransferCurrency {
-    code?: string;
-}
-
-interface TransferRecipient {
-    accountHolderName?: string;
-}
+// --- Define Transfer type used WITHIN this component ---
 interface Transfer {
     _id: string;
-    user: TransferUser;
-    sendAmount: string; // Keep as string if API returns string, parse for calcs/sorting
-    sendCurrency?: TransferCurrency;
+    user: { // Made user non-optional as it seems core
+        fullName?: string;
+        email?: string;
+    };
+    sendAmount: string; // Keep as string as per original definition and API
+    sendCurrency?: {
+        code?: string;
+    };
     status: string;
     createdAt: string; // ISO date string
-    recipient?: TransferRecipient;
+    recipient?: { // Recipient is optional
+        accountHolderName?: string;
+    };
     // Add other properties as needed based on your Transfer object structure
 }
+
+// Define the type for the sortable fields more explicitly
+// Includes top-level keys and nested keys used for sorting
+type TransferSortField = keyof Omit<Transfer, 'user' | 'recipient' | 'sendCurrency'> | 'user' | 'recipient' | 'createdAt' | 'amount' | '_id'; // Alias for user.fullName and recipient.accountHolderName used in switch
 
 
 const AdminTransfersPage: React.FC = () => {
@@ -844,7 +844,8 @@ const AdminTransfersPage: React.FC = () => {
     const [recipientFilter, setRecipientFilter] = useState<string>('');
 
     // Sorting
-    const [sortField, setSortField] = useState<string | null>(null);
+    // --- FIX: Update sortField state type ---
+    const [sortField, setSortField] = useState<TransferSortField | null>(null); // Use the more specific type
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
     // Pagination State
@@ -868,23 +869,18 @@ const AdminTransfersPage: React.FC = () => {
         // Clear success message on new fetch? Optional, depends on desired UX
         // setSuccessMessage(null);
         try {
-            const response = await axios.get<{ data: Transfer[] }>('/admin/transfers', { // Add response type if known
+            // Use the local Transfer type for the response
+            const response = await axios.get<{ data: Transfer[] }>('/admin/transfers', {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            // Adjust based on actual API response structure if needed
-            const fetchedData = response.data.data || response.data;
+            const fetchedData = response.data.data || response.data || []; // Ensure it's an array
             setTransfers(fetchedData);
-            // Initially, filtered transfers are the same as all transfers
-            // This will be updated by the filter useEffect below
-            // setFilteredTransfers(fetchedData); // Let the filter effect handle this
         } catch (err: unknown) { // 2. Change 'any' to 'unknown'
             // 3. Type check the error before accessing properties
             let message = 'Failed to load transfers'; // Default message
             if (axios.isAxiosError(err)) {
-                // Access Axios-specific properties safely
                 message = err.response?.data?.message || err.message || 'An unexpected error occurred.';
             } else if (err instanceof Error) {
-                // Standard JavaScript error
                 message = err.message;
             } else if (typeof err === 'string') {
                 message = err;
@@ -895,8 +891,7 @@ const AdminTransfersPage: React.FC = () => {
             setLoadingTransfers(false);
             setIsRefreshing(false); // Stop refresh animation
         }
-    // Add stable setters to dependencies (optional but recommended by some linters)
-    }, [token, setLoadingTransfers, setIsRefreshing, setError, setTransfers]);
+    }, [token]); // Simplified dependencies as setters are stable
 
 
     useEffect(() => {
@@ -936,6 +931,7 @@ const AdminTransfersPage: React.FC = () => {
             // Use parseFloat for comparison, handle potential NaN
             const amount = parseFloat(amountFilter);
             if (!isNaN(amount)) {
+                // Compare parsed amount from filter with parsed amount from transfer
                 results = results.filter(transfer => parseFloat(transfer.sendAmount) === amount);
             }
         }
@@ -982,78 +978,62 @@ const AdminTransfersPage: React.FC = () => {
         // Apply sorting
         if (sortField) {
             results.sort((a, b) => {
-                // --- Start of Fixes for sorting ---
-                // 5. Define value types more specifically than 'any'
                 let valueA: string | number | Date | undefined;
                 let valueB: string | number | Date | undefined;
 
                 // Extract values based on sortField
                 switch (sortField) {
-                    case 'user':
-                        valueA = a.user?.fullName?.toLowerCase() ?? ''; // Use nullish coalescing for safety
+                    case 'user': // Represents sorting by user.fullName
+                        valueA = a.user?.fullName?.toLowerCase() ?? '';
                         valueB = b.user?.fullName?.toLowerCase() ?? '';
                         break;
-                    case 'amount':
-                        valueA = parseFloat(a.sendAmount); // Parse to number for comparison
+                    case 'amount': // Represents sorting by sendAmount
+                        // Parse string amount to number for comparison
+                        valueA = parseFloat(a.sendAmount);
                         valueB = parseFloat(b.sendAmount);
-                        // Handle potential NaN values during comparison below
                         break;
-                    case 'recipient':
+                    case 'recipient': // Represents sorting by recipient.accountHolderName
                         valueA = a.recipient?.accountHolderName?.toLowerCase() ?? '';
                         valueB = b.recipient?.accountHolderName?.toLowerCase() ?? '';
                         break;
                     case 'createdAt':
                         valueA = new Date(a.createdAt); // Compare as Date objects
                         valueB = new Date(b.createdAt);
-                        // Handle potential invalid dates during comparison below
                         break;
                     case 'status':
-                         valueA = a.status.toLowerCase(); // Ensure case-insensitive sort for status
+                         valueA = a.status.toLowerCase();
                          valueB = b.status.toLowerCase();
                          break;
-                    case '_id': // Example if sorting by ID
+                    case '_id':
                          valueA = a._id;
                          valueB = b._id;
                          break;
-                    // Add other sortable fields if necessary
-                    default:
-                        // Attempt direct access, assuming string or comparable type
-                        // This might need refinement based on actual Transfer properties
-                        try {
-                             const key = sortField as keyof Transfer;
-                             // Ensure values are comparable (e.g., convert to string if mixed types)
-                             valueA = (a[key] as any)?.toString().toLowerCase() ?? '';
-                             valueB = (b[key] as any)?.toString().toLowerCase() ?? '';
-                        } catch (e) {
-                             console.error("Error accessing sort key:", sortField, e);
-                             valueA = '';
-                             valueB = '';
-                        }
-                        break;
+                    // Add direct key access if needed, ensuring type safety
+                    // default:
+                    //     const key = sortField as keyof Transfer; // Assert key type
+                    //     // Ensure values are comparable (e.g., convert to string if mixed types)
+                    //     valueA = (a[key] as any)?.toString().toLowerCase() ?? '';
+                    //     valueB = (b[key] as any)?.toString().toLowerCase() ?? '';
+                    //     break;
                 }
-                // --- End of Fixes for sorting 'any' ---
 
                 // Comparison Logic - Handle different types
                 let comparison = 0;
 
-                // Handle Date comparison
                 if (valueA instanceof Date && valueB instanceof Date) {
                     const timeA = !isNaN(valueA.getTime()) ? valueA.getTime() : -Infinity;
                     const timeB = !isNaN(valueB.getTime()) ? valueB.getTime() : -Infinity;
                     comparison = timeA - timeB;
                 }
-                // Handle Number comparison (including NaN)
                 else if (typeof valueA === 'number' && typeof valueB === 'number') {
-                    const numA = isNaN(valueA) ? -Infinity : valueA; // Treat NaN as lowest value
+                    const numA = isNaN(valueA) ? -Infinity : valueA;
                     const numB = isNaN(valueB) ? -Infinity : valueB;
                     comparison = numA - numB;
                 }
-                // Handle String comparison (case-insensitive)
                 else {
-                    // Convert potentially undefined/null values to empty strings for safe comparison
                     const strA = String(valueA ?? '').toLowerCase();
                     const strB = String(valueB ?? '').toLowerCase();
-                    comparison = strA.localeCompare(strB); // Use localeCompare for better string sorting
+                    comparison = strA.localeCompare(strB);
                 }
 
                 // Apply direction
@@ -1063,14 +1043,14 @@ const AdminTransfersPage: React.FC = () => {
 
         setFilteredTransfers(results);
         // Reset page to 1 only if filters/sorting change *after* the initial load
-        // This prevents resetting unnecessarily when `transfers` initially populates
         if (transfers.length > 0) { // Basic check to see if it's not the initial empty state
             setCurrentPage(1);
         }
     }, [transfers, searchTerm, statusFilter, dateRange, sortField, sortDirection, transferIdFilter, amountFilter, currencyFilter, recipientFilter]); // Keep all relevant dependencies
 
 
-    const toggleSort = (field: string) => {
+    // --- FIX: Ensure field passed to toggleSort matches TransferSortField type ---
+    const toggleSort = (field: TransferSortField) => {
         if (sortField === field) {
             setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
         } else {
@@ -1087,26 +1067,19 @@ const AdminTransfersPage: React.FC = () => {
         setAmountFilter('');
         setCurrencyFilter('all');
         setRecipientFilter('');
-        // Optionally reset sorting
-        // setSortField(null);
-        // setSortDirection('asc');
+        setSortField(null); // Clear sorting when clearing filters
+        setSortDirection('asc');
         setCurrentPage(1); // Reset page when clearing filters
     };
 
     const getStatusColor = (status: string) => {
         switch (status?.toLowerCase()) { // Added toLowerCase for safety
-            case 'completed':
-                return 'text-green-600 bg-green-600/20 ';
-            case 'pending':
-                return 'text-yellow-600 bg-yellow-600/20 ';
-            case 'processing':
-                return 'text-blue-600 bg-blue-600/20 ';
-            case 'failed':
-                return 'text-rose-600 bg-rose-600/20 ';
-            case 'canceled':
-                return 'text-red-600 bg-red-600/20 ';
-            default:
-                return 'text-gray-600 bg-gray-600/20 ';
+            case 'completed': return 'text-green-600 bg-green-600/20 ';
+            case 'pending': return 'text-yellow-600 bg-yellow-600/20 ';
+            case 'processing': return 'text-blue-600 bg-blue-600/20 ';
+            case 'failed': return 'text-rose-600 bg-rose-600/20 ';
+            case 'canceled': return 'text-red-600 bg-red-600/20 ';
+            default: return 'text-gray-600 bg-gray-600/20 ';
         }
     };
 
@@ -1120,15 +1093,13 @@ const AdminTransfersPage: React.FC = () => {
 
 
     const refreshData = () => {
-        // fetchTransfers is already memoized, just call it
         fetchTransfers();
     };
 
     // Pagination logic
     const indexOfLastTransfer = currentPage * transfersPerPage;
     const indexOfFirstTransfer = indexOfLastTransfer - transfersPerPage;
-    // Ensure currentTransfers calculation happens *after* filtering/sorting
-    const currentTransfers = filteredTransfers.slice(indexOfFirstTransfer, indexOfLastTransfer);
+    const currentTransfers = filteredTransfers.slice(indexOfFirstTransfer, indexOfLastTransfer); // Use the locally defined Transfer type
 
     const totalPages = Math.ceil(filteredTransfers.length / transfersPerPage);
     const paginate = (pageNumber: number) => {
@@ -1143,32 +1114,30 @@ const AdminTransfersPage: React.FC = () => {
     return (
         <div className="container mx-auto px-4 py-8 relative">
             <div className="space-y-6">
-                <div className="flex flex-wrap justify-between items-center gap-4"> {/* Added flex-wrap and items-center */}
+                <div className="flex flex-wrap justify-between items-center gap-4">
                     <h1 className="text-2xl font-bold text-mainheading dark:text-white">Transfer Management</h1>
-                    <div className="flex flex-wrap gap-3 items-center"> {/* Added flex-wrap and items-center */}
-                        {/* Transfer Filter */}
+                    <div className="flex flex-wrap gap-3 items-center">
                         <div className="relative">
                             <input
                                 type="text"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 placeholder="Search by User, Recipient or Email..."
-                                className="w-full sm:w-64 md:w-xl rounded-full py-2 pl-12 pr-3 h-12.5 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white" // Adjusted width classes
+                                className="w-full sm:w-64 md:w-xl rounded-full py-2 pl-12 pr-3 h-12.5 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white"
                             />
                             <Search className="absolute left-3 top-3.5 text-gray-400" size={20} />
                         </div>
                         <button
                             onClick={() => setShowFilterModal(true)}
-                            className="flex items-center cursor-pointer gap-2 bg-primary text-secondary font-medium text-lg px-8 py-2 h-12.5 rounded-3xl hover:bg-primaryhover transition-colors whitespace-nowrap" // Added whitespace-nowrap
+                            className="flex items-center cursor-pointer gap-2 bg-primary text-secondary font-medium text-lg px-8 py-2 h-12.5 rounded-3xl hover:bg-primaryhover transition-colors whitespace-nowrap"
                         >
                             <Filter size={18} />
                             Filters
                         </button>
-                        {/* Refresh Data Button */}
                         <button
                             onClick={refreshData}
-                            disabled={isRefreshing || loadingTransfers} // Disable while loading or refreshing
-                            className="flex items-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 h-12.5 rounded-3xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap" // Added whitespace-nowrap
+                            disabled={isRefreshing || loadingTransfers}
+                            className="flex items-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 h-12.5 rounded-3xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                         >
                             <RefreshCw
                                 className={`size-5 ${isRefreshing ? "animate-spin" : ""}`}
@@ -1197,7 +1166,7 @@ const AdminTransfersPage: React.FC = () => {
                                 <button
                                     onClick={() => setSuccessMessage(null)}
                                     className="ml-auto flex-shrink-0 text-green-500 hover:text-green-700"
-                                    aria-label="Dismiss success message" // Added aria-label
+                                    aria-label="Dismiss success message"
                                 >
                                     <X size={18} />
                                 </button>
@@ -1217,7 +1186,6 @@ const AdminTransfersPage: React.FC = () => {
                         >
                             <div className="flex items-start">
                                 <div className="flex-shrink-0">
-                                     {/* Using X for error indication */}
                                     <X className="h-5 w-5 text-red-500" />
                                 </div>
                                 <div className="ml-3">
@@ -1226,7 +1194,7 @@ const AdminTransfersPage: React.FC = () => {
                                 <button
                                     onClick={() => setError(null)}
                                     className="ml-auto flex-shrink-0 text-red-500 hover:text-red-700"
-                                    aria-label="Dismiss error message" // Added aria-label
+                                    aria-label="Dismiss error message"
                                 >
                                     <X size={18} />
                                 </button>
@@ -1235,15 +1203,14 @@ const AdminTransfersPage: React.FC = () => {
                     )}
                 </AnimatePresence>
 
-                <div className="flex flex-wrap justify-between items-center mb-4 gap-4"> {/* Added flex-wrap and gap */}
-                    {/* Show per page dropdown */}
-                    <div className="flex items-center gap-2"> {/* Group label and select */}
+                <div className="flex flex-wrap justify-between items-center mb-4 gap-4">
+                    <div className="flex items-center gap-2">
                         <label htmlFor="transfersPerPage" className="text-sm font-medium text-gray-600 dark:text-white whitespace-nowrap">Show per page:</label>
                         <select
                             id="transfersPerPage"
                             value={transfersPerPage}
                             onChange={(e) => handlePageSizeChange(Number(e.target.value))}
-                            className="block w-auto pl-3 pr-10 py-2 border focus:outline-none sm:text-sm rounded-md bg-lightgray dark:bg-[#2E2E2E] dark:text-white dark:border-gray-600" // Removed w-full, adjusted padding/border
+                            className="block w-auto pl-3 pr-10 py-2 border focus:outline-none sm:text-sm rounded-md bg-lightgray dark:bg-[#2E2E2E] dark:text-white dark:border-gray-600"
                         >
                             {pageSizeOptions.map(size => (
                                 <option key={size} value={size}>{size}</option>
@@ -1251,19 +1218,20 @@ const AdminTransfersPage: React.FC = () => {
                         </select>
                     </div>
                     <p className="text-sm text-gray-600 dark:text-white">
-                        {/* Display range of items shown */}
                         Showing {filteredTransfers.length > 0 ? indexOfFirstTransfer + 1 : 0}-{Math.min(indexOfLastTransfer, filteredTransfers.length)} of {filteredTransfers.length} results
-                         {/* Display page info only if there are pages */}
                          {totalPages > 0 && ` (Page ${currentPage} of ${totalPages})`}
                     </p>
                 </div>
 
                 {/* Transfers Table */}
                 <TransferTable
-                    filteredTransfers={currentTransfers} // Use currentTransfers for pagination
+                    // --- FIX: Pass currentTransfers which now uses the local Transfer type ---
+                    filteredTransfers={currentTransfers}
                     loadingTransfers={loadingTransfers}
                     getStatusColor={getStatusColor}
+                    // --- FIX: Pass toggleSort which now expects TransferSortField ---
                     toggleSort={toggleSort}
+                    // --- FIX: Pass sortField which now has the specific type TransferSortField | null ---
                     sortField={sortField}
                     sortDirection={sortDirection}
                 />

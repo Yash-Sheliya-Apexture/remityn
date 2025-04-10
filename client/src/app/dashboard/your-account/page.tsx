@@ -9,7 +9,7 @@ import { RiShieldLine } from "react-icons/ri";
 import { FaRegBell } from "react-icons/fa6";
 import { IoMdCopy } from "react-icons/io";
 import { IoMoonOutline } from "react-icons/io5"; // <-- Import the new icon
-import { useAuth } from '@/app/hooks/useAuth'; // Import the useAuth hook
+import { useAuth } from '@/app/contexts/AuthContext'; // Import the useAuth hook
 
 const AccountSettings: React.FC = () => {
   // Use the hook to get authentication status and user data

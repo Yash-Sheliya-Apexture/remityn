@@ -686,7 +686,7 @@ export default function ChangePassword() {
                   id="currentPassword"
                   name="currentPassword" // Added name attribute
                   autoComplete="current-password" // Added autocomplete attribute
-                  className={`autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 placeholder:text-neutral-600 dark:placeholder:text-white/80 focus:outline-none focus:ring-2 dark:focus:ring-offset-0 dark:bg-primarybox ${
+                  className={`autofill:bg-transparent  w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 placeholder:text-neutral-600 dark:placeholder:text-white/80 focus:outline-none focus:ring-2 dark:focus:ring-offset-0 dark:bg-primarybox ${
                     showInvalidCurrentPasswordError
                       ? "border-red-500 dark:border-red-700 focus:ring-red-500/50 dark:focus:ring-red-700/50"
                       : "border-neutral-600 dark:border-white/40 hover:shadow-darkcolor dark:hover:shadow-whitecolor focus:ring-primary/50 dark:focus:ring-white/50 dark:focus:shadow-whitecolor focus:shadow-darkcolor"
@@ -711,7 +711,7 @@ export default function ChangePassword() {
                   id="newPassword"
                   name="newPassword" // Added name attribute
                   autoComplete="new-password" // Added autocomplete attribute
-                  className={`autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 pr-12 border transition-shadow ease-in-out duration-300 placeholder:text-neutral-600 dark:placeholder:text-white/80 focus:outline-none focus:ring-2 dark:focus:ring-offset-0 dark:bg-primarybox ${
+                  className={`autofill:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 pr-12 border transition-shadow ease-in-out duration-300 placeholder:text-neutral-600 dark:placeholder:text-white/80 focus:outline-none focus:ring-2 dark:focus:ring-offset-0 dark:bg-primarybox ${
                     (showSamePasswordError || (newPassword && !isNewPasswordValid())) && !showSortedMessage // Show error border if same password or invalid (and not yet sorted)
                       ? "border-red-500 dark:border-red-700 focus:ring-red-500/50 dark:focus:ring-red-700/50"
                       : "border-neutral-600 dark:border-white/40 hover:shadow-darkcolor dark:hover:shadow-whitecolor focus:ring-primary/50 dark:focus:ring-white/50 dark:focus:shadow-whitecolor focus:shadow-darkcolor"

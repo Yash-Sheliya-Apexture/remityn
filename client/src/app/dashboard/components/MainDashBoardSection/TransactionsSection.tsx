@@ -711,19 +711,313 @@
 
 
 
+// // components/MainDashBoardSection/TransactionsSection.tsx
+// "use client"; // Required for hooks like useState, useEffect, useAuth
+
+// import React, { useState, useEffect, useCallback } from "react";
+// import Link from "next/link";
+// import { LuPlus } from "react-icons/lu";
+// import { GoArrowUp } from "react-icons/go";
+
+// import { useAuth } from "../../../contexts/AuthContext"; // Adjust path if needed
+// import paymentService from "../../../services/payment"; // Adjust path if needed
+// import transferService from "../../../services/transfer"; // Adjust path if needed
+// import { Transaction } from "@/types/transaction"; // Adjust path if needed
+// import { Skeleton } from "@/components/ui/skeleton"; // Assuming Skeleton is in "@/components/ui/skeleton" or adjust path accordingly.
+
+// const TransactionsSection: React.FC = () => {
+//   const [latestTransactions, setLatestTransactions] = useState<Transaction[]>(
+//     []
+//   );
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+//   const { token } = useAuth();
+
+//   const fetchAndProcessTransactions = useCallback(async () => {
+//     if (!token) {
+//       setError("Not authenticated.");
+//       setLoading(false);
+//       return;
+//     }
+
+//     setLoading(true);
+//     setError(null);
+//     setLatestTransactions([]); // Clear previous data
+
+//     try {
+//       // Fetch both payments and transfers concurrently
+//       const [paymentsData, transfersData] = await Promise.all([
+//         paymentService.getUserPayments(token),
+//         transferService.getUserTransfers(token),
+//       ]);
+
+//       // Map payments to the common Transaction structure
+//       const mappedPayments: Transaction[] = paymentsData.map((payment) => ({
+//         _id: payment._id,
+//         type: "Add Money",
+//         amountToAdd: payment.amountToAdd, // Amount relevant for display
+//         balanceCurrency: payment.balanceCurrency, // For currency code
+//         createdAt: payment.createdAt,
+//         updatedAt: payment.updatedAt,
+//         status: payment.status,
+//         // Add other fields from Transaction type if needed, initialized appropriately
+//         payInCurrency: payment.payInCurrency,
+//         account: payment.account,
+//         amountToPay: payment.amountToPay, // Keep if needed elsewhere, but amountToAdd is primary for display
+//       }));
+
+//       // Map transfers to the common Transaction structure
+//       const mappedTransfers: Transaction[] = transfersData.map((transfer) => ({
+//         _id: transfer._id,
+//         type: "Send Money",
+//         name:
+//           typeof transfer.recipient === "object" && transfer.recipient !== null
+//             ? transfer.recipient.accountHolderName
+//             : "Recipient", // Use recipient name
+//         sendAmount: transfer.sendAmount, // Amount relevant for display
+//         sendCurrency: transfer.sendCurrency, // For currency code
+//         createdAt: transfer.createdAt,
+//         updatedAt: transfer.updatedAt,
+//         status: transfer.status,
+//         recipient: transfer.recipient, // Keep recipient details if needed
+//         sourceAccountId:
+//           typeof transfer.sourceAccount === "string"
+//             ? transfer.sourceAccount
+//             : transfer.sourceAccount?._id,
+//         // Add other fields from Transaction type if needed
+//         receiveAmount: transfer.receiveAmount,
+//         receiveCurrency: transfer.receiveCurrency,
+//       }));
+
+//       // Combine both types of transactions
+//       const allTransactions = [...mappedPayments, ...mappedTransfers];
+
+//       // Sort all transactions by date (use updatedAt falling back to createdAt)
+//       const sortedTransactions = allTransactions.sort((a, b) => {
+//         const dateA = a.updatedAt || a.createdAt;
+//         const dateB = b.updatedAt || b.createdAt;
+//         // Handle potentially missing dates
+//         if (!dateA && !dateB) return 0;
+//         if (!dateA) return 1; // Put transactions without date last
+//         if (!dateB) return -1; // Put transactions without date last
+//         // Sort descending (newest first)
+//         return new Date(dateB).getTime() - new Date(dateA).getTime();
+//       });
+
+//       // Get the latest 3 transactions
+//       setLatestTransactions(sortedTransactions.slice(0, 3));
+//     } catch (err: unknown) { // Changed 'any' to 'unknown'
+//       console.error("Failed to fetch transactions:", err); // Log the raw error object/value
+
+//       // Determine the error message safely
+//       let errorMessage = "Could not load recent transactions."; // Default message
+//       if (err instanceof Error) {
+//         // If it's an Error object, use its message
+//         errorMessage = err.message || errorMessage; // Use error message if available, otherwise default
+//       } else if (typeof err === 'string' && err) {
+//         // If it's a non-empty string, use it directly
+//         errorMessage = err;
+//       }
+//       // You could add more specific checks here if needed (e.g., for custom error objects)
+
+//       setError(errorMessage);
+//     } finally {
+//       setLoading(false);
+//     }
+//   }, [token]); // Dependency: run when token changes
+
+//   useEffect(() => {
+//     fetchAndProcessTransactions();
+//   }, [fetchAndProcessTransactions]); // Run fetch logic
+
+//   // --- Render Helper ---
+//   const renderTransactionRow = (transaction: Transaction) => {
+//     const isAddMoney = transaction.type === "Add Money";
+//     const icon = isAddMoney ? (
+//       <LuPlus size={24} className="text-neutral-900 dark:text-white" />
+//     ) : (
+//       <GoArrowUp size={24} className="text-neutral-900 dark:text-white" />
+//     );
+//     const name = isAddMoney
+//       ? `To your ${transaction.balanceCurrency?.code ?? ""} balance`
+//       : transaction.name || "Recipient";
+
+//     let description = transaction.status; // Default description to status
+//     if (isAddMoney) {
+//       description =
+//         transaction.status === "completed"
+//           ? "Added by you"
+//           : transaction.status === "pending" ||
+//             transaction.status === "in progress"
+//           ? "Waiting for your money"
+//           : transaction.status === "canceled"
+//           ? "Cancelled"
+//           : transaction.status === "failed"
+//           ? "Failed"
+//           : "Processing";
+//     } else {
+//       // Send Money
+//       description =
+//         transaction.status === "completed"
+//           ? "Sent by you"
+//           : transaction.status === "pending" ||
+//             transaction.status === "in progress" ||
+//             transaction.status === "processing"
+//           ? "Sending your money"
+//           : transaction.status === "canceled"
+//           ? "Cancelled"
+//           : transaction.status === "failed"
+//           ? "Failed"
+//           : "Processing";
+//     }
+
+//     const amount = isAddMoney
+//       ? transaction.amountToAdd ?? 0
+//       : transaction.sendAmount ?? 0;
+//     const currencyCode = isAddMoney
+//       ? transaction.balanceCurrency?.code ?? ""
+//       : transaction.sendCurrency?.code ?? "";
+//     const amountPrefix = isAddMoney ? "+ " : "- ";
+//     let amountClass = "text-neutral-900  dark:text-white"; // Default for Send Money or pending Add Money
+//     if (isAddMoney && transaction.status === "completed") {
+//       amountClass = "text-green-600 dark:text-green-500";
+//     } else if (transaction.status === "canceled") {
+//       amountClass = "text-red-600 line-through";
+//     } else if (transaction.status === "failed") {
+//       amountClass = "text-red-600 line-through";
+//     }
+
+//     return (
+//       // Link to the specific transaction detail page
+
+//       <Link
+//         href={`/dashboard/transactions/${transaction._id}`}
+//         key={transaction._id}
+//         className="block"
+//       >
+//         <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
+//           <div className="flex items-center gap-4">
+//             <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center">
+//               {icon}
+//             </div>
+//             <div className="flex justify-between w-full items-center">
+//               {" "}
+//               {/* Use items-center */}
+//               <div>
+//                 <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg">
+//                   {name}
+//                 </h3>
+//                 <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
+//                   {description}{" "}
+//                   <span className="italic">({transaction.status})</span>
+//                 </p>
+//               </div>
+//               <div className={`font-medium ${amountClass} whitespace-nowrap`}>
+//                 {amountPrefix}
+//                 {amount.toLocaleString(undefined, {
+//                   minimumFractionDigits: 2, // Show 2 decimal places
+//                   maximumFractionDigits: 2,
+//                 })}{" "}
+//                 {currencyCode}
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </Link>
+//     );
+//   };
+
+//   return (
+//     <section className="Transactions py-10"> {/* Adjusted padding */}
+//       <div className="container mx-auto">
+//         <div className="flex justify-between items-center mb-6"> {/* Adjusted margin */}
+//           <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
+//             Recent Transactions
+//           </h1> {/* Adjusted size */}
+//           <Link
+//             href="/dashboard/transactions" // Corrected path assuming it's directly under dashboard
+//             className="text-primary font-medium underline cursor-pointer hover:text-primaryhover transition-all duration-75 ease-linear"
+//           >
+//             See all
+//           </Link>
+//         </div>
+
+//         {/* Transaction History */}
+//         <div className="space-y-2">
+//           {loading && (
+//             <div className="space-y-2"> {/* Keep space-y-2 for skeleton spacing */}
+//               {Array(3)
+//                 .fill(0)
+//                 .map((_, index) => (
+//                   <div key={index} className="block">
+//                     <div className="block p-2 sm:p-4 rounded-2xl"> {/* Match padding and rounded corners */}
+//                       <div className="flex items-center gap-4"> {/* Match flex layout */}
+//                         <div className="flex items-center justify-center"> {/* Match icon container */}
+//                           <Skeleton className="h-12 w-12 rounded-full" />
+//                         </div>
+//                         <div className="flex justify-between w-full items-center"> {/* Match text and amount container */}
+//                           <div>
+//                             <Skeleton className="h-4 w-40 mb-2" /> {/* Skeleton for name */}
+//                             <Skeleton className="h-3 w-32" /> {/* Skeleton for description */}
+//                           </div>
+//                           <div className="text-right sm:text-left">
+//                             <Skeleton className="h-5 w-20" /> {/* Skeleton for amount */}
+//                           </div>
+//                         </div>
+//                       </div>
+//                     </div>
+//                   </div>
+//                 ))}
+//             </div>
+//           )}
+//           {!loading && error && (
+//             <p className="text-center text-red-500 py-4">Error: {error}</p>
+//           )}
+//           {!loading && !error && latestTransactions.length === 0 && (
+//             <p className="text-center text-gray-500 py-4">
+//               No recent transactions found.
+//             </p>
+//           )}
+//           {!loading &&
+//             !error &&
+//             latestTransactions.length > 0 &&
+//             latestTransactions.map(renderTransactionRow)}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default TransactionsSection;
+
+
 // components/MainDashBoardSection/TransactionsSection.tsx
-"use client"; // Required for hooks like useState, useEffect, useAuth
+"use client";
 
 import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { LuPlus } from "react-icons/lu";
 import { GoArrowUp } from "react-icons/go";
 
-import { useAuth } from "../../../contexts/AuthContext"; // Adjust path if needed
-import paymentService from "../../../services/payment"; // Adjust path if needed
-import transferService from "../../../services/transfer"; // Adjust path if needed
-import { Transaction } from "@/types/transaction"; // Adjust path if needed
-import { Skeleton } from "@/components/ui/skeleton"; // Assuming Skeleton is in "@/components/ui/skeleton" or adjust path accordingly.
+import { useAuth } from "../../../contexts/AuthContext";
+// Import the response types from the service files
+import paymentService, { PaymentDetailsResponse } from "../../../services/payment"; // Ensure PaymentDetailsResponse is defined correctly in payment.ts
+import transferService, { TransferDetailsResponse } from "../../../services/transfer";
+// Import the core Transaction type and Currency type
+import { Transaction, Currency, TransactionStatus } from "@/types/transaction";
+import { Skeleton } from "@/components/ui/skeleton";
+
+// Helper function to create a Currency object from a code (Temporary Solution)
+// TODO: Replace this with actual currency data lookup or ensure API returns full object
+const mapCodeToCurrency = (code: string | undefined): Currency | undefined => {
+  if (!code) return undefined;
+  return {
+    _id: code, // TEMPORARY HACK: Using code as _id. Assumes codes are unique.
+               // Ideally, fetch/lookup the real Currency object with its actual _id.
+    code: code,
+  };
+};
+
 
 const TransactionsSection: React.FC = () => {
   const [latestTransactions, setLatestTransactions] = useState<Transaction[]>(
@@ -734,104 +1028,135 @@ const TransactionsSection: React.FC = () => {
   const { token } = useAuth();
 
   const fetchAndProcessTransactions = useCallback(async () => {
-    if (!token) {
-      setError("Not authenticated.");
-      setLoading(false);
-      return;
-    }
-
+    // ... (token check, loading state logic remains the same) ...
     setLoading(true);
     setError(null);
-    setLatestTransactions([]); // Clear previous data
+    setLatestTransactions([]);
 
     try {
-      // Fetch both payments and transfers concurrently
       const [paymentsData, transfersData] = await Promise.all([
-        paymentService.getUserPayments(token),
-        transferService.getUserTransfers(token),
+        paymentService.getUserPayments(token), // Should return PaymentDetailsResponse[]
+        transferService.getUserTransfers(token), // Should return TransferDetailsResponse[]
       ]);
 
-      // Map payments to the common Transaction structure
-      const mappedPayments: Transaction[] = paymentsData.map((payment) => ({
-        _id: payment._id,
-        type: "Add Money",
-        amountToAdd: payment.amountToAdd, // Amount relevant for display
-        balanceCurrency: payment.balanceCurrency, // For currency code
-        createdAt: payment.createdAt,
-        updatedAt: payment.updatedAt,
-        status: payment.status,
-        // Add other fields from Transaction type if needed, initialized appropriately
-        payInCurrency: payment.payInCurrency,
-        account: payment.account,
-        amountToPay: payment.amountToPay, // Keep if needed elsewhere, but amountToAdd is primary for display
-      }));
+      // --- Map Payments ---
+      const mappedPayments: Transaction[] = paymentsData.map((payment: PaymentDetailsResponse): Transaction => {
+          // Validate required fields from payment response if necessary
+          if (!payment._id || !payment.status || payment.amountToPay === undefined) {
+              console.warn("Skipping incomplete payment data:", payment);
+              // Return null or throw an error, or handle appropriately
+              // For now, let's filter these out later (or return a placeholder if needed)
+              // This example implicitly filters by not pushing anything for invalid data
+          }
 
-      // Map transfers to the common Transaction structure
-      const mappedTransfers: Transaction[] = transfersData.map((transfer) => ({
+          // Map accountId to the Transaction's account field
+          const transactionAccount = typeof payment.accountId === 'string'
+              ? { _id: payment.accountId } // Create object if only ID is given
+              : payment.account; // Use directly if structure matches { _id: string } | string
+
+          return {
+              _id: payment._id,
+              type: "Add Money",
+              // Use amountToPay from response for amountToAdd in Transaction
+              // You might want amountToAdd specifically if the API provides it,
+              // otherwise derive from amountToPay. Let's assume amountToAdd = amountToPay here.
+              amountToAdd: payment.amountToPay, // Corrected: Use amountToPay
+              // Map balanceCurrencyCode to balanceCurrency object { _id, code } using helper
+              balanceCurrency: mapCodeToCurrency(payment.balanceCurrencyCode), // Corrected: Use balanceCurrencyCode
+              createdAt: payment.createdAt,
+              updatedAt: payment.updatedAt,
+              // Assert status type
+              status: payment.status as TransactionStatus, // Use TransactionStatus alias
+              // Map payInCurrencyCode to payInCurrency object { _id, code } using helper
+              payInCurrency: mapCodeToCurrency(payment.payInCurrencyCode), // Corrected: Use payInCurrencyCode
+              // Map accountId correctly
+              account: transactionAccount, // Corrected: Use mapped accountId/account
+              amountToPay: payment.amountToPay, // Keep original amountToPay
+
+              // --- Initialize fields specific to Send Money ---
+              name: undefined,
+              sendAmount: undefined,
+              sendCurrency: undefined,
+              recipient: undefined,
+              sourceAccountId: undefined,
+              receiveAmount: undefined,
+              receiveCurrency: undefined,
+          };
+      });
+
+
+      // --- Map Transfers --- (Assuming this part was correct from previous step)
+      const mappedTransfers: Transaction[] = transfersData.map((transfer: TransferDetailsResponse): Transaction => ({
         _id: transfer._id,
         type: "Send Money",
         name:
           typeof transfer.recipient === "object" && transfer.recipient !== null
-            ? transfer.recipient.accountHolderName
-            : "Recipient", // Use recipient name
-        sendAmount: transfer.sendAmount, // Amount relevant for display
-        sendCurrency: transfer.sendCurrency, // For currency code
+            ? transfer.recipient.accountHolderName ?? "Recipient"
+            : typeof transfer.recipient === 'string'
+            ? "Recipient"
+            : "Recipient",
+        sendAmount: transfer.sendAmount,
+        // Assume transfer response *does* contain full currency objects
+        // If not, apply mapCodeToCurrency or similar logic here too
+        sendCurrency: transfer.sendCurrency as Currency | undefined, // Assert type if needed
         createdAt: transfer.createdAt,
         updatedAt: transfer.updatedAt,
-        status: transfer.status,
-        recipient: transfer.recipient, // Keep recipient details if needed
+        status: transfer.status as TransactionStatus,
+        recipient: transfer.recipient,
         sourceAccountId:
           typeof transfer.sourceAccount === "string"
             ? transfer.sourceAccount
-            : transfer.sourceAccount?._id,
-        // Add other fields from Transaction type if needed
+            : typeof transfer.sourceAccount === 'object' && transfer.sourceAccount !== null
+            ? transfer.sourceAccount._id
+            : undefined,
         receiveAmount: transfer.receiveAmount,
-        receiveCurrency: transfer.receiveCurrency,
+        receiveCurrency: transfer.receiveCurrency as Currency | undefined, // Assert type if needed
+
+        // --- Initialize fields specific to Add Money ---
+        amountToAdd: undefined,
+        balanceCurrency: undefined,
+        payInCurrency: undefined,
+        account: undefined,
+        amountToPay: undefined,
       }));
 
-      // Combine both types of transactions
-      const allTransactions = [...mappedPayments, ...mappedTransfers];
+      // Combine and sort
+      // Filter out any nulls potentially introduced by validation in mapping
+      const allTransactions = [...mappedPayments, ...mappedTransfers].filter(t => t !== null) as Transaction[];
 
-      // Sort all transactions by date (use updatedAt falling back to createdAt)
       const sortedTransactions = allTransactions.sort((a, b) => {
         const dateA = a.updatedAt || a.createdAt;
         const dateB = b.updatedAt || b.createdAt;
-        // Handle potentially missing dates
         if (!dateA && !dateB) return 0;
-        if (!dateA) return 1; // Put transactions without date last
-        if (!dateB) return -1; // Put transactions without date last
-        // Sort descending (newest first)
+        if (!dateA) return 1;
+        if (!dateB) return -1;
         return new Date(dateB).getTime() - new Date(dateA).getTime();
       });
 
-      // Get the latest 3 transactions
       setLatestTransactions(sortedTransactions.slice(0, 3));
-    } catch (err: unknown) { // Changed 'any' to 'unknown'
-      console.error("Failed to fetch transactions:", err); // Log the raw error object/value
 
-      // Determine the error message safely
-      let errorMessage = "Could not load recent transactions."; // Default message
-      if (err instanceof Error) {
-        // If it's an Error object, use its message
-        errorMessage = err.message || errorMessage; // Use error message if available, otherwise default
-      } else if (typeof err === 'string' && err) {
-        // If it's a non-empty string, use it directly
-        errorMessage = err;
-      }
-      // You could add more specific checks here if needed (e.g., for custom error objects)
-
-      setError(errorMessage);
+    } catch (err: unknown) {
+       // ... (error handling remains the same) ...
+        console.error("Failed to fetch transactions:", err);
+        let errorMessage = "Could not load recent transactions.";
+        if (err instanceof Error) {
+            errorMessage = err.message || errorMessage;
+        } else if (typeof err === 'string' && err) {
+            errorMessage = err;
+        }
+        setError(errorMessage);
     } finally {
       setLoading(false);
     }
-  }, [token]); // Dependency: run when token changes
+  }, [token]);
 
   useEffect(() => {
     fetchAndProcessTransactions();
-  }, [fetchAndProcessTransactions]); // Run fetch logic
+  }, [fetchAndProcessTransactions]);
 
-  // --- Render Helper ---
+  // --- Render Helper --- (renderTransactionRow function remains the same)
   const renderTransactionRow = (transaction: Transaction) => {
+    // ... (implementation from previous step should be fine) ...
     const isAddMoney = transaction.type === "Add Money";
     const icon = isAddMoney ? (
       <LuPlus size={24} className="text-neutral-900 dark:text-white" />
@@ -842,31 +1167,33 @@ const TransactionsSection: React.FC = () => {
       ? `To your ${transaction.balanceCurrency?.code ?? ""} balance`
       : transaction.name || "Recipient";
 
-    let description = transaction.status; // Default description to status
+    let description: string;
+    const status = transaction.status;
+
     if (isAddMoney) {
       description =
-        transaction.status === "completed"
+        status === "completed"
           ? "Added by you"
-          : transaction.status === "pending" ||
-            transaction.status === "in progress"
+          : status === "pending" || status === "in progress"
           ? "Waiting for your money"
-          : transaction.status === "canceled"
+          : status === "canceled"
           ? "Cancelled"
-          : transaction.status === "failed"
+          : status === "failed"
           ? "Failed"
+          : status === "processing"
+          ? "Processing payment"
           : "Processing";
-    } else {
-      // Send Money
+    } else { // Send Money
       description =
-        transaction.status === "completed"
+        status === "completed"
           ? "Sent by you"
-          : transaction.status === "pending" ||
-            transaction.status === "in progress" ||
-            transaction.status === "processing"
+          : status === "pending"
+          ? "Waiting to send"
+          : status === "in progress" || status === "processing"
           ? "Sending your money"
-          : transaction.status === "canceled"
+          : status === "canceled"
           ? "Cancelled"
-          : transaction.status === "failed"
+          : status === "failed"
           ? "Failed"
           : "Processing";
     }
@@ -878,18 +1205,20 @@ const TransactionsSection: React.FC = () => {
       ? transaction.balanceCurrency?.code ?? ""
       : transaction.sendCurrency?.code ?? "";
     const amountPrefix = isAddMoney ? "+ " : "- ";
-    let amountClass = "text-neutral-900  dark:text-white"; // Default for Send Money or pending Add Money
-    if (isAddMoney && transaction.status === "completed") {
+    let amountClass = "text-neutral-900 dark:text-white";
+
+    if (isAddMoney && status === "completed") {
       amountClass = "text-green-600 dark:text-green-500";
-    } else if (transaction.status === "canceled") {
-      amountClass = "text-red-600 line-through";
-    } else if (transaction.status === "failed") {
-      amountClass = "text-red-600 line-through";
+    } else if (!isAddMoney && status === "completed") {
+      amountClass = "text-neutral-900 dark:text-white";
+    } else if (status === "canceled" || status === "failed") {
+       amountClass = "text-red-600 line-through";
+    } else if (status === 'pending' || status === 'processing' || status === 'in progress') {
+       amountClass = "text-neutral-900 dark:text-white";
     }
 
-    return (
-      // Link to the specific transaction detail page
 
+    return (
       <Link
         href={`/dashboard/transactions/${transaction._id}`}
         key={transaction._id}
@@ -901,21 +1230,21 @@ const TransactionsSection: React.FC = () => {
               {icon}
             </div>
             <div className="flex justify-between w-full items-center">
-              {" "}
-              {/* Use items-center */}
               <div>
                 <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg">
                   {name}
                 </h3>
                 <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
-                  {description}{" "}
-                  <span className="italic">({transaction.status})</span>
+                  {description}
+                  {(status === 'processing' || status === 'pending' || status === 'in progress') && (
+                     <span className="italic text-xs"> ({status})</span>
+                  )}
                 </p>
               </div>
               <div className={`font-medium ${amountClass} whitespace-nowrap`}>
                 {amountPrefix}
                 {amount.toLocaleString(undefined, {
-                  minimumFractionDigits: 2, // Show 2 decimal places
+                  minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })}{" "}
                 {currencyCode}
@@ -927,41 +1256,43 @@ const TransactionsSection: React.FC = () => {
     );
   };
 
+
+  // --- Return JSX --- (remains the same)
   return (
-    <section className="Transactions py-10"> {/* Adjusted padding */}
+    // ... (section, container, heading, link, loading/error/empty/list logic) ...
+     <section className="Transactions py-10">
       <div className="container mx-auto">
-        <div className="flex justify-between items-center mb-6"> {/* Adjusted margin */}
+        <div className="flex justify-between items-center mb-6">
           <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
             Recent Transactions
-          </h1> {/* Adjusted size */}
+          </h1>
           <Link
-            href="/dashboard/transactions" // Corrected path assuming it's directly under dashboard
+            href="/dashboard/transactions"
             className="text-primary font-medium underline cursor-pointer hover:text-primaryhover transition-all duration-75 ease-linear"
           >
             See all
           </Link>
         </div>
 
-        {/* Transaction History */}
         <div className="space-y-2">
           {loading && (
-            <div className="space-y-2"> {/* Keep space-y-2 for skeleton spacing */}
+             <div className="space-y-2">
               {Array(3)
                 .fill(0)
                 .map((_, index) => (
                   <div key={index} className="block">
-                    <div className="block p-2 sm:p-4 rounded-2xl"> {/* Match padding and rounded corners */}
-                      <div className="flex items-center gap-4"> {/* Match flex layout */}
-                        <div className="flex items-center justify-center"> {/* Match icon container */}
+                    <div className="block p-2 sm:p-4 rounded-2xl">
+                      <div className="flex items-center gap-4">
+                        <div className="p-3 rounded-full flex items-center justify-center">
                           <Skeleton className="h-12 w-12 rounded-full" />
                         </div>
-                        <div className="flex justify-between w-full items-center"> {/* Match text and amount container */}
+                        <div className="flex justify-between w-full items-center">
                           <div>
-                            <Skeleton className="h-4 w-40 mb-2" /> {/* Skeleton for name */}
-                            <Skeleton className="h-3 w-32" /> {/* Skeleton for description */}
+                            <Skeleton className="h-5 w-40 mb-2 rounded" />
+                            <Skeleton className="h-4 w-32 rounded" />
                           </div>
-                          <div className="text-right sm:text-left">
-                            <Skeleton className="h-5 w-20" /> {/* Skeleton for amount */}
+                          <div className="text-right">
+                            <Skeleton className="h-5 w-24 rounded" />
                           </div>
                         </div>
                       </div>

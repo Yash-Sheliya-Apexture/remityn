@@ -1,6 +1,6 @@
 // backend/src/controllers/transfer.controller.js
 import transferService from '../services/transfer.service.js';
-
+import mongoose from 'mongoose';
 const calculateSendSummary = async (req, res, next) => {
     try {
         const userId = req.user._id;
@@ -101,10 +101,49 @@ const getUserTransfers = async (req, res, next) => {
     }
 };
 
+// --- START FIX ---
+const cancelTransfer = async (req, res, next) => {
+    try {
+        const userId = req.user._id;
+        const { transferId } = req.params;
+
+        // Basic validation
+        if (!transferId || !mongoose.Types.ObjectId.isValid(transferId)) {
+            return res.status(400).json({ message: 'Invalid or missing Transfer ID.' });
+        }
+
+        const result = await transferService.cancelTransfer(transferId, userId);
+
+        // Respond with success message and potentially the updated transfer
+        res.status(200).json({ message: 'Transfer cancelled successfully.', transfer: result });
+
+    } catch (error) {
+        // Handle specific errors from the service
+        if (error.message.includes('not found') || error.message.includes('access denied')) {
+            return res.status(404).json({ message: error.message });
+        }
+        if (error.message.includes('Cannot cancel transfer')) {
+            // Use 400 Bad Request or 409 Conflict if the state prevents cancellation
+            return res.status(400).json({ message: error.message });
+        }
+         if (error.message.includes('Invalid transfer ID format')) {
+             return res.status(400).json({ message: error.message });
+         }
+         if (error.message.includes('Failed to cancel transfer')) {
+            // Internal error during cancellation logic (e.g., refund failed)
+            return res.status(500).json({ message: error.message });
+         }
+        // Pass other errors to the generic error handler
+        next(error);
+    }
+};
+// --- END FIX ---
+
 
 export default {
     calculateSendSummary,
     executeTransfer,
     getTransferDetails,
     getUserTransfers,
+    cancelTransfer,
 };

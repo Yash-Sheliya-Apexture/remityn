@@ -163,8 +163,8 @@
 
 
 
-
-// components/admin/payments/CustomDropdown.tsx
+// frontend/src/app/admin/components/add-money/CustomDropdown.tsx
+// OR wherever your CustomDropdown component is located
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -172,9 +172,9 @@ import { ChevronDown } from 'lucide-react';
 import { GiCheckMark } from "react-icons/gi";
 
 interface CustomDropdownProps {
-    label: React.ReactNode; // Change label type to React.ReactNode
+    label: React.ReactNode;
     value: string | null;
-    onChange: (value: string) => void;
+    onChange: (value: string | null) => void; // Allow onChange to receive null
     options: string[];
     displayAllOption?: string; // Optional prop for custom "All" option text
 }

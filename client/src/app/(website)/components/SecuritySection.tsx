@@ -107,7 +107,6 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 // Import the image correctly
-import img from "../../../../public/assets/images/lock.webp";
 import { LuLockKeyhole } from "react-icons/lu";
 import { BsBank } from "react-icons/bs";
 import { MdSecurity } from "react-icons/md";
@@ -141,8 +140,8 @@ const SecuritySection = () => {
           <div className="w-full md:w-2/5 h-auto order-1 md:order-2 flex md:justify-end justify-center">
             <Image
               // Use the imported 'img' variable here
-              src={img}
-              alt="Padlock symbolizing security" // Improved alt text
+              src="/assets/images/Protecation.png"
+              alt="Padlock symbolizing security"
               width={500}
               height={500}
               className="w-[300px] lg:w-[500px] h-auto"
@@ -154,7 +153,7 @@ const SecuritySection = () => {
         <div className="mt-10">
           <div className="grid md:grid-cols-3 gap-12">
             <div className="space-y-4">
-              <div className="p-4 bg-green/10 text-green rounded-full inline-flex items-center ">
+              <div className="p-4 bg-lightgray dark:bg-secondary dark:text-primary text-mainheading rounded-full inline-flex items-center ">
                 <LuLockKeyhole size={32} aria-hidden="true" /> {/* Add aria-hidden to icon */}
               </div>
               <div>
@@ -166,7 +165,7 @@ const SecuritySection = () => {
             </div>
 
             <div className="space-y-4">
-              <div className="p-4 bg-green/10 text-green rounded-full inline-flex items-center ">
+              <div className="p-4 bg-lightgray dark:bg-secondary dark:text-primary text-mainheading rounded-full inline-flex items-center ">
                 <svg
                   aria-hidden="true" // Keep aria-hidden
                   focusable="false"
@@ -191,7 +190,7 @@ const SecuritySection = () => {
             </div>
 
             <div className="space-y-4">
-              <div className="p-4 bg-green/10 text-green rounded-full inline-flex items-center ">
+              <div className="p-4 bg-lightgray dark:bg-secondary dark:text-primary text-mainheading rounded-full inline-flex items-center ">
                 <BsBank size={32} aria-hidden="true" /> {/* Add aria-hidden to icon */}
               </div>
               <div>

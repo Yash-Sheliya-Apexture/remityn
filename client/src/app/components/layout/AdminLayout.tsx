@@ -223,7 +223,7 @@
 // frontend/src/app/components/layout/AdminLayout.tsx
 "use client";
 
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import AdminSidebar from "./AdminSidebar";

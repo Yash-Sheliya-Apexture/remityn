@@ -421,10 +421,114 @@ const getUserTransfers = async (userId) => {
     }
 };
 
+
+// --- START FIX ---
+const cancelTransfer = async (transferId, userId) => {
+    console.log(`Service: cancelTransfer - Attempting to cancel transfer ${transferId} for user ${userId}`);
+    if (!mongoose.Types.ObjectId.isValid(transferId)) {
+        throw new Error('Invalid transfer ID format.');
+    }
+
+    const session = await mongoose.startSession(); // Use a transaction for atomicity
+    session.startTransaction();
+
+    try {
+        const transfer = await Transfer.findOne({ _id: transferId, user: userId }).session(session);
+
+        if (!transfer) {
+            await session.abortTransaction();
+            session.endSession();
+            throw new Error('Transfer not found or access denied.');
+        }
+
+        // Define statuses that CANNOT be cancelled
+        const nonCancellableStatuses = ['completed', 'failed', 'canceled']; // Already final states
+        if (nonCancellableStatuses.includes(transfer.status)) {
+            await session.abortTransaction();
+            session.endSession();
+            throw new Error(`Cannot cancel transfer: Status is already '${transfer.status}'.`);
+        }
+
+        // Define statuses that ALLOW cancellation
+        const cancellableStatuses = ['pending', 'processing']; // Adjust as per your workflow
+         if (!cancellableStatuses.includes(transfer.status)) {
+            // This case might indicate an unexpected state, handle as needed
+            await session.abortTransaction();
+            session.endSession();
+             console.warn(`Service: cancelTransfer - Attempting to cancel transfer ${transferId} with unexpected status: ${transfer.status}`);
+             throw new Error(`Cannot cancel transfer: Unexpected status '${transfer.status}'.`);
+         }
+
+
+        // --- Refunding Logic (Important!) ---
+        // Check if funds need to be returned. This depends on when you debit the user.
+        // Assuming funds are debited when status moves to 'processing' or upon creation ('pending')
+        // If funds are debited ONLY when the transfer is 'processing', check for that.
+        // If funds are debited immediately ('pending'), refund always needed for cancellable states.
+        // Let's assume funds are debited during 'executeTransfer' (initial state 'pending')
+        const needsRefund = ['pending', 'processing'].includes(transfer.status); // Adjust this condition based on your debit logic
+
+        if (needsRefund && transfer.sourceAccount && transfer.sendAmount > 0) {
+            const sourceAccount = await Account.findById(transfer.sourceAccount).session(session);
+            if (!sourceAccount) {
+                // This is a critical inconsistency if the transfer exists but the source account doesn't
+                await session.abortTransaction();
+                session.endSession();
+                console.error(`Service: cancelTransfer - Critical error: Source account ${transfer.sourceAccount} not found for transfer ${transferId}.`);
+                throw new Error('Failed to cancel transfer: Source account data missing.');
+            }
+            // Add the sent amount back to the balance
+            sourceAccount.balance += transfer.sendAmount;
+            await sourceAccount.save({ session });
+            console.log(`Service: cancelTransfer - Refunded ${transfer.sendAmount} ${sourceAccount.currency?.code || ''} to account ${transfer.sourceAccount}`);
+        } else if (needsRefund) {
+             console.warn(`Service: cancelTransfer - Refund condition met for transfer ${transferId}, but source account or send amount is invalid. Skipping refund step.`);
+        }
+        // --- End Refunding Logic ---
+
+
+        // Update the transfer status
+        transfer.status = 'canceled';
+        transfer.updatedAt = new Date();
+        // Optionally add a reason if not already present
+        transfer.failureReason = transfer.failureReason || 'Cancelled by user.';
+        const updatedTransfer = await transfer.save({ session });
+
+        await session.commitTransaction(); // Commit all changes if successful
+        session.endSession();
+
+        console.log(`Service: cancelTransfer - Transfer ${transferId} successfully cancelled and refunded (if applicable).`);
+
+        // Return the updated transfer, potentially populated
+        const populatedTransfer = await Transfer.findById(updatedTransfer._id)
+             .populate('user', 'fullName email')
+             .populate({ path: 'sourceAccount', select: 'currency', populate: { path: 'currency', select: 'code flagImage' } })
+             .populate({ path: 'recipient', select: 'accountHolderName nickname currency accountNumber bankName', populate: { path: 'currency', select: 'code flagImage' } })
+             .populate('sendCurrency', 'code flagImage')
+             .populate('receiveCurrency', 'code flagImage'); // Populate fields needed by frontend/controller
+
+        return populatedTransfer; // Return the fully updated and populated transfer
+
+    } catch (error) {
+        // If anything fails, abort the transaction
+        await session.abortTransaction();
+        session.endSession();
+        console.error(`Service: cancelTransfer - Error during cancellation transaction for ${transferId}:`, error);
+        // Rethrow a clearer error message if possible
+        if (error.message.startsWith('Cannot cancel transfer') || error.message.startsWith('Transfer not found') || error.message.startsWith('Invalid transfer ID')) {
+            throw error; // Keep specific errors
+        }
+        throw new Error(`Failed to cancel transfer: ${error.message}`); // Generic failure message
+    }
+};
+// --- END FIX --
+
+
 // --- Export Service Methods ---
 export default {
     calculateSendSummary,
     executeTransfer,
     getTransferDetails,
     getUserTransfers,
+    cancelTransfer,
 };
