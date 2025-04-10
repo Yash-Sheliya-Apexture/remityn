@@ -122,7 +122,6 @@
 // frontend/src/services/transfer.ts
 import axios from 'axios';
 import apiConfig from '../config/apiConfig'; // Adjust path
-import { Currency } from '@/types/transaction'; // Import Currency type
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 

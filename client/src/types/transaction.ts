@@ -59,7 +59,6 @@
 // }
 
 
-
 // frontend/src/types/transaction.ts
 
 // Re-export Currency type if needed elsewhere
@@ -83,7 +82,8 @@ interface TransactionAccount {
   // Add other fields if you need them from the account within a transaction context
 }
 
-export type TransactionStatus = "pending" | "completed" | "canceled" | "in progress" | "failed" | "processing";
+// ***** MODIFIED LINE *****
+export type TransactionStatus = "pending" | "completed" | "canceled" | "in progress" | "failed" | "processing" | "unknown"; // Added 'unknown'
 
 export interface Transaction {
   _id: string;
