@@ -6966,7 +6966,7 @@ const AdminEditCurrencyPage = () => {
                 <div>
                   <label
                     htmlFor="code"
-                    className="mb-2 flex items-center gap-1.5 font-medium text-gray-500 dark:text-gray-300"
+                    className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
                   >
                     <Globe size={18} className="text-primary" />
                     Currency Code
@@ -6977,9 +6977,9 @@ const AdminEditCurrencyPage = () => {
                       id="code"
                       value={formState.code} // Use formState directly
                       readOnly
-                      className="block w-full rounded-md border bg-gray-100 dark:bg-gray-700 py-3 px-4 text-neutral-900 dark:text-gray-300 placeholder:text-gray-400 focus:outline-none font-medium cursor-not-allowed"
+                      className="block w-full rounded-md border bg-gray-100 dark:bg-white/5 py-3 px-4 text-neutral-900 dark:text-gray-300 placeholder:text-gray-400 focus:outline-none font-medium cursor-not-allowed"
                     />
-                    <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 dark:text-gray-400">
+                    <span className="pointer-events-none absolute right-4.5 top-1/2 -translate-y-1/2 text-neutral-500 dark:text-gray-300">
                       <Lock size={18} />
                     </span>
                   </div>
@@ -6989,10 +6989,10 @@ const AdminEditCurrencyPage = () => {
                 <div>
                   <label
                     htmlFor="currencyName"
-                    className="mb-2 flex items-center gap-1.5 font-medium text-gray-500 dark:text-gray-300"
+                    className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
                   >
                     <DollarSign size={18} className="text-primary" />
-                    Currency Name <span className="text-red-500">*</span>
+                    Currency Name <span className="text-red-600">*</span>
                   </label>
                   <input
                     type="text"
@@ -7002,7 +7002,7 @@ const AdminEditCurrencyPage = () => {
                     value={formState.currencyName} // Use formState directly
                     onChange={handleChange}
                     required
-                    className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-400 focus:outline-none font-medium"
+                    className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-400 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
                   />
                 </div>
 
@@ -7010,7 +7010,7 @@ const AdminEditCurrencyPage = () => {
                 <div className="md:col-span-2">
                   <label
                     htmlFor="flagImage"
-                    className="mb-2 flex items-center gap-1.5 font-medium text-gray-500 dark:text-gray-300"
+                    className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
                   >
                     <ImageIcon size={18} className="text-primary" />
                     Flag Image Path
@@ -7023,7 +7023,7 @@ const AdminEditCurrencyPage = () => {
                       value={formState.flagImage} // Use formState directly
                       onChange={handleChange}
                       placeholder="/assets/icon/flags/eur.png or https://..."
-                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 dark:text-white dark:hover:shadow-whitecolor transition-shadow ease-in-out duration-300 hover:shadow-darkcolor placeholder:text-gray-400 focus:outline-none font-medium pr-12 md:pr-16" // Add padding for image
+                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 dark:text-white dark:hover:shadow-whitecolor transition-shadow ease-in-out duration-300 hover:shadow-darkcolor placeholder:text-gray-400 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium pr-12 md:pr-16" // Add padding for image
                     />
                     {formState.flagImage && !flagImageError && ( // Use formState directly
                       <div className="absolute right-3 top-1/2 -translate-y-1/2 h-6 w-8 md:h-8 md:w-10 pointer-events-none">
@@ -7038,7 +7038,7 @@ const AdminEditCurrencyPage = () => {
                       </div>
                     )}
                     {flagImageError && formState.flagImage && ( // Use formState directly
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 text-xs">
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-red-600 text-xs">
                             Load Error
                         </div>
                     )}
@@ -7047,7 +7047,7 @@ const AdminEditCurrencyPage = () => {
                     Relative path (e.g., /assets/icon/flags/eur.png) or full URL. Must be accessible.
                   </p>
                    {flagImageError && (
-                    <p className="mt-1 text-xs text-red-500">
+                    <p className="mt-1 text-xs text-red-600">
                         Could not load the flag image. Check the path/URL.
                     </p>
                    )}
@@ -7064,17 +7064,17 @@ const AdminEditCurrencyPage = () => {
                 Metadata
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:p-6 p-4">
-                <div className="space-y-1.5">
-                  <p className="font-medium text-sm text-gray-500 dark:text-gray-300">Created At</p>
-                  <div className="rounded-md bg-gray-100 dark:bg-gray-800 p-2.5 text-neutral-900 dark:text-gray-200 text-sm">
+                <div className="space-y-2">
+                  <p className="font-medium text-gray-500 dark:text-gray-300">Created At</p>
+                  <div className="rounded-md border bg-gray-100 dark:bg-white/5 py-3 px-4 text-neutral-900 dark:text-gray-300 ">
                     {currency?.createdAt
                       ? new Date(currency.createdAt).toLocaleString()
                       : "N/A"}
                   </div>
                 </div>
-                <div className="space-y-1.5">
-                  <p className="font-medium text-sm text-gray-500 dark:text-gray-300">Last Updated</p>
-                  <div className="rounded-md bg-gray-100 dark:bg-gray-800 p-2.5 text-neutral-900 dark:text-gray-200 text-sm">
+                <div className="space-y-2">
+                  <p className="font-medium text-gray-500 dark:text-gray-300">Last Updated</p>
+                  <div className="rounded-md border bg-gray-100 dark:bg-white/5 py-3 px-4 text-neutral-900 dark:text-gray-300 ">
                     {currency?.updatedAt
                       ? new Date(currency.updatedAt).toLocaleString()
                       : "N/A"}
@@ -7102,7 +7102,7 @@ const AdminEditCurrencyPage = () => {
                 <h3 className="md:text-lg text-base font-medium text-neutral-900 dark:text-white">
                   Bank Details (Optional)
                 </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
                   Provide these details if you need to store bank information associated with this currency.
                 </p>
               </div>
@@ -7112,7 +7112,7 @@ const AdminEditCurrencyPage = () => {
                 <div>
                   <label
                     htmlFor="payeeName"
-                    className="mb-2 flex items-center gap-1.5 font-medium text-gray-500 dark:text-gray-300"
+                    className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
                   >
                     <Building size={18} className="text-primary" />
                     Payee Name
@@ -7124,7 +7124,7 @@ const AdminEditCurrencyPage = () => {
                     placeholder="Recipient's full name or company name"
                     value={formState.payeeName} // Use formState directly
                     onChange={handleChange}
-                    className="block w-full rounded-md border py-3 px-4 text-neutral-900 dark:text-white hover:shadow-darkcolor dark:hover:shadow-whitecolor transition-shadow ease-in-out duration-300 placeholder:text-gray-400 focus:outline-none font-medium"
+                    className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-400 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
                   />
                 </div>
 
@@ -7133,7 +7133,7 @@ const AdminEditCurrencyPage = () => {
                   <div>
                     <label
                       htmlFor="iban"
-                      className="mb-2 flex items-center gap-1.5 font-medium text-gray-500 dark:text-gray-300"
+                      className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
                     >
                       <Hash size={18} className="text-primary" />
                       IBAN
@@ -7145,14 +7145,14 @@ const AdminEditCurrencyPage = () => {
                       placeholder="International Bank Account Number"
                       value={formState.iban} // Use formState directly
                       onChange={handleChange}
-                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 dark:text-white hover:shadow-darkcolor dark:hover:shadow-whitecolor transition-shadow ease-in-out duration-300 placeholder:text-gray-400 focus:outline-none font-medium"
+                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-400 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
                     />
                   </div>
 
                   <div>
                     <label
                       htmlFor="bicSwift"
-                      className="mb-2 flex items-center gap-1.5 font-medium text-gray-500 dark:text-gray-300"
+                      className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
                     >
                       <Hash size={18} className="text-primary" />
                       BIC/SWIFT
@@ -7164,7 +7164,7 @@ const AdminEditCurrencyPage = () => {
                       placeholder="Bank Identifier Code"
                       value={formState.bicSwift} // Use formState directly
                       onChange={handleChange}
-                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 dark:text-white hover:shadow-darkcolor dark:hover:shadow-whitecolor transition-shadow ease-in-out duration-300 placeholder:text-gray-400 focus:outline-none font-medium"
+                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-400 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
                     />
                   </div>
                 </div>
@@ -7173,7 +7173,7 @@ const AdminEditCurrencyPage = () => {
                 <div>
                   <label
                     htmlFor="bankAddress"
-                    className="mb-2 flex items-center gap-1.5 font-medium text-gray-500 dark:text-gray-300"
+                    className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
                   >
                     <Landmark size={18} className="text-primary" />
                     Bank Address
@@ -7185,7 +7185,7 @@ const AdminEditCurrencyPage = () => {
                     placeholder="Full address of the recipient's bank"
                     value={formState.bankAddress} // Use formState directly
                     onChange={handleChange}
-                    className="block w-full rounded-md border py-3 px-4 text-neutral-900 dark:text-white hover:shadow-darkcolor dark:hover:shadow-whitecolor transition-shadow ease-in-out duration-300 placeholder:text-gray-400 focus:outline-none font-medium"
+                    className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-400 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
                   ></textarea>
                 </div>
               </div>
@@ -7215,7 +7215,7 @@ const AdminEditCurrencyPage = () => {
                 <div>
                   <label
                     htmlFor="wiseFeePercentage"
-                    className="mb-2 flex items-center gap-1.5 font-medium text-gray-500 dark:text-gray-300"
+                    className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
                   >
                     <Percent size={18} className="text-primary" />
                     Wise Fee %
@@ -7229,11 +7229,11 @@ const AdminEditCurrencyPage = () => {
                       onChange={handleChange}
                       step="any"
                       min="0"
-                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 dark:text-white hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 hover:shadow-darkcolor placeholder:text-gray-400 focus:outline-none font-medium pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-400 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       placeholder="e.g., 0.5"
                     />
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
-                      <span className="text-gray-500">%</span>
+                      <span className="text-gray-500 dark:text-gray-300">%</span>
                     </div>
                   </div>
                   <p className="mt-2 text-xs text-gray-500 dark:text-gray-300">
@@ -7245,7 +7245,7 @@ const AdminEditCurrencyPage = () => {
                 <div>
                   <label
                     htmlFor="bankTransferFee"
-                    className="mb-2 flex items-center gap-1.5 font-medium text-gray-500 dark:text-gray-300"
+                    className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
                   >
                     <DollarSign size={18} className="text-primary" />
                     Bank Transfer Fee
@@ -7259,11 +7259,11 @@ const AdminEditCurrencyPage = () => {
                       onChange={handleChange}
                       step="any"
                       min="0"
-                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 dark:text-white hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 hover:shadow-darkcolor placeholder:text-gray-400 focus:outline-none font-medium pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-400 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       placeholder="e.g., 5.00"
                     />
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
-                      <span className="text-gray-500 text-sm font-medium">
+                      <span className="text-gray-500 dark:text-gray-300 text-sm font-medium">
                         {formState.code || "CUR"} {/* Use formState */}
                       </span>
                     </div>
@@ -7277,10 +7277,10 @@ const AdminEditCurrencyPage = () => {
                 <div>
                   <label
                     htmlFor="rateAdjustmentPercentage"
-                    className="mb-2 flex items-center gap-1.5 font-medium text-gray-500 dark:text-gray-300"
+                    className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
                   >
                     <Percent size={18} className="text-primary" />
-                    Rate Adjustment %
+                    Our Adjustment %
                   </label>
                   <div className="relative">
                     <input
@@ -7290,11 +7290,11 @@ const AdminEditCurrencyPage = () => {
                       value={formState.rateAdjustmentPercentage} // Use formState directly
                       onChange={handleChange}
                       step="any" // Allow negative/positive decimals
-                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 dark:text-white hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 hover:shadow-darkcolor placeholder:text-gray-400 focus:outline-none font-medium pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-400 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       placeholder="e.g., -0.5 or 1.2"
                     />
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
-                      <span className="text-gray-500">%</span>
+                      <span className="text-gray-500 dark:text-gray-300">%</span>
                     </div>
                   </div>
                   <p className="mt-2 text-xs text-gray-500 dark:text-gray-300">
@@ -7309,7 +7309,7 @@ const AdminEditCurrencyPage = () => {
                   Exchange Rate Info
                 </h4>
                 <p className="text-sm text-blue-700 dark:text-blue-300">
-                  The <strong>Rate Adjustment %</strong> modifies the market exchange rate used in calculations.
+                  The <strong>Our Adjustment %</strong> modifies the market exchange rate used in calculations.
                   A positive value (e.g., 1%) increases the rate, making the foreign currency relatively cheaper.
                   A negative value (e.g., -0.5%) decreases the rate, making the foreign currency relatively more expensive.
                   Set to 0 (or leave blank) to use the market rate directly.
@@ -7329,7 +7329,7 @@ const AdminEditCurrencyPage = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="min-h-screen py-6 bg-gray-50 dark:bg-gray-900" // Added background color
+      className="min-h-screen py-6 bg-white dark:bg-background" // Added background color
     >
       <ToastContainer
         position="top-right"
@@ -7352,7 +7352,7 @@ const AdminEditCurrencyPage = () => {
         >
           <Link
             href="/admin/currencies"
-            className="inline-flex items-center font-medium lg:text-base text-sm gap-2 text-neutral-700 dark:text-neutral-300 hover:text-primary dark:hover:text-primary transition-colors"
+            className="inline-flex items-center font-medium lg:text-base text-sm gap-2 text-neutral-900 dark:text-white hover:text-primary dark:hover:text-primary transition-colors"
           >
             <FaArrowLeftLong className="size-4" /> Back to Currencies
           </Link>
@@ -7367,12 +7367,12 @@ const AdminEditCurrencyPage = () => {
         {isLoading && !currency && (
           <div className="flex justify-center items-center h-64">
             <Loader2 className="animate-spin mr-3 text-primary" size={32} />
-            <span className="text-lg text-gray-600 dark:text-gray-400">Loading currency details...</span>
+            <span className="text-lg text-gray-500 dark:text-gray-300">Loading currency details...</span>
           </div>
         )}
 
         {!isLoading && !currency && !formState && (
-           <div className="text-center text-red-500 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 p-4 rounded-lg">
+           <div className="text-center text-red-600 bg-red-600/20 border border-red-400 dark:border-red-600 p-4 rounded-lg">
              Failed to load currency details. Please check the ID or try again later.
            </div>
         )}
@@ -7389,7 +7389,7 @@ const AdminEditCurrencyPage = () => {
             {/* Tabs Navigation */}
             <motion.nav
               variants={itemVariants}
-              className="relative z-0 rounded-lg shadow-sm overflow-hidden flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x divide-gray-200 dark:divide-gray-700 border border-gray-200 dark:border-gray-700 mb-6"
+              className="relative z-0 rounded-lg shadow-sm overflow-hidden flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x border mb-6"
             >
               {(["general", "bank", "fees"] as const).map((tab) => (
                 <button
@@ -7398,13 +7398,13 @@ const AdminEditCurrencyPage = () => {
                   onClick={() => setActiveTab(tab)}
                   className={`relative min-w-0 flex-1 group py-3 px-4 text-center font-medium cursor-pointer transition-colors duration-200 ease-in-out flex items-center justify-center gap-2 text-sm sm:text-base ${
                     activeTab === tab
-                      ? "bg-primary text-neutral-900 dark:text-neutral-900 shadow-inner inset-x-0"
-                      : "bg-white dark:bg-background text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+                      ? "bg-primary text-neutral-900 shadow-inner inset-x-0"
+                      : "bg-white dark:bg-background text-gray-500 dark:text-gray-300 hover:bg-lightgray dark:hover:bg-primarybox"
                   }`}
                 >
-                  {tab === "general" && <FaGlobe size={18} />}
-                  {tab === "bank" && <FaIdCard size={18} />}
-                  {tab === "fees" && <FaPercentage size={18} />}
+                  {tab === "general" && <FaGlobe size={20} />}
+                  {tab === "bank" && <FaIdCard size={20} />}
+                  {tab === "fees" && <FaPercentage size={20} />}
                   <span className="capitalize">{tab === "fees" ? "Fees & Rates" : tab}</span>
                 </button>
               ))}
@@ -7416,24 +7416,25 @@ const AdminEditCurrencyPage = () => {
             {/* Action Buttons */}
             <motion.div
               variants={itemVariants}
-              className="flex flex-col sm:flex-row justify-end gap-3 mt-8 pt-6 border-t border-gray-200 dark:border-gray-700"
+              className="flex flex-col sm:flex-row justify-end gap-3 mt-8 pt-6 border-t"
             >
               <button
                 type="button"
                 onClick={handleReset}
                 disabled={isSubmitting || !formChanged} // Disable reset if submitting or form hasn't changed
-                className="inline-flex items-center justify-center bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed font-medium rounded-md px-5 py-2.5 h-11 text-center w-full sm:w-auto transition-colors duration-150 ease-linear group" // Added group for potential hover effects
+                className="inline-flex items-center justify-center gap-2 cursor-pointer bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed font-medium rounded-full px-6 py-3 h-12 text-center w-full sm:w-auto transition-all duration-75 ease-linear group" // Added group for potential hover effects
               >
+                {/* px-4 py-2 h-12 rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed */}
                 <RefreshCw
                   size={18}
-                  className={`mr-2 transition-transform duration-300 ${formChanged && !isSubmitting ? 'group-hover:rotate-[-180deg]' : ''}`} // Spin on hover only if changed and not submitting
+                  className={`transition-transform duration-300 ${formChanged && !isSubmitting ? 'group-hover:rotate-[-180deg]' : ''}`} // Spin on hover only if changed and not submitting
                 />
                 Reset
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting || !formChanged} // Disable save if submitting or form hasn't changed
-                className="inline-flex items-center justify-center bg-primary text-neutral-900 hover:bg-primaryhover disabled:opacity-50 disabled:cursor-not-allowed font-medium rounded-md px-5 py-2.5 h-11 text-center w-full sm:w-auto transition-colors duration-150 ease-linear"
+                className="inline-flex items-center justify-center gap-2 cursor-pointer bg-primary hover:bg-primaryhover text-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed font-medium rounded-full px-6 py-3 h-12 text-center w-full sm:w-auto transition-all duration-75 ease-linear"
               >
                 {isSubmitting ? (
                   <>

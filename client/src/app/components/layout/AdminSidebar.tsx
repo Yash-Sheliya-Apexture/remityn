@@ -2181,9 +2181,10 @@ import {
   FaUsers,
   FaMoneyBillWave,
   FaChevronRight,
-  FaSignOutAlt,
   FaTimes,
 } from "react-icons/fa";
+import { GrLogout } from "react-icons/gr";
+
 import { IoMdAddCircleOutline } from "react-icons/io";
 import ThemeToggle from "../../contexts/ThemeToggle"; // Import ThemeToggle
 
@@ -2453,9 +2454,9 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
           {user && (
             <button
               onClick={handleLogout}
-              className="flex items-center gap-3 w-full px-4 py-3 rounded-4xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 transition-all duration-200"
+              className="flex items-center gap-3 w-full px-4 py-3 rounded-4xl text-red-600 bg-red-600/20 hover:bg-red-500/30 transition-all duration-200"
             >
-              <FaSignOutAlt className="size-5" />
+              <GrLogout className="size-5" />
               <span className="font-medium">Logout</span>
             </button>
           )}

@@ -1053,7 +1053,7 @@ const AdminCurrenciesPage: React.FC = () => {
 
   // --- RENDER ---
   return (
-    <div className="min-h-screen p-4 bg-gray-50 dark:bg-background dark:text-white">
+    <div className="min-h-screen p-4 bg-white dark:bg-background dark:text-white">
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -1077,7 +1077,7 @@ const AdminCurrenciesPage: React.FC = () => {
       </div>
 
       {/* Action Bar */}
-      <div className="flex justify-end flex-col lg:flex-row w-full  md:items-center mb-6 space-y-3 lg:space-y-0 gap-4">
+      <div className="flex sm:justify-between flex-row w-full items-center mb-6 gap-4">
         <div>
         <button
           onClick={() => {
@@ -1092,11 +1092,10 @@ const AdminCurrenciesPage: React.FC = () => {
           {!isMobile && <span>Add Currency</span>}
           {/* Conditionally render text */}
         </button>
-        <div className="text-white ml-2 mt-2 lg:hidden">Add</div>
         </div>
 
         {/* Search Bar */}
-        <div className="relative">
+        <div className="relative sm:w-auto w-full">
           <input
             type="text"
             placeholder="Search currencies..."
@@ -1245,7 +1244,7 @@ const AdminCurrenciesPage: React.FC = () => {
                   </div>
                 ) : (
                   // --- Details/Edit/Delete Buttons ---
-                  <div className="flex flex-row gap-2">
+                  <div className="flex flex-wrap flex-row gap-2">
                     <Link
                       href={`/admin/currencies/${currency._id}`}
                       className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border  text-gray-700 dark:text-gray-300 font-medium lg:px-6 px-4 py-3 h-10 lg:h-12.5 rounded-full transition duration-200 focus:outline-none"
