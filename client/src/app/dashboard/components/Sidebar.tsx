@@ -751,11 +751,265 @@
 
 // export default Sidebar;
 
+// "use client";
+
+// import React, { useEffect, useRef, useState } from "react";
+// import { usePathname, useRouter } from "next/navigation";
+// import { motion } from "framer-motion";
+// import { FiCreditCard, FiUserPlus, FiSettings } from "react-icons/fi";
+// import { RiHomeLine } from "react-icons/ri";
+// import { GrTransaction } from "react-icons/gr";
+// import { BsSend } from "react-icons/bs";
+// import { GoArrowUp } from "react-icons/go";
+// import { VscSignOut } from "react-icons/vsc";
+// import Image from "next/image";
+// import Link from "next/link";
+// import { useAuth } from "../../contexts/AuthContext";
+
+// interface SidebarProps {
+//   sidebarOpen: boolean;
+//   toggleSidebar: () => void;
+// }
+
+// interface NavLink {
+//   label: string;
+//   icon: keyof typeof icons;
+//   route: string;
+// }
+
+// const icons = {
+//   RiHomeLine,
+//   GrTransaction,
+//   BsSend,
+//   GoArrowUp,
+//   FiCreditCard,
+//   FiUserPlus,
+//   FiSettings,
+// };
+
+// const navLinksData: NavLink[] = [
+//   { label: "Dashboard", icon: "RiHomeLine", route: "/dashboard" },
+//   {
+//     label: "Transactions",
+//     icon: "GrTransaction",
+//     route: "/dashboard/transactions",
+//   },
+//   { label: "Send Money", icon: "BsSend", route: "/dashboard/send" },
+//   { label: "Add Money", icon: "GoArrowUp", route: "/dashboard/add-money" },
+//   {
+//     label: "Recipients",
+//     icon: "FiUserPlus",
+//     route: "/dashboard/recipients",
+//   },
+//   { label: "Settings", icon: "FiSettings", route: "/dashboard/your-account" },
+// ];
+
+// const bottomNavLinksData: NavLink[] = [
+//   { label: "Home", icon: "RiHomeLine", route: "/dashboard" },
+//   {
+//     label: "Transactions",
+//     icon: "GrTransaction",
+//     route: "/dashboard/transactions",
+//   },
+//   { label: "Send", icon: "BsSend", route: "/dashboard/send" },
+//   { label: "Account", icon: "FiSettings", route: "/dashboard/your-account" },
+// ];
+
+// const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
+//   const router = useRouter();
+//   const pathname = usePathname();
+//   const sidebarRef = useRef<HTMLDivElement>(null);
+//   const [isMobileView, setIsMobileView] = useState<boolean | null>(null);
+//   const { logout } = useAuth();
+
+//   useEffect(() => {
+//     const checkMobileView = () => setIsMobileView(window.innerWidth < 1024);
+//     checkMobileView();
+//     window.addEventListener("resize", checkMobileView);
+//     return () => window.removeEventListener("resize", checkMobileView);
+//   }, []);
+
+//   useEffect(() => {
+//     const handleClickOutside = (event: MouseEvent) => {
+//       if (
+//         sidebarRef.current &&
+//         !sidebarRef.current.contains(event.target as Node) &&
+//         sidebarOpen &&
+//         isMobileView === true
+//       ) {
+//         toggleSidebar();
+//       }
+//     };
+
+//     if (sidebarOpen && isMobileView === true) {
+//       document.addEventListener("mousedown", handleClickOutside);
+//     } else {
+//       document.removeEventListener("mousedown", handleClickOutside);
+//     }
+
+//     return () => {
+//       document.removeEventListener("mousedown", handleClickOutside);
+//     };
+//   }, [sidebarOpen, isMobileView, toggleSidebar]);
+
+//   const handleLogout = () => {
+//     logout();
+//     router.push("/auth/login");
+//     if (sidebarOpen && isMobileView) {
+//       toggleSidebar();
+//     }
+//   };
+
+//   // Find active menu item
+//   const activeMenuItem = bottomNavLinksData.find(
+//     (item) => pathname === item.route
+//   );
+
+//   return (
+//     <>
+//       {/* Backdrop for mobile sidebar */}
+//       {sidebarOpen && isMobileView && (
+//         <div
+//           onClick={toggleSidebar}
+//           className="fixed inset-0 bg-black/45 z-10 lg:hidden"
+//         />
+//       )}
+
+//       {isMobileView === null ||
+//       isMobileView === false ||
+//       (sidebarOpen && isMobileView === true) ? (
+//         <motion.div
+//           ref={sidebarRef}
+//           className={`w-64 fixed bg-white dark:bg-background h-screen inset-y-0 left-0 lg:relative lg:z-0 z-20 px-4 ${
+//             isMobileView ? "" : "translate-x-0"
+//           } ${
+//             sidebarOpen && isMobileView
+//               ? "translate-x-0"
+//               : isMobileView
+//               ? "-translate-x-full"
+//               : "translate-x-0"
+//           }`}
+//           initial={isMobileView ? { x: "-100%" } : {}}
+//           animate={isMobileView ? { x: sidebarOpen ? 0 : "-100%" } : {}}
+//           exit={isMobileView ? { x: "-100%" } : {}}
+//           transition={isMobileView ? { duration: 0.3, ease: "easeInOut" } : {}}
+//         >
+//           <div className="flex flex-col items-center justify-center lg:h-28 h-20">
+//             <Link href="/dashboard">
+//               <Image
+//                 src="/assets/images/wise-logo.svg"
+//                 alt="logo"
+//                 width={100}
+//                 height={100}
+//               />
+//             </Link>
+//           </div>
+//           <div className="h-[calc(100%-112px)] overflow-y-auto [&::-webkit-scrollbar-track]:rounded-t-3xl [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-t-3xl [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
+//             <nav>
+//               {navLinksData.map((item: NavLink) => {
+//                 const IconComponent = icons[item.icon];
+//                 const isActive = pathname === item.route;
+
+//                 return (
+//                   <Link
+//                     key={item.route}
+//                     href={item.route}
+//                     onClick={(e) => {
+//                       if (sidebarOpen && isMobileView) {
+//                         toggleSidebar();
+//                       }
+//                     }}
+//                     className={`w-full flex items-center space-x-3 py-3 px-4 font-medium rounded-full transition duration-200 mb-2 ${
+//                       isActive
+//                         ? "bg-primary/60 text-neutral-900 dark:bg-primarybox dark:text-primary"
+//                         : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
+//                     }`}
+//                   >
+//                     {IconComponent && <IconComponent className="w-6 h-6" />}
+//                     <span>{item.label}</span>
+//                   </Link>
+//                 );
+//               })}
+//             </nav>
+
+//             <button
+//               onClick={handleLogout}
+//               className="w-full flex items-center space-x-3 py-3 group px-4 font-medium rounded-full transition duration-200 mb-2 text-gray cursor-pointer"
+//             >
+//               <VscSignOut className="w-6 h-6 group-hover:text-neutral-900 dark:text-gray-300 dark:group-hover:text-primary" />
+//               <span className="text-gray font-medium group-hover:text-neutral-900 dark:text-gray-300 dark:group-hover:text-primary">
+//                 Logout
+//               </span>
+//             </button>
+//           </div>
+//         </motion.div>
+//       ) : null}
+
+//       {/* Small screen bottom navigation bar with animation - Design 1 */}
+//       <div className="sm:hidden fixed bottom-0 left-0 w-full z-80 bg-white dark:bg-background border-t">
+//         <motion.div
+//           className="flex items-center justify-around px-3 rounded-t-xl shadow-md dark:shadow-none"
+//           initial={{ y: 100 }}
+//           animate={{ y: 0 }}
+//           transition={{ type: "spring", stiffness: 260, damping: 20 }}
+//         >
+//           {bottomNavLinksData.map((item: NavLink) => {
+//             const IconComponent = icons[item.icon];
+//             const isActive = pathname === item.route;
+
+//             return (
+//               <Link
+//                 key={item.route}
+//                 href={item.route}
+//                 className="flex relative flex-col items-center justify-center space-y-1 py-3"
+//               >
+//                 {isActive && (
+//                     <motion.div
+//                       className="absolute top-0 left-1/2 -translate-x-1/2 h-[3px] w-16 rounded-full bg-primary"
+//                       layoutId="bottom-nav-indicator"
+//                     />
+//                   )}
+//                 <motion.div
+//                   className={` p-2 rounded-md ${
+//                     isActive
+//                       ? "text-primary"
+//                       : "text-neutral-500 dark:text-gray-300"
+//                   }`}
+//                   whileTap={{ scale: 0.9 }}
+//                   initial={{ scale: 1 }}
+//                   animate={{ scale: 1 }}
+//                   layout
+//                 >
+//                   <IconComponent className="size-6" />
+                  
+//                 </motion.div>
+//                 <span
+//                   className={`text-xs font-medium ${
+//                     isActive
+//                       ? "text-neutral-900 dark:text-primary"
+//                       : "text-neutral-500 dark:text-gray-400"
+//                   }`}
+//                 >
+//                   {item.label}
+//                 </span>
+//               </Link>
+//             );
+//           })}
+//         </motion.div>
+//       </div>
+//     </>
+//   );
+// };
+
+// export default Sidebar;
+
+
+
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion"; // Import AnimatePresence
 import { FiCreditCard, FiUserPlus, FiSettings } from "react-icons/fi";
 import { RiHomeLine } from "react-icons/ri";
 import { GrTransaction } from "react-icons/gr";
@@ -860,10 +1114,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
     }
   };
 
-  // Find active menu item
-  const activeMenuItem = bottomNavLinksData.find(
-    (item) => pathname === item.route
-  );
+  // --- No need for activeMenuItem here for the main sidebar animation ---
 
   return (
     <>
@@ -875,128 +1126,172 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
         />
       )}
 
-      {isMobileView === null ||
-      isMobileView === false ||
-      (sidebarOpen && isMobileView === true) ? (
-        <motion.div
-          ref={sidebarRef}
-          className={`w-64 fixed bg-white dark:bg-background h-screen inset-y-0 left-0 lg:relative lg:z-0 z-20 ${
-            isMobileView ? "" : "translate-x-0"
-          } ${
-            sidebarOpen && isMobileView
-              ? "translate-x-0"
-              : isMobileView
-              ? "-translate-x-full"
-              : "translate-x-0"
-          }`}
-          initial={isMobileView ? { x: "-100%" } : {}}
-          animate={isMobileView ? { x: sidebarOpen ? 0 : "-100%" } : {}}
-          exit={isMobileView ? { x: "-100%" } : {}}
-          transition={isMobileView ? { duration: 0.3, ease: "easeInOut" } : {}}
-        >
-          <div className="flex flex-col items-center justify-center lg:h-28 h-20">
-            <Link href="/dashboard">
-              <Image
-                src="/assets/images/wise-logo.svg"
-                alt="logo"
-                width={100}
-                height={100}
-              />
-            </Link>
-          </div>
-          <div className="h-[calc(100%-112px)] overflow-y-auto">
-            <nav>
-              {navLinksData.map((item: NavLink) => {
-                const IconComponent = icons[item.icon];
-                const isActive = pathname === item.route;
+      {/* Desktop Sidebar Container */}
+      {/* Conditionally render based on screen size OR if mobile sidebar is open */}
+      <AnimatePresence>
+        {(isMobileView === null || !isMobileView || sidebarOpen) && (
+          <motion.div
+            ref={sidebarRef}
+            className={`w-64 fixed bg-white dark:bg-background h-screen inset-y-0 left-0 lg:relative lg:translate-x-0 lg:z-0 z-20 px-4 flex flex-col ${
+              isMobileView ? '' : 'translate-x-0' // Keep desktop always visible
+            }`}
+            // Mobile-specific animations
+            key="sidebar" // Add a key for AnimatePresence
+            initial={isMobileView ? { x: "-100%" } : { x: 0 }} // Initial state for mobile and desktop
+            animate={isMobileView ? { x: sidebarOpen ? 0 : "-100%" } : { x: 0 }} // Animate mobile, keep desktop static
+            exit={isMobileView ? { x: "-100%" } : { x: 0 }} // Exit animation for mobile
+            transition={isMobileView ? { duration: 0.3, ease: "easeInOut" } : { duration: 0 }} // Only transition mobile slide
+          >
+            {/* Logo */}
+            <div className="flex flex-col items-center justify-center lg:h-28 h-20 shrink-0">
+              <Link href="/dashboard">
+                <Image
+                  src="/assets/images/wise-logo.svg"
+                  alt="logo"
+                  width={100}
+                  height={100}
+                />
+              </Link>
+            </div>
 
-                return (
-                  <Link
-                    key={item.route}
-                    href={item.route}
-                    onClick={(e) => {
-                      if (sidebarOpen && isMobileView) {
-                        toggleSidebar();
-                      }
-                    }}
-                    className={`w-full flex items-center space-x-3 py-3 px-4 font-medium rounded-full transition duration-200 mb-2 ${
-                      isActive
-                        ? "bg-primary/60 text-neutral-900 dark:bg-primarybox dark:text-primary"
-                        : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
-                    }`}
-                  >
-                    {IconComponent && <IconComponent className="w-6 h-6" />}
-                    <span>{item.label}</span>
-                  </Link>
-                );
-              })}
-            </nav>
+            {/* Scrollable Nav Area */}
+            <div className="flex-grow overflow-y-auto [&::-webkit-scrollbar-track]:rounded-t-3xl [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-t-3xl [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
+              <nav className="flex flex-col"> {/* Added flex-col here */}
+                {navLinksData.map((item: NavLink) => {
+                  const IconComponent = icons[item.icon];
+                  const isActive = pathname === item.route;
 
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center space-x-3 py-3 group px-4 font-medium rounded-full transition duration-200 mb-2 text-gray cursor-pointer"
-            >
-              <VscSignOut className="w-6 h-6 group-hover:text-neutral-900 dark:text-gray-300 dark:group-hover:text-primary" />
-              <span className="text-gray font-medium group-hover:text-neutral-900 dark:text-gray-300 dark:group-hover:text-primary">
-                Logout
-              </span>
-            </button>
-          </div>
-        </motion.div>
-      ) : null}
+                  return (
+                    <Link
+                      key={item.route}
+                      href={item.route}
+                      onClick={() => { // Simplified click handler
+                        if (isMobileView && sidebarOpen) {
+                          toggleSidebar();
+                        }
+                      }}
+                      // Apply relative positioning to the Link itself
+                      className={`relative w-full flex items-center space-x-3 py-3 px-4 font-medium rounded-full transition-colors duration-200 mb-2 group ${ // Use transition-colors for text/icon
+                        isActive
+                          ? "text-neutral-900 dark:text-primary" // Active text color
+                          : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary" // Inactive text/icon color + hover
+                      }`}
+                    >
+                      {/* Animated Background Element */}
+                      {isActive && !isMobileView && ( // Only render background on active desktop item
+                        <motion.div
+                          layoutId="active-sidebar-background" // Shared layoutId for the background
+                          className="absolute inset-0 bg-primary/10 dark:bg-primarybox rounded-full z-0" // Background styles
+                          initial={false} // Don't animate initial appearance
+                          transition={{ // Customize the spring animation
+                            type: "spring",
+                            stiffness: 350,
+                            damping: 30,
+                          }}
+                        />
+                      )}
 
-      {/* Small screen bottom navigation bar with animation - Design 1 */}
-      <div className="sm:hidden fixed bottom-0 left-0 w-full z-80 bg-white dark:bg-background border-t">
-        <motion.div
-          className="flex items-center justify-around px-3 rounded-t-xl shadow-md dark:shadow-none"
-          initial={{ y: 100 }}
-          animate={{ y: 0 }}
-          transition={{ type: "spring", stiffness: 260, damping: 20 }}
-        >
-          {bottomNavLinksData.map((item: NavLink) => {
-            const IconComponent = icons[item.icon];
-            const isActive = pathname === item.route;
+                       {/* Mobile Active Background (Simpler) */}
+                       {isActive && isMobileView && (
+                          <div className="absolute inset-0 bg-primary/10 dark:bg-primarybox rounded-full z-0" />
+                       )}
 
-            return (
-              <Link
-                key={item.route}
-                href={item.route}
-                className="flex relative flex-col items-center justify-center space-y-1 py-3"
-              >
-                {isActive && (
+
+                      {/* Icon and Text Container (ensure it's above the background) */}
+                      <div className="relative z-10 flex items-center space-x-3">
+                         {IconComponent && <IconComponent className="w-6 h-6 shrink-0" />}
+                         <span className="truncate">{item.label}</span>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </nav>
+            </div>
+
+             {/* Logout Button Area */}
+             <div className="shrink-0 py-4">
+                <button
+                    onClick={handleLogout}
+                    // Apply relative positioning for potential future animations if needed
+                    className="relative w-full flex items-center space-x-3 py-3 group px-4 font-medium rounded-full transition-colors duration-200 text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary cursor-pointer"
+                    >
+                    {/* Icon and Text Container */}
+                    <div className="relative z-10 flex items-center space-x-3">
+                        <VscSignOut className="w-6 h-6 shrink-0" />
+                        <span className="truncate">Logout</span>
+                    </div>
+                </button>
+             </div>
+
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+
+      {/* Small screen bottom navigation bar - Remains the same */}
+      {isMobileView && ( // Only render bottom nav on mobile
+        <div className="sm:hidden fixed bottom-0 left-0 w-full z-50 bg-white dark:bg-background border-t dark:border-gray-700">
+          <motion.div
+            className="flex items-center justify-around px-3 shadow-md dark:shadow-none"
+            // Removed rounded-t-xl as it might clip the indicator
+            initial={{ y: 100 }}
+            animate={{ y: 0 }}
+            transition={{ type: "spring", stiffness: 260, damping: 20 }}
+          >
+            {bottomNavLinksData.map((item: NavLink) => {
+              const IconComponent = icons[item.icon];
+              const isActive = pathname === item.route;
+
+              return (
+                <Link
+                  key={item.route}
+                  href={item.route}
+                  className="flex relative flex-col items-center justify-center space-y-1 py-2.5 flex-1" // Use flex-1 to distribute space
+                  // Add padding top to make space for the indicator
+                  style={{ paddingTop: '0.75rem' }} // Roughly py-3 equivalent including the indicator space
+                >
+                   {/* Animated Top Indicator */}
+                  {isActive && (
                     <motion.div
-                      className="absolute top-0 left-1/2 -translate-x-1/2 h-[3px] w-16 rounded-full bg-primary"
-                      layoutId="bottom-nav-indicator"
+                      className="absolute top-0 left-1/2 -translate-x-1/2 h-[3px] w-10 md:w-16 rounded-full bg-primary" // Adjusted width
+                      layoutId="bottom-nav-indicator" // Keep this unique to bottom nav
+                       transition={{ // Match spring animation
+                          type: "spring",
+                          stiffness: 350,
+                          damping: 30,
+                       }}
                     />
                   )}
-                <motion.div
-                  className={` p-2 rounded-md ${
-                    isActive
-                      ? "text-primary"
-                      : "text-neutral-500 dark:text-gray-300"
-                  }`}
-                  whileTap={{ scale: 0.9 }}
-                  initial={{ scale: 1 }}
-                  animate={{ scale: 1 }}
-                  layout
-                >
-                  <IconComponent className="size-6" />
-                  
-                </motion.div>
-                <span
-                  className={`text-xs font-medium ${
-                    isActive
-                      ? "text-neutral-900 dark:text-primary"
-                      : "text-neutral-500 dark:text-gray-400"
-                  }`}
-                >
-                  {item.label}
-                </span>
-              </Link>
-            );
-          })}
-        </motion.div>
-      </div>
+                  {/* Icon */}
+                  <motion.div
+                     className={`p-1 rounded-md ${ // Smaller padding maybe
+                       isActive
+                         ? "text-primary"
+                         : "text-neutral-500 dark:text-gray-300"
+                     }`}
+                     whileTap={{ scale: 0.9 }}
+                     initial={{ scale: 1 }}
+                     animate={{ scale: 1 }}
+                     layout // Enable layout animation for the icon container if needed (e.g., slight size change)
+                   >
+                     {IconComponent && <IconComponent className="size-5 sm:size-6" />} {/* Adjusted size slightly */}
+                  </motion.div>
+                  {/* Label */}
+                  <span
+                     className={`text-[10px] sm:text-xs font-medium ${ // Smaller text
+                       isActive
+                         ? "text-neutral-900 dark:text-primary"
+                         : "text-neutral-500 dark:text-gray-400"
+                     }`}
+                   >
+                     {item.label}
+                  </span>
+                </Link>
+              );
+            })}
+          </motion.div>
+        </div>
+      )}
     </>
   );
 };
