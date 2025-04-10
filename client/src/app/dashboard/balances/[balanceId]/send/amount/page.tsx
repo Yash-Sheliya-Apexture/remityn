@@ -3413,8 +3413,8 @@ export default function SendAmountPage() {
     // Added check for recipient just in case, though it should be defined here
     const needsReason = recipient?.currency.code === "INR";
     const nextPath = needsReason
-      ? `/dashboard/balances/${balanceId}/send/reason?recipientId=${recipientId}`
-      : `/dashboard/balances/${balanceId}/send/review?recipientId=${recipientId}`;
+    ? `/dashboard/balances/${balanceId}/send/reason?recipientId=${recipientId}`
+    : `/dashboard/balances/${balanceId}/send/review?recipientId=${recipientId}`;
     router.push(nextPath);
   }, [
     summary,
@@ -3544,7 +3544,7 @@ export default function SendAmountPage() {
                 : "gets approx."
             }
             currencyCode={recipient!.currency.code} // Use ! assertion
-            flagImage={recipient!.currency.flagImage} // Use ! assertion
+            flagImage={`/assets/icon/${recipient!.currency.code.toLowerCase()}.svg`} // Use ! assertion
             value={receiveAmount}
             onValueChange={(val) => handleAmountChange(val, "receive")}
             onFocus={() => handleFocus("receive")}
