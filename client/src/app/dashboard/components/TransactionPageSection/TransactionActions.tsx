@@ -216,6 +216,50 @@
 // export default TransactionActions;
 
 
+// // app/dashboard/components/TransactionPageSection/TransactionActions.tsx
+// import React from "react";
+// import Search from "./Search"; // Adjusted relative path
+// import Filter from "./Filter"; // Adjusted relative path
+// import { Transaction } from "@/types/transaction";
+// import { Account } from "@/types/account"; // Import Account type
+
+// // Define a placeholder type for filters until specific structure is known
+// type TransactionFilters = object; // Or define specific properties: { status?: string[], dateRange?: { from: Date; to: Date }; ... }
+
+// interface TransactionActionsProps {
+//     transactions: Transaction[];
+//     userAccounts: Account[]; // <-- Add userAccounts prop
+//     onTransactionsChange: (transactions: Transaction[]) => void;
+//     onFiltersApply: (filters: TransactionFilters) => void; // Use defined type
+// }
+
+// const TransactionActions: React.FC<TransactionActionsProps> = ({
+//     transactions,
+//     userAccounts, // <-- Destructure userAccounts
+//     onTransactionsChange,
+//     onFiltersApply
+// }) => {
+//     return (
+//         <div className="flex justify-between items-center gap-4 sm:w-auto w-full"> {/* Added flex-wrap */}
+//             <Search
+//                 transactions={transactions}
+//                 onTransactionsChange={onTransactionsChange}
+//             />
+//             <div className="flex items-center gap-2">
+//                  {/* Pass userAccounts down to Filter */}
+//                 <Filter
+//                     userAccounts={userAccounts} // <-- Pass accounts here
+//                     onFiltersApply={onFiltersApply}
+//                 />
+//                 {/* <Download /> */}
+//             </div>
+//         </div>
+//     );
+// };
+
+// export default TransactionActions;
+
+
 // app/dashboard/components/TransactionPageSection/TransactionActions.tsx
 import React from "react";
 import Search from "./Search"; // Adjusted relative path
@@ -223,33 +267,39 @@ import Filter from "./Filter"; // Adjusted relative path
 import { Transaction } from "@/types/transaction";
 import { Account } from "@/types/account"; // Import Account type
 
-// Define a placeholder type for filters until specific structure is known
-type TransactionFilters = object; // Or define specific properties: { status?: string[], dateRange?: { from: Date; to: Date }; ... }
+// Define or import the specific filter type
+interface AppliedFilters {
+    selectedRecipients: (string | number)[];
+    selectedDirection?: string;
+    selectedStatus?: string | null;
+    selectedBalance?: string[];
+    fromDate?: string;
+    toDate?: string;
+}
 
 interface TransactionActionsProps {
     transactions: Transaction[];
-    userAccounts: Account[]; // <-- Add userAccounts prop
+    userAccounts: Account[];
     onTransactionsChange: (transactions: Transaction[]) => void;
-    onFiltersApply: (filters: TransactionFilters) => void; // Use defined type
+    onFiltersApply: (filters: AppliedFilters) => void; // <-- Use the specific type here
 }
 
 const TransactionActions: React.FC<TransactionActionsProps> = ({
     transactions,
-    userAccounts, // <-- Destructure userAccounts
+    userAccounts,
     onTransactionsChange,
-    onFiltersApply
+    onFiltersApply // Prop type now matches the expected function signature
 }) => {
     return (
-        <div className="flex justify-between items-center gap-4 sm:w-auto w-full"> {/* Added flex-wrap */}
+        <div className="flex justify-between items-center gap-4 sm:w-auto w-full">
             <Search
                 transactions={transactions}
                 onTransactionsChange={onTransactionsChange}
             />
             <div className="flex items-center gap-2">
-                 {/* Pass userAccounts down to Filter */}
                 <Filter
-                    userAccounts={userAccounts} // <-- Pass accounts here
-                    onFiltersApply={onFiltersApply}
+                    userAccounts={userAccounts}
+                    onFiltersApply={onFiltersApply} // Pass the correctly typed prop down
                 />
                 {/* <Download /> */}
             </div>

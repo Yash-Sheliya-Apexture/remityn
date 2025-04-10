@@ -59,7 +59,8 @@
 //       if (/[a-zA-Z]/.test(pw)) {
 //         hasLetter = true;
 //       }
-//       if (/\d/.test(pw)) {
+//       if (/
+//d/.test(pw)) {
 //         hasNumber = true;
 //       }
 //     }
@@ -391,7 +392,7 @@
 
 //             <div className="text-center mt-6">
 //               <p className="text-sm text-gray-500 dark:text-gray-400">
-//                 Go back to{" "}
+//                 Go back to
 //                 <Link
 //                   href="/auth/login"
 //                   className="text-secondary font-medium hover:underline dark:text-primary-500"
@@ -409,18 +410,21 @@
 
 // export default NewPasswordPage;
 
-
-
 "use client";
 
 import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { useRouter, useParams } from "next/navigation";
 import authService from "../../../services/auth";
-import { IoMdCloseCircle, IoIosCheckmarkCircle } from "react-icons/io";
+import {
+  IoMdCloseCircle,
+  IoIosCheckmarkCircle,
+} from "react-icons/io";
 import { VscEye } from "react-icons/vsc";
 import { RiEyeCloseLine } from "react-icons/ri";
-import { IoClose } from "react-icons/io5";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion"; // Import Framer Motion
+import { FiX } from "react-icons/fi";
+import { FaCheck } from "react-icons/fa6";
 
 // Interface definition removed as it's not used for props in this client component.
 
@@ -428,7 +432,9 @@ const NewPasswordPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   // Store only the primary password error message (like "required")
-  const [passwordRequiredError, setPasswordRequiredError] = useState<string | null>(null);
+  const [passwordRequiredError, setPasswordRequiredError] = useState<
+    string | null
+  >(null);
   const [confirmPasswordError, setConfirmPasswordError] = useState<string>("");
   const [resetError, setResetError] = useState("");
   const [resetSuccess, setResetSuccess] = useState("");
@@ -439,7 +445,8 @@ const NewPasswordPage = () => {
   const params = useParams(); // Get params object
   // Safely access token, handle potential array or undefined
   const tokenFromParams = params?.token;
-  const token = typeof tokenFromParams === 'string' ? tokenFromParams : undefined;
+  const token =
+    typeof tokenFromParams === "string" ? tokenFromParams : undefined;
 
   const [validationCriteria, setValidationCriteria] = useState({
     hasLetter: false,
@@ -471,9 +478,15 @@ const NewPasswordPage = () => {
       };
     }
 
-    if (pw.length >= 9) { hasMinLength = true; }
-    if (/[a-zA-Z]/.test(pw)) { hasLetter = true; }
-    if (/\d/.test(pw)) { hasNumber = true; }
+    if (pw.length >= 9) {
+      hasMinLength = true;
+    }
+    if (/[a-zA-Z]/.test(pw)) {
+      hasLetter = true;
+    }
+    if (/\d/.test(pw)) {
+      hasNumber = true;
+    }
 
     return { hasLetter, hasNumber, hasMinLength };
   };
@@ -505,9 +518,9 @@ const NewPasswordPage = () => {
     }
 
     if (!formIsValid || !token) {
-       if (!token && !resetError) {
-         setResetError("Invalid reset link or token missing.");
-       }
+      if (!token && !resetError) {
+        setResetError("Invalid reset link or token missing.");
+      }
       setIsSubmitting(false);
       return;
     }
@@ -517,14 +530,15 @@ const NewPasswordPage = () => {
       setResetSuccess("Password reset successful! Redirecting to login...");
       setTimeout(() => {
         router.push("/auth/login?resetSuccess=true"); // Changed query param for clarity
-      }, 2000);
+      }, 300);
     } catch (err: unknown) {
       let errorMessage = "Password reset failed. Please try again.";
       if (err instanceof Error) {
         if (err.message.includes("Invalid or expired")) {
-          errorMessage = "This password reset link is invalid or has expired. Please request a new password reset link.";
+          errorMessage =
+            "This password reset link is invalid or has expired. Please request a new password reset link.";
         } else if (err.message) {
-            errorMessage = err.message;
+          errorMessage = err.message;
         }
       }
       setResetError(errorMessage);
@@ -541,10 +555,6 @@ const NewPasswordPage = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
-  const handleCloseResetError = () => {
-    setResetError("");
-  };
-
   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newPassword = e.target.value;
     setPassword(newPassword);
@@ -557,11 +567,11 @@ const NewPasswordPage = () => {
       setPasswordRequiredError(null);
     }
 
-     if (confirmPassword && newPassword !== confirmPassword) {
-        setConfirmPasswordError("Passwords do not match.");
-     } else if (confirmPassword && newPassword === confirmPassword) {
-         setConfirmPasswordError("");
-     }
+    if (confirmPassword && newPassword !== confirmPassword) {
+      setConfirmPasswordError("Passwords do not match.");
+    } else if (confirmPassword && newPassword === confirmPassword) {
+      setConfirmPasswordError("");
+    }
   };
 
   const handleConfirmPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -569,11 +579,11 @@ const NewPasswordPage = () => {
     setConfirmPassword(newConfirmPassword);
 
     if (!newConfirmPassword && !passwordRequiredError) {
-        setConfirmPasswordError("");
+      setConfirmPasswordError("");
     } else if (password && newConfirmPassword !== password) {
       setConfirmPasswordError("Passwords do not match.");
     } else {
-        setConfirmPasswordError("");
+      setConfirmPasswordError("");
     }
   };
 
@@ -587,267 +597,368 @@ const NewPasswordPage = () => {
   };
 
   // Determine if the password input itself is invalid (for styling/aria)
-  const isPasswordInputInvalid = !!passwordRequiredError || shouldShowCriteriaList();
+  const isPasswordInputInvalid =
+    !!passwordRequiredError || shouldShowCriteriaList();
   // Determine if the confirm password input is invalid
   const isConfirmPasswordInputInvalid = !!confirmPasswordError;
 
   // Determine if the submit button should be disabled
   const isSubmitDisabled =
-      isSubmitting ||
-      !token ||
-      !!passwordRequiredError ||
-      (password && !areAllCriteriaMet(validationCriteria)) ||
-      !confirmPassword || // Disable if confirm password empty
-      !!confirmPasswordError;
+    isSubmitting ||
+    !token ||
+    !!passwordRequiredError ||
+    (password && !areAllCriteriaMet(validationCriteria)) ||
+    !confirmPassword || // Disable if confirm password empty
+    !!confirmPasswordError;
 
+  const errorVariants = {
+    initial: {
+      opacity: 0.5,
+      y: 10, // Start slightly below to gently rise up
+      scale: 0.95, // Start slightly smaller to subtly scale up
+      rotate: "2deg", // A very slight initial rotation for a soft lean-in
+    },
+    animate: {
+      opacity: 1,
+      y: 0, // Move to its natural position
+      scale: 1, // Scale to its normal size
+      rotate: "0deg", // Rotate to straight position
+      transition: {
+        duration: 0.3, // Slightly longer duration for a smoother feel
+        ease: "easeInOut", // Smooth start and end
+        type: "spring", // Use spring for a gentle, bouncy settle
+        stiffness: 95, // Adjust stiffness for desired bounce
+        damping: 10, // Adjust damping to control oscillation
+      },
+    },
+    exit: {
+      opacity: 0,
+      y: 10, // Move down slightly as it fades out
+      scale: 0.95, // Scale down slightly as it fades out
+      rotate: "-2deg", // Rotate slightly in the opposite direction for exit
+      transition: {
+        duration: 0.2, // Slightly faster exit
+        ease: "easeIn", // Ease in for a smooth fade out
+      },
+    },
+  };
+
+  
   return (
     // --- Original Layout Structure ---
     <div className="flex flex-col justify-center items-center lg:h-[calc(100vh-73px)] px-4">
       <div className="w-full max-w-md mt-10">
         {/* --- Original bg-white Wrapper --- */}
-        <div className="bg-white">
-           {/* --- Original py-3 Wrapper --- */}
+        <div className="bg-white  dark:bg-background">
+          {/* --- Original py-3 Wrapper --- */}
           <div className="py-3">
-            <h2 className="lg:text-3xl text-2xl text-center text-main font-semibold mb-4">
+            <h2 className="lg:text-3xl text-2xl text-center text-mainheading  dark:text-white font-semibold mb-4">
               Set your new password
             </h2>
 
             {/* Reset Error Display (Original Styling) */}
-            {resetError && (
-              <div
-                className="flex bg-red-100 border border-red-400 text-red-700 p-4 rounded-lg gap-4 items-center relative mb-4" // Original padding/gap
-                role="alert"
-              >
-                <div className="flex bg-error justify-center rounded-full items-center size-8 flex-shrink-0"> {/* Original size */}
-                  <IoClose className="text-white size-6" /> {/* Original size */}
-                </div>
-                <div className="flex-grow">
-                  <span className="block text-sm">{resetError}</span> {/* Original size */}
-                </div>
-                <button
-                  className="absolute cursor-pointer right-2 top-2 p-1" // Original position/padding
-                  onClick={handleCloseResetError}
-                  aria-label="Close error message"
+            <AnimatePresence>
+              {resetError && (
+                <motion.div
+                  className="bg-lightgray dark:bg-white/5 rounded-2xl p-4 flex items-center gap-4 relative" // Original padding/gap
+                  role="alert"
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  variants={errorVariants}
                 >
-                  <IoClose
-                    className="text-red-700 hover:text-red-900 size-6" // Original size/color
-                  />
-                </button>
-              </div>
-            )}
+                  <div className="flex bg-red-600/20 justify-center rounded-full items-center size-12 shrink-0">
+                    <FiX className="p-0.5 text-lightgray dark:text-red-600 size-8" />
+                  </div>
+
+                  <div>
+                    <span className="text-gray-500 dark:text-white block max-w-60 leading-relaxed">
+                      {resetError}
+                    </span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Reset Success Display (Original Styling) */}
-            {resetSuccess && (
-              <div
-                className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
-                role="alert"
-              >
-                <strong className="font-bold">Success!</strong>
-                <span className="block sm:inline"> {resetSuccess}</span>
-              </div>
-            )}
+            <AnimatePresence>
+              {resetSuccess && (
+                <motion.div
+                  className="flex bg-lightgray dark:bg-secondary p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4"
+                  role="alert"
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  variants={errorVariants}
+                >
+                  {/* Adjusted background/padding */}
+                  <div className="flex bg-primary/20 justify-center rounded-full items-center size-12 shrink-0">
+                    <FaCheck className="p-0.5 text-mainheading dark:text-primary size-8" />
+                  </div>
+
+                  <div className="flex-grow space-y-0.5">
+                    <span className="text-mainheading dark:text-primary block font-medium">
+                      Password Reset Successful!
+                    </span>
+
+                    {/* Improved text */}
+                    <span className="text-gray-500 dark:text-gray-300 block text-sm">
+                      Redirecting to login...
+                    </span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Form (Conditionally rendered based on token) */}
             {token ? (
-                // --- Original Form Structure ---
-                <form onSubmit={handleSubmit} className="mt-10 space-y-5">
+              <form onSubmit={handleSubmit} className="mt-10 space-y-5">
                 {/* New Password Field */}
                 <div>
-                    <label
+                  <label
                     htmlFor="password"
-                    className="text-gray text-sm block capitalize font-medium"
-                    >
+                    className="text-gray-500 dark:text-gray-300 block capitalize font-medium"
+                  >
                     New Password <span className="text-error">*</span>
-                    </label>
-                    <div className="relative">
+                  </label>
+                  <div className="relative">
                     <input
-                        type={showPassword ? "text" : "password"}
-                        id="password"
-                        // --- Original Input Classes + Dynamic Error Class ---
-                        className={`mt-1 block px-4 py-3 border w-full rounded-lg transition-shadow ease-in-out duration-300 ${
+                      type={showPassword ? "text" : "password"}
+                      id="password"
+                      // --- Original Input Classes + Dynamic Error Class ---
+                      className={`mt-1 block px-4 py-3 h-14 border w-full rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
                         isPasswordInputInvalid
-                            ? "border-error border-2 !shadow-none" // Keep error state visual
-                            : "border-[#c9cbce] hover:shadow-color" // Original normal/hover
-                        }`}
-                        placeholder="••••••••" // --- Original Placeholder ---
-                        value={password}
-                        onChange={handlePasswordChange}
-                        aria-describedby={shouldShowCriteriaList() ? "password-criteria" : passwordRequiredError ? "password-required-error" : undefined}
-                        // --- Fixed aria-invalid ---
-                        aria-invalid={isPasswordInputInvalid ? "true" : undefined}
+                          ? "border-red-700 border-2 !shadow-none" // Keep error state visual
+                          : "dark:hover:shadow-whitecolor hover:shadow-darkcolor" // Original normal/hover
+                      }`}
+                      placeholder="••••••••" // --- Original Placeholder ---
+                      value={password}
+                      onChange={handlePasswordChange}
+                      aria-describedby={
+                        shouldShowCriteriaList()
+                          ? "password-criteria"
+                          : passwordRequiredError
+                          ? "password-required-error"
+                          : undefined
+                      }
+                      // --- Fixed aria-invalid ---
+                      aria-invalid={isPasswordInputInvalid ? "true" : undefined}
                     />
                     <button
-                        type="button"
-                         // --- Original Button Classes ---
-                        className="text-gray-500 -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-1 top-1/2 transform bg-white p-3 rounded-md"
-                        onClick={togglePasswordVisibility}
-                        aria-label={showPassword ? "Hide password" : "Show password"}
+                      type="button"
+                      // --- Original Button Classes ---
+                      className="text-gray-500 dark:text-gray-300 cursor-pointer -translate-y-1/2 absolute focus:outline-none right-1 top-1/2 transform dark:bg-background bg-white p-3 rounded-md"
+                      onClick={togglePasswordVisibility}
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
                     >
-                        {/* --- Original Icon Size --- */}
-                        {showPassword ? (
-                        <RiEyeCloseLine className="text-secondary size-5" />
-                        ) : (
-                        <VscEye className="text-secondary size-5" />
-                        )}
+                      {/* --- Original Icon Size --- */}
+                      {showPassword ? (
+                        <RiEyeCloseLine className="text-secondary dark:text-white size-5" />
+                      ) : (
+                        <VscEye className="text-secondary dark:text-white size-5" />
+                      )}
                     </button>
-                    </div>
-                    {/* Password Required Error (Original Styling) */}
-                    {passwordRequiredError && (
-                    <p id="password-required-error" className="flex text-error text-sm items-center mt-1"> {/* Original size/margin */}
-                        <IoMdCloseCircle className="size-4 mr-1" /> {/* Original size */}
-                        {passwordRequiredError}
+                  </div>
+                  {/* Password Required Error (Original Styling) */}
+                  {passwordRequiredError && (
+                    <p
+                      id="password-required-error"
+                      className="flex text-red-700 items-center mt-1"
+                    >
+                      {/* Original size/margin */}
+                      <IoMdCloseCircle className="size-4 mr-1" />
+                      {/* Original size */}
+                      {passwordRequiredError}
                     </p>
-                    )}
-                    {/* Password Criteria List (Original Styling) */}
-                    {shouldShowCriteriaList() && (
-                    <ul id="password-criteria" className="mt-2 text-sm space-y-1 list-none pl-0"> {/* Original size/spacing */}
-                        <li className={`flex items-center ${validationCriteria.hasMinLength ? 'text-green-600' : 'text-error'}`}>
+                  )}
+                  {/* Password Criteria List (Original Styling) */}
+                  {shouldShowCriteriaList() && (
+                    <ul
+                      id="password-criteria"
+                      className="mt-2 space-y-1.5 list-none pl-0"
+                    >
+                      {/* Original size/spacing */}
+                      <li
+                        className={`flex items-center ${
+                          validationCriteria.hasMinLength
+                            ? "text-green-500"
+                            : "text-red-700"
+                        }`}
+                      >
                         {validationCriteria.hasMinLength ? (
-                            <IoIosCheckmarkCircle className="mr-1 size-4" /> // Original size
+                          <IoIosCheckmarkCircle className="mr-1 size-5" /> // Original size
                         ) : (
-                            <IoMdCloseCircle className="mr-1 size-4" /> // Original size
+                          <IoMdCloseCircle className="mr-1 size-5" /> // Original size
                         )}
                         Has 9 or more characters
-                        </li>
-                        <li className={`flex items-center ${validationCriteria.hasLetter ? 'text-green-600' : 'text-error'}`}>
+                      </li>
+                      <li
+                        className={`flex items-center ${
+                          validationCriteria.hasLetter
+                            ? "text-green-500"
+                            : "text-red-700"
+                        }`}
+                      >
                         {validationCriteria.hasLetter ? (
-                            <IoIosCheckmarkCircle className="mr-1 size-4" /> // Original size
+                          <IoIosCheckmarkCircle className="mr-1 size-5" /> // Original size
                         ) : (
-                            <IoMdCloseCircle className="mr-1 size-4" /> // Original size
+                          <IoMdCloseCircle className="mr-1 size-5" /> // Original size
                         )}
                         Contains a letter
-                        </li>
-                         <li className={`flex items-center ${validationCriteria.hasNumber ? 'text-green-600' : 'text-error'}`}>
+                      </li>
+                      <li
+                        className={`flex items-center ${
+                          validationCriteria.hasNumber
+                            ? "text-green-500"
+                            : "text-red-700"
+                        }`}
+                      >
                         {validationCriteria.hasNumber ? (
-                            <IoIosCheckmarkCircle className="mr-1 size-4" /> // Original size
+                          <IoIosCheckmarkCircle className="mr-1 size-5" /> // Original size
                         ) : (
-                            <IoMdCloseCircle className="mr-1 size-4" /> // Original size
+                          <IoMdCloseCircle className="mr-1 size-5" /> // Original size
                         )}
                         Contains a number
-                        </li>
+                      </li>
                     </ul>
-                    )}
+                  )}
                 </div>
 
                 {/* Confirm New Password Field */}
                 <div>
-                    <label
+                  <label
                     htmlFor="confirm-password"
-                    className="text-gray text-sm block capitalize font-medium"
-                    >
+                    className="text-gray-500  dark:text-gray-300 block capitalize font-medium"
+                  >
                     Confirm New Password <span className="text-error">*</span>
-                    </label>
-                    <div className="relative">
+                  </label>
+                  <div className="relative">
                     <input
-                        type={showConfirmPassword ? "text" : "password"}
-                        id="confirm-password"
-                        // --- Original Input Classes + Dynamic Error Class ---
-                         className={`mt-1 block px-4 py-3 border w-full rounded-lg transition-shadow ease-in-out duration-300 ${
-                         isConfirmPasswordInputInvalid
-                            ? "border-error border-2 !shadow-none" // Keep error state visual
-                            : "border-[#c9cbce] hover:shadow-color" // Original normal/hover
-                        }`}
-                        placeholder="••••••••" // --- Original Placeholder ---
-                        value={confirmPassword}
-                        onChange={handleConfirmPasswordChange}
-                        // --- Fixed aria-invalid ---
-                        aria-invalid={isConfirmPasswordInputInvalid ? "true" : undefined}
-                        aria-describedby={confirmPasswordError ? "confirm-password-error" : undefined}
+                      type={showConfirmPassword ? "text" : "password"}
+                      id="confirm-password"
+                      // --- Original Input Classes + Dynamic Error Class ---
+                      className={`mt-1 block px-4 py-3 h-14 border w-full rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
+                        isConfirmPasswordInputInvalid
+                          ? "border-red-700 border-2 !shadow-none" // Keep error state visual
+                          : "dark:hover:shadow-whitecolor hover:shadow-darkcolor" // Original normal/hover
+                      }`}
+                      placeholder="••••••••" // --- Original Placeholder ---
+                      value={confirmPassword}
+                      onChange={handleConfirmPasswordChange}
+                      // --- Fixed aria-invalid ---
+                      aria-invalid={
+                        isConfirmPasswordInputInvalid ? "true" : undefined
+                      }
+                      aria-describedby={
+                        confirmPasswordError
+                          ? "confirm-password-error"
+                          : undefined
+                      }
                     />
                     <button
-                        type="button"
-                         // --- Original Button Classes ---
-                        className="text-gray-500 -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-1 top-1/2 transform bg-white p-3 rounded-md" // Restored original rounded-md
-                        onClick={toggleConfirmPasswordVisibility}
-                        aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+                      type="button"
+                      // --- Original Button Classes ---
+                      className="text-gray-500 dark:text-gray-300 cursor-pointer -translate-y-1/2 absolute focus:outline-none right-1 top-1/2 transform dark:bg-background bg-white p-3 rounded-md" // Restored original rounded-md
+                      onClick={toggleConfirmPasswordVisibility}
+                      aria-label={
+                        showConfirmPassword
+                          ? "Hide confirm password"
+                          : "Show confirm password"
+                      }
                     >
-                         {/* --- Original Icon Size --- */}
-                        {showConfirmPassword ? (
-                        <RiEyeCloseLine className="text-secondary size-5" />
-                        ) : (
-                        <VscEye className="text-secondary size-5" />
-                        )}
+                      {/* --- Original Icon Size --- */}
+                      {showConfirmPassword ? (
+                        <RiEyeCloseLine className="text-secondary dark:text-white size-5" />
+                      ) : (
+                        <VscEye className="text-secondary dark:text-white size-5" />
+                      )}
                     </button>
-                    </div>
-                    {/* Confirm Password Error (Original Styling) */}
-                    {confirmPasswordError && (
-                    <p id="confirm-password-error" className="flex text-error text-sm items-center mt-1"> {/* Original size/margin */}
-                        <IoMdCloseCircle className="size-4 mr-1" /> {/* Original size */}
-                        {confirmPasswordError}
+                  </div>
+                  {/* Confirm Password Error (Original Styling) */}
+                  {confirmPasswordError && (
+                    <p
+                      id="confirm-password-error"
+                      className="flex text-red-700 items-center mt-1"
+                    >
+                      {/* Original size/margin */}
+                      <IoMdCloseCircle className="size-5 mr-1" />
+                      {/* Original size */}
+                      {confirmPasswordError}
                     </p>
-                    )}
+                  )}
                 </div>
 
                 {/* Submit Button */}
-                {/* --- Original Button Wrapper --- */}
                 <div className="pt-2">
-                    <button
+                  <button
                     type="submit"
-                     // --- Original Button Classes + Dynamic Disabled State ---
-                    className={`rounded-full text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium py-3 transition-colors ${
-                        isSubmitDisabled
-                        ? "bg-gray-300 text-gray-500 cursor-not-allowed" // Original disabled style
-                        : "bg-primary hover:bg-primary-hover text-secondary" // Original enabled style
+                    // --- Original Button Classes + Dynamic Disabled State ---
+                    className={`rounded-full text-lg w-full h-14 cursor-pointer duration-300 ease-in-out focus:outline-none font-medium py-3 transition-colors ${
+                      isSubmitDisabled
+                        ? "bg-lightgray dark:bg-background border text-mainheading dark:text-white cursor-not-allowed" // Original disabled style
+                        : "bg-primary hover:bg-primaryhover font-medium text-secondary" // Original enabled style
                     }`}
                     disabled={isSubmitDisabled} // Use combined disabled logic
-                    >
+                  >
                     {isSubmitting ? (
-                        <div className="flex justify-center items-center">
+                      <div className="flex justify-center items-center">
                         <svg
-                             // --- Original Spinner Style ---
-                            className="h-5 w-5 animate-spin mr-3 text-gray-500"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg" // Added xmlns
+                          // --- Original Spinner Style ---
+                          className="h-5 w-5 animate-spin mr-3 text-gray-500 dark:text-mainheading"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg" // Added xmlns
                         >
-                            <circle
+                          <circle
                             className="opacity-25"
                             cx="12"
                             cy="12"
                             r="10"
                             stroke="currentColor"
                             strokeWidth="4"
-                            ></circle>
-                            <path
+                          ></circle>
+                          <path
                             className="opacity-75"
                             fill="currentColor"
                             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                            ></path>
+                          ></path>
                         </svg>
                         Resetting...
-                        </div>
+                      </div>
                     ) : (
-                        "Reset password"
+                      "Reset password"
                     )}
-                    </button>
+                  </button>
                 </div>
-                </form>
+              </form>
             ) : (
-                // Show message if token is missing and not already showing success
-                !resetSuccess && (
-                    <div className="mt-8 text-center">
-                        {/* Error message (resetError) is displayed above */}
-                         <p className="text-sm text-gray-500">
-                            Please request a new password reset link.
-                         </p>
-                    </div>
-                )
+              // Show message if token is missing and not already showing success
+              !resetSuccess && (
+                <div className="mt-8 text-center">
+                  {/* Error message (resetError) is displayed above */}
+                  <p className="font-medium text-gray-500  dark:text-gray-300">
+                    Please request a new password reset link.
+                  </p>
+                </div>
+              )
             )}
-
 
             {/* Back to Login Link (Original Structure/Styling) */}
             {!resetSuccess && (
-                 <div className="text-center mt-6">
-                    <p className="text-sm text-gray-500 dark:text-gray-400"> {/* Kept dark mode class if it was there */}
-                        Go back to{" "}
-                        <Link
-                        href="/auth/login"
-                        className="text-secondary font-medium hover:underline dark:text-primary-500" // Kept dark mode class
-                        >
-                        Login
-                        </Link>
-                    </p>
-                </div>
+              <div className="text-center mt-6">
+                <p className="text-gray-500 dark:text-gray-300">
+                  {/* Kept dark mode class if it was there */}
+                  Go back to&nbsp;
+                  <Link
+                    href="/auth/login"
+                    className="text-primary font-medium underline underline-offset-4" // Kept dark mode class
+                  >
+                    Login
+                  </Link>
+                </p>
+              </div>
             )}
           </div>
         </div>

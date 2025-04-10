@@ -111,3 +111,79 @@ export interface Transaction {
   // Optional generic description (maybe useful sometimes)
   description?: string;
 }
+
+
+// Interface for route parameters, ensuring compatibility with useParams constraint
+export interface TransactionDetailsPageParams extends Record<string, string | string[] | undefined> {
+  transactionId: string;
+}
+
+// Define the structure for Payment details
+export interface PaymentDetails {
+  _id: string;
+  type: 'payment'; // Discriminator property
+  user: { _id: string; email?: string; fullName?: string };
+  balanceCurrency: { _id: string; code: string; flagImage?: string }; // Currency being added to
+  payInCurrency: { _id: string; code: string; flagImage?: string }; // Currency user pays with
+  amountToAdd: number; // Amount credited to balance
+  amountToPay: number; // Amount user needs to send
+  exchangeRate: number;
+  wiseFee: number; // Fee charged by Wise
+  bankTransferFee: number; // Any specific fee for the bank transfer method
+  referenceCode?: string; // Reference for the bank transfer
+  paymentMethod: string; // e.g., 'bank_transfer', 'card'
+  status: 'pending' | 'completed' | 'failed' | 'in progress' | 'canceled' | string; // Robust status handling
+  bankDetails?: { // Details of the bank account to pay into (e.g., Wise's account)
+      payeeName?: string;
+      iban?: string;
+      bicSwift?: string;
+      bankAddress?: string;
+  };
+  createdAt: string; // ISO Date string
+  updatedAt: string; // ISO Date string
+  note?: string; // User-added note
+  failureReason?: string; // Reason if status is 'failed'
+}
+
+// Define the structure for Transfer details
+export interface TransferDetails {
+  _id: string;
+  type: 'transfer'; // Discriminator property
+  user: { _id: string; email?: string; fullName?: string };
+  sourceAccount: { _id: string; currency: { _id: string; code: string; flagImage?: string } }; // Account money is sent FROM
+  recipient: { // Details of the recipient
+      _id: string; // Recipient ID in the system
+      accountHolderName: string;
+      nickname?: string;
+      currency: { _id: string; code: string; flagImage?: string }; // Currency recipient receives
+      accountNumber: string; // Essential for display/verification
+      bankName: string; // Essential for display/verification
+  };
+  sendAmount: number; // Amount debited from source account
+  receiveAmount: number; // Amount recipient gets after conversion/fees
+  sendCurrency: { _id: string; code: string; flagImage?: string };
+  receiveCurrency: { _id: string; code: string; flagImage?: string };
+  exchangeRate: number;
+  fees: number; // Total fees for the transfer
+  reason?: string; // Purpose of the transfer
+  reference?: string; // Reference for the recipient
+  status: 'pending' | 'processing' | 'completed' | 'failed' | 'canceled' | string; // Robust status handling
+  failureReason?: string; // Reason if status is 'failed'
+  createdAt: string; // ISO Date string
+  updatedAt: string; // ISO Date string
+  note?: string; // User-added note
+}
+
+// Union type for any transaction
+export type TransactionDetails = PaymentDetails | TransferDetails;
+
+// Define timeline step structure
+export type TimelineStatus = 'completed' | 'active' | 'pending' | 'failed' | 'cancelled';
+export interface TimelineStep {
+  id: string;
+  label: string;
+  status: TimelineStatus;
+  date?: string; // Formatted display date
+  info?: string | null; // Additional context for the step
+  showCancelAction?: boolean; // Flag for inline cancel button (e.g., "I've not paid")
+}

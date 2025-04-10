@@ -261,6 +261,9 @@ export interface InitiatePaymentPayload {
 
 // Response containing details of a specific payment
 export interface PaymentDetailsResponse {
+    amountToAdd: any;
+    payInCurrency: any;
+    balanceCurrency: any;
     account: any;
     type: string;
     accountId: any;

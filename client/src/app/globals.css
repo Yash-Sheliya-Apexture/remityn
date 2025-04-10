@@ -31,17 +31,16 @@ body {
   /* Border-Color */
   --color-lightborder: #e3e3e3;
 
---color-mainheading: #171717;
---color-subheading: #171717;
---color-secondarybox: #525252;
-/* Background-color Hover-Button */
---color-primaryhover: #bcf65f;
+  --color-mainheading: #171717;
+  --color-subheading: #171717;
+  --color-secondarybox: #525252;
+  /* Background-color Hover-Button */
+  --color-primaryhover: #bcf65f;
 
-/* text-color : text-neutral-900 */
+  /* text-color : text-neutral-900 */
 
---color-primaryhover: #8de900;
---color-dropdowncolor: #2e2e2e
-
+  --color-primaryhover: #8de900;
+  --color-dropdowncolor: #2e2e2e;
 
 }
 
@@ -197,4 +196,36 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+
+
+/* Add these styles */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  /* Force background color */
+  -webkit-box-shadow: 0 0 0px 1000px theme('colors.white') inset; /* Light mode background */
+  box-shadow: 0 0 0px 1000px theme('colors.white') inset; /* Light mode background */
+  
+  /* Force text color */
+  -webkit-text-fill-color: theme('colors.mainheading'); /* Your light mode text color */
+  
+  /* Optional: Prevent transition delays if needed */
+  transition: background-color 5000s ease-in-out 0s; 
+}
+
+/* --- Dark Mode Overrides --- */
+/* Ensure your dark mode is triggered by a class, e.g., 'dark' on the html/body */
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus,
+.dark input:-webkit-autofill:active {
+  /* Force background color for dark mode */
+  -webkit-box-shadow: 0 0 0px 1000px theme('colors.background') inset; /* Your dark mode input background */
+  box-shadow: 0 0 0px 1000px theme('colors.background') inset; /* Your dark mode input background */
+  
+  /* Force text color for dark mode */
+  -webkit-text-fill-color: theme('colors.white'); /* Your dark mode text color */
 }
