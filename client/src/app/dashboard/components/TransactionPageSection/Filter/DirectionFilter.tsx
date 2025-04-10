@@ -367,7 +367,7 @@ const DirectionFilter: React.FC<DirectionFilterProps> = ({
 }) => {
   return (
     <div>
-      <h4 className="text-gray-500 dark:text-gray-300  font-medium relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
+      <h4 className="text-gray-500 dark:text-gray-300  font-medium relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-neutral-500 dark:after:bg-white/30 after:mt-1">
         Direction
       </h4>
       <RadioGroup

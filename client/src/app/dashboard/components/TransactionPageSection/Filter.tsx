@@ -3497,7 +3497,7 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
                   : "top-0 right-0 sm:w-[600px] h-full"
               } bg-white dark:bg-background  ${
                 isMobile ? "rounded-t-2xl" : ""
-              } z-50 flex flex-col`} // Use flex column
+              } z-90 flex flex-col`} // Use flex column
               initial={
                 isMobile ? { y: "100%", opacity: 0 } : { x: "100%", opacity: 0 }
               }
@@ -3527,7 +3527,7 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
                 {" "}
                 {/* Use space-y */}
                 <div>
-                  <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
+                  <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-neutral-500 dark:after:bg-white/30 after:mt-1">
                     Date
                   </h4>
                   {/* Date tab */}
@@ -3535,7 +3535,7 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
                     <button
                       className={`font-medium border flex items-center gap-2 rounded-full px-4 py-2 cursor-pointer ${
                         isLastMonthActive
-                          ? "bg-secondary text-primary"
+                          ? "bg-neutral-900 text-primary dark:bg-green-600/20"
                           : "text-mainheading dark:bg-background dark:text-white  bg-white"
                       }`}
                       onClick={getLastMonthRange}
@@ -3554,7 +3554,7 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
                     <button
                       className={`font-medium border flex items-center gap-2 rounded-full px-4 py-2 cursor-pointer ${
                         isLastQuarterActive
-                          ? "bg-secondary text-primary "
+                          ? "bg-neutral-900 text-primary dark:bg-green-600/20"
                           : "text-mainheading dark:bg-background dark:text-white bg-white"
                       }`}
                       onClick={getLastQuarterRange}
@@ -3573,7 +3573,7 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
                     <button
                       className={`font-medium border flex items-center gap-2 rounded-full px-4 py-2 cursor-pointer ${
                         isLastYearActive
-                          ? "bg-secondary text-primary "
+                          ? "bg-neutral-900 text-primary dark:bg-green-600/20"
                           : "text-mainheading dark:bg-background dark:text-white bg-white"
                       }`}
                       onClick={getLastYearRange}
@@ -3642,7 +3642,7 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
                 {userAccounts &&
                   userAccounts.length > 0 && ( // Only show if accounts exist
                     <div>
-                      <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
+                      <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-neutral-500 dark:after:bg-white/30 after:mt-1">
                         Balance
                       </h4>
                       <div className="space-y-2">
@@ -3678,14 +3678,14 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
                 <div className="flex items-center gap-3">
                   <button
                     type="button"
-                    className="w-full bg-white border text-main font-medium cursor-pointer py-3 px-4 rounded-full hover:bg-gray-50 text-sm"
+                    className="bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear"
                     onClick={handleClearAllFilters}
                   >
                     Clear all
                   </button>
                   <button
                     type="button"
-                    className="w-full bg-primary text-main font-medium py-3 px-4 cursor-pointer rounded-full hover:bg-primary/90 text-sm"
+                    className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear"
                     onClick={handleApplyFilters}
                   >
                     Apply

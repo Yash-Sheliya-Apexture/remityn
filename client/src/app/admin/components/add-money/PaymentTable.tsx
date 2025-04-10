@@ -615,7 +615,7 @@ const PaymentTable: React.FC<PaymentTableProps> = ({
                                     className="hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors duration-100"
                                 >
                                     <td className="px-4 py-3 whitespace-nowrap">
-                                        <span className="font-medium text-neutral-900 dark:text-white">{payment._id.substring(0, 10)}...</span>
+                                        <span className="font-medium text-neutral-900 dark:text-white">{payment._id}</span>
                                     </td>
                                     <td className="px-4 py-3">
                                         <div className="flex flex-col">

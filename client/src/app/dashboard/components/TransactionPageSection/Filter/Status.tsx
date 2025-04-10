@@ -25,7 +25,7 @@ export default function Status({ selectedStatus, onStatusChange }: StatusProps) 
 
   return (
     <div>
-      <h4 className="text-gray-500  dark:text-gray-300 font-medium relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
+      <h4 className="text-gray-500  dark:text-gray-300 font-medium relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-neutral-500 dark:after:bg-white/30 after:mt-1">
         Status
       </h4>
       <div className="pt-4 flex items-center gap-2">
@@ -34,7 +34,7 @@ export default function Status({ selectedStatus, onStatusChange }: StatusProps) 
             key={status}
             className={`font-medium border rounded-full px-4 py-2 flex items-center gap-2 cursor-pointer ${
               selectedStatus === status
-                ? "bg-secondary text-primary" // Highlight if selected
+                ? "bg-neutral-900 text-primary dark:bg-green-600/20" // Highlight if selected
                 : "text-mainheading dark:bg-background dark:text-white bg-white"
             }`}
             onClick={() => handleStatusButtonClick(status)}

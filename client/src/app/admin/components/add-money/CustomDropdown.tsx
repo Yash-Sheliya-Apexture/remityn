@@ -176,12 +176,14 @@ interface CustomDropdownProps {
     value: string | null;
     onChange: (value: string) => void;
     options: string[];
+    displayAllOption?: string; // Optional prop for custom "All" option text
 }
 
 // Custom Dropdown Component
-const CustomDropdown: React.FC<CustomDropdownProps> = ({ label, value, onChange, options }) => {
+const CustomDropdown: React.FC<CustomDropdownProps> = ({ label, value, onChange, options, displayAllOption }) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null); // Ref to the outer div
+    const allOptionText = displayAllOption || `All ${label}s`; // Default "All" option text
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -208,9 +210,9 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({ label, value, onChange,
                 <button
                     type="button"
                     onClick={toggleDropdown} // Use the toggleDropdown function
-                    className="flex items-center justify-between cursor-pointer autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-600 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white"
+                    className="flex items-center justify-between cursor-pointer autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 hover:shadow-darkcolor dark:hover:shadow-whitecolor focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white"
                 >
-                    <span>{value || `All ${label}s`}</span>
+                    <span>{value || allOptionText}</span>
                     <ChevronDown className="size-6 text-neutral-600 dark:text-white/80" />
                 </button>
                 <AnimatePresence>
@@ -219,7 +221,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({ label, value, onChange,
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 10 }}
-                            className="absolute z-0 mt-2 w-full rounded-xl shadow-lg bg-white dark:bg-background border overflow-hidden p-2"
+                            className="absolute z-20 mt-2 w-full rounded-xl shadow-lg bg-white dark:bg-background border overflow-hidden p-2"
                         >
                             {options.map((option) => (
                                 <motion.li
@@ -227,7 +229,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({ label, value, onChange,
                                     onClick={() => { onChange(option); setIsOpen(false); }}
                                     className="px-4 py-2 cursor-pointer rounded-full transition-colors font-medium duration-300 ease-in-out flex justify-between items-center hover:bg-lightgray dark:hover:bg-primarybox text-gray-500 dark:text-gray-300"
                                 >
-                                    {option === 'all' ? `All ${label}s` : option}
+                                    {option === 'all' ? allOptionText : option}
                                     {value === option && <GiCheckMark className="text-gray-500 dark:text-gray-300" size={20} />}
                                 </motion.li>
                             ))}
