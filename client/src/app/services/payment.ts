@@ -261,6 +261,7 @@ export interface InitiatePaymentPayload {
 
 // Response containing details of a specific payment
 export interface PaymentDetailsResponse {
+    account: any;
     type: string;
     accountId: any;
     _id: string; // Or ObjectId type

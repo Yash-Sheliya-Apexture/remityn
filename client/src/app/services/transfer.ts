@@ -50,64 +50,214 @@
 
 
 
+// // frontend/src/services/transfer.ts
+// import axios from 'axios';
+// import apiConfig from '../config/apiConfig'; // Adjust path
+
+// axios.defaults.baseURL = apiConfig.baseUrl;
+
+// // Define interfaces if needed (e.g., SendSummary, TransferDetails)
+
+// const calculateSendSummary = async (data: {
+//     sourceAccountId: string;
+//     recipientId: string;
+//     amount: number;
+//     isSendingAmount: boolean;
+// }, token: string | null): Promise<any> => { // Use specific type instead of any
+//     const response = await axios.post('/transfers/calculate-summary', data, {
+//         headers: { Authorization: `Bearer ${token}` },
+//     });
+//     return response.data;
+// };
+
+// const executeTransfer = async (transferData: any, token: string | null): Promise<any> => { // Use specific type
+//      const response = await axios.post('/transfers/execute', transferData, {
+//         headers: { Authorization: `Bearer ${token}` },
+//     });
+//     return response.data;
+// };
+
+//  const getTransferDetails = async (transferId: string, token: string | null): Promise<any> => { // Use specific type
+//      const response = await axios.get(`/transfers/${transferId}`, {
+//         headers: { Authorization: `Bearer ${token}` },
+//     });
+//     return response.data;
+// };
+
+//  const getUserTransfers = async (token: string | null): Promise<any[]> => { // Use specific type array
+//      const response = await axios.get('/transfers', {
+//         headers: { Authorization: `Bearer ${token}` },
+//         // Ensure token is passed in headers for protected routes
+//         ...(token ? { headers: { Authorization: `Bearer ${token}` } } : {}),
+//     });
+//     return response.data;
+// };
+// const cancelTransfer = async (transferId: string, token: string | null): Promise<any> => { // Return type might be void or specific confirmation
+//     if (!transferId || !token) {
+//         throw new Error("Transfer ID and authentication token are required.");
+//     }
+//     try {
+//         // --- Adjust HTTP method (POST or DELETE) and endpoint as per your backend ---
+//         // Example using POST:
+//         const response = await axios.post(`/transfers/${transferId}/cancel`, {}, { // Empty body if no data needed
+//             headers: { Authorization: `Bearer ${token}` },
+//         });
+
+//         console.log(`Cancellation response for ${transferId}:`, response.data);
+//         return response.data; // Return backend confirmation if any
+//     } catch (error: any) {
+//         console.error(`API Error cancelling transfer ${transferId}:`, error.response?.data || error.message);
+//         throw new Error(error.response?.data?.message || 'Failed to cancel transfer. Please try again.');
+//     }
+// };
+
+// export default {
+//     calculateSendSummary,
+//     executeTransfer,
+//     getTransferDetails,
+//     getUserTransfers,
+//     cancelTransfer,
+// };
+
 // frontend/src/services/transfer.ts
 import axios from 'axios';
 import apiConfig from '../config/apiConfig'; // Adjust path
+import { Currency } from '@/types/transaction'; // Import Currency type
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
-// Define interfaces if needed (e.g., SendSummary, TransferDetails)
+// --- Define Currency Object Structure (Matches Transaction type) ---
+// You can reuse the Currency type from transaction.ts if it matches
+interface CurrencyObject {
+    _id: string;
+    code: string;
+    // Add other fields if returned by the API (currencyName, flagImage, etc.)
+}
+
+// --- Define Recipient Structure (Example) ---
+interface RecipientDetails {
+    _id: string;
+    accountHolderName: string;
+    // Add other recipient fields if needed (email, account number etc.)
+}
+
+// --- Define Source Account Structure (Example) ---
+interface SourceAccountDetails {
+    _id: string;
+    // Add other account fields if needed (account number, type etc.)
+}
+
+// --- Define the structure for a single transfer details response ---
+export interface TransferDetailsResponse {
+    _id: string;
+    status: string; // API returns string, will be asserted later
+    sendAmount: number;
+    receiveAmount?: number; // Optional?
+    sendCurrency: CurrencyObject; // Expecting full object from API
+    receiveCurrency?: CurrencyObject; // Optional? Expecting full object
+    recipient: RecipientDetails | string; // Can be populated object or just ID string
+    sourceAccount: SourceAccountDetails | string; // Can be populated object or just ID string
+    createdAt: string;
+    updatedAt: string;
+    // Add any other relevant fields returned by the API
+    type?: string; // Maybe the API includes a type?
+    exchangeRate?: number;
+    fee?: number;
+}
+
+// --- Define the structure for Calculate Summary Response (Example) ---
+export interface SendSummaryResponse {
+    sendAmount: number;
+    receiveAmount: number;
+    sendCurrencyCode: string;
+    receiveCurrencyCode: string;
+    fee: number;
+    rate: number;
+    estimatedDelivery?: string; // Optional
+    // Add other relevant summary fields
+}
+
+// --- Define the structure for Execute Transfer Request (Example) ---
+export interface ExecuteTransferData {
+    sourceAccountId: string;
+    recipientId: string;
+    sendAmount?: number; // Send either sendAmount or receiveAmount
+    receiveAmount?: number;
+    isSendingAmount: boolean; // To clarify which amount is fixed
+    // You might need quoteId or summary details here depending on backend
+    reference?: string; // Optional
+}
+
+// --- Define the structure for Execute Transfer Response (Example) ---
+export interface ExecuteTransferResponse {
+    transferId: string;
+    status: string; // e.g., "pending", "processing"
+    message: string;
+    // Include details of the created transfer if returned
+    transfer?: TransferDetailsResponse; // Optional
+}
+
+// --- Define the structure for Cancel Transfer Response (Example) ---
+export interface CancelTransferResponse {
+    message: string;
+    status?: string; // Optional: new status if returned
+}
+
+
+// --- Service Functions with Typing ---
 
 const calculateSendSummary = async (data: {
     sourceAccountId: string;
     recipientId: string;
     amount: number;
     isSendingAmount: boolean;
-}, token: string | null): Promise<any> => { // Use specific type instead of any
+}, token: string | null): Promise<SendSummaryResponse> => { // Use specific type
     const response = await axios.post('/transfers/calculate-summary', data, {
         headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
 };
 
-const executeTransfer = async (transferData: any, token: string | null): Promise<any> => { // Use specific type
+const executeTransfer = async (transferData: ExecuteTransferData, token: string | null): Promise<ExecuteTransferResponse> => { // Use specific type
      const response = await axios.post('/transfers/execute', transferData, {
         headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
 };
 
- const getTransferDetails = async (transferId: string, token: string | null): Promise<any> => { // Use specific type
+ const getTransferDetails = async (transferId: string, token: string | null): Promise<TransferDetailsResponse> => { // Use specific type
      const response = await axios.get(`/transfers/${transferId}`, {
         headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
 };
 
- const getUserTransfers = async (token: string | null): Promise<any[]> => { // Use specific type array
+ // The list endpoint likely returns an array of transfer details
+ const getUserTransfers = async (token: string | null): Promise<TransferDetailsResponse[]> => { // Use specific type array
      const response = await axios.get('/transfers', {
-        headers: { Authorization: `Bearer ${token}` },
-        // Ensure token is passed in headers for protected routes
-        ...(token ? { headers: { Authorization: `Bearer ${token}` } } : {}),
+        // Combine headers correctly
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
+    // Assuming the API returns an array directly in the data property
+    // If it's nested like { transfers: [...] }, adjust accordingly: return response.data.transfers;
     return response.data;
 };
-const cancelTransfer = async (transferId: string, token: string | null): Promise<any> => { // Return type might be void or specific confirmation
+
+const cancelTransfer = async (transferId: string, token: string | null): Promise<CancelTransferResponse> => { // Use specific type
     if (!transferId || !token) {
         throw new Error("Transfer ID and authentication token are required.");
     }
     try {
-        // --- Adjust HTTP method (POST or DELETE) and endpoint as per your backend ---
-        // Example using POST:
-        const response = await axios.post(`/transfers/${transferId}/cancel`, {}, { // Empty body if no data needed
+        const response = await axios.post(`/transfers/${transferId}/cancel`, {}, {
             headers: { Authorization: `Bearer ${token}` },
         });
-
         console.log(`Cancellation response for ${transferId}:`, response.data);
-        return response.data; // Return backend confirmation if any
+        return response.data;
     } catch (error: any) {
         console.error(`API Error cancelling transfer ${transferId}:`, error.response?.data || error.message);
-        throw new Error(error.response?.data?.message || 'Failed to cancel transfer. Please try again.');
+        // Rethrow a more specific error if possible
+        const message = error.response?.data?.message || 'Failed to cancel transfer. Please try again.';
+        throw new Error(message);
     }
 };
 
@@ -118,8 +268,6 @@ export default {
     getUserTransfers,
     cancelTransfer,
 };
-
-
 
 
 // // frontend/src/services/transfer.ts
