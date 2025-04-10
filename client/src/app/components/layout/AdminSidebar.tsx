@@ -2167,14 +2167,327 @@
 
 // export default AdminSidebar;
 
+// // frontend/src/app/components/layout/AdminSidebar.tsx
+// "use client";
+
+// import Link from "next/link";
+// import { usePathname } from "next/navigation";
+// import { useAuth } from "../../contexts/AuthContext";
+// import { useState, useEffect } from "react";
+// import Image from "next/image";
+// import {
+//   FaChartPie,
+//   FaCoins,
+//   FaUsers,
+//   FaMoneyBillWave,
+//   FaChevronRight,
+//   FaTimes,
+// } from "react-icons/fa";
+// import { GrLogout } from "react-icons/gr";
+
+// import { IoMdAddCircleOutline } from "react-icons/io";
+// import ThemeToggle from "../../contexts/ThemeToggle"; // Import ThemeToggle
+
+// interface AdminSidebarProps {
+//   isSidebarOpen: boolean;
+//   toggleSidebar: () => void;
+// }
+
+// const AdminSidebar: React.FC<AdminSidebarProps> = ({
+//   isSidebarOpen,
+//   toggleSidebar,
+// }) => {
+//   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+//   const [dashboardDropdownOpen, setDashboardDropdownOpen] =
+//     useState<boolean>(false); // State for Dashboard dropdown
+//   const { user, logout } = useAuth();
+//   const pathname = usePathname();
+
+//   useEffect(() => {
+//     // Update dropdown state based on current path
+//     if (pathname?.startsWith("/admin/currencies")) {
+//       setActiveDropdown("currencies");
+//     } else if (pathname?.startsWith("/admin/transactions")) {
+//       setActiveDropdown("transactions");
+//     } else if (pathname?.startsWith("/admin/dashboard")) {
+//       setDashboardDropdownOpen(true); // Open dashboard dropdown if on a dashboard subpage
+//     }
+//   }, [pathname]);
+
+//   const handleLogout = async () => {
+//     await logout();
+//     window.location.href = "/auth/login";
+//   };
+
+//   const toggleDropdown = (dropdown: string) => {
+//     setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
+//     if (dropdown === "dashboard") {
+//       setDashboardDropdownOpen(!dashboardDropdownOpen);
+//     }
+//   };
+
+//   const isActive = (path: string): boolean => {
+//     return pathname === path;
+//   };
+
+//   const isDashboardActive = (): boolean => {
+//     return isActive("/admin"); // Modified to check for exact match of /admin
+//   };
+
+//   const isDashboardDropdownActive = (): boolean => {
+//     return pathname?.startsWith("/admin/dashboard") || false; // Keep this for dropdown active state
+//   };
+
+//   return (
+//     <>
+//       {/* Mobile Overlay */}
+//       {isSidebarOpen && (
+//         <div
+//           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+//           onClick={toggleSidebar}
+//         />
+//       )}
+
+//       {/* Sidebar */}
+//       <aside
+//         className={`fixed lg:relative top-0 left-0 z-50 h-full border-r transition-all duration-300 ease-in-out ${
+//           isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+//         } lg:translate-x-0 w-64 flex flex-col`} // Modified classes for left sidebar
+//       >
+//         {/* Mobile Close Button */}
+//         <button
+//           className="absolute top-4 right-4 lg:hidden text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200" // Modified right-4
+//           onClick={toggleSidebar}
+//         >
+//           <FaTimes className="size-5" />
+//         </button>
+
+//         {/* Logo Section */}
+//         <div className="p-3 border-b">
+//           <div className="h-14 flex justify-center items-center">
+//             <Image
+//               src="/assets/images/wise-logo.svg"
+//               height={100}
+//               width={100}
+//               alt="Wise Admin Logo"
+//               className="transition-opacity"
+//             />
+//           </div>
+//         </div>
+
+//         {/* User Profile Summary */}
+//         {user && (
+//           <div className="flex items-center gap-3 p-3 border-b">
+//             <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center relative">
+//               <span className="text-neutral-900 font-semibold uppercase">
+//                 {user.email?.charAt(0) || "A"}
+//               </span>
+//             </div>
+//             <div className="overflow-hidden space-y-1 w-[calc(100%-60px)]">
+//               <p className="font-semibold text-neutral-900 dark:text-white truncate">
+//                 {user.name || "Admin User"}
+//               </p>
+//               <p className="text-xs text-gray-500 dark:text-gray-300 truncate">
+//                 {user.email || "admin@example.com"}
+//               </p>
+//             </div>
+//           </div>
+//         )}
+
+//         {/* Navigation */}
+//         <nav className="flex-1 py-4 overflow-y-auto scrollbar-hide">
+//           <div className="px-4 mb-4">
+//             <span className="text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-white px-4">
+//               Main
+//             </span>
+//           </div>
+
+//           <ul className="space-y-2.5 px-3">
+//             {/* Dashboard */}
+//             <li>
+//               <Link
+//                 href="/admin"
+//                 onClick={() => toggleDropdown("dashboard")}
+//                 className={`flex items-center justify-between w-full cursor-pointer px-4 py-3 rounded-4xl transition-all duration-200
+//     ${
+//       isDashboardActive() || isDashboardDropdownActive()
+//         ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
+//         : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
+//     }`}
+//               >
+//                 <div className="flex items-center gap-3">
+//                   <FaChartPie className="size-5" />
+//                   <span className="font-medium">Dashboard</span>
+//                 </div>
+//                 <FaChevronRight
+//                   className={`size-3.5 transition-transform duration-200 ${
+//                     dashboardDropdownOpen ? "rotate-90" : ""
+//                   }`}
+//                 />
+//               </Link>
+
+//               {dashboardDropdownOpen && (
+//                 <ul className="mt-2 ml-6 space-y-1 border-l-2 pl-4">
+//                   {/* Demo 1 */}
+//                   <li>
+//                     <Link
+//                       href="/admin/dashboard/demo1"
+//                       className={`block px-4 py-2.5 rounded-md transition-all duration-200
+//                       ${
+//                         isActive("/admin/dashboard/demo1")
+//                           ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
+//                           : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
+//                       }`}
+//                     >
+//                       Demo 1
+//                     </Link>
+//                   </li>
+//                   {/* Demo 2 */}
+//                   <li>
+//                     <Link
+//                       href="/admin/dashboard/demo2"
+//                       className={`block px-4 py-2.5 rounded-md transition-all duration-200
+//                       ${
+//                         isActive("/admin/dashboard/demo2")
+//                           ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
+//                           : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
+//                       }`}
+//                     >
+//                       Demo 2
+//                     </Link>
+//                   </li>
+//                   {/* Demo 3 */}
+//                   <li>
+//                     <Link
+//                       href="/admin/dashboard/demo3"
+//                       className={`block px-4 py-2.5 rounded-md transition-all duration-200
+//                       ${
+//                         isActive("/admin/dashboard/demo3")
+//                           ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
+//                           : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
+//                       }`}
+//                     >
+//                       Demo 3
+//                     </Link>
+//                   </li>
+//                 </ul>
+//               )}
+//             </li>
+
+//             {/* Currencies */}
+//             <li>
+//               <Link
+//                 href="/admin/currencies"
+//                 className={`flex items-center gap-3 px-4 py-3 rounded-4xl transition-all duration-200
+//                 ${
+//                   isActive("/admin/currencies")
+//                     ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
+//                     : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
+//                 }`}
+//               >
+//                 <FaCoins className="size-5" />
+//                 <span className="font-medium">Currencies</span>
+//               </Link>
+//             </li>
+
+//             {/* Users */}
+//             <li>
+//               <Link
+//                 href="/admin/users"
+//                 className={`flex items-center gap-3 px-4 py-3 rounded-4xl transition-all duration-200
+//                 ${
+//                   isActive("/admin/users")
+//                     ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
+//                     : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
+//                 }`}
+//               >
+//                 <FaUsers className="size-5" />
+//                 <span className="font-medium">Users</span>
+//               </Link>
+//             </li>
+
+//             {/* Add-Money */}
+//             <li>
+//               <Link
+//                 href="/admin/add-money"
+//                 className={`flex items-center justify-between w-full cursor-pointer px-4 py-3 rounded-4xl transition-all duration-200
+//                 ${
+//                   isActive("/admin/add-money")
+//                     ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
+//                     : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
+//                 }`}
+//               >
+//                 <div className="flex items-center gap-3">
+//                   <IoMdAddCircleOutline className="size-5" />
+//                   <span className="font-medium">Add-Money</span>
+//                 </div>
+//               </Link>
+//             </li>
+
+//             {/* Send-Money */}
+//             <li>
+//               <Link
+//                 href="/admin/transfer"
+//                 className={`flex items-center justify-between w-full cursor-pointer px-4 py-3 rounded-4xl transition-all duration-200
+//                 ${
+//                   isActive("/admin/transfer")
+//                     ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
+//                     : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
+//                 }`}
+//               >
+//                 <div className="flex items-center gap-3">
+//                   <FaMoneyBillWave className="size-5" />
+//                   <span className="font-medium">Send-Money</span>
+//                 </div>
+//               </Link>
+//             </li>
+//           </ul>
+//         </nav>
+
+//         {/* Footer Actions */}
+//         <div className="p-4 border-t space-y-2">
+//           {/* Theme Toggle for Admin Sidebar */}
+//           <div className="mb-2 flex justify-center">
+//             <ThemeToggle location="admin" className="inline-block" />
+//           </div>
+//           {/* Logout Button */}
+//           {user && (
+//             <button
+//               onClick={handleLogout}
+//               className="flex items-center gap-3 w-full px-4 py-3 rounded-4xl text-red-600 bg-red-600/20 hover:bg-red-500/30 transition-all duration-200"
+//             >
+//               <GrLogout className="size-5" />
+//               <span className="font-medium">Logout</span>
+//             </button>
+//           )}
+//         </div>
+//       </aside>
+//     </>
+//   );
+// };
+
+// export default AdminSidebar;
+
+
+
+
+
+
+
+
+
+
+
 // frontend/src/app/components/layout/AdminSidebar.tsx
 "use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "../../contexts/AuthContext";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react"; // Import React and hooks
 import Image from "next/image";
+import { IconType } from "react-icons";
+import { motion } from "framer-motion"; // Import motion
 import {
   FaChartPie,
   FaCoins,
@@ -2184,12 +2497,44 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import { GrLogout } from "react-icons/gr";
-
 import { IoMdAddCircleOutline } from "react-icons/io";
-import ThemeToggle from "../../contexts/ThemeToggle"; // Import ThemeToggle
+import ThemeToggle from "../../contexts/ThemeToggle";
+
+// --- Reusable Nav Item Component (Keep as is) ---
+interface SidebarNavItemProps {
+  href: string;
+  icon: IconType;
+  label: string;
+  isActive: boolean;
+  onClick?: () => void; // Add onClick prop for mobile close
+}
+
+const SidebarNavItem: React.FC<SidebarNavItemProps> = ({ href, icon: Icon, label, isActive, onClick }) => {
+  return (
+    <Link
+      href={href}
+      onClick={onClick} // Call onClick when link is clicked
+      className={`flex items-center gap-3 py-2 pl-2 rounded-4xl transition-all duration-200 group ${
+        isActive
+          ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
+          : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
+      }`}
+    >
+      <div className={`p-2 rounded-full transition-colors duration-200 ${
+          isActive ? "dark:bg-primary bg-neutral-900" : ""
+      }`}>
+        <Icon className={`size-5 transition-colors duration-200 ${
+            isActive ? "dark:text-neutral-900 text-primary" : ""
+        }`} />
+      </div>
+      <span className="font-medium">{label}</span>
+    </Link>
+  );
+};
+// --- End Reusable Nav Item Component ---
 
 interface AdminSidebarProps {
-  isSidebarOpen: boolean;
+  isSidebarOpen: boolean; // Renamed from sidebarOpen for clarity if preferred, keep AdminSidebar prop name consistent
   toggleSidebar: () => void;
 }
 
@@ -2197,271 +2542,259 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
   isSidebarOpen,
   toggleSidebar,
 }) => {
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const [dashboardDropdownOpen, setDashboardDropdownOpen] =
-    useState<boolean>(false); // State for Dashboard dropdown
-  const { user, logout } = useAuth();
   const pathname = usePathname();
+  const sidebarRef = useRef<HTMLDivElement>(null); // Use HTMLDivElement or HTMLAsideElement
+  const [isMobileView, setIsMobileView] = useState<boolean | null>(null);
+  const { user, logout } = useAuth();
+  const [dashboardDropdownOpen, setDashboardDropdownOpen] = useState<boolean>(false);
 
+  // --- Effect for Mobile View Detection ---
   useEffect(() => {
-    // Update dropdown state based on current path
-    if (pathname?.startsWith("/admin/currencies")) {
-      setActiveDropdown("currencies");
-    } else if (pathname?.startsWith("/admin/transactions")) {
-      setActiveDropdown("transactions");
-    } else if (pathname?.startsWith("/admin/dashboard")) {
-      setDashboardDropdownOpen(true); // Open dashboard dropdown if on a dashboard subpage
-    }
-  }, [pathname]);
+    const checkMobileView = () => setIsMobileView(window.innerWidth < 1024);
+    checkMobileView(); // Initial check
+    window.addEventListener("resize", checkMobileView);
+    return () => window.removeEventListener("resize", checkMobileView);
+  }, []);
 
+  // --- Effect for Click Outside ---
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target as Node) &&
+        isSidebarOpen && // Use the prop directly
+        isMobileView === true // Only on mobile
+      ) {
+        toggleSidebar(); // Call the passed toggle function
+      }
+    };
+
+    // Add listener only when sidebar is open on mobile
+    if (isSidebarOpen && isMobileView === true) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    // Cleanup
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isSidebarOpen, isMobileView, toggleSidebar]); // Dependencies
+
+  // --- Active State Logic (Keep as is) ---
+  const isDashboardRoute = pathname === "/admin";
+  const isDashboardSubRoute = pathname?.startsWith("/admin/dashboard");
+  const isCurrenciesRoute = pathname === "/admin/currencies";
+  const isUsersRoute = pathname === "/admin/users";
+  const isAddMoneyRoute = pathname === "/admin/add-money";
+  const isTransferRoute = pathname === "/admin/transfer";
+  const isDashboardSectionActive = isDashboardRoute || isDashboardSubRoute;
+
+  // --- Effect for Dropdown (Keep as is, but maybe close on mobile nav click?) ---
+  useEffect(() => {
+    if (isDashboardSubRoute) {
+      setDashboardDropdownOpen(true);
+    } else if (!isDashboardRoute && !isDashboardSubRoute) {
+      setDashboardDropdownOpen(false);
+    }
+  }, [pathname, isDashboardRoute, isDashboardSubRoute]);
+
+  // --- Handlers ---
   const handleLogout = async () => {
     await logout();
-    window.location.href = "/auth/login";
-  };
-
-  const toggleDropdown = (dropdown: string) => {
-    setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
-    if (dropdown === "dashboard") {
-      setDashboardDropdownOpen(!dashboardDropdownOpen);
+    if (isSidebarOpen && isMobileView) { // Close sidebar on mobile after action
+        toggleSidebar();
     }
+    window.location.href = "/auth/login"; // Or use Next router if preferred
   };
 
-  const isActive = (path: string): boolean => {
-    return pathname === path;
+  const toggleDashboardSubmenu = () => {
+    setDashboardDropdownOpen((prevOpen) => !prevOpen);
   };
 
-  const isDashboardActive = (): boolean => {
-    return isActive("/admin"); // Modified to check for exact match of /admin
+  // Helper to close sidebar on mobile when a nav item is clicked
+  const handleMobileNavClick = () => {
+    if (isSidebarOpen && isMobileView) {
+      toggleSidebar();
+    }
+    // Optional: Close dropdown when navigating away on mobile?
+    // setDashboardDropdownOpen(false);
   };
 
-  const isDashboardDropdownActive = (): boolean => {
-    return pathname?.startsWith("/admin/dashboard") || false; // Keep this for dropdown active state
-  };
+   const handleDashboardLinkClick = () => {
+     if (isSidebarOpen && isMobileView) {
+       toggleSidebar();
+     }
+     // Don't toggle the submenu here, just navigate
+   };
+
+  const isSubmenuActive = (path: string): boolean => pathname === path;
 
   return (
     <>
-      {/* Mobile Overlay */}
-      {isSidebarOpen && (
+      {/* Backdrop for mobile sidebar */}
+      {isSidebarOpen && isMobileView === true && ( // Condition based on state and prop
         <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-          onClick={toggleSidebar}
+          onClick={toggleSidebar} // Allow closing by clicking backdrop
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden" // Use z-index lower than sidebar
+          aria-hidden="true"
         />
       )}
 
-      {/* Sidebar */}
-      <aside
-        className={`fixed lg:relative top-0 left-0 z-50 h-full border-r transition-all duration-300 ease-in-out ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-        } lg:translate-x-0 w-64 flex flex-col`} // Modified classes for left sidebar
-      >
-        {/* Mobile Close Button */}
-        <button
-          className="absolute top-4 right-4 lg:hidden text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200" // Modified right-4
-          onClick={toggleSidebar}
+      {/* Conditionally render Sidebar based on screen size and open state */}
+      {/* Logic: Render if isMobileView isn't determined yet (null), OR if it's desktop (false), OR if it's mobile AND open (true && true) */}
+      {isMobileView === null || isMobileView === false || (isSidebarOpen && isMobileView === true) ? (
+        <motion.aside
+          ref={sidebarRef} // Attach ref for click outside detection
+          className={`w-64 fixed bg-white dark:bg-neutral-900 h-full inset-y-0 left-0 lg:relative lg:z-auto z-50 border-r dark:border-neutral-700 flex flex-col`} // Base styles + z-index
+          // Framer Motion props based on Sidebar component
+          initial={isMobileView ? { x: "-100%" } : {}} // Start off-screen on mobile
+          animate={isMobileView ? { x: isSidebarOpen ? 0 : "-100%" } : {}} // Animate based on open state on mobile, always visible on desktop
+          exit={isMobileView ? { x: "-100%" } : {}} // Animate out on mobile
+          transition={isMobileView ? { duration: 0.3, ease: "easeInOut" } : { duration: 0 }} // Only transition on mobile
         >
-          <FaTimes className="size-5" />
-        </button>
-
-        {/* Logo Section */}
-        <div className="p-3 border-b">
-          <div className="h-14 flex justify-center items-center">
-            <Image
-              src="/assets/images/wise-logo.svg"
-              height={100}
-              width={100}
-              alt="Wise Admin Logo"
-              className="transition-opacity"
-            />
-          </div>
-        </div>
-
-        {/* User Profile Summary */}
-        {user && (
-          <div className="flex items-center gap-3 p-3 border-b">
-            <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center relative">
-              <span className="text-neutral-900 font-semibold uppercase">
-                {user.email?.charAt(0) || "A"}
-              </span>
-            </div>
-            <div className="overflow-hidden space-y-1 w-[calc(100%-60px)]">
-              <p className="font-semibold text-neutral-900 dark:text-white truncate">
-                {user.name || "Admin User"}
-              </p>
-              <p className="text-xs text-gray-500 dark:text-gray-300 truncate">
-                {user.email || "admin@example.com"}
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Navigation */}
-        <nav className="flex-1 py-4 overflow-y-auto scrollbar-hide">
-          <div className="px-4 mb-4">
-            <span className="text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-white px-4">
-              Main
-            </span>
-          </div>
-
-          <ul className="space-y-2.5 px-3">
-            {/* Dashboard */}
-            <li>
-              <Link
-                href="/admin"
-                onClick={() => toggleDropdown("dashboard")}
-                className={`flex items-center justify-between w-full cursor-pointer px-4 py-3 rounded-4xl transition-all duration-200
-    ${
-      isDashboardActive() || isDashboardDropdownActive()
-        ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
-        : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
-    }`}
-              >
-                <div className="flex items-center gap-3">
-                  <FaChartPie className="size-5" />
-                  <span className="font-medium">Dashboard</span>
-                </div>
-                <FaChevronRight
-                  className={`size-3.5 transition-transform duration-200 ${
-                    dashboardDropdownOpen ? "rotate-90" : ""
-                  }`}
-                />
-              </Link>
-
-              {dashboardDropdownOpen && (
-                <ul className="mt-2 ml-6 space-y-1 border-l-2 pl-4">
-                  {/* Demo 1 */}
-                  <li>
-                    <Link
-                      href="/admin/dashboard/demo1"
-                      className={`block px-4 py-2.5 rounded-md transition-all duration-200
-                      ${
-                        isActive("/admin/dashboard/demo1")
-                          ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
-                          : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
-                      }`}
-                    >
-                      Demo 1
-                    </Link>
-                  </li>
-                  {/* Demo 2 */}
-                  <li>
-                    <Link
-                      href="/admin/dashboard/demo2"
-                      className={`block px-4 py-2.5 rounded-md transition-all duration-200
-                      ${
-                        isActive("/admin/dashboard/demo2")
-                          ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
-                          : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
-                      }`}
-                    >
-                      Demo 2
-                    </Link>
-                  </li>
-                  {/* Demo 3 */}
-                  <li>
-                    <Link
-                      href="/admin/dashboard/demo3"
-                      className={`block px-4 py-2.5 rounded-md transition-all duration-200
-                      ${
-                        isActive("/admin/dashboard/demo3")
-                          ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
-                          : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
-                      }`}
-                    >
-                      Demo 3
-                    </Link>
-                  </li>
-                </ul>
-              )}
-            </li>
-
-            {/* Currencies */}
-            <li>
-              <Link
-                href="/admin/currencies"
-                className={`flex items-center gap-3 px-4 py-3 rounded-4xl transition-all duration-200
-                ${
-                  isActive("/admin/currencies")
-                    ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
-                    : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
-                }`}
-              >
-                <FaCoins className="size-5" />
-                <span className="font-medium">Currencies</span>
-              </Link>
-            </li>
-
-            {/* Users */}
-            <li>
-              <Link
-                href="/admin/users"
-                className={`flex items-center gap-3 px-4 py-3 rounded-4xl transition-all duration-200
-                ${
-                  isActive("/admin/users")
-                    ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
-                    : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
-                }`}
-              >
-                <FaUsers className="size-5" />
-                <span className="font-medium">Users</span>
-              </Link>
-            </li>
-
-            {/* Add-Money */}
-            <li>
-              <Link
-                href="/admin/add-money"
-                className={`flex items-center justify-between w-full cursor-pointer px-4 py-3 rounded-4xl transition-all duration-200
-                ${
-                  isActive("/admin/add-money")
-                    ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
-                    : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <IoMdAddCircleOutline className="size-5" />
-                  <span className="font-medium">Add-Money</span>
-                </div>
-              </Link>
-            </li>
-
-            {/* Send-Money */}
-            <li>
-              <Link
-                href="/admin/transfer"
-                className={`flex items-center justify-between w-full cursor-pointer px-4 py-3 rounded-4xl transition-all duration-200
-                ${
-                  isActive("/admin/transfer")
-                    ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
-                    : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <FaMoneyBillWave className="size-5" />
-                  <span className="font-medium">Send-Money</span>
-                </div>
-              </Link>
-            </li>
-          </ul>
-        </nav>
-
-        {/* Footer Actions */}
-        <div className="p-4 border-t space-y-2">
-          {/* Theme Toggle for Admin Sidebar */}
-          <div className="mb-2 flex justify-center">
-            <ThemeToggle location="admin" className="inline-block" />
-          </div>
-          {/* Logout Button */}
-          {user && (
+          {/* Mobile Close Button - Render only on mobile */}
+          {isMobileView && (
             <button
-              onClick={handleLogout}
-              className="flex items-center gap-3 w-full px-4 py-3 rounded-4xl text-red-600 bg-red-600/20 hover:bg-red-500/30 transition-all duration-200"
+              className="absolute top-4 right-4 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 z-10" // z-10 to be above content
+              onClick={toggleSidebar}
+              aria-label="Close sidebar"
             >
-              <GrLogout className="size-5" />
-              <span className="font-medium">Logout</span>
+              <FaTimes className="size-5" />
             </button>
           )}
-        </div>
-      </aside>
+
+          {/* Logo Section (Keep as is) */}
+          <div className="p-3 border-b dark:border-neutral-700">
+            <div className="h-14 flex justify-center items-center">
+              <Image
+                src="/assets/images/wise-logo.svg"
+                height={100}
+                width={100}
+                alt="Wise Admin Logo"
+                className="h-auto w-auto max-h-10"
+                priority
+              />
+            </div>
+          </div>
+
+          {/* User Profile Summary (Keep as is) */}
+          {user && (
+            <div className="flex items-center gap-3 p-3 border-b dark:border-neutral-700">
+              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center relative flex-shrink-0">
+                <span className="text-neutral-900 font-semibold uppercase text-lg">
+                  {user.email?.charAt(0) || "A"}
+                </span>
+              </div>
+              <div className="overflow-hidden space-y-0.5">
+                <p className="font-semibold text-neutral-900 dark:text-white truncate text-sm">
+                  {user.name || "Admin User"}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                  {user.email || "admin@example.com"}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Navigation */}
+          {/* Add scrollbar styling */}
+          <nav className="flex-1 py-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600 dark:hover:scrollbar-thumb-gray-500">
+            <div className="px-4 mb-4">
+              <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 px-3">
+                Main
+              </span>
+            </div>
+
+            <ul className="space-y-1 px-3">
+              {/* Dashboard Section */}
+              <li>
+                <div
+                  className={`flex items-center justify-between w-full py-2 pl-2 rounded-4xl transition-all duration-200 group ${
+                    isDashboardSectionActive
+                      ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
+                      : "text-neutral-500 dark:text-gray-300"
+                  }`}
+                >
+                  <Link
+                    href="/admin"
+                    onClick={handleDashboardLinkClick} // Close sidebar on mobile click
+                    className={`flex items-center gap-3 flex-grow ${!isDashboardSectionActive ? "hover:text-neutral-900 dark:hover:text-primary" : ""}`}
+                  >
+                    <div className={`p-2 rounded-full transition-colors duration-200 ${ isDashboardSectionActive ? "dark:bg-primary bg-neutral-900" : "" }`}>
+                      <FaChartPie className={`size-5 transition-colors duration-200 ${ isDashboardSectionActive ? "dark:text-neutral-900 text-primary" : "" }`} />
+                    </div>
+                    <span className="font-medium">Dashboard</span>
+                  </Link>
+                  <button
+                    onClick={toggleDashboardSubmenu}
+                    className={`p-2 mr-1 rounded-full transition-colors duration-200 ${
+                      !isDashboardSectionActive ? "hover:bg-gray-500/10 dark:hover:bg-gray-700/30" : ""
+                    }`}
+                    aria-label="Toggle dashboard submenu"
+                    aria-expanded={dashboardDropdownOpen}
+                  >
+                    <FaChevronRight
+                      className={`size-3.5 transition-transform duration-200 ${ dashboardDropdownOpen ? "rotate-90" : "" } ${
+                          isDashboardSectionActive ? "" : "text-neutral-500 dark:text-gray-400"
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                {/* Sub-menu */}
+                {dashboardDropdownOpen && (
+                  <ul className="mt-1 ml-7 space-y-1 border-l-2 border-gray-200 dark:border-gray-700 pl-4 py-1">
+                    {[
+                      { href: "/admin/dashboard/demo1", label: "Demo 1" },
+                      { href: "/admin/dashboard/demo2", label: "Demo 2" },
+                      { href: "/admin/dashboard/demo3", label: "Demo 3" }
+                    ].map(item => (
+                      <li key={item.href}>
+                        <Link
+                          href={item.href}
+                          onClick={handleMobileNavClick} // Close sidebar on mobile click
+                          className={`block px-3 py-2 rounded-md text-sm transition-colors duration-200 ${
+                            isSubmenuActive(item.href)
+                              ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary font-medium"
+                              : "text-neutral-500 hover:text-neutral-900 dark:text-gray-400 dark:hover:text-primary hover:bg-gray-500/5 dark:hover:bg-gray-700/20"
+                          }`}
+                        >
+                          {item.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+
+              {/* Other Nav Items using SidebarNavItem */}
+              {/* Pass handleMobileNavClick to close sidebar on mobile */}
+              <li> <SidebarNavItem href="/admin/currencies" icon={FaCoins} label="Currencies" isActive={isCurrenciesRoute} onClick={handleMobileNavClick} /> </li>
+              <li> <SidebarNavItem href="/admin/users" icon={FaUsers} label="Users" isActive={isUsersRoute} onClick={handleMobileNavClick} /> </li>
+              <li> <SidebarNavItem href="/admin/add-money" icon={IoMdAddCircleOutline} label="Add-Money" isActive={isAddMoneyRoute} onClick={handleMobileNavClick} /> </li>
+              <li> <SidebarNavItem href="/admin/transfer" icon={FaMoneyBillWave} label="Send-Money" isActive={isTransferRoute} onClick={handleMobileNavClick} /> </li>
+            </ul>
+          </nav>
+
+          {/* Footer Actions (Keep as is, but inside motion.aside) */}
+          <div className="p-4 border-t dark:border-neutral-700 mt-auto space-y-3">
+            <div className="flex justify-center">
+              <ThemeToggle location="admin" className="inline-block" />
+            </div>
+            {user && (
+              <button
+                onClick={handleLogout} // handleLogout already closes sidebar on mobile
+                className="flex items-center justify-center gap-3 w-full px-4 py-2.5 rounded-lg text-red-600 dark:text-red-500 bg-red-500/10 hover:bg-red-500/20 dark:bg-red-500/15 dark:hover:bg-red-500/25 transition-colors duration-200"
+              >
+                <GrLogout className="size-5" aria-hidden="true"/>
+                <span className="font-medium text-sm">Logout</span>
+              </button>
+            )}
+          </div>
+        </motion.aside>
+      ) : null /* Render nothing if mobile and closed */}
     </>
   );
 };

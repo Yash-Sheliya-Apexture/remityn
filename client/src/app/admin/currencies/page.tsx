@@ -748,7 +748,7 @@ import {
   Save,
   Percent,
 } from "lucide-react";
-import { IoClose} from "react-icons/io5";
+import { IoClose } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
 // Removed IoMdAddCircle as it's unused
 import { IoMdAdd, IoMdCloseCircle } from "react-icons/io";
@@ -776,10 +776,9 @@ interface NewCurrencyData {
 
 // Define a type for Axios error responses if needed, or use AxiosError directly
 interface ApiErrorResponse {
-    message: string;
-    // Add other potential fields if your API returns them
+  message: string;
+  // Add other potential fields if your API returns them
 }
-
 
 const AdminCurrenciesPage: React.FC = () => {
   const [currencies, setCurrencies] = useState<Currency[]>([]);
@@ -868,31 +867,36 @@ const AdminCurrenciesPage: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCurrencies(response.data);
-    } catch (error: unknown) { // Use unknown for catch block
+    } catch (error: unknown) {
+      // Use unknown for catch block
       console.error("Error fetching currencies:", error);
-      if (axios.isAxiosError<ApiErrorResponse>(error)) { // Type guard for AxiosError
+      if (axios.isAxiosError<ApiErrorResponse>(error)) {
+        // Type guard for AxiosError
         if (error.response?.status === 403 || error.response?.status === 401) {
           router.push("/auth/login");
         } else {
-          toast.error(error.response?.data?.message || "Failed to load currencies");
+          toast.error(
+            error.response?.data?.message || "Failed to load currencies"
+          );
         }
-      } else if (error instanceof Error) { // Handle generic errors
-          toast.error(error.message);
-      } else { // Handle unknown errors
-          toast.error("An unexpected error occurred while fetching currencies.");
+      } else if (error instanceof Error) {
+        // Handle generic errors
+        toast.error(error.message);
+      } else {
+        // Handle unknown errors
+        toast.error("An unexpected error occurred while fetching currencies.");
       }
     } finally {
       setIsLoading(false);
     }
   }, [token, router]); // Add dependencies for useCallback
 
-
   useEffect(() => {
-    if (token) { // Only fetch if token exists
-        fetchCurrenciesList();
+    if (token) {
+      // Only fetch if token exists
+      fetchCurrenciesList();
     }
   }, [fetchCurrenciesList, token]); // Add fetchCurrenciesList to dependency array
-
 
   const handleCreateInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -945,14 +949,20 @@ const AdminCurrenciesPage: React.FC = () => {
       setIsCreateModalOpen(false);
       await fetchCurrenciesList();
       toast.success("Currency added successfully!");
-    } catch (error: unknown) { // Use unknown for catch block
-        if (axios.isAxiosError<ApiErrorResponse>(error)) { // Type guard
-            toast.error(error.response?.data?.message || "Failed to create currency");
-        } else if (error instanceof Error) {
-            toast.error(error.message);
-        } else {
-            toast.error("An unexpected error occurred while creating the currency.");
-        }
+    } catch (error: unknown) {
+      // Use unknown for catch block
+      if (axios.isAxiosError<ApiErrorResponse>(error)) {
+        // Type guard
+        toast.error(
+          error.response?.data?.message || "Failed to create currency"
+        );
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error(
+          "An unexpected error occurred while creating the currency."
+        );
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -1006,14 +1016,20 @@ const AdminCurrenciesPage: React.FC = () => {
       setEditingFields({ code: "", rateAdjustmentPercentage: "" });
       await fetchCurrenciesList();
       toast.success("Currency updated successfully!");
-    } catch (error: unknown) { // Use unknown for catch block
-        if (axios.isAxiosError<ApiErrorResponse>(error)) { // Type guard
-            toast.error(error.response?.data?.message || "Failed to update currency");
-        } else if (error instanceof Error) {
-            toast.error(error.message);
-        } else {
-            toast.error("An unexpected error occurred while updating the currency.");
-        }
+    } catch (error: unknown) {
+      // Use unknown for catch block
+      if (axios.isAxiosError<ApiErrorResponse>(error)) {
+        // Type guard
+        toast.error(
+          error.response?.data?.message || "Failed to update currency"
+        );
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error(
+          "An unexpected error occurred while updating the currency."
+        );
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -1037,14 +1053,20 @@ const AdminCurrenciesPage: React.FC = () => {
       setCurrencyToDeleteId(null);
       await fetchCurrenciesList();
       toast.success("Currency deleted successfully!");
-    } catch (error: unknown) { // Use unknown for catch block
-        if (axios.isAxiosError<ApiErrorResponse>(error)) { // Type guard
-            toast.error(error.response?.data?.message || "Failed to delete currency");
-        } else if (error instanceof Error) {
-            toast.error(error.message);
-        } else {
-            toast.error("An unexpected error occurred while deleting the currency.");
-        }
+    } catch (error: unknown) {
+      // Use unknown for catch block
+      if (axios.isAxiosError<ApiErrorResponse>(error)) {
+        // Type guard
+        toast.error(
+          error.response?.data?.message || "Failed to delete currency"
+        );
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error(
+          "An unexpected error occurred while deleting the currency."
+        );
+      }
       // Keep modal open on error to show message
     } finally {
       setIsSubmitting(false);
@@ -1079,19 +1101,19 @@ const AdminCurrenciesPage: React.FC = () => {
       {/* Action Bar */}
       <div className="flex sm:justify-between flex-row w-full items-center mb-6 gap-4">
         <div>
-        <button
-          onClick={() => {
-            setIsCreateModalOpen(true);
-          }} // Clear error on open
-          className="bg-primary text-neutral-900 flex hover:bg-primaryhover text-nowrap font-medium rounded-full text-center lg:px-6 p-2 lg:py-3 lg:h-12.5  items-center gap-1 cursor-pointer transition-all duration-75 ease-linear"
-        >
-          <IoMdAdd
-            className="size-8"
-            title={isMobile ? "Add Currency" : undefined} // Tooltip for mobile
-          />
-          {!isMobile && <span>Add Currency</span>}
-          {/* Conditionally render text */}
-        </button>
+          <button
+            onClick={() => {
+              setIsCreateModalOpen(true);
+            }} // Clear error on open
+            className="bg-primary text-neutral-900 flex hover:bg-primaryhover text-nowrap font-medium rounded-full text-center lg:px-6 p-2 lg:py-3 lg:h-12.5  items-center gap-1 cursor-pointer transition-all duration-75 ease-linear"
+          >
+            <IoMdAdd
+              className="size-8"
+              title={isMobile ? "Add Currency" : undefined} // Tooltip for mobile
+            />
+            {!isMobile && <span>Add Currency</span>}
+            {/* Conditionally render text */}
+          </button>
         </div>
 
         {/* Search Bar */}
@@ -1278,147 +1300,152 @@ const AdminCurrenciesPage: React.FC = () => {
       <AnimatePresence>
         {isCreateModalOpen && (
           <motion.div
-            className="fixed top-0 left-0 w-full h-full bg-black/50 dark:bg-white/30 z-50 flex sm:items-center items-end justify-center"
+            className="fixed top-0 left-0 w-full h-full bg-black/50 dark:bg-white/30 z-80 flex sm:items-center items-end justify-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsCreateModalOpen(false)}
           >
             <motion.div
-              className="bg-white dark:bg-background sm:rounded-2xl rounded-t-2xl w-full sm:max-w-xl relative"
+              className="bg-white dark:bg-background sm:rounded-3xl rounded-t-3xl sm:p-8 p-4 w-full sm:max-w-xl relative"
               onClick={(e) => e.stopPropagation()}
               variants={modalVariants}
               initial="initial"
               animate="animate"
               exit="exit"
             >
-              <button
-                className="absolute top-2 right-4 p-2 mt-1 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
-                onClick={() => setIsCreateModalOpen(false)}
-                aria-label="Close modal"
-              >
-                <IoClose className="size-8 text-neutral-900 dark:text-white" /> {/* Added dark mode text color */}
-              </button>
+              <div className="absolute sm:top-2 sm:right-2 top-1 right-1">
+                <button
+                  className="p-3 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
+                  onClick={() => setIsCreateModalOpen(false)}
+                  aria-label="Close modal"
+                >
+                  <IoClose
+                    size={28}
+                    className="text-neutral-900 dark:text-white"
+                  />{" "}
+                  {/* Added dark mode text color */}
+                </button>
+              </div>
 
-              <div className="lg:p-6 p-4">
-                {/* Modal Header */}
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="lg:text-xl font-medium text-neutral-900 dark:text-white">
-                    Add New Currency
-                  </h2>
-                </div>
+              {/* Modal Header */}
+              <div className="flex justify-between items-center my-6">
+                <h2 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
+                  Add New Currency
+                </h2>
+              </div>
 
-                {/* Modal Form */}
-                <div className="space-y-5">
-                  {/* Code */}
-                  <div>
-                    <label
-                      htmlFor="create-code"
-                      className="block text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
-                    >
-                      Currency Code <span className="text-red-600">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="create-code"
-                      name="code"
-                      value={newCurrencyData.code}
-                      onChange={handleCreateInputChange}
-                      maxLength={3}
-                      placeholder="e.g., USD"
-                      className="w-full rounded-lg border dark:text-white dark:bg-gray-800 dark:border-gray-600 px-4 py-3 h-12.5 hover:shadow-darkcolor dark:hover:shadow-whitecolor focus:outline-none transition-shadow ease-in-out duration-300" // Added dark mode styles
-                    />
-                    <p className="mt-2 text-xs text-gray-500 dark:text-gray-300">
-                      3-letter uppercase code.
-                    </p>
-                  </div>
-                  {/* Name */}
-                  <div>
-                    <label
-                      htmlFor="create-currencyName"
-                      className="block text-sm font-medium text-gray-500 dark:text-gray-300 mb-2"
-                    >
-                      Currency Name <span className="text-red-600">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="create-currencyName"
-                      name="currencyName"
-                      value={newCurrencyData.currencyName}
-                      onChange={handleCreateInputChange}
-                      placeholder="e.g., US Dollar"
-                      className="w-full rounded-lg border dark:text-white dark:bg-gray-800 dark:border-gray-600 px-4 py-3 h-12.5 hover:shadow-darkcolor dark:hover:shadow-whitecolor focus:outline-none transition-shadow ease-in-out duration-300" // Added dark mode styles
-                    />
-                  </div>
-                  {/* Flag Image Path */}
-                  <div>
-                    <label
-                      htmlFor="create-flagImage"
-                      className="block text-sm font-medium text-gray-500 dark:text-gray-300 mb-2"
-                    >
-                      Flag Image Path
-                    </label>
-                    <input
-                      type="text"
-                      id="create-flagImage"
-                      name="flagImage"
-                      value={newCurrencyData.flagImage}
-                      onChange={handleCreateInputChange}
-                      placeholder="/assets/icon/flags/usd.png"
-                      className="w-full rounded-lg border dark:text-white dark:bg-gray-800 dark:border-gray-600 px-4 py-3 h-12.5 hover:shadow-darkcolor dark:hover:shadow-whitecolor focus:outline-none transition-shadow ease-in-out duration-300" // Added dark mode styles
-                    />
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-300">
-                      Relative path to the image.
-                    </p>
-                  </div>
-                  {/* Rate Adjustment Percentage - UPDATED */}
-                  <div>
-                    <label
-                      htmlFor="create-rateAdjustmentPercentage"
-                      className="text-sm font-medium text-gray-500 dark:text-gray-300 mb-2 flex items-center gap-1"
-                    >
-                      <Percent size={14} className="dark:text-gray-300" /> Rate
-                      Adjustment
-                    </label>
-                    <input
-                      type="number" // Ensure type is number for step validation
-                      id="create-rateAdjustmentPercentage"
-                      name="rateAdjustmentPercentage" // Correct name
-                      value={newCurrencyData.rateAdjustmentPercentage}
-                      onChange={handleCreateInputChange}
-                      step="any"
-                      placeholder="e.g., 0.5 (for +0.5%) or -0.1 (for -0.1%)"
-                      className="w-full rounded-lg border dark:text-white dark:bg-gray-800 dark:border-gray-600 px-4 py-3 h-12.5 hover:shadow-darkcolor dark:hover:shadow-whitecolor focus:outline-none transition-shadow ease-in-out duration-300" // Added dark mode styles
-                    />
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-300">
-                      Enter percentage adjustment. Default is 0%.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Modal Actions */}
-                <div className="flex flex-col gap-2.5 mt-8">
-                  <button
-                    onClick={handleCreateCurrency}
-                    disabled={
-                      isSubmitting ||
-                      !newCurrencyData.code ||
-                      !newCurrencyData.currencyName
-                    }
-                    className="bg-primary flex capitalize justify-center items-center gap-2 text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styles
+              {/* Modal Form */}
+              <div className="space-y-5">
+                {/* Code */}
+                <div>
+                  <label
+                    htmlFor="create-code"
+                    className="block font-medium text-gray-500 dark:text-gray-300 mb-2"
                   >
-                    {isSubmitting ? (
-                         <Loader2 className="animate-spin mr-2" size={20}/> // Added loader
-                    ) : null}
-                    {isSubmitting ? "Adding..." : "Add Currency"}
-                  </button>
-                  <button
-                    onClick={() => setIsCreateModalOpen(false)}
-                    className="bg-neutral-900 capitalize flex justify-center items-center gap-2 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear"
-                  >
-                    Cancel
-                  </button>
+                    Currency Code <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="create-code"
+                    name="code"
+                    value={newCurrencyData.code}
+                    onChange={handleCreateInputChange}
+                    maxLength={3}
+                    placeholder="e.g., USD"
+                    className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium" // Added dark mode styles
+                  />
+                  <p className="mt-2 text-xs text-gray-500 dark:text-gray-300">
+                    3-letter uppercase code.
+                  </p>
                 </div>
+                {/* Name */}
+                <div>
+                  <label
+                    htmlFor="create-currencyName"
+                    className="block font-medium text-gray-500 dark:text-gray-300 mb-2"
+                  >
+                    Currency Name <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="create-currencyName"
+                    name="currencyName"
+                    value={newCurrencyData.currencyName}
+                    onChange={handleCreateInputChange}
+                    placeholder="e.g., US Dollar"
+                    className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium" // Added dark mode styles
+                  />
+                </div>
+                {/* Flag Image Path */}
+                <div>
+                  <label
+                    htmlFor="create-flagImage"
+                    className="block font-medium text-gray-500 dark:text-gray-300 mb-2"
+                  >
+                    Flag Image Path
+                  </label>
+                  <input
+                    type="text"
+                    id="create-flagImage"
+                    name="flagImage"
+                    value={newCurrencyData.flagImage}
+                    onChange={handleCreateInputChange}
+                    placeholder="/assets/icon/flags/usd.png"
+                    className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium" // Added dark mode styles
+                  />
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-300">
+                    Relative path to the image.
+                  </p>
+                </div>
+                {/* Rate Adjustment Percentage - UPDATED */}
+                <div>
+                  <label
+                    htmlFor="create-rateAdjustmentPercentage"
+                    className="flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300 mb-2
+"
+                  >
+                    <Percent size={14} className="dark:text-gray-300" /> Rate
+                    Adjustment
+                  </label>
+                  <input
+                    type="number" // Ensure type is number for step validation
+                    id="create-rateAdjustmentPercentage"
+                    name="rateAdjustmentPercentage" // Correct name
+                    value={newCurrencyData.rateAdjustmentPercentage}
+                    onChange={handleCreateInputChange}
+                    step="any"
+                    placeholder="e.g., 0.5 (for +0.5%) or -0.1 (for -0.1%)"
+                    className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium" // Added dark mode styles
+                  />
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-300">
+                    Enter percentage adjustment. Default is 0%.
+                  </p>
+                </div>
+              </div>
+
+              {/* Modal Actions */}
+              <div className="flex flex-col gap-2.5 mt-8">
+                <button
+                  onClick={handleCreateCurrency}
+                  disabled={
+                    isSubmitting ||
+                    !newCurrencyData.code ||
+                    !newCurrencyData.currencyName
+                  }
+                  className="inline-flex justify-center cursor-pointer bg-primary hover:bg-primaryhover text-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed font-medium rounded-full px-6 py-3 h-12.5 text-center w-full sm:w-auto transition-all duration-75 ease-linear" // Added disabled styles
+                >
+                  {isSubmitting ? (
+                    <Loader2 className="animate-spin mr-2" size={20} /> // Added loader
+                  ) : null}
+                  {isSubmitting ? "Adding..." : "Add Currency"}
+                </button>
+                <button
+                  onClick={() => setIsCreateModalOpen(false)}
+                  className="inline-flex justify-center cursor-pointer bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear"
+                >
+                  Cancel
+                </button>
               </div>
             </motion.div>
           </motion.div>
@@ -1456,7 +1483,9 @@ const AdminCurrenciesPage: React.FC = () => {
                   Delete Currency ?
                 </h3>
                 <div>
-                  <p className="text-gray-600 dark:text-gray-300 font-medium mb-6"> {/* Adjusted text color */}
+                  <p className="text-gray-600 dark:text-gray-300 font-medium mb-6">
+                    {" "}
+                    {/* Adjusted text color */}
                     Are you sure you want to delete this currency? This action
                     cannot be undone.
                   </p>

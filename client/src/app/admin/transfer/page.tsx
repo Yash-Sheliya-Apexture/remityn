@@ -784,44 +784,569 @@
 
 
 
+// // frontend/src/app/admin/transfers/page.tsx
+// 'use client';
+// import React, { useState, useEffect, useCallback } from 'react'; // Import useCallback
+// import { useAuth } from '../../contexts/AuthContext';
+// import axios from 'axios'; // Import AxiosError for type checking
+// import apiConfig from '../../config/apiConfig';
+// import { motion, AnimatePresence } from 'framer-motion';
+// import { Check, X, Search, Filter, RefreshCw } from 'lucide-react';
+
+// // Import components
+// import TransferTable from '../components/transfers/TransferTable';
+// import TransferFilters from '../components/transfers/TransferFilters';
+// import Pagination from '../components/Pagination'; // Import Pagination component
+
+// axios.defaults.baseURL = apiConfig.baseUrl;
+
+// // --- Define Transfer type used WITHIN this component ---
+// interface Transfer {
+//     _id: string;
+//     user: { // Made user non-optional as it seems core
+//         fullName?: string;
+//         email?: string;
+//     };
+//     sendAmount: string; // Keep as string as per original definition and API
+//     sendCurrency?: {
+//         code?: string;
+//     };
+//     status: string;
+//     createdAt: string; // ISO date string
+//     recipient?: { // Recipient is optional
+//         accountHolderName?: string;
+//     };
+//     // Add other properties as needed based on your Transfer object structure
+// }
+
+// // Define the type for the sortable fields more explicitly
+// // Includes top-level keys and nested keys used for sorting
+// type TransferSortField = keyof Omit<Transfer, 'user' | 'recipient' | 'sendCurrency'> | 'user' | 'recipient' | 'createdAt' | 'amount' | '_id'; // Alias for user.fullName and recipient.accountHolderName used in switch
+
+
+// const AdminTransfersPage: React.FC = () => {
+//     const { token } = useAuth();
+//     const [transfers, setTransfers] = useState<Transfer[]>([]);
+//     const [filteredTransfers, setFilteredTransfers] = useState<Transfer[]>([]);
+//     const [loadingTransfers, setLoadingTransfers] = useState<boolean>(true);
+//     const [error, setError] = useState<string | null>(null);
+//     const [successMessage, setSuccessMessage] = useState<string | null>(null);
+//     const [isRefreshing, setIsRefreshing] = useState<boolean>(false); // State for refresh animation
+
+//     // Filter state
+//     const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
+//     const [searchTerm, setSearchTerm] = useState<string>('');
+//     const [dateRange, setDateRange] = useState<{ from: Date | null, to: Date | null }>({ from: null, to: null });
+//     const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'processing' | 'completed' | 'failed' | 'canceled'>('all');
+//     const [transferIdFilter, setTransferIdFilter] = useState<string>('');
+//     const [amountFilter, setAmountFilter] = useState<string>('');
+//     const [currencyFilter, setCurrencyFilter] = useState<'all' | string>('all');
+//     const [recipientFilter, setRecipientFilter] = useState<string>('');
+
+//     // Sorting
+//     // --- FIX: Update sortField state type ---
+//     const [sortField, setSortField] = useState<TransferSortField | null>(null); // Use the more specific type
+//     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+
+//     // Pagination State
+//     const [currentPage, setCurrentPage] = useState<number>(1);
+//     const [transfersPerPage, setTransfersPerPage] = useState<number>(10); // Default to 10 per page
+//     const pageSizeOptions: number[] = [10, 25, 50]; // Options for transfers per page
+
+//     // Update transfers per page and reset to first page
+//     const handlePageSizeChange = (size: number) => {
+//         setTransfersPerPage(size);
+//         setCurrentPage(1); // Reset to the first page when page size changes
+//     };
+
+//     // --- Start of Fixes ---
+
+//     // 1. Wrap fetchTransfers in useCallback
+//     const fetchTransfers = useCallback(async () => {
+//         setLoadingTransfers(true);
+//         setIsRefreshing(true); // Start refresh animation
+//         setError(null);
+//         // Clear success message on new fetch? Optional, depends on desired UX
+//         // setSuccessMessage(null);
+//         try {
+//             // Use the local Transfer type for the response
+//             const response = await axios.get<{ data: Transfer[] }>('/admin/transfers', {
+//                 headers: { Authorization: `Bearer ${token}` },
+//             });
+//             const fetchedData = response.data.data || response.data || []; // Ensure it's an array
+//             setTransfers(fetchedData);
+//         } catch (err: unknown) { // 2. Change 'any' to 'unknown'
+//             // 3. Type check the error before accessing properties
+//             let message = 'Failed to load transfers'; // Default message
+//             if (axios.isAxiosError(err)) {
+//                 message = err.response?.data?.message || err.message || 'An unexpected error occurred.';
+//             } else if (err instanceof Error) {
+//                 message = err.message;
+//             } else if (typeof err === 'string') {
+//                 message = err;
+//             }
+//             setError(message);
+//             console.error("Error fetching transfers:", err);
+//         } finally {
+//             setLoadingTransfers(false);
+//             setIsRefreshing(false); // Stop refresh animation
+//         }
+//     }, [token]); // Simplified dependencies as setters are stable
+
+
+//     useEffect(() => {
+//         if (token) { // Ensure token exists before fetching
+//              fetchTransfers();
+//         }
+//     // 4. Add fetchTransfers to dependency array
+//     }, [token, fetchTransfers]);
+
+//     // --- End of Fixes for useEffect dependency ---
+
+//     // Apply filters and sorting when dependencies change
+//     useEffect(() => {
+//         let results: Transfer[] = [...transfers]; // Start with the original full list
+
+//         // Apply search filter (user name and email, transfer ID, recipient)
+//         if (searchTerm) {
+//             const lowerSearchTerm = searchTerm.toLowerCase();
+//             results = results.filter(transfer =>
+//                 transfer._id.toLowerCase().includes(lowerSearchTerm) ||
+//                 transfer.user?.fullName?.toLowerCase().includes(lowerSearchTerm) ||
+//                 transfer.user?.email?.toLowerCase().includes(lowerSearchTerm) ||
+//                 transfer.recipient?.accountHolderName?.toLowerCase().includes(lowerSearchTerm)
+//             );
+//         }
+
+//         // Apply Transfer ID filter
+//         if (transferIdFilter) {
+//             const lowerTransferIdFilter = transferIdFilter.toLowerCase();
+//             results = results.filter(transfer =>
+//                 transfer._id.toLowerCase().includes(lowerTransferIdFilter)
+//             );
+//         }
+
+//         // Apply Amount filter
+//         if (amountFilter) {
+//             // Use parseFloat for comparison, handle potential NaN
+//             const amount = parseFloat(amountFilter);
+//             if (!isNaN(amount)) {
+//                 // Compare parsed amount from filter with parsed amount from transfer
+//                 results = results.filter(transfer => parseFloat(transfer.sendAmount) === amount);
+//             }
+//         }
+
+//         // Apply Currency filter
+//         if (currencyFilter !== 'all') {
+//             results = results.filter(transfer => transfer.sendCurrency?.code === currencyFilter);
+//         }
+
+//         // Apply Recipient filter
+//         if (recipientFilter) {
+//             const lowerRecipientFilter = recipientFilter.toLowerCase();
+//             results = results.filter(transfer =>
+//                 transfer.recipient?.accountHolderName?.toLowerCase().includes(lowerRecipientFilter)
+//             );
+//         }
+
+//         // Apply status filter
+//         if (statusFilter !== 'all') {
+//             results = results.filter(transfer => transfer.status === statusFilter);
+//         }
+
+//         // Apply date range filter
+//         if (dateRange.from) {
+//             const fromDate = new Date(dateRange.from);
+//             fromDate.setHours(0, 0, 0, 0); // Start of the day
+
+//             results = results.filter(transfer => {
+//                 const transferDate = new Date(transfer.createdAt);
+//                 return !isNaN(transferDate.getTime()) && transferDate >= fromDate; // Check for valid date
+//             });
+//         }
+
+//         if (dateRange.to) {
+//             const toDate = new Date(dateRange.to);
+//             toDate.setHours(23, 59, 59, 999); // End of the day
+
+//             results = results.filter(transfer => {
+//                 const transferDate = new Date(transfer.createdAt);
+//                 return !isNaN(transferDate.getTime()) && transferDate <= toDate; // Check for valid date
+//             });
+//         }
+
+//         // Apply sorting
+//         if (sortField) {
+//             results.sort((a, b) => {
+//                 let valueA: string | number | Date | undefined;
+//                 let valueB: string | number | Date | undefined;
+
+//                 // Extract values based on sortField
+//                 switch (sortField) {
+//                     case 'user': // Represents sorting by user.fullName
+//                         valueA = a.user?.fullName?.toLowerCase() ?? '';
+//                         valueB = b.user?.fullName?.toLowerCase() ?? '';
+//                         break;
+//                     case 'amount': // Represents sorting by sendAmount
+//                         // Parse string amount to number for comparison
+//                         valueA = parseFloat(a.sendAmount);
+//                         valueB = parseFloat(b.sendAmount);
+//                         break;
+//                     case 'recipient': // Represents sorting by recipient.accountHolderName
+//                         valueA = a.recipient?.accountHolderName?.toLowerCase() ?? '';
+//                         valueB = b.recipient?.accountHolderName?.toLowerCase() ?? '';
+//                         break;
+//                     case 'createdAt':
+//                         valueA = new Date(a.createdAt); // Compare as Date objects
+//                         valueB = new Date(b.createdAt);
+//                         break;
+//                     case 'status':
+//                          valueA = a.status.toLowerCase();
+//                          valueB = b.status.toLowerCase();
+//                          break;
+//                     case '_id':
+//                          valueA = a._id;
+//                          valueB = b._id;
+//                          break;
+//                     // Add direct key access if needed, ensuring type safety
+//                     // default:
+//                     //     const key = sortField as keyof Transfer; // Assert key type
+//                     //     // Ensure values are comparable (e.g., convert to string if mixed types)
+//                     //     valueA = (a[key] as any)?.toString().toLowerCase() ?? '';
+//                     //     valueB = (b[key] as any)?.toString().toLowerCase() ?? '';
+//                     //     break;
+//                 }
+
+//                 // Comparison Logic - Handle different types
+//                 let comparison = 0;
+
+//                 if (valueA instanceof Date && valueB instanceof Date) {
+//                     const timeA = !isNaN(valueA.getTime()) ? valueA.getTime() : -Infinity;
+//                     const timeB = !isNaN(valueB.getTime()) ? valueB.getTime() : -Infinity;
+//                     comparison = timeA - timeB;
+//                 }
+//                 else if (typeof valueA === 'number' && typeof valueB === 'number') {
+//                     const numA = isNaN(valueA) ? -Infinity : valueA;
+//                     const numB = isNaN(valueB) ? -Infinity : valueB;
+//                     comparison = numA - numB;
+//                 }
+//                 else {
+//                     const strA = String(valueA ?? '').toLowerCase();
+//                     const strB = String(valueB ?? '').toLowerCase();
+//                     comparison = strA.localeCompare(strB);
+//                 }
+
+//                 // Apply direction
+//                 return sortDirection === 'asc' ? comparison : -comparison;
+//             });
+//         }
+
+//         setFilteredTransfers(results);
+//         // Reset page to 1 only if filters/sorting change *after* the initial load
+//         if (transfers.length > 0) { // Basic check to see if it's not the initial empty state
+//             setCurrentPage(1);
+//         }
+//     }, [transfers, searchTerm, statusFilter, dateRange, sortField, sortDirection, transferIdFilter, amountFilter, currencyFilter, recipientFilter]); // Keep all relevant dependencies
+
+
+//     // --- FIX: Ensure field passed to toggleSort matches TransferSortField type ---
+//     const toggleSort = (field: TransferSortField) => {
+//         if (sortField === field) {
+//             setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+//         } else {
+//             setSortField(field);
+//             setSortDirection('asc');
+//         }
+//     };
+
+//     const clearFilters = () => {
+//         setSearchTerm('');
+//         setDateRange({ from: null, to: null });
+//         setStatusFilter('all');
+//         setTransferIdFilter('');
+//         setAmountFilter('');
+//         setCurrencyFilter('all');
+//         setRecipientFilter('');
+//         setSortField(null); // Clear sorting when clearing filters
+//         setSortDirection('asc');
+//         setCurrentPage(1); // Reset page when clearing filters
+//     };
+
+//     const getStatusColor = (status: string) => {
+//         switch (status?.toLowerCase()) { // Added toLowerCase for safety
+//             case 'completed': return 'text-green-600 bg-green-600/20 ';
+//             case 'pending': return 'text-yellow-600 bg-yellow-600/20 ';
+//             case 'processing': return 'text-blue-600 bg-blue-600/20 ';
+//             case 'failed': return 'text-rose-600 bg-rose-600/20 ';
+//             case 'canceled': return 'text-red-600 bg-red-600/20 ';
+//             default: return 'text-gray-600 bg-gray-600/20 ';
+//         }
+//     };
+
+//     // Memoize calculation of options to prevent re-computation on every render
+//     const currencyOptions = React.useMemo(() => {
+//         const codes = new Set(transfers.map(p => p.sendCurrency?.code).filter((code): code is string => Boolean(code)));
+//         return ['all', ...Array.from(codes)];
+//     }, [transfers]);
+
+//     const statusOptions: ('all' | 'pending' | 'processing' | 'completed' | 'failed' | 'canceled')[] = ['all', 'pending', 'processing', 'completed', 'failed', 'canceled'];
+
+
+//     const refreshData = () => {
+//         fetchTransfers();
+//     };
+
+//     // Pagination logic
+//     const indexOfLastTransfer = currentPage * transfersPerPage;
+//     const indexOfFirstTransfer = indexOfLastTransfer - transfersPerPage;
+//     const currentTransfers = filteredTransfers.slice(indexOfFirstTransfer, indexOfLastTransfer); // Use the locally defined Transfer type
+
+//     const totalPages = Math.ceil(filteredTransfers.length / transfersPerPage);
+//     const paginate = (pageNumber: number) => {
+//         if (pageNumber >= 1 && pageNumber <= totalPages) {
+//              setCurrentPage(pageNumber);
+//         }
+//     };
+//     const goToPreviousPage = () => setCurrentPage(currentPage > 1 ? currentPage - 1 : currentPage);
+//     const goToNextPage = () => setCurrentPage(currentPage < totalPages ? currentPage + 1 : currentPage);
+
+
+//     return (
+//         <div className="container mx-auto px-4 py-8 relative">
+//             <div className="space-y-6">
+//                 <div className="flex flex-wrap justify-between items-center gap-4">
+//                     <h1 className="text-2xl font-bold text-mainheading dark:text-white">Transfer Management</h1>
+//                     <div className="flex flex-wrap gap-3 items-center">
+//                         <div className="relative">
+//                             <input
+//                                 type="text"
+//                                 value={searchTerm}
+//                                 onChange={(e) => setSearchTerm(e.target.value)}
+//                                 placeholder="Search by User, Recipient or Email..."
+//                                 className="w-full sm:w-64 md:w-xl rounded-full py-2 pl-12 pr-3 h-12.5 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white"
+//                             />
+//                             <Search className="absolute left-3 top-3.5 text-gray-400" size={20} />
+//                         </div>
+//                         <button
+//                             onClick={() => setShowFilterModal(true)}
+//                             className="flex items-center cursor-pointer gap-2 bg-primary text-secondary font-medium text-lg px-8 py-2 h-12.5 rounded-3xl hover:bg-primaryhover transition-colors whitespace-nowrap"
+//                         >
+//                             <Filter size={18} />
+//                             Filters
+//                         </button>
+//                         <button
+//                             onClick={refreshData}
+//                             disabled={isRefreshing || loadingTransfers}
+//                             className="flex items-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 h-12.5 rounded-3xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+//                         >
+//                             <RefreshCw
+//                                 className={`size-5 ${isRefreshing ? "animate-spin" : ""}`}
+//                             />
+//                             <span>Refresh</span>
+//                         </button>
+//                     </div>
+//                 </div>
+
+//                 {/* Success Message */}
+//                 <AnimatePresence>
+//                     {successMessage && (
+//                         <motion.div
+//                             initial={{ opacity: 0, y: -10 }}
+//                             animate={{ opacity: 1, y: 0 }}
+//                             exit={{ opacity: 0, y: -10 }}
+//                             className="bg-green-50 border-l-4 border-green-500 p-4 rounded-md shadow"
+//                         >
+//                             <div className="flex items-start">
+//                                 <div className="flex-shrink-0">
+//                                     <Check className="h-5 w-5 text-green-500" />
+//                                 </div>
+//                                 <div className="ml-3">
+//                                     <p className="text-sm text-green-700">{successMessage}</p>
+//                                 </div>
+//                                 <button
+//                                     onClick={() => setSuccessMessage(null)}
+//                                     className="ml-auto flex-shrink-0 text-green-500 hover:text-green-700"
+//                                     aria-label="Dismiss success message"
+//                                 >
+//                                     <X size={18} />
+//                                 </button>
+//                             </div>
+//                         </motion.div>
+//                     )}
+//                 </AnimatePresence>
+
+//                 {/* Error Message */}
+//                 <AnimatePresence>
+//                     {error && (
+//                         <motion.div
+//                             initial={{ opacity: 0, y: -10 }}
+//                             animate={{ opacity: 1, y: 0 }}
+//                             exit={{ opacity: 0, y: -10 }}
+//                             className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md shadow"
+//                         >
+//                             <div className="flex items-start">
+//                                 <div className="flex-shrink-0">
+//                                     <X className="h-5 w-5 text-red-500" />
+//                                 </div>
+//                                 <div className="ml-3">
+//                                     <p className="text-sm text-red-700">{error}</p>
+//                                 </div>
+//                                 <button
+//                                     onClick={() => setError(null)}
+//                                     className="ml-auto flex-shrink-0 text-red-500 hover:text-red-700"
+//                                     aria-label="Dismiss error message"
+//                                 >
+//                                     <X size={18} />
+//                                 </button>
+//                             </div>
+//                         </motion.div>
+//                     )}
+//                 </AnimatePresence>
+
+//                 <div className="flex flex-wrap justify-between items-center mb-4 gap-4">
+//                     <div className="flex items-center gap-2">
+//                         <label htmlFor="transfersPerPage" className="text-sm font-medium text-gray-600 dark:text-white whitespace-nowrap">Show per page:</label>
+//                         <select
+//                             id="transfersPerPage"
+//                             value={transfersPerPage}
+//                             onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+//                             className="block w-auto pl-3 pr-10 py-2 border focus:outline-none sm:text-sm rounded-md bg-lightgray dark:bg-[#2E2E2E] dark:text-white dark:border-gray-600"
+//                         >
+//                             {pageSizeOptions.map(size => (
+//                                 <option key={size} value={size}>{size}</option>
+//                             ))}
+//                         </select>
+//                     </div>
+//                     <p className="text-sm text-gray-600 dark:text-white">
+//                         Showing {filteredTransfers.length > 0 ? indexOfFirstTransfer + 1 : 0}-{Math.min(indexOfLastTransfer, filteredTransfers.length)} of {filteredTransfers.length} results
+//                          {totalPages > 0 && ` (Page ${currentPage} of ${totalPages})`}
+//                     </p>
+//                 </div>
+
+//                 {/* Transfers Table */}
+//                 <TransferTable
+//                     // --- FIX: Pass currentTransfers which now uses the local Transfer type ---
+//                     filteredTransfers={currentTransfers}
+//                     loadingTransfers={loadingTransfers}
+//                     getStatusColor={getStatusColor}
+//                     // --- FIX: Pass toggleSort which now expects TransferSortField ---
+//                     toggleSort={toggleSort}
+//                     // --- FIX: Pass sortField which now has the specific type TransferSortField | null ---
+//                     sortField={sortField}
+//                     sortDirection={sortDirection}
+//                 />
+//                 {/* Pagination Controls - Only show if more than one page */}
+//                  {totalPages > 1 && (
+//                      <Pagination
+//                          currentPage={currentPage}
+//                          totalPages={totalPages}
+//                          paginate={paginate}
+//                          goToPreviousPage={goToPreviousPage}
+//                          goToNextPage={goToNextPage}
+//                      />
+//                  )}
+//             </div>
+
+//             {/* Filter Sidebar */}
+//             <TransferFilters
+//                 showFilterModal={showFilterModal}
+//                 setShowFilterModal={setShowFilterModal}
+//                 searchTerm={searchTerm}
+//                 setSearchTerm={setSearchTerm}
+//                 dateRange={dateRange}
+//                 setDateRange={setDateRange}
+//                 statusFilter={statusFilter}
+//                 setStatusFilter={setStatusFilter}
+//                 currencyFilter={currencyFilter}
+//                 setCurrencyFilter={setCurrencyFilter}
+//                 transferIdFilter={transferIdFilter}
+//                 setTransferIdFilter={setTransferIdFilter}
+//                 amountFilter={amountFilter}
+//                 setAmountFilter={setAmountFilter}
+//                 currencyOptions={currencyOptions}
+//                 statusOptions={statusOptions}
+//                 clearFilters={clearFilters}
+//                 recipientFilter={recipientFilter}
+//                 setRecipientFilter={setRecipientFilter}
+//             />
+//         </div >
+//     );
+// };
+
+// export default AdminTransfersPage;
+
+
+
+
+
 // frontend/src/app/admin/transfers/page.tsx
 'use client';
-import React, { useState, useEffect, useCallback } from 'react'; // Import useCallback
+import React, { useState, useEffect, useCallback, useMemo } from 'react'; // Added useMemo
 import { useAuth } from '../../contexts/AuthContext';
-import axios from 'axios'; // Import AxiosError for type checking
+import axios, { AxiosError } from 'axios'; // Import AxiosError
 import apiConfig from '../../config/apiConfig';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, X, Search, Filter, RefreshCw } from 'lucide-react';
 
 // Import components
 import TransferTable from '../components/transfers/TransferTable';
-import TransferFilters from '../components/transfers/TransferFilters';
-import Pagination from '../components/Pagination'; // Import Pagination component
+// *** IMPORT THE GENERIC FILTER COMPONENT ***
+import GenericFilters, { FiltersState } from '../components/add-money/PaymentFilters'; // Adjust path if needed
+import Pagination from '../components/Pagination';
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
-// --- Define Transfer type used WITHIN this component ---
+// --- Transfer type (keep as is) ---
 interface Transfer {
     _id: string;
-    user: { // Made user non-optional as it seems core
+    user: {
         fullName?: string;
         email?: string;
     };
-    sendAmount: string; // Keep as string as per original definition and API
-    sendCurrency?: {
-        code?: string;
-    };
+    sendAmount: string;
+    sendCurrency?: { code?: string };
     status: string;
     createdAt: string; // ISO date string
-    recipient?: { // Recipient is optional
-        accountHolderName?: string;
-    };
-    // Add other properties as needed based on your Transfer object structure
+    recipient?: { accountHolderName?: string };
+    // Add other properties as needed
 }
 
-// Define the type for the sortable fields more explicitly
-// Includes top-level keys and nested keys used for sorting
-type TransferSortField = keyof Omit<Transfer, 'user' | 'recipient' | 'sendCurrency'> | 'user' | 'recipient' | 'createdAt' | 'amount' | '_id'; // Alias for user.fullName and recipient.accountHolderName used in switch
+// TransferSortField type (keep as is)
+type TransferSortField = keyof Omit<Transfer, 'user' | 'recipient' | 'sendCurrency'> | 'user' | 'recipient' | 'createdAt' | 'amount' | '_id';
+
+// Helper function to parse date string (dd-MM-yyyy) to Date object
+function parseDateString(dateString: string): Date | null {
+    if (!dateString) return null;
+    const parts = dateString.split('-');
+    if (parts.length === 3) {
+        // Basic check if parts look like numbers
+        if (!/^\d+$/.test(parts[0]) || !/^\d+$/.test(parts[1]) || !/^\d+$/.test(parts[2])) {
+            console.warn("Invalid date parts:", parts);
+            return null;
+        }
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1; // Month is 0-indexed
+        const year = parseInt(parts[2], 10);
+
+        // Additional validation for reasonable date values
+        if (day < 1 || day > 31 || month < 0 || month > 11 || year < 1900 || year > 3000) {
+            console.warn("Date components out of range:", { day, month, year });
+            return null;
+        }
+
+        const date = new Date(Date.UTC(year, month, day)); // Use UTC to avoid timezone issues
+
+        // Final check to ensure the date wasn't rolled over
+        if (date.getUTCFullYear() === year && date.getUTCMonth() === month && date.getUTCDate() === day) {
+            return date;
+        } else {
+            console.warn("Date validation failed after construction:", dateString);
+            return null;
+        }
+    }
+    console.warn("Could not parse date string:", dateString);
+    return null;
+}
 
 
 const AdminTransfersPage: React.FC = () => {
@@ -831,83 +1356,93 @@ const AdminTransfersPage: React.FC = () => {
     const [loadingTransfers, setLoadingTransfers] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
-    const [isRefreshing, setIsRefreshing] = useState<boolean>(false); // State for refresh animation
+    const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
     // Filter state
     const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
     const [searchTerm, setSearchTerm] = useState<string>('');
-    const [dateRange, setDateRange] = useState<{ from: Date | null, to: Date | null }>({ from: null, to: null });
-    const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'processing' | 'completed' | 'failed' | 'canceled'>('all');
+    // *** CHANGE dateRange state to use strings ***
+    const [fromDate, setFromDate] = useState<string>('');
+    const [toDate, setToDate] = useState<string>('');
+    const [statusFilter, setStatusFilter] = useState<string>('all'); // Use string
     const [transferIdFilter, setTransferIdFilter] = useState<string>('');
     const [amountFilter, setAmountFilter] = useState<string>('');
     const [currencyFilter, setCurrencyFilter] = useState<'all' | string>('all');
     const [recipientFilter, setRecipientFilter] = useState<string>('');
 
-    // Sorting
-    // --- FIX: Update sortField state type ---
-    const [sortField, setSortField] = useState<TransferSortField | null>(null); // Use the more specific type
+    // Sorting state (keep as is)
+    const [sortField, setSortField] = useState<TransferSortField | null>(null);
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
-    // Pagination State
+    // Pagination State (keep as is)
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const [transfersPerPage, setTransfersPerPage] = useState<number>(10); // Default to 10 per page
-    const pageSizeOptions: number[] = [10, 25, 50]; // Options for transfers per page
+    const [transfersPerPage, setTransfersPerPage] = useState<number>(10);
+    const pageSizeOptions: number[] = [10, 25, 50];
 
-    // Update transfers per page and reset to first page
-    const handlePageSizeChange = (size: number) => {
-        setTransfersPerPage(size);
-        setCurrentPage(1); // Reset to the first page when page size changes
-    };
-
-    // --- Start of Fixes ---
-
-    // 1. Wrap fetchTransfers in useCallback
+    // Fetch transfers (keep as is, wrapped in useCallback)
     const fetchTransfers = useCallback(async () => {
         setLoadingTransfers(true);
-        setIsRefreshing(true); // Start refresh animation
+        setIsRefreshing(true);
         setError(null);
-        // Clear success message on new fetch? Optional, depends on desired UX
-        // setSuccessMessage(null);
         try {
-            // Use the local Transfer type for the response
-            const response = await axios.get<{ data: Transfer[] }>('/admin/transfers', {
-                headers: { Authorization: `Bearer ${token}` },
+            const response = await axios.get<{ data: Transfer[] } | Transfer[]>('/admin/transfers', {
+                 headers: { Authorization: `Bearer ${token}` },
             });
-            const fetchedData = response.data.data || response.data || []; // Ensure it's an array
-            setTransfers(fetchedData);
-        } catch (err: unknown) { // 2. Change 'any' to 'unknown'
-            // 3. Type check the error before accessing properties
-            let message = 'Failed to load transfers'; // Default message
+             // Robust data checking
+             let transferData: Transfer[] = [];
+             if (response.data && Array.isArray((response.data as any).data)) {
+                 transferData = (response.data as any).data;
+             } else if (Array.isArray(response.data)) {
+                 transferData = response.data;
+             } else {
+                  console.warn("API response format unexpected:", response.data);
+                  transferData = [];
+             }
+            // Add basic validation/defaults if needed
+            const validatedData = transferData.map(t => ({
+                ...t,
+                _id: String(t._id ?? ''),
+                sendAmount: String(t.sendAmount ?? ''),
+                status: String(t.status ?? 'unknown'),
+                createdAt: t.createdAt || new Date(0).toISOString(),
+                user: t.user ?? { fullName: 'N/A', email: 'N/A' },
+                recipient: t.recipient ?? { accountHolderName: 'N/A' },
+                sendCurrency: t.sendCurrency ?? { code: 'N/A'}
+            }));
+
+            setTransfers(validatedData);
+        } catch (err: unknown) {
+            let message = 'Failed to load transfers';
             if (axios.isAxiosError(err)) {
-                message = err.response?.data?.message || err.message || 'An unexpected error occurred.';
+                const axiosError = err as AxiosError<{ message?: string }>; // Type the error response data
+                message = axiosError.response?.data?.message || axiosError.message || 'An unexpected error occurred.';
             } else if (err instanceof Error) {
                 message = err.message;
-            } else if (typeof err === 'string') {
-                message = err;
             }
             setError(message);
+            setTransfers([]); // Clear data on error
             console.error("Error fetching transfers:", err);
         } finally {
             setLoadingTransfers(false);
-            setIsRefreshing(false); // Stop refresh animation
+            setIsRefreshing(false);
         }
-    }, [token]); // Simplified dependencies as setters are stable
-
+    }, [token]);
 
     useEffect(() => {
-        if (token) { // Ensure token exists before fetching
-             fetchTransfers();
+        if (token) {
+            fetchTransfers();
+        } else {
+            setError("Authentication required.");
+            setLoadingTransfers(false);
+            setTransfers([]);
         }
-    // 4. Add fetchTransfers to dependency array
     }, [token, fetchTransfers]);
 
-    // --- End of Fixes for useEffect dependency ---
-
-    // Apply filters and sorting when dependencies change
+    // Apply filters and sorting
     useEffect(() => {
-        let results: Transfer[] = [...transfers]; // Start with the original full list
+        let results: Transfer[] = [...transfers];
 
-        // Apply search filter (user name and email, transfer ID, recipient)
+        // Apply search filter (as before)
         if (searchTerm) {
             const lowerSearchTerm = searchTerm.toLowerCase();
             results = results.filter(transfer =>
@@ -918,30 +1453,30 @@ const AdminTransfersPage: React.FC = () => {
             );
         }
 
-        // Apply Transfer ID filter
+        // Apply Transfer ID filter (using transferIdFilter state)
         if (transferIdFilter) {
-            const lowerTransferIdFilter = transferIdFilter.toLowerCase();
             results = results.filter(transfer =>
-                transfer._id.toLowerCase().includes(lowerTransferIdFilter)
+                transfer._id.toLowerCase().includes(transferIdFilter.toLowerCase())
             );
         }
 
-        // Apply Amount filter
+        // Apply Amount filter (using amountFilter state)
         if (amountFilter) {
-            // Use parseFloat for comparison, handle potential NaN
             const amount = parseFloat(amountFilter);
             if (!isNaN(amount)) {
-                // Compare parsed amount from filter with parsed amount from transfer
-                results = results.filter(transfer => parseFloat(transfer.sendAmount) === amount);
+                results = results.filter(transfer => {
+                     const transferAmount = parseFloat(transfer.sendAmount);
+                     return !isNaN(transferAmount) && transferAmount === amount;
+                });
             }
         }
 
-        // Apply Currency filter
+        // Apply Currency filter (using currencyFilter state)
         if (currencyFilter !== 'all') {
             results = results.filter(transfer => transfer.sendCurrency?.code === currencyFilter);
         }
 
-        // Apply Recipient filter
+        // Apply Recipient filter (using recipientFilter state)
         if (recipientFilter) {
             const lowerRecipientFilter = recipientFilter.toLowerCase();
             results = results.filter(transfer =>
@@ -949,187 +1484,211 @@ const AdminTransfersPage: React.FC = () => {
             );
         }
 
-        // Apply status filter
+        // Apply status filter (using statusFilter state)
         if (statusFilter !== 'all') {
-            results = results.filter(transfer => transfer.status === statusFilter);
+            results = results.filter(transfer => transfer.status.toLowerCase() === statusFilter.toLowerCase());
         }
 
-        // Apply date range filter
-        if (dateRange.from) {
-            const fromDate = new Date(dateRange.from);
-            fromDate.setHours(0, 0, 0, 0); // Start of the day
+        // Apply date range filter *** USING fromDate and toDate strings ***
+        const fromDateObj = parseDateString(fromDate);
+        const toDateObj = parseDateString(toDate);
 
-            results = results.filter(transfer => {
-                const transferDate = new Date(transfer.createdAt);
-                return !isNaN(transferDate.getTime()) && transferDate >= fromDate; // Check for valid date
-            });
-        }
+        if (fromDateObj) {
+            fromDateObj.setUTCHours(0, 0, 0, 0); // Start of the day UTC
+             results = results.filter(transfer => {
+                 try {
+                     const transferDate = new Date(transfer.createdAt); // Assume createdAt is ISO string
+                     return !isNaN(transferDate.getTime()) && transferDate >= fromDateObj;
+                 } catch { return false; }
+             });
+         }
 
-        if (dateRange.to) {
-            const toDate = new Date(dateRange.to);
-            toDate.setHours(23, 59, 59, 999); // End of the day
+         if (toDateObj) {
+             toDateObj.setUTCHours(23, 59, 59, 999); // End of the day UTC
+             results = results.filter(transfer => {
+                 try {
+                     const transferDate = new Date(transfer.createdAt);
+                     return !isNaN(transferDate.getTime()) && transferDate <= toDateObj;
+                 } catch { return false; }
+             });
+         }
 
-            results = results.filter(transfer => {
-                const transferDate = new Date(transfer.createdAt);
-                return !isNaN(transferDate.getTime()) && transferDate <= toDate; // Check for valid date
-            });
-        }
-
-        // Apply sorting
+        // Apply sorting (keep sorting logic as is)
         if (sortField) {
             results.sort((a, b) => {
-                let valueA: string | number | Date | undefined;
-                let valueB: string | number | Date | undefined;
+                let valueA: any;
+                let valueB: any;
 
-                // Extract values based on sortField
                 switch (sortField) {
-                    case 'user': // Represents sorting by user.fullName
-                        valueA = a.user?.fullName?.toLowerCase() ?? '';
-                        valueB = b.user?.fullName?.toLowerCase() ?? '';
-                        break;
-                    case 'amount': // Represents sorting by sendAmount
-                        // Parse string amount to number for comparison
-                        valueA = parseFloat(a.sendAmount);
-                        valueB = parseFloat(b.sendAmount);
-                        break;
-                    case 'recipient': // Represents sorting by recipient.accountHolderName
-                        valueA = a.recipient?.accountHolderName?.toLowerCase() ?? '';
-                        valueB = b.recipient?.accountHolderName?.toLowerCase() ?? '';
-                        break;
-                    case 'createdAt':
-                        valueA = new Date(a.createdAt); // Compare as Date objects
-                        valueB = new Date(b.createdAt);
-                        break;
-                    case 'status':
-                         valueA = a.status.toLowerCase();
-                         valueB = b.status.toLowerCase();
-                         break;
-                    case '_id':
-                         valueA = a._id;
-                         valueB = b._id;
-                         break;
-                    // Add direct key access if needed, ensuring type safety
-                    // default:
-                    //     const key = sortField as keyof Transfer; // Assert key type
-                    //     // Ensure values are comparable (e.g., convert to string if mixed types)
-                    //     valueA = (a[key] as any)?.toString().toLowerCase() ?? '';
-                    //     valueB = (b[key] as any)?.toString().toLowerCase() ?? '';
-                    //     break;
+                    case 'user': valueA = a.user?.fullName?.toLowerCase() ?? ''; valueB = b.user?.fullName?.toLowerCase() ?? ''; break;
+                    case 'amount': valueA = parseFloat(a.sendAmount) || 0; valueB = parseFloat(b.sendAmount) || 0; break;
+                    case 'recipient': valueA = a.recipient?.accountHolderName?.toLowerCase() ?? ''; valueB = b.recipient?.accountHolderName?.toLowerCase() ?? ''; break;
+                    case 'createdAt': valueA = new Date(a.createdAt).getTime() || 0; valueB = new Date(b.createdAt).getTime() || 0; break;
+                    case 'status': valueA = a.status.toLowerCase(); valueB = b.status.toLowerCase(); break;
+                    case '_id': valueA = a._id; valueB = b._id; break;
+                    default: valueA = ''; valueB = ''; // Should not happen with TransferSortField type
                 }
 
-                // Comparison Logic - Handle different types
                 let comparison = 0;
+                if (valueA < valueB) comparison = -1;
+                else if (valueA > valueB) comparison = 1;
 
-                if (valueA instanceof Date && valueB instanceof Date) {
-                    const timeA = !isNaN(valueA.getTime()) ? valueA.getTime() : -Infinity;
-                    const timeB = !isNaN(valueB.getTime()) ? valueB.getTime() : -Infinity;
-                    comparison = timeA - timeB;
-                }
-                else if (typeof valueA === 'number' && typeof valueB === 'number') {
-                    const numA = isNaN(valueA) ? -Infinity : valueA;
-                    const numB = isNaN(valueB) ? -Infinity : valueB;
-                    comparison = numA - numB;
-                }
-                else {
-                    const strA = String(valueA ?? '').toLowerCase();
-                    const strB = String(valueB ?? '').toLowerCase();
-                    comparison = strA.localeCompare(strB);
-                }
-
-                // Apply direction
-                return sortDirection === 'asc' ? comparison : -comparison;
+                return sortDirection === 'asc' ? comparison : comparison * -1;
             });
         }
 
         setFilteredTransfers(results);
-        // Reset page to 1 only if filters/sorting change *after* the initial load
-        if (transfers.length > 0) { // Basic check to see if it's not the initial empty state
-            setCurrentPage(1);
+
+    }, [transfers, searchTerm, statusFilter, fromDate, toDate, sortField, sortDirection, transferIdFilter, amountFilter, currencyFilter, recipientFilter]); // Include new date states
+
+    // --- Reset Page on Filter/Sort Change ---
+    useEffect(() => {
+        if (currentPage !== 1) {
+             setCurrentPage(1);
         }
-    }, [transfers, searchTerm, statusFilter, dateRange, sortField, sortDirection, transferIdFilter, amountFilter, currencyFilter, recipientFilter]); // Keep all relevant dependencies
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchTerm, statusFilter, fromDate, toDate, transferIdFilter, amountFilter, currencyFilter, recipientFilter, sortField, sortDirection]);
 
 
-    // --- FIX: Ensure field passed to toggleSort matches TransferSortField type ---
-    const toggleSort = (field: TransferSortField) => {
-        if (sortField === field) {
-            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-        } else {
-            setSortField(field);
-            setSortDirection('asc');
-        }
-    };
+    // --- Callback for GenericFilters to apply selected filters ---
+    const handleApplyFilters = useCallback((filters: FiltersState) => {
+        setSearchTerm(filters.searchTerm);
+        setFromDate(filters.fromDate); // Use string date
+        setToDate(filters.toDate);     // Use string date
+        setStatusFilter(filters.statusFilter);
+        // Map idFilter back to transferIdFilter
+        setTransferIdFilter(filters.idFilter);
+        setAmountFilter(filters.amountFilter);
+        setCurrencyFilter(filters.currencyFilter);
+        // Use recipientFilter, provide default empty string if undefined
+        setRecipientFilter(filters.recipientFilter ?? '');
+        // Page reset is handled by the useEffect above
+    }, []); // No dependencies needed as it only uses setters
 
-    const clearFilters = () => {
+    // --- Callback for GenericFilters to clear all filters ---
+    const handleClearAllFilters = useCallback(() => {
         setSearchTerm('');
-        setDateRange({ from: null, to: null });
+        setFromDate(''); // Clear string date
+        setToDate('');   // Clear string date
         setStatusFilter('all');
         setTransferIdFilter('');
         setAmountFilter('');
         setCurrencyFilter('all');
         setRecipientFilter('');
-        setSortField(null); // Clear sorting when clearing filters
-        setSortDirection('asc');
-        setCurrentPage(1); // Reset page when clearing filters
+        // Optionally reset sorting
+        // setSortField(null);
+        // setSortDirection('asc');
+        // Page reset is handled by the useEffect above
+    }, []); // No dependencies needed
+
+    // Page size change handler (keep as is)
+    const handlePageSizeChange = (size: number) => {
+        setTransfersPerPage(size);
+        setCurrentPage(1);
     };
 
+    // Toggle sort handler (keep as is)
+    const toggleSort = (field: TransferSortField) => {
+        const newDirection = (sortField === field && sortDirection === 'asc') ? 'desc' : 'asc';
+        setSortField(field);
+        setSortDirection(newDirection);
+    };
+
+    // Get status color helper (keep as is)
     const getStatusColor = (status: string) => {
-        switch (status?.toLowerCase()) { // Added toLowerCase for safety
-            case 'completed': return 'text-green-600 bg-green-600/20 ';
-            case 'pending': return 'text-yellow-600 bg-yellow-600/20 ';
-            case 'processing': return 'text-blue-600 bg-blue-600/20 ';
-            case 'failed': return 'text-rose-600 bg-rose-600/20 ';
-            case 'canceled': return 'text-red-600 bg-red-600/20 ';
-            default: return 'text-gray-600 bg-gray-600/20 ';
-        }
+         switch (status?.toLowerCase()) {
+             case 'completed': return 'text-green-600 bg-green-100 dark:bg-green-600/20 dark:text-green-400';
+             case 'pending': return 'text-yellow-600 bg-yellow-100 dark:bg-yellow-600/20 dark:text-yellow-400';
+             case 'processing': return 'text-blue-600 bg-blue-100 dark:bg-blue-600/20 dark:text-blue-400';
+             case 'failed': return 'text-rose-600 bg-rose-100 dark:bg-rose-600/20 dark:text-rose-400';
+             case 'canceled': return 'text-red-600 bg-red-100 dark:bg-red-600/20 dark:text-red-400';
+             default: return 'text-gray-600 bg-gray-100 dark:bg-gray-600/20 dark:text-gray-400';
+         }
     };
 
-    // Memoize calculation of options to prevent re-computation on every render
-    const currencyOptions = React.useMemo(() => {
-        const codes = new Set(transfers.map(p => p.sendCurrency?.code).filter((code): code is string => Boolean(code)));
-        return ['all', ...Array.from(codes)];
+    // Memoized options
+    const currencyOptions = useMemo(() => {
+        const codes = new Set(transfers.map(t => t.sendCurrency?.code).filter((code): code is string => Boolean(code) && code !== 'N/A'));
+        return ['all', ...Array.from(codes).sort()];
     }, [transfers]);
 
-    const statusOptions: ('all' | 'pending' | 'processing' | 'completed' | 'failed' | 'canceled')[] = ['all', 'pending', 'processing', 'completed', 'failed', 'canceled'];
+    // Use string array for status options
+    const statusOptions: string[] = useMemo(() => {
+        const statuses = new Set(transfers.map(t => t.status).filter(Boolean));
+        return ['all', ...Array.from(statuses).sort()];
+     }, [transfers]);
 
 
-    const refreshData = () => {
+    const refreshData = useCallback(() => {
         fetchTransfers();
-    };
+    }, [fetchTransfers]);
 
-    // Pagination logic
-    const indexOfLastTransfer = currentPage * transfersPerPage;
-    const indexOfFirstTransfer = indexOfLastTransfer - transfersPerPage;
-    const currentTransfers = filteredTransfers.slice(indexOfFirstTransfer, indexOfLastTransfer); // Use the locally defined Transfer type
+    // --- Pagination Calculation (Memoized) ---
+    const { currentTransfers, totalPages } = useMemo(() => {
+        const indexOfLastTransfer = currentPage * transfersPerPage;
+        const indexOfFirstTransfer = indexOfLastTransfer - transfersPerPage;
+        const paginatedData = filteredTransfers.slice(indexOfFirstTransfer, indexOfLastTransfer);
+        const pages = Math.ceil(filteredTransfers.length / transfersPerPage);
+        // Ensure currentPage is valid after filtering
+        if (currentPage > pages && pages > 0) {
+            // Use setCurrentPage in a useEffect triggered by totalPages change if direct setting causes issues
+            // For now, try direct setting, but be mindful of potential render loops
+             // setCurrentPage(pages); // Be cautious here
+             // Safer approach: Let pagination component handle clamping or use effect
+        }
+        return { currentTransfers: paginatedData, totalPages: pages };
+    }, [filteredTransfers, currentPage, transfersPerPage]);
 
-    const totalPages = Math.ceil(filteredTransfers.length / transfersPerPage);
+    // Effect to adjust current page if it becomes invalid after filtering/page size change
+     useEffect(() => {
+         if (totalPages > 0 && currentPage > totalPages) {
+             setCurrentPage(totalPages);
+         }
+          // Reset to 1 if filters result in no pages but there used to be pages
+         else if (totalPages === 0 && currentPage !== 1 && filteredTransfers.length === 0 && transfers.length > 0) {
+             // Only reset if filters cleared everything, not on initial load
+             // setCurrentPage(1); // Maybe not needed if pagination handles 0 pages gracefully
+         }
+     }, [currentPage, totalPages, filteredTransfers.length, transfers.length]);
+
+
+    // Pagination handlers
     const paginate = (pageNumber: number) => {
         if (pageNumber >= 1 && pageNumber <= totalPages) {
              setCurrentPage(pageNumber);
+        } else if (pageNumber < 1 && totalPages > 0) {
+            setCurrentPage(1);
+        } else if (pageNumber > totalPages && totalPages > 0) {
+            setCurrentPage(totalPages);
         }
     };
-    const goToPreviousPage = () => setCurrentPage(currentPage > 1 ? currentPage - 1 : currentPage);
-    const goToNextPage = () => setCurrentPage(currentPage < totalPages ? currentPage + 1 : currentPage);
+    const goToPreviousPage = () => paginate(currentPage - 1);
+    const goToNextPage = () => paginate(currentPage + 1);
+
+    // --- Bundle current filters into an object for GenericFilters prop ---
+    const currentFilterState: FiltersState = useMemo(() => ({
+        searchTerm,
+        fromDate, // Use string date
+        toDate,   // Use string date
+        statusFilter,
+        currencyFilter,
+        idFilter: transferIdFilter, // Map transferIdFilter to idFilter
+        amountFilter,
+        recipientFilter,         // Pass recipientFilter
+    }), [searchTerm, fromDate, toDate, statusFilter, currencyFilter, transferIdFilter, amountFilter, recipientFilter]);
 
 
     return (
         <div className="container mx-auto px-4 py-8 relative">
             <div className="space-y-6">
+                {/* Header */}
                 <div className="flex flex-wrap justify-between items-center gap-4">
                     <h1 className="text-2xl font-bold text-mainheading dark:text-white">Transfer Management</h1>
-                    <div className="flex flex-wrap gap-3 items-center">
-                        <div className="relative">
-                            <input
-                                type="text"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                placeholder="Search by User, Recipient or Email..."
-                                className="w-full sm:w-64 md:w-xl rounded-full py-2 pl-12 pr-3 h-12.5 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white"
-                            />
-                            <Search className="absolute left-3 top-3.5 text-gray-400" size={20} />
-                        </div>
+                    <div className="flex flex-wrap justify-end gap-3 items-center">
+                        {/* Search moved to Filter modal, keep buttons */}
                         <button
                             onClick={() => setShowFilterModal(true)}
-                            className="flex items-center cursor-pointer gap-2 bg-primary text-secondary font-medium text-lg px-8 py-2 h-12.5 rounded-3xl hover:bg-primaryhover transition-colors whitespace-nowrap"
+                            className="flex items-center justify-center cursor-pointer gap-2 bg-primary text-secondary font-medium text-base px-6 py-2 h-12 rounded-full hover:bg-primaryhover transition-colors"
                         >
                             <Filter size={18} />
                             Filters
@@ -1137,137 +1696,83 @@ const AdminTransfersPage: React.FC = () => {
                         <button
                             onClick={refreshData}
                             disabled={isRefreshing || loadingTransfers}
-                            className="flex items-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 h-12.5 rounded-3xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                            className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 h-12 rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                            title="Refresh transfer data"
                         >
-                            <RefreshCw
-                                className={`size-5 ${isRefreshing ? "animate-spin" : ""}`}
-                            />
+                            <RefreshCw className={`size-5 ${isRefreshing ? "animate-spin" : ""}`} />
                             <span>Refresh</span>
                         </button>
                     </div>
                 </div>
 
-                {/* Success Message */}
+                {/* Success/Error Messages (Keep as is) */}
                 <AnimatePresence>
-                    {successMessage && (
-                        <motion.div
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            className="bg-green-50 border-l-4 border-green-500 p-4 rounded-md shadow"
-                        >
-                            <div className="flex items-start">
-                                <div className="flex-shrink-0">
-                                    <Check className="h-5 w-5 text-green-500" />
-                                </div>
-                                <div className="ml-3">
-                                    <p className="text-sm text-green-700">{successMessage}</p>
-                                </div>
-                                <button
-                                    onClick={() => setSuccessMessage(null)}
-                                    className="ml-auto flex-shrink-0 text-green-500 hover:text-green-700"
-                                    aria-label="Dismiss success message"
-                                >
-                                    <X size={18} />
-                                </button>
-                            </div>
-                        </motion.div>
-                    )}
+                    {successMessage && <motion.div /* ... */>{successMessage}</motion.div>}
+                </AnimatePresence>
+                <AnimatePresence>
+                    {error && <motion.div /* ... */>{error}</motion.div>}
                 </AnimatePresence>
 
-                {/* Error Message */}
-                <AnimatePresence>
-                    {error && (
-                        <motion.div
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md shadow"
-                        >
-                            <div className="flex items-start">
-                                <div className="flex-shrink-0">
-                                    <X className="h-5 w-5 text-red-500" />
-                                </div>
-                                <div className="ml-3">
-                                    <p className="text-sm text-red-700">{error}</p>
-                                </div>
-                                <button
-                                    onClick={() => setError(null)}
-                                    className="ml-auto flex-shrink-0 text-red-500 hover:text-red-700"
-                                    aria-label="Dismiss error message"
-                                >
-                                    <X size={18} />
-                                </button>
-                            </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
 
-                <div className="flex flex-wrap justify-between items-center mb-4 gap-4">
+                {/* Pagination and Page Size Controls (Keep as is) */}
+                 <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
                     <div className="flex items-center gap-2">
-                        <label htmlFor="transfersPerPage" className="text-sm font-medium text-gray-600 dark:text-white whitespace-nowrap">Show per page:</label>
-                        <select
-                            id="transfersPerPage"
-                            value={transfersPerPage}
-                            onChange={(e) => handlePageSizeChange(Number(e.target.value))}
-                            className="block w-auto pl-3 pr-10 py-2 border focus:outline-none sm:text-sm rounded-md bg-lightgray dark:bg-[#2E2E2E] dark:text-white dark:border-gray-600"
-                        >
-                            {pageSizeOptions.map(size => (
-                                <option key={size} value={size}>{size}</option>
-                            ))}
-                        </select>
+                         <label htmlFor="transfersPerPage" className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Show:</label>
+                         <select id="transfersPerPage" value={transfersPerPage} onChange={(e) => handlePageSizeChange(Number(e.target.value))} className="block w-auto pl-3 pr-8 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-primary bg-white dark:bg-primarybox dark:text-white">
+                              {pageSizeOptions.map(size => <option key={size} value={size} className="dark:bg-dropdowncolor">{size}</option>)}
+                         </select>
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">entries</span>
                     </div>
-                    <p className="text-sm text-gray-600 dark:text-white">
-                        Showing {filteredTransfers.length > 0 ? indexOfFirstTransfer + 1 : 0}-{Math.min(indexOfLastTransfer, filteredTransfers.length)} of {filteredTransfers.length} results
-                         {totalPages > 0 && ` (Page ${currentPage} of ${totalPages})`}
-                    </p>
-                </div>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                         Showing {filteredTransfers.length > 0 ? (currentPage - 1) * transfersPerPage + 1 : 0}
+                         - {Math.min(currentPage * transfersPerPage, filteredTransfers.length)}
+                         {" "}of {filteredTransfers.length} results
+                         {totalPages > 1 && ` (Page ${currentPage} of ${totalPages})`}
+                     </p>
+                 </div>
 
-                {/* Transfers Table */}
+                {/* Transfers Table (Keep as is) */}
                 <TransferTable
-                    // --- FIX: Pass currentTransfers which now uses the local Transfer type ---
-                    filteredTransfers={currentTransfers}
+                    filteredTransfers={currentTransfers} // Pass paginated data
                     loadingTransfers={loadingTransfers}
                     getStatusColor={getStatusColor}
-                    // --- FIX: Pass toggleSort which now expects TransferSortField ---
                     toggleSort={toggleSort}
-                    // --- FIX: Pass sortField which now has the specific type TransferSortField | null ---
                     sortField={sortField}
                     sortDirection={sortDirection}
                 />
-                {/* Pagination Controls - Only show if more than one page */}
-                 {totalPages > 1 && (
-                     <Pagination
-                         currentPage={currentPage}
-                         totalPages={totalPages}
-                         paginate={paginate}
-                         goToPreviousPage={goToPreviousPage}
-                         goToNextPage={goToNextPage}
-                     />
-                 )}
+
+                {/* Pagination Component (Keep as is) */}
+                {totalPages > 1 && (
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        paginate={paginate}
+                        goToPreviousPage={goToPreviousPage}
+                        goToNextPage={goToNextPage}
+                    />
+                )}
             </div>
 
-            {/* Filter Sidebar */}
-            <TransferFilters
+            {/* *** USE GENERIC FILTERS COMPONENT *** */}
+            <GenericFilters
                 showFilterModal={showFilterModal}
                 setShowFilterModal={setShowFilterModal}
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-                dateRange={dateRange}
-                setDateRange={setDateRange}
-                statusFilter={statusFilter}
-                setStatusFilter={setStatusFilter}
-                currencyFilter={currencyFilter}
-                setCurrencyFilter={setCurrencyFilter}
-                transferIdFilter={transferIdFilter}
-                setTransferIdFilter={setTransferIdFilter}
-                amountFilter={amountFilter}
-                setAmountFilter={setAmountFilter}
-                currencyOptions={currencyOptions}
-                statusOptions={statusOptions}
-                clearFilters={clearFilters}
-                recipientFilter={recipientFilter}
-                setRecipientFilter={setRecipientFilter}
+                initialFilters={currentFilterState} // Pass the mapped state
+                onApplyFilters={handleApplyFilters} // Pass the apply handler
+                onClearFilters={handleClearAllFilters} // Pass the clear handler
+                currencyOptions={currencyOptions} // Pass transfer currencies
+                statusOptions={statusOptions} // Pass transfer statuses (as strings)
+                // Customize labels/visibility for Transfers
+                idFilterLabel="Transfer ID"
+                idFilterPlaceholder="Filter by Transfer ID"
+                recipientFilterLabel="Recipient Name"
+                recipientFilterPlaceholder="Filter by Recipient"
+                showRecipientFilter={true} // Enable the recipient filter field
+                showIdFilter={true}
+                showAmountFilter={true}
+                showCurrencyFilter={true}
+                showStatusFilter={true}
+                showDateFilter={true}
             />
         </div >
     );

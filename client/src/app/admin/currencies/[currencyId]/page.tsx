@@ -7002,7 +7002,7 @@ const AdminEditCurrencyPage = () => {
                     value={formState.currencyName} // Use formState directly
                     onChange={handleChange}
                     required
-                    className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-400 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
+                    className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
                   />
                 </div>
 
@@ -7023,7 +7023,7 @@ const AdminEditCurrencyPage = () => {
                       value={formState.flagImage} // Use formState directly
                       onChange={handleChange}
                       placeholder="/assets/icon/flags/eur.png or https://..."
-                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 dark:text-white dark:hover:shadow-whitecolor transition-shadow ease-in-out duration-300 hover:shadow-darkcolor placeholder:text-gray-400 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium pr-12 md:pr-16" // Add padding for image
+                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 dark:text-white dark:hover:shadow-whitecolor transition-shadow ease-in-out duration-300 hover:shadow-darkcolor placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium pr-12 md:pr-16" // Add padding for image
                     />
                     {formState.flagImage && !flagImageError && ( // Use formState directly
                       <div className="absolute right-3 top-1/2 -translate-y-1/2 h-6 w-8 md:h-8 md:w-10 pointer-events-none">
@@ -7124,7 +7124,7 @@ const AdminEditCurrencyPage = () => {
                     placeholder="Recipient's full name or company name"
                     value={formState.payeeName} // Use formState directly
                     onChange={handleChange}
-                    className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-400 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
+                    className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
                   />
                 </div>
 
@@ -7145,7 +7145,7 @@ const AdminEditCurrencyPage = () => {
                       placeholder="International Bank Account Number"
                       value={formState.iban} // Use formState directly
                       onChange={handleChange}
-                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-400 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
+                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
                     />
                   </div>
 
@@ -7164,7 +7164,7 @@ const AdminEditCurrencyPage = () => {
                       placeholder="Bank Identifier Code"
                       value={formState.bicSwift} // Use formState directly
                       onChange={handleChange}
-                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-400 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
+                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
                     />
                   </div>
                 </div>
@@ -7185,7 +7185,7 @@ const AdminEditCurrencyPage = () => {
                     placeholder="Full address of the recipient's bank"
                     value={formState.bankAddress} // Use formState directly
                     onChange={handleChange}
-                    className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-400 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
+                    className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
                   ></textarea>
                 </div>
               </div>
@@ -7229,7 +7229,7 @@ const AdminEditCurrencyPage = () => {
                       onChange={handleChange}
                       step="any"
                       min="0"
-                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-400 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       placeholder="e.g., 0.5"
                     />
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
@@ -7259,7 +7259,7 @@ const AdminEditCurrencyPage = () => {
                       onChange={handleChange}
                       step="any"
                       min="0"
-                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-400 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       placeholder="e.g., 5.00"
                     />
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
@@ -7290,7 +7290,7 @@ const AdminEditCurrencyPage = () => {
                       value={formState.rateAdjustmentPercentage} // Use formState directly
                       onChange={handleChange}
                       step="any" // Allow negative/positive decimals
-                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-400 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       placeholder="e.g., -0.5 or 1.2"
                     />
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
