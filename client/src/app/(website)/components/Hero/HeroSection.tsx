@@ -6748,29 +6748,15 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import { SlLock } from "react-icons/sl";
 // import { IoIosArrowForward } from "react-icons/io";
 // import { CiBank } from "react-icons/ci";
 // import { useState, useEffect } from "react";
-// import CountryDropdown from "../../../components/CountryDropdown";
+// import CountryDropdown from "@/app/components/ui/CountryDropdown";
 // import HeroText from "./HeroText";
 // import Image from "next/image"; // Import Image from next/image
-// import inr from "../../../../../public/assets/icons/inr.svg"; // Import INR SVG
+// import inr from "../../../../../public/assets/icon/inr.svg"; // Import INR SVG
 
 // interface ExchangeRates {
 //   [key: string]: { [key: string]: number };
@@ -6907,7 +6893,7 @@
 
 
 //     return (
-//     <section className="Hero-Section py-12 bg-white">
+//     <section className="Hero-Section py-12 bg-white dark:bg-background">
 //       <div className="container mx-auto px-4">
 //         <div className="flex flex-col lg:flex-row items-center gap-12">
 //           {/* Left Column: Text Content */}
@@ -7049,9 +7035,6 @@
 // };
 
 // export default HeroSection;
-
-
-
 
 
 
@@ -8852,7 +8835,7 @@
 
 
 
-// // app/(website)/components/Hero/HeroSection.tsx
+// // // app/(website)/components/Hero/HeroSection.tsx
 "use client";
 import { SlLock } from "react-icons/sl";
 import { IoIosArrowForward } from "react-icons/io";
@@ -9033,11 +9016,11 @@ const HeroSection: React.FC = () => {
 
   // --- JSX ---
   return (
-    <section className="Hero-Section py-12 bg-white dark:bg-background">
+    <section className="Hero-Section lg::py-12 py-5 bg-white dark:bg-background">
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row items-center gap-12">
           {/* Left Column: Text Content */}
-          <div className="lg:w-1/2 space-y-5 p-4">
+          <div className="lg:w-1/2 space-y-5">
             <HeroText />
           </div>
 
@@ -9045,7 +9028,7 @@ const HeroSection: React.FC = () => {
           <div className="lg:max-w-xl lg:ml-auto w-full"> {/* Use max-w-xl and w-full */}
             <div className="bg-white dark:bg-background rounded-3xl shadow-lg md:p-8 p-4 border">
               {/* Rate Guaranteed */}
-              <div className="flex flex-col justify-center items-center gap-2 text-primary font-medium text-center mb-4 ">
+              <div className="flex flex-col justify-center items-center gap-2 text-primary font-medium text-center mb-4">
                 <div className="flex justify-center items-center gap-2">
                   <SlLock size={22} />
                   <span>Rate guaranteed (24h)</span>
@@ -9069,7 +9052,7 @@ const HeroSection: React.FC = () => {
                       placeholder="0.00"
                       value={sendAmount}
                       onChange={handleSendAmountChange}
-                      className="block w-full h-14 p-3 text-mainheading placeholder:text-white dark:text-white text-2xl font-black focus:outline-none" // Added appearance-none
+                      className="block w-full p-3 focus:text-2xl text-mainheading placeholder:text-mainheading dark:placeholder:text-white dark:text-white text-2xl font-black focus:outline-none" // Added appearance-none
                       autoComplete="off" // Prevent browser autocomplete
                     />
                     {/* Pass only necessary props to CountryDropdown */}
@@ -9120,15 +9103,11 @@ const HeroSection: React.FC = () => {
                     <CiBank size={24} />
                     <span className="text-mainheading dark:text-white font-semibold">Bank transfer</span>
                   </div>
-                  <button type="button" className="text-mainheading dark:text-white bg-green/10 dark:bg-secondary font-medium px-3 py-2 rounded-full text-sm inline-flex items-center gap-2">
-                    Change
-                    <IoIosArrowForward size={18} />
-                  </button>
                 </div>
               </div>
 
               {/* Fee Details Section */}
-              <div className="text-sm border border-gray-300 rounded-xl p-4 space-y-2.5">
+              <div className="text-sm border rounded-xl p-4 space-y-2.5">
                  {/* Fee details remain the same */}
                  <div className="flex justify-between">
                    <span className="text-mainheading dark:text-white ">Bank transfer fee</span>
@@ -9142,7 +9121,7 @@ const HeroSection: React.FC = () => {
                    <span className="text-mainheading dark:text-white ">GST</span>
                    <span className="text-gray-500 dark:text-gray-300">{gst.toFixed(2)} {selectedSendCurrency}</span>
                  </div>
-                 <hr className="my-2 border-gray-200" />
+                 <hr className="my-2" />
                  <div className="flex justify-between text-mainheading dark:text-white font-semibold">
                    <span>Total included fees (0%)</span>
                    <span>{(sendFee + gst).toFixed(2)} {selectedSendCurrency}</span>

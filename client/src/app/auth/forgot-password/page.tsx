@@ -1299,8 +1299,6 @@
 
 // export default ResetPasswordForm;
 
-
-
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -1354,11 +1352,13 @@ const ResetPasswordForm = () => {
         await authService.forgotPassword({ email });
         setEmailSent(true);
         setResendAttemptFailed(false); // Reset resend attempt status on successful send
-      } catch (err: unknown) { // FIXED: Use unknown instead of any
+      } catch (err: unknown) {
+        // FIXED: Use unknown instead of any
         // Determine error message safely
-        const message = err instanceof Error
+        const message =
+          err instanceof Error
             ? err.message
-            : typeof err === 'string'
+            : typeof err === "string"
             ? err
             : "An error occurred while processing your request. Please try again.";
         console.error("Forgot password error:", err); // Log the original error for debugging
@@ -1387,11 +1387,13 @@ const ResetPasswordForm = () => {
       // setSuccessMessage("A new password reset link has been sent to your email address."); // This state seems unused in the success flow
       setShowCheckAgainMessage(true);
       setResendAttemptFailed(false); // Reset resend attempt status on successful resend
-    } catch (err: unknown) { // FIXED: Use unknown instead of any
+    } catch (err: unknown) {
+      // FIXED: Use unknown instead of any
       // Determine error message safely
-      const message = err instanceof Error
+      const message =
+        err instanceof Error
           ? err.message
-          : typeof err === 'string'
+          : typeof err === "string"
           ? err
           : "Failed to send email again. Please try again later.";
       console.error("Resend password error:", err); // Log the original error for debugging
@@ -1402,6 +1404,17 @@ const ResetPasswordForm = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Framer Motion variants for animation
+  const errorVariants = {
+    initial: { opacity: 0, y: -20 },
+    animate: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.4, ease: "easeOut" },
+    },
+    exit: { opacity: 0, y: -20, transition: { duration: 0.3, ease: "easeIn" } },
   };
 
   if (emailSent) {
@@ -1436,16 +1449,18 @@ const ResetPasswordForm = () => {
           <AnimatePresence>
             {showCheckAgainMessage && (
               <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-                className="flex bg-lightborder dark:bg-green-600/20 lg:p-6 p-4 rounded-2xl cursor-pointer lg:gap-4 gap-2 items-center mb-4"
+                className="flex bg-lightgray dark:bg-secondary p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4"
+                role="alert"
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                variants={errorVariants}
               >
-                <div className="flex bg-white justify-center rounded-full items-center lg:size-12 size-8">
-                  <FaCheck className="text-mainheading size-6" />
+                <div className="flex bg-primary/20 justify-center rounded-full items-center size-12 shrink-0">
+                  <FaCheck className="p-0.5 text-mainheading dark:text-primary size-8" />
                 </div>
-                <p className="text-gray-500 dark:text-white lg:text-lg text-base">
+
+                <p className="text-gray-500 dark:text-gray-300 block font-medium">
                   Please check your email inbox again.
                 </p>
               </motion.div>
@@ -1457,11 +1472,14 @@ const ResetPasswordForm = () => {
               className="flex bg-red-100 border border-red-400 p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4" // Adjusted styling slightly for consistency
               role="alert"
             >
-              <div className="flex bg-[#a8200d] justify-center rounded-full items-center size-12 shrink-0"> {/* Added shrink-0 */}
+              <div className="flex bg-[#a8200d] justify-center rounded-full items-center size-12 shrink-0">
+                {" "}
+                {/* Added shrink-0 */}
                 <IoMdCloseCircle className="p-0.5 text-white size-8" />
               </div>
               <div>
-                <span className="text-red-700 block">{resendError}</span> {/* Adjusted text color */}
+                <span className="text-red-700 block">{resendError}</span>{" "}
+                {/* Adjusted text color */}
               </div>
             </div>
           )}
@@ -1516,8 +1534,8 @@ const ResetPasswordForm = () => {
         Reset password
       </h2>
       <p className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base max-w-lg mb-4">
-        Just enter the email address you registered with and we&apos;ll send you a
-        link to reset your password.
+        Just enter the email address you registered with and we&apos;ll send you
+        a link to reset your password.
       </p>
 
       {error && (
