@@ -1533,33 +1533,23 @@ const Header: React.FC = () => {
             </div>
 
             <div className="flex justify-end items-center w-full">
-              {/* Desktop Links */}
-              {isLargeScreen && (
-                <div className="flex items-center gap-2">
-                  <Link
-                    href="/personal"
-                    className="bg-[#d3f2c0] dark:text-mainheading px-4 py-1.5 rounded-full font-medium"
-                  >
-                    Personal
-                  </Link>
-                  <Link
-                    href="/business"
-                    className="px-4 py-1.5 rounded-full font-medium hover:bg-lightgray dark:hover:bg-primarybox"
-                  >
-                    Business
-                  </Link>
-                  <Link
-                    href="/platform"
-                    className="px-4 py-1.5 rounded-full font-medium hover:bg-lightgray dark:hover:bg-primarybox"
-                  >
-                    Platform
-                  </Link>
-                </div>
-              )}
-
               {isLargeScreen && (
                 <>
-                  <div className="flex justify-end items-center gap-2 flex-1/2 w-full">
+                  <div className="flex justify-end items-center gap-2.5 flex-1/2 w-full">
+                    <Link
+                      href="/"
+                      className="px-2.5 py-1.5 rounded-full font-medium hover:bg-lightgray dark:hover:bg-primarybox"
+                    >
+                      Home
+                    </Link>
+
+                    <Link
+                      href="/"
+                      className="px-2.5 py-1.5 rounded-full font-medium hover:bg-lightgray dark:hover:bg-primarybox"
+                    >
+                      About
+                    </Link>
+
                     <FeatureDropdown
                       buttonText="Features"
                       links={featureLinks}
@@ -1568,55 +1558,26 @@ const Header: React.FC = () => {
                     />
 
                     <Link
-                      href="/pricing"
-                      className="px-2.5 py-1.5 rounded-full font-medium hover:bg-lightgray dark:hover:bg-primarybox"
-                    >
-                      Pricing
-                    </Link>
-                    <Link
                       href="/help"
                       className="px-2.5 py-1.5 rounded-full font-medium hover:bg-lightgray dark:hover:bg-primarybox"
                     >
                       Help
                     </Link>
-                    <Link href="/en">
-                      <button className="flex items-center gap-1 px-2.5 py-1.5 rounded-full cursor-pointer hover:bg-lightgray dark:hover:bg-secondary">
-                        <Image
-                          src="/assets/icon/flags/inr.svg" // Keep the same source
-                          alt="Indian Flag"
-                          className="h-5 w-5 rounded-full mr-1 object-cover"
-                          width={500} // REQUIRED: Replace with the actual width of image.png in pixels
-                          height={300} // REQUIRED: Replace with the actual height of image.png in pixels
-                          priority
-                        />
-                        <span className="font-medium">EN</span>
-                      </button>
-                    </Link>
                   </div>
 
-                  <div className="flex items-center ml-2">
+                  <div className="flex items-center mr-2">
                     <ThemeToggle location="header" />
                   </div>
                 </>
               )}
 
               <div className="flex items-center gap-2">
-                {/* Register Link (Desktop) */}
-                {isLargeScreen && (
-                  <Link
-                    href="/auth/register"
-                    className="px-4 py-2 rounded-full font-medium hover:bg-lightgray dark:hover:bg-primarybox"
-                  >
-                    Register
-                  </Link>
-                )}
-
                 {/* Login and Hamburger for Mobile */}
                 {!isMobileMenuOpen && (
                   <>
                     <Link
                       href="/auth/login"
-                      className="bg-primary px-5 py-2 text-nowrap font-medium rounded-full hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading"
+                      className="bg-primary px-8 py-1.5 lg:block hidden text-nowrap font-medium text-lg rounded-full hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading"
                     >
                       Log in
                     </Link>
@@ -1627,7 +1588,7 @@ const Header: React.FC = () => {
                         className="text-primary p-2 cursor-pointer"
                         aria-label="Open Mobile Menu"
                       >
-                        <GiHamburgerMenu size={26}/>
+                        <GiHamburgerMenu size={26} />
                       </button>
                     )}
                   </>

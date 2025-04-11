@@ -108,16 +108,17 @@ import { FaShieldAlt, FaUniversity } from "react-icons/fa";
 
 const SecuritySection = () => {
   return (
-    <section className="Security-section py-12">
+    <section className="Security-section md:py-12 py-5">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           {/* Left Content */}
           <div className="w-full md:w-3/5 order-2 md:order-1">
             <div className="mb-10">
-              <h1 className="text-5xl md:text-6xl xl:text-8xl leading-14 lg:leading-24 font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+              <h1 className="text-5xl md:text-6xl xl:text-8xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
                 Secure Currency Exchange
                 <span className="text-primary"> You Can Trust </span>
               </h1>
+              
               <p className="lg:text-lg sm:text-base text-sm text-gray-500 leading-relaxed dark:text-gray-300 mt-5">
                 Experience fast, reliable, and secure currency exchange with
                 full transparency and top-level protection for your
@@ -125,7 +126,7 @@ const SecuritySection = () => {
               </p>
             </div>
             <div>
-              <button className="bg-primary rounded-full px-6 py-3 h-14 hover:bg-primaryhover text-mainheading font-medium text-lg transition-colors duration-300 ease-in-out">
+              <button className="bg-primary rounded-full px-6 md:py-3 py-2 md:h-14 hover:bg-primaryhover text-mainheading font-medium text-base lg:text-lg transition-colors duration-300 ease-in-out">
                 <Link href={""} className="text-mainheading font-medium">
                   How we keep your money safe
                 </Link>
@@ -141,7 +142,7 @@ const SecuritySection = () => {
               alt="Padlock symbolizing security"
               width={500}
               height={500}
-              className="w-[300px] lg:w-[500px] h-auto"
+              className="md:w-[300px] w-[200px] lg:w-[500px] h-auto md:mb-0 mb-5"
               priority // Optional: Add priority if this image is above the fold
             />
           </div>
