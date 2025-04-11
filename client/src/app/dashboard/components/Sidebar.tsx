@@ -1206,10 +1206,8 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                   );
                 })}
               </nav>
-            </div>
-
              {/* Logout Button Area */}
-             <div className="shrink-0 py-4">
+             <div className="shrink-0">
                 <button
                     onClick={handleLogout}
                     // Apply relative positioning for potential future animations if needed
@@ -1222,6 +1220,8 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                     </div>
                 </button>
              </div>
+            </div>
+
 
           </motion.div>
         )}
