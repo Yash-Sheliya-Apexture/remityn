@@ -1771,7 +1771,7 @@ export default function LoginPage() {
                         </AnimatePresence>
 
                         <form className="mt-10 space-y-5" onSubmit={handleSubmit}>
-                            {/* <div>
+                            <div>
                                 <button
                                     type="button" // Changed to button type for accessibility and preventing form submission
                                     className="flex bg-white dark:bg-background border justify-center rounded-lg text-mainheading dark:text-white  text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3"
@@ -1785,7 +1785,7 @@ export default function LoginPage() {
                                     />
                                     Continue with Google
                                 </button>
-                            </div> */}
+                            </div>
 
                             <div>
                                 <label
