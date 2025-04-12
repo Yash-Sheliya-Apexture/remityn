@@ -4350,7 +4350,7 @@ const TransactionDetailsPage = () => {
     // --- Main Component Return ---
     return (
         <> {/* Fragment wrapping page content and modal */}
-            <div className="container mx-auto px-4 py-8">
+            <div className="container mx-auto">
                 {/* Main Content Card */}
                 <div className="bg-white dark:bg-background rounded-2xl border dark:border-border shadow-sm mx-auto max-w-4xl">
                     {/* Card Header */}
@@ -4373,10 +4373,10 @@ const TransactionDetailsPage = () => {
                             <div>
                                 {/* Transaction ID / Reference Code (Consistent placement) */}
                                 <div className="flex items-center mb-6 text-sm gap-2">
-                                    <span className="text-gray-500 dark:text-gray-400 w-28 flex-shrink-0">
+                                    <span className="text-gray-500 dark:text-gray-300 w-28 flex-shrink-0">
                                         {isPayment ? "Reference Code" : "Transfer ID"}
                                     </span>
-                                    <span className="font-medium text-gray-700 dark:text-gray-300 break-all">
+                                    <span className="font-medium text-neutral-900 dark:text-white break-all">
                                         {isPayment ? (transactionDetails as PaymentDetails).referenceCode || 'N/A' : transactionDetails._id}
                                     </span>
                                     {/* Optional: Add copy button here */}

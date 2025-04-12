@@ -30,27 +30,24 @@ const TransactionHeader: React.FC<TransactionHeaderProps> = ({
     return (
         <div className="sm:p-6 p-4 flex items-start gap-4 border-b dark:border-border">
             {/* Icon container */}
-            <div className={cn(
-                "p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center shrink-0",
-                isPayment ? 'text-green-600' : 'text-blue-600' // Example coloring
-            )}>
+            <div className={cn("p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center")}>
                 {headerIcon}
             </div>
 
             {/* Text content container */}
-            <div className="flex-grow flex flex-col sm:flex-row justify-between sm:items-center gap-1 sm:gap-4">
+            <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
                 {/* Left side: Title and Status */}
                 <div className="text-wrap mr-2">
-                    <h2 className="font-medium leading-tight text-neutral-900 dark:text-white sm:text-lg break-words">
+                    <h2 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg">
                         {headerTitle}
                     </h2>
-                    <p className={cn("text-sm mt-0.5", statusColorClass)}>
+                    <p className={cn("text-sm mt-1", statusColorClass)}>
                         {statusText}
                     </p>
                 </div>
                 {/* Right side: Amount */}
                 <div className={cn(
-                    "font-medium text-lg sm:text-xl whitespace-nowrap text-right sm:text-left",
+                    "font-medium whitespace-nowrap",
                     isPayment ? 'text-green-600 dark:text-green-500' : 'text-neutral-900 dark:text-white'
                 )}>
                     {headerAmountSign} {headerAmount}

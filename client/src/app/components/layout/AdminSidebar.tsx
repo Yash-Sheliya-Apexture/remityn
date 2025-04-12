@@ -2520,11 +2520,9 @@ const SidebarNavItem: React.FC<SidebarNavItemProps> = ({ href, icon: Icon, label
           : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
       }`}
     >
-      <div className={`p-2 rounded-full transition-colors duration-200 ${
-          isActive ? "dark:bg-primary bg-neutral-900" : ""
-      }`}>
+      <div className={`p-2 rounded-full transition-colors duration-200`}>
         <Icon className={`size-5 transition-colors duration-200 ${
-            isActive ? "dark:text-neutral-900 text-primary" : ""
+            isActive ? "text-neutral-900 dark:text-primary" : ""
         }`} />
       </div>
       <span className="font-medium">{label}</span>
@@ -2635,7 +2633,11 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
     <>
       {/* Backdrop for mobile sidebar */}
       {isSidebarOpen && isMobileView === true && ( // Condition based on state and prop
-        <div
+        <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.5 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
           onClick={toggleSidebar} // Allow closing by clicking backdrop
           className="fixed inset-0 bg-black/50 z-40 lg:hidden" // Use z-index lower than sidebar
           aria-hidden="true"
@@ -2722,8 +2724,8 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
                     onClick={handleDashboardLinkClick} // Close sidebar on mobile click
                     className={`flex items-center gap-3 flex-grow ${!isDashboardSectionActive ? "hover:text-neutral-900 dark:hover:text-primary" : ""}`}
                   >
-                    <div className={`p-2 rounded-full transition-colors duration-200 ${ isDashboardSectionActive ? "dark:bg-primary bg-neutral-900" : "" }`}>
-                      <FaChartPie className={`size-5 transition-colors duration-200 ${ isDashboardSectionActive ? "dark:text-neutral-900 text-primary" : "" }`} />
+                    <div className={`p-2 rounded-full transition-colors duration-200`}>
+                      <FaChartPie className={`size-5 transition-colors duration-200 ${ isDashboardSectionActive ? "text-neutral-900 dark:text-primary" : "" }`} />
                     </div>
                     <span className="font-medium">Dashboard</span>
                   </Link>
