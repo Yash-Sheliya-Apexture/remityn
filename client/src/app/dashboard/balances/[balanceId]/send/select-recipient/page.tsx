@@ -385,6 +385,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "../../../../../contexts/AuthContext"; // Adjust path if needed
 import recipientService from "../../../../../services/recipient"; // Adjust path if needed
 import { MdCancel } from "react-icons/md";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Define a type for the recipient object for better type safety
 interface Recipient {
@@ -501,7 +502,45 @@ export default function SelectRecipientPage() {
 
   // Handle loading state
   if (loadingRecipients) {
-    return <div className="container mx-auto py-10 text-center">Loading...</div>;
+    return (
+      <>
+        <div className="flex justify-between">
+          <Skeleton className="h-8 w-64 mb-4 rounded-full" />
+        </div>
+
+        <div className="mb-8 flex justify-between gap-4">
+          <Skeleton className="h-10 w-full rounded-full" />
+        </div>
+        <div className="space-y-2">
+          {Array(3)
+            .fill(0)
+            .map((_, index) => (
+              <div key={index} className="block">
+                <div className="block p-2 sm:p-4 rounded-2xl">
+                  <div className="flex items-center gap-4">
+                    {/* Icon Skeleton */}
+                    <div className="relative flex-shrink-0">
+                      <div className="flex items-center justify-center">
+                        <Skeleton className="h-12 w-12 rounded-full" />
+                      </div>
+                    </div>
+                    {/* Text and Button Skeletons */}
+                    <div className="flex-grow flex flex-row justify-between items-center gap-4">
+                      <div className="flex-grow">
+                        <Skeleton className="h-4 w-40 mb-2" />
+                        <Skeleton className="h-3 w-32" />
+                      </div>
+                      <div className="shrink-0">
+                        <Skeleton className="h-5 w-10 rounded-full" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+        </div>
+      </>
+    )
   }
 
   // Handle errors (fetch errors or invalid param errors)

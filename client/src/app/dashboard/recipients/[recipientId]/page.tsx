@@ -1656,6 +1656,7 @@ import { useAuth } from "../../../contexts/AuthContext";
 import recipientService from "../../../services/recipient";
 import DashboardHeader from "../../../components/layout/DashboardHeader";
 import DeleteRecipientModal from "@/app/dashboard/components/DeleteRecipientModal";
+import Link from "next/link";
 
 // Define the structure for the Currency object
 interface Currency {
@@ -1895,31 +1896,38 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
             </span>
             {/* Conditional Flag Display */}
             {currentRecipient.currency?.code && ( // Check if currency and code exist
-                 <div className="absolute bottom-1 right-0 w-6 h-6 rounded-full overflow-hidden border border-white">
-                    <Image
-                    // Construct the path safely, handle potential errors
-                    src={`/assets/icon/${currentRecipient.currency.code.toLowerCase()}.svg`}
-                    alt={`${currentRecipient.currency.code} flag`}
-                    width={24}
-                    height={24}
-                    onError={(e) => {
-                        // Handle image loading error gracefully
-                        console.error(`Error loading flag for ${currentRecipient.currency.code}:`, e.currentTarget.src);
-                        e.currentTarget.style.display = 'none'; // Hide broken image icon
-                        // Optionally display a default icon or placeholder here
-                    }}
-                    />
-                </div>
+              <div className="absolute bottom-1 right-0 w-6 h-6 rounded-full overflow-hidden border border-white">
+                <Image
+                  // Construct the path safely, handle potential errors
+                  src={`/assets/icon/${currentRecipient.currency.code.toLowerCase()}.svg`}
+                  alt={`${currentRecipient.currency.code} flag`}
+                  width={24}
+                  height={24}
+                  onError={(e) => {
+                    // Handle image loading error gracefully
+                    console.error(
+                      `Error loading flag for ${currentRecipient.currency.code}:`,
+                      e.currentTarget.src
+                    );
+                    e.currentTarget.style.display = "none"; // Hide broken image icon
+                    // Optionally display a default icon or placeholder here
+                  }}
+                />
+              </div>
             )}
           </div>
           <h2 className="sm:text-[26px] text-xl font-semibold text-mainheading dark:text-white break-words">
             {displayName} {/* Use calculated displayName */}
           </h2>
-          <div className="flex items-center gap-4 flex-wrap"> {/* Added flex-wrap for responsiveness */}
+          <div className="flex items-center gap-4 flex-wrap">
+            {" "}
+            {/* Added flex-wrap for responsiveness */}
             {/* Add onClick handler for Send button if needed */}
-            <button className="font-medium bg-primary text-neutral-900 rounded-full w-32 h-10 flex items-center justify-center cursor-pointer hover:bg-primaryhover transition-colors duration-200">
-              Send
-            </button>
+            <Link href={"/dashboard/send/select-balance"}>
+              <button className="font-medium bg-primary text-neutral-900 rounded-full w-32 h-10 flex items-center justify-center cursor-pointer hover:bg-primaryhover transition-colors duration-200">
+                Send
+              </button>
+            </Link>
             <button
               className="font-medium bg-red-600 text-white rounded-full w-32 h-10 flex items-center justify-center cursor-pointer hover:bg-red-700 transition-colors duration-200"
               onClick={handleDeleteRecipientClick}
@@ -1934,7 +1942,9 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
           <h3 className="text-lg font-medium text-gray-600 dark:text-white mb-6 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
             Account Details
           </h3>
-          <div className="grid sm:grid-cols-2 gap-x-8 gap-y-6 mb-8"> {/* Adjusted gap */}
+          <div className="grid sm:grid-cols-2 gap-x-8 gap-y-6 mb-8">
+            {" "}
+            {/* Adjusted gap */}
             {/* Account Holder Name */}
             <div>
               <label className="block text-sm font-semibold text-gray dark:text-white">
@@ -1944,7 +1954,6 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
                 {currentRecipient.accountHolderName}
               </p>
             </div>
-
             {/* Nickname */}
             <div>
               <label className="block text-sm font-semibold text-gray dark:text-white">
@@ -1952,7 +1961,9 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
               </label>
               <div className="flex items-center gap-4 mt-1">
                 {currentRecipient.nickname ? (
-                  <div className="flex items-center gap-2 flex-wrap"> {/* Added flex-wrap */}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {" "}
+                    {/* Added flex-wrap */}
                     <p className="text-main dark:text-gray-300 break-words">
                       {currentRecipient.nickname}
                     </p>
@@ -1975,7 +1986,6 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
                 )}
               </div>
             </div>
-
             {/* Account Type */}
             <div>
               <label className="block text-sm font-semibold text-gray dark:text-white">
@@ -1985,7 +1995,6 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
                 {currentRecipient.accountType}
               </p>
             </div>
-
             {/* IFSC Code */}
             <div>
               <label className="block text-sm font-semibold text-gray dark:text-white">
@@ -1995,7 +2004,6 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
                 {currentRecipient.ifscCode}
               </p>
             </div>
-
             {/* Account Number */}
             <div>
               <label className="block text-sm font-semibold text-gray dark:text-white">
@@ -2005,7 +2013,6 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
                 {currentRecipient.accountNumber}
               </p>
             </div>
-
             {/* Email (Optional) */}
             {currentRecipient.email && (
               <div>
@@ -2017,8 +2024,7 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
                 </p>
               </div>
             )}
-
-             {/* Bank Name (Optional) */}
+            {/* Bank Name (Optional) */}
             {currentRecipient.bankName && (
               <div>
                 <label className="block text-sm font-semibold text-gray dark:text-white">
@@ -2029,10 +2035,11 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
                 </p>
               </div>
             )}
-
             {/* Address (Optional) */}
             {currentRecipient.address && (
-              <div className="sm:col-span-2"> {/* Allow address to span full width on small screens if long */}
+              <div className="sm:col-span-2">
+                {" "}
+                {/* Allow address to span full width on small screens if long */}
                 <label className="block text-sm font-semibold text-gray dark:text-white">
                   Address
                 </label>
@@ -2049,7 +2056,11 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
           isOpen={isNicknamePopupOpen}
           onClose={handleCloseNicknamePopup}
           title={currentRecipient.nickname ? "Edit nickname" : "Add nickname"} // Dynamic title
-          description={currentRecipient.nickname ? "Update the nickname for this account." : "Add a nickname so you can easily find this account."} // Dynamic description
+          description={
+            currentRecipient.nickname
+              ? "Update the nickname for this account."
+              : "Add a nickname so you can easily find this account."
+          } // Dynamic description
         >
           <div className="mb-4">
             <label
@@ -2068,7 +2079,10 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
               onChange={(e) => setNicknameInput(e.target.value)}
               aria-describedby="nickname-char-count" // Accessibility
             />
-            <p id="nickname-char-count" className="mt-2 text-gray dark:text-gray-300 font-semibold text-xs">
+            <p
+              id="nickname-char-count"
+              className="mt-2 text-gray dark:text-gray-300 font-semibold text-xs"
+            >
               {nicknameInput.length}/40 characters
             </p>
           </div>

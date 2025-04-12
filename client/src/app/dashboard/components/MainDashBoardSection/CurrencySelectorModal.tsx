@@ -763,7 +763,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
       {/* Use handleOpenChange */}
       <DialogContent>
         {/* Removed fixed height for DialogContent to allow natural expansion */}
-        <div className="mt-4 flex flex-col gap-4"> {/* Removed h-[calc(100%-80px)] */}
+        <div className="mt-4 h-[calc(100%-80px)] flex flex-col gap-4"> {/* Removed h-[calc(100%-80px)] */}
           <DialogHeader>
             <DialogTitle>Open a balance</DialogTitle>
           </DialogHeader>
