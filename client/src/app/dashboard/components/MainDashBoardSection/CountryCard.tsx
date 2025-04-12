@@ -1454,7 +1454,7 @@ const CountryCard = () => {
   if (isLoading) {
     return (
       <section className="Country-card pt-4">
-        <div className="container mx-auto relative z-10">
+        <div className="container mx-auto">
           <div
             className="flex overflow-x-scroll scroll-smooth scrollbar-hide gap-3 py-4 px-2"
             style={{
@@ -1498,11 +1498,11 @@ const CountryCard = () => {
 
   return (
     <section className="Country-card pt-4">
-      <div className="container mx-auto relative z-10">
+      <div className="container mx-auto">
         <div
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
-          className="relative"
+          className="relative z-10"
         >
           {/* Conditionally render buttons only if scrolling is possible */}
           {canScrollLeft && (

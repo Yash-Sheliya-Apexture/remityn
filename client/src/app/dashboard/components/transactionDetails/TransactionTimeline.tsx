@@ -23,7 +23,7 @@ const TransactionTimeline: React.FC<TransactionTimelineProps> = ({
 }) => {
     if (!steps || steps.length === 0) {
         return (
-            <p className="text-gray-500 dark:text-gray-400 text-sm py-4">
+            <p className="text-gray-500 dark:text-gray-300 text-sm py-4">
                 Status updates are currently unavailable.
             </p>
         );
@@ -37,21 +37,23 @@ const TransactionTimeline: React.FC<TransactionTimelineProps> = ({
                         {/* Marker & Line */}
                         <div className="relative flex flex-col items-center flex-shrink-0 pt-1">
                             <div className={cn(
-                                "h-5 w-5 rounded-full flex items-center justify-center ring-4 z-10",
-                                step.status === "completed" && "bg-green-600 ring-green-100 dark:ring-green-900/50 text-white",
-                                step.status === "active" && "bg-blue-500 ring-blue-100 dark:ring-blue-900/50 text-white animate-pulse",
-                                step.status === "pending" && "bg-gray-300 dark:bg-gray-600 ring-gray-100 dark:ring-gray-700/50 text-gray-600 dark:text-gray-300",
-                                (step.status === "failed" || step.status === "cancelled") && "bg-red-600 ring-red-100 dark:ring-red-900/50 text-white"
+                                "h-6 w-6 rounded-full flex items-center justify-center ring-4 z-10",
+                                step.status === "completed" && "bg-green-600 ring-green-600/40 text-white",
+                                step.status === "active" && "bg-blue-500 ring-blue-600/30 text-white animate-pulse",
+                                step.status === "pending" && "bg-gray-500  ring-gray-600/30 dark:ring-gray-600/50 text-white",
+                                (step.status === "failed" || step.status === "cancelled") && "bg-red-600 ring-red-600/20 text-white"
                             )}>
-                                {step.status === "completed" && <FaCheck className="h-2.5 w-2.5" />}
-                                {step.status === "active" && <FaRegClock className="h-2.5 w-2.5" />}
-                                {(step.status === "failed" || step.status === "cancelled") && <MdErrorOutline className="h-3 w-3" />}
-                                {step.status === "pending" && <div className="h-1.5 w-1.5 bg-gray-500 dark:bg-gray-400 rounded-full"></div>}
+                                {step.status === "completed" && <FaCheck size={12} />}
+                                {step.status === "active" && <FaRegClock size={12}/>}
+                                {(step.status === "failed" || step.status === "cancelled") && <MdErrorOutline size={12} />}
+                                {step.status === "pending" && <div className="h-2 w-2 bg-white rounded-full"></div>}
                             </div>
                             {index < steps.length - 1 && (
                                 <div className={cn(
                                     "absolute top-5 left-1/2 transform -translate-x-1/2 h-[calc(100%_+_0.25rem)] w-0.5",
-                                    step.status === "completed" || step.status === "active" ? "bg-blue-500" : "bg-gray-300 dark:bg-gray-600"
+                                    step.status === "completed" ? "bg-green-600" :
+                                    (step.status === 'failed' || step.status === 'cancelled') ? 'bg-red-600' :
+                                    step.status === "active" ? "bg-blue-600" : "bg-gray-300 dark:bg-gray-500"
                                 )} aria-hidden="true"></div>
                             )}
                         </div>
@@ -60,33 +62,31 @@ const TransactionTimeline: React.FC<TransactionTimelineProps> = ({
                         <div className="flex-1 min-w-0 pb-1">
                             <h4 className={cn(
                                 "text-sm font-medium",
-                                step.status === 'pending' ? 'text-gray-500 dark:text-gray-400' :
+                                step.status === 'pending' ? 'text-gray-500 dark:text-gray-300' :
                                 step.status === 'active' ? 'text-blue-600 dark:text-blue-400 font-semibold' :
                                 (step.status === 'failed' || step.status === 'cancelled') ? 'text-red-600 dark:text-red-400 font-semibold' :
-                                'text-neutral-800 dark:text-neutral-200'
+                                'text-neutral-900 dark:text-white'
                             )}>
                                 {step.label}
                             </h4>
-                            {step.date && (<p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{step.date}</p>)}
+                            {step.date && (<p className="text-xs text-gray-500 dark:text-gray-300 mt-0.5">{step.date}</p>)}
                             {step.info && (<div className={cn(
                                 "mt-2 text-sm p-3 rounded-md border",
-                                step.status === 'active' ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700/50 text-blue-700 dark:text-blue-300' :
-                                step.status === 'failed' ? 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-700/50 text-red-700 dark:text-red-300' :
-                                step.status === 'cancelled' ? 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-700/50 text-red-700 dark:text-red-300' :
-                                'bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700/50 text-gray-600 dark:text-gray-300'
+                                step.status === 'active' ? 'bg-blue-600/20 border-blue-600/80 text-blue-600 dark:text-blue-400' :
+                                step.status === 'failed' ? 'bg-rose-600/10 border-rose-600/70 text-rose-600 dark:text-rose-300' :
+                                step.status === 'cancelled' ? 'bg-red-600/20 border-red-600/60 text-red-600 dark:text-red-400' :
+                                'bg-gray-600/20 border-gray-600/60 text-gray-600 dark:text-gray-300'
                             )}>
                                 <p>{step.info}</p>
                             </div>)}
                             {step.showCancelAction && isPayment && status === 'pending' && (
-                                <Button
-                                    variant="link"
-                                    size="sm"
-                                    className="mt-2 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 h-auto px-0 py-0"
+                                <button
+                                    className="mt-3 px-3 py-2 border rounded-md text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 border-red-300 dark:border-red-500 hover:bg-red-100 dark:hover:bg-red-600/20  transition-all duration-75 ease-linear cursor-pointer"
                                     onClick={onOpenCancelModal}
                                     disabled={isSubmitting}
                                 >
                                     I haven't paid / Cancel
-                                </Button>
+                                </button>
                             )}
                         </div>
                     </li>

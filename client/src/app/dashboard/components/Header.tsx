@@ -262,6 +262,7 @@ import { HiArrowLeft } from "react-icons/hi";
 import Link from "next/link";
 import { useAuth } from "../../contexts/AuthContext"
 import { IoIosArrowForward } from "react-icons/io";
+import Image from "next/image";
 
 
 interface HeaderProps {
@@ -292,6 +293,27 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   const pathname = usePathname();
   const { user, loading } = useAuth(); // Get user data and loading state from context
   const [showBackArrow, setShowBackArrow] = useState(false);
+  const [isMobile, setIsMobile] = useState(false); // <-- State for mobile screen width
+
+
+  // --- Effect for Screen Width Detection ---
+  useEffect(() => {
+    const checkScreenWidth = () => {
+      // Set state based on whether window width is less than 640px (Tailwind 'sm' breakpoint)
+      setIsMobile(window.innerWidth < 640);
+    };
+
+    // Check on initial mount
+    checkScreenWidth();
+
+    // Add event listener for window resize
+    window.addEventListener('resize', checkScreenWidth);
+
+    // Cleanup function to remove the event listener
+    return () => {
+      window.removeEventListener('resize', checkScreenWidth);
+    };
+  }, []); // Empty dependency array means this effect runs only on mount and unmount
 
   useEffect(() => {
     setShowBackArrow(pathname !== "/dashboard");
@@ -328,6 +350,20 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
                 <HiArrowLeft className="size-5" />
               </button>
             )}
+
+            {/* Logo */}
+            {isMobile && ( // <-- Render only if isMobile is true
+              <div>
+                <Image
+                  src={"/assets/icon/logo-2.svg"}
+                  alt="logo"
+                  width={28}
+                  height={28}
+                  // Removed responsive classes like sm:hidden block
+                />
+              </div>
+            )}
+
           </div>
           {/* Only show profile section if user data is available (or not loading) */}
           {user && !loading && (
