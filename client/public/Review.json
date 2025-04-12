@@ -1,0 +1,104 @@
+{
+    "reviewGroups": [
+        {
+            "id": 1,
+            "reviews": [
+                {
+                    "reviewerName": "Tom Diaz",
+                    "avatarUrl": "/assets/images/Tom.jpg",
+                    "rating": 4.5,
+                    "comment": "As a blogger, I spent too much time updating plugins and dealing with minor issues that slowed down my site. After using their WordPress maintenance service for just 2 months, my site is now 40% faster, and I've seen a 25% increase in search engine rankings. The best part? I haven't had a single technical issue in over 8 weeks. Their team knows what they're doing."
+                },
+                {
+                    "reviewerName": "James Collins",
+                    "avatarUrl": "/assets/images/John-Taylor.jpg",
+                    "rating": 5,
+                    "comment": "Thir WordPresse consistency services are excellent! I have never experience any downtime since I signed up, and my e-commerce site is always current. small business owners require peace of mind."
+                },
+                {
+                    "reviewerName": "Ryan Cooper",
+                    "avatarUrl": "/assets/images/Ryan.jpg",
+                    "rating": 5,
+                    "comment": "As a first-time blogger, I was overwhelmed by WordPress, but their tutorials made it so much easier! I set up my blog and even made it look professional in just one week. Their detailed instructions are ideal for beginners. My traffic has already started to increase."
+                },
+                {
+                    "reviewerName": "Mark Evans",
+                    "avatarUrl": "/assets/images/Mark.jpg",
+                    "rating": 5,
+                    "comment": "Their security services gave me peace of mind after my site was hacked. They cleaned everything up and set up protections to prevent it from happening.Outstanding helpful in getting things working properly..."
+                },
+                {
+                    "reviewerName": "Rachel Thompson",
+                    "avatarUrl": "/assets/images/Rachel.jpg",
+                    "rating": 4.5,
+                    "comment": "My life has been changed by this service. I used what to do. be connected to my pc for hours at a time, trying to solve problems and handle things that I didn’t know They take care of the rest with comfort, and I can now finally focus entirely on what I do best. genuinely transformative!"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "reviews": [
+                {
+                    "reviewerName": "John Taylor",
+                    "avatarUrl": "./assets/images/John-Taylor.jpg",
+                    "rating": 4,
+                    "comment": "Their WordPress consistency services are excellent! I have never experience any downtime since I signed up, and my e-commerce is always current. The solution for small business owners require peace of mind."
+                },
+                {
+                    "reviewerName": "Lisa Carter",
+                    "avatarUrl": "./assets/images/Lisa-Carter.jpg",
+                    "rating": 4.5,
+                    "comment": "My site’s performance to significantly improved since I signed up. I’ve learned a lot from their, and their staff is always quick to reply. They’re consistently spot on whether it’s error correction, feature addition, speed optimization. Highly recommend their services!"
+                },
+                {
+                    "reviewerName": "Amelia Brown",
+                    "avatarUrl": "./assets/images/Amelia.jpg",
+                    "rating": 5,
+                    "comment": "This service is a lifesaver for my business. Their team optimizes my site regularly, keeps it secure, and ensures lightning-fast loading times. My clients have even complimented how smooth the site feels now..."
+                },
+                {
+                    "reviewerName": "Henry Walker",
+                    "avatarUrl": "./assets/images/Henry.jpg",
+                    "rating": 5,
+                    "comment": "Their blogging tutorials helped me grow my site from 100 monthly visitors to over 5,000! Their advice on content creation and SEO is priceless. I wouldn’t be where I am today without them."
+                },
+                {
+                    "reviewerName": "Hannah Smith",
+                    "avatarUrl": "./assets/images/Hannah.jpg",
+                    "rating": 4.5,
+                    "comment": "I’ve only been using VCGA for a few days, but I’m already blown away by how much they’ve helped. It feels like I’m working with a trusted friend who truly understands WordPress and handles every issue right away. Where have you been all this time? This service is a total game-changer!"
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "reviews": [
+                {
+                    "reviewerName": "Sarah Mitchell",
+                    "avatarUrl": "./assets/images/Sarah-Mitchell-1.jpg",
+                    "rating": 4.5,
+                    "comment": "This is hands down one of the best services we’ve ever partnered with. The pricing is fair, the customer service is outstanding, and the quality of their work is top-tier. We’ve been with them for about eight months now, and we can’t imagine managing our site without their support. Their service is incredibly valuable and has made a huge difference for us. Big thanks to the team!"
+                },
+                {
+                    "reviewerName": "Emily Clarke",
+                    "avatarUrl": "./assets/images/Emily.jpg",
+                    "rating": 3.5,
+                    "comment": "I was having trouble getting my first blog up and running, but these tutorials made it so easy! Even for beginners like me, following the detailed instructions is simple. I’ve now launched a fully functional blog. I heartily recommend it!"
+                },
+                {
+                    "reviewerName": "Jake Miller",
+                    "avatarUrl": "./assets/images/Jake.jpg",
+                    "location": "Denver, CO",
+                    "rating": 5,
+                    "comment": "“I’ve been using their maintenance plan for almost a year now, and my site has never been more stable. They handle everything, from plugin updates to security patches. It’s a relief knowing my site is in good hands."
+                },
+                {
+                    "reviewerName": "Liam Brown",
+                    "avatarUrl": "./assets/images/Liam.jpg",
+                    "rating": 4.5,
+                    "comment": "This team is incredibly reliable. Whenever I have a question or issue, respond quickly and resolve it effectively. Their support has been invaluable for my online store my site has never been more reliable"
+                }
+            ]
+        }
+    ]
+}
