@@ -300,7 +300,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   useEffect(() => {
     const checkScreenWidth = () => {
       // Set state based on whether window width is less than 640px (Tailwind 'sm' breakpoint)
-      setIsMobile(window.innerWidth < 640);
+      setIsMobile(window.innerWidth < 1024);
     };
 
     // Check on initial mount
@@ -355,7 +355,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
             {isMobile && ( // <-- Render only if isMobile is true
               <div>
                 <Image
-                  src={"/assets/icon/logo-2.svg"}
+                  src={"/assets/images/wise-logo2.svg"}
                   alt="logo"
                   width={28}
                   height={28}
