@@ -61,9 +61,9 @@ const HeroText = () => {
       </div> */}
 
       <div className="space-y-6">
-        <h1 className="text-5xl md:text-6xl xl:text-8xl leading-14 lg:leading-24 font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
-        Real-Time Rates. 
-          <span className="text-primary"> Zero Hassle </span>
+        <h1 className="text-5xl md:text-6xl xl:text-8xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+          Transfer Money
+          <span className="text-primary"> at 0% Fees </span>
         </h1>
 
         <p className="lg:text-lg sm:text-base text-sm text-gray-500  leading-relaxed dark:text-gray-300">
@@ -76,28 +76,36 @@ const HeroText = () => {
           {/* Tags */}
           <div className="flex items-center gap-2.5 text-primary">
             <AiOutlineClockCircle className="sm:size-6 size-5" />
-            <span className="dark:text-white text-mainheading font-medium text-sm sm:text-base">Real-Time Conversion</span>
+            <span className="dark:text-white text-mainheading font-medium text-sm sm:text-base">
+              Real-Time Conversion
+            </span>
           </div>
 
           <div className="flex items-center gap-2.5 text-primary">
             <FaHandHoldingUsd className="sm:size-6 size-5" />
-            <span className="dark:text-white text-mainheading font-medium text-sm sm:text-base">Competitive Rates</span>
+            <span className="dark:text-white text-mainheading font-medium text-sm sm:text-base">
+              Competitive Rates
+            </span>
           </div>
 
           <div className="flex items-center gap-2.5 text-primary">
             <BsShieldLock className="sm:size-6 size-5" />
-            <span className="dark:text-white text-mainheading font-medium text-sm sm:text-base">Secure Transactions</span>
+            <span className="dark:text-white text-mainheading font-medium text-sm sm:text-base">
+              Secure Transactions
+            </span>
           </div>
 
           <div className="flex items-center gap-2.5 text-primary">
             <MdSpeed className="sm:size-6 size-5" />
-            <span className="dark:text-white text-mainheading font-medium text-sm sm:text-base">Fast & Easy</span>
+            <span className="dark:text-white text-mainheading font-medium text-sm sm:text-base">
+              Fast & Easy
+            </span>
           </div>
         </div>
 
         <div className="md:pt-4 pt-0">
           <Link href="auth/register">
-            <button className="bg-primary group hover:bg-primaryhover cursor-pointer font-medium md:py-3 py-2 px-6 rounded-full transition-colors duration-300 ease-in-out text-mainheading flex items-center justify-center">
+            <button className="bg-primary group hover:bg-primaryhover cursor-pointer font-medium md:py-3 py-2 px-4 md:h-14 rounded-full transition-colors duration-300 ease-in-out text-mainheading flex items-center justify-center">
               Get Started Now
               <FaChevronRight className="opacity-0 group-hover:opacity-100 group-hover:translate-x-5 transition-all duration-300 ease-in-out" />
             </button>
