@@ -393,7 +393,6 @@ input:-webkit-autofill:active {
   animation-play-state: paused;
 }
 
-
 @layer utilities {
   @keyframes drawBorder {
     from {
