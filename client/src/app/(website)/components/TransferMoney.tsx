@@ -1047,6 +1047,8 @@
 
 // export default TransferSteps;
 
+
+
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
@@ -1090,7 +1092,7 @@ const stepsData: StepData[] = [
         Identify yourself with our inbuilt KYC process
       </>
     ),
-    contentImage1: "/assets/images/reg.997f6e4c.svg", // Left phone mockup
+    contentImage1: "/assets/images/Frame.svg", // Left phone mockup
     contentImage2: "/assets/images/reg-2.1d035221.svg", // Right phone mockup
   },
   {
@@ -1221,7 +1223,7 @@ const TransferSteps: React.FC = () => {
         return "bg-green-600/20 text-green-600";
       case "default":
       default:
-        return "bg-lightgray dark:bg-white/5 text-gray-500 dark:text-gray-300";
+        return "bg-lightgray dark:bg-white/5 text-xs lg:text-base text-gray-500 dark:text-gray-300";
     }
   };
 
@@ -1241,11 +1243,11 @@ const TransferSteps: React.FC = () => {
         </article>
 
         {/* Steps and Content Section */}
-        <article className="grid items-start justify-center gap-8 lg:grid-cols-3 lg:gap-8">
+        <article className="grid gap-8 lg:grid-cols-3 lg:gap-8">
           {/* Steps List (Left Side) */}
           <div className="w-full h-full">
-            <div className="rounded-3xl bg-white dark:bg-white/5 p-8 h-full">
-              <ul className="flex flex-col justify-between h-full">
+            <div className="rounded-3xl bg-white dark:bg-white/5 lg:p-8 p-6 h-full">
+              <ul className="lg:flex md:grid md:grid-cols-2 grid-cols-1 flex-col space-y-6 justify-between h-full gap-8">
                 {stepsData.map((step, index) => {
                   const isActive = activeIndex === index;
                   const isCurrentlyAnimating = isActive && isAnimating;
@@ -1258,7 +1260,7 @@ const TransferSteps: React.FC = () => {
                     >
                       <button
                         onClick={() => handleStepClick(index)}
-                        className="z-10 flex flex-col lg:flex-row cursor-pointer items-center lg:items-start gap-3 lg:gap-5 bg-transparent w-full text-left group focus:outline-none rounded-lg" // Added focus styles
+                        className="z-10 flex flex-col lg:flex-row cursor-pointer items-center lg:items-start gap-2 lg:gap-5 bg-transparent w-full text-left group focus:outline-none rounded-lg" // Added focus styles
                         aria-current={isActive ? "step" : undefined}
                       >
                         {/* Icon SVG Container */}
@@ -1267,7 +1269,7 @@ const TransferSteps: React.FC = () => {
                             viewBox="0 0 54 54"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
-                            className={`transition-colors duration-300 md:size-18 size-10 ${
+                            className={`transition-colors duration-300 lg:size-18 md:size-14 size-10 ${
                               // Faster transition
                               isActive
                                 ? "text-mainheading dark:text-primary" // Use primary color for active icon border
@@ -1281,12 +1283,12 @@ const TransferSteps: React.FC = () => {
                               width="52"
                               height="52"
                               rx="12"
-                              className={`transition-colors duration-300 stroke-[#EAECF0] dark:stroke-white`}
+                              className={`transition-colors duration-300 stroke-[#EAECF0] dark:stroke-gray-500`}
                               strokeWidth="2"
                               fill={
                                 isActive
-                                  ? "dark:bg-gray-800"
-                                  : "#F2F4F7 dark:bg-gray-800" // Subtle bg for inactive
+                                  ? "dark:stroke-black"
+                                  : ""
                               }
                             />
                             {/* Icon Image */}
@@ -1332,7 +1334,7 @@ const TransferSteps: React.FC = () => {
                         {/* Text Content */}
                         <div className="flex flex-col items-center lg:items-start gap-1 mt-2">
                           <h3
-                            className={`text-center lg:text-left capitalize text-base font-bold leading-tight transition-colors duration-300 md:text-xl ${
+                            className={`text-center lg:text-left capitalize text-base font-bold leading-tight transition-colors duration-300 lg:text-xl ${
                               isActive
                                 ? "text-[#182230] dark:text-white" // Darker active text
                                 : "text-[#97A2B3] dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300"
@@ -1341,7 +1343,7 @@ const TransferSteps: React.FC = () => {
                             {step.title}
                           </h3>
                           <p
-                            className={`text-center lg:text-left text-sm font-normal transition-colors duration-300 md:text-lg ${
+                            className={`text-center lg:text-left text-sm font-normal transition-colors duration-300 lg:text-lg ${
                               isActive
                                 ? "text-gray-500 dark:text-gray-300"
                                 : "text-[#97A2B3] dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-gray-400"
@@ -1366,11 +1368,11 @@ const TransferSteps: React.FC = () => {
             >
               {/* Top Text Content */}
               <div className="space-y-2 animate-in slide-in-from-top-5 duration-500 z-10 mb-4 lg:mb-8">
-                <h3 className="text-2xl lg:text-3xl font-medium text-mainheading dark:text-white">
+                <h3 className="text-xl lg:text-3xl font-medium text-mainheading dark:text-white">
                   {/* Adjusted color */}
                   {currentStep.contentTitle}
                 </h3>
-                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                <p className="text-gray-700 dark:text-gray-300 lg:text-base text-xs leading-relaxed">
                   {/* Handle line breaks */}
                   {currentStep.contentSubtitle}
                 </p>
@@ -1378,11 +1380,11 @@ const TransferSteps: React.FC = () => {
 
               {/* Content Blocks (Steps 2 & 4) */}
               {currentStep.contentBlocks && (
-                <div className="flex flex-col items-start lg:items-end gap-3 mb-4 lg:mb-0 lg:absolute lg:top-10 lg:right-10 z-10 animate-in fade-in slide-in-from-right-5 duration-500 delay-100">
+                <div className="flex flex-col items-start lg:items-end gap-3 mb-4 text-nowrap lg:mb-0 lg:absolute lg:top-10 lg:right-10 z-10 animate-in fade-in slide-in-from-right-5 duration-500 delay-100">
                   {currentStep.contentBlocks.map((block, blockIndex) => (
                     <div
                       key={blockIndex} // Use the inner index for the key
-                      className={`px-4 py-3 rounded-full font-medium ${getBlockClasses(
+                      className={`px-4 lg:py-3 py-2 rounded-full font-medium ${getBlockClasses(
                         block.type
                       )}`}
                     >
@@ -1449,3 +1451,4 @@ const TransferSteps: React.FC = () => {
 };
 
 export default TransferSteps;
+

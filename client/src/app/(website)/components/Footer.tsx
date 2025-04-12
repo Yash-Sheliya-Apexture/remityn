@@ -843,14 +843,14 @@ const Footer: React.FC = () => {
           { href: "", label: "Terms of Use" },
         ],
       },
-      {
-        title: "Follow Us",
-        socialLinks: [
-          { href: "", label: "Facebook", icon: LuFacebook },
-          { href: "", label: "Twitter", icon: FaXTwitter },
-          { href: "", label: "Instagram", icon: LuInstagram },
-        ],
-      },
+      // {
+      //   title: "Follow Us",
+      //   socialLinks: [
+      //     { href: "", label: "Facebook", icon: LuFacebook },
+      //     { href: "", label: "Twitter", icon: FaXTwitter },
+      //     { href: "", label: "Instagram", icon: LuInstagram },
+      //   ],
+      // },
     ],
     currencyConverters: [
       "USD to INR",

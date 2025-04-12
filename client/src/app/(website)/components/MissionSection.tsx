@@ -147,11 +147,11 @@ const MobileDownloadSection: React.FC = () => {
         <aside className="flex flex-1 items-center justify-center">
           <div className="relative flex aspect-square w-full flex-shrink-0 justify-center overflow-hidden rounded-bl-lg rounded-br-3xl rounded-tl-3xl rounded-tr-lg bg-white dark:bg-white/5  dark:border pt-12 md:h-[572px] md:w-[583px] md:rounded-bl-[30px] md:rounded-br-[120px] md:rounded-tl-[120px] md:rounded-tr-[30px]">
             <Image
-              src="/assets/images/send-money.svg"
+              src="/assets/images/Send-Monyes.svg"
               width={500}
               height={500}
               alt="Picture of the author"
-              className="z-10 h-[130%] flex-shrink-0 md:h-[634px] md:w-[312px]"
+              className="z-10 flex-shrink-0 md:h-[550px] md:w-[312px]"
               style={{ color: "transparent" }}
             />
             <Image

@@ -1797,6 +1797,7 @@ export default function LoginPage() {
                                 <input
                                     type="email"
                                     id="email"
+                                    placeholder='Your Email'
                                     className={`mt-1 block px-4 py-3 h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${emailError
                                         ? "border-red-700 border-2 !shadow-none"
                                         : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
@@ -1825,6 +1826,7 @@ export default function LoginPage() {
                                     <input
                                         type={showPassword ? 'text' : 'password'}
                                         id="password"
+                                        placeholder='Your Password'
                                         className={`mt-1 block px-4 py-3 h-14 border w-full rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${passwordError
                                             ? "border-red-700 border-2 !shadow-none"
                                             : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
