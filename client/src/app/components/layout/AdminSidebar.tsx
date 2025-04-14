@@ -2496,6 +2496,7 @@ import {
   FaChevronRight,
   FaTimes,
 } from "react-icons/fa";
+import { MdManageAccounts } from "react-icons/md";
 import { GrLogout } from "react-icons/gr";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import ThemeToggle from "../../contexts/ThemeToggle";
@@ -2587,6 +2588,8 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
   const isUsersRoute = pathname === "/admin/users";
   const isAddMoneyRoute = pathname === "/admin/add-money";
   const isTransferRoute = pathname === "/admin/transfer";
+  const isKycManagementRoute = pathname === "/admin/kyc-management";
+
   const isDashboardSectionActive = isDashboardRoute || isDashboardSubRoute;
 
   // --- Effect for Dropdown (Keep as is, but maybe close on mobile nav click?) ---
@@ -2690,8 +2693,8 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 </span>
               </div>
               <div className="overflow-hidden space-y-0.5">
-                <p className="font-semibold text-neutral-900 dark:text-white truncate text-sm">
-                  {user.name || "Admin User"}
+                <p className="font-semibold capitalize text-neutral-900 dark:text-white truncate text-sm">
+                  {user.fullName || "Admin User"}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                   {user.email || "admin@example.com"}
@@ -2777,6 +2780,8 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
               <li> <SidebarNavItem href="/admin/users" icon={FaUsers} label="Users" isActive={isUsersRoute} onClick={handleMobileNavClick} /> </li>
               <li> <SidebarNavItem href="/admin/add-money" icon={IoMdAddCircleOutline} label="Add-Money" isActive={isAddMoneyRoute} onClick={handleMobileNavClick} /> </li>
               <li> <SidebarNavItem href="/admin/transfer" icon={FaMoneyBillWave} label="Send-Money" isActive={isTransferRoute} onClick={handleMobileNavClick} /> </li>
+              <li> <SidebarNavItem href="/admin/kyc-management" icon={MdManageAccounts} label="KYC Management" isActive={isKycManagementRoute} onClick={handleMobileNavClick} /> </li>
+            
             </ul>
           </nav>
 
