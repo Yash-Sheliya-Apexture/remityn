@@ -1351,10 +1351,10 @@ const KycUserDetailPage: React.FC = () => {
             )}
 
             {/* Personal Information */}
-            <Card className="shadow-sm gap-0">
-              <CardHeader className="border-b pb-4">
+            <Card className="shadow-sm gap-0 overflow-hidden">
+              <CardHeader className="border-b bg-lightgray dark:bg-secondarybox p-6">
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <User className="h-5 w-5 text-primary" /> Personal Information
+                  <User className="h-6 w-6 text-primary" /> Personal Information
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-5 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1402,10 +1402,10 @@ const KycUserDetailPage: React.FC = () => {
             </Card>
 
             {/* Identity Information */}
-            <Card className="shadow-sm gap-0">
-              <CardHeader className="border-b pb-4">
+            <Card className="shadow-sm gap-0 overflow-hidden">
+              <CardHeader className="border-b bg-lightgray dark:bg-secondarybox p-6">
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <Fingerprint className="h-5 w-5 text-primary" /> Identity
+                  <Fingerprint className="h-6 w-6 text-primary" /> Identity
                   Document Details
                 </CardTitle>
               </CardHeader>
@@ -1439,13 +1439,13 @@ const KycUserDetailPage: React.FC = () => {
           </div>
 
           {/* Submitted Documents */}
-          <Card className="shadow-sm w-1/3 h-fit gap-0">
-            <CardHeader className="border-b pb-4">
+          <Card className="shadow-sm w-1/3 h-fit gap-0  overflow-hidden">
+            <CardHeader className="border-b bg-lightgray dark:bg-secondarybox p-6">
               <CardTitle className="text-lg flex items-center gap-2">
-                <FileText className="h-5 w-5 text-primary" /> Submitted
+                <FileText className="h-6 w-6 text-primary" /> Submitted
                 Documents
               </CardTitle>
-              <CardDescription>
+              <CardDescription className='text-gray-500 dark:text-gray-300'>
                 Review identification documents submitted by the user
               </CardDescription>
             </CardHeader>
