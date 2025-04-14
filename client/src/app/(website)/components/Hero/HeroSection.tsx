@@ -9016,7 +9016,7 @@ const HeroSection: React.FC = () => {
 
   // --- JSX ---
   return (
-    <section className="Hero-Section lg:py-12 py-5 bg-white dark:bg-background">
+    <section className="Hero-Section lg:py-12 py-5 bg-[#F2F4F7] dark:bg-background">
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row items-center gap-12">
           {/* Left Column: Text Content */}
@@ -9026,7 +9026,7 @@ const HeroSection: React.FC = () => {
 
           {/* Right Column: Calculator Card */}
           <div className="lg:max-w-xl lg:ml-auto w-full"> {/* Use max-w-xl and w-full */}
-            <div className="bg-white dark:bg-background rounded-3xl shadow-lg md:p-8 p-4 border">
+            <div className="bg-white dark:bg-background rounded-3xl md:p-8 p-4 dark:border">
               {/* Rate Guaranteed */}
               <div className="flex flex-col justify-center items-center gap-2 text-primary font-medium text-center mb-4">
                 <div className="flex justify-center items-center gap-2">
@@ -9044,7 +9044,7 @@ const HeroSection: React.FC = () => {
                   You send exactly
                 </label>
                 <div>
-                  <div className="w-full border rounded-xl  flex items-center justify-between">
+                  <div className="w-full rounded-xl flex items-center justify-between border">
                     <input
                       id="sendAmountInput"
                       type="text"

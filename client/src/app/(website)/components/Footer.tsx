@@ -517,9 +517,6 @@
 
 // export default Footer;
 
-
-
-
 // // app/components/Footer.tsx
 // "use client";
 // import Link from "next/link";
@@ -778,8 +775,6 @@
 
 // export default Footer;
 
-
-
 // app/components/Footer.tsx
 "use client";
 import Link from "next/link";
@@ -794,7 +789,7 @@ import { IconType } from "react-icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppContext } from "../../contexts/WebsiteAppContext";
 import { useRouter } from "next/navigation";
-import ThemeToggle from '../../contexts/ThemeToggle'; // Import ThemeToggle
+import ThemeToggle from "../../contexts/ThemeToggle"; // Import ThemeToggle
 
 interface FooterLink {
   href: string;
@@ -818,39 +813,28 @@ interface FooterData {
   disclaimer: string;
 }
 
+
 const Footer: React.FC = () => {
   const footerData: FooterData = {
     sections: [
       {
         title: "Company",
         links: [
-          { href: "", label: "About Us" },
-          { href: "", label: "Careers" },
-          { href: "", label: "Customer Reviews" },
-          { href: "", label: "Pricing" },
+          { href: "/", label: "Home" },
+          { href: "/about-us", label: "AboutUs" },
+          { href: "#protect", label: "Features" },
+          { href: "#review", label: "Reviews" },
           { href: "", label: "Help" },
         ],
       },
       {
-        title: "Products",
-        links: [{ href: "", label: "Send money to India" }],
-      },
-      {
-        title: "Resources",
-        links: [
-          { href: "", label: "News and Blogs" },
-          { href: "", label: "Privacy Policy" },
-          { href: "", label: "Terms of Use" },
+        title: "Follow Us",
+        socialLinks: [
+          { href: "", label: "Facebook", icon: LuFacebook },
+          { href: "", label: "Twitter", icon: FaXTwitter },
+          { href: "", label: "Instagram", icon: LuInstagram },
         ],
       },
-      // {
-      //   title: "Follow Us",
-      //   socialLinks: [
-      //     { href: "", label: "Facebook", icon: LuFacebook },
-      //     { href: "", label: "Twitter", icon: FaXTwitter },
-      //     { href: "", label: "Instagram", icon: LuInstagram },
-      //   ],
-      // },
     ],
     currencyConverters: [
       "USD to INR",
@@ -859,7 +843,7 @@ const Footer: React.FC = () => {
       "CAD to INR",
       "EUR to INR",
     ],
-    copyright: `Wise Payments Limited ${new Date().getFullYear()}`,
+    copyright: `Apexture Payments Limited ${new Date().getFullYear()}`,
     disclaimer:
       "Wise is authorised by the Financial Conduct Authority under the Electronic Money Regulations 2011, Firm Reference 900507, for the issuing of electronic money. Wise works with a local bank partner to offer the service in India with the approval of the Reserve Bank of India.",
   };
@@ -885,14 +869,14 @@ const Footer: React.FC = () => {
   }, []);
 
   const renderLinkList = (links: FooterLink[] | undefined) => (
-    <ul className="space-y-3 text-gray-500 dark:text-white inline-block">
+    <ul className="space-y-3 text-mainheading font-medium dark:text-white inline-block">
       {links?.map((link) => (
         <li key={link.label}>
           <div className="relative group w-fit">
             <Link href={link.href} className="relative z-10">
               {link.label}
             </Link>
-            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-green dark:bg-primary transform scale-x-0 origin-right transition-transform duration-500 ease-in-out group-hover:origin-left group-hover:scale-x-100"></span>
+            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-mainheading dark:bg-primary transform scale-x-0 origin-right transition-transform duration-500 ease-in-out group-hover:origin-left group-hover:scale-x-100"></span>
           </div>
         </li>
       ))}
@@ -902,13 +886,19 @@ const Footer: React.FC = () => {
   const renderSocialLinks = (socialLinks: SocialLink[] | undefined) => (
     <ul className="flex items-center gap-4 mt-4">
       {socialLinks?.map((link) => (
-        <li key={link.label} className="p-2 bg-green/10 dark:bg-secondary rounded-full">
+        <li
+          key={link.label}
+          className="p-2.5 bg-black/10 dark:bg-secondary rounded-full group transition-colors ease-in-out duration-300"
+        >
           <Link
             href={link.href}
             className="text-gray-500 dark:text-gray-300"
             aria-label={link.label}
           >
-            <link.icon size={18} className="text-mainheading dark:text-white dark:hover:text-primary" />
+            <link.icon
+              size={18}
+              className="text-mainheading group-hover:text-gray group-dark:hover:text-primary dark:text-white"
+            />
           </Link>
         </li>
       ))}
@@ -922,28 +912,40 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="py-12">
-      <div className="container mx-auto flex flex-col md:flex-row justify-between items-start">
-        <div className="inline-flex w-full mb-12 md:mb-0">
-          <Image src="/assets/images/wise-logo.svg" alt="logo" height={100} width={100} className="size-28" />
+    <footer className="md:py-10 py-5 bg-[#F2F4F7] dark:bg-background">
+      <div className="container mx-auto flex flex-col md:flex-row justify-between items-start px-4 gap-6">
+        <div className="flex flex-col w-full">
+          <Image
+            src="/assets/images/wise-logo.svg"
+            alt="logo"
+            height={100}
+            width={100}
+            className="mb-5"
+          />
+          <p className="max-w-2xl text-mainheading dark:text-white lg:text-lg text-base">
+            We provide reliable and competitive currency exchange services with
+            real-time rates, secure transactions, and excellent customer
+            support. Whether you're traveling, investing, or sending money
+            abroad, trust us to handle your currency needs with transparency and
+            speed.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-14">
+        <div className="grid grid-cols-2 space-x-20">
           {footerData.sections.map((section) => (
             <div key={section.title}>
               <div
                 className={`${
-                  isMobile
-                    ? "flex justify-between items-center pb-4 cursor-pointer"
-                    : "pb-4"
+                  isMobile ? "flex items-center pb-4 cursor-pointer" : "pb-4"
                 }`}
                 onClick={
                   isMobile ? () => toggleDropdown(section.title) : undefined
                 }
               >
-                <h3 className="text-green dark:text-primary md:text-2xl text-xl font-medium text-nowrap">
+                <h3 className="text-primary dark:text-primary text-2xl font-medium">
                   {section.title}
                 </h3>
+
                 {isMobile && (
                   <button
                     aria-expanded={openDropdown === section.title}
@@ -990,30 +992,26 @@ const Footer: React.FC = () => {
             </div>
           ))}
         </div>
-        {/* Theme Toggle in Footer - Right Side */}
-        <div className="md:ml-auto mt-6 md:mt-0">
-          <ThemeToggle location="dashboard" className="justify-end" />
-        </div>
       </div>
 
       <hr className="my-6 container mx-auto px-4" />
       <div className="container mx-auto px-4">
-        <h3 className="text-green dark:text-primary text-lg font-semibold pb-4">
+        <h3 className="text-primary text-lg font-semibold pb-4">
           Currency Converters
         </h3>
 
         <div className="flex flex-wrap">
           {footerData.currencyConverters.map((pair, index) => (
-            <div className="text-gray-500 dark:text-white" key={pair}>
+            <div className="text-mainheading dark:text-white" key={pair}>
               <div className="relative group w-fit inline-block">
                 <button
-                  className="relative z-10"
+                  className="relative z-10 cursor-pointer"
                   onClick={() => handleCurrencyConverterClick(pair)}
                 >
                   {pair}
                 </button>
-                <span className="absolute bottom-0 left-0 w-full h-[2px] bg-green dark:bg-primary transform scale-x-0 origin-right transition-transform duration-500 ease-in-out group-hover:origin-left group-hover:scale-x-100"></span>
-                </div>
+                <span className="absolute bottom-0 left-0 w-full h-[2px] bg-mainheading dark:bg-primary transform scale-x-0 origin-right transition-transform duration-500 ease-in-out group-hover:origin-left group-hover:scale-x-100"></span>
+              </div>
               {index !== footerData.currencyConverters.length - 1 && (
                 <span className="mx-4">|</span>
               )}
@@ -1022,11 +1020,11 @@ const Footer: React.FC = () => {
         </div>
       </div>
 
-
       <hr className="my-6 container mx-auto px-4" />
-      <div className="space-y-4 text-center container mx-auto px-4">
-        <p className="text-green dark:text-primary font-medium">{footerData.copyright}</p>
-        <p className="text-gray-500 dark:text-gray-300 font-light">{footerData.disclaimer}</p>
+      <div className="text-center container mx-auto px-4">
+        <p className="text-mainheading dark:text-primary font-semibold">
+          {footerData.copyright}
+        </p>
       </div>
     </footer>
   );

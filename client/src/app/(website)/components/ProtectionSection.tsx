@@ -5,13 +5,14 @@ import { RiCustomerService2Fill } from "react-icons/ri";
 
 const ProtectionSection = () => {
   return (
-    <section className="Protection-Section md:py-12 py-5">
+    <section className="Protection-Section md:py-12 py-5 bg-[#f2f4f7] dark:bg-background" id="protect">
       <div className="container mx-auto px-4">
-        <div className="border-t md:pt-10 pt-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
+        <div className="md:pt-10 pt-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
+
           {/* Real-Time Exchange Rates */}
           <div className="flex flex-col items-center text-center space-y-4">
-            <div className="w-16 h-16 rounded-full bg-lightgray dark:bg-primarybox flex items-center justify-center">
-              <MdSyncAlt className="w-8 h-8 text-secondary dark:text-primary" />{" "}
+            <div className="w-16 h-16 rounded-full bg-secondary  dark:bg-primarybox flex items-center justify-center">
+              <MdSyncAlt className="w-8 h-8 text-white dark:text-primary" />
             </div>
             <h3 className="text-xl font-medium text-mainheading dark:text-white">
               Real-Time Exchange Rates
@@ -25,8 +26,8 @@ const ProtectionSection = () => {
 
           {/* Multi-Currency Support */}
           <div className="flex flex-col items-center text-center space-y-4">
-            <div className="w-16 h-16 rounded-full bg-lightgray dark:bg-primarybox flex items-center justify-center">
-              <FaGlobe className="w-8 h-8 text-secondary dark:text-primary" />{" "}
+            <div className="w-16 h-16 rounded-full bg-secondary dark:bg-primarybox flex items-center justify-center">
+              <FaGlobe className="w-8 h-8 text-white dark:text-primary" />
             </div>
             <h3 className="text-xl font-medium text-mainheading dark:text-white">
               Multi-Currency Support
@@ -40,8 +41,8 @@ const ProtectionSection = () => {
         
           {/* Fast Processing */}
           <div className="flex flex-col items-center text-center space-y-4">
-            <div className="w-16 h-16 rounded-full bg-lightgray dark:bg-primarybox flex items-center justify-center">
-              <FaClock className="w-8 h-8 text-secondary dark:text-primary" />{" "}
+            <div className="w-16 h-16 rounded-full bg-secondary dark:bg-primarybox flex items-center justify-center">
+              <FaClock className="w-8 h-8 text-white dark:text-primary" />
             </div>
             <h3 className="text-xl font-medium text-mainheading dark:text-white">
               Fast Processing
@@ -54,8 +55,8 @@ const ProtectionSection = () => {
 
           {/* 24/7 Customer Support */}
           <div className="flex flex-col items-center text-center space-y-4">
-            <div className="w-16 h-16 rounded-full bg-lightgray dark:bg-primarybox flex items-center justify-center">
-              <RiCustomerService2Fill className="w-8 h-8 text-secondary dark:text-primary" />{" "}
+            <div className="w-16 h-16 rounded-full bg-secondary dark:bg-primarybox flex items-center justify-center">
+              <RiCustomerService2Fill className="w-8 h-8 text-white dark:text-primary" />
             </div>
             <h3 className="text-xl font-medium text-mainheading dark:text-white">
               24/7 Customer Support

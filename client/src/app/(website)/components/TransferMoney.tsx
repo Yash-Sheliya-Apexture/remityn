@@ -1047,37 +1047,872 @@
 
 // export default TransferSteps;
 
+//latest Codes
 
+// "use client";
+
+// import React, { useState, useEffect, useRef, useCallback } from "react";
+// import Image from "next/image";
+// import { IconType } from "react-icons";
+// import { FaCheckCircle, FaWallet, FaUserFriends } from "react-icons/fa"; // Importing React Icons
+// import { FaMoneyBillTransfer } from "react-icons/fa6";
+
+// // Define the structure for content blocks (used in steps 2 and 4)
+// interface ContentBlock {
+//   text: string;
+//   type?: "default" | "success"; // Optional type for styling
+// }
+
+// // Define the structure for each step
+// interface StepData {
+//   id: number;
+//   iconDefault: IconType; // Changed to IconType
+//   iconActive: IconType; // Changed to IconType
+//   title: string;
+//   subtitle: string;
+//   contentTitle: string;
+//   contentSubtitle: React.ReactNode; // Can be string or JSX
+//   contentImage1: string;
+//   contentImage2?: string; // Optional second image
+//   contentBlocks?: ContentBlock[]; // Optional array of text blocks
+// }
+
+// // Updated Data matching the reference images, using React Icons
+// const stepsData: StepData[] = [
+//   {
+//     id: 0,
+//     iconDefault: FaCheckCircle,
+//     iconActive: FaCheckCircle,
+//     title: "Register and verify",
+//     subtitle: "Complete verification process",
+//     contentTitle: "Register & Identify",
+//     contentSubtitle: (
+//       <>
+//         Register with your email and phone number. <br />
+//         Identify yourself with our inbuilt KYC process
+//       </>
+//     ),
+//     contentImage1: "/assets/images/Frame.svg", // Left phone mockup
+//     contentImage2: "/assets/images/reg-2.1d035221.svg", // Right phone mockup
+//   },
+//   {
+//     id: 1,
+//     iconDefault: FaWallet, // Assuming this is the wallet icon
+//     iconActive: FaWallet,
+//     title: "Create a Digital Wallet",
+//     subtitle: "Add transfer amount",
+//     contentTitle: "Create Digital Wallet With Passkey",
+//     contentSubtitle: "Our passkey security feature safeguards your money",
+//     contentImage1: "/assets/images/wallet.8ef702f3.svg", // Single phone mockup with security icons
+//     contentBlocks: [
+//       // Text blocks for this step
+//       { text: "Passkeys : Robust alternative to passwords", type: "default" },
+//       { text: "Prevents phishing and password hacks", type: "default" },
+//       { text: "Protect your wallet with passkey", type: "default" },
+//     ],
+//   },
+//   {
+//     id: 2,
+//     iconDefault: FaUserFriends,
+//     iconActive: FaUserFriends,
+//     title: "Add Recipients",
+//     subtitle: "Who do we send to?",
+//     contentTitle: "Add Recipients",
+//     contentSubtitle: "Add the accounts of people you'd like to send to",
+//     contentImage1: "/assets/images/rec-1.27d0b92a.svg", // Left phone mockup
+//     contentImage2: "/assets/images/rec-2.e0ece37b.svg", // Right phone mockup
+//   },
+//   {
+//     id: 3,
+//     iconDefault: FaMoneyBillTransfer, // Assuming this is the transfer icon
+//     iconActive: FaMoneyBillTransfer,
+//     title: "Transfer Money",
+//     subtitle: "Complete transfer process",
+//     contentTitle: "Transfer Money",
+//     contentSubtitle: (
+//       <>
+//         Send Euros to our bank account. <br />
+//         We transfer money to the recipient on your approval
+//       </>
+//     ),
+//     contentImage1: "/assets/images/trf-1.7a2bc647.svg", // Single phone mockup showing transfer screen
+//     contentBlocks: [
+//       // Text blocks for this step
+//       { text: "Approve your transaction", type: "default" },
+//       { text: "ScopeX will verify your transfer soon", type: "default" },
+//       { text: "Transfer Completed", type: "success" }, // Special styling for success
+//     ],
+//   },
+// ];
+
+// const AUTO_ADVANCE_DELAY = 3000; // ms
+// const BORDER_ANIMATION_DURATION = 3000; // ms - Match CSS
+
+// const TransferSteps: React.FC = () => {
+//   const [activeIndex, setActiveIndex] = useState(0);
+//   const [isAutoAdvancing, setIsAutoAdvancing] = useState(true);
+//   const [isAnimating, setIsAnimating] = useState(true); // Tracks border animation state
+//   const timerRef = useRef<NodeJS.Timeout | null>(null);
+//   const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+//   const advanceStep = useCallback(() => {
+//     setActiveIndex((prevIndex) => {
+//       const nextIndex = (prevIndex + 1) % stepsData.length;
+//       setIsAnimating(true);
+//       if (animationTimeoutRef.current)
+//         clearTimeout(animationTimeoutRef.current);
+//       animationTimeoutRef.current = setTimeout(() => {
+//         setIsAnimating(false);
+//       }, BORDER_ANIMATION_DURATION);
+//       return nextIndex;
+//     });
+//   }, []);
+
+//   useEffect(() => {
+//     if (isAutoAdvancing) {
+//       if (timerRef.current) clearTimeout(timerRef.current);
+//       // Start animation timeout for initial load or auto-advance
+//       if (isAnimating) {
+//         // Should be true on initial load / advance
+//         if (animationTimeoutRef.current)
+//           clearTimeout(animationTimeoutRef.current);
+//         animationTimeoutRef.current = setTimeout(() => {
+//           setIsAnimating(false);
+//         }, BORDER_ANIMATION_DURATION);
+//       }
+
+//       timerRef.current = setTimeout(advanceStep, AUTO_ADVANCE_DELAY);
+
+//       return () => {
+//         if (timerRef.current) clearTimeout(timerRef.current);
+//         if (animationTimeoutRef.current)
+//           clearTimeout(animationTimeoutRef.current);
+//       };
+//     } else {
+//       if (timerRef.current) clearTimeout(timerRef.current);
+//       // Optionally clear animation timeout if stopped manually,
+//       // though letting it finish might be smoother visually.
+//       // if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
+//     }
+//   }, [activeIndex, isAutoAdvancing, advanceStep, isAnimating]); // isAnimating added to deps
+
+//   const handleStepClick = (index: number) => {
+//     setIsAutoAdvancing(false);
+//     if (timerRef.current) clearTimeout(timerRef.current);
+//     if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
+
+//     if (index !== activeIndex) {
+//       setActiveIndex(index);
+//       setIsAnimating(true); // Start animation for newly clicked index
+//       animationTimeoutRef.current = setTimeout(() => {
+//         setIsAnimating(false);
+//       }, BORDER_ANIMATION_DURATION);
+//     } else {
+//       // If clicking the already active index, maybe reset animation or do nothing
+//       // For now, we assume clicking active does nothing to animation state unless auto-advance was on
+//       setIsAnimating(false); // Ensure animation stops if clicking the active one while auto-advancing was on
+//     }
+//   };
+
+//   const currentStep = stepsData[activeIndex];
+
+//   // Helper function to get block styling
+//   const getBlockClasses = (type: ContentBlock["type"]) => {
+//     switch (type) {
+//       case "success":
+//         return "bg-green-600/20 text-green-600";
+//       case "default":
+//       default:
+//         return "bg-lightgray dark:bg-white/5 text-xs lg:text-base text-gray-500 dark:text-gray-300";
+//     }
+//   };
+
+//   return (
+//     <div className="py-10 bg-[#F2F4F7] dark:bg-background">
+//       {/* Adjusted dark bg */}
+//       <section
+//         className="flex flex-col justify-center container mx-auto px-4"
+//         id="transfer-steps"
+//       >
+//         {/* Title Section */}
+//         <article className="flex flex-col gap-5 mb-8 lg:mb-14">
+//           <h1 className="text-4xl md:text-5xl xl:text-7xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight text-center lg:text-left">
+//             4 easy steps to
+//             <span className="text-primary"> Transfer to India </span>
+//           </h1>
+//         </article>
+
+//         {/* Steps and Content Section */}
+//         <article className="grid gap-8 lg:grid-cols-3 lg:gap-8">
+//           {/* Steps List (Left Side) */}
+//           <div className="w-full h-full">
+//             <div className="rounded-3xl bg-white dark:bg-white/5 lg:p-8 p-6 h-full">
+//               <ul className="lg:flex md:grid md:grid-cols-2 grid-cols-1 flex-col space-y-6 justify-between h-full gap-8">
+//                 {stepsData.map((step, index) => {
+//                   const isActive = activeIndex === index;
+//                   const isCurrentlyAnimating = isActive && isAnimating;
+//                   return (
+//                     <li
+//                       key={step.id}
+//                       className={`relative shrink-0 lg:shrink ${
+//                         index === stepsData.length - 1 ? "" : "" // Consistent padding
+//                       }`}
+//                     >
+//                       <button
+//                         onClick={() => handleStepClick(index)}
+//                         className="z-10 flex flex-col lg:flex-row cursor-pointer items-center lg:items-start gap-2 lg:gap-5 bg-transparent w-full text-left group focus:outline-none rounded-lg" // Added focus styles
+//                         aria-current={isActive ? "step" : undefined}
+//                       >
+//                         {/* Icon SVG Container */}
+//                         <div className="relative">
+//                           <svg
+//                             viewBox="0 0 54 54"
+//                             fill="none"
+//                             xmlns="http://www.w3.org/2000/svg"
+//                             className={`transition-colors duration-300 lg:size-18 md:size-14 size-10 ${
+//                               // Faster transition
+//                               isActive
+//                                 ? "text-mainheading dark:text-primary" // Use primary color for active icon border
+//                                 : "text-[#97A2B3] dark:text-gray-500"
+//                             }`}
+//                           >
+//                             {/* Base Rect */}
+//                             <rect
+//                               x="1"
+//                               y="1"
+//                               width="52"
+//                               height="52"
+//                               rx="12"
+//                               className={`transition-colors duration-300 stroke-[#EAECF0] dark:stroke-gray-500`}
+//                               strokeWidth="2"
+//                               fill={isActive ? "dark:stroke-black" : ""}
+//                             />
+//                             {/* Icon Image */}
+//                             <foreignObject x="15" y="15" width="24" height="24">
+//                               {isActive ? (
+//                                 <step.iconActive
+//                                   className={`h-6 w-6 ${
+//                                     isActive
+//                                       ? "text-mainheading dark:text-primary"
+//                                       : "text-[#97A2B3] dark:text-gray-500"
+//                                   }`}
+//                                 />
+//                               ) : (
+//                                 <step.iconDefault
+//                                   className={`h-6 w-6 ${
+//                                     isActive
+//                                       ? "text-mainheading dark:text-primary"
+//                                       : "text-[#97A2B3] dark:text-gray-500"
+//                                   }`}
+//                                 />
+//                               )}
+//                             </foreignObject>
+
+//                             {/* Animated Border Path */}
+//                             <path
+//                               d="M 27,1 H 41 A 12,12 0 0 1 53,13 V 41 A 12,12 0 0 1 41,53 H 13 A 12,12 0 0 1 1,41 V 13 A 12,12 0 0 1 13,1 H 27 Z"
+//                               stroke={isActive ? "currentColor" : "none"}
+//                               strokeWidth="2"
+//                               fill="none"
+//                               strokeDasharray="208"
+//                               strokeDashoffset="208"
+//                               className={
+//                                 isCurrentlyAnimating
+//                                   ? "animate-border-draw"
+//                                   : isActive
+//                                   ? "border-path-static"
+//                                   : "border-path-reset" // Keep border visible when active but not animating
+//                               }
+//                             />
+//                           </svg>
+//                         </div>
+
+//                         {/* Text Content */}
+//                         <div className="flex flex-col items-center lg:items-start gap-1 mt-2">
+//                           <h3
+//                             className={`text-center lg:text-left capitalize text-base font-bold leading-tight transition-colors duration-300 lg:text-xl ${
+//                               isActive
+//                                 ? "text-[#182230] dark:text-white" // Darker active text
+//                                 : "text-[#97A2B3] dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300"
+//                             }`}
+//                           >
+//                             {step.title}
+//                           </h3>
+//                           <p
+//                             className={`text-center lg:text-left text-sm font-normal transition-colors duration-300 lg:text-lg ${
+//                               isActive
+//                                 ? "text-gray-500 dark:text-gray-300"
+//                                 : "text-[#97A2B3] dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-gray-400"
+//                             }`}
+//                           >
+//                             {step.subtitle}
+//                           </p>
+//                         </div>
+//                       </button>
+//                     </li>
+//                   );
+//                 })}
+//               </ul>
+//             </div>
+//           </div>
+
+//           {/* Content Area (Right Side) */}
+//           <div className="relative flex lg:col-span-2 lg:block lg:self-stretch h-[500px] md:h-[550px] lg:h-[600px] min-h-[500px] md:min-h-[550px] lg:min-h-[600px]">
+//             <div
+//               key={activeIndex} // Trigger animation on change
+//               className="absolute inset-0 flex flex-col rounded-3xl bg-white dark:bg-white/5 lg:p-8 p-6 animate-in fade-in duration-700 overflow-hidden" // Added overflow-hidden
+//             >
+//               {/* Top Text Content */}
+//               <div className="space-y-2 animate-in slide-in-from-top-5 duration-500 z-10 mb-4 lg:mb-8">
+//                 <h3 className="text-xl lg:text-3xl font-medium text-mainheading dark:text-white">
+//                   {/* Adjusted color */}
+//                   {currentStep.contentTitle}
+//                 </h3>
+//                 <p className="text-gray-700 dark:text-gray-300 lg:text-base text-xs leading-relaxed">
+//                   {/* Handle line breaks */}
+//                   {currentStep.contentSubtitle}
+//                 </p>
+//               </div>
+
+//               {/* Content Blocks (Steps 2 & 4) */}
+//               {currentStep.contentBlocks && (
+//                 <div className="flex flex-col items-start lg:items-end gap-3 mb-4 text-nowrap lg:mb-0 lg:absolute lg:top-10 lg:right-10 z-10 animate-in fade-in slide-in-from-right-5 duration-500 delay-100">
+//                   {currentStep.contentBlocks.map((block, blockIndex) => (
+//                     <div
+//                       key={blockIndex} // Use the inner index for the key
+//                       className={`px-4 lg:py-3 py-2 rounded-full font-medium ${getBlockClasses(
+//                         block.type
+//                       )}`}
+//                     >
+//                       {block.text}
+//                     </div>
+//                   ))}
+//                 </div>
+//               )}
+
+//               {/* Images Container - Adjusted positioning and sizing */}
+//               <div className="relative flex-grow flex items-end justify-center lg:justify-start mt-auto">
+//                 {/* Image 1 */}
+//                 <div
+//                   className={`relative ${
+//                     currentStep.contentImage2
+//                       ? "w-1/2 lg:w-auto lg:absolute lg:bottom-0 lg:left-5"
+//                       : "mx-auto lg:mx-0 lg:absolute lg:bottom-0 lg:left-1/2 lg:-translate-x-1/2"
+//                   } animate-in slide-in-from-bottom-10 duration-700 delay-100`}
+//                 >
+//                   <Image
+//                     src={currentStep.contentImage1}
+//                     alt={`${currentStep.title} illustration 1`}
+//                     width={currentStep.contentImage2 ? 280 : 320}
+//                     height={currentStep.contentImage2 ? 500 : 550}
+//                     style={{
+//                       width: "auto",
+//                       height: "auto",
+//                       maxHeight: currentStep.contentImage2 ? "450px" : "500px",
+//                       maxWidth: "100%",
+//                     }} // Adjusted max heights
+//                     priority={activeIndex === 0} // Prioritize Image 1 only if it's the first step active
+//                     className="object-cover"
+//                   />
+//                 </div>
+
+//                 {/* Image 2 (Conditional) */}
+//                 {currentStep.contentImage2 && (
+//                   <div className="relative w-1/2 lg:w-auto lg:absolute lg:bottom-0 lg:right-5 animate-in slide-in-from-bottom-10 duration-700 delay-200">
+//                     <Image
+//                       src={currentStep.contentImage2}
+//                       alt={`${currentStep.title} illustration 2`}
+//                       width={280}
+//                       height={500}
+//                       style={{
+//                         width: "auto",
+//                         height: "auto",
+//                         maxHeight: "350px",
+//                         maxWidth: "100%",
+//                       }} // Responsive
+//                       // --- FIX HERE ---
+//                       priority={activeIndex === 0} // Prioritize Image 2 *only* if the active step is the first one (index 0)
+//                       // --- END FIX ---
+//                       className="object-cover"
+//                     />
+//                   </div>
+//                 )}
+//               </div>
+//             </div>
+//           </div>
+//         </article>
+//       </section>
+//     </div>
+//   );
+// };
+
+// export default TransferSteps;
+
+// "use client";
+
+// import React, { useState, useEffect, useRef, useCallback } from "react";
+// import Image from "next/image";
+// import { IconType } from "react-icons";
+// import { FaCheckCircle, FaWallet, FaUserFriends } from "react-icons/fa"; // Importing React Icons
+// import { FaMoneyBillTransfer } from "react-icons/fa6";
+
+// // Define the structure for content blocks (used in steps 2 and 4)
+// interface ContentBlock {
+//   text: string;
+//   type?: "default" | "success"; // Optional type for styling
+// }
+
+// // Define the structure for each step
+// interface StepData {
+//   id: number;
+//   iconDefault: IconType; // Changed to IconType
+//   iconActive: IconType; // Changed to IconType
+//   title: string;
+//   subtitle: string;
+//   contentTitle: string;
+//   contentSubtitle: React.ReactNode; // Can be string or JSX
+//   contentImage1: string;
+//   contentImage2?: string; // Optional second image
+//   contentBlocks?: ContentBlock[]; // Optional array of text blocks
+// }
+
+// // Updated Data matching the reference images, using React Icons
+// const stepsData: StepData[] = [
+//   {
+//     id: 0,
+//     iconDefault: FaCheckCircle,
+//     iconActive: FaCheckCircle,
+//     title: "Register and verify",
+//     subtitle: "Complete verification process",
+//     contentTitle: "Register & Identify",
+//     contentSubtitle: (
+//       <>
+//         Register with your email and phone number. <br />
+//         Identify yourself with our inbuilt KYC process
+//       </>
+//     ),
+//     contentImage1: "/assets/images/Frame.svg", // Left phone mockup
+//     contentImage2: "/assets/images/reg-2.1d035221.svg", // Right phone mockup
+//   },
+//   {
+//     id: 1,
+//     iconDefault: FaWallet, // Assuming this is the wallet icon
+//     iconActive: FaWallet,
+//     title: "Create a Digital Wallet",
+//     subtitle: "Add transfer amount",
+//     contentTitle: "Create Digital Wallet With Passkey",
+//     contentSubtitle: "Our passkey security feature safeguards your money",
+//     contentImage1: "/assets/images/wallet.8ef702f3.svg", // Single phone mockup with security icons
+//     contentBlocks: [
+//       // Text blocks for this step
+//       { text: "Passkeys : Robust alternative to passwords", type: "default" },
+//       { text: "Prevents phishing and password hacks", type: "default" },
+//       { text: "Protect your wallet with passkey", type: "default" },
+//     ],
+//   },
+//   {
+//     id: 2,
+//     iconDefault: FaUserFriends,
+//     iconActive: FaUserFriends,
+//     title: "Add Recipients",
+//     subtitle: "Who do we send to?",
+//     contentTitle: "Add Recipients",
+//     contentSubtitle: "Add the accounts of people you'd like to send to",
+//     contentImage1: "/assets/images/rec-1.27d0b92a.svg", // Left phone mockup
+//     contentImage2: "/assets/images/rec-2.e0ece37b.svg", // Right phone mockup
+//   },
+//   {
+//     id: 3,
+//     iconDefault: FaMoneyBillTransfer, // Assuming this is the transfer icon
+//     iconActive: FaMoneyBillTransfer,
+//     title: "Transfer Money",
+//     subtitle: "Complete transfer process",
+//     contentTitle: "Transfer Money",
+//     contentSubtitle: (
+//       <>
+//         Send Euros to our bank account. <br />
+//         We transfer money to the recipient on your approval
+//       </>
+//     ),
+//     contentImage1: "/assets/images/trf-1.7a2bc647.svg", // Single phone mockup showing transfer screen
+//     contentBlocks: [
+//       // Text blocks for this step
+//       { text: "Approve your transaction", type: "default" },
+//       { text: "ScopeX will verify your transfer soon", type: "default" },
+//       { text: "Transfer Completed", type: "success" }, // Special styling for success
+//     ],
+//   },
+// ];
+
+// const AUTO_ADVANCE_DELAY = 3000; // ms
+// const BORDER_ANIMATION_DURATION = 3000; // ms - Match CSS
+
+// const TransferSteps: React.FC = () => {
+//   const [activeIndex, setActiveIndex] = useState(0);
+//   const [isAutoAdvancing, setIsAutoAdvancing] = useState(true);
+//   const [isAnimating, setIsAnimating] = useState(true); // Tracks border animation state
+//   const [isHoverPaused, setIsHoverPaused] = useState(false); // Track if hover is pausing the timer
+
+//   const timerRef = useRef<NodeJS.Timeout | null>(null);
+//   const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+//   // Function to clear all timers
+//   const clearTimers = () => {
+//     if (timerRef.current) clearTimeout(timerRef.current);
+//     if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
+//   };
+
+//   // Function to start the border animation timeout
+//   const startBorderAnimation = () => {
+//     setIsAnimating(true);
+//     if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
+//     animationTimeoutRef.current = setTimeout(() => {
+//       setIsAnimating(false);
+//     }, BORDER_ANIMATION_DURATION);
+//   };
+
+//   // Callback to advance to the next step
+//   const advanceStep = useCallback(() => {
+//     setActiveIndex((prevIndex) => (prevIndex + 1) % stepsData.length);
+//     startBorderAnimation(); // Start border animation for the next step
+//   }, []);
+
+//   // Effect to handle automatic advancement and cleanup
+//   useEffect(() => {
+//     // Clear previous timers on cleanup or when dependencies change
+//     clearTimers();
+
+//     // Start the border animation for the initial load or when activeIndex changes
+//     startBorderAnimation();
+
+//     // Set up the auto-advance timer if enabled and not paused by hover
+//     if (isAutoAdvancing && !isHoverPaused) {
+//       timerRef.current = setTimeout(advanceStep, AUTO_ADVANCE_DELAY);
+//     }
+
+//     // Cleanup function to clear timers when the component unmounts
+//     // or when dependencies change before the next effect runs
+//     return () => {
+//       clearTimers();
+//     };
+//     // Dependencies: Re-run when activeIndex changes, auto-advance state changes,
+//     // hover pause state changes, or the advanceStep function reference changes.
+//   }, [activeIndex, isAutoAdvancing, isHoverPaused, advanceStep]);
+
+//   // Handle clicking on a step button
+//   const handleStepClick = (index: number) => {
+//     // --- MODIFIED LOGIC ---
+//     // No longer sets isAutoAdvancing to false
+
+//     // Prevent changing if already active (optional, but good practice)
+//     if (index === activeIndex) {
+//       // If clicking the active step while auto-advancing, reset its timer/animation
+//       if (isAutoAdvancing && !isHoverPaused) {
+//         clearTimers(); // Clear existing timers
+//         startBorderAnimation(); // Restart border animation
+//         timerRef.current = setTimeout(advanceStep, AUTO_ADVANCE_DELAY); // Restart advance timer
+//       }
+//       return;
+//     }
+
+//     // Clear existing timers before setting new state
+//     clearTimers();
+
+//     // Set the new active index IMMEDIATELY
+//     setActiveIndex(index);
+
+//   };
+
+//   // --- NEW: Handle mouse entering the content area ---
+//   const handleContentMouseEnter = () => {
+//     if (isAutoAdvancing) {
+//       setIsHoverPaused(true); // Set pause flag
+//       if (timerRef.current) {
+//         clearTimeout(timerRef.current); // Clear the advance timer
+//         // console.log("Auto-advance paused on hover");
+//       }
+//     }
+//   };
+
+//   // --- NEW: Handle mouse leaving the content area ---
+//   const handleContentMouseLeave = () => {
+//     if (isAutoAdvancing) {
+//       setIsHoverPaused(false); // Unset pause flag
+//       // The useEffect will now detect isHoverPaused is false and restart the timer
+//       // console.log("Auto-advance resuming on hover leave");
+//     }
+//   };
+
+//   const currentStep = stepsData[activeIndex];
+
+//   // Helper function to get block styling
+//   const getBlockClasses = (type: ContentBlock["type"]) => {
+//     switch (type) {
+//       case "success":
+//         return "bg-green-600/20 text-green-600";
+//       case "default":
+//       default:
+//         return "bg-lightgray dark:bg-white/5 text-xs lg:text-base text-gray-500 dark:text-gray-300";
+//     }
+//   };
+
+//   return (
+//     <div className="py-10 bg-[#F2F4F7] dark:bg-background">
+//       <section
+//         className="flex flex-col justify-center container mx-auto px-4"
+//         id="transfer-steps"
+//       >
+//         {/* Title Section */}
+//         <article className="flex flex-col gap-5 mb-8 lg:mb-14">
+//           <h1 className="text-4xl md:text-5xl xl:text-7xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight text-center lg:text-left">
+//             4 easy steps to
+//             <span className="text-primary"> Transfer to India </span>
+//           </h1>
+//           {/* Optional: Button to toggle auto-advance for testing */}
+//           {/* <button onClick={() => setIsAutoAdvancing(prev => !prev)} className="p-2 bg-blue-500 text-white rounded">
+//                         {isAutoAdvancing ? "Pause Auto Advance" : "Resume Auto Advance"}
+//                     </button> */}
+//         </article>
+
+//         {/* Steps and Content Section */}
+//         <article className="grid gap-8 lg:grid-cols-3 lg:gap-8">
+//           {/* Steps List (Left Side) */}
+//           <div className="w-full h-full">
+//             <div className="rounded-3xl bg-white dark:bg-white/5 lg:p-8 p-6 h-full">
+//               <ul className="lg:flex md:grid md:grid-cols-2 grid-cols-1 flex-col space-y-6 justify-between h-full gap-8">
+//                 {stepsData.map((step, index) => {
+//                   const isActive = activeIndex === index;
+//                   const isCurrentlyAnimating = isActive && isAnimating;
+//                   return (
+//                     <li
+//                       key={step.id}
+//                       className={`relative shrink-0 lg:shrink ${
+//                         index === stepsData.length - 1 ? "" : ""
+//                       }`}
+//                     >
+//                       <button
+//                         onClick={() => handleStepClick(index)}
+//                         className="z-10 flex flex-col lg:flex-row cursor-pointer items-center lg:items-start gap-2 lg:gap-5 bg-transparent w-full text-left group focus:outline-none rounded-lg" // Added focus styles
+//                         aria-current={isActive ? "step" : undefined}
+//                       >
+//                         {/* Icon SVG Container */}
+//                         <div className="relative">
+//                           <svg
+//                             viewBox="0 0 54 54"
+//                             fill="none"
+//                             xmlns="http://www.w3.org/2000/svg"
+//                             className={`transition-colors duration-300 lg:size-18 md:size-14 size-10 ${
+//                               isActive
+//                                 ? "text-mainheading dark:text-primary"
+//                                 : "text-[#97A2B3] dark:text-gray-500"
+//                             }`}
+//                           >
+//                             {/* Base Rect */}
+//                             <rect
+//                               x="1"
+//                               y="1"
+//                               width="52"
+//                               height="52"
+//                               rx="12"
+//                               className={`transition-colors duration-300 stroke-[#EAECF0] dark:stroke-gray-500`}
+//                               strokeWidth="2"
+//                               // Updated fill logic for dark mode active state
+//                               fill={
+//                                 isActive
+//                                   ? "transparent dark:transparent"
+//                                   : "transparent"
+//                               }
+//                             />
+//                             {/* Icon Image */}
+//                             <foreignObject x="15" y="15" width="24" height="24">
+//                               {isActive ? (
+//                                 <step.iconActive
+//                                   className={`h-6 w-6 ${
+//                                     isActive
+//                                       ? "text-mainheading dark:text-primary"
+//                                       : "text-[#97A2B3] dark:text-gray-500"
+//                                   }`}
+//                                 />
+//                               ) : (
+//                                 <step.iconDefault
+//                                   className={`h-6 w-6 ${
+//                                     isActive
+//                                       ? "text-mainheading dark:text-primary"
+//                                       : "text-[#97A2B3] dark:text-gray-500"
+//                                   }`}
+//                                 />
+//                               )}
+//                             </foreignObject>
+
+//                             {/* Animated Border Path */}
+//                             <path
+//                               // Corrected path data for rounded rect perimeter
+//                               d="M 27,1 H 41 C 47.6274,1 53,6.37258 53,13 V 41 C 53,47.6274 47.6274,53 41,53 H 13 C 6.37258,53 1,47.6274 1,41 V 13 C 1,6.37258 6.37258,1 13,1 H 27 Z"
+//                               stroke={isActive ? "currentColor" : "none"} // Use text color for border
+//                               strokeWidth="2"
+//                               fill="none"
+//                               strokeDasharray="208" // Approximate perimeter length
+//                               strokeDashoffset="208"
+//                               className={
+//                                 isCurrentlyAnimating
+//                                   ? "animate-border-draw"
+//                                   : isActive
+//                                   ? "border-path-static" // Keep border fully drawn when active but not animating
+//                                   : "border-path-reset" // Fully hidden when not active
+//                               }
+//                             />
+//                           </svg>
+//                         </div>
+
+//                         {/* Text Content */}
+//                         <div className="flex flex-col items-center lg:items-start gap-1 mt-2 lg:mt-0">
+//                           <h3
+//                             className={`text-center lg:text-left capitalize text-base font-bold leading-tight transition-colors duration-300 lg:text-xl ${
+//                               isActive
+//                                 ? "text-[#182230] dark:text-white"
+//                                 : "text-[#97A2B3] dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300"
+//                             }`}
+//                           >
+//                             {step.title}
+//                           </h3>
+//                           <p
+//                             className={`text-center lg:text-left text-sm font-normal transition-colors duration-300 lg:text-lg ${
+//                               isActive
+//                                 ? "text-gray-500 dark:text-gray-300"
+//                                 : "text-[#97A2B3] dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-gray-400"
+//                             }`}
+//                           >
+//                             {step.subtitle}
+//                           </p>
+//                         </div>
+//                       </button>
+//                     </li>
+//                   );
+//                 })}
+//               </ul>
+//             </div>
+//           </div>
+
+//           {/* Content Area (Right Side) */}
+//           {/* --- ADDED HOVER HANDLERS --- */}
+//           <div
+//             className="relative flex lg:col-span-2 lg:block lg:self-stretch h-[500px] md:h-[550px] lg:h-[600px] min-h-[500px] md:min-h-[550px] lg:min-h-[600px]"
+//             onMouseEnter={handleContentMouseEnter}
+//             onMouseLeave={handleContentMouseLeave}
+//           >
+//             <div
+//               key={activeIndex} // Trigger animation on content change
+//               className="absolute inset-0 flex flex-col rounded-3xl bg-white dark:bg-white/5 lg:p-8 p-6 animate-in fade-in duration-700 overflow-hidden"
+//             >
+//               {/* Top Text Content */}
+//               <div className="space-y-2 animate-in slide-in-from-top-5 duration-500 z-10 mb-4 lg:mb-8">
+//                 <h3 className="text-xl lg:text-3xl font-medium text-mainheading dark:text-white">
+//                   {currentStep.contentTitle}
+//                 </h3>
+//                 <p className="text-gray-700 dark:text-gray-300 lg:text-base text-xs leading-relaxed">
+//                   {currentStep.contentSubtitle}
+//                 </p>
+//               </div>
+
+//               {/* Content Blocks (Steps 2 & 4) */}
+//               {currentStep.contentBlocks && (
+//                 <div className="flex flex-col items-start lg:items-end gap-3 mb-4 text-nowrap lg:mb-0 lg:absolute lg:top-10 lg:right-10 z-10 animate-in fade-in slide-in-from-right-5 duration-500 delay-100">
+//                   {currentStep.contentBlocks.map((block, blockIndex) => (
+//                     <div
+//                       key={blockIndex}
+//                       className={`px-4 lg:py-3 py-2 rounded-full font-medium ${getBlockClasses(
+//                         block.type
+//                       )}`}
+//                     >
+//                       {block.text}
+//                     </div>
+//                   ))}
+//                 </div>
+//               )}
+
+//               {/* Images Container */}
+//               <div className="relative flex-grow flex items-end justify-center lg:justify-start mt-auto">
+//                 {/* Image 1 */}
+//                 <div
+//                   className={`relative ${
+//                     currentStep.contentImage2
+//                       ? "w-1/2 lg:w-auto lg:absolute lg:bottom-0 lg:left-5"
+//                       : "mx-auto lg:mx-0 lg:absolute lg:bottom-0 lg:left-1/2 lg:-translate-x-1/2"
+//                   } animate-in slide-in-from-bottom-10 duration-700 delay-100`}
+//                 >
+//                   <Image
+//                     src={currentStep.contentImage1}
+//                     alt={`${currentStep.title} illustration 1`}
+//                     width={currentStep.contentImage2 ? 280 : 320}
+//                     height={currentStep.contentImage2 ? 500 : 550}
+//                     style={{
+//                       width: "auto",
+//                       height: "auto",
+//                       maxHeight: currentStep.contentImage2 ? "450px" : "500px",
+//                       maxWidth: "100%",
+//                     }}
+//                     priority={activeIndex === 0}
+//                     className="object-contain" // Changed to contain for better fitting potentially
+//                   />
+//                 </div>
+
+//                 {/* Image 2 (Conditional) */}
+//                 {currentStep.contentImage2 && (
+//                   <div className="relative w-1/2 lg:w-auto lg:absolute lg:bottom-0 lg:right-5 animate-in slide-in-from-bottom-10 duration-700 delay-200">
+//                     <Image
+//                       src={currentStep.contentImage2}
+//                       alt={`${currentStep.title} illustration 2`}
+//                       width={280}
+//                       height={500}
+//                       style={{
+//                         width: "auto",
+//                         height: "auto",
+//                         maxHeight: "350px",
+//                         maxWidth: "100%",
+//                       }}
+//                       // Priority only for first step's images
+//                       priority={activeIndex === 0}
+//                       className="object-contain" // Changed to contain
+//                     />
+//                   </div>
+//                 )}
+//               </div>
+//             </div>
+//           </div>
+//         </article>
+//       </section>
+//     </div>
+//   );
+// };
+
+// export default TransferSteps;
 
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { IconType } from "react-icons";
-import { FaCheckCircle, FaWallet, FaUserFriends } from "react-icons/fa"; // Importing React Icons
+import { FaCheckCircle, FaWallet, FaUserFriends } from "react-icons/fa";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 
-// Define the structure for content blocks (used in steps 2 and 4)
 interface ContentBlock {
   text: string;
-  type?: "default" | "success"; // Optional type for styling
+  type?: "default" | "success";
 }
 
-// Define the structure for each step
 interface StepData {
   id: number;
-  iconDefault: IconType; // Changed to IconType
-  iconActive: IconType; // Changed to IconType
+  iconDefault: IconType;
+  iconActive: IconType;
   title: string;
   subtitle: string;
   contentTitle: string;
-  contentSubtitle: React.ReactNode; // Can be string or JSX
+  contentSubtitle: React.ReactNode;
   contentImage1: string;
-  contentImage2?: string; // Optional second image
-  contentBlocks?: ContentBlock[]; // Optional array of text blocks
+  contentImage2?: string;
+  contentBlocks?: ContentBlock[];
 }
 
-// Updated Data matching the reference images, using React Icons
 const stepsData: StepData[] = [
   {
     id: 0,
@@ -1092,20 +1927,19 @@ const stepsData: StepData[] = [
         Identify yourself with our inbuilt KYC process
       </>
     ),
-    contentImage1: "/assets/images/Frame.svg", // Left phone mockup
-    contentImage2: "/assets/images/reg-2.1d035221.svg", // Right phone mockup
+    contentImage1: "/assets/images/Frame.svg",
+    contentImage2: "/assets/images/reg-2.1d035221.svg",
   },
   {
     id: 1,
-    iconDefault: FaWallet, // Assuming this is the wallet icon
+    iconDefault: FaWallet,
     iconActive: FaWallet,
     title: "Create a Digital Wallet",
     subtitle: "Add transfer amount",
     contentTitle: "Create Digital Wallet With Passkey",
     contentSubtitle: "Our passkey security feature safeguards your money",
-    contentImage1: "/assets/images/wallet.8ef702f3.svg", // Single phone mockup with security icons
+    contentImage1: "/assets/images/wallet.8ef702f3.svg",
     contentBlocks: [
-      // Text blocks for this step
       { text: "Passkeys : Robust alternative to passwords", type: "default" },
       { text: "Prevents phishing and password hacks", type: "default" },
       { text: "Protect your wallet with passkey", type: "default" },
@@ -1119,12 +1953,12 @@ const stepsData: StepData[] = [
     subtitle: "Who do we send to?",
     contentTitle: "Add Recipients",
     contentSubtitle: "Add the accounts of people you'd like to send to",
-    contentImage1: "/assets/images/rec-1.27d0b92a.svg", // Left phone mockup
-    contentImage2: "/assets/images/rec-2.e0ece37b.svg", // Right phone mockup
+    contentImage1: "/assets/images/rec-1.27d0b92a.svg",
+    contentImage2: "/assets/images/rec-2.e0ece37b.svg",
   },
   {
     id: 3,
-    iconDefault: FaMoneyBillTransfer, // Assuming this is the transfer icon
+    iconDefault: FaMoneyBillTransfer,
     iconActive: FaMoneyBillTransfer,
     title: "Transfer Money",
     subtitle: "Complete transfer process",
@@ -1135,23 +1969,23 @@ const stepsData: StepData[] = [
         We transfer money to the recipient on your approval
       </>
     ),
-    contentImage1: "/assets/images/trf-1.7a2bc647.svg", // Single phone mockup showing transfer screen
+    contentImage1: "/assets/images/trf-1.7a2bc647.svg",
     contentBlocks: [
-      // Text blocks for this step
       { text: "Approve your transaction", type: "default" },
       { text: "ScopeX will verify your transfer soon", type: "default" },
-      { text: "Transfer Completed", type: "success" }, // Special styling for success
+      { text: "Transfer Completed", type: "success" },
     ],
   },
 ];
 
-const AUTO_ADVANCE_DELAY = 3000; // ms
-const BORDER_ANIMATION_DURATION = 3000; // ms - Match CSS
+const AUTO_ADVANCE_DELAY = 3200;
+const BORDER_ANIMATION_DURATION = 3200;
 
 const TransferSteps: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAutoAdvancing, setIsAutoAdvancing] = useState(true);
-  const [isAnimating, setIsAnimating] = useState(true); // Tracks border animation state
+  const [isAnimating, setIsAnimating] = useState(true);
+  const [isContentHovered, setIsContentHovered] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -1169,11 +2003,10 @@ const TransferSteps: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (isAutoAdvancing) {
+    if (isAutoAdvancing && !isContentHovered) {
       if (timerRef.current) clearTimeout(timerRef.current);
-      // Start animation timeout for initial load or auto-advance
+
       if (isAnimating) {
-        // Should be true on initial load / advance
         if (animationTimeoutRef.current)
           clearTimeout(animationTimeoutRef.current);
         animationTimeoutRef.current = setTimeout(() => {
@@ -1190,33 +2023,30 @@ const TransferSteps: React.FC = () => {
       };
     } else {
       if (timerRef.current) clearTimeout(timerRef.current);
-      // Optionally clear animation timeout if stopped manually,
-      // though letting it finish might be smoother visually.
-      // if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
     }
-  }, [activeIndex, isAutoAdvancing, advanceStep, isAnimating]); // isAnimating added to deps
+  }, [
+    activeIndex,
+    isAutoAdvancing,
+    advanceStep,
+    isAnimating,
+    isContentHovered,
+  ]);
 
   const handleStepClick = (index: number) => {
-    setIsAutoAdvancing(false);
+    setIsAutoAdvancing(true);
+    setIsContentHovered(false);
     if (timerRef.current) clearTimeout(timerRef.current);
     if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
 
-    if (index !== activeIndex) {
-      setActiveIndex(index);
-      setIsAnimating(true); // Start animation for newly clicked index
-      animationTimeoutRef.current = setTimeout(() => {
-        setIsAnimating(false);
-      }, BORDER_ANIMATION_DURATION);
-    } else {
-      // If clicking the already active index, maybe reset animation or do nothing
-      // For now, we assume clicking active does nothing to animation state unless auto-advance was on
-      setIsAnimating(false); // Ensure animation stops if clicking the active one while auto-advancing was on
-    }
+    setActiveIndex(index);
+    setIsAnimating(true);
+    animationTimeoutRef.current = setTimeout(() => {
+      setIsAnimating(false);
+    }, BORDER_ANIMATION_DURATION);
   };
 
   const currentStep = stepsData[activeIndex];
 
-  // Helper function to get block styling
   const getBlockClasses = (type: ContentBlock["type"]) => {
     switch (type) {
       case "success":
@@ -1229,22 +2059,18 @@ const TransferSteps: React.FC = () => {
 
   return (
     <div className="py-10 bg-[#F2F4F7] dark:bg-background">
-      {/* Adjusted dark bg */}
       <section
         className="flex flex-col justify-center container mx-auto px-4"
         id="transfer-steps"
       >
-        {/* Title Section */}
         <article className="flex flex-col gap-5 mb-8 lg:mb-14">
-          <h1 className="text-4xl md:text-5xl xl:text-7xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight text-center lg:text-left">
+          <h1 className="text-4xl md:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight text-center lg:text-left">
             4 easy steps to
             <span className="text-primary"> Transfer to India </span>
           </h1>
         </article>
 
-        {/* Steps and Content Section */}
         <article className="grid gap-8 lg:grid-cols-3 lg:gap-8">
-          {/* Steps List (Left Side) */}
           <div className="w-full h-full">
             <div className="rounded-3xl bg-white dark:bg-white/5 lg:p-8 p-6 h-full">
               <ul className="lg:flex md:grid md:grid-cols-2 grid-cols-1 flex-col space-y-6 justify-between h-full gap-8">
@@ -1255,28 +2081,25 @@ const TransferSteps: React.FC = () => {
                     <li
                       key={step.id}
                       className={`relative shrink-0 lg:shrink ${
-                        index === stepsData.length - 1 ? "" : "" // Consistent padding
+                        index === stepsData.length - 1 ? "" : ""
                       }`}
                     >
                       <button
                         onClick={() => handleStepClick(index)}
-                        className="z-10 flex flex-col lg:flex-row cursor-pointer items-center lg:items-start gap-2 lg:gap-5 bg-transparent w-full text-left group focus:outline-none rounded-lg" // Added focus styles
+                        className="z-10 flex flex-col lg:flex-row cursor-pointer items-center lg:items-start gap-2 lg:gap-5 bg-transparent w-full text-left group focus:outline-none rounded-lg"
                         aria-current={isActive ? "step" : undefined}
                       >
-                        {/* Icon SVG Container */}
                         <div className="relative">
                           <svg
                             viewBox="0 0 54 54"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
                             className={`transition-colors duration-300 lg:size-18 md:size-14 size-10 ${
-                              // Faster transition
                               isActive
-                                ? "text-mainheading dark:text-primary" // Use primary color for active icon border
+                                ? "text-mainheading dark:text-primary"
                                 : "text-[#97A2B3] dark:text-gray-500"
                             }`}
                           >
-                            {/* Base Rect */}
                             <rect
                               x="1"
                               y="1"
@@ -1285,13 +2108,8 @@ const TransferSteps: React.FC = () => {
                               rx="12"
                               className={`transition-colors duration-300 stroke-[#EAECF0] dark:stroke-gray-500`}
                               strokeWidth="2"
-                              fill={
-                                isActive
-                                  ? "dark:stroke-black"
-                                  : ""
-                              }
+                              fill={isActive ? "dark:stroke-black" : ""}
                             />
-                            {/* Icon Image */}
                             <foreignObject x="15" y="15" width="24" height="24">
                               {isActive ? (
                                 <step.iconActive
@@ -1312,7 +2130,6 @@ const TransferSteps: React.FC = () => {
                               )}
                             </foreignObject>
 
-                            {/* Animated Border Path */}
                             <path
                               d="M 27,1 H 41 A 12,12 0 0 1 53,13 V 41 A 12,12 0 0 1 41,53 H 13 A 12,12 0 0 1 1,41 V 13 A 12,12 0 0 1 13,1 H 27 Z"
                               stroke={isActive ? "currentColor" : "none"}
@@ -1325,18 +2142,17 @@ const TransferSteps: React.FC = () => {
                                   ? "animate-border-draw"
                                   : isActive
                                   ? "border-path-static"
-                                  : "border-path-reset" // Keep border visible when active but not animating
+                                  : "border-path-reset"
                               }
                             />
                           </svg>
                         </div>
 
-                        {/* Text Content */}
                         <div className="flex flex-col items-center lg:items-start gap-1 mt-2">
                           <h3
                             className={`text-center lg:text-left capitalize text-base font-bold leading-tight transition-colors duration-300 lg:text-xl ${
                               isActive
-                                ? "text-[#182230] dark:text-white" // Darker active text
+                                ? "text-[#182230] dark:text-white"
                                 : "text-[#97A2B3] dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300"
                             }`}
                           >
@@ -1360,30 +2176,35 @@ const TransferSteps: React.FC = () => {
             </div>
           </div>
 
-          {/* Content Area (Right Side) */}
-          <div className="relative flex lg:col-span-2 lg:block lg:self-stretch h-[500px] md:h-[550px] lg:h-[600px] min-h-[500px] md:min-h-[550px] lg:min-h-[600px]">
+          <div
+            className="relative flex lg:col-span-2 lg:block lg:self-stretch h-[500px] md:h-[550px] lg:h-[600px] min-h-[500px] md:min-h-[550px] lg:min-h-[600px]"
+            onMouseEnter={() => {
+              setIsContentHovered(true);
+              setIsAutoAdvancing(false);
+            }}
+            onMouseLeave={() => {
+              setIsContentHovered(false);
+              setIsAutoAdvancing(true);
+            }}
+          >
             <div
-              key={activeIndex} // Trigger animation on change
-              className="absolute inset-0 flex flex-col rounded-3xl bg-white dark:bg-white/5 lg:p-8 p-6 animate-in fade-in duration-700 overflow-hidden" // Added overflow-hidden
+              key={activeIndex}
+              className="absolute inset-0 flex flex-col rounded-3xl bg-white dark:bg-white/5 lg:p-8 p-6 animate-in fade-in duration-700 overflow-hidden"
             >
-              {/* Top Text Content */}
               <div className="space-y-2 animate-in slide-in-from-top-5 duration-500 z-10 mb-4 lg:mb-8">
                 <h3 className="text-xl lg:text-3xl font-medium text-mainheading dark:text-white">
-                  {/* Adjusted color */}
                   {currentStep.contentTitle}
                 </h3>
                 <p className="text-gray-700 dark:text-gray-300 lg:text-base text-xs leading-relaxed">
-                  {/* Handle line breaks */}
                   {currentStep.contentSubtitle}
                 </p>
               </div>
 
-              {/* Content Blocks (Steps 2 & 4) */}
               {currentStep.contentBlocks && (
                 <div className="flex flex-col items-start lg:items-end gap-3 mb-4 text-nowrap lg:mb-0 lg:absolute lg:top-10 lg:right-10 z-10 animate-in fade-in slide-in-from-right-5 duration-500 delay-100">
                   {currentStep.contentBlocks.map((block, blockIndex) => (
                     <div
-                      key={blockIndex} // Use the inner index for the key
+                      key={blockIndex}
                       className={`px-4 lg:py-3 py-2 rounded-full font-medium ${getBlockClasses(
                         block.type
                       )}`}
@@ -1394,9 +2215,7 @@ const TransferSteps: React.FC = () => {
                 </div>
               )}
 
-              {/* Images Container - Adjusted positioning and sizing */}
               <div className="relative flex-grow flex items-end justify-center lg:justify-start mt-auto">
-                {/* Image 1 */}
                 <div
                   className={`relative ${
                     currentStep.contentImage2
@@ -1414,13 +2233,12 @@ const TransferSteps: React.FC = () => {
                       height: "auto",
                       maxHeight: currentStep.contentImage2 ? "450px" : "500px",
                       maxWidth: "100%",
-                    }} // Adjusted max heights
-                    priority={activeIndex === 0} // Prioritize Image 1 only if it's the first step active
+                    }}
+                    priority={activeIndex === 0}
                     className="object-cover"
                   />
                 </div>
 
-                {/* Image 2 (Conditional) */}
                 {currentStep.contentImage2 && (
                   <div className="relative w-1/2 lg:w-auto lg:absolute lg:bottom-0 lg:right-5 animate-in slide-in-from-bottom-10 duration-700 delay-200">
                     <Image
@@ -1433,10 +2251,8 @@ const TransferSteps: React.FC = () => {
                         height: "auto",
                         maxHeight: "350px",
                         maxWidth: "100%",
-                      }} // Responsive
-                      // --- FIX HERE ---
-                      priority={activeIndex === 0} // Prioritize Image 2 *only* if the active step is the first one (index 0)
-                      // --- END FIX ---
+                      }}
+                      priority={activeIndex === 0}
                       className="object-cover"
                     />
                   </div>
@@ -1451,4 +2267,3 @@ const TransferSteps: React.FC = () => {
 };
 
 export default TransferSteps;
-
