@@ -1184,7 +1184,8 @@
 
 // export default kycService;
 
-// --- No changes needed in kycService.ts based on this error ---
+
+
 // frontend/src/app/services/kyc.ts
 // ... (kycService.ts remains the same as provided in the prompt, it was already correct)
 import axios, { AxiosError, type AxiosResponse } from 'axios';
