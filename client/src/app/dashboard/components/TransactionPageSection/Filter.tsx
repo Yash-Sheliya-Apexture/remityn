@@ -3495,9 +3495,7 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
                 isMobile
                   ? "bottom-0 left-0 right-0 h-[100vh]"
                   : "top-0 right-0 sm:w-[600px] h-full"
-              } bg-white dark:bg-background  ${
-                isMobile ? "rounded-t-2xl" : ""
-              } z-90 flex flex-col`} // Use flex column
+              } bg-white dark:bg-background z-80 flex flex-col`} // Use flex column
               initial={
                 isMobile ? { y: "100%", opacity: 0 } : { x: "100%", opacity: 0 }
               }

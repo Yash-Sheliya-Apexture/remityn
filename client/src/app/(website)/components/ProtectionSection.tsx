@@ -1,14 +1,13 @@
 // components/ProtectionSection.tsx
-import { FaUsers, FaLandmark, FaHeadset } from "react-icons/fa"; // Import icons from react-icons/fa (Font Awesome)
 import { FaClock, FaGlobe } from "react-icons/fa6";
 import { MdSyncAlt } from "react-icons/md";
 import { RiCustomerService2Fill } from "react-icons/ri";
 
 const ProtectionSection = () => {
   return (
-    <section className="Protection-Section py-12">
+    <section className="Protection-Section md:py-12 py-5">
       <div className="container mx-auto px-4">
-        <div className="border-t pt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
+        <div className="border-t md:pt-10 pt-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
           {/* Real-Time Exchange Rates */}
           <div className="flex flex-col items-center text-center space-y-4">
             <div className="w-16 h-16 rounded-full bg-lightgray dark:bg-primarybox flex items-center justify-center">

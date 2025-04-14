@@ -1428,12 +1428,234 @@
 
 // export default Header;
 
+// "use client";
+// import React, { useState, useEffect } from "react";
+// import Link from "next/link";
+// import Image from "next/image";
+// import { GiHamburgerMenu } from "react-icons/gi";
+// import { FiX } from "react-icons/fi";
+// import { motion, AnimatePresence } from "framer-motion";
+// import MobileMenu from "./MobileMenu"; // Ensure MobileMenu has proper TypeScript definitions
+// import FeatureDropdown from "@/app/components/ui/FeatureDropdown"; // Ensure FeatureDropdown has proper TypeScript definitions
+// import ThemeToggle from "../../../contexts/ThemeToggle"; // Import ThemeToggle
+// import { IoClose } from "react-icons/io5";
+
+// // Define a type for the feature links
+// interface FeatureLink {
+//   href: string;
+//   text: string;
+// }
+
+// const Header: React.FC = () => {
+//   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+//   const [isLargeScreen, setIsLargeScreen] = useState<boolean>(false);
+
+//   const toggleMobileMenu = () => {
+//     setIsMobileMenuOpen((prev) => !prev);
+//   };
+
+//   const closeMobileMenu = () => {
+//     setIsMobileMenuOpen(false);
+//   };
+
+//   useEffect(() => {
+//     const checkScreenSize = () => {
+//       const large = window.innerWidth >= 1024;
+//       setIsLargeScreen(large);
+//       if (large && isMobileMenuOpen) {
+//         closeMobileMenu();
+//       }
+//     };
+
+//     checkScreenSize();
+//     window.addEventListener("resize", checkScreenSize);
+//     return () => window.removeEventListener("resize", checkScreenSize);
+//   }, [isMobileMenuOpen]);
+
+//   useEffect(() => {
+//     if (isMobileMenuOpen) {
+//       document.body.style.overflow = "hidden";
+//     } else {
+//       document.body.style.overflow = "auto";
+//     }
+//     return () => {
+//       document.body.style.overflow = "auto";
+//     };
+//   }, [isMobileMenuOpen]);
+
+//   const mobileMenuVariants = {
+//     open: { x: 0, opacity: 1, transition: { type: "tween", duration: 0.3 } },
+//     closed: {
+//       x: "-100%",
+//       opacity: 0,
+//       transition: { type: "tween", duration: 0.3 },
+//     },
+//   };
+
+//   const featureLinks: FeatureLink[] = [
+//     { href: "/dashboard", text: "Send Money" },
+//     { href: "/sendlargeamount", text: "Send Large Amounts" },
+//     // Add more features here as needed
+//   ];
+
+//   const topContent = (
+//     <>
+//       <Image
+//         src="/assets/images/plane.webp"
+//         alt="Plane"
+//         width={100}
+//         height={100}
+//         className="size-16"
+//       />
+//       <div>
+//         <p className="font-light text-gray-500 dark:text-gray-300 mt-5">
+//           Learn how millions of customers move their money globally
+//         </p>
+//       </div>
+//     </>
+//   );
+
+//   return (
+//     <header className="header">
+//       <div className="shadow border">
+//         <div className="container mx-auto px-4">
+//           <nav className="flex items-center gap-6 h-20" aria-label="Global">
+//             {/* Logo */}
+//             <div>
+//               <Link href="/">
+//                 <Image
+//                   src="/assets/images/wise-logo.svg"
+//                   alt="Wise Logo"
+//                   width={120}
+//                   height={28}
+//                 />
+//               </Link>
+//             </div>
+
+//             <div className="flex justify-end items-center w-full">
+//               {isLargeScreen && (
+//                 <>
+//                   <div className="flex justify-end items-center gap-4 flex-1/2 w-full">
+//                     <div className="relative group">
+//                       <Link
+//                         href="/"
+//                         className="px-2.5 py-1.5 rounded-full font-medium"
+//                       >
+//                         Home
+//                         <span
+//                           className={`absolute left-0 -bottom-1 w-full h-[2px] dark:bg-primary bg-mainheading transform origin-right scale-x-0 transition-transform duration-500 ease-in-out group-hover:scale-x-100 group-hover:origin-left`}
+//                         ></span>
+//                       </Link>
+//                     </div>
+
+//                     <div className="relative group">
+//                       <Link
+//                         href="/"
+//                         className="px-2.5 py-1.5 rounded-full font-medium"
+//                       >
+//                         About
+//                       </Link>
+//                       <span
+//                         className={`absolute left-0 -bottom-1 w-full h-[2px] dark:bg-primary bg-mainheading transform origin-right scale-x-0 transition-transform duration-500 ease-in-out group-hover:scale-x-100 group-hover:origin-left`}
+//                       ></span>
+//                     </div>
+
+//                     <FeatureDropdown
+//                       buttonText="Features"
+//                       links={featureLinks}
+//                       topContent={topContent}
+//                       onLinkClick={closeMobileMenu}
+//                     />
+
+//                     <div className="relative group">
+//                       <Link
+//                         href="/help"
+//                         className="px-2.5 py-1.5 rounded-full font-medium"
+//                       >
+//                         Help
+//                         <span
+//                           className={`absolute left-0 -bottom-1 w-full h-[2px] dark:bg-primary bg-mainheading transform origin-right scale-x-0 transition-transform duration-500 ease-in-out group-hover:scale-x-100 group-hover:origin-left`}
+//                         ></span>
+//                       </Link>
+//                     </div>
+//                   </div>
+
+//                   <div className="flex items-center mr-2">
+//                     <ThemeToggle location="header" />
+//                   </div>
+//                 </>
+//               )}
+
+//               <div className="flex items-center gap-2">
+//                 {/* Login and Hamburger for Mobile */}
+//                 {!isMobileMenuOpen && (
+//                   <>
+//                     <Link
+//                       href="/auth/login"
+//                       className="bg-primary px-6 py-1.5 lg:block hidden text-nowrap font-medium text-lg rounded-full hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading"
+//                     >
+//                       Log in
+//                     </Link>
+
+//                     {!isLargeScreen && (
+//                       <button
+//                         onClick={toggleMobileMenu}
+//                         className="text-primary p-2 cursor-pointer"
+//                         aria-label="Open Mobile Menu"
+//                       >
+//                         <GiHamburgerMenu size={26} />
+//                       </button>
+//                     )}
+//                   </>
+//                 )}
+
+//                 {/* Close Button (Mobile) */}
+//                 {isMobileMenuOpen && !isLargeScreen && (
+//                   <button
+//                     onClick={closeMobileMenu}
+//                     aria-label="Close Mobile Menu"
+//                     className="text-neutral-900 cursor-pointer"
+//                   >
+//                     <IoClose className="size-10 hover:bg-gray-300 text-mainheading dark:text-white hover:dark:bg-primarybox p-1.5 rounded-full transition-colors duration-300 ease-in-out" />
+//                   </button>
+//                 )}
+//               </div>
+//             </div>
+//           </nav>
+//         </div>
+//       </div>
+
+//       {/* Mobile Menu (Conditional Rendering with Framer Motion) */}
+//       <AnimatePresence>
+//         {isMobileMenuOpen && (
+//           <motion.div
+//             variants={mobileMenuVariants}
+//             initial="closed"
+//             animate="open"
+//             exit="closed"
+//           >
+//             <MobileMenu
+//               isOpen={isMobileMenuOpen}
+//               onClose={closeMobileMenu}
+//               featureLinks={featureLinks}
+//               topContent={topContent}
+//             />
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+//     </header>
+//   );
+// };
+
+// export default Header;
+
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { FiX } from "react-icons/fi";
+// We use IoClose now, so FiX is not needed unless used elsewhere
+// import { FiX } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import MobileMenu from "./MobileMenu"; // Ensure MobileMenu has proper TypeScript definitions
 import FeatureDropdown from "@/app/components/ui/FeatureDropdown"; // Ensure FeatureDropdown has proper TypeScript definitions
@@ -1449,6 +1671,7 @@ interface FeatureLink {
 const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isLargeScreen, setIsLargeScreen] = useState<boolean>(false);
+  const [isSticky, setIsSticky] = useState<boolean>(false); // State for sticky header
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen((prev) => !prev);
@@ -1458,6 +1681,7 @@ const Header: React.FC = () => {
     setIsMobileMenuOpen(false);
   };
 
+  // Effect for screen size and closing mobile menu on resize
   useEffect(() => {
     const checkScreenSize = () => {
       const large = window.innerWidth >= 1024;
@@ -1470,18 +1694,36 @@ const Header: React.FC = () => {
     checkScreenSize();
     window.addEventListener("resize", checkScreenSize);
     return () => window.removeEventListener("resize", checkScreenSize);
-  }, [isMobileMenuOpen]);
+  }, [isMobileMenuOpen]); // Dependency remains the same
 
+  // Effect for handling body scroll lock when mobile menu is open
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
     }
+    // Cleanup function
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isMobileMenuOpen]);
+  }, [isMobileMenuOpen]); // Dependency remains the same
+
+  // Effect for handling scroll position and setting sticky state
+  useEffect(() => {
+    const handleScroll = () => {
+      // Set sticky state based on scroll position
+      setIsSticky(window.scrollY > 300);
+    };
+
+    // Add scroll event listener
+    window.addEventListener("scroll", handleScroll);
+
+    // Cleanup function to remove event listener
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []); // Empty dependency array ensures this runs only on mount and unmount
 
   const mobileMenuVariants = {
     open: { x: 0, opacity: 1, transition: { type: "tween", duration: 0.3 } },
@@ -1516,8 +1758,16 @@ const Header: React.FC = () => {
   );
 
   return (
-    <header className="header">
-      <div className="shadow border">
+    // Apply sticky styles conditionally to the main header element
+    <header
+      className={`header w-full transition-all duration-300 ease-in-out border-b shadow-xs ${
+        isSticky
+          ? "fixed top-0 left-0 right-0 z-50 bg-background dark:bg-darkbackground" // Sticky styles: fixed position, top/left/right 0, z-index, background, shadow
+          : "relative bg-transparent" // Non-sticky styles: relative positioning (or static), transparent background
+      }`}
+    >
+      <div className={` ${isSticky ? "" : ""}`}>
+        {/* Remove shadow/border when sticky if background/shadow is handled by the outer header */}
         <div className="container mx-auto px-4">
           <nav className="flex items-center gap-6 h-20" aria-label="Global">
             {/* Logo */}
@@ -1528,120 +1778,93 @@ const Header: React.FC = () => {
                   alt="Wise Logo"
                   width={120}
                   height={28}
+                  // Add dark mode logo variant if needed
+                  // className="dark:hidden"
                 />
               </Link>
             </div>
 
             <div className="flex justify-end items-center w-full">
-              {/* Desktop Links */}
-              {isLargeScreen && (
-                <div className="flex items-center gap-2">
-                  <Link
-                    href="/personal"
-                    className="bg-[#d3f2c0] dark:text-mainheading px-4 py-1.5 rounded-full font-medium"
-                  >
-                    Personal
-                  </Link>
-                  <Link
-                    href="/business"
-                    className="px-4 py-1.5 rounded-full font-medium hover:bg-lightgray dark:hover:bg-primarybox"
-                  >
-                    Business
-                  </Link>
-                  <Link
-                    href="/platform"
-                    className="px-4 py-1.5 rounded-full font-medium hover:bg-lightgray dark:hover:bg-primarybox"
-                  >
-                    Platform
-                  </Link>
-                </div>
-              )}
-
               {isLargeScreen && (
                 <>
                   <div className="flex justify-end items-center gap-2 flex-1/2 w-full">
+                    {/* Home Link */}
+                    <Link
+                      href="/"
+                      className="px-4 py-1.5 rounded-full font-medium text-mainheading dark:hover:text-primary hover:bg-lightgray hover:dark:bg-secondary dark:text-white transition-colors duration-300"
+                    >
+                      Home
+                    </Link>
+
+                    {/* About Link */}
+                    <Link
+                      href="/about" // Assuming you have an about page
+                      className="px-4 py-1.5 rounded-full font-medium text-mainheading dark:hover:text-primary hover:bg-lightgray hover:dark:bg-secondary dark:text-white transition-colors duration-300"
+                    >
+                      About
+                    </Link>
+
+                    {/* Features Dropdown */}
                     <FeatureDropdown
                       buttonText="Features"
                       links={featureLinks}
                       topContent={topContent}
-                      onLinkClick={closeMobileMenu}
+                      onLinkClick={closeMobileMenu} // Close mobile menu if a link is clicked (though this dropdown is for large screens)
                     />
 
-                    <Link
-                      href="/pricing"
-                      className="px-2.5 py-1.5 rounded-full font-medium hover:bg-lightgray dark:hover:bg-primarybox"
-                    >
-                      Pricing
-                    </Link>
+                    {/* Help Link */}
                     <Link
                       href="/help"
-                      className="px-2.5 py-1.5 rounded-full font-medium hover:bg-lightgray dark:hover:bg-primarybox"
+                      className="px-4 py-1.5 rounded-full font-medium text-mainheading dark:hover:text-primary hover:bg-lightgray hover:dark:bg-secondary dark:text-white transition-colors duration-300"
                     >
                       Help
                     </Link>
-                    <Link href="/en">
-                      <button className="flex items-center gap-1 px-2.5 py-1.5 rounded-full cursor-pointer hover:bg-lightgray dark:hover:bg-secondary">
-                        <Image
-                          src="/assets/icon/flags/inr.svg" // Keep the same source
-                          alt="Indian Flag"
-                          className="h-5 w-5 rounded-full mr-1 object-cover"
-                          width={500} // REQUIRED: Replace with the actual width of image.png in pixels
-                          height={300} // REQUIRED: Replace with the actual height of image.png in pixels
-                          priority
-                        />
-                        <span className="font-medium">EN</span>
-                      </button>
-                    </Link>
                   </div>
 
-                  <div className="flex items-center ml-2">
+                  {/* Theme Toggle */}
+                  <div className="flex items-center mx-2">
                     <ThemeToggle location="header" />
                   </div>
                 </>
               )}
 
               <div className="flex items-center gap-2">
-                {/* Register Link (Desktop) */}
-                {isLargeScreen && (
-                  <Link
-                    href="/auth/register"
-                    className="px-4 py-2 rounded-full font-medium hover:bg-lightgray dark:hover:bg-primarybox"
-                  >
-                    Register
-                  </Link>
-                )}
+                <Link
+                  href="/auth/register"
+                  className="px-4 py-1.5 hidden lg:block  dark:text-white text-nowrap font-medium hover:bg-lightgray dark:hover:bg-secondary rounded-full transition-colors ease-in-out duration-300 text-mainheading"
+                >
+                  Register
+                </Link>
 
-                {/* Login and Hamburger for Mobile */}
-                {!isMobileMenuOpen && (
+                {/* Login Button (Visible on Large Screens) */}
+                <Link
+                  href="/auth/login"
+                  className="bg-primary px-4 py-1.5 hidden lg:block text-nowrap font-medium rounded-full hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading"
+                >
+                  Log in
+                </Link>
+
+                {/* Hamburger/Close Button (Mobile/Tablet) */}
+                {!isLargeScreen && (
                   <>
-                    <Link
-                      href="/auth/login"
-                      className="bg-primary px-5 py-2 text-nowrap font-medium rounded-full hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading"
-                    >
-                      Log in
-                    </Link>
-
-                    {!isLargeScreen && (
+                    {!isMobileMenuOpen ? (
                       <button
                         onClick={toggleMobileMenu}
                         className="text-primary p-2 cursor-pointer"
                         aria-label="Open Mobile Menu"
                       >
-                        <GiHamburgerMenu size={26}/>
+                        <GiHamburgerMenu size={26} />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={closeMobileMenu}
+                        aria-label="Close Mobile Menu"
+                        className="text-neutral-900 cursor-pointer" // Keep consistent styling or adjust as needed
+                      >
+                        <IoClose className="size-10 hover:bg-gray-300 text-mainheading dark:text-white hover:dark:bg-primarybox p-1.5 rounded-full transition-colors duration-300 ease-in-out" />
                       </button>
                     )}
                   </>
-                )}
-
-                {/* Close Button (Mobile) */}
-                {isMobileMenuOpen && !isLargeScreen && (
-                  <button
-                    onClick={closeMobileMenu}
-                    aria-label="Close Mobile Menu"
-                    className="text-neutral-900 cursor-pointer"
-                  >
-                    <IoClose className="size-10 hover:bg-gray-300 text-mainheading dark:text-white hover:dark:bg-primarybox p-1.5 rounded-full transition-colors duration-300 ease-in-out" />
-                  </button>
                 )}
               </div>
             </div>
@@ -1651,21 +1874,24 @@ const Header: React.FC = () => {
 
       {/* Mobile Menu (Conditional Rendering with Framer Motion) */}
       <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            variants={mobileMenuVariants}
-            initial="closed"
-            animate="open"
-            exit="closed"
-          >
-            <MobileMenu
-              isOpen={isMobileMenuOpen}
-              onClose={closeMobileMenu}
-              featureLinks={featureLinks}
-              topContent={topContent}
-            />
-          </motion.div>
-        )}
+        {isMobileMenuOpen &&
+          !isLargeScreen && ( // Ensure menu only shows when open AND not on large screen
+            <motion.div
+              key="mobile-menu" // Add key for AnimatePresence to track the element
+              className="fixed inset-0 z-40 lg:hidden" // Use fixed positioning and ensure it's behind the sticky header's z-index if needed
+              variants={mobileMenuVariants}
+              initial="closed"
+              animate="open"
+              exit="closed"
+            >
+              <MobileMenu
+                isOpen={isMobileMenuOpen}
+                onClose={closeMobileMenu}
+                featureLinks={featureLinks}
+                topContent={topContent}
+              />
+            </motion.div>
+          )}
       </AnimatePresence>
     </header>
   );

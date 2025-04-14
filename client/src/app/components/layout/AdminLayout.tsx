@@ -275,7 +275,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       {isSidebarOpen && (
         <div
           onClick={() => setIsSidebarOpen(false)}
-          className="fixed inset-0 bg-black/50 backdrop-blur-md z-40 lg:hidden" // Adjusted backdrop blur
+          className="fixed inset-0 bg-black/50 dark:bg-white/30 z-40 lg:hidden" // Adjusted backdrop blur
         ></div>
       )}
     </div>

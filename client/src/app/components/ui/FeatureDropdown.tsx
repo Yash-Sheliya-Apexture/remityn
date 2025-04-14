@@ -155,15 +155,6 @@
 
 // export default FeatureDropdown;
 
-
-
-
-
-
-
-
-
-
 // // components/FeatureDropdown/FeatureDropdown.tsx  (Slightly Modified)
 
 // "use client";
@@ -198,7 +189,6 @@
 //   const dropdownRef = useRef<HTMLDivElement>(null);
 //     const myIsOpen = isMobile ? isOpen : internalIsOpen;
 //     const myToggleDropdown = isMobile ? toggleDropdown : () => setInternalIsOpen(!internalIsOpen);
-
 
 //   useEffect(() => {
 //     const handleClickOutside = (event: MouseEvent) => {
@@ -347,10 +337,6 @@
 
 // export default FeatureDropdown;
 
-
-
-
-
 // components/FeatureDropdown/FeatureDropdown.tsx
 
 // "use client";
@@ -388,7 +374,6 @@
 //   const dropdownRef = useRef<HTMLDivElement>(null);
 //     const myIsOpen = isMobile ? isOpen : internalIsOpen;
 //     const myToggleDropdown = isMobile ? toggleDropdown : () => setInternalIsOpen(!internalIsOpen);
-
 
 //   useEffect(() => {
 //     const handleClickOutside = (event: MouseEvent) => {
@@ -519,7 +504,6 @@
 // };
 
 // export default FeatureDropdown;
-
 
 // // components/FeatureDropdown/FeatureDropdown.tsx
 // "use client";
@@ -697,12 +681,6 @@
 
 // export default FeatureDropdown;
 
-
-
-
-
-
-
 // components/FeatureDropdown/FeatureDropdown.tsx
 "use client";
 import React, { useState, useRef, useEffect } from "react";
@@ -740,7 +718,9 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
   const [internalIsOpen, setInternalIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const myIsOpen = isMobile ? isOpen : internalIsOpen;
-  const myToggleDropdown = isMobile ? toggleDropdown : () => setInternalIsOpen(!internalIsOpen);
+  const myToggleDropdown = isMobile
+    ? toggleDropdown
+    : () => setInternalIsOpen(!internalIsOpen);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -807,48 +787,58 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
     },
   };
 
-    const dropdownContent = (
-        <div >
-            {/* Top Content (Optional) */}
-            {topContent && (
-                <div className={`p-8 flex flex-col rounded-t-2xl justify-start bg-white dark:bg-background mt-2 ${topContentClassName || ""}`}>
-                    {topContent}
-                </div>
-            )}
-
-            {/* Links */}
-            <div className="px-4 py-6 flex flex-col gap-4 dark:bg-background bg-white border-t">
-                {links.map((link, index) => (
-                  <div key={index} className="w-fit"> {/* Added key here to the wrapping div */}
-                    <Link
-                        href={link.href}
-                        passHref
-                        className={`group relative inline-flex items-center gap-2 text-primary dark:text-white font-medium cursor-pointer ${linkClassName || ""}`}
-                        onClick={() => {
-                            if (!isMobile) {
-                                setInternalIsOpen(false);
-                            }
-                            onLinkClick?.();
-                        }}
-                    >
-                        <p>{link.text}</p>
-                        <IoIosArrowForward
-                            size={18}
-                            className="opacity-100 translate-x-0 transition-all duration-300  group-hover:translate-x-3"
-                        />
-                        <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full"></span>
-                    </Link>
-                  </div>
-                ))}
-            </div>
+  const dropdownContent = (
+    <div>
+      {/* Top Content (Optional) */}
+      {topContent && (
+        <div
+          className={`p-8 flex flex-col rounded-t-2xl justify-start bg-white dark:bg-background mt-2 ${
+            topContentClassName || ""
+          }`}
+        >
+          {topContent}
         </div>
-    );
+      )}
+
+      {/* Links */}
+      <div className="px-4 py-6 flex flex-col gap-4 dark:bg-background bg-white border-t">
+        {links.map((link, index) => (
+          <div key={index} className="w-fit">
+            {" "}
+            {/* Added key here to the wrapping div */}
+            <Link
+              href={link.href}
+              passHref
+              className={`group relative inline-flex items-center gap-2 text-primary dark:text-white font-medium cursor-pointer ${
+                linkClassName || ""
+              }`}
+              onClick={() => {
+                if (!isMobile) {
+                  setInternalIsOpen(false);
+                }
+                onLinkClick?.();
+              }}
+            >
+              <p>{link.text}</p>
+              <IoIosArrowForward
+                size={18}
+                className="opacity-100 translate-x-0 transition-all duration-300  group-hover:translate-x-3"
+              />
+              <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full"></span>
+            </Link>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={myToggleDropdown}
-        className={`rounded-full font-medium  cursor-pointer px-2.5 py-1.5 hover:bg-lightgray dark:hover:bg-primarybox ${buttonClassName || ""}`}
+        className={`rounded-full font-medium cursor-pointer px-2.5 dark:hover:text-primary py-1.5 text-mainheading hover:bg-lightgray hover:dark:bg-secondary dark:text-white ${
+          buttonClassName || ""
+        }`}
       >
         {buttonText}
       </button>

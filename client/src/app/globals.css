@@ -206,14 +206,17 @@ input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   /* Force background color */
-  -webkit-box-shadow: 0 0 0px 1000px theme('colors.white') inset; /* Light mode background */
-  box-shadow: 0 0 0px 1000px theme('colors.white') inset; /* Light mode background */
-  
+  -webkit-box-shadow: 0 0 0px 1000px theme('colors.white') inset;
+  /* Light mode background */
+  box-shadow: 0 0 0px 1000px theme('colors.white') inset;
+  /* Light mode background */
+
   /* Force text color */
-  -webkit-text-fill-color: theme('colors.mainheading'); /* Your light mode text color */
-  
+  -webkit-text-fill-color: theme('colors.mainheading');
+  /* Your light mode text color */
+
   /* Optional: Prevent transition delays if needed */
-  transition: background-color 5000s ease-in-out 0s; 
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 /* --- Dark Mode Overrides --- */
@@ -223,9 +226,190 @@ input:-webkit-autofill:active {
 .dark input:-webkit-autofill:focus,
 .dark input:-webkit-autofill:active {
   /* Force background color for dark mode */
-  -webkit-box-shadow: 0 0 0px 1000px theme('colors.background') inset; /* Your dark mode input background */
-  box-shadow: 0 0 0px 1000px theme('colors.background') inset; /* Your dark mode input background */
-  
+  -webkit-box-shadow: 0 0 0px 1000px theme('colors.background') inset;
+  /* Your dark mode input background */
+  box-shadow: 0 0 0px 1000px theme('colors.background') inset;
+  /* Your dark mode input background */
+
   /* Force text color for dark mode */
-  -webkit-text-fill-color: theme('colors.white'); /* Your dark mode text color */
+  -webkit-text-fill-color: theme('colors.white');
+  /* Your dark mode text color */
+}
+
+/* Review Card Animation */
+
+/* .marquee-column {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.marquee-content {
+  display: flex;
+  flex-direction: column;
+  animation-timing-function: linear;
+
+}
+
+
+
+.marquee-column-1 .marquee-content {
+  animation: marquee-vertical-1 10s linear infinite;
+}
+
+.marquee-column-2 .marquee-content {
+  animation: marquee-vertical-2 10s linear infinite;
+}
+
+.marquee-column-3 .marquee-content {
+  animation: marquee-vertical-3 10s linear infinite;
+}
+
+@keyframes marquee-vertical-1 {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes marquee-vertical-2 {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes marquee-vertical-3 {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-100%);
+  }
+} */
+
+
+/* Make sure these styles are loaded, either globally or scoped */
+
+.marquee-column {
+  overflow: hidden;
+  display: flex;
+  /* Needed for flex-col on content */
+  flex-direction: column;
+  /* Needed for flex-col on content */
+  height: 100%;
+  /* Ensure column takes full height of the grid cell */
+  position: relative;
+  /* Needed if you have absolute elements inside, though not strictly required for the marquee itself */
+}
+
+.marquee-content {
+  /* This element will be taller than its container due to duplication */
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  /* animation properties are set below */
+  animation-timing-function: linear;
+  /* Ensure smooth, constant speed */
+  animation-iteration-count: infinite;
+  /* Loop forever */
+}
+
+/* --- Individual Column Animations --- */
+/* Adjust durations as needed */
+
+.marquee-column-1 .marquee-content {
+  /* The animation moves the content upwards */
+  animation-name: marquee-vertical-1;
+  animation-duration: 45s;
+  /* Slower example duration */
+}
+
+.marquee-column-2 .marquee-content {
+  /* Start this one scrolled down slightly for visual variety */
+  /* transform: translateY(-30%); /* Optional: Initial offset */
+  animation-name: marquee-vertical-2;
+  animation-duration: 60s;
+  /* Different duration */
+  animation-direction: reverse;
+  /* Example: Make one column scroll up */
+}
+
+.marquee-column-3 .marquee-content {
+  animation-name: marquee-vertical-3;
+  animation-duration: 50s;
+  /* Different duration */
+}
+
+
+/* --- Keyframes --- */
+
+@keyframes marquee-vertical-1 {
+  from {
+    transform: translateY(0%);
+  }
+
+  to {
+    /* Move up by half its total height (which is the height of the original content) */
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes marquee-vertical-2 {
+  from {
+    transform: translateY(0%);
+  }
+
+  to {
+    /* Move up by half its total height (which is the height of the original content) */
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes marquee-vertical-3 {
+  from {
+    transform: translateY(0%);
+  }
+
+  to {
+    /* Move up by half its total height (which is the height of the original content) */
+    transform: translateY(-50%);
+  }
+}
+
+/* Optional: Pause animation on hover */
+.marquee-column:hover .marquee-content {
+  animation-play-state: paused;
+}
+
+@layer utilities {
+  @keyframes drawBorder {
+    from {
+      stroke-dashoffset: 208;
+      /* Initial offset - adjust if path length changes */
+    }
+
+    to {
+      stroke-dashoffset: 0;
+      /* Draw the full border */
+    }
+  }
+
+  .animate-border-draw {
+    /* Apply the animation */
+    animation: drawBorder 3s linear forwards;
+    /* Duration should match timer slightly */
+  }
+
+  /* Optional: Add a reset state for when animation is not active */
+  .border-path-reset {
+    stroke-dashoffset: 208;
+  }
 }

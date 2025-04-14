@@ -2391,7 +2391,7 @@ const ReviewSendPage = () => {
          <div className="mt-6 text-center">
             <Link
                 href={getPreviousStepLink()} // Uses the dynamic link function
-                className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 inline-flex items-center"
+                className="inline-flex items-center justify-center bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-xl px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear"
             >
                 <FiArrowLeft className="mr-1" /> Go back
             </Link>

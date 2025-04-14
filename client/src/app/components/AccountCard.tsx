@@ -501,7 +501,7 @@ const AccountCard: React.FC<AccountCardProps> = ({ username }) => {
   return (
     <>
       {/* Main card container */}
-      <div className="bg-lightgray dark:bg-primarybox p-8 rounded-3xl overflow-hidden z-20 relative">
+      <div className="bg-lightgray dark:bg-primarybox p-8 rounded-3xl overflow-hidden relative">
         {/* Profile initials display */}
         <div className="flex flex-col items-center mb-4">
           <div className="bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center size-20 overflow-hidden">

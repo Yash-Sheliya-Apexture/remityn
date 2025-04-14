@@ -2342,7 +2342,8 @@ export default function RegisterPage() {
 
         <form onSubmit={handleSubmit} className="mt-0 space-y-4">
           {/* Google Button */}
-          {/* <div>
+          <div>
+            
             <a className="flex bg-white dark:bg-background border justify-center rounded-lg text-mainheading dark:text-white  text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 h-14">
               <Image
                 src="/assets/icon/google.svg"
@@ -2352,7 +2353,7 @@ export default function RegisterPage() {
               />
               Continue with Google
             </a>
-          </div> */}
+          </div>
 
           {/* Full Name Input */}
           <div>
