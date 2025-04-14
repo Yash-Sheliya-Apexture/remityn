@@ -350,10 +350,6 @@ input:-webkit-autofill:active {
 
 
 /* --- Keyframes --- */
-/* These keyframes move the entire content block upwards by its *own height*.
-   Since the content is duplicated, when the first half moves up by 100% (disappears),
-   the second half (the clone) is exactly in position to seamlessly continue.
-   The keyframe only needs to define the movement from 0 to -100% */
 
 @keyframes marquee-vertical-1 {
   from {

@@ -1276,12 +1276,293 @@
 
 // export default ReviewCards;
 
-"use client"; // Mark this component as a client component
+// "use client"; // Mark this component as a client component
+
+// import React, { useState, useEffect, useRef } from "react";
+// import { FaStar, FaStarHalfAlt } from "react-icons/fa";
+// // FaStarHalf is imported but not used in the original StarRating, keeping it just in case
+// // import { FaStarHalf } from "react-icons/fa6";
+
+// // --- StarRating Component ---
+// interface StarRatingProps {
+//   rating: number;
+//   maxRating?: number;
+// }
+
+// const StarRating: React.FC<StarRatingProps> = ({ rating, maxRating = 5 }) => {
+//   const stars = [];
+//   const fullStars = Math.floor(rating);
+//   const hasHalfStar = rating % 1 !== 0;
+
+//   for (let i = 0; i < maxRating; i++) {
+//     if (i < fullStars) {
+//       stars.push(
+//         <FaStar
+//           key={i}
+//           className="inline-block text-[#FBBF24] dark:text-white"
+//         /> // Adjusted dark mode color slightly
+//       );
+//     } else if (i === fullStars && hasHalfStar) {
+//       stars.push(
+//         <FaStarHalfAlt
+//           key={i}
+//           className="inline-block text-[#FBBF24] dark:text-white"
+//         /> // Adjusted dark mode color slightly
+//       );
+//     } else {
+//       // Use a different color for empty stars for better contrast
+//       stars.push(
+//         <FaStar
+//           key={i}
+//           className="inline-block text-gray-300 dark:text-white"
+//         />
+//       );
+//     }
+//   }
+
+//   // Adjusted text color for better visibility in both modes
+//   return <div className="inline-block">{stars}</div>;
+// };
+
+// // --- ReviewCard Component ---
+// interface ReviewCardProps {
+//   reviewerName: string;
+//   avatarUrl: string;
+//   rating: number;
+//   comment: string;
+// }
+
+// const ReviewCard: React.FC<ReviewCardProps> = ({
+//   reviewerName,
+//   avatarUrl,
+//   rating,
+//   comment,
+// }) => {
+//   return (
+//     <div className="bg-white dark:bg-white/5 border rounded-2xl lg:p-6 p-4 flex flex-col items-start relative mb-4 flex-shrink-0">
+//       {/* Added flex-shrink-0 */}
+//       <div className="flex md:flex-row items-center w-full justify-center md:justify-start">
+//         {/* Adjusted alignment */}
+//         <div className="flex flex-col md:flex-row items-center">
+//           <img
+//             src={avatarUrl}
+//             alt={`Avatar of ${reviewerName}`}
+//             className="lg:size-16 size-14 rounded-full object-cover mb-2 md:mb-0 md:mr-4"
+//           />
+//           <div className="flex flex-col items-center md:items-start">
+//             <div className="text-mainheading dark:text-primary font-semibold text-nowrap">
+//               {reviewerName}
+//             </div>
+//             <StarRating rating={rating} />
+//           </div>
+//         </div>
+//       </div>
+//       <div className="text-mainheading dark:text-gray-300 leading-relaxed font-normal mt-4 md:mt-6 text-base md:text-xl">
+//         {comment}
+//       </div>
+//     </div>
+//   );
+// };
+
+// // --- Interfaces for Data Structure ---
+// interface Review {
+//   reviewerName: string;
+//   avatarUrl: string;
+//   rating: number;
+//   comment: string;
+// }
+
+// interface ReviewGroup {
+//   id: string;
+//   reviews: Review[];
+// }
+
+// interface ReviewData {
+//   reviewGroups: ReviewGroup[];
+// }
+
+// // --- ReviewCards Component (Main Component) ---
+// const ReviewCards: React.FC = () => {
+//   const [reviewGroups, setReviewGroups] = useState<ReviewGroup[]>([]);
+//   const [loading, setLoading] = useState<boolean>(true);
+//   const [error, setError] = useState<Error | null>(null);
+//   // Ref to hold references to the column divs
+//   const columnRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+//   // --- Fetch Data ---
+//   useEffect(() => {
+//     const fetchReviews = async () => {
+//       setLoading(true); // Start loading
+//       setError(null); // Reset error
+//       try {
+//         const response = await fetch("/Review.json"); // Make sure this path is correct
+//         if (!response.ok) {
+//           throw new Error(`HTTP error! status: ${response.status}`);
+//         }
+//         const data: ReviewData = await response.json();
+//         // Ensure data conforms to expected structure (basic check)
+//         if (!data || !Array.isArray(data.reviewGroups)) {
+//           throw new Error("Invalid data structure received from Review.json");
+//         }
+//         setReviewGroups(data.reviewGroups);
+//       } catch (err: any) {
+//         console.error("Failed to fetch reviews:", err); // Log error for debugging
+//         setError(
+//           err instanceof Error ? err : new Error("An unknown error occurred")
+//         );
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+//     fetchReviews();
+//   }, []); // Empty dependency array means this runs once on mount
+
+//   // --- Infinite Scroll Setup ---
+//   useEffect(() => {
+//     // Only run this effect if data is loaded and we have groups
+//     if (loading || error || reviewGroups.length === 0) {
+//       return;
+//     }
+
+//     const columns = columnRefs.current;
+
+//     columns.forEach((columnEl) => {
+//       if (!columnEl) return; // Skip if ref is null for some reason
+
+//       const contentEl =
+//         columnEl.querySelector<HTMLDivElement>(".marquee-content");
+//       if (!contentEl) return; // Skip if content element not found
+
+//       // --- Content Duplication Logic ---
+//       // Check if content is already duplicated to prevent duplication on hot reloads/re-renders
+//       const originalContentHeight = contentEl.scrollHeight / 2; // Assumes content is already duplicated by CSS or previous runs
+//       const currentScrollHeight = contentEl.scrollHeight;
+//       const childrenCount = contentEl.children.length;
+//       const expectedChildrenCount = reviewGroups[0]?.reviews.length * 2; // Estimate based on first group
+
+//       // Basic check to see if duplication likely already happened
+//       // This isn't foolproof but helps prevent infinite duplication loops during development HMR
+//       let needsDuplication = true;
+//       if (childrenCount > 0 && childrenCount === expectedChildrenCount) {
+//         // console.log("Skipping duplication, seems already done.");
+//         needsDuplication = false;
+//       }
+//       // More robust check: see if the scrollHeight is roughly double the height of its first child * number of original items
+//       if (contentEl.children.length > 0) {
+//         const firstChildHeight = (contentEl.children[0] as HTMLElement)
+//           .offsetHeight;
+//         const estimatedOriginalHeight = firstChildHeight * (childrenCount / 2); // Approximate original height
+//         // If current height is already much larger than estimated original height, assume duplication happened
+//         // Add some tolerance with margins/paddings
+//         if (currentScrollHeight > estimatedOriginalHeight * 1.8) {
+//           // console.log("Skipping duplication based on height check.");
+//           needsDuplication = false;
+//         }
+//       }
+
+//       if (needsDuplication) {
+//         // console.log(`Duplicating content for column...`);
+//         const originalChildren = Array.from(contentEl.children);
+//         originalChildren.forEach((child) => {
+//           const clone = child.cloneNode(true);
+//           contentEl.appendChild(clone);
+//         });
+//       }
+
+//       // --- Start Animation (handled by CSS) ---
+//       // No JS needed to manually start/control animation timing if using CSS animations correctly
+//     });
+
+//     // No cleanup needed for this specific effect as we are only manipulating the DOM once
+//     // and relying on CSS for the continuous animation loop.
+//   }, [loading, error, reviewGroups]); // Rerun when loading/error state changes or data arrives
+
+//   // --- Render Logic ---
+//   if (loading) {
+//     // Optional: Add a more visually appealing loader
+//     return <div className="text-center p-10">Loading reviews...</div>;
+//   }
+
+//   if (error) {
+//     return (
+//       <div className="text-center p-10 text-red-500">
+//         Error loading reviews: {error.message}
+//       </div>
+//     );
+//   }
+
+//   if (reviewGroups.length === 0) {
+//     return (
+//       <div className="text-center p-10 text-gray-500">
+//         No reviews available yet.
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <section className="Reviews md:py-14 py-10 bg-gray-50 dark:bg-background">
+//       {/* Added background */}
+//       <div className="container mx-auto px-4">
+//         {/* Added horizontal padding */}
+//         <div className="w-full mb-10 lg:mb-16">
+//           <h1 className="text-5xl md:text-6xl xl:text-8xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+//             Honest Reviews
+//             <span className="text-primary"> Real Travelers Like You </span>
+//           </h1>
+
+//           <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-500 leading-relaxed dark:text-gray-300 mt-5 text-left">
+//             {/* Adjusted max-width and alignment */}
+//             Hear directly from globetrotters who’ve trusted us for their
+//             currency exchange needs. From smooth transactions to unbeatable
+//             rates, see why travelers around the world choose us every time.
+//           </p>
+//         </div>
+//         {/* Ensure the parent has a defined height and overflow hidden */}
+//         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 h-[600px] md:h-[1000px] overflow-hidden relative">
+//           {/* Adjusted height and gap */}
+//           {reviewGroups.slice(0, 3).map(
+//             (
+//               group,
+//               index // Ensure only max 3 groups are rendered if more exist
+//             ) => (
+//               <div
+//                 key={group.id || `group-${index}`} // Add fallback key
+//                 // Assign specific classes for CSS animation targeting
+//                 className={`lg:marquee-column marquee-column-${index + 1}`}
+//                 // Assign ref to the array element
+//                 ref={(el: HTMLDivElement | null) => {
+//                   // Ensure type and use curly braces
+//                   columnRefs.current[index] = el;
+//                 }}
+//               >
+//                 {/* This div will contain the duplicated content */}
+//                 <div className="marquee-content flex flex-col space-y-4 md:space-y-6">
+//                   {/* Added spacing */}
+//                   {group.reviews.map((review, reviewIndex) => (
+//                     <ReviewCard
+//                       key={reviewIndex} // Key should be unique within this list
+//                       {...review}
+//                     />
+//                   ))}
+//                 </div>
+//               </div>
+//             )
+//           )}
+//           {/* Gradient Fades */}
+//           <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-gray-50 via-gray-50/80 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none"></div>
+//           <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-gray-50 via-gray-50/80 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none"></div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default ReviewCards;
+
+"use client";
 
 import React, { useState, useEffect, useRef } from "react";
 import { FaStar, FaStarHalfAlt } from "react-icons/fa";
-// FaStarHalf is imported but not used in the original StarRating, keeping it just in case
-// import { FaStarHalf } from "react-icons/fa6";
 
 // --- StarRating Component ---
 interface StarRatingProps {
@@ -1300,17 +1581,16 @@ const StarRating: React.FC<StarRatingProps> = ({ rating, maxRating = 5 }) => {
         <FaStar
           key={i}
           className="inline-block text-[#FBBF24] dark:text-white"
-        /> // Adjusted dark mode color slightly
+        />
       );
     } else if (i === fullStars && hasHalfStar) {
       stars.push(
         <FaStarHalfAlt
           key={i}
           className="inline-block text-[#FBBF24] dark:text-white"
-        /> // Adjusted dark mode color slightly
+        />
       );
     } else {
-      // Use a different color for empty stars for better contrast
       stars.push(
         <FaStar
           key={i}
@@ -1320,7 +1600,6 @@ const StarRating: React.FC<StarRatingProps> = ({ rating, maxRating = 5 }) => {
     }
   }
 
-  // Adjusted text color for better visibility in both modes
   return <div className="inline-block">{stars}</div>;
 };
 
@@ -1340,9 +1619,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
 }) => {
   return (
     <div className="bg-white dark:bg-white/5 border rounded-2xl lg:p-6 p-4 flex flex-col items-start relative mb-4 flex-shrink-0">
-      {/* Added flex-shrink-0 */}
       <div className="flex md:flex-row items-center w-full justify-center md:justify-start">
-        {/* Adjusted alignment */}
         <div className="flex flex-col md:flex-row items-center">
           <img
             src={avatarUrl}
@@ -1381,105 +1658,76 @@ interface ReviewData {
   reviewGroups: ReviewGroup[];
 }
 
-// --- ReviewCards Component (Main Component) ---
+// --- Main Component ---
 const ReviewCards: React.FC = () => {
   const [reviewGroups, setReviewGroups] = useState<ReviewGroup[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
-  // Ref to hold references to the column divs
   const columnRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  // --- Fetch Data ---
   useEffect(() => {
     const fetchReviews = async () => {
-      setLoading(true); // Start loading
-      setError(null); // Reset error
+      setLoading(true);
+      setError(null);
       try {
-        const response = await fetch("/Review.json"); // Make sure this path is correct
+        const response = await fetch("/Review.json");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data: ReviewData = await response.json();
-        // Ensure data conforms to expected structure (basic check)
         if (!data || !Array.isArray(data.reviewGroups)) {
           throw new Error("Invalid data structure received from Review.json");
         }
         setReviewGroups(data.reviewGroups);
       } catch (err: any) {
-        console.error("Failed to fetch reviews:", err); // Log error for debugging
-        setError(
-          err instanceof Error ? err : new Error("An unknown error occurred")
-        );
+        console.error("Failed to fetch reviews:", err);
+        setError(err instanceof Error ? err : new Error("Unknown error"));
       } finally {
         setLoading(false);
       }
     };
     fetchReviews();
-  }, []); // Empty dependency array means this runs once on mount
+  }, []);
 
-  // --- Infinite Scroll Setup ---
   useEffect(() => {
-    // Only run this effect if data is loaded and we have groups
-    if (loading || error || reviewGroups.length === 0) {
-      return;
-    }
+    if (loading || error || reviewGroups.length === 0) return;
 
     const columns = columnRefs.current;
 
     columns.forEach((columnEl) => {
-      if (!columnEl) return; // Skip if ref is null for some reason
-
+      if (!columnEl) return;
       const contentEl =
         columnEl.querySelector<HTMLDivElement>(".marquee-content");
-      if (!contentEl) return; // Skip if content element not found
+      if (!contentEl) return;
 
-      // --- Content Duplication Logic ---
-      // Check if content is already duplicated to prevent duplication on hot reloads/re-renders
-      const originalContentHeight = contentEl.scrollHeight / 2; // Assumes content is already duplicated by CSS or previous runs
-      const currentScrollHeight = contentEl.scrollHeight;
       const childrenCount = contentEl.children.length;
-      const expectedChildrenCount = reviewGroups[0]?.reviews.length * 2; // Estimate based on first group
-
-      // Basic check to see if duplication likely already happened
-      // This isn't foolproof but helps prevent infinite duplication loops during development HMR
+      const expectedChildrenCount = reviewGroups[0]?.reviews.length * 2;
       let needsDuplication = true;
-      if (childrenCount > 0 && childrenCount === expectedChildrenCount) {
-        // console.log("Skipping duplication, seems already done.");
+
+      if (childrenCount === expectedChildrenCount) {
         needsDuplication = false;
       }
-      // More robust check: see if the scrollHeight is roughly double the height of its first child * number of original items
+
       if (contentEl.children.length > 0) {
         const firstChildHeight = (contentEl.children[0] as HTMLElement)
           .offsetHeight;
-        const estimatedOriginalHeight = firstChildHeight * (childrenCount / 2); // Approximate original height
-        // If current height is already much larger than estimated original height, assume duplication happened
-        // Add some tolerance with margins/paddings
-        if (currentScrollHeight > estimatedOriginalHeight * 1.8) {
-          // console.log("Skipping duplication based on height check.");
+        const estimatedOriginalHeight = firstChildHeight * (childrenCount / 2);
+        if (contentEl.scrollHeight > estimatedOriginalHeight * 1.8) {
           needsDuplication = false;
         }
       }
 
       if (needsDuplication) {
-        // console.log(`Duplicating content for column...`);
         const originalChildren = Array.from(contentEl.children);
         originalChildren.forEach((child) => {
           const clone = child.cloneNode(true);
           contentEl.appendChild(clone);
         });
       }
-
-      // --- Start Animation (handled by CSS) ---
-      // No JS needed to manually start/control animation timing if using CSS animations correctly
     });
+  }, [loading, error, reviewGroups]);
 
-    // No cleanup needed for this specific effect as we are only manipulating the DOM once
-    // and relying on CSS for the continuous animation loop.
-  }, [loading, error, reviewGroups]); // Rerun when loading/error state changes or data arrives
-
-  // --- Render Logic ---
   if (loading) {
-    // Optional: Add a more visually appealing loader
     return <div className="text-center p-10">Loading reviews...</div>;
   }
 
@@ -1501,9 +1749,7 @@ const ReviewCards: React.FC = () => {
 
   return (
     <section className="Reviews md:py-14 py-10 bg-gray-50 dark:bg-background">
-      {/* Added background */}
       <div className="container mx-auto px-4">
-        {/* Added horizontal padding */}
         <div className="w-full mb-10 lg:mb-16">
           <h1 className="text-5xl md:text-6xl xl:text-8xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
             Honest Reviews
@@ -1511,48 +1757,59 @@ const ReviewCards: React.FC = () => {
           </h1>
 
           <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-500 leading-relaxed dark:text-gray-300 mt-5 text-left">
-            {/* Adjusted max-width and alignment */}
             Hear directly from globetrotters who’ve trusted us for their
             currency exchange needs. From smooth transactions to unbeatable
             rates, see why travelers around the world choose us every time.
           </p>
         </div>
-        {/* Ensure the parent has a defined height and overflow hidden */}
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 h-[600px] md:h-[1000px] overflow-hidden relative">
-          {/* Adjusted height and gap */}
-          {reviewGroups.slice(0, 3).map(
-            (
-              group,
-              index // Ensure only max 3 groups are rendered if more exist
-            ) => (
-              <div
-                key={group.id || `group-${index}`} // Add fallback key
-                // Assign specific classes for CSS animation targeting
-                className={`lg:marquee-column marquee-column-${index + 1}`}
-                // Assign ref to the array element
-                ref={(el: HTMLDivElement | null) => {
-                  // Ensure type and use curly braces
-                  columnRefs.current[index] = el;
-                }}
-              >
-                {/* This div will contain the duplicated content */}
-                <div className="marquee-content flex flex-col space-y-4 md:space-y-6">
-                  {/* Added spacing */}
-                  {group.reviews.map((review, reviewIndex) => (
-                    <ReviewCard
-                      key={reviewIndex} // Key should be unique within this list
-                      {...review}
-                    />
-                  ))}
-                </div>
+          {reviewGroups.slice(0, 3).map((group, index) => (
+            <div
+              key={group.id || `group-${index}`}
+              className={`marquee-column marquee-column-${index + 1}`}
+              ref={(el: HTMLDivElement | null) => {
+                columnRefs.current[index] = el;
+              }}
+            >
+              <div className="marquee-content flex flex-col space-y-4 md:space-y-6">
+                {group.reviews.map((review, reviewIndex) => (
+                  <ReviewCard key={reviewIndex} {...review} />
+                ))}
               </div>
-            )
-          )}
+            </div>
+          ))}
           {/* Gradient Fades */}
           <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-gray-50 via-gray-50/80 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none"></div>
           <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-gray-50 via-gray-50/80 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none"></div>
         </div>
       </div>
+
+      {/* Custom CSS for marquee animation */}
+      <style jsx global>{`
+        .marquee-column {
+          overflow: hidden;
+          height: 100%;
+          position: relative;
+        }
+
+        .marquee-content {
+          animation: scroll-up 30s linear infinite;
+        }
+
+        .marquee-column:hover .marquee-content {
+          animation-play-state: paused;
+        }
+
+        @keyframes scroll-up {
+          0% {
+            transform: translateY(0);
+          }
+          100% {
+            transform: translateY(-50%);
+          }
+        }
+      `}</style>
     </section>
   );
 };
