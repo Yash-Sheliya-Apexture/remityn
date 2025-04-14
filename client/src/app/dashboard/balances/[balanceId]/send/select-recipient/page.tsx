@@ -374,76 +374,363 @@
 // }
 
 
+// // frontend/src/app/dashboard/balances/[balanceId]/send/select-recipient/page.tsx
+// "use client";
+// import React, { useState, ChangeEvent, useEffect } from "react";
+// import { FiSearch } from "react-icons/fi";
+// import RecipientList from "@/app/dashboard/components/RecipientList";
+// import { FaCirclePlus } from "react-icons/fa6";
+// import { IoIosArrowForward } from "react-icons/io";
+// import { useParams, useRouter } from "next/navigation";
+// import { useAuth } from "../../../../../contexts/AuthContext"; // Adjust path if needed
+// import recipientService from "../../../../../services/recipient"; // Adjust path if needed
+// import { MdCancel } from "react-icons/md";
+// import { Skeleton } from "@/components/ui/skeleton";
+
+// // Define a type for the recipient object for better type safety
+// interface Recipient {
+//   _id: string;
+//   accountHolderName?: string; // Optional if nickname is primary
+//   nickname?: string; // Optional if accountHolderName is primary
+//   // Add other relevant fields if used by RecipientList or elsewhere
+//   // e.g., bankName?: string; accountNumberLast4?: string; currency?: string; type?: string;
+// }
+
+// export default function SelectRecipientPage() {
+//   const [searchTerm, setSearchTerm] = useState<string>("");
+//   const router = useRouter();
+//   const params = useParams(); // Use the default hook return type
+//   const balanceIdParam = params.balanceId; // Access the specific param
+
+//   const { token } = useAuth();
+//   const [recipients, setRecipients] = useState<Recipient[]>([]);
+//   const [loadingRecipients, setLoadingRecipients] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+//   const [isValidParam, setIsValidParam] = useState(false); // State to track param validity
+
+//   // Validate balanceIdParam early
+//   useEffect(() => {
+//     if (typeof balanceIdParam === 'string') {
+//       setIsValidParam(true);
+//     } else if (balanceIdParam) {
+//       // Handle cases where balanceId might be an array (e.g., [...balanceId]) if your routing allows it
+//       console.error("Invalid balanceId parameter type:", typeof balanceIdParam);
+//       setError("Invalid page URL."); // Set an error
+//       // Optional: Redirect if param is definitely wrong
+//       // router.replace("/dashboard/balances");
+//     } else {
+//         // Handle case where balanceId is missing entirely (might happen during SSR/initial render)
+//         // We'll rely on loading state for now, but could add specific handling
+//         console.log("balanceId parameter not yet available.");
+//     }
+//   }, [balanceIdParam, router]); // Add router if using it inside error handling
+
+//   useEffect(() => {
+//     // Only fetch if the param is valid and token exists
+//     if (!isValidParam || !token) {
+//         // If param invalid, error is already set.
+//         // If no token, set loading to false to potentially trigger redirect logic below.
+//         if (!token) setLoadingRecipients(false);
+//         return;
+//     }
+
+//     const fetchRecipients = async () => {
+//       setLoadingRecipients(true);
+//       setError(null);
+//       try {
+//         const data: Recipient[] = await recipientService.getUserRecipients(token);
+//         setRecipients(data);
+//       } catch (err: unknown) {
+//         let errorMessage = "Failed to load recipients.";
+//         if (err instanceof Error) {
+//           errorMessage = err.message;
+//         }
+//         setError(errorMessage);
+//         console.error("Error fetching recipients:", err);
+//       } finally {
+//         setLoadingRecipients(false);
+//       }
+//     };
+
+//     fetchRecipients();
+
+//   }, [token, isValidParam]); // Depend on token and param validity
+
+//   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
+//     setSearchTerm(event.target.value);
+//   };
+
+//   const clearSearchTerm = () => {
+//     setSearchTerm("");
+//   };
+
+//   // Use the validated balanceId (only if it's a string)
+//   const balanceId = typeof balanceIdParam === 'string' ? balanceIdParam : '';
+
+//   const filteredRecipients = recipients.filter((recipient) => {
+//     const recipientName = recipient.accountHolderName ?? recipient.nickname ?? "";
+//     return recipientName.toLowerCase().includes(searchTerm.toLowerCase());
+//   });
+
+//   const handleRecipientSelect = (recipientId: string) => {
+//     if (!balanceId) return; // Prevent navigation if balanceId isn't valid
+//     router.push(
+//       `/dashboard/balances/${balanceId}/send/amount?recipientId=${recipientId}`
+//     );
+//   };
+
+//   const handleAddRecipientClick = () => {
+//     if (!balanceId) return; // Prevent navigation if balanceId isn't valid
+//     const returnUrl = `/dashboard/balances/${balanceId}/send/select-recipient`;
+//     router.push(
+//       `/dashboard/recipients/addrecipient?returnTo=${encodeURIComponent(
+//         returnUrl
+//       )}`
+//     );
+//   };
+
+//   // --- Render Logic ---
+
+//   // Handle missing token after initial checks/loading
+//   if (!loadingRecipients && !token) {
+//     console.log("No auth token found, redirecting to login.");
+//     // Use replace to prevent user from navigating back to this page without login
+//     router.replace("/auth/login");
+//     // Render null or a message while redirecting
+//     return <div className="container mx-auto py-10 text-center">Redirecting to login...</div>;
+//   }
+
+//   // Handle loading state
+//   if (loadingRecipients) {
+//     return (
+//       <>
+//         <div className="flex justify-between">
+//           <Skeleton className="h-8 w-64 mb-4 rounded-full" />
+//         </div>
+
+//         <div className="mb-8 flex justify-between gap-4">
+//           <Skeleton className="h-10 w-full rounded-full" />
+//         </div>
+//         <div className="space-y-2">
+//           {Array(3)
+//             .fill(0)
+//             .map((_, index) => (
+//               <div key={index} className="block">
+//                 <div className="block p-2 sm:p-4 rounded-2xl">
+//                   <div className="flex items-center gap-4">
+//                     {/* Icon Skeleton */}
+//                     <div className="relative flex-shrink-0">
+//                       <div className="flex items-center justify-center">
+//                         <Skeleton className="h-12 w-12 rounded-full" />
+//                       </div>
+//                     </div>
+//                     {/* Text and Button Skeletons */}
+//                     <div className="flex-grow flex flex-row justify-between items-center gap-4">
+//                       <div className="flex-grow">
+//                         <Skeleton className="h-4 w-40 mb-2" />
+//                         <Skeleton className="h-3 w-32" />
+//                       </div>
+//                       <div className="shrink-0">
+//                         <Skeleton className="h-5 w-10 rounded-full" />
+//                       </div>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
+//             ))}
+//         </div>
+//       </>
+//     )
+//   }
+
+//   // Handle errors (fetch errors or invalid param errors)
+//   if (error) {
+//     return (
+//       <div className="container mx-auto py-10 text-red-500 text-center">Error: {error}</div>
+//     );
+//   }
+
+//   // Handle case where balanceId is fundamentally invalid after loading/checks
+//   if (!isValidParam) {
+//      return (
+//        <div className="container mx-auto py-10 text-red-500 text-center">
+//          Error: Invalid page parameters. Please return to your balances.
+//        </div>
+//      );
+//   }
+
+//   // --- Main Content Render ---
+//   return (
+//     <section className="SelectRecipient-Page py-10">
+//       <div className="container mx-auto">
+//         <h1 className="text-2xl lg:text-3xl font-semibold text-mainheading dark:text-white mb-6">
+//           Who are you sending money to?
+//         </h1>
+
+//         <div className="mb-6 relative">
+//           <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+//             <FiSearch className="size-5 text-neutral-900 dark:text-white" aria-hidden="true" />
+//           </div>
+//           <input
+//             type="text"
+//             className="w-full rounded-full h-12.5 py-3 pl-12 pr-10 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white"
+//             placeholder="Search existing recipients"
+//             value={searchTerm}
+//             onChange={handleSearchChange}
+//           />
+//           {searchTerm && (
+//             <button
+//               onClick={clearSearchTerm}
+//               className="absolute inset-y-0 right-3 flex items-center text-neutral-900 dark:text-primary focus:outline-none cursor-pointer"
+//               aria-label="Clear search"
+//             >
+//               <MdCancel size={24} aria-hidden="true" />
+//             </button>
+//           )}
+//         </div>
+
+//         <div
+//           onClick={handleAddRecipientClick}
+//           role="button"
+//           tabIndex={0}
+//           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleAddRecipientClick(); }}
+//           className="flex items-center p-4 -mx-4 rounded-2xl hover:bg-lightgray dark:hover:bg-primarybox transition-colors duration-200 ease-in-out cursor-pointer mb-4 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-offset-primarybox"
+//         >
+//           <div className="size-12 rounded-full bg-green-600/20 p-2 flex items-center justify-center shrink-0">
+//             <FaCirclePlus className="text-green-600" size={24} />
+//           </div>
+//           <div className="ml-4 flex-grow">
+//             <h5 className="font-medium text-mainheading dark:text-white">Add a recipient</h5>
+//           </div>
+//           <IoIosArrowForward className="h-5 w-5 text-neutral-900 dark:text-white shrink-0" />
+//         </div>
+
+//         {recipients.length === 0 && !searchTerm ? (
+//           <p className="text-center text-gray-500 rounded-2xl dark:text-gray-300 text-lg dark:bg-white/8 py-10">
+//             You haven't added any recipients yet. Click 'Add a recipient' to get started.
+//           </p>
+//         ) : filteredRecipients.length > 0 ? (
+//           <div>
+//             <h3 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
+//               All
+//             </h3>
+//             <div className="space-y-1">
+//               {filteredRecipients.map((recipient) => (
+//                 <div
+//                   key={recipient._id}
+//                   onClick={() => handleRecipientSelect(recipient._id)}
+//                   role="button"
+//                   tabIndex={0}
+//                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleRecipientSelect(recipient._id); }}
+//                   className="rounded-lg"
+//                 >
+//                   <RecipientList
+//                     recipient={recipient}
+//                     isSelected={false}
+//                     showCheckbox={false}
+//                   />
+//                 </div>
+//               ))}
+//             </div>
+//           </div>
+//         ) : (
+//           searchTerm && (
+//             <p className="text-center text-gray-500 rounded-2xl dark:text-gray-300 text-lg dark:bg-white/8 py-10">
+//               No recipients found matching '{searchTerm}'.
+//             </p>
+//           )
+//         )}
+//       </div>
+//     </section>
+//   );
+// }
+
+
+
 // frontend/src/app/dashboard/balances/[balanceId]/send/select-recipient/page.tsx
 "use client";
-import React, { useState, ChangeEvent, useEffect } from "react";
+import React, { useState, ChangeEvent, useEffect, Suspense } from "react"; // Added Suspense
 import { FiSearch } from "react-icons/fi";
-import RecipientList from "@/app/dashboard/components/RecipientList";
+import RecipientList from "@/app/dashboard/components/RecipientList"; // Check path
 import { FaCirclePlus } from "react-icons/fa6";
 import { IoIosArrowForward } from "react-icons/io";
-import { useParams, useRouter } from "next/navigation";
-import { useAuth } from "../../../../../contexts/AuthContext"; // Adjust path if needed
-import recipientService from "../../../../../services/recipient"; // Adjust path if needed
+import { useParams, useRouter, useSearchParams } from "next/navigation"; // Added useSearchParams
+import { useAuth } from "../../../../../contexts/AuthContext"; // Adjust path
+import recipientService from "../../../../../services/recipient"; // Adjust path
 import { MdCancel } from "react-icons/md";
 import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link"; // Import Link
 
-// Define a type for the recipient object for better type safety
+// Define Recipient type (ensure consistency with other files)
 interface Recipient {
   _id: string;
-  accountHolderName?: string; // Optional if nickname is primary
-  nickname?: string; // Optional if accountHolderName is primary
-  // Add other relevant fields if used by RecipientList or elsewhere
-  // e.g., bankName?: string; accountNumberLast4?: string; currency?: string; type?: string;
+  accountHolderName?: string;
+  nickname?: string;
+  // Add other relevant fields if needed by RecipientList
+  currency?: { code: string; flagImage?: string };
+  accountNumber?: string;
+  bankName?: string;
 }
 
-export default function SelectRecipientPage() {
+// Wrap content in a component for Suspense
+const SelectRecipientContent = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const router = useRouter();
-  const params = useParams(); // Use the default hook return type
-  const balanceIdParam = params.balanceId; // Access the specific param
+  const params = useParams();
+  const searchParams = useSearchParams(); // To read potential returnTo params if needed
+
+  // Validate and extract balanceId
+  const balanceIdParam = params.balanceId;
+  const balanceId = typeof balanceIdParam === 'string' ? balanceIdParam : '';
 
   const { token } = useAuth();
   const [recipients, setRecipients] = useState<Recipient[]>([]);
   const [loadingRecipients, setLoadingRecipients] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isValidParam, setIsValidParam] = useState(false); // State to track param validity
+  const [isValidParam, setIsValidParam] = useState(false);
 
-  // Validate balanceIdParam early
+  // Validate balanceIdParam
   useEffect(() => {
-    if (typeof balanceIdParam === 'string') {
+    if (balanceId) {
       setIsValidParam(true);
-    } else if (balanceIdParam) {
-      // Handle cases where balanceId might be an array (e.g., [...balanceId]) if your routing allows it
-      console.error("Invalid balanceId parameter type:", typeof balanceIdParam);
-      setError("Invalid page URL."); // Set an error
-      // Optional: Redirect if param is definitely wrong
-      // router.replace("/dashboard/balances");
     } else {
-        // Handle case where balanceId is missing entirely (might happen during SSR/initial render)
-        // We'll rely on loading state for now, but could add specific handling
-        console.log("balanceId parameter not yet available.");
+      // If balanceId is missing or invalid from the start
+      console.error("Invalid balanceId parameter:", balanceIdParam);
+      setError("Invalid page URL. Missing balance information.");
+      setIsValidParam(false);
+      setLoadingRecipients(false); // Stop loading if param is invalid
     }
-  }, [balanceIdParam, router]); // Add router if using it inside error handling
+  }, [balanceId, balanceIdParam]);
 
+  // Fetch recipients only if params are valid and token exists
   useEffect(() => {
-    // Only fetch if the param is valid and token exists
     if (!isValidParam || !token) {
-        // If param invalid, error is already set.
-        // If no token, set loading to false to potentially trigger redirect logic below.
-        if (!token) setLoadingRecipients(false);
-        return;
+      if (isValidParam && !token) {
+          // If params are valid but token is missing, stop loading
+          // Redirect logic below will handle it
+          setLoadingRecipients(false);
+      }
+      // If params invalid, error is already set, loading stopped above
+      return;
     }
 
     const fetchRecipients = async () => {
       setLoadingRecipients(true);
       setError(null);
       try {
+        // Fetch only recipients compatible with the balance currency?
+        // This might require backend changes or filtering here.
+        // For now, fetching all user recipients.
         const data: Recipient[] = await recipientService.getUserRecipients(token);
         setRecipients(data);
       } catch (err: unknown) {
         let errorMessage = "Failed to load recipients.";
         if (err instanceof Error) {
           errorMessage = err.message;
+        } else if (typeof err === 'string') {
+          errorMessage = err;
+        } else if (typeof err === 'object' && err !== null && 'message' in err) {
+             errorMessage = String((err as { message: unknown }).message);
         }
         setError(errorMessage);
         console.error("Error fetching recipients:", err);
@@ -464,97 +751,87 @@ export default function SelectRecipientPage() {
     setSearchTerm("");
   };
 
-  // Use the validated balanceId (only if it's a string)
-  const balanceId = typeof balanceIdParam === 'string' ? balanceIdParam : '';
-
+  // Filter recipients based on search term
   const filteredRecipients = recipients.filter((recipient) => {
-    const recipientName = recipient.accountHolderName ?? recipient.nickname ?? "";
-    return recipientName.toLowerCase().includes(searchTerm.toLowerCase());
+    const nameToSearch = recipient.nickname || recipient.accountHolderName || "";
+    // Optional: Search other fields like email or bank name
+    // const emailToSearch = recipient.email || "";
+    // const bankToSearch = recipient.bankName || "";
+    // return nameToSearch.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //        emailToSearch.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //        bankToSearch.toLowerCase().includes(searchTerm.toLowerCase());
+    return nameToSearch.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
+  // Handle selecting an existing recipient
   const handleRecipientSelect = (recipientId: string) => {
-    if (!balanceId) return; // Prevent navigation if balanceId isn't valid
+    if (!balanceId) {
+        setError("Cannot proceed without a valid balance ID.");
+        return;
+    }
+    console.log(`Selected recipient ${recipientId} for balance ${balanceId}. Navigating to amount.`);
     router.push(
       `/dashboard/balances/${balanceId}/send/amount?recipientId=${recipientId}`
     );
   };
 
+  // Handle clicking the 'Add a recipient' button
   const handleAddRecipientClick = () => {
-    if (!balanceId) return; // Prevent navigation if balanceId isn't valid
+    if (!balanceId) {
+        setError("Cannot add recipient without a valid balance context.");
+        return;
+    }
+    // Construct the return URL to come back to *this* page after adding
     const returnUrl = `/dashboard/balances/${balanceId}/send/select-recipient`;
+    console.log(`Navigating to add recipient, will return to: ${returnUrl}`);
     router.push(
-      `/dashboard/recipients/addrecipient?returnTo=${encodeURIComponent(
-        returnUrl
-      )}`
+      `/dashboard/recipients/addrecipient?returnTo=${encodeURIComponent(returnUrl)}`
     );
   };
 
   // --- Render Logic ---
 
-  // Handle missing token after initial checks/loading
-  if (!loadingRecipients && !token) {
-    console.log("No auth token found, redirecting to login.");
-    // Use replace to prevent user from navigating back to this page without login
-    router.replace("/auth/login");
-    // Render null or a message while redirecting
-    return <div className="container mx-auto py-10 text-center">Redirecting to login...</div>;
-  }
+  // Redirect to login if no token after loading checks
+   if (!loadingRecipients && !token && isValidParam) {
+     console.log("No auth token found on Select Recipient page, redirecting to login.");
+     router.replace("/auth/login");
+     return <div className="container mx-auto py-10 text-center">Redirecting to login...</div>;
+   }
 
   // Handle loading state
   if (loadingRecipients) {
-    return (
-      <>
-        <div className="flex justify-between">
-          <Skeleton className="h-8 w-64 mb-4 rounded-full" />
-        </div>
-
-        <div className="mb-8 flex justify-between gap-4">
-          <Skeleton className="h-10 w-full rounded-full" />
-        </div>
-        <div className="space-y-2">
-          {Array(3)
-            .fill(0)
-            .map((_, index) => (
-              <div key={index} className="block">
-                <div className="block p-2 sm:p-4 rounded-2xl">
-                  <div className="flex items-center gap-4">
-                    {/* Icon Skeleton */}
-                    <div className="relative flex-shrink-0">
-                      <div className="flex items-center justify-center">
-                        <Skeleton className="h-12 w-12 rounded-full" />
-                      </div>
-                    </div>
-                    {/* Text and Button Skeletons */}
-                    <div className="flex-grow flex flex-row justify-between items-center gap-4">
-                      <div className="flex-grow">
-                        <Skeleton className="h-4 w-40 mb-2" />
-                        <Skeleton className="h-3 w-32" />
-                      </div>
-                      <div className="shrink-0">
-                        <Skeleton className="h-5 w-10 rounded-full" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-        </div>
-      </>
-    )
+     return (
+       <div className="container mx-auto py-10">
+         {/* Enhanced Skeleton */}
+         <Skeleton className="h-8 w-72 mb-6 rounded-full" />
+         <Skeleton className="h-12.5 w-full mb-6 rounded-full" />
+         <Skeleton className="h-20 w-full mb-4 rounded-2xl" />
+         <Skeleton className="h-6 w-24 mb-3 rounded-md" />
+         <div className="space-y-2">
+           {Array(3).fill(0).map((_, index) => (
+             <Skeleton key={index} className="h-20 w-full rounded-lg" />
+           ))}
+         </div>
+       </div>
+     );
   }
 
   // Handle errors (fetch errors or invalid param errors)
   if (error) {
     return (
-      <div className="container mx-auto py-10 text-red-500 text-center">Error: {error}</div>
+      <div className="container mx-auto py-10 text-red-500 text-center p-4 bg-red-100 dark:bg-red-900/30 rounded-md">
+          Error: {error}
+          <Link href="/dashboard/send/select-balance" className="ml-2 text-primary hover:underline">Start Over</Link>
+      </div>
     );
   }
 
-  // Handle case where balanceId is fundamentally invalid after loading/checks
+  // Handle case where balanceId was invalid (redundant check, but safe)
   if (!isValidParam) {
      return (
-       <div className="container mx-auto py-10 text-red-500 text-center">
-         Error: Invalid page parameters. Please return to your balances.
+       <div className="container mx-auto py-10 text-red-500 text-center p-4 bg-red-100 dark:bg-red-900/30 rounded-md">
+         Error: Invalid page parameters. Missing balance information.
+         <Link href="/dashboard/send/select-balance" className="ml-2 text-primary hover:underline">Select a Balance</Link>
        </div>
      );
   }
@@ -567,16 +844,18 @@ export default function SelectRecipientPage() {
           Who are you sending money to?
         </h1>
 
+        {/* Search Input */}
         <div className="mb-6 relative">
           <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
             <FiSearch className="size-5 text-neutral-900 dark:text-white" aria-hidden="true" />
           </div>
           <input
             type="text"
-            className="w-full rounded-full h-12.5 py-3 pl-12 pr-10 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white"
-            placeholder="Search existing recipients"
+            className="w-full rounded-full h-12.5 py-3 pl-12 pr-10 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white bg-white dark:bg-primarybox"
+            placeholder="Search by name, email, or bank"
             value={searchTerm}
             onChange={handleSearchChange}
+            aria-label="Search existing recipients"
           />
           {searchTerm && (
             <button
@@ -589,58 +868,89 @@ export default function SelectRecipientPage() {
           )}
         </div>
 
+        {/* Add Recipient Button/Link */}
         <div
           onClick={handleAddRecipientClick}
           role="button"
           tabIndex={0}
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleAddRecipientClick(); }}
-          className="flex items-center p-4 -mx-4 rounded-2xl hover:bg-lightgray dark:hover:bg-primarybox transition-colors duration-200 ease-in-out cursor-pointer mb-4 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-offset-primarybox"
+          className="flex items-center p-4 -mx-4 rounded-2xl hover:bg-lightgray dark:hover:bg-secondarybox transition-colors duration-200 ease-in-out cursor-pointer mb-4 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-offset-primarybox"
         >
           <div className="size-12 rounded-full bg-green-600/20 p-2 flex items-center justify-center shrink-0">
-            <FaCirclePlus className="text-green-600" size={24} />
+            {/* Using a simple plus icon for consistency */}
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-green-600">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            {/* <FaCirclePlus className="text-green-600" size={24} /> */}
           </div>
           <div className="ml-4 flex-grow">
-            <h5 className="font-medium text-mainheading dark:text-white">Add a recipient</h5>
+            <h5 className="font-medium text-mainheading dark:text-white">Add a new recipient</h5>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Add bank details for someone new.</p>
           </div>
           <IoIosArrowForward className="h-5 w-5 text-neutral-900 dark:text-white shrink-0" />
         </div>
 
+        {/* Recipient List or Empty/No Results Message */}
         {recipients.length === 0 && !searchTerm ? (
-          <p className="text-center text-gray-500 rounded-2xl dark:text-gray-300 text-lg dark:bg-white/8 py-10">
-            You haven't added any recipients yet. Click 'Add a recipient' to get started.
-          </p>
+          <div className="text-center text-gray-500 rounded-2xl dark:text-gray-300 text-lg bg-lightgray dark:bg-primarybox/50 py-10 mt-6">
+            <p className="font-medium">No recipients found.</p>
+            <p className="text-sm mt-1">You haven't added any recipients yet. Click above to add someone.</p>
+          </div>
         ) : filteredRecipients.length > 0 ? (
           <div>
             <h3 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
-              All
+              Your Recipients
             </h3>
             <div className="space-y-1">
               {filteredRecipients.map((recipient) => (
-                <div
+                // Make the whole div clickable
+                 <div
                   key={recipient._id}
                   onClick={() => handleRecipientSelect(recipient._id)}
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleRecipientSelect(recipient._id); }}
-                  className="rounded-lg"
+                  className="rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-primary dark:focus:ring-offset-primarybox"
+                  aria-label={`Select recipient ${recipient.nickname || recipient.accountHolderName}`}
                 >
-                  <RecipientList
-                    recipient={recipient}
-                    isSelected={false}
-                    showCheckbox={false}
-                  />
-                </div>
+                    {/* RecipientList component should ideally not be interactive itself if the parent div handles click */}
+                    <RecipientList
+                        recipient={recipient}
+                        isSelected={false} // Not used for selection state here
+                        showCheckbox={false} // No checkboxes needed
+                        // Pass specific fields if needed, or let RecipientList handle the object
+                    />
+                 </div>
               ))}
             </div>
           </div>
         ) : (
+          // Only show "No results" if there was a search term
           searchTerm && (
-            <p className="text-center text-gray-500 rounded-2xl dark:text-gray-300 text-lg dark:bg-white/8 py-10">
-              No recipients found matching '{searchTerm}'.
-            </p>
+            <div className="text-center text-gray-500 rounded-2xl dark:text-gray-300 text-lg bg-lightgray dark:bg-primarybox/50 py-10 mt-6">
+                 <p className="font-medium">No recipients found matching '{searchTerm}'.</p>
+                 <p className="text-sm mt-1">Check the spelling or try adding them as a new recipient.</p>
+            </div>
           )
         )}
       </div>
     </section>
   );
 }
+
+// The Page component using Suspense
+export default function SelectRecipientPage() {
+    return (
+        // Suspense is needed for useParams and useSearchParams
+        <Suspense fallback={<PageLoadingSpinner />}>
+            <SelectRecipientContent />
+        </Suspense>
+    );
+}
+
+// Simple loading spinner for the whole page during Suspense fallback
+const PageLoadingSpinner = () => (
+    <div className="flex justify-center items-center min-h-[calc(100vh-200px)]">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary"></div>
+    </div>
+);
