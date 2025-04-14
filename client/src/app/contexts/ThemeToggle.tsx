@@ -311,7 +311,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ location, className }) => {
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="flex items-center px-3 py-2 cursor-pointer rounded-full hover:bg-lightgray dark:hover:bg-primarybox"
+          className="flex items-center px-2 py-1.5 cursor-pointer rounded-full hover:bg-lightgray dark:hover:bg-primarybox group"
           aria-label="Toggle Theme Dropdown"
           aria-expanded={isDropdownOpen} // Add aria-expanded for accessibility
           aria-controls="theme-menu" // Add aria-controls for accessibility
@@ -320,7 +320,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ location, className }) => {
             <IoSunnyOutline className="size-5 text-neutral-900 dark:text-white" />
           )}
           {theme === "dark" && (
-            <IoMoonOutline className="size-5 text-neutral-900 dark:text-white" />
+            <IoMoonOutline className="size-5 text-neutral-900 dark:text-white group-dark:hover:text-primary" />
           )}
           {theme === "system" && (
             <IoContrastOutline className="size-5 text-neutral-900 dark:text-white" />

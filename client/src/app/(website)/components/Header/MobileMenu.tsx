@@ -928,7 +928,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
     >
       <div className="flex flex-col justify-between h-full">
         <div className="p-4 space-y-4 border-t">
-          <div className="flex flex-col gap-2 w-full">
+          <div className="flex flex-col gap-4 w-full">
             <Link
               href="/"
               className="px-4 py-1.5 w-fit rounded-full font-medium hover:bg-lightgray dark:hover:bg-primarybox"
