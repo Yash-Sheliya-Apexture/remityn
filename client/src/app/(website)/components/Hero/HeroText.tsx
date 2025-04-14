@@ -105,9 +105,8 @@ const HeroText = () => {
 
         <div className="md:pt-4 pt-0">
           <Link href="auth/register">
-            <button className="bg-primary group hover:bg-primaryhover cursor-pointer font-medium md:py-3 py-2 px-4 md:h-14 rounded-full transition-colors duration-300 ease-in-out text-mainheading flex items-center justify-center">
+            <button className="bg-primary hover:bg-primaryhover cursor-pointer font-medium py-2 px-8 md:h-12.5 rounded-full transition-colors duration-300 ease-in-out text-mainheading flex items-center justify-center">
               Get Started Now
-              <FaChevronRight className="opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300 ease-in-out" />
             </button>
           </Link>
         </div>

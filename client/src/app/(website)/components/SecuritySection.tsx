@@ -108,13 +108,13 @@ import { FaShieldAlt, FaUniversity } from "react-icons/fa";
 
 const SecuritySection = () => {
   return (
-    <section className="Security-section md:py-12 py-5">
+    <section className="Security-section md:py-12 py-5 bg-[#F2F4F7] dark:bg-background">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           {/* Left Content */}
           <div className="w-full md:w-3/5 order-2 md:order-1">
             <div className="mb-10">
-              <h1 className="text-5xl md:text-6xl xl:text-8xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+              <h1 className="text-5xl md:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
                 Secure Currency Exchange
                 <span className="text-primary"> You Can Trust </span>
               </h1>
@@ -138,11 +138,11 @@ const SecuritySection = () => {
           <div className="w-full md:w-2/5 h-auto order-1 md:order-2 flex md:justify-end justify-center">
             <Image
               // Use the imported 'img' variable here
-              src="/assets/images/lock.webp"
+              src="/assets/images/Frame2.svg"
               alt="Padlock symbolizing security"
               width={500}
               height={500}
-              className="md:w-[300px] w-[200px] lg:w-[500px] h-auto md:mb-0 mb-5"
+              className="md:w-[300px] w-[200px] lg:w-[400px] h-auto md:mb-0 mb-5"
               priority // Optional: Add priority if this image is above the fold
             />
           </div>
@@ -151,7 +151,7 @@ const SecuritySection = () => {
         <div className="mt-10">
           <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-12">
             <div className="space-y-4">
-              <div className="p-4 bg-lightgray dark:bg-secondary dark:text-primary text-secondary rounded-full inline-flex items-center ">
+              <div className="p-4 bg-secondary dark:text-primary text-white rounded-full inline-flex items-center ">
                 <FaLock size={32} aria-hidden="true" />
               </div>
               <div>
@@ -163,7 +163,7 @@ const SecuritySection = () => {
             </div>
 
             <div className="space-y-4">
-              <div className="p-4 bg-lightgray dark:bg-secondary dark:text-primary text-secondary rounded-full inline-flex items-center ">
+              <div className="p-4 bg-secondary dark:text-primary text-white rounded-full inline-flex items-center ">
                 <FaShieldAlt size={32} aria-hidden="true" />
               </div>
               <div>
@@ -175,7 +175,7 @@ const SecuritySection = () => {
             </div>
 
             <div className="space-y-4">
-              <div className="p-4 bg-lightgray dark:bg-secondary dark:text-primary text-secondary rounded-full inline-flex items-center ">
+              <div className="p-4 bg-secondary dark:text-primary text-white rounded-full inline-flex items-center">
                 <FaUniversity size={32} aria-hidden="true" />
               </div>
               <div>

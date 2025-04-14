@@ -1760,116 +1760,114 @@ const Header: React.FC = () => {
   return (
     // Apply sticky styles conditionally to the main header element
     <header
-      className={`header w-full transition-all duration-300 ease-in-out border-b shadow-xs ${
+      className={`header w-full transition-all duration-300 ease-in-out ${
         isSticky
-          ? "fixed top-0 left-0 right-0 z-50 bg-background dark:bg-darkbackground" // Sticky styles: fixed position, top/left/right 0, z-index, background, shadow
+          ? "fixed top-0 left-0 right-0 z-50 bg-background dark:bg-darkbackground shadow-md" // Sticky styles: fixed position, top/left/right 0, z-index, background, shadow
           : "relative bg-transparent" // Non-sticky styles: relative positioning (or static), transparent background
       }`}
     >
-      <div className={` ${isSticky ? "" : ""}`}>
-        {/* Remove shadow/border when sticky if background/shadow is handled by the outer header */}
-        <div className="container mx-auto px-4">
-          <nav className="flex items-center gap-6 h-20" aria-label="Global">
-            {/* Logo */}
-            <div>
-              <Link href="/">
-                <Image
-                  src="/assets/images/wise-logo.svg"
-                  alt="Wise Logo"
-                  width={120}
-                  height={28}
-                  // Add dark mode logo variant if needed
-                  // className="dark:hidden"
-                />
+      {/* Remove shadow/border when sticky if background/shadow is handled by the outer header */}
+      <div className="px-4 bg-[#f2f4f7] dark:bg-background ">
+        <nav className="flex items-center gap-6 md:h-20 h-18 container mx-auto" aria-label="Global">
+          {/* Logo */}
+          <div>
+            <Link href="/">
+              <Image
+                src="/assets/images/wise-logo.svg"
+                alt="Wise Logo"
+                width={120}
+                height={28}
+                // Add dark mode logo variant if needed
+                // className="dark:hidden"
+              />
+            </Link>
+          </div>
+
+          <div className="flex justify-end items-center w-full">
+            {isLargeScreen && (
+              <>
+                <div className="flex justify-end items-center gap-2 flex-1/2 w-full">
+                  {/* Home Link */}
+                  <Link
+                    href="/"
+                    className="px-4 py-1.5 rounded-full font-medium text-mainheading dark:hover:text-primary hover:bg-gray/5 hover:dark:bg-secondary dark:text-white transition-colors duration-300"
+                  >
+                    Home
+                  </Link>
+
+                  {/* About Link */}
+                  <Link
+                    href="/about" // Assuming you have an about page
+                    className="px-4 py-1.5 rounded-full font-medium text-mainheading dark:hover:text-primary hover:bg-gray/5 hover:dark:bg-secondary dark:text-white transition-colors duration-300"
+                  >
+                    About
+                  </Link>
+
+                  {/* Features Dropdown */}
+                  <FeatureDropdown
+                    buttonText="Features"
+                    links={featureLinks}
+                    topContent={topContent}
+                    onLinkClick={closeMobileMenu} // Close mobile menu if a link is clicked (though this dropdown is for large screens)
+                  />
+
+                  {/* Help Link */}
+                  <Link
+                    href="/help"
+                    className="px-4 py-1.5 rounded-full font-medium text-mainheading dark:hover:text-primary hover:bg-gray/5 hover:dark:bg-secondary dark:text-white transition-colors duration-300"
+                  >
+                    Help
+                  </Link>
+                </div>
+
+                {/* Theme Toggle */}
+                <div className="flex items-center mx-2">
+                  <ThemeToggle location="header" />
+                </div>
+              </>
+            )}
+
+            <div className="flex items-center gap-2">
+              <Link
+                href="/auth/register"
+                className="px-4 py-1.5 hidden lg:block  dark:text-white text-nowrap dark:hover:text-primary font-medium hover:bg-gray/5 dark:hover:bg-secondary rounded-full transition-colors ease-in-out duration-300 text-mainheading"
+              >
+                Register
               </Link>
-            </div>
 
-            <div className="flex justify-end items-center w-full">
-              {isLargeScreen && (
+              {/* Login Button (Visible on Large Screens) */}
+              <Link
+                href="/auth/login"
+                className="bg-primary px-4 py-1.5 hidden lg:block text-nowrap font-medium rounded-full hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading"
+              >
+                Log in
+              </Link>
+
+              {/* Hamburger/Close Button (Mobile/Tablet) */}
+              {!isLargeScreen && (
                 <>
-                  <div className="flex justify-end items-center gap-2 flex-1/2 w-full">
-                    {/* Home Link */}
-                    <Link
-                      href="/"
-                      className="px-4 py-1.5 rounded-full font-medium text-mainheading dark:hover:text-primary hover:bg-lightgray hover:dark:bg-secondary dark:text-white transition-colors duration-300"
+                  {!isMobileMenuOpen ? (
+                    <button
+                      onClick={toggleMobileMenu}
+                      className="text-primary p-2 cursor-pointer"
+                      aria-label="Open Mobile Menu"
                     >
-                      Home
-                    </Link>
-
-                    {/* About Link */}
-                    <Link
-                      href="/about" // Assuming you have an about page
-                      className="px-4 py-1.5 rounded-full font-medium text-mainheading dark:hover:text-primary hover:bg-lightgray hover:dark:bg-secondary dark:text-white transition-colors duration-300"
+                      <GiHamburgerMenu size={26} />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={closeMobileMenu}
+                      aria-label="Close Mobile Menu"
+                      className="text-neutral-900 cursor-pointer" // Keep consistent styling or adjust as needed
                     >
-                      About
-                    </Link>
-
-                    {/* Features Dropdown */}
-                    <FeatureDropdown
-                      buttonText="Features"
-                      links={featureLinks}
-                      topContent={topContent}
-                      onLinkClick={closeMobileMenu} // Close mobile menu if a link is clicked (though this dropdown is for large screens)
-                    />
-
-                    {/* Help Link */}
-                    <Link
-                      href="/help"
-                      className="px-4 py-1.5 rounded-full font-medium text-mainheading dark:hover:text-primary hover:bg-lightgray hover:dark:bg-secondary dark:text-white transition-colors duration-300"
-                    >
-                      Help
-                    </Link>
-                  </div>
-
-                  {/* Theme Toggle */}
-                  <div className="flex items-center mx-2">
-                    <ThemeToggle location="header" />
-                  </div>
+                      <IoClose className="size-10 hover:bg-gray-300 text-mainheading dark:text-white hover:dark:bg-primarybox p-1.5 rounded-full transition-colors duration-300 ease-in-out" />
+                    </button>
+                  )}
                 </>
               )}
-
-              <div className="flex items-center gap-2">
-                <Link
-                  href="/auth/register"
-                  className="px-4 py-1.5 hidden lg:block  dark:text-white text-nowrap font-medium hover:bg-lightgray dark:hover:bg-secondary rounded-full transition-colors ease-in-out duration-300 text-mainheading"
-                >
-                  Register
-                </Link>
-
-                {/* Login Button (Visible on Large Screens) */}
-                <Link
-                  href="/auth/login"
-                  className="bg-primary px-4 py-1.5 hidden lg:block text-nowrap font-medium rounded-full hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading"
-                >
-                  Log in
-                </Link>
-
-                {/* Hamburger/Close Button (Mobile/Tablet) */}
-                {!isLargeScreen && (
-                  <>
-                    {!isMobileMenuOpen ? (
-                      <button
-                        onClick={toggleMobileMenu}
-                        className="text-primary p-2 cursor-pointer"
-                        aria-label="Open Mobile Menu"
-                      >
-                        <GiHamburgerMenu size={26} />
-                      </button>
-                    ) : (
-                      <button
-                        onClick={closeMobileMenu}
-                        aria-label="Close Mobile Menu"
-                        className="text-neutral-900 cursor-pointer" // Keep consistent styling or adjust as needed
-                      >
-                        <IoClose className="size-10 hover:bg-gray-300 text-mainheading dark:text-white hover:dark:bg-primarybox p-1.5 rounded-full transition-colors duration-300 ease-in-out" />
-                      </button>
-                    )}
-                  </>
-                )}
-              </div>
             </div>
-          </nav>
-        </div>
+          </div>
+        </nav>
       </div>
 
       {/* Mobile Menu (Conditional Rendering with Framer Motion) */}

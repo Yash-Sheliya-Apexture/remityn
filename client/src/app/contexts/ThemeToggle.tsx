@@ -288,7 +288,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ location, className }) => {
         <button
           onClick={() => handleThemeChange("dark")}
           className={`p-2 rounded-full hover:bg-lightgray dark:hover:bg-primarybox ${
-            theme === "dark" ? "bg-lightgray dark:bg-primarybox" : ""
+            theme === "dark" ? "bg-lightgray  dark:bg-primarybox" : ""
           }`}
           aria-label="Dark Theme"
         >
@@ -311,21 +311,21 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ location, className }) => {
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="flex items-center px-2 py-1.5 cursor-pointer rounded-full hover:bg-lightgray dark:hover:bg-primarybox group"
+          className="flex items-center px-2 py-1.5 cursor-pointer group rounded-full hover:bg-gray/5 dark:hover:bg-primarybox group transition-colors ease-in-out duration-300"
           aria-label="Toggle Theme Dropdown"
           aria-expanded={isDropdownOpen} // Add aria-expanded for accessibility
           aria-controls="theme-menu" // Add aria-controls for accessibility
         >
           {theme === "light" && (
-            <IoSunnyOutline className="size-5 text-neutral-900 dark:text-white" />
+            <IoSunnyOutline className="size-5  dark:text-white" />
           )}
           {theme === "dark" && (
-            <IoMoonOutline className="size-5 text-neutral-900 dark:text-white group-dark:hover:text-primary" />
+            <IoMoonOutline className="size-5  dark:text-white dark:group-hover:text-primary" />
           )}
           {theme === "system" && (
-            <IoContrastOutline className="size-5 text-neutral-900 dark:text-white" />
+            <IoContrastOutline className="size-5  dark:text-white" />
           )}
-          <GoChevronDown className="size-5 ml-1 mt-0.5 text-neutral-900 dark:text-white" />
+          <GoChevronDown className="size-5 ml-1 mt-0.5 dark:text-white" />
         </button>
 
         {isDropdownOpen && (

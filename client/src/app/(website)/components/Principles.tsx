@@ -25,8 +25,8 @@ const FeaturesSection: React.FC = () => {
         id="features"
       >
         {/* Heading Section */}
-        <div className="flex flex-col items-center gap-5 mt-10">
-          <h1 className="text-5xl md:text-6xl xl:text-8xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+        <div className="flex flex-col gap-5 mt-10">
+          <h1 className="text-5xl md:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight" >
             Security, Speed,
             <span className="text-primary"> Savings & Support </span>
           </h1>
@@ -41,7 +41,7 @@ const FeaturesSection: React.FC = () => {
               width={500}
               height={500}
               alt="Picture of the author"
-              className="w-full object-cover sm:h-60 lg:h-80"
+              className="w-full object-cover md:h-80 h-60"
             />
 
             <div className="flex flex-col gap-3 p-6">
