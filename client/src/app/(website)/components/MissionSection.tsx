@@ -50,7 +50,6 @@
 
 // export default MissionSection;
 
-
 import Image from "next/image";
 import React from "react";
 import { FaStarHalfAlt } from "react-icons/fa";
@@ -129,7 +128,7 @@ const MobileDownloadSection: React.FC = () => {
 
           {/* Text Content: Heading and Paragraph */}
           <div className="flex flex-col md:gap-5">
-            <h1 className="text-5xl md:text-6xl xl:text-8xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+            <h1 className="text-5xl md:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
               Send Money to India
               <span className="text-primary"> with Wise </span>
             </h1>
@@ -145,7 +144,7 @@ const MobileDownloadSection: React.FC = () => {
 
         {/* Right Column: Phone Image */}
         <aside className="flex flex-1 items-center justify-center">
-          <div className="relative flex aspect-square w-full flex-shrink-0 justify-center overflow-hidden rounded-bl-lg rounded-br-3xl rounded-tl-3xl rounded-tr-lg bg-white dark:bg-white/5  dark:border pt-12 md:h-[572px] md:w-[583px] md:rounded-bl-[30px] md:rounded-br-[120px] md:rounded-tl-[120px] md:rounded-tr-[30px]">
+          <div className="relative flex aspect-square w-full flex-shrink-0 justify-center overflow-hidden rounded-bl-lg rounded-br-3xl rounded-tl-3xl rounded-tr-lg bg-white dark:bg-white/5  dark:border pt-12 md:h-[572px] md:w-[450px] md:rounded-bl-[30px] md:rounded-br-[120px] md:rounded-tl-[120px] md:rounded-tr-[30px]">
             <Image
               src="/assets/images/Send-Monyes.svg"
               width={500}

@@ -3757,17 +3757,11 @@ export const KycProvider = ({ children }: KycProviderProps) => {
                // Now TypeScript knows possibleStep is one of the formStepOrder types
                const validFormStep = possibleStep as (typeof formStepOrder)[number];
                if (currentUiStepId !== validFormStep) {
-                   // console.log(`KycContext: Syncing UI step (${currentUiStepId}) to path step (${validFormStep})`);
                    updateCurrentUiStepId(validFormStep);
                }
            } else if (isOnStartPage && currentUiStepId !== 'start') {
-               // If on start page, ensure UI step is 'start'
-                // console.log(`KycContext: Syncing UI step (${currentUiStepId}) to 'start'`);
                 updateCurrentUiStepId('start');
            }
-           // --- END FIX ---
-
-           // Allow staying on start/form pages.
            return; // Stop processing
        }
 

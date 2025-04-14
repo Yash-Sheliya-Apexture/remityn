@@ -928,7 +928,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
     >
       <div className="flex flex-col justify-between h-full">
         <div className="p-4 space-y-4 border-t">
-          <div className="flex flex-col gap-4 w-full">
+          <div className="flex flex-col gap-2 w-full">
             <Link
               href="/"
               className="px-4 py-1.5 w-fit rounded-full font-medium hover:bg-lightgray dark:hover:bg-primarybox"
@@ -970,7 +970,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             <Link
               href="/auth/login" // Corrected path based on Header
               passHref
-              className="block w-full px-4 py-3 bg-white dark:bg-background border rounded-full font-medium text-lg text-center dark:text-white text-mainheading"
+              className="block w-full px-4 lg:py-3 py-2 bg-white dark:bg-background border rounded-full font-medium lg:text-lg text-base text-center dark:text-white text-mainheading"
               onClick={onClose}
             >
               Log in
@@ -978,7 +978,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             <Link
               href="/auth/register" // Corrected path based on Header
               passHref
-              className="block w-full px-4 py-3 bg-primary hover:bg-primaryhover rounded-full font-medium text-lg text-center text-mainheading" // Assuming lightgreen requires black text
+              className="block w-full px-4 lg:py-3 border py-2 bg-primary hover:bg-primaryhover rounded-full font-medium lg:text-lg text-base text-center text-mainheading" // Assuming lightgreen requires black text
               onClick={onClose}
             >
               Register

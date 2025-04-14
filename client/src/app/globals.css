@@ -404,7 +404,7 @@ input:-webkit-autofill:active {
 
   .animate-border-draw {
     /* Apply the animation */
-    animation: drawBorder 3s linear forwards;
+    animation: drawBorder 3500ms linear forwards;
     /* Duration should match timer slightly */
   }
 

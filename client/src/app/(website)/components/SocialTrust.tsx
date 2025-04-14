@@ -1618,7 +1618,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
   comment,
 }) => {
   return (
-    <div className="bg-white dark:bg-white/5 border rounded-2xl lg:p-6 p-4 flex flex-col items-start relative mb-4 flex-shrink-0">
+    <div className="bg-white dark:bg-white/5 rounded-2xl lg:p-6 p-4 flex flex-col items-start relative mb-4 flex-shrink-0">
       <div className="flex md:flex-row items-center w-full justify-center md:justify-start">
         <div className="flex flex-col md:flex-row items-center">
           <img
@@ -1748,10 +1748,10 @@ const ReviewCards: React.FC = () => {
   }
 
   return (
-    <section className="Reviews md:py-14 py-10 bg-gray-50 dark:bg-background">
+    <section className="Reviews md:py-14 py-10 bg-[#F2F4F7] dark:bg-background" id="review">
       <div className="container mx-auto px-4">
         <div className="w-full mb-10 lg:mb-16">
-          <h1 className="text-5xl md:text-6xl xl:text-8xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+          <h1 className="text-5xl md:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
             Honest Reviews
             <span className="text-primary"> Real Travelers Like You </span>
           </h1>
@@ -1780,8 +1780,8 @@ const ReviewCards: React.FC = () => {
             </div>
           ))}
           {/* Gradient Fades */}
-          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-gray-50 via-gray-50/80 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none"></div>
-          <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-gray-50 via-gray-50/80 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none"></div>
+          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#F2F4F7] via-gray-50 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none"></div>
+          <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#F2F4F7] via-gray-50 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none"></div>
         </div>
       </div>
 
