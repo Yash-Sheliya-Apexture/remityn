@@ -104,26 +104,8 @@ const updateTransferStatusAdmin = async (transferId, newStatus, failureReason = 
              transfer.failureReason = undefined; // Clear reason if status is not failed/canceled
         }
 
-
-        // 6. *** Trigger External Payout Here (if applicable) ***
-        // If the status is changing FROM 'pending' TO 'processing' or 'completed',
-        // this is where you might initiate the actual money movement via an external API.
         if (wasPending && (newStatus === 'processing' || newStatus === 'completed')) {
             console.log(`Service: updateTransferStatusAdmin - TODO: Trigger external payout for transfer ${transferId} as status moved from pending.`);
-            // try {
-            //    const payoutResult = await externalPayoutService.initiate(transfer);
-            //    if (!payoutResult.success) {
-            //        transfer.status = 'failed'; // Revert to failed if payout initiation fails
-            //        transfer.failureReason = payoutResult.message || 'External payout initiation failed.';
-            //    } else {
-            //         transfer.transactionId = payoutResult.externalId; // Store external ID if available
-            //         // Keep status as 'processing' or 'completed' based on payoutResult
-            //    }
-            // } catch (payoutError) {
-            //     console.error(`Service: updateTransferStatusAdmin - Error during external payout initiation for ${transferId}:`, payoutError);
-            //     transfer.status = 'failed';
-            //     transfer.failureReason = 'External payout system error.';
-            // }
         }
         // *****************************************************
 
