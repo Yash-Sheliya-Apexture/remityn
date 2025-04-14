@@ -781,11 +781,238 @@
 
 
 
+// // frontend/src/app/kyc/personal/page.tsx
+// 'use client';
+
+// import React, { useState, useEffect, useMemo } from 'react';
+// import { useRouter } from 'next/navigation';
+// import { useForm } from 'react-hook-form';
+// import { zodResolver } from '@hookform/resolvers/zod';
+// import * as z from 'zod';
+// import { format, subYears, startOfDay, isValid as isDateValid, parseISO } from "date-fns";
+// import { cn } from "@/lib/utils";
+// import * as countryCodes from 'country-codes-list';
+
+// // --- UI Components ---
+// import { Button } from "@/components/ui/button";
+// import { Input } from "@/components/ui/input";
+// import { Calendar } from "@/components/ui/calendar";
+// import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+// import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+// import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+// import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+// import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+// import { Check, ChevronsUpDown, Calendar as CalendarIcon, Loader2, User, Phone, AlertTriangle, ArrowRight } from 'lucide-react';
+
+// // --- App Specific Imports ---
+// import { useKyc, formStepOrder } from '../../contexts/KycContext';
+// import { useAuth } from '@/app/contexts/AuthContext';
+// import kycService from '@/app/services/kyc';
+
+// // --- Zod Validation Schema ---
+// const personalDetailsSchema = z.object({
+//     firstName: z.string().trim().min(1, { message: 'First name is required' }).max(100, { message: 'First name cannot exceed 100 characters' }),
+//     lastName: z.string().trim().min(1, { message: 'Last name is required' }).max(100, { message: 'Last name cannot exceed 100 characters' }),
+//     dateOfBirth: z.date({ required_error: "Date of birth is required.", invalid_type_error: "Please enter a valid date." })
+//         .max(startOfDay(subYears(new Date(), 18)), { message: "You must be at least 18 years old." })
+//         .min(new Date("1900-01-01"), { message: "Date of birth seems incorrect (before 1900)." }),
+//     mobileCountryCode: z.string().trim().min(2, { message: 'Code required' }).regex(/^\+\d{1,4}$/, {message: 'Invalid format (e.g., +1, +44)'}),
+//     mobileNumber: z.string().trim().min(5, { message: 'Minimum 5 digits required' }).max(15, { message: 'Maximum 15 digits allowed' }).regex(/^\d+$/, {message: 'Enter only numbers'}),
+// });
+
+// type PersonalDetailsFormData = z.infer<typeof personalDetailsSchema>;
+// type CountryCodeOption = { value: string; label: string; };
+// const DEFAULT_COUNTRY_CODE = '+1';
+
+// // --- Component ---
+// export default function KycPersonalPage() {
+//     const router = useRouter();
+//     const { user, loading: authLoading, refetchUser } = useAuth();
+//     const {
+//         kycData, setKycData, nextStep, updateCurrentUiStepId, goToStep,
+//         isInitialized: kycInitialized, backendStatus, resetKycProgress
+//      } = useKyc();
+
+//     const [isPageLoading, setIsPageLoading] = useState(true);
+//     const [formActionError, setFormActionError] = useState<string | null>(null);
+//     const [isSubmittingForm, setIsSubmittingForm] = useState(false);
+//     const [isSkipping, setIsSkipping] = useState(false);
+//     const [countryCodePopoverOpen, setCountryCodePopoverOpen] = useState(false);
+
+//     const form = useForm<PersonalDetailsFormData>({
+//         resolver: zodResolver(personalDetailsSchema),
+//         defaultValues: { firstName: '', lastName: '', dateOfBirth: undefined, mobileCountryCode: DEFAULT_COUNTRY_CODE, mobileNumber: '' },
+//         mode: 'onChange',
+//     });
+
+//     const countryCodeOptions = useMemo<CountryCodeOption[]>(() => {
+//         try {
+//             const codesObject = countryCodes.customList('countryNameEn', '+{countryCallingCode}');
+//             return Object.entries(codesObject)
+//                 .map(([name, code]) => ({ value: code, label: `${name} (${code})` }))
+//                 .filter(option => option.value && option.value !== '+' && option.label && option.label.trim() !== `(${option.value})`)
+//                  .sort((a, b) => a.label.localeCompare(b.label));
+//         } catch (error) { console.error("Error generating country code list:", error); return [{ value: '+1', label: 'United States (+1)' }]; }
+//     }, []);
+
+//     // Effect 1: Set UI step
+//     useEffect(() => { if (kycInitialized) updateCurrentUiStepId('personal'); }, [kycInitialized, updateCurrentUiStepId]);
+
+//     // Effect 2: Load initial/persisted data
+//     useEffect(() => {
+//         if (!kycInitialized || authLoading) { setIsPageLoading(true); return; }
+//         if (backendStatus !== 'not_started' && backendStatus !== 'rejected' && backendStatus !== 'skipped') {
+//             setIsPageLoading(false); return;
+//         }
+//         setIsPageLoading(true);
+//         let initialValues: Partial<PersonalDetailsFormData> = {};
+//         if (kycData && Object.keys(kycData).length > 0 && (kycData.firstName || kycData.lastName)) {
+//             const parsedDate = kycData.dateOfBirth ? parseISO(kycData.dateOfBirth) : undefined;
+//             initialValues = { firstName: kycData.firstName || '', lastName: kycData.lastName || '', dateOfBirth: parsedDate && isDateValid(parsedDate) ? parsedDate : undefined, mobileCountryCode: kycData.mobile?.countryCode || DEFAULT_COUNTRY_CODE, mobileNumber: kycData.mobile?.number || '' };
+//         } else if (user && backendStatus === 'not_started') {
+//             const nameParts = user.fullName?.trim().split(' ') || [];
+//             initialValues = { firstName: nameParts[0] || '', lastName: nameParts.slice(1).join(' ') || '', dateOfBirth: undefined, mobileCountryCode: DEFAULT_COUNTRY_CODE, mobileNumber: '' };
+//         } else { initialValues = { firstName: '', lastName: '', dateOfBirth: undefined, mobileCountryCode: DEFAULT_COUNTRY_CODE, mobileNumber: '' }; }
+//         const finalCountryCode = initialValues.mobileCountryCode || DEFAULT_COUNTRY_CODE;
+//         initialValues.mobileCountryCode = countryCodeOptions.some(opt => opt.value === finalCountryCode) ? finalCountryCode : DEFAULT_COUNTRY_CODE;
+//         form.reset(initialValues);
+//         setIsPageLoading(false);
+//     }, [kycInitialized, authLoading, user, backendStatus, kycData, form.reset, countryCodeOptions]);
+
+//     // --- Event Handlers ---
+//     const onSubmit = (data: PersonalDetailsFormData) => {
+//         setIsSubmittingForm(true); setFormActionError(null);
+//         try { setKycData({ firstName: data.firstName, lastName: data.lastName, dateOfBirth: format(data.dateOfBirth, "yyyy-MM-dd"), mobile: { countryCode: data.mobileCountryCode, number: data.mobileNumber } }); nextStep();
+//         } catch (error: any) { console.error("PersonalPage: Error saving progress:", error); setFormActionError(error.message || "Failed to save progress."); setIsSubmittingForm(false); }
+//     };
+//     const handleSkip = async () => {
+//          if (!confirm("Are you sure you want to skip identity verification for now? Some account features will be limited.")) return;
+//         setIsSkipping(true); setFormActionError(null);
+//         try { await kycService.skipKyc(); await refetchUser(); } catch (err: any) { console.error("PersonalPage: Error skipping KYC:", err); setFormActionError(err.message || "Could not skip verification."); setIsSkipping(false); }
+//     };
+
+//     // --- Render Logic ---
+//     if (isPageLoading || authLoading || !kycInitialized) { /* ... loading spinner ... */ return ( <div className="flex justify-center items-center min-h-[400px]"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div> ); }
+//     if (backendStatus !== 'not_started' && backendStatus !== 'rejected' && backendStatus !== 'skipped') { /* ... loading spinner ... */ return ( <div className="flex justify-center items-center min-h-[400px]"><Loader2 className="h-8 w-8 animate-spin text-primary" /><span className="ml-2">Updating status...</span></div> ); }
+
+//     return (
+//         <Card className="w-full max-w-2xl mx-auto shadow-lg border border-border/40 animate-fadeIn">
+//             <CardHeader>
+//                 <CardTitle className="text-2xl font-semibold tracking-tight flex items-center gap-2"><User className="h-6 w-6 text-primary" /> Personal Details (Step {formStepOrder.indexOf('personal') + 1} of {formStepOrder.length})</CardTitle>
+//                 <CardDescription>Enter your legal name and date of birth exactly as they appear on your ID. Provide a valid mobile number.</CardDescription>
+//             </CardHeader>
+//             <CardContent className="p-6 md:p-8">
+//                  {formActionError && ( <Alert variant="destructive" className="mb-6"> <AlertTriangle className="h-4 w-4" /> <AlertTitle>Action Failed</AlertTitle> <AlertDescription>{formActionError}</AlertDescription> </Alert> )}
+//                  <Form {...form}>
+//                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+//                         {/* First Name & Last Name Fields */}
+//                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6">
+//                            <FormField control={form.control} name="firstName" render={({ field }) => (<FormItem><FormLabel>Legal First Name *</FormLabel><FormControl><Input placeholder="e.g., Jane" {...field} /></FormControl><FormMessage /></FormItem>)} />
+//                            <FormField control={form.control} name="lastName" render={({ field }) => (<FormItem><FormLabel>Legal Last Name *</FormLabel><FormControl><Input placeholder="e.g., Doe" {...field} /></FormControl><FormMessage /></FormItem>)} />
+//                         </div>
+
+//                         {/* Date of Birth Field */}
+//                         <FormField control={form.control} name="dateOfBirth" render={({ field }) => (
+//                             <FormItem className="flex flex-col">
+//                                 <FormLabel>Date of Birth *</FormLabel>
+//                                 <Popover>
+//                                     <PopoverTrigger asChild>
+//                                          {/* ***** FIX: Removed FormControl wrapper ***** */}
+//                                         <Button
+//                                             variant={"outline"}
+//                                             className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}
+//                                         >
+//                                             <CalendarIcon className="mr-2 h-4 w-4" />
+//                                             {field.value && isDateValid(field.value) ? format(field.value, "PPP") : <span>Pick a date</span>}
+//                                         </Button>
+//                                          {/* ***** END FIX ***** */}
+//                                     </PopoverTrigger>
+//                                     <PopoverContent className="w-auto p-0" align="start">
+//                                         <Calendar
+//                                             mode="single"
+//                                             selected={field.value && isDateValid(field.value) ? field.value : undefined}
+//                                             onSelect={(date) => { field.onChange(date || undefined); form.trigger("dateOfBirth"); }}
+//                                             disabled={(date) => date > startOfDay(subYears(new Date(), 18)) || date < new Date("1900-01-01")}
+//                                             initialFocus
+//                                             defaultMonth={field.value && isDateValid(field.value) ? field.value : subYears(new Date(), 30)}
+//                                             captionLayout="dropdown-buttons" fromYear={1900} toYear={new Date().getFullYear() - 18}
+//                                         />
+//                                     </PopoverContent>
+//                                 </Popover>
+//                                 <FormDescription>You must be 18 years or older.</FormDescription>
+//                                 <FormMessage />
+//                             </FormItem>
+//                         )} />
+
+//                         {/* Mobile Number Fields */}
+//                         <div className="space-y-2">
+//                              <FormLabel className="flex items-center gap-1.5"><Phone className="h-4 w-4 text-muted-foreground"/> Mobile Number *</FormLabel>
+//                              <div className="flex items-start gap-2">
+//                                 {/* Country Code */}
+//                                 <FormField control={form.control} name="mobileCountryCode" render={({ field }) => (
+//                                     <FormItem className="flex flex-col w-1/3 max-w-[150px] shrink-0">
+//                                         <Popover open={countryCodePopoverOpen} onOpenChange={setCountryCodePopoverOpen}>
+//                                             <PopoverTrigger asChild>
+//                                                 {/* ***** FIX: Removed FormControl wrapper ***** */}
+//                                                 <Button
+//                                                     variant="outline" role="combobox" aria-expanded={countryCodePopoverOpen}
+//                                                     className={cn("w-full justify-between", !field.value && "text-muted-foreground")}
+//                                                     aria-label="Select country calling code"
+//                                                 >
+//                                                     {field.value ? field.value : "Code"}
+//                                                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+//                                                 </Button>
+//                                                  {/* ***** END FIX ***** */}
+//                                             </PopoverTrigger>
+//                                             <PopoverContent className="w-[300px] p-0">
+//                                                 <Command filter={(value, search) => { const option = countryCodeOptions.find(opt => opt.label.toLowerCase() === value.toLowerCase()); if (!option) return 0; const searchTerm = search.toLowerCase(); const isInLabel = option.label.toLowerCase().includes(searchTerm); const codeSearchTerm = searchTerm.startsWith('+') ? searchTerm : searchTerm.replace(/^\+/, ''); const isInCode = option.value.replace(/^\+/, '').includes(codeSearchTerm); return isInLabel || isInCode ? 1 : 0; }}>
+//                                                     <CommandInput placeholder="Search country or code..." />
+//                                                     <CommandList><CommandEmpty>No country found.</CommandEmpty><CommandGroup>
+//                                                         {countryCodeOptions.map((option) => ( <CommandItem key={option.label} value={option.label} onSelect={(currentValue) => { const selectedOption = countryCodeOptions.find(opt => opt.label === currentValue); if (selectedOption) { form.setValue("mobileCountryCode", selectedOption.value, { shouldValidate: true }); } setCountryCodePopoverOpen(false); }}> <Check className={cn("mr-2 h-4 w-4", option.value === field.value ? "opacity-100" : "opacity-0")} /> {option.label} </CommandItem> ))}
+//                                                     </CommandGroup></CommandList>
+//                                                 </Command>
+//                                             </PopoverContent>
+//                                         </Popover>
+//                                         <FormMessage />
+//                                     </FormItem>
+//                                 )} />
+//                                 {/* Number Input */}
+//                                 <FormField control={form.control} name="mobileNumber" render={({ field }) => (
+//                                     <FormItem className="flex-grow">
+//                                         {/* FormControl is correct here as Input is the control */}
+//                                         <FormControl><Input type="tel" inputMode="numeric" placeholder="Enter number" {...field} /></FormControl>
+//                                         <FormMessage />
+//                                     </FormItem>
+//                                 )} />
+//                              </div>
+//                              <FormDescription>Used for verification and important communications.</FormDescription>
+//                         </div>
+
+//                         {/* Navigation Buttons */}
+//                         <div className="flex flex-col sm:flex-row justify-between items-center pt-6 border-t dark:border-border/50 mt-8 gap-4">
+//                              {(backendStatus === 'not_started' || backendStatus === 'rejected') ? ( // <<<--- CONDITION HERE
+//                                  <Button type="button" variant="ghost" onClick={handleSkip} disabled={isSubmittingForm || isSkipping} className="text-muted-foreground hover:text-foreground">
+//                                      {isSkipping ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+//                                      Skip for Now
+//                                  </Button>
+//                              ) : <div/> /* Placeholder for alignment */}
+//                             <Button type="submit" disabled={isSubmittingForm || isSkipping || !form.formState.isValid}>
+//                                 {isSubmittingForm ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ArrowRight className="mr-2 h-4 w-4" />}
+//                                 Continue
+//                             </Button>
+//                         </div>
+//                     </form>
+//                  </Form>
+//             </CardContent>
+//         </Card>
+//     );
+// }
+
 // frontend/src/app/kyc/personal/page.tsx
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation'; // Import usePathname
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -802,7 +1029,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Check, ChevronsUpDown, Calendar as CalendarIcon, Loader2, User, Phone, AlertTriangle, ArrowRight } from 'lucide-react';
+import { Check, ChevronsUpDown, Calendar as CalendarIcon, Loader2, User, Phone, AlertTriangle, ArrowRight, ArrowLeft } from 'lucide-react'; // Added ArrowLeft
 
 // --- App Specific Imports ---
 import { useKyc, formStepOrder } from '../../contexts/KycContext';
@@ -822,21 +1049,24 @@ const personalDetailsSchema = z.object({
 
 type PersonalDetailsFormData = z.infer<typeof personalDetailsSchema>;
 type CountryCodeOption = { value: string; label: string; };
-const DEFAULT_COUNTRY_CODE = '+1';
+const DEFAULT_COUNTRY_CODE = '+1'; // Default or most common code
 
 // --- Component ---
 export default function KycPersonalPage() {
     const router = useRouter();
+    const pathname = usePathname();
     const { user, loading: authLoading, refetchUser } = useAuth();
     const {
-        kycData, setKycData, nextStep, updateCurrentUiStepId, goToStep,
-        isInitialized: kycInitialized, backendStatus, resetKycProgress
+        kycData, setKycData, nextStep, prevStep, // Add prevStep
+        updateCurrentUiStepId, goToStep,
+        isInitialized: kycInitialized, backendStatus,
+        fetchKycStatus, isLoadingStatus: kycLoadingStatus // Get loading status
      } = useKyc();
 
-    const [isPageLoading, setIsPageLoading] = useState(true);
+    const [isPageLoading, setIsPageLoading] = useState(true); // Controls local loading state
     const [formActionError, setFormActionError] = useState<string | null>(null);
     const [isSubmittingForm, setIsSubmittingForm] = useState(false);
-    const [isSkipping, setIsSkipping] = useState(false);
+    const [isSkipping, setIsSkipping] = useState(false); // State for skip button
     const [countryCodePopoverOpen, setCountryCodePopoverOpen] = useState(false);
 
     const form = useForm<PersonalDetailsFormData>({
@@ -845,6 +1075,7 @@ export default function KycPersonalPage() {
         mode: 'onChange',
     });
 
+    // Memoize country code options
     const countryCodeOptions = useMemo<CountryCodeOption[]>(() => {
         try {
             const codesObject = countryCodes.customList('countryNameEn', '+{countryCallingCode}');
@@ -855,57 +1086,172 @@ export default function KycPersonalPage() {
         } catch (error) { console.error("Error generating country code list:", error); return [{ value: '+1', label: 'United States (+1)' }]; }
     }, []);
 
-    // Effect 1: Set UI step
-    useEffect(() => { if (kycInitialized) updateCurrentUiStepId('personal'); }, [kycInitialized, updateCurrentUiStepId]);
-
-    // Effect 2: Load initial/persisted data
+    // Effect 1: Set UI step in context if on the correct page
     useEffect(() => {
-        if (!kycInitialized || authLoading) { setIsPageLoading(true); return; }
-        if (backendStatus !== 'not_started' && backendStatus !== 'rejected' && backendStatus !== 'skipped') {
-            setIsPageLoading(false); return;
+        if (kycInitialized && pathname === '/kyc/personal') {
+             updateCurrentUiStepId('personal');
         }
+    }, [kycInitialized, updateCurrentUiStepId, pathname]);
+
+    // Effect 2: Load initial/persisted data OR pre-fill from user profile
+    useEffect(() => {
+        // Wait for context/auth to be ready
+        if (!kycInitialized || authLoading) {
+            setIsPageLoading(true);
+            return;
+        }
+
+        // Check if the status allows being on this form page
+        if (backendStatus !== 'not_started' && backendStatus !== 'rejected' && backendStatus !== 'skipped') {
+            // If status is pending, verified, etc., rely on context redirection effect
+            // console.log(`PersonalPage: Status is ${backendStatus}, skipping form load. Context should redirect.`);
+            setIsPageLoading(false); // Don't show loading, let context redirect
+            return;
+        }
+
+        // Proceed with loading form data
         setIsPageLoading(true);
         let initialValues: Partial<PersonalDetailsFormData> = {};
-        if (kycData && Object.keys(kycData).length > 0 && (kycData.firstName || kycData.lastName)) {
-            const parsedDate = kycData.dateOfBirth ? parseISO(kycData.dateOfBirth) : undefined;
-            initialValues = { firstName: kycData.firstName || '', lastName: kycData.lastName || '', dateOfBirth: parsedDate && isDateValid(parsedDate) ? parsedDate : undefined, mobileCountryCode: kycData.mobile?.countryCode || DEFAULT_COUNTRY_CODE, mobileNumber: kycData.mobile?.number || '' };
-        } else if (user && backendStatus === 'not_started') {
+
+        // Try loading persisted data first (if resuming after rejection/skip with saved progress)
+        const storedData = localStorage.getItem('kycProgressData_v1'); // Using context's key
+        if (storedData && (backendStatus === 'rejected' || backendStatus === 'skipped')) {
+             try {
+                const parsedData = JSON.parse(storedData);
+                if (parsedData && typeof parsedData === 'object') {
+                    const parsedDate = parsedData.dateOfBirth ? parseISO(parsedData.dateOfBirth) : undefined;
+                    initialValues = {
+                        firstName: parsedData.firstName || '',
+                        lastName: parsedData.lastName || '',
+                        dateOfBirth: parsedDate && isDateValid(parsedDate) ? parsedDate : undefined,
+                        mobileCountryCode: parsedData.mobile?.countryCode || DEFAULT_COUNTRY_CODE,
+                        mobileNumber: parsedData.mobile?.number || ''
+                    };
+                     console.log("PersonalPage: Loaded persisted data.");
+                }
+             } catch (e) { console.error("PersonalPage: Failed to parse persisted data", e); }
+        }
+
+        // If no persisted data OR status is 'not_started', try pre-filling from user profile
+        if (Object.keys(initialValues).length === 0 && user && (backendStatus === 'not_started' || backendStatus === 'skipped')) {
             const nameParts = user.fullName?.trim().split(' ') || [];
-            initialValues = { firstName: nameParts[0] || '', lastName: nameParts.slice(1).join(' ') || '', dateOfBirth: undefined, mobileCountryCode: DEFAULT_COUNTRY_CODE, mobileNumber: '' };
-        } else { initialValues = { firstName: '', lastName: '', dateOfBirth: undefined, mobileCountryCode: DEFAULT_COUNTRY_CODE, mobileNumber: '' }; }
+            initialValues = {
+                firstName: nameParts[0] || '',
+                lastName: nameParts.slice(1).join(' ') || '',
+                dateOfBirth: undefined, // DOB usually not in basic profile
+                mobileCountryCode: DEFAULT_COUNTRY_CODE, // Use default country code
+                mobileNumber: '' // Mobile usually not in basic profile or needs confirmation
+            };
+             console.log("PersonalPage: Pre-filled from user profile.");
+        }
+
+        // Ensure default values if nothing else loaded
+        if (Object.keys(initialValues).length === 0) {
+             initialValues = { firstName: '', lastName: '', dateOfBirth: undefined, mobileCountryCode: DEFAULT_COUNTRY_CODE, mobileNumber: '' };
+             console.log("PersonalPage: Using default empty values.");
+        }
+
+        // Validate and set country code
         const finalCountryCode = initialValues.mobileCountryCode || DEFAULT_COUNTRY_CODE;
         initialValues.mobileCountryCode = countryCodeOptions.some(opt => opt.value === finalCountryCode) ? finalCountryCode : DEFAULT_COUNTRY_CODE;
+
+        // Reset the form with the determined initial values
         form.reset(initialValues);
         setIsPageLoading(false);
-    }, [kycInitialized, authLoading, user, backendStatus, kycData, form.reset, countryCodeOptions]);
+
+    }, [kycInitialized, authLoading, user, backendStatus, form.reset, countryCodeOptions]); // Add form.reset and countryCodeOptions
 
     // --- Event Handlers ---
     const onSubmit = (data: PersonalDetailsFormData) => {
         setIsSubmittingForm(true); setFormActionError(null);
-        try { setKycData({ firstName: data.firstName, lastName: data.lastName, dateOfBirth: format(data.dateOfBirth, "yyyy-MM-dd"), mobile: { countryCode: data.mobileCountryCode, number: data.mobileNumber } }); nextStep();
-        } catch (error: any) { console.error("PersonalPage: Error saving progress:", error); setFormActionError(error.message || "Failed to save progress."); setIsSubmittingForm(false); }
+        try {
+            // Format date correctly before saving to context
+            const formattedDOB = format(data.dateOfBirth, "yyyy-MM-dd");
+            setKycData({
+                firstName: data.firstName,
+                lastName: data.lastName,
+                dateOfBirth: formattedDOB, // Save as YYYY-MM-DD string
+                mobile: { countryCode: data.mobileCountryCode, number: data.mobileNumber }
+            });
+             console.log("PersonalPage: Data saved to context. Proceeding to next step.");
+            nextStep(); // Navigate to the next step via context
+        } catch (error: any) {
+            console.error("PersonalPage: Error saving progress:", error);
+            setFormActionError(error.message || "Failed to save progress.");
+             setIsSubmittingForm(false); // Reset submitting state only on error
+        }
+        // Do not reset isSubmittingForm here on success, page navigation will unmount
     };
+
+    // Handle Skip (Only available if status is 'not_started')
     const handleSkip = async () => {
          if (!confirm("Are you sure you want to skip identity verification for now? Some account features will be limited.")) return;
+
+         // Double-check status before API call
+         if (backendStatus !== 'not_started') {
+            console.warn(`Attempted to skip KYC when status is '${backendStatus}'. Aborting.`);
+            setFormActionError(`Cannot skip KYC in current status: ${backendStatus}.`);
+            setIsSkipping(false);
+            return;
+         }
+
         setIsSkipping(true); setFormActionError(null);
-        try { await kycService.skipKyc(); await refetchUser(); } catch (err: any) { console.error("PersonalPage: Error skipping KYC:", err); setFormActionError(err.message || "Could not skip verification."); setIsSkipping(false); }
+        try {
+            await kycService.skipKyc();
+            await refetchUser(); // Refetch user data which might include KYC status
+            await fetchKycStatus(true); // Force fetch KYC status to trigger context update/redirect
+            // Context redirection logic should handle moving away (to start page)
+            // Resetting skip state might happen after unmount, which is fine.
+        } catch (err: any) {
+            console.error("PersonalPage: Error skipping KYC:", err);
+            const message = err?.response?.data?.message || err.message || "Could not skip verification.";
+            setFormActionError(message);
+             setIsSkipping(false); // Reset loading state only on error
+        }
     };
 
     // --- Render Logic ---
-    if (isPageLoading || authLoading || !kycInitialized) { /* ... loading spinner ... */ return ( <div className="flex justify-center items-center min-h-[400px]"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div> ); }
-    if (backendStatus !== 'not_started' && backendStatus !== 'rejected' && backendStatus !== 'skipped') { /* ... loading spinner ... */ return ( <div className="flex justify-center items-center min-h-[400px]"><Loader2 className="h-8 w-8 animate-spin text-primary" /><span className="ml-2">Updating status...</span></div> ); }
+    // Show main loading overlay if page is loading data OR context is loading
+    if (isPageLoading || authLoading || !kycInitialized || kycLoadingStatus) {
+        return (
+            <div className="flex justify-center items-center min-h-[400px]">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <span className='ml-2 text-muted-foreground'>Loading Personal Details...</span>
+            </div>
+        );
+    }
 
+    // If status is definitively finalized (pending, verified, etc.), show loading while context redirects
+    // Keep showing the form for not_started, rejected, skipped
+    if (backendStatus !== 'not_started' && backendStatus !== 'rejected' && backendStatus !== 'skipped') {
+        return (
+            <div className="flex justify-center items-center min-h-[400px]">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <span className="ml-2 text-muted-foreground">Checking status ({backendStatus})...</span>
+            </div>
+        );
+    }
+
+    // --- Render the Form ---
     return (
         <Card className="w-full max-w-2xl mx-auto shadow-lg border border-border/40 animate-fadeIn">
             <CardHeader>
-                <CardTitle className="text-2xl font-semibold tracking-tight flex items-center gap-2"><User className="h-6 w-6 text-primary" /> Personal Details (Step {formStepOrder.indexOf('personal') + 1} of {formStepOrder.length})</CardTitle>
+                <CardTitle className="text-2xl font-semibold tracking-tight flex items-center gap-2">
+                    <User className="h-6 w-6 text-primary" /> Personal Details (Step {formStepOrder.indexOf('personal') + 1} of {formStepOrder.length})
+                 </CardTitle>
                 <CardDescription>Enter your legal name and date of birth exactly as they appear on your ID. Provide a valid mobile number.</CardDescription>
             </CardHeader>
             <CardContent className="p-6 md:p-8">
-                 {formActionError && ( <Alert variant="destructive" className="mb-6"> <AlertTriangle className="h-4 w-4" /> <AlertTitle>Action Failed</AlertTitle> <AlertDescription>{formActionError}</AlertDescription> </Alert> )}
+                 {formActionError && (
+                     <Alert variant="destructive" className="mb-6">
+                         <AlertTriangle className="h-4 w-4" />
+                         <AlertTitle>Action Failed</AlertTitle>
+                         <AlertDescription>{formActionError}</AlertDescription>
+                     </Alert>
+                 )}
                  <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                        {/* First Name & Last Name Fields */}
+                         {/* First Name & Last Name Fields */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6">
                            <FormField control={form.control} name="firstName" render={({ field }) => (<FormItem><FormLabel>Legal First Name *</FormLabel><FormControl><Input placeholder="e.g., Jane" {...field} /></FormControl><FormMessage /></FormItem>)} />
                            <FormField control={form.control} name="lastName" render={({ field }) => (<FormItem><FormLabel>Legal Last Name *</FormLabel><FormControl><Input placeholder="e.g., Doe" {...field} /></FormControl><FormMessage /></FormItem>)} />
@@ -917,24 +1263,24 @@ export default function KycPersonalPage() {
                                 <FormLabel>Date of Birth *</FormLabel>
                                 <Popover>
                                     <PopoverTrigger asChild>
-                                         {/* ***** FIX: Removed FormControl wrapper ***** */}
-                                        <Button
-                                            variant={"outline"}
-                                            className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}
-                                        >
-                                            <CalendarIcon className="mr-2 h-4 w-4" />
-                                            {field.value && isDateValid(field.value) ? format(field.value, "PPP") : <span>Pick a date</span>}
-                                        </Button>
-                                         {/* ***** END FIX ***** */}
+                                        <FormControl>
+                                            <Button
+                                                variant={"outline"}
+                                                className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}
+                                            >
+                                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                                {field.value && isDateValid(field.value) ? format(field.value, "PPP") : <span>Pick a date</span>}
+                                            </Button>
+                                        </FormControl>
                                     </PopoverTrigger>
                                     <PopoverContent className="w-auto p-0" align="start">
                                         <Calendar
                                             mode="single"
                                             selected={field.value && isDateValid(field.value) ? field.value : undefined}
-                                            onSelect={(date) => { field.onChange(date || undefined); form.trigger("dateOfBirth"); }}
+                                            onSelect={(date) => { field.onChange(date || undefined); form.trigger("dateOfBirth"); }} // Trigger validation on change
                                             disabled={(date) => date > startOfDay(subYears(new Date(), 18)) || date < new Date("1900-01-01")}
                                             initialFocus
-                                            defaultMonth={field.value && isDateValid(field.value) ? field.value : subYears(new Date(), 30)}
+                                            defaultMonth={field.value && isDateValid(field.value) ? field.value : subYears(new Date(), 30)} // Sensible default view
                                             captionLayout="dropdown-buttons" fromYear={1900} toYear={new Date().getFullYear() - 18}
                                         />
                                     </PopoverContent>
@@ -953,19 +1299,19 @@ export default function KycPersonalPage() {
                                     <FormItem className="flex flex-col w-1/3 max-w-[150px] shrink-0">
                                         <Popover open={countryCodePopoverOpen} onOpenChange={setCountryCodePopoverOpen}>
                                             <PopoverTrigger asChild>
-                                                {/* ***** FIX: Removed FormControl wrapper ***** */}
-                                                <Button
-                                                    variant="outline" role="combobox" aria-expanded={countryCodePopoverOpen}
-                                                    className={cn("w-full justify-between", !field.value && "text-muted-foreground")}
-                                                    aria-label="Select country calling code"
-                                                >
-                                                    {field.value ? field.value : "Code"}
-                                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                </Button>
-                                                 {/* ***** END FIX ***** */}
+                                                <FormControl>
+                                                    <Button
+                                                        variant="outline" role="combobox" aria-expanded={countryCodePopoverOpen}
+                                                        className={cn("w-full justify-between", !field.value && "text-muted-foreground")}
+                                                        aria-label="Select country calling code"
+                                                    >
+                                                        {field.value ? field.value : "Code"}
+                                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                    </Button>
+                                                </FormControl>
                                             </PopoverTrigger>
                                             <PopoverContent className="w-[300px] p-0">
-                                                <Command filter={(value, search) => { const option = countryCodeOptions.find(opt => opt.label.toLowerCase() === value.toLowerCase()); if (!option) return 0; const searchTerm = search.toLowerCase(); const isInLabel = option.label.toLowerCase().includes(searchTerm); const codeSearchTerm = searchTerm.startsWith('+') ? searchTerm : searchTerm.replace(/^\+/, ''); const isInCode = option.value.replace(/^\+/, '').includes(codeSearchTerm); return isInLabel || isInCode ? 1 : 0; }}>
+                                                <Command filter={(value, search) => { /* Custom filter for label and code */ const option = countryCodeOptions.find(opt => opt.label.toLowerCase() === value.toLowerCase()); if (!option) return 0; const searchTerm = search.toLowerCase(); const isInLabel = option.label.toLowerCase().includes(searchTerm); const codeSearchTerm = searchTerm.startsWith('+') ? searchTerm.slice(1) : searchTerm; const isInCode = option.value.slice(1).includes(codeSearchTerm); return isInLabel || isInCode ? 1 : 0; }}>
                                                     <CommandInput placeholder="Search country or code..." />
                                                     <CommandList><CommandEmpty>No country found.</CommandEmpty><CommandGroup>
                                                         {countryCodeOptions.map((option) => ( <CommandItem key={option.label} value={option.label} onSelect={(currentValue) => { const selectedOption = countryCodeOptions.find(opt => opt.label === currentValue); if (selectedOption) { form.setValue("mobileCountryCode", selectedOption.value, { shouldValidate: true }); } setCountryCodePopoverOpen(false); }}> <Check className={cn("mr-2 h-4 w-4", option.value === field.value ? "opacity-100" : "opacity-0")} /> {option.label} </CommandItem> ))}
@@ -973,25 +1319,52 @@ export default function KycPersonalPage() {
                                                 </Command>
                                             </PopoverContent>
                                         </Popover>
-                                        <FormMessage />
+                                        <FormMessage /> {/* Show validation errors for country code */}
                                     </FormItem>
                                 )} />
                                 {/* Number Input */}
                                 <FormField control={form.control} name="mobileNumber" render={({ field }) => (
                                     <FormItem className="flex-grow">
-                                        {/* FormControl is correct here as Input is the control */}
                                         <FormControl><Input type="tel" inputMode="numeric" placeholder="Enter number" {...field} /></FormControl>
-                                        <FormMessage />
+                                        <FormMessage /> {/* Show validation errors for number */}
                                     </FormItem>
                                 )} />
                              </div>
                              <FormDescription>Used for verification and important communications.</FormDescription>
                         </div>
 
+
                         {/* Navigation Buttons */}
                         <div className="flex flex-col sm:flex-row justify-between items-center pt-6 border-t dark:border-border/50 mt-8 gap-4">
-                             {(backendStatus === 'not_started' || backendStatus === 'rejected') ? ( <Button type="button" variant="ghost" onClick={handleSkip} disabled={isSubmittingForm || isSkipping} className="text-muted-foreground hover:text-foreground"> {isSkipping ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null} Skip for Now </Button> ) : <div/> }
-                            <Button type="submit" disabled={isSubmittingForm || isSkipping || !form.formState.isValid}> {isSubmittingForm ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ArrowRight className="mr-2 h-4 w-4" />} Continue </Button>
+                             {/* Back Button */}
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={prevStep} // Go back using context's prevStep
+                                disabled={isSubmittingForm || isSkipping}
+                             >
+                                <ArrowLeft className="mr-2 h-4 w-4" /> Back
+                             </Button>
+
+                             {/* Skip Button (Only show if status is 'not_started') */}
+                             {backendStatus === 'not_started' && (
+                                 <Button
+                                     type="button"
+                                     variant="ghost"
+                                     onClick={handleSkip}
+                                     disabled={isSubmittingForm || isSkipping}
+                                     className="text-muted-foreground hover:text-foreground order-first sm:order-none" // Adjust order for mobile
+                                 >
+                                     {isSkipping ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                                     Skip for Now
+                                 </Button>
+                             )}
+
+                            {/* Continue Button */}
+                            <Button type="submit" disabled={isSubmittingForm || isSkipping || !form.formState.isValid}>
+                                {isSubmittingForm ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ArrowRight className="mr-2 h-4 w-4" />}
+                                Continue
+                            </Button>
                         </div>
                     </form>
                  </Form>
