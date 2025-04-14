@@ -1647,6 +1647,471 @@
 
 
 
+// "use client";
+// import React, { useState, useEffect } from "react";
+// import { useParams, useRouter } from "next/navigation";
+// import Image from "next/image";
+// import NicknamePopup from "@/app/dashboard/components/NicknamePopup";
+// import { useAuth } from "../../../contexts/AuthContext";
+// import recipientService from "../../../services/recipient";
+// import DashboardHeader from "../../../components/layout/DashboardHeader";
+// import DeleteRecipientModal from "@/app/dashboard/components/DeleteRecipientModal";
+// import Link from "next/link";
+
+// // Define the structure for the Currency object
+// interface Currency {
+//   code: string;
+//   // Add other properties if your currency object has them, e.g., name, symbol
+// }
+
+// // Define the structure for the Recipient object
+// interface Recipient {
+//   id: string; // Good practice to include ID if available
+//   accountHolderName: string;
+//   nickname?: string | null;
+//   accountType: string;
+//   ifscCode: string;
+//   accountNumber: string;
+//   email?: string | null;
+//   bankName?: string | null;
+//   address?: string | null;
+//   currency: Currency;
+//   // Add any other relevant properties returned by the API
+// }
+
+
+// interface RecipientDetailsPageProps {
+//   // No explicit props needed if using useParams, but kept for potential future use
+//   // params: { recipientId: string }; // This is handled by useParams now
+// }
+
+// const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
+//   const params = useParams();
+//   // Ensure recipientId is treated as a string. Handle potential undefined/array if necessary.
+//   const recipientId = typeof params.recipientId === 'string' ? params.recipientId : '';
+//   const { token } = useAuth();
+//   const router = useRouter();
+
+//   // Use the specific Recipient type here
+//   const [currentRecipient, setCurrentRecipient] = useState<Recipient | null>(null);
+//   const [isNicknamePopupOpen, setIsNicknamePopupOpen] = useState(false);
+//   const [nicknameInput, setNicknameInput] = useState("");
+//   const [loadingRecipient, setLoadingRecipient] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+//   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+//   useEffect(() => {
+//     const fetchRecipientDetails = async () => {
+//       if (!token || !recipientId) {
+//          // Don't fetch if token or id is missing or invalid
+//          setLoadingRecipient(false); // Ensure loading state is turned off
+//          setError("Missing authentication token or invalid recipient ID.");
+//          // Optionally redirect or show a more specific error message
+//          if (!recipientId) {
+//             console.error("Recipient ID is missing from parameters.");
+//             // router.push('/dashboard/recipients'); // Example redirect
+//          }
+//          return;
+//       }
+
+//       setLoadingRecipient(true);
+//       setError(null);
+//       try {
+//         // Assuming getRecipientById returns data conforming to the Recipient interface
+//         const data: Recipient = await recipientService.getRecipientById(
+//           recipientId,
+//           token
+//         );
+//         setCurrentRecipient(data);
+//         // Pre-fill nickname input if nickname exists when fetching details
+//         setNicknameInput(data.nickname || "");
+//       } catch (err: unknown) { // Use 'unknown' instead of 'any'
+//         let errorMessage = "Failed to load recipient details.";
+//         // Type check the error before accessing properties
+//         if (err instanceof Error) {
+//           errorMessage = err.message; // Standard Error object
+//         } else if (typeof err === 'string') {
+//           errorMessage = err; // Error might be a string
+//         } else if (typeof err === 'object' && err !== null && 'message' in err) {
+//             // Handle cases where error is an object with a message property
+//             errorMessage = String((err as { message: unknown }).message);
+//         }
+//         setError(errorMessage);
+//         console.error("Error fetching recipient details:", err);
+//       } finally {
+//         setLoadingRecipient(false);
+//       }
+//     };
+
+//     fetchRecipientDetails();
+//   }, [token, recipientId, router]); // Add router to dependency array if used inside effect
+
+//   if (!recipientId && !loadingRecipient) {
+//       // Handle the case where recipientId was invalid early
+//        return (
+//         <div className="RecipientDetailsPage py-10">
+//           <DashboardHeader title="Recipients" />
+//           <div className="container mx-auto text-red-500">
+//             Invalid or missing Recipient ID.
+//           </div>
+//         </div>
+//       );
+//   }
+
+
+//   if (loadingRecipient) {
+//     return (
+//       <div className="RecipientDetailsPage py-10">
+//         <DashboardHeader title="Recipients" />
+//         <div className="container mx-auto">Loading recipient details...</div>
+//       </div>
+//     );
+//   }
+
+//   if (error || !currentRecipient) {
+//     return (
+//       <div className="RecipientDetailsPage py-10">
+//         <DashboardHeader title="Recipients" />
+//         <div className="container mx-auto text-red-500">
+//           Error loading recipient: {error || "Recipient not found."}
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   const getInitials = (accountHolderName: string | undefined | null): string => {
+//     const name = (accountHolderName || "").trim(); // Handle null/undefined safely
+//     if (!name) return "?"; // Return placeholder if no name
+
+//     const nameParts = name.toUpperCase().split(" ").filter(part => part.length > 0); // Filter empty strings after split
+//     if (nameParts.length === 0) return "?"; // Return placeholder if name consists only of spaces
+
+//     let initials = nameParts[0][0]; // First letter of the first word
+//     if (nameParts.length > 1) {
+//       initials += nameParts[nameParts.length - 1][0]; // First letter of the last word
+//     } else if (nameParts[0].length > 1) {
+//         initials += nameParts[0][1]; // Use second letter if only one word with more than one letter
+//     }
+//     return initials;
+//   };
+
+
+//   const handleAddNicknameClick = () => {
+//     // Ensure currentRecipient is not null before accessing its properties
+//     setNicknameInput(currentRecipient?.nickname || "");
+//     setIsNicknamePopupOpen(true);
+//   };
+
+//   const handleCloseNicknamePopup = () => {
+//     setIsNicknamePopupOpen(false);
+//   };
+
+//   const handleSaveNickname = async () => {
+//     if (!token || !recipientId) {
+//         setError("Cannot save nickname without token or recipient ID.");
+//         return;
+//     }
+//     // Optionally add validation for nicknameInput here
+
+//     setIsNicknamePopupOpen(false); // Close popup immediately for better UX
+//     // Consider showing a loading state specific to the nickname save action
+//     try {
+//       // Assuming updateRecipient returns the updated Recipient object
+//       const updatedRecipient: Recipient = await recipientService.updateRecipient(
+//         recipientId,
+//         { nickname: nicknameInput.trim() || null }, // Send null if empty after trim, adjust based on API
+//         token
+//       );
+//       setCurrentRecipient(updatedRecipient);
+//       // Keep nicknameInput as the saved value, or clear it if desired
+//       // setNicknameInput(""); // Clear input after successful save
+//     } catch (err: unknown) { // Use 'unknown' instead of 'any'
+//       let errorMessage = "Failed to update nickname.";
+//       // Type check the error
+//        if (err instanceof Error) {
+//           errorMessage = err.message;
+//         } else if (typeof err === 'string') {
+//           errorMessage = err;
+//         } else if (typeof err === 'object' && err !== null && 'message' in err) {
+//              errorMessage = String((err as { message: unknown }).message);
+//         }
+//       setError(errorMessage); // Show error feedback to the user
+//       console.error("Error updating nickname:", err);
+//       // Re-open popup or provide other feedback if save failed?
+//       setIsNicknamePopupOpen(true); // Example: Re-open popup on error
+//     }
+//   };
+
+//   const handleDeleteRecipientClick = () => {
+//     setIsDeleteModalOpen(true);
+//   };
+
+//   const handleCancelDeleteRecipient = () => {
+//     setIsDeleteModalOpen(false);
+//   };
+
+//   const handleConfirmDeleteRecipient = async () => {
+//     if (!token || !recipientId) {
+//         setError("Cannot delete recipient without token or recipient ID.");
+//         setIsDeleteModalOpen(false);
+//         return;
+//     }
+//     setIsDeleteModalOpen(false);
+//     setLoadingRecipient(true); // Show loading indicator during deletion
+//     setError(null);
+//     try {
+//       await recipientService.deleteRecipient(recipientId, token);
+//       // Optional: Add a success message/toast before redirecting
+//       router.push("/dashboard/recipients"); // Navigate away on success
+//     } catch (err: unknown) { // Use 'unknown' instead of 'any'
+//       let errorMessage = "Failed to delete recipient.";
+//       // Type check the error
+//       if (err instanceof Error) {
+//           errorMessage = err.message;
+//         } else if (typeof err === 'string') {
+//           errorMessage = err;
+//         } else if (typeof err === 'object' && err !== null && 'message' in err) {
+//              errorMessage = String((err as { message: unknown }).message);
+//         }
+//       setError(errorMessage); // Show error feedback
+//       console.error("Error deleting recipient:", err);
+//       setLoadingRecipient(false); // Turn off loading on error ONLY
+//     }
+//     // No finally needed here as loading is turned off on error, and navigation happens on success
+//   };
+
+//   // Determine the name to use for display and initials
+//   // Ensure currentRecipient is not null before accessing its properties
+//   const displayName = currentRecipient.nickname || currentRecipient.accountHolderName;
+
+//   return (
+//     <div className="RecipientDetailsPage py-10">
+//       <DashboardHeader title="Recipients" />
+//       <div className="container mx-auto">
+//         {/* Profile Section */}
+//         <div className="flex flex-col mb-8 space-y-4">
+//           <div className="relative w-20 h-20 rounded-full bg-lightborder dark:bg-secondarybox flex items-center justify-center">
+//             <span className="font-bold text-2xl text-neutral-900 dark:text-white">
+//               {getInitials(displayName)} {/* Use calculated displayName */}
+//             </span>
+//             {/* Conditional Flag Display */}
+//             {currentRecipient.currency?.code && ( // Check if currency and code exist
+//               <div className="absolute bottom-1 right-0 w-6 h-6 rounded-full overflow-hidden border border-white">
+//                 <Image
+//                   // Construct the path safely, handle potential errors
+//                   src={`/assets/icon/${currentRecipient.currency.code.toLowerCase()}.svg`}
+//                   alt={`${currentRecipient.currency.code} flag`}
+//                   width={24}
+//                   height={24}
+//                   onError={(e) => {
+//                     // Handle image loading error gracefully
+//                     console.error(
+//                       `Error loading flag for ${currentRecipient.currency.code}:`,
+//                       e.currentTarget.src
+//                     );
+//                     e.currentTarget.style.display = "none"; // Hide broken image icon
+//                     // Optionally display a default icon or placeholder here
+//                   }}
+//                 />
+//               </div>
+//             )}
+//           </div>
+//           <h2 className="sm:text-[26px] text-xl font-semibold text-mainheading dark:text-white break-words">
+//             {displayName} {/* Use calculated displayName */}
+//           </h2>
+//           <div className="flex items-center gap-4 flex-wrap">
+//             {" "}
+//             {/* Added flex-wrap for responsiveness */}
+//             {/* Add onClick handler for Send button if needed */}
+//             <Link href={"/dashboard/send/select-balance"}>
+//               <button className="font-medium bg-primary text-neutral-900 rounded-full w-32 h-10 flex items-center justify-center cursor-pointer hover:bg-primaryhover transition-colors duration-200">
+//                 Send
+//               </button>
+//             </Link>
+//             <button
+//               className="font-medium bg-red-600 text-white rounded-full w-32 h-10 flex items-center justify-center cursor-pointer hover:bg-red-700 transition-colors duration-200"
+//               onClick={handleDeleteRecipientClick}
+//             >
+//               Delete
+//             </button>
+//           </div>
+//         </div>
+
+//         {/* Account Details Section */}
+//         <div className="mb-6 pb-4">
+//           <h3 className="text-lg font-medium text-gray-600 dark:text-white mb-6 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
+//             Account Details
+//           </h3>
+//           <div className="grid sm:grid-cols-2 gap-x-8 gap-y-6 mb-8">
+//             {" "}
+//             {/* Adjusted gap */}
+//             {/* Account Holder Name */}
+//             <div>
+//               <label className="block text-sm font-semibold text-gray dark:text-white">
+//                 Account holder name
+//               </label>
+//               <p className="mt-1 text-main dark:text-gray-300 break-words">
+//                 {currentRecipient.accountHolderName}
+//               </p>
+//             </div>
+//             {/* Nickname */}
+//             <div>
+//               <label className="block text-sm font-semibold text-gray dark:text-white">
+//                 Nickname
+//               </label>
+//               <div className="flex items-center gap-4 mt-1">
+//                 {currentRecipient.nickname ? (
+//                   <div className="flex items-center gap-2 flex-wrap">
+//                     {" "}
+//                     {/* Added flex-wrap */}
+//                     <p className="text-main dark:text-gray-300 break-words">
+//                       {currentRecipient.nickname}
+//                     </p>
+//                     <button
+//                       className="cursor-pointer text-sm underline text-secondary font-medium dark:text-primary whitespace-nowrap" // Prevent wrap
+//                       onClick={handleAddNicknameClick}
+//                       aria-label="Edit nickname" // Accessibility
+//                     >
+//                       Edit
+//                     </button>
+//                   </div>
+//                 ) : (
+//                   <button
+//                     className="cursor-pointer text-sm underline text-secondary font-medium dark:text-primary"
+//                     onClick={handleAddNicknameClick}
+//                     aria-label="Add nickname" // Accessibility
+//                   >
+//                     Add Nickname
+//                   </button>
+//                 )}
+//               </div>
+//             </div>
+//             {/* Account Type */}
+//             <div>
+//               <label className="block text-sm font-semibold text-gray dark:text-white">
+//                 Account type
+//               </label>
+//               <p className="mt-1 text-main dark:text-gray-300 break-words">
+//                 {currentRecipient.accountType}
+//               </p>
+//             </div>
+//             {/* IFSC Code */}
+//             <div>
+//               <label className="block text-sm font-semibold text-gray dark:text-white">
+//                 IFSC code
+//               </label>
+//               <p className="mt-1 text-main dark:text-gray-300 break-words">
+//                 {currentRecipient.ifscCode}
+//               </p>
+//             </div>
+//             {/* Account Number */}
+//             <div>
+//               <label className="block text-sm font-semibold text-gray dark:text-white">
+//                 Account number
+//               </label>
+//               <p className="mt-1 text-main dark:text-gray-300 break-words">
+//                 {currentRecipient.accountNumber}
+//               </p>
+//             </div>
+//             {/* Email (Optional) */}
+//             {currentRecipient.email && (
+//               <div>
+//                 <label className="block text-sm font-semibold text-gray dark:text-white">
+//                   Email (Optional)
+//                 </label>
+//                 <p className="mt-1 text-main dark:text-gray-300 break-words">
+//                   {currentRecipient.email}
+//                 </p>
+//               </div>
+//             )}
+//             {/* Bank Name (Optional) */}
+//             {currentRecipient.bankName && (
+//               <div>
+//                 <label className="block text-sm font-semibold text-gray dark:text-white">
+//                   Bank name
+//                 </label>
+//                 <p className="mt-1 text-main dark:text-gray-300 break-words">
+//                   {currentRecipient.bankName}
+//                 </p>
+//               </div>
+//             )}
+//             {/* Address (Optional) */}
+//             {currentRecipient.address && (
+//               <div className="sm:col-span-2">
+//                 {" "}
+//                 {/* Allow address to span full width on small screens if long */}
+//                 <label className="block text-sm font-semibold text-gray dark:text-white">
+//                   Address
+//                 </label>
+//                 <p className="mt-1 text-main dark:text-gray-300 break-words">
+//                   {currentRecipient.address}
+//                 </p>
+//               </div>
+//             )}
+//           </div>
+//         </div>
+
+//         {/* Nickname Popup Component */}
+//         <NicknamePopup
+//           isOpen={isNicknamePopupOpen}
+//           onClose={handleCloseNicknamePopup}
+//           title={currentRecipient.nickname ? "Edit nickname" : "Add nickname"} // Dynamic title
+//           description={
+//             currentRecipient.nickname
+//               ? "Update the nickname for this account."
+//               : "Add a nickname so you can easily find this account."
+//           } // Dynamic description
+//         >
+//           <div className="mb-4">
+//             <label
+//               htmlFor="nickname"
+//               className="block text-sm font-semibold text-gray dark:text-gray-300 mb-1"
+//             >
+//               Account nickname
+//             </label>
+//             <input
+//               type="text"
+//               id="nickname"
+//               className="autofill:!bg-transparent dark:autofill:!bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-900 dark:border-white focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary dark:text-white dark:bg-transparent placeholder:text-gray-500 dark:placeholder:text-gray-400" // Improved styling and focus state
+//               placeholder="Enter nickname"
+//               maxLength={40}
+//               value={nicknameInput}
+//               onChange={(e) => setNicknameInput(e.target.value)}
+//               aria-describedby="nickname-char-count" // Accessibility
+//             />
+//             <p
+//               id="nickname-char-count"
+//               className="mt-2 text-gray dark:text-gray-300 font-semibold text-xs"
+//             >
+//               {nicknameInput.length}/40 characters
+//             </p>
+//           </div>
+//           <button
+//             className="bg-primary text-neutral-900 hover:bg-primaryhover disabled:opacity-50 disabled:cursor-not-allowed font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-150 ease-linear"
+//             onClick={handleSaveNickname}
+//             disabled={loadingRecipient} // Simplified: disable only during network ops
+//           >
+//             Save
+//           </button>
+//         </NicknamePopup>
+
+//         {/* Delete Recipient Modal */}
+//         <DeleteRecipientModal
+//           isOpen={isDeleteModalOpen}
+//           onClose={handleCancelDeleteRecipient}
+//           // Use display name for the modal confirmation text for consistency
+//           recipientName={displayName}
+//           onConfirmDelete={handleConfirmDeleteRecipient}
+//         />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default RecipientDetailsPage;
+
+
+// frontend/src/app/dashboard/recipients/[recipientId]/page.tsx
 "use client";
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -1654,23 +2119,26 @@ import Image from "next/image";
 import NicknamePopup from "@/app/dashboard/components/NicknamePopup";
 import { useAuth } from "../../../contexts/AuthContext";
 import recipientService from "../../../services/recipient";
-import DashboardHeader from "../../../components/layout/DashboardHeader";
+import DashboardHeader from "../../../components/layout/DashboardHeader"; // Assuming this is the correct path
 import DeleteRecipientModal from "@/app/dashboard/components/DeleteRecipientModal";
 import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton"; // Import Skeleton
 
 // Define the structure for the Currency object
 interface Currency {
+  _id: string; // Add _id if it exists in your API response
   code: string;
-  // Add other properties if your currency object has them, e.g., name, symbol
+  name?: string; // Optional name
+  flagImage?: string; // Optional flag image path
 }
 
 // Define the structure for the Recipient object
 interface Recipient {
-  id: string; // Good practice to include ID if available
+  _id: string; // Use _id consistently if that's what your API uses
   accountHolderName: string;
   nickname?: string | null;
   accountType: string;
-  ifscCode: string;
+  ifscCode: string; // Assuming these fields exist based on usage below
   accountNumber: string;
   email?: string | null;
   bankName?: string | null;
@@ -1681,18 +2149,16 @@ interface Recipient {
 
 
 interface RecipientDetailsPageProps {
-  // No explicit props needed if using useParams, but kept for potential future use
-  // params: { recipientId: string }; // This is handled by useParams now
+  // No explicit props needed if using useParams
 }
 
 const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
   const params = useParams();
-  // Ensure recipientId is treated as a string. Handle potential undefined/array if necessary.
+  // Ensure recipientId is treated as a string. Handle potential undefined/array.
   const recipientId = typeof params.recipientId === 'string' ? params.recipientId : '';
   const { token } = useAuth();
   const router = useRouter();
 
-  // Use the specific Recipient type here
   const [currentRecipient, setCurrentRecipient] = useState<Recipient | null>(null);
   const [isNicknamePopupOpen, setIsNicknamePopupOpen] = useState(false);
   const [nicknameInput, setNicknameInput] = useState("");
@@ -1703,13 +2169,14 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
   useEffect(() => {
     const fetchRecipientDetails = async () => {
       if (!token || !recipientId) {
-         // Don't fetch if token or id is missing or invalid
-         setLoadingRecipient(false); // Ensure loading state is turned off
-         setError("Missing authentication token or invalid recipient ID.");
-         // Optionally redirect or show a more specific error message
+         setLoadingRecipient(false);
          if (!recipientId) {
-            console.error("Recipient ID is missing from parameters.");
-            // router.push('/dashboard/recipients'); // Example redirect
+             setError("Invalid or missing Recipient ID.");
+             console.error("Recipient ID is missing or invalid:", params.recipientId);
+         } else {
+             // No token case - might redirect later or rely on AuthProvider context
+             setError("Authentication required.");
+             // Potentially redirect to login if preferred: router.replace('/auth/login');
          }
          return;
       }
@@ -1717,23 +2184,19 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
       setLoadingRecipient(true);
       setError(null);
       try {
-        // Assuming getRecipientById returns data conforming to the Recipient interface
-        const data: Recipient = await recipientService.getRecipientById(
-          recipientId,
-          token
-        );
+        // Use recipientId directly here
+        const data: Recipient = await recipientService.getRecipientById(recipientId, token);
+        // Ensure API response includes _id if you use it elsewhere
+        // If API uses 'id', map it: const mappedData = { ...data, _id: data.id };
         setCurrentRecipient(data);
-        // Pre-fill nickname input if nickname exists when fetching details
         setNicknameInput(data.nickname || "");
-      } catch (err: unknown) { // Use 'unknown' instead of 'any'
+      } catch (err: unknown) {
         let errorMessage = "Failed to load recipient details.";
-        // Type check the error before accessing properties
         if (err instanceof Error) {
-          errorMessage = err.message; // Standard Error object
+          errorMessage = err.message;
         } else if (typeof err === 'string') {
-          errorMessage = err; // Error might be a string
+          errorMessage = err;
         } else if (typeof err === 'object' && err !== null && 'message' in err) {
-            // Handle cases where error is an object with a message property
             errorMessage = String((err as { message: unknown }).message);
         }
         setError(errorMessage);
@@ -1744,15 +2207,17 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
     };
 
     fetchRecipientDetails();
-  }, [token, recipientId, router]); // Add router to dependency array if used inside effect
+  // Add params.recipientId to dependency array to refetch if the ID changes client-side
+  }, [token, recipientId, params.recipientId, router]);
 
+  // Handle invalid ID more explicitly after attempting fetch or validation
   if (!recipientId && !loadingRecipient) {
-      // Handle the case where recipientId was invalid early
        return (
         <div className="RecipientDetailsPage py-10">
           <DashboardHeader title="Recipients" />
-          <div className="container mx-auto text-red-500">
-            Invalid or missing Recipient ID.
+          <div className="container mx-auto text-red-500 p-4 bg-red-100 dark:bg-red-900/30 rounded-md">
+            Error: Invalid or missing Recipient ID provided in the URL.
+            <Link href="/dashboard/recipients" className="ml-2 text-primary hover:underline">Go back to Recipients</Link>
           </div>
         </div>
       );
@@ -1763,7 +2228,26 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
     return (
       <div className="RecipientDetailsPage py-10">
         <DashboardHeader title="Recipients" />
-        <div className="container mx-auto">Loading recipient details...</div>
+        <div className="container mx-auto">
+            {/* Enhanced Skeleton Loading State */}
+            <div className="flex flex-col mb-8 space-y-4">
+                <Skeleton className="w-20 h-20 rounded-full" />
+                <Skeleton className="h-8 w-48 sm:w-64 rounded-md" />
+                <div className="flex items-center gap-4">
+                    <Skeleton className="w-32 h-10 rounded-full" />
+                    <Skeleton className="w-32 h-10 rounded-full" />
+                </div>
+            </div>
+             <Skeleton className="h-8 w-32 mb-6 rounded-md" />
+             <div className="grid sm:grid-cols-2 gap-x-8 gap-y-6 mb-8">
+                {Array(6).fill(0).map((_, i) => (
+                    <div key={i}>
+                        <Skeleton className="h-4 w-24 mb-2 rounded-md"/>
+                        <Skeleton className="h-5 w-40 rounded-md"/>
+                    </div>
+                ))}
+             </div>
+        </div>
       </div>
     );
   }
@@ -1772,32 +2256,32 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
     return (
       <div className="RecipientDetailsPage py-10">
         <DashboardHeader title="Recipients" />
-        <div className="container mx-auto text-red-500">
+        <div className="container mx-auto text-red-500 p-4 bg-red-100 dark:bg-red-900/30 rounded-md">
           Error loading recipient: {error || "Recipient not found."}
+          <Link href="/dashboard/recipients" className="ml-2 text-primary hover:underline">Go back to Recipients</Link>
         </div>
       </div>
     );
   }
 
+  // --- Helper Functions ---
   const getInitials = (accountHolderName: string | undefined | null): string => {
-    const name = (accountHolderName || "").trim(); // Handle null/undefined safely
-    if (!name) return "?"; // Return placeholder if no name
+    const name = (accountHolderName || "").trim();
+    if (!name) return "?";
 
-    const nameParts = name.toUpperCase().split(" ").filter(part => part.length > 0); // Filter empty strings after split
-    if (nameParts.length === 0) return "?"; // Return placeholder if name consists only of spaces
+    const nameParts = name.toUpperCase().split(" ").filter(part => part.length > 0);
+    if (nameParts.length === 0) return "?";
 
-    let initials = nameParts[0][0]; // First letter of the first word
+    let initials = nameParts[0][0];
     if (nameParts.length > 1) {
-      initials += nameParts[nameParts.length - 1][0]; // First letter of the last word
+      initials += nameParts[nameParts.length - 1][0];
     } else if (nameParts[0].length > 1) {
-        initials += nameParts[0][1]; // Use second letter if only one word with more than one letter
+        initials += nameParts[0][1];
     }
     return initials;
   };
 
-
   const handleAddNicknameClick = () => {
-    // Ensure currentRecipient is not null before accessing its properties
     setNicknameInput(currentRecipient?.nickname || "");
     setIsNicknamePopupOpen(true);
   };
@@ -1807,27 +2291,31 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
   };
 
   const handleSaveNickname = async () => {
-    if (!token || !recipientId) {
-        setError("Cannot save nickname without token or recipient ID.");
+    if (!token || !recipientId || !currentRecipient) {
+        setError("Cannot save nickname. Missing required information.");
         return;
     }
-    // Optionally add validation for nicknameInput here
 
-    setIsNicknamePopupOpen(false); // Close popup immediately for better UX
-    // Consider showing a loading state specific to the nickname save action
+    // Basic validation example (can be more complex)
+    if (nicknameInput.trim().length > 40) {
+        setError("Nickname cannot exceed 40 characters.");
+        // Optionally keep the popup open
+        return;
+    }
+
+    setIsNicknamePopupOpen(false);
+    // Consider a specific loading state for the nickname save action
+    // setLoadingNickname(true);
     try {
-      // Assuming updateRecipient returns the updated Recipient object
       const updatedRecipient: Recipient = await recipientService.updateRecipient(
-        recipientId,
-        { nickname: nicknameInput.trim() || null }, // Send null if empty after trim, adjust based on API
+        recipientId, // Use the validated recipientId
+        { nickname: nicknameInput.trim() || null },
         token
       );
       setCurrentRecipient(updatedRecipient);
-      // Keep nicknameInput as the saved value, or clear it if desired
-      // setNicknameInput(""); // Clear input after successful save
-    } catch (err: unknown) { // Use 'unknown' instead of 'any'
+      // Keep nicknameInput as the saved value
+    } catch (err: unknown) {
       let errorMessage = "Failed to update nickname.";
-      // Type check the error
        if (err instanceof Error) {
           errorMessage = err.message;
         } else if (typeof err === 'string') {
@@ -1835,10 +2323,11 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
         } else if (typeof err === 'object' && err !== null && 'message' in err) {
              errorMessage = String((err as { message: unknown }).message);
         }
-      setError(errorMessage); // Show error feedback to the user
+      setError(errorMessage);
       console.error("Error updating nickname:", err);
-      // Re-open popup or provide other feedback if save failed?
-      setIsNicknamePopupOpen(true); // Example: Re-open popup on error
+      setIsNicknamePopupOpen(true); // Re-open popup on error
+    } finally {
+        // setLoadingNickname(false);
     }
   };
 
@@ -1852,20 +2341,20 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
 
   const handleConfirmDeleteRecipient = async () => {
     if (!token || !recipientId) {
-        setError("Cannot delete recipient without token or recipient ID.");
+        setError("Cannot delete recipient. Missing required information.");
         setIsDeleteModalOpen(false);
         return;
     }
     setIsDeleteModalOpen(false);
-    setLoadingRecipient(true); // Show loading indicator during deletion
+    setLoadingRecipient(true); // Use main loading state or a specific delete loading state
     setError(null);
     try {
       await recipientService.deleteRecipient(recipientId, token);
-      // Optional: Add a success message/toast before redirecting
-      router.push("/dashboard/recipients"); // Navigate away on success
-    } catch (err: unknown) { // Use 'unknown' instead of 'any'
+      // Optional: Add a success message/toast
+      // toast.success("Recipient deleted successfully!");
+      router.push("/dashboard/recipients");
+    } catch (err: unknown) {
       let errorMessage = "Failed to delete recipient.";
-      // Type check the error
       if (err instanceof Error) {
           errorMessage = err.message;
         } else if (typeof err === 'string') {
@@ -1873,17 +2362,17 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
         } else if (typeof err === 'object' && err !== null && 'message' in err) {
              errorMessage = String((err as { message: unknown }).message);
         }
-      setError(errorMessage); // Show error feedback
+      setError(errorMessage);
       console.error("Error deleting recipient:", err);
-      setLoadingRecipient(false); // Turn off loading on error ONLY
+      setLoadingRecipient(false); // Turn off loading only on error
     }
-    // No finally needed here as loading is turned off on error, and navigation happens on success
   };
 
-  // Determine the name to use for display and initials
-  // Ensure currentRecipient is not null before accessing its properties
+  // Use nickname if available, otherwise fall back to account holder name
   const displayName = currentRecipient.nickname || currentRecipient.accountHolderName;
+  const initials = getInitials(displayName); // Use display name for initials
 
+  // --- Render ---
   return (
     <div className="RecipientDetailsPage py-10">
       <DashboardHeader title="Recipients" />
@@ -1892,25 +2381,21 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
         <div className="flex flex-col mb-8 space-y-4">
           <div className="relative w-20 h-20 rounded-full bg-lightborder dark:bg-secondarybox flex items-center justify-center">
             <span className="font-bold text-2xl text-neutral-900 dark:text-white">
-              {getInitials(displayName)} {/* Use calculated displayName */}
+              {initials} {/* Use calculated initials */}
             </span>
-            {/* Conditional Flag Display */}
-            {currentRecipient.currency?.code && ( // Check if currency and code exist
-              <div className="absolute bottom-1 right-0 w-6 h-6 rounded-full overflow-hidden border border-white">
+            {/* Conditional Flag Display - Robust check */}
+            {currentRecipient.currency?.code && (
+              <div className="absolute bottom-1 right-0 w-6 h-6 rounded-full overflow-hidden border border-white dark:border-gray-800">
                 <Image
-                  // Construct the path safely, handle potential errors
-                  src={`/assets/icon/${currentRecipient.currency.code.toLowerCase()}.svg`}
+                  src={currentRecipient.currency.flagImage || `/assets/icon/${currentRecipient.currency.code.toLowerCase()}.svg`}
                   alt={`${currentRecipient.currency.code} flag`}
                   width={24}
                   height={24}
+                  unoptimized // Consider if optimization is needed based on source
                   onError={(e) => {
-                    // Handle image loading error gracefully
-                    console.error(
-                      `Error loading flag for ${currentRecipient.currency.code}:`,
-                      e.currentTarget.src
-                    );
-                    e.currentTarget.style.display = "none"; // Hide broken image icon
-                    // Optionally display a default icon or placeholder here
+                    console.error(`Error loading flag for ${currentRecipient.currency.code}:`, e.currentTarget.src);
+                    e.currentTarget.src = "/assets/icon/default.svg"; // Fallback image
+                    e.currentTarget.alt = "Default flag";
                   }}
                 />
               </div>
@@ -1920,17 +2405,20 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
             {displayName} {/* Use calculated displayName */}
           </h2>
           <div className="flex items-center gap-4 flex-wrap">
-            {" "}
-            {/* Added flex-wrap for responsiveness */}
-            {/* Add onClick handler for Send button if needed */}
-            <Link href={"/dashboard/send/select-balance"}>
-              <button className="font-medium bg-primary text-neutral-900 rounded-full w-32 h-10 flex items-center justify-center cursor-pointer hover:bg-primaryhover transition-colors duration-200">
-                Send
-              </button>
+            {/* === MODIFIED LINK FOR SEND BUTTON === */}
+            <Link
+              href={recipientId ? `/dashboard/send/select-balance?recipientId=${recipientId}` : '#'} // Add recipientId as query param
+              onClick={(e) => !recipientId && e.preventDefault()} // Prevent navigation if recipientId is somehow missing
+              className={`font-medium bg-primary text-neutral-900 rounded-full w-32 h-10 flex items-center justify-center cursor-pointer hover:bg-primaryhover transition-colors duration-200 ${!recipientId ? 'opacity-50 cursor-not-allowed' : ''}`} // Disable visually if no ID
+              aria-disabled={!recipientId}
+            >
+              Send
             </Link>
+            {/* === END MODIFIED LINK === */}
             <button
               className="font-medium bg-red-600 text-white rounded-full w-32 h-10 flex items-center justify-center cursor-pointer hover:bg-red-700 transition-colors duration-200"
               onClick={handleDeleteRecipientClick}
+              disabled={loadingRecipient} // Disable during loading/deleting
             >
               Delete
             </button>
@@ -1943,8 +2431,6 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
             Account Details
           </h3>
           <div className="grid sm:grid-cols-2 gap-x-8 gap-y-6 mb-8">
-            {" "}
-            {/* Adjusted gap */}
             {/* Account Holder Name */}
             <div>
               <label className="block text-sm font-semibold text-gray dark:text-white">
@@ -1962,15 +2448,13 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
               <div className="flex items-center gap-4 mt-1">
                 {currentRecipient.nickname ? (
                   <div className="flex items-center gap-2 flex-wrap">
-                    {" "}
-                    {/* Added flex-wrap */}
                     <p className="text-main dark:text-gray-300 break-words">
                       {currentRecipient.nickname}
                     </p>
                     <button
-                      className="cursor-pointer text-sm underline text-secondary font-medium dark:text-primary whitespace-nowrap" // Prevent wrap
+                      className="cursor-pointer text-sm underline text-secondary font-medium dark:text-primary whitespace-nowrap"
                       onClick={handleAddNicknameClick}
-                      aria-label="Edit nickname" // Accessibility
+                      aria-label="Edit nickname"
                     >
                       Edit
                     </button>
@@ -1979,7 +2463,7 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
                   <button
                     className="cursor-pointer text-sm underline text-secondary font-medium dark:text-primary"
                     onClick={handleAddNicknameClick}
-                    aria-label="Add nickname" // Accessibility
+                    aria-label="Add nickname"
                   >
                     Add Nickname
                   </button>
@@ -1992,7 +2476,7 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
                 Account type
               </label>
               <p className="mt-1 text-main dark:text-gray-300 break-words">
-                {currentRecipient.accountType}
+                {currentRecipient.accountType || "N/A"} {/* Handle potential missing value */}
               </p>
             </div>
             {/* IFSC Code */}
@@ -2001,7 +2485,7 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
                 IFSC code
               </label>
               <p className="mt-1 text-main dark:text-gray-300 break-words">
-                {currentRecipient.ifscCode}
+                {currentRecipient.ifscCode || "N/A"} {/* Handle potential missing value */}
               </p>
             </div>
             {/* Account Number */}
@@ -2010,7 +2494,7 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
                 Account number
               </label>
               <p className="mt-1 text-main dark:text-gray-300 break-words">
-                {currentRecipient.accountNumber}
+                {currentRecipient.accountNumber || "N/A"} {/* Handle potential missing value */}
               </p>
             </div>
             {/* Email (Optional) */}
@@ -2038,12 +2522,10 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
             {/* Address (Optional) */}
             {currentRecipient.address && (
               <div className="sm:col-span-2">
-                {" "}
-                {/* Allow address to span full width on small screens if long */}
                 <label className="block text-sm font-semibold text-gray dark:text-white">
                   Address
                 </label>
-                <p className="mt-1 text-main dark:text-gray-300 break-words">
+                <p className="mt-1 text-main dark:text-gray-300 break-words whitespace-pre-wrap"> {/* Allow wrapping */}
                   {currentRecipient.address}
                 </p>
               </div>
@@ -2055,29 +2537,33 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
         <NicknamePopup
           isOpen={isNicknamePopupOpen}
           onClose={handleCloseNicknamePopup}
-          title={currentRecipient.nickname ? "Edit nickname" : "Add nickname"} // Dynamic title
+          title={currentRecipient.nickname ? "Edit nickname" : "Add nickname"}
           description={
             currentRecipient.nickname
               ? "Update the nickname for this account."
               : "Add a nickname so you can easily find this account."
-          } // Dynamic description
+          }
         >
           <div className="mb-4">
             <label
               htmlFor="nickname"
               className="block text-sm font-semibold text-gray dark:text-gray-300 mb-1"
             >
-              Account nickname
+              Account nickname (Optional)
             </label>
             <input
               type="text"
               id="nickname"
-              className="autofill:!bg-transparent dark:autofill:!bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-900 dark:border-white focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary dark:text-white dark:bg-transparent placeholder:text-gray-500 dark:placeholder:text-gray-400" // Improved styling and focus state
-              placeholder="Enter nickname"
+              className="autofill:!bg-transparent dark:autofill:!bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-900 dark:border-white focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary dark:text-white dark:bg-transparent placeholder:text-gray-500 dark:placeholder:text-gray-400"
+              placeholder="E.g., Savings, John Doe USD"
               maxLength={40}
               value={nicknameInput}
-              onChange={(e) => setNicknameInput(e.target.value)}
-              aria-describedby="nickname-char-count" // Accessibility
+              onChange={(e) => {
+                setNicknameInput(e.target.value);
+                // Clear error instantly when user types
+                if (error?.toLowerCase().includes('nickname')) setError(null);
+              }}
+              aria-describedby="nickname-char-count nickname-error"
             />
             <p
               id="nickname-char-count"
@@ -2085,11 +2571,16 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
             >
               {nicknameInput.length}/40 characters
             </p>
+            {/* Display nickname-specific errors here */}
+            {error?.toLowerCase().includes('nickname') && (
+                <p id="nickname-error" className="mt-1 text-red-500 text-xs">{error}</p>
+            )}
           </div>
           <button
             className="bg-primary text-neutral-900 hover:bg-primaryhover disabled:opacity-50 disabled:cursor-not-allowed font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-150 ease-linear"
             onClick={handleSaveNickname}
-            disabled={loadingRecipient} // Simplified: disable only during network ops
+            // Disable save if nickname hasn't changed or during loading
+            disabled={loadingRecipient || nicknameInput === (currentRecipient.nickname || "")}
           >
             Save
           </button>
@@ -2099,8 +2590,7 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
         <DeleteRecipientModal
           isOpen={isDeleteModalOpen}
           onClose={handleCancelDeleteRecipient}
-          // Use display name for the modal confirmation text for consistency
-          recipientName={displayName}
+          recipientName={displayName} // Use display name for consistency
           onConfirmDelete={handleConfirmDeleteRecipient}
         />
       </div>

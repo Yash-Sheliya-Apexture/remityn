@@ -129,6 +129,7 @@ const PaymentTableHeader: React.FC<PaymentTableHeaderProps> = ({ toggleSort, sor
                         )}
                     </button>
                 </th>
+                <th className="px-6 py-4 text-left font-medium text-neutral-900 dark:text-white uppercase tracking-wider">Date</th>
                 <th className="px-6 py-4 text-left font-medium text-neutral-900 dark:text-white uppercase tracking-wider">Actions</th>
             </tr>
         </thead>
