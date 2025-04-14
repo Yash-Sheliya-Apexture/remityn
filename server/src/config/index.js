@@ -27,10 +27,16 @@ const emailConfig = {
     clientURL: process.env.CLIENT_URL || 'http://localhost:3000', // Frontend URL
 };
 
-
+const  cloudinaryConfig= {
+    cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+    apiKey: process.env.CLOUDINARY_API_KEY,
+    apiSecret: process.env.CLOUDINARY_API_SECRET,
+    uploadFolder: process.env.CLOUDINARY_UPLOAD_FOLDER || 'wise_clone_kyc', // Optional: specific folder
+};
 export default {
     database: databaseConfig,
     auth: authConfig,
     port: process.env.PORT || 5000,
     email: emailConfig, // Add email config
+    cloudinary:cloudinaryConfig,
 };

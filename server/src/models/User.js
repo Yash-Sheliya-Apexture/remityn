@@ -53,30 +53,285 @@
 // export default User;
 
 
-// backend/src/models/User.js
-import mongoose from 'mongoose';
+// // backend/src/models/User.js
+// import mongoose from 'mongoose';
 
+// const userSchema = new mongoose.Schema({
+//     fullName: { type: String, required: true },
+//     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+//     password: { type: String, required: true },
+//     role: { type: String, enum: ['user', 'admin'], default: 'user' },
+//     createdAt: { type: Date, default: Date.now },
+//     resetPasswordToken: String, // Add reset password token field
+//     resetPasswordExpires: Date,  // Add reset password expiry field
+// }, {
+//     timestamps: true,
+//     toJSON: {
+//         transform: function (doc, ret) {
+//             delete ret.password;
+//             delete ret.__v;
+//             delete ret.resetPasswordToken; // Optionally hide reset tokens in responses
+//             delete ret.resetPasswordExpires;
+//             return ret;
+//         }
+//     }
+// });
+
+// const User = mongoose.model('User', userSchema);
+
+// export default User;
+
+
+// // backend/src/models/User.js
+// import mongoose from 'mongoose';
+
+// // --- KYC Subdocument Schema ---
+// const kycSchema = new mongoose.Schema({
+//     status: {
+//         type: String,
+//         enum: ['not_started', 'pending', 'verified', 'rejected', 'skipped'], // Added 'skipped'
+//         default: 'not_started',
+//     },
+//     firstName: { type: String, trim: true },
+//     lastName: { type: String, trim: true },
+//     dateOfBirth: { type: Date },
+//     mobile: {
+//         countryCode: { type: String, trim: true },
+//         number: { type: String, trim: true },
+//     },
+//     occupation: { type: String, trim: true }, // Consider an enum if options are strictly limited and managed by admin
+//     salaryRange: {
+//         type: String,
+//         enum: ['0-1000', '10000-50000', '50000-100000', '100000+', null], // Added null for potential reset/not provided
+//         default: null,
+//     },
+//     nationality: { type: String, trim: true }, // Consider using country codes
+//     idType: {
+//         type: String,
+//         enum: ['passport', 'resident_permit', null],
+//         default: null,
+//     },
+//     idNumber: { type: String, trim: true },
+//     idIssueDate: { type: Date },
+//     idExpiryDate: { type: Date },
+//     documents: [{
+//         docType: { type: String, required: true, enum: ['id_front', 'id_back'] }, // E.g., 'id_front', 'id_back'
+//         url: { type: String, required: true }, // URL from cloud storage
+//         public_id: { type: String, required: true }, // ID for deletion from cloud storage
+//         uploadedAt: { type: Date, default: Date.now },
+//     }],
+//     submittedAt: { type: Date },
+//     verifiedAt: { type: Date },
+//     rejectedAt: { type: Date },
+//     rejectionReason: { type: String, trim: true },
+//     lastUpdatedAt: { type: Date }, // Track updates to editable fields
+// }, { _id: false }); // Don't create a separate _id for the subdocument
+
+
+// const userSchema = new mongoose.Schema({
+//     fullName: { type: String, required: true },
+//     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+//     password: { type: String, required: true , select: true},
+//     role: { type: String, enum: ['user', 'admin'], default: 'user' },
+//     // --- Add KYC Subdocument ---
+//     kyc: {
+//         type: kycSchema,
+//         default: () => ({}), // Ensures the default object is created
+//     },
+//     createdAt: { type: Date, default: Date.now },
+//     resetPasswordToken: String,
+//     resetPasswordExpires: Date,
+// }, {
+//     timestamps: true, // Adds createdAt and updatedAt automatically
+//     toJSON: { // <-- This affects JSON serialization, NOT database queries
+//         transform: function (doc, ret) {
+//             delete ret.password; // This deletes password when converting to JSON (e.g., for API response)
+//             delete ret.__v;
+//             delete ret.resetPasswordToken;
+//             delete ret.resetPasswordExpires;
+//             return ret;
+//         }
+//     }
+// });
+
+// // --- Initialize KYC on new user creation ---
+// userSchema.pre('save', function (next) {
+//     if (this.isNew && !this.kyc) { // Ensure kyc object exists on new users
+//         this.kyc = { status: 'not_started' };
+//     }
+//     // Initialize names from fullName if KYC names are missing (only on creation or if explicitly empty)
+//     if (this.isNew || (!this.kyc.firstName && !this.kyc.lastName)) {
+//         const nameParts = this.fullName.trim().split(' ');
+//         this.kyc.firstName = nameParts[0] || '';
+//         this.kyc.lastName = nameParts.slice(1).join(' ') || '';
+//     }
+//     next();
+// });
+
+
+// const User = mongoose.model('User', userSchema);
+
+// export default User;
+
+
+
+// backend/models/User.js
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs'; // For password hashing
+
+// --- KYC Subdocument Schema ---
+const kycSchema = new mongoose.Schema({
+    status: {
+        type: String,
+        enum: ['not_started', 'pending', 'verified', 'rejected', 'skipped'],
+        default: 'not_started',
+        index: true, // Index status for faster queries (e.g., find pending)
+    },
+    firstName: { type: String, trim: true },
+    lastName: { type: String, trim: true },
+    dateOfBirth: { type: Date },
+    mobile: {
+        _id: false, // Don't create ID for mobile object
+        countryCode: { type: String, trim: true },
+        number: { type: String, trim: true },
+    },
+    occupation: { type: String, trim: true },
+    salaryRange: {
+        type: String,
+        enum: ['0-1000', '10000-50000', '50000-100000', '100000+', null],
+        default: null,
+    },
+    nationality: { type: String, trim: true },
+    idType: {
+        type: String,
+        enum: ['passport', 'resident_permit', null],
+        default: null,
+    },
+    idNumber: { type: String, trim: true },
+    idIssueDate: { type: Date },
+    idExpiryDate: { type: Date },
+    documents: [{
+        _id: false, // Don't create ID for document objects
+        docType: { type: String, required: true, enum: ['id_front', 'id_back'] },
+        url: { type: String, required: true },
+        public_id: { type: String, required: true }, // Cloudinary public ID
+        uploadedAt: { type: Date, default: Date.now },
+    }],
+    submittedAt: { type: Date },
+    verifiedAt: { type: Date },
+    rejectedAt: { type: Date },
+    rejectionReason: { type: String, trim: true },
+    lastUpdatedAt: { type: Date }, // Track general updates to KYC
+}, { _id: false });
+
+
+// --- User Schema ---
 const userSchema = new mongoose.Schema({
-    fullName: { type: String, required: true },
-    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-    password: { type: String, required: true },
-    role: { type: String, enum: ['user', 'admin'], default: 'user' },
-    createdAt: { type: Date, default: Date.now },
-    resetPasswordToken: String, // Add reset password token field
-    resetPasswordExpires: Date,  // Add reset password expiry field
+    fullName: { type: String, required: [true, 'Full name is required.'], trim: true },
+    email: {
+        type: String,
+        required: [true, 'Email is required.'],
+        unique: true,
+        lowercase: true,
+        trim: true,
+        match: [ // Basic email format validation
+            /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+            'Please fill a valid email address',
+        ],
+        index: true, // Index email for faster lookups
+    },
+    password: {
+        type: String,
+        required: [true, 'Password is required.'],
+        minlength: [8, 'Password must be at least 8 characters long.'],
+        select: false, // Exclude password from query results by default
+    },
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user',
+    },
+    kyc: {
+        type: kycSchema,
+        default: () => ({ status: 'not_started' }), // Ensure default object with status
+        // No 'select: false' here, let it be included by default
+        // We select needed parts in controllers/services
+    },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
 }, {
-    timestamps: true,
+    timestamps: true, // Automatically add createdAt and updatedAt
     toJSON: {
         transform: function (doc, ret) {
-            delete ret.password;
-            delete ret.__v;
-            delete ret.resetPasswordToken; // Optionally hide reset tokens in responses
+            delete ret.password; // Remove password when converting document to JSON
+            delete ret.__v;     // Remove version key
+            delete ret.resetPasswordToken;
             delete ret.resetPasswordExpires;
+            // Optionally transform _id to id
+            // ret.id = ret._id;
+            // delete ret._id;
             return ret;
-        }
+        },
+        virtuals: true // Include virtuals if any are defined
+    },
+    toObject: { // Similar options for toObject if used
+        transform: function (doc, ret) {
+             delete ret.password;
+             delete ret.__v;
+             delete ret.resetPasswordToken;
+             delete ret.resetPasswordExpires;
+             return ret;
+        },
+        virtuals: true
     }
 });
 
+// --- Middleware ---
+
+// Initialize KYC default and potentially pre-fill names on NEW user save
+userSchema.pre('save', function (next) {
+    if (this.isNew) {
+        // Ensure KYC object exists with default status
+        if (!this.kyc || !this.kyc.status) {
+            this.kyc = { status: 'not_started' };
+        }
+        // Pre-fill names from fullName if KYC names are empty
+        if (!this.kyc.firstName && !this.kyc.lastName && this.fullName) {
+            const nameParts = this.fullName.trim().split(' ');
+            this.kyc.firstName = nameParts[0] || '';
+            this.kyc.lastName = nameParts.slice(1).join(' ') || '';
+            console.log(`Initialized KYC names for new user ${this.email}`);
+        }
+    }
+    next();
+});
+
+// Password Hashing Middleware (Run before saving if password is modified)
+userSchema.pre('save', async function (next) {
+    // Only hash the password if it has been modified (or is new)
+    if (!this.isModified('password')) return next();
+
+    try {
+        const salt = await bcrypt.genSalt(10); // Generate salt (10 rounds is generally good)
+        this.password = await bcrypt.hash(this.password, salt); // Hash the password
+        next();
+    } catch (error) {
+        next(error); // Pass error to error handling middleware
+    }
+});
+
+// --- Methods ---
+
+// Method to compare entered password with hashed password in DB
+userSchema.methods.matchPassword = async function (enteredPassword) {
+    // 'this' refers to the user document
+    // Need to explicitly select password if it was excluded in the initial query
+    const userWithPassword = await mongoose.model('User').findById(this._id).select('+password');
+    if (!userWithPassword) return false; // Should not happen if called on existing user doc
+    return await bcrypt.compare(enteredPassword, userWithPassword.password);
+};
+
+// --- Model Creation ---
 const User = mongoose.model('User', userSchema);
 
 export default User;
