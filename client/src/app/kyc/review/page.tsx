@@ -863,292 +863,10 @@
 //   );
 // }
 
-// // frontend/src/app/kyc/review/page.tsx
-// "use client";
-
-// import React, { useState, useEffect, useCallback } from "react";
-// import Image from 'next/image';
-
-// // --- Context & State Types ---
-// import { useKyc, formStepOrder } from "../../contexts/KycContext";
-// import type { KycProgressData, KycFileState, KycStepId } from "../../contexts/KycContext";
-// import type { KycSubmissionPayload } from "@/app/services/kyc";
-
-// // --- UI Components ---
-// import { Button } from "@/components/ui/button";
-// import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-// import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-// import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-// import { Loader2, AlertTriangle, CheckCircle, FileText, UserCircle, CalendarDays, Phone, Globe, Briefcase, BadgeDollarSign, Fingerprint, Edit, FileWarning, ArrowLeft, Send, Image as ImageIcon } from "lucide-react";
-
-// // --- Utilities ---
-// import { format, isValid as isDateValid, parseISO } from "date-fns";
-// import { cn } from "@/lib/utils";
-
-// // ============================================================================
-// // Helper Component & Functions
-// // ============================================================================
-
-// // --- DetailItem Component ---
-// interface DetailItemProps {
-//   label: string; value?: string | null | React.ReactNode; icon?: React.ElementType;
-//   stepTarget: KycStepId; isMissing?: boolean; className?: string;
-// }
-// const DetailItem: React.FC<DetailItemProps> = ({ label, value, icon: Icon, stepTarget, isMissing = false, className }) => {
-//   const { goToStep } = useKyc();
-//   const displayValue = value === null || value === undefined || (typeof value === 'string' && value.trim() === "") ? "Not Provided" : value;
-//   const isEmptyOrMissing = displayValue === "Not Provided" || isMissing;
-//   const handleEditClick = useCallback(() => { goToStep(stepTarget); }, [goToStep, stepTarget]);
-//   return (
-//     <div className={cn("py-3 grid grid-cols-[auto,1fr,auto] gap-x-3 items-center group border-b border-border/20 dark:border-border/10 last:border-b-0", className)}>
-//       <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">{Icon && <Icon className={cn("h-4 w-4", isEmptyOrMissing ? "text-muted-foreground/60" : "text-muted-foreground")} />}</div>
-//       <dt className={cn("text-sm font-medium truncate", isEmptyOrMissing ? "text-muted-foreground/80" : "text-foreground/90")}>{label}:</dt>
-//       <dd className="flex items-center justify-end gap-1 text-right">
-//           <span className={cn("text-sm break-words", isEmptyOrMissing && !isMissing ? "text-muted-foreground italic" : "text-foreground font-medium", isMissing ? "text-destructive font-semibold italic flex items-center gap-1" : "")}>
-//             {isMissing ? <><AlertTriangle className="h-3.5 w-3.5 inline-block" /> Missing</> : displayValue}
-//           </span>
-//           {!isMissing && (<Button variant="ghost" size="icon" onClick={handleEditClick} className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity h-7 w-7 flex-shrink-0" aria-label={`Edit ${label}`}><Edit className="h-3.5 w-3.5" /></Button>)}
-//       </dd>
-//     </div>
-//   );
-// };
-
-// // --- Salary & Date Helpers ---
-// const salaryDisplayMap: Record<string, string> = { '0-1000': 'Below $10,000', '10000-50000': '$10,000 - $49,999', '50000-100000': '$50,000 - $99,999', '100000+': '$100,000 or more' };
-// const formatDateReview = (dateString?: string): string | undefined => {
-//   if (!dateString) return undefined;
-//   try { const date = parseISO(dateString); return isDateValid(date) ? format(date, "MMMM d, yyyy") : `Invalid Date (${dateString})`; }
-//   catch { return `Invalid Date (${dateString})`; }
-// };
-
-// // --- FileDisplay Component (Corrected) ---
-// const FileDisplay: React.FC<{ file: File | null }> = ({ file }) => {
-//     // --- Hooks MUST be called at the top level ---
-//     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-
-//     useEffect(() => {
-//         let objectUrl: string | null = null;
-//         // Perform checks *inside* the effect
-//         if (file && file.type !== 'application/pdf') {
-//              objectUrl = URL.createObjectURL(file);
-//              setPreviewUrl(objectUrl);
-//         } else {
-//              // Reset preview if file is null or PDF
-//              setPreviewUrl(null);
-//         }
-
-//         // Cleanup function: runs when effect re-runs or component unmounts
-//         return () => {
-//             if (objectUrl) {
-//                 URL.revokeObjectURL(objectUrl);
-//             }
-//         };
-//     // Dependency: Re-run effect only when the file prop itself changes
-//     }, [file]);
-
-//     // --- Conditional return *after* Hooks ---
-//     if (!file) {
-//         return <span className="text-muted-foreground italic">Not Uploaded</span>;
-//     }
-
-//     // --- Derived state/variables for rendering (can be calculated after null check) ---
-//     const isPdf = file.type === 'application/pdf';
-
-//     // --- Render logic ---
-//     return (
-//         <div className="flex items-center justify-end gap-2 text-sm max-w-[250px] sm:max-w-xs md:max-w-sm">
-//             <div className="flex-shrink-0 h-6 w-6 flex items-center justify-center">
-//                 {/* Use the state variable 'previewUrl' */}
-//                 {previewUrl && (<Image src={previewUrl} alt="Preview" width={24} height={24} className="rounded object-cover border" />)}
-//                 {/* Use the calculated 'isPdf' variable */}
-//                 {isPdf && <FileText className="h-5 w-5 text-red-600" />}
-//                 {/* Use both for the fallback icon */}
-//                 {!previewUrl && !isPdf && <ImageIcon className="h-5 w-5 text-muted-foreground" />}
-//             </div>
-//             <div className="flex-grow overflow-hidden">
-//                  <span className="font-medium truncate text-foreground block" title={file.name}>{file.name}</span>
-//                  <span className="text-xs text-muted-foreground whitespace-nowrap block">({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
-//             </div>
-//         </div>
-//     );
-// };
-
-
-// // --- Data Validation Check ---
-// const checkRequiredDataPresent = (data: KycProgressData, files: KycFileState): string[] => {
-//   const missing: string[] = [];
-//   const requiredDataFields: (keyof KycSubmissionPayload)[] = [ 'firstName', 'lastName', 'dateOfBirth', 'mobile', 'nationality', 'idType', 'idNumber', 'idIssueDate', 'idExpiryDate' ];
-//   requiredDataFields.forEach(field => {
-//     if (field === 'mobile') { if (!data.mobile || !data.mobile.countryCode || !data.mobile.number) missing.push("Mobile Number"); }
-//     else { const value = data[field as keyof KycProgressData]; if (value === undefined || value === null || (typeof value === 'string' && value.trim() === '')) { const label = field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()); missing.push(label); } }
-//   });
-//   if (!files.idFrontFile) { missing.push("Front ID Document"); }
-//   // Check if idType is resident_permit before checking for back file
-//   if (data.idType === 'resident_permit' && !files.idBackFile) { missing.push("Back ID Document"); }
-//   return missing;
-// };
-
-// // ============================================================================
-// // Main Component: KycReviewPage
-// // ============================================================================
-// export default function KycReviewPage() {
-//   const {
-//       kycData, fileState, goToStep, updateCurrentUiStepId, submitKycData,
-//       isInitialized: kycInitialized, isSubmitting, backendStatus
-//     } = useKyc();
-
-//   const [submitError, setSubmitError] = useState<string | null>(null);
-//   const [isPageLoading, setIsPageLoading] = useState(true);
-//   const [missingFields, setMissingFields] = useState<string[]>([]);
-
-//   // Effect 1: Set UI step
-//   useEffect(() => { if (kycInitialized) updateCurrentUiStepId('review'); }, [kycInitialized, updateCurrentUiStepId]);
-
-//    // Effect 2: Check data readiness
-//    useEffect(() => {
-//     if (!kycInitialized) { setIsPageLoading(true); return; }
-//      // Check backend status first - no need to check fields if already submitted/approved/etc.
-//      if (backendStatus !== 'not_started' && backendStatus !== 'rejected' && backendStatus !== 'skipped') {
-//         setIsPageLoading(false); // Don't show loading if already submitted/in progress
-//         return;
-//      }
-//     const missing = checkRequiredDataPresent(kycData, fileState);
-//     setMissingFields(missing);
-//     if (missing.length > 0 && isPageLoading) { // Only log initial check
-//         console.warn("ReviewPage: Initial check found missing fields:", missing);
-//     }
-//     setIsPageLoading(false);
-//   }, [kycInitialized, backendStatus, kycData, fileState, isPageLoading]); // Added isPageLoading to deps for initial log
-
-
-//   // Handle Submission Attempt
-//   const handleSubmit = useCallback(async () => {
-//     setSubmitError(null);
-//     const currentMissing = checkRequiredDataPresent(kycData, fileState); // Re-check with latest state
-//     setMissingFields(currentMissing);
-//     if (currentMissing.length > 0) {
-//          const errorMsg = `Cannot submit. Please go back and complete the following: ${currentMissing.join(', ')}.`;
-//          setSubmitError(errorMsg); window.scrollTo({ top: 0, behavior: 'smooth' });
-//          console.error("ReviewPage: Submission blocked due to missing fields:", currentMissing); return;
-//     }
-//     console.log("ReviewPage: All checks passed. Calling context submitKycData...");
-//     try {
-//       const success = await submitKycData(); // Context handles API call and state updates
-//       if (!success) {
-//         // Set a generic error message if the context didn't provide a more specific one
-//         // (Potentially enhance context to return error messages)
-//         setSubmitError(prev => prev || "Submission failed. Please check details or try again.");
-//         window.scrollTo({ top: 0, behavior: 'smooth' });
-//       }
-//       // Success navigation is handled by submitKycData within the context
-//     } catch (error: any) {
-//       console.error("ReviewPage: Unexpected error during submitKycData call:", error);
-//       setSubmitError(error.message || "An unexpected error occurred during submission.");
-//       window.scrollTo({ top: 0, behavior: 'smooth' });
-//     }
-//   }, [kycData, fileState, submitKycData]); // Add fileState dependency
-
-
-//   // --- Render Logic ---
-//   if (isPageLoading || !kycInitialized) {
-//       return ( <div className="flex justify-center items-center min-h-[400px]"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div> );
-//   }
-
-//   // Handle cases where submission is already done or in progress (should ideally redirect or show status)
-//   // Redirect logic might be better handled in the KycContext based on backendStatus changes
-//   if (backendStatus !== 'not_started' && backendStatus !== 'rejected' && backendStatus !== 'skipped') {
-//       // Instead of a spinner, maybe show a message or redirect
-//       // For now, keep spinner as per original code, but add context
-//       return (
-//           <div className="flex flex-col justify-center items-center min-h-[400px]">
-//               <Loader2 className="h-8 w-8 animate-spin text-primary" />
-//               <span className="mt-3 text-muted-foreground">Checking KYC status ({backendStatus})...</span>
-//               {/* Optionally add a button to go to status page if applicable */}
-//           </div>
-//        );
-//   }
-
-//   const idTypeDisplayName = kycData.idType === 'passport' ? 'Passport' : kycData.idType === 'resident_permit' ? 'Resident Permit / National ID' : 'ID'; // Handle potential null/undefined idType
-
-//   return (
-//     <Card className="w-full max-w-3xl mx-auto shadow-xl border border-border/40 animate-fadeIn mb-10">
-//       <CardHeader className="border-b dark:border-border/50 p-6">
-//          <div className="flex items-center gap-3 mb-1"> <CheckCircle className="h-6 w-6 text-primary" /> <CardTitle className="text-2xl font-semibold tracking-tight">Review & Submit (Step {formStepOrder.indexOf('review') + 1} of {formStepOrder.length})</CardTitle> </div>
-//          <CardDescription>Please carefully review all details and documents. Click <Edit className="inline h-3 w-3 mx-1 text-muted-foreground" /> to make corrections.</CardDescription>
-//       </CardHeader>
-//       <CardContent className="p-6 md:p-8 space-y-6">
-//         {submitError && (
-//             <Alert variant="destructive" className="mb-4">
-//                 <AlertTriangle className="h-4 w-4" />
-//                 <AlertTitle>Submission Problem</AlertTitle>
-//                 <AlertDescription>{submitError}</AlertDescription>
-//             </Alert>
-//         )}
-//         {missingFields.length > 0 && !submitError && (
-//           <Alert className="mb-4 border-yellow-500/50 text-yellow-700 dark:border-yellow-500/30 dark:text-yellow-300 [&>svg]:text-yellow-500 dark:[&>svg]:text-yellow-400">
-//             <AlertTriangle className="h-4 w-4" />
-//             <AlertTitle className="font-semibold">Incomplete Information</AlertTitle>
-//             <AlertDescription>Before submitting, please go back and provide: <span className="font-medium">{missingFields.join(', ')}</span>.</AlertDescription>
-//           </Alert>
-//         )}
-
-//         <Accordion type="multiple" defaultValue={["personal", "identity", "documents"]} className="w-full space-y-3">
-//           {/* Personal Details Section */}
-//           <AccordionItem value="personal" className="border rounded-lg overflow-hidden shadow-sm bg-background dark:bg-secondary/30">
-//              <AccordionTrigger className="text-base font-semibold hover:no-underline px-4 py-3 bg-secondary/50 dark:bg-secondary/40 [&[data-state=open]>svg]:rotate-180">Personal & Contact Details</AccordionTrigger>
-//              <AccordionContent className="px-4 pt-0 pb-0">
-//                 <DetailItem label="First Name" value={kycData.firstName} icon={UserCircle} stepTarget='personal' isMissing={!kycData.firstName || kycData.firstName.trim() === ''} />
-//                 <DetailItem label="Last Name" value={kycData.lastName} stepTarget='personal' isMissing={!kycData.lastName || kycData.lastName.trim() === ''} />
-//                 <DetailItem label="Date of Birth" value={formatDateReview(kycData.dateOfBirth)} icon={CalendarDays} stepTarget='personal' isMissing={!kycData.dateOfBirth} />
-//                 <DetailItem label="Mobile Number" value={kycData.mobile ? `${kycData.mobile.countryCode} ${kycData.mobile.number}` : undefined} icon={Phone} stepTarget='personal' isMissing={!kycData.mobile?.countryCode || !kycData.mobile?.number} />
-//                 <DetailItem label="Nationality" value={kycData.nationality} icon={Globe} stepTarget='details' isMissing={!kycData.nationality || kycData.nationality.trim() === ''} />
-//                 <DetailItem label="Occupation" value={kycData.occupation} icon={Briefcase} stepTarget='details' />
-//                 <DetailItem label="Income Range" value={kycData.salaryRange ? salaryDisplayMap[kycData.salaryRange] : undefined} icon={BadgeDollarSign} stepTarget='details' />
-//              </AccordionContent>
-//           </AccordionItem>
-//            {/* Identity Document Section */}
-//            <AccordionItem value="identity" className="border rounded-lg overflow-hidden shadow-sm bg-background dark:bg-secondary/30">
-//               <AccordionTrigger className="text-base font-semibold hover:no-underline px-4 py-3 bg-secondary/50 dark:bg-secondary/40 [&[data-state=open]>svg]:rotate-180">Identity Document Details</AccordionTrigger>
-//               <AccordionContent className="px-4 pt-0 pb-0">
-//                  <DetailItem label="ID Type" value={idTypeDisplayName} icon={Fingerprint} stepTarget='identity' isMissing={!kycData.idType}/>
-//                  <DetailItem label="ID Number" value={kycData.idNumber} stepTarget='identity' isMissing={!kycData.idNumber || kycData.idNumber.trim() === ''}/>
-//                  <DetailItem label="Issue Date" value={formatDateReview(kycData.idIssueDate)} icon={CalendarDays} stepTarget='identity' isMissing={!kycData.idIssueDate}/>
-//                  <DetailItem label="Expiry Date" value={formatDateReview(kycData.idExpiryDate)} stepTarget='identity' isMissing={!kycData.idExpiryDate}/>
-//               </AccordionContent>
-//            </AccordionItem>
-//            {/* Uploaded Documents Section */}
-//            <AccordionItem value="documents" className="border rounded-lg overflow-hidden shadow-sm bg-background dark:bg-secondary/30">
-//               <AccordionTrigger className="text-base font-semibold hover:no-underline px-4 py-3 bg-secondary/50 dark:bg-secondary/40 [&[data-state=open]>svg]:rotate-180">Uploaded Documents</AccordionTrigger>
-//               <AccordionContent className="px-4 pt-0 pb-0">
-//                   <DetailItem label={`Front of ${idTypeDisplayName}`} value={<FileDisplay file={fileState.idFrontFile} />} icon={FileText} stepTarget='upload' isMissing={!fileState.idFrontFile} className="items-center" />
-//                   {kycData.idType === 'resident_permit' && ( <DetailItem label={`Back of ${idTypeDisplayName}`} value={<FileDisplay file={fileState.idBackFile} />} icon={FileText} stepTarget='upload' isMissing={!fileState.idBackFile} className="items-center" /> )}
-//               </AccordionContent>
-//            </AccordionItem>
-//         </Accordion>
-
-//         {/* Navigation / Submission Buttons */}
-//         <div className="flex flex-col sm:flex-row justify-between items-center pt-8 border-t dark:border-border/50 mt-8 gap-4">
-//           <Button type="button" variant="outline" onClick={() => goToStep('upload')} disabled={isSubmitting}><ArrowLeft className="mr-2 h-4 w-4" /> Back (Edit Uploads)</Button>
-//           <Button
-//             type="button"
-//             onClick={handleSubmit}
-//             disabled={isSubmitting || missingFields.length > 0} // Disable if submitting OR if fields are missing
-//             size="lg"
-//             className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-md hover:shadow-lg transition-all duration-300 disabled:opacity-60 disabled:shadow-none disabled:cursor-not-allowed"
-//           >
-//             {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
-//             Confirm and Submit KYC
-//           </Button>
-//         </div>
-//       </CardContent>
-//     </Card>
-//   );
-// }
-
 // frontend/src/app/kyc/review/page.tsx
 "use client";
 
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Image from 'next/image';
 
 // --- Context & State Types ---
@@ -1173,135 +891,83 @@ import { cn } from "@/lib/utils";
 
 // --- DetailItem Component ---
 interface DetailItemProps {
-  label: string;
-  value?: string | null | React.ReactNode;
-  icon?: React.ElementType;
-  stepTarget: KycStepId;
-  isMissing?: boolean;
-  className?: string;
+  label: string; value?: string | null | React.ReactNode; icon?: React.ElementType;
+  stepTarget: KycStepId; isMissing?: boolean; className?: string;
 }
 const DetailItem: React.FC<DetailItemProps> = ({ label, value, icon: Icon, stepTarget, isMissing = false, className }) => {
-  const { goToStep } = useKyc(); // Assuming useKyc provides goToStep
-
-  // Use useCallback for stability if DetailItem might re-render often
-  const handleEditClick = useCallback(() => {
-    goToStep(stepTarget);
-  }, [goToStep, stepTarget]);
-
-  const displayValue = value === null || value === undefined || (typeof value === 'string' && value.trim() === "")
-    ? "Not Provided"
-    : value;
+  const { goToStep } = useKyc();
+  const displayValue = value === null || value === undefined || (typeof value === 'string' && value.trim() === "") ? "Not Provided" : value;
   const isEmptyOrMissing = displayValue === "Not Provided" || isMissing;
-
+  const handleEditClick = useCallback(() => { goToStep(stepTarget); }, [goToStep, stepTarget]);
   return (
     <div className={cn("py-3 grid grid-cols-[auto,1fr,auto] gap-x-3 items-center group border-b border-border/20 dark:border-border/10 last:border-b-0", className)}>
-      {/* Icon */}
-      <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">
-        {Icon && <Icon className={cn("h-4 w-4", isEmptyOrMissing ? "text-muted-foreground/60" : "text-muted-foreground")} />}
-      </div>
-      {/* Label */}
-      <dt className={cn("text-sm font-medium truncate", isEmptyOrMissing ? "text-muted-foreground/80" : "text-foreground/90")}>
-        {label}:
-      </dt>
-      {/* Value and Edit Button */}
+      <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">{Icon && <Icon className={cn("h-4 w-4", isEmptyOrMissing ? "text-muted-foreground/60" : "text-muted-foreground")} />}</div>
+      <dt className={cn("text-sm font-medium truncate", isEmptyOrMissing ? "text-muted-foreground/80" : "text-foreground/90")}>{label}:</dt>
       <dd className="flex items-center justify-end gap-1 text-right">
-          <span className={cn(
-              "text-sm break-words",
-              isEmptyOrMissing && !isMissing ? "text-muted-foreground italic" : "text-foreground", // Apply italic only for "Not Provided"
-              isMissing ? "text-destructive font-semibold italic flex items-center gap-1" : "font-medium" // Special style for missing
-          )}>
-            {isMissing ? (
-              <><AlertTriangle className="h-3.5 w-3.5 inline-block" /> Missing</>
-            ) : (
-              displayValue
-            )}
+          <span className={cn("text-sm break-words", isEmptyOrMissing && !isMissing ? "text-muted-foreground italic" : "text-foreground font-medium", isMissing ? "text-destructive font-semibold italic flex items-center gap-1" : "")}>
+            {isMissing ? <><AlertTriangle className="h-3.5 w-3.5 inline-block" /> Missing</> : displayValue}
           </span>
-          {/* Show edit button only if not explicitly marked as missing */}
-          {!isMissing && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleEditClick}
-              className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity h-7 w-7 flex-shrink-0"
-              aria-label={`Edit ${label}`}
-            >
-              <Edit className="h-3.5 w-3.5" />
-            </Button>
-          )}
+          {!isMissing && (<Button variant="ghost" size="icon" onClick={handleEditClick} className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity h-7 w-7 flex-shrink-0" aria-label={`Edit ${label}`}><Edit className="h-3.5 w-3.5" /></Button>)}
       </dd>
     </div>
   );
 };
 
-
 // --- Salary & Date Helpers ---
 const salaryDisplayMap: Record<string, string> = { '0-1000': 'Below $10,000', '10000-50000': '$10,000 - $49,999', '50000-100000': '$50,000 - $99,999', '100000+': '$100,000 or more' };
 const formatDateReview = (dateString?: string): string | undefined => {
   if (!dateString) return undefined;
-  try {
-    const date = parseISO(dateString);
-    return isDateValid(date) ? format(date, "MMMM d, yyyy") : `Invalid Date (${dateString})`;
-  }
-  catch {
-    return `Invalid Date (${dateString})`;
-  }
+  try { const date = parseISO(dateString); return isDateValid(date) ? format(date, "MMMM d, yyyy") : `Invalid Date (${dateString})`; }
+  catch { return `Invalid Date (${dateString})`; }
 };
 
-// --- ** CORRECTED FileDisplay Component ** ---
+// --- FileDisplay Component (Corrected) ---
 const FileDisplay: React.FC<{ file: File | null }> = ({ file }) => {
+    // --- Hooks MUST be called at the top level ---
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-    const isPdf = file?.type === 'application/pdf';
-    const isImage = file?.type.startsWith('image/');
 
     useEffect(() => {
         let objectUrl: string | null = null;
-
-        // Create preview only for image files
-        if (file && isImage) {
-            objectUrl = URL.createObjectURL(file);
-            setPreviewUrl(objectUrl);
+        // Perform checks *inside* the effect
+        if (file && file.type !== 'application/pdf') {
+             objectUrl = URL.createObjectURL(file);
+             setPreviewUrl(objectUrl);
         } else {
-            // Reset preview if file is null, PDF, or other non-image type
-            setPreviewUrl(null);
+             // Reset preview if file is null or PDF
+             setPreviewUrl(null);
         }
 
         // Cleanup function: runs when effect re-runs or component unmounts
         return () => {
             if (objectUrl) {
-                // console.log("Revoking Object URL:", objectUrl); // For debugging
                 URL.revokeObjectURL(objectUrl);
             }
         };
-    // Re-run effect only when the file prop itself changes identity
-    }, [file, isImage]); // Add isImage to dependencies
+    // Dependency: Re-run effect only when the file prop itself changes
+    }, [file]);
 
     // --- Conditional return *after* Hooks ---
     if (!file) {
         return <span className="text-muted-foreground italic">Not Uploaded</span>;
     }
 
+    // --- Derived state/variables for rendering (can be calculated after null check) ---
+    const isPdf = file.type === 'application/pdf';
+
     // --- Render logic ---
     return (
         <div className="flex items-center justify-end gap-2 text-sm max-w-[250px] sm:max-w-xs md:max-w-sm">
-            {/* Icon/Preview */}
-            <div className="flex-shrink-0 h-8 w-8 flex items-center justify-center bg-muted/50 rounded border">
-                {/* Use the state variable 'previewUrl' for images */}
-                {previewUrl && isImage && (
-                    <Image src={previewUrl} alt="Preview" width={32} height={32} className="rounded object-cover" />
-                )}
+            <div className="flex-shrink-0 h-6 w-6 flex items-center justify-center">
+                {/* Use the state variable 'previewUrl' */}
+                {previewUrl && (<Image src={previewUrl} alt="Preview" width={24} height={24} className="rounded object-cover border" />)}
                 {/* Use the calculated 'isPdf' variable */}
                 {isPdf && <FileText className="h-5 w-5 text-red-600" />}
-                {/* Fallback icon for non-image, non-pdf files */}
-                {!isImage && !isPdf && <FileWarning className="h-5 w-5 text-muted-foreground" />}
+                {/* Use both for the fallback icon */}
+                {!previewUrl && !isPdf && <ImageIcon className="h-5 w-5 text-muted-foreground" />}
             </div>
-            {/* File Name and Size */}
             <div className="flex-grow overflow-hidden">
-                 <span className="font-medium truncate text-foreground block text-xs sm:text-sm" title={file.name}>
-                    {file.name}
-                 </span>
-                 <span className="text-xs text-muted-foreground whitespace-nowrap block">
-                    ({(file.size / 1024 / 1024).toFixed(2)} MB)
-                 </span>
+                 <span className="font-medium truncate text-foreground block" title={file.name}>{file.name}</span>
+                 <span className="text-xs text-muted-foreground whitespace-nowrap block">({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
             </div>
         </div>
     );
@@ -1312,29 +978,13 @@ const FileDisplay: React.FC<{ file: File | null }> = ({ file }) => {
 const checkRequiredDataPresent = (data: KycProgressData, files: KycFileState): string[] => {
   const missing: string[] = [];
   const requiredDataFields: (keyof KycSubmissionPayload)[] = [ 'firstName', 'lastName', 'dateOfBirth', 'mobile', 'nationality', 'idType', 'idNumber', 'idIssueDate', 'idExpiryDate' ];
-
   requiredDataFields.forEach(field => {
-    let isMissing = false;
-    let label = field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-
-    if (field === 'mobile') {
-        isMissing = !data.mobile || !data.mobile.countryCode || !data.mobile.number;
-        label = "Mobile Number";
-    } else {
-        const value = data[field as keyof KycProgressData];
-        isMissing = value === undefined || value === null || (typeof value === 'string' && value.trim() === '');
-    }
-    if (isMissing) missing.push(label);
+    if (field === 'mobile') { if (!data.mobile || !data.mobile.countryCode || !data.mobile.number) missing.push("Mobile Number"); }
+    else { const value = data[field as keyof KycProgressData]; if (value === undefined || value === null || (typeof value === 'string' && value.trim() === '')) { const label = field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()); missing.push(label); } }
   });
-
   if (!files.idFrontFile) { missing.push("Front ID Document"); }
-
-  // Check if back file is required based on ID type AND if it's missing
-  const requiresBackId = data.idType === 'resident_permit';
-  if (requiresBackId && !files.idBackFile) {
-    missing.push("Back ID Document");
-  }
-
+  // Check if idType is resident_permit before checking for back file
+  if (data.idType === 'resident_permit' && !files.idBackFile) { missing.push("Back ID Document"); }
   return missing;
 };
 
@@ -1344,8 +994,7 @@ const checkRequiredDataPresent = (data: KycProgressData, files: KycFileState): s
 export default function KycReviewPage() {
   const {
       kycData, fileState, goToStep, updateCurrentUiStepId, submitKycData,
-      isInitialized: kycInitialized, isSubmitting, backendStatus,
-      isLoadingStatus: kycLoadingStatus, authLoading // Get loading states
+      isInitialized: kycInitialized, isSubmitting, backendStatus
     } = useKyc();
 
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -1355,57 +1004,44 @@ export default function KycReviewPage() {
   // Effect 1: Set UI step
   useEffect(() => { if (kycInitialized) updateCurrentUiStepId('review'); }, [kycInitialized, updateCurrentUiStepId]);
 
-   // Effect 2: Check data readiness and status
+   // Effect 2: Check data readiness
    useEffect(() => {
-    // Wait for context and auth
-    if (!kycInitialized || authLoading) {
-        setIsPageLoading(true);
-        return;
-    }
+    if (!kycInitialized) { setIsPageLoading(true); return; }
      // Check backend status first - no need to check fields if already submitted/approved/etc.
-     if (!['not_started', 'rejected', 'skipped'].includes(backendStatus as string)) {
-        // console.log("ReviewPage: Skipping field check due to status:", backendStatus);
+     if (backendStatus !== 'not_started' && backendStatus !== 'rejected' && backendStatus !== 'skipped') {
         setIsPageLoading(false); // Don't show loading if already submitted/in progress
-        setMissingFields([]); // Clear missing fields if status is final
         return;
      }
-    // Only check fields if status allows submission
     const missing = checkRequiredDataPresent(kycData, fileState);
     setMissingFields(missing);
-    // if (missing.length > 0 && isPageLoading) { // Log only on initial load if needed
-    //     console.warn("ReviewPage: Initial check found missing fields:", missing);
-    // }
+    if (missing.length > 0 && isPageLoading) { // Only log initial check
+        console.warn("ReviewPage: Initial check found missing fields:", missing);
+    }
     setIsPageLoading(false);
-  }, [kycInitialized, authLoading, backendStatus, kycData, fileState]); // Removed isPageLoading dependency
+  }, [kycInitialized, backendStatus, kycData, fileState, isPageLoading]); // Added isPageLoading to deps for initial log
 
 
   // Handle Submission Attempt
   const handleSubmit = useCallback(async () => {
     setSubmitError(null);
-    // Re-check with latest state right before submission
-    const currentMissing = checkRequiredDataPresent(kycData, fileState);
+    const currentMissing = checkRequiredDataPresent(kycData, fileState); // Re-check with latest state
     setMissingFields(currentMissing);
-
     if (currentMissing.length > 0) {
          const errorMsg = `Cannot submit. Please go back and complete the following: ${currentMissing.join(', ')}.`;
-         setSubmitError(errorMsg);
-         window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to show error
-         console.error("ReviewPage: Submission blocked due to missing fields:", currentMissing);
-         return; // Stop submission
+         setSubmitError(errorMsg); window.scrollTo({ top: 0, behavior: 'smooth' });
+         console.error("ReviewPage: Submission blocked due to missing fields:", currentMissing); return;
     }
-
-    // console.log("ReviewPage: All checks passed. Calling context submitKycData...");
+    console.log("ReviewPage: All checks passed. Calling context submitKycData...");
     try {
-      const success = await submitKycData(); // Context handles API call, state updates, and refetching AuthContext
+      const success = await submitKycData(); // Context handles API call and state updates
       if (!success) {
-        // Context's submitKycData should ideally set an error state,
-        // but set a generic one here as a fallback if it doesn't.
+        // Set a generic error message if the context didn't provide a more specific one
+        // (Potentially enhance context to return error messages)
         setSubmitError(prev => prev || "Submission failed. Please check details or try again.");
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
-      // On success, the KycContext's redirection effect will handle navigation
+      // Success navigation is handled by submitKycData within the context
     } catch (error: any) {
-      // Catch errors specifically from the submitKycData promise itself (e.g., network issues before API call)
       console.error("ReviewPage: Unexpected error during submitKycData call:", error);
       setSubmitError(error.message || "An unexpected error occurred during submission.");
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1414,37 +1050,33 @@ export default function KycReviewPage() {
 
 
   // --- Render Logic ---
-  if (isPageLoading || authLoading || !kycInitialized || kycLoadingStatus) {
+  if (isPageLoading || !kycInitialized) {
       return ( <div className="flex justify-center items-center min-h-[400px]"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div> );
   }
 
-  // Handle cases where submission is already done or in progress (context should redirect)
-  if (!['not_started', 'rejected', 'skipped'].includes(backendStatus as string)) {
+  // Handle cases where submission is already done or in progress (should ideally redirect or show status)
+  // Redirect logic might be better handled in the KycContext based on backendStatus changes
+  if (backendStatus !== 'not_started' && backendStatus !== 'rejected' && backendStatus !== 'skipped') {
+      // Instead of a spinner, maybe show a message or redirect
+      // For now, keep spinner as per original code, but add context
       return (
           <div className="flex flex-col justify-center items-center min-h-[400px]">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
               <span className="mt-3 text-muted-foreground">Checking KYC status ({backendStatus})...</span>
+              {/* Optionally add a button to go to status page if applicable */}
           </div>
        );
   }
 
-  const idTypeDisplayNameMap: Partial<Record<IdType, string>> = {
-      'passport': 'Passport',
-      'resident_permit': 'Resident Permit / National ID'
-  };
-  const idTypeDisplayName = kycData.idType ? (idTypeDisplayNameMap[kycData.idType] ?? 'ID') : 'ID'; // Handle null/undefined idType
+  const idTypeDisplayName = kycData.idType === 'passport' ? 'Passport' : kycData.idType === 'resident_permit' ? 'Resident Permit / National ID' : 'ID'; // Handle potential null/undefined idType
 
   return (
     <Card className="w-full max-w-3xl mx-auto shadow-xl border border-border/40 animate-fadeIn mb-10">
       <CardHeader className="border-b dark:border-border/50 p-6">
-         <div className="flex items-center gap-3 mb-1">
-             <CheckCircle className="h-6 w-6 text-primary" />
-             <CardTitle className="text-2xl font-semibold tracking-tight">Review & Submit (Step {formStepOrder.indexOf('review') + 1} of {formStepOrder.length})</CardTitle>
-          </div>
+         <div className="flex items-center gap-3 mb-1"> <CheckCircle className="h-6 w-6 text-primary" /> <CardTitle className="text-2xl font-semibold tracking-tight">Review & Submit (Step {formStepOrder.indexOf('review') + 1} of {formStepOrder.length})</CardTitle> </div>
          <CardDescription>Please carefully review all details and documents. Click <Edit className="inline h-3 w-3 mx-1 text-muted-foreground" /> to make corrections.</CardDescription>
       </CardHeader>
       <CardContent className="p-6 md:p-8 space-y-6">
-        {/* --- Error Display --- */}
         {submitError && (
             <Alert variant="destructive" className="mb-4">
                 <AlertTriangle className="h-4 w-4" />
@@ -1452,26 +1084,24 @@ export default function KycReviewPage() {
                 <AlertDescription>{submitError}</AlertDescription>
             </Alert>
         )}
-        {/* --- Missing Fields Warning (Only if no submission error) --- */}
         {missingFields.length > 0 && !submitError && (
           <Alert className="mb-4 border-yellow-500/50 text-yellow-700 dark:border-yellow-500/30 dark:text-yellow-300 [&>svg]:text-yellow-500 dark:[&>svg]:text-yellow-400">
-            <FileWarning className="h-4 w-4" />
+            <AlertTriangle className="h-4 w-4" />
             <AlertTitle className="font-semibold">Incomplete Information</AlertTitle>
             <AlertDescription>Before submitting, please go back and provide: <span className="font-medium">{missingFields.join(', ')}</span>.</AlertDescription>
           </Alert>
         )}
 
-        {/* --- Data Sections --- */}
         <Accordion type="multiple" defaultValue={["personal", "identity", "documents"]} className="w-full space-y-3">
           {/* Personal Details Section */}
           <AccordionItem value="personal" className="border rounded-lg overflow-hidden shadow-sm bg-background dark:bg-secondary/30">
              <AccordionTrigger className="text-base font-semibold hover:no-underline px-4 py-3 bg-secondary/50 dark:bg-secondary/40 [&[data-state=open]>svg]:rotate-180">Personal & Contact Details</AccordionTrigger>
              <AccordionContent className="px-4 pt-0 pb-0">
-                <DetailItem label="First Name" value={kycData.firstName} icon={UserCircle} stepTarget='personal' isMissing={!kycData.firstName} />
-                <DetailItem label="Last Name" value={kycData.lastName} stepTarget='personal' isMissing={!kycData.lastName} />
+                <DetailItem label="First Name" value={kycData.firstName} icon={UserCircle} stepTarget='personal' isMissing={!kycData.firstName || kycData.firstName.trim() === ''} />
+                <DetailItem label="Last Name" value={kycData.lastName} stepTarget='personal' isMissing={!kycData.lastName || kycData.lastName.trim() === ''} />
                 <DetailItem label="Date of Birth" value={formatDateReview(kycData.dateOfBirth)} icon={CalendarDays} stepTarget='personal' isMissing={!kycData.dateOfBirth} />
                 <DetailItem label="Mobile Number" value={kycData.mobile ? `${kycData.mobile.countryCode} ${kycData.mobile.number}` : undefined} icon={Phone} stepTarget='personal' isMissing={!kycData.mobile?.countryCode || !kycData.mobile?.number} />
-                <DetailItem label="Nationality" value={kycData.nationality} icon={Globe} stepTarget='details' isMissing={!kycData.nationality} />
+                <DetailItem label="Nationality" value={kycData.nationality} icon={Globe} stepTarget='details' isMissing={!kycData.nationality || kycData.nationality.trim() === ''} />
                 <DetailItem label="Occupation" value={kycData.occupation} icon={Briefcase} stepTarget='details' />
                 <DetailItem label="Income Range" value={kycData.salaryRange ? salaryDisplayMap[kycData.salaryRange] : undefined} icon={BadgeDollarSign} stepTarget='details' />
              </AccordionContent>
@@ -1481,7 +1111,7 @@ export default function KycReviewPage() {
               <AccordionTrigger className="text-base font-semibold hover:no-underline px-4 py-3 bg-secondary/50 dark:bg-secondary/40 [&[data-state=open]>svg]:rotate-180">Identity Document Details</AccordionTrigger>
               <AccordionContent className="px-4 pt-0 pb-0">
                  <DetailItem label="ID Type" value={idTypeDisplayName} icon={Fingerprint} stepTarget='identity' isMissing={!kycData.idType}/>
-                 <DetailItem label="ID Number" value={kycData.idNumber} stepTarget='identity' isMissing={!kycData.idNumber}/>
+                 <DetailItem label="ID Number" value={kycData.idNumber} stepTarget='identity' isMissing={!kycData.idNumber || kycData.idNumber.trim() === ''}/>
                  <DetailItem label="Issue Date" value={formatDateReview(kycData.idIssueDate)} icon={CalendarDays} stepTarget='identity' isMissing={!kycData.idIssueDate}/>
                  <DetailItem label="Expiry Date" value={formatDateReview(kycData.idExpiryDate)} stepTarget='identity' isMissing={!kycData.idExpiryDate}/>
               </AccordionContent>
@@ -1491,17 +1121,7 @@ export default function KycReviewPage() {
               <AccordionTrigger className="text-base font-semibold hover:no-underline px-4 py-3 bg-secondary/50 dark:bg-secondary/40 [&[data-state=open]>svg]:rotate-180">Uploaded Documents</AccordionTrigger>
               <AccordionContent className="px-4 pt-0 pb-0">
                   <DetailItem label={`Front of ${idTypeDisplayName}`} value={<FileDisplay file={fileState.idFrontFile} />} icon={FileText} stepTarget='upload' isMissing={!fileState.idFrontFile} className="items-center" />
-                  {/* Conditionally render Back ID only if required and type selected */}
-                  {kycData.idType === 'resident_permit' && (
-                    <DetailItem
-                        label={`Back of ${idTypeDisplayName}`}
-                        value={<FileDisplay file={fileState.idBackFile} />}
-                        icon={FileText}
-                        stepTarget='upload'
-                        isMissing={!fileState.idBackFile} // Missing check is correct here
-                        className="items-center"
-                     />
-                  )}
+                  {kycData.idType === 'resident_permit' && ( <DetailItem label={`Back of ${idTypeDisplayName}`} value={<FileDisplay file={fileState.idBackFile} />} icon={FileText} stepTarget='upload' isMissing={!fileState.idBackFile} className="items-center" /> )}
               </AccordionContent>
            </AccordionItem>
         </Accordion>
