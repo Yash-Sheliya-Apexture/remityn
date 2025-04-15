@@ -1217,7 +1217,7 @@ const KycUserDetailPage: React.FC = () => {
 
         {/* User Profile Card */}
         <Card className="shadow-sm overflow-hidden">
-          <CardHeader className="flex md:items-center items-start justify-between">
+          <CardHeader className="flex md:items-center items-start justify-between sm:p-6 p-4">
             <div className="flex sm:flex-row flex-col sm:items-center gap-4">
               <Avatar className="h-16 w-16 flex-shrink-0">
                 <AvatarFallback
@@ -1262,7 +1262,7 @@ const KycUserDetailPage: React.FC = () => {
 
           {/* Status Timeline */}
           <CardContent className="p-6">
-            <div className="flex items-center space-x-4 sm:text-base text-sm text-gray-500 dark:text-gray-300">
+            <div className="flex sm:flex-row flex-col justify-between sm:items-center gap-4 sm:text-base text-sm text-gray-500 dark:text-gray-300">
               {kyc?.submittedAt && (
                 <span className="flex items-center gap-1">
                   <Clock className="size-5" /> Submitted:{" "}
@@ -1286,12 +1286,12 @@ const KycUserDetailPage: React.FC = () => {
 
           {/* Action Buttons for Pending Applications */}
           {canTakeAction && (
-            <CardFooter className="border-t  bg-muted/30">
+            <CardFooter className="border-t sm:p-6 p-4">
               <div className="flex sm:flex-row flex-col gap-3 w-full sm:justify-end">
                 <Button
                   onClick={openRejectModal}
                   disabled={!!isProcessingAction}
-                  className="gap-0 text-base bg-red-600 text-white hover:bg-red-700 font-medium rounded-full px-6 py-3  h-12.5 text-center cursor-pointer transition-all duration-75 ease-linear flex justify-center items-center"
+                  className="gap-0 text-base bg-red-600 text-white hover:bg-red-700 font-medium rounded-full px-6 py-3 md:h-12.5 h-10 text-center cursor-pointer transition-all duration-75 ease-linear flex justify-center items-center"
                 >
                   {isProcessingAction === "reject" ? (
                     <Loader2 className="mr-2 size-5 animate-spin" />
@@ -1303,7 +1303,7 @@ const KycUserDetailPage: React.FC = () => {
                 <Button
                   onClick={handleApprove}
                   disabled={!!isProcessingAction}
-                  className="gap-0 text-base bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center cursor-pointer transition-all duration-75 ease-linear flex justify-center items-center"
+                  className="gap-0 text-base bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 md:h-12.5 h-10 text-center cursor-pointer transition-all duration-75 ease-linear flex justify-center items-center"
                 >
                   {isProcessingAction === "approve" ? (
                     <Loader2 className="mr-2 size-5 animate-spin" />
@@ -1328,23 +1328,23 @@ const KycUserDetailPage: React.FC = () => {
           <div className="w-full xl:w-2/3 flex flex-col gap-6">
             {/* Rejection Reason (if applicable) */}
             {kyc?.status === "rejected" && kyc.rejectionReason && (
-              <Card className="border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-900/10">
-                <CardHeader className="pb-2">
+              <Card className="border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-900/10 px-5 py-4">
+                <CardHeader>
                   <CardTitle className="text-sm flex items-center gap-1.5 text-red-700 dark:text-red-400">
                     <AlertCircle className="h-4 w-4" /> Rejection Reason
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-red-700 dark:text-red-400">
+                  <p className="text-sm text-red-700 dark:text-red-400 font-light mt-2">
                     {kyc.rejectionReason}
                   </p>
                 </CardContent>
               </Card>
-            )}
+             )} 
 
             {/* Personal Information */}
             <Card className="shadow-sm gap-0 overflow-hidden">
-              <CardHeader className="inline-flex items-center w-full border-b bg-lightgray dark:bg-secondarybox p-6 h-[97px]">
+              <CardHeader className="inline-flex items-center w-full bg-lightgray dark:bg-secondarybox px-5 py-4 h-[81px]">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <User className="h-6 w-6 text-primary" /> Personal Information
                 </CardTitle>
@@ -1395,7 +1395,7 @@ const KycUserDetailPage: React.FC = () => {
 
             {/* Identity Information */}
             <Card className="shadow-sm gap-0 overflow-hidden">
-              <CardHeader className="border-b bg-lightgray dark:bg-secondarybox p-6">
+              <CardHeader className="inline-flex items-center w-full bg-lightgray dark:bg-secondarybox px-5 py-4 h-[81px]">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Fingerprint className="h-6 w-6 text-primary" /> Identity
                   Document Details
@@ -1432,7 +1432,7 @@ const KycUserDetailPage: React.FC = () => {
 
           {/* Submitted Documents */}
           <Card className="shadow-sm w-full xl:w-1/3 h-fit gap-0  overflow-hidden">
-            <CardHeader className="border-b bg-lightgray dark:bg-secondarybox p-6">
+            <CardHeader className="bg-lightgray dark:bg-secondarybox px-5 py-4">
               <CardTitle className="text-lg flex items-center gap-2">
                 <FileText className="h-6 w-6 text-primary" /> Submitted
                 Documents
@@ -1443,11 +1443,11 @@ const KycUserDetailPage: React.FC = () => {
             </CardHeader>
             <CardContent className="p-5">
               {kyc?.documents && kyc.documents.length > 0 ? (
-                <div className="space-y-2">
+                <div className="flex xl:flex-col sm:flex-row flex-col gap-4">
                   {kyc.documents.map((doc) => (
                     <Card
                       key={doc.public_id}
-                      className="border overflow-hidden"
+                      className="border overflow-hidden w-full"
                     >
                       <CardHeader className="bg-muted/50 p-5 border-b">
                         <CardTitle className="text-sm capitalize flex items-center gap-1.5">
@@ -1471,27 +1471,18 @@ const KycUserDetailPage: React.FC = () => {
                         </CardContent>
                       )}
 
-                      <CardFooter className='justify-center items-center w-full'>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Link
-                                href={doc.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                <Button className="w-full cursor-pointer">
-                                  <Eye className="h-3.5 w-3.5" />
-                                  View Full Document
-                                  <ExternalLink className="h-3 w-3 ml-1 opacity-70" />
-                                </Button>
-                              </Link>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Open document in new tab</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
+                      <CardFooter className="justify-center items-center w-full">
+                        <Link
+                          href={doc.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Button className="w-full cursor-pointer border text-neutral-900 bg-white hover:bg-lightborder dark:text-white dark:hover:bg-neutral-700 dark:bg-neutral-900">
+                            <Eye className="h-3.5 w-3.5" />
+                            View Full Document
+                            <ExternalLink className="h-3 w-3 ml-1 opacity-70" />
+                          </Button>
+                        </Link>
                       </CardFooter>
                     </Card>
                   ))}
