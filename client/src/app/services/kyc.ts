@@ -1186,8 +1186,297 @@
 
 
 
+// // frontend/src/app/services/kyc.ts
+// // ... (kycService.ts remains the same as provided in the prompt, it was already correct)
+// import axios, { AxiosError, type AxiosResponse } from 'axios';
+// import apiConfig from '../config/apiConfig'; // Adjust path as necessary
+
+// //--------------------------------------------------
+// // Type Definitions (Matching Backend/API)
+// //--------------------------------------------------
+
+// // Exported here - Used for mobile number structure
+// export interface KycMobile {
+//     countryCode: string;
+//     number: string;
+// }
+
+// // Exported here - Represents stored document info
+// export interface KycDocument {
+//     docType: 'id_front' | 'id_back';
+//     url: string; // URL to the stored file (e.g., Cloudinary URL)
+//     public_id: string; // Public ID for services like Cloudinary
+//     uploadedAt?: string | Date; // Timestamp from backend
+// }
+
+// // Exported here - Possible KYC statuses from backend
+// export type KycStatus = 'not_started' | 'pending' | 'verified' | 'rejected' | 'skipped';
+// // Exported here - Possible salary ranges
+// export type SalaryRange = '0-1000' | '10000-50000' | '50000-100000' | '100000+';
+// // Exported here - Possible ID types
+// export type IdType = 'passport' | 'resident_permit';
+
+// // Exported here - Detailed structure of KYC info stored in the User model (matches backend)
+// export interface KycDetails {
+//     status: KycStatus;
+//     firstName?: string;
+//     lastName?: string;
+//     dateOfBirth?: string | Date; // API might return string or Date object if transformed
+//     mobile?: KycMobile;
+//     occupation?: string;
+//     salaryRange?: SalaryRange | null;
+//     nationality?: string;
+//     idType?: IdType | null;
+//     idNumber?: string;
+//     idIssueDate?: string | Date; // API might return string or Date object
+//     idExpiryDate?: string | Date; // API might return string or Date object
+//     documents?: KycDocument[]; // Array of uploaded document info
+//     submittedAt?: string | Date;
+//     verifiedAt?: string | Date;
+//     rejectedAt?: string | Date;
+//     rejectionReason?: string | null;
+//     lastUpdatedAt?: string | Date;
+// }
+
+// // Exported here - Payload for the initial KYC submission (text data part)
+// export interface KycSubmissionPayload {
+//     firstName: string;
+//     lastName: string;
+//     dateOfBirth: string; // Expecting YYYY-MM-DD format string
+//     mobile: KycMobile; // Will be stringified before sending
+//     nationality: string;
+//     idType: IdType;
+//     idNumber: string;
+//     idIssueDate: string; // Expecting YYYY-MM-DD format string
+//     idExpiryDate: string; // Expecting YYYY-MM-DD format string
+//     // Optional fields
+//     occupation?: string;
+//     salaryRange?: SalaryRange | null;
+// }
+
+// // Exported here - Payload for updating *editable* KYC details (if backend allows)
+// export interface UpdateDetailsPayload {
+//     firstName?: string;
+//     lastName?: string;
+//     mobile?: KycMobile;
+//     salaryRange?: SalaryRange | null;
+//     occupation?: string;
+//     // Add other fields if the backend allows updating them post-submission
+//     nationality?: string; // Allow updating nationality?
+// }
+
+// // API Response Structures
+// // Exported here - Response structure for fetching status
+// export interface KycStatusResponse {
+//     status: KycStatus;
+//     rejectionReason?: string | null;
+// }
+
+// // Exported here - Generic success response structure (used for submit, skip, update)
+// export interface KycSuccessResponse {
+//     message: string;
+//     kyc?: KycDetails; // Often included on update/submit containing the updated state
+//     status?: KycStatus; // Included on skip to confirm the new status
+// }
+
+// // Exported here - Interface for structured API errors (assuming backend sends this on failure)
+// export interface ApiErrorResponse {
+//     message: string;
+//     // Optional: Field-specific errors map { fieldName: errorMessage }
+//     errors?: Record<string, string>;
+//     status?: number; // HTTP status code might be included
+// }
+
+// //--------------------------------------------------
+// // Axios Client Setup
+// //--------------------------------------------------
+// const apiClient = axios.create({
+//     baseURL: apiConfig.baseUrl,
+//     // REMOVED Default Content-Type header
+//     headers: {
+//          Accept: 'application/json',
+//     },
+//     withCredentials: true,
+// });
+
+// // Request Interceptor
+// apiClient.interceptors.request.use(
+//     (config) => {
+//         if (typeof window !== 'undefined') {
+//             const token = localStorage.getItem('token');
+//             if (token && config.headers) {
+//                 config.headers.Authorization = `Bearer ${token}`;
+//             }
+//         }
+//         // console.log('[Axios Interceptor] Request Headers:', config.headers); // Keep commented unless debugging
+//         return config;
+//     },
+//     (error) => {
+//         console.error('Axios request interceptor error:', error);
+//         return Promise.reject(error);
+//     }
+// );
+
+// //--------------------------------------------------
+// // Error Handling Helper
+// //--------------------------------------------------
+// const getApiErrorMessage = (error: unknown): string => {
+//     if (axios.isAxiosError(error)) {
+//         const axiosError = error as AxiosError<ApiErrorResponse>;
+//         if (axiosError.response) {
+//             const status = axiosError.response.status;
+//             const responseData = axiosError.response.data;
+//             console.error(`API Error Response (Status ${status}):`, responseData);
+//             if (responseData?.message) {
+//                 return responseData.message;
+//             }
+//             return axiosError.message || `Request failed with status ${status}`;
+//         } else if (axiosError.request) {
+//             console.error("API No Response Error:", axiosError.request);
+//             return 'Network error or server is unreachable.';
+//         } else {
+//             console.error("API Request Setup Error:", axiosError.message);
+//             return `Request setup failed: ${axiosError.message}`;
+//         }
+//     } else if (error instanceof Error) {
+//         console.error("Non-API Error:", error);
+//         return error.message;
+//     } else {
+//         console.error("Unknown Error Type:", error);
+//         return 'An unexpected error occurred.';
+//     }
+// };
+
+// //--------------------------------------------------
+// // KYC Service Functions
+// //--------------------------------------------------
+
+// /**
+//  * Submits KYC data along with document files using FormData.
+//  */
+// const submitKyc = async (
+//     kycData: KycSubmissionPayload,
+//     idFrontFile: File,
+//     idBackFile: File | null
+// ): Promise<KycSuccessResponse> => {
+//     const formData = new FormData();
+//     console.log('[kycService] Preparing FormData for submission...');
+
+//     // 1. Append text data fields
+//     Object.entries(kycData).forEach(([key, value]) => {
+//         if (value === undefined || value === null) { return; }
+//         const fieldName = key;
+//         let fieldValue: string;
+//         if (key === 'mobile' && typeof value === 'object') { fieldValue = JSON.stringify(value); }
+//         else { fieldValue = String(value); }
+//         formData.append(fieldName, fieldValue);
+//         // console.log(`[kycService] Appending ${fieldName}: ${fieldValue}`); // Optional: Keep for debug if needed
+//     });
+
+//     // 2. Append file fields
+//     const frontFileFieldName = 'id_front';
+//     const backFileFieldName = 'id_back';
+//     if (idFrontFile instanceof File) {
+//         console.log(`[kycService] Appending file ${frontFileFieldName}: ${idFrontFile.name}`);
+//         formData.append(frontFileFieldName, idFrontFile, idFrontFile.name);
+//     } else {
+//         console.error("[kycService] ERROR: idFrontFile is not a valid File object!", idFrontFile);
+//         throw new Error("Internal Error: Front ID document is missing or invalid.");
+//     }
+//     if (idBackFile instanceof File && kycData.idType === 'resident_permit') {
+//         console.log(`[kycService] Appending file ${backFileFieldName}: ${idBackFile.name}`);
+//         formData.append(backFileFieldName, idBackFile, idBackFile.name);
+//     } else if (!idBackFile && kycData.idType === 'resident_permit') {
+//         console.error("[kycService] ERROR: idBackFile missing for resident_permit.");
+//         throw new Error("Internal Error: Back ID document is missing for Resident Permit.");
+//     }
+
+//     try {
+//         console.log('[kycService] Attempting POST /kyc/submit with FormData...');
+//         const response: AxiosResponse<KycSuccessResponse> = await apiClient.post(
+//             '/kyc/submit',
+//             formData
+//             // No explicit headers object here for Content-Type (browser sets it for FormData)
+//         );
+//         console.log('[kycService] KYC Submission Successful:', response.data);
+//         return response.data;
+//     } catch (error: unknown) {
+//         console.error('[kycService] --- KYC SUBMISSION HTTP ERROR ---');
+//         const errorMessage = getApiErrorMessage(error);
+//         console.error('[kycService] Processed Submission Error Message:', errorMessage);
+//         throw new Error(errorMessage);
+//     }
+// };
+
+// /**
+//  * Sends a request to mark the KYC process as skipped by the user.
+//  */
+// const skipKyc = async (): Promise<KycSuccessResponse> => {
+//     console.log('[kycService] Skipping KYC process...');
+//     try {
+//         const response: AxiosResponse<KycSuccessResponse> = await apiClient.post('/kyc/skip');
+//         console.log('[kycService] KYC Skip Successful:', response.data);
+//         return response.data;
+//     } catch (error: unknown) {
+//         console.error('[kycService] KYC Skip Error:', error);
+//         const errorMessage = getApiErrorMessage(error);
+//         console.error('[kycService] Processed Skip Error Message:', errorMessage);
+//         throw new Error(errorMessage);
+//     }
+//  };
+
+// /**
+//  * Fetches the current user's KYC status and rejection reason, if applicable.
+//  */
+// const getMyKycStatus = async (): Promise<KycStatusResponse> => {
+//     console.log('[kycService] Fetching KYC status...');
+//     try {
+//         const response: AxiosResponse<KycStatusResponse> = await apiClient.get('/kyc/status');
+//         console.log('[kycService] KYC Status Response:', response.data);
+//         // Provide default if backend returns empty success response for 'not_started'
+//         return response.data || { status: 'not_started', rejectionReason: null };
+//     } catch (error: unknown) {
+//         console.error('[kycService] Get KYC Status Error:', error);
+//         const errorMessage = getApiErrorMessage(error);
+//         console.error('[kycService] Processed Status Error Message:', errorMessage);
+//         // If status fails, maybe default to 'not_started' or rethrow depending on desired UX
+//         throw new Error(errorMessage); // Rethrowing is usually safer
+//     }
+//  };
+
+// /**
+//  * Updates editable KYC details for the current user (if backend allows).
+//  */
+// const updateMyKycDetails = async (updateData: UpdateDetailsPayload): Promise<KycSuccessResponse> => {
+//     console.log('[kycService] Updating KYC details:', updateData);
+//     try {
+//         const response: AxiosResponse<KycSuccessResponse> = await apiClient.put(
+//             '/kyc/update-details',
+//             updateData,
+//             { headers: { 'Content-Type': 'application/json' } } // Explicit JSON header for this request
+//         );
+//         console.log('[kycService] KYC Details Update Successful:', response.data);
+//         return response.data;
+//     } catch (error: unknown) {
+//         console.error('[kycService] Update KYC Details Error:', error);
+//         const errorMessage = getApiErrorMessage(error);
+//         console.error('[kycService] Processed Update Error Message:', errorMessage);
+//         throw new Error(errorMessage);
+//     }
+//  };
+
+
+// // Export the service object containing all methods as the default export
+// const kycService = {
+//     submitKyc,
+//     skipKyc,
+//     getMyKycStatus,
+//     updateMyKycDetails,
+// };
+
+// export default kycService;
+
 // frontend/src/app/services/kyc.ts
-// ... (kycService.ts remains the same as provided in the prompt, it was already correct)
 import axios, { AxiosError, type AxiosResponse } from 'axios';
 import apiConfig from '../config/apiConfig'; // Adjust path as necessary
 
@@ -1292,27 +1581,28 @@ export interface ApiErrorResponse {
 //--------------------------------------------------
 const apiClient = axios.create({
     baseURL: apiConfig.baseUrl,
-    // REMOVED Default Content-Type header
+    // REMOVED Default Content-Type header - Let browser set for FormData, specify JSON manually otherwise
     headers: {
-         Accept: 'application/json',
+         Accept: 'application/json', // Expect JSON responses
     },
-    withCredentials: true,
+    withCredentials: true, // Send cookies if needed
 });
 
-// Request Interceptor
+// Request Interceptor: Add Auth Token
 apiClient.interceptors.request.use(
     (config) => {
+        // Ensure this runs only client-side
         if (typeof window !== 'undefined') {
             const token = localStorage.getItem('token');
             if (token && config.headers) {
                 config.headers.Authorization = `Bearer ${token}`;
             }
         }
-        // console.log('[Axios Interceptor] Request Headers:', config.headers); // Keep commented unless debugging
+        // console.log('[kycService Axios Req] URL:', config.url, 'Headers:', config.headers);
         return config;
     },
     (error) => {
-        console.error('Axios request interceptor error:', error);
+        console.error('kycService Axios request interceptor error:', error);
         return Promise.reject(error);
     }
 );
@@ -1323,26 +1613,40 @@ apiClient.interceptors.request.use(
 const getApiErrorMessage = (error: unknown): string => {
     if (axios.isAxiosError(error)) {
         const axiosError = error as AxiosError<ApiErrorResponse>;
-        if (axiosError.response) {
-            const status = axiosError.response.status;
-            const responseData = axiosError.response.data;
-            console.error(`API Error Response (Status ${status}):`, responseData);
-            if (responseData?.message) {
-                return responseData.message;
+        const responseData = axiosError.response?.data;
+        const status = axiosError.response?.status;
+
+        // Log detailed error info
+        console.error(`[kycService] API Error: Status ${status}, URL: ${axiosError.config?.url}`, {
+            requestData: axiosError.config?.data,
+            responseData: responseData,
+            axiosErrorMessage: axiosError.message,
+        });
+
+        // Prefer backend message
+        if (responseData?.message) {
+            // Combine with field errors if available
+            if (responseData.errors) {
+                const fieldErrors = Object.entries(responseData.errors)
+                    .map(([field, msg]) => `${field}: ${msg}`)
+                    .join(', ');
+                return `${responseData.message} (${fieldErrors})`;
             }
-            return axiosError.message || `Request failed with status ${status}`;
+            return responseData.message;
+        }
+        // Fallback to generic Axios messages
+        if (axiosError.response) {
+            return `Request failed with status ${status}`;
         } else if (axiosError.request) {
-            console.error("API No Response Error:", axiosError.request);
-            return 'Network error or server is unreachable.';
+            return 'Network error or server is unreachable. Please check your connection.';
         } else {
-            console.error("API Request Setup Error:", axiosError.message);
             return `Request setup failed: ${axiosError.message}`;
         }
     } else if (error instanceof Error) {
-        console.error("Non-API Error:", error);
+        console.error("[kycService] Non-API Error:", error);
         return error.message;
     } else {
-        console.error("Unknown Error Type:", error);
+        console.error("[kycService] Unknown Error Type:", error);
         return 'An unexpected error occurred.';
     }
 };
@@ -1357,53 +1661,61 @@ const getApiErrorMessage = (error: unknown): string => {
 const submitKyc = async (
     kycData: KycSubmissionPayload,
     idFrontFile: File,
-    idBackFile: File | null
+    idBackFile: File | null // Allow null explicitly
 ): Promise<KycSuccessResponse> => {
     const formData = new FormData();
-    console.log('[kycService] Preparing FormData for submission...');
+    // console.log('[kycService] Preparing FormData for submission...');
 
     // 1. Append text data fields
-    Object.entries(kycData).forEach(([key, value]) => {
-        if (value === undefined || value === null) { return; }
-        const fieldName = key;
-        let fieldValue: string;
-        if (key === 'mobile' && typeof value === 'object') { fieldValue = JSON.stringify(value); }
-        else { fieldValue = String(value); }
-        formData.append(fieldName, fieldValue);
-        // console.log(`[kycService] Appending ${fieldName}: ${fieldValue}`); // Optional: Keep for debug if needed
-    });
+    // Use optional chaining and nullish coalescing for safer access
+    formData.append('firstName', kycData.firstName ?? '');
+    formData.append('lastName', kycData.lastName ?? '');
+    formData.append('dateOfBirth', kycData.dateOfBirth ?? ''); // Expecting YYYY-MM-DD
+    formData.append('mobile', JSON.stringify(kycData.mobile ?? {})); // Stringify mobile object
+    formData.append('nationality', kycData.nationality ?? '');
+    formData.append('idType', kycData.idType ?? '');
+    formData.append('idNumber', kycData.idNumber ?? '');
+    formData.append('idIssueDate', kycData.idIssueDate ?? ''); // Expecting YYYY-MM-DD
+    formData.append('idExpiryDate', kycData.idExpiryDate ?? ''); // Expecting YYYY-MM-DD
 
-    // 2. Append file fields
-    const frontFileFieldName = 'id_front';
-    const backFileFieldName = 'id_back';
+    // Append optional fields only if they have a value
+    if (kycData.occupation) formData.append('occupation', kycData.occupation);
+    if (kycData.salaryRange) formData.append('salaryRange', kycData.salaryRange);
+
+    // 2. Append file fields (ensure they are File objects)
+    const frontFileFieldName = 'id_front'; // Match backend expected field name
+    const backFileFieldName = 'id_back';   // Match backend expected field name
+
     if (idFrontFile instanceof File) {
-        console.log(`[kycService] Appending file ${frontFileFieldName}: ${idFrontFile.name}`);
+        // console.log(`[kycService] Appending file ${frontFileFieldName}: ${idFrontFile.name}`);
         formData.append(frontFileFieldName, idFrontFile, idFrontFile.name);
     } else {
-        console.error("[kycService] ERROR: idFrontFile is not a valid File object!", idFrontFile);
-        throw new Error("Internal Error: Front ID document is missing or invalid.");
+        // This should ideally be caught by form validation earlier
+        console.error("[kycService] ERROR: idFrontFile is missing or not a File object.");
+        throw new Error("Front ID document is missing or invalid.");
     }
-    if (idBackFile instanceof File && kycData.idType === 'resident_permit') {
-        console.log(`[kycService] Appending file ${backFileFieldName}: ${idBackFile.name}`);
-        formData.append(backFileFieldName, idBackFile, idBackFile.name);
-    } else if (!idBackFile && kycData.idType === 'resident_permit') {
-        console.error("[kycService] ERROR: idBackFile missing for resident_permit.");
-        throw new Error("Internal Error: Back ID document is missing for Resident Permit.");
+
+    // Append back file only if it's provided and required for the ID type
+    // (Assuming backend handles the logic of whether it's needed based on idType)
+    if (idBackFile instanceof File) {
+         // console.log(`[kycService] Appending file ${backFileFieldName}: ${idBackFile.name}`);
+         formData.append(backFileFieldName, idBackFile, idBackFile.name);
     }
 
     try {
-        console.log('[kycService] Attempting POST /kyc/submit with FormData...');
+        // console.log('[kycService] Attempting POST /kyc/submit with FormData...');
         const response: AxiosResponse<KycSuccessResponse> = await apiClient.post(
             '/kyc/submit',
             formData
-            // No explicit headers object here for Content-Type (browser sets it for FormData)
+            // No explicit Content-Type header - Browser sets it correctly for FormData
         );
-        console.log('[kycService] KYC Submission Successful:', response.data);
+        // console.log('[kycService] KYC Submission Successful:', response.data);
         return response.data;
     } catch (error: unknown) {
         console.error('[kycService] --- KYC SUBMISSION HTTP ERROR ---');
         const errorMessage = getApiErrorMessage(error);
-        console.error('[kycService] Processed Submission Error Message:', errorMessage);
+        // console.error('[kycService] Processed Submission Error Message:', errorMessage);
+        // Throw the processed error message for the UI to catch
         throw new Error(errorMessage);
     }
 };
@@ -1412,15 +1724,16 @@ const submitKyc = async (
  * Sends a request to mark the KYC process as skipped by the user.
  */
 const skipKyc = async (): Promise<KycSuccessResponse> => {
-    console.log('[kycService] Skipping KYC process...');
+    // console.log('[kycService] Skipping KYC process...');
     try {
+        // No payload needed for skip
         const response: AxiosResponse<KycSuccessResponse> = await apiClient.post('/kyc/skip');
-        console.log('[kycService] KYC Skip Successful:', response.data);
+        // console.log('[kycService] KYC Skip Successful:', response.data);
         return response.data;
     } catch (error: unknown) {
         console.error('[kycService] KYC Skip Error:', error);
         const errorMessage = getApiErrorMessage(error);
-        console.error('[kycService] Processed Skip Error Message:', errorMessage);
+        // console.error('[kycService] Processed Skip Error Message:', errorMessage);
         throw new Error(errorMessage);
     }
  };
@@ -1429,18 +1742,26 @@ const skipKyc = async (): Promise<KycSuccessResponse> => {
  * Fetches the current user's KYC status and rejection reason, if applicable.
  */
 const getMyKycStatus = async (): Promise<KycStatusResponse> => {
-    console.log('[kycService] Fetching KYC status...');
+    // console.log('[kycService] Fetching KYC status...');
     try {
         const response: AxiosResponse<KycStatusResponse> = await apiClient.get('/kyc/status');
-        console.log('[kycService] KYC Status Response:', response.data);
-        // Provide default if backend returns empty success response for 'not_started'
-        return response.data || { status: 'not_started', rejectionReason: null };
+        // console.log('[kycService] KYC Status Response:', response.data);
+        // Handle cases where backend might return empty success (e.g., 200 OK with no body)
+        // Ensure a valid status is always returned.
+        if (response.data && response.data.status) {
+             return response.data;
+        } else {
+             // If no status returned but request was successful, assume 'not_started'
+             console.warn("[kycService] getMyKycStatus received success response but no status data. Assuming 'not_started'.");
+             return { status: 'not_started', rejectionReason: null };
+        }
     } catch (error: unknown) {
         console.error('[kycService] Get KYC Status Error:', error);
         const errorMessage = getApiErrorMessage(error);
-        console.error('[kycService] Processed Status Error Message:', errorMessage);
-        // If status fails, maybe default to 'not_started' or rethrow depending on desired UX
-        throw new Error(errorMessage); // Rethrowing is usually safer
+        // console.error('[kycService] Processed Status Error Message:', errorMessage);
+        // Decide fallback behavior: rethrow, or return a default error state?
+        // Rethrowing is generally better to let the caller handle the failure explicitly.
+        throw new Error(errorMessage);
     }
  };
 
@@ -1453,20 +1774,21 @@ const updateMyKycDetails = async (updateData: UpdateDetailsPayload): Promise<Kyc
         const response: AxiosResponse<KycSuccessResponse> = await apiClient.put(
             '/kyc/update-details',
             updateData,
-            { headers: { 'Content-Type': 'application/json' } } // Explicit JSON header for this request
+            // Explicitly set Content-Type for PUT request with JSON body
+            { headers: { 'Content-Type': 'application/json' } }
         );
         console.log('[kycService] KYC Details Update Successful:', response.data);
         return response.data;
     } catch (error: unknown) {
         console.error('[kycService] Update KYC Details Error:', error);
         const errorMessage = getApiErrorMessage(error);
-        console.error('[kycService] Processed Update Error Message:', errorMessage);
+        // console.error('[kycService] Processed Update Error Message:', errorMessage);
         throw new Error(errorMessage);
     }
  };
 
 
-// Export the service object containing all methods as the default export
+// Export the service object containing all methods
 const kycService = {
     submitKyc,
     skipKyc,

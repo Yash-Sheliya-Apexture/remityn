@@ -1767,7 +1767,7 @@ const ReviewCards: React.FC = () => {
           {reviewGroups.slice(0, 3).map((group, index) => (
             <div
               key={group.id || `group-${index}`}
-              className={`marquee-column marquee-column-${index + 1}`}
+              className={`lg:marquee-column marquee-column-${index + 1}`}
               ref={(el: HTMLDivElement | null) => {
                 columnRefs.current[index] = el;
               }}

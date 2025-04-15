@@ -343,7 +343,262 @@
 //   );
 // }
 
-// src/app/components/ui/AccountVerification.tsx
+// // src/app/components/ui/AccountVerification.tsx
+// import Link from "next/link";
+// import React from "react";
+// import { AlertCircle, AlertTriangle, ArrowRight, Clock, Info, RefreshCw } from "lucide-react"; // Added Clock, Info, RefreshCw
+// import { cn } from "@/lib/utils";
+// import type { KycStatus } from "@/app/services/kyc"; // Import the type
+
+// // --- Props Interface ---
+// interface AccountVerificationProps {
+//     status: KycStatus | null | undefined; // Receive the actual status
+//     reason?: string | null; // Rejection reason (only relevant if rejected)
+// }
+
+// // --- Account Verification Banner Component ---
+// export default function AccountVerification({ status, reason }: AccountVerificationProps) {
+
+//     let title = "Account Verification";
+//     let message = "Complete account verification to unlock all features.";
+//     let linkText = "Start Verification";
+//     let linkPath = "/kyc/start";
+//     let IconComponent: React.ElementType = AlertCircle;
+//     let variant: 'warning' | 'destructive' | 'info' | 'pending' = 'warning'; // Default to warning
+
+//     // --- Determine content based on status ---
+//     switch (status) {
+//         case 'not_started':
+//             title = "Verify Your Account";
+//             message = "Complete account verification to unlock all features, including sending higher amounts and receiving money in different currencies.";
+//             linkText = "Start Verification";
+//             linkPath = "/kyc/start";
+//             IconComponent = AlertCircle;
+//             variant = 'warning';
+//             break;
+
+//         case 'skipped':
+//             title = "Complete Verification";
+//             message = "You skipped verification earlier. Complete it now to access all account features and enhance security.";
+//             linkText = "Start Verification";
+//             linkPath = "/kyc/start";
+//             IconComponent = Info;
+//             variant = 'info';
+//             break;
+
+//         case 'pending':
+//             title = "Verification Pending";
+//             message = "Your documents are under review. This usually takes 1-2 business days. We'll notify you upon completion.";
+//             linkText = "Check Status";
+//             linkPath = "/kyc/pending";
+//             IconComponent = Clock;
+//             variant = 'pending';
+//             break;
+
+//         case 'rejected':
+//             title = "Verification Action Required";
+//             const defaultRejectionMessage = 'Please review common issues (e.g., document clarity, validity) and try again.';
+//             message = `Your previous verification attempt requires attention.${reason ? ` Reason: ${reason}` : ` ${defaultRejectionMessage}`}`;
+//             linkText = "Retry Verification";
+//             linkPath = "/kyc/start"; // Links to start for retry
+//             IconComponent = AlertTriangle;
+//             variant = 'destructive';
+//             break;
+
+//         case 'verified':
+//              console.warn("AccountVerification rendered with status 'verified'. This should not happen.");
+//              return null; // Render nothing if somehow called with 'verified'
+
+//         default:
+//              console.warn(`AccountVerification rendered with unexpected status: ${status}`);
+//              title = "Verification Status Unknown";
+//              message = "Could not determine verification status. Please check your profile or contact support.";
+//              linkText = "Contact Support";
+//              linkPath = "/support";
+//              IconComponent = AlertCircle;
+//              variant = 'warning';
+//              // return null; // Or render a generic message as above
+//              break;
+//     }
+
+//     // --- Determine styles based on variant ---
+//     const styles = {
+//         warning: { iconColor: "text-yellow-600 dark:text-yellow-400", bgColor: "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 dark:border-yellow-700/40", titleColor: "text-yellow-800 dark:text-yellow-200", messageColor: "text-yellow-700 dark:text-yellow-300/90", linkColor: "text-yellow-700 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300" },
+//         destructive: { iconColor: "text-destructive", bgColor: "bg-destructive/10 dark:bg-destructive/20 border-destructive/30", titleColor: "text-destructive dark:text-red-300", messageColor: "text-destructive/90 dark:text-red-300/80", linkColor: "text-destructive hover:text-destructive/80" },
+//         info: { iconColor: "text-blue-600 dark:text-blue-400", bgColor: "bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-700/40", titleColor: "text-blue-800 dark:text-blue-200", messageColor: "text-blue-700 dark:text-blue-300/90", linkColor: "text-blue-700 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300" },
+//         pending: { iconColor: "text-cyan-600 dark:text-cyan-400", bgColor: "bg-cyan-50 dark:bg-cyan-900/20 border-cyan-300 dark:border-cyan-700/40", titleColor: "text-cyan-800 dark:text-cyan-200", messageColor: "text-cyan-700 dark:text-cyan-300/90", linkColor: "text-cyan-700 hover:text-cyan-800 dark:text-cyan-400 dark:hover:text-cyan-300" }
+//     };
+//     const currentStyles = styles[variant];
+
+//     // Don't render if status is null/undefined and it's not explicitly handled as 'unknown'
+//     if (!status && variant !== 'warning') return null;
+
+//   return (
+//     <div className={cn("Verify-Banner rounded-lg border p-4 shadow-sm", currentStyles.bgColor)} role="alert">
+//         <div className="flex items-start gap-3 sm:gap-4">
+//             {/* Icon */}
+//             <div className={cn("flex-shrink-0 mt-0.5", currentStyles.iconColor)}>
+//                 <IconComponent aria-hidden="true" className="h-5 w-5 sm:h-6 sm:w-6" />
+//                 <span className="sr-only">{variant.charAt(0).toUpperCase() + variant.slice(1)}</span>
+//             </div>
+
+//             {/* Text and Link */}
+//             <div className="flex-grow">
+//                  <h3 className={cn("text-sm sm:text-base font-semibold", currentStyles.titleColor)}>
+//                     {title}
+//                 </h3>
+//                 <p className={cn("text-xs sm:text-sm mt-1", currentStyles.messageColor)}>
+//                     {message}
+//                 </p>
+//                 {/* Only show link if not pending OR link points to pending page */}
+//                  {(status !== 'pending' || linkPath === '/kyc/pending') && (
+//                     <Link
+//                          href={linkPath}
+//                          className={cn(
+//                             "inline-flex items-center gap-1 text-sm font-semibold mt-2 group transition-colors duration-150",
+//                             currentStyles.linkColor
+//                         )}
+//                     >
+//                         {linkText}
+//                          <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-200 ease-in-out group-hover:translate-x-1" />
+//                     </Link>
+//                  )}
+//             </div>
+//         </div>
+//     </div>
+//   );
+// }
+
+
+// // src/app/components/ui/AccountVerification.tsx
+// // No changes needed here. It correctly displays based on the props received.
+// import Link from "next/link";
+// import React from "react";
+// import { AlertCircle, AlertTriangle, ArrowRight, Clock, Info, RefreshCw } from "lucide-react"; // Added Clock, Info, RefreshCw
+// import { cn } from "@/lib/utils";
+// import type { KycStatus } from "@/app/services/kyc"; // Import the type
+
+// // --- Props Interface ---
+// interface AccountVerificationProps {
+//     status: KycStatus | null | undefined; // Receive the actual status
+//     reason?: string | null; // Rejection reason (only relevant if rejected)
+// }
+
+// // --- Account Verification Banner Component ---
+// export default function AccountVerification({ status, reason }: AccountVerificationProps) {
+
+//     let title = "Account Verification";
+//     let message = "Complete account verification to unlock all features.";
+//     let linkText = "Start Verification";
+//     let linkPath = "/kyc/start";
+//     let IconComponent: React.ElementType = AlertCircle;
+//     let variant: 'warning' | 'destructive' | 'info' | 'pending' = 'warning'; // Default to warning
+
+//     // --- Determine content based on status ---
+//     switch (status) {
+//         case 'not_started':
+//             title = "Verify Your Account";
+//             message = "Complete account verification to unlock all features, including sending higher amounts and receiving money in different currencies.";
+//             linkText = "Start Verification";
+//             linkPath = "/kyc/start";
+//             IconComponent = AlertCircle;
+//             variant = 'warning';
+//             break;
+
+//         case 'skipped':
+//             title = "Complete Verification";
+//             message = "You skipped verification earlier. Complete it now to access all account features and enhance security.";
+//             linkText = "Start Verification";
+//             linkPath = "/kyc/start";
+//             IconComponent = Info;
+//             variant = 'info';
+//             break;
+
+//         case 'pending':
+//             title = "Verification Pending";
+//             message = "Your documents are under review. This usually takes 1-2 business days. We'll notify you upon completion.";
+//             linkText = "Check Status"; // Link still relevant for pending
+//             linkPath = "/kyc/pending";
+//             IconComponent = Clock;
+//             variant = 'pending';
+//             break;
+
+//         case 'rejected':
+//             title = "Verification Action Required";
+//             const defaultRejectionMessage = 'Please review common issues (e.g., document clarity, validity) and try again.';
+//             message = `Your previous verification attempt requires attention.${reason ? ` Reason: ${reason}` : ` ${defaultRejectionMessage}`}`;
+//             linkText = "Retry Verification";
+//             linkPath = "/kyc/start"; // Links to start for retry
+//             IconComponent = AlertTriangle;
+//             variant = 'destructive';
+//             break;
+
+//         case 'verified':
+//              // This component should not be rendered if status is verified (handled in MainDashboard)
+//              // console.warn("AccountVerification rendered with status 'verified'. Should be hidden by parent.");
+//              return null; // Render nothing
+
+//         default:
+//              console.warn(`AccountVerification rendered with unexpected status: ${status}`);
+//              // Provide a generic message but keep it distinct
+//              title = "Verification Status Unknown";
+//              message = "We couldn't determine your current verification status. Please refresh or contact support if this persists.";
+//              linkText = "Contact Support"; // Make link actionable
+//              linkPath = "/support"; // Or relevant support page
+//              IconComponent = AlertCircle;
+//              variant = 'warning'; // Use warning for unknown/error state
+//              // Decide if you want to show this generic banner or return null
+//              // return null; // Option to hide completely
+//              break;
+//     }
+
+//     // --- Determine styles based on variant ---
+//     const styles = {
+//         warning: { iconColor: "text-yellow-600 dark:text-yellow-400", bgColor: "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 dark:border-yellow-700/40", titleColor: "text-yellow-800 dark:text-yellow-200", messageColor: "text-yellow-700 dark:text-yellow-300/90", linkColor: "text-yellow-700 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300" },
+//         destructive: { iconColor: "text-destructive", bgColor: "bg-destructive/10 dark:bg-destructive/20 border-destructive/30", titleColor: "text-destructive dark:text-red-300", messageColor: "text-destructive/90 dark:text-red-300/80", linkColor: "text-destructive hover:text-destructive/80" },
+//         info: { iconColor: "text-blue-600 dark:text-blue-400", bgColor: "bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-700/40", titleColor: "text-blue-800 dark:text-blue-200", messageColor: "text-blue-700 dark:text-blue-300/90", linkColor: "text-blue-700 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300" },
+//         pending: { iconColor: "text-cyan-600 dark:text-cyan-400", bgColor: "bg-cyan-50 dark:bg-cyan-900/20 border-cyan-300 dark:border-cyan-700/40", titleColor: "text-cyan-800 dark:text-cyan-200", messageColor: "text-cyan-700 dark:text-cyan-300/90", linkColor: "text-cyan-700 hover:text-cyan-800 dark:text-cyan-400 dark:hover:text-cyan-300" }
+//     };
+//     const currentStyles = styles[variant];
+
+//     // Don't render if status is invalid and not handled as 'unknown'
+//     if (!status && variant !== 'warning') return null;
+
+//   return (
+//     <div className={cn("Verify-Banner rounded-lg border p-4 shadow-sm", currentStyles.bgColor)} role="alert">
+//         <div className="flex items-start gap-3 sm:gap-4">
+//             {/* Icon */}
+//             <div className={cn("flex-shrink-0 mt-0.5", currentStyles.iconColor)}>
+//                 <IconComponent aria-hidden="true" className="h-5 w-5 sm:h-6 sm:w-6" />
+//                 <span className="sr-only">{variant.charAt(0).toUpperCase() + variant.slice(1)}</span>
+//             </div>
+
+//             {/* Text and Link */}
+//             <div className="flex-grow">
+//                  <h3 className={cn("text-sm sm:text-base font-semibold", currentStyles.titleColor)}>
+//                     {title}
+//                 </h3>
+//                 <p className={cn("text-xs sm:text-sm mt-1", currentStyles.messageColor)}>
+//                     {message}
+//                 </p>
+//                 {/* Link logic remains the same */}
+//                  <Link
+//                      href={linkPath}
+//                      className={cn(
+//                         "inline-flex items-center gap-1 text-sm font-semibold mt-2 group transition-colors duration-150",
+//                         currentStyles.linkColor
+//                     )}
+//                  >
+//                     {linkText}
+//                      <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-200 ease-in-out group-hover:translate-x-1" />
+//                  </Link>
+//             </div>
+//         </div>
+//     </div>
+//   );
+// }
+
+// frontend/src/app/components/ui/AccountVerification.tsx
 import Link from "next/link";
 import React from "react";
 import { AlertCircle, AlertTriangle, ArrowRight, Clock, Info, RefreshCw } from "lucide-react"; // Added Clock, Info, RefreshCw
@@ -381,7 +636,7 @@ export default function AccountVerification({ status, reason }: AccountVerificat
             title = "Complete Verification";
             message = "You skipped verification earlier. Complete it now to access all account features and enhance security.";
             linkText = "Start Verification";
-            linkPath = "/kyc/start";
+            linkPath = "/kyc/start"; // Go to start page to initiate
             IconComponent = Info;
             variant = 'info';
             break;
@@ -389,7 +644,7 @@ export default function AccountVerification({ status, reason }: AccountVerificat
         case 'pending':
             title = "Verification Pending";
             message = "Your documents are under review. This usually takes 1-2 business days. We'll notify you upon completion.";
-            linkText = "Check Status";
+            linkText = "Check Status"; // Link to pending page
             linkPath = "/kyc/pending";
             IconComponent = Clock;
             variant = 'pending';
@@ -398,26 +653,31 @@ export default function AccountVerification({ status, reason }: AccountVerificat
         case 'rejected':
             title = "Verification Action Required";
             const defaultRejectionMessage = 'Please review common issues (e.g., document clarity, validity) and try again.';
-            message = `Your previous verification attempt requires attention.${reason ? ` Reason: ${reason}` : ` ${defaultRejectionMessage}`}`;
+            // Construct message including the reason if available
+            message = `Your verification attempt requires attention.${reason ? ` Reason: ${reason}` : ` ${defaultRejectionMessage}`}`;
             linkText = "Retry Verification";
-            linkPath = "/kyc/start"; // Links to start for retry
+            linkPath = "/kyc/start"; // Links to start page for retry flow
             IconComponent = AlertTriangle;
             variant = 'destructive';
             break;
 
         case 'verified':
-             console.warn("AccountVerification rendered with status 'verified'. This should not happen.");
-             return null; // Render nothing if somehow called with 'verified'
+             // This component should not be rendered if status is verified
+             // This is handled by the parent component (MainDashboard)
+             // console.warn("AccountVerification rendered with status 'verified'. Should be hidden by parent.");
+             return null; // Render nothing
 
         default:
-             console.warn(`AccountVerification rendered with unexpected status: ${status}`);
+             // Handle null, undefined, or unexpected status values
+             console.warn(`AccountVerification rendered with unexpected or missing status: ${status}`);
              title = "Verification Status Unknown";
-             message = "Could not determine verification status. Please check your profile or contact support.";
-             linkText = "Contact Support";
+             message = "We couldn't determine your current verification status. Please refresh or contact support if this persists.";
+             linkText = "Contact Support"; // Actionable link
              linkPath = "/support";
              IconComponent = AlertCircle;
-             variant = 'warning';
-             // return null; // Or render a generic message as above
+             variant = 'warning'; // Use warning for unknown/error state
+             // Decide whether to show this generic banner or hide completely
+             // return null; // Option to hide completely if status is truly unknown/invalid
              break;
     }
 
@@ -430,8 +690,8 @@ export default function AccountVerification({ status, reason }: AccountVerificat
     };
     const currentStyles = styles[variant];
 
-    // Don't render if status is null/undefined and it's not explicitly handled as 'unknown'
-    if (!status && variant !== 'warning') return null;
+    // Don't render if status is null/undefined and not handled as 'unknown' warning
+    // if (!status && variant !== 'warning') return null; // Already handled by switch default potentially returning null or rendering warning
 
   return (
     <div className={cn("Verify-Banner rounded-lg border p-4 shadow-sm", currentStyles.bgColor)} role="alert">
@@ -450,19 +710,17 @@ export default function AccountVerification({ status, reason }: AccountVerificat
                 <p className={cn("text-xs sm:text-sm mt-1", currentStyles.messageColor)}>
                     {message}
                 </p>
-                {/* Only show link if not pending OR link points to pending page */}
-                 {(status !== 'pending' || linkPath === '/kyc/pending') && (
-                    <Link
-                         href={linkPath}
-                         className={cn(
-                            "inline-flex items-center gap-1 text-sm font-semibold mt-2 group transition-colors duration-150",
-                            currentStyles.linkColor
-                        )}
-                    >
-                        {linkText}
-                         <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-200 ease-in-out group-hover:translate-x-1" />
-                    </Link>
-                 )}
+                {/* Link */}
+                 <Link
+                     href={linkPath}
+                     className={cn(
+                        "inline-flex items-center gap-1 text-sm font-semibold mt-2 group transition-colors duration-150",
+                        currentStyles.linkColor
+                    )}
+                 >
+                    {linkText}
+                     <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-200 ease-in-out group-hover:translate-x-1" />
+                 </Link>
             </div>
         </div>
     </div>
