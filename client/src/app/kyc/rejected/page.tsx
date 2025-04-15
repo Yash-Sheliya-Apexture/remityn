@@ -751,6 +751,136 @@
 // }
 
 
+// // frontend/src/app/kyc/rejected/page.tsx
+// 'use client';
+
+// import React, { useEffect } from 'react';
+// import { useRouter } from 'next/navigation';
+// import { Button } from '@/components/ui/button';
+// import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+// import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+// import { Loader2, AlertTriangle, RotateCcw, LayoutDashboard, FileWarning, HelpCircle } from 'lucide-react';
+// import { useAuth } from '@/app/contexts/AuthContext';
+// import { useKyc } from '../../contexts/KycContext'; // Correct path
+// import Link from 'next/link';
+
+// export default function KycRejectedPage() {
+//     const router = useRouter();
+//     const { user, loading: authLoading } = useAuth();
+//     const {
+//         resetKycProgress, // Use this for retry
+//         updateCurrentUiStepId,
+//         backendStatus,
+//         rejectionReason,
+//         isInitialized: kycInitialized,
+//         isLoadingStatus: kycLoadingStatus
+//     } = useKyc();
+
+//     // Effect 1: Set UI step
+//     useEffect(() => {
+//         if (kycInitialized) {
+//             updateCurrentUiStepId('rejected');
+//         }
+//     }, [kycInitialized, updateCurrentUiStepId]);
+
+//     // Effect 2: Check login status
+//     useEffect(() => {
+//         if (!authLoading && !user && kycInitialized) {
+//             router.replace('/auth/login?redirect=/kyc/rejected');
+//         }
+//     }, [user, authLoading, kycInitialized, router]);
+
+//     // Effect 3: Rely on KycContext provider for redirection if status changes
+
+//     // --- Action Handlers ---
+//     const handleRetryVerification = () => {
+//         console.log("KYC Rejected: Retrying verification...");
+//         // *** Call resetKycProgress with true to navigate to start ***
+//         resetKycProgress(true);
+//     };
+
+//     const handleGoToDashboard = () => {
+//         router.push('/dashboard');
+//     };
+
+//     // --- Render Logic ---
+//     if (authLoading || !kycInitialized) {
+//         return ( /* ... Loading indicator ... */
+//              <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
+//                  <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
+//                  <p className="text-muted-foreground text-lg">Initializing...</p>
+//              </div>
+//         );
+//     }
+//     if (!user) {
+//         return ( /* ... Redirecting to login indicator ... */
+//              <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
+//                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground mb-3" />
+//                  <p className="text-muted-foreground">Redirecting to login...</p>
+//              </div>
+//         );
+//     }
+//     if (kycLoadingStatus || (backendStatus !== 'rejected' && backendStatus !== 'error')) {
+//         return ( /* ... Checking status indicator ... */
+//              <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
+//                  <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
+//                  <p className="text-muted-foreground text-lg">Checking Verification Status...</p>
+//              </div>
+//         );
+//     }
+//     if (backendStatus !== 'rejected') {
+//         // Should be redirected by KycContext, show loading as fallback
+//         return ( /* ... Updating status indicator ... */
+//              <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
+//                  <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
+//                  <p className="text-muted-foreground text-lg">Updating Status...</p>
+//              </div>
+//          );
+//     }
+
+//     // --- Main Rejected Content ---
+//     return (
+//         <div className="flex justify-center items-center min-h-[calc(100vh-200px)] px-4 py-8">
+//             <Card className="w-full max-w-lg mx-auto shadow-xl border border-destructive/50 bg-gradient-to-br from-background to-red-50 dark:from-secondary dark:to-red-900/20 animate-fadeIn overflow-hidden">
+//                 <CardHeader className="text-center items-center p-6 md:p-8 bg-destructive/10 dark:bg-destructive/20 border-b border-destructive/20 dark:border-red-800/60">
+//                     <div className="p-4 bg-red-100 dark:bg-red-900/40 rounded-full mb-4 border border-destructive/30 dark:border-red-800/50 shadow-inner">
+//                         <AlertTriangle className="h-10 w-10 text-destructive stroke-[1.5]" />
+//                     </div>
+//                     <CardTitle className="text-2xl md:text-3xl font-bold tracking-tight text-destructive">
+//                         Verification Action Required
+//                     </CardTitle>
+//                     <CardDescription className="text-base text-destructive/90 dark:text-red-300/90 pt-1 max-w-md mx-auto">
+//                         Unfortunately, we couldn't verify your identity.
+//                     </CardDescription>
+//                 </CardHeader>
+//                 <CardContent className="p-6 md:p-8 text-center space-y-6">
+//                     <Alert variant="destructive" className="text-left">
+//                         <FileWarning className="h-4 w-4" />
+//                         <AlertTitle className="font-semibold">Reason for Rejection</AlertTitle>
+//                         <AlertDescription>
+//                             {rejectionReason || "No specific reason provided. Common issues include unclear images, expired documents, or mismatched information. Please ensure your documents are valid and uploaded clearly."}
+//                         </AlertDescription>
+//                     </Alert>
+//                     <p className="text-foreground/90 dark:text-foreground/80 px-2 text-base">
+//                         Please review the reason above. You can restart the verification process with updated information or corrected documents.
+//                     </p>
+//                     <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+//                         <Button onClick={handleRetryVerification} size="lg" className="w-full sm:w-auto bg-destructive hover:bg-destructive/90 text-destructive-foreground flex-1">
+//                             <RotateCcw className="mr-2 h-4 w-4" /> Retry Verification
+//                         </Button>
+//                         <Button onClick={handleGoToDashboard} variant="outline" size="lg" className="w-full sm:w-auto flex-1">
+//                             <LayoutDashboard className="mr-2 h-4 w-4" /> Go to Dashboard
+//                         </Button>
+//                     </div>
+//                     <p className="text-xs text-muted-foreground pt-4">
+//                         Need help? <Link href="/support" className="underline hover:text-primary">Contact support</Link> <HelpCircle className="inline h-3 w-3 ml-0.5"/>
+//                     </p>
+//                 </CardContent>
+//             </Card>
+//         </div>
+//     );
+// }
+
 // frontend/src/app/kyc/rejected/page.tsx
 'use client';
 
@@ -771,31 +901,32 @@ export default function KycRejectedPage() {
         resetKycProgress, // Use this for retry
         updateCurrentUiStepId,
         backendStatus,
-        rejectionReason,
+        rejectionReason, // Get reason from context
         isInitialized: kycInitialized,
         isLoadingStatus: kycLoadingStatus
     } = useKyc();
 
-    // Effect 1: Set UI step
+    // Effect 1: Set UI step if initialized and on the correct page
     useEffect(() => {
-        if (kycInitialized) {
+        if (kycInitialized && window.location.pathname === '/kyc/rejected') {
             updateCurrentUiStepId('rejected');
         }
     }, [kycInitialized, updateCurrentUiStepId]);
 
-    // Effect 2: Check login status
+    // Effect 2: Check login status (context provider handles main redirection)
     useEffect(() => {
         if (!authLoading && !user && kycInitialized) {
-            router.replace('/auth/login?redirect=/kyc/rejected');
+            // console.log("KYC Rejected: No user, context should redirect to login.");
+            // Let KycProvider handle redirect to login
         }
     }, [user, authLoading, kycInitialized, router]);
 
-    // Effect 3: Rely on KycContext provider for redirection if status changes
+    // Effect 3: Rely on KycContext provider (Effect 2) for redirection if status changes *away* from 'rejected'
 
     // --- Action Handlers ---
     const handleRetryVerification = () => {
         console.log("KYC Rejected: Retrying verification...");
-        // *** Call resetKycProgress with true to navigate to start ***
+        // Call resetKycProgress with true to clear state AND navigate to start page
         resetKycProgress(true);
     };
 
@@ -804,33 +935,32 @@ export default function KycRejectedPage() {
     };
 
     // --- Render Logic ---
+
+    // Show loading if Auth or KYC context is not ready
     if (authLoading || !kycInitialized) {
-        return ( /* ... Loading indicator ... */
+        return (
              <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
                  <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
                  <p className="text-muted-foreground text-lg">Initializing...</p>
              </div>
         );
     }
-    if (!user) {
-        return ( /* ... Redirecting to login indicator ... */
-             <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
-                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground mb-3" />
-                 <p className="text-muted-foreground">Redirecting to login...</p>
-             </div>
-        );
-    }
-    if (kycLoadingStatus || (backendStatus !== 'rejected' && backendStatus !== 'error')) {
-        return ( /* ... Checking status indicator ... */
+
+    // Show loading if status is being checked actively
+    if (kycLoadingStatus) {
+         return (
              <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
                  <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
                  <p className="text-muted-foreground text-lg">Checking Verification Status...</p>
              </div>
-        );
+         );
     }
-    if (backendStatus !== 'rejected') {
-        // Should be redirected by KycContext, show loading as fallback
-        return ( /* ... Updating status indicator ... */
+
+    // If user is logged in, but status is NOT rejected, context should redirect. Show loading briefly.
+    if (user && backendStatus !== 'rejected') {
+        // This state should be temporary as KycContext Effect 2 redirects
+        // console.log(`KYC Rejected Page: Status is ${backendStatus}, waiting for context redirect.`);
+        return (
              <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
                  <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
                  <p className="text-muted-foreground text-lg">Updating Status...</p>
@@ -838,7 +968,18 @@ export default function KycRejectedPage() {
          );
     }
 
-    // --- Main Rejected Content ---
+    // If user is not logged in (and auth check is complete), show loading/redirecting message
+    if (!user) {
+        return (
+             <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
+                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground mb-3" />
+                 <p className="text-muted-foreground">Redirecting to login...</p>
+             </div>
+        );
+    }
+
+
+    // --- Main Rejected Content (Render only if user exists and status is 'rejected') ---
     return (
         <div className="flex justify-center items-center min-h-[calc(100vh-200px)] px-4 py-8">
             <Card className="w-full max-w-lg mx-auto shadow-xl border border-destructive/50 bg-gradient-to-br from-background to-red-50 dark:from-secondary dark:to-red-900/20 animate-fadeIn overflow-hidden">
@@ -854,6 +995,7 @@ export default function KycRejectedPage() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 md:p-8 text-center space-y-6">
+                    {/* Display rejection reason from context */}
                     <Alert variant="destructive" className="text-left">
                         <FileWarning className="h-4 w-4" />
                         <AlertTitle className="font-semibold">Reason for Rejection</AlertTitle>
@@ -861,6 +1003,7 @@ export default function KycRejectedPage() {
                             {rejectionReason || "No specific reason provided. Common issues include unclear images, expired documents, or mismatched information. Please ensure your documents are valid and uploaded clearly."}
                         </AlertDescription>
                     </Alert>
+
                     <p className="text-foreground/90 dark:text-foreground/80 px-2 text-base">
                         Please review the reason above. You can restart the verification process with updated information or corrected documents.
                     </p>

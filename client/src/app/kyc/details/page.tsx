@@ -1098,9 +1098,345 @@
 //     );
 // }
 
+// 'use client';
+
+// import React, { useState, useEffect, useMemo } from 'react';
+// import { useForm } from 'react-hook-form';
+// import { zodResolver } from '@hookform/resolvers/zod';
+// import * as z from 'zod';
+// import { getData as getCountryData } from 'country-list'; // Corrected import
+
+// // --- UI Components ---
+// import { Button } from '@/components/ui/button';
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+// import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+// import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+// import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+// import { Loader2, Briefcase, BadgeDollarSign, Globe, AlertTriangle, ArrowLeft, ArrowRight, Check, ChevronsUpDown } from 'lucide-react';
+// import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+// import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+// import { cn } from '@/lib/utils'; // Ensure cn is imported
+
+// // --- App Specific Imports ---
+// import { useKyc, formStepOrder } from '../../contexts/KycContext';
+// import type { SalaryRange } from '@/app/services/kyc'; // Assuming it's exported
+
+// // --- Zod Validation Schema ---
+// const salaryRangeValues: [SalaryRange, ...SalaryRange[]] = ['0-1000', '10000-50000', '50000-100000', '100000+'];
+// const salaryRangeEnum = z.enum(salaryRangeValues);
+
+// const detailsSchema = z.object({
+//     occupation: z.string().trim()
+//         .max(100, { message: 'Occupation cannot exceed 100 characters' })
+//         .optional()
+//         .transform(val => val === '' ? undefined : val), // Keep: ensures empty input becomes undefined
+//     salaryRange: salaryRangeEnum.nullable().optional(), // Keep: allows null or valid range
+//     nationality: z.string({ required_error: "Nationality is required." })
+//         .trim()
+//         .min(1, { message: 'Nationality is required.' }), // Ensure a selection is made
+// });
+
+// type DetailsFormData = z.infer<typeof detailsSchema>;
+
+// // --- Select Options ---
+// const salaryOptions: { value: SalaryRange; label: string }[] = [
+//     { value: '0-1000', label: 'Below $10,000' },
+//     { value: '10000-50000', label: '$10,000 - $49,999' },
+//     { value: '50000-100000', label: '$50,000 - $99,999' },
+//     { value: '100000+', label: '$100,000 or more' },
+// ];
+// const occupationOptions: string[] = ['Student', 'Employed', 'Self-Employed', 'Business Owner', 'Investor', 'Retired', 'Unemployed', 'Other'];
+
+// type CountryOption = {
+//     value: string; // Country name (used as value for form)
+//     label: string; // Country name (used for display)
+// };
+
+// // --- Component ---
+// export default function KycDetailsPage() {
+//     const {
+//         kycData,
+//         setKycData,
+//         nextStep,
+//         prevStep,
+//         updateCurrentUiStepId,
+//         isInitialized: kycInitialized,
+//         backendStatus,
+//     } = useKyc();
+
+//     const [formError, setFormError] = useState<string | null>(null);
+//     const [isSubmitting, setIsSubmitting] = useState(false);
+//     const [isPageLoading, setIsPageLoading] = useState(true);
+//     const [nationalityPopoverOpen, setNationalityPopoverOpen] = useState(false);
+
+//     const countryOptions = useMemo<CountryOption[]>(() => {
+//         try {
+//             return getCountryData()
+//                 .map((country: { name: string; code: string }) => ({ // Added 'code' assuming it exists
+//                     value: country.name, // Store name as value
+//                     label: country.name, // Display name
+//                 }))
+//                 .sort((a, b) => a.label.localeCompare(b.label));
+//         } catch (error) {
+//             console.error("Failed to load country data:", error);
+//             return [];
+//         }
+//     }, []);
+
+//     const form = useForm<DetailsFormData>({
+//         resolver: zodResolver(detailsSchema),
+//         defaultValues: {
+//             occupation: undefined,
+//             salaryRange: null,
+//             nationality: '',
+//         },
+//         mode: 'onChange',
+//     });
+
+//     // Effect 1: Set UI step
+//     useEffect(() => {
+//         if (kycInitialized) {
+//             updateCurrentUiStepId('details');
+//         }
+//     }, [kycInitialized, updateCurrentUiStepId]);
+
+//     // Effect 2: Load data from context
+//     useEffect(() => {
+//         if (!kycInitialized || !countryOptions.length) {
+//             setIsPageLoading(true);
+//             return;
+//         }
+//         if (backendStatus !== 'not_started' && backendStatus !== 'rejected' && backendStatus !== 'skipped') {
+//             setIsPageLoading(false);
+//             return;
+//         }
+
+//         setIsPageLoading(true);
+//         form.reset({
+//             occupation: kycData.occupation || undefined,
+//             salaryRange: kycData.salaryRange && salaryRangeValues.includes(kycData.salaryRange)
+//                 ? kycData.salaryRange
+//                 : null,
+//             nationality: countryOptions.some(c => c.value === kycData.nationality)
+//                 ? kycData.nationality ?? ''
+//                 : '',
+//         });
+//         setIsPageLoading(false);
+//     }, [kycInitialized, backendStatus, kycData, form.reset, countryOptions]);
+
+//     // --- Event Handlers ---
+//     const onSubmit = (data: DetailsFormData) => {
+//         console.log("DetailsPage: Form submitted with validated data:", data);
+//         setIsSubmitting(true); setFormError(null);
+//         try {
+//             setKycData({
+//                 occupation: data.occupation || undefined, // Pass undefined if empty/null
+//                 salaryRange: data.salaryRange || null,   // Pass null if empty
+//                 nationality: data.nationality, // Already validated as string
+//             });
+//             nextStep();
+//         } catch (error: any) {
+//             console.error("DetailsPage: Error saving progress:", error);
+//             setFormError(error.message || "Failed to save progress.");
+//         } finally {
+//             setIsSubmitting(false);
+//         }
+//     };
+
+//     // --- Render Logic ---
+//     if (isPageLoading || !kycInitialized || !countryOptions.length) {
+//         return (
+//             <div className="flex justify-center items-center min-h-[400px] w-full">
+//                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
+//                 <span className="ml-3 text-muted-foreground">Loading Additional Details...</span>
+//             </div>
+//         );
+//     }
+
+//     if (backendStatus !== 'not_started' && backendStatus !== 'rejected' && backendStatus !== 'skipped') {
+//         return (
+//              <div className="flex flex-col justify-center items-center min-h-[400px] w-full text-center">
+//                  <Briefcase className="h-12 w-12 text-muted-foreground mb-4" />
+//                  <p className="text-muted-foreground">Your KYC status is currently <span className="font-semibold">{backendStatus.replace(/_/g, ' ')}</span>.</p>
+//                  <p className="text-sm text-muted-foreground mt-1">You cannot edit these details at this time.</p>
+//              </div>
+//         );
+//     }
+
+//     return (
+//         <Card className="w-full max-w-2xl mx-auto shadow-lg border border-border/40 animate-fadeIn">
+//              <CardHeader>
+//                 <CardTitle className="text-2xl font-semibold tracking-tight flex items-center gap-2">
+//                     <Briefcase className="h-6 w-6 text-primary" />
+//                     Additional Details (Step {formStepOrder.indexOf('details') + 1} of {formStepOrder.length})
+//                 </CardTitle>
+//                 <CardDescription>
+//                     Please provide your nationality. Other details are optional but help us understand our users better.
+//                 </CardDescription>
+//             </CardHeader>
+//              <CardContent className="p-6 md:p-8">
+//                  {formError && (
+//                     <Alert variant="destructive" className="mb-6">
+//                         <AlertTriangle className="h-4 w-4" />
+//                         <AlertTitle>Error</AlertTitle>
+//                         <AlertDescription>{formError}</AlertDescription>
+//                      </Alert>
+//                   )}
+//                  <Form {...form}>
+//                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+
+//                         {/* Occupation Select (Optional) */}
+//                         <FormField control={form.control} name="occupation" render={({ field }) => (
+//                              <FormItem>
+//                                 <FormLabel className="flex items-center gap-1.5">
+//                                     <Briefcase className="h-4 w-4 text-muted-foreground"/> Occupation (Optional)
+//                                 </FormLabel>
+//                                 {/* **FIX**: Use field.onChange directly. Pass undefined if value is empty string (handled by zod transform) */}
+//                                 <Select
+//                                     onValueChange={field.onChange}
+//                                     value={field.value ?? ""} // Map undefined/null to "" for Select state
+//                                 >
+//                                     <FormControl>
+//                                         {/* **FIX**: Use placeholder prop */}
+//                                         <SelectTrigger>
+//                                             <SelectValue placeholder="Select your occupation" />
+//                                         </SelectTrigger>
+//                                     </FormControl>
+//                                     <SelectContent>
+//                                         {/* **FIX**: Removed the explicit empty SelectItem */}
+//                                         {occupationOptions.map(opt => (
+//                                             // Ensure value prop is never empty string
+//                                             <SelectItem key={opt} value={opt}>
+//                                                 {opt}
+//                                             </SelectItem>
+//                                         ))}
+//                                     </SelectContent>
+//                                 </Select>
+//                                 <FormDescription>Your primary professional activity.</FormDescription>
+//                                 <FormMessage />
+//                             </FormItem>
+//                         )} />
+
+//                         {/* Salary Range Select (Optional) */}
+//                         <FormField control={form.control} name="salaryRange" render={({ field }) => (
+//                             <FormItem>
+//                                 <FormLabel className="flex items-center gap-1.5">
+//                                     <BadgeDollarSign className="h-4 w-4 text-muted-foreground"/> Annual Income Range (Optional)
+//                                 </FormLabel>
+//                                 {/* **FIX**: Use field.onChange. Pass null if value is empty string */}
+//                                 <Select
+//                                     onValueChange={(value) => field.onChange(value || null)}
+//                                     value={field.value ?? ""} // Map null/undefined to "" for Select state
+//                                 >
+//                                     <FormControl>
+//                                         {/* **FIX**: Use placeholder prop */}
+//                                         <SelectTrigger>
+//                                             <SelectValue placeholder="Select income range" />
+//                                         </SelectTrigger>
+//                                     </FormControl>
+//                                     <SelectContent>
+//                                          {/* **FIX**: Removed the explicit empty SelectItem */}
+//                                         {salaryOptions.map(opt => (
+//                                             // Ensure value prop is never empty string
+//                                             <SelectItem key={opt.value} value={opt.value}>
+//                                                 {opt.label}
+//                                             </SelectItem>
+//                                         ))}
+//                                     </SelectContent>
+//                                 </Select>
+//                                  <FormDescription>Approximate yearly income.</FormDescription>
+//                                  <FormMessage />
+//                             </FormItem>
+//                         )} />
+
+//                         {/* Nationality Combobox (Required) */}
+//                         <FormField
+//                             control={form.control}
+//                             name="nationality"
+//                             render={({ field }) => (
+//                                 <FormItem className="flex flex-col">
+//                                     <FormLabel className="flex items-center gap-1.5"><Globe className="h-4 w-4 text-muted-foreground"/> Nationality *</FormLabel>
+//                                     <Popover open={nationalityPopoverOpen} onOpenChange={setNationalityPopoverOpen}>
+//                                         <PopoverTrigger asChild>
+//                                             <FormControl>
+//                                                 <Button
+//                                                     variant="outline"
+//                                                     role="combobox"
+//                                                     aria-expanded={nationalityPopoverOpen}
+//                                                     aria-label="Select nationality"
+//                                                     className={cn(
+//                                                         "w-full justify-between",
+//                                                         !field.value && "text-muted-foreground"
+//                                                     )}
+//                                                 >
+//                                                     {field.value
+//                                                         ? countryOptions.find((country) => country.value === field.value)?.label
+//                                                         : "Select nationality..."}
+//                                                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+//                                                 </Button>
+//                                             </FormControl>
+//                                         </PopoverTrigger>
+//                                         <PopoverContent align="start" className="w-[--radix-popover-trigger-width] max-h-[--radix-popover-content-available-height] p-0">
+//                                             <Command filter={(value, search) => {
+//                                                 // Custom filter for better matching (name starts with, contains, etc.)
+//                                                 const label = countryOptions.find(c => c.value.toLowerCase() === value.toLowerCase())?.label ?? '';
+//                                                 return label.toLowerCase().includes(search.toLowerCase()) ? 1 : 0;
+//                                             }}>
+//                                                 <CommandInput placeholder="Search nationality..." />
+//                                                 <CommandList>
+//                                                     <CommandEmpty>No nationality found.</CommandEmpty>
+//                                                     <CommandGroup>
+//                                                         {countryOptions.map((country) => (
+//                                                             <CommandItem
+//                                                                 // Use value for internal matching and key
+//                                                                 value={country.value}
+//                                                                 key={country.value}
+//                                                                 onSelect={(currentValue) => {
+//                                                                     // currentValue is the 'value' prop of CommandItem
+//                                                                     form.setValue("nationality", currentValue, { shouldValidate: true });
+//                                                                     setNationalityPopoverOpen(false);
+//                                                                 }}
+//                                                             >
+//                                                                 <Check
+//                                                                     className={cn(
+//                                                                         "mr-2 h-4 w-4",
+//                                                                         country.value === field.value ? "opacity-100" : "opacity-0"
+//                                                                     )}
+//                                                                 />
+//                                                                 {country.label}
+//                                                             </CommandItem>
+//                                                         ))}
+//                                                     </CommandGroup>
+//                                                 </CommandList>
+//                                             </Command>
+//                                         </PopoverContent>
+//                                     </Popover>
+//                                     <FormDescription>Your country of citizenship.</FormDescription>
+//                                     <FormMessage />
+//                                 </FormItem>
+//                             )}
+//                         />
+
+//                         {/* Navigation Buttons */}
+//                         <div className="flex justify-between items-center pt-6 border-t dark:border-border/50 mt-8">
+//                             <Button type="button" variant="outline" onClick={prevStep} disabled={isSubmitting}>
+//                                 <ArrowLeft className="mr-2 h-4 w-4" /> Back
+//                             </Button>
+//                             <Button type="submit" disabled={isSubmitting || !form.formState.isValid}>
+//                                 {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ArrowRight className="mr-2 h-4 w-4" />} Continue
+//                             </Button>
+//                         </div>
+//                     </form>
+//                  </Form>
+//              </CardContent>
+//         </Card>
+//     );
+// }
+
+// frontend/src/app/kyc/details/page.tsx
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -1129,8 +1465,8 @@ const detailsSchema = z.object({
     occupation: z.string().trim()
         .max(100, { message: 'Occupation cannot exceed 100 characters' })
         .optional()
-        .transform(val => val === '' ? undefined : val), // Keep: ensures empty input becomes undefined
-    salaryRange: salaryRangeEnum.nullable().optional(), // Keep: allows null or valid range
+        .transform(val => val === '' ? undefined : val), // Ensures empty input becomes undefined for context
+    salaryRange: salaryRangeEnum.nullable().optional(), // Allows null or valid range for context
     nationality: z.string({ required_error: "Nationality is required." })
         .trim()
         .min(1, { message: 'Nationality is required.' }), // Ensure a selection is made
@@ -1162,6 +1498,8 @@ export default function KycDetailsPage() {
         updateCurrentUiStepId,
         isInitialized: kycInitialized,
         backendStatus,
+        isLoadingStatus: kycLoadingStatus,
+        authLoading, // Get auth loading status
     } = useKyc();
 
     const [formError, setFormError] = useState<string | null>(null);
@@ -1172,7 +1510,7 @@ export default function KycDetailsPage() {
     const countryOptions = useMemo<CountryOption[]>(() => {
         try {
             return getCountryData()
-                .map((country: { name: string; code: string }) => ({ // Added 'code' assuming it exists
+                .map((country: { name: string; code: string }) => ({
                     value: country.name, // Store name as value
                     label: country.name, // Display name
                 }))
@@ -1202,49 +1540,53 @@ export default function KycDetailsPage() {
 
     // Effect 2: Load data from context
     useEffect(() => {
-        if (!kycInitialized || !countryOptions.length) {
+        // Wait for context, auth, and country options
+        if (!kycInitialized || authLoading || !countryOptions.length) {
             setIsPageLoading(true);
             return;
         }
-        if (backendStatus !== 'not_started' && backendStatus !== 'rejected' && backendStatus !== 'skipped') {
+        // Check status allows being on this page
+        if (!['not_started', 'rejected', 'skipped'].includes(backendStatus as string)) {
             setIsPageLoading(false);
             return;
         }
 
         setIsPageLoading(true);
+        // Reset form with data from context or defaults
+        const currentNationality = kycData.nationality;
+        const validNationality = countryOptions.some(c => c.value === currentNationality) ? currentNationality : '';
+
         form.reset({
             occupation: kycData.occupation || undefined,
             salaryRange: kycData.salaryRange && salaryRangeValues.includes(kycData.salaryRange)
                 ? kycData.salaryRange
                 : null,
-            nationality: countryOptions.some(c => c.value === kycData.nationality)
-                ? kycData.nationality ?? ''
-                : '',
+            nationality: validNationality,
         });
         setIsPageLoading(false);
-    }, [kycInitialized, backendStatus, kycData, form.reset, countryOptions]);
+    }, [kycInitialized, authLoading, backendStatus, kycData, form.reset, countryOptions]); // form.reset is stable
 
     // --- Event Handlers ---
-    const onSubmit = (data: DetailsFormData) => {
-        console.log("DetailsPage: Form submitted with validated data:", data);
+    const onSubmit = useCallback((data: DetailsFormData) => {
+        // console.log("DetailsPage: Form submitted with validated data:", data);
         setIsSubmitting(true); setFormError(null);
         try {
+            // Data is already in the correct format (undefined/null) due to zod transform/schema
             setKycData({
-                occupation: data.occupation || undefined, // Pass undefined if empty/null
-                salaryRange: data.salaryRange || null,   // Pass null if empty
-                nationality: data.nationality, // Already validated as string
+                occupation: data.occupation,
+                salaryRange: data.salaryRange,
+                nationality: data.nationality,
             });
             nextStep();
         } catch (error: any) {
             console.error("DetailsPage: Error saving progress:", error);
             setFormError(error.message || "Failed to save progress.");
-        } finally {
-            setIsSubmitting(false);
+            setIsSubmitting(false); // Only reset on error
         }
-    };
+    }, [setKycData, nextStep]);
 
     // --- Render Logic ---
-    if (isPageLoading || !kycInitialized || !countryOptions.length) {
+    if (isPageLoading || authLoading || !kycInitialized || kycLoadingStatus || !countryOptions.length) {
         return (
             <div className="flex justify-center items-center min-h-[400px] w-full">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -1253,12 +1595,13 @@ export default function KycDetailsPage() {
         );
     }
 
-    if (backendStatus !== 'not_started' && backendStatus !== 'rejected' && backendStatus !== 'skipped') {
+    if (!['not_started', 'rejected', 'skipped'].includes(backendStatus as string)) {
         return (
              <div className="flex flex-col justify-center items-center min-h-[400px] w-full text-center">
                  <Briefcase className="h-12 w-12 text-muted-foreground mb-4" />
                  <p className="text-muted-foreground">Your KYC status is currently <span className="font-semibold">{backendStatus.replace(/_/g, ' ')}</span>.</p>
                  <p className="text-sm text-muted-foreground mt-1">You cannot edit these details at this time.</p>
+                 {/* Optionally add a button to navigate away */}
              </div>
         );
     }
@@ -1291,21 +1634,16 @@ export default function KycDetailsPage() {
                                 <FormLabel className="flex items-center gap-1.5">
                                     <Briefcase className="h-4 w-4 text-muted-foreground"/> Occupation (Optional)
                                 </FormLabel>
-                                {/* **FIX**: Use field.onChange directly. Pass undefined if value is empty string (handled by zod transform) */}
-                                <Select
-                                    onValueChange={field.onChange}
-                                    value={field.value ?? ""} // Map undefined/null to "" for Select state
-                                >
+                                {/* Pass field.onChange directly. Zod transform handles empty string -> undefined */}
+                                <Select onValueChange={field.onChange} value={field.value ?? ""}>
                                     <FormControl>
-                                        {/* **FIX**: Use placeholder prop */}
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select your occupation" />
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {/* **FIX**: Removed the explicit empty SelectItem */}
+                                        {/* No explicit empty item needed */}
                                         {occupationOptions.map(opt => (
-                                            // Ensure value prop is never empty string
                                             <SelectItem key={opt} value={opt}>
                                                 {opt}
                                             </SelectItem>
@@ -1323,21 +1661,16 @@ export default function KycDetailsPage() {
                                 <FormLabel className="flex items-center gap-1.5">
                                     <BadgeDollarSign className="h-4 w-4 text-muted-foreground"/> Annual Income Range (Optional)
                                 </FormLabel>
-                                {/* **FIX**: Use field.onChange. Pass null if value is empty string */}
-                                <Select
-                                    onValueChange={(value) => field.onChange(value || null)}
-                                    value={field.value ?? ""} // Map null/undefined to "" for Select state
-                                >
+                                {/* Map empty string back to null for field.onChange, as Zod expects null or enum */}
+                                <Select onValueChange={(value) => field.onChange(value || null)} value={field.value ?? ""}>
                                     <FormControl>
-                                        {/* **FIX**: Use placeholder prop */}
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select income range" />
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                         {/* **FIX**: Removed the explicit empty SelectItem */}
+                                        {/* No explicit empty item needed */}
                                         {salaryOptions.map(opt => (
-                                            // Ensure value prop is never empty string
                                             <SelectItem key={opt.value} value={opt.value}>
                                                 {opt.label}
                                             </SelectItem>
@@ -1368,6 +1701,7 @@ export default function KycDetailsPage() {
                                                         "w-full justify-between",
                                                         !field.value && "text-muted-foreground"
                                                     )}
+                                                    type="button" // Prevent form submission
                                                 >
                                                     {field.value
                                                         ? countryOptions.find((country) => country.value === field.value)?.label
@@ -1378,9 +1712,8 @@ export default function KycDetailsPage() {
                                         </PopoverTrigger>
                                         <PopoverContent align="start" className="w-[--radix-popover-trigger-width] max-h-[--radix-popover-content-available-height] p-0">
                                             <Command filter={(value, search) => {
-                                                // Custom filter for better matching (name starts with, contains, etc.)
-                                                const label = countryOptions.find(c => c.value.toLowerCase() === value.toLowerCase())?.label ?? '';
-                                                return label.toLowerCase().includes(search.toLowerCase()) ? 1 : 0;
+                                                // Value here is the item's `value` prop (country name)
+                                                return value.toLowerCase().includes(search.toLowerCase()) ? 1 : 0;
                                             }}>
                                                 <CommandInput placeholder="Search nationality..." />
                                                 <CommandList>
@@ -1388,11 +1721,11 @@ export default function KycDetailsPage() {
                                                     <CommandGroup>
                                                         {countryOptions.map((country) => (
                                                             <CommandItem
-                                                                // Use value for internal matching and key
+                                                                // Use value (country name) for matching and key
                                                                 value={country.value}
                                                                 key={country.value}
                                                                 onSelect={(currentValue) => {
-                                                                    // currentValue is the 'value' prop of CommandItem
+                                                                    // currentValue is the `value` prop (country name)
                                                                     form.setValue("nationality", currentValue, { shouldValidate: true });
                                                                     setNationalityPopoverOpen(false);
                                                                 }}
