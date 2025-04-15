@@ -32,17 +32,20 @@ const featuresData: FeatureItem[] = [
 
 const XeFeaturesSection: React.FC = () => {
   return (
-    <div className="bg-slate-50 py-5 md:py-10">
+    <div className="bg-[#f2f4f7] dark:bg-background py-5 md:py-10">
       {" "}
       {/* Optional background, adjust padding */}
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        {" "}
-        {/* Container with max-width and padding */}
         {/* Section Header */}
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            Find out why millions choose Xe
+            millions choose Xe
           </h2>
+
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-mainheading dark:text-white mt-6">
+            Find out why <span className="text-primary"></span>
+          </h2>
+
           <p className="mt-4 text-lg leading-8 text-gray-600">
             For over 30 years, Xe Corporation Inc. customers have been trusting
             us to manage and send international money transfers. It's what we
