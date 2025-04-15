@@ -175,7 +175,168 @@
 
 
 
-// backend/models/User.js
+// // backend/models/User.js
+// import mongoose from 'mongoose';
+// import bcrypt from 'bcryptjs'; // For password hashing
+
+// // --- KYC Subdocument Schema ---
+// const kycSchema = new mongoose.Schema({
+//     status: {
+//         type: String,
+//         enum: ['not_started', 'pending', 'verified', 'rejected', 'skipped'],
+//         default: 'not_started',
+//         index: true, // Index status for faster queries (e.g., find pending)
+//     },
+//     firstName: { type: String, trim: true },
+//     lastName: { type: String, trim: true },
+//     dateOfBirth: { type: Date },
+//     mobile: {
+//         _id: false, // Don't create ID for mobile object
+//         countryCode: { type: String, trim: true },
+//         number: { type: String, trim: true },
+//     },
+//     occupation: { type: String, trim: true },
+//     salaryRange: {
+//         type: String,
+//         enum: ['0-1000', '10000-50000', '50000-100000', '100000+', null],
+//         default: null,
+//     },
+//     nationality: { type: String, trim: true },
+//     idType: {
+//         type: String,
+//         enum: ['passport', 'resident_permit', null],
+//         default: null,
+//     },
+//     idNumber: { type: String, trim: true },
+//     idIssueDate: { type: Date },
+//     idExpiryDate: { type: Date },
+//     documents: [{
+//         _id: false, // Don't create ID for document objects
+//         docType: { type: String, required: true, enum: ['id_front', 'id_back'] },
+//         url: { type: String, required: true },
+//         public_id: { type: String, required: true }, // Cloudinary public ID
+//         uploadedAt: { type: Date, default: Date.now },
+//     }],
+//     submittedAt: { type: Date },
+//     verifiedAt: { type: Date },
+//     rejectedAt: { type: Date },
+//     rejectionReason: { type: String, trim: true },
+//     lastUpdatedAt: { type: Date }, // Track general updates to KYC
+// }, { _id: false });
+
+
+// // --- User Schema ---
+// const userSchema = new mongoose.Schema({
+//     fullName: { type: String, required: [true, 'Full name is required.'], trim: true },
+//     email: {
+//         type: String,
+//         required: [true, 'Email is required.'],
+//         unique: true,
+//         lowercase: true,
+//         trim: true,
+//         match: [ // Basic email format validation
+//             /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+//             'Please fill a valid email address',
+//         ],
+//         index: true, // Index email for faster lookups
+//     },
+//     password: {
+//         type: String,
+//         required: [true, 'Password is required.'],
+//         minlength: [8, 'Password must be at least 8 characters long.'],
+//         select: false, // Exclude password from query results by default
+//     },
+//     role: {
+//         type: String,
+//         enum: ['user', 'admin'],
+//         default: 'user',
+//     },
+//     kyc: {
+//         type: kycSchema,
+//         default: () => ({ status: 'not_started' }), // Ensure default object with status
+//         // No 'select: false' here, let it be included by default
+//         // We select needed parts in controllers/services
+//     },
+//     resetPasswordToken: String,
+//     resetPasswordExpires: Date,
+// }, {
+//     timestamps: true, // Automatically add createdAt and updatedAt
+//     toJSON: {
+//         transform: function (doc, ret) {
+//             delete ret.password; // Remove password when converting document to JSON
+//             delete ret.__v;     // Remove version key
+//             delete ret.resetPasswordToken;
+//             delete ret.resetPasswordExpires;
+//             // Optionally transform _id to id
+//             // ret.id = ret._id;
+//             // delete ret._id;
+//             return ret;
+//         },
+//         virtuals: true // Include virtuals if any are defined
+//     },
+//     toObject: { // Similar options for toObject if used
+//         transform: function (doc, ret) {
+//              delete ret.password;
+//              delete ret.__v;
+//              delete ret.resetPasswordToken;
+//              delete ret.resetPasswordExpires;
+//              return ret;
+//         },
+//         virtuals: true
+//     }
+// });
+
+// // --- Middleware ---
+
+// // Initialize KYC default and potentially pre-fill names on NEW user save
+// userSchema.pre('save', function (next) {
+//     if (this.isNew) {
+//         // Ensure KYC object exists with default status
+//         if (!this.kyc || !this.kyc.status) {
+//             this.kyc = { status: 'not_started' };
+//         }
+//         // Pre-fill names from fullName if KYC names are empty
+//         if (!this.kyc.firstName && !this.kyc.lastName && this.fullName) {
+//             const nameParts = this.fullName.trim().split(' ');
+//             this.kyc.firstName = nameParts[0] || '';
+//             this.kyc.lastName = nameParts.slice(1).join(' ') || '';
+//             console.log(`Initialized KYC names for new user ${this.email}`);
+//         }
+//     }
+//     next();
+// });
+
+// // Password Hashing Middleware (Run before saving if password is modified)
+// userSchema.pre('save', async function (next) {
+//     // Only hash the password if it has been modified (or is new)
+//     if (!this.isModified('password')) return next();
+
+//     try {
+//         const salt = await bcrypt.genSalt(10); // Generate salt (10 rounds is generally good)
+//         this.password = await bcrypt.hash(this.password, salt); // Hash the password
+//         next();
+//     } catch (error) {
+//         next(error); // Pass error to error handling middleware
+//     }
+// });
+
+// // --- Methods ---
+
+// // Method to compare entered password with hashed password in DB
+// userSchema.methods.matchPassword = async function (enteredPassword) {
+//     // 'this' refers to the user document
+//     // Need to explicitly select password if it was excluded in the initial query
+//     const userWithPassword = await mongoose.model('User').findById(this._id).select('+password');
+//     if (!userWithPassword) return false; // Should not happen if called on existing user doc
+//     return await bcrypt.compare(enteredPassword, userWithPassword.password);
+// };
+
+// // --- Model Creation ---
+// const User = mongoose.model('User', userSchema);
+
+// export default User;
+
+
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs'; // For password hashing
 
@@ -254,8 +415,6 @@ const userSchema = new mongoose.Schema({
     kyc: {
         type: kycSchema,
         default: () => ({ status: 'not_started' }), // Ensure default object with status
-        // No 'select: false' here, let it be included by default
-        // We select needed parts in controllers/services
     },
     resetPasswordToken: String,
     resetPasswordExpires: Date,
@@ -267,9 +426,6 @@ const userSchema = new mongoose.Schema({
             delete ret.__v;     // Remove version key
             delete ret.resetPasswordToken;
             delete ret.resetPasswordExpires;
-            // Optionally transform _id to id
-            // ret.id = ret._id;
-            // delete ret._id;
             return ret;
         },
         virtuals: true // Include virtuals if any are defined
@@ -300,7 +456,7 @@ userSchema.pre('save', function (next) {
             const nameParts = this.fullName.trim().split(' ');
             this.kyc.firstName = nameParts[0] || '';
             this.kyc.lastName = nameParts.slice(1).join(' ') || '';
-            console.log(`Initialized KYC names for new user ${this.email}`);
+            console.log(`[User Model - pre-save] Initialized KYC names for new user ${this.email}`);
         }
     }
     next();
@@ -309,13 +465,26 @@ userSchema.pre('save', function (next) {
 // Password Hashing Middleware (Run before saving if password is modified)
 userSchema.pre('save', async function (next) {
     // Only hash the password if it has been modified (or is new)
-    if (!this.isModified('password')) return next();
+    if (!this.isModified('password')) {
+        // --- ADDED LOG ---
+        console.log(`[User Model - pre-save] Password for ${this.email} not modified. Skipping hash.`);
+        return next();
+    }
+
+    // --- ADDED LOG ---
+    console.log(`[User Model - pre-save] Password for ${this.email} IS modified. Attempting to hash...`);
 
     try {
         const salt = await bcrypt.genSalt(10); // Generate salt (10 rounds is generally good)
+        // const originalPasswordForDebug = this.password; // Optional: Uncomment for deeper debugging
         this.password = await bcrypt.hash(this.password, salt); // Hash the password
+        // --- ADDED LOG ---
+        console.log(`[User Model - pre-save] Password for ${this.email} successfully hashed.`);
+        // console.log(`[User Model - pre-save] Original length: ${originalPasswordForDebug.length}, Hashed starts with: ${this.password.substring(0, 7)}`); // Optional detail
         next();
     } catch (error) {
+        // --- ADDED ERROR LOG ---
+        console.error(`[User Model - pre-save] Error hashing password for ${this.email}:`, error);
         next(error); // Pass error to error handling middleware
     }
 });

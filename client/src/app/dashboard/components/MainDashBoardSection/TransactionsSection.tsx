@@ -991,6 +991,337 @@
 // export default TransactionsSection;
 
 
+// // components/MainDashBoardSection/TransactionsSection.tsx
+// "use client";
+
+// import React, { useState, useEffect, useCallback } from "react";
+// import Link from "next/link";
+// import { LuPlus } from "react-icons/lu";
+// import { GoArrowUp } from "react-icons/go";
+
+// import { useAuth } from "../../../contexts/AuthContext";
+// // Import the response types from the service files
+// import paymentService, { PaymentDetailsResponse } from "../../../services/payment"; // Ensure PaymentDetailsResponse is defined correctly in payment.ts
+// import transferService, { TransferDetailsResponse } from "../../../services/transfer";
+// // Import the core Transaction type and Currency type
+// import { Transaction, Currency, TransactionStatus } from "@/types/transaction";
+// import { Skeleton } from "@/components/ui/skeleton";
+
+// // Helper function to create a Currency object from a code (Temporary Solution)
+// // TODO: Replace this with actual currency data lookup or ensure API returns full object
+// const mapCodeToCurrency = (code: string | undefined): Currency | undefined => {
+//   if (!code) return undefined;
+//   return {
+//     _id: code, // TEMPORARY HACK: Using code as _id. Assumes codes are unique.
+//                // Ideally, fetch/lookup the real Currency object with its actual _id.
+//     code: code,
+//   };
+// };
+
+
+// const TransactionsSection: React.FC = () => {
+//   const [latestTransactions, setLatestTransactions] = useState<Transaction[]>(
+//     []
+//   );
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+//   const { token } = useAuth();
+
+//   const fetchAndProcessTransactions = useCallback(async () => {
+//     // ... (token check, loading state logic remains the same) ...
+//     setLoading(true);
+//     setError(null);
+//     setLatestTransactions([]);
+
+//     try {
+//       const [paymentsData, transfersData] = await Promise.all([
+//         paymentService.getUserPayments(token), // Should return PaymentDetailsResponse[]
+//         transferService.getUserTransfers(token), // Should return TransferDetailsResponse[]
+//       ]);
+
+//       // --- Map Payments ---
+//       const mappedPayments: Transaction[] = paymentsData.map((payment: PaymentDetailsResponse): Transaction => {
+//           // Validate required fields from payment response if necessary
+//           if (!payment._id || !payment.status || payment.amountToPay === undefined) {
+//               console.warn("Skipping incomplete payment data:", payment);
+//               // Return null or throw an error, or handle appropriately
+//               // For now, let's filter these out later (or return a placeholder if needed)
+//               // This example implicitly filters by not pushing anything for invalid data
+//           }
+
+//           // Map accountId to the Transaction's account field
+//           const transactionAccount = typeof payment.accountId === 'string'
+//               ? { _id: payment.accountId } // Create object if only ID is given
+//               : payment.account; // Use directly if structure matches { _id: string } | string
+
+//           return {
+//               _id: payment._id,
+//               type: "Add Money",
+//               // Use amountToPay from response for amountToAdd in Transaction
+//               // You might want amountToAdd specifically if the API provides it,
+//               // otherwise derive from amountToPay. Let's assume amountToAdd = amountToPay here.
+//               amountToAdd: payment.amountToPay, // Corrected: Use amountToPay
+//               // Map balanceCurrencyCode to balanceCurrency object { _id, code } using helper
+//               balanceCurrency: mapCodeToCurrency(payment.balanceCurrencyCode), // Corrected: Use balanceCurrencyCode
+//               createdAt: payment.createdAt,
+//               updatedAt: payment.updatedAt,
+//               // Assert status type
+//               status: payment.status as TransactionStatus, // Use TransactionStatus alias
+//               // Map payInCurrencyCode to payInCurrency object { _id, code } using helper
+//               payInCurrency: mapCodeToCurrency(payment.payInCurrencyCode), // Corrected: Use payInCurrencyCode
+//               // Map accountId correctly
+//               account: transactionAccount, // Corrected: Use mapped accountId/account
+//               amountToPay: payment.amountToPay, // Keep original amountToPay
+
+//               // --- Initialize fields specific to Send Money ---
+//               name: undefined,
+//               sendAmount: undefined,
+//               sendCurrency: undefined,
+//               recipient: undefined,
+//               sourceAccountId: undefined,
+//               receiveAmount: undefined,
+//               receiveCurrency: undefined,
+//           };
+//       });
+
+
+//       // --- Map Transfers --- (Assuming this part was correct from previous step)
+//       const mappedTransfers: Transaction[] = transfersData.map((transfer: TransferDetailsResponse): Transaction => ({
+//         _id: transfer._id,
+//         type: "Send Money",
+//         name:
+//           typeof transfer.recipient === "object" && transfer.recipient !== null
+//             ? transfer.recipient.accountHolderName ?? "Recipient"
+//             : typeof transfer.recipient === 'string'
+//             ? "Recipient"
+//             : "Recipient",
+//         sendAmount: transfer.sendAmount,
+//         // Assume transfer response *does* contain full currency objects
+//         // If not, apply mapCodeToCurrency or similar logic here too
+//         sendCurrency: transfer.sendCurrency as Currency | undefined, // Assert type if needed
+//         createdAt: transfer.createdAt,
+//         updatedAt: transfer.updatedAt,
+//         status: transfer.status as TransactionStatus,
+//         recipient: transfer.recipient,
+//         sourceAccountId:
+//           typeof transfer.sourceAccount === "string"
+//             ? transfer.sourceAccount
+//             : typeof transfer.sourceAccount === 'object' && transfer.sourceAccount !== null
+//             ? transfer.sourceAccount._id
+//             : undefined,
+//         receiveAmount: transfer.receiveAmount,
+//         receiveCurrency: transfer.receiveCurrency as Currency | undefined, // Assert type if needed
+
+//         // --- Initialize fields specific to Add Money ---
+//         amountToAdd: undefined,
+//         balanceCurrency: undefined,
+//         payInCurrency: undefined,
+//         account: undefined,
+//         amountToPay: undefined,
+//       }));
+
+//       // Combine and sort
+//       // Filter out any nulls potentially introduced by validation in mapping
+//       const allTransactions = [...mappedPayments, ...mappedTransfers].filter(t => t !== null) as Transaction[];
+
+//       const sortedTransactions = allTransactions.sort((a, b) => {
+//         const dateA = a.updatedAt || a.createdAt;
+//         const dateB = b.updatedAt || b.createdAt;
+//         if (!dateA && !dateB) return 0;
+//         if (!dateA) return 1;
+//         if (!dateB) return -1;
+//         return new Date(dateB).getTime() - new Date(dateA).getTime();
+//       });
+
+//       setLatestTransactions(sortedTransactions.slice(0, 3));
+
+//     } catch (err: unknown) {
+//        // ... (error handling remains the same) ...
+//         console.error("Failed to fetch transactions:", err);
+//         let errorMessage = "Could not load recent transactions.";
+//         if (err instanceof Error) {
+//             errorMessage = err.message || errorMessage;
+//         } else if (typeof err === 'string' && err) {
+//             errorMessage = err;
+//         }
+//         setError(errorMessage);
+//     } finally {
+//       setLoading(false);
+//     }
+//   }, [token]);
+
+//   useEffect(() => {
+//     fetchAndProcessTransactions();
+//   }, [fetchAndProcessTransactions]);
+
+//   // --- Render Helper --- (renderTransactionRow function remains the same)
+//   const renderTransactionRow = (transaction: Transaction) => {
+//     // ... (implementation from previous step should be fine) ...
+//     const isAddMoney = transaction.type === "Add Money";
+//     const icon = isAddMoney ? (
+//       <LuPlus size={24} className="text-neutral-900 dark:text-white" />
+//     ) : (
+//       <GoArrowUp size={24} className="text-neutral-900 dark:text-white" />
+//     );
+//     const name = isAddMoney
+//       ? `To your ${transaction.balanceCurrency?.code ?? ""} balance`
+//       : transaction.name || "Recipient";
+
+//     let description: string;
+//     const status = transaction.status;
+
+//     if (isAddMoney) {
+//       description =
+//         status === "completed"
+//           ? "Added by you"
+//           : status === "pending" || status === "in progress"
+//           ? "Waiting for your money"
+//           : status === "canceled"
+//           ? "Cancelled"
+//           : status === "failed"
+//           ? "Failed"
+//           : status === "processing"
+//           ? "Processing payment"
+//           : "Processing";
+//     } else { // Send Money
+//       description =
+//         status === "completed"
+//           ? "Sent by you"
+//           : status === "pending"
+//           ? "Waiting to send"
+//           : status === "in progress" || status === "processing"
+//           ? "Sending your money"
+//           : status === "canceled"
+//           ? "Cancelled"
+//           : status === "failed"
+//           ? "Failed"
+//           : "Processing";
+//     }
+
+//     const amount = isAddMoney
+//       ? transaction.amountToAdd ?? 0
+//       : transaction.sendAmount ?? 0;
+//     const currencyCode = isAddMoney
+//       ? transaction.balanceCurrency?.code ?? ""
+//       : transaction.sendCurrency?.code ?? "";
+//     const amountPrefix = isAddMoney ? "+ " : "- ";
+//     let amountClass = "text-neutral-900 dark:text-white";
+
+//     if (isAddMoney && status === "completed") {
+//       amountClass = "text-green-600 dark:text-green-500";
+//     } else if (!isAddMoney && status === "completed") {
+//       amountClass = "text-neutral-900 dark:text-white";
+//     } else if (status === "canceled" || status === "failed") {
+//        amountClass = "text-red-600 line-through";
+//     } else if (status === 'pending' || status === 'processing' || status === 'in progress') {
+//        amountClass = "text-neutral-900 dark:text-white";
+//     }
+
+
+//     return (
+//       <Link
+//         href={`/dashboard/transactions/${transaction._id}`}
+//         key={transaction._id}
+//         className="block"
+//       >
+//         <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
+//           <div className="flex items-center gap-4">
+//             <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center">
+//               {icon}
+//             </div>
+//             <div className="flex justify-between w-full items-center">
+//               <div>
+//                 <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg">
+//                   {name}
+//                 </h3>
+//                 <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
+//                   {description}
+//                   {(status === 'processing' || status === 'pending' || status === 'in progress') && (
+//                      <span className="italic text-xs"> ({status})</span>
+//                   )}
+//                 </p>
+//               </div>
+//               <div className={`font-medium ${amountClass} whitespace-nowrap`}>
+//                 {amountPrefix}
+//                 {amount.toLocaleString(undefined, {
+//                   minimumFractionDigits: 2,
+//                   maximumFractionDigits: 2,
+//                 })}{" "}
+//                 {currencyCode}
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </Link>
+//     );
+//   };
+
+
+//   // --- Return JSX --- (remains the same)
+//   return (
+//     // ... (section, container, heading, link, loading/error/empty/list logic) ...
+//      <section className="Transactions py-10">
+//       <div className="container mx-auto">
+//         <div className="flex justify-between items-center mb-6">
+//           <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
+//             Recent Transactions
+//           </h1>
+//           <Link
+//             href="/dashboard/transactions"
+//             className="text-primary font-medium underline cursor-pointer hover:text-primaryhover transition-all duration-75 ease-linear"
+//           >
+//             See all
+//           </Link>
+//         </div>
+
+//         <div className="space-y-2">
+//           {loading && (
+//              <div className="space-y-2">
+//               {Array(3)
+//                 .fill(0)
+//                 .map((_, index) => (
+//                   <div key={index} className="block">
+//                     <div className="block p-2 sm:p-4 rounded-2xl">
+//                       <div className="flex items-center gap-4">
+//                         <div className="p-3 rounded-full flex items-center justify-center">
+//                           <Skeleton className="h-12 w-12 rounded-full" />
+//                         </div>
+//                         <div className="flex justify-between w-full items-center">
+//                           <div>
+//                             <Skeleton className="h-5 w-40 mb-2 rounded" />
+//                             <Skeleton className="h-4 w-32 rounded" />
+//                           </div>
+//                           <div className="text-right">
+//                             <Skeleton className="h-5 w-24 rounded" />
+//                           </div>
+//                         </div>
+//                       </div>
+//                     </div>
+//                   </div>
+//                 ))}
+//             </div>
+//           )}
+//           {!loading && error && (
+//             <p className="text-center text-red-500 py-4">Error: {error}</p>
+//           )}
+//           {!loading && !error && latestTransactions.length === 0 && (
+//             <p className="text-center text-gray-500 py-4">
+//               No recent transactions found.
+//             </p>
+//           )}
+//           {!loading &&
+//             !error &&
+//             latestTransactions.length > 0 &&
+//             latestTransactions.map(renderTransactionRow)}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default TransactionsSection;
+
+
 // components/MainDashBoardSection/TransactionsSection.tsx
 "use client";
 
@@ -1004,17 +1335,20 @@ import { useAuth } from "../../../contexts/AuthContext";
 import paymentService, { PaymentDetailsResponse } from "../../../services/payment"; // Ensure PaymentDetailsResponse is defined correctly in payment.ts
 import transferService, { TransferDetailsResponse } from "../../../services/transfer";
 // Import the core Transaction type and Currency type
-import { Transaction, Currency, TransactionStatus } from "@/types/transaction";
+import { Transaction, Currency, TransactionStatus } from "@/types/transaction"; // Ensure these types are correctly defined
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Helper function to create a Currency object from a code (Temporary Solution)
 // TODO: Replace this with actual currency data lookup or ensure API returns full object
 const mapCodeToCurrency = (code: string | undefined): Currency | undefined => {
   if (!code) return undefined;
+  // This is a simplified mapping. Ideally, you'd have a lookup
+  // or the API would return the full Currency object including its _id.
   return {
-    _id: code, // TEMPORARY HACK: Using code as _id. Assumes codes are unique.
-               // Ideally, fetch/lookup the real Currency object with its actual _id.
+    _id: code, // Using code as a placeholder _id - THIS MIGHT NOT BE CORRECT
     code: code,
+    // name: code, // You might want to map names too if possible
+    // symbol: code // You might want to map symbols too if possible
   };
 };
 
@@ -1028,145 +1362,206 @@ const TransactionsSection: React.FC = () => {
   const { token } = useAuth();
 
   const fetchAndProcessTransactions = useCallback(async () => {
-    // ... (token check, loading state logic remains the same) ...
+    if (!token) {
+      setError("Authentication token not found. Please log in.");
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     setError(null);
-    setLatestTransactions([]);
+    setLatestTransactions([]); // Clear previous transactions
 
     try {
+      // Fetch both payments and transfers concurrently
       const [paymentsData, transfersData] = await Promise.all([
-        paymentService.getUserPayments(token), // Should return PaymentDetailsResponse[]
-        transferService.getUserTransfers(token), // Should return TransferDetailsResponse[]
+        paymentService.getUserPayments(token),
+        transferService.getUserTransfers(token),
       ]);
 
-      // --- Map Payments ---
-      const mappedPayments: Transaction[] = paymentsData.map((payment: PaymentDetailsResponse): Transaction => {
-          // Validate required fields from payment response if necessary
-          if (!payment._id || !payment.status || payment.amountToPay === undefined) {
-              console.warn("Skipping incomplete payment data:", payment);
-              // Return null or throw an error, or handle appropriately
-              // For now, let's filter these out later (or return a placeholder if needed)
-              // This example implicitly filters by not pushing anything for invalid data
+      // --- Map Payments (Add Money) ---
+      const mappedPayments: Transaction[] = paymentsData
+        .map((payment: PaymentDetailsResponse): Transaction | null => {
+          // Return null for invalid
+          // Basic validation for essential fields
+          if (
+            !payment._id ||
+            !payment.status ||
+            payment.amountToPay === undefined
+          ) {
+            console.warn(
+              "Skipping incomplete payment data (missing id, status, or amountToPay):",
+              payment
+            );
+            return null;
+          }
+          // **Crucial check: Ensure balanceCurrencyCode exists for Add Money**
+          if (!payment.balanceCurrencyCode) {
+            console.warn(
+              "Skipping 'Add Money' payment data due to missing 'balanceCurrencyCode':",
+              payment
+            );
+            return null; // Filter this out later
           }
 
-          // Map accountId to the Transaction's account field
-          const transactionAccount = typeof payment.accountId === 'string'
-              ? { _id: payment.accountId } // Create object if only ID is given
-              : payment.account; // Use directly if structure matches { _id: string } | string
+          // Handle account ID mapping (can be string or object)
+          const transactionAccount =
+            typeof payment.accountId === "string"
+              ? { _id: payment.accountId }
+              : payment.account; // Assume 'account' is already { _id: string } if object
 
+          // Construct the Transaction object for Add Money
           return {
-              _id: payment._id,
-              type: "Add Money",
-              // Use amountToPay from response for amountToAdd in Transaction
-              // You might want amountToAdd specifically if the API provides it,
-              // otherwise derive from amountToPay. Let's assume amountToAdd = amountToPay here.
-              amountToAdd: payment.amountToPay, // Corrected: Use amountToPay
-              // Map balanceCurrencyCode to balanceCurrency object { _id, code } using helper
-              balanceCurrency: mapCodeToCurrency(payment.balanceCurrencyCode), // Corrected: Use balanceCurrencyCode
-              createdAt: payment.createdAt,
-              updatedAt: payment.updatedAt,
-              // Assert status type
-              status: payment.status as TransactionStatus, // Use TransactionStatus alias
-              // Map payInCurrencyCode to payInCurrency object { _id, code } using helper
-              payInCurrency: mapCodeToCurrency(payment.payInCurrencyCode), // Corrected: Use payInCurrencyCode
-              // Map accountId correctly
-              account: transactionAccount, // Corrected: Use mapped accountId/account
-              amountToPay: payment.amountToPay, // Keep original amountToPay
+            _id: payment._id,
+            type: "Add Money",
+            amountToAdd: payment.amountToPay, // Using amountToPay as the amount added to balance
+            // Use the validated balanceCurrencyCode to create the Currency object
+            balanceCurrency: mapCodeToCurrency(payment.balanceCurrencyCode),
+            createdAt: payment.createdAt,
+            updatedAt: payment.updatedAt,
+            status: payment.status as TransactionStatus, // Assert the status type
+            // Map payInCurrency if available
+            payInCurrency: mapCodeToCurrency(payment.payInCurrencyCode),
+            account: transactionAccount,
+            amountToPay: payment.amountToPay, // Keep original amountToPay if needed elsewhere
 
-              // --- Initialize fields specific to Send Money ---
-              name: undefined,
-              sendAmount: undefined,
-              sendCurrency: undefined,
-              recipient: undefined,
-              sourceAccountId: undefined,
-              receiveAmount: undefined,
-              receiveCurrency: undefined,
+            // --- Initialize fields specific to Send Money (set to undefined) ---
+            name: undefined,
+            sendAmount: undefined,
+            sendCurrency: undefined,
+            recipient: undefined,
+            sourceAccountId: undefined,
+            receiveAmount: undefined,
+            receiveCurrency: undefined,
           };
-      });
+        })
+        .filter((t) => t !== null) as Transaction[]; // Filter out any nulls returned from map
 
+      // --- Map Transfers (Send Money) ---
+      const mappedTransfers: Transaction[] = transfersData.map(
+        (transfer: TransferDetailsResponse): Transaction => {
+          // Optional validation: Check if sendCurrency exists if amount is present
+          if (
+            !transfer.sendCurrency?.code &&
+            transfer.sendAmount !== undefined &&
+            transfer.sendAmount > 0
+          ) {
+            console.warn(
+              "Send Money transaction might be missing 'sendCurrency.code':",
+              transfer
+            );
+          }
 
-      // --- Map Transfers --- (Assuming this part was correct from previous step)
-      const mappedTransfers: Transaction[] = transfersData.map((transfer: TransferDetailsResponse): Transaction => ({
-        _id: transfer._id,
-        type: "Send Money",
-        name:
-          typeof transfer.recipient === "object" && transfer.recipient !== null
-            ? transfer.recipient.accountHolderName ?? "Recipient"
-            : typeof transfer.recipient === 'string'
-            ? "Recipient"
-            : "Recipient",
-        sendAmount: transfer.sendAmount,
-        // Assume transfer response *does* contain full currency objects
-        // If not, apply mapCodeToCurrency or similar logic here too
-        sendCurrency: transfer.sendCurrency as Currency | undefined, // Assert type if needed
-        createdAt: transfer.createdAt,
-        updatedAt: transfer.updatedAt,
-        status: transfer.status as TransactionStatus,
-        recipient: transfer.recipient,
-        sourceAccountId:
-          typeof transfer.sourceAccount === "string"
-            ? transfer.sourceAccount
-            : typeof transfer.sourceAccount === 'object' && transfer.sourceAccount !== null
-            ? transfer.sourceAccount._id
-            : undefined,
-        receiveAmount: transfer.receiveAmount,
-        receiveCurrency: transfer.receiveCurrency as Currency | undefined, // Assert type if needed
+          // Construct the Transaction object for Send Money
+          return {
+            _id: transfer._id,
+            type: "Send Money",
+            // Determine recipient name safely
+            name:
+              typeof transfer.recipient === "object" &&
+              transfer.recipient !== null
+                ? transfer.recipient.accountHolderName ?? "Recipient" // Use name if available
+                : typeof transfer.recipient === "string"
+                ? "Recipient" // Can't get name from ID easily here
+                : "Recipient", // Fallback
+            sendAmount: transfer.sendAmount,
+            // Use currency object directly if available, otherwise map (needs adjustment if only code)
+            sendCurrency: transfer.sendCurrency as Currency | undefined, // Assert or use mapCodeToCurrency if needed
+            createdAt: transfer.createdAt,
+            updatedAt: transfer.updatedAt,
+            status: transfer.status as TransactionStatus,
+            recipient: transfer.recipient,
+            // Determine source account ID safely
+            sourceAccountId:
+              typeof transfer.sourceAccount === "string"
+                ? transfer.sourceAccount
+                : typeof transfer.sourceAccount === "object" &&
+                  transfer.sourceAccount !== null
+                ? transfer.sourceAccount._id
+                : undefined,
+            receiveAmount: transfer.receiveAmount,
+            // Use currency object directly if available, otherwise map
+            receiveCurrency: transfer.receiveCurrency as Currency | undefined,
 
-        // --- Initialize fields specific to Add Money ---
-        amountToAdd: undefined,
-        balanceCurrency: undefined,
-        payInCurrency: undefined,
-        account: undefined,
-        amountToPay: undefined,
-      }));
+            // --- Initialize fields specific to Add Money (set to undefined) ---
+            amountToAdd: undefined,
+            balanceCurrency: undefined,
+            payInCurrency: undefined,
+            account: undefined,
+            amountToPay: undefined,
+          };
+        }
+      );
 
-      // Combine and sort
-      // Filter out any nulls potentially introduced by validation in mapping
-      const allTransactions = [...mappedPayments, ...mappedTransfers].filter(t => t !== null) as Transaction[];
+      // Combine mapped payments and transfers
+      const allTransactions = [...mappedPayments, ...mappedTransfers];
 
+      // Sort transactions by date (most recent first)
       const sortedTransactions = allTransactions.sort((a, b) => {
         const dateA = a.updatedAt || a.createdAt;
         const dateB = b.updatedAt || b.createdAt;
+        // Handle cases where dates might be missing
         if (!dateA && !dateB) return 0;
-        if (!dateA) return 1;
-        if (!dateB) return -1;
+        if (!dateA) return 1; // Treat missing date as older
+        if (!dateB) return -1; // Treat missing date as older
         return new Date(dateB).getTime() - new Date(dateA).getTime();
       });
 
+      // Set state with the latest 3 transactions
       setLatestTransactions(sortedTransactions.slice(0, 3));
-
     } catch (err: unknown) {
-       // ... (error handling remains the same) ...
-        console.error("Failed to fetch transactions:", err);
-        let errorMessage = "Could not load recent transactions.";
-        if (err instanceof Error) {
-            errorMessage = err.message || errorMessage;
-        } else if (typeof err === 'string' && err) {
-            errorMessage = err;
-        }
-        setError(errorMessage);
+      // Handle errors during API fetching or processing
+      console.error("Failed to fetch or process transactions:", err);
+      let errorMessage = "Could not load recent transactions.";
+      if (err instanceof Error) {
+        errorMessage = `Error: ${err.message}` || errorMessage;
+      } else if (typeof err === "string" && err) {
+        errorMessage = `Error: ${err}`;
+      }
+      setError(errorMessage);
     } finally {
+      // Ensure loading state is turned off
       setLoading(false);
     }
-  }, [token]);
+  }, [token]); // Depend only on token
 
+  // Effect to trigger fetching when the component mounts or the token changes
   useEffect(() => {
-    fetchAndProcessTransactions();
-  }, [fetchAndProcessTransactions]);
+    if (token) {
+      // Only fetch if token is available
+      fetchAndProcessTransactions();
+    } else {
+      // Handle case where token is not yet available or user logged out
+      setLoading(false); // Stop loading indicator
+      setLatestTransactions([]); // Clear any existing transactions
+      // Optionally set an error or message
+      // setError("Please log in to view transactions.");
+    }
+  }, [token, fetchAndProcessTransactions]); // Re-run when token changes or the memoized fetch function reference changes
 
-  // --- Render Helper --- (renderTransactionRow function remains the same)
+  // --- Render Helper Function for a Single Transaction Row ---
   const renderTransactionRow = (transaction: Transaction) => {
-    // ... (implementation from previous step should be fine) ...
     const isAddMoney = transaction.type === "Add Money";
+
+    // Determine the icon based on transaction type
     const icon = isAddMoney ? (
       <LuPlus size={24} className="text-neutral-900 dark:text-white" />
     ) : (
       <GoArrowUp size={24} className="text-neutral-900 dark:text-white" />
     );
-    const name = isAddMoney
-      ? `To your ${transaction.balanceCurrency?.code ?? ""} balance`
-      : transaction.name || "Recipient";
 
+    // Determine the primary currency to display for this transaction
+    // For "Add Money", use balanceCurrency. For "Send Money", use sendCurrency.
+    const displayCurrency = isAddMoney
+      ? transaction.balanceCurrency
+      : transaction.sendCurrency;
+    const currencyCode = displayCurrency?.code ?? ""; // Safely get the currency code, default to empty string
+
+    // Determine the main name/title for the transaction row
+    const name = isAddMoney
+      ? `To your ${currencyCode} balance` // Use the determined currency code
+      : transaction.name || "Recipient"; // Use recipient name or fallback
+
+    // Determine the description text based on status and type
     let description: string;
     const status = transaction.status;
 
@@ -1175,15 +1570,16 @@ const TransactionsSection: React.FC = () => {
         status === "completed"
           ? "Added by you"
           : status === "pending" || status === "in progress"
-          ? "Waiting for your money"
+          ? "Waiting for payment" // Simplified text
           : status === "canceled"
           ? "Cancelled"
           : status === "failed"
           ? "Failed"
           : status === "processing"
           ? "Processing payment"
-          : "Processing";
-    } else { // Send Money
+          : "Processing"; // Default for other statuses
+    } else {
+      // Send Money
       description =
         status === "completed"
           ? "Sent by you"
@@ -1195,28 +1591,39 @@ const TransactionsSection: React.FC = () => {
           ? "Cancelled"
           : status === "failed"
           ? "Failed"
-          : "Processing";
+          : "Processing"; // Default
     }
 
+    // Determine the amount to display
     const amount = isAddMoney
-      ? transaction.amountToAdd ?? 0
-      : transaction.sendAmount ?? 0;
-    const currencyCode = isAddMoney
-      ? transaction.balanceCurrency?.code ?? ""
-      : transaction.sendCurrency?.code ?? "";
+      ? transaction.amountToAdd ?? 0 // Use amountToAdd for Add Money
+      : transaction.sendAmount ?? 0; // Use sendAmount for Send Money
+
+    // Determine the prefix (+ or -) and styling for the amount
     const amountPrefix = isAddMoney ? "+ " : "- ";
-    let amountClass = "text-neutral-900 dark:text-white";
+    let amountClass = "text-neutral-900 dark:text-white"; // Default style
 
     if (isAddMoney && status === "completed") {
+      // Green for completed Add Money
       amountClass = "text-green-600 dark:text-green-500";
     } else if (!isAddMoney && status === "completed") {
+      // Neutral for completed Send Money (it's an outgoing transaction)
       amountClass = "text-neutral-900 dark:text-white";
     } else if (status === "canceled" || status === "failed") {
-       amountClass = "text-red-600 line-through";
-    } else if (status === 'pending' || status === 'processing' || status === 'in progress') {
-       amountClass = "text-neutral-900 dark:text-white";
+      // Red for cancelled or failed
+      amountClass = "text-red-600 dark:text-red-500";
+      // Add line-through only if amount is positive to avoid striking through 0.00
+      if (amount > 0) {
+        amountClass += " line-through";
+      }
+    } else if (
+      status === "pending" ||
+      status === "processing" ||
+      status === "in progress"
+    ) {
+      // Muted/gray for pending or processing states
+      amountClass = "text-neutral-900 dark:text-white";
     }
-
 
     return (
       <Link
@@ -1236,8 +1643,10 @@ const TransactionsSection: React.FC = () => {
                 </h3>
                 <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
                   {description}
-                  {(status === 'processing' || status === 'pending' || status === 'in progress') && (
-                     <span className="italic text-xs"> ({status})</span>
+                  {(status === "processing" ||
+                    status === "pending" ||
+                    status === "in progress") && (
+                    <span className="italic text-xs"> ({status})</span>
                   )}
                 </p>
               </div>
@@ -1256,11 +1665,10 @@ const TransactionsSection: React.FC = () => {
     );
   };
 
-
   // --- Return JSX --- (remains the same)
   return (
     // ... (section, container, heading, link, loading/error/empty/list logic) ...
-     <section className="Transactions py-10">
+    <section className="Transactions py-10">
       <div className="container mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
@@ -1276,7 +1684,7 @@ const TransactionsSection: React.FC = () => {
 
         <div className="space-y-2">
           {loading && (
-             <div className="space-y-2">
+            <div className="space-y-2">
               {Array(3)
                 .fill(0)
                 .map((_, index) => (
