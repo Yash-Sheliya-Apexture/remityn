@@ -3364,23 +3364,23 @@ export const KycProvider = ({ children }: KycProviderProps) => {
                 setBackendStatus(statusData.status);
                 setRejectionReason(statusData.rejectionReason || null);
                 // Clear progress data if verified or pending (no longer resumable)
-                if (['verified', 'pending'].includes(statusData.status)) {
-                    if (localStorage.getItem(KYC_PROGRESS_STORAGE_KEY)) {
-                        localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
-                        setKycDataInternal({});
-                        setFileState({ idFrontFile: null, idBackFile: null });
-                        console.log("KycContext: Cleared persisted data due to final status:", statusData.status);
-                    }
-                }
+                // if (['verified', 'pending'].includes(statusData.status)) {
+                //     if (localStorage.getItem(KYC_PROGRESS_STORAGE_KEY)) {
+                //         localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+                //         setKycDataInternal({});
+                //         setFileState({ idFrontFile: null, idBackFile: null });
+                //         console.log("KycContext: Cleared persisted data due to final status:", statusData.status);
+                //     }
+                // }
             });
 
-            // ----- CHANGE 3: Refetch Auth user data AFTER successful status fetch IF status changed -----
-            if (statusData.status !== previousStatus) {
-                console.log(`KycContext: Backend status changed (${previousStatus} -> ${statusData.status}). Triggering AuthContext refetch.`);
-                refetchUser(); // Call refetchUser from AuthContext
-            } else {
-                // console.log(`KycContext: Backend status (${statusData.status}) unchanged after fetch. No AuthContext refetch needed.`);
-            }
+            // // ----- CHANGE 3: Refetch Auth user data AFTER successful status fetch IF status changed -----
+            // if (statusData.status !== previousStatus) {
+            //     console.log(`KycContext: Backend status changed (${previousStatus} -> ${statusData.status}). Triggering AuthContext refetch.`);
+            //     refetchUser(); // Call refetchUser from AuthContext
+            // } else {
+            //     // console.log(`KycContext: Backend status (${statusData.status}) unchanged after fetch. No AuthContext refetch needed.`);
+            // }
 
         } catch (error: any) {
             console.error("KycContext: Error fetching KYC status:", error.response?.status, error.message);
@@ -3390,7 +3390,7 @@ export const KycProvider = ({ children }: KycProviderProps) => {
             isFetchingRef.current = false;
         }
         // ----- CHANGE 4: Add refetchUser to dependencies -----
-    }, [user, backendStatus, refetchUser]); // Added refetchUser
+    }, [user, backendStatus]); // Added refetchUser
 
     /** Loads KYC progress data from localStorage if status allows. Requires user to be logged in. */
     const loadPersistedData = useCallback(() => {
