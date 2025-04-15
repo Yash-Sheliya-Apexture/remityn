@@ -822,7 +822,7 @@ const Footer: React.FC = () => {
         links: [
           { href: "/", label: "Home" },
           { href: "/about-us", label: "AboutUs" },
-          { href: "#protect", label: "Features" },
+          { href: "/features", label: "Features" },
           { href: "#review", label: "Reviews" },
           { href: "", label: "Help" },
         ],
@@ -913,7 +913,7 @@ const Footer: React.FC = () => {
 
   return (
     <footer className="md:py-10 py-5 bg-[#F2F4F7] dark:bg-background">
-      <div className="container mx-auto flex flex-col md:flex-row justify-between items-start px-4 gap-6">
+      <div className="container mx-auto flex flex-col md:flex-row justify-between items-start gap-6 px-4">
         <div className="flex flex-col w-full">
           <Image
             src="/assets/images/wise-logo.svg"
@@ -942,7 +942,7 @@ const Footer: React.FC = () => {
                   isMobile ? () => toggleDropdown(section.title) : undefined
                 }
               >
-                <h3 className="text-primary dark:text-primary text-2xl font-medium">
+                <h3 className="text-primary dark:text-primary lg:text-2xl font-medium">
                   {section.title}
                 </h3>
 

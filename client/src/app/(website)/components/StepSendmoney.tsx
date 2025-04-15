@@ -347,144 +347,196 @@
 
 // export default MoneyTransferSteps;
 
+
+// export default MoneyTransferSteps;
+
 // // MoneyTransferSteps.tsx
 "use client";
-
+import {
+  FaUserPlus,
+  FaFileInvoiceDollar,
+  FaUserFriends,
+  FaIdCard,
+  FaCheckCircle,
+  FaMapMarkedAlt,
+} from "react-icons/fa";
+// Removed: import { useInView } from "react-intersection-observer";
 import React, { useEffect, useState } from "react";
 
 const MoneyTransferSteps: React.FC = () => {
   const moneyTransferSteps = [
     {
       title: "Sign up for free",
-      subtitle: "Web Developer | Internship",
-      date: "Jun 2024 - Present",
+      description:
+        "It only takes a few minutes—all you need is an email address, and you're ready to get started.",
       position: "left",
+      icon: <FaUserPlus className="text-primary text-3xl" />,
     },
     {
       title: "Get a quote",
-      subtitle: "Frontend Developer",
-      date: "March 2023 - 2024",
+      description:
+        "Choose your destination country, send & recipient currency, and send amount to generate a quote.",
       position: "right",
+      icon: <FaFileInvoiceDollar className="text-primary text-2xl mr-2" />,
     },
     {
       title: "Add your recipient",
-      subtitle: "Web Developer | Internship",
-      date: "Jun 2024 - Present",
+      description:
+        "Provide your recipient's payment information (you'll need details like their name and address).",
       position: "left",
+      icon: <FaUserFriends className="text-primary text-2xl mr-2" />,
     },
     {
       title: "Verify your identity",
-      subtitle: "Web Developer | Internship",
-      date: "Jun 2024 - Present",
+      description:
+        "For some transfers, we may need identifying documents to confirm it's really you and keep your money safe.",
       position: "right",
+      icon: <FaIdCard className="text-primary text-2xl mr-2" />,
     },
     {
       title: "Confirm the quote",
-      subtitle: "Web Developer | Internship",
-      date: "Jun 2024 - Present",
+      description:
+        "Confirm and fund your transfer with a bank account, credit card, or a debit card and you're done!",
       position: "left",
+      icon: <FaCheckCircle className="text-primary text-2xl mr-2" />,
     },
     {
       title: "Track your transfer",
-      subtitle: "Web Developer | Internship",
-      date: "Jun 2024 - Present",
+      description:
+        "See where your money is and when it arrives to your recipient. Get live chat, phone and email support.",
       position: "right",
+      icon: <FaMapMarkedAlt className="text-primary text-2xl mr-2" />,
     },
   ];
 
-  const [activeStepIndex, setActiveStepIndex] = useState(-1);
+  // State to track which step is currently active/highlighted
+  const [activeStepIndex, setActiveStepIndex] = useState(-1); // Start at -1 (none active)
 
+  // Timer effect to advance the active step
   useEffect(() => {
     let timer: NodeJS.Timeout;
+    // Only set the timer if we haven't reached the last step
     if (activeStepIndex < moneyTransferSteps.length - 1) {
       timer = setTimeout(() => {
         setActiveStepIndex(activeStepIndex + 1);
-      }, 1500);
+      }, 1500); // Delay between steps (1.5 seconds)
     }
+    // Cleanup function to clear the timer if the component unmounts
+    // or if activeStepIndex changes before the timer fires
     return () => clearTimeout(timer);
-  }, [activeStepIndex, moneyTransferSteps.length]);
+  }, [activeStepIndex, moneyTransferSteps.length]); // Re-run effect when activeStepIndex changes
 
   return (
-    <div className="text-white bg-white  dark:bg-background py-20 min-h-screen">
+    <div className="text-white bg-[#f2f4f7] dark:bg-background md:py-10 py-5 overflow-x-hidden">
+      {" "}
+      {/* Added overflow-x-hidden */}
       <div className="container mx-auto px-4">
         <h1 className="text-5xl md:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
           HOW TO SEND MONEY
           <span className="text-primary"> ONLINE WITH APEXTURE </span>
         </h1>
       </div>
-
       <div className="container max-w-5xl mx-auto px-4 mt-10">
         <div className="relative ">
+          {/* Timeline Background Line */}
           <div className="absolute left-1/2 transform -translate-x-1/2 top-0 h-full w-1 bg-gray-700 hidden md:block">
+            {/* Timeline Progress Line */}
             <div
               className="bg-primary w-1 absolute top-0 left-0"
               style={{
+                // Height based on the current active step index
                 height: `${
                   activeStepIndex >= 0
                     ? ((activeStepIndex + 1) / moneyTransferSteps.length) * 100
                     : 0
                 }%`,
-                transition: "height 1.5s ease-in-out",
+                // Smooth transition for the height change
+                transition: "height 1.5s ease-in-out", // Match timer duration
               }}
             ></div>
           </div>
 
-          {moneyTransferSteps.map((step, index) => (
-            <div key={index} className="relative mb-10">
-              <div className="absolute left-1/2 top-0 transform -translate-x-1/2 hidden md:block z-10">
-                <div
-                  className={`flex items-center justify-center w-10 h-10 rounded-full ${
-                    index <= activeStepIndex
-                      ? "bg-primary border-primary"
-                      : "bg-gray-900"
-                  } transition-all duration-500 ease-in-out`}
-                >
-                  <span
-                    className={`font-bold ${
-                      index <= activeStepIndex
-                        ? "text-mainheading"
-                        : "text-gray-400"
-                    } transition-colors duration-500 ease-in-out`}
-                  >
-                    {index + 1}
-                  </span>
-                </div>
-              </div>
+          {moneyTransferSteps.map((step, index) => {
+            // Removed: useInView hook call
 
-              {/* Card-Content */}
+            // Determine if the current step is active or completed
+            const isStepActiveOrCompleted = index <= activeStepIndex;
+
+            return (
+              // Removed: ref={ref}
               <div
-                className={`w-full md:w-5/12 ${
-                  index <= activeStepIndex
-                    ? "opacity-100 translate-x-0"
-                    : "opacity-0"
-                } ${
-                  step.position === "left"
-                    ? `ml-10 mr-auto ${
-                        index > activeStepIndex ? "-translate-x-10" : ""
-                      }`
-                    : `ml-auto mr-10 ${
-                        index > activeStepIndex ? "translate-x-10" : ""
-                      }`
-                }`}
+                key={index}
+                className="relative mb-10 flex md:block"
+                style={{
+                  justifyContent:
+                    step.position === "left" ? "flex-start" : "flex-end",
+                }}
               >
-                <div className="bg-orange-500 dark:bg-secondary rounded-lg p-4 text-black relative shadow-lg">
+                {/* Step Number Circle (Timeline Marker) */}
+                <div className="absolute left-1/2 top-0 transform -translate-x-1/2 hidden md:block z-10">
                   <div
-                    className={`absolute top-4 size-4 bg-secondary transform rotate-45 z-0 
+                    className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
+                      isStepActiveOrCompleted // Highlight based on activeStepIndex
+                        ? "bg-primary border-primary"
+                        : "bg-gray-900 border-gray-700"
+                    } transition-all duration-500 ease-in-out`} // Transition for color/bg change
+                  >
+                    <span
+                      className={`font-bold ${
+                        isStepActiveOrCompleted // Text color based on activeStepIndex
+                          ? "text-mainheading" // Or text-white
+                          : "text-gray-300"
+                      } transition-colors duration-500 ease-in-out`} // Transition for color change
+                    >
+                      {index + 1}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Card Content */}
+                <div
+                  className={`w-full md:w-5/12 ${
+                    // Added transition classes
+                    step.position === "left"
+                      ? "ml-10 mr-auto" // Position left card
+                      : "ml-auto mr-10" // Position right card
+                  } ${
+                    // Animation based SOLELY on activeStepIndex now
+                    isStepActiveOrCompleted
+                      ? "opacity-100 translate-x-0" // Fade in and move to final position
+                      : `opacity-0 ${
+                          step.position === "left"
+                            ? "-translate-x-10"
+                            : "translate-x-10"
+                        }` // Start faded out and slightly offset
+                  }`}
+                >
+                  {/* Card styling */}
+                  <div className="bg-subheading dark:bg-secondary rounded-lg p-4 text-black relative shadow-lg">
+                    {/* Arrow pointing to timeline */}
+                    <div
+                      className={`absolute top-4 w-4 h-4 bg-subheading dark:bg-secondary transform rotate-45 z-0 hidden md:block
                                 ${
                                   step.position === "left"
-                                    ? "right-[-6px]"
-                                    : "left-[-6px]"
+                                    ? "right-[-8px]"
+                                    : "left-[-8px]"
                                 }`}
-                  ></div>
-                  <h3 className="text-lg font-semibold text-white">
-                    {step.title}
-                  </h3>
-                  <p className="text-gray-300 mt-1 text-sm">{step.subtitle}</p>
-                  <p className="text-gray-400 mt-2 text-xs">{step.date}</p>
+                    ></div>
+                    {/* Card Content Inner */}
+                    <div className="flex items-center gap-2 relative z-10">
+                      {step.icon}
+                      <h3 className="text-lg font-semibold text-white">
+                        {step.title}
+                      </h3>
+                    </div>
+                    <p className="text-gray-300 mt-4 text-sm leading-relaxed relative z-10">
+                      {step.description}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

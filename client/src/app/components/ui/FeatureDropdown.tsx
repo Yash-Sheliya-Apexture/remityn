@@ -834,14 +834,15 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <button
+      <Link
+        href="/features"
         onClick={myToggleDropdown}
         className={`rounded-full font-medium cursor-pointer px-2.5 dark:hover:text-primary py-1.5 text-mainheading hover:bg-gray/5 hover:dark:bg-secondary dark:text-white ${
           buttonClassName || ""
         }`}
       >
         {buttonText}
-      </button>
+      </Link>
 
       <AnimatePresence>
         {myIsOpen && (
@@ -853,7 +854,7 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
             className={
               isMobile
                 ? `mt-2 pl-4`
-                : `absolute right-0 top-16 w-md bg-white border dark:bg-background rounded-xl overflow-hidden shadow-lg z-50 ${
+                : `absolute right-0 top-12 w-md bg-white border dark:bg-background rounded-xl overflow-hidden shadow-lg z-50 ${
                     dropdownClassName || ""
                   }`
             }

@@ -331,7 +331,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ location, className }) => {
         {isDropdownOpen && (
           <div
             id="theme-menu" // Add id corresponding to aria-controls
-            className="absolute right-0 mt-7 w-36 border rounded-md shadow-lg bg-white dark:bg-background focus:outline-none" // Added z-index
+            className="absolute right-0 top-12 z-40 w-36 border rounded-md shadow-lg bg-white dark:bg-background focus:outline-none" // Added z-index
             role="menu"
             aria-orientation="vertical"
             aria-labelledby="theme-menu-button"
