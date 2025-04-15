@@ -1217,7 +1217,7 @@ const KycUserDetailPage: React.FC = () => {
 
         {/* User Profile Card */}
         <Card className="shadow-sm overflow-hidden">
-          <CardHeader className="flex md:flex-row flex-col md:items-center justify-between gap-8">
+          <CardHeader className="flex md:items-center items-start justify-between">
             <div className="flex sm:flex-row flex-col sm:items-center gap-4">
               <Avatar className="h-16 w-16 flex-shrink-0">
                 <AvatarFallback
@@ -1248,22 +1248,16 @@ const KycUserDetailPage: React.FC = () => {
             </div>
 
             {/* Status Badge */}
-            <div className="flex flex-col md:items-end gap-2">
-              <Badge
-                className={cn(
-                  "px-4 py-2 text-sm flex items-center gap-1.5",
-                  statusConfig.color
-                )}
-              >
-                <statusConfig.icon className="h-4 w-4" />
-                {statusConfig.label}
-              </Badge>
 
-              <span className="text-sm text-gray-500 dark:text-gray-300">
-                {kyc?.submittedAt &&
-                  `Submitted: ${formatDate(kyc.submittedAt, false)}`}
-              </span>
-            </div>
+            <Badge
+              className={cn(
+                "px-4 py-2 text-sm flex items-center gap-1.5",
+                statusConfig.color
+              )}
+            >
+              <statusConfig.icon className="h-4 w-4" />
+              {statusConfig.label}
+            </Badge>
           </CardHeader>
 
           {/* Status Timeline */}
@@ -1330,8 +1324,8 @@ const KycUserDetailPage: React.FC = () => {
           )}
         </Card>
 
-        <div className="flex justify-between gap-4">
-          <div className="w-2/3 flex flex-col gap-6">
+        <div className="flex xl:flex-row flex-col justify-between gap-4">
+          <div className="w-full xl:w-2/3 flex flex-col gap-6">
             {/* Rejection Reason (if applicable) */}
             {kyc?.status === "rejected" && kyc.rejectionReason && (
               <Card className="border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-900/10">
@@ -1350,12 +1344,12 @@ const KycUserDetailPage: React.FC = () => {
 
             {/* Personal Information */}
             <Card className="shadow-sm gap-0 overflow-hidden">
-              <CardHeader className="border-b bg-lightgray dark:bg-secondarybox p-6">
+              <CardHeader className="inline-flex items-center w-full border-b bg-lightgray dark:bg-secondarybox p-6 h-[97px]">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <User className="h-6 w-6 text-primary" /> Personal Information
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-5 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <CardContent className="p-5 grid grid-cols-1 md:grid-cols-2 sm:gap-6 gap-4">
                 <DetailItem
                   label="Full Name"
                   value={userData.fullName}
@@ -1407,7 +1401,7 @@ const KycUserDetailPage: React.FC = () => {
                   Document Details
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-5 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <CardContent className="p-5 grid grid-cols-1 md:grid-cols-2 sm:gap-6 gap-4">
                 <DetailItem
                   label="ID Type"
                   value={
@@ -1437,7 +1431,7 @@ const KycUserDetailPage: React.FC = () => {
           </div>
 
           {/* Submitted Documents */}
-          <Card className="shadow-sm w-1/3 h-fit gap-0  overflow-hidden">
+          <Card className="shadow-sm w-full xl:w-1/3 h-fit gap-0  overflow-hidden">
             <CardHeader className="border-b bg-lightgray dark:bg-secondarybox p-6">
               <CardTitle className="text-lg flex items-center gap-2">
                 <FileText className="h-6 w-6 text-primary" /> Submitted
@@ -1449,7 +1443,7 @@ const KycUserDetailPage: React.FC = () => {
             </CardHeader>
             <CardContent className="p-5">
               {kyc?.documents && kyc.documents.length > 0 ? (
-                <div className="">
+                <div className="space-y-2">
                   {kyc.documents.map((doc) => (
                     <Card
                       key={doc.public_id}
@@ -1476,27 +1470,22 @@ const KycUserDetailPage: React.FC = () => {
                           <FileText className="h-12 w-12 text-muted-foreground/50" />
                         </CardContent>
                       )}
-                      <CardFooter className="bg-muted/30 p-6 border-t">
+
+                      <CardFooter className='justify-center items-center w-full'>
                         <TooltipProvider>
                           <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="w-full h-10"
-                                asChild
+                            <TooltipTrigger>
+                              <Link
+                                href={doc.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
                               >
-                                <Link
-                                  href={doc.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="inline-flex items-center justify-center gap-1.5"
-                                >
-                                  <Eye className="h-3.5 w-3.5" /> View Full
-                                  Document{" "}
+                                <Button className="w-full cursor-pointer">
+                                  <Eye className="h-3.5 w-3.5" />
+                                  View Full Document
                                   <ExternalLink className="h-3 w-3 ml-1 opacity-70" />
-                                </Link>
-                              </Button>
+                                </Button>
+                              </Link>
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>Open document in new tab</p>
