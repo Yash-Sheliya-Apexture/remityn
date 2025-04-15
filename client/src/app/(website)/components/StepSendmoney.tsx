@@ -349,46 +349,60 @@
 
 // // MoneyTransferSteps.tsx
 "use client";
-
+import {
+  FaUserPlus,
+  FaFileInvoiceDollar,
+  FaUserFriends,
+  FaIdCard,
+  FaCheckCircle,
+  FaMapMarkedAlt,
+} from "react-icons/fa";
+import { useInView } from "react-intersection-observer";
 import React, { useEffect, useState } from "react";
 
 const MoneyTransferSteps: React.FC = () => {
   const moneyTransferSteps = [
     {
       title: "Sign up for free",
-      subtitle: "Web Developer | Internship",
-      date: "Jun 2024 - Present",
+      description:
+        "It only takes a few minutes—all you need is an email address, and you're ready to get started.",
       position: "left",
+      icon: <FaUserPlus className="text-primary text-3xl" />,
     },
     {
       title: "Get a quote",
-      subtitle: "Frontend Developer",
-      date: "March 2023 - 2024",
+      description:
+        "Choose your destination country, send & recipient currency, and send amount to generate a quote.",
       position: "right",
+      icon: <FaFileInvoiceDollar className="text-primary text-2xl mr-2" />,
     },
     {
       title: "Add your recipient",
-      subtitle: "Web Developer | Internship",
-      date: "Jun 2024 - Present",
+      description:
+        "Provide your recipient's payment information (you'll need details like their name and address).",
       position: "left",
+      icon: <FaUserFriends className="text-primary text-2xl mr-2" />,
     },
     {
       title: "Verify your identity",
-      subtitle: "Web Developer | Internship",
-      date: "Jun 2024 - Present",
+      description:
+        "For some transfers, we may need identifying documents to confirm it's really you and keep your money safe.",
       position: "right",
+      icon: <FaIdCard className="text-primary text-2xl mr-2" />,
     },
     {
       title: "Confirm the quote",
-      subtitle: "Web Developer | Internship",
-      date: "Jun 2024 - Present",
+      description:
+        "Confirm and fund your transfer with a bank account, credit card, or a debit card and you're done!",
       position: "left",
+      icon: <FaCheckCircle className="text-primary text-2xl mr-2" />,
     },
     {
       title: "Track your transfer",
-      subtitle: "Web Developer | Internship",
-      date: "Jun 2024 - Present",
+      description:
+        "See where your money is and when it arrives to your recipient. Get live chat, phone and email support.",
       position: "right",
+      icon: <FaMapMarkedAlt className="text-primary text-2xl mr-2" />,
     },
   ];
 
@@ -405,7 +419,7 @@ const MoneyTransferSteps: React.FC = () => {
   }, [activeStepIndex, moneyTransferSteps.length]);
 
   return (
-    <div className="text-white bg-white  dark:bg-background py-20 min-h-screen">
+    <div className="text-white bg-[#f2f4f7] dark:bg-background md:py-10 py-5">
       <div className="container mx-auto px-4">
         <h1 className="text-5xl md:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
           HOW TO SEND MONEY
@@ -429,62 +443,73 @@ const MoneyTransferSteps: React.FC = () => {
             ></div>
           </div>
 
-          {moneyTransferSteps.map((step, index) => (
-            <div key={index} className="relative mb-10">
-              <div className="absolute left-1/2 top-0 transform -translate-x-1/2 hidden md:block z-10">
-                <div
-                  className={`flex items-center justify-center w-10 h-10 rounded-full ${
-                    index <= activeStepIndex
-                      ? "bg-primary border-primary"
-                      : "bg-gray-900"
-                  } transition-all duration-500 ease-in-out`}
-                >
-                  <span
-                    className={`font-bold ${
-                      index <= activeStepIndex
-                        ? "text-mainheading"
-                        : "text-gray-400"
-                    } transition-colors duration-500 ease-in-out`}
-                  >
-                    {index + 1}
-                  </span>
-                </div>
-              </div>
+          {moneyTransferSteps.map((step, index) => {
+            const { ref, inView } = useInView({
+              triggerOnce: true,
+              threshold: 0.3,
+            });
 
-              {/* Card-Content */}
-              <div
-                className={`w-full md:w-5/12 ${
-                  index <= activeStepIndex
-                    ? "opacity-100 translate-x-0"
-                    : "opacity-0"
-                } ${
-                  step.position === "left"
-                    ? `ml-10 mr-auto ${
-                        index > activeStepIndex ? "-translate-x-10" : ""
-                      }`
-                    : `ml-auto mr-10 ${
-                        index > activeStepIndex ? "translate-x-10" : ""
-                      }`
-                }`}
-              >
-                <div className="bg-orange-500 dark:bg-secondary rounded-lg p-4 text-black relative shadow-lg">
+            return (
+              <div key={index} ref={ref} className="relative mb-10">
+                <div className="absolute left-1/2 top-0 transform -translate-x-1/2 hidden md:block z-10">
                   <div
-                    className={`absolute top-4 size-4 bg-secondary transform rotate-45 z-0 
+                    className={`flex items-center justify-center w-10 h-10 rounded-full ${
+                      index <= activeStepIndex
+                        ? "bg-primary border-primary"
+                        : "bg-gray-900 "
+                    } transition-all duration-500 ease-in-out`}
+                  >
+                    <span
+                      className={`font-bold ${
+                        index <= activeStepIndex
+                          ? "text-mainheading"
+                          : "text-gray-300"
+                      } transition-colors duration-500 ease-in-out`}
+                    >
+                      {index + 1}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Card-Content */}
+                <div
+                  className={`w-full md:w-5/12 ${
+                    index <= activeStepIndex
+                      ? "opacity-100 translate-x-0"
+                      : "opacity-0"
+                  } ${
+                    step.position === "left"
+                      ? `ml-10 mr-auto ${
+                          index > activeStepIndex ? "-translate-x-10" : ""
+                        }`
+                      : `ml-auto mr-10 ${
+                          index > activeStepIndex ? "translate-x-10" : ""
+                        }`
+                  }`}
+                >
+                  <div className="bg-subheading dark:bg-secondary rounded-lg p-4 text-black relative shadow-lg">
+                    <div
+                      className={`absolute top-4 size-4 bg-subheading dark:bg-secondary transform rotate-45 z-0
                                 ${
                                   step.position === "left"
                                     ? "right-[-6px]"
                                     : "left-[-6px]"
                                 }`}
-                  ></div>
-                  <h3 className="text-lg font-semibold text-white">
-                    {step.title}
-                  </h3>
-                  <p className="text-gray-300 mt-1 text-sm">{step.subtitle}</p>
-                  <p className="text-gray-400 mt-2 text-xs">{step.date}</p>
+                    ></div>
+                    <div className="flex items-center gap-2">
+                      {step.icon}
+                      <h3 className="text-lg font-semibold text-white">
+                        {step.title}
+                      </h3>
+                    </div>
+                    <p className="text-gray-300 mt-4 text-sm leading-relaxed">
+                      {step.description}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
