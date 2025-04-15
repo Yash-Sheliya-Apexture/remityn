@@ -822,7 +822,7 @@ const Footer: React.FC = () => {
         links: [
           { href: "/", label: "Home" },
           { href: "/about-us", label: "AboutUs" },
-          { href: "#protect", label: "Features" },
+          { href: "/features", label: "Features" },
           { href: "#review", label: "Reviews" },
           { href: "", label: "Help" },
         ],
