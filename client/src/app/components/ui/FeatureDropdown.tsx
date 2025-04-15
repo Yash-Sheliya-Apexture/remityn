@@ -853,7 +853,7 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
             className={
               isMobile
                 ? `mt-2 pl-4`
-                : `absolute right-0 top-16 w-md bg-white border dark:bg-background rounded-xl overflow-hidden shadow-lg z-50 ${
+                : `absolute right-0 top-12 w-md bg-white border dark:bg-background rounded-xl overflow-hidden shadow-lg z-50 ${
                     dropdownClassName || ""
                   }`
             }

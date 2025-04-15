@@ -1797,7 +1797,7 @@ const Header: React.FC = () => {
 
                   {/* About Link */}
                   <Link
-                    href="/aboutus" // Assuming you have an about page
+                    href="/about-us" // Assuming you have an about page
                     className="px-4 py-1.5 rounded-full font-medium text-mainheading dark:hover:text-primary hover:bg-gray/5 hover:dark:bg-secondary dark:text-white transition-colors duration-300"
                   >
                     About
