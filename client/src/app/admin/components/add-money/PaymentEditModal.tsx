@@ -1307,7 +1307,7 @@ const PaymentEditModal: React.FC<PaymentEditModalProps> = ({
                     variant="outline"
                     size="sm"
                     onClick={() => copyPaymentId(selectedPaymentForEdit._id)}
-                    className="shrink-0 h-8 text-xs cursor-pointer dark:text-white dark:hover:bg-neutral-700"
+                    className="shrink-0 h-8 text-xs cursor-pointer text-neutral-900 bg-white hover:bg-lightborder dark:text-white dark:hover:bg-neutral-700 dark:bg-neutral-900"
                   >
                     <Copy className="size-3.5 mr-1 text-neutral-900 dark:text-white" />{" "}
                     {isPaymentIdCopied ? "Copied!" : "Copy"}
@@ -1338,7 +1338,7 @@ const PaymentEditModal: React.FC<PaymentEditModalProps> = ({
                       )
                     }
                     disabled={!selectedPaymentForEdit.referenceCode}
-                    className="shrink-0 h-8 text-xs cursor-pointer  dark:text-white dark:hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="shrink-0 h-8 text-xs cursor-pointer text-neutral-900 bg-white hover:bg-lightborder dark:text-white dark:hover:bg-neutral-700 dark:bg-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Copy className="size-3.5 mr-1 text-neutral-900 dark:text-white" />{" "}
                     {isReferenceCodeCopied ? "Copied!" : "Copy"}

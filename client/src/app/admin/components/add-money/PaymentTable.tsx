@@ -560,132 +560,135 @@ const PaymentTable: React.FC<PaymentTableProps> = ({
     sortDirection,
     handleEditPayment,
 }) => {
-    const formatDate = (dateString: string) => {
-        if (!dateString || isNaN(new Date(dateString).getTime())) {
-            return "Invalid Date";
-        }
-        const options: Intl.DateTimeFormatOptions = {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        };
-        return new Date(dateString).toLocaleString(undefined, options);
-      };
-
-    if (loadingPayments) {
-        // Skeleton remains the same
-        return (
-            <div className="rounded-xl border overflow-hidden dark:border-neutral-800">
-                <table className="min-w-full">
-                    <PaymentTableHeader
-                        toggleSort={toggleSort}
-                        sortField={sortField}
-                        sortDirection={sortDirection}
-                    />
-                    <tbody>
-                        {Array(10).fill(0).map((_, i) => (
-                            <tr key={i} className="dark:border-neutral-800">
-                                <td className="px-4 py-3 whitespace-nowrap"><Skeleton className="h-4 w-24" /></td>
-                                <td className="px-4 py-3"><Skeleton className="h-4 w-32" /></td>
-                                <td className="px-4 py-3 whitespace-nowrap"><Skeleton className="h-4 w-16" /></td>
-                                <td className="px-4 py-3 whitespace-nowrap"><Skeleton className="h-4 w-16" /></td>
-                                <td className="px-4 py-3 whitespace-nowrap"><Skeleton className="h-4 w-24" /></td>
-                                <td className="px-4 py-3 whitespace-nowrap"><Skeleton className="h-7 w-28" /></td>
-                                <td className="px-4 py-3 whitespace-nowrap text-sm font-medium"><Skeleton className="h-8 w-24" /></td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        );
+  const formatDate = (dateString: string) => {
+    if (!dateString || isNaN(new Date(dateString).getTime())) {
+      return "Invalid Date";
     }
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+    return new Date(dateString).toLocaleString(undefined, options);
+  };
 
+  // Define the number of columns for consistency
+  const numberOfColumns = 8; // Matched to actual columns
+
+  if (loadingPayments) {
+    // Skeleton remains the same
     return (
       <div className="rounded-xl border overflow-hidden dark:border-neutral-800">
-        <div className="overflow-x-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
-          <table className="min-w-full overflow-hidden">
-            <PaymentTableHeader
-              toggleSort={toggleSort}
-              sortField={sortField}
-              sortDirection={sortDirection}
-            />
-            <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800 overflow-hidden">
-              {filteredPayments.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={7}
-                    className="px-4 py-10 text-center text-gray-500 dark:text-gray-400"
-                  >
-                    No payments found.
-                  </td>
+        <table className="min-w-full">
+          <PaymentTableHeader
+            toggleSort={toggleSort}
+            sortField={sortField}
+            sortDirection={sortDirection}
+          />
+          <tbody>
+            {Array(10)
+              .fill(0)
+              .map((_, i) => (
+                <tr key={i}>
+                  {Array(numberOfColumns).fill(0).map(( _, j) => (
+                        <td key={j} className="px-4 py-3 whitespace-nowrap">
+                          <Skeleton className="h-4 w-full" /> {/* Use full width skeleton */}
+                        </td>
+                      ))}
                 </tr>
-              ) : (
-                filteredPayments.map((payment, index) => (
-                  <motion.tr
-                    key={payment._id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    className="hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors duration-100"
-                  >
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <span className="font-medium text-neutral-900 dark:text-white">
-                        {payment._id}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex flex-col">
-                        <span className="font-medium capitalize text-neutral-900 dark:text-white">
-                          {payment.user?.fullName || "N/A"}
-                        </span>
-                        <span className="text-sm text-gray-500 dark:text-gray-400">
-                          {payment.user?.email || "N/A"}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap font-medium text-neutral-900 dark:text-white">
-                      {payment.amountToAdd} {/* Display string amount */}
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-neutral-900 dark:text-white">
-                      {payment.payInCurrency?.code || "N/A"}
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <span className="text-neutral-900 dark:text-white">
-                        {payment.referenceCode || "N/A"}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <span
-                        className={`inline-flex justify-center items-center px-4 py-1 w-28 font-medium rounded-3xl capitalize ${getStatusColor(
-                          payment.status
-                        )}`}
-                      >
-                        {payment.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-3 whitespace-nowrap font-medium">
-                      {formatDate(payment.createdAt)}
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap font-medium">
-                      <motion.button
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => handleEditPayment(payment)}
-                        className="bg-primary hover:bg-primaryhover dark:bg-primarybox hover:dark:bg-secondarybox transition-all duration-75 ease-linear cursor-pointer rounded-3xl px-4 py-2 font-medium text-neutral-900 dark:text-primary focus:outline-none flex items-center"
-                      >
-                        <Edit size={18} className="mr-1" />
-                        Edit
-                      </motion.button>
-                    </td>
-                  </motion.tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+              ))}
+          </tbody>
+        </table>
       </div>
     );
+  }
+
+  return (
+    <div className="rounded-xl border overflow-hidden dark:border-neutral-800">
+      <div className="overflow-x-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
+        <table className="min-w-full overflow-hidden">
+          <PaymentTableHeader
+            toggleSort={toggleSort}
+            sortField={sortField}
+            sortDirection={sortDirection}
+          />
+          <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800 overflow-hidden">
+            {filteredPayments.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={7}
+                  className="px-4 py-10 text-center text-gray-500 dark:text-gray-400"
+                >
+                  No payments found.
+                </td>
+              </tr>
+            ) : (
+              filteredPayments.map((payment, index) => (
+                <motion.tr
+                  key={payment._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className="hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors duration-100"
+                >
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <span className="font-medium text-neutral-900 dark:text-white">
+                      {payment._id}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex flex-col">
+                      <span className="font-medium capitalize text-neutral-900 dark:text-white">
+                        {payment.user?.fullName || "N/A"}
+                      </span>
+                      <span className="text-sm text-gray-500 dark:text-gray-400">
+                        {payment.user?.email || "N/A"}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap font-medium text-neutral-900 dark:text-white">
+                    {payment.amountToAdd} {/* Display string amount */}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap text-neutral-900 dark:text-white">
+                    {payment.payInCurrency?.code || "N/A"}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <span className="text-neutral-900 dark:text-white">
+                      {payment.referenceCode || "N/A"}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <span
+                      className={`inline-flex justify-center items-center px-4 py-1 w-28 font-medium rounded-3xl capitalize ${getStatusColor(
+                        payment.status
+                      )}`}
+                    >
+                      {payment.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-3 whitespace-nowrap font-medium">
+                    {formatDate(payment.createdAt)}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap font-medium">
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => handleEditPayment(payment)}
+                      className="bg-primary hover:bg-primaryhover dark:bg-primarybox hover:dark:bg-secondarybox transition-all duration-75 ease-linear cursor-pointer rounded-3xl px-4 py-2 font-medium text-neutral-900 dark:text-primary focus:outline-none flex items-center"
+                    >
+                      <Edit size={18} className="mr-1" />
+                      Edit
+                    </motion.button>
+                  </td>
+                </motion.tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 };
 
 export default PaymentTable;

@@ -440,7 +440,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                 disabled={disabled} // <-- Add the disabled attribute
             >
                 <span>{ (value === 'all' || !value) ? allOptionText : value }</span>
-                <ChevronDown className={`size-5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''} ${disabled ? 'text-gray-400 dark:text-gray-500' : ''}`} />
+                <ChevronDown className={`size-5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''} ${disabled ? 'text-gray-500 dark:text-gray-300' : ''}`} />
             </button>
 
             <AnimatePresence>

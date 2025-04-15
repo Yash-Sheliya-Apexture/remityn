@@ -1200,7 +1200,7 @@ const KycUserDetailPage: React.FC = () => {
 
       <div className="container mx-auto space-y-6">
         {/* Back Navigation */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <Link
             href="/admin/kyc-management"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline transition-colors"
@@ -1209,7 +1209,7 @@ const KycUserDetailPage: React.FC = () => {
             Back to KYC Management
           </Link>
 
-          <span className="text-xs text-muted-foreground">
+          <span className="text-xs text-right sm:w-auto w-full text-gray-500 dark:text-gray-300">
             User ID:{" "}
             <code className="bg-muted px-1 py-0.5 rounded">{userId}</code>
           </span>
@@ -1217,48 +1217,49 @@ const KycUserDetailPage: React.FC = () => {
 
         {/* User Profile Card */}
         <Card className="shadow-sm overflow-hidden">
-          <CardHeader className="flex flex-row items-center gap-4">
-            <Avatar className="h-16 w-16 flex-shrink-0">
-              <AvatarFallback
-                className={cn(
-                  "text-lg font-medium", // Base styles
-                  statusConfig.color // Dynamic status color from config
-                )}
-              >
-                {getInitials(userData.fullName)}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1 space-y-2">
-              <CardTitle className="text-xl text-neutral-900 dark:text-white">
-                {userData.fullName || "Unnamed User"}
-              </CardTitle>
-              <CardDescription className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-gray-500 dark:text-gray-300">
-                <span className="flex items-center gap-1">
-                  <Mail className="h-3.5 w-3.5" /> {userData.email}
-                </span>
-                {kyc?.mobile && (
-                  <span className="flex items-center gap-1">
-                    <Phone className="h-3.5 w-3.5" />{" "}
-                    {formatMobile(kyc?.mobile)}
+          <CardHeader className="flex md:flex-row flex-col md:items-center justify-between gap-8">
+            <div className="flex sm:flex-row flex-col sm:items-center gap-4">
+              <Avatar className="h-16 w-16 flex-shrink-0">
+                <AvatarFallback
+                  className={cn(
+                    "text-lg font-medium", // Base styles
+                    statusConfig.color // Dynamic status color from config
+                  )}
+                >
+                  {getInitials(userData.fullName)}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 space-y-2">
+                <CardTitle className="text-xl text-neutral-900 dark:text-white">
+                  {userData.fullName || "Unnamed User"}
+                </CardTitle>
+                <CardDescription className="flex flex-wrap flex-row items-center gap-3 text-sm text-gray-500 dark:text-gray-300">
+                  <span className="flex items-center gap-2">
+                    <Mail className="h-5 w-5" /> {userData.email}
                   </span>
-                )}
-              </CardDescription>
+                  {kyc?.mobile && (
+                    <span className="flex items-center gap-2">
+                      <Phone className="h-5 w-5" />
+                      {formatMobile(kyc?.mobile)}
+                    </span>
+                  )}
+                </CardDescription>
+              </div>
             </div>
 
             {/* Status Badge */}
-            <div className="flex flex-col items-end gap-2">
+            <div className="flex flex-col md:items-end gap-2">
               <Badge
                 className={cn(
-                  "px-2.5 py-1 flex items-center gap-1.5",
+                  "px-4 py-2 text-sm flex items-center gap-1.5",
                   statusConfig.color
                 )}
-                variant="outline"
               >
-                <statusConfig.icon className="h-3.5 w-3.5" />
+                <statusConfig.icon className="h-4 w-4" />
                 {statusConfig.label}
               </Badge>
 
-              <span className="text-xs text-gray-500 dark:text-gray-300">
+              <span className="text-sm text-gray-500 dark:text-gray-300">
                 {kyc?.submittedAt &&
                   `Submitted: ${formatDate(kyc.submittedAt, false)}`}
               </span>
@@ -1266,57 +1267,54 @@ const KycUserDetailPage: React.FC = () => {
           </CardHeader>
 
           {/* Status Timeline */}
-                    {/* Status Timeline */}
-                    <CardContent className="p-4">
-            <div className="flex items-center text-xs text-muted-foreground space-x-4">
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-4 sm:text-base text-sm text-gray-500 dark:text-gray-300">
               {kyc?.submittedAt && (
                 <span className="flex items-center gap-1">
-                  <Clock className="h-3 w-3" /> Submitted:{" "}
+                  <Clock className="size-5" /> Submitted:{" "}
                   {formatDate(kyc.submittedAt, true)}
                 </span>
               )}
               {kyc?.verifiedAt && (
                 <span className="flex items-center gap-1 text-green-600 dark:text-green-400">
-                  <CheckCircle className="h-3 w-3" /> Verified:{" "}
+                  <CheckCircle className="size-5" /> Verified:{" "}
                   {formatDate(kyc.verifiedAt, true)}
                 </span>
               )}
               {kyc?.rejectedAt && (
                 <span className="flex items-center gap-1 text-red-600 dark:text-red-400">
-                  <XCircle className="h-3 w-3" /> Rejected:{" "}
+                  <XCircle className="size-5" /> Rejected:{" "}
                   {formatDate(kyc.rejectedAt, true)}
                 </span>
               )}
             </div>
-          </CardContent> 
+          </CardContent>
 
           {/* Action Buttons for Pending Applications */}
           {canTakeAction && (
             <CardFooter className="border-t  bg-muted/30">
-              <div className="flex gap-3 w-full sm:justify-end">
+              <div className="flex sm:flex-row flex-col gap-3 w-full sm:justify-end">
                 <Button
-                  variant="outline"
                   onClick={openRejectModal}
                   disabled={!!isProcessingAction}
-                  className="flex-1 sm:flex-initial"
+                  className="gap-0 text-base bg-red-600 text-white hover:bg-red-700 font-medium rounded-full px-6 py-3  h-12.5 text-center cursor-pointer transition-all duration-75 ease-linear flex justify-center items-center"
                 >
                   {isProcessingAction === "reject" ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-2 size-5 animate-spin" />
                   ) : (
-                    <XCircle className="mr-2 h-4 w-4" />
+                    <XCircle className="mr-2 size-5" />
                   )}
                   Reject Application
                 </Button>
                 <Button
-                  variant="default"
                   onClick={handleApprove}
                   disabled={!!isProcessingAction}
-                  className="flex-1 sm:flex-initial bg-green-600 hover:bg-green-700 text-white dark:bg-green-700 dark:hover:bg-green-800"
+                  className="gap-0 text-base bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center cursor-pointer transition-all duration-75 ease-linear flex justify-center items-center"
                 >
                   {isProcessingAction === "approve" ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-2 size-5 animate-spin" />
                   ) : (
-                    <CheckCircle className="mr-2 h-4 w-4" />
+                    <CheckCircle className="mr-2 size-5 " />
                   )}
                   Approve Application
                 </Button>
@@ -1332,8 +1330,8 @@ const KycUserDetailPage: React.FC = () => {
           )}
         </Card>
 
-        <div className='flex justify-between gap-4'>
-          <div className='w-2/3 flex flex-col gap-6'>
+        <div className="flex justify-between gap-4">
+          <div className="w-2/3 flex flex-col gap-6">
             {/* Rejection Reason (if applicable) */}
             {kyc?.status === "rejected" && kyc.rejectionReason && (
               <Card className="border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-900/10">
@@ -1445,7 +1443,7 @@ const KycUserDetailPage: React.FC = () => {
                 <FileText className="h-6 w-6 text-primary" /> Submitted
                 Documents
               </CardTitle>
-              <CardDescription className='text-gray-500 dark:text-gray-300'>
+              <CardDescription className="text-gray-500 dark:text-gray-300">
                 Review identification documents submitted by the user
               </CardDescription>
             </CardHeader>
