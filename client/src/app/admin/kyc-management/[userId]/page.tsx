@@ -1249,16 +1249,15 @@ const KycUserDetailPage: React.FC = () => {
 
             {/* Status Badge */}
 
-              <Badge
-                className={cn(
-                  "px-4 py-2 text-sm flex items-center gap-1.5",
-                  statusConfig.color
-                )}
-              >
-                <statusConfig.icon className="h-4 w-4" />
-                {statusConfig.label}
-              </Badge>
-          
+            <Badge
+              className={cn(
+                "px-4 py-2 text-sm flex items-center gap-1.5",
+                statusConfig.color
+              )}
+            >
+              <statusConfig.icon className="h-4 w-4" />
+              {statusConfig.label}
+            </Badge>
           </CardHeader>
 
           {/* Status Timeline */}
@@ -1325,8 +1324,8 @@ const KycUserDetailPage: React.FC = () => {
           )}
         </Card>
 
-        <div className="flex lg:flex-row flex-col justify-between gap-4">
-          <div className="w-full lg:w-2/3 flex flex-col gap-6">
+        <div className="flex xl:flex-row flex-col justify-between gap-4">
+          <div className="w-full xl:w-2/3 flex flex-col gap-6">
             {/* Rejection Reason (if applicable) */}
             {kyc?.status === "rejected" && kyc.rejectionReason && (
               <Card className="border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-900/10">
@@ -1432,7 +1431,7 @@ const KycUserDetailPage: React.FC = () => {
           </div>
 
           {/* Submitted Documents */}
-          <Card className="shadow-sm w-full lg:w-1/3 h-fit gap-0  overflow-hidden">
+          <Card className="shadow-sm w-full xl:w-1/3 h-fit gap-0  overflow-hidden">
             <CardHeader className="border-b bg-lightgray dark:bg-secondarybox p-6">
               <CardTitle className="text-lg flex items-center gap-2">
                 <FileText className="h-6 w-6 text-primary" /> Submitted
@@ -1444,7 +1443,7 @@ const KycUserDetailPage: React.FC = () => {
             </CardHeader>
             <CardContent className="p-5">
               {kyc?.documents && kyc.documents.length > 0 ? (
-                <div className="">
+                <div className="space-y-2">
                   {kyc.documents.map((doc) => (
                     <Card
                       key={doc.public_id}
@@ -1471,41 +1470,26 @@ const KycUserDetailPage: React.FC = () => {
                           <FileText className="h-12 w-12 text-muted-foreground/50" />
                         </CardContent>
                       )}
-                      <CardFooter>
+
+                      <CardFooter className='justify-center items-center w-full'>
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger>
-                              <Button
-                                size="sm"
-                                className="w-full h-10"
+                              <Link
+                                href={doc.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
                               >
-                                <Link
-                                  href={doc.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className=""
-                                >
-                                  <Eye className="h-3.5 w-3.5" /> View Full
-                                  Document{" "}
+                                <Button className="w-full cursor-pointer">
+                                  <Eye className="h-3.5 w-3.5" />
+                                  View Full Document
                                   <ExternalLink className="h-3 w-3 ml-1 opacity-70" />
-                                </Link>
-                              </Button>
+                                </Button>
+                              </Link>
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>Open document in new tab</p>
                             </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </CardFooter>
-
-                      <CardFooter>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Link href={doc.url} target='_blank' rel='noopener noreferrer'>
-                              
-                              </Link>
-                            </TooltipTrigger>
                           </Tooltip>
                         </TooltipProvider>
                       </CardFooter>

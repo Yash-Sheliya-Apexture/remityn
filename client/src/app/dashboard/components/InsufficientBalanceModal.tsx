@@ -448,7 +448,7 @@ const InsufficientBalanceModal: React.FC<InsufficientBalanceModalProps> = ({
               {/* Close Button */}
               <div className="absolute sm:top-2 sm:right-2 top-1 right-1">
                 <button
-                  className="p-3 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background" // Added focus styles
+                  className="p-3 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer focus:outline-none" // Added focus styles
                   onClick={onClose}
                   aria-label="Close modal"
                 >

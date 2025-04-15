@@ -167,51 +167,142 @@
 
 
 
+// // frontend/src/app/dashboard/add-money/select-balance/page.tsx
+// "use client";
+
+// import React, { useEffect, useCallback } from 'react';
+// import { useRouter } from 'next/navigation';
+// import { useBalances } from '../../../hooks/useBalances'; // Adjust path
+// import { useAuth } from '../../../contexts/AuthContext'; // Adjust path
+// import SelectBalanceComponent from '../../../components/ui/SelectBalanceComponent'; // Import the reusable component
+
+// const AddMoneySelectBalancePage = () => {
+//     const router = useRouter();
+//     const { balances, isLoading, error, refetchBalances } = useBalances();
+//     const { token } = useAuth(); // Get token status
+
+//     // --- Redirect Logic ---
+//     useEffect(() => {
+//         // If user isn't logged in and not loading, redirect to login
+//         // Let the component handle the display if token exists but balances are empty
+//         if (!token && !isLoading && !error) {
+//              router.replace('/auth/login');
+//         }
+//          // Let the component handle auth errors displayed to the user
+//     }, [token, isLoading, error, router]);
+
+//     // --- Selection Handler ---
+//     const handleSelectBalanceForAddMoney = useCallback((balanceId: string) => {
+//         router.push(`/dashboard/balances/${balanceId}/add-money`);
+//     }, [router]);
+
+//     // --- Render the reusable component ---
+//     return (
+//         <SelectBalanceComponent
+//             balances={balances}
+//             isLoading={isLoading}
+//             error={error}
+//             refetchBalances={refetchBalances}
+//             onSelectBalance={handleSelectBalanceForAddMoney}
+//             allowAddBalance={true} // IMPORTANT: Allow adding new balance
+//             pageTitle="Select a Balance to Add Money To"
+//             noBalancePrimaryMessage="You don't have any currency balances yet."
+//             noBalanceSecondaryMessage="Create your first balance to add money"
+//             addBalanceHref="/dashboard/add-balance" // Link to create page
+//             addBalanceLinkText="Add New Balance" // Text for the add card
+//             tokenExists={!!token} // Pass token presence
+//         />
+//     );
+// };
+
+// export default AddMoneySelectBalancePage;
+
+
+
 // frontend/src/app/dashboard/add-money/select-balance/page.tsx
 "use client";
 
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useBalances } from '../../../hooks/useBalances'; // Adjust path
 import { useAuth } from '../../../contexts/AuthContext'; // Adjust path
 import SelectBalanceComponent from '../../../components/ui/SelectBalanceComponent'; // Import the reusable component
+import CurrencySelectorModal from '../../components/MainDashBoardSection/CurrencySelectorModal'; // Import the modal *** ADJUST PATH ***
+
+// --- Interface for NewAccount from Modal ---
+interface NewAccount {
+  _id: string;
+  userId: string;
+  currencyCode: string;
+  balance: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 const AddMoneySelectBalancePage = () => {
     const router = useRouter();
     const { balances, isLoading, error, refetchBalances } = useBalances();
     const { token } = useAuth(); // Get token status
 
-    // --- Redirect Logic ---
+    // --- State for the Currency Selector Modal ---
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    // --- Redirect Logic (no changes) ---
     useEffect(() => {
-        // If user isn't logged in and not loading, redirect to login
-        // Let the component handle the display if token exists but balances are empty
         if (!token && !isLoading && !error) {
              router.replace('/auth/login');
         }
-         // Let the component handle auth errors displayed to the user
     }, [token, isLoading, error, router]);
 
-    // --- Selection Handler ---
+    // --- Selection Handler for existing balances (no changes) ---
     const handleSelectBalanceForAddMoney = useCallback((balanceId: string) => {
         router.push(`/dashboard/balances/${balanceId}/add-money`);
     }, [router]);
 
-    // --- Render the reusable component ---
+    // --- Modal Control Functions ---
+    const handleOpenModal = useCallback(() => {
+        setIsModalOpen(true);
+    }, []);
+
+    const handleCloseModal = useCallback(() => {
+        setIsModalOpen(false);
+    }, []);
+
+    // --- Handler for when a currency is successfully added ---
+    const handleCurrencyAdded = useCallback((newAccount: NewAccount) => {
+        console.log("New currency account added:", newAccount);
+        handleCloseModal(); // Close the modal
+        refetchBalances(); // Refresh the list of balances to show the new one
+        // Optional: Navigate somewhere, e.g., directly to add money for the new balance
+        // router.push(`/dashboard/balances/${newAccount._id}/add-money`);
+    }, [handleCloseModal, refetchBalances]); // Removed router dependency unless you uncomment the navigation
+
+    // --- Render the reusable component and the modal ---
     return (
-        <SelectBalanceComponent
-            balances={balances}
-            isLoading={isLoading}
-            error={error}
-            refetchBalances={refetchBalances}
-            onSelectBalance={handleSelectBalanceForAddMoney}
-            allowAddBalance={true} // IMPORTANT: Allow adding new balance
-            pageTitle="Select a Balance to Add Money To"
-            noBalancePrimaryMessage="You don't have any currency balances yet."
-            noBalanceSecondaryMessage="Create your first balance to add money"
-            addBalanceHref="/dashboard/add-balance" // Link to create page
-            addBalanceLinkText="Add New Balance" // Text for the add card
-            tokenExists={!!token} // Pass token presence
-        />
+        <>
+            <SelectBalanceComponent
+                balances={balances}
+                isLoading={isLoading}
+                error={error}
+                refetchBalances={refetchBalances}
+                onSelectBalance={handleSelectBalanceForAddMoney}
+                allowAddBalance={true} // Keep this true
+                pageTitle="Select a Balance to Add Money To"
+                noBalancePrimaryMessage="You don't have any currency balances yet."
+                noBalanceSecondaryMessage="Create your first balance to add money"
+                // addBalanceHref="/dashboard/add-balance" // Remove or comment out this prop - onAddBalanceClick takes precedence
+                onAddBalanceClick={handleOpenModal} // *** Pass the function to open the modal ***
+                addBalanceLinkText="Add New Balance" // Text for the add card
+                tokenExists={!!token}
+            />
+
+            {/* Render the Modal */}
+            <CurrencySelectorModal
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+                onCurrencyAdded={handleCurrencyAdded} // Pass the success handler
+            />
+        </>
     );
 };
 

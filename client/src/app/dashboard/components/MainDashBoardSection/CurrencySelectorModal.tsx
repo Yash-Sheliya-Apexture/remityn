@@ -1579,7 +1579,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
                 key={currency.code}
                 className={cn(
                   "block hover:bg-lightgray dark:hover:bg-primarybox p-3 sm:p-4 rounded-2xl transition-colors duration-200 ease-in-out cursor-pointer",
-                  selectedCurrencyCode === currency.code && "bg-lightgray dark:bg-primarybox ring-1 ring-inset ring-primary/50" // Enhanced selection indicator
+                  selectedCurrencyCode === currency.code && "bg-lightgray dark:bg-primarybox" // Enhanced selection indicator
                 )}
                 onClick={() => handleCurrencySelect(currency.code)}
                 role="button"
