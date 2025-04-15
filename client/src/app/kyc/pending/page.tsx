@@ -455,16 +455,167 @@
 //     );
 // }
 
+// 'use client';
+
+// import React, { useEffect } from 'react';
+// import { useRouter } from 'next/navigation';
+
+// // --- UI Components ---
+// import { Button } from '@/components/ui/button';
+// import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+// import { Loader2, Clock, LayoutDashboard, Mail, Info, RefreshCw } from 'lucide-react'; // Use RefreshCw for refresh icon
+// import { cn } from '@/lib/utils'; // Import cn utility
+
+// // --- App Specific Imports ---
+// import { useAuth } from '@/app/contexts/AuthContext';
+// import { useKyc } from '../../contexts/KycContext';
+
+// // --- Component ---
+// export default function KycPendingPage() {
+//     const router = useRouter();
+//     const { user, loading: authLoading } = useAuth();
+//     const {
+//         backendStatus,
+//         isLoadingStatus: kycLoadingStatus, // Use context's loading state
+//         isInitialized: kycInitialized,
+//         updateCurrentUiStepId,
+//         fetchKycStatus // Function to trigger a status refresh
+//     } = useKyc();
+
+//     // Effect 1: Set UI step in context
+//     useEffect(() => {
+//         if (kycInitialized) {
+//             updateCurrentUiStepId('pending');
+//         }
+//     }, [kycInitialized, updateCurrentUiStepId]);
+
+//     // Effect 2: Check login status and redirect if necessary
+//     useEffect(() => {
+//         if (!authLoading && !user && kycInitialized) { // Check kycInitialized too
+//             console.log("KYC Pending: No user found, redirecting to login.");
+//             router.replace('/auth/login?redirect=/kyc/pending');
+//         }
+//     }, [user, authLoading, kycInitialized, router]);
+
+//     // Effect 3: Redirect if status changes away from 'pending' (handled by KycContext provider now)
+//     // The KycContext provider should handle navigation when backendStatus changes from 'pending'
+
+//     // --- Event Handlers ---
+//     const handleGoToDashboard = () => {
+//         router.push('/dashboard');
+//     };
+
+//     const handleRefreshStatus = () => {
+//         console.log("KYC Pending: Manual status refresh triggered.");
+//         fetchKycStatus(); // Call the context function to refresh
+//     };
+
+//     // --- Render Logic ---
+
+//     // Primary loading state: Waiting for auth or KYC context initialization
+//     if (authLoading || !kycInitialized) {
+//         return (
+//             <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
+//                 <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
+//                 <p className="text-muted-foreground text-lg">Initializing...</p>
+//             </div>
+//         );
+//     }
+
+//     // If user is definitely not logged in after loading
+//     if (!user) {
+//         return (
+//             <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
+//                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground mb-3" />
+//                 <p className="text-muted-foreground">Redirecting to login...</p>
+//             </div>
+//         );
+//     }
+
+//     // If status is currently being checked or is not yet 'pending'
+//     if (kycLoadingStatus || (backendStatus !== 'pending' && backendStatus !== 'error')) {
+//          // Show loading indicator while status is being fetched or updated
+//          // The context will handle redirection if status becomes verified/rejected etc.
+//         return (
+//             <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
+//                 <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
+//                 <p className="text-muted-foreground text-lg">Checking Verification Status...</p>
+//             </div>
+//         );
+//     }
+
+//     // Render only if status is definitively 'pending'
+//     // We check for 'error' state explicitly handled by provider if needed
+//     if (backendStatus !== 'pending') {
+//        // This case should ideally be handled by the KycProvider redirecting,
+//        // but act as a failsafe or indicate potential state inconsistency.
+//        console.warn(`KYC Pending Page: Render attempted with status ${backendStatus}. Waiting for context redirect.`);
+//         return (
+//              <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
+//                  <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
+//                  <p className="text-muted-foreground text-lg">Updating Status...</p>
+//              </div>
+//         );
+//     }
+
+
+//     // --- Main Pending Content ---
+//     return (
+//          <div className="flex justify-center items-center min-h-[calc(100vh-200px)] px-4 py-8"> {/* Added padding and vertical centering */}
+//              <Card className="w-full max-w-lg mx-auto shadow-xl border border-blue-200 dark:border-blue-800/50 bg-gradient-to-br from-background to-blue-50 dark:from-secondary dark:to-blue-900/20 animate-fadeIn overflow-hidden">
+//                 <CardHeader className="text-center items-center p-6 md:p-8 bg-blue-50 dark:bg-blue-900/20 border-b border-blue-100 dark:border-blue-800/60">
+//                      <div className="p-4 bg-blue-100 dark:bg-blue-900/40 rounded-full mb-4 border border-blue-200 dark:border-blue-800 shadow-inner">
+//                          <Clock className="h-10 w-10 text-blue-600 dark:text-blue-400 stroke-[1.5]" />
+//                      </div>
+//                      <CardTitle className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
+//                          Verification in Progress
+//                      </CardTitle>
+//                      <CardDescription className="text-base text-muted-foreground pt-1 px-4 max-w-md mx-auto">
+//                          Your documents are under review. Thank you for your patience!
+//                      </CardDescription>
+//                 </CardHeader>
+//                  <CardContent className="p-6 md:p-8 text-center space-y-6">
+//                     <p className="text-foreground/90 dark:text-foreground/80 text-base">
+//                         Reviews typically take <span className="font-semibold text-primary">1-2 business days</span>, but may occasionally take longer.
+//                     </p>
+//                     <p className="text-muted-foreground text-sm flex items-center justify-center gap-1.5">
+//                         <Mail className="h-4 w-4 flex-shrink-0"/> We'll notify you by email once the review is complete.
+//                     </p>
+//                     <p className="text-muted-foreground text-sm pt-2 flex items-center justify-center gap-1.5">
+//                         <Info className="h-4 w-4 flex-shrink-0"/> Some account features may be limited until verification is successful.
+//                     </p>
+//                      <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+//                          <Button onClick={handleGoToDashboard} size="lg" className="flex-1">
+//                              <LayoutDashboard className="mr-2 h-4 w-4" /> Go to Dashboard
+//                          </Button>
+//                          <Button
+//                             onClick={handleRefreshStatus}
+//                             variant="outline"
+//                             size="lg"
+//                             disabled={kycLoadingStatus} // Disable button while already refreshing
+//                             className="flex-1"
+//                           >
+//                             <RefreshCw className={cn("mr-2 h-4 w-4", kycLoadingStatus ? "animate-spin" : "")} />
+//                              Refresh Status
+//                         </Button>
+//                      </div>
+//                 </CardContent>
+//             </Card>
+//         </div>
+//     );
+// }
+
+// frontend/src/app/kyc/pending/page.tsx
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
 // --- UI Components ---
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Loader2, Clock, LayoutDashboard, Mail, Info, RefreshCw } from 'lucide-react'; // Use RefreshCw for refresh icon
-import { cn } from '@/lib/utils'; // Import cn utility
+import { Loader2, Clock, LayoutDashboard, Mail, Info, RefreshCw } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 // --- App Specific Imports ---
 import { useAuth } from '@/app/contexts/AuthContext';
@@ -484,31 +635,32 @@ export default function KycPendingPage() {
 
     // Effect 1: Set UI step in context
     useEffect(() => {
-        if (kycInitialized) {
+        if (kycInitialized && window.location.pathname === '/kyc/pending') {
             updateCurrentUiStepId('pending');
         }
     }, [kycInitialized, updateCurrentUiStepId]);
 
-    // Effect 2: Check login status and redirect if necessary
+    // Effect 2: Check login status (context handles main redirection)
     useEffect(() => {
-        if (!authLoading && !user && kycInitialized) { // Check kycInitialized too
-            console.log("KYC Pending: No user found, redirecting to login.");
-            router.replace('/auth/login?redirect=/kyc/pending');
+        if (!authLoading && !user && kycInitialized) {
+            // console.log("KYC Pending: No user found, context should redirect to login.");
+            // Let KycProvider handle redirect to login
         }
     }, [user, authLoading, kycInitialized, router]);
 
-    // Effect 3: Redirect if status changes away from 'pending' (handled by KycContext provider now)
-    // The KycContext provider should handle navigation when backendStatus changes from 'pending'
+    // Effect 3: Rely on KycContext provider for redirection if status changes *away* from 'pending'
 
     // --- Event Handlers ---
-    const handleGoToDashboard = () => {
+    const handleGoToDashboard = useCallback(() => {
         router.push('/dashboard');
-    };
+    }, [router]);
 
-    const handleRefreshStatus = () => {
-        console.log("KYC Pending: Manual status refresh triggered.");
-        fetchKycStatus(); // Call the context function to refresh
-    };
+    const handleRefreshStatus = useCallback(() => {
+        // console.log("KYC Pending: Manual status refresh triggered.");
+        if (!kycLoadingStatus) { // Prevent multiple clicks while already loading
+            fetchKycStatus(true); // Call the context function to refresh (force retry)
+        }
+    }, [fetchKycStatus, kycLoadingStatus]); // Add kycLoadingStatus dependency
 
     // --- Render Logic ---
 
@@ -522,46 +674,40 @@ export default function KycPendingPage() {
         );
     }
 
-    // If user is definitely not logged in after loading
-    if (!user) {
-        return (
-            <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
-                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground mb-3" />
-                <p className="text-muted-foreground">Redirecting to login...</p>
-            </div>
-        );
-    }
-
-    // If status is currently being checked or is not yet 'pending'
-    if (kycLoadingStatus || (backendStatus !== 'pending' && backendStatus !== 'error')) {
-         // Show loading indicator while status is being fetched or updated
-         // The context will handle redirection if status becomes verified/rejected etc.
+     // Show loading if status is being checked actively
+     if (kycLoadingStatus) {
         return (
             <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
                 <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
                 <p className="text-muted-foreground text-lg">Checking Verification Status...</p>
             </div>
         );
-    }
+   }
 
-    // Render only if status is definitively 'pending'
-    // We check for 'error' state explicitly handled by provider if needed
-    if (backendStatus !== 'pending') {
-       // This case should ideally be handled by the KycProvider redirecting,
-       // but act as a failsafe or indicate potential state inconsistency.
-       console.warn(`KYC Pending Page: Render attempted with status ${backendStatus}. Waiting for context redirect.`);
+    // If user is logged in, but status is NOT pending, context should redirect. Show loading briefly.
+    if (user && backendStatus !== 'pending') {
+        // console.log(`KYC Pending Page: Status is ${backendStatus}, waiting for context redirect.`);
         return (
              <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
                  <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
                  <p className="text-muted-foreground text-lg">Updating Status...</p>
              </div>
+         );
+    }
+
+    // If user is not logged in (and auth check is complete)
+    if (!user) {
+        return (
+             <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
+                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground mb-3" />
+                 <p className="text-muted-foreground">Redirecting to login...</p>
+             </div>
         );
     }
 
-
-    // --- Main Pending Content ---
+    // --- Main Pending Content (Render only if user exists and status is 'pending') ---
     return (
-         <div className="flex justify-center items-center min-h-[calc(100vh-200px)] px-4 py-8"> {/* Added padding and vertical centering */}
+         <div className="flex justify-center items-center min-h-[calc(100vh-200px)] px-4 py-8">
              <Card className="w-full max-w-lg mx-auto shadow-xl border border-blue-200 dark:border-blue-800/50 bg-gradient-to-br from-background to-blue-50 dark:from-secondary dark:to-blue-900/20 animate-fadeIn overflow-hidden">
                 <CardHeader className="text-center items-center p-6 md:p-8 bg-blue-50 dark:bg-blue-900/20 border-b border-blue-100 dark:border-blue-800/60">
                      <div className="p-4 bg-blue-100 dark:bg-blue-900/40 rounded-full mb-4 border border-blue-200 dark:border-blue-800 shadow-inner">

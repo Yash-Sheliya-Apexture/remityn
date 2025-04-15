@@ -61,7 +61,6 @@
 //          return null;
 //      }
 
-
 //     return (
 //         <div className="text-center">
 //             <h1 className="text-2xl md:text-3xl font-semibold mb-4 text-mainheading dark:text-white">
@@ -86,7 +85,6 @@
 //                     {error}
 //                 </div>
 //              )}
-
 
 //             <div className="flex flex-col sm:flex-row justify-center gap-4">
 //                 <Button
@@ -201,7 +199,6 @@
 //     // Only run when contexts/status initially stabilize or change
 //     }, [user, authLoading, kycInitialized, backendStatus, kycLoadingStatus, router]);
 
-
 //     // --- Action Handlers ---
 
 //     const handleStartVerification = () => {
@@ -251,7 +248,6 @@
 //              </div>
 //          );
 //      }
-
 
 //     // --- Content specific to user status (not_started, skipped) ---
 //      let title = 'Verify Your Identity';
@@ -333,19 +329,19 @@
 
 //  import React, { useEffect, useState } from 'react';
 //  import { useRouter } from 'next/navigation';
- 
+
 //  // --- UI Components ---
 //  import { Button } from '@/components/ui/button';
 //  import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 //  import { Loader2, AlertTriangle, Info, UserCheck, UserX, UserPlus, RotateCcw, LayoutDashboard, ShieldCheck, HelpCircle } from 'lucide-react';
 //  import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
- 
+
 //  // --- App Specific Imports ---
 //  import { useAuth } from '@/app/contexts/AuthContext';
 //  import { useKyc } from '../../contexts/KycContext';
 //  import kycService from '@/app/services/kyc';
 // import Link from 'next/link';
- 
+
 //  // --- Component ---
 //  export default function KycStartPage() {
 //      const router = useRouter();
@@ -360,17 +356,17 @@
 //          rejectionReason, // Keep for potential future use, though handled by redirect now
 //          fetchKycStatus // Explicitly fetch if needed, although context should handle it
 //      } = useKyc();
- 
+
 //      const [isSkipping, setIsSkipping] = useState(false);
 //      const [actionError, setActionError] = useState<string | null>(null);
- 
+
 //      // Effect 1: Set the current UI step in context
 //      useEffect(() => {
 //          if (kycInitialized) {
 //              updateCurrentUiStepId('start');
 //          }
 //      }, [kycInitialized, updateCurrentUiStepId]);
- 
+
 //      // Effect 2: Handle redirection based on context status
 //      useEffect(() => {
 //          // Wait until all contexts are ready and status isn't actively loading
@@ -378,16 +374,16 @@
 //              // console.log("KYC Start Effect: Waiting for loading states.");
 //              return;
 //          }
- 
+
 //          // If no user, redirect to login
 //          if (!user) {
 //              // console.log("KYC Start Effect: No user, redirecting to login.");
 //              router.replace('/auth/login?redirect=/kyc/start');
 //              return;
 //          }
- 
+
 //          // console.log("KYC Start Effect: Ready. Backend Status:", backendStatus);
- 
+
 //          // Handle redirections for states that should NOT be on this page
 //          switch (backendStatus) {
 //              case 'verified':
@@ -421,20 +417,19 @@
 //          }
 //      // Rerun whenever status or loading states change
 //      }, [user, authLoading, kycInitialized, backendStatus, kycLoadingStatus, router]);
- 
- 
+
 //      // --- Action Handlers ---
- 
+
 //      const handleStartVerification = () => {
 //          setActionError(null);
 //          console.log("KYC Start: Initiating verification flow...");
 //          resetKycProgress(false);
 //          goToStep('personal');
 //      };
- 
+
 //      const handleSkip = async () => {
 //          if (!confirm("Skipping verification will limit access to certain features. You can complete it later from your profile. Are you sure?")) return;
- 
+
 //          setIsSkipping(true);
 //          setActionError(null);
 //          try {
@@ -456,9 +451,9 @@
 //               // the skip button won't be rendered anymore, so no need to set isSkipping=false
 //          }
 //      };
- 
+
 //      // --- Render Logic ---
- 
+
 //      // Show loader while essential contexts are loading
 //      if (authLoading || !kycInitialized || (kycLoadingStatus && !backendStatus)) { // Show loader if KYC status is loading AND we don't have a previous status to display
 //          return (
@@ -468,7 +463,7 @@
 //              </div>
 //          );
 //      }
- 
+
 //       // If KycContext encountered an error, let its provider handle the display (or show generic error)
 //       if (backendStatus === 'error') {
 //           // Optionally, render a specific error message here if the provider doesn't
@@ -482,7 +477,7 @@
 //               </Alert>
 //           );
 //       }
- 
+
 //       // Prevent flicker during pending redirects for states that shouldn't be on this page
 //       // Only show loader if we are certain a redirect is pending based on status
 //       if (!user || ['verified', 'pending', 'rejected'].includes(backendStatus as string)) {
@@ -493,14 +488,14 @@
 //               </div>
 //           );
 //       }
- 
+
 //      // --- Content specific to user status (not_started, skipped) ---
 //       let title = 'Verify Your Identity';
 //       let description = 'To comply with regulations and ensure account security, please complete identity verification. It usually takes just a few minutes.';
 //       let icon = <UserPlus className="mx-auto h-12 w-12 text-primary mb-4" />;
 //       let requirements = "You'll need a valid government-issued photo ID (like a Passport or Resident Permit/National ID).";
 //       let statusMessage = null;
- 
+
 //       if (backendStatus === 'skipped') {
 //           title = 'Complete Your Verification';
 //           description = 'You previously skipped identity verification. Complete it now to unlock full account features.';
@@ -515,7 +510,7 @@
 //               </Alert>
 //           );
 //       }
- 
+
 //      return (
 //           <Card className="w-full max-w-lg mx-auto shadow-md border border-border/30 animate-fadeIn">
 //               <CardHeader className="text-center items-center p-6 md:p-8">
@@ -529,11 +524,11 @@
 //              </CardHeader>
 //               <CardContent className="text-center space-y-6 px-6 md:px-8 pb-8">
 //                  {statusMessage}
- 
+
 //                   <div className="text-sm text-muted-foreground p-3 border rounded-md bg-secondary/30">
 //                        <p className='flex items-center justify-center gap-2'><ShieldCheck className='h-4 w-4 text-green-600' /> {requirements}</p>
 //                   </div>
- 
+
 //                   {actionError && (
 //                       <Alert variant="destructive">
 //                           <AlertTriangle className="h-4 w-4"/>
@@ -541,13 +536,13 @@
 //                           <AlertDescription>{actionError}</AlertDescription>
 //                       </Alert>
 //                   )}
- 
+
 //                  <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
 //                      {/* Start button always shown if on this page */}
 //                      <Button onClick={handleStartVerification} size="lg" disabled={isSkipping} className="cursor-pointer flex-1">
 //                          Start Verification
 //                      </Button>
- 
+
 //                       {/* Show Skip button ONLY if status is 'not_started' */}
 //                       {(backendStatus === 'not_started') && (
 //                         <Link href='/dashboard' className='block'>
@@ -670,7 +665,6 @@
 //     // Rerun whenever key states change
 //     }, [user, authLoading, kycInitialized, backendStatus, kycLoadingStatus, router]);
 
-
 //     // --- Action Handlers ---
 
 //     const handleStartVerification = () => {
@@ -769,7 +763,6 @@
 //         );
 //     }
 
-
 //     // 6. Render Main Content (Only if user is logged in AND status is 'not_started' or 'skipped')
 //     let title = 'Verify Your Identity';
 //     let description = 'To comply with regulations and ensure account security, please complete identity verification. It usually takes just a few minutes.';
@@ -854,297 +847,650 @@
 //     );
 // }
 
+// // frontend/src/app/kyc/start/page.tsx
+// 'use client';
 
-// frontend/src/app/kyc/start/page.tsx
-'use client';
+// import React, { useEffect, useState } from 'react';
+// import { useRouter, usePathname } from 'next/navigation'; // Import usePathname here
+// import Link from 'next/link'; // Import Link
 
-import React, { useEffect, useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation'; // Import usePathname here
-import Link from 'next/link'; // Import Link
+// // --- UI Components ---
+// import { Button } from '@/components/ui/button';
+// import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+// import { Loader2, AlertTriangle, Info, UserCheck, UserX, UserPlus, RotateCcw, LayoutDashboard, ShieldCheck, HelpCircle } from 'lucide-react';
+// import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
+// // --- App Specific Imports ---
+// import { useAuth } from '@/app/contexts/AuthContext'; // Get user and loading state
+// import { useKyc } from '../../contexts/KycContext'; // Get KYC state and actions
+// import kycService from '@/app/services/kyc';
+
+// // --- Component ---
+// export default function KycStartPage() {
+//     const router = useRouter();
+//     const pathname = usePathname(); // <-- Call usePathname to get the current path
+//     // Get auth state
+//     const { user, loading: authLoading, refetchUser } = useAuth();
+//     // Get KYC state and necessary actions
+//     const {
+//         goToStep,
+//         updateCurrentUiStepId,
+//         isInitialized: kycInitialized,
+//         backendStatus,
+//         isLoadingStatus: kycLoadingStatus, // Use this from context
+//         rejectionReason,
+//         fetchKycStatus,
+//         startKycFlow // Use the dedicated action for starting
+//         // resetKycProgress is not needed here for starting flow
+//     } = useKyc();
+
+//     const [isSkipping, setIsSkipping] = useState(false);
+//     const [actionError, setActionError] = useState<string | null>(null);
+
+//     // Effect 1: Update UI Step ID (only if KYC context is ready and on correct page)
+//     useEffect(() => {
+//         // Ensure we only update if the context is ready and status allows being on start
+//         if (kycInitialized && (backendStatus === 'not_started' || backendStatus === 'skipped' || backendStatus === 'loading' || backendStatus === 'unauthenticated' || backendStatus === 'error')) {
+//              // Only update if the current path IS the start page
+//             if (pathname === '/kyc/start') {
+//                 updateCurrentUiStepId('start');
+//             }
+//         }
+//     }, [kycInitialized, backendStatus, updateCurrentUiStepId, pathname]); // Add backendStatus and pathname dependency
+
+//     // Effect 2: Handle Redirection Logic (Auth Check FIRST, then KYC status)
+//     // This relies heavily on the KycProvider's redirection logic, but keeps a local check for robustness.
+//     useEffect(() => {
+//         // Wait for contexts to be ready
+//         if (authLoading || !kycInitialized) {
+//            return; // Wait for initialization
+//         }
+
+//         // If auth done but no user, redirect (KycProvider/Layout also handle this)
+//         if (!user) {
+//            // Use the pathname obtained from the hook
+//             if (pathname && !pathname.startsWith('/auth/login')) { // Avoid loop if already redirecting
+//                console.log("KYC Start Effect: No user detected, ensuring redirect to login.");
+//                // Redirect back to the current page (start page) after login
+//                const redirectUrl = `/auth/login?redirect=${encodeURIComponent(pathname)}`;
+//                router.replace(redirectUrl);
+//             }
+//             return;
+//         }
+
+//         // If KYC status is loading, wait for it to resolve before potentially redirecting
+//         if (kycLoadingStatus) {
+//             return;
+//         }
+
+//         // Redirect based on FINALIZED KYC status (verified, pending, rejected)
+//         // Let KycProvider primarily handle this, but included here as safety
+//         switch (backendStatus) {
+//             case 'verified':
+//                 console.log("KYC Start Effect: Status verified, replacing route to /dashboard.");
+//                 router.replace('/dashboard'); // Or user profile / verified page
+//                 break;
+//             case 'pending':
+//                  console.log("KYC Start Effect: Status pending, replacing route to /kyc/pending.");
+//                 router.replace('/kyc/pending');
+//                 break;
+//             case 'rejected':
+//                 console.log("KYC Start Effect: Status rejected, replacing route to /kyc/rejected.");
+//                 router.replace('/kyc/rejected');
+//                 break;
+//             // Stay on this page for 'not_started', 'skipped', 'error', 'loading'
+//             // 'unauthenticated' case handled above
+//         }
+//     // Add pathname to dependency array
+//     }, [user, authLoading, kycInitialized, backendStatus, kycLoadingStatus, router, pathname]);
+
+//     // --- Action Handlers ---
+
+//     /** Handles the click on the "Start Verification" button */
+//     const handleStartVerification = () => {
+//         // Should only be clickable if user exists and status is appropriate
+//         if (!user || (backendStatus !== 'not_started' && backendStatus !== 'skipped')) {
+//            console.warn("Start verification clicked in unexpected state:", backendStatus);
+//            setActionError("Cannot start verification at this time.");
+//            return;
+//         }
+//         setActionError(null);
+//         console.log("KYC Start: Initiating verification flow...");
+//         // 1. Call context action to prepare state (sets status to 'not_started' and UI step to 'personal')
+//         startKycFlow();
+//         // 2. Navigate to the first form step
+//         goToStep('personal');
+//     };
+
+//     /** Handles the click on the "Skip for Now" button */
+//     const handleSkip = async () => {
+//         // Should only be clickable if user exists and status is 'not_started'
+//         if (!user || backendStatus !== 'not_started') {
+//             console.warn("Skip button clicked in unexpected state:", backendStatus);
+//             setActionError("Cannot skip verification at this stage.");
+//             return;
+//         }
+//         if (!confirm("Skipping verification will limit access to certain features. You can complete it later from your profile. Are you sure?")) return;
+
+//         setIsSkipping(true);
+//         setActionError(null);
+//         try {
+//             // console.log("KYC Start: Attempting to skip KYC via service...");
+//             await kycService.skipKyc();
+//             // Refetch user data AND KYC status to ensure contexts update
+//             await refetchUser();
+//             await fetchKycStatus(true); // Force fetch KYC status
+//             console.log("KYC Start: Skip successful. Context useEffect will handle state change.");
+//             // No explicit redirect here; Effect 2 will react to the new 'skipped' status and keep the user here.
+//             // Reset skipping state AFTER status has been fetched and processed by effects
+//             setIsSkipping(false);
+//         } catch (err: any) {
+//             console.error("KYC Start: Error skipping KYC:", err);
+//             const message = err?.response?.data?.message || err.message || "Could not skip verification. Please try again later.";
+//             setActionError(message);
+//             setIsSkipping(false); // Reset loading state on error
+//         }
+//     };
+
+//     // --- Render Logic ---
+
+//     // 1. Initial Loading State (Waiting for Auth or KYC Context)
+//     if (authLoading || !kycInitialized) {
+//         return (
+//             <div className="flex justify-center items-center min-h-[400px]">
+//                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
+//                 <span className="ml-3 text-muted-foreground">Loading Session...</span>
+//             </div>
+//         );
+//     }
+
+//     // 2. Redirecting to Login State (Auth done, but no user)
+//     // This is brief as the useEffect or Layout redirects quickly.
+//     if (!user) {
+//         return (
+//             <div className="flex justify-center items-center min-h-[400px]">
+//                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
+//                 <span className="ml-3 text-muted-foreground">Redirecting to Login...</span>
+//             </div>
+//         );
+//     }
+
+//     // 3. Loading KYC Status State (User logged in, but fetching KYC status)
+//     if (kycLoadingStatus && !['not_started', 'skipped'].includes(backendStatus as string)) { // Only show if status isn't already known resumable
+//         return (
+//             <div className="flex justify-center items-center min-h-[400px]">
+//                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
+//                 <span className="ml-3 text-muted-foreground">Loading Verification Status...</span>
+//             </div>
+//         );
+//     }
+
+//     // 4. KYC Error State
+//     if (backendStatus === 'error') {
+//         return (
+//             <Alert variant="destructive" className="max-w-lg mx-auto my-8">
+//                 <AlertTriangle className="h-4 w-4"/>
+//                 <AlertTitle>Error Loading Status</AlertTitle>
+//                 <AlertDescription>
+//                     Could not load your verification status. Please{' '}
+//                     <button
+//                        onClick={() => fetchKycStatus(true)} // Allow retry
+//                        className="underline font-medium text-destructive hover:text-destructive/80"
+//                    >
+//                        try again
+//                    </button>
+//                    {' '}or contact support.
+//                 </AlertDescription>
+//             </Alert>
+//         );
+//     }
+
+//     // 5. Redirecting based on inappropriate KYC Status (e.g., verified, pending)
+//     // This is brief as the useEffect or Provider redirects quickly.
+//     if (['verified', 'pending', 'rejected'].includes(backendStatus as string)) {
+//         return (
+//             <div className="flex justify-center items-center min-h-[400px]">
+//                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
+//                 <span className="ml-3 text-muted-foreground">Checking Status...</span>
+//             </div>
+//         );
+//     }
+
+//     // 6. Render Main Content (Only if user is logged in AND status is 'not_started' or 'skipped')
+//     if (backendStatus === 'not_started' || backendStatus === 'skipped') {
+//        let title = 'Verify Your Identity';
+//        let description = 'To comply with regulations and ensure account security, please complete identity verification. It usually takes just a few minutes.';
+//        let icon = <UserPlus className="mx-auto h-12 w-12 text-primary mb-4" />;
+//        let requirements = "You'll need a valid government-issued photo ID (like a Passport or Resident Permit/National ID).";
+//        let statusMessage = null;
+
+//        if (backendStatus === 'skipped') {
+//            title = 'Complete Your Verification';
+//            description = 'You previously skipped identity verification. Complete it now to unlock full account features.';
+//            icon = <UserCheck className="mx-auto h-12 w-12 text-blue-600 mb-4" />;
+//            statusMessage = (
+//                <Alert className="text-left border-blue-500/50 text-blue-800 dark:text-blue-200 dark:border-blue-500/30 [&>svg]:text-blue-500">
+//                    <Info className="h-4 w-4"/>
+//                    <AlertTitle className="font-semibold">Verification Recommended</AlertTitle>
+//                    <AlertDescription>
+//                        Complete verification now to access all account features and enhance security.
+//                    </AlertDescription>
+//                </Alert>
+//            );
+//        }
+
+//        // --- Render the Card ---
+//        return (
+//            <Card className="w-full max-w-lg mx-auto shadow-md border border-border/30 animate-fadeIn my-8">
+//                <CardHeader className="text-center items-center p-6 md:p-8">
+//                    {icon}
+//                    <CardTitle className="text-2xl md:text-3xl font-semibold">
+//                        {title}
+//                    </CardTitle>
+//                    <CardDescription className="mt-2 text-base">
+//                        {description}
+//                    </CardDescription>
+//                </CardHeader>
+//                <CardContent className="text-center space-y-6 px-6 md:px-8 pb-8">
+//                    {statusMessage}
+
+//                    <div className="text-sm text-muted-foreground p-3 border rounded-md bg-secondary/30">
+//                        <p className='flex items-center justify-center gap-2'><ShieldCheck className='h-4 w-4 text-green-600' /> {requirements}</p>
+//                    </div>
+
+//                    {actionError && (
+//                        <Alert variant="destructive">
+//                            <AlertTriangle className="h-4 w-4"/>
+//                            <AlertTitle>Action Failed</AlertTitle>
+//                            <AlertDescription>{actionError}</AlertDescription>
+//                        </Alert>
+//                    )}
+
+//                    <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+//                        {/* Start button always shown if status is not_started or skipped */}
+//                        <Button onClick={handleStartVerification} size="lg" disabled={isSkipping} className="cursor-pointer flex-1">
+//                            Start Verification
+//                        </Button>
+
+//                        {/* Show Skip button ONLY if status is 'not_started' */}
+//                        {backendStatus === 'not_started' && (
+//                         <Link href="/dashboard">
+//                            <Button onClick={handleSkip} variant="outline" size="lg" disabled={isSkipping} className="flex-1 cursor-pointer">
+//                                {isSkipping ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+//                                Skip for Now
+//                            </Button>
+//                         </Link>
+//                        )}
+//                    </div>
+//                    <p className="text-xs text-muted-foreground pt-4">
+//                        Need help? <Link href="/support" className="underline hover:text-primary">Contact support</Link> <HelpCircle className="inline h-3 w-3 ml-0.5"/>
+//                    </p>
+//                </CardContent>
+//            </Card>
+//        );
+//     }
+
+//     // Fallback if none of the above conditions are met (should be rare)
+//     console.warn("KycStartPage reached unexpected render state. Status:", backendStatus);
+//     return (
+//         <div className="flex justify-center items-center min-h-[400px]">
+//             <Loader2 className="h-8 w-8 animate-spin text-primary" />
+//             <span className="ml-3 text-muted-foreground">Loading...</span>
+//         </div>
+//     );
+// }
+
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
 
 // --- UI Components ---
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Loader2, AlertTriangle, Info, UserCheck, UserX, UserPlus, RotateCcw, LayoutDashboard, ShieldCheck, HelpCircle } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import {
+  Loader2,
+  AlertTriangle,
+  Info,
+  UserCheck,
+  UserX,
+  UserPlus,
+  RotateCcw,
+  LayoutDashboard,
+  ShieldCheck,
+  HelpCircle,
+} from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 // --- App Specific Imports ---
-import { useAuth } from '@/app/contexts/AuthContext'; // Get user and loading state
-import { useKyc } from '../../contexts/KycContext'; // Get KYC state and actions
-import kycService from '@/app/services/kyc';
+import { useAuth } from "@/app/contexts/AuthContext";
+import { useKyc } from "../../contexts/KycContext";
+import kycService from "@/app/services/kyc";
 
 // --- Component ---
 export default function KycStartPage() {
-    const router = useRouter();
-    const pathname = usePathname(); // <-- Call usePathname to get the current path
-    // Get auth state
-    const { user, loading: authLoading, refetchUser } = useAuth();
-    // Get KYC state and necessary actions
-    const {
-        goToStep,
-        updateCurrentUiStepId,
-        isInitialized: kycInitialized,
-        backendStatus,
-        isLoadingStatus: kycLoadingStatus, // Use this from context
-        rejectionReason,
-        fetchKycStatus,
-        startKycFlow // Use the dedicated action for starting
-        // resetKycProgress is not needed here for starting flow
-    } = useKyc();
+  const router = useRouter();
+  const pathname = usePathname();
+  const { user, loading: authLoading, refetchUser } = useAuth();
+  const {
+    goToStep,
+    updateCurrentUiStepId,
+    isInitialized: kycInitialized,
+    backendStatus,
+    isLoadingStatus: kycLoadingStatus,
+    rejectionReason,
+    fetchKycStatus, // KycContext status fetch
+    startKycFlow,
+    resetKycProgress, // Use reset if retrying from rejected
+  } = useKyc();
 
-    const [isSkipping, setIsSkipping] = useState(false);
-    const [actionError, setActionError] = useState<string | null>(null);
+  const [isSkipping, setIsSkipping] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
 
-    // Effect 1: Update UI Step ID (only if KYC context is ready and on correct page)
-    useEffect(() => {
-        // Ensure we only update if the context is ready and status allows being on start
-        if (kycInitialized && (backendStatus === 'not_started' || backendStatus === 'skipped' || backendStatus === 'loading' || backendStatus === 'unauthenticated' || backendStatus === 'error')) {
-             // Only update if the current path IS the start page
-            if (pathname === '/kyc/start') {
-                updateCurrentUiStepId('start');
-            }
-        }
-    }, [kycInitialized, backendStatus, updateCurrentUiStepId, pathname]); // Add backendStatus and pathname dependency
+  // Effect 1: Update UI Step ID based on path and context readiness
+  useEffect(() => {
+    // Only update if context is ready and the path is correct
+    if (kycInitialized && pathname === "/kyc/start") {
+      // Ensure UI step reflects 'start' if status allows being here
+      if (
+        [
+          "not_started",
+          "skipped",
+          "loading",
+          "unauthenticated",
+          "error",
+        ].includes(backendStatus as string)
+      ) {
+        updateCurrentUiStepId("start");
+      }
+    }
+  }, [kycInitialized, backendStatus, updateCurrentUiStepId, pathname]); // Add pathname dependency
 
-    // Effect 2: Handle Redirection Logic (Auth Check FIRST, then KYC status)
-    // This relies heavily on the KycProvider's redirection logic, but keeps a local check for robustness.
-    useEffect(() => {
-        // Wait for contexts to be ready
-        if (authLoading || !kycInitialized) {
-           return; // Wait for initialization
-        }
-
-        // If auth done but no user, redirect (KycProvider/Layout also handle this)
-        if (!user) {
-           // Use the pathname obtained from the hook
-            if (pathname && !pathname.startsWith('/auth/login')) { // Avoid loop if already redirecting
-               console.log("KYC Start Effect: No user detected, ensuring redirect to login.");
-               // Redirect back to the current page (start page) after login
-               const redirectUrl = `/auth/login?redirect=${encodeURIComponent(pathname)}`;
-               router.replace(redirectUrl);
-            }
-            return;
-        }
-
-        // If KYC status is loading, wait for it to resolve before potentially redirecting
-        if (kycLoadingStatus) {
-            return;
-        }
-
-        // Redirect based on FINALIZED KYC status (verified, pending, rejected)
-        // Let KycProvider primarily handle this, but included here as safety
-        switch (backendStatus) {
-            case 'verified':
-                console.log("KYC Start Effect: Status verified, replacing route to /dashboard.");
-                router.replace('/dashboard'); // Or user profile / verified page
-                break;
-            case 'pending':
-                 console.log("KYC Start Effect: Status pending, replacing route to /kyc/pending.");
-                router.replace('/kyc/pending');
-                break;
-            case 'rejected':
-                console.log("KYC Start Effect: Status rejected, replacing route to /kyc/rejected.");
-                router.replace('/kyc/rejected');
-                break;
-            // Stay on this page for 'not_started', 'skipped', 'error', 'loading'
-            // 'unauthenticated' case handled above
-        }
-    // Add pathname to dependency array
-    }, [user, authLoading, kycInitialized, backendStatus, kycLoadingStatus, router, pathname]);
-
-
-    // --- Action Handlers ---
-
-    /** Handles the click on the "Start Verification" button */
-    const handleStartVerification = () => {
-        // Should only be clickable if user exists and status is appropriate
-        if (!user || (backendStatus !== 'not_started' && backendStatus !== 'skipped')) {
-           console.warn("Start verification clicked in unexpected state:", backendStatus);
-           setActionError("Cannot start verification at this time.");
-           return;
-        }
-        setActionError(null);
-        console.log("KYC Start: Initiating verification flow...");
-        // 1. Call context action to prepare state (sets status to 'not_started' and UI step to 'personal')
-        startKycFlow();
-        // 2. Navigate to the first form step
-        goToStep('personal');
-    };
-
-    /** Handles the click on the "Skip for Now" button */
-    const handleSkip = async () => {
-        // Should only be clickable if user exists and status is 'not_started'
-        if (!user || backendStatus !== 'not_started') {
-            console.warn("Skip button clicked in unexpected state:", backendStatus);
-            setActionError("Cannot skip verification at this stage.");
-            return;
-        }
-        if (!confirm("Skipping verification will limit access to certain features. You can complete it later from your profile. Are you sure?")) return;
-
-        setIsSkipping(true);
-        setActionError(null);
-        try {
-            // console.log("KYC Start: Attempting to skip KYC via service...");
-            await kycService.skipKyc();
-            // Refetch user data AND KYC status to ensure contexts update
-            await refetchUser();
-            await fetchKycStatus(true); // Force fetch KYC status
-            console.log("KYC Start: Skip successful. Context useEffect will handle state change.");
-            // No explicit redirect here; Effect 2 will react to the new 'skipped' status and keep the user here.
-            // Reset skipping state AFTER status has been fetched and processed by effects
-            setIsSkipping(false);
-        } catch (err: any) {
-            console.error("KYC Start: Error skipping KYC:", err);
-            const message = err?.response?.data?.message || err.message || "Could not skip verification. Please try again later.";
-            setActionError(message);
-            setIsSkipping(false); // Reset loading state on error
-        }
-    };
-
-    // --- Render Logic ---
-
-    // 1. Initial Loading State (Waiting for Auth or KYC Context)
-    if (authLoading || !kycInitialized) {
-        return (
-            <div className="flex justify-center items-center min-h-[400px]">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                <span className="ml-3 text-muted-foreground">Loading Session...</span>
-            </div>
-        );
+  // Effect 2: Handle Redirection (Auth Check FIRST, then KYC status)
+  // Primarily relies on KycProvider's redirection logic, but keeps local check
+  useEffect(() => {
+    // Wait for contexts to be ready
+    if (authLoading || !kycInitialized || kycLoadingStatus) {
+      return; // Wait for initialization and status loading
     }
 
-    // 2. Redirecting to Login State (Auth done, but no user)
-    // This is brief as the useEffect or Layout redirects quickly.
+    // If auth done but no user, KycProvider/Layout should redirect
     if (!user) {
-        return (
-            <div className="flex justify-center items-center min-h-[400px]">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                <span className="ml-3 text-muted-foreground">Redirecting to Login...</span>
-            </div>
-        );
+      // console.log("KYC Start Effect: No user detected, context should handle redirect.");
+      return;
     }
 
-    // 3. Loading KYC Status State (User logged in, but fetching KYC status)
-    if (kycLoadingStatus && !['not_started', 'skipped'].includes(backendStatus as string)) { // Only show if status isn't already known resumable
-        return (
-            <div className="flex justify-center items-center min-h-[400px]">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                <span className="ml-3 text-muted-foreground">Loading Verification Status...</span>
-            </div>
-        );
+    // If user is logged in, but status is final (verified, pending, rejected),
+    // KycProvider/Layout should redirect away from start page.
+    if (["verified", "pending", "rejected"].includes(backendStatus as string)) {
+      // console.log(`KYC Start Effect: Status is ${backendStatus}, context should handle redirect away from start.`);
+      return;
     }
 
-    // 4. KYC Error State
-    if (backendStatus === 'error') {
-        return (
-            <Alert variant="destructive" className="max-w-lg mx-auto my-8">
-                <AlertTriangle className="h-4 w-4"/>
-                <AlertTitle>Error Loading Status</AlertTitle>
-                <AlertDescription>
-                    Could not load your verification status. Please{' '}
-                    <button
-                       onClick={() => fetchKycStatus(true)} // Allow retry
-                       className="underline font-medium text-destructive hover:text-destructive/80"
-                   >
-                       try again
-                   </button>
-                   {' '}or contact support.
-                </AlertDescription>
-            </Alert>
-        );
+    // If status is error, KycProvider should redirect to error page
+    if (backendStatus === "error") {
+      // console.log("KYC Start Effect: Status is error, context should handle redirect to error page.");
+      return;
     }
 
-    // 5. Redirecting based on inappropriate KYC Status (e.g., verified, pending)
-    // This is brief as the useEffect or Provider redirects quickly.
-    if (['verified', 'pending', 'rejected'].includes(backendStatus as string)) {
-        return (
-            <div className="flex justify-center items-center min-h-[400px]">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                <span className="ml-3 text-muted-foreground">Checking Status...</span>
-            </div>
-        );
+    // If status is not_started or skipped, stay here. UI step updated by Effect 1.
+
+    // Dependencies reflect conditions needed for redirection logic
+  }, [
+    user,
+    authLoading,
+    kycInitialized,
+    backendStatus,
+    kycLoadingStatus,
+    router,
+    pathname,
+  ]);
+
+  // --- Action Handlers ---
+
+  /** Handles the click on the "Start Verification" button */
+  const handleStartVerification = () => {
+    // Check if user exists and status allows starting
+    if (
+      !user ||
+      !["not_started", "skipped", "rejected"].includes(backendStatus as string)
+    ) {
+      console.warn(
+        "Start verification clicked in unexpected state:",
+        backendStatus
+      );
+      setActionError("Cannot start verification at this time.");
+      // Consider fetching status again if state seems inconsistent
+      // fetchKycStatus(true);
+      return;
     }
+    setActionError(null);
+    console.log("KYC Start: Initiating verification flow...");
 
-    // 6. Render Main Content (Only if user is logged in AND status is 'not_started' or 'skipped')
-    if (backendStatus === 'not_started' || backendStatus === 'skipped') {
-       let title = 'Verify Your Identity';
-       let description = 'To comply with regulations and ensure account security, please complete identity verification. It usually takes just a few minutes.';
-       let icon = <UserPlus className="mx-auto h-12 w-12 text-primary mb-4" />;
-       let requirements = "You'll need a valid government-issued photo ID (like a Passport or Resident Permit/National ID).";
-       let statusMessage = null;
-
-       if (backendStatus === 'skipped') {
-           title = 'Complete Your Verification';
-           description = 'You previously skipped identity verification. Complete it now to unlock full account features.';
-           icon = <UserCheck className="mx-auto h-12 w-12 text-blue-600 mb-4" />;
-           statusMessage = (
-               <Alert className="text-left border-blue-500/50 text-blue-800 dark:text-blue-200 dark:border-blue-500/30 [&>svg]:text-blue-500">
-                   <Info className="h-4 w-4"/>
-                   <AlertTitle className="font-semibold">Verification Recommended</AlertTitle>
-                   <AlertDescription>
-                       Complete verification now to access all account features and enhance security.
-                   </AlertDescription>
-               </Alert>
-           );
-       }
-
-       // --- Render the Card ---
-       return (
-           <Card className="w-full max-w-lg mx-auto shadow-md border border-border/30 animate-fadeIn my-8">
-               <CardHeader className="text-center items-center p-6 md:p-8">
-                   {icon}
-                   <CardTitle className="text-2xl md:text-3xl font-semibold">
-                       {title}
-                   </CardTitle>
-                   <CardDescription className="mt-2 text-base">
-                       {description}
-                   </CardDescription>
-               </CardHeader>
-               <CardContent className="text-center space-y-6 px-6 md:px-8 pb-8">
-                   {statusMessage}
-
-                   <div className="text-sm text-muted-foreground p-3 border rounded-md bg-secondary/30">
-                       <p className='flex items-center justify-center gap-2'><ShieldCheck className='h-4 w-4 text-green-600' /> {requirements}</p>
-                   </div>
-
-                   {actionError && (
-                       <Alert variant="destructive">
-                           <AlertTriangle className="h-4 w-4"/>
-                           <AlertTitle>Action Failed</AlertTitle>
-                           <AlertDescription>{actionError}</AlertDescription>
-                       </Alert>
-                   )}
-
-                   <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
-                       {/* Start button always shown if status is not_started or skipped */}
-                       <Button onClick={handleStartVerification} size="lg" disabled={isSkipping} className="cursor-pointer flex-1">
-                           Start Verification
-                       </Button>
-
-                       {/* Show Skip button ONLY if status is 'not_started' */}
-                       {backendStatus === 'not_started' && (
-                        <Link href="/dashboard">
-                           <Button onClick={handleSkip} variant="outline" size="lg" disabled={isSkipping} className="flex-1 cursor-pointer">
-                               {isSkipping ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                               Skip for Now
-                           </Button>
-                        </Link>
-                       )}
-                   </div>
-                   <p className="text-xs text-muted-foreground pt-4">
-                       Need help? <Link href="/support" className="underline hover:text-primary">Contact support</Link> <HelpCircle className="inline h-3 w-3 ml-0.5"/>
-                   </p>
-               </CardContent>
-           </Card>
-       );
+    // If status was rejected, use resetKycProgress to clear old data fully
+    if (backendStatus === "rejected") {
+      console.log(
+        "KYC Start: Resetting progress for rejected status before starting."
+      );
+      // resetKycProgress(false) resets state but doesn't navigate away immediately,
+      // allowing startKycFlow to navigate to 'personal'
+      resetKycProgress(false); // Reset state locally, don't navigate yet
     }
+    // Use startKycFlow to set state and navigate to the first step
+    startKycFlow(); // This handles state reset and navigation to 'personal'
+  };
 
-    // Fallback if none of the above conditions are met (should be rare)
-    console.warn("KycStartPage reached unexpected render state. Status:", backendStatus);
+  /** Handles the click on the "Skip for Now" button */
+  const handleSkip = async () => {
+    // Should only be clickable if user exists and status is 'not_started'
+    if (!user || backendStatus !== "not_started") {
+      console.warn("Skip button clicked in unexpected state:", backendStatus);
+      setActionError("Cannot skip verification at this stage.");
+      return;
+    }
+    if (
+      !confirm(
+        "Skipping verification will limit access to certain features. You can complete it later from your profile. Are you sure?"
+      )
+    )
+      return;
+
+    setIsSkipping(true);
+    setActionError(null);
+    try {
+      console.log("KYC Start: Attempting to skip KYC via service...");
+      await kycService.skipKyc();
+      console.log(
+        "KYC Start: Skip API call successful. Refetching contexts..."
+      );
+
+      // --- CRITICAL: Refetch BOTH Auth user and KYC status ---
+      await refetchUser(); // Update AuthContext immediately
+      await fetchKycStatus(true); // Force fetch KycContext status (will become 'skipped')
+      // --- End Refetch ---
+
+      console.log(
+        "KYC Start: Contexts refetched. Status should now be 'skipped'."
+      );
+      // No explicit redirect here; Effect 2 and KycProvider logic will handle staying on 'start' or moving if needed.
+      // Or redirect explicitly to dashboard after skip?
+      // router.push('/dashboard'); // Option: Redirect after successful skip
+    } catch (err: any) {
+      console.error("KYC Start: Error skipping KYC:", err);
+      const message =
+        err?.response?.data?.message ||
+        err.message ||
+        "Could not skip verification. Please try again later.";
+      setActionError(message);
+    } finally {
+      setIsSkipping(false); // Reset loading state
+    }
+  };
+
+  // --- Render Logic ---
+
+  // 1. Initial Loading State (Waiting for Auth or KYC Context)
+  if (authLoading || !kycInitialized) {
     return (
-        <div className="flex justify-center items-center min-h-[400px]">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <span className="ml-3 text-muted-foreground">Loading...</span>
-        </div>
+      <div className="flex justify-center items-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <span className="ml-3 text-muted-foreground">Loading Session...</span>
+      </div>
     );
+  }
+
+  // 2. User exists, but KYC status is still loading
+  // Show only if not already in a state where content can be shown ('not_started', 'skipped')
+  if (
+    user &&
+    kycLoadingStatus &&
+    !["not_started", "skipped"].includes(backendStatus as string)
+  ) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <span className="ml-3 text-muted-foreground">
+          Loading Verification Status...
+        </span>
+      </div>
+    );
+  }
+
+  // 3. Redirecting States (Handled by Effects/Provider, show minimal loading)
+  // This covers unauthenticated, or final statuses (verified, pending, rejected) where context should navigate away
+  if (
+    !user ||
+    (user &&
+      ["verified", "pending", "rejected", "error"].includes(
+        backendStatus as string
+      ))
+  ) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <span className="ml-3 text-muted-foreground">Checking Status...</span>
+      </div>
+    );
+  }
+
+  // 4. Render Main Content (Only if user is logged in AND status is 'not_started' or 'skipped')
+  if (
+    user &&
+    (backendStatus === "not_started" || backendStatus === "skipped")
+  ) {
+    let title = "Verify Your Identity";
+    let description =
+      "To comply with regulations and ensure account security, please complete identity verification. It usually takes just a few minutes.";
+    let icon = <UserPlus className="mx-auto h-12 w-12 text-primary mb-4" />;
+    let requirements =
+      "You'll need a valid government-issued photo ID (like a Passport or Resident Permit/National ID).";
+    let statusMessage = null;
+
+    if (backendStatus === "skipped") {
+      title = "Complete Your Verification";
+      description =
+        "You previously skipped identity verification. Complete it now to unlock full account features.";
+      icon = <UserCheck className="mx-auto h-12 w-12 text-blue-600 mb-4" />;
+      statusMessage = (
+        <Alert className="text-left border-blue-500/50 text-blue-800 dark:text-blue-200 dark:border-blue-500/30 [&>svg]:text-blue-500">
+          <Info className="h-4 w-4" />
+          <AlertTitle className="font-semibold">
+            Verification Recommended
+          </AlertTitle>
+          <AlertDescription>
+            Complete verification now to access all account features and enhance
+            security.
+          </AlertDescription>
+        </Alert>
+      );
+    }
+
+    // --- Render the Card ---
+    return (
+      <Card className="w-full max-w-lg mx-auto shadow-md border border-border/30 animate-fadeIn my-8">
+        <CardHeader className="text-center items-center p-6 md:p-8">
+          {icon}
+          <CardTitle className="text-2xl md:text-3xl font-semibold">
+            {title}
+          </CardTitle>
+          <CardDescription className="mt-2 text-base text-muted-foreground">
+            {description}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="text-center space-y-6 px-6 md:px-8 pb-8">
+          {statusMessage}
+
+          <div className="text-sm text-muted-foreground p-3 border rounded-md bg-secondary/30">
+            <p className="flex items-center justify-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-green-600" /> {requirements}
+            </p>
+          </div>
+
+          {actionError && (
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>Action Failed</AlertTitle>
+              <AlertDescription>{actionError}</AlertDescription>
+            </Alert>
+          )}
+
+          <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+            {/* Start button always shown if status allows starting */}
+            <Button
+              onClick={handleStartVerification}
+              size="lg"
+              disabled={isSkipping}
+              className="cursor-pointer flex-1"
+            >
+              Start Verification
+            </Button>
+
+            {/* Show Skip button ONLY if status is 'not_started' */}
+            {backendStatus === "not_started" && (
+              <Link href="/dashboard">
+                <Button
+                  onClick={handleSkip}
+                  variant="outline"
+                  size="lg"
+                  disabled={isSkipping}
+                  className="flex-1 cursor-pointer"
+                >
+                  {isSkipping ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : null}
+                  Skip for Now
+                </Button>
+              </Link>
+            )}
+          </div>
+          <p className="text-xs text-muted-foreground pt-4">
+            Need help?{" "}
+            <Link href="/support" className="underline hover:text-primary">
+              Contact support
+            </Link>{" "}
+            <HelpCircle className="inline h-3 w-3 ml-0.5" />
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Fallback if none of the above conditions are met (should be rare)
+  console.warn(
+    "KycStartPage reached unexpected render state. Status:",
+    backendStatus
+  );
+  return (
+    <div className="flex justify-center items-center min-h-[400px]">
+      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <span className="ml-3 text-muted-foreground">Loading...</span>
+    </div>
+  );
 }
