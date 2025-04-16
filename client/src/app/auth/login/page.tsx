@@ -1976,7 +1976,7 @@ export default function LoginPage() {
     useEffect(() => {
         // This effect handles redirection *after* the user state is updated by login()
         if (!loading && user) {
-            console.log("Login successful, checking KYC status:", user.kycStatus);
+            console.log("Login successful, checking KYC status:", user.kyc?.status);
 
             let redirectUrl = '';
 
@@ -1984,7 +1984,7 @@ export default function LoginPage() {
             if (isAdmin) {
                 redirectUrl = '/admin'; // Admins go straight to admin panel
             } else {
-                switch (user.kycStatus) {
+                switch (user.kyc?.status) {
                     case 'not_started':
                     case 'rejected':
                     case 'skipped': // Treat skipped like not_started for initial flow

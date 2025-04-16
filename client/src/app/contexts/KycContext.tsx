@@ -6477,7 +6477,7 @@ export const KycProvider = ({ children }: KycProviderProps) => {
   const router = useRouter();
   const pathname = usePathname();
   // --- Inject AuthContext ---
-  const { user, loading: authLoading, refetchUser, updateAuthUserKycStatus } = useAuth();
+  const { user, loading: authLoading, refetchUser, updateAuthUserKyc  } = useAuth();
 
   // --- State ---
   const [currentUiStepId, setCurrentUiStepId] = useState<KycStepId>("start");
@@ -6508,9 +6508,12 @@ export const KycProvider = ({ children }: KycProviderProps) => {
       startTransition(() => {
         setBackendStatus(statusData.status);
         setRejectionReason(statusData.rejectionReason || null);
-        // --- Update AuthContext ---
-        updateAuthUserKycStatus(statusData.status, statusData.rejectionReason);
-        // -------------------------
+        // --- FIX: Update AuthContext using the correct function ---
+        updateAuthUserKyc({
+            status: statusData.status,
+            rejectionReason: statusData.rejectionReason || null,
+        });
+        // ---------------------------------------------------------
         // console.log("KycContext: Fetched status:", statusData.status);
       });
     } catch (error: any) {
@@ -6520,7 +6523,8 @@ export const KycProvider = ({ children }: KycProviderProps) => {
       startTransition(() => setIsLoadingStatus(false));
       isFetchingRef.current = false;
     }
-  }, [user, backendStatus, updateAuthUserKycStatus]); // Added updateAuthUserKycStatus
+    // FIX: Update dependency array
+  }, [user, backendStatus, updateAuthUserKyc]);
 
   const loadPersistedData = useCallback(() => { /* ... (no changes needed here) ... */
         if (!user) {
@@ -6795,7 +6799,10 @@ export const KycProvider = ({ children }: KycProviderProps) => {
         setSubmissionError(null);
         setIsSubmitting(false); // Turn off submission indicator
         // --- Update AuthContext Immediately ---
-        updateAuthUserKycStatus(newBackendStatus, newReason);
+        updateAuthUserKyc({
+          status: newBackendStatus,
+          rejectionReason: newReason,
+      });
         // ----------------------------------
       });
 
@@ -6814,7 +6821,7 @@ export const KycProvider = ({ children }: KycProviderProps) => {
       startTransition(() => setIsSubmitting(false));
       return false; // Indicate failure
     }
-  }, [user, kycData, fileState, goToStep, refetchUser, updateAuthUserKycStatus]); // Added dependencies
+  }, [user, kycData, fileState, goToStep, refetchUser, updateAuthUserKyc]); // Added dependencies
 
   // --- Effects ---
 

@@ -84,71 +84,60 @@ const getUserById = async (userId) => {
     }
 };
 
-// // --- Function to get user including their KYC details ---
-// // Used by /users/me and potentially admin views
-// const getUserByIdWithKyc = async (userId) => {
-//     try {
-//          if (!mongoose.Types.ObjectId.isValid(userId)) {
-//              throw new Error('Invalid user ID format.');
-//         }
-//         // Find by ID and explicitly select the kyc object.
-//         // Password is automatically removed by the schema's toJSON transform.
-//         const user = await User.findById(userId).select('+kyc'); // Ensure KYC is populated
-
-//         if (!user) {
-//             return null; // Return null if user not found
-//         }
-//         // No need to manually delete password here due to toJSON in model
-//         return user;
-//     } catch (error) {
-//         console.error(`Error in getUserByIdWithKyc for ${userId}:`, error);
-//          if (error.message.includes('Invalid user ID format')) {
-//              throw error;
-//          }
-//         throw new Error("Failed to fetch user details.");
-//     }
-// };
-
 const getUserByIdWithKyc = async (userId) => {
-    console.log(`[User Service] Attempting to fetch user by ID: ${userId}`);
-
-    // --- FIX: Add the mongoose import at the top of the file ---
-    // Now this check will work because 'mongoose' is defined.
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-        console.warn(`[User Service] Invalid User ID format received: ${userId}`);
-        throw new Error('Invalid user ID format.');
-    }
-
+    // ... (ID validation) ...
     try {
-        // Fetch user, select necessary fields, exclude sensitive ones
-        // Ensure 'kyc' is selected (it should be by default unless explicitly excluded in schema)
         const user = await User.findById(userId)
             .select('-password -resetPasswordToken -resetPasswordExpires -__v') // Exclude sensitive info
-            .lean(); // Use lean for performance if you only need plain objects
+            .lean(); // Use lean
 
         if (!user) {
-            console.warn(`[User Service] User not found for ID: ${userId}`);
             throw new Error('User not found.');
         }
 
-        // Optional: Ensure KYC object exists, even if default (though model pre-save should handle this)
+        // ***** ENSURE DEFAULT KYC OBJECT *****
         if (!user.kyc) {
-            console.warn(`[User Service] User ${userId} found but missing 'kyc' object. Providing default.`);
-            user.kyc = { status: 'not_started', rejectionReason: null };
+            console.warn(`[User Service] User ${userId} found but missing 'kyc' object in lean result. Providing default.`);
+            // Manually add the default structure if lean() didn't include it
+            user.kyc = {
+                status: 'not_started',
+                // Initialize other fields to null/defaults as needed by KycDetails type
+                firstName: user.fullName?.split(' ')[0] || '', // Example prefill
+                lastName: user.fullName?.split(' ').slice(1).join(' ') || '', // Example prefill
+                dateOfBirth: null,
+                mobile: null,
+                occupation: null,
+                salaryRange: null,
+                nationality: null,
+                idType: null,
+                idNumber: null,
+                idIssueDate: null,
+                idExpiryDate: null,
+                documents: [],
+                submittedAt: null,
+                verifiedAt: null,
+                rejectedAt: null,
+                rejectionReason: null,
+                lastUpdatedAt: null,
+             };
+        } else if (typeof user.kyc !== 'object' || user.kyc === null) {
+             // Handle unexpected non-object kyc (shouldn't happen with schema default)
+             console.error(`[User Service] User ${userId} has invalid kyc field:`, user.kyc);
+             // Decide how to handle: throw error or force default? Forcing default might be safer.
+             user.kyc = { status: 'not_started', /* ... other defaults */ };
+        } else if (typeof user.kyc.status !== 'string') {
+            // Ensure status exists if kyc object exists
+            console.warn(`[User Service] User ${userId} kyc object missing status. Setting default.`);
+            user.kyc.status = 'not_started';
         }
+        // *************************************
 
-        console.log(`[User Service] Successfully fetched user details for ID: ${userId}`);
+        console.log(`[User Service] Successfully fetched and ensured KYC for user ID: ${userId}`);
         return user; // Return the user object (including kyc)
 
     } catch (error) {
-        console.error(`[User Service] Error fetching user by ID ${userId}:`, error);
-        // Re-throw specific errors or a more generic one for the controller
-        if (error.message === 'User not found.' || error.message === 'Invalid user ID format.') {
-             // Throw specific known errors
-             throw error;
-        }
-        // Throw a generic error for unexpected database issues
-        throw new Error('Failed to fetch user details.'); // This message is caught by the controller
+        // ... (error handling) ...
+        throw new Error('Failed to fetch user details.');
     }
 };
 // --- End Function ---
