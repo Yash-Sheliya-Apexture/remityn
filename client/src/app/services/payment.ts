@@ -261,6 +261,7 @@ export interface InitiatePaymentPayload {
 
 // Response containing details of a specific payment
 export interface PaymentDetailsResponse {
+    type: string;
     _id: string;
     status: string; // Should ideally be TransactionStatus type from backend if possible
     amountToAdd: number; // Changed from any
