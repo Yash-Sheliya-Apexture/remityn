@@ -5786,8 +5786,705 @@
 // // export { AuthContext };
 
 
+// // frontend/src/app/contexts/AuthContext.js
+// "use client";
+
+// import React, {
+//   createContext,
+//   useState,
+//   useEffect,
+//   useContext,
+//   useCallback,
+//   useRef,
+//   useMemo,
+//   ReactNode, // Import ReactNode
+// } from "react";
+// import debounce from "lodash/debounce";
+// import axios from "axios";
+// import { useRouter } from "next/navigation";
+// import apiConfig from "../config/apiConfig"; // Ensure path is correct
+// import { Loader2 } from "lucide-react"; // For loading indicator
+// import type { KycStatus } from '@/app/services/kyc'; // Import type for KYC status
+
+// // --- Types ---
+
+// // Full User object structure from backend API response
+// interface BackendUser {
+//   _id: string;
+//   fullName: string;
+//   email: string;
+//   role: "user" | "admin";
+//   kyc: { // Nested KYC object from API
+//     status: KycStatus;
+//     rejectionReason?: string | null;
+//     // Potentially other KYC details we might not need directly in AuthContext state
+//   };
+//   createdAt: string; // Or Date
+//   updatedAt: string; // Or Date
+// }
+
+// // Simplified User state exposed by the context (flattened)
+// interface UserContextState {
+//   _id: string;
+//   fullName: string;
+//   email: string;
+//   role: "user" | "admin";
+//   kycStatus: KycStatus; // Flattened for easy access
+//   kycRejectionReason: string | null; // Flattened
+// }
+
+// // AuthContext structure
+// interface AuthContextType {
+//   user: UserContextState | null; // Holds the flattened user data in React state
+//   token: string | null;
+//   loading: boolean; // Indicates if INITIAL auth state is being determined
+//   login: (backendUser: BackendUser, authToken: string) => void; // Takes full backend user
+//   logout: (reason?: "inactivity" | "sessionExpired" | "manual", isBroadcastLogout?: boolean) => void;
+//   isAdmin: boolean;
+//   refetchUser: () => Promise<void>; // Function to manually refresh user data
+//   updateAuthUserKycStatus: (status: KycStatus, rejectionReason?: string | null) => void; // Exposed function
+// }
+
+// // --- Context Setup ---
+// const AuthContext = createContext<AuthContextType | undefined>(undefined);
+// const INACTIVITY_TIMEOUT_MS = 15 * 60 * 1000; // 15 minutes
+// const BROADCAST_CHANNEL_NAME = "wise-auth-channel";
+// const DEBOUNCE_WAIT_MS = 500;
+
+// // --- Axios Instance ---
+// const apiClient = axios.create({ baseURL: apiConfig.baseUrl });
+
+// // --- Helper: Validate Backend User Structure ---
+// const isValidBackendUser = (data: any): data is BackendUser => {
+//   return (
+//     data && typeof data === 'object' &&
+//     typeof data._id === 'string' && data._id &&
+//     typeof data.email === 'string' && data.email &&
+//     typeof data.role === 'string' && (data.role === 'user' || data.role === 'admin') &&
+//     typeof data.kyc === 'object' && data.kyc !== null &&
+//     typeof data.kyc.status === 'string' // Check only for status existence and type
+//     // We don't strictly require rejectionReason to exist here
+//   );
+// };
+
+// // --- Auth Provider Component ---
+// export const AuthProvider = ({ children }: { children: ReactNode }) => {
+//   const [user, setUser] = useState<UserContextState | null>(null);
+//   const [token, setToken] = useState<string | null>(null);
+//   const [loading, setLoading] = useState<boolean>(true); // Tracks ONLY the initial load
+//   const logoutTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+//   const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
+//   const logoutRef = useRef<AuthContextType["logout"]>(() => {});
+//   const router = useRouter();
+
+//   // --- Initialize BroadcastChannel ---
+//   useEffect(() => {
+//     if (typeof window !== "undefined" && !broadcastChannelRef.current) {
+//       try {
+//         broadcastChannelRef.current = new BroadcastChannel(BROADCAST_CHANNEL_NAME);
+//         console.log("AuthContext: BroadcastChannel initialized");
+//       } catch (error) { console.error("AuthContext: Failed to init BC:", error); }
+//     }
+//     return () => { broadcastChannelRef.current?.close(); broadcastChannelRef.current = null; };
+//   }, []);
+
+//   // --- Logout Function ---
+//   const logout = useCallback((reason: "inactivity" | "sessionExpired" | "manual" = "manual", isBroadcastLogout = false) => {
+//       console.log(`AuthContext: Logging out. Reason: ${reason}, Is Broadcast: ${isBroadcastLogout}`);
+//       const wasLoggedIn = !!localStorage.getItem("token");
+//       setUser(null); setToken(null);
+//       localStorage.removeItem("token");
+//       if (logoutTimerRef.current) clearTimeout(logoutTimerRef.current); logoutTimerRef.current = null;
+//       delete apiClient.defaults.headers.common["Authorization"];
+//       if (!isBroadcastLogout && broadcastChannelRef.current) { try { broadcastChannelRef.current.postMessage("logout"); } catch (e) { console.error("AuthContext: BC post error:", e); }}
+//       if (typeof window !== "undefined" && !isBroadcastLogout && wasLoggedIn && !window.location.pathname.startsWith("/auth/login")) {
+//         let redirectUrl = "/auth/login"; if (reason === "sessionExpired") redirectUrl += "?sessionExpired=true"; else if (reason === "inactivity") redirectUrl += "?autoLogout=true";
+//         router.push(redirectUrl);
+//       }
+//     }, [router] ); // router dependency
+
+//   useEffect(() => { logoutRef.current = logout; }, [logout]); // Keep logout ref updated
+
+//   // --- Inactivity Handling ---
+//   const logoutDueToInactivity = useCallback(() => { logoutRef.current("inactivity"); }, []);
+//   const resetInactivityTimerDebounced = useRef(debounce((currentToken: string | null) => {
+//       if (logoutTimerRef.current) clearTimeout(logoutTimerRef.current);
+//       if (currentToken) { logoutTimerRef.current = setTimeout(logoutDueToInactivity, INACTIVITY_TIMEOUT_MS); }
+//     }, DEBOUNCE_WAIT_MS)).current;
+
+//   // --- Refetch User Data ---
+//   const refetchUser = useCallback(async () => {
+//     const currentToken = localStorage.getItem("token"); // Get fresh token from storage
+//     if (!currentToken) {
+//       console.log("AuthContext: Refetch skipped - no token found.");
+//       if (user !== null) setUser(null); // Clear user if token gone
+//       if (token !== null) setToken(null); // Clear token state too
+//       return;
+//     }
+//     console.log("AuthContext: Refetching user data...");
+//     // Don't set global 'loading' here, refetch is usually in background
+//     try {
+//       apiClient.defaults.headers.common["Authorization"] = `Bearer ${currentToken}`;
+//       const response = await apiClient.get<BackendUser>("/dashboard/users/me"); // Ensure endpoint returns BackendUser structure
+
+//       if (!isValidBackendUser(response.data)) {
+//         console.error("AuthContext: Invalid user data structure received during refetch:", response.data);
+//         throw new Error("Invalid user data structure received from API during refetch");
+//       }
+//       const updatedBackendUser: BackendUser = response.data;
+
+//       console.log("AuthContext: Refetched user:", updatedBackendUser.email, "KYC Status:", updatedBackendUser.kyc.status);
+//       // Create the flattened state structure
+//       const userContextData: UserContextState = {
+//         _id: updatedBackendUser._id,
+//         fullName: updatedBackendUser.fullName,
+//         email: updatedBackendUser.email,
+//         role: updatedBackendUser.role,
+//         kycStatus: updatedBackendUser.kyc.status,
+//         kycRejectionReason: updatedBackendUser.kyc.rejectionReason ?? null, // Ensure null if undefined
+//       };
+//       setUser(userContextData); // Update state
+//       setToken(currentToken); // Ensure token state is synced
+
+//       // ---- REMOVED THIS BLOCK ----
+//       // Broadcast that user data was updated (optional, but good for consistency)
+//       // if (broadcastChannelRef.current) {
+//       //   try {
+//       //     broadcastChannelRef.current.postMessage("user_updated"); // THIS CAUSED THE LOOP
+//       //   } catch(e) {
+//       //     console.error("BC post error:", e)
+//       //   }
+//       // }
+//       // ---- END REMOVED BLOCK ----
+
+//     } catch (error: any) {
+//       console.error("AuthContext: Failed to refetch user data:", error.response?.status, error.response?.data?.message || error.message);
+//       if (error.response?.status === 401) { logoutRef.current("sessionExpired"); }
+//       else { console.error("AuthContext: Non-401 error during refetch. User state preserved."); }
+//     }
+//     // No 'finally setLoading(false)' here, as we don't set loading=true for refetch
+//   }, [user, token]); // Keep dependencies as they are needed for the initial check/clear logic
+
+
+//   // --- Login Function ---
+//   const login = useCallback((backendUser: BackendUser, authToken: string) => {
+//       if (!isValidBackendUser(backendUser)) {
+//         console.error("AuthContext: Login failed - Invalid user data received.", backendUser);
+//         logoutRef.current("manual", true); return;
+//       }
+//       console.log("AuthContext: Logging in user:", backendUser.email, "KYC Status:", backendUser.kyc.status);
+//       const userContextData: UserContextState = {
+//         _id: backendUser._id, fullName: backendUser.fullName, email: backendUser.email, role: backendUser.role,
+//         kycStatus: backendUser.kyc.status, kycRejectionReason: backendUser.kyc.rejectionReason ?? null,
+//       };
+//       setUser(userContextData); setToken(authToken);
+//       localStorage.setItem("token", authToken);
+//       apiClient.defaults.headers.common["Authorization"] = `Bearer ${authToken}`;
+//       if (broadcastChannelRef.current) { try { broadcastChannelRef.current.postMessage("login"); } catch (e) { console.error("AuthContext: BC post error:", e); } }
+//       resetInactivityTimerDebounced(authToken);
+//     }, [resetInactivityTimerDebounced]);
+
+//   // --- Function to Update KYC Status Locally ---
+//   const updateAuthUserKycStatus = useCallback((newStatus: KycStatus, newRejectionReason?: string | null) => {
+//     console.log(`[AuthContext] Updating KYC status in auth state to: ${newStatus}`);
+//     setUser(currentUser => {
+//         if (!currentUser) return null;
+//         const currentReason = currentUser.kycRejectionReason ?? null;
+//         const nextReason = newRejectionReason ?? null;
+//         if (currentUser.kycStatus === newStatus && currentReason === nextReason) {
+//             console.log("[AuthContext] KYC status unchanged, skipping state update.");
+//             return currentUser; // Return same object - no re-render needed
+//         }
+//         console.log("[AuthContext] KYC status changed, updating user state object.");
+//         return { ...currentUser, kycStatus: newStatus, kycRejectionReason: nextReason }; // Create NEW object
+//     });
+//   }, []); // No dependencies needed for functional update
+
+//   // --- Initialization Effect (Mount) ---
+//   useEffect(() => {
+//     console.log("AuthProvider: Initializing state (Mount)...");
+//     let isMounted = true; setLoading(true); // Set initial loading true
+//     const storedToken = localStorage.getItem("token");
+
+//     const initializeAuth = async () => {
+//       if (storedToken && isMounted) {
+//         console.log("AuthProvider: Token found. Setting token state and fetching user.");
+//         setToken(storedToken); apiClient.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
+//         try {
+//           const response = await apiClient.get<BackendUser>("/dashboard/users/me");
+//           if (!isValidBackendUser(response.data)) { throw new Error("Invalid user data structure received during init."); }
+//           if (isMounted) {
+//             const fetchedUser: BackendUser = response.data;
+//             const userContextData: UserContextState = { _id: fetchedUser._id, fullName: fetchedUser.fullName, email: fetchedUser.email, role: fetchedUser.role, kycStatus: fetchedUser.kyc.status, kycRejectionReason: fetchedUser.kyc.rejectionReason ?? null };
+//             setUser(userContextData);
+//             resetInactivityTimerDebounced(storedToken);
+//             console.log("AuthProvider: Initial user fetch success:", userContextData.email, "KYC:", userContextData.kycStatus);
+//           }
+//         } catch (error: any) {
+//           console.error("AuthProvider: Failed to fetch user during init:", error.response?.status, error.message);
+//           if (isMounted) { localStorage.removeItem("token"); setToken(null); setUser(null); delete apiClient.defaults.headers.common["Authorization"];
+//             if (error.response?.status === 401 && typeof window !== "undefined" && !window.location.pathname.startsWith("/auth/login")) {
+//                router.push("/auth/login?sessionExpired=true");
+//             }
+//           }
+//         } finally { if (isMounted) { setLoading(false); } } // Set initial loading false
+//       } else { if (isMounted) { setLoading(false); } } // No token, loading finished
+//     };
+//     initializeAuth();
+//     return () => { isMounted = false; };
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, []); // Run only once
+
+//   // --- Axios 401 Interceptor ---
+//   useEffect(() => {
+//     const interceptor = apiClient.interceptors.response.use(res => res, error => {
+//         if (error.response?.status === 401 && localStorage.getItem("token")) { logoutRef.current("sessionExpired"); }
+//         return Promise.reject(error);
+//       });
+//     return () => { apiClient.interceptors.response.eject(interceptor); };
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, []); // Run only once
+
+//   // --- BroadcastChannel Listener ---
+//   useEffect(() => {
+//     const channel = broadcastChannelRef.current; if (!channel) return;
+//     const handleBroadcast = (event: MessageEvent) => {
+//       const localUserBefore = user; const localTokenBefore = token;
+//       if (event.data === "logout" && localUserBefore !== null) logoutRef.current("manual", true);
+//       else if (event.data === "login") {
+//         const storageToken = localStorage.getItem("token");
+//         if (storageToken && (!localTokenBefore || localTokenBefore !== storageToken)) { setToken(storageToken); apiClient.defaults.headers.common["Authorization"] = `Bearer ${storageToken}`; refetchUser(); }
+//         else if (storageToken && localTokenBefore === storageToken && !localUserBefore) refetchUser();
+//       }
+//        else if (event.data === "user_updated") { console.log("Auth BC: Received user_updated, refetching."); refetchUser(); }
+//     };
+//     channel.addEventListener("message", handleBroadcast);
+//     return () => { if (broadcastChannelRef.current) { broadcastChannelRef.current.removeEventListener("message", handleBroadcast); }};
+//   }, [user, token, refetchUser]); // Include refetchUser
+
+//   // --- Inactivity Event Listeners ---
+//   useEffect(() => {
+//     const events: (keyof WindowEventMap)[] = [ "mousemove", "mousedown", "keypress", "scroll", "touchstart", ];
+//     const activityHandler = () => { if (document.visibilityState === 'visible') resetInactivityTimerDebounced(token); };
+//     if (token && typeof window !== "undefined") {
+//       events.forEach((event) => window.addEventListener(event, activityHandler, { passive: true })); activityHandler(); // Initial reset
+//       return () => { events.forEach((event) => window.removeEventListener(event, activityHandler)); resetInactivityTimerDebounced.cancel(); if (logoutTimerRef.current) { clearTimeout(logoutTimerRef.current); logoutTimerRef.current = null; } };
+//     }
+//   }, [token, resetInactivityTimerDebounced]); // Depend on token
+
+//   // --- Derived State ---
+//   const isAdmin = useMemo(() => user?.role === "admin", [user]);
+
+//   // --- Context Value ---
+//   const contextValue: AuthContextType = useMemo(() => ({
+//       user, token, loading, login, logout: logoutRef.current, isAdmin, refetchUser, updateAuthUserKycStatus,
+//     }), [user, token, loading, login, isAdmin, refetchUser, updateAuthUserKycStatus] );
+
+//   // --- Render ---
+//   return (
+//     <AuthContext.Provider value={contextValue}>
+//       {/* Global Loading Indicator ONLY for initial load */}
+//       {loading ? <GlobalLoadingIndicator /> : children}
+//     </AuthContext.Provider>
+//   );
+// };
+
+// // --- Hook & Global Loader ---
+// export const useAuth = (): AuthContextType => {
+//   const context = useContext(AuthContext);
+//   if (context === undefined) throw new Error("useAuth must be used within an AuthProvider");
+//   return context;
+// };
+
+// const GlobalLoadingIndicator = () => (
+//   <div className="fixed inset-0 z-[200] flex justify-center items-center bg-background/80 backdrop-blur-sm" aria-label="Loading session" role="status">
+//     <Loader2 className="h-10 w-10 animate-spin text-primary" />
+//   </div>
+// );
+
+
+// // frontend/src/app/contexts/AuthContext.js
+// "use client";
+
+// import React, {
+//   createContext,
+//   useState,
+//   useEffect,
+//   useContext,
+//   useCallback,
+//   useRef,
+//   useMemo,
+//   ReactNode, // Import ReactNode
+// } from "react";
+// import debounce from "lodash/debounce";
+// import axios from "axios";
+// import { useRouter } from "next/navigation";
+// import apiConfig from "../config/apiConfig"; // Ensure path is correct
+// import { Loader2 } from "lucide-react"; // For loading indicator
+// import type { KycStatus } from '@/app/services/kyc'; // Import type for KYC status
+
+// // --- Types ---
+
+// // Full User object structure from backend API response
+// interface BackendUser {
+//   _id: string;
+//   fullName: string;
+//   email: string;
+//   role: "user" | "admin";
+//   kyc: { // Nested KYC object from API
+//     status: KycStatus;
+//     rejectionReason?: string | null;
+//     // Potentially other KYC details we might not need directly in AuthContext state
+//   };
+//   createdAt: string; // Or Date
+//   updatedAt: string; // Or Date
+// }
+
+// // Simplified User state exposed by the context (flattened)
+// interface UserContextState {
+//   _id: string;
+//   fullName: string;
+//   email: string;
+//   role: "user" | "admin";
+//   kycStatus: KycStatus; // Flattened for easy access
+//   kycRejectionReason: string | null; // Flattened
+// }
+
+// // AuthContext structure
+// interface AuthContextType {
+//   user: UserContextState | null; // Holds the flattened user data in React state
+//   token: string | null;
+//   loading: boolean; // Indicates if INITIAL auth state is being determined
+//   login: (backendUser: BackendUser, authToken: string) => void; // Takes full backend user
+//   logout: (reason?: "inactivity" | "sessionExpired" | "manual", isBroadcastLogout?: boolean) => void;
+//   isAdmin: boolean;
+//   refetchUser: () => Promise<void>; // Function to manually refresh user data
+//   updateAuthUserKycStatus: (status: KycStatus, rejectionReason?: string | null) => void; // Exposed function
+// }
+
+// // --- Context Setup ---
+// const AuthContext = createContext<AuthContextType | undefined>(undefined);
+// const INACTIVITY_TIMEOUT_MS = 15 * 60 * 1000; // 15 minutes
+// const BROADCAST_CHANNEL_NAME = "wise-auth-channel";
+// const DEBOUNCE_WAIT_MS = 500;
+
+// // --- Axios Instance ---
+// const apiClient = axios.create({ baseURL: apiConfig.baseUrl });
+
+// // --- Helper: Validate Backend User Structure ---
+// const isValidBackendUser = (data: any): data is BackendUser => {
+//   return (
+//     data && typeof data === 'object' &&
+//     typeof data._id === 'string' && data._id &&
+//     typeof data.email === 'string' && data.email &&
+//     typeof data.role === 'string' && (data.role === 'user' || data.role === 'admin') &&
+//     typeof data.kyc === 'object' && data.kyc !== null &&
+//     typeof data.kyc.status === 'string' // Check only for status existence and type
+//     // We don't strictly require rejectionReason to exist here
+//   );
+// };
+
+// // --- Auth Provider Component ---
+// export const AuthProvider = ({ children }: { children: ReactNode }) => {
+//   const [user, setUser] = useState<UserContextState | null>(null);
+//   const [token, setToken] = useState<string | null>(null);
+//   const [loading, setLoading] = useState<boolean>(true); // Tracks ONLY the initial load
+//   const [isMounted, setIsMounted] = useState<boolean>(false); // <-- Hydration Fix: Track client mount
+//   const logoutTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+//   const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
+//   const logoutRef = useRef<AuthContextType["logout"]>(() => {});
+//   const router = useRouter();
+
+//   // --- Set Mounted State ---
+//   // This effect runs only once on the client after the initial render
+//   useEffect(() => {
+//     setIsMounted(true);
+//   }, []);
+
+//   // --- Initialize BroadcastChannel ---
+//   useEffect(() => {
+//     if (typeof window !== "undefined" && !broadcastChannelRef.current) {
+//       try {
+//         broadcastChannelRef.current = new BroadcastChannel(BROADCAST_CHANNEL_NAME);
+//         console.log("AuthContext: BroadcastChannel initialized");
+//       } catch (error) { console.error("AuthContext: Failed to init BC:", error); }
+//     }
+//     return () => { broadcastChannelRef.current?.close(); broadcastChannelRef.current = null; };
+//   }, []);
+
+//   // --- Logout Function ---
+//   const logout = useCallback((reason: "inactivity" | "sessionExpired" | "manual" = "manual", isBroadcastLogout = false) => {
+//       console.log(`AuthContext: Logging out. Reason: ${reason}, Is Broadcast: ${isBroadcastLogout}`);
+//       const wasLoggedIn = typeof window !== 'undefined' && !!localStorage.getItem("token"); // Check window existence
+//       setUser(null); setToken(null);
+//       if (typeof window !== 'undefined') localStorage.removeItem("token"); // Check window existence
+//       if (logoutTimerRef.current) clearTimeout(logoutTimerRef.current); logoutTimerRef.current = null;
+//       delete apiClient.defaults.headers.common["Authorization"];
+//       if (!isBroadcastLogout && broadcastChannelRef.current) { try { broadcastChannelRef.current.postMessage("logout"); } catch (e) { console.error("AuthContext: BC post error:", e); }}
+//       if (typeof window !== "undefined" && !isBroadcastLogout && wasLoggedIn && !window.location.pathname.startsWith("/auth/login")) {
+//         let redirectUrl = "/auth/login"; if (reason === "sessionExpired") redirectUrl += "?sessionExpired=true"; else if (reason === "inactivity") redirectUrl += "?autoLogout=true";
+//         router.push(redirectUrl);
+//       }
+//     }, [router] ); // router dependency
+
+//   useEffect(() => { logoutRef.current = logout; }, [logout]); // Keep logout ref updated
+
+//   // --- Inactivity Handling ---
+//   const logoutDueToInactivity = useCallback(() => { logoutRef.current("inactivity"); }, []);
+//   const resetInactivityTimerDebounced = useRef(debounce((currentToken: string | null) => {
+//       if (logoutTimerRef.current) clearTimeout(logoutTimerRef.current);
+//       if (currentToken && typeof window !== 'undefined') { // Check window for setTimeout
+//           logoutTimerRef.current = setTimeout(logoutDueToInactivity, INACTIVITY_TIMEOUT_MS);
+//       }
+//     }, DEBOUNCE_WAIT_MS)).current;
+
+//   // --- Refetch User Data ---
+//   const refetchUser = useCallback(async () => {
+//     let currentToken: string | null = null;
+//     if (typeof window !== 'undefined') { // Check window existence
+//         currentToken = localStorage.getItem("token"); // Get fresh token from storage
+//     }
+
+//     if (!currentToken) {
+//       console.log("AuthContext: Refetch skipped - no token found.");
+//       if (user !== null) setUser(null); // Clear user if token gone
+//       if (token !== null) setToken(null); // Clear token state too
+//       delete apiClient.defaults.headers.common["Authorization"]; // Ensure header removed
+//       return;
+//     }
+//     console.log("AuthContext: Refetching user data...");
+//     // Don't set global 'loading' here, refetch is usually in background
+//     try {
+//       apiClient.defaults.headers.common["Authorization"] = `Bearer ${currentToken}`;
+//       const response = await apiClient.get<BackendUser>("/dashboard/users/me"); // Ensure endpoint returns BackendUser structure
+
+//       if (!isValidBackendUser(response.data)) {
+//         console.error("AuthContext: Invalid user data structure received during refetch:", response.data);
+//         throw new Error("Invalid user data structure received from API during refetch");
+//       }
+//       const updatedBackendUser: BackendUser = response.data;
+
+//       console.log("AuthContext: Refetched user:", updatedBackendUser.email, "KYC Status:", updatedBackendUser.kyc.status);
+//       // Create the flattened state structure
+//       const userContextData: UserContextState = {
+//         _id: updatedBackendUser._id,
+//         fullName: updatedBackendUser.fullName,
+//         email: updatedBackendUser.email,
+//         role: updatedBackendUser.role,
+//         kycStatus: updatedBackendUser.kyc.status,
+//         kycRejectionReason: updatedBackendUser.kyc.rejectionReason ?? null, // Ensure null if undefined
+//       };
+//       setUser(userContextData); // Update state
+//       setToken(currentToken); // Ensure token state is synced
+
+//       // No broadcast on refetch to avoid potential loops if multiple tabs refetch simultaneously
+
+//     } catch (error: any) {
+//       console.error("AuthContext: Failed to refetch user data:", error.response?.status, error.response?.data?.message || error.message);
+//       if (error.response?.status === 401) { logoutRef.current("sessionExpired"); }
+//       else { console.error("AuthContext: Non-401 error during refetch. User state preserved."); }
+//     }
+//     // No 'finally setLoading(false)' here, as we don't set loading=true for refetch
+//   }, [user, token]); // Dependencies are okay here
+
+
+//   // --- Login Function ---
+//   const login = useCallback((backendUser: BackendUser, authToken: string) => {
+//       if (!isValidBackendUser(backendUser)) {
+//         console.error("AuthContext: Login failed - Invalid user data received.", backendUser);
+//         logoutRef.current("manual", true); return;
+//       }
+//       console.log("AuthContext: Logging in user:", backendUser.email, "KYC Status:", backendUser.kyc.status);
+//       const userContextData: UserContextState = {
+//         _id: backendUser._id, fullName: backendUser.fullName, email: backendUser.email, role: backendUser.role,
+//         kycStatus: backendUser.kyc.status, kycRejectionReason: backendUser.kyc.rejectionReason ?? null,
+//       };
+//       setUser(userContextData); setToken(authToken);
+//       if (typeof window !== 'undefined') localStorage.setItem("token", authToken); // Check window existence
+//       apiClient.defaults.headers.common["Authorization"] = `Bearer ${authToken}`;
+//       if (broadcastChannelRef.current) { try { broadcastChannelRef.current.postMessage("login"); } catch (e) { console.error("AuthContext: BC post error:", e); } }
+//       resetInactivityTimerDebounced(authToken);
+//     }, [resetInactivityTimerDebounced]);
+
+//   // --- Function to Update KYC Status Locally ---
+//   const updateAuthUserKycStatus = useCallback((newStatus: KycStatus, newRejectionReason?: string | null) => {
+//     console.log(`[AuthContext] Updating KYC status in auth state to: ${newStatus}`);
+//     setUser(currentUser => {
+//         if (!currentUser) return null;
+//         const currentReason = currentUser.kycRejectionReason ?? null;
+//         const nextReason = newRejectionReason ?? null;
+//         if (currentUser.kycStatus === newStatus && currentReason === nextReason) {
+//             console.log("[AuthContext] KYC status unchanged, skipping state update.");
+//             return currentUser; // Return same object - no re-render needed
+//         }
+//         console.log("[AuthContext] KYC status changed, updating user state object.");
+//         return { ...currentUser, kycStatus: newStatus, kycRejectionReason: nextReason }; // Create NEW object
+//     });
+//   }, []); // No dependencies needed for functional update
+
+//   // --- Initialization Effect (Mount) ---
+//   useEffect(() => {
+//     // Only run initialization logic on the client AFTER mount
+//     if (!isMounted) {
+//         return;
+//     }
+
+//     console.log("AuthProvider: Initializing state (Client Mount)...");
+//     setLoading(true); // Set initial loading true
+//     let isActive = true; // Track if component is still mounted during async ops
+//     let storedToken: string | null = null;
+//     if (typeof window !== 'undefined') { // Check window existence
+//         storedToken = localStorage.getItem("token");
+//     }
+
+//     const initializeAuth = async () => {
+//       if (storedToken && isActive) {
+//         console.log("AuthProvider: Token found. Setting token state and fetching user.");
+//         setToken(storedToken); apiClient.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
+//         try {
+//           const response = await apiClient.get<BackendUser>("/dashboard/users/me");
+//           if (!isValidBackendUser(response.data)) { throw new Error("Invalid user data structure received during init."); }
+//           if (isActive) {
+//             const fetchedUser: BackendUser = response.data;
+//             const userContextData: UserContextState = { _id: fetchedUser._id, fullName: fetchedUser.fullName, email: fetchedUser.email, role: fetchedUser.role, kycStatus: fetchedUser.kyc.status, kycRejectionReason: fetchedUser.kyc.rejectionReason ?? null };
+//             setUser(userContextData);
+//             resetInactivityTimerDebounced(storedToken);
+//             console.log("AuthProvider: Initial user fetch success:", userContextData.email, "KYC:", userContextData.kycStatus);
+//           }
+//         } catch (error: any) {
+//           console.error("AuthProvider: Failed to fetch user during init:", error.response?.status, error.message);
+//           if (isActive) {
+//              // Call logout logic to clear state and storage, potentially redirecting
+//              logoutRef.current(error.response?.status === 401 ? "sessionExpired" : "manual", true); // Use true to prevent broadcast loop if called from here
+//              // Redirect only if 401 and not already on login page
+//              if (error.response?.status === 401 && typeof window !== "undefined" && !window.location.pathname.startsWith("/auth/login")) {
+//                 router.push("/auth/login?sessionExpired=true");
+//              }
+//           }
+//         } finally { if (isActive) { setLoading(false); } } // Set initial loading false
+//       } else { if (isActive) { setLoading(false); } } // No token, loading finished
+//     };
+//     initializeAuth();
+//     return () => { isActive = false; }; // Cleanup function for async operations
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [isMounted]); // Run this effect when isMounted becomes true
+
+//   // --- Axios 401 Interceptor ---
+//   useEffect(() => {
+//     const interceptor = apiClient.interceptors.response.use(res => res, error => {
+//         // Check for window existence before accessing localStorage
+//         const currentToken = typeof window !== 'undefined' ? localStorage.getItem("token") : null;
+//         if (error.response?.status === 401 && currentToken) {
+//             console.log("AuthContext: Axios interceptor caught 401. Logging out.");
+//             logoutRef.current("sessionExpired");
+//         }
+//         return Promise.reject(error);
+//       });
+//     return () => { apiClient.interceptors.response.eject(interceptor); };
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, []); // Run only once
+
+//   // --- BroadcastChannel Listener ---
+//   useEffect(() => {
+//     // Ensure channel exists before adding listener
+//     const channel = broadcastChannelRef.current; if (!channel) return;
+
+//     const handleBroadcast = (event: MessageEvent) => {
+//       console.log("Auth BC: Received message - ", event.data);
+//       const localUserBefore = user; const localTokenBefore = token;
+//       const storageToken = typeof window !== 'undefined' ? localStorage.getItem("token") : null;
+
+//       if (event.data === "logout") {
+//          // Only logout if currently logged in locally
+//          if (localUserBefore !== null || localTokenBefore !== null) {
+//             console.log("Auth BC: Handling 'logout' broadcast.");
+//             logoutRef.current("manual", true); // Use true to indicate it's a broadcast response
+//          }
+//       } else if (event.data === "login") {
+//         console.log("Auth BC: Handling 'login' broadcast.");
+//         // If we received a login broadcast, check if we need to update our state
+//         if (storageToken && (!localTokenBefore || localTokenBefore !== storageToken)) {
+//             console.log("Auth BC: Token mismatch or missing locally, refetching user.");
+//             setToken(storageToken); // Immediately update token state
+//             apiClient.defaults.headers.common["Authorization"] = `Bearer ${storageToken}`;
+//             refetchUser();
+//         } else if (storageToken && localTokenBefore === storageToken && !localUserBefore) {
+//             console.log("Auth BC: Token matches but user missing locally, refetching user.");
+//             refetchUser();
+//         } else if (!storageToken && (localUserBefore || localTokenBefore)) {
+//             // This case shouldn't happen if logout broadcast works, but as a fallback:
+//             console.warn("Auth BC: 'login' received but no token in storage, logging out locally.");
+//             logoutRef.current("manual", true);
+//         }
+//       }
+//       // Removed the "user_updated" broadcast sender and listener to prevent loops.
+//       // Refetching on "login" handles state synchronization sufficiently in most cases.
+//     };
+//     channel.addEventListener("message", handleBroadcast);
+//     return () => { if (broadcastChannelRef.current) { broadcastChannelRef.current.removeEventListener("message", handleBroadcast); }};
+//   }, [user, token, refetchUser]); // Include refetchUser
+
+//   // --- Inactivity Event Listeners ---
+//   useEffect(() => {
+//     // Only run on client
+//     if (typeof window === 'undefined') return;
+
+//     const events: (keyof WindowEventMap)[] = [ "mousemove", "mousedown", "keypress", "scroll", "touchstart", ];
+//     const activityHandler = () => {
+//         // Reset timer only if user is logged in and window is visible
+//         if (token && document.visibilityState === 'visible') {
+//             resetInactivityTimerDebounced(token);
+//         }
+//     };
+
+//     if (token) {
+//       events.forEach((event) => window.addEventListener(event, activityHandler, { passive: true }));
+//       activityHandler(); // Initial reset when token becomes available or changes
+//       return () => {
+//           events.forEach((event) => window.removeEventListener(event, activityHandler));
+//           resetInactivityTimerDebounced.cancel(); // Cancel any pending debounced calls
+//           if (logoutTimerRef.current) { clearTimeout(logoutTimerRef.current); logoutTimerRef.current = null; }
+//       };
+//     } else {
+//         // If token becomes null (logout), clear any existing timer
+//         resetInactivityTimerDebounced.cancel();
+//         if (logoutTimerRef.current) { clearTimeout(logoutTimerRef.current); logoutTimerRef.current = null; }
+//     }
+//   }, [token, resetInactivityTimerDebounced]); // Depend on token
+
+//   // --- Derived State ---
+//   const isAdmin = useMemo(() => user?.role === "admin", [user]);
+
+//   // --- Context Value ---
+//   const contextValue: AuthContextType = useMemo(() => ({
+//       user, token, loading, login, logout: logoutRef.current, isAdmin, refetchUser, updateAuthUserKycStatus,
+//     }), [user, token, loading, login, isAdmin, refetchUser, updateAuthUserKycStatus] );
+
+//   // --- Render ---
+//   // Hydration Fix: Render loading indicator if not mounted OR if still loading after mount
+//   // This ensures the initial client render matches the server render (which shows loading)
+//   return (
+//     <AuthContext.Provider value={contextValue}>
+//       {(!isMounted || loading) ? <GlobalLoadingIndicator /> : children}
+//     </AuthContext.Provider>
+//   );
+// };
+
+// // --- Hook & Global Loader ---
+// export const useAuth = (): AuthContextType => {
+//   const context = useContext(AuthContext);
+//   if (context === undefined) throw new Error("useAuth must be used within an AuthProvider");
+//   return context;
+// };
+
+// // Simple, SSR-safe loading indicator
+// const GlobalLoadingIndicator = () => (
+//   <div className="fixed inset-0 z-[200] flex justify-center items-center bg-background/80 backdrop-blur-sm" aria-label="Loading session" role="status">
+//     <Loader2 className="h-10 w-10 animate-spin text-primary" />
+//   </div>
+// );
+
 // frontend/src/app/contexts/AuthContext.js
-// frontend/src/app/contexts/AuthContext.tsx (Assuming conversion to TypeScript)
 "use client";
 
 import React, {
@@ -5805,7 +6502,8 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import apiConfig from "../config/apiConfig"; // Ensure path is correct
 import { Loader2 } from "lucide-react"; // For loading indicator
-import type { KycStatus } from '@/app/services/kyc'; // Import type for KYC status
+// --- MODIFIED: Import detailed KYC types ---
+import type { KycStatus, KycDetails, KycMobile } from '@/app/services/kyc';
 
 // --- Types ---
 
@@ -5815,56 +6513,53 @@ interface BackendUser {
   fullName: string;
   email: string;
   role: "user" | "admin";
-  kyc: { // Nested KYC object from API
-    status: KycStatus;
-    rejectionReason?: string | null;
-    // Potentially other KYC details we might not need directly in AuthContext state
-  };
+  kyc: KycDetails; // Use the detailed KycDetails type from kyc service
   createdAt: string; // Or Date
   updatedAt: string; // Or Date
 }
 
-// Simplified User state exposed by the context (flattened)
+// User state exposed by the context - Includes nested kyc object
 interface UserContextState {
   _id: string;
   fullName: string;
   email: string;
   role: "user" | "admin";
-  kycStatus: KycStatus; // Flattened for easy access
-  kycRejectionReason: string | null; // Flattened
+  kyc: KycDetails; // <-- Include the full nested KycDetails object
 }
 
 // AuthContext structure
 interface AuthContextType {
-  user: UserContextState | null; // Holds the flattened user data in React state
+  user: UserContextState | null; // Holds the user data with nested KYC
   token: string | null;
   loading: boolean; // Indicates if INITIAL auth state is being determined
   login: (backendUser: BackendUser, authToken: string) => void; // Takes full backend user
   logout: (reason?: "inactivity" | "sessionExpired" | "manual", isBroadcastLogout?: boolean) => void;
   isAdmin: boolean;
   refetchUser: () => Promise<void>; // Function to manually refresh user data
-  updateAuthUserKycStatus: (status: KycStatus, rejectionReason?: string | null) => void; // Exposed function
+  updateAuthUserKyc: (updatedKycData: Partial<KycDetails>) => void; // Update parts of the KYC object
 }
 
 // --- Context Setup ---
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const INACTIVITY_TIMEOUT_MS = 15 * 60 * 1000; // 15 minutes
 const BROADCAST_CHANNEL_NAME = "wise-auth-channel";
-const DEBOUNCE_WAIT_MS = 500;
+const DEBOUNCE_WAIT_MS = 500; // Debounce time for inactivity timer reset
 
 // --- Axios Instance ---
+// Configured to communicate with your backend API
 const apiClient = axios.create({ baseURL: apiConfig.baseUrl });
 
 // --- Helper: Validate Backend User Structure ---
+// Validation function
 const isValidBackendUser = (data: any): data is BackendUser => {
   return (
     data && typeof data === 'object' &&
     typeof data._id === 'string' && data._id &&
     typeof data.email === 'string' && data.email &&
     typeof data.role === 'string' && (data.role === 'user' || data.role === 'admin') &&
-    typeof data.kyc === 'object' && data.kyc !== null &&
-    typeof data.kyc.status === 'string' // Check only for status existence and type
-    // We don't strictly require rejectionReason to exist here
+    // --- Most likely failure points ---
+    typeof data.kyc === 'object' && data.kyc !== null && // Checks kyc is a non-null object
+    typeof data.kyc.status === 'string' // Checks kyc has a status string
   );
 };
 
@@ -5873,223 +6568,488 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserContextState | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true); // Tracks ONLY the initial load
+  const [isMounted, setIsMounted] = useState<boolean>(false); // Hydration Fix: Track client mount
   const logoutTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
-  const logoutRef = useRef<AuthContextType["logout"]>(() => {});
+  const logoutRef = useRef<AuthContextType["logout"]>(() => {}); // Ref to hold the latest logout function
   const router = useRouter();
 
+  // --- Set Mounted State ---
+  // This effect runs only once on the client after the initial render
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   // --- Initialize BroadcastChannel ---
+  // Used for cross-tab communication (login/logout sync)
   useEffect(() => {
     if (typeof window !== "undefined" && !broadcastChannelRef.current) {
       try {
         broadcastChannelRef.current = new BroadcastChannel(BROADCAST_CHANNEL_NAME);
         console.log("AuthContext: BroadcastChannel initialized");
-      } catch (error) { console.error("AuthContext: Failed to init BC:", error); }
+      } catch (error) {
+        console.error("AuthContext: Failed to initialize BroadcastChannel:", error);
+      }
     }
-    return () => { broadcastChannelRef.current?.close(); broadcastChannelRef.current = null; };
-  }, []);
+    // Cleanup function to close the channel when the provider unmounts
+    return () => {
+      broadcastChannelRef.current?.close();
+      broadcastChannelRef.current = null;
+      console.log("AuthContext: BroadcastChannel closed");
+    };
+  }, []); // Run only once
 
   // --- Logout Function ---
+  // Clears user state, token, local storage, and redirects if necessary
   const logout = useCallback((reason: "inactivity" | "sessionExpired" | "manual" = "manual", isBroadcastLogout = false) => {
       console.log(`AuthContext: Logging out. Reason: ${reason}, Is Broadcast: ${isBroadcastLogout}`);
-      const wasLoggedIn = !!localStorage.getItem("token");
-      setUser(null); setToken(null);
-      localStorage.removeItem("token");
-      if (logoutTimerRef.current) clearTimeout(logoutTimerRef.current); logoutTimerRef.current = null;
+      const wasLoggedIn = typeof window !== 'undefined' && !!localStorage.getItem("token"); // Check if user was logged in before clearing
+
+      // Clear state
+      setUser(null);
+      setToken(null);
+
+      // Clear storage and Axios header
+      if (typeof window !== 'undefined') {
+          localStorage.removeItem("token");
+      }
       delete apiClient.defaults.headers.common["Authorization"];
-      if (!isBroadcastLogout && broadcastChannelRef.current) { try { broadcastChannelRef.current.postMessage("logout"); } catch (e) { console.error("AuthContext: BC post error:", e); }}
+
+      // Clear inactivity timer
+      if (logoutTimerRef.current) {
+          clearTimeout(logoutTimerRef.current);
+          logoutTimerRef.current = null;
+      }
+
+      // Broadcast logout to other tabs unless this is a response to a broadcast
+      if (!isBroadcastLogout && broadcastChannelRef.current) {
+          try {
+              broadcastChannelRef.current.postMessage("logout");
+              console.log("AuthContext: Sent 'logout' broadcast");
+          } catch (e) {
+              console.error("AuthContext: BroadcastChannel postMessage error:", e);
+          }
+      }
+
+      // Redirect to login page if logged out manually, due to inactivity, or session expiry,
+      // but only if user was previously logged in and not already on login page.
       if (typeof window !== "undefined" && !isBroadcastLogout && wasLoggedIn && !window.location.pathname.startsWith("/auth/login")) {
-        let redirectUrl = "/auth/login"; if (reason === "sessionExpired") redirectUrl += "?sessionExpired=true"; else if (reason === "inactivity") redirectUrl += "?autoLogout=true";
+        let redirectUrl = "/auth/login";
+        if (reason === "sessionExpired") redirectUrl += "?sessionExpired=true";
+        else if (reason === "inactivity") redirectUrl += "?autoLogout=true";
         router.push(redirectUrl);
       }
-    }, [router] ); // router dependency
+    }, [router] ); // router is a dependency for redirection
 
-  useEffect(() => { logoutRef.current = logout; }, [logout]); // Keep logout ref updated
+  // Keep a stable reference to the logout function for timers/listeners
+  useEffect(() => {
+    logoutRef.current = logout;
+  }, [logout]);
 
   // --- Inactivity Handling ---
-  const logoutDueToInactivity = useCallback(() => { logoutRef.current("inactivity"); }, []);
+  const logoutDueToInactivity = useCallback(() => {
+    console.log("AuthContext: Logging out due to inactivity.");
+    logoutRef.current("inactivity"); // Call the logout function with 'inactivity' reason
+  }, []); // No dependencies needed here
+
+  // Debounced function to reset the inactivity timer
   const resetInactivityTimerDebounced = useRef(debounce((currentToken: string | null) => {
-      if (logoutTimerRef.current) clearTimeout(logoutTimerRef.current);
-      if (currentToken) { logoutTimerRef.current = setTimeout(logoutDueToInactivity, INACTIVITY_TIMEOUT_MS); }
-    }, DEBOUNCE_WAIT_MS)).current;
+      if (logoutTimerRef.current) {
+          clearTimeout(logoutTimerRef.current); // Clear existing timer
+      }
+      // Set a new timer only if a token exists (user is logged in) and window is available
+      if (currentToken && typeof window !== 'undefined') {
+          logoutTimerRef.current = setTimeout(logoutDueToInactivity, INACTIVITY_TIMEOUT_MS);
+      }
+    }, DEBOUNCE_WAIT_MS)).current; // Use useRef to keep the same debounced function across renders
 
   // --- Refetch User Data ---
+  // Fetches fresh user data from the backend using the stored token
   const refetchUser = useCallback(async () => {
-    const currentToken = localStorage.getItem("token"); // Get fresh token from storage
+    let currentToken: string | null = null;
+    if (typeof window !== 'undefined') {
+        currentToken = localStorage.getItem("token"); // Get token from storage
+    }
+
+    // If no token, ensure user is logged out state-wise
     if (!currentToken) {
       console.log("AuthContext: Refetch skipped - no token found.");
-      if (user !== null) setUser(null); // Clear user if token gone
-      if (token !== null) setToken(null); // Clear token state too
+      if (user !== null) setUser(null); // Clear user state if token is gone
+      if (token !== null) setToken(null); // Clear token state
+      delete apiClient.defaults.headers.common["Authorization"]; // Ensure Axios header is clear
       return;
     }
+
     console.log("AuthContext: Refetching user data...");
     // Don't set global 'loading' here, refetch is usually in background
     try {
+      // Ensure Axios header is set for the request
       apiClient.defaults.headers.common["Authorization"] = `Bearer ${currentToken}`;
-      const response = await apiClient.get<BackendUser>("/dashboard/users/me"); // Ensure endpoint returns BackendUser structure
+      const response = await apiClient.get<BackendUser>("/dashboard/users/me"); // API endpoint to get current user
 
+      // Validate the structure of the received data
       if (!isValidBackendUser(response.data)) {
         console.error("AuthContext: Invalid user data structure received during refetch:", response.data);
+        // Log out if data is invalid, as something is wrong
+        logoutRef.current("manual", true); // Use true to prevent broadcast loop
         throw new Error("Invalid user data structure received from API during refetch");
       }
-      const updatedBackendUser: BackendUser = response.data;
 
+      const updatedBackendUser: BackendUser = response.data;
       console.log("AuthContext: Refetched user:", updatedBackendUser.email, "KYC Status:", updatedBackendUser.kyc.status);
-      // Create the flattened state structure
+
+      // --- Update state with the nested kyc object ---
       const userContextData: UserContextState = {
         _id: updatedBackendUser._id,
         fullName: updatedBackendUser.fullName,
         email: updatedBackendUser.email,
         role: updatedBackendUser.role,
-        kycStatus: updatedBackendUser.kyc.status,
-        kycRejectionReason: updatedBackendUser.kyc.rejectionReason ?? null, // Ensure null if undefined
+        kyc: updatedBackendUser.kyc, // Assign the full kyc object
       };
-      setUser(userContextData); // Update state
-      setToken(currentToken); // Ensure token state is synced
+      setUser(userContextData); // Update user state
+      setToken(currentToken); // Ensure token state matches storage
 
-      // Broadcast that user data was updated (optional, but good for consistency)
-      if (broadcastChannelRef.current) { try { broadcastChannelRef.current.postMessage("user_updated"); } catch(e) { console.error("BC post error:", e)} }
+      // Reset inactivity timer as user data was successfully fetched (implies activity)
+      resetInactivityTimerDebounced(currentToken);
 
     } catch (error: any) {
       console.error("AuthContext: Failed to refetch user data:", error.response?.status, error.response?.data?.message || error.message);
-      if (error.response?.status === 401) { logoutRef.current("sessionExpired"); }
-      else { console.error("AuthContext: Non-401 error during refetch. User state preserved."); }
+      // If unauthorized (401), log out due to expired/invalid session
+      if (error.response?.status === 401) {
+          logoutRef.current("sessionExpired");
+      }
+      // For other errors, log them but don't necessarily log out immediately
+      else {
+          console.error("AuthContext: Non-401 error during refetch. User state preserved for now.");
+      }
     }
     // No 'finally setLoading(false)' here, as we don't set loading=true for refetch
-  }, [user, token]); // Depends on state vars to potentially clear them
+  }, [user, token, resetInactivityTimerDebounced]); // Dependencies
+
 
   // --- Login Function ---
+  // Sets user state, token, stores token, and sets Axios header
   const login = useCallback((backendUser: BackendUser, authToken: string) => {
+      // Validate incoming user data structure
       if (!isValidBackendUser(backendUser)) {
         console.error("AuthContext: Login failed - Invalid user data received.", backendUser);
-        logoutRef.current("manual", true); return;
+        // Optionally clear any partial state if needed
+        logoutRef.current("manual", true); // Use true to prevent broadcast loop
+        return;
       }
-      console.log("AuthContext: Logging in user:", backendUser.email, "KYC Status:", backendUser.kyc.status);
-      const userContextData: UserContextState = {
-        _id: backendUser._id, fullName: backendUser.fullName, email: backendUser.email, role: backendUser.role,
-        kycStatus: backendUser.kyc.status, kycRejectionReason: backendUser.kyc.rejectionReason ?? null,
-      };
-      setUser(userContextData); setToken(authToken);
-      localStorage.setItem("token", authToken);
-      apiClient.defaults.headers.common["Authorization"] = `Bearer ${authToken}`;
-      if (broadcastChannelRef.current) { try { broadcastChannelRef.current.postMessage("login"); } catch (e) { console.error("AuthContext: BC post error:", e); } }
-      resetInactivityTimerDebounced(authToken);
-    }, [resetInactivityTimerDebounced]);
 
-  // --- Function to Update KYC Status Locally ---
-  const updateAuthUserKycStatus = useCallback((newStatus: KycStatus, newRejectionReason?: string | null) => {
-    console.log(`[AuthContext] Updating KYC status in auth state to: ${newStatus}`);
+      console.log("AuthContext: Logging in user:", backendUser.email, "KYC Status:", backendUser.kyc.status);
+
+      // --- Set the state with the nested kyc object ---
+      const userContextData: UserContextState = {
+        _id: backendUser._id,
+        fullName: backendUser.fullName,
+        email: backendUser.email,
+        role: backendUser.role,
+        kyc: backendUser.kyc, // Assign the full kyc object
+      };
+      setUser(userContextData);
+      setToken(authToken);
+
+      // Store token and set Axios header
+      if (typeof window !== 'undefined') {
+          localStorage.setItem("token", authToken);
+      }
+      apiClient.defaults.headers.common["Authorization"] = `Bearer ${authToken}`;
+
+      // Broadcast login to other tabs
+      if (broadcastChannelRef.current) {
+          try {
+              broadcastChannelRef.current.postMessage("login");
+              console.log("AuthContext: Sent 'login' broadcast");
+          } catch (e) {
+              console.error("AuthContext: BroadcastChannel postMessage error:", e);
+          }
+      }
+
+      // Start/reset the inactivity timer
+      resetInactivityTimerDebounced(authToken);
+    }, [resetInactivityTimerDebounced]); // Dependency
+
+  // --- Function to Update KYC Data Locally ---
+  // Allows components to update parts of the user's KYC info in the context state
+  // Useful after a successful KYC update API call for immediate UI feedback
+  const updateAuthUserKyc = useCallback((updatedKycData: Partial<KycDetails>) => {
+    console.log(`[AuthContext] Updating KYC data in auth state with:`, updatedKycData);
     setUser(currentUser => {
+        // If no current user, do nothing
         if (!currentUser) return null;
-        const currentReason = currentUser.kycRejectionReason ?? null;
-        const nextReason = newRejectionReason ?? null;
-        if (currentUser.kycStatus === newStatus && currentReason === nextReason) {
-            console.log("[AuthContext] KYC status unchanged, skipping state update.");
-            return currentUser; // Return same object - no re-render needed
+
+        // Create the next KYC state by merging existing data with updates
+        const nextKyc: KycDetails = {
+            ...currentUser.kyc, // Start with current KYC data
+            ...updatedKycData,  // Overwrite with provided updates
+             // Ensure nested objects like 'mobile' are handled correctly if updated partially
+             // If updatedKycData contains 'mobile', it should contain the full mobile object
+             mobile: updatedKycData.mobile ? { ...currentUser.kyc.mobile, ...updatedKycData.mobile } : currentUser.kyc.mobile,
+             // Add similar merging for other nested objects if applicable (e.g., documents array - though that's less likely updated this way)
+        };
+
+        // Simple check to see if anything actually changed to prevent unnecessary re-renders
+        // NOTE: This is a shallow comparison. For deep objects, changes within might not be detected.
+        // Consider using a deep-comparison library if complex nested updates are common.
+        if (JSON.stringify(currentUser.kyc) === JSON.stringify(nextKyc)) {
+             console.log("[AuthContext] KYC data unchanged after merge, skipping state update.");
+             return currentUser; // Return the existing state object
         }
-        console.log("[AuthContext] KYC status changed, updating user state object.");
-        return { ...currentUser, kycStatus: newStatus, kycRejectionReason: nextReason }; // Create NEW object
+
+        console.log("[AuthContext] KYC data changed, updating user state object.");
+        // Return a *new* user object with the updated kyc object to trigger re-render
+        return { ...currentUser, kyc: nextKyc };
     });
-  }, []); // No dependencies needed for functional update
+  }, []); // No dependencies needed for functional update pattern
 
   // --- Initialization Effect (Mount) ---
+  // Checks for a token in local storage on initial client mount
+  // If found, validates it by fetching user data
   useEffect(() => {
-    console.log("AuthProvider: Initializing state (Mount)...");
-    let isMounted = true; setLoading(true); // Set initial loading true
-    const storedToken = localStorage.getItem("token");
+    // Only run initialization logic on the client AFTER mount
+    if (!isMounted) {
+        return;
+    }
+
+    console.log("AuthProvider: Initializing state (Client Mount)...");
+    setLoading(true); // Start loading indicator
+    let isActive = true; // Flag to prevent state updates if component unmounts during async ops
+
+    let storedToken: string | null = null;
+    if (typeof window !== 'undefined') {
+        storedToken = localStorage.getItem("token"); // Check for existing token
+    }
 
     const initializeAuth = async () => {
-      if (storedToken && isMounted) {
+      // If a token exists, try to fetch user data to validate it
+      if (storedToken && isActive) {
         console.log("AuthProvider: Token found. Setting token state and fetching user.");
         setToken(storedToken); apiClient.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
+
         try {
-          const response = await apiClient.get<BackendUser>("/dashboard/users/me");
-          if (!isValidBackendUser(response.data)) { throw new Error("Invalid user data structure received during init."); }
-          if (isMounted) {
+          const response = await apiClient.get<BackendUser>("/dashboard/users/me"); // Validate token by fetching user
+
+          // Validate the received user data structure
+          if (!isValidBackendUser(response.data)) {
+            throw new Error("Invalid user data structure received during initialization.");
+          }
+
+          // If component is still mounted, update user state
+          if (isActive) {
             const fetchedUser: BackendUser = response.data;
-            const userContextData: UserContextState = { _id: fetchedUser._id, fullName: fetchedUser.fullName, email: fetchedUser.email, role: fetchedUser.role, kycStatus: fetchedUser.kyc.status, kycRejectionReason: fetchedUser.kyc.rejectionReason ?? null };
-            setUser(userContextData);
-            resetInactivityTimerDebounced(storedToken);
-            console.log("AuthProvider: Initial user fetch success:", userContextData.email, "KYC:", userContextData.kycStatus);
+            // --- Set the state with the nested kyc object ---
+            const userContextData: UserContextState = {
+                _id: fetchedUser._id,
+                fullName: fetchedUser.fullName,
+                email: fetchedUser.email,
+                role: fetchedUser.role,
+                kyc: fetchedUser.kyc, // Assign the full kyc object
+            };
+            setUser(userContextData); // Set user state
+            resetInactivityTimerDebounced(storedToken); // Start inactivity timer
+            console.log("AuthProvider: Initial user fetch success:", userContextData.email, "KYC:", userContextData.kyc.status);
           }
         } catch (error: any) {
-          console.error("AuthProvider: Failed to fetch user during init:", error.response?.status, error.message);
-          if (isMounted) { localStorage.removeItem("token"); setToken(null); setUser(null); delete apiClient.defaults.headers.common["Authorization"];
-            if (error.response?.status === 401 && typeof window !== "undefined" && !window.location.pathname.startsWith("/auth/login")) {
-               router.push("/auth/login?sessionExpired=true");
-            }
+          console.error("AuthProvider: Failed to fetch user during init (token might be invalid/expired):", error.response?.status, error.message);
+          // If fetching user fails (e.g., 401 Unauthorized), log out
+          if (isActive) {
+             // Call logout logic - it handles clearing state, storage, and potential redirect
+             logoutRef.current(error.response?.status === 401 ? "sessionExpired" : "manual", true); // Use true to prevent broadcast loop
+             // No need to manually redirect here, logout function handles it if needed
           }
-        } finally { if (isMounted) { setLoading(false); } } // Set initial loading false
-      } else { if (isMounted) { setLoading(false); } } // No token, loading finished
+        } finally {
+          // Stop loading indicator once initialization attempt is complete
+          if (isActive) {
+            setLoading(false);
+          }
+        }
+      } else {
+        // No token found, initialization is complete (user is not logged in)
+        if (isActive) {
+          setLoading(false);
+        }
+      }
     };
-    initializeAuth();
-    return () => { isMounted = false; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Run only once
 
-  // --- Axios 401 Interceptor ---
-  useEffect(() => {
-    const interceptor = apiClient.interceptors.response.use(res => res, error => {
-        if (error.response?.status === 401 && localStorage.getItem("token")) { logoutRef.current("sessionExpired"); }
-        return Promise.reject(error);
-      });
-    return () => { apiClient.interceptors.response.eject(interceptor); };
+    initializeAuth();
+
+    // Cleanup function for the effect
+    return () => {
+      isActive = false; // Mark component as unmounted
+      console.log("AuthProvider: Initializing effect cleanup.");
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Run only once
+  }, [isMounted]); // Run this effect only when isMounted becomes true
+
+  // --- Axios Response Interceptor for 401 Errors ---
+  // Automatically logs out the user if any API request returns a 401 Unauthorized
+  useEffect(() => {
+    const interceptor = apiClient.interceptors.response.use(
+      (response) => response, // Pass through successful responses
+      (error) => {
+        // Check if the error is a 401 and if a token currently exists (meaning user *was* logged in)
+        const currentToken = typeof window !== 'undefined' ? localStorage.getItem("token") : null;
+        if (error.response?.status === 401 && currentToken) {
+            console.log("AuthContext: Axios interceptor caught 401. Logging out.");
+            logoutRef.current("sessionExpired"); // Log out due to session expiry
+        }
+        // IMPORTANT: Reject the promise so the original caller handles the error too
+        return Promise.reject(error);
+      }
+    );
+
+    // Cleanup function to remove the interceptor when the provider unmounts
+    return () => {
+      apiClient.interceptors.response.eject(interceptor);
+      console.log("AuthContext: Axios 401 interceptor removed.");
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Run only once on mount
 
   // --- BroadcastChannel Listener ---
+  // Listens for messages from other tabs (login/logout)
   useEffect(() => {
-    const channel = broadcastChannelRef.current; if (!channel) return;
+    const channel = broadcastChannelRef.current;
+    if (!channel) return; // Don't add listener if channel failed to initialize
+
     const handleBroadcast = (event: MessageEvent) => {
-      const localUserBefore = user; const localTokenBefore = token;
-      if (event.data === "logout" && localUserBefore !== null) logoutRef.current("manual", true);
-      else if (event.data === "login") {
-        const storageToken = localStorage.getItem("token");
-        if (storageToken && (!localTokenBefore || localTokenBefore !== storageToken)) { setToken(storageToken); apiClient.defaults.headers.common["Authorization"] = `Bearer ${storageToken}`; refetchUser(); }
-        else if (storageToken && localTokenBefore === storageToken && !localUserBefore) refetchUser();
+      console.log("AuthContext BC: Received message - ", event.data);
+      const localUserBefore = user;
+      const localTokenBefore = token;
+      const storageToken = typeof window !== 'undefined' ? localStorage.getItem("token") : null;
+
+      if (event.data === "logout") {
+         // If we receive a logout message and are currently logged in, log out locally
+         if (localUserBefore !== null || localTokenBefore !== null) {
+            console.log("AuthContext BC: Handling 'logout' broadcast.");
+            logoutRef.current("manual", true); // Use true to indicate it's a broadcast response
+         }
+      } else if (event.data === "login") {
+        console.log("AuthContext BC: Handling 'login' broadcast.");
+        // If we receive a login message, check if our state needs updating
+        // Case 1: We have no token locally, or our token differs from storage -> Need to sync
+        if (storageToken && (!localTokenBefore || localTokenBefore !== storageToken)) {
+            console.log("AuthContext BC: Token mismatch or missing locally, refetching user.");
+            setToken(storageToken); // Immediately update token state from storage
+            apiClient.defaults.headers.common["Authorization"] = `Bearer ${storageToken}`; // Update Axios header
+            refetchUser(); // Fetch user data corresponding to the new token
+        }
+        // Case 2: Token matches, but user data is missing locally -> Refetch
+        else if (storageToken && localTokenBefore === storageToken && !localUserBefore) {
+            console.log("AuthContext BC: Token matches but user missing locally, refetching user.");
+            refetchUser();
+        }
+        // Case 3: We received 'login' but there's no token in storage (edge case) -> Log out locally
+        else if (!storageToken && (localUserBefore || localTokenBefore)) {
+            console.warn("AuthContext BC: 'login' received but no token in storage, logging out locally.");
+            logoutRef.current("manual", true);
+        }
       }
-       else if (event.data === "user_updated") { console.log("Auth BC: Received user_updated, refetching."); refetchUser(); }
+      // NOTE: Removed "user_updated" broadcast to simplify and avoid potential loops.
+      // Synchronization relies on login/logout broadcasts and subsequent refetches.
     };
+
     channel.addEventListener("message", handleBroadcast);
-    return () => { if (broadcastChannelRef.current) { broadcastChannelRef.current.removeEventListener("message", handleBroadcast); }};
-  }, [user, token, refetchUser]); // Include refetchUser
+
+    // Cleanup listener
+    return () => {
+      if (broadcastChannelRef.current) {
+        broadcastChannelRef.current.removeEventListener("message", handleBroadcast);
+        console.log("AuthContext BC: Message listener removed.");
+      }
+    };
+  }, [user, token, refetchUser]); // Dependencies ensure listener has access to current state/functions
 
   // --- Inactivity Event Listeners ---
+  // Resets the inactivity timer on user interaction
   useEffect(() => {
+    // Only run on client-side
+    if (typeof window === 'undefined') return;
+
+    // Events that indicate user activity
     const events: (keyof WindowEventMap)[] = [ "mousemove", "mousedown", "keypress", "scroll", "touchstart", ];
-    const activityHandler = () => { if (document.visibilityState === 'visible') resetInactivityTimerDebounced(token); };
-    if (token && typeof window !== "undefined") {
-      events.forEach((event) => window.addEventListener(event, activityHandler, { passive: true })); activityHandler(); // Initial reset
-      return () => { events.forEach((event) => window.removeEventListener(event, activityHandler)); resetInactivityTimerDebounced.cancel(); if (logoutTimerRef.current) { clearTimeout(logoutTimerRef.current); logoutTimerRef.current = null; } };
+
+    // Handler to reset the timer
+    const activityHandler = () => {
+        // Reset timer only if user is logged in (token exists) and the window/tab is visible
+        if (token && document.visibilityState === 'visible') {
+            resetInactivityTimerDebounced(token);
+        }
+    };
+
+    // Add listeners only if the user is logged in
+    if (token) {
+      console.log("AuthContext: Adding inactivity listeners.");
+      events.forEach((event) => window.addEventListener(event, activityHandler, { passive: true }));
+      activityHandler(); // Initial reset when token becomes available or changes
+
+      // Cleanup function to remove listeners and timer when token is cleared or component unmounts
+      return () => {
+          console.log("AuthContext: Removing inactivity listeners.");
+          events.forEach((event) => window.removeEventListener(event, activityHandler));
+          resetInactivityTimerDebounced.cancel(); // Cancel any pending debounced calls
+          if (logoutTimerRef.current) {
+              clearTimeout(logoutTimerRef.current);
+              logoutTimerRef.current = null;
+          }
+      };
+    } else {
+        // If token becomes null (logout), ensure any existing timer/pending calls are cleared
+        resetInactivityTimerDebounced.cancel();
+        if (logoutTimerRef.current) {
+            clearTimeout(logoutTimerRef.current);
+            logoutTimerRef.current = null;
+        }
     }
-  }, [token, resetInactivityTimerDebounced]); // Depend on token
+  }, [token, resetInactivityTimerDebounced]); // Re-run when token changes
 
   // --- Derived State ---
+  // Calculate isAdmin based on the current user state
   const isAdmin = useMemo(() => user?.role === "admin", [user]);
 
   // --- Context Value ---
+  // Memoize the context value to prevent unnecessary re-renders of consumers
   const contextValue: AuthContextType = useMemo(() => ({
-      user, token, loading, login, logout: logoutRef.current, isAdmin, refetchUser, updateAuthUserKycStatus,
-    }), [user, token, loading, login, isAdmin, refetchUser, updateAuthUserKycStatus] );
+      user,
+      token,
+      loading,
+      login,
+      logout: logoutRef.current, // Provide the stable ref
+      isAdmin,
+      refetchUser,
+      updateAuthUserKyc, // Provide the KYC update function
+    }), [user, token, loading, login, isAdmin, refetchUser, updateAuthUserKyc] ); // Include all provided values
 
   // --- Render ---
+  // Render loading indicator if not mounted on client OR if initial loading is still in progress
+  // This prevents hydration mismatches between server and client initial render.
   return (
     <AuthContext.Provider value={contextValue}>
-      {/* Global Loading Indicator ONLY for initial load */}
-      {loading ? <GlobalLoadingIndicator /> : children}
+      {(!isMounted || loading) ? <GlobalLoadingIndicator /> : children}
     </AuthContext.Provider>
   );
 };
 
-// --- Hook & Global Loader ---
+// --- Hook to Consume Context ---
+// Provides a convenient way for components to access the auth context
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
-  if (context === undefined) throw new Error("useAuth must be used within an AuthProvider");
+  if (context === undefined) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
   return context;
 };
 
+// --- Global Loading Indicator Component ---
+// Simple, centered spinner shown during initial auth state loading
 const GlobalLoadingIndicator = () => (
   <div className="fixed inset-0 z-[200] flex justify-center items-center bg-background/80 backdrop-blur-sm" aria-label="Loading session" role="status">
     <Loader2 className="h-10 w-10 animate-spin text-primary" />
   </div>
 );
+
+// --- Export KYC types needed by AuthContext ---
+// Re-exporting types here can be convenient for components importing from AuthContext
+export type { KycStatus, KycDetails, KycMobile };

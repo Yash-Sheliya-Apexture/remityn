@@ -613,8 +613,8 @@ const MainDashBoard = () => {
 
   // --- Render Dashboard Content ---
   // User data is available and guaranteed to be non-null here
-  const kycStatus: KycStatus | null | undefined = user.kycStatus; // Get status directly from AuthContext user
-  const rejectionReason = user.kycRejectionReason; // Get reason directly from AuthContext user
+  const kycStatus: KycStatus = user.kyc.status; // Get status from user.kyc.status
+  const rejectionReason: string | null | undefined = user.kyc.rejectionReason; // Get reason from user.kyc.rejectionReason
   // console.log("Dashboard: Rendering with KYC Status from AuthContext:", kycStatus);
 
   const showVerificationBanner = kycStatus !== 'verified';
