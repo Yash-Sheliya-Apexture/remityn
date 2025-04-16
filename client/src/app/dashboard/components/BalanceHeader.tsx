@@ -489,21 +489,177 @@
 // export default BalanceHeader;
 
 
+// // frontend/src/app/dashboard/components/BalanceHeader.tsx
+// import React from "react";
+// import Image from "next/image";
+// import Link from "next/link";
+// import { LuPlus } from "react-icons/lu";
+// import { GoArrowUp } from "react-icons/go";
+// import { Skeleton } from "@/components/ui/skeleton";
+// // *** Import from the type definition file ***
+// import { BalanceDetail } from "@/types/balance"; // Adjust path as needed
+
+// interface BalanceHeaderProps {
+//   balanceDetail: BalanceDetail | null;
+//   isLoading: boolean;
+//   onSendClick: () => void;
+//   canSendMoney: boolean;
+//   marketRateAgainstINR: number | null;
+//   ourRateAgainstINR: number | null;
+// }
+
+// const BalanceHeader: React.FC<BalanceHeaderProps> = ({
+//   balanceDetail,
+//   isLoading,
+//   onSendClick,
+//   canSendMoney,
+//   marketRateAgainstINR,
+//   ourRateAgainstINR,
+// }) => {
+//   // ... rest of the component code remains the same ...
+
+//   // Example access using the correct types (already looks correct in your original code)
+//   const currencyCode = balanceDetail?.currency.code; // Access works because BalanceDetail has currency: Currency
+//   const formattedBalance = balanceDetail ? parseFloat(
+//     balanceDetail.balance.toString() // Access works because BalanceDetail has balance: number
+//   ).toLocaleString(undefined, {
+//     minimumFractionDigits: 2,
+//     maximumFractionDigits: 2,
+//   }) : '0.00'; // Handle null case
+
+//   // ... rest of the component code ...
+
+//    return (
+//     <>
+//       {/* Balance Card */}
+//       <div className="pb-6 mb-8 border-b">
+//         <div className="flex sm:flex-row flex-col gap-4 justify-between">
+
+//           {/* Left Side - Balance Info */}
+//           <div className="Balance sm:text-left text-center">
+//             {/* Currency Flag and Name */}
+//             <div className="flex items-center sm:justify-start justify-center gap-2 mb-4">
+//               {balanceDetail?.currency.flagImage ? ( // Use optional chaining
+//                 <Image
+//                   src={balanceDetail.currency.flagImage}
+//                   alt={`${currencyCode ?? 'N/A'} flag`} // Handle potential null currencyCode here
+//                   width={50}
+//                   height={50}
+//                   className="rounded-full object-cover"
+//                   onError={(e) => {
+//                     (e.target as HTMLImageElement).src =
+//                       "/assets/icon/default.svg";
+//                   }}
+//                   priority
+//                 />
+//               ) : (
+//                 <div className="w-[50px] h-[50px] rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 text-lg font-semibold">
+//                   {currencyCode ? currencyCode.slice(0, 2) : '??'} {/* Handle null case */}
+//                 </div>
+//               )}
+//               <h2 className="text-lg text-neutral-900 dark:text-white">
+//                 {currencyCode ?? 'N/A'} balance {/* Handle null case */}
+//               </h2>
+//             </div>
+
+//              {/* Balance Amount - Render Skeleton if loading OR balanceDetail is null */}
+//              {isLoading || !balanceDetail ? (
+//                  <Skeleton className="h-12 w-48 mb-6 sm:mx-0 mx-auto" />
+//              ) : (
+//                  <div className="text-5xl font-bold text-neutral-900 dark:text-white mb-6">
+//                  {formattedBalance}
+//                  <span className="text-2xl font-bold"> {currencyCode}</span>
+//                  </div>
+//              )}
+
+
+//             {/* Display Market Rate and Our Rate against INR - with Loading State */}
+//             {/* Rates logic remains similar, ensure currencyCode check includes null/undefined */}
+//             { currencyCode && currencyCode !== 'INR' && (
+//                  <div className="mb-4 text-gray-500 dark:text-gray-300 flex md:flex-row flex-col sm:items-start items-center gap-4 min-h-[32px]">
+//                  {marketRateAgainstINR === null && ourRateAgainstINR === null ? (
+//                      <>
+//                      {/* Skeleton for Rates */}
+//                      <Skeleton className="h-8 w-48 rounded-4xl" />
+//                      <Skeleton className="h-8 w-48 rounded-4xl" />
+//                      </>
+//                  ) : marketRateAgainstINR !== null && ourRateAgainstINR !== null ? (
+//                     <>
+//                         {/* Actual Rate Display */}
+//                         <div className="p-1.5 px-6 rounded-4xl bg-primary dark:bg-primary/20 text-neutral-900 dark:text-primary w-fit whitespace-nowrap">
+//                         <span>Our Rate: 1 {currencyCode} = {ourRateAgainstINR.toFixed(2)} INR</span>
+//                         </div>
+//                         <div className="p-1.5 px-6 rounded-4xl bg-blue-600 dark:bg-blue-600/20 text-gray-100 dark:text-blue-600 w-fit whitespace-nowrap">
+//                         <span>Market Rate: 1 {currencyCode} = {marketRateAgainstINR.toFixed(2)} INR</span>
+//                         </div>
+//                     </>
+//                  ) : (
+//                      // Render nothing if rates aren't applicable or failed to load
+//                      null
+//                  )}
+//                  </div>
+//             )}
+//           </div>
+
+//           {/* Right Side - Actions */}
+//           {/* Add checks for balanceDetail existence before rendering links/buttons depending on it */}
+//           {balanceDetail && (
+//             <div className="flex flex-col justify-start items-center sm:items-end">
+//                 <div className="flex justify-center space-x-6">
+//                 <Link
+//                     href={`/dashboard/balances/${balanceDetail._id}/add-money`} // Safe access
+//                     className="text-center text-neutral-900 dark:text-white flex flex-col items-center"
+//                 >
+//                     <div className="bg-primary cursor-pointer mb-1 hover:bg-primaryhover text-neutral-900 w-14 h-14 flex justify-center items-center rounded-full">
+//                     <LuPlus size={24} />
+//                     </div>
+//                     Add
+//                 </Link>
+
+//                 <div className="send text-center cursor-pointer flex flex-col items-center" onClick={onSendClick}>
+//                     <div
+//                     className={`bg-primary cursor-pointer mb-1 text-neutral-900 w-14 h-14 flex justify-center items-center rounded-full ${
+//                         !canSendMoney
+//                         ? "opacity-50 bg-primary hover:bg-primaryhover cursor-not-allowed"
+//                         : "hover:bg-primaryhover"
+//                     }`}
+//                     title={
+//                         !canSendMoney ? "Add funds to send money" : "Send money"
+//                     }
+//                     >
+//                     <GoArrowUp size={24} />
+//                     </div>
+//                     <span className="text-neutral-900 dark:text-white">Send</span>
+//                 </div>
+//                 </div>
+//             </div>
+//           )}
+
+//         </div>
+//       </div>
+//       {/* Removed initial loading skeleton logic from here, as it's handled by parent or top-level check */}
+//     </>
+//   );
+// };
+
+// export default BalanceHeader;
+
 // frontend/src/app/dashboard/components/BalanceHeader.tsx
 import React from "react";
 import Image from "next/image";
-import Link from "next/link";
+// REMOVE Link import if no longer needed directly here
+// import Link from "next/link";
 import { LuPlus } from "react-icons/lu";
 import { GoArrowUp } from "react-icons/go";
 import { Skeleton } from "@/components/ui/skeleton";
-// *** Import from the type definition file ***
 import { BalanceDetail } from "@/types/balance"; // Adjust path as needed
 
 interface BalanceHeaderProps {
   balanceDetail: BalanceDetail | null;
   isLoading: boolean;
   onSendClick: () => void;
-  canSendMoney: boolean;
+  onAddMoneyClick: () => void; // <-- ADDED: Callback for Add Money
+  canSendMoney: boolean; // Keep this, it's still relevant *after* KYC check
   marketRateAgainstINR: number | null;
   ourRateAgainstINR: number | null;
 }
@@ -512,24 +668,22 @@ const BalanceHeader: React.FC<BalanceHeaderProps> = ({
   balanceDetail,
   isLoading,
   onSendClick,
+  onAddMoneyClick, // <-- Destructure new prop
   canSendMoney,
   marketRateAgainstINR,
   ourRateAgainstINR,
 }) => {
-  // ... rest of the component code remains the same ...
+  // ... (rest of the component code remains the same until the Actions section) ...
 
-  // Example access using the correct types (already looks correct in your original code)
-  const currencyCode = balanceDetail?.currency.code; // Access works because BalanceDetail has currency: Currency
+  const currencyCode = balanceDetail?.currency.code;
   const formattedBalance = balanceDetail ? parseFloat(
-    balanceDetail.balance.toString() // Access works because BalanceDetail has balance: number
+    balanceDetail.balance.toString()
   ).toLocaleString(undefined, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  }) : '0.00'; // Handle null case
+  }) : '0.00';
 
-  // ... rest of the component code ...
-
-   return (
+  return (
     <>
       {/* Balance Card */}
       <div className="pb-6 mb-8 border-b">
@@ -537,97 +691,93 @@ const BalanceHeader: React.FC<BalanceHeaderProps> = ({
 
           {/* Left Side - Balance Info */}
           <div className="Balance sm:text-left text-center">
-            {/* Currency Flag and Name */}
-            <div className="flex items-center sm:justify-start justify-center gap-2 mb-4">
-              {balanceDetail?.currency.flagImage ? ( // Use optional chaining
-                <Image
-                  src={balanceDetail.currency.flagImage}
-                  alt={`${currencyCode ?? 'N/A'} flag`} // Handle potential null currencyCode here
-                  width={50}
-                  height={50}
-                  className="rounded-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src =
-                      "/assets/icon/default.svg";
-                  }}
-                  priority
-                />
+            {/* ... (Currency Flag, Name, Balance Amount, Rates - unchanged) ... */}
+             {/* Currency Flag and Name */}
+             <div className="flex items-center sm:justify-start justify-center gap-2 mb-4">
+               {balanceDetail?.currency.flagImage ? (
+                 <Image
+                   src={balanceDetail.currency.flagImage}
+                   alt={`${currencyCode ?? 'N/A'} flag`}
+                   width={50}
+                   height={50}
+                   className="rounded-full object-cover"
+                   onError={(e) => { (e.target as HTMLImageElement).src = "/assets/icon/default.svg"; }}
+                   priority
+                 />
+               ) : (
+                 <div className="w-[50px] h-[50px] rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 text-lg font-semibold">
+                   {currencyCode ? currencyCode.slice(0, 2) : '??'}
+                 </div>
+               )}
+               <h2 className="text-lg text-neutral-900 dark:text-white">
+                 {currencyCode ?? 'N/A'} balance
+               </h2>
+             </div>
+
+              {/* Balance Amount */}
+              {isLoading || !balanceDetail ? (
+                  <Skeleton className="h-12 w-48 mb-6 sm:mx-0 mx-auto" />
               ) : (
-                <div className="w-[50px] h-[50px] rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 text-lg font-semibold">
-                  {currencyCode ? currencyCode.slice(0, 2) : '??'} {/* Handle null case */}
-                </div>
+                  <div className="text-5xl font-bold text-neutral-900 dark:text-white mb-6">
+                  {formattedBalance}
+                  <span className="text-2xl font-bold"> {currencyCode}</span>
+                  </div>
               )}
-              <h2 className="text-lg text-neutral-900 dark:text-white">
-                {currencyCode ?? 'N/A'} balance {/* Handle null case */}
-              </h2>
-            </div>
 
-             {/* Balance Amount - Render Skeleton if loading OR balanceDetail is null */}
-             {isLoading || !balanceDetail ? (
-                 <Skeleton className="h-12 w-48 mb-6 sm:mx-0 mx-auto" />
-             ) : (
-                 <div className="text-5xl font-bold text-neutral-900 dark:text-white mb-6">
-                 {formattedBalance}
-                 <span className="text-2xl font-bold"> {currencyCode}</span>
-                 </div>
-             )}
-
-
-            {/* Display Market Rate and Our Rate against INR - with Loading State */}
-            {/* Rates logic remains similar, ensure currencyCode check includes null/undefined */}
-            { currencyCode && currencyCode !== 'INR' && (
-                 <div className="mb-4 text-gray-500 dark:text-gray-300 flex md:flex-row flex-col sm:items-start items-center gap-4 min-h-[32px]">
-                 {marketRateAgainstINR === null && ourRateAgainstINR === null ? (
+             {/* Display Market Rate and Our Rate */}
+             { currencyCode && currencyCode !== 'INR' && (
+                  <div className="mb-4 text-gray-500 dark:text-gray-300 flex md:flex-row flex-col sm:items-start items-center gap-4 min-h-[32px]">
+                  {marketRateAgainstINR === null && ourRateAgainstINR === null ? (
+                      <>
+                      <Skeleton className="h-8 w-48 rounded-4xl" />
+                      <Skeleton className="h-8 w-48 rounded-4xl" />
+                      </>
+                  ) : marketRateAgainstINR !== null && ourRateAgainstINR !== null ? (
                      <>
-                     {/* Skeleton for Rates */}
-                     <Skeleton className="h-8 w-48 rounded-4xl" />
-                     <Skeleton className="h-8 w-48 rounded-4xl" />
+                         <div className="p-1.5 px-6 rounded-4xl bg-primary dark:bg-primary/20 text-neutral-900 dark:text-primary w-fit whitespace-nowrap">
+                         <span>Our Rate: 1 {currencyCode} = {ourRateAgainstINR.toFixed(2)} INR</span>
+                         </div>
+                         <div className="p-1.5 px-6 rounded-4xl bg-blue-600 dark:bg-blue-600/20 text-gray-100 dark:text-blue-600 w-fit whitespace-nowrap">
+                         <span>Market Rate: 1 {currencyCode} = {marketRateAgainstINR.toFixed(2)} INR</span>
+                         </div>
                      </>
-                 ) : marketRateAgainstINR !== null && ourRateAgainstINR !== null ? (
-                    <>
-                        {/* Actual Rate Display */}
-                        <div className="p-1.5 px-6 rounded-4xl bg-primary dark:bg-primary/20 text-neutral-900 dark:text-primary w-fit whitespace-nowrap">
-                        <span>Our Rate: 1 {currencyCode} = {ourRateAgainstINR.toFixed(2)} INR</span>
-                        </div>
-                        <div className="p-1.5 px-6 rounded-4xl bg-blue-600 dark:bg-blue-600/20 text-gray-100 dark:text-blue-600 w-fit whitespace-nowrap">
-                        <span>Market Rate: 1 {currencyCode} = {marketRateAgainstINR.toFixed(2)} INR</span>
-                        </div>
-                    </>
-                 ) : (
-                     // Render nothing if rates aren't applicable or failed to load
-                     null
-                 )}
-                 </div>
-            )}
+                  ) : ( null )}
+                  </div>
+             )}
           </div>
 
           {/* Right Side - Actions */}
-          {/* Add checks for balanceDetail existence before rendering links/buttons depending on it */}
+          {/* Add checks for balanceDetail existence */}
           {balanceDetail && (
             <div className="flex flex-col justify-start items-center sm:items-end">
                 <div className="flex justify-center space-x-6">
-                <Link
-                    href={`/dashboard/balances/${balanceDetail._id}/add-money`} // Safe access
-                    className="text-center text-neutral-900 dark:text-white flex flex-col items-center"
+
+                {/* --- MODIFIED: Use div + onClick for Add Money --- */}
+                <div
+                    className="text-center text-neutral-900 dark:text-white flex flex-col items-center cursor-pointer"
+                    onClick={onAddMoneyClick} // <-- Use the callback
+                    title="Add money" // Add title for accessibility
                 >
                     <div className="bg-primary cursor-pointer mb-1 hover:bg-primaryhover text-neutral-900 w-14 h-14 flex justify-center items-center rounded-full">
-                    <LuPlus size={24} />
+                        <LuPlus size={24} />
                     </div>
                     Add
-                </Link>
+                </div>
+                {/* --- END MODIFICATION --- */}
 
+                {/* Send Money Button (unchanged structure, logic handled by onSendClick in parent) */}
                 <div className="send text-center cursor-pointer flex flex-col items-center" onClick={onSendClick}>
                     <div
-                    className={`bg-primary cursor-pointer mb-1 text-neutral-900 w-14 h-14 flex justify-center items-center rounded-full ${
-                        !canSendMoney
-                        ? "opacity-50 bg-primary hover:bg-primaryhover cursor-not-allowed"
-                        : "hover:bg-primaryhover"
-                    }`}
-                    title={
-                        !canSendMoney ? "Add funds to send money" : "Send money"
-                    }
+                        className={`bg-primary cursor-pointer mb-1 text-neutral-900 w-14 h-14 flex justify-center items-center rounded-full ${
+                            !canSendMoney // Keep existing styling for insufficient balance visual cue
+                            ? "opacity-50 bg-primary hover:bg-primaryhover cursor-not-allowed"
+                            : "hover:bg-primaryhover"
+                        }`}
+                        title={
+                            !canSendMoney ? "Add funds to send money" : "Send money"
+                        }
                     >
-                    <GoArrowUp size={24} />
+                        <GoArrowUp size={24} />
                     </div>
                     <span className="text-neutral-900 dark:text-white">Send</span>
                 </div>
@@ -637,7 +787,6 @@ const BalanceHeader: React.FC<BalanceHeaderProps> = ({
 
         </div>
       </div>
-      {/* Removed initial loading skeleton logic from here, as it's handled by parent or top-level check */}
     </>
   );
 };

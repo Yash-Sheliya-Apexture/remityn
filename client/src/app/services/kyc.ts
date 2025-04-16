@@ -1870,13 +1870,12 @@ export interface KycSubmissionPayload {
 
 // Exported here - Payload for updating *editable* KYC details (if backend allows)
 export interface UpdateDetailsPayload {
-    firstName?: string;
+    firstName?: string; // Optional because user might only change phone
     lastName?: string;
+    nationality?: string; // Added nationality
     mobile?: KycMobile;
-    salaryRange?: SalaryRange | null;
     occupation?: string;
-    // Add other fields if the backend allows updating them post-submission
-    nationality?: string; // Allow updating nationality?
+    salaryRange?: SalaryRange | null; // If you add salary range update
 }
 
 // API Response Structures
