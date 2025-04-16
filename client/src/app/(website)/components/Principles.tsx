@@ -42,7 +42,7 @@ const FeaturesSection: React.FC = () => {
               width={500}
               height={500}
               alt="Picture of the author"
-              className="w-full object-cover md:h-80 h-80"
+              className="w-full object-cover md:h-80 h-60"
             />
 
             <div className="flex flex-col gap-3 p-6">

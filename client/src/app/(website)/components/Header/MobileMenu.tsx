@@ -886,11 +886,11 @@
 
 // export default MobileMenu;
 
+
 // components/MobileMenu.tsx
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import Image from "next/image"; // Import next/image
 import FeatureDropdown from "@/app/components/ui/FeatureDropdown"; // Import FeatureDropdown, adjust path
 
 interface MobileMenuProps {
@@ -911,9 +911,6 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
   const toggleFeaturesDropdown = () => {
     setIsFeaturesOpen(!isFeaturesOpen);
   };
-
-  // Define image dimensions based on className w-5 h-5 (assuming default Tailwind base font size 16px, 1.25rem = 20px)
-  const flagSize = 20;
 
   return (
     <div

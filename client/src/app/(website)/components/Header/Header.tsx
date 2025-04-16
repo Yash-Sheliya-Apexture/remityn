@@ -1813,6 +1813,14 @@ const Header: React.FC = () => {
 
                   {/* Help Link */}
                   <Link
+                    href="/reviews"
+                    className="px-4 py-1.5 rounded-full font-medium text-mainheading dark:hover:text-primary hover:bg-gray/5 hover:dark:bg-secondary dark:text-white transition-colors duration-300"
+                  >
+                    Reviews
+                  </Link>
+
+                  {/* Help Link */}
+                  <Link
                     href="/help"
                     className="px-4 py-1.5 rounded-full font-medium text-mainheading dark:hover:text-primary hover:bg-gray/5 hover:dark:bg-secondary dark:text-white transition-colors duration-300"
                   >
