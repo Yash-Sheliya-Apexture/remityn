@@ -4422,6 +4422,45 @@ interface AppliedFilters {
     toDate?: string;
 }
 
+const TransactionsPageSkeleton: React.FC = () => {
+  return (
+      <section className="Transaction-Page pb-8 md:pb-10">
+          <div className="container mx-auto">
+              {/* Skeleton for Header and Actions */}
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky top-0 z-10 bg-white dark:bg-background">
+                  {/* Skeleton for H1 Title */}
+                  <Skeleton className="h-8 w-64 rounded-md" />
+                  {/* Skeleton for Actions (Search, Filters) */}
+                  <div className="flex items-center gap-4 w-full md:w-auto justify-end">
+                      <Skeleton className="h-10 w-full sm:w-64 rounded-full" /> {/* Search */}
+                      <Skeleton className="h-10 w-32 rounded-full" /> {/* Filter Button */}
+                  </div>
+              </div>
+
+              {/* Skeleton for Transaction List */}
+              <div className="space-y-2">
+                  {Array(8).fill(0).map((_, index) => (
+                      <div key={index} className="block p-2 sm:p-4 rounded-2xl">
+                          <div className="flex items-center gap-4">
+                              <Skeleton className="h-12 w-12 rounded-full flex-shrink-0" />
+                              <div className="flex-grow flex flex-row justify-between items-center gap-4">
+                                  <div className="flex-grow">
+                                      <Skeleton className="h-4 w-40 mb-2" />
+                                      <Skeleton className="h-3 w-32" />
+                                  </div>
+                                  <div className="shrink-0">
+                                      <Skeleton className="h-5 w-20 rounded-full" />
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  ))}
+              </div>
+          </div>
+      </section>
+  );
+};
+
 
 const TransactionsPage: React.FC = () => {
     // --- State Declarations ---
@@ -4747,6 +4786,10 @@ const TransactionsPage: React.FC = () => {
 
     // --- Render Logic ---
     const isLoading = loadingTransactions || loadingAccounts;
+    // *** RENDER SKELETON IF LOADING ***
+    if (isLoading) {
+      return <TransactionsPageSkeleton />;
+  }
 
     return (
       <section className="Transaction-Page pb-8 md:pb-10">
@@ -4756,48 +4799,23 @@ const TransactionsPage: React.FC = () => {
             <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
               Transactions
             </h1>
+            {/* Conditional rendering for actions based on accounts loading is now implicit */}
             {!loadingAccounts && userAccounts.length > 0 && (
               <TransactionActions
-                transactions={allTransactions} // Pass all for searching
+                transactions={allTransactions}
                 userAccounts={userAccounts}
-                onTransactionsChange={handleTransactionsChange} // Handles search output
-                onFiltersApply={handleFiltersApply} // Handles filter application
+                onTransactionsChange={handleTransactionsChange}
+                onFiltersApply={handleFiltersApply}
               />
             )}
-            {loadingAccounts && (
-              <div className="flex items-center gap-4 animate-pulse">
-                <div className="h-10 w-32 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
-                <div className="h-10 w-32 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
-              </div>
-            )}
+            {/* Skeleton for actions during only account loading phase (less likely now with combined check) */}
+            {/* {loadingAccounts && !loadingTransactions && (...) } */} {/* This case is less common with the combined isLoading check */}
             {!loadingAccounts && userAccounts.length === 0 && !error && (
               <p className="text-sm text-gray-500">
                 Create an account to start making transactions.
               </p>
             )}
           </div>
-
-          {/* Loading State */}
-          {isLoading && (
-             <div className="space-y-2">
-              {Array(8).fill(0).map((_, index) => (
-                  <div key={index} className="block p-2 sm:p-4 rounded-2xl">
-                      <div className="flex items-center gap-4">
-                          <Skeleton className="h-12 w-12 rounded-full flex-shrink-0" />
-                          <div className="flex-grow flex flex-row justify-between items-center gap-4">
-                              <div className="flex-grow">
-                                  <Skeleton className="h-4 w-40 mb-2" />
-                                  <Skeleton className="h-3 w-32" />
-                              </div>
-                              <div className="shrink-0">
-                                  <Skeleton className="h-5 w-20 rounded-full" />
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              ))}
-            </div>
-          )}
 
           {/* Error State */}
           {!isLoading && error && (

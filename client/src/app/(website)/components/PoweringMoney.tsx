@@ -77,28 +77,28 @@ const AboutSection: React.FC<AboutSectionProps> = ({
   imageAlt = "Person smiling while using a laptop and wearing headphones",
 }) => {
   return (
-    <section className="relative bg-[#f2f4f7] dark:bg-background py-12 overflow-hidden">
+    <section className="relative bg-[#f2f4f7] dark:bg-background md:py-12 py-10 overflow-hidden">
       <div className="container mx-auto px-4 relative z-20">
-        <div className="flex flex-col md:flex-row items-center gap-12 lg:gap-20">
+        <div className="flex flex-col md:flex-row items-center gap-6">
           {/* Content Area */}
           <div className="w-full md:w-1/2 space-y-6">
-            <div className="space-y-6 text-center md:text-left ">
-              <span className="font-semibold uppercase tracking-wider text-gray dark:text-gray-300">
+            <div className="space-y-6 text-center md:text-left">
+              <span className="font-semibold uppercase tracking-wider text-xs md:text-base text-gray dark:text-gray-300">
                 ABOUT US
               </span>
 
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-mainheading dark:text-white mt-6">
-                {title} <span className="text-primary">{subtitle}</span>
+              <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-mainheading dark:text-white md:mt-6 mt-4">
+                {title}  <span className="text-primary">{subtitle}</span>
               </h2>
 
-              <p className="text-gray-500 dark:text-gray-300 text-lg max-w-prose">
+              <p className="text-gray-500 dark:text-gray-300 md:text-lg text-base max-w-prose">
                 {description}
               </p>
 
               <div className="">
                 <Link
                   href={buttonLink}
-                  className="inline-flex items-center justify-center rounded-md bg-primary hover:bg-primaryhover text-mainheading px-6 py-3 h-12.5 duration-300 transition-colors ease-in-out font-medium"
+                  className="inline-flex items-center justify-center rounded-md bg-primary hover:bg-primaryhover text-mainheading px-6 md:py-3 py-2 md:h-12.5 duration-300 transition-colors ease-in-out font-medium"
                 >
                   {buttonText}
                 </Link>
@@ -107,7 +107,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({
           </div>
 
           {/* Image Area with animation */}
-          <div className="w-full md:w-1/2 mt-8 md:mt-0">
+          <div className="w-full md:w-1/2 md:mt-8 mt-0">
             <div className="relative rounded-2xl overflow-hidden border group transition-all duration-500">
               {/* Image overlay for glow effect */}
               <div className="absolute inset-0 bg-gradient-to-tr from-black/60 via-transparent to-lime-400/30 z-10"></div>
