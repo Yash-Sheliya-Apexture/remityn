@@ -327,211 +327,12 @@
 
 // export default FaqSection;
 
-// "use client";
-
-// import React, { useState, useRef, useEffect, useCallback } from "react";
-// import { SlArrowDown } from "react-icons/sl";
-
-// // Define the structure for each FAQ item
-// interface FaqItemData {
-//   id: string;
-//   question: string;
-//   answer: string;
-// }
-
-// // Sample FAQ Data - Replace with your actual data or fetch from an API
-// const faqData: FaqItemData[] = [
-//   {
-//     id: "1",
-//     question: "What is currency exchange and how does it work? ",
-//     answer:
-//       "Currency exchange is the process of converting one currency into another, typically for travel, business, or international transactions. The amount you get depends on current exchange rates, which fluctuate based on global market conditions.",
-//   },
-//   {
-//     id: "2",
-//     question: "How are currency exchange rates calculated? ",
-//     answer:
-//       "Exchange rates are influenced by factors like interest rates, inflation, political stability, and market demand. These rates are constantly changing and are set by the foreign exchange (forex) market. Banks and exchange providers may also add a margin to the rate.",
-//   },
-//   {
-//     id: "3",
-//     question: "Where can I get the best currency exchange rates? ",
-//     answer:
-//       "You can get the best currency exchange rates from licensed online platforms, banks, or trusted currency exchange centers. Avoid airport kiosks and hotels, as they often charge higher fees. Always compare rates and check for hidden charges before exchanging.",
-//   },
-//   {
-//     id: "4",
-//     question: "Is it better to exchange currency before traveling or after? ",
-//     answer:
-//       "It’s usually smarter to exchange some currency before you travel to avoid high fees at airports or foreign ATMs. However, using a travel-friendly debit card abroad can also be convenient if it offers low or no foreign transaction fees.",
-//   },
-//   {
-//     id: "5",
-//     question: "Are there fees involved in currency exchange? ",
-//     answer:
-//       "Many banks and exchange services add hidden charges through transaction fees or marked-up rates. However, some modern platforms offer zero-fee currency exchange with transparent, real-time rates. To get truly fee-free service",
-//   },
-// ];
-
-// // React Functional Component for the FAQ Section using Accordion Pattern
-// const FaqSection: React.FC = () => {
-//   // Initialize state with the ID of the first FAQ item, if faqData is not empty
-//   const [openItemId, setOpenItemId] = useState<string | null>(
-//     faqData.length > 0 ? faqData[0].id : null
-//   );
-//   const contentRefs = useRef<Map<string, HTMLDivElement | null>>(new Map());
-
-//   const handleToggle = useCallback((id: string) => {
-//     setOpenItemId((prevOpenId) => (prevOpenId === id ? null : id));
-//   }, []);
-
-//   useEffect(() => {
-//     // Calculate and set the height for the content div when it's open or when data changes
-//     contentRefs.current.forEach((contentDiv, id) => {
-//       if (contentDiv) {
-//         // Always recalculate scrollHeight in case content changes dynamically
-//         const scrollHeight = contentDiv.scrollHeight;
-//         contentDiv.style.setProperty(
-//           "--radix-accordion-content-height", // Ensure this matches your CSS animation if you use one
-//           `${scrollHeight}px`
-//         );
-
-//         // Additionally, explicitly set height for the initially open item without animation interference
-//         // Note: The animation classes might override this, so ensure your CSS handles the initial state correctly
-//         if (id === openItemId) {
-//           contentDiv.style.height = `${scrollHeight}px`;
-//         } else if (contentDiv.style.height !== "0px") {
-//           // Only set to 0 if not already closed by animation
-//           contentDiv.style.height = "0px";
-//         }
-//       }
-//     });
-//   }, [openItemId, faqData]); // Rerun effect if open item or data changes
-
-//   // Ensure initial height is set correctly for the first item on mount
-//   useEffect(() => {
-//     if (openItemId && contentRefs.current.has(openItemId)) {
-//       const initialOpenContent = contentRefs.current.get(openItemId);
-//       if (initialOpenContent) {
-//         const scrollHeight = initialOpenContent.scrollHeight;
-//         initialOpenContent.style.setProperty(
-//           "--radix-accordion-content-height",
-//           `${scrollHeight}px`
-//         );
-//         initialOpenContent.style.height = `${scrollHeight}px`; // Set initial height directly
-//       }
-//     }
-//     // Set other items' height to 0 initially
-//     contentRefs.current.forEach((contentDiv, id) => {
-//       if (id !== openItemId && contentDiv) {
-//         contentDiv.style.height = "0px";
-//       }
-//     });
-//   }, []); // Run only once on mount
-
-//   return (
-//     <div className="lg:py-10 py-5 bg-[#F2F4F7] dark:bg-background border-b">
-//       <section
-//         className="grid items-start lg:gap-14 gap-10 lg:grid-cols-5 container mx-auto px-4"
-//         id="faq"
-//       >
-//         <div className="flex flex-col gap-5 self-start md:col-span-2">
-//           <h1 className="text-5xl md:text-6xl xl:text-8xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
-//             Quick Currency
-//             <span className="text-primary"> Exchange Help </span>
-//           </h1>
-
-//           <p className="lg:text-lg sm:text-base text-sm text-gray-500 leading-relaxed dark:text-gray-300">
-//             Get quick answers to common currency exchange questions — rates,
-//             fees, timing, and more. Simple, clear, and reliable info at your
-//             fingertips.
-//           </p>
-//         </div>
-
-//         <div className="md:col-span-3 md:row-span-2">
-//           <div className="flex flex-col gap-3" data-orientation="vertical">
-//             {faqData.map((item) => {
-//               const isOpen = openItemId === item.id;
-//               const uniqueTriggerId = `faq-trigger-${item.id}`;
-//               const uniqueContentId = `faq-content-${item.id}`;
-
-//               return (
-//                 <div
-//                   key={item.id}
-//                   data-state={isOpen ? "open" : "closed"}
-//                   data-orientation="vertical"
-//                   className="rounded-xl bg-white md:p-6 p-4 dark:bg-white/5" // Added dark mode bg and shadow
-//                 >
-//                   <h3
-//                     data-orientation="vertical"
-//                     data-state={isOpen ? "open" : "closed"}
-//                     className="flex m-0"
-//                   >
-//                     <button
-//                       type="button"
-//                       aria-controls={uniqueContentId}
-//                       aria-expanded={isOpen}
-//                       data-state={isOpen ? "open" : "closed"}
-//                       data-orientation="vertical"
-//                       id={uniqueTriggerId}
-//                       className="flex w-full cursor-pointer flex-1 gap-2 items-center justify-between text-start lg:text-xl md:text-lg text-base text-mainheading dark:text-gray-100 transition-all font-medium [&[data-state=open]>svg]:rotate-180" // Adjusted text size and dark mode color
-//                       onClick={() => handleToggle(item.id)}
-//                       data-radix-collection-item=""
-//                     >
-//                       {item.question}
-//                       <SlArrowDown
-//                         className={`size-3 shrink-0 text-gray-500 dark:text-gray-300 transition-transform duration-200 ${
-//                           isOpen ? "rotate-180" : ""
-//                         }`}
-//                       />
-//                     </button>
-//                   </h3>
-//                   <div
-//                     ref={(el) => {
-//                       if (el) {
-//                         contentRefs.current.set(item.id, el);
-//                       } else {
-//                         contentRefs.current.delete(item.id);
-//                       }
-//                     }}
-//                     data-state={isOpen ? "open" : "closed"}
-//                     id={uniqueContentId}
-//                     role="region"
-//                     aria-labelledby={uniqueTriggerId}
-//                     data-orientation="vertical"
-//                     // Updated className for smooth transition using height and opacity
-//                     className={`overflow-hidden md:text-base text-sm lg:text-lg leading-relaxed text-[#667085] dark:text-gray-300 transition-all duration-300 ease-in-out ${
-//                       isOpen ? "mt-4" : "mt-0"
-//                     }`}
-//                     style={{
-//                       height: isOpen ? "auto" : "0px", // Start with auto height when open to let content flow naturally
-//                       opacity: isOpen ? 1 : 0,
-//                     }}
-//                   >
-//                     {/* Add padding within the content div itself */}
-//                     <div
-//                       className={`lg:pt-2 pt-2 pb-1 ${
-//                         isOpen ? "visible" : "invisible"
-//                       }`}
-//                     >
-//                       {item.answer}
-//                     </div>
-//                   </div>
-//                 </div>
-//               );
-//             })}
-//           </div>
-//         </div>
-//       </section>
-//     </div>
-//   );
-// };
-
-// export default FaqSection;
-
 "use client";
 
+import Link from "next/link";
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import { FaTelegram } from "react-icons/fa6";
+import { IoLogoWhatsapp } from "react-icons/io";
 import { SlArrowDown } from "react-icons/sl";
 
 // Define the structure for each FAQ item
@@ -545,7 +346,7 @@ interface FaqItemData {
 const faqData: FaqItemData[] = [
   {
     id: "1",
-    question: "What is Apexture? ",
+    question: "What is Apexture?",
     answer:
       "Apexture is a digital banking platform providing powerful APIs for real-time currency exchange, helping financial institutions and websites deliver secure, modern FX services",
   },
@@ -588,16 +389,48 @@ const FaqSection: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    // Calculate and set the height for the content div when it's open or when data changes
     contentRefs.current.forEach((contentDiv, id) => {
       if (contentDiv) {
+        // Always recalculate scrollHeight in case content changes dynamically
+        const scrollHeight = contentDiv.scrollHeight;
+        contentDiv.style.setProperty(
+          "--radix-accordion-content-height", // Ensure this matches your CSS animation if you use one
+          `${scrollHeight}px`
+        );
+
+        // Additionally, explicitly set height for the initially open item without animation interference
+        // Note: The animation classes might override this, so ensure your CSS handles the initial state correctly
         if (id === openItemId) {
-          contentDiv.style.height = `${contentDiv.scrollHeight}px`;
-        } else {
+          contentDiv.style.height = `${scrollHeight}px`;
+        } else if (contentDiv.style.height !== "0px") {
+          // Only set to 0 if not already closed by animation
           contentDiv.style.height = "0px";
         }
       }
     });
-  }, [openItemId]);
+  }, [openItemId, faqData]); // Rerun effect if open item or data changes
+
+  // Ensure initial height is set correctly for the first item on mount
+  useEffect(() => {
+    if (openItemId && contentRefs.current.has(openItemId)) {
+      const initialOpenContent = contentRefs.current.get(openItemId);
+      if (initialOpenContent) {
+        const scrollHeight = initialOpenContent.scrollHeight;
+        initialOpenContent.style.setProperty(
+          "--radix-accordion-content-height",
+          `${scrollHeight}px`
+        );
+        initialOpenContent.style.height = `${scrollHeight}px`; // Set initial height directly
+      }
+    }
+    // Set other items' height to 0 initially
+    contentRefs.current.forEach((contentDiv, id) => {
+      if (id !== openItemId && contentDiv) {
+        contentDiv.style.height = "0px";
+      }
+    });
+  }, []); // Run only once on mount
 
   return (
     <div className="lg:py-10 py-5 bg-[#F2F4F7] dark:bg-background border-b">
@@ -606,12 +439,12 @@ const FaqSection: React.FC = () => {
         id="faq"
       >
         <div className="flex flex-col gap-5 self-start md:col-span-2">
-          <h1 className="text-5xl md:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+          <h1 className="text-4xl md:text-5xl xl:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
             Quick Currency
             <span className="text-primary"> Exchange Help </span>
           </h1>
 
-          <p className="lg:text-lg sm:text-base text-gray-500 leading-relaxed dark:text-gray-300">
+          <p className="lg:text-lg sm:text-base text-sm text-gray-500 leading-relaxed dark:text-gray-300">
             Get quick answers to common currency exchange questions — rates,
             fees, timing, and more. Simple, clear, and reliable info at your
             fingertips.
@@ -630,7 +463,7 @@ const FaqSection: React.FC = () => {
                   key={item.id}
                   data-state={isOpen ? "open" : "closed"}
                   data-orientation="vertical"
-                  className="rounded-xl bg-white md:p-6 p-4 dark:bg-white/5"
+                  className="rounded-xl bg-white md:p-6 p-4 dark:bg-white/5" // Added dark mode bg and shadow
                 >
                   <h3
                     data-orientation="vertical"
@@ -644,7 +477,7 @@ const FaqSection: React.FC = () => {
                       data-state={isOpen ? "open" : "closed"}
                       data-orientation="vertical"
                       id={uniqueTriggerId}
-                      className="flex w-full cursor-pointer flex-1 gap-2 items-center justify-between text-start lg:text-xl md:text-lg text-base text-mainheading dark:text-gray-100 transition-all font-medium [&[data-state=open]>svg]:rotate-180"
+                      className="flex w-full cursor-pointer flex-1 gap-2 items-center justify-between text-start lg:text-xl md:text-lg text-base text-mainheading dark:text-gray-100 transition-all font-medium [&[data-state=open]>svg]:rotate-180" // Adjusted text size and dark mode color
                       onClick={() => handleToggle(item.id)}
                       data-radix-collection-item=""
                     >
@@ -669,18 +502,57 @@ const FaqSection: React.FC = () => {
                     role="region"
                     aria-labelledby={uniqueTriggerId}
                     data-orientation="vertical"
-                    className={`overflow-hidden md:text-base text-sm lg:text-lg leading-relaxed text-[#667085] dark:text-gray-300 transition-height duration-300 ease-in-out ${
+                    // Updated className for smooth transition using height and opacity
+                    className={`overflow-hidden md:text-base text-sm lg:text-lg leading-relaxed text-[#667085] dark:text-gray-300 transition-all duration-300 ease-in-out ${
                       isOpen ? "mt-4" : "mt-0"
                     }`}
                     style={{
-                      height: isOpen ? "auto" : "0px",
+                      height: isOpen ? "auto" : "0px", // Start with auto height when open to let content flow naturally
+                      opacity: isOpen ? 1 : 0,
                     }}
                   >
-                    <div className="lg:pt-2 pt-2 pb-1">{item.answer}</div>
+                    {/* Add padding within the content div itself */}
+                    <div
+                      className={`lg:pt-2 pt-2 pb-1 ${
+                        isOpen ? "visible" : "invisible"
+                      }`}
+                    >
+                      {item.answer}
+                    </div>
                   </div>
                 </div>
               );
             })}
+          </div>
+        </div>
+
+        <div className="md:col-span-2 md:self-end sticky top-0">
+          <div className="flex flex-col items-start gap-5 rounded-2xl bg-white dark:bg-white/5 p-5 md:p-8">
+            <div>
+              <h3 className="text-2xl font-semibold text-gray-900 dark:text-gray-300">
+                More questions?
+              </h3>
+              <p className="mt-1 text-lg font-normal text-gray-500 dark:text-gray-300">
+                We're always ready to help you out.
+              </p>
+            </div>
+            <div className="flex w-full flex-wrap items-center justify-between gap-4 md:flex-nowrap">
+              <div className="flex gap-2.5">
+                <a href="">
+                  <IoLogoWhatsapp className="size-8 text-[#25D366]" />
+                </a>
+                <a href="">
+                  <FaTelegram className="size-8 text-[#3390EC]" />
+                </a>
+              </div>
+              <Link
+                href="/faqs"
+                className="px-4 py-1.5
+                 rounded-full font-medium text-mainheading dark:text-primary hover:bg-gray/5 dark:bg-secondary transition-colors duration-300"
+              >
+                Read more FAQs
+              </Link>
+            </div>
           </div>
         </div>
       </section>

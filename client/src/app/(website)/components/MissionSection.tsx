@@ -58,7 +58,7 @@ import { FaStar } from "react-icons/fa6";
 // Define the component using React's FunctionComponent type (React.FC)
 const MobileDownloadSection: React.FC = () => {
   return (
-    <div className="py-10 bg-[#F2F4F7] dark:bg-background">
+    <div className="lg:py-10 py-5 bg-[#F2F4F7] dark:bg-background">
       <section
         className="flex flex-col gap-8 md:gap-6 lg:flex-row lg:items-center lg:justify-between container mx-auto px-4"
         id="mobile-download"
@@ -111,14 +111,14 @@ const MobileDownloadSection: React.FC = () => {
             </div>
 
             {/* Star rating and user count */}
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               <div className="flex">
                 {/* SVG Star Icons (remain the same) */}
-                <FaStar className="size-5 text-yellow-500 dark:text-white" />
-                <FaStar className="size-5 text-yellow-500 dark:text-white" />
-                <FaStar className="size-5 text-yellow-500 dark:text-white" />
-                <FaStar className="size-5 text-yellow-500 dark:text-white" />
-                <FaStarHalfAlt className="size-5 text-yellow-500 dark:text-white" />
+                <FaStar className="lg:size-5 size-3 text-yellow-500 dark:text-white" />
+                <FaStar className="lg:size-5 size-3 text-yellow-500 dark:text-white" />
+                <FaStar className="lg:size-5 size-3 text-yellow-500 dark:text-white" />
+                <FaStar className="lg:size-5 size-3 text-yellow-500 dark:text-white" />
+                <FaStarHalfAlt className="lg:size-5 size-3 text-yellow-500 dark:text-white" />
               </div>
               <p className="text-xs font-normal text-mainheading dark:text-white capitalize">
                 Join +500 happy users
@@ -128,7 +128,7 @@ const MobileDownloadSection: React.FC = () => {
 
           {/* Text Content: Heading and Paragraph */}
           <div className="flex flex-col md:gap-5">
-            <h1 className="text-5xl md:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
               Send Money to India
               <span className="text-primary"> with Wise </span>
             </h1>
@@ -150,7 +150,7 @@ const MobileDownloadSection: React.FC = () => {
               width={500}
               height={500}
               alt="Picture of the author"
-              className="z-10 flex-shrink-0 md:h-[550px] md:w-[312px]"
+              className="z-10 flex-shrink-0 md:h-[550px] md:w-[500px]"
               style={{ color: "transparent" }}
             />
             <Image

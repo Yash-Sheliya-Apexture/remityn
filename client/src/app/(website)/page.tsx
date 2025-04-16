@@ -14,9 +14,8 @@ export default function Home() {
       <HeroSection />
       <ProtectionSection />
       <SecuritySection />
-      {/* <FlagSection /> */}
       <SocialTrustSection />
-      <StepSendmoney />
+      {/* <StepSendmoney /> */}
       <MissionSection />
       <Principles />
       <TransferMoney />

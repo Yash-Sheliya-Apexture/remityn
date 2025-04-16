@@ -19,34 +19,35 @@ import { FiGlobe } from "react-icons/fi";
 
 const FeaturesSection: React.FC = () => {
   return (
-    <div className="bg-[#F2F4F7] dark:bg-background">
+    <div className="bg-[#F2F4F7] lg:py-10 py-5 dark:bg-background">
       <section
-        className="flex flex-col gap-16 pb-10 container mx-auto px-4"
+        className="flex flex-col lg:gap-10 gap-8 container mx-auto px-4"
         id="features"
       >
         {/* Heading Section */}
-        <div className="flex flex-col gap-5 mt-10">
-          <h1 className="text-5xl md:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+        <div className="flex flex-col gap-5">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
             Security, Speed,
             <span className="text-primary"> Savings & Support </span>
           </h1>
         </div>
 
         {/* Features Grid */}
-        <div className="grid gap-y-6 px-3 md:grid-cols-2 md:grid-rows-6 md:gap-x-8 md:gap-y-8 md:px-0">
+        <div className="grid gap-y-6 lg:grid-cols-2 md:grid-rows-6 md:gap-x-8 md:gap-y-8">
 
+          
           {/* Feature Card 1: Security (Large) */}
           <div className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-white dark:bg-white/5">
             <Image
-              src="/assets/images/feature1.svg"
+              src="/assets/images/colorful-illustration-colorful-padlock-with-colorful-leaves-flowers_1122354-15513.jpg"
               width={500}
               height={500}
               alt="Picture of the author"
-              className="w-full object-cover md:h-80 h-80"
+              className="w-full object-cover md:h-96 h-60"
             />
 
-            <div className="flex flex-col gap-3 p-6">
-              <h3 className="text-xl font-medium text-mainheading dark:text-white md:text-2xl">
+            <div className="flex flex-col gap-3 p-4">
+              <h3 className="text-lg font-medium text-mainheading dark:text-white md:text-2xl">
                 <span className="text-primary font-bold">Secure</span> Every
                 Step of the Way
               </h3>
@@ -60,7 +61,7 @@ const FeaturesSection: React.FC = () => {
 
           {/* Feature Card 2: Speed (Small) */}
           <div className="row-span-2 flex flex-col gap-6 overflow-hidden rounded-3xl bg-white dark:bg-white/5 p-6">
-            <MdSend className="size-10 text-mainheading  dark:text-primary" />
+            <MdSend className="size-10 text-mainheading dark:text-primary" />
             <div className="flex flex-col gap-3">
               <h3 className="text-xl font-medium text-mainheading dark:text-white md:text-2xl">
                 <span>
@@ -78,14 +79,14 @@ const FeaturesSection: React.FC = () => {
           {/* Feature Card 3: Support (Large) */}
           <div className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-white dark:bg-white/5">
             <Image
-              src="/assets/images/feature2.svg"
+              src="/assets/images/friendly-customer.jpg"
               width={500}
               height={500}
               alt="Picture of the author"
               className="w-full object-cover sm:h-60 lg:h-96"
             />
 
-            <div className="flex flex-col gap-3 p-6">
+            <div className="flex flex-col gap-3 p-4">
               <h3 className="text-xl font-medium text-mainheading dark:text-white md:text-2xl">
                 <span>
                   Need{" "}
@@ -127,7 +128,7 @@ const FeaturesSection: React.FC = () => {
               className="w-full object-cover sm:h-60 lg:h-96"
             />
 
-            <div className="flex flex-col gap-3 p-6">
+            <div className="flex flex-col gap-3 p-4">
               <h3 className="text-xl font-medium text-mainheading dark:text-white md:text-2xl">
                 <span>
                   Stay ahead with live &nbsp;
@@ -174,7 +175,7 @@ const FeaturesSection: React.FC = () => {
               className="w-full object-cover sm:h-60 lg:h-96"
             />
 
-            <div className="flex flex-col gap-3 p-6">
+            <div className="flex flex-col gap-3 p-4">
               <h3 className="text-xl font-medium text-mainheading dark:text-white md:text-2xl">
                 <span>
                   Exchange &nbsp;
@@ -199,7 +200,7 @@ const FeaturesSection: React.FC = () => {
               <h3 className="text-xl font-medium text-mainheading dark:text-white md:text-2xl">
                 <span>
                   <span className="text-primary font-bold">
-                    {" "}
+                    {" "} 
                     24/7 Customer{" "}
                   </span>{" "}
                   Support
@@ -213,7 +214,6 @@ const FeaturesSection: React.FC = () => {
               </p>
             </div>
           </div>
-
         </div>
       </section>
     </div>
