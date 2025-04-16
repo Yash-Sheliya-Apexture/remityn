@@ -4795,7 +4795,7 @@ const TransactionsPage: React.FC = () => {
       <section className="Transaction-Page pb-8 md:pb-10">
         <div className="container mx-auto">
           {/* Header and Actions */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky top-0 z-10 bg-white dark:bg-background">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky lg:top-28 top-20 z-10 bg-white dark:bg-background">
             <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
               Transactions
             </h1>

@@ -522,7 +522,7 @@ const PaymentSuccessPage = () => {
                 {/* Action Button */}
                 <button
                     onClick={handleGotIt}
-                    className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-10 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-10 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={isLoading}
                 >
                     Got it

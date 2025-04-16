@@ -1238,6 +1238,9 @@ const PaymentEditModal: React.FC<PaymentEditModalProps> = ({
       {isEditModalOpen && selectedPaymentForEdit && (
         <motion.div
           className="fixed top-0 left-0 w-full h-full bg-black/50 dark:bg-white/30 z-50 flex justify-center sm:items-center items-end"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           aria-labelledby="edit-payment-modal-title"
           role="dialog"
           aria-modal="true"
@@ -1252,7 +1255,10 @@ const PaymentEditModal: React.FC<PaymentEditModalProps> = ({
           >
             {/* Header */}
             <div className="p-6 rounded-t-2xl flex items-center justify-between border-b ">
-              <h2 id="edit-payment-modal-title" className="text-xl font-bold flex items-center text-neutral-900 dark:text-white">
+              <h2
+                id="edit-payment-modal-title"
+                className="text-xl font-bold flex items-center text-neutral-900 dark:text-white"
+              >
                 <CreditCard className="mr-2 size-6 text-primary" />
                 Edit Payment Status
               </h2>
@@ -1283,8 +1289,9 @@ const PaymentEditModal: React.FC<PaymentEditModalProps> = ({
                 {/* Informational message if status is final */}
                 {isFinalStatus && (
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 italic flex items-center gap-1">
-                     <AlertCircle size={14} />
-                    This payment has reached a final status and cannot be changed.
+                    <AlertCircle size={14} />
+                    This payment has reached a final status and cannot be
+                    changed.
                   </p>
                 )}
               </div>

@@ -41,14 +41,14 @@ const TransactionUpdateActions: React.FC<TransactionUpdateActionsProps> = ({
                          <button
                             onClick={onOpenCancelModal}
                             disabled={isSubmitting}
-                            className="order-2 sm:order-1 px-4 py-2 bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary rounded-full transition-all duration-75 ease-linear"
+                            className="order-2 sm:order-1 px-4 py-2 bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary rounded-full transition-all duration-75 ease-linear cursor-pointer"
                          >
                              Cancel Payment
                          </button>
                          <button
                             onClick={onConfirmPayment}
                             disabled={isSubmitting}
-                            className="order-1 sm:order-2 px-4 py-2 w-full sm:w-auto bg-primary text-neutral-900 hover:bg-primaryhover rounded-full transition-all duration-75 ease-linear"
+                            className="order-1 sm:order-2 px-4 py-2 w-full sm:w-auto bg-primary text-neutral-900 hover:bg-primaryhover rounded-full transition-all duration-75 ease-linear cursor-pointer"
                          >
                             {isSubmitting ? 'Processing...' : "Yes, I've Paid"}
                          </button>
@@ -63,7 +63,7 @@ const TransactionUpdateActions: React.FC<TransactionUpdateActionsProps> = ({
                     <button
                         onClick={onOpenCancelModal}
                         disabled={isSubmitting}
-                        className="text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-full transition-all duration-75 ease-linear"
+                        className="text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-full transition-all duration-75 ease-linear cursor-pointer"
                     >
                         {isSubmitting ? 'Cancelling...' : `Cancel ${isPayment ? 'Payment' : 'Transfer'}`}
                     </button>

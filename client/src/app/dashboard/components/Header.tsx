@@ -329,7 +329,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   const userInitials = getInitials(user?.fullName);
 
   return (
-    <header className="sticky top-0 bg-background z-60">
+    <header className="sticky top-0 bg-background z-20">
       <div className="max-w-5xl mx-auto px-4">
         <div className="flex justify-between items-center lg:h-28 h-20">
           <div className="flex justify-center items-center gap-4"> {/* Added items-center */}

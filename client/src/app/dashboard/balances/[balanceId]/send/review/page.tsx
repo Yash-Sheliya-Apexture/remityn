@@ -2137,33 +2137,48 @@ const ReviewSendPage = () => {
   if (error && !isSubmitting) {
     return (
       <div className="min-h-screen">
-         {/* Make sure DashboardHeaderProps includes totalSteps */}
-        <DashboardHeader
-          title="Send Money"
-          currentStep={3}
-          steps={steps}
-        />
-        <div className="container mx-auto max-w-2xl px-4 py-8">
-          <div className="bg-white dark:bg-background rounded-xl p-8 text-center border border-red-200 dark:border-red-800">
-            <FiAlertTriangle className="text-red-500 text-4xl mx-auto mb-4" />
-            <h2 className="text-xl font-medium mb-4 text-neutral-900 dark:text-white">Something went wrong</h2>
-            <p className="text-red-600 dark:text-red-400 mb-6">{error}</p>
-            {/* Only show go back link if we have enough info */}
-            {(balanceId && recipientId) ? (
-                 <Link
-                     href={getPreviousStepLink()}
-                     className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
-                 >
-                     <FiArrowLeft className="mr-2" /> Go back and try again
-                 </Link>
-             ) : (
-                 <Link
-                     href="/dashboard/balances" // Fallback link
-                     className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
-                 >
-                     <FiArrowLeft className="mr-2" /> Return to Balances
-                 </Link>
-             )}
+        {/* Make sure DashboardHeaderProps includes totalSteps */}
+        <DashboardHeader title="Send Money" currentStep={3} steps={steps} />
+        <div className="container mx-auto max-w-2xl">
+          {/* Card container with subtle tint and border */}
+          <div className="bg-red-50 dark:bg-red-900/20 rounded-xl sm:p-8 p-4 text-center border border-red-200 dark:border-red-700/50">
+            {/* Icon */}
+            <FiAlertTriangle
+              className="text-red-500 dark:text-red-400 text-4xl mx-auto mb-4"
+              aria-hidden="true"
+            />
+
+            <h2 className="text-xl font-semibold mb-3 text-neutral-800 dark:text-neutral-100">
+              Something went wrong
+            </h2>
+
+            <p className="text-red-700 dark:text-red-300 mb-8 text-base">
+              {error || "An unexpected error occurred. Please try again."}
+            </p>
+
+            {balanceId && recipientId ? (
+              <Link
+                href={getPreviousStepLink()}
+                className="inline-flex items-center justify-center bg-red-600 text-white hover:bg-red-700 font-medium rounded-full px-6 py-3 h-12.5 text-center  cursor-pointer transition-all duration-75 ease-linear" // Adjusted button color to match theme
+              >
+                <FiArrowLeft
+                  className="-ml-1 mr-2 h-5 w-5"
+                  aria-hidden="true"
+                />
+                Go back and try again
+              </Link>
+            ) : (
+              <Link
+                href="/dashboard/balances" // Fallback link
+                className="inline-flex items-center justify-center bg-red-600 text-white hover:bg-red-700 font-medium rounded-full px-6 py-3 h-12.5 text-center  cursor-pointer transition-all duration-75 ease-linear" // Neutral button for fallback
+              >
+                <FiArrowLeft
+                  className="-ml-1 mr-2 h-5 w-5"
+                  aria-hidden="true"
+                />
+                Return to Balances
+              </Link>
+            )}
           </div>
         </div>
       </div>
