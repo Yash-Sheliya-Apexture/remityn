@@ -6041,7 +6041,7 @@ const BalanceDetailPage = () => {
   const router = useRouter();
   const { balanceId } = params;
   const { token, user, loading: authLoading } = useAuth(); // Get user, token, and auth loading state
-  const kycStatus: KycStatus | undefined = user?.kycStatus; // Get KYC status from user object
+  const kycStatus: KycStatus | undefined = user?.kyc.status; // Get KYC status from user object
 
   // --- Data Fetching using Custom Hook ---
   // Ensure useBalanceDetailData returns a type compatible with ExtendedBalanceDetail
