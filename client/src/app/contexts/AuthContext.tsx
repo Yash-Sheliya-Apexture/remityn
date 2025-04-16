@@ -5787,7 +5787,6 @@
 
 
 // frontend/src/app/contexts/AuthContext.js
-// frontend/src/app/contexts/AuthContext.tsx (Assuming conversion to TypeScript)
 "use client";
 
 import React, {
