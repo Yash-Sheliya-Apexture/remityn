@@ -48,7 +48,6 @@
 // //     // Separate state for files as they cannot be stringified in localStorage
 // //     const [files, setFiles] = useState<{ idFrontFile: File | null, idBackFile: File | null }>({ idFrontFile: null, idBackFile: null });
 
-
 // //     // Load initial data from localStorage on mount
 // //     useEffect(() => {
 // //         try {
@@ -85,7 +84,6 @@
 // //          // Note: This won't persist the File object itself, just signals its presence/absence
 // //         setKycDataInternal(prevData => ({ ...prevData, [type]: file ? { name: file.name, type: file.type } : null }));
 // //     }, []);
-
 
 // //     const goToStep = useCallback((step: KycStep) => {
 // //         // Add logic here if needed (e.g., check if previous steps are complete)
@@ -127,7 +125,6 @@
 // //         idBackFile: files.idBackFile,
 // //     }), [kycData, files]);
 
-
 // //     const value = {
 // //         currentStep,
 // //         kycData: combinedKycData, // Provide combined data
@@ -149,8 +146,6 @@
 // //     }
 // //     return context;
 // // };.
-
-
 
 // // frontend/src/app/kyc/context/KycContext.tsx
 // 'use client';
@@ -382,7 +377,7 @@
 //     isInitialized: boolean;
 //     isLoadingStatus: boolean;
 //     isSubmitting: boolean; // Added state for submission process
-    
+
 //     // Actions / Setters
 //     setKycData: (data: Partial<KycProgressData>) => void;
 //     setFile: (type: keyof KycFileState, file: File | null) => void;
@@ -716,7 +711,6 @@
 //     }
 //     return context;
 // };
-
 
 // // frontend/src/app/kyc/context/KycContext.tsx
 // 'use client';
@@ -1079,8 +1073,6 @@
 //     return context;
 // };
 
-
-
 // // frontend/src/app/kyc/context/KycContext.tsx
 // 'use client';
 
@@ -1216,7 +1208,6 @@
 //     const [isSubmitting, setIsSubmitting] = useState(false); // KYC submission in progress?
 //     // Local state for submission errors shown potentially outside Review page
 //     const [submissionError, setSubmissionError] = useState<string | null>(null);
-
 
 //     // --- Actions ---
 
@@ -1458,7 +1449,6 @@
 //         }
 //     }, [kycData, fileState, goToStep]); // Dependencies
 
-
 //     // --- Effects ---
 
 //     // Effect 1: Initial Load - Fetch status and load persisted data
@@ -1522,7 +1512,6 @@
 
 //     }, [backendStatus, isInitialized, isLoadingStatus, pathname, router]);
 
-
 //     // --- Memoized Context Value ---
 //     const value = useMemo<KycContextType>(() => ({
 //         currentUiStepId, kycData, fileState, backendStatus, rejectionReason, isInitialized, isLoadingStatus, isSubmitting,
@@ -1531,7 +1520,6 @@
 //         currentUiStepId, kycData, fileState, backendStatus, rejectionReason, isInitialized, isLoadingStatus, isSubmitting,
 //         setKycData, setFile, updateCurrentUiStepId, goToStep, nextStep, prevStep, fetchKycStatus, resetKycProgress, submitKycData
 //     ]);
-
 
 //     // --- Render Provider ---
 
@@ -1593,7 +1581,6 @@
 //     }
 //     return context;
 // };
-
 
 // // frontend/src/app/kyc/context/KycContext.tsx
 // 'use client';
@@ -1731,7 +1718,6 @@
 //     const [isSubmitting, setIsSubmitting] = useState(false); // KYC submission in progress?
 //     const [submissionError, setSubmissionError] = useState<string | null>(null); // For displaying submission errors
 
-
 //     // --- Actions ---
 
 //     /** Fetches KYC status from the backend and updates state */
@@ -1775,7 +1761,6 @@
 //         }
 //     }, [backendStatus]); // Dependency on backendStatus
 
-
 //     /** Loads KYC progress data from localStorage */
 //     const loadPersistedData = useCallback(() => {
 //         // Only load if status allows starting/retrying
@@ -1809,7 +1794,6 @@
 //         }
 //     }, [backendStatus]); // Depend on backendStatus
 
-
 //     /** Updates a portion of the KYC data and persists to localStorage */
 //     const setKycData = useCallback((data: Partial<KycProgressData>) => {
 //         setKycDataInternal(prevData => {
@@ -1831,13 +1815,11 @@
 //         });
 //     }, [backendStatus]); // Depend on status
 
-
 //     /** Updates the state for a specific file input */
 //     const setFile = useCallback((type: keyof KycFileState, file: File | null) => {
 //         console.log(`KycContext: Setting file state for ${type}`, file?.name);
 //         setFileState(prevFiles => ({ ...prevFiles, [type]: file }));
 //     }, []);
-
 
 //     /** Updates the logical UI step ID (used by pages to identify themselves) */
 //     const updateCurrentUiStepId = useCallback((stepId: KycStepId) => {
@@ -1848,7 +1830,6 @@
 //             }
 //         });
 //     }, [currentUiStepId]); // Depend on current value
-
 
 //     /** Navigates the user to a specific KYC page path */
 //     const goToStep = useCallback((stepId: KycStepId) => {
@@ -1865,7 +1846,6 @@
 //         }
 //     }, [router, pathname]); // Depend on router and current path
 
-
 //     /** Navigates to the next step in the form sequence */
 //     const nextStep = useCallback(() => {
 //         const currentFormStep = currentUiStepId as Exclude<KycStepId, 'start' | 'pending' | 'rejected' | 'complete' | 'error'>;
@@ -1880,7 +1860,6 @@
 //             console.warn(`KycContext: Could not determine next step from ${currentUiStepId}`);
 //         }
 //     }, [currentUiStepId, goToStep]);
-
 
 //     /** Navigates to the previous step in the form sequence */
 //     const prevStep = useCallback(() => {
@@ -1898,7 +1877,6 @@
 //             goToStep('start');
 //         }
 //     }, [currentUiStepId, goToStep]);
-
 
 //     /** Resets KYC progress (state and localStorage) and optionally navigates */
 //     const resetKycProgress = useCallback((navigateToStart = true) => {
@@ -1931,7 +1909,6 @@
 //         // although the start page should ideally handle its own status check on load.
 //         // setTimeout(() => fetchKycStatus(true), 100); // isRetry=true ensures loading state is set
 //     }, [goToStep]); // Only depends on goToStep for navigation
-
 
 //     /** Validates and submits the collected KYC data and files to the backend */
 //     const submitKycData = useCallback(async (): Promise<boolean> => {
@@ -2008,7 +1985,6 @@
 //             startTransition(() => { setIsSubmitting(false); }); // Ensure state update is transitioned
 //         }
 //     }, [kycData, fileState, goToStep]); // Dependencies
-
 
 //     // --- Effects ---
 
@@ -2096,7 +2072,6 @@
 
 //     }, [backendStatus, isInitialized, isLoadingStatus, pathname, router]); // Dependencies
 
-
 //     // --- Memoized Context Value ---
 //     const value = useMemo<KycContextType>(() => ({
 //         currentUiStepId, kycData, fileState, backendStatus, rejectionReason, isInitialized, isLoadingStatus, isSubmitting,
@@ -2105,7 +2080,6 @@
 //         currentUiStepId, kycData, fileState, backendStatus, rejectionReason, isInitialized, isLoadingStatus, isSubmitting,
 //         setKycData, setFile, updateCurrentUiStepId, goToStep, nextStep, prevStep, fetchKycStatus, resetKycProgress, submitKycData
 //     ]);
-
 
 //     // --- Render Provider ---
 
@@ -2167,7 +2141,6 @@
 //     }
 //     return context;
 // };
-
 
 // // frontend/src/app/kyc/context/KycContext.tsx
 // 'use client';
@@ -2981,7 +2954,6 @@
 //         }
 //     }, [user, kycData, fileState, goToStep, router, pathname]); // Depend on user, data, files, navigation
 
-
 //     // --- Effects ---
 
 //     /** Effect 1: Initialization - Handles auth changes and triggers initial KYC fetch */
@@ -3026,7 +2998,6 @@
 //             });
 
 //     }, [authLoading, user, fetchKycStatus, loadPersistedData]); // Dependencies trigger re-init on auth change
-
 
 //     /** Effect 2: Redirection Logic - Ensures user is on the correct page based on status */
 //     useEffect(() => {
@@ -3098,7 +3069,6 @@
 
 //     }, [authLoading, user, backendStatus, isInitialized, isLoadingStatus, pathname, router]); // Depend on all relevant states
 
-
 //     // --- Memoized Context Value ---
 //     const value = useMemo<KycContextType>(() => ({
 //         currentUiStepId, kycData, fileState, backendStatus, rejectionReason,
@@ -3160,7 +3130,6 @@
 //     // This covers the brief period after auth completes but before KYC initialization finishes
 //     // or if none of the above conditions are met (should be unlikely).
 //     return <LoadingOverlay message="Initializing KYC..." />;
-
 
 // };
 
@@ -3644,7 +3613,6 @@
 //         // ----- CHANGE 8: Add refetchUser to dependencies -----
 //     }, [user, kycData, fileState, goToStep, router, pathname, refetchUser]); // Added refetchUser
 
-
 //     // --- Effects ---
 
 //     /** Effect 1: Initialization - Handles auth changes and triggers initial KYC fetch */
@@ -3686,7 +3654,6 @@
 //             });
 
 //     }, [authLoading, user, fetchKycStatus, loadPersistedData]); // Dependencies trigger re-init on auth change
-
 
 //     /** Effect 2: Redirection Logic - Ensures user is on the correct page based on status */
 //     useEffect(() => {
@@ -3773,7 +3740,6 @@
 
 //    }, [authLoading, user, backendStatus, isInitialized, isLoadingStatus, pathname, router, currentUiStepId, updateCurrentUiStepId]);
 
-
 //     // --- Memoized Context Value ---
 //     // ----- CHANGE 9: Ensure callbacks with new dependency are in value -----
 //     const value = useMemo<KycContextType>(() => ({
@@ -3830,7 +3796,6 @@
 //     }
 //     return context;
 // };
-
 
 // // frontend/src/contexts/KycContext.tsx
 // 'use client';
@@ -4342,7 +4307,6 @@
 //         }
 //     }, [user, kycData, fileState, goToStep, router, pathname, refetchUser]);
 
-
 //     // --- Effects ---
 
 //     /** Effect 1: Initialization - Handles auth changes and triggers initial KYC fetch */
@@ -4391,7 +4355,6 @@
 //             });
 
 //     }, [authLoading, user, fetchKycStatus, loadPersistedData]); // Dependencies trigger re-init
-
 
 //     /** Effect 2: Redirection Logic - Ensures user is on the correct page based on status */
 //     useEffect(() => {
@@ -4490,7 +4453,6 @@
 
 //    }, [authLoading, user, backendStatus, isInitialized, isLoadingStatus, pathname, router, currentUiStepId, updateCurrentUiStepId]);
 
-
 //     // --- Memoized Context Value ---
 //     const value = useMemo<KycContextType>(() => ({
 //         currentUiStepId, kycData, fileState, backendStatus, rejectionReason,
@@ -4579,98 +4541,1894 @@
 //     return context;
 // };
 
+// 'use client';
+
+// import React, {
+//     createContext,
+//     useState,
+//     useContext,
+//     useEffect,
+//     ReactNode,
+//     useCallback,
+//     useMemo,
+//     startTransition,
+//     useRef
+// } from 'react';
+// import { useRouter, usePathname } from 'next/navigation';
+// import kycService, {
+//     type KycMobile,
+//     type KycSubmissionPayload,
+//     type KycStatusResponse,
+//     type KycDetails,
+//     type KycStatus,
+//     type SalaryRange,
+//     type IdType,
+// } from '@/app/services/kyc'; // Ensure path is correct
+// import { useAuth } from '@/app/contexts/AuthContext'; // Ensure path is correct
+// import { Loader2 } from 'lucide-react';
+
+// //--------------------------------------------------
+// // Type Definitions (Context Specific)
+// //--------------------------------------------------
+
+// /** Possible UI states or steps within the KYC flow. */
+// export type KycStepId =
+//     | 'start'
+//     | 'personal'
+//     | 'details'
+//     | 'identity'
+//     | 'upload'
+//     | 'review'
+//     | 'pending'
+//     | 'rejected'
+//     | 'verified' // Usually means complete and redirects away
+//     | 'complete' // Explicit completion page/state
+//     | 'error'
+//     | 'unauthenticated'; // State when user is not logged in
+
+// /** Combined status including backend states and UI loading/error states. */
+// export type KycCombinedStatus = KycStatus | 'loading' | 'error' | 'unauthenticated';
+
+// /** Data collected during the KYC process, stored temporarily. */
+// export interface KycProgressData {
+//     firstName?: string;
+//     lastName?: string;
+//     dateOfBirth?: string; // Store as ISO string (YYYY-MM-DD)
+//     mobile?: KycMobile;
+//     occupation?: string;
+//     salaryRange?: SalaryRange | null;
+//     nationality?: string;
+//     idType?: IdType | null; // Allow null for initial state
+//     idNumber?: string;
+//     idIssueDate?: string; // Store as ISO string (YYYY-MM-DD)
+//     idExpiryDate?: string; // Store as ISO string (YYYY-MM-DD)
+// }
+
+// /** State of uploaded files. */
+// export interface KycFileState {
+//     idFrontFile: File | null;
+//     idBackFile: File | null;
+// }
+
+// /** The shape of the KYC context provided to consumers. */
+// export interface KycContextType {
+//     currentUiStepId: KycStepId;
+//     kycData: KycProgressData;
+//     fileState: KycFileState;
+//     backendStatus: KycCombinedStatus;
+//     rejectionReason: string | null;
+//     isInitialized: boolean; // True if KYC context has run its initial auth check and setup
+//     isAuthLoading: boolean; // True if the authentication context is loading
+//     isLoadingStatus: boolean; // True if fetching KYC status from backend
+//     isSubmitting: boolean; // True if KYC data is being submitted to backend
+//     setKycData: (data: Partial<KycProgressData>) => void;
+//     setFile: (type: keyof KycFileState, file: File | null) => void;
+//     updateCurrentUiStepId: (stepId: KycStepId) => void;
+//     goToStep: (stepId: KycStepId) => void;
+//     nextStep: () => void;
+//     prevStep: () => void;
+//     fetchKycStatus: (isRetry?: boolean) => Promise<void>;
+//     resetKycProgress: (navigateToStart?: boolean) => void;
+//     submitKycData: () => Promise<boolean>; // Returns true on success, false on failure
+//     startKycFlow: () => void; // Action to initiate the flow from start/skipped/rejected
+// }
+
+// //--------------------------------------------------
+// // Context Definition & Constants
+// //--------------------------------------------------
+
+// const KycContext = createContext<KycContextType | undefined>(undefined);
+// const KYC_PROGRESS_STORAGE_KEY = 'kycProgressData_v1'; // Key for localStorage
+
+// /** Order of the main form steps. */
+// export const formStepOrder: Exclude<KycStepId, 'start' | 'pending' | 'rejected' | 'complete' | 'error' | 'unauthenticated' | 'verified'>[] = [
+//     'personal', 'details', 'identity', 'upload', 'review'
+// ];
+
+// /** Mapping of final backend statuses to their corresponding page paths. */
+// const statusPageMap: Partial<Record<KycStatus, string>> = {
+//     pending: '/kyc/pending',
+//     rejected: '/kyc/rejected',
+//     verified: '/kyc/complete', // 'verified' status directs to the completion page
+// };
+
+// // Pre-calculated paths for easier checks
+// const formStepPaths = formStepOrder.map(step => `/kyc/${step}`);
+// const statusPagePaths = Object.values(statusPageMap);
+// const startPagePath = '/kyc/start';
+// const completePagePath = '/kyc/complete'; // Explicit complete page
+// const errorPagePath = '/kyc/error';
+// const loginPagePath = '/auth/login'; // Define login path
+
+// //--------------------------------------------------
+// // Loading Component (Internal)
+// //--------------------------------------------------
+
+// /** A simple loading overlay component. */
+// const LoadingOverlay: React.FC<{ message: string }> = ({ message }) => (
+//     <div className="fixed inset-0 z-[200] flex justify-center items-center bg-background/80 backdrop-blur-sm" aria-live="polite" aria-busy="true" aria-label={message}>
+//         <div className="text-center p-6 bg-card rounded-lg shadow-lg border">
+//             <Loader2 className="h-10 w-10 animate-spin text-primary mb-3 mx-auto" />
+//             <p className="text-lg font-semibold text-muted-foreground">{message}</p>
+//         </div>
+//     </div>
+// );
+
+// //--------------------------------------------------
+// // Provider Component
+// //--------------------------------------------------
+
+// interface KycProviderProps { children: ReactNode; }
+
+// export const KycProvider = ({ children }: KycProviderProps) => {
+//     const router = useRouter();
+//     const pathname = usePathname();
+//     const { user, loading: authLoading, refetchUser } = useAuth();
+
+//     // --- State ---
+//     const [currentUiStepId, setCurrentUiStepId] = useState<KycStepId>('start');
+//     const [kycData, setKycDataInternal] = useState<KycProgressData>({});
+//     const [fileState, setFileState] = useState<KycFileState>({ idFrontFile: null, idBackFile: null });
+//     const [backendStatus, setBackendStatus] = useState<KycCombinedStatus>(authLoading ? 'loading' : 'unauthenticated');
+//     const [rejectionReason, setRejectionReason] = useState<string | null>(null);
+//     const [isInitialized, setIsInitialized] = useState(false); // Has the KYC context run its init?
+//     const [isLoadingStatus, setIsLoadingStatus] = useState(true); // Loading KYC status?
+//     const [isSubmitting, setIsSubmitting] = useState(false); // Submitting to backend?
+//     const [submissionError, setSubmissionError] = useState<string | null>(null);
+//     const isFetchingRef = useRef(false); // Prevent simultaneous fetches
+
+//     // --- Actions ---
+
+//     /** Fetches KYC status from the backend and updates state. Requires user to be logged in. */
+//     const fetchKycStatus = useCallback(async (isRetry = false) => {
+//         if (!user) {
+//             // console.log("KycContext: fetchKycStatus skipped - no user.");
+//             startTransition(() => {
+//                  if (backendStatus !== 'unauthenticated') setBackendStatus('unauthenticated');
+//                  setIsLoadingStatus(false);
+//             });
+//             return;
+//         }
+//         // Prevent simultaneous fetches unless it's an explicit retry
+//         if (isFetchingRef.current && !isRetry) {
+//              // console.log("KycContext: fetchKycStatus skipped - fetch already in progress.");
+//              return;
+//         }
+
+//         isFetchingRef.current = true;
+//         startTransition(() => {
+//             setIsLoadingStatus(true);
+//             // Show loading feedback immediately if not already loading/initialized correctly
+//             if (backendStatus !== 'loading') {
+//                 setBackendStatus('loading');
+//             }
+//         });
+
+//         try {
+//             const statusData = await kycService.getMyKycStatus();
+//             // console.log("KycContext: Received status:", statusData.status, "Reason:", statusData.rejectionReason);
+//             // Use startTransition for batching state updates related to the fetch result
+//             startTransition(() => {
+//                 setBackendStatus(statusData.status);
+//                 setRejectionReason(statusData.rejectionReason || null);
+//             });
+//         } catch (error: any) {
+//             console.error("KycContext: Error fetching KYC status:", error);
+//             startTransition(() => {
+//                 setBackendStatus('error');
+//                 setRejectionReason(null);
+//             });
+//         } finally {
+//             startTransition(() => setIsLoadingStatus(false));
+//             isFetchingRef.current = false;
+//             // console.log("KycContext: fetchKycStatus finished.");
+//         }
+//     }, [user, backendStatus]); // Dependency on backendStatus helps manage the 'loading' state correctly
+
+//     /** Loads KYC progress data from localStorage if status allows. Requires user to be logged in. */
+//     const loadPersistedData = useCallback(() => {
+//         if (!user) {
+//             if (localStorage.getItem(KYC_PROGRESS_STORAGE_KEY)) localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+//             startTransition(() => setKycDataInternal({}));
+//             return;
+//         }
+//         // Allow loading data if status indicates user can start/resume (not_started, rejected, skipped)
+//         if (['not_started', 'rejected', 'skipped'].includes(backendStatus as string)) {
+//             try {
+//                 const storedData = localStorage.getItem(KYC_PROGRESS_STORAGE_KEY);
+//                 if (storedData) {
+//                     const parsedData: KycProgressData = JSON.parse(storedData);
+//                     // Basic validation of parsed data
+//                     if (typeof parsedData === 'object' && parsedData !== null) {
+//                         startTransition(() => setKycDataInternal(parsedData));
+//                         // console.log("KycContext: Loaded persisted KYC data.");
+//                     } else {
+//                         localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+//                         startTransition(() => setKycDataInternal({}));
+//                     }
+//                 } else {
+//                     startTransition(() => setKycDataInternal({})); // Ensure state is empty if nothing stored
+//                 }
+//             } catch (error) {
+//                 console.error("KycContext: Error loading persisted data:", error);
+//                 localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+//                 startTransition(() => setKycDataInternal({}));
+//             }
+//         } else {
+//              // Clear persisted data if status is terminal or in progress (pending, verified, error, loading, unauth)
+//             if (localStorage.getItem(KYC_PROGRESS_STORAGE_KEY)) {
+//                 localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+//                 // console.log("KycContext: Cleared persisted data due to status:", backendStatus);
+//             }
+//             // Ensure local data state is also cleared if it shouldn't persist
+//             if (Object.keys(kycData).length > 0) {
+//                 startTransition(() => setKycDataInternal({}));
+//             }
+//         }
+//     }, [user, backendStatus, kycData]); // Added kycData dependency to clear state if needed
+
+//     /** Updates KYC data in state and persists to localStorage if status allows. Requires user to be logged in. */
+//     const setKycData = useCallback((data: Partial<KycProgressData>) => {
+//         if (!user) {
+//             console.warn("KycContext: Attempted to setKycData while unauthenticated.");
+//             return;
+//         }
+//         // Update state optimistically within a transition
+//         startTransition(() => {
+//             setKycDataInternal(prevData => {
+//                 const newData = { ...prevData, ...data };
+//                 // Only save progress if user can potentially resume (not started, rejected, skipped)
+//                 if (['not_started', 'rejected', 'skipped'].includes(backendStatus as string)) {
+//                     try {
+//                         localStorage.setItem(KYC_PROGRESS_STORAGE_KEY, JSON.stringify(newData));
+//                     } catch (error) {
+//                         console.error("KycContext: Error saving progress:", error);
+//                     }
+//                 } else {
+//                     // Clean up localStorage if progress shouldn't be saved for the current status
+//                     if (localStorage.getItem(KYC_PROGRESS_STORAGE_KEY)) {
+//                         localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+//                     }
+//                 }
+//                 return newData;
+//             });
+//         });
+//     }, [user, backendStatus]);
+
+//     /** Updates file state. */
+//     const setFile = useCallback((type: keyof KycFileState, file: File | null) => {
+//         startTransition(() => { // Wrap file state update in transition as well
+//             setFileState(prevFiles => ({ ...prevFiles, [type]: file }));
+//         });
+//     }, []);
+
+//     /** Updates the logical UI step ID in the context state. */
+//     const updateCurrentUiStepId = useCallback((stepId: KycStepId) => {
+//         startTransition(() => {
+//             if (currentUiStepId !== stepId) {
+//                  // console.log(`KycContext: Updating UI step ID from ${currentUiStepId} to ${stepId}`);
+//                  setCurrentUiStepId(stepId);
+//             }
+//         });
+//     }, [currentUiStepId]);
+
+//     /** Navigates the user to a specific KYC step using the router. Requires user to be logged in for most steps. */
+//     const goToStep = useCallback((stepId: KycStepId) => {
+//         // Check auth status immediately
+//         if (!user && stepId !== 'unauthenticated') {
+//             // Redirect to login if trying to access any KYC page while logged out
+//             if (!pathname.startsWith(loginPagePath)) {
+//                  console.log(`KycContext: goToStep(${stepId}) blocked (unauthenticated), redirecting to login.`);
+//                  // Determine redirect target intelligently
+//                  const redirectTarget = (pathname === '/' || pathname.startsWith('/auth/') || !pathname.startsWith('/kyc/')) ? startPagePath : pathname;
+//                 router.replace(`${loginPagePath}?redirect=${encodeURIComponent(redirectTarget)}`);
+//             }
+//             return;
+//         }
+
+//         // Determine the target path
+//         const path = stepId === 'unauthenticated' ? loginPagePath : `/kyc/${stepId}`;
+
+//         // Navigate only if the path is different
+//         if (pathname !== path) {
+//              console.log(`KycContext: Navigating to step ${stepId} (Path: ${path})`);
+//              // Use replace for terminal/entry/status steps to avoid history buildup
+//              if (['pending', 'rejected', 'complete', 'start', 'error', 'unauthenticated'].includes(stepId)) {
+//                 router.replace(path);
+//             } else {
+//                 router.push(path); // Use push for form steps
+//             }
+//             // Update UI step immediately after initiating navigation (using transition)
+//             updateCurrentUiStepId(stepId);
+//         } else {
+//             // If already on the correct path, ensure UI step ID matches (often redundant but safe)
+//             if (currentUiStepId !== stepId) {
+//                 updateCurrentUiStepId(stepId);
+//             }
+//         }
+//     }, [router, pathname, user, updateCurrentUiStepId, currentUiStepId]); // Added currentUiStepId
+
+//     /** Navigates to the next step in the defined form order. */
+//     const nextStep = useCallback(() => {
+//         const currentFormStepIndex = formStepOrder.indexOf(currentUiStepId as any); // Find index in form steps
+//         if (currentFormStepIndex >= 0 && currentFormStepIndex < formStepOrder.length - 1) {
+//             goToStep(formStepOrder[currentFormStepIndex + 1]);
+//         } else if (currentUiStepId === 'review') {
+//             console.warn("KycContext: nextStep called on review step. Consider calling submitKycData.");
+//             // Potentially trigger submit automatically, or rely on user clicking submit button
+//         } else {
+//             console.warn(`KycContext: Could not determine next step from ${currentUiStepId}`);
+//         }
+//     }, [currentUiStepId, goToStep]);
+
+//     /** Navigates to the previous step in the defined form order, or back to start. */
+//     const prevStep = useCallback(() => {
+//         const currentFormStepIndex = formStepOrder.indexOf(currentUiStepId as any); // Find index in form steps
+//         if (currentFormStepIndex > 0) { // If it's a form step other than the first
+//             goToStep(formStepOrder[currentFormStepIndex - 1]);
+//         } else if (currentFormStepIndex === 0) { // If it's the first form step ('personal')
+//             goToStep('start'); // Go back to the start page
+//         } else {
+//              // If somehow called from a non-form step (e.g., review, start), go to start as a safe fallback
+//              console.warn(`KycContext: prevStep called from non-form step ${currentUiStepId}. Navigating to start.`);
+//              goToStep('start');
+//         }
+//     }, [currentUiStepId, goToStep]);
+
+//     /** Resets the KYC progress state and clears localStorage. Optionally navigates to the start page. */
+//     const resetKycProgress = useCallback(async (navigateToStart = true) => { // Make async for refetch
+//         console.log("KycContext: Resetting KYC progress.");
+//         startTransition(() => {
+//             setKycDataInternal({});
+//             setFileState({ idFrontFile: null, idBackFile: null });
+//             setSubmissionError(null);
+//             // Reset backend status LOCALLY to 'not_started' to allow restarting the flow.
+//             // AuthContext will hold the *actual* backend status after refetch.
+//             setBackendStatus('not_started');
+//             setCurrentUiStepId('start'); // Reset UI step to start
+//             setRejectionReason(null); // Clear local rejection reason display
+//             setIsLoadingStatus(false); // Stop loading indicators if any
+//             setIsSubmitting(false);
+//         });
+//         localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+
+//         // --- CRITICAL: Trigger AuthContext refetch ---
+//         // This ensures AuthContext reflects the latest *actual* status from the backend (e.g., still 'rejected'),
+//         // while this KycContext allows the user to restart the flow from 'start'.
+//         console.log("KycContext: Triggering AuthContext refetch after KYC reset.");
+//         try {
+//             await refetchUser();
+//             console.log("KycContext: AuthContext refetch completed after reset.");
+//         } catch (err) {
+//             console.error("KycContext: Error refetching user after reset:", err);
+//         }
+//         // --- End Refetch ---
+
+//         if (navigateToStart) {
+//             goToStep('start');
+//         }
+//     }, [goToStep, refetchUser]); // Added refetchUser dependency
+
+//      /** Initiates the KYC flow from start/skipped/rejected state */
+//      const startKycFlow = useCallback(async () => { // Make async for refetch
+//         console.log("KycContext: Starting KYC flow (from start/skipped/rejected).");
+//         startTransition(() => {
+//             // Clear any previous progress data and files
+//             setKycDataInternal({});
+//             setFileState({ idFrontFile: null, idBackFile: null });
+//             setSubmissionError(null);
+//             // Set local backend status to not_started to allow form progression
+//             setBackendStatus('not_started');
+//             // Set the UI step to the *first form step* immediately
+//             setCurrentUiStepId('personal');
+//             // Clear local rejection reason display for the new flow
+//             setRejectionReason(null);
+//             setIsLoadingStatus(false);
+//             setIsSubmitting(false);
+//         });
+//         localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+
+//         // --- Trigger AuthContext refetch ---
+//         // Good practice to ensure AuthContext is current, although the main purpose
+//         // here is navigating the user and resetting local state for the form flow.
+//         console.log("KycContext: Triggering AuthContext refetch after starting KYC flow.");
+//         try {
+//             await refetchUser();
+//              console.log("KycContext: AuthContext refetch completed after starting flow.");
+//         } catch (err) {
+//             console.error("KycContext: Error refetching user after start flow:", err);
+//         }
+//         // --- End Refetch ---
+
+//         // Navigate to the first form step explicitly
+//         goToStep('personal');
+//     }, [goToStep, refetchUser]); // Added refetchUser dependency
+
+//     /** Validates data and submits the KYC information to the backend. Requires user to be logged in. */
+//     const submitKycData = useCallback(async (): Promise<boolean> => {
+//         if (!user) {
+//             console.error("KycContext: Cannot submit KYC data, user is not authenticated.");
+//             setSubmissionError("Authentication required to submit KYC.");
+//             goToStep('unauthenticated'); // Redirect to login via context helper
+//             return false;
+//         }
+
+//         console.log("KycContext: Attempting to submit KYC data...");
+//         setSubmissionError(null); // Clear previous errors
+//         startTransition(() => { setIsSubmitting(true); });
+
+//         const { idFrontFile, idBackFile } = fileState;
+
+//         // --- Pre-submission Validation ---
+//         let firstErrorStep: KycStepId = 'review'; // Default error location
+//         const missingFieldsLabels: string[] = [];
+
+//         // Check required data fields (align with KycSubmissionPayload)
+//         const requiredFields: (keyof KycSubmissionPayload)[] = [
+//             'firstName', 'lastName', 'dateOfBirth', 'mobile', 'nationality',
+//             'idType', 'idNumber', 'idIssueDate', 'idExpiryDate'
+//         ];
+
+//         for (const field of requiredFields) {
+//              let isMissing = false;
+//              let fieldLabel = field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+
+//              if (field === 'mobile') {
+//                  isMissing = !kycData.mobile || !kycData.mobile.countryCode || !kycData.mobile.number;
+//                  fieldLabel = 'Mobile Number';
+//                  if (isMissing && firstErrorStep === 'review') firstErrorStep = 'personal';
+//              } else if (field === 'idType') {
+//                  isMissing = !kycData.idType;
+//                  fieldLabel = 'ID Type';
+//                   if (isMissing && ['review', 'personal', 'details'].includes(firstErrorStep)) firstErrorStep = 'identity';
+//              } else {
+//                  const value = kycData[field as keyof KycProgressData];
+//                  isMissing = value === undefined || value === null || (typeof value === 'string' && value.trim() === '');
+//                  // Determine step for missing field
+//                  if (isMissing) {
+//                     if (['firstName', 'lastName', 'dateOfBirth'].includes(field) && firstErrorStep === 'review') firstErrorStep = 'personal';
+//                     else if (['nationality'].includes(field) && ['review', 'personal'].includes(firstErrorStep)) firstErrorStep = 'details'; // Occupation/Salary optional
+//                     else if (['idNumber', 'idIssueDate', 'idExpiryDate'].includes(field) && ['review', 'personal', 'details'].includes(firstErrorStep)) firstErrorStep = 'identity';
+//                  }
+//              }
+//              if (isMissing) missingFieldsLabels.push(fieldLabel);
+//         }
+
+//         // Check required files
+//         if (!idFrontFile) {
+//             missingFieldsLabels.push('Front ID Document');
+//             if (['review', 'personal', 'details', 'identity'].includes(firstErrorStep)) firstErrorStep = 'upload';
+//         }
+//         const requiresBackId = kycData.idType === 'resident_permit'; // Only require back for specific types
+//         if (requiresBackId && !idBackFile) {
+//             missingFieldsLabels.push('Back ID Document');
+//             if (['review', 'personal', 'details', 'identity'].includes(firstErrorStep)) firstErrorStep = 'upload';
+//         }
+
+//         if (missingFieldsLabels.length > 0) {
+//              const errorMsg = `Submission Error: Missing required information: ${missingFieldsLabels.join(', ')}. Please go back and complete these fields.`;
+//              console.error(errorMsg, `Directing to step: ${firstErrorStep}`);
+//              setSubmissionError(errorMsg);
+//              goToStep(firstErrorStep); // Navigate to the first step with missing data
+//              startTransition(() => { setIsSubmitting(false); });
+//              return false;
+//         }
+//         // --- End Validation ---
+
+//         // Construct Payload (Ensure fields exist due to validation above)
+//         const payload: KycSubmissionPayload = {
+//             firstName: kycData.firstName!, lastName: kycData.lastName!, dateOfBirth: kycData.dateOfBirth!,
+//             mobile: kycData.mobile!, nationality: kycData.nationality!, idType: kycData.idType!,
+//             idNumber: kycData.idNumber!, idIssueDate: kycData.idIssueDate!, idExpiryDate: kycData.idExpiryDate!,
+//             // Optional fields: pass undefined/null as appropriate
+//             occupation: kycData.occupation || undefined,
+//             salaryRange: kycData.salaryRange || null,
+//         };
+
+//         // --- API Call via Service ---
+//         try {
+//             const response = await kycService.submitKyc(payload, idFrontFile!, idBackFile); // Pass files (idFrontFile is validated)
+//             console.log("KycContext: Submission successful, backend status:", response.kyc?.status);
+
+//             const newBackendStatus = response.kyc?.status || 'pending'; // Default to pending if status missing in response
+
+//             startTransition(() => {
+//                 setBackendStatus(newBackendStatus);
+//                 setRejectionReason(response.kyc?.rejectionReason || null);
+//                 setKycDataInternal({}); // Clear local form progress data
+//                 setFileState({ idFrontFile: null, idBackFile: null }); // Clear local files
+//             });
+//             localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY); // Clear persisted data
+
+//             // --- CRITICAL: Refetch Auth user data AFTER successful submission ---
+//             console.log("KycContext: Triggering AuthContext refetch after successful KYC submission.");
+//             await refetchUser(); // Update AuthContext with the new status from backend
+//             console.log("KycContext: AuthContext refetch completed after submission.");
+//             // --- End Refetch ---
+
+//             // Let Effect 2 handle navigation based on the new 'backendStatus'
+//             startTransition(() => { setIsSubmitting(false); });
+//             return true; // Indicate success
+
+//         } catch (error: any) {
+//             console.error("KycContext: Submission failed:", error);
+//             const errorMsg = error.message || "An unexpected error occurred during submission."; // Use error message from service
+//             setSubmissionError(errorMsg);
+//             // Stay on review page to show the error
+//             startTransition(() => { setIsSubmitting(false); });
+//             return false; // Indicate failure
+//         }
+//     }, [user, kycData, fileState, goToStep, refetchUser]); // Dependencies
+
+//     // --- Effects ---
+
+//     /** Effect 1: Initialization - Handles auth changes and triggers initial KYC fetch */
+//     useEffect(() => {
+//         // console.log(`KycContext: Init Effect - Auth Loading: ${authLoading}`);
+//         if (authLoading) {
+//             startTransition(() => {
+//                 setIsInitialized(false);
+//                 setIsLoadingStatus(true); // Show loading while auth loads
+//                 if (backendStatus !== 'loading') setBackendStatus('loading');
+//             });
+//             return;
+//         }
+
+//         if (!user) {
+//             // User is confirmed not logged in
+//             // console.log("KycContext: Init Effect - User not authenticated.");
+//             startTransition(() => {
+//                 if (backendStatus !== 'unauthenticated') setBackendStatus('unauthenticated');
+//                 setIsInitialized(true);
+//                 setIsLoadingStatus(false);
+//                 setKycDataInternal({});
+//                 setFileState({ idFrontFile: null, idBackFile: null });
+//                 if (localStorage.getItem(KYC_PROGRESS_STORAGE_KEY)) localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+//             });
+//             return;
+//         }
+
+//         // User is logged in, proceed with KYC status fetch ONLY IF NOT ALREADY INITIALIZED
+//         if (!isInitialized) {
+//             console.log("KycContext: Init Effect - User authenticated. Fetching initial KYC status.");
+//             startTransition(() => {
+//                  setIsLoadingStatus(true); // Start loading KYC status
+//                  if (backendStatus !== 'loading') setBackendStatus('loading'); // Ensure loading state
+//             });
+
+//             fetchKycStatus()
+//                 .then(() => {
+//                     // Load persisted data *after* fetch completes and status is known
+//                     // This happens within startTransition inside loadPersistedData
+//                     loadPersistedData();
+//                 })
+//                 .catch(err => console.error("KycContext: Error in initial fetch/load sequence:", err))
+//                 .finally(() => {
+//                     startTransition(() => setIsInitialized(true)); // Mark as initialized only after fetch+load attempt
+//                     // console.log("KycContext: Init Effect - Sequence complete.");
+//                 });
+//         } else {
+//              // If already initialized but user/auth changes, potentially re-fetch?
+//              // For now, rely on explicit calls or full page refresh.
+//              // console.log("KycContext: Init Effect - Already initialized, skipping initial fetch.");
+//              // Ensure loading status is false if auth is done and we're initialized
+//              if (isLoadingStatus) startTransition(() => setIsLoadingStatus(false));
+//         }
+
+//     // fetchKycStatus and loadPersistedData are stable callbacks due to useCallback
+//     }, [authLoading, user, fetchKycStatus, loadPersistedData, isInitialized, backendStatus, isLoadingStatus]);
+
+//     /** Effect 2: Redirection Logic - Ensures user is on the correct page based on status */
+//     useEffect(() => {
+//         // Wait for initialization and auth/status loading to complete before attempting redirection
+//         if (authLoading || !isInitialized || isLoadingStatus) {
+//              // console.log(`KycContext: Redirection Check Deferred - AuthLoading: ${authLoading}, Initialized: ${isInitialized}, KYCStatusLoading: ${isLoadingStatus}, BackendStatus: ${backendStatus}`);
+//             return;
+//         }
+
+//         // Current path details
+//         const isOnFormPage = formStepPaths.includes(pathname);
+//         const isOnStartPage = pathname === startPagePath;
+//         const isOnErrorPage = pathname === errorPagePath;
+//         const isOnCompletePage = pathname === completePagePath;
+//         const isOnLoginPage = pathname.startsWith(loginPagePath);
+//         const isOnAnyKycPage = pathname.startsWith('/kyc/');
+
+//         // --- Handle Unauthenticated State ---
+//         if (backendStatus === 'unauthenticated') {
+//             // If on any KYC page (except potentially error) and not logged in, redirect to login
+//             if (isOnAnyKycPage && !isOnLoginPage && !isOnErrorPage) {
+//                console.log(`KycContext: (Redirect Effect) Backend status unauthenticated (Path: ${pathname}). Ensuring redirect to login.`);
+//                const redirectTarget = (pathname === '/' || pathname.startsWith('/auth/')) ? startPagePath : pathname;
+//                router.replace(`${loginPagePath}?redirect=${encodeURIComponent(redirectTarget)}`);
+//                if (currentUiStepId !== 'unauthenticated') updateCurrentUiStepId('unauthenticated');
+//            } else if (!isOnLoginPage && currentUiStepId !== 'unauthenticated') {
+//                // Ensure UI step is correct even if not redirecting (e.g., already on login)
+//                updateCurrentUiStepId('unauthenticated');
+//            }
+//            return; // Stop processing for unauthenticated state
+//        }
+
+//         // --- KYC Status Based Redirection (User is Authenticated) ---
+//         const targetStatusPath = statusPageMap[backendStatus as KycStatus]; // Path for pending/rejected/verified
+//         const isOnTargetStatusPage = targetStatusPath && pathname === targetStatusPath;
+//         const isOnAnyStatusPage = statusPagePaths.includes(pathname); // includes pending, rejected, complete paths
+
+//         // console.log(`KycContext: Redirection Check - Path: ${pathname}, Status: ${backendStatus}, TargetStatusPath: ${targetStatusPath}, CurrentUIStep: ${currentUiStepId}`);
+
+//         // 1. Error State -> Error Page
+//         if (backendStatus === 'error') {
+//             if (!isOnErrorPage) {
+//                 console.log(`KycContext: Status is error. Redirecting to error page.`);
+//                 router.replace(errorPagePath);
+//                 updateCurrentUiStepId('error');
+//             } else if (currentUiStepId !== 'error') {
+//                  updateCurrentUiStepId('error'); // Sync UI step if already on error page
+//             }
+//             return; // Stop processing
+//         }
+
+//         // 2. Final/Status States (Verified, Pending, Rejected) -> Go TO Specific Status/Complete Page
+//         if (targetStatusPath) { // Covers pending, rejected, verified (maps to /kyc/complete)
+//             const finalPath = backendStatus === 'verified' ? completePagePath : targetStatusPath;
+//             const isOnFinalPath = pathname === finalPath;
+
+//             if (!isOnFinalPath) {
+//                 console.log(`KycContext: Status is ${backendStatus}. Redirecting to designated page: ${finalPath}`);
+//                 router.replace(finalPath);
+//                 // Update UI step to match the target *after* initiating navigation
+//                 const targetUiStep = backendStatus === 'verified' ? 'complete' : (backendStatus as KycStepId);
+//                 updateCurrentUiStepId(targetUiStep);
+//             } else {
+//                  // If already on the correct final path, ensure UI step matches
+//                  const targetUiStep = backendStatus === 'verified' ? 'complete' : (backendStatus as KycStepId);
+//                  if (currentUiStepId !== targetUiStep) updateCurrentUiStepId(targetUiStep);
+//             }
+//             return; // Stop processing
+//         }
+
+//         // 3. Not Started / Skipped State -> Allow on Start or Form pages. Redirect AWAY from Status/Complete/Error pages.
+//         if (backendStatus === 'not_started' || backendStatus === 'skipped') {
+//             // If user is on a page they shouldn't be (pending, rejected, complete, error)
+//             if (isOnAnyStatusPage || isOnErrorPage || isOnCompletePage) {
+//                 console.log(`KycContext: Status is ${backendStatus} (Path: ${pathname}, which is a status/error/complete page). Redirecting TO start page.`);
+//                 router.replace(startPagePath);
+//                 updateCurrentUiStepId('start');
+//                 return; // Stop processing
+//             }
+
+//            // If on a form page, ensure the UI step matches the current path
+//            const pathSegments = pathname.split('/');
+//            const potentialStepId = pathSegments[pathSegments.length - 1] as KycStepId;
+//            if (isOnFormPage && formStepOrder.includes(potentialStepId as any)) {
+//                if (currentUiStepId !== potentialStepId) {
+//                     // console.log(`KycContext: Syncing UI step on form page. Path: ${pathname}, New Step: ${potentialStepId}`);
+//                     updateCurrentUiStepId(potentialStepId);
+//                }
+//            } else if (isOnStartPage && currentUiStepId !== 'start') {
+//                 // If on start page, ensure UI step is 'start'
+//                  // console.log(`KycContext: Syncing UI step on start page.`);
+//                 updateCurrentUiStepId('start');
+//            } else if (!isOnStartPage && !isOnFormPage && currentUiStepId !== 'start') {
+//                // If somehow not on start or form pages, default UI step to 'start' for safety
+//                // This might happen briefly during navigation or if URL is manually entered.
+//                // console.log(`KycContext: Non-form/start page with resumable status. Setting UI step to 'start'.`);
+//                updateCurrentUiStepId('start');
+//            }
+//            // Allow staying on form pages or start page
+//            return; // Stop processing
+//        }
+
+//          // 4. Fallback (Should be rare if all statuses are handled) -> Go TO Start Page
+//          // Only redirect if definitely *not* on a known valid page for the current context
+//          if (!isOnLoginPage && !isOnStartPage && !isOnFormPage && !isOnAnyStatusPage && !isOnCompletePage && !isOnErrorPage) {
+//             console.warn(`KycContext: Reached fallback redirection. Status: ${backendStatus}, Path: ${pathname}. Redirecting to Start.`);
+//             router.replace(startPagePath);
+//             updateCurrentUiStepId('start');
+//        }
+
+//    // Ensure all state and router dependencies that influence the logic are included.
+//    }, [authLoading, user, backendStatus, isInitialized, isLoadingStatus, pathname, router, currentUiStepId, updateCurrentUiStepId, goToStep]);
+
+//     // --- Memoized Context Value ---
+//     const value = useMemo<KycContextType>(() => ({
+//         currentUiStepId, kycData, fileState, backendStatus, rejectionReason,
+//         isInitialized,
+//         isAuthLoading: authLoading,
+//         isLoadingStatus,
+//         isSubmitting,
+//         setKycData, setFile, updateCurrentUiStepId, goToStep, nextStep, prevStep, startKycFlow,
+//         fetchKycStatus, resetKycProgress, submitKycData
+//     }), [
+//         currentUiStepId, kycData, fileState, backendStatus, rejectionReason,
+//         isInitialized, authLoading, isLoadingStatus, isSubmitting,
+//         setKycData, setFile, updateCurrentUiStepId, goToStep, nextStep, prevStep, startKycFlow,
+//         fetchKycStatus, resetKycProgress, submitKycData // Ensure all functions are dependencies
+//     ]);
+
+//     // --- Render Provider ---
+
+//      // 1. Show Auth Loading Overlay FIRST
+//      if (authLoading) {
+//          return <LoadingOverlay message="Loading Session..." />;
+//      }
+
+//      // 2. Show Initializing Overlay if KYC context is initializing (after auth is confirmed done)
+//      if (!isInitialized && (user || backendStatus === 'unauthenticated')) {
+//          return <LoadingOverlay message="Initializing KYC..." />;
+//      }
+
+//      // 3. Show KYC Status Loading Overlay if explicitly fetching status
+//      // (and user exists, init done, not already on login page)
+//      if (user && isInitialized && isLoadingStatus && !pathname.startsWith(loginPagePath)) {
+//          return <LoadingOverlay message="Loading KYC Status..." />;
+//      }
+
+//      // 4. Show Error Loading Overlay if backend status is error
+//      // (and user exists, init done, not already on error page)
+//       if (user && isInitialized && backendStatus === 'error' && pathname !== errorPagePath) {
+//          return <LoadingOverlay message="Error Loading KYC..." />;
+//      }
+
+//      // 5. Render Children when ready
+//      // Ready if: Auth not loading AND Initialized AND (unauthenticated OR user exists and not loading/error)
+//      const isReadyToRenderChildren = !authLoading && isInitialized &&
+//         (backendStatus === 'unauthenticated' || (user && !isLoadingStatus && backendStatus !== 'error'));
+
+//      if (isReadyToRenderChildren || pathname.startsWith(loginPagePath) ) { // Allow rendering login page even if context isn't fully stable
+//          return (
+//              <KycContext.Provider value={value}>
+//                  {/* Submission Loading Overlay */}
+//                  {isSubmitting && (
+//                      <div className="fixed inset-0 z-[210] flex justify-center items-center bg-black/60 backdrop-blur-sm" role="alertdialog" aria-live="assertive" aria-busy="true" aria-label="Submitting KYC information">
+//                          <div className="text-center text-white p-6 bg-card rounded-lg shadow-lg border border-primary">
+//                              <Loader2 className="h-10 w-10 animate-spin text-primary mb-3 mx-auto" />
+//                              <p className="text-xl font-semibold text-foreground">Submitting Information...</p>
+//                              <p className="text-sm text-muted-foreground">Please wait...</p>
+//                          </div>
+//                      </div>
+//                  )}
+//                  {children}
+//              </KycContext.Provider>
+//          );
+//      }
+
+//      // Fallback: If none of the above, show initializing as safety net.
+//      // console.log("KycContext: Reached fallback render state."); // For debugging
+//      return <LoadingOverlay message="Initializing..." />;
+// };
+
+// //--------------------------------------------------
+// // Hook for Consuming Context
+// //--------------------------------------------------
+
+// export const useKyc = (): KycContextType => {
+//     const context = useContext(KycContext);
+//     if (context === undefined) {
+//         throw new Error('useKyc must be used within a KycProvider');
+//     }
+//     return context;
+// };
+
+// "use client";
+
+// import React, {
+//   createContext,
+//   useState,
+//   useContext,
+//   useEffect,
+//   ReactNode,
+//   useCallback,
+//   useMemo,
+//   startTransition,
+//   useRef,
+// } from "react";
+// import { useRouter, usePathname } from "next/navigation";
+// import kycService, {
+//   type KycMobile,
+//   type KycSubmissionPayload,
+//   type KycStatusResponse,
+//   type KycDetails,
+//   type KycStatus,
+//   type SalaryRange,
+//   type IdType,
+// } from "@/app/services/kyc"; // Ensure path is correct
+// import { useAuth } from "@/app/contexts/AuthContext"; // Ensure path is correct
+// import { Loader2 } from "lucide-react";
+
+// //--------------------------------------------------
+// // Type Definitions (Context Specific)
+// //--------------------------------------------------
+
+// /** Possible UI states or steps within the KYC flow. */
+// export type KycStepId =
+//   | "start"
+//   | "personal"
+//   | "details"
+//   | "identity"
+//   | "upload"
+//   | "review"
+//   | "pending"
+//   | "rejected"
+//   | "verified" // Usually means complete and redirects away
+//   | "complete" // Explicit completion page/state
+//   | "error"
+//   | "unauthenticated"; // State when user is not logged in
+
+// /** Combined status including backend states and UI loading/error states. */
+// export type KycCombinedStatus =
+//   | KycStatus
+//   | "loading"
+//   | "error"
+//   | "unauthenticated";
+
+// /** Data collected during the KYC process, stored temporarily. */
+// export interface KycProgressData {
+//   firstName?: string;
+//   lastName?: string;
+//   dateOfBirth?: string; // Store as ISO string (YYYY-MM-DD)
+//   mobile?: KycMobile;
+//   occupation?: string;
+//   salaryRange?: SalaryRange | null;
+//   nationality?: string;
+//   idType?: IdType | null; // Allow null for initial state
+//   idNumber?: string;
+//   idIssueDate?: string; // Store as ISO string (YYYY-MM-DD)
+//   idExpiryDate?: string; // Store as ISO string (YYYY-MM-DD)
+// }
+
+// /** State of uploaded files. */
+// export interface KycFileState {
+//   idFrontFile: File | null;
+//   idBackFile: File | null;
+// }
+
+// /** The shape of the KYC context provided to consumers. */
+// export interface KycContextType {
+//   currentUiStepId: KycStepId;
+//   kycData: KycProgressData;
+//   fileState: KycFileState;
+//   // Note: 'backendStatus' here reflects the status *as known by KycContext*,
+//   // primarily for controlling the KYC flow pages. For general status display
+//   // (like dashboard banner), rely on AuthContext's user.kycStatus.
+//   backendStatus: KycCombinedStatus;
+//   rejectionReason: string | null;
+//   isInitialized: boolean; // True if KYC context has run its initial auth check and setup
+//   isAuthLoading: boolean; // True if the authentication context is loading
+//   isLoadingStatus: boolean; // True if fetching KYC status from backend for this context
+//   isSubmitting: boolean; // True if KYC data is being submitted to backend
+//   submissionError: string | null; // Specific error during submission attempt
+//   setKycData: (data: Partial<KycProgressData>) => void;
+//   setFile: (type: keyof KycFileState, file: File | null) => void;
+//   updateCurrentUiStepId: (stepId: KycStepId) => void;
+//   goToStep: (stepId: KycStepId) => void;
+//   nextStep: () => void;
+//   prevStep: () => void;
+//   fetchKycStatus: (isRetry?: boolean) => Promise<void>;
+//   resetKycProgress: (navigateToStart?: boolean) => Promise<void>; // Made async
+//   submitKycData: () => Promise<boolean>; // Returns true on success, false on failure
+//   startKycFlow: () => Promise<void>; // Action to initiate the flow from start/skipped/rejected, made async
+// }
+
+// //--------------------------------------------------
+// // Context Definition & Constants
+// //--------------------------------------------------
+
+// const KycContext = createContext<KycContextType | undefined>(undefined);
+// const KYC_PROGRESS_STORAGE_KEY = "kycProgressData_v1"; // Key for localStorage
+
+// /** Order of the main form steps. */
+// export const formStepOrder: Exclude<
+//   KycStepId,
+//   | "start"
+//   | "pending"
+//   | "rejected"
+//   | "complete"
+//   | "error"
+//   | "unauthenticated"
+//   | "verified"
+// >[] = ["personal", "details", "identity", "upload", "review"];
+
+// /** Mapping of final backend statuses to their corresponding page paths within the KYC flow. */
+// const statusPageMap: Partial<Record<KycStatus, string>> = {
+//   pending: "/kyc/pending",
+//   rejected: "/kyc/rejected",
+//   verified: "/kyc/complete", // 'verified' status directs to the completion page
+// };
+
+// // Pre-calculated paths for easier checks
+// const formStepPaths = formStepOrder.map((step) => `/kyc/${step}`);
+// const statusPagePaths = Object.values(statusPageMap);
+// const startPagePath = "/kyc/start";
+// const completePagePath = "/kyc/complete"; // Explicit complete page
+// const errorPagePath = "/kyc/error";
+// const loginPagePath = "/auth/login"; // Define login path
+// const kycBasePrefix = "/kyc/";
+
+// //--------------------------------------------------
+// // Loading Component (Internal)
+// //--------------------------------------------------
+
+// /** A simple loading overlay component. */
+// const LoadingOverlay: React.FC<{ message: string }> = ({ message }) => (
+//   <div
+//     className="fixed inset-0 z-[200] flex justify-center items-center bg-background/80 backdrop-blur-sm"
+//     aria-live="polite"
+//     aria-busy="true"
+//     aria-label={message}
+//   >
+//     <div className="text-center p-6 bg-card rounded-lg shadow-lg border">
+//       <Loader2 className="h-10 w-10 animate-spin text-primary mb-3 mx-auto" />
+//       <p className="text-lg font-semibold text-muted-foreground">{message}</p>
+//     </div>
+//   </div>
+// );
+
+// //--------------------------------------------------
+// // Provider Component
+// //--------------------------------------------------
+
+// interface KycProviderProps {
+//   children: ReactNode;
+// }
+
+// export const KycProvider = ({ children }: KycProviderProps) => {
+//   const router = useRouter();
+//   const pathname = usePathname();
+//   const { user, loading: authLoading, refetchUser } = useAuth();
+
+//   // --- State ---
+//   const [currentUiStepId, setCurrentUiStepId] = useState<KycStepId>("start");
+//   const [kycData, setKycDataInternal] = useState<KycProgressData>({});
+//   const [fileState, setFileState] = useState<KycFileState>({
+//     idFrontFile: null,
+//     idBackFile: null,
+//   });
+//   // This status is specific to the KycContext's operation and flow control
+//   const [backendStatus, setBackendStatus] = useState<KycCombinedStatus>(
+//     authLoading ? "loading" : "unauthenticated"
+//   );
+//   const [rejectionReason, setRejectionReason] = useState<string | null>(null);
+//   const [isInitialized, setIsInitialized] = useState(false); // Has the KYC context run its init?
+//   const [isLoadingStatus, setIsLoadingStatus] = useState(true); // Loading KYC status *for this context*?
+//   const [isSubmitting, setIsSubmitting] = useState(false); // Submitting to backend?
+//   const [submissionError, setSubmissionError] = useState<string | null>(null);
+//   const isFetchingRef = useRef(false); // Prevent simultaneous fetches
+
+//   // --- Actions ---
+
+//   /** Fetches KYC status from the backend and updates *this context's* state. Requires user to be logged in. */
+//   const fetchKycStatus = useCallback(
+//     async (isRetry = false) => {
+//       if (!user) {
+//         // console.log("KycContext: fetchKycStatus skipped - no user.");
+//         startTransition(() => {
+//           if (backendStatus !== "unauthenticated")
+//             setBackendStatus("unauthenticated");
+//           setIsLoadingStatus(false);
+//         });
+//         return;
+//       }
+//       if (isFetchingRef.current && !isRetry) {
+//         // console.log("KycContext: fetchKycStatus skipped - fetch already in progress.");
+//         return;
+//       }
+
+//       isFetchingRef.current = true;
+//       startTransition(() => {
+//         setIsLoadingStatus(true);
+//         if (backendStatus !== "loading") {
+//           setBackendStatus("loading"); // Show loading state within KycContext
+//         }
+//       });
+
+//       try {
+//         const statusData = await kycService.getMyKycStatus();
+//         // console.log("KycContext: Received status:", statusData.status, "Reason:", statusData.rejectionReason);
+//         startTransition(() => {
+//           // Update KycContext's view of the status
+//           setBackendStatus(statusData.status);
+//           setRejectionReason(statusData.rejectionReason || null);
+//         });
+//       } catch (error: any) {
+//         console.error("KycContext: Error fetching KYC status:", error);
+//         startTransition(() => {
+//           setBackendStatus("error"); // Set KycContext status to error
+//           setRejectionReason(null);
+//         });
+//       } finally {
+//         startTransition(() => setIsLoadingStatus(false));
+//         isFetchingRef.current = false;
+//         // console.log("KycContext: fetchKycStatus finished.");
+//       }
+//     },
+//     [user, backendStatus]
+//   ); // Dependency on backendStatus helps manage the 'loading' state correctly
+
+//   /** Loads KYC progress data from localStorage if status allows. Requires user to be logged in. */
+//   const loadPersistedData = useCallback(() => {
+//     if (!user) {
+//       if (localStorage.getItem(KYC_PROGRESS_STORAGE_KEY))
+//         localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+//       startTransition(() => setKycDataInternal({}));
+//       return;
+//     }
+//     // Allow loading data only if KycContext thinks user can start/resume
+//     const contextAllowsResume = ["not_started", "rejected", "skipped"].includes(
+//       backendStatus as string
+//     );
+//     if (contextAllowsResume) {
+//       try {
+//         const storedData = localStorage.getItem(KYC_PROGRESS_STORAGE_KEY);
+//         if (storedData) {
+//           const parsedData: KycProgressData = JSON.parse(storedData);
+//           if (typeof parsedData === "object" && parsedData !== null) {
+//             startTransition(() => setKycDataInternal(parsedData));
+//             // console.log("KycContext: Loaded persisted KYC data.");
+//           } else {
+//             localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+//             startTransition(() => setKycDataInternal({}));
+//           }
+//         } else {
+//           startTransition(() => setKycDataInternal({}));
+//         }
+//       } catch (error) {
+//         console.error("KycContext: Error loading persisted data:", error);
+//         localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+//         startTransition(() => setKycDataInternal({}));
+//       }
+//     } else {
+//       if (localStorage.getItem(KYC_PROGRESS_STORAGE_KEY)) {
+//         localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+//         // console.log("KycContext: Cleared persisted data due to KycContext status:", backendStatus);
+//       }
+//       if (Object.keys(kycData).length > 0) {
+//         startTransition(() => setKycDataInternal({}));
+//       }
+//     }
+//   }, [user, backendStatus, kycData]); // kycData dependency ensures clear if needed
+
+//   /** Updates KYC data in state and persists to localStorage if status allows. Requires user to be logged in. */
+//   const setKycData = useCallback(
+//     (data: Partial<KycProgressData>) => {
+//       if (!user) {
+//         console.warn(
+//           "KycContext: Attempted to setKycData while unauthenticated."
+//         );
+//         return;
+//       }
+//       startTransition(() => {
+//         setKycDataInternal((prevData) => {
+//           const newData = { ...prevData, ...data };
+//           // Only save progress if KycContext thinks user can potentially resume
+//           const contextAllowsResume = [
+//             "not_started",
+//             "rejected",
+//             "skipped",
+//           ].includes(backendStatus as string);
+//           if (contextAllowsResume) {
+//             try {
+//               localStorage.setItem(
+//                 KYC_PROGRESS_STORAGE_KEY,
+//                 JSON.stringify(newData)
+//               );
+//             } catch (error) {
+//               console.error("KycContext: Error saving progress:", error);
+//             }
+//           } else {
+//             if (localStorage.getItem(KYC_PROGRESS_STORAGE_KEY)) {
+//               localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+//             }
+//           }
+//           return newData;
+//         });
+//       });
+//     },
+//     [user, backendStatus]
+//   );
+
+//   /** Updates file state. */
+//   const setFile = useCallback((type: keyof KycFileState, file: File | null) => {
+//     startTransition(() => {
+//       setFileState((prevFiles) => ({ ...prevFiles, [type]: file }));
+//     });
+//   }, []);
+
+//   /** Updates the logical UI step ID in the context state. */
+//   const updateCurrentUiStepId = useCallback(
+//     (stepId: KycStepId) => {
+//       startTransition(() => {
+//         if (currentUiStepId !== stepId) {
+//           // console.log(`KycContext: Updating UI step ID from ${currentUiStepId} to ${stepId}`);
+//           setCurrentUiStepId(stepId);
+//         }
+//       });
+//     },
+//     [currentUiStepId]
+//   );
+
+//   /** Navigates the user to a specific KYC step page using the router. */
+//   const goToStep = useCallback(
+//     (stepId: KycStepId) => {
+//       if (!user && stepId !== "unauthenticated") {
+//         if (!pathname.startsWith(loginPagePath)) {
+//           console.log(
+//             `KycContext: goToStep(${stepId}) blocked (unauthenticated), redirecting to login.`
+//           );
+//           const redirectTarget =
+//             pathname.startsWith(kycBasePrefix) || pathname === "/"
+//               ? startPagePath
+//               : pathname;
+//           router.replace(
+//             `${loginPagePath}?redirect=${encodeURIComponent(redirectTarget)}`
+//           );
+//           updateCurrentUiStepId("unauthenticated"); // Also update internal step
+//         } else if (currentUiStepId !== "unauthenticated") {
+//           updateCurrentUiStepId("unauthenticated"); // Sync step if already on login page
+//         }
+//         return;
+//       }
+
+//       const path =
+//         stepId === "unauthenticated" ? loginPagePath : `/kyc/${stepId}`;
+
+//       if (pathname !== path) {
+//         // console.log(`KycContext: Navigating to step ${stepId} (Path: ${path}) from ${pathname}`);
+//         // Use replace for terminal/entry/status steps and error/unauthenticated
+//         if (
+//           [
+//             "pending",
+//             "rejected",
+//             "complete",
+//             "start",
+//             "error",
+//             "unauthenticated",
+//             "verified",
+//           ].includes(stepId)
+//         ) {
+//           router.replace(path);
+//         } else {
+//           router.push(path); // Use push for sequential form steps
+//         }
+//         updateCurrentUiStepId(stepId); // Update UI step ID immediately after navigation starts
+//       } else if (currentUiStepId !== stepId) {
+//         // console.log(`KycContext: Already on path ${path}, ensuring UI step matches ${stepId}`);
+//         updateCurrentUiStepId(stepId); // Sync UI step if already on the correct path
+//       }
+//     },
+//     [router, pathname, user, updateCurrentUiStepId, currentUiStepId]
+//   );
+
+//   /** Navigates to the next step in the defined form order. */
+//   const nextStep = useCallback(() => {
+//     const currentFormStepIndex = formStepOrder.indexOf(currentUiStepId as any);
+//     if (
+//       currentFormStepIndex >= 0 &&
+//       currentFormStepIndex < formStepOrder.length - 1
+//     ) {
+//       goToStep(formStepOrder[currentFormStepIndex + 1]);
+//     } else if (currentUiStepId === "review") {
+//       console.warn(
+//         "KycContext: nextStep called on review step. User should use submit button."
+//       );
+//       // Maybe trigger submit? For now, do nothing.
+//     } else {
+//       console.warn(
+//         `KycContext: Could not determine next step from ${currentUiStepId}`
+//       );
+//     }
+//   }, [currentUiStepId, goToStep]);
+
+//   /** Navigates to the previous step in the defined form order, or back to start. */
+//   const prevStep = useCallback(() => {
+//     const currentFormStepIndex = formStepOrder.indexOf(currentUiStepId as any);
+//     if (currentFormStepIndex > 0) {
+//       goToStep(formStepOrder[currentFormStepIndex - 1]);
+//     } else if (currentFormStepIndex === 0) {
+//       // First form step ('personal')
+//       goToStep("start");
+//     } else {
+//       console.warn(
+//         `KycContext: prevStep called from non-form step ${currentUiStepId}. Navigating to start.`
+//       );
+//       goToStep("start");
+//     }
+//   }, [currentUiStepId, goToStep]);
+
+//   /** Resets the KYC progress state, clears localStorage, and refetches AuthContext user. Optionally navigates to the start page. */
+//   const resetKycProgress = useCallback(
+//     async (navigateToStart = true) => {
+//       console.log("KycContext: Resetting KYC progress.");
+//       localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+//       startTransition(() => {
+//         setKycDataInternal({});
+//         setFileState({ idFrontFile: null, idBackFile: null });
+//         setSubmissionError(null);
+//         // Reset *local* context state to allow restart
+//         setBackendStatus("not_started");
+//         setCurrentUiStepId("start");
+//         setRejectionReason(null);
+//         setIsLoadingStatus(false);
+//         setIsSubmitting(false);
+//       });
+
+//       // --- CRITICAL: Trigger AuthContext refetch ---
+//       // Ensures AuthContext gets the *actual* backend status (which might still be 'rejected' etc.)
+//       console.log(
+//         "KycContext: Triggering AuthContext refetch after KYC reset."
+//       );
+//       try {
+//         await refetchUser();
+//         console.log("KycContext: AuthContext refetch completed after reset.");
+//         // Note: AuthContext now has the authoritative status. KycContext's 'not_started'
+//         // is just to allow the UI flow locally. Redirection logic (Effect 2)
+//         // should still respect the *actual* status from AuthContext eventually.
+//       } catch (err) {
+//         console.error("KycContext: Error refetching user after reset:", err);
+//         // Potentially set an error state here if refetch fails critically
+//       }
+//       // --- End Refetch ---
+
+//       if (navigateToStart) {
+//         goToStep("start");
+//       }
+//     },
+//     [goToStep, refetchUser]
+//   ); // Added refetchUser dependency
+
+//   /** Initiates the KYC flow UI from start/skipped/rejected state, refetches AuthContext user, and navigates. */
+//   const startKycFlow = useCallback(async () => {
+//     console.log(
+//       "KycContext: Starting KYC flow UI (from start/skipped/rejected)."
+//     );
+//     localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY); // Clear any old persisted data
+//     startTransition(() => {
+//       // Reset local form state for a fresh start
+//       setKycDataInternal({});
+//       setFileState({ idFrontFile: null, idBackFile: null });
+//       setSubmissionError(null);
+//       // Set local context status to allow form progression, even if actual backend is 'rejected'
+//       setBackendStatus("not_started");
+//       // Set UI step to the first form step immediately
+//       setCurrentUiStepId("personal");
+//       setRejectionReason(null); // Clear local rejection reason display for the new flow
+//       setIsLoadingStatus(false);
+//       setIsSubmitting(false);
+//     });
+
+//     // --- Trigger AuthContext refetch ---
+//     // Ensures AuthContext is aligned, though backend status likely hasn't changed yet
+//     console.log(
+//       "KycContext: Triggering AuthContext refetch after starting KYC flow UI."
+//     );
+//     try {
+//       await refetchUser();
+//       console.log(
+//         "KycContext: AuthContext refetch completed after starting flow UI."
+//       );
+//     } catch (err) {
+//       console.error(
+//         "KycContext: Error refetching user after starting flow UI:",
+//         err
+//       );
+//     }
+//     // --- End Refetch ---
+
+//     // Navigate to the first form step page
+//     goToStep("personal");
+//   }, [goToStep, refetchUser]); // Added refetchUser dependency
+
+//   /** Validates data and submits the KYC information to the backend. Requires user to be logged in. */
+//   const submitKycData = useCallback(async (): Promise<boolean> => {
+//     if (!user) {
+//       console.error(
+//         "KycContext: Cannot submit KYC data, user not authenticated."
+//       );
+//       setSubmissionError("Authentication required to submit KYC.");
+//       goToStep("unauthenticated"); // Redirect to login
+//       return false;
+//     }
+
+//     console.log("KycContext: Attempting submission...");
+//     setSubmissionError(null);
+//     startTransition(() => {
+//       setIsSubmitting(true);
+//     });
+
+//     const { idFrontFile, idBackFile } = fileState;
+//     let firstErrorStep: KycStepId = "review";
+//     const missingFieldsLabels: string[] = [];
+
+//     // --- Pre-submission Validation (Simplified Check) ---
+//     const requiredFields: (keyof KycProgressData)[] = [
+//       "firstName",
+//       "lastName",
+//       "dateOfBirth",
+//       "mobile",
+//       "nationality",
+//       "idType",
+//       "idNumber",
+//       "idIssueDate",
+//       "idExpiryDate",
+//     ];
+//     const stepMapping: Record<
+//       keyof KycProgressData | "idFrontFile" | "idBackFile",
+//       KycStepId
+//     > = {
+//       firstName: "personal",
+//       lastName: "personal",
+//       dateOfBirth: "personal",
+//       mobile: "personal",
+//       occupation: "details",
+//       salaryRange: "details",
+//       nationality: "details",
+//       idType: "identity",
+//       idNumber: "identity",
+//       idIssueDate: "identity",
+//       idExpiryDate: "identity",
+//       idFrontFile: "upload",
+//       idBackFile: "upload",
+//     };
+//     const stepOrderValue = (step: KycStepId) =>
+//       formStepOrder.indexOf(step as any) ?? 99; // Assign high value if not found
+
+//     requiredFields.forEach((field) => {
+//       let isMissing = false;
+//       let value = kycData[field as keyof KycProgressData];
+//       if (field === "mobile") {
+//         isMissing =
+//           !value ||
+//           !(value as KycMobile).countryCode ||
+//           !(value as KycMobile).number;
+//       } else {
+//         isMissing =
+//           value === undefined ||
+//           value === null ||
+//           (typeof value === "string" && value.trim() === "");
+//       }
+//       if (isMissing) {
+//         missingFieldsLabels.push(field);
+//         if (
+//           stepOrderValue(stepMapping[field]) < stepOrderValue(firstErrorStep)
+//         ) {
+//           firstErrorStep = stepMapping[field];
+//         }
+//       }
+//     });
+
+//     if (!idFrontFile) {
+//       missingFieldsLabels.push("idFrontFile");
+//       if (stepOrderValue("upload") < stepOrderValue(firstErrorStep))
+//         firstErrorStep = "upload";
+//     }
+//     const requiresBackId = kycData.idType === "resident_permit"; // Example condition
+//     if (requiresBackId && !idBackFile) {
+//       missingFieldsLabels.push("idBackFile");
+//       if (stepOrderValue("upload") < stepOrderValue(firstErrorStep))
+//         firstErrorStep = "upload";
+//     }
+//     // --- End Validation ---
+
+//     if (missingFieldsLabels.length > 0) {
+//       const errorMsg = `Submission Error: Missing required fields/documents: ${missingFieldsLabels.join(
+//         ", "
+//       )}. Please review.`;
+//       console.error(
+//         errorMsg,
+//         `Directing to first error step: ${firstErrorStep}`
+//       );
+//       setSubmissionError(errorMsg);
+//       goToStep(firstErrorStep); // Navigate to the first step with missing data
+//       startTransition(() => {
+//         setIsSubmitting(false);
+//       });
+//       return false;
+//     }
+
+//     // Construct Payload (Assert non-null due to validation)
+//     const payload: KycSubmissionPayload = {
+//       firstName: kycData.firstName!,
+//       lastName: kycData.lastName!,
+//       dateOfBirth: kycData.dateOfBirth!,
+//       mobile: kycData.mobile!,
+//       nationality: kycData.nationality!,
+//       idType: kycData.idType!,
+//       idNumber: kycData.idNumber!,
+//       idIssueDate: kycData.idIssueDate!,
+//       idExpiryDate: kycData.idExpiryDate!,
+//       occupation: kycData.occupation || undefined,
+//       salaryRange: kycData.salaryRange || null,
+//     };
+
+//     try {
+//       const response = await kycService.submitKyc(
+//         payload,
+//         idFrontFile!,
+//         idBackFile
+//       ); // Pass files
+//       const newBackendStatus = response.kyc?.status || "pending"; // Assume pending if status missing
+//       console.log(
+//         "KycContext: Submission successful. New Backend Status:",
+//         newBackendStatus
+//       );
+
+//       localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY); // Clear persisted form data on success
+//       startTransition(() => {
+//         // Update *local* context state immediately after submission
+//         setBackendStatus(newBackendStatus);
+//         setRejectionReason(response.kyc?.rejectionReason || null);
+//         setKycDataInternal({}); // Clear local form data
+//         setFileState({ idFrontFile: null, idBackFile: null }); // Clear local files
+//         setSubmissionError(null); // Clear any previous submission errors
+//         setIsSubmitting(false); // Turn off submission indicator *before* refetch potentially shows loading
+//       });
+
+//       // --- CRITICAL: Refetch Auth user data AFTER successful submission ---
+//       console.log(
+//         "KycContext: Triggering AuthContext refetch after successful KYC submission."
+//       );
+//       try {
+//         await refetchUser(); // Update AuthContext with the definitive new status from backend
+//         console.log(
+//           "KycContext: AuthContext refetch completed after submission."
+//         );
+//         // Effect 2 will handle navigation based on the *KycContext's* backendStatus update
+//         // which occurred just before this refetch.
+//       } catch (refetchError) {
+//         console.error(
+//           "KycContext: Error refetching user after submission:",
+//           refetchError
+//         );
+//         // Handle potential failure to update AuthContext - maybe show a general error?
+//         // The local KycContext status is updated, so redirection might still work.
+//       }
+//       // --- End Refetch ---
+
+//       return true; // Indicate success
+//     } catch (error: any) {
+//       console.error("KycContext: Submission API call failed:", error);
+//       const errorMsg =
+//         error.message || "An unexpected error occurred during submission.";
+//       setSubmissionError(errorMsg);
+//       // Stay on review page (or current page) to show the error
+//       startTransition(() => {
+//         setIsSubmitting(false);
+//       });
+//       return false; // Indicate failure
+//     }
+//   }, [user, kycData, fileState, goToStep, refetchUser]); // Dependencies
+
+//   // --- Effects ---
+
+//   /** Effect 1: Initialization - Handles auth changes, triggers initial KYC fetch for *this context*. */
+//   useEffect(() => {
+//     // console.log(`KycContext: Init Effect - Auth Loading: ${authLoading}, Initialized: ${isInitialized}`);
+//     if (authLoading) {
+//       startTransition(() => {
+//         setIsInitialized(false);
+//         setIsLoadingStatus(true); // Show loading while auth loads
+//         if (backendStatus !== "loading") setBackendStatus("loading");
+//       });
+//       return; // Wait for auth loading to finish
+//     }
+
+//     if (!user) {
+//       // User definitively logged out
+//       // console.log("KycContext: Init Effect - User logged out.");
+//       startTransition(() => {
+//         if (backendStatus !== "unauthenticated")
+//           setBackendStatus("unauthenticated");
+//         setIsInitialized(true);
+//         setIsLoadingStatus(false);
+//         // Clear any stale KYC data if user logs out
+//         if (Object.keys(kycData).length > 0) setKycDataInternal({});
+//         if (fileState.idBackFile || fileState.idFrontFile)
+//           setFileState({ idFrontFile: null, idBackFile: null });
+//         if (localStorage.getItem(KYC_PROGRESS_STORAGE_KEY))
+//           localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+//         if (currentUiStepId !== "unauthenticated")
+//           setCurrentUiStepId("unauthenticated");
+//       });
+//       // If currently on a KYC page, the redirection effect should handle moving to login
+//       return;
+//     }
+
+//     // User is logged in. Fetch KYC status if this context isn't initialized yet.
+//     if (user && !isInitialized) {
+//       console.log(
+//         "KycContext: Init Effect - User logged in, initializing context."
+//       );
+//       startTransition(() => {
+//         setIsLoadingStatus(true);
+//         if (backendStatus !== "loading") setBackendStatus("loading");
+//       });
+
+//       fetchKycStatus() // Fetches status and updates KycContext's backendStatus
+//         .then(() => {
+//           // Load persisted data *after* fetch completes and KycContext status is known
+//           // loadPersistedData checks KycContext's status before loading
+//           loadPersistedData();
+//         })
+//         .catch((err) =>
+//           console.error(
+//             "KycContext: Error in initial fetch/load sequence:",
+//             err
+//           )
+//         )
+//         .finally(() => {
+//           startTransition(() => {
+//             setIsInitialized(true); // Mark KycContext as initialized
+//             // setIsLoadingStatus(false); // fetchKycStatus handles this in its finally block
+//           });
+//           // console.log("KycContext: Init Effect - Initialization sequence complete.");
+//         });
+//     } else if (user && isInitialized) {
+//       // Already initialized. Could potentially add logic here to re-sync if user object changes
+//       // externally, but rely on explicit fetches for now.
+//       // console.log("KycContext: Init Effect - Already initialized for current user.");
+//       // If for some reason status loading is stuck, reset it
+//       if (isLoadingStatus) startTransition(() => setIsLoadingStatus(false));
+//     }
+
+//     // loadPersistedData is stable, fetchKycStatus depends on user & backendStatus
+//   }, [
+//     authLoading,
+//     user,
+//     isInitialized,
+//     fetchKycStatus,
+//     loadPersistedData,
+//     backendStatus,
+//     kycData,
+//     fileState,
+//     currentUiStepId,
+//   ]); // Added dependencies
+
+//   /** Effect 2: Redirection Logic - Ensures user is on the correct /kyc/* page based on *KycContext's* state. */
+//   useEffect(() => {
+//     // Wait for auth, KycContext initialization, and status loading to complete before redirecting *within* KYC flow
+//     if (authLoading || !isInitialized || isLoadingStatus) {
+//       // console.log(`KycContext: Redirection Check Deferred - Auth: ${authLoading}, Init: ${isInitialized}, StatusLoading: ${isLoadingStatus}, KycStatus: ${backendStatus}`);
+//       return;
+//     }
+
+//     const isOnKycPage = pathname.startsWith(kycBasePrefix);
+//     const isOnLoginPage = pathname.startsWith(loginPagePath);
+
+//     // console.log(`KycContext: Redirection Check Running - Path: ${pathname}, KycStatus: ${backendStatus}, UI Step: ${currentUiStepId}`);
+
+//     // --- Handle Unauthenticated State ---
+//     if (backendStatus === "unauthenticated") {
+//       // If context knows user is unauthenticated, but user is trying to access a KYC page
+//       if (isOnKycPage) {
+//         console.log(
+//           `KycContext: (Redirect Effect) Context unauthenticated, on KYC page (${pathname}). Redirecting to login.`
+//         );
+//         goToStep("unauthenticated"); // Use goToStep to handle navigation and UI step update
+//       } else if (currentUiStepId !== "unauthenticated") {
+//         // Sync UI step if not on KYC page but state is unauthenticated
+//         updateCurrentUiStepId("unauthenticated");
+//       }
+//       return; // Stop processing redirects for unauthenticated state
+//     }
+
+//     // --- Handle Authenticated User Redirections (primarily within /kyc/*) ---
+//     if (user) {
+//       const targetStatusPath = statusPageMap[backendStatus as KycStatus];
+//       const isFinalStatus = ["pending", "rejected", "verified"].includes(
+//         backendStatus as string
+//       );
+
+//       // 1. Error State in KycContext -> Go to Error Page (if not already there)
+//       if (backendStatus === "error" && pathname !== errorPagePath) {
+//         console.log(
+//           `KycContext: (Redirect Effect) Context status 'error'. Redirecting to ${errorPagePath}`
+//         );
+//         goToStep("error");
+//         return;
+//       }
+
+//       // 2. Final Backend Status (Pending, Rejected, Verified) -> Go to specific Status/Complete Page
+//       if (isFinalStatus && targetStatusPath) {
+//         const finalPath =
+//           backendStatus === "verified" ? completePagePath : targetStatusPath;
+//         const targetUiStep =
+//           backendStatus === "verified"
+//             ? "complete"
+//             : (backendStatus as KycStepId);
+
+//         // Redirect if not on the correct final page OR if on a form page (shouldn't be)
+//         if (pathname !== finalPath || formStepPaths.includes(pathname)) {
+//           console.log(
+//             `KycContext: (Redirect Effect) Status is ${backendStatus}. Redirecting to final page: ${finalPath}`
+//           );
+//           // *** This calls goToStep('complete') when status is 'verified' ***
+//           goToStep(targetUiStep);
+//         } else if (currentUiStepId !== targetUiStep) {
+//           // If already on the correct page, just sync the UI step ID
+//           updateCurrentUiStepId(targetUiStep);
+//         }
+//         return; // Stop processing further redirects in this effect cycle
+//       }
+
+//       // 3. Resumable Status (Not Started, Skipped) or Active Form Filling
+//       const canStartOrResume = ["not_started", "rejected", "skipped"].includes(
+//         backendStatus as string
+//       );
+//       const pathSegments = pathname.split("/");
+//       const currentPathStep = pathSegments[
+//         pathSegments.length - 1
+//       ] as KycStepId;
+//       const isOnFormPage = formStepPaths.includes(pathname);
+//       const isOnStartPage = pathname === startPagePath;
+
+//       if (canStartOrResume) {
+//         // If status allows starting/resuming, but user lands on a final/error page, redirect to start
+//         if (
+//           statusPagePaths.includes(pathname) ||
+//           pathname === completePagePath ||
+//           pathname === errorPagePath
+//         ) {
+//           console.log(
+//             `KycContext: (Redirect Effect) Status ${backendStatus} but on final/error page (${pathname}). Redirecting to start.`
+//           );
+//           goToStep("start");
+//           return;
+//         }
+//         // If on a valid page (start or form), ensure UI step ID is synced
+//         if (isOnStartPage && currentUiStepId !== "start") {
+//           updateCurrentUiStepId("start");
+//         } else if (
+//           isOnFormPage &&
+//           formStepOrder.includes(currentPathStep as any) &&
+//           currentUiStepId !== currentPathStep
+//         ) {
+//           updateCurrentUiStepId(currentPathStep);
+//         } else if (
+//           !isOnStartPage &&
+//           !isOnFormPage &&
+//           isOnKycPage &&
+//           currentUiStepId !== "start"
+//         ) {
+//           // If on an unknown /kyc/ page, maybe default UI step to 'start' or try to infer? Safer to use 'start'.
+//           // console.log(`KycContext: (Redirect Effect) On unknown KYC page ${pathname} with resumable status. Setting UI step to start.`);
+//           // updateCurrentUiStepId('start'); // Or potentially redirect to start
+//         }
+//       } else if (
+//         !isFinalStatus &&
+//         backendStatus !== "error" &&
+//         backendStatus !== "loading"
+//       ) {
+//         // Handle cases where context thinks user is in a form step (e.g., if page reloads)
+//         // Ensure redirection doesn't occur if already on a valid form page matching the UI step
+//         if (isOnFormPage && currentPathStep === currentUiStepId) {
+//           // Correct state, do nothing
+//         } else if (
+//           formStepOrder.includes(currentUiStepId as any) &&
+//           pathname !== `/kyc/${currentUiStepId}`
+//         ) {
+//           // If UI step is a form step, but path doesn't match, try navigating to the correct form step
+//           // console.log(`KycContext: (Redirect Effect) Path ${pathname} doesn't match UI step ${currentUiStepId}. Navigating.`);
+//           // goToStep(currentUiStepId); // Be cautious with this - might cause loops if state is inconsistent
+//         }
+//       }
+//     }
+
+//     // --- Fallback (if none of the above handled it) ---
+//     // Generally, if the state is inconsistent, avoid automatic redirection unless clearly necessary (like unauth)
+//     // console.log(`KycContext: (Redirect Effect) Reached end of checks. Current Path: ${pathname}, Status: ${backendStatus}, UI Step: ${currentUiStepId}`);
+
+//     // Dependencies now include user object, which changes on refetch
+//   }, [
+//     authLoading,
+//     user,
+//     backendStatus,
+//     isInitialized,
+//     isLoadingStatus,
+//     pathname,
+//     currentUiStepId,
+//     updateCurrentUiStepId,
+//     goToStep,
+//   ]);
+
+//   // --- Memoized Context Value ---
+//   const value = useMemo<KycContextType>(
+//     () => ({
+//       currentUiStepId,
+//       kycData,
+//       fileState,
+//       backendStatus,
+//       rejectionReason,
+//       isInitialized,
+//       isAuthLoading: authLoading,
+//       isLoadingStatus,
+//       isSubmitting,
+//       submissionError, // Expose submission error
+//       setKycData,
+//       setFile,
+//       updateCurrentUiStepId,
+//       goToStep,
+//       nextStep,
+//       prevStep,
+//       startKycFlow,
+//       fetchKycStatus,
+//       resetKycProgress,
+//       submitKycData,
+//     }),
+//     [
+//       currentUiStepId,
+//       kycData,
+//       fileState,
+//       backendStatus,
+//       rejectionReason,
+//       isInitialized,
+//       authLoading,
+//       isLoadingStatus,
+//       isSubmitting,
+//       submissionError,
+//       setKycData,
+//       setFile,
+//       updateCurrentUiStepId,
+//       goToStep,
+//       nextStep,
+//       prevStep,
+//       startKycFlow,
+//       fetchKycStatus,
+//       resetKycProgress,
+//       submitKycData, // Ensure all functions are dependencies
+//     ]
+//   );
+
+//   // --- Render Provider ---
+
+//   // Show loading overlays based on priority
+//   const showAuthLoading = authLoading;
+//   // Show initializing only *after* auth is done, and *before* KycContext is initialized
+//   const showInitializing = !authLoading && !isInitialized && user;
+//   // Show status loading if KycContext is fetching status *after* init phase (or during init)
+//   const showStatusLoading =
+//     !authLoading &&
+//     isLoadingStatus &&
+//     isInitialized &&
+//     user &&
+//     !pathname.startsWith(loginPagePath);
+//   // Show submission loading overlay
+//   const showSubmitting = isSubmitting;
+
+//   return (
+//     <KycContext.Provider value={value}>
+//       {/* Render loading overlays */}
+//       {showAuthLoading && <LoadingOverlay message="Loading Session..." />}
+//       {showInitializing && <LoadingOverlay message="Initializing KYC..." />}
+//       {/* Consider if status loading should overlay content or just be indicated */}
+//       {/* {showStatusLoading && <LoadingOverlay message="Loading KYC Status..." />} */}
+//       {showSubmitting && (
+//         <div
+//           className="fixed inset-0 z-[210] flex justify-center items-center bg-black/60 backdrop-blur-sm"
+//           role="alertdialog"
+//           aria-live="assertive"
+//           aria-busy="true"
+//           aria-label="Submitting KYC information"
+//         >
+//           <div className="text-center text-white p-6 bg-card rounded-lg shadow-lg border border-primary">
+//             <Loader2 className="h-10 w-10 animate-spin text-primary mb-3 mx-auto" />
+//             <p className="text-xl font-semibold text-foreground">
+//               Submitting Information...
+//             </p>
+//             <p className="text-sm text-muted-foreground">Please wait...</p>
+//           </div>
+//         </div>
+//       )}
+
+//       {/* Render children once auth is resolved, regardless of KycContext init, to prevent blocking non-KYC UI */}
+//       {/* Redirection logic inside KycContext handles access control for /kyc/* paths */}
+//       {!authLoading && children}
+//     </KycContext.Provider>
+//   );
+// };
+
+// //--------------------------------------------------
+// // Hook for Consuming Context
+// //--------------------------------------------------
+
+// export const useKyc = (): KycContextType => {
+//   const context = useContext(KycContext);
+//   if (context === undefined) {
+//     throw new Error("useKyc must be used within a KycProvider");
+//   }
+//   return context;
+// };
 
 
-'use client';
+
+// frontend/src/app/contexts/KycContext.tsx
+"use client";
 
 import React, {
-    createContext,
-    useState,
-    useContext,
-    useEffect,
-    ReactNode,
-    useCallback,
-    useMemo,
-    startTransition,
-    useRef
-} from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  ReactNode,
+  useCallback,
+  useMemo,
+  startTransition,
+  useRef,
+} from "react";
+import { useRouter, usePathname } from "next/navigation";
 import kycService, {
-    type KycMobile,
-    type KycSubmissionPayload,
-    type KycStatusResponse,
-    type KycDetails,
-    type KycStatus,
-    type SalaryRange,
-    type IdType,
-} from '@/app/services/kyc'; // Ensure path is correct
-import { useAuth } from '@/app/contexts/AuthContext'; // Ensure path is correct
-import { Loader2 } from 'lucide-react';
+  type KycMobile,
+  type KycSubmissionPayload,
+  type KycStatusResponse,
+  type KycDetails,
+  type KycStatus,
+  type SalaryRange,
+  type IdType,
+} from "@/app/services/kyc"; // Ensure path is correct
+import { useAuth } from "@/app/contexts/AuthContext"; // Ensure path is correct
+import { Loader2 } from "lucide-react";
 
 //--------------------------------------------------
 // Type Definitions (Context Specific)
 //--------------------------------------------------
 
-/** Possible UI states or steps within the KYC flow. */
 export type KycStepId =
-    | 'start'
-    | 'personal'
-    | 'details'
-    | 'identity'
-    | 'upload'
-    | 'review'
-    | 'pending'
-    | 'rejected'
-    | 'verified' // Usually means complete and redirects away
-    | 'complete' // Explicit completion page/state
-    | 'error'
-    | 'unauthenticated'; // State when user is not logged in
+  | "start" | "personal" | "details" | "identity" | "upload" | "review"
+  | "pending" | "rejected" | "verified" // Verified status leads to complete
+  | "complete" // Specific page for completion message
+  | "error" | "unauthenticated";
 
-/** Combined status including backend states and UI loading/error states. */
-export type KycCombinedStatus = KycStatus | 'loading' | 'error' | 'unauthenticated';
+export type KycCombinedStatus = KycStatus | "loading" | "error" | "unauthenticated";
 
-/** Data collected during the KYC process, stored temporarily. */
 export interface KycProgressData {
-    firstName?: string;
-    lastName?: string;
-    dateOfBirth?: string; // Store as ISO string (YYYY-MM-DD)
-    mobile?: KycMobile;
-    occupation?: string;
-    salaryRange?: SalaryRange | null;
-    nationality?: string;
-    idType?: IdType | null; // Allow null for initial state
-    idNumber?: string;
-    idIssueDate?: string; // Store as ISO string (YYYY-MM-DD)
-    idExpiryDate?: string; // Store as ISO string (YYYY-MM-DD)
+  firstName?: string; lastName?: string; dateOfBirth?: string; // YYYY-MM-DD
+  mobile?: KycMobile; occupation?: string; salaryRange?: SalaryRange | null;
+  nationality?: string; idType?: IdType | null; idNumber?: string;
+  idIssueDate?: string; idExpiryDate?: string; // YYYY-MM-DD
 }
 
-/** State of uploaded files. */
-export interface KycFileState {
-    idFrontFile: File | null;
-    idBackFile: File | null;
-}
+export interface KycFileState { idFrontFile: File | null; idBackFile: File | null; }
 
-/** The shape of the KYC context provided to consumers. */
 export interface KycContextType {
-    currentUiStepId: KycStepId;
-    kycData: KycProgressData;
-    fileState: KycFileState;
-    backendStatus: KycCombinedStatus;
-    rejectionReason: string | null;
-    isInitialized: boolean; // True if KYC context has run its initial auth check and setup
-    isAuthLoading: boolean; // True if the authentication context is loading
-    isLoadingStatus: boolean; // True if fetching KYC status from backend
-    isSubmitting: boolean; // True if KYC data is being submitted to backend
-    setKycData: (data: Partial<KycProgressData>) => void;
-    setFile: (type: keyof KycFileState, file: File | null) => void;
-    updateCurrentUiStepId: (stepId: KycStepId) => void;
-    goToStep: (stepId: KycStepId) => void;
-    nextStep: () => void;
-    prevStep: () => void;
-    fetchKycStatus: (isRetry?: boolean) => Promise<void>;
-    resetKycProgress: (navigateToStart?: boolean) => void;
-    submitKycData: () => Promise<boolean>; // Returns true on success, false on failure
-    startKycFlow: () => void; // Action to initiate the flow from start/skipped/rejected
+  currentUiStepId: KycStepId;
+  kycData: KycProgressData;
+  fileState: KycFileState;
+  backendStatus: KycCombinedStatus; // KycContext's view of the status
+  rejectionReason: string | null;
+  isInitialized: boolean; // Has KycContext finished initial setup?
+  isAuthLoading: boolean; // Reflects AuthContext loading state
+  isLoadingStatus: boolean; // Is KycContext fetching its status?
+  isSubmitting: boolean; // Is submission to backend in progress?
+  submissionError: string | null;
+  setKycData: (data: Partial<KycProgressData>) => void;
+  setFile: (type: keyof KycFileState, file: File | null) => void;
+  updateCurrentUiStepId: (stepId: KycStepId) => void;
+  goToStep: (stepId: KycStepId) => void;
+  nextStep: () => void;
+  prevStep: () => void;
+  fetchKycStatus: (isRetry?: boolean) => Promise<void>;
+  resetKycProgress: (navigateToStart?: boolean) => Promise<void>; // For retry after rejection
+  submitKycData: () => Promise<boolean>;
+  startKycFlow: () => Promise<void>; // Explicitly start/restart the UI flow
 }
 
 //--------------------------------------------------
@@ -4678,40 +6436,35 @@ export interface KycContextType {
 //--------------------------------------------------
 
 const KycContext = createContext<KycContextType | undefined>(undefined);
-const KYC_PROGRESS_STORAGE_KEY = 'kycProgressData_v1'; // Key for localStorage
+const KYC_PROGRESS_STORAGE_KEY = "kycProgressData_v1";
 
-/** Order of the main form steps. */
-export const formStepOrder: Exclude<KycStepId, 'start' | 'pending' | 'rejected' | 'complete' | 'error' | 'unauthenticated' | 'verified'>[] = [
-    'personal', 'details', 'identity', 'upload', 'review'
+export const formStepOrder: Exclude<KycStepId, "start" | "pending" | "rejected" | "complete" | "error" | "unauthenticated" | "verified">[] = [
+  "personal", "details", "identity", "upload", "review",
 ];
 
-/** Mapping of final backend statuses to their corresponding page paths. */
 const statusPageMap: Partial<Record<KycStatus, string>> = {
-    pending: '/kyc/pending',
-    rejected: '/kyc/rejected',
-    verified: '/kyc/complete', // 'verified' status directs to the completion page
+  pending: "/kyc/pending", rejected: "/kyc/rejected",
+  verified: "/kyc/complete", // verified status leads to complete page
 };
 
-// Pre-calculated paths for easier checks
-const formStepPaths = formStepOrder.map(step => `/kyc/${step}`);
+const formStepPaths = formStepOrder.map((step) => `/kyc/${step}`);
 const statusPagePaths = Object.values(statusPageMap);
-const startPagePath = '/kyc/start';
-const completePagePath = '/kyc/complete'; // Explicit complete page
-const errorPagePath = '/kyc/error';
-const loginPagePath = '/auth/login'; // Define login path
+const startPagePath = "/kyc/start";
+const completePagePath = "/kyc/complete";
+const errorPagePath = "/kyc/error";
+const loginPagePath = "/auth/login";
+const kycBasePrefix = "/kyc/";
 
 //--------------------------------------------------
 // Loading Component (Internal)
 //--------------------------------------------------
-
-/** A simple loading overlay component. */
-const LoadingOverlay: React.FC<{ message: string }> = ({ message }) => (
-    <div className="fixed inset-0 z-[200] flex justify-center items-center bg-background/80 backdrop-blur-sm" aria-live="polite" aria-busy="true" aria-label={message}>
-        <div className="text-center p-6 bg-card rounded-lg shadow-lg border">
-            <Loader2 className="h-10 w-10 animate-spin text-primary mb-3 mx-auto" />
-            <p className="text-lg font-semibold text-muted-foreground">{message}</p>
-        </div>
+const KycContextLoadingOverlay: React.FC<{ message: string }> = ({ message }) => (
+  <div className="fixed inset-0 z-[200] flex justify-center items-center bg-background/80 backdrop-blur-sm" aria-live="polite" aria-busy="true">
+    <div className="text-center p-6 bg-card rounded-lg shadow-lg border">
+      <Loader2 className="h-10 w-10 animate-spin text-primary mb-3 mx-auto" />
+      <p className="text-lg font-semibold text-muted-foreground">{message}</p>
     </div>
+  </div>
 );
 
 //--------------------------------------------------
@@ -4721,654 +6474,510 @@ const LoadingOverlay: React.FC<{ message: string }> = ({ message }) => (
 interface KycProviderProps { children: ReactNode; }
 
 export const KycProvider = ({ children }: KycProviderProps) => {
-    const router = useRouter();
-    const pathname = usePathname();
-    const { user, loading: authLoading, refetchUser } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
+  // --- Inject AuthContext ---
+  const { user, loading: authLoading, refetchUser, updateAuthUserKycStatus } = useAuth();
 
-    // --- State ---
-    const [currentUiStepId, setCurrentUiStepId] = useState<KycStepId>('start');
-    const [kycData, setKycDataInternal] = useState<KycProgressData>({});
-    const [fileState, setFileState] = useState<KycFileState>({ idFrontFile: null, idBackFile: null });
-    const [backendStatus, setBackendStatus] = useState<KycCombinedStatus>(authLoading ? 'loading' : 'unauthenticated');
-    const [rejectionReason, setRejectionReason] = useState<string | null>(null);
-    const [isInitialized, setIsInitialized] = useState(false); // Has the KYC context run its init?
-    const [isLoadingStatus, setIsLoadingStatus] = useState(true); // Loading KYC status?
-    const [isSubmitting, setIsSubmitting] = useState(false); // Submitting to backend?
-    const [submissionError, setSubmissionError] = useState<string | null>(null);
-    const isFetchingRef = useRef(false); // Prevent simultaneous fetches
+  // --- State ---
+  const [currentUiStepId, setCurrentUiStepId] = useState<KycStepId>("start");
+  const [kycData, setKycDataInternal] = useState<KycProgressData>({});
+  const [fileState, setFileState] = useState<KycFileState>({ idFrontFile: null, idBackFile: null });
+  const [backendStatus, setBackendStatus] = useState<KycCombinedStatus>(authLoading ? "loading" : "unauthenticated");
+  const [rejectionReason, setRejectionReason] = useState<string | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [isLoadingStatus, setIsLoadingStatus] = useState(true); // Internal status loading
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
+  const isFetchingRef = useRef(false);
 
-    // --- Actions ---
+  // --- Actions ---
 
-    /** Fetches KYC status from the backend and updates state. Requires user to be logged in. */
-    const fetchKycStatus = useCallback(async (isRetry = false) => {
+  /** Fetches KYC status, updates KycContext, and informs AuthContext. */
+  const fetchKycStatus = useCallback(async (isRetry = false) => {
+    if (!user) {
+      startTransition(() => { if (backendStatus !== "unauthenticated") setBackendStatus("unauthenticated"); setIsLoadingStatus(false); }); return;
+    }
+    if (isFetchingRef.current && !isRetry) return;
+
+    isFetchingRef.current = true;
+    startTransition(() => { setIsLoadingStatus(true); if (backendStatus !== "loading") setBackendStatus("loading"); });
+
+    try {
+      const statusData = await kycService.getMyKycStatus();
+      startTransition(() => {
+        setBackendStatus(statusData.status);
+        setRejectionReason(statusData.rejectionReason || null);
+        // --- Update AuthContext ---
+        updateAuthUserKycStatus(statusData.status, statusData.rejectionReason);
+        // -------------------------
+        // console.log("KycContext: Fetched status:", statusData.status);
+      });
+    } catch (error: any) {
+      console.error("KycContext: Error fetching KYC status:", error);
+      startTransition(() => { setBackendStatus("error"); setRejectionReason(null); });
+    } finally {
+      startTransition(() => setIsLoadingStatus(false));
+      isFetchingRef.current = false;
+    }
+  }, [user, backendStatus, updateAuthUserKycStatus]); // Added updateAuthUserKycStatus
+
+  const loadPersistedData = useCallback(() => { /* ... (no changes needed here) ... */
         if (!user) {
-            // console.log("KycContext: fetchKycStatus skipped - no user.");
-            startTransition(() => {
-                 if (backendStatus !== 'unauthenticated') setBackendStatus('unauthenticated');
-                 setIsLoadingStatus(false);
-            });
-            return;
-        }
-        // Prevent simultaneous fetches unless it's an explicit retry
-        if (isFetchingRef.current && !isRetry) {
-             // console.log("KycContext: fetchKycStatus skipped - fetch already in progress.");
-             return;
-        }
-
-        isFetchingRef.current = true;
-        startTransition(() => {
-            setIsLoadingStatus(true);
-            // Show loading feedback immediately if not already loading/initialized correctly
-            if (backendStatus !== 'loading') {
-                setBackendStatus('loading');
-            }
-        });
-
-        try {
-            const statusData = await kycService.getMyKycStatus();
-            // console.log("KycContext: Received status:", statusData.status, "Reason:", statusData.rejectionReason);
-            // Use startTransition for batching state updates related to the fetch result
-            startTransition(() => {
-                setBackendStatus(statusData.status);
-                setRejectionReason(statusData.rejectionReason || null);
-            });
-        } catch (error: any) {
-            console.error("KycContext: Error fetching KYC status:", error);
-            startTransition(() => {
-                setBackendStatus('error');
-                setRejectionReason(null);
-            });
-        } finally {
-            startTransition(() => setIsLoadingStatus(false));
-            isFetchingRef.current = false;
-            // console.log("KycContext: fetchKycStatus finished.");
-        }
-    }, [user, backendStatus]); // Dependency on backendStatus helps manage the 'loading' state correctly
-
-    /** Loads KYC progress data from localStorage if status allows. Requires user to be logged in. */
-    const loadPersistedData = useCallback(() => {
-        if (!user) {
-            if (localStorage.getItem(KYC_PROGRESS_STORAGE_KEY)) localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+      if (localStorage.getItem(KYC_PROGRESS_STORAGE_KEY))
+        localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+      startTransition(() => setKycDataInternal({}));
+      return;
+    }
+    const contextAllowsResume = ["not_started", "rejected", "skipped"].includes(
+      backendStatus as string
+    );
+    if (contextAllowsResume) {
+      try {
+        const storedData = localStorage.getItem(KYC_PROGRESS_STORAGE_KEY);
+        if (storedData) {
+          const parsedData: KycProgressData = JSON.parse(storedData);
+          if (typeof parsedData === "object" && parsedData !== null) {
+            startTransition(() => setKycDataInternal(parsedData));
+            // console.log("KycContext: Loaded persisted KYC data.");
+          } else {
+            localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
             startTransition(() => setKycDataInternal({}));
-            return;
+          }
+        } else {
+          startTransition(() => setKycDataInternal({}));
         }
-        // Allow loading data if status indicates user can start/resume (not_started, rejected, skipped)
-        if (['not_started', 'rejected', 'skipped'].includes(backendStatus as string)) {
+      } catch (error) {
+        console.error("KycContext: Error loading persisted data:", error);
+        localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+        startTransition(() => setKycDataInternal({}));
+      }
+    } else {
+      if (localStorage.getItem(KYC_PROGRESS_STORAGE_KEY)) {
+        localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+        // console.log("KycContext: Cleared persisted data due to KycContext status:", backendStatus);
+      }
+      if (Object.keys(kycData).length > 0) {
+        startTransition(() => setKycDataInternal({}));
+      }
+    }
+  }, [user, backendStatus, kycData]);
+
+  const setKycData = useCallback((data: Partial<KycProgressData>) => { /* ... (no changes needed here) ... */
+    if (!user) {
+        console.warn(
+          "KycContext: Attempted to setKycData while unauthenticated."
+        );
+        return;
+      }
+      startTransition(() => {
+        setKycDataInternal((prevData) => {
+          const newData = { ...prevData, ...data };
+          const contextAllowsResume = [
+            "not_started",
+            "rejected",
+            "skipped",
+          ].includes(backendStatus as string);
+          if (contextAllowsResume) {
             try {
-                const storedData = localStorage.getItem(KYC_PROGRESS_STORAGE_KEY);
-                if (storedData) {
-                    const parsedData: KycProgressData = JSON.parse(storedData);
-                    // Basic validation of parsed data
-                    if (typeof parsedData === 'object' && parsedData !== null) {
-                        startTransition(() => setKycDataInternal(parsedData));
-                        // console.log("KycContext: Loaded persisted KYC data.");
-                    } else {
-                        localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
-                        startTransition(() => setKycDataInternal({}));
-                    }
-                } else {
-                    startTransition(() => setKycDataInternal({})); // Ensure state is empty if nothing stored
-                }
+              localStorage.setItem(
+                KYC_PROGRESS_STORAGE_KEY,
+                JSON.stringify(newData)
+              );
             } catch (error) {
-                console.error("KycContext: Error loading persisted data:", error);
-                localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
-                startTransition(() => setKycDataInternal({}));
+              console.error("KycContext: Error saving progress:", error);
             }
-        } else {
-             // Clear persisted data if status is terminal or in progress (pending, verified, error, loading, unauth)
+          } else {
             if (localStorage.getItem(KYC_PROGRESS_STORAGE_KEY)) {
-                localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
-                // console.log("KycContext: Cleared persisted data due to status:", backendStatus);
+              localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
             }
-            // Ensure local data state is also cleared if it shouldn't persist
-            if (Object.keys(kycData).length > 0) {
-                startTransition(() => setKycDataInternal({}));
-            }
-        }
-    }, [user, backendStatus, kycData]); // Added kycData dependency to clear state if needed
-
-    /** Updates KYC data in state and persists to localStorage if status allows. Requires user to be logged in. */
-    const setKycData = useCallback((data: Partial<KycProgressData>) => {
-        if (!user) {
-            console.warn("KycContext: Attempted to setKycData while unauthenticated.");
-            return;
-        }
-        // Update state optimistically within a transition
-        startTransition(() => {
-            setKycDataInternal(prevData => {
-                const newData = { ...prevData, ...data };
-                // Only save progress if user can potentially resume (not started, rejected, skipped)
-                if (['not_started', 'rejected', 'skipped'].includes(backendStatus as string)) {
-                    try {
-                        localStorage.setItem(KYC_PROGRESS_STORAGE_KEY, JSON.stringify(newData));
-                    } catch (error) {
-                        console.error("KycContext: Error saving progress:", error);
-                    }
-                } else {
-                    // Clean up localStorage if progress shouldn't be saved for the current status
-                    if (localStorage.getItem(KYC_PROGRESS_STORAGE_KEY)) {
-                        localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
-                    }
-                }
-                return newData;
-            });
+          }
+          return newData;
         });
-    }, [user, backendStatus]);
+      });
+   }, [user, backendStatus]);
 
-    /** Updates file state. */
-    const setFile = useCallback((type: keyof KycFileState, file: File | null) => {
-        startTransition(() => { // Wrap file state update in transition as well
-            setFileState(prevFiles => ({ ...prevFiles, [type]: file }));
-        });
-    }, []);
+  const setFile = useCallback((type: keyof KycFileState, file: File | null) => { /* ... (no changes needed here) ... */
+    startTransition(() => {
+      setFileState((prevFiles) => ({ ...prevFiles, [type]: file }));
+    });
+   }, []);
 
-    /** Updates the logical UI step ID in the context state. */
-    const updateCurrentUiStepId = useCallback((stepId: KycStepId) => {
-        startTransition(() => {
-            if (currentUiStepId !== stepId) {
-                 // console.log(`KycContext: Updating UI step ID from ${currentUiStepId} to ${stepId}`);
-                 setCurrentUiStepId(stepId);
-            }
-        });
-    }, [currentUiStepId]);
-
-    /** Navigates the user to a specific KYC step using the router. Requires user to be logged in for most steps. */
-    const goToStep = useCallback((stepId: KycStepId) => {
-        // Check auth status immediately
-        if (!user && stepId !== 'unauthenticated') {
-            // Redirect to login if trying to access any KYC page while logged out
-            if (!pathname.startsWith(loginPagePath)) {
-                 console.log(`KycContext: goToStep(${stepId}) blocked (unauthenticated), redirecting to login.`);
-                 // Determine redirect target intelligently
-                 const redirectTarget = (pathname === '/' || pathname.startsWith('/auth/') || !pathname.startsWith('/kyc/')) ? startPagePath : pathname;
-                router.replace(`${loginPagePath}?redirect=${encodeURIComponent(redirectTarget)}`);
-            }
-            return;
+  const updateCurrentUiStepId = useCallback((stepId: KycStepId) => { /* ... (no changes needed here) ... */
+     startTransition(() => {
+        if (currentUiStepId !== stepId) {
+          // console.log(`KycContext: Updating UI step ID from ${currentUiStepId} to ${stepId}`);
+          setCurrentUiStepId(stepId);
         }
+      });
+   }, [currentUiStepId]);
 
-        // Determine the target path
-        const path = stepId === 'unauthenticated' ? loginPagePath : `/kyc/${stepId}`;
+  const goToStep = useCallback((stepId: KycStepId) => { /* ... (no changes needed here) ... */
+    if (!user && stepId !== "unauthenticated") {
+        if (!pathname.startsWith(loginPagePath)) {
+          console.log(
+            `KycContext: goToStep(${stepId}) blocked (unauthenticated), redirecting to login.`
+          );
+          const redirectTarget =
+            pathname.startsWith(kycBasePrefix) || pathname === "/"
+              ? startPagePath
+              : pathname;
+          router.replace(
+            `${loginPagePath}?redirect=${encodeURIComponent(redirectTarget)}`
+          );
+          updateCurrentUiStepId("unauthenticated"); // Also update internal step
+        } else if (currentUiStepId !== "unauthenticated") {
+          updateCurrentUiStepId("unauthenticated"); // Sync step if already on login page
+        }
+        return;
+      }
 
-        // Navigate only if the path is different
-        if (pathname !== path) {
-             console.log(`KycContext: Navigating to step ${stepId} (Path: ${path})`);
-             // Use replace for terminal/entry/status steps to avoid history buildup
-             if (['pending', 'rejected', 'complete', 'start', 'error', 'unauthenticated'].includes(stepId)) {
-                router.replace(path);
-            } else {
-                router.push(path); // Use push for form steps
-            }
-            // Update UI step immediately after initiating navigation (using transition)
-            updateCurrentUiStepId(stepId);
+      const path =
+        stepId === "unauthenticated" ? loginPagePath : `/kyc/${stepId}`;
+
+      if (pathname !== path) {
+        // console.log(`KycContext: Navigating to step ${stepId} (Path: ${path}) from ${pathname}`);
+        if (
+          [
+            "pending",
+            "rejected",
+            "complete",
+            "start",
+            "error",
+            "unauthenticated",
+            "verified", // treat verified like complete for navigation
+          ].includes(stepId)
+        ) {
+          router.replace(path);
         } else {
-            // If already on the correct path, ensure UI step ID matches (often redundant but safe)
-            if (currentUiStepId !== stepId) {
-                updateCurrentUiStepId(stepId);
-            }
+          router.push(path);
         }
-    }, [router, pathname, user, updateCurrentUiStepId, currentUiStepId]); // Added currentUiStepId
+        updateCurrentUiStepId(stepId);
+      } else if (currentUiStepId !== stepId) {
+        // console.log(`KycContext: Already on path ${path}, ensuring UI step matches ${stepId}`);
+        updateCurrentUiStepId(stepId);
+      }
+   }, [router, pathname, user, updateCurrentUiStepId, currentUiStepId]);
 
-    /** Navigates to the next step in the defined form order. */
-    const nextStep = useCallback(() => {
-        const currentFormStepIndex = formStepOrder.indexOf(currentUiStepId as any); // Find index in form steps
-        if (currentFormStepIndex >= 0 && currentFormStepIndex < formStepOrder.length - 1) {
-            goToStep(formStepOrder[currentFormStepIndex + 1]);
-        } else if (currentUiStepId === 'review') {
-            console.warn("KycContext: nextStep called on review step. Consider calling submitKycData.");
-            // Potentially trigger submit automatically, or rely on user clicking submit button
-        } else {
-            console.warn(`KycContext: Could not determine next step from ${currentUiStepId}`);
-        }
-    }, [currentUiStepId, goToStep]);
+  const nextStep = useCallback(() => { /* ... (no changes needed here) ... */
+    const currentFormStepIndex = formStepOrder.indexOf(currentUiStepId as any);
+    if (
+      currentFormStepIndex >= 0 &&
+      currentFormStepIndex < formStepOrder.length - 1
+    ) {
+      goToStep(formStepOrder[currentFormStepIndex + 1]);
+    } else if (currentUiStepId === "review") {
+      console.warn(
+        "KycContext: nextStep called on review step. User should use submit button."
+      );
+    } else {
+      console.warn(
+        `KycContext: Could not determine next step from ${currentUiStepId}`
+      );
+    }
+  }, [currentUiStepId, goToStep]);
 
-    /** Navigates to the previous step in the defined form order, or back to start. */
-    const prevStep = useCallback(() => {
-        const currentFormStepIndex = formStepOrder.indexOf(currentUiStepId as any); // Find index in form steps
-        if (currentFormStepIndex > 0) { // If it's a form step other than the first
-            goToStep(formStepOrder[currentFormStepIndex - 1]);
-        } else if (currentFormStepIndex === 0) { // If it's the first form step ('personal')
-            goToStep('start'); // Go back to the start page
-        } else {
-             // If somehow called from a non-form step (e.g., review, start), go to start as a safe fallback
-             console.warn(`KycContext: prevStep called from non-form step ${currentUiStepId}. Navigating to start.`);
-             goToStep('start');
-        }
-    }, [currentUiStepId, goToStep]);
+  const prevStep = useCallback(() => { /* ... (no changes needed here) ... */
+    const currentFormStepIndex = formStepOrder.indexOf(currentUiStepId as any);
+    if (currentFormStepIndex > 0) {
+      goToStep(formStepOrder[currentFormStepIndex - 1]);
+    } else if (currentFormStepIndex === 0) { // First form step
+      goToStep("start");
+    } else {
+      console.warn(
+        `KycContext: prevStep called from non-form step ${currentUiStepId}. Navigating to start.`
+      );
+      goToStep("start");
+    }
+   }, [currentUiStepId, goToStep]);
 
-    /** Resets the KYC progress state and clears localStorage. Optionally navigates to the start page. */
-    const resetKycProgress = useCallback(async (navigateToStart = true) => { // Make async for refetch
-        console.log("KycContext: Resetting KYC progress.");
-        startTransition(() => {
-            setKycDataInternal({});
-            setFileState({ idFrontFile: null, idBackFile: null });
-            setSubmissionError(null);
-            // Reset backend status LOCALLY to 'not_started' to allow restarting the flow.
-            // AuthContext will hold the *actual* backend status after refetch.
-            setBackendStatus('not_started');
-            setCurrentUiStepId('start'); // Reset UI step to start
-            setRejectionReason(null); // Clear local rejection reason display
-            setIsLoadingStatus(false); // Stop loading indicators if any
-            setIsSubmitting(false);
+  /** Resets local KYC state, clears storage, refetches Auth user, and optionally navigates. */
+  const resetKycProgress = useCallback(async (navigateToStart = true) => {
+    console.log("KycContext: Resetting KYC progress...");
+    localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+    startTransition(() => {
+      setKycDataInternal({});
+      setFileState({ idFrontFile: null, idBackFile: null });
+      setSubmissionError(null);
+      setBackendStatus("not_started"); // Reset local status to allow restart
+      setCurrentUiStepId("start");
+      setRejectionReason(null); // Clear displayed reason
+      setIsLoadingStatus(false);
+      setIsSubmitting(false);
+    });
+
+    console.log("KycContext: Triggering AuthContext refetch after KYC reset.");
+    try {
+      await refetchUser(); // Ensure AuthContext has latest status (might still be 'rejected' backend-wise)
+      console.log("KycContext: AuthContext refetch completed after reset.");
+    } catch (err) {
+      console.error("KycContext: Error refetching user after reset:", err);
+    }
+
+    if (navigateToStart) {
+      goToStep("start");
+    }
+  }, [goToStep, refetchUser]); // Added refetchUser
+
+  /** Initiates the KYC flow UI from start/skipped/rejected state. */
+  const startKycFlow = useCallback(async () => {
+    console.log("KycContext: Starting KYC flow UI.");
+    localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY); // Clear any old persisted data
+    startTransition(() => {
+      // Reset local form state for a fresh start
+      setKycDataInternal({});
+      setFileState({ idFrontFile: null, idBackFile: null });
+      setSubmissionError(null);
+      setBackendStatus("not_started"); // Set local status to allow form progression
+      setCurrentUiStepId("personal"); // Set UI step to the first form step
+      setRejectionReason(null); // Clear local rejection reason display
+      setIsLoadingStatus(false);
+      setIsSubmitting(false);
+    });
+
+    console.log("KycContext: Triggering AuthContext refetch after starting flow UI.");
+    try {
+      await refetchUser(); // Sync AuthContext (status likely unchanged yet)
+      console.log("KycContext: AuthContext refetch completed after starting flow UI.");
+    } catch (err) { console.error("KycContext: Error refetching user after starting flow UI:", err); }
+
+    goToStep("personal"); // Navigate to the first form step page
+  }, [goToStep, refetchUser]); // Added refetchUser
+
+  /** Validates and submits KYC data, updates AuthContext on success. */
+  const submitKycData = useCallback(async (): Promise<boolean> => {
+    if (!user) {
+      setSubmissionError("Authentication required to submit KYC."); goToStep("unauthenticated"); return false;
+    }
+
+    console.log("KycContext: Validating submission data...");
+    setSubmissionError(null);
+    const { idFrontFile, idBackFile } = fileState;
+    const requiredFields: (keyof KycSubmissionPayload)[] = [ 'firstName', 'lastName', 'dateOfBirth', 'mobile', 'nationality', 'idType', 'idNumber', 'idIssueDate', 'idExpiryDate' ];
+    const missingFieldsLabels: string[] = [];
+    let firstErrorStep: KycStepId = "review";
+    const stepMapping: Record<keyof KycProgressData | 'idFrontFile' | 'idBackFile', KycStepId> = { firstName: "personal", lastName: "personal", dateOfBirth: "personal", mobile: "personal", occupation: "details", salaryRange: "details", nationality: "details", idType: "identity", idNumber: "identity", idIssueDate: "identity", idExpiryDate: "identity", idFrontFile: "upload", idBackFile: "upload" };
+    const stepOrderValue = (step: KycStepId) => formStepOrder.indexOf(step as any) ?? 99;
+
+    requiredFields.forEach((field) => {
+      let isMissing = false; let value = kycData[field as keyof KycProgressData];
+      if (field === "mobile") isMissing = !value || !(value as KycMobile).countryCode || !(value as KycMobile).number;
+      else isMissing = value === undefined || value === null || (typeof value === "string" && value.trim() === "");
+      if (isMissing) { missingFieldsLabels.push(field); if (stepOrderValue(stepMapping[field]) < stepOrderValue(firstErrorStep)) firstErrorStep = stepMapping[field]; }
+    });
+    if (!idFrontFile) { missingFieldsLabels.push("idFrontFile"); if (stepOrderValue("upload") < stepOrderValue(firstErrorStep)) firstErrorStep = "upload"; }
+    const requiresBackId = kycData.idType === "resident_permit";
+    if (requiresBackId && !idBackFile) { missingFieldsLabels.push("idBackFile"); if (stepOrderValue("upload") < stepOrderValue(firstErrorStep)) firstErrorStep = "upload"; }
+
+    if (missingFieldsLabels.length > 0) {
+      const errorMsg = `Submission Error: Missing required fields/documents: ${missingFieldsLabels.join(", ")}. Please review.`;
+      console.error(errorMsg, `Directing to first error step: ${firstErrorStep}`);
+      setSubmissionError(errorMsg); goToStep(firstErrorStep); return false;
+    }
+
+    console.log("KycContext: Validation passed, attempting submission API call...");
+    startTransition(() => setIsSubmitting(true));
+
+    const payload: KycSubmissionPayload = { firstName: kycData.firstName!, lastName: kycData.lastName!, dateOfBirth: kycData.dateOfBirth!, mobile: kycData.mobile!, nationality: kycData.nationality!, idType: kycData.idType!, idNumber: kycData.idNumber!, idIssueDate: kycData.idIssueDate!, idExpiryDate: kycData.idExpiryDate!, occupation: kycData.occupation || undefined, salaryRange: kycData.salaryRange || null };
+
+    try {
+      const response = await kycService.submitKyc(payload, idFrontFile!, idBackFile);
+      const newBackendStatus = response.kyc?.status || "pending";
+      const newReason = response.kyc?.rejectionReason || null;
+      console.log("KycContext: Submission successful. New Backend Status:", newBackendStatus);
+
+      localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+      startTransition(() => {
+        setBackendStatus(newBackendStatus); // Update local context status
+        setRejectionReason(newReason);
+        setKycDataInternal({}); // Clear local form data
+        setFileState({ idFrontFile: null, idBackFile: null });
+        setSubmissionError(null);
+        setIsSubmitting(false); // Turn off submission indicator
+        // --- Update AuthContext Immediately ---
+        updateAuthUserKycStatus(newBackendStatus, newReason);
+        // ----------------------------------
+      });
+
+      console.log("KycContext: Triggering AuthContext refetch after successful KYC submission.");
+      try {
+        await refetchUser(); // Update AuthContext fully
+        console.log("KycContext: AuthContext refetch completed after submission.");
+        // Redirection will be handled by Effect 2 based on the updated backendStatus
+      } catch (refetchError) { console.error("KycContext: Error refetching user after submission:", refetchError); }
+
+      return true; // Indicate success
+    } catch (error: any) {
+      console.error("KycContext: Submission API call failed:", error);
+      const errorMsg = error.message || "An unexpected error occurred during submission.";
+      setSubmissionError(errorMsg);
+      startTransition(() => setIsSubmitting(false));
+      return false; // Indicate failure
+    }
+  }, [user, kycData, fileState, goToStep, refetchUser, updateAuthUserKycStatus]); // Added dependencies
+
+  // --- Effects ---
+
+  /** Effect 1: Initialization - Handles auth changes, initial fetch. */
+  useEffect(() => { /* ... (mostly unchanged, ensure fetchKycStatus is called) ... */
+        // console.log(`KycContext: Init Effect - Auth Loading: ${authLoading}, Initialized: ${isInitialized}`);
+    if (authLoading) {
+      startTransition(() => {
+        setIsInitialized(false);
+        setIsLoadingStatus(true); // Show loading while auth loads
+        if (backendStatus !== "loading") setBackendStatus("loading");
+      });
+      return; // Wait for auth loading to finish
+    }
+
+    if (!user) {
+      // User definitively logged out
+      // console.log("KycContext: Init Effect - User logged out.");
+      startTransition(() => {
+        if (backendStatus !== "unauthenticated")
+          setBackendStatus("unauthenticated");
+        setIsInitialized(true);
+        setIsLoadingStatus(false);
+        // Clear any stale KYC data if user logs out
+        if (Object.keys(kycData).length > 0) setKycDataInternal({});
+        if (fileState.idBackFile || fileState.idFrontFile)
+          setFileState({ idFrontFile: null, idBackFile: null });
+        if (localStorage.getItem(KYC_PROGRESS_STORAGE_KEY))
+          localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+        if (currentUiStepId !== "unauthenticated")
+          setCurrentUiStepId("unauthenticated");
+      });
+      return;
+    }
+
+    // User is logged in. Fetch KYC status if this context isn't initialized yet.
+    if (user && !isInitialized) {
+      console.log(
+        "KycContext: Init Effect - User logged in, initializing context."
+      );
+      startTransition(() => {
+        setIsLoadingStatus(true);
+        if (backendStatus !== "loading") setBackendStatus("loading");
+      });
+
+      fetchKycStatus() // Fetches status, updates KycContext AND AuthContext
+        .then(() => {
+          loadPersistedData(); // Load data after status is known
+        })
+        .catch((err) =>
+          console.error(
+            "KycContext: Error in initial fetch/load sequence:",
+            err
+          )
+        )
+        .finally(() => {
+          startTransition(() => {
+            setIsInitialized(true); // Mark KycContext as initialized
+            // setIsLoadingStatus(false); // Handled within fetchKycStatus
+          });
         });
-        localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+    } else if (user && isInitialized) {
+      // Already initialized. Reset loading if stuck.
+      if (isLoadingStatus) startTransition(() => setIsLoadingStatus(false));
+    }
+  }, [authLoading, user, isInitialized, fetchKycStatus, loadPersistedData, backendStatus, kycData, fileState, currentUiStepId]); // Dependencies
 
-        // --- CRITICAL: Trigger AuthContext refetch ---
-        // This ensures AuthContext reflects the latest *actual* status from the backend (e.g., still 'rejected'),
-        // while this KycContext allows the user to restart the flow from 'start'.
-        console.log("KycContext: Triggering AuthContext refetch after KYC reset.");
-        try {
-            await refetchUser();
-            console.log("KycContext: AuthContext refetch completed after reset.");
-        } catch (err) {
-            console.error("KycContext: Error refetching user after reset:", err);
-        }
-        // --- End Refetch ---
+  /** Effect 2: Redirection Logic - Ensures user is on the correct /kyc/* page. */
+  useEffect(() => { /* ... (Refined redirection logic) ... */
+    // Wait for auth, KycContext init, and status loading
+    if (authLoading || !isInitialized || isLoadingStatus) return;
 
-        if (navigateToStart) {
-            goToStep('start');
-        }
-    }, [goToStep, refetchUser]); // Added refetchUser dependency
+    const isOnKycPage = pathname.startsWith(kycBasePrefix);
 
-     /** Initiates the KYC flow from start/skipped/rejected state */
-     const startKycFlow = useCallback(async () => { // Make async for refetch
-        console.log("KycContext: Starting KYC flow (from start/skipped/rejected).");
-        startTransition(() => {
-            // Clear any previous progress data and files
-            setKycDataInternal({});
-            setFileState({ idFrontFile: null, idBackFile: null });
-            setSubmissionError(null);
-            // Set local backend status to not_started to allow form progression
-            setBackendStatus('not_started');
-            // Set the UI step to the *first form step* immediately
-            setCurrentUiStepId('personal');
-            // Clear local rejection reason display for the new flow
-            setRejectionReason(null);
-            setIsLoadingStatus(false);
-            setIsSubmitting(false);
-        });
-        localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
+    // Handle Unauthenticated State
+    if (backendStatus === "unauthenticated") {
+      if (isOnKycPage) { console.log(`KycContext: (Redirect) Unauth, on KYC page (${pathname}). Redirecting login.`); goToStep("unauthenticated"); }
+      else if (currentUiStepId !== "unauthenticated") { updateCurrentUiStepId("unauthenticated"); } return;
+    }
 
-        // --- Trigger AuthContext refetch ---
-        // Good practice to ensure AuthContext is current, although the main purpose
-        // here is navigating the user and resetting local state for the form flow.
-        console.log("KycContext: Triggering AuthContext refetch after starting KYC flow.");
-        try {
-            await refetchUser();
-             console.log("KycContext: AuthContext refetch completed after starting flow.");
-        } catch (err) {
-            console.error("KycContext: Error refetching user after start flow:", err);
-        }
-        // --- End Refetch ---
+    // Handle Authenticated User Redirections
+    if (user) {
+      const targetStatusPath = statusPageMap[backendStatus as KycStatus];
+      const isFinalStatus = ["pending", "rejected", "verified"].includes(backendStatus as string);
 
-        // Navigate to the first form step explicitly
-        goToStep('personal');
-    }, [goToStep, refetchUser]); // Added refetchUser dependency
+      // 1. Error State -> Error Page
+      if (backendStatus === "error" && pathname !== errorPagePath) { console.log(`KycContext: (Redirect) Status 'error'. Redirecting to ${errorPagePath}`); goToStep("error"); return; }
 
-    /** Validates data and submits the KYC information to the backend. Requires user to be logged in. */
-    const submitKycData = useCallback(async (): Promise<boolean> => {
-        if (!user) {
-            console.error("KycContext: Cannot submit KYC data, user is not authenticated.");
-            setSubmissionError("Authentication required to submit KYC.");
-            goToStep('unauthenticated'); // Redirect to login via context helper
-            return false;
-        }
+      // 2. Final Status -> Specific Status/Complete Page
+      if (isFinalStatus && targetStatusPath) {
+        const finalPath = backendStatus === "verified" ? completePagePath : targetStatusPath;
+        const targetUiStep = backendStatus === "verified" ? "complete" : (backendStatus as KycStepId);
 
-        console.log("KycContext: Attempting to submit KYC data...");
-        setSubmissionError(null); // Clear previous errors
-        startTransition(() => { setIsSubmitting(true); });
+        if (pathname !== finalPath || formStepPaths.includes(pathname)) { console.log(`KycContext: (Redirect) Status ${backendStatus}. Redirecting to final page: ${finalPath}`); goToStep(targetUiStep); }
+        else if (currentUiStepId !== targetUiStep) { updateCurrentUiStepId(targetUiStep); } return;
+      }
 
-        const { idFrontFile, idBackFile } = fileState;
+      // 3. Resumable Status (Not Started, Skipped) or Active Form Filling
+      const canStartOrResume = ["not_started", "rejected", "skipped"].includes(backendStatus as string);
+      const pathSegments = pathname.split("/"); const currentPathStep = pathSegments[pathSegments.length - 1] as KycStepId;
+      const isOnFormPage = formStepPaths.includes(pathname);
+      const isOnStartPage = pathname === startPagePath;
 
-        // --- Pre-submission Validation ---
-        let firstErrorStep: KycStepId = 'review'; // Default error location
-        const missingFieldsLabels: string[] = [];
-
-        // Check required data fields (align with KycSubmissionPayload)
-        const requiredFields: (keyof KycSubmissionPayload)[] = [
-            'firstName', 'lastName', 'dateOfBirth', 'mobile', 'nationality',
-            'idType', 'idNumber', 'idIssueDate', 'idExpiryDate'
-        ];
-
-        for (const field of requiredFields) {
-             let isMissing = false;
-             let fieldLabel = field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-
-             if (field === 'mobile') {
-                 isMissing = !kycData.mobile || !kycData.mobile.countryCode || !kycData.mobile.number;
-                 fieldLabel = 'Mobile Number';
-                 if (isMissing && firstErrorStep === 'review') firstErrorStep = 'personal';
-             } else if (field === 'idType') {
-                 isMissing = !kycData.idType;
-                 fieldLabel = 'ID Type';
-                  if (isMissing && ['review', 'personal', 'details'].includes(firstErrorStep)) firstErrorStep = 'identity';
-             } else {
-                 const value = kycData[field as keyof KycProgressData];
-                 isMissing = value === undefined || value === null || (typeof value === 'string' && value.trim() === '');
-                 // Determine step for missing field
-                 if (isMissing) {
-                    if (['firstName', 'lastName', 'dateOfBirth'].includes(field) && firstErrorStep === 'review') firstErrorStep = 'personal';
-                    else if (['nationality'].includes(field) && ['review', 'personal'].includes(firstErrorStep)) firstErrorStep = 'details'; // Occupation/Salary optional
-                    else if (['idNumber', 'idIssueDate', 'idExpiryDate'].includes(field) && ['review', 'personal', 'details'].includes(firstErrorStep)) firstErrorStep = 'identity';
-                 }
-             }
-             if (isMissing) missingFieldsLabels.push(fieldLabel);
-        }
-
-        // Check required files
-        if (!idFrontFile) {
-            missingFieldsLabels.push('Front ID Document');
-            if (['review', 'personal', 'details', 'identity'].includes(firstErrorStep)) firstErrorStep = 'upload';
-        }
-        const requiresBackId = kycData.idType === 'resident_permit'; // Only require back for specific types
-        if (requiresBackId && !idBackFile) {
-            missingFieldsLabels.push('Back ID Document');
-            if (['review', 'personal', 'details', 'identity'].includes(firstErrorStep)) firstErrorStep = 'upload';
-        }
-
-        if (missingFieldsLabels.length > 0) {
-             const errorMsg = `Submission Error: Missing required information: ${missingFieldsLabels.join(', ')}. Please go back and complete these fields.`;
-             console.error(errorMsg, `Directing to step: ${firstErrorStep}`);
-             setSubmissionError(errorMsg);
-             goToStep(firstErrorStep); // Navigate to the first step with missing data
-             startTransition(() => { setIsSubmitting(false); });
-             return false;
-        }
-        // --- End Validation ---
-
-        // Construct Payload (Ensure fields exist due to validation above)
-        const payload: KycSubmissionPayload = {
-            firstName: kycData.firstName!, lastName: kycData.lastName!, dateOfBirth: kycData.dateOfBirth!,
-            mobile: kycData.mobile!, nationality: kycData.nationality!, idType: kycData.idType!,
-            idNumber: kycData.idNumber!, idIssueDate: kycData.idIssueDate!, idExpiryDate: kycData.idExpiryDate!,
-            // Optional fields: pass undefined/null as appropriate
-            occupation: kycData.occupation || undefined,
-            salaryRange: kycData.salaryRange || null,
-        };
-
-        // --- API Call via Service ---
-        try {
-            const response = await kycService.submitKyc(payload, idFrontFile!, idBackFile); // Pass files (idFrontFile is validated)
-            console.log("KycContext: Submission successful, backend status:", response.kyc?.status);
-
-            const newBackendStatus = response.kyc?.status || 'pending'; // Default to pending if status missing in response
-
-            startTransition(() => {
-                setBackendStatus(newBackendStatus);
-                setRejectionReason(response.kyc?.rejectionReason || null);
-                setKycDataInternal({}); // Clear local form progress data
-                setFileState({ idFrontFile: null, idBackFile: null }); // Clear local files
-            });
-            localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY); // Clear persisted data
-
-            // --- CRITICAL: Refetch Auth user data AFTER successful submission ---
-            console.log("KycContext: Triggering AuthContext refetch after successful KYC submission.");
-            await refetchUser(); // Update AuthContext with the new status from backend
-            console.log("KycContext: AuthContext refetch completed after submission.");
-            // --- End Refetch ---
-
-            // Let Effect 2 handle navigation based on the new 'backendStatus'
-            startTransition(() => { setIsSubmitting(false); });
-            return true; // Indicate success
-
-        } catch (error: any) {
-            console.error("KycContext: Submission failed:", error);
-            const errorMsg = error.message || "An unexpected error occurred during submission."; // Use error message from service
-            setSubmissionError(errorMsg);
-            // Stay on review page to show the error
-            startTransition(() => { setIsSubmitting(false); });
-            return false; // Indicate failure
-        }
-    }, [user, kycData, fileState, goToStep, refetchUser]); // Dependencies
+      if (canStartOrResume) {
+        // Redirect from final/error pages back to start
+        if (statusPagePaths.includes(pathname) || pathname === completePagePath || pathname === errorPagePath) { console.log(`KycContext: (Redirect) Status ${backendStatus} but on final/error page (${pathname}). Redirecting to start.`); goToStep("start"); return; }
+        // Sync UI step if on valid start/form page
+        if (isOnStartPage && currentUiStepId !== "start") updateCurrentUiStepId("start");
+        else if (isOnFormPage && formStepOrder.includes(currentPathStep as any) && currentUiStepId !== currentPathStep) updateCurrentUiStepId(currentPathStep);
+      }
+      // Note: No explicit redirection if status is 'not_started' etc. and user is on a form page. Let them continue.
+    }
+   }, [authLoading, user, backendStatus, isInitialized, isLoadingStatus, pathname, currentUiStepId, updateCurrentUiStepId, goToStep]); // Dependencies
 
 
-    // --- Effects ---
+  // --- Memoized Context Value ---
+  const value = useMemo<KycContextType>(() => ({
+    currentUiStepId, kycData, fileState, backendStatus, rejectionReason, isInitialized,
+    isAuthLoading: authLoading, isLoadingStatus, isSubmitting, submissionError,
+    setKycData, setFile, updateCurrentUiStepId, goToStep, nextStep, prevStep,
+    startKycFlow, fetchKycStatus, resetKycProgress, submitKycData,
+  }), [
+    currentUiStepId, kycData, fileState, backendStatus, rejectionReason, isInitialized,
+    authLoading, isLoadingStatus, isSubmitting, submissionError, setKycData, setFile,
+    updateCurrentUiStepId, goToStep, nextStep, prevStep, startKycFlow, fetchKycStatus,
+    resetKycProgress, submitKycData, // Ensure all functions are dependencies
+  ]);
 
-    /** Effect 1: Initialization - Handles auth changes and triggers initial KYC fetch */
-    useEffect(() => {
-        // console.log(`KycContext: Init Effect - Auth Loading: ${authLoading}`);
-        if (authLoading) {
-            startTransition(() => {
-                setIsInitialized(false);
-                setIsLoadingStatus(true); // Show loading while auth loads
-                if (backendStatus !== 'loading') setBackendStatus('loading');
-            });
-            return;
-        }
+  // --- Render Provider ---
+  const showAuthLoading = authLoading; // Global Auth loading
+  // Show KycContext initializing only *after* auth is done, and *before* KycContext is ready
+  const showInitializing = !authLoading && !isInitialized && user;
+  // Show submission loading overlay
+  const showSubmitting = isSubmitting;
+  // Show status loading indicator (less intrusive? maybe just a spinner somewhere?)
+  // const showStatusLoadingIndicator = !authLoading && isLoadingStatus && isInitialized && user;
 
-        if (!user) {
-            // User is confirmed not logged in
-            // console.log("KycContext: Init Effect - User not authenticated.");
-            startTransition(() => {
-                if (backendStatus !== 'unauthenticated') setBackendStatus('unauthenticated');
-                setIsInitialized(true);
-                setIsLoadingStatus(false);
-                setKycDataInternal({});
-                setFileState({ idFrontFile: null, idBackFile: null });
-                if (localStorage.getItem(KYC_PROGRESS_STORAGE_KEY)) localStorage.removeItem(KYC_PROGRESS_STORAGE_KEY);
-            });
-            return;
-        }
+  return (
+    <KycContext.Provider value={value}>
+      {/* Conditionally render overlays. Auth loader handled globally by AuthProvider */}
+      {/* {showAuthLoading && <KycContextLoadingOverlay message="Loading Session..." />} */}
+      {showInitializing && <KycContextLoadingOverlay message="Initializing KYC..." />}
+      {showSubmitting && (
+        <div className="fixed inset-0 z-[210] flex justify-center items-center bg-black/60 backdrop-blur-sm" role="alertdialog" aria-live="assertive" aria-busy="true">
+          <div className="text-center text-white p-6 bg-card rounded-lg shadow-lg border border-primary">
+            <Loader2 className="h-10 w-10 animate-spin text-primary mb-3 mx-auto" />
+            <p className="text-xl font-semibold text-foreground">Submitting Information...</p>
+            <p className="text-sm text-muted-foreground">Please wait...</p>
+          </div>
+        </div>
+      )}
 
-        // User is logged in, proceed with KYC status fetch ONLY IF NOT ALREADY INITIALIZED
-        if (!isInitialized) {
-            console.log("KycContext: Init Effect - User authenticated. Fetching initial KYC status.");
-            startTransition(() => {
-                 setIsLoadingStatus(true); // Start loading KYC status
-                 if (backendStatus !== 'loading') setBackendStatus('loading'); // Ensure loading state
-            });
-
-            fetchKycStatus()
-                .then(() => {
-                    // Load persisted data *after* fetch completes and status is known
-                    // This happens within startTransition inside loadPersistedData
-                    loadPersistedData();
-                })
-                .catch(err => console.error("KycContext: Error in initial fetch/load sequence:", err))
-                .finally(() => {
-                    startTransition(() => setIsInitialized(true)); // Mark as initialized only after fetch+load attempt
-                    // console.log("KycContext: Init Effect - Sequence complete.");
-                });
-        } else {
-             // If already initialized but user/auth changes, potentially re-fetch?
-             // For now, rely on explicit calls or full page refresh.
-             // console.log("KycContext: Init Effect - Already initialized, skipping initial fetch.");
-             // Ensure loading status is false if auth is done and we're initialized
-             if (isLoadingStatus) startTransition(() => setIsLoadingStatus(false));
-        }
-
-    // fetchKycStatus and loadPersistedData are stable callbacks due to useCallback
-    }, [authLoading, user, fetchKycStatus, loadPersistedData, isInitialized, backendStatus, isLoadingStatus]);
-
-
-    /** Effect 2: Redirection Logic - Ensures user is on the correct page based on status */
-    useEffect(() => {
-        // Wait for initialization and auth/status loading to complete before attempting redirection
-        if (authLoading || !isInitialized || isLoadingStatus) {
-             // console.log(`KycContext: Redirection Check Deferred - AuthLoading: ${authLoading}, Initialized: ${isInitialized}, KYCStatusLoading: ${isLoadingStatus}, BackendStatus: ${backendStatus}`);
-            return;
-        }
-
-        // Current path details
-        const isOnFormPage = formStepPaths.includes(pathname);
-        const isOnStartPage = pathname === startPagePath;
-        const isOnErrorPage = pathname === errorPagePath;
-        const isOnCompletePage = pathname === completePagePath;
-        const isOnLoginPage = pathname.startsWith(loginPagePath);
-        const isOnAnyKycPage = pathname.startsWith('/kyc/');
-
-        // --- Handle Unauthenticated State ---
-        if (backendStatus === 'unauthenticated') {
-            // If on any KYC page (except potentially error) and not logged in, redirect to login
-            if (isOnAnyKycPage && !isOnLoginPage && !isOnErrorPage) {
-               console.log(`KycContext: (Redirect Effect) Backend status unauthenticated (Path: ${pathname}). Ensuring redirect to login.`);
-               const redirectTarget = (pathname === '/' || pathname.startsWith('/auth/')) ? startPagePath : pathname;
-               router.replace(`${loginPagePath}?redirect=${encodeURIComponent(redirectTarget)}`);
-               if (currentUiStepId !== 'unauthenticated') updateCurrentUiStepId('unauthenticated');
-           } else if (!isOnLoginPage && currentUiStepId !== 'unauthenticated') {
-               // Ensure UI step is correct even if not redirecting (e.g., already on login)
-               updateCurrentUiStepId('unauthenticated');
-           }
-           return; // Stop processing for unauthenticated state
-       }
-
-        // --- KYC Status Based Redirection (User is Authenticated) ---
-        const targetStatusPath = statusPageMap[backendStatus as KycStatus]; // Path for pending/rejected/verified
-        const isOnTargetStatusPage = targetStatusPath && pathname === targetStatusPath;
-        const isOnAnyStatusPage = statusPagePaths.includes(pathname); // includes pending, rejected, complete paths
-
-        // console.log(`KycContext: Redirection Check - Path: ${pathname}, Status: ${backendStatus}, TargetStatusPath: ${targetStatusPath}, CurrentUIStep: ${currentUiStepId}`);
-
-        // 1. Error State -> Error Page
-        if (backendStatus === 'error') {
-            if (!isOnErrorPage) {
-                console.log(`KycContext: Status is error. Redirecting to error page.`);
-                router.replace(errorPagePath);
-                updateCurrentUiStepId('error');
-            } else if (currentUiStepId !== 'error') {
-                 updateCurrentUiStepId('error'); // Sync UI step if already on error page
-            }
-            return; // Stop processing
-        }
-
-        // 2. Final/Status States (Verified, Pending, Rejected) -> Go TO Specific Status/Complete Page
-        if (targetStatusPath) { // Covers pending, rejected, verified (maps to /kyc/complete)
-            const finalPath = backendStatus === 'verified' ? completePagePath : targetStatusPath;
-            const isOnFinalPath = pathname === finalPath;
-
-            if (!isOnFinalPath) {
-                console.log(`KycContext: Status is ${backendStatus}. Redirecting to designated page: ${finalPath}`);
-                router.replace(finalPath);
-                // Update UI step to match the target *after* initiating navigation
-                const targetUiStep = backendStatus === 'verified' ? 'complete' : (backendStatus as KycStepId);
-                updateCurrentUiStepId(targetUiStep);
-            } else {
-                 // If already on the correct final path, ensure UI step matches
-                 const targetUiStep = backendStatus === 'verified' ? 'complete' : (backendStatus as KycStepId);
-                 if (currentUiStepId !== targetUiStep) updateCurrentUiStepId(targetUiStep);
-            }
-            return; // Stop processing
-        }
-
-        // 3. Not Started / Skipped State -> Allow on Start or Form pages. Redirect AWAY from Status/Complete/Error pages.
-        if (backendStatus === 'not_started' || backendStatus === 'skipped') {
-            // If user is on a page they shouldn't be (pending, rejected, complete, error)
-            if (isOnAnyStatusPage || isOnErrorPage || isOnCompletePage) {
-                console.log(`KycContext: Status is ${backendStatus} (Path: ${pathname}, which is a status/error/complete page). Redirecting TO start page.`);
-                router.replace(startPagePath);
-                updateCurrentUiStepId('start');
-                return; // Stop processing
-            }
-
-           // If on a form page, ensure the UI step matches the current path
-           const pathSegments = pathname.split('/');
-           const potentialStepId = pathSegments[pathSegments.length - 1] as KycStepId;
-           if (isOnFormPage && formStepOrder.includes(potentialStepId as any)) {
-               if (currentUiStepId !== potentialStepId) {
-                    // console.log(`KycContext: Syncing UI step on form page. Path: ${pathname}, New Step: ${potentialStepId}`);
-                    updateCurrentUiStepId(potentialStepId);
-               }
-           } else if (isOnStartPage && currentUiStepId !== 'start') {
-                // If on start page, ensure UI step is 'start'
-                 // console.log(`KycContext: Syncing UI step on start page.`);
-                updateCurrentUiStepId('start');
-           } else if (!isOnStartPage && !isOnFormPage && currentUiStepId !== 'start') {
-               // If somehow not on start or form pages, default UI step to 'start' for safety
-               // This might happen briefly during navigation or if URL is manually entered.
-               // console.log(`KycContext: Non-form/start page with resumable status. Setting UI step to 'start'.`);
-               updateCurrentUiStepId('start');
-           }
-           // Allow staying on form pages or start page
-           return; // Stop processing
-       }
-
-         // 4. Fallback (Should be rare if all statuses are handled) -> Go TO Start Page
-         // Only redirect if definitely *not* on a known valid page for the current context
-         if (!isOnLoginPage && !isOnStartPage && !isOnFormPage && !isOnAnyStatusPage && !isOnCompletePage && !isOnErrorPage) {
-            console.warn(`KycContext: Reached fallback redirection. Status: ${backendStatus}, Path: ${pathname}. Redirecting to Start.`);
-            router.replace(startPagePath);
-            updateCurrentUiStepId('start');
-       }
-
-   // Ensure all state and router dependencies that influence the logic are included.
-   }, [authLoading, user, backendStatus, isInitialized, isLoadingStatus, pathname, router, currentUiStepId, updateCurrentUiStepId, goToStep]);
-
-
-    // --- Memoized Context Value ---
-    const value = useMemo<KycContextType>(() => ({
-        currentUiStepId, kycData, fileState, backendStatus, rejectionReason,
-        isInitialized,
-        isAuthLoading: authLoading,
-        isLoadingStatus,
-        isSubmitting,
-        setKycData, setFile, updateCurrentUiStepId, goToStep, nextStep, prevStep, startKycFlow,
-        fetchKycStatus, resetKycProgress, submitKycData
-    }), [
-        currentUiStepId, kycData, fileState, backendStatus, rejectionReason,
-        isInitialized, authLoading, isLoadingStatus, isSubmitting,
-        setKycData, setFile, updateCurrentUiStepId, goToStep, nextStep, prevStep, startKycFlow,
-        fetchKycStatus, resetKycProgress, submitKycData // Ensure all functions are dependencies
-    ]);
-
-    // --- Render Provider ---
-
-     // 1. Show Auth Loading Overlay FIRST
-     if (authLoading) {
-         return <LoadingOverlay message="Loading Session..." />;
-     }
-
-     // 2. Show Initializing Overlay if KYC context is initializing (after auth is confirmed done)
-     if (!isInitialized && (user || backendStatus === 'unauthenticated')) {
-         return <LoadingOverlay message="Initializing KYC..." />;
-     }
-
-     // 3. Show KYC Status Loading Overlay if explicitly fetching status
-     // (and user exists, init done, not already on login page)
-     if (user && isInitialized && isLoadingStatus && !pathname.startsWith(loginPagePath)) {
-         return <LoadingOverlay message="Loading KYC Status..." />;
-     }
-
-     // 4. Show Error Loading Overlay if backend status is error
-     // (and user exists, init done, not already on error page)
-      if (user && isInitialized && backendStatus === 'error' && pathname !== errorPagePath) {
-         return <LoadingOverlay message="Error Loading KYC..." />;
-     }
-
-     // 5. Render Children when ready
-     // Ready if: Auth not loading AND Initialized AND (unauthenticated OR user exists and not loading/error)
-     const isReadyToRenderChildren = !authLoading && isInitialized &&
-        (backendStatus === 'unauthenticated' || (user && !isLoadingStatus && backendStatus !== 'error'));
-
-     if (isReadyToRenderChildren || pathname.startsWith(loginPagePath) ) { // Allow rendering login page even if context isn't fully stable
-         return (
-             <KycContext.Provider value={value}>
-                 {/* Submission Loading Overlay */}
-                 {isSubmitting && (
-                     <div className="fixed inset-0 z-[210] flex justify-center items-center bg-black/60 backdrop-blur-sm" role="alertdialog" aria-live="assertive" aria-busy="true" aria-label="Submitting KYC information">
-                         <div className="text-center text-white p-6 bg-card rounded-lg shadow-lg border border-primary">
-                             <Loader2 className="h-10 w-10 animate-spin text-primary mb-3 mx-auto" />
-                             <p className="text-xl font-semibold text-foreground">Submitting Information...</p>
-                             <p className="text-sm text-muted-foreground">Please wait...</p>
-                         </div>
-                     </div>
-                 )}
-                 {children}
-             </KycContext.Provider>
-         );
-     }
-
-     // Fallback: If none of the above, show initializing as safety net.
-     // console.log("KycContext: Reached fallback render state."); // For debugging
-     return <LoadingOverlay message="Initializing..." />;
+      {/* Render children once auth is resolved */}
+      {!authLoading && children}
+    </KycContext.Provider>
+  );
 };
 
 //--------------------------------------------------
 // Hook for Consuming Context
 //--------------------------------------------------
-
 export const useKyc = (): KycContextType => {
-    const context = useContext(KycContext);
-    if (context === undefined) {
-        throw new Error('useKyc must be used within a KycProvider');
-    }
-    return context;
+  const context = useContext(KycContext);
+  if (context === undefined) throw new Error("useKyc must be used within a KycProvider");
+  return context;
 };

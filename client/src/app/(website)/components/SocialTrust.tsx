@@ -1559,10 +1559,267 @@
 
 // export default ReviewCards;
 
-"use client";
+// "use client";
+// import React, { useState, useEffect, useRef } from "react";
+// import { FaStar, FaStarHalfAlt } from "react-icons/fa";
 
+// // --- StarRating Component ---
+// interface StarRatingProps {
+//   rating: number;
+//   maxRating?: number;
+// }
+
+// const StarRating: React.FC<StarRatingProps> = ({ rating, maxRating = 5 }) => {
+//   const stars = [];
+//   const fullStars = Math.floor(rating);
+//   const hasHalfStar = rating % 1 !== 0;
+
+//   for (let i = 0; i < maxRating; i++) {
+//     if (i < fullStars) {
+//       stars.push(
+//         <FaStar
+//           key={i}
+//           className="inline-block text-[#FBBF24] dark:text-white"
+//         />
+//       );
+//     } else if (i === fullStars && hasHalfStar) {
+//       stars.push(
+//         <FaStarHalfAlt
+//           key={i}
+//           className="inline-block text-[#FBBF24] dark:text-white"
+//         />
+//       );
+//     } else {
+//       stars.push(
+//         <FaStar
+//           key={i}
+//           className="inline-block text-gray-300 dark:text-white"
+//         />
+//       );
+//     }
+//   }
+
+//   return <div className="inline-block">{stars}</div>;
+// };
+
+// // --- ReviewCard Component ---
+// interface ReviewCardProps {
+//   reviewerName: string;
+//   avatarUrl: string;
+//   rating: number;
+//   comment: string;
+// }
+
+// const ReviewCard: React.FC<ReviewCardProps> = ({
+//   reviewerName,
+//   avatarUrl,
+//   rating,
+//   comment,
+// }) => {
+//   return (
+//     <div className="bg-white dark:bg-white/5 rounded-2xl lg:p-6 p-4 flex flex-col items-start relative mb-4 flex-shrink-0">
+//       <div className="flex md:flex-row items-center w-full justify-center md:justify-start">
+//         <div className="flex flex-col md:flex-row items-center">
+//           <img
+//             src={avatarUrl}
+//             alt={`Avatar of ${reviewerName}`}
+//             className="lg:size-16 size-14 rounded-full object-cover mb-2 md:mb-0 md:mr-4"
+//           />
+//           <div className="flex flex-col items-center md:items-start">
+//             <div className="text-mainheading dark:text-primary font-semibold text-nowrap">
+//               {reviewerName}
+//             </div>
+//             <StarRating rating={rating} />
+//           </div>
+//         </div>
+//       </div>
+//       <div className="text-mainheading dark:text-gray-300 leading-relaxed font-normal mt-4 md:mt-6 text-base md:text-xl">
+//         {comment}
+//       </div>
+//     </div>
+//   );
+// };
+
+// // --- Interfaces for Data Structure ---
+// interface Review {
+//   reviewerName: string;
+//   avatarUrl: string;
+//   rating: number;
+//   comment: string;
+// }
+
+// interface ReviewGroup {
+//   id: string;
+//   reviews: Review[];
+// }
+
+// interface ReviewData {
+//   reviewGroups: ReviewGroup[];
+// }
+
+// // --- Main Component ---
+// const ReviewCards: React.FC = () => {
+//   const [reviewGroups, setReviewGroups] = useState<ReviewGroup[]>([]);
+//   const [loading, setLoading] = useState<boolean>(true);
+//   const [error, setError] = useState<Error | null>(null);
+//   const columnRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+//   useEffect(() => {
+//     const fetchReviews = async () => {
+//       setLoading(true);
+//       setError(null);
+//       try {
+//         const response = await fetch("/Review.json");
+//         if (!response.ok) {
+//           throw new Error(`HTTP error! status: ${response.status}`);
+//         }
+//         const data: ReviewData = await response.json();
+//         if (!data || !Array.isArray(data.reviewGroups)) {
+//           throw new Error("Invalid data structure received from Review.json");
+//         }
+//         setReviewGroups(data.reviewGroups);
+//       } catch (err: any) {
+//         console.error("Failed to fetch reviews:", err);
+//         setError(err instanceof Error ? err : new Error("Unknown error"));
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+//     fetchReviews();
+//   }, []);
+
+//   useEffect(() => {
+//     if (loading || error || reviewGroups.length === 0) return;
+
+//     const columns = columnRefs.current;
+
+//     columns.forEach((columnEl) => {
+//       if (!columnEl) return;
+//       const contentEl =
+//         columnEl.querySelector<HTMLDivElement>(".marquee-content");
+//       if (!contentEl) return;
+
+//       const childrenCount = contentEl.children.length;
+//       const expectedChildrenCount = reviewGroups[0]?.reviews.length * 2;
+//       let needsDuplication = true;
+
+//       if (childrenCount === expectedChildrenCount) {
+//         needsDuplication = false;
+//       }
+
+//       if (contentEl.children.length > 0) {
+//         const firstChildHeight = (contentEl.children[0] as HTMLElement)
+//           .offsetHeight;
+//         const estimatedOriginalHeight = firstChildHeight * (childrenCount / 2);
+//         if (contentEl.scrollHeight > estimatedOriginalHeight * 1.8) {
+//           needsDuplication = false;
+//         }
+//       }
+
+//       if (needsDuplication) {
+//         const originalChildren = Array.from(contentEl.children);
+//         originalChildren.forEach((child) => {
+//           const clone = child.cloneNode(true);
+//           contentEl.appendChild(clone);
+//         });
+//       }
+//     });
+//   }, [loading, error, reviewGroups]);
+
+//   if (loading) {
+//     return <div className="text-center p-10">Loading reviews...</div>;
+//   }
+
+//   if (error) {
+//     return (
+//       <div className="text-center p-10 text-red-500">
+//         Error loading reviews: {error.message}
+//       </div>
+//     );
+//   }
+
+//   if (reviewGroups.length === 0) {
+//     return (
+//       <div className="text-center p-10 text-gray-500">
+//         No reviews available yet.
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <section className="Reviews md:py-14 py-10 bg-[#F2F4F7] dark:bg-background" id="review">
+//       <div className="container mx-auto px-4">
+//         <div className="w-full mb-10 lg:mb-16">
+//           {/* heading and paragraph */}
+//           <h1 className="text-5xl md:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+//             Honest Reviews
+//             <span className="text-primary"> Real Travelers Like You </span>
+//           </h1>
+
+//           <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-500 leading-relaxed dark:text-gray-300 mt-5 text-left">
+//             Hear directly from globetrotters who’ve trusted us for their
+//             currency exchange needs. From smooth transactions to unbeatable
+//             rates, see why travelers around the world choose us every time.
+//           </p>
+//         </div>
+
+//         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 h-[600px] md:h-[1000px] overflow-hidden relative">
+//           {reviewGroups.slice(0, 3).map((group, index) => (
+//             <div
+//               key={group.id || `group-${index}`}
+//               className={`lg:marquee-column marquee-column-${index + 1}`}
+//               ref={(el: HTMLDivElement | null) => {
+//                 columnRefs.current[index] = el;
+//               }}
+//             >
+//               <div className="marquee-content flex flex-col space-y-4 md:space-y-6">
+//                 {group.reviews.map((review, reviewIndex) => (
+//                   <ReviewCard key={reviewIndex} {...review} />
+//                 ))}
+//               </div>
+//             </div>
+//           ))}
+//           {/* Gradient Fades */}
+//           <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#F2F4F7] via-gray-50 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none"></div>
+//           <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#F2F4F7] via-gray-50 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none"></div>
+//         </div>
+//       </div>
+
+//       {/* Custom CSS for marquee animation */}
+//       <style jsx global>{`
+//         .marquee-column {
+//           overflow: hidden;
+//           height: 100%;
+//           position: relative;
+//         }
+
+//         .marquee-content {
+//           animation: scroll-up 30s linear infinite;
+//         }
+
+//         .marquee-column:hover .marquee-content {
+//           animation-play-state: paused;
+//         }
+
+//         @keyframes scroll-up {
+//           0% {
+//             transform: translateY(0);
+//           }
+//           100% {
+//             transform: translateY(-50%);
+//           }
+//         }
+//       `}</style>
+//     </section>
+//   );
+// };
+
+// export default ReviewCards;
+
+"use client";
 import React, { useState, useEffect, useRef } from "react";
 import { FaStar, FaStarHalfAlt } from "react-icons/fa";
+import { useRouter, usePathname } from "next/navigation";
 
 // --- StarRating Component ---
 interface StarRatingProps {
@@ -1634,7 +1891,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
           </div>
         </div>
       </div>
-      <div className="text-mainheading dark:text-gray-300 leading-relaxed font-normal mt-4 md:mt-6 text-base md:text-xl">
+      <div className="text-mainheading dark:text-gray-300 leading-relaxed font-normal mt-4 md:mt-6 text-sm lg:text-xl">
         {comment}
       </div>
     </div>
@@ -1664,6 +1921,7 @@ const ReviewCards: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const columnRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const pathname = usePathname();
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -1747,20 +2005,45 @@ const ReviewCards: React.FC = () => {
     );
   }
 
+  const isHomePage = pathname === "/";
+
+  const heading = isHomePage ? (
+    <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+      Honest Reviews
+      <span className="text-primary"> Real Travelers Like You </span>
+    </h1>
+  ) : (
+    <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+      Trusted Currency Exchange
+      <span className="text-primary"> Feedback & Rating </span>
+    </h1>
+  );
+
+  const paragraph = isHomePage ? (
+    <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-500 leading-relaxed dark:text-gray-300 mt-5 text-left">
+      Hear directly from globetrotters who’ve trusted us for their currency
+      exchange needs. From smooth transactions to unbeatable rates, see why
+      travelers around the world choose us every time.
+    </p>
+  ) : (
+    <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-500 leading-relaxed dark:text-gray-300 mt-5 text-left">
+      Read honest customer reviews about our currency exchange services. See why
+      travelers, investors, and expats trust us for fast, reliable, and
+      competitive rates. Our clients appreciate the transparency, excellent
+      support, and real-time rates.
+    </p>
+  );
+
   return (
-    <section className="Reviews md:py-14 py-10 bg-[#F2F4F7] dark:bg-background" id="review">
+    <section
+      className="Reviews md:py-14 py-10 bg-[#F2F4F7] dark:bg-background"
+      id="review"
+    >
       <div className="container mx-auto px-4">
         <div className="w-full mb-10 lg:mb-16">
-          <h1 className="text-5xl md:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
-            Honest Reviews
-            <span className="text-primary"> Real Travelers Like You </span>
-          </h1>
-
-          <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-500 leading-relaxed dark:text-gray-300 mt-5 text-left">
-            Hear directly from globetrotters who’ve trusted us for their
-            currency exchange needs. From smooth transactions to unbeatable
-            rates, see why travelers around the world choose us every time.
-          </p>
+          {/* heading and paragraph */}
+          {heading}
+          {paragraph}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 h-[600px] md:h-[1000px] overflow-hidden relative">

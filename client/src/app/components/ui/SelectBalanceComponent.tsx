@@ -248,7 +248,7 @@ const SelectBalanceComponent: React.FC<SelectBalanceComponentProps> = ({
             <div className="">
                 <Skeleton className="h-10 w-72 sm:w-96 mx-auto rounded-md mb-8" />
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {Array(allowAddBalance ? 6 : 5) // Show one less skeleton if adding isn't allowed
+                    {Array(6) // Show one less skeleton if adding isn't allowed
                         .fill(0)
                         .map((_, i) => (
                             <Skeleton key={`skel-${i}`} className="h-28 w-full rounded-2xl" />
@@ -331,6 +331,35 @@ const SelectBalanceComponent: React.FC<SelectBalanceComponentProps> = ({
             {/* --- Balances Grid --- */}
             {!isLoading && !error && balances.length > 0 && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                    {/* "Add Another Balance" Card - Conditionally Rendered */}
+                    {allowAddBalance && (
+                        <>
+                            {onAddBalanceClick ? ( // *** If click handler is provided, use a div/button with onClick ***
+                                <div
+                                    onClick={onAddBalanceClick}
+                                    className={addCardClasses}
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyPress={(e) => e.key === 'Enter' && onAddBalanceClick()}
+                                    aria-label={addBalanceLinkText}
+                                >
+                                   <AddCardContent />
+                                </div>
+                            ) : ( // *** Otherwise, use the Link component (if href exists) ***
+                                addBalanceHref && (
+                                    <Link
+                                        href={addBalanceHref}
+                                        className={addCardClasses}
+                                        aria-label={addBalanceLinkText}
+                                    >
+                                        <AddCardContent />
+                                    </Link>
+                                )
+                            )}
+                        </>
+                    )}
+
                     {/* Map existing balances */}
                     {balances.map((account) => (
                         <div
@@ -365,33 +394,6 @@ const SelectBalanceComponent: React.FC<SelectBalanceComponentProps> = ({
                         </div>
                     ))}
 
-                    {/* "Add Another Balance" Card - Conditionally Rendered */}
-                    {allowAddBalance && (
-                        <>
-                            {onAddBalanceClick ? ( // *** If click handler is provided, use a div/button with onClick ***
-                                <div
-                                    onClick={onAddBalanceClick}
-                                    className={addCardClasses}
-                                    role="button"
-                                    tabIndex={0}
-                                    onKeyPress={(e) => e.key === 'Enter' && onAddBalanceClick()}
-                                    aria-label={addBalanceLinkText}
-                                >
-                                   <AddCardContent />
-                                </div>
-                            ) : ( // *** Otherwise, use the Link component (if href exists) ***
-                                addBalanceHref && (
-                                    <Link
-                                        href={addBalanceHref}
-                                        className={addCardClasses}
-                                        aria-label={addBalanceLinkText}
-                                    >
-                                        <AddCardContent />
-                                    </Link>
-                                )
-                            )}
-                        </>
-                    )}
                 </div>
             )}
 

@@ -790,6 +790,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAppContext } from "../../contexts/WebsiteAppContext";
 import { useRouter } from "next/navigation";
 import ThemeToggle from "../../contexts/ThemeToggle"; // Import ThemeToggle
+import { IoLogoWhatsapp } from "react-icons/io";
+import { FaTelegram } from "react-icons/fa";
 
 interface FooterLink {
   href: string;
@@ -813,29 +815,30 @@ interface FooterData {
   disclaimer: string;
 }
 
-
 const Footer: React.FC = () => {
   const footerData: FooterData = {
     sections: [
       {
-        title: "Company",
+        title: "Help",
         links: [
-          { href: "/", label: "Home" },
-          { href: "/about-us", label: "AboutUs" },
-          { href: "/features", label: "Features" },
-          { href: "#review", label: "Reviews" },
-          { href: "", label: "Help" },
+          { href: "/privacy-policy", label: "Privacy Policy" },
+          { href: "/cookie-policy", label: "Cookie Policy" },
+          { href: "/terms-and-conditions", label: "Terms and Conditions" },
+          { href: "#faq", label: "FAQs" },
         ],
       },
       {
-        title: "Follow Us",
-        socialLinks: [
-          { href: "", label: "Facebook", icon: LuFacebook },
-          { href: "", label: "Twitter", icon: FaXTwitter },
-          { href: "", label: "Instagram", icon: LuInstagram },
+        title: "Company",
+        links: [
+          { href: "/", label: "Home" },
+          { href: "/about-us", label: "About" },
+          { href: "/features", label: "Features" },
+          { href: "/reviews", label: "Reviews" },
+          { href: "/helps", label: "Help" },
         ],
       },
     ],
+
     currencyConverters: [
       "USD to INR",
       "AED to INR",
@@ -843,7 +846,7 @@ const Footer: React.FC = () => {
       "CAD to INR",
       "EUR to INR",
     ],
-    copyright: `Apexture Payments Limited ${new Date().getFullYear()}`,
+    copyright: `Apexture Payments Limited @${new Date().getFullYear()}`,
     disclaimer:
       "Wise is authorised by the Financial Conduct Authority under the Electronic Money Regulations 2011, Firm Reference 900507, for the issuing of electronic money. Wise works with a local bank partner to offer the service in India with the approval of the Reserve Bank of India.",
   };
@@ -869,7 +872,7 @@ const Footer: React.FC = () => {
   }, []);
 
   const renderLinkList = (links: FooterLink[] | undefined) => (
-    <ul className="space-y-3 text-mainheading font-medium dark:text-white inline-block">
+    <ul className="space-y-3 text-mainheading font-medium dark:text-white">
       {links?.map((link) => (
         <li key={link.label}>
           <div className="relative group w-fit">
@@ -884,11 +887,11 @@ const Footer: React.FC = () => {
   );
 
   const renderSocialLinks = (socialLinks: SocialLink[] | undefined) => (
-    <ul className="flex items-center gap-4 mt-4">
+    <ul className="flex flex-col w-fit gap-4">
       {socialLinks?.map((link) => (
         <li
           key={link.label}
-          className="p-2.5 bg-black/10 dark:bg-secondary rounded-full group transition-colors ease-in-out duration-300"
+          className="p-2.5 bg-black/10 dark:bg-secondary inline-block rounded-full group transition-colors ease-in-out duration-300"
         >
           <Link
             href={link.href}
@@ -912,9 +915,9 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="md:py-10 py-5 bg-[#F2F4F7] dark:bg-background">
-      <div className="container mx-auto flex flex-col md:flex-row justify-between items-start gap-6 px-4">
-        <div className="flex flex-col w-full">
+    <footer className="md:py-10 py-5 bg-[#F2F4F7] dark:bg-background px-4">
+      <div className="container mx-auto flex flex-col md:flex-row justify-between items-start w-full gap-6">
+        <div className="flex flex-col">
           <Image
             src="/assets/images/wise-logo.svg"
             alt="logo"
@@ -922,16 +925,25 @@ const Footer: React.FC = () => {
             width={100}
             className="mb-5"
           />
-          <p className="max-w-2xl text-mainheading dark:text-white lg:text-lg text-base">
+
+          <p className="max-w-3xl text-mainheading dark:text-white lg:text-xl text-base">
             We provide reliable and competitive currency exchange services with
             real-time rates, secure transactions, and excellent customer
             support. Whether you're traveling, investing, or sending money
             abroad, trust us to handle your currency needs with transparency and
             speed.
           </p>
+
+          {/* Condinally-button */}
+          <Link href="/dashboard" className="w-fit">
+            <div className="bg-primary cursor-pointer hover:bg-primaryhover inline-block font-medium px-10 lg:py-3 focus:outline-none py-2 h-12.5 transition-colors duration-300 ease-in-out mt-4 rounded-full text-mainheading">
+              Send-Money
+            </div>
+          </Link>
+
         </div>
 
-        <div className="grid grid-cols-2 space-x-20">
+        <div className="grid grid-cols-2 gap-10">
           {footerData.sections.map((section) => (
             <div key={section.title}>
               <div
@@ -942,7 +954,7 @@ const Footer: React.FC = () => {
                   isMobile ? () => toggleDropdown(section.title) : undefined
                 }
               >
-                <h3 className="text-primary dark:text-primary lg:text-2xl font-medium">
+                <h3 className="text-primary dark:text-primary lg:text-xl font-medium">
                   {section.title}
                 </h3>
 
@@ -994,8 +1006,8 @@ const Footer: React.FC = () => {
         </div>
       </div>
 
-      <hr className="my-6 container mx-auto px-4" />
-      <div className="container mx-auto px-4">
+      <hr className="my-6 container mx-auto" />
+      <div className="container mx-auto">
         <h3 className="text-primary text-lg font-semibold pb-4">
           Currency Converters
         </h3>
@@ -1020,11 +1032,21 @@ const Footer: React.FC = () => {
         </div>
       </div>
 
-      <hr className="my-6 container mx-auto px-4" />
-      <div className="text-center container mx-auto px-4">
-        <p className="text-mainheading dark:text-primary font-semibold">
+      <hr className="container mx-auto my-5" />
+
+      <div className="flex justify-between container mx-auto">
+        <p className="text-mainheading dark:text-primary lg:text-lg text-base font-semibold">
           {footerData.copyright}
         </p>
+
+        <div className="flex gap-2.5">
+          <a href="">
+            <IoLogoWhatsapp className="size-8 text-[#25D366]" />
+          </a>
+          <a href="">
+            <FaTelegram className="size-8 text-[#3390EC]" />
+          </a>
+        </div>
       </div>
     </footer>
   );

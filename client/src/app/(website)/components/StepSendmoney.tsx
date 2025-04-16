@@ -347,7 +347,6 @@
 
 // export default MoneyTransferSteps;
 
-
 // export default MoneyTransferSteps;
 
 // // MoneyTransferSteps.tsx
@@ -370,42 +369,44 @@ const MoneyTransferSteps: React.FC = () => {
       description:
         "It only takes a few minutes—all you need is an email address, and you're ready to get started.",
       position: "left",
-      icon: <FaUserPlus className="text-primary text-3xl" />,
+      icon: <FaUserPlus className="text-primary lg:text-2xl text-xl" />,
     },
     {
       title: "Get a quote",
       description:
         "Choose your destination country, send & recipient currency, and send amount to generate a quote.",
       position: "right",
-      icon: <FaFileInvoiceDollar className="text-primary text-2xl mr-2" />,
+      icon: (
+        <FaFileInvoiceDollar className="text-primary lg:text-2xl text-xl" />
+      ),
     },
     {
       title: "Add your recipient",
       description:
         "Provide your recipient's payment information (you'll need details like their name and address).",
       position: "left",
-      icon: <FaUserFriends className="text-primary text-2xl mr-2" />,
+      icon: <FaUserFriends className="text-primary lg:text-2xl text-xl" />,
     },
     {
       title: "Verify your identity",
       description:
         "For some transfers, we may need identifying documents to confirm it's really you and keep your money safe.",
       position: "right",
-      icon: <FaIdCard className="text-primary text-2xl mr-2" />,
+      icon: <FaIdCard className="text-primary lg:text-2xl text-xl" />,
     },
     {
       title: "Confirm the quote",
       description:
         "Confirm and fund your transfer with a bank account, credit card, or a debit card and you're done!",
       position: "left",
-      icon: <FaCheckCircle className="text-primary text-2xl mr-2" />,
+      icon: <FaCheckCircle className="text-primary lg:text-2xl text-xl" />,
     },
     {
       title: "Track your transfer",
       description:
         "See where your money is and when it arrives to your recipient. Get live chat, phone and email support.",
       position: "right",
-      icon: <FaMapMarkedAlt className="text-primary text-2xl mr-2" />,
+      icon: <FaMapMarkedAlt className="text-primary lg:text-2xl text-xl" />,
     },
   ];
 
@@ -428,15 +429,14 @@ const MoneyTransferSteps: React.FC = () => {
 
   return (
     <div className="text-white bg-[#f2f4f7] dark:bg-background md:py-10 py-5 overflow-x-hidden">
-      {" "}
       {/* Added overflow-x-hidden */}
       <div className="container mx-auto px-4">
-        <h1 className="text-5xl md:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
           HOW TO SEND MONEY
           <span className="text-primary"> ONLINE WITH APEXTURE </span>
         </h1>
       </div>
-      <div className="container max-w-5xl mx-auto px-4 mt-10">
+      <div className="container max-w-5xl mx-auto px-4 lg:mt-10 mt-5">
         <div className="relative ">
           {/* Timeline Background Line */}
           <div className="absolute left-1/2 transform -translate-x-1/2 top-0 h-full w-1 bg-gray-700 hidden md:block">
@@ -451,7 +451,7 @@ const MoneyTransferSteps: React.FC = () => {
                     : 0
                 }%`,
                 // Smooth transition for the height change
-                transition: "height 1.5s ease-in-out", // Match timer duration
+                transition: "height 1s ease-in-out", // Match timer duration
               }}
             ></div>
           </div>
@@ -466,7 +466,7 @@ const MoneyTransferSteps: React.FC = () => {
               // Removed: ref={ref}
               <div
                 key={index}
-                className="relative mb-10 flex md:block"
+                className="relative lg:mb-10 mb-8 flex md:block"
                 style={{
                   justifyContent:
                     step.position === "left" ? "flex-start" : "flex-end",
@@ -475,18 +475,18 @@ const MoneyTransferSteps: React.FC = () => {
                 {/* Step Number Circle (Timeline Marker) */}
                 <div className="absolute left-1/2 top-0 transform -translate-x-1/2 hidden md:block z-10">
                   <div
-                    className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
+                    className={`flex items-center justify-center lg:size-10 size-8 rounded-full border-2 ${
                       isStepActiveOrCompleted // Highlight based on activeStepIndex
                         ? "bg-primary border-primary"
-                        : "bg-gray-900 border-gray-700"
-                    } transition-all duration-500 ease-in-out`} // Transition for color/bg change
+                        : "bg-mainheading border-gray-700"
+                    } transition-all duration-700 ease-in-out`} // Transition for color/bg change
                   >
                     <span
                       className={`font-bold ${
                         isStepActiveOrCompleted // Text color based on activeStepIndex
                           ? "text-mainheading" // Or text-white
                           : "text-gray-300"
-                      } transition-colors duration-500 ease-in-out`} // Transition for color change
+                      } transition-colors duration-700 ease-in-out`} // Transition for color change
                     >
                       {index + 1}
                     </span>
@@ -498,8 +498,8 @@ const MoneyTransferSteps: React.FC = () => {
                   className={`w-full md:w-5/12 ${
                     // Added transition classes
                     step.position === "left"
-                      ? "ml-10 mr-auto" // Position left card
-                      : "ml-auto mr-10" // Position right card
+                      ? "lg:ml-10 ml-5 mr-auto" // Position left card
+                      : "ml-auto lg:mr-10 mr-5" // Position right card
                   } ${
                     // Animation based SOLELY on activeStepIndex now
                     isStepActiveOrCompleted
@@ -512,10 +512,10 @@ const MoneyTransferSteps: React.FC = () => {
                   }`}
                 >
                   {/* Card styling */}
-                  <div className="bg-subheading dark:bg-secondary rounded-lg p-4 text-black relative shadow-lg">
+                  <div className="bg-subheading dark:bg-secondary rounded-lg p-4 text-mainheading relative">
                     {/* Arrow pointing to timeline */}
                     <div
-                      className={`absolute top-4 w-4 h-4 bg-subheading dark:bg-secondary transform rotate-45 z-0 hidden md:block
+                      className={`absolute top-4 size-4 bg-subheading dark:bg-secondary transform rotate-45 z-0 hidden md:block
                                 ${
                                   step.position === "left"
                                     ? "right-[-8px]"
@@ -525,11 +525,11 @@ const MoneyTransferSteps: React.FC = () => {
                     {/* Card Content Inner */}
                     <div className="flex items-center gap-2 relative z-10">
                       {step.icon}
-                      <h3 className="text-lg font-semibold text-white">
+                      <h3 className="lg:text-lg text-sm font-semibold text-white">
                         {step.title}
                       </h3>
                     </div>
-                    <p className="text-gray-300 mt-4 text-sm leading-relaxed relative z-10">
+                    <p className="text-gray-300 mt-4 lg:text-sm text-xs leading-relaxed relative z-10">
                       {step.description}
                     </p>
                   </div>
