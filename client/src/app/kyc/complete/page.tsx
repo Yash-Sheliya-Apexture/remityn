@@ -224,6 +224,131 @@
 //     );
 // }
 
+// // frontend/src/app/kyc/complete/page.tsx
+// 'use client';
+
+// import React, { useEffect, useCallback } from 'react';
+// import { useRouter } from 'next/navigation';
+
+// // --- UI Components ---
+// import { Button } from '@/components/ui/button';
+// import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+// import { Loader2, CheckCircle, PartyPopper, LayoutDashboard } from 'lucide-react';
+
+// // --- App Specific Imports ---
+// import { useAuth } from '@/app/contexts/AuthContext';
+// import { useKyc } from '../../contexts/KycContext';
+
+// // --- Component ---
+// export default function KycCompletePage() {
+//     const router = useRouter();
+//     const { user, loading: authLoading } = useAuth();
+//     const {
+//         isInitialized: kycInitialized,
+//         backendStatus,
+//         isLoadingStatus: kycLoadingStatus,
+//         updateCurrentUiStepId
+//     } = useKyc();
+
+//     // Effect 1: Set UI step
+//     useEffect(() => {
+//         if (kycInitialized && window.location.pathname === '/kyc/complete') {
+//             updateCurrentUiStepId('complete');
+//         }
+//     }, [kycInitialized, updateCurrentUiStepId]);
+
+//     // Effect 2: Check login status (context handles main redirection)
+//     useEffect(() => {
+//         if (!authLoading && !user && kycInitialized) {
+//             // console.log("KYC Complete: No user found, context should redirect to login.");
+//              // Let KycProvider handle redirect to login
+//         }
+//     }, [user, authLoading, kycInitialized, router]);
+
+//     // Effect 3: Rely on KycContext provider for redirection if status changes *away* from 'verified'
+
+//     // --- Event Handlers ---
+//     const handleGoToDashboard = useCallback(() => {
+//         router.push('/dashboard');
+//     }, [router]);
+
+//     // --- Render Logic ---
+
+//     // Primary loading state
+//     if (authLoading || !kycInitialized) {
+//         return (
+//             <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
+//                 <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
+//                 <p className="text-muted-foreground text-lg">Initializing...</p>
+//             </div>
+//         );
+//     }
+
+//     // Show loading if status is being checked actively
+//     if (kycLoadingStatus) {
+//         return (
+//             <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
+//                 <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
+//                 <p className="text-muted-foreground text-lg">Confirming Verification Status...</p>
+//             </div>
+//         );
+//     }
+
+//     // If user is logged in, but status is NOT verified, context should redirect.
+//     if (user && backendStatus !== 'verified') {
+//         // console.log(`KYC Complete Page: Status is ${backendStatus}, waiting for context redirect.`);
+//         return (
+//              <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
+//                  <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
+//                  <p className="text-muted-foreground text-lg">Updating Status...</p>
+//              </div>
+//          );
+//     }
+
+//     // If user is not logged in (and auth check is complete)
+//     if (!user) {
+//         return (
+//              <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
+//                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground mb-3" />
+//                  <p className="text-muted-foreground">Redirecting to login...</p>
+//              </div>
+//         );
+//     }
+
+//     // --- Main Complete Content (Render only if user exists and status is 'verified') ---
+//     return (
+//         <div className="flex justify-center items-center min-h-[calc(100vh-200px)] px-4 py-8">
+//             <Card className="w-full max-w-lg mx-auto shadow-xl border border-green-200 dark:border-green-800/50 bg-gradient-to-br from-background to-green-50 dark:from-secondary dark:to-green-900/20 animate-fadeIn overflow-hidden">
+//                 <CardHeader className="text-center items-center p-6 md:p-8 bg-green-50 dark:bg-green-900/20 border-b border-green-100 dark:border-green-800/60">
+//                      <div className="p-4 bg-green-100 dark:bg-green-900/40 rounded-full mb-4 border border-green-200 dark:border-green-700 shadow-inner">
+//                          <CheckCircle className="h-10 w-10 text-green-600 dark:text-green-400 stroke-[1.5]" />
+//                      </div>
+//                      <CardTitle className="text-2xl md:text-3xl font-bold tracking-tight text-green-800 dark:text-green-300">
+//                          Verification Successful!
+//                          <PartyPopper className="inline-block h-7 w-7 ml-2 mb-1 text-yellow-500 animate-bounce"/>
+//                      </CardTitle>
+//                      <CardDescription className="text-base text-muted-foreground pt-1 px-4 max-w-md mx-auto">
+//                          Congratulations{user.fullName ? `, ${user.fullName.split(' ')[0]}` : ''}! Your identity is verified.
+//                      </CardDescription>
+//                 </CardHeader>
+//                 <CardContent className="p-6 md:p-8 text-center space-y-6">
+//                      <p className="text-foreground/90 dark:text-foreground/80 text-base">
+//                          You now have full access to all account features. Thank you for completing the verification process.
+//                      </p>
+//                      <Button
+//                         onClick={handleGoToDashboard}
+//                         size="lg"
+//                         className="w-full sm:w-auto bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-md hover:shadow-lg transition-all duration-300 mt-4"
+//                       >
+//                           <LayoutDashboard className="mr-2 h-4 w-4" /> Proceed to Dashboard
+//                      </Button>
+//                 </CardContent>
+//             </Card>
+//         </div>
+//     );
+// }
+
+
 // frontend/src/app/kyc/complete/page.tsx
 'use client';
 
@@ -244,10 +369,8 @@ export default function KycCompletePage() {
     const router = useRouter();
     const { user, loading: authLoading } = useAuth();
     const {
-        isInitialized: kycInitialized,
-        backendStatus,
-        isLoadingStatus: kycLoadingStatus,
-        updateCurrentUiStepId
+        isInitialized: kycInitialized, backendStatus,
+        isLoadingStatus: kycLoadingStatus, updateCurrentUiStepId
     } = useKyc();
 
     // Effect 1: Set UI step
@@ -257,91 +380,45 @@ export default function KycCompletePage() {
         }
     }, [kycInitialized, updateCurrentUiStepId]);
 
-    // Effect 2: Check login status (context handles main redirection)
+    // Effect 2: Check login (context handles redirection)
     useEffect(() => {
-        if (!authLoading && !user && kycInitialized) {
-            // console.log("KYC Complete: No user found, context should redirect to login.");
-             // Let KycProvider handle redirect to login
-        }
-    }, [user, authLoading, kycInitialized, router]);
+        if (!authLoading && !user && kycInitialized) { /* Context redirects */ }
+    }, [user, authLoading, kycInitialized]);
 
-    // Effect 3: Rely on KycContext provider for redirection if status changes *away* from 'verified'
+    // Effect 3: Rely on context for redirection if status changes from 'verified'
 
-    // --- Event Handlers ---
-    const handleGoToDashboard = useCallback(() => {
-        router.push('/dashboard');
-    }, [router]);
+    const handleGoToDashboard = useCallback(() => { router.push('/dashboard'); }, [router]);
 
     // --- Render Logic ---
-
-    // Primary loading state
+    // Primary Loading
     if (authLoading || !kycInitialized) {
-        return (
-            <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
-                <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
-                <p className="text-muted-foreground text-lg">Initializing...</p>
-            </div>
-        );
+        return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-primary" /> </div> );
     }
-
-    // Show loading if status is being checked actively
+    // Context Status Loading
     if (kycLoadingStatus) {
-        return (
-            <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
-                <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
-                <p className="text-muted-foreground text-lg">Confirming Verification Status...</p>
-            </div>
-        );
+         return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-primary" /> </div> );
     }
-
-    // If user is logged in, but status is NOT verified, context should redirect.
+    // Waiting for Redirect (if status not 'verified')
     if (user && backendStatus !== 'verified') {
-        // console.log(`KYC Complete Page: Status is ${backendStatus}, waiting for context redirect.`);
-        return (
-             <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
-                 <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
-                 <p className="text-muted-foreground text-lg">Updating Status...</p>
-             </div>
-         );
+        return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-primary" /> </div> );
     }
-
-    // If user is not logged in (and auth check is complete)
+    // Not Logged In
     if (!user) {
-        return (
-             <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
-                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground mb-3" />
-                 <p className="text-muted-foreground">Redirecting to login...</p>
-             </div>
-        );
+        return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /> </div> );
     }
 
-    // --- Main Complete Content (Render only if user exists and status is 'verified') ---
+    // --- Main Complete Content ---
     return (
         <div className="flex justify-center items-center min-h-[calc(100vh-200px)] px-4 py-8">
             <Card className="w-full max-w-lg mx-auto shadow-xl border border-green-200 dark:border-green-800/50 bg-gradient-to-br from-background to-green-50 dark:from-secondary dark:to-green-900/20 animate-fadeIn overflow-hidden">
                 <CardHeader className="text-center items-center p-6 md:p-8 bg-green-50 dark:bg-green-900/20 border-b border-green-100 dark:border-green-800/60">
-                     <div className="p-4 bg-green-100 dark:bg-green-900/40 rounded-full mb-4 border border-green-200 dark:border-green-700 shadow-inner">
-                         <CheckCircle className="h-10 w-10 text-green-600 dark:text-green-400 stroke-[1.5]" />
-                     </div>
-                     <CardTitle className="text-2xl md:text-3xl font-bold tracking-tight text-green-800 dark:text-green-300">
-                         Verification Successful!
-                         <PartyPopper className="inline-block h-7 w-7 ml-2 mb-1 text-yellow-500 animate-bounce"/>
-                     </CardTitle>
-                     <CardDescription className="text-base text-muted-foreground pt-1 px-4 max-w-md mx-auto">
-                         Congratulations{user.fullName ? `, ${user.fullName.split(' ')[0]}` : ''}! Your identity is verified.
-                     </CardDescription>
+                     <div className="p-4 bg-green-100 dark:bg-green-900/40 rounded-full mb-4 border border-green-200 dark:border-green-700 shadow-inner"> <CheckCircle className="h-10 w-10 text-green-600 dark:text-green-400 stroke-[1.5]" /> </div>
+                     <CardTitle className="text-2xl md:text-3xl font-bold tracking-tight text-green-800 dark:text-green-300"> Verification Successful! <PartyPopper className="inline-block h-7 w-7 ml-2 mb-1 text-yellow-500 animate-bounce"/> </CardTitle>
+                     <CardDescription className="text-base text-muted-foreground pt-1 px-4 max-w-md mx-auto"> Congratulations{user.fullName ? `, ${user.fullName.split(' ')[0]}` : ''}! Your identity is verified. </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 md:p-8 text-center space-y-6">
-                     <p className="text-foreground/90 dark:text-foreground/80 text-base">
-                         You now have full access to all account features. Thank you for completing the verification process.
-                     </p>
-                     <Button
-                        onClick={handleGoToDashboard}
-                        size="lg"
-                        className="w-full sm:w-auto bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-md hover:shadow-lg transition-all duration-300 mt-4"
-                      >
-                          <LayoutDashboard className="mr-2 h-4 w-4" /> Proceed to Dashboard
-                     </Button>
+                     <p className="text-foreground/90 dark:text-foreground/80 text-base"> You now have full access to all account features. </p>
+                     <Button onClick={handleGoToDashboard} size="lg" className="w-full sm:w-auto bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-md hover:shadow-lg transition-all duration-300 mt-4" > <LayoutDashboard className="mr-2 h-4 w-4" /> Proceed to Dashboard </Button>
                 </CardContent>
             </Card>
         </div>

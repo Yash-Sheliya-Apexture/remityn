@@ -189,17 +189,122 @@
 // }
 
 
+// // frontend/src/app/kyc/components/KycStepper.tsx
+// 'use client';
+
+// import React from 'react';
+// import { motion } from 'framer-motion';
+// import { useKyc } from '../contexts/KycContext'; // Adjust path
+// import { Check, CircleDot, Circle } from 'lucide-react'; // Lucide icons
+// import { cn } from "@/lib/utils"; // For conditional classes
+
+// // Define the steps and their IDs matching KycStepId and formStepOrder in KycContext
+// const steps: { id: 'personal' | 'details' | 'identity' | 'upload' | 'review'; label: string }[] = [
+//     { id: 'personal', label: 'Personal' },
+//     { id: 'details', label: 'Details' },
+//     { id: 'identity', label: 'Identity' },
+//     { id: 'upload', label: 'Upload' },
+//     { id: 'review', label: 'Review' },
+// ];
+
+// export default function KycStepper() {
+//     const { currentUiStepId } = useKyc(); // Get the current logical step ID from context
+
+//     // Find the index of the current step in our defined order
+//     const currentStepIndex = steps.findIndex(step => step.id === currentUiStepId);
+
+//     // Stepper is only relevant for form steps, handled by layout now
+//     // if (currentStepIndex === -1) {
+//     //     return null; // Don't render if not a form step
+//     // }
+
+//     return (
+//         <nav aria-label="KYC Progress">
+//             <ol role="list" className="flex items-center justify-between">
+//                 {steps.map((step, stepIdx) => {
+//                     const isCompleted = currentStepIndex > stepIdx;
+//                     const isCurrent = currentStepIndex === stepIdx;
+//                     // const isUpcoming = currentStepIndex < stepIdx; // Not explicitly needed for styling
+
+//                     const status = isCompleted ? 'complete' : isCurrent ? 'current' : 'upcoming';
+
+//                     return (
+//                         <li key={step.id} className={cn(
+//                             "relative flex-1",
+//                             // Add padding to the right for all but the last item to make space for the line
+//                             stepIdx < steps.length - 1 ? 'pr-10 md:pr-16' : ''
+//                         )}>
+//                             {/* Connecting Line (except for the first item) */}
+//                             {stepIdx > 0 && (
+//                                 <div
+//                                     className="absolute left-[-50%] top-4 -z-10 hidden h-0.5 w-full md:block"
+//                                     aria-hidden="true"
+//                                 >
+//                                     <motion.div
+//                                          className={cn(
+//                                             "h-full rounded-full",
+//                                             status === 'complete' || status === 'current' ? 'bg-primary' : 'bg-border'
+//                                         )}
+//                                         // Animate line completion
+//                                         initial={{ scaleX: 0 }}
+//                                         animate={{ scaleX: (status === 'complete' || status === 'current') ? 1 : 0 }}
+//                                         transition={{ duration: 0.4, ease: "easeInOut", delay: 0.1 }}
+//                                         style={{ transformOrigin: 'left' }}
+//                                     />
+//                                 </div>
+//                             )}
+
+//                             {/* Step Marker (Icon + Text) */}
+//                             <div className="flex flex-col items-center text-center gap-2">
+//                                 <motion.div
+//                                     className={cn(
+//                                         "relative flex h-8 w-8 items-center justify-center rounded-full border-2 transition-colors duration-300",
+//                                         status === 'complete' ? 'border-primary bg-primary' :
+//                                         status === 'current' ? 'border-primary bg-background dark:bg-secondary' :
+//                                         'border-border bg-background dark:bg-secondary'
+//                                     )}
+//                                     // Animate scale/pop effect on status change
+//                                     initial={{ scale: 0.8, opacity: 0.8 }}
+//                                     animate={{ scale: 1, opacity: 1 }}
+//                                     transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+//                                 >
+//                                     {status === 'complete' && <Check className="h-5 w-5 text-primary-foreground" aria-hidden="true" />}
+//                                     {status === 'current' && <CircleDot className="h-5 w-5 text-primary animate-pulse" aria-hidden="true" />}
+//                                     {status === 'upcoming' && <Circle className="h-5 w-5 text-muted-foreground/50" aria-hidden="true" />}
+//                                     <span className="sr-only">{step.label} - {status}</span>
+//                                 </motion.div>
+
+//                                 {/* Label */}
+//                                 <span className={cn(
+//                                     "text-xs font-medium transition-colors duration-300",
+//                                      status === 'complete' ? 'text-primary' :
+//                                      status === 'current' ? 'text-primary font-semibold' :
+//                                      'text-muted-foreground'
+//                                 )}>
+//                                     {step.label}
+//                                 </span>
+//                             </div>
+//                         </li>
+//                     );
+//                 })}
+//             </ol>
+//         </nav>
+//     );
+// }
+
+
 // frontend/src/app/kyc/components/KycStepper.tsx
+// (No changes needed)
 'use client';
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useKyc } from '../contexts/KycContext'; // Adjust path
+import { useKyc, formStepOrder } from '../contexts/KycContext'; // Correct relative path
 import { Check, CircleDot, Circle } from 'lucide-react'; // Lucide icons
 import { cn } from "@/lib/utils"; // For conditional classes
 
 // Define the steps and their IDs matching KycStepId and formStepOrder in KycContext
-const steps: { id: 'personal' | 'details' | 'identity' | 'upload' | 'review'; label: string }[] = [
+const steps: { id: typeof formStepOrder[number]; label: string }[] = [
     { id: 'personal', label: 'Personal' },
     { id: 'details', label: 'Details' },
     { id: 'identity', label: 'Identity' },
@@ -213,10 +318,8 @@ export default function KycStepper() {
     // Find the index of the current step in our defined order
     const currentStepIndex = steps.findIndex(step => step.id === currentUiStepId);
 
-    // Stepper is only relevant for form steps, handled by layout now
-    // if (currentStepIndex === -1) {
-    //     return null; // Don't render if not a form step
-    // }
+    // Stepper visibility is now handled by the KycLayoutComponent based on currentUiStepId
+    // No need for a check here if the layout conditionally renders it.
 
     return (
         <nav aria-label="KYC Progress">
@@ -224,7 +327,6 @@ export default function KycStepper() {
                 {steps.map((step, stepIdx) => {
                     const isCompleted = currentStepIndex > stepIdx;
                     const isCurrent = currentStepIndex === stepIdx;
-                    // const isUpcoming = currentStepIndex < stepIdx; // Not explicitly needed for styling
 
                     const status = isCompleted ? 'complete' : isCurrent ? 'current' : 'upcoming';
 

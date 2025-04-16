@@ -605,6 +605,153 @@
 //     );
 // }
 
+// // frontend/src/app/kyc/pending/page.tsx
+// 'use client';
+
+// import React, { useEffect, useCallback } from 'react';
+// import { useRouter } from 'next/navigation';
+
+// // --- UI Components ---
+// import { Button } from '@/components/ui/button';
+// import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+// import { Loader2, Clock, LayoutDashboard, Mail, Info, RefreshCw } from 'lucide-react';
+// import { cn } from '@/lib/utils';
+
+// // --- App Specific Imports ---
+// import { useAuth } from '@/app/contexts/AuthContext';
+// import { useKyc } from '../../contexts/KycContext';
+
+// // --- Component ---
+// export default function KycPendingPage() {
+//     const router = useRouter();
+//     const { user, loading: authLoading } = useAuth();
+//     const {
+//         backendStatus,
+//         isLoadingStatus: kycLoadingStatus, // Use context's loading state
+//         isInitialized: kycInitialized,
+//         updateCurrentUiStepId,
+//         fetchKycStatus // Function to trigger a status refresh
+//     } = useKyc();
+
+//     // Effect 1: Set UI step in context
+//     useEffect(() => {
+//         if (kycInitialized && window.location.pathname === '/kyc/pending') {
+//             updateCurrentUiStepId('pending');
+//         }
+//     }, [kycInitialized, updateCurrentUiStepId]);
+
+//     // Effect 2: Check login status (context handles main redirection)
+//     useEffect(() => {
+//         if (!authLoading && !user && kycInitialized) {
+//             // console.log("KYC Pending: No user found, context should redirect to login.");
+//             // Let KycProvider handle redirect to login
+//         }
+//     }, [user, authLoading, kycInitialized, router]);
+
+//     // Effect 3: Rely on KycContext provider for redirection if status changes *away* from 'pending'
+
+//     // --- Event Handlers ---
+//     const handleGoToDashboard = useCallback(() => {
+//         router.push('/dashboard');
+//     }, [router]);
+
+//     const handleRefreshStatus = useCallback(() => {
+//         // console.log("KYC Pending: Manual status refresh triggered.");
+//         if (!kycLoadingStatus) { // Prevent multiple clicks while already loading
+//             fetchKycStatus(true); // Call the context function to refresh (force retry)
+//         }
+//     }, [fetchKycStatus, kycLoadingStatus]); // Add kycLoadingStatus dependency
+
+//     // --- Render Logic ---
+
+//     // Primary loading state: Waiting for auth or KYC context initialization
+//     if (authLoading || !kycInitialized) {
+//         return (
+//             <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
+//                 <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
+//                 <p className="text-muted-foreground text-lg">Initializing...</p>
+//             </div>
+//         );
+//     }
+
+//      // Show loading if status is being checked actively
+//      if (kycLoadingStatus) {
+//         return (
+//             <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
+//                 <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
+//                 <p className="text-muted-foreground text-lg">Checking Verification Status...</p>
+//             </div>
+//         );
+//    }
+
+//     // If user is logged in, but status is NOT pending, context should redirect. Show loading briefly.
+//     if (user && backendStatus !== 'pending') {
+//         // console.log(`KYC Pending Page: Status is ${backendStatus}, waiting for context redirect.`);
+//         return (
+//              <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
+//                  <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
+//                  <p className="text-muted-foreground text-lg">Updating Status...</p>
+//              </div>
+//          );
+//     }
+
+//     // If user is not logged in (and auth check is complete)
+//     if (!user) {
+//         return (
+//              <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
+//                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground mb-3" />
+//                  <p className="text-muted-foreground">Redirecting to login...</p>
+//              </div>
+//         );
+//     }
+
+//     // --- Main Pending Content (Render only if user exists and status is 'pending') ---
+//     return (
+//          <div className="flex justify-center items-center min-h-[calc(100vh-200px)] px-4 py-8">
+//              <Card className="w-full max-w-lg mx-auto shadow-xl border border-blue-200 dark:border-blue-800/50 bg-gradient-to-br from-background to-blue-50 dark:from-secondary dark:to-blue-900/20 animate-fadeIn overflow-hidden">
+//                 <CardHeader className="text-center items-center p-6 md:p-8 bg-blue-50 dark:bg-blue-900/20 border-b border-blue-100 dark:border-blue-800/60">
+//                      <div className="p-4 bg-blue-100 dark:bg-blue-900/40 rounded-full mb-4 border border-blue-200 dark:border-blue-800 shadow-inner">
+//                          <Clock className="h-10 w-10 text-blue-600 dark:text-blue-400 stroke-[1.5]" />
+//                      </div>
+//                      <CardTitle className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
+//                          Verification in Progress
+//                      </CardTitle>
+//                      <CardDescription className="text-base text-muted-foreground pt-1 px-4 max-w-md mx-auto">
+//                          Your documents are under review. Thank you for your patience!
+//                      </CardDescription>
+//                 </CardHeader>
+//                  <CardContent className="p-6 md:p-8 text-center space-y-6">
+//                     <p className="text-foreground/90 dark:text-foreground/80 text-base">
+//                         Reviews typically take <span className="font-semibold text-primary">1-2 business days</span>, but may occasionally take longer.
+//                     </p>
+//                     <p className="text-muted-foreground text-sm flex items-center justify-center gap-1.5">
+//                         <Mail className="h-4 w-4 flex-shrink-0"/> We'll notify you by email once the review is complete.
+//                     </p>
+//                     <p className="text-muted-foreground text-sm pt-2 flex items-center justify-center gap-1.5">
+//                         <Info className="h-4 w-4 flex-shrink-0"/> Some account features may be limited until verification is successful.
+//                     </p>
+//                      <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+//                          <Button onClick={handleGoToDashboard} size="lg" className="flex-1">
+//                              <LayoutDashboard className="mr-2 h-4 w-4" /> Go to Dashboard
+//                          </Button>
+//                          <Button
+//                             onClick={handleRefreshStatus}
+//                             variant="outline"
+//                             size="lg"
+//                             disabled={kycLoadingStatus} // Disable button while already refreshing
+//                             className="flex-1"
+//                           >
+//                             <RefreshCw className={cn("mr-2 h-4 w-4", kycLoadingStatus ? "animate-spin" : "")} />
+//                              Refresh Status
+//                         </Button>
+//                      </div>
+//                 </CardContent>
+//             </Card>
+//         </div>
+//     );
+// }
+
+
 // frontend/src/app/kyc/pending/page.tsx
 'use client';
 
@@ -626,124 +773,62 @@ export default function KycPendingPage() {
     const router = useRouter();
     const { user, loading: authLoading } = useAuth();
     const {
-        backendStatus,
-        isLoadingStatus: kycLoadingStatus, // Use context's loading state
-        isInitialized: kycInitialized,
-        updateCurrentUiStepId,
-        fetchKycStatus // Function to trigger a status refresh
+        backendStatus, isLoadingStatus: kycLoadingStatus,
+        isInitialized: kycInitialized, updateCurrentUiStepId,
+        fetchKycStatus
     } = useKyc();
 
-    // Effect 1: Set UI step in context
+    // Effect 1: Set UI step
     useEffect(() => {
         if (kycInitialized && window.location.pathname === '/kyc/pending') {
             updateCurrentUiStepId('pending');
         }
     }, [kycInitialized, updateCurrentUiStepId]);
 
-    // Effect 2: Check login status (context handles main redirection)
+    // Effect 2: Check login (context handles redirection)
     useEffect(() => {
-        if (!authLoading && !user && kycInitialized) {
-            // console.log("KYC Pending: No user found, context should redirect to login.");
-            // Let KycProvider handle redirect to login
-        }
-    }, [user, authLoading, kycInitialized, router]);
+        if (!authLoading && !user && kycInitialized) { /* Context redirects */ }
+    }, [user, authLoading, kycInitialized]);
 
-    // Effect 3: Rely on KycContext provider for redirection if status changes *away* from 'pending'
+    // Effect 3: Rely on context for redirection if status changes from 'pending'
 
-    // --- Event Handlers ---
-    const handleGoToDashboard = useCallback(() => {
-        router.push('/dashboard');
-    }, [router]);
-
-    const handleRefreshStatus = useCallback(() => {
-        // console.log("KYC Pending: Manual status refresh triggered.");
-        if (!kycLoadingStatus) { // Prevent multiple clicks while already loading
-            fetchKycStatus(true); // Call the context function to refresh (force retry)
-        }
-    }, [fetchKycStatus, kycLoadingStatus]); // Add kycLoadingStatus dependency
+    const handleGoToDashboard = useCallback(() => { router.push('/dashboard'); }, [router]);
+    const handleRefreshStatus = useCallback(() => { if (!kycLoadingStatus) fetchKycStatus(true); }, [fetchKycStatus, kycLoadingStatus]);
 
     // --- Render Logic ---
-
-    // Primary loading state: Waiting for auth or KYC context initialization
+    // Primary Loading
     if (authLoading || !kycInitialized) {
-        return (
-            <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
-                <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
-                <p className="text-muted-foreground text-lg">Initializing...</p>
-            </div>
-        );
+        return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-primary" /> </div> );
     }
-
-     // Show loading if status is being checked actively
-     if (kycLoadingStatus) {
-        return (
-            <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
-                <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
-                <p className="text-muted-foreground text-lg">Checking Verification Status...</p>
-            </div>
-        );
-   }
-
-    // If user is logged in, but status is NOT pending, context should redirect. Show loading briefly.
+    // Context Status Loading
+    if (kycLoadingStatus) {
+        return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-primary" /> </div> );
+    }
+    // Waiting for Redirect (if status not 'pending')
     if (user && backendStatus !== 'pending') {
-        // console.log(`KYC Pending Page: Status is ${backendStatus}, waiting for context redirect.`);
-        return (
-             <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
-                 <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
-                 <p className="text-muted-foreground text-lg">Updating Status...</p>
-             </div>
-         );
+        return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-primary" /> </div> );
     }
-
-    // If user is not logged in (and auth check is complete)
+    // Not Logged In
     if (!user) {
-        return (
-             <div className="flex flex-col justify-center items-center min-h-[400px] w-full">
-                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground mb-3" />
-                 <p className="text-muted-foreground">Redirecting to login...</p>
-             </div>
-        );
+        return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /> </div> );
     }
 
-    // --- Main Pending Content (Render only if user exists and status is 'pending') ---
+    // --- Main Pending Content ---
     return (
          <div className="flex justify-center items-center min-h-[calc(100vh-200px)] px-4 py-8">
              <Card className="w-full max-w-lg mx-auto shadow-xl border border-blue-200 dark:border-blue-800/50 bg-gradient-to-br from-background to-blue-50 dark:from-secondary dark:to-blue-900/20 animate-fadeIn overflow-hidden">
                 <CardHeader className="text-center items-center p-6 md:p-8 bg-blue-50 dark:bg-blue-900/20 border-b border-blue-100 dark:border-blue-800/60">
-                     <div className="p-4 bg-blue-100 dark:bg-blue-900/40 rounded-full mb-4 border border-blue-200 dark:border-blue-800 shadow-inner">
-                         <Clock className="h-10 w-10 text-blue-600 dark:text-blue-400 stroke-[1.5]" />
-                     </div>
-                     <CardTitle className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
-                         Verification in Progress
-                     </CardTitle>
-                     <CardDescription className="text-base text-muted-foreground pt-1 px-4 max-w-md mx-auto">
-                         Your documents are under review. Thank you for your patience!
-                     </CardDescription>
+                     <div className="p-4 bg-blue-100 dark:bg-blue-900/40 rounded-full mb-4 border border-blue-200 dark:border-blue-800 shadow-inner"> <Clock className="h-10 w-10 text-blue-600 dark:text-blue-400 stroke-[1.5]" /> </div>
+                     <CardTitle className="text-2xl md:text-3xl font-bold tracking-tight text-foreground"> Verification in Progress </CardTitle>
+                     <CardDescription className="text-base text-muted-foreground pt-1 px-4 max-w-md mx-auto"> Your documents are under review. Thank you! </CardDescription>
                 </CardHeader>
                  <CardContent className="p-6 md:p-8 text-center space-y-6">
-                    <p className="text-foreground/90 dark:text-foreground/80 text-base">
-                        Reviews typically take <span className="font-semibold text-primary">1-2 business days</span>, but may occasionally take longer.
-                    </p>
-                    <p className="text-muted-foreground text-sm flex items-center justify-center gap-1.5">
-                        <Mail className="h-4 w-4 flex-shrink-0"/> We'll notify you by email once the review is complete.
-                    </p>
-                    <p className="text-muted-foreground text-sm pt-2 flex items-center justify-center gap-1.5">
-                        <Info className="h-4 w-4 flex-shrink-0"/> Some account features may be limited until verification is successful.
-                    </p>
+                    <p className="text-foreground/90 dark:text-foreground/80 text-base"> Reviews typically take <span className="font-semibold text-primary">1-2 business days</span>. </p>
+                    <p className="text-muted-foreground text-sm flex items-center justify-center gap-1.5"> <Mail className="h-4 w-4 flex-shrink-0"/> We'll notify you by email upon completion. </p>
+                    <p className="text-muted-foreground text-sm pt-2 flex items-center justify-center gap-1.5"> <Info className="h-4 w-4 flex-shrink-0"/> Some features may be limited until verified. </p>
                      <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
-                         <Button onClick={handleGoToDashboard} size="lg" className="flex-1">
-                             <LayoutDashboard className="mr-2 h-4 w-4" /> Go to Dashboard
-                         </Button>
-                         <Button
-                            onClick={handleRefreshStatus}
-                            variant="outline"
-                            size="lg"
-                            disabled={kycLoadingStatus} // Disable button while already refreshing
-                            className="flex-1"
-                          >
-                            <RefreshCw className={cn("mr-2 h-4 w-4", kycLoadingStatus ? "animate-spin" : "")} />
-                             Refresh Status
-                        </Button>
+                         <Button onClick={handleGoToDashboard} size="lg" className="flex-1"> <LayoutDashboard className="mr-2 h-4 w-4" /> Go to Dashboard </Button>
+                         <Button onClick={handleRefreshStatus} variant="outline" size="lg" disabled={kycLoadingStatus} className="flex-1" > <RefreshCw className={cn("mr-2 h-4 w-4", kycLoadingStatus ? "animate-spin" : "")} /> Refresh Status </Button>
                      </div>
                 </CardContent>
             </Card>
