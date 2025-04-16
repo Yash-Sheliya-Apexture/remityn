@@ -660,6 +660,7 @@ import recipientService from "../../../../../services/recipient"; // Adjust path
 import { MdCancel } from "react-icons/md";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link"; // Import Link
+import { LuPlus } from "react-icons/lu";
 
 // Define Recipient type (ensure consistency with other files)
 interface Recipient {
@@ -847,11 +848,14 @@ const SelectRecipientContent = () => {
         {/* Search Input */}
         <div className="mb-6 relative">
           <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-            <FiSearch className="size-5 text-neutral-900 dark:text-white" aria-hidden="true" />
+            <FiSearch
+              className="size-5 text-neutral-900 dark:text-white"
+              aria-hidden="true"
+            />
           </div>
           <input
             type="text"
-            className="w-full rounded-full h-12.5 py-3 pl-12 pr-10 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white bg-white dark:bg-primarybox"
+            className="w-full rounded-full h-12.5 py-3 pl-12 pr-10 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white"
             placeholder="Search by name, email, or bank"
             value={searchTerm}
             onChange={handleSearchChange}
@@ -873,19 +877,21 @@ const SelectRecipientContent = () => {
           onClick={handleAddRecipientClick}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleAddRecipientClick(); }}
-          className="flex items-center p-4 -mx-4 rounded-2xl hover:bg-lightgray dark:hover:bg-secondarybox transition-colors duration-200 ease-in-out cursor-pointer mb-4 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-offset-primarybox"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") handleAddRecipientClick();
+          }}
+          className="flex items-center mb-4 hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer"
         >
           <div className="size-12 rounded-full bg-green-600/20 p-2 flex items-center justify-center shrink-0">
-            {/* Using a simple plus icon for consistency */}
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-green-600">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-            </svg>
-            {/* <FaCirclePlus className="text-green-600" size={24} /> */}
+            <LuPlus className="w-6 h-6 text-green-600" />
           </div>
           <div className="ml-4 flex-grow">
-            <h5 className="font-medium text-mainheading dark:text-white">Add a new recipient</h5>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Add bank details for someone new.</p>
+            <h5 className="font-medium text-mainheading dark:text-white">
+              Add a new recipient
+            </h5>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Add bank details for someone new.
+            </p>
           </div>
           <IoIosArrowForward className="h-5 w-5 text-neutral-900 dark:text-white shrink-0" />
         </div>
@@ -894,33 +900,39 @@ const SelectRecipientContent = () => {
         {recipients.length === 0 && !searchTerm ? (
           <div className="text-center text-gray-500 rounded-2xl dark:text-gray-300 text-lg bg-lightgray dark:bg-primarybox/50 py-10 mt-6">
             <p className="font-medium">No recipients found.</p>
-            <p className="text-sm mt-1">You haven't added any recipients yet. Click above to add someone.</p>
+            <p className="text-sm mt-1">
+              You haven't added any recipients yet. Click above to add someone.
+            </p>
           </div>
         ) : filteredRecipients.length > 0 ? (
           <div>
             <h3 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
               Your Recipients
             </h3>
-            <div className="space-y-1">
+            <div className="space-y-2">
               {filteredRecipients.map((recipient) => (
                 // Make the whole div clickable
-                 <div
+                <div
                   key={recipient._id}
                   onClick={() => handleRecipientSelect(recipient._id)}
                   role="button"
                   tabIndex={0}
-                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleRecipientSelect(recipient._id); }}
-                  className="rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-primary dark:focus:ring-offset-primarybox"
-                  aria-label={`Select recipient ${recipient.nickname || recipient.accountHolderName}`}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ")
+                      handleRecipientSelect(recipient._id);
+                  }}
+                  aria-label={`Select recipient ${
+                    recipient.nickname || recipient.accountHolderName
+                  }`}
                 >
-                    {/* RecipientList component should ideally not be interactive itself if the parent div handles click */}
-                    <RecipientList
-                        recipient={recipient}
-                        isSelected={false} // Not used for selection state here
-                        showCheckbox={false} // No checkboxes needed
-                        // Pass specific fields if needed, or let RecipientList handle the object
-                    />
-                 </div>
+                  {/* RecipientList component should ideally not be interactive itself if the parent div handles click */}
+                  <RecipientList
+                    recipient={recipient}
+                    isSelected={false} // Not used for selection state here
+                    showCheckbox={false} // No checkboxes needed
+                    // Pass specific fields if needed, or let RecipientList handle the object
+                  />
+                </div>
               ))}
             </div>
           </div>
@@ -928,8 +940,12 @@ const SelectRecipientContent = () => {
           // Only show "No results" if there was a search term
           searchTerm && (
             <div className="text-center text-gray-500 rounded-2xl dark:text-gray-300 text-lg bg-lightgray dark:bg-primarybox/50 py-10 mt-6">
-                 <p className="font-medium">No recipients found matching '{searchTerm}'.</p>
-                 <p className="text-sm mt-1">Check the spelling or try adding them as a new recipient.</p>
+              <p className="font-medium">
+                No recipients found matching '{searchTerm}'.
+              </p>
+              <p className="text-sm mt-1">
+                Check the spelling or try adding them as a new recipient.
+              </p>
             </div>
           )
         )}

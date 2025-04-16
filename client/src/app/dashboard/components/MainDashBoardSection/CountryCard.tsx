@@ -1545,7 +1545,7 @@ const CountryCard = () => {
                 passHref
                 legacyBehavior // Recommended for wrapping custom components like styled divs
               >
-                <a // Use an anchor tag when using legacyBehavior
+                <div // Use an anchor tag when using legacyBehavior
                   className="p-6 bg-lightgray dark:bg-primarybox hover:dark:bg-secondarybox rounded-2xl flex flex-col justify-between w-64 shrink-0 transition-all duration-75 ease-linear cursor-pointer hover:bg-neutral-200/70"
                   style={{ scrollSnapAlign: 'start' }}
                 >
@@ -1579,7 +1579,7 @@ const CountryCard = () => {
                       {account.balance != null ? parseFloat(account.balance).toFixed(2) : '0.00'}
                     </span>
                   </div>
-                </a>
+                </div>
               </Link>
             ))}
             {/* Add Currency Card */}
