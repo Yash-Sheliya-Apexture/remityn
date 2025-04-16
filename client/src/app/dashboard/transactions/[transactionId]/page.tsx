@@ -4312,12 +4312,11 @@ const TransactionDetailsPage = () => {
 
     // Loading State (Initial Load)
     if (isLoading && !transactionDetails) { return (
-         <div className="container mx-auto px-4 py-8 animate-pulse">
-             <Skeleton className="h-6 w-1/3 mb-4" /> {/* Page title placeholder */}
-             <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm mx-auto max-w-4xl">
-                 <Skeleton className="h-24 sm:h-20 w-full rounded-t-2xl" /> {/* Header */}
-                 <Skeleton className="h-14 w-full border-y border-gray-200 dark:border-gray-700" /> {/* Tabs */}
-                 <div className="p-6 space-y-8"> {/* Increased spacing */}
+         <div className="max-w-4xl mx-auto animate-pulse">
+             <div className="rounded-2xl border shadow-sm p-4">
+                 <Skeleton className="h-24 sm:h-20 w-full rounded-md" /> {/* Header */}
+                 <Skeleton className="h-14 w-full mt-2 rounded-md" /> {/* Tabs */}
+                 <div className="space-y-6   mt-6"> {/* Increased spacing */}
                      <Skeleton className="h-6 w-3/4" /> {/* Ref/ID placeholder */}
                      <Skeleton className="h-48 w-full" /> {/* Timeline placeholder */}
                      <Skeleton className="h-12 w-full" /> {/* Button Area placeholder */}

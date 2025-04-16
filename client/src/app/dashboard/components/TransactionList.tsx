@@ -1648,11 +1648,11 @@ const TransactionList: React.FC<TransactionListProps> = ({
                             : `Sent to ${transaction.recipient ? (transaction.recipient as any).accountHolderName || transaction.name || 'Recipient' : transaction.name || 'Recipient'}`; // Try to get recipient name
                           break;
                         case "canceled": // Use the correct spelling from the type
-                          amountClass = "text-red-600 dark:text-red-400 line-through";
+                          amountClass = "text-red-600 line-through";
                           description = "Canceled";
                           break;
                         case "failed":
-                          amountClass = "text-red-600 dark:text-red-400 line-through";
+                          amountClass = "text-red-600 line-through";
                           description = "Failed";
                           break;
                         default: // Should ideally not happen for 'processed' but handle just in case
