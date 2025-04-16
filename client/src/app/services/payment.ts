@@ -261,23 +261,28 @@ export interface InitiatePaymentPayload {
 
 // Response containing details of a specific payment
 export interface PaymentDetailsResponse {
-    amountToAdd: any;
-    payInCurrency: any;
-    balanceCurrency: any;
-    account: any;
     type: string;
-    accountId: any;
-    _id: string; // Or ObjectId type
-    status: string; // e.g., 'PENDING_PAYMENT', 'PROCESSING', 'COMPLETED', 'CANCELLED'
-    amountToPay?: number; // Optional if not always present
-    payInCurrencyCode?: string;
-    amountAdded?: number; // e.g. amount credited to balance
-    balanceCurrencyCode?: string;
+    _id: string;
+    status: string; // Should ideally be TransactionStatus type from backend if possible
+    amountToAdd: number; // Changed from any
+    amountToPay?: number;
+    // *** CHANGED LINES START ***
+    // Use the imported Currency type (adjust if structure differs slightly from API)
+    balanceCurrency: any;
+    payInCurrency: any;
+    // Use the optional code fields if the API *sometimes* provides them
+    balanceCurrencyCode?: string; // Keep if API sometimes sends this IN ADDITION TO object
+    payInCurrencyCode?: string;   // Keep if API sometimes sends this IN ADDITION TO object
+    // *** CHANGED LINES END ***
+    account: any;
+    accountId: string | undefined; // More specific than 'any'
+    amountAdded?: number;
     createdAt: string; // Or Date type
     updatedAt: string; // Or Date type
     userId: string; // Or ObjectId
-    // ... other specific payment properties (transfer details, etc.)
+    // NOTE: 'type' field removed as it's usually determined frontend-side based on origin (payment vs transfer)
 }
+
 
 // Response type for confirming user transfer (adjust as needed)
 export interface ConfirmTransferResponse {

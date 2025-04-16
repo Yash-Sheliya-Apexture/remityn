@@ -108,6 +108,27 @@
 //     );
 // }
 
+// import React from 'react';
+// import { KycProvider } from '@/app/contexts/KycContext'; // Adjust path if needed
+// import KycLayoutComponent from '../components/KycLayout'; // Adjust path if needed
+
+// // Layout for all routes under /kyc/*
+// export default function KycRouteGroupLayout({
+//     children,
+// }: {
+//     children: React.ReactNode;
+// }) {
+//     // KycProvider wraps the specific layout component, which then renders children
+//     return (
+//         <KycProvider>
+//             <KycLayoutComponent>{children}</KycLayoutComponent>
+//         </KycProvider>
+//     );
+// }.
+
+
+
+// frontend/src/app/kyc/layout.tsx
 import React from 'react';
 import { KycProvider } from '@/app/contexts/KycContext'; // Adjust path if needed
 import KycLayoutComponent from '../components/KycLayout'; // Adjust path if needed
@@ -119,6 +140,7 @@ export default function KycRouteGroupLayout({
     children: React.ReactNode;
 }) {
     // KycProvider wraps the specific layout component, which then renders children
+    // This ensures KycContext is available for KycLayoutComponent and its children
     return (
         <KycProvider>
             <KycLayoutComponent>{children}</KycLayoutComponent>

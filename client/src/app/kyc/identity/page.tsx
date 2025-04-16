@@ -516,10 +516,211 @@
 // }
 
 
+// // frontend/src/app/kyc/identity/page.tsx
+// 'use client';
+
+// import React, { useState, useEffect } from 'react';
+// import { useForm } from 'react-hook-form';
+// import { zodResolver } from '@hookform/resolvers/zod';
+// import * as z from 'zod';
+// import { format, startOfDay, parseISO, isValid as isDateValid, addDays } from "date-fns";
+// import { cn } from "@/lib/utils";
+
+// // --- UI Components ---
+// import { Button } from "@/components/ui/button";
+// import { Input } from "@/components/ui/input";
+// import { Calendar } from "@/components/ui/calendar";
+// import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+// import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+// import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+// import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+// import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+// import { Calendar as CalendarIcon, Loader2, Fingerprint, AlertTriangle, ArrowRight, ArrowLeft, Check, BookUser, Contact } from 'lucide-react';
+
+// // --- App Specific Imports ---
+// import { useKyc, formStepOrder } from '../../contexts/KycContext';
+// import type { IdType } from '@/app/services/kyc';
+
+// // --- Zod Validation Schema ---
+// const idTypeValues: [IdType, ...IdType[]] = ['passport', 'resident_permit'];
+// const identitySchema = z.object({
+//     idType: z.enum(idTypeValues, { required_error: "Please select the type of ID you will upload." }),
+//     idNumber: z.string().trim()
+//         .min(5, { message: 'ID number must be at least 5 characters.' })
+//         .max(50, { message: 'ID number cannot exceed 50 characters.' }),
+//     idIssueDate: z.date({ required_error: "Issue date is required.", invalid_type_error: "Please enter a valid issue date."})
+//        .max(startOfDay(new Date()), { message: "Issue date cannot be in the future." })
+//        .min(new Date("1950-01-01"), { message: "Issue date seems incorrect (before 1950)." }),
+//     idExpiryDate: z.date({ required_error: "Expiry date is required.", invalid_type_error: "Please enter a valid expiry date."})
+//        .min(startOfDay(addDays(new Date(), 1)), { message: "This ID appears to be expired or expires today." }), // Min tomorrow
+// })
+// .refine(data => !data.idIssueDate || !data.idExpiryDate || data.idExpiryDate > data.idIssueDate, { // Check only if both dates are valid
+//     message: "Expiry date must be after the issue date.",
+//     path: ["idExpiryDate"],
+// });
+
+// type IdentityFormData = z.infer<typeof identitySchema>;
+
+// // --- Component ---
+// export default function KycIdentityPage() {
+//     const {
+//         kycData, setKycData, nextStep, prevStep, updateCurrentUiStepId, goToStep,
+//         isInitialized: kycInitialized, backendStatus
+//     } = useKyc();
+
+//     const [formError, setFormError] = useState<string | null>(null);
+//     const [isSubmitting, setIsSubmitting] = useState(false);
+//     const [isPageLoading, setIsPageLoading] = useState(true);
+
+//     const form = useForm<IdentityFormData>({
+//         resolver: zodResolver(identitySchema),
+//         defaultValues: { idType: undefined, idNumber: '', idIssueDate: undefined, idExpiryDate: undefined },
+//         mode: 'onChange',
+//     });
+
+//     // Effect 1: Set UI step
+//     useEffect(() => { if (kycInitialized) updateCurrentUiStepId('identity'); }, [kycInitialized, updateCurrentUiStepId]);
+
+//     // Effect 2: Load data from context
+//     useEffect(() => {
+//         if (!kycInitialized) { setIsPageLoading(true); return; }
+//         if (backendStatus !== 'not_started' && backendStatus !== 'rejected' && backendStatus !== 'skipped') {
+//             // console.log("IdentityPage: Skipping data load due to backend status:", backendStatus);
+//             setIsPageLoading(false); return;
+//         }
+
+//         // console.log("IdentityPage: Context initialized. Loading data:", kycData);
+//         setIsPageLoading(true);
+
+//         const parseContextDate = (dateString?: string): Date | undefined => {
+//             if (!dateString) return undefined;
+//             try { const date = parseISO(dateString); return isDateValid(date) ? date : undefined; }
+//             catch { console.warn("IdentityPage: Failed to parse date string:", dateString); return undefined; }
+//         };
+
+//         form.reset({
+//              idType: kycData.idType && idTypeValues.includes(kycData.idType) ? kycData.idType : undefined,
+//              idNumber: kycData.idNumber || '',
+//              idIssueDate: parseContextDate(kycData.idIssueDate),
+//              idExpiryDate: parseContextDate(kycData.idExpiryDate),
+//         });
+//         setIsPageLoading(false);
+
+//     }, [kycInitialized, backendStatus, kycData.idType, kycData.idNumber, kycData.idIssueDate, kycData.idExpiryDate, form.reset]);
+
+//     // --- Event Handlers ---
+//     const onSubmit = (data: IdentityFormData) => {
+//         setIsSubmitting(true); setFormError(null);
+//         try {
+//             setKycData({
+//                 idType: data.idType, idNumber: data.idNumber,
+//                 idIssueDate: format(data.idIssueDate, "yyyy-MM-dd"),
+//                 idExpiryDate: format(data.idExpiryDate, "yyyy-MM-dd"),
+//             });
+//             nextStep();
+//         } catch (error: any) {
+//             console.error("IdentityPage: Error saving progress:", error);
+//             setFormError(error.message || "Failed to save progress.");
+//             setIsSubmitting(false);
+//         }
+//     };
+
+//     const selectedIdType = form.watch('idType');
+
+//     // --- Render Logic ---
+//     if (isPageLoading || !kycInitialized) { /* ... loading spinner ... */ return ( <div className="flex justify-center items-center min-h-[400px]"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div> ); }
+//     if (backendStatus !== 'not_started' && backendStatus !== 'rejected' && backendStatus !== 'skipped') { /* ... loading spinner ... */ return ( <div className="flex justify-center items-center min-h-[400px]"><Loader2 className="h-8 w-8 animate-spin text-primary" /><span className="ml-2">Updating status...</span></div> ); }
+
+//     return (
+//          <Card className="w-full max-w-2xl mx-auto shadow-xl border border-border/40 animate-fadeIn">
+//             <CardHeader className="border-b dark:border-border/50 p-6">
+//                  <div className="flex items-center gap-3 mb-1">
+//                     <Fingerprint className="h-6 w-6 text-primary" />
+//                      <CardTitle className="text-2xl font-semibold tracking-tight">
+//                          Identity Document (Step {formStepOrder.indexOf('identity') + 1} of {formStepOrder.length})
+//                     </CardTitle>
+//                   </div>
+//                 <CardDescription>
+//                     Select the ID type you will upload and enter details exactly as shown on the document.
+//                 </CardDescription>
+//             </CardHeader>
+//              <CardContent className="p-6 md:p-8">
+//                  {formError && ( <Alert variant="destructive" className="mb-6"> {/* ... error display ... */} </Alert> )}
+//                 <Form {...form}>
+//                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+//                         {/* ID Type Radio Group */}
+//                          <FormField control={form.control} name="idType" render={({ field }) => (
+//                             <FormItem className="space-y-4">
+//                                 <FormLabel className="text-base font-medium">Select ID Type *</FormLabel>
+//                                 <FormControl>
+//                                     <RadioGroup onValueChange={field.onChange} value={field.value ?? ''} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+//                                         {/* Passport Option */}
+//                                         <FormItem>
+//                                             <FormControl><RadioGroupItem value="passport" id="passport-radio" className="peer sr-only" /></FormControl>
+//                                             <FormLabel htmlFor="passport-radio" className="flex flex-col items-center justify-between rounded-lg border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer transition-colors duration-200">
+//                                                 <BookUser className="h-6 w-6 text-muted-foreground mb-2" /><span className="font-semibold">Passport</span><div className="h-5 mt-1">{field.value === 'passport' && <Check className="h-5 w-5 text-primary" />}</div>
+//                                             </FormLabel>
+//                                         </FormItem>
+//                                         {/* Resident Permit Option */}
+//                                         <FormItem>
+//                                              <FormControl><RadioGroupItem value="resident_permit" id="resident_permit-radio" className="peer sr-only" /></FormControl>
+//                                              <FormLabel htmlFor="resident_permit-radio" className="flex flex-col items-center justify-between rounded-lg border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer transition-colors duration-200">
+//                                                 <Contact className="h-6 w-6 text-muted-foreground mb-2" /><span className="font-semibold text-center">Resident Permit / National ID</span><div className="h-5 mt-1">{field.value === 'resident_permit' && <Check className="h-5 w-5 text-primary" />}</div>
+//                                              </FormLabel>
+//                                         </FormItem>
+//                                     </RadioGroup>
+//                                 </FormControl>
+//                                 <FormMessage />
+//                             </FormItem>
+//                          )} />
+
+//                         {/* Conditionally Rendered Fields */}
+//                         <div className={cn("space-y-6 pt-6 border-t border-border/30 dark:border-border/20 transition-opacity duration-300 ease-in-out", selectedIdType ? "opacity-100" : "opacity-0 h-0 overflow-hidden pointer-events-none")}>
+//                             {/* ID Number Field */}
+//                             <FormField control={form.control} name="idNumber" render={({ field }) => (
+//                                 <FormItem>
+//                                     <FormLabel>{selectedIdType === 'passport' ? 'Passport Number' : 'Permit / ID Number'} *</FormLabel>
+//                                     <FormControl><Input placeholder="Enter document number" {...field} /></FormControl>
+//                                     <FormDescription>Enter the full ID number. Include letters/dashes if present.</FormDescription>
+//                                     <FormMessage />
+//                                 </FormItem>
+//                             )} />
+//                             {/* Issue and Expiry Date Fields */}
+//                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6">
+//                                 <FormField control={form.control} name="idIssueDate" render={({ field }) => (
+//                                     <FormItem className="flex flex-col">
+//                                         <FormLabel>Date of Issue *</FormLabel>
+//                                         <Popover> <PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}> <CalendarIcon className="mr-2 h-4 w-4" /> {field.value && isDateValid(field.value) ? format(field.value, "PPP") : <span>Pick issue date</span>} </Button></FormControl></PopoverTrigger> <PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value && isDateValid(field.value) ? field.value : undefined} onSelect={(date) => { field.onChange(date); if (form.getValues("idExpiryDate")) { form.trigger("idExpiryDate"); } }} disabled={(date) => date > startOfDay(new Date()) || date < new Date("1950-01-01")} initialFocus captionLayout="dropdown-buttons" fromYear={1950} toYear={new Date().getFullYear()} /></PopoverContent> </Popover>
+//                                         <FormMessage />
+//                                     </FormItem>
+//                                 )} />
+//                                 <FormField control={form.control} name="idExpiryDate" render={({ field }) => (
+//                                     <FormItem className="flex flex-col">
+//                                         <FormLabel>Date of Expiry *</FormLabel>
+//                                         <Popover> <PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}> <CalendarIcon className="mr-2 h-4 w-4" /> {field.value && isDateValid(field.value) ? format(field.value, "PPP") : <span>Pick expiry date</span>} </Button></FormControl></PopoverTrigger> <PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value && isDateValid(field.value) ? field.value : undefined} onSelect={(date) => { field.onChange(date); form.trigger("idExpiryDate"); }} disabled={(date) => date < startOfDay(addDays(new Date(), 1))} initialFocus captionLayout="dropdown-buttons" fromYear={new Date().getFullYear()} toYear={new Date().getFullYear() + 30} /></PopoverContent> </Popover>
+//                                         <FormDescription>Your ID must not be expired.</FormDescription><FormMessage />
+//                                     </FormItem>
+//                                 )} />
+//                             </div>
+//                         </div>
+
+//                         {/* Navigation Buttons */}
+//                         <div className="flex justify-between items-center pt-8 border-t dark:border-border/50 mt-8">
+//                              <Button type="button" variant="outline" onClick={prevStep} disabled={isSubmitting}><ArrowLeft className="mr-2 h-4 w-4" /> Back</Button>
+//                              <Button type="submit" disabled={isSubmitting || !form.formState.isValid}>{isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ArrowRight className="mr-2 h-4 w-4" />} Continue</Button>
+//                         </div>
+//                     </form>
+//                 </Form>
+//             </CardContent>
+//         </Card>
+//     );
+// }
+
+
 // frontend/src/app/kyc/identity/page.tsx
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'; // Added useCallback
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -552,9 +753,9 @@ const identitySchema = z.object({
        .max(startOfDay(new Date()), { message: "Issue date cannot be in the future." })
        .min(new Date("1950-01-01"), { message: "Issue date seems incorrect (before 1950)." }),
     idExpiryDate: z.date({ required_error: "Expiry date is required.", invalid_type_error: "Please enter a valid expiry date."})
-       .min(startOfDay(addDays(new Date(), 1)), { message: "This ID appears to be expired or expires today." }), // Min tomorrow
+       .min(startOfDay(addDays(new Date(), 1)), { message: "This ID appears to be expired or expires today." }),
 })
-.refine(data => !data.idIssueDate || !data.idExpiryDate || data.idExpiryDate > data.idIssueDate, { // Check only if both dates are valid
+.refine(data => !data.idIssueDate || !data.idExpiryDate || data.idExpiryDate > data.idIssueDate, {
     message: "Expiry date must be after the issue date.",
     path: ["idExpiryDate"],
 });
@@ -564,13 +765,13 @@ type IdentityFormData = z.infer<typeof identitySchema>;
 // --- Component ---
 export default function KycIdentityPage() {
     const {
-        kycData, setKycData, nextStep, prevStep, updateCurrentUiStepId, goToStep,
-        isInitialized: kycInitialized, backendStatus
+        kycData, setKycData, nextStep, prevStep, updateCurrentUiStepId,
+        isInitialized: kycInitialized, backendStatus, isLoadingStatus: kycLoadingStatus
     } = useKyc();
 
     const [formError, setFormError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [isPageLoading, setIsPageLoading] = useState(true);
+    const [isPageLoading, setIsPageLoading] = useState(true); // Local loading for form init
 
     const form = useForm<IdentityFormData>({
         resolver: zodResolver(identitySchema),
@@ -579,23 +780,26 @@ export default function KycIdentityPage() {
     });
 
     // Effect 1: Set UI step
-    useEffect(() => { if (kycInitialized) updateCurrentUiStepId('identity'); }, [kycInitialized, updateCurrentUiStepId]);
+    useEffect(() => {
+        if (kycInitialized && window.location.pathname === '/kyc/identity') {
+            updateCurrentUiStepId('identity');
+        }
+     }, [kycInitialized, updateCurrentUiStepId]);
 
     // Effect 2: Load data from context
     useEffect(() => {
-        if (!kycInitialized) { setIsPageLoading(true); return; }
-        if (backendStatus !== 'not_started' && backendStatus !== 'rejected' && backendStatus !== 'skipped') {
-            // console.log("IdentityPage: Skipping data load due to backend status:", backendStatus);
+        if (!kycInitialized) {
+            setIsPageLoading(true); return;
+        }
+        if (!["not_started", "rejected", "skipped", "loading"].includes(backendStatus as string)) {
             setIsPageLoading(false); return;
         }
 
-        // console.log("IdentityPage: Context initialized. Loading data:", kycData);
         setIsPageLoading(true);
-
         const parseContextDate = (dateString?: string): Date | undefined => {
             if (!dateString) return undefined;
             try { const date = parseISO(dateString); return isDateValid(date) ? date : undefined; }
-            catch { console.warn("IdentityPage: Failed to parse date string:", dateString); return undefined; }
+            catch { return undefined; }
         };
 
         form.reset({
@@ -606,10 +810,10 @@ export default function KycIdentityPage() {
         });
         setIsPageLoading(false);
 
-    }, [kycInitialized, backendStatus, kycData.idType, kycData.idNumber, kycData.idIssueDate, kycData.idExpiryDate, form.reset]);
+    }, [kycInitialized, backendStatus, kycData, form.reset]); // Simplified dependencies
 
     // --- Event Handlers ---
-    const onSubmit = (data: IdentityFormData) => {
+    const onSubmit = useCallback((data: IdentityFormData) => {
         setIsSubmitting(true); setFormError(null);
         try {
             setKycData({
@@ -619,33 +823,31 @@ export default function KycIdentityPage() {
             });
             nextStep();
         } catch (error: any) {
-            console.error("IdentityPage: Error saving progress:", error);
             setFormError(error.message || "Failed to save progress.");
             setIsSubmitting(false);
         }
-    };
+    }, [setKycData, nextStep]); // Minimal deps
 
     const selectedIdType = form.watch('idType');
 
     // --- Render Logic ---
-    if (isPageLoading || !kycInitialized) { /* ... loading spinner ... */ return ( <div className="flex justify-center items-center min-h-[400px]"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div> ); }
-    if (backendStatus !== 'not_started' && backendStatus !== 'rejected' && backendStatus !== 'skipped') { /* ... loading spinner ... */ return ( <div className="flex justify-center items-center min-h-[400px]"><Loader2 className="h-8 w-8 animate-spin text-primary" /><span className="ml-2">Updating status...</span></div> ); }
+    // Simplified Loading
+    if (isPageLoading || (kycLoadingStatus && !isPageLoading)) {
+        return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-primary" /> </div> );
+    }
+    // Waiting for Redirect
+    if (!["not_started", "rejected", "skipped", "loading"].includes(backendStatus as string)) {
+        return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-primary" /> </div> );
+    }
 
     return (
          <Card className="w-full max-w-2xl mx-auto shadow-xl border border-border/40 animate-fadeIn">
             <CardHeader className="border-b dark:border-border/50 p-6">
-                 <div className="flex items-center gap-3 mb-1">
-                    <Fingerprint className="h-6 w-6 text-primary" />
-                     <CardTitle className="text-2xl font-semibold tracking-tight">
-                         Identity Document (Step {formStepOrder.indexOf('identity') + 1} of {formStepOrder.length})
-                    </CardTitle>
-                  </div>
-                <CardDescription>
-                    Select the ID type you will upload and enter details exactly as shown on the document.
-                </CardDescription>
+                 <div className="flex items-center gap-3 mb-1"> <Fingerprint className="h-6 w-6 text-primary" /> <CardTitle className="text-2xl font-semibold tracking-tight"> Identity Document (Step {formStepOrder.indexOf('identity') + 1} of {formStepOrder.length}) </CardTitle> </div>
+                <CardDescription> Select the ID type and enter details exactly as shown on the document. </CardDescription>
             </CardHeader>
              <CardContent className="p-6 md:p-8">
-                 {formError && ( <Alert variant="destructive" className="mb-6"> {/* ... error display ... */} </Alert> )}
+                 {formError && ( <Alert variant="destructive" className="mb-6"> <AlertTriangle className="h-4 w-4" /> <AlertTitle>Error</AlertTitle> <AlertDescription>{formError}</AlertDescription> </Alert> )}
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                         {/* ID Type Radio Group */}
@@ -654,51 +856,39 @@ export default function KycIdentityPage() {
                                 <FormLabel className="text-base font-medium">Select ID Type *</FormLabel>
                                 <FormControl>
                                     <RadioGroup onValueChange={field.onChange} value={field.value ?? ''} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        {/* Passport Option */}
-                                        <FormItem>
-                                            <FormControl><RadioGroupItem value="passport" id="passport-radio" className="peer sr-only" /></FormControl>
-                                            <FormLabel htmlFor="passport-radio" className="flex flex-col items-center justify-between rounded-lg border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer transition-colors duration-200">
-                                                <BookUser className="h-6 w-6 text-muted-foreground mb-2" /><span className="font-semibold">Passport</span><div className="h-5 mt-1">{field.value === 'passport' && <Check className="h-5 w-5 text-primary" />}</div>
-                                            </FormLabel>
-                                        </FormItem>
-                                        {/* Resident Permit Option */}
-                                        <FormItem>
-                                             <FormControl><RadioGroupItem value="resident_permit" id="resident_permit-radio" className="peer sr-only" /></FormControl>
-                                             <FormLabel htmlFor="resident_permit-radio" className="flex flex-col items-center justify-between rounded-lg border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer transition-colors duration-200">
-                                                <Contact className="h-6 w-6 text-muted-foreground mb-2" /><span className="font-semibold text-center">Resident Permit / National ID</span><div className="h-5 mt-1">{field.value === 'resident_permit' && <Check className="h-5 w-5 text-primary" />}</div>
-                                             </FormLabel>
-                                        </FormItem>
+                                        <FormItem> <FormControl><RadioGroupItem value="passport" id="passport-radio" className="peer sr-only" /></FormControl> <FormLabel htmlFor="passport-radio" className="flex flex-col items-center justify-between rounded-lg border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer transition-colors duration-200"> <BookUser className="h-6 w-6 text-muted-foreground mb-2" /><span className="font-semibold">Passport</span><div className="h-5 mt-1">{field.value === 'passport' && <Check className="h-5 w-5 text-primary" />}</div> </FormLabel> </FormItem>
+                                        <FormItem> <FormControl><RadioGroupItem value="resident_permit" id="resident_permit-radio" className="peer sr-only" /></FormControl> <FormLabel htmlFor="resident_permit-radio" className="flex flex-col items-center justify-between rounded-lg border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer transition-colors duration-200"> <Contact className="h-6 w-6 text-muted-foreground mb-2" /><span className="font-semibold text-center">Resident Permit / National ID</span><div className="h-5 mt-1">{field.value === 'resident_permit' && <Check className="h-5 w-5 text-primary" />}</div> </FormLabel> </FormItem>
                                     </RadioGroup>
-                                </FormControl>
-                                <FormMessage />
+                                </FormControl> <FormMessage />
                             </FormItem>
                          )} />
 
                         {/* Conditionally Rendered Fields */}
                         <div className={cn("space-y-6 pt-6 border-t border-border/30 dark:border-border/20 transition-opacity duration-300 ease-in-out", selectedIdType ? "opacity-100" : "opacity-0 h-0 overflow-hidden pointer-events-none")}>
                             {/* ID Number Field */}
-                            <FormField control={form.control} name="idNumber" render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{selectedIdType === 'passport' ? 'Passport Number' : 'Permit / ID Number'} *</FormLabel>
-                                    <FormControl><Input placeholder="Enter document number" {...field} /></FormControl>
-                                    <FormDescription>Enter the full ID number. Include letters/dashes if present.</FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )} />
+                            <FormField control={form.control} name="idNumber" render={({ field }) => ( <FormItem> <FormLabel>{selectedIdType === 'passport' ? 'Passport Number' : 'Permit / ID Number'} *</FormLabel> <FormControl><Input placeholder="Enter document number" {...field} /></FormControl> <FormDescription>Enter the full ID number.</FormDescription> <FormMessage /> </FormItem> )} />
                             {/* Issue and Expiry Date Fields */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6">
                                 <FormField control={form.control} name="idIssueDate" render={({ field }) => (
-                                    <FormItem className="flex flex-col">
-                                        <FormLabel>Date of Issue *</FormLabel>
-                                        <Popover> <PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}> <CalendarIcon className="mr-2 h-4 w-4" /> {field.value && isDateValid(field.value) ? format(field.value, "PPP") : <span>Pick issue date</span>} </Button></FormControl></PopoverTrigger> <PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value && isDateValid(field.value) ? field.value : undefined} onSelect={(date) => { field.onChange(date); if (form.getValues("idExpiryDate")) { form.trigger("idExpiryDate"); } }} disabled={(date) => date > startOfDay(new Date()) || date < new Date("1950-01-01")} initialFocus captionLayout="dropdown-buttons" fromYear={1950} toYear={new Date().getFullYear()} /></PopoverContent> </Popover>
-                                        <FormMessage />
+                                    <FormItem className="flex flex-col"> <FormLabel>Date of Issue *</FormLabel>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                {/* FIX: Removed FormControl wrapper */}
+                                                <Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}> <CalendarIcon className="mr-2 h-4 w-4" /> {field.value && isDateValid(field.value) ? format(field.value, "PPP") : <span>Pick issue date</span>} </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value && isDateValid(field.value) ? field.value : undefined} onSelect={(date) => { field.onChange(date); if (form.getValues("idExpiryDate")) { form.trigger("idExpiryDate"); } }} disabled={(date) => date > startOfDay(new Date()) || date < new Date("1950-01-01")} initialFocus captionLayout="dropdown-buttons" fromYear={1950} toYear={new Date().getFullYear()} /></PopoverContent>
+                                        </Popover> <FormMessage />
                                     </FormItem>
                                 )} />
                                 <FormField control={form.control} name="idExpiryDate" render={({ field }) => (
-                                    <FormItem className="flex flex-col">
-                                        <FormLabel>Date of Expiry *</FormLabel>
-                                        <Popover> <PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}> <CalendarIcon className="mr-2 h-4 w-4" /> {field.value && isDateValid(field.value) ? format(field.value, "PPP") : <span>Pick expiry date</span>} </Button></FormControl></PopoverTrigger> <PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value && isDateValid(field.value) ? field.value : undefined} onSelect={(date) => { field.onChange(date); form.trigger("idExpiryDate"); }} disabled={(date) => date < startOfDay(addDays(new Date(), 1))} initialFocus captionLayout="dropdown-buttons" fromYear={new Date().getFullYear()} toYear={new Date().getFullYear() + 30} /></PopoverContent> </Popover>
-                                        <FormDescription>Your ID must not be expired.</FormDescription><FormMessage />
+                                    <FormItem className="flex flex-col"> <FormLabel>Date of Expiry *</FormLabel>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                 {/* FIX: Removed FormControl wrapper */}
+                                                <Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}> <CalendarIcon className="mr-2 h-4 w-4" /> {field.value && isDateValid(field.value) ? format(field.value, "PPP") : <span>Pick expiry date</span>} </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value && isDateValid(field.value) ? field.value : undefined} onSelect={(date) => { field.onChange(date); form.trigger("idExpiryDate"); }} disabled={(date) => date < startOfDay(addDays(new Date(), 1))} initialFocus captionLayout="dropdown-buttons" fromYear={new Date().getFullYear()} toYear={new Date().getFullYear() + 30} /></PopoverContent>
+                                        </Popover> <FormDescription>Your ID must not be expired.</FormDescription><FormMessage />
                                     </FormItem>
                                 )} />
                             </div>
@@ -707,7 +897,7 @@ export default function KycIdentityPage() {
                         {/* Navigation Buttons */}
                         <div className="flex justify-between items-center pt-8 border-t dark:border-border/50 mt-8">
                              <Button type="button" variant="outline" onClick={prevStep} disabled={isSubmitting}><ArrowLeft className="mr-2 h-4 w-4" /> Back</Button>
-                             <Button type="submit" disabled={isSubmitting || !form.formState.isValid}>{isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ArrowRight className="mr-2 h-4 w-4" />} Continue</Button>
+                             <Button type="submit" disabled={isSubmitting || !form.formState.isValid || !selectedIdType}>{isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ArrowRight className="mr-2 h-4 w-4" />} Continue</Button> {/* Disable if ID type not selected */}
                         </div>
                     </form>
                 </Form>
