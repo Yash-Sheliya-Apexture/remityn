@@ -409,7 +409,90 @@
 
 // export default MainDashBoard;
 
-// frontend/src/app/dashboard/components/MainDashBoardSection/MainSection.tsx
+// // frontend/src/app/dashboard/components/MainDashBoardSection/MainSection.tsx
+// "use client";
+
+// import React from "react";
+// import CountryCard from "./CountryCard";
+// import TasksPage from "./Tasks";
+// import TransactionsSection from "./TransactionsSection";
+// import { useAuth } from "../../../contexts/AuthContext"; // Correct path
+// import AccountVerification from "@/app/components/ui/AccountVerification"; // Correct path
+// import { Skeleton } from "@/components/ui/skeleton";
+// import { AlertCircle } from "lucide-react";
+// import type { KycStatus } from "@/app/services/kyc"; // Import the KycStatus type
+
+// const MainDashBoard = () => {
+//   // Use AuthContext as the single source of truth for user data on the dashboard
+//   const { user, loading: authLoading } = useAuth();
+
+//   // --- Loading State ---
+//   // Show skeleton while AuthContext is determining the user state
+//   if (authLoading) {
+//     // console.log("Dashboard: Auth is loading, showing skeleton.");
+//     return (
+//       <div className="space-y-6 md:space-y-8 animate-pulse p-4 md:p-0">
+//          {/* Mimic layout with skeletons */}
+//          <Skeleton className="h-24 w-full rounded-lg bg-muted dark:bg-muted/60" /> {/* Placeholder for Banner/Verification */}
+//          <Skeleton className="h-32 w-full rounded-lg bg-muted dark:bg-muted/60" /> {/* Placeholder for CountryCard */}
+//          <Skeleton className="h-48 w-full rounded-lg bg-muted dark:bg-muted/60" /> {/* Placeholder for Tasks */}
+//          <Skeleton className="h-64 w-full rounded-lg bg-muted dark:bg-muted/60" /> {/* Placeholder for Transactions */}
+//       </div>
+//     );
+//   }
+
+//   // --- Error State: User data not available after loading ---
+//   if (!user) {
+//     // This indicates an issue with authentication or data fetching in AuthContext
+//     console.error("Dashboard: Auth loaded but user data is null. Cannot render dashboard sections.");
+//     return (
+//         <div className="flex flex-col items-center justify-center min-h-[300px] text-center p-6 bg-destructive/10 dark:bg-destructive/20 rounded-lg border border-destructive/30 dark:border-destructive/50">
+//             <AlertCircle className="h-12 w-12 text-destructive mb-4" />
+//             <p className="text-destructive dark:text-red-300 font-semibold text-lg">
+//                 Error: Could not load user session data.
+//             </p>
+//             <p className="text-sm text-destructive/80 dark:text-red-300/80 mt-2">
+//                 Please try refreshing the page or logging out and logging back in. Contact support if the problem persists.
+//             </p>
+//             {/* Maybe add logout button here */}
+//         </div>
+//     );
+//   }
+
+//   // --- Get KYC Status and Reason DIRECTLY from AuthContext ---
+//   // This ensures the dashboard reflects the most recently fetched status via refetchUser
+//   const kycStatus: KycStatus | undefined | null = user.kycStatus;
+//   const rejectionReason = user.kycRejectionReason;
+
+//   // Determine if the banner should be shown (only for non-verified states)
+//   const showVerificationBanner = kycStatus && kycStatus !== 'verified';
+
+//   // console.log(`Dashboard Render - User: ${user.email}, KYC Status from AuthContext: ${kycStatus}, Show Banner: ${showVerificationBanner}`);
+
+//   return (
+//     // Add padding consistent with loading state or remove if parent provides padding
+//     <div className="space-y-6 md:space-y-8 p-4 md:p-0">
+//       {/* --- Account Verification Banner --- */}
+//       {/* Render the banner based on the status derived from AuthContext */}
+//       {showVerificationBanner && (
+//         <AccountVerification
+//           status={kycStatus} // Pass the actual status from AuthContext
+//           reason={rejectionReason} // Pass the reason
+//         />
+//       )}
+
+//       {/* --- Other Dashboard Sections --- */}
+//       {/* These components likely don't depend directly on KYC status, but might use user info */}
+//       <CountryCard />
+//       <TasksPage />
+//       <TransactionsSection />
+//     </div>
+//   );
+// };
+
+// export default MainDashBoard;
+
+
 "use client";
 
 import React from "react";
@@ -440,8 +523,6 @@ const MainDashBoard = () => {
       </div>
     );
   }
-
-  // --- Error State: User data not available after loading ---
   if (!user) {
     // This indicates an issue with authentication or data fetching in AuthContext
     console.error("Dashboard: Auth loaded but user data is null. Cannot render dashboard sections.");
@@ -454,35 +535,25 @@ const MainDashBoard = () => {
             <p className="text-sm text-destructive/80 dark:text-red-300/80 mt-2">
                 Please try refreshing the page or logging out and logging back in. Contact support if the problem persists.
             </p>
-            {/* Maybe add logout button here */}
         </div>
     );
   }
 
-  // --- Get KYC Status and Reason DIRECTLY from AuthContext ---
-  // This ensures the dashboard reflects the most recently fetched status via refetchUser
-  const kycStatus: KycStatus | undefined | null = user.kycStatus;
-  const rejectionReason = user.kycRejectionReason;
+  const kycStatus: KycStatus | undefined | null = user.kycStatus; // Assuming kycStatus is directly on user object
+  const rejectionReason = user.kycRejectionReason; // Assuming rejection reason is on user object
+  console.log(kycStatus);
+  const showVerificationBanner = kycStatus !== 'verified';
 
-  // Determine if the banner should be shown (only for non-verified states)
-  const showVerificationBanner = kycStatus && kycStatus !== 'verified';
-
-  // console.log(`Dashboard Render - User: ${user.email}, KYC Status from AuthContext: ${kycStatus}, Show Banner: ${showVerificationBanner}`);
 
   return (
     // Add padding consistent with loading state or remove if parent provides padding
     <div className="space-y-6 md:space-y-8 p-4 md:p-0">
-      {/* --- Account Verification Banner --- */}
-      {/* Render the banner based on the status derived from AuthContext */}
       {showVerificationBanner && (
         <AccountVerification
-          status={kycStatus} // Pass the actual status from AuthContext
+          status={kycStatus} // Pass the actual status (or null/undefined) from AuthContext
           reason={rejectionReason} // Pass the reason
         />
       )}
-
-      {/* --- Other Dashboard Sections --- */}
-      {/* These components likely don't depend directly on KYC status, but might use user info */}
       <CountryCard />
       <TasksPage />
       <TransactionsSection />

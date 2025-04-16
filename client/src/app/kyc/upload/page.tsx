@@ -1146,14 +1146,14 @@ export default function KycUploadPage() {
                 )}
 
                 {/* Info for Passport */}
-                 {kycData.idType === 'passport' && (
-                     // FIX: Removed variant="info" as it's not a standard variant for shadcn Alert.
-                     // The default variant usually works fine for informational messages,
-                     // especially with the CheckCircle icon.
-                     <Alert className="mt-4">
-                         <CheckCircle className="h-4 w-4" />
-                         <AlertTitle>Passport Upload</AlertTitle>
-                         <AlertDescription>Only the main photo page is required.</AlertDescription>
+                {kycData.idType === 'passport' && (
+                     // FIX: Removed invalid variant="info". Default variant with appropriate icon works.
+                     <Alert className="mt-4 border-blue-300 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20">
+                         <CheckCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                         <AlertTitle className="text-blue-800 dark:text-blue-200 font-semibold">Passport Upload</AlertTitle>
+                         <AlertDescription className="text-blue-700 dark:text-blue-300">
+                             Only the main photo page is required.
+                         </AlertDescription>
                      </Alert>
                   )}
 
