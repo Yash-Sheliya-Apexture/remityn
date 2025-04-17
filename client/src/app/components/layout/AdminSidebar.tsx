@@ -2705,7 +2705,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
           {/* Navigation */}
           {/* Add scrollbar styling */}
-          <nav className="flex-1 py-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600 dark:hover:scrollbar-thumb-gray-500">
+          <nav className="flex-1 py-4 overflow-x-hidden overflow-y-auto [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
             <div className="px-4 mb-4">
               <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 px-3">
                 Main

@@ -2445,7 +2445,7 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
                 isMobile
                   ? "bottom-0 left-0 right-0 h-[100vh] max-h-screen"
                   : "top-0 right-0 sm:w-[600px] h-full border-l border-gray-200 dark:border-neutral-700"
-              } bg-white dark:bg-background z-[51] flex flex-col shadow-xl overflow-hidden`}
+              } bg-white dark:bg-background z-[51] flex flex-col overflow-hidden`}
               role="dialog"
               aria-modal="true"
               aria-labelledby="filter-modal-heading"

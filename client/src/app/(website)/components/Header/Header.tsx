@@ -2348,7 +2348,7 @@ const Header: React.FC = () => {
               links={featureLinks}
               topContent={topContent}
               // Apply conditional classes to the button itself
-              buttonClassName={getLinkClasses("/features", true)} // Pass true for isFeatureDropdown check
+              buttonClassName={getLinkClasses("/features")} // Pass true for isFeatureDropdown check
             />
 
             <Link href="/reviews" className={getLinkClasses("/reviews")}>
@@ -2360,9 +2360,9 @@ const Header: React.FC = () => {
             </Link>
 
             {/* Theme Toggle */}
-            <div className="mx-2">
+            {/* <div className="mx-2">
               <ThemeToggle />
-            </div>
+            </div> */}
 
             {/* --- Auth Links --- */}
             <Link
