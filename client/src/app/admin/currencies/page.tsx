@@ -316,7 +316,7 @@
 //           }} // Clear error on open
 //           className="bg-primary text-neutral-900 flex hover:bg-primaryhover text-nowrap font-medium rounded-full text-center lg:px-6 p-2 lg:py-3 lg:h-12.5  items-center gap-1 cursor-pointer transition-all duration-75 ease-linear"
 //         >
-//           <IoMdAdd  
+//           <IoMdAdd
 //             className="size-8"
 //             title={isMobile ? "Add Currency" : undefined} // Tooltip for mobile
 //           />
@@ -401,12 +401,12 @@
 //                       />
 //                     ) : (
 //                       <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                        
+
 //                         {currency.code}
 //                       </h3>
 //                     )}
 //                     <p className="text-sm text-gray-500 dark:text-gray-300 mt-0.5">
-                      
+
 //                       {currency.currencyName}
 //                     </p>
 //                   </div>
@@ -539,7 +539,7 @@
 //                 {/* Modal Header */}
 //                 <div className="flex justify-between items-center mb-6">
 //                   <h2 className="lg:text-xl font-medium text-neutral-900 dark:text-white">
-                    
+
 //                     Add New Currency
 //                   </h2>
 //                 </div>
@@ -552,7 +552,7 @@
 //                       htmlFor="create-code"
 //                       className="block text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
 //                     >
-                      
+
 //                       Currency Code <span className="text-red-600">*</span>
 //                     </label>
 //                     <input
@@ -575,7 +575,7 @@
 //                       htmlFor="create-currencyName"
 //                       className="block text-sm font-medium text-gray-500 dark:text-gray-300 mb-2"
 //                     >
-                      
+
 //                       Currency Name <span className="text-red-600">*</span>
 //                     </label>
 //                     <input
@@ -594,7 +594,7 @@
 //                       htmlFor="create-flagImage"
 //                       className="block text-sm font-medium text-gray-500 dark:text-gray-300 mb-2"
 //                     >
-                      
+
 //                       Flag Image Path
 //                     </label>
 //                     <input
@@ -727,9 +727,6 @@
 // };
 
 // export default AdminCurrenciesPage;
-
-
-
 
 "use client";
 import React, { useState, useEffect, useMemo, useCallback } from "react"; // Added useCallback
@@ -1075,450 +1072,455 @@ const AdminCurrenciesPage: React.FC = () => {
 
   // --- RENDER ---
   return (
-    <div className="min-h-screen p-4 bg-white dark:bg-background dark:text-white">
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-      {/* Header Section */}
-      <div className="py-6 mb-6 border-b">
-        <h1 className="lg:text-3xl text-2xl font-bold text-neutral-900 dark:text-white mb-2.5">
-          Currency Management
-        </h1>
-        <p className="text-gray-500 dark:text-gray-300 capitalize">
-          Manage currency options and custom rates for your application
-        </p>
-      </div>
-
-      {/* Action Bar */}
-      <div className="flex sm:justify-between flex-row w-full items-center mb-6 gap-4">
-        <div>
-          <button
-            onClick={() => {
-              setIsCreateModalOpen(true);
-            }} // Clear error on open
-            className="bg-primary text-neutral-900 flex hover:bg-primaryhover text-nowrap font-medium rounded-full text-center lg:px-6 p-2 lg:py-3 lg:h-12.5  items-center gap-1 cursor-pointer transition-all duration-75 ease-linear"
-          >
-            <IoMdAdd
-              className="size-8"
-              title={isMobile ? "Add Currency" : undefined} // Tooltip for mobile
-            />
-            {!isMobile && <span>Add Currency</span>}
-            {/* Conditionally render text */}
-          </button>
-        </div>
-
-        {/* Search Bar */}
-        <div className="relative sm:w-auto w-full">
-          <input
-            type="text"
-            placeholder="Search currencies..."
-            className="rounded-full pl-10 pr-3 lg:h-12.5 h-12 border w-full transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-none focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <CiSearch className="size-5 absolute top-3.5 left-3 text-neutral-900 dark:text-white" />
-        </div>
-      </div>
-
-      {/* Currency List / Loading / Empty State */}
-      {isLoading ? (
-        <div className="flex justify-center items-center h-64">
-          <Loader2 size={60} className="text-neutral-900 animate-spin" />
-        </div>
-      ) : filteredCurrencies.length === 0 ? (
-        <div className="p-8 text-center rounded-lg shadow-sm border">
-          <div className="flex justify-center items-center">
-            {/* <IoWarningOutline className="text-error size-20  mx-auto mb-6" /> */}
-            <Image
-              src="/assets/images/money-bag-removebg-preview.png"
-              width={250}
-              height={250}
-              alt="No currencies found illustration" // Improved alt text
-            />
-          </div>
-          <p className="text-neutral-900 font-medium text-xl dark:text-white capitalize">
-            No currencies found. You can add one using the button above.
+    <div className="container mx-auto px-4 py-8 relative">
+      <div className="space-y-6">
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+        {/* Header Section */}
+        <div className="py-6 mb-6 border-b">
+          <h1 className="lg:text-3xl text-2xl font-bold text-neutral-900 dark:text-white mb-2.5">
+            Currency Management
+          </h1>
+          <p className="text-gray-500 dark:text-gray-300 capitalize">
+            Manage currency options and custom rates for your application
           </p>
         </div>
-      ) : (
-        // --- Currency Cards ---
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {filteredCurrencies.map((currency) => (
-            <div
-              key={currency._id}
-              className="rounded-xl overflow-hidden transition-all duration-300 border flex flex-col"
-            >
-              <div className="lg:p-5 p-4 flex-grow">
-                {/* Top Section: Flag, Code, Name */}
-                <div className="flex items-center gap-4 mb-4">
-                  {/* Flag Image - Replaced <img> with next/image <Image> */}
-                  {currency.flagImage ? (
-                    <Image
-                      src={currency.flagImage}
-                      alt={`${currency.currencyName} Flag`}
-                      width={56} // size-14 = 3.5rem = 56px
-                      height={56} // size-14 = 3.5rem = 56px
-                      className="object-contain rounded-full"
-                      // onError is handled differently in next/image, consider a placeholder if needed
-                    />
-                  ) : (
-                    <div className="size-14 border bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center text-xs text-gray-500 dark:text-gray-400">
-                      No flag
-                    </div>
-                  )}
 
-                  {/* Code and Name */}
-                  <div className="flex-1">
-                    {editingCurrencyId === currency._id ? (
-                      <input
-                        type="text"
-                        name="code"
-                        value={editingFields.code}
-                        onChange={handleEditingInputChange}
-                        className="text-lg font-bold text-main dark:text-white border-b border-primary focus:outline-none bg-primary/8 dark:bg-transparent px-1 py-0.5 w-20"
-                        autoFocus
-                        maxLength={3}
+        {/* Action Bar */}
+        <div className="flex sm:justify-between flex-row w-full items-center mb-6 gap-4">
+          <div>
+            <button
+              onClick={() => {
+                setIsCreateModalOpen(true);
+              }} // Clear error on open
+              className="bg-primary text-neutral-900 flex hover:bg-primaryhover text-nowrap font-medium rounded-full text-center lg:px-6 p-2 lg:py-3 lg:h-12.5  items-center gap-1 cursor-pointer transition-all duration-75 ease-linear"
+            >
+              <IoMdAdd
+                className="size-8"
+                title={isMobile ? "Add Currency" : undefined} // Tooltip for mobile
+              />
+              {!isMobile && <span>Add Currency</span>}
+              {/* Conditionally render text */}
+            </button>
+          </div>
+
+          {/* Search Bar */}
+          <div className="relative sm:w-auto w-full">
+            <input
+              type="text"
+              placeholder="Search currencies..."
+              className="rounded-full pl-10 pr-3 lg:h-12.5 h-12 border w-full transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-none focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <CiSearch className="size-5 absolute top-3.5 left-3 text-neutral-900 dark:text-white" />
+          </div>
+        </div>
+
+        {/* Currency List / Loading / Empty State */}
+        {isLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <Loader2 size={60} className="text-neutral-900 animate-spin" />
+          </div>
+        ) : filteredCurrencies.length === 0 ? (
+          <div className="p-8 text-center rounded-lg shadow-sm border">
+            <div className="flex justify-center items-center">
+              {/* <IoWarningOutline className="text-error size-20  mx-auto mb-6" /> */}
+              <Image
+                src="/assets/images/money-bag-removebg-preview.png"
+                width={250}
+                height={250}
+                alt="No currencies found illustration" // Improved alt text
+              />
+            </div>
+            <p className="text-neutral-900 font-medium text-xl dark:text-white capitalize">
+              No currencies found. You can add one using the button above.
+            </p>
+          </div>
+        ) : (
+          // --- Currency Cards ---
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {filteredCurrencies.map((currency) => (
+              <div
+                key={currency._id}
+                className="rounded-xl overflow-hidden transition-all duration-300 border flex flex-col"
+              >
+                <div className="lg:p-5 p-4 flex-grow">
+                  {/* Top Section: Flag, Code, Name */}
+                  <div className="flex items-center gap-4 mb-4">
+                    {/* Flag Image - Replaced <img> with next/image <Image> */}
+                    {currency.flagImage ? (
+                      <Image
+                        src={currency.flagImage}
+                        alt={`${currency.currencyName} Flag`}
+                        width={56} // size-14 = 3.5rem = 56px
+                        height={56} // size-14 = 3.5rem = 56px
+                        className="object-contain rounded-full"
+                        // onError is handled differently in next/image, consider a placeholder if needed
                       />
                     ) : (
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                        {currency.code}
-                      </h3>
+                      <div className="size-14 border bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center text-xs text-gray-500 dark:text-gray-400">
+                        No flag
+                      </div>
                     )}
-                    <p className="text-sm text-gray-500 dark:text-gray-300 mt-0.5">
-                      {currency.currencyName}
-                    </p>
-                  </div>
-                </div>
 
-                {/* Rate Adjustment Section - UPDATED */}
-                <div className="p-3 space-y-2 rounded-lg border">
-                  <label className="font-medium text-gray-500 dark:text-gray-300 mb-1 flex items-center gap-1">
-                    Our Rates
-                  </label>
-
-                  {editingCurrencyId === currency._id ? (
-                    <input
-                      type="number"
-                      name="rateAdjustmentPercentage" // Correct name
-                      value={editingFields.rateAdjustmentPercentage}
-                      onChange={handleEditingInputChange}
-                      placeholder="e.g., 0.5 or +0.1"
-                      step="any"
-                      className="text-base font-semibold text-gray-800 dark:text-white border-b border-primary focus:outline-none bg-transparent w-full py-0.5"
-                    />
-                  ) : (
-                    <p
-                      className={`text-lg font-bold ${
-                        currency.rateAdjustmentPercentage != null
-                          ? "text-neutral-900 font-medium dark:text-white"
-                          : "text-gray-400 italic dark:text-gray-500"
-                      }`}
-                    >
-                      {currency.rateAdjustmentPercentage != null
-                        ? `${currency.rateAdjustmentPercentage.toLocaleString(
-                            undefined,
-                            {
-                              minimumFractionDigits: 0,
-                              maximumFractionDigits: 2,
-                            }
-                          )}%`
-                        : "Not Set"}
-                    </p>
-                  )}
-                  <p className="text-gray-500 dark:text-gray-300 mt-1">
-                    Our Rates vs market rate.
-                  </p>
-                </div>
-              </div>
-
-              {/* Actions Footer */}
-              <div className=" border-t p-3">
-                {editingCurrencyId === currency._id ? (
-                  // --- Save/Cancel Buttons ---
-                  <div className="flex gap-2">
-                    <button
-                      onClick={handleUpdateCurrency}
-                      disabled={isSubmitting}
-                      className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border  text-gray-700 dark:text-gray-300 font-medium lg:px-6 px-4 py-3 h-10 lg:h-12.5 rounded-full transition duration-200 focus:outline-none"
-                    >
-                      {isSubmitting ? (
-                        <Loader2 size={20} className="animate-spin" />
+                    {/* Code and Name */}
+                    <div className="flex-1">
+                      {editingCurrencyId === currency._id ? (
+                        <input
+                          type="text"
+                          name="code"
+                          value={editingFields.code}
+                          onChange={handleEditingInputChange}
+                          className="text-lg font-bold text-main dark:text-white border-b border-primary focus:outline-none bg-primary/8 dark:bg-transparent px-1 py-0.5 w-20"
+                          autoFocus
+                          maxLength={3}
+                        />
                       ) : (
-                        <Save size={20} />
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                          {currency.code}
+                        </h3>
                       )}
-                      Save
-                    </button>
-                    <button
-                      onClick={cancelEditing}
-                      className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border text-red-600 font-medium lg:px-6 px-4 py-3 h-10 lg:h-12.5 rounded-full transition duration-200 focus:outline-none"
-                    >
-                      <IoMdCloseCircle size={20} /> Cancel
-                    </button>
+                      <p className="text-sm text-gray-500 dark:text-gray-300 mt-0.5">
+                        {currency.currencyName}
+                      </p>
+                    </div>
                   </div>
-                ) : (
-                  // --- Details/Edit/Delete Buttons ---
-                  <div className="flex flex-wrap flex-row gap-2">
-                    <Link
-                      href={`/admin/currencies/${currency._id}`}
-                      className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border  text-gray-700 dark:text-gray-300 font-medium lg:px-6 px-4 py-3 h-10 lg:h-12.5 rounded-full transition duration-200 focus:outline-none"
-                    >
-                      <Info size={20} /> Details
-                    </Link>
-                    <button
-                      onClick={() => startEditing(currency)}
-                      className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border text-gray-700 dark:text-gray-300 font-medium lg:px-6 px-4 py-3 h-10 lg:h-12.5 rounded-full transition duration-200 focus:outline-none"
-                    >
-                      <Edit size={20} /> Edit
-                    </button>
-                    <button
-                      onClick={() => {
-                        setCurrencyToDeleteId(currency._id);
-                        setIsDeleteConfirmationOpen(true);
-                      }}
-                      className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border text-red-600 font-medium lg:px-6 px-4 py-3 h-10 lg:h-12.5 rounded-full transition duration-200 focus:outline-none"
-                    >
-                      <Trash2 size={20} /> Delete
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
 
-      {/* Add Currency Modal */}
-      <AnimatePresence>
-        {isCreateModalOpen && (
-          <motion.div
-            className="fixed top-0 left-0 w-full h-full bg-black/50 dark:bg-white/30 z-80 flex sm:items-center items-end justify-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsCreateModalOpen(false)}
-          >
+                  {/* Rate Adjustment Section - UPDATED */}
+                  <div className="p-3 space-y-2 rounded-lg border">
+                    <label className="font-medium text-gray-500 dark:text-gray-300 mb-1 flex items-center gap-1">
+                      Our Rates
+                    </label>
+
+                    {editingCurrencyId === currency._id ? (
+                      <input
+                        type="number"
+                        name="rateAdjustmentPercentage" // Correct name
+                        value={editingFields.rateAdjustmentPercentage}
+                        onChange={handleEditingInputChange}
+                        placeholder="e.g., 0.5 or +0.1"
+                        step="any"
+                        className="text-base font-semibold text-gray-800 dark:text-white border-b border-primary focus:outline-none bg-transparent w-full py-0.5"
+                      />
+                    ) : (
+                      <p
+                        className={`text-lg font-bold ${
+                          currency.rateAdjustmentPercentage != null
+                            ? "text-neutral-900 font-medium dark:text-white"
+                            : "text-gray-400 italic dark:text-gray-500"
+                        }`}
+                      >
+                        {currency.rateAdjustmentPercentage != null
+                          ? `${currency.rateAdjustmentPercentage.toLocaleString(
+                              undefined,
+                              {
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 2,
+                              }
+                            )}%`
+                          : "Not Set"}
+                      </p>
+                    )}
+                    <p className="text-gray-500 dark:text-gray-300 mt-1">
+                      Our Rates vs market rate.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Actions Footer */}
+                <div className=" border-t p-3">
+                  {editingCurrencyId === currency._id ? (
+                    // --- Save/Cancel Buttons ---
+                    <div className="flex gap-2">
+                      <button
+                        onClick={handleUpdateCurrency}
+                        disabled={isSubmitting}
+                        className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border  text-gray-700 dark:text-gray-300 font-medium lg:px-6 px-4 py-3 h-10 lg:h-12.5 rounded-full transition duration-200 focus:outline-none"
+                      >
+                        {isSubmitting ? (
+                          <Loader2 size={20} className="animate-spin" />
+                        ) : (
+                          <Save size={20} />
+                        )}
+                        Save
+                      </button>
+                      <button
+                        onClick={cancelEditing}
+                        className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border text-red-600 font-medium lg:px-6 px-4 py-3 h-10 lg:h-12.5 rounded-full transition duration-200 focus:outline-none"
+                      >
+                        <IoMdCloseCircle size={20} /> Cancel
+                      </button>
+                    </div>
+                  ) : (
+                    // --- Details/Edit/Delete Buttons ---
+                    <div className="flex flex-wrap flex-row gap-2">
+                      <Link
+                        href={`/admin/currencies/${currency._id}`}
+                        className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border  text-gray-700 dark:text-gray-300 font-medium lg:px-6 px-4 py-3 h-10 lg:h-12.5 rounded-full transition duration-200 focus:outline-none"
+                      >
+                        <Info size={20} /> Details
+                      </Link>
+                      <button
+                        onClick={() => startEditing(currency)}
+                        className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border text-gray-700 dark:text-gray-300 font-medium lg:px-6 px-4 py-3 h-10 lg:h-12.5 rounded-full transition duration-200 focus:outline-none"
+                      >
+                        <Edit size={20} /> Edit
+                      </button>
+                      <button
+                        onClick={() => {
+                          setCurrencyToDeleteId(currency._id);
+                          setIsDeleteConfirmationOpen(true);
+                        }}
+                        className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border text-red-600 font-medium lg:px-6 px-4 py-3 h-10 lg:h-12.5 rounded-full transition duration-200 focus:outline-none"
+                      >
+                        <Trash2 size={20} /> Delete
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Add Currency Modal */}
+        <AnimatePresence>
+          {isCreateModalOpen && (
             <motion.div
-              className="bg-white dark:bg-background sm:rounded-3xl rounded-t-3xl sm:p-8 p-4 w-full sm:max-w-xl relative"
-              onClick={(e) => e.stopPropagation()}
-              variants={modalVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
+              className="fixed top-0 left-0 w-full h-full bg-black/50 dark:bg-white/30 z-80 flex sm:items-center items-end justify-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsCreateModalOpen(false)}
             >
-              <div className="absolute sm:top-2 sm:right-2 top-1 right-1">
-                <button
-                  className="p-3 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
-                  onClick={() => setIsCreateModalOpen(false)}
-                  aria-label="Close modal"
-                >
-                  <IoClose
-                    size={28}
-                    className="text-neutral-900 dark:text-white"
-                  />{" "}
-                  {/* Added dark mode text color */}
-                </button>
-              </div>
+              <motion.div
+                className="bg-white dark:bg-background sm:rounded-3xl rounded-t-3xl sm:p-8 p-4 w-full sm:max-w-xl relative"
+                onClick={(e) => e.stopPropagation()}
+                variants={modalVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+              >
+                <div className="absolute sm:top-2 sm:right-2 top-1 right-1">
+                  <button
+                    className="p-3 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
+                    onClick={() => setIsCreateModalOpen(false)}
+                    aria-label="Close modal"
+                  >
+                    <IoClose
+                      size={28}
+                      className="text-neutral-900 dark:text-white"
+                    />{" "}
+                    {/* Added dark mode text color */}
+                  </button>
+                </div>
 
-              {/* Modal Header */}
-              <div className="flex justify-between items-center my-6">
-                <h2 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
-                  Add New Currency
-                </h2>
-              </div>
+                {/* Modal Header */}
+                <div className="flex justify-between items-center my-6">
+                  <h2 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
+                    Add New Currency
+                  </h2>
+                </div>
 
-              {/* Modal Form */}
-              <div className="space-y-5">
-                {/* Code */}
-                <div>
-                  <label
-                    htmlFor="create-code"
-                    className="block font-medium text-gray-500 dark:text-gray-300 mb-2"
-                  >
-                    Currency Code <span className="text-red-600">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="create-code"
-                    name="code"
-                    value={newCurrencyData.code}
-                    onChange={handleCreateInputChange}
-                    maxLength={3}
-                    placeholder="e.g., USD"
-                    className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium" // Added dark mode styles
-                  />
-                  <p className="mt-2 text-xs text-gray-500 dark:text-gray-300">
-                    3-letter uppercase code.
-                  </p>
-                </div>
-                {/* Name */}
-                <div>
-                  <label
-                    htmlFor="create-currencyName"
-                    className="block font-medium text-gray-500 dark:text-gray-300 mb-2"
-                  >
-                    Currency Name <span className="text-red-600">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="create-currencyName"
-                    name="currencyName"
-                    value={newCurrencyData.currencyName}
-                    onChange={handleCreateInputChange}
-                    placeholder="e.g., US Dollar"
-                    className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium" // Added dark mode styles
-                  />
-                </div>
-                {/* Flag Image Path */}
-                <div>
-                  <label
-                    htmlFor="create-flagImage"
-                    className="block font-medium text-gray-500 dark:text-gray-300 mb-2"
-                  >
-                    Flag Image Path
-                  </label>
-                  <input
-                    type="text"
-                    id="create-flagImage"
-                    name="flagImage"
-                    value={newCurrencyData.flagImage}
-                    onChange={handleCreateInputChange}
-                    placeholder="/assets/icon/flags/usd.png"
-                    className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium" // Added dark mode styles
-                  />
-                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-300">
-                    Relative path to the image.
-                  </p>
-                </div>
-                {/* Rate Adjustment Percentage - UPDATED */}
-                <div>
-                  <label
-                    htmlFor="create-rateAdjustmentPercentage"
-                    className="flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300 mb-2
+                {/* Modal Form */}
+                <div className="space-y-5">
+                  {/* Code */}
+                  <div>
+                    <label
+                      htmlFor="create-code"
+                      className="block font-medium text-gray-500 dark:text-gray-300 mb-2"
+                    >
+                      Currency Code <span className="text-red-600">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="create-code"
+                      name="code"
+                      value={newCurrencyData.code}
+                      onChange={handleCreateInputChange}
+                      maxLength={3}
+                      placeholder="e.g., USD"
+                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium" // Added dark mode styles
+                    />
+                    <p className="mt-2 text-xs text-gray-500 dark:text-gray-300">
+                      3-letter uppercase code.
+                    </p>
+                  </div>
+                  {/* Name */}
+                  <div>
+                    <label
+                      htmlFor="create-currencyName"
+                      className="block font-medium text-gray-500 dark:text-gray-300 mb-2"
+                    >
+                      Currency Name <span className="text-red-600">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="create-currencyName"
+                      name="currencyName"
+                      value={newCurrencyData.currencyName}
+                      onChange={handleCreateInputChange}
+                      placeholder="e.g., US Dollar"
+                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium" // Added dark mode styles
+                    />
+                  </div>
+                  {/* Flag Image Path */}
+                  <div>
+                    <label
+                      htmlFor="create-flagImage"
+                      className="block font-medium text-gray-500 dark:text-gray-300 mb-2"
+                    >
+                      Flag Image Path
+                    </label>
+                    <input
+                      type="text"
+                      id="create-flagImage"
+                      name="flagImage"
+                      value={newCurrencyData.flagImage}
+                      onChange={handleCreateInputChange}
+                      placeholder="/assets/icon/flags/usd.png"
+                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium" // Added dark mode styles
+                    />
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-300">
+                      Relative path to the image.
+                    </p>
+                  </div>
+                  {/* Rate Adjustment Percentage - UPDATED */}
+                  <div>
+                    <label
+                      htmlFor="create-rateAdjustmentPercentage"
+                      className="flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300 mb-2
 "
+                    >
+                      <Percent size={14} className="dark:text-gray-300" /> Rate
+                      Adjustment
+                    </label>
+                    <input
+                      type="number" // Ensure type is number for step validation
+                      id="create-rateAdjustmentPercentage"
+                      name="rateAdjustmentPercentage" // Correct name
+                      value={newCurrencyData.rateAdjustmentPercentage}
+                      onChange={handleCreateInputChange}
+                      step="any"
+                      placeholder="e.g., 0.5 (for +0.5%) or -0.1 (for -0.1%)"
+                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium" // Added dark mode styles
+                    />
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-300">
+                      Enter percentage adjustment. Default is 0%.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Modal Actions */}
+                <div className="flex flex-col gap-2.5 mt-8">
+                  <button
+                    onClick={handleCreateCurrency}
+                    disabled={
+                      isSubmitting ||
+                      !newCurrencyData.code ||
+                      !newCurrencyData.currencyName
+                    }
+                    className="inline-flex justify-center cursor-pointer bg-primary hover:bg-primaryhover text-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed font-medium rounded-full px-6 py-3 h-12.5 text-center w-full sm:w-auto transition-all duration-75 ease-linear" // Added disabled styles
                   >
-                    <Percent size={14} className="dark:text-gray-300" /> Rate
-                    Adjustment
-                  </label>
-                  <input
-                    type="number" // Ensure type is number for step validation
-                    id="create-rateAdjustmentPercentage"
-                    name="rateAdjustmentPercentage" // Correct name
-                    value={newCurrencyData.rateAdjustmentPercentage}
-                    onChange={handleCreateInputChange}
-                    step="any"
-                    placeholder="e.g., 0.5 (for +0.5%) or -0.1 (for -0.1%)"
-                    className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium" // Added dark mode styles
-                  />
-                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-300">
-                    Enter percentage adjustment. Default is 0%.
-                  </p>
+                    {isSubmitting ? (
+                      <Loader2 className="animate-spin mr-2" size={20} /> // Added loader
+                    ) : null}
+                    {isSubmitting ? "Adding..." : "Add Currency"}
+                  </button>
+                  <button
+                    onClick={() => setIsCreateModalOpen(false)}
+                    className="inline-flex justify-center cursor-pointer bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear"
+                  >
+                    Cancel
+                  </button>
                 </div>
-              </div>
-
-              {/* Modal Actions */}
-              <div className="flex flex-col gap-2.5 mt-8">
-                <button
-                  onClick={handleCreateCurrency}
-                  disabled={
-                    isSubmitting ||
-                    !newCurrencyData.code ||
-                    !newCurrencyData.currencyName
-                  }
-                  className="inline-flex justify-center cursor-pointer bg-primary hover:bg-primaryhover text-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed font-medium rounded-full px-6 py-3 h-12.5 text-center w-full sm:w-auto transition-all duration-75 ease-linear" // Added disabled styles
-                >
-                  {isSubmitting ? (
-                    <Loader2 className="animate-spin mr-2" size={20} /> // Added loader
-                  ) : null}
-                  {isSubmitting ? "Adding..." : "Add Currency"}
-                </button>
-                <button
-                  onClick={() => setIsCreateModalOpen(false)}
-                  className="inline-flex justify-center cursor-pointer bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear"
-                >
-                  Cancel
-                </button>
-              </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
 
-      {/* Delete Confirmation Modal */}
-      <AnimatePresence>
-        {isDeleteConfirmationOpen && (
-          <motion.div
-            className="fixed top-0 left-0 w-full h-full bg-black/50 dark:bg-white/30 z-80 flex sm:items-center items-end justify-center" // Added padding and inset-0
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsDeleteConfirmationOpen(false)}
-          >
+        {/* Delete Confirmation Modal */}
+        <AnimatePresence>
+          {isDeleteConfirmationOpen && (
             <motion.div
-              className="bg-white dark:bg-background sm:rounded-3xl rounded-t-3xl sm:p-8 p-4 w-full sm:max-w-xl relative" // Added dark mode, padding adjustments, shadow
-              onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
-              variants={modalVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
+              className="fixed top-0 left-0 w-full h-full bg-black/50 dark:bg-white/30 z-80 flex sm:items-center items-end justify-center" // Added padding and inset-0
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsDeleteConfirmationOpen(false)}
             >
-              <div className="absolute sm:top-2 sm:right-2 top-1 right-1">
-                <button
-                  className="p-3 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
-                  onClick={() => setIsDeleteConfirmationOpen(false)}
-                  aria-label="Close modal"
-                >
-                  <IoClose size={28} className="text-neutral-900 dark:text-white" />
-                </button>
-              </div>
-              {/* Icon and Title */}
-              <div className="text-left">
-                <h3 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white my-6">
-                  Delete Currency ?
-                </h3>
-                <div>
-                  <p className="text-gray-500 dark:text-gray-300 font-medium mb-6">
-                    {" "}
-                    {/* Adjusted text color */}
-                    Are you sure you want to delete this currency? This action
-                    cannot be undone.
-                  </p>
+              <motion.div
+                className="bg-white dark:bg-background sm:rounded-3xl rounded-t-3xl sm:p-8 p-4 w-full sm:max-w-xl relative" // Added dark mode, padding adjustments, shadow
+                onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
+                variants={modalVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+              >
+                <div className="absolute sm:top-2 sm:right-2 top-1 right-1">
+                  <button
+                    className="p-3 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
+                    onClick={() => setIsDeleteConfirmationOpen(false)}
+                    aria-label="Close modal"
+                  >
+                    <IoClose
+                      size={28}
+                      className="text-neutral-900 dark:text-white"
+                    />
+                  </button>
                 </div>
-              </div>
-              {/* Buttons */}
-              <div className="mt-6 flex flex-col gap-4">
-                <button
-                  onClick={handleDeleteCurrency}
-                  disabled={isSubmitting}
-                  type="button"
-                  className="bg-red-600 text-white hover:bg-red-700 font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear flex justify-center items-center disabled:opacity-50 disabled:cursor-not-allowed" // Changed to red, added loader handling
-                >
-                  {isSubmitting ? (
-                    <Loader2 size={20} className="animate-spin mr-2" /> // Added loader
-                  ) : null}
-                  {isSubmitting ? "Deleting..." : "Delete"}
-                </button>
-                <button
-                  onClick={() => setIsDeleteConfirmationOpen(false)}
-                  type="button"
-                  disabled={isSubmitting} // Disable cancel while deleting
-                  className="bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styles and border colors
-                >
-                  Cancel
-                </button>
-              </div>
+                {/* Icon and Title */}
+                <div className="text-left">
+                  <h3 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white my-6">
+                    Delete Currency ?
+                  </h3>
+                  <div>
+                    <p className="text-gray-500 dark:text-gray-300 font-medium mb-6">
+                      {" "}
+                      {/* Adjusted text color */}
+                      Are you sure you want to delete this currency? This action
+                      cannot be undone.
+                    </p>
+                  </div>
+                </div>
+                {/* Buttons */}
+                <div className="mt-6 flex flex-col gap-4">
+                  <button
+                    onClick={handleDeleteCurrency}
+                    disabled={isSubmitting}
+                    type="button"
+                    className="bg-red-600 text-white hover:bg-red-700 font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear flex justify-center items-center disabled:opacity-50 disabled:cursor-not-allowed" // Changed to red, added loader handling
+                  >
+                    {isSubmitting ? (
+                      <Loader2 size={20} className="animate-spin mr-2" /> // Added loader
+                    ) : null}
+                    {isSubmitting ? "Deleting..." : "Delete"}
+                  </button>
+                  <button
+                    onClick={() => setIsDeleteConfirmationOpen(false)}
+                    type="button"
+                    disabled={isSubmitting} // Disable cancel while deleting
+                    className="bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styles and border colors
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 };

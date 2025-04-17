@@ -450,71 +450,201 @@
 
 
 
+// // src/app/components/AccountCard.tsx
+// "use client";
+// import React from "react"; // Removed useState as it's no longer needed
+// import { useRouter } from "next/navigation";
+// import { useAuth } from "@/app/contexts/AuthContext";
+
+// type AccountCardProps = {
+//   username: string;
+// };
+
+// // Helper function to get initials
+// const getInitials = (name: string): string => {
+//   if (!name) return "??"; // Handle empty or null name
+
+//   const nameParts = name.trim().split(/\s+/); // Split by one or more spaces, handles multiple spaces
+
+//   if (nameParts.length === 1 && nameParts[0].length > 0) {
+//     // If only one name, take the first two letters if possible
+//     return nameParts[0].substring(0, 2).toUpperCase();
+//   } else if (nameParts.length > 1) {
+//     // If multiple names, take the first letter of the first and last name part
+//     const firstInitial = nameParts[0][0] || "";
+//     const lastInitial = nameParts[nameParts.length - 1][0] || "";
+//     return (firstInitial + lastInitial).toUpperCase();
+//   }
+
+//   return "??"; // Fallback for unexpected cases
+// };
+
+// const AccountCard: React.FC<AccountCardProps> = ({ username }) => {
+//   const router = useRouter();
+//   const { logout } = useAuth();
+
+//   const handleLogout = () => {
+//     logout();
+//     router.push("/auth/login");
+//   };
+
+//   // Calculate initials
+//   const initials = getInitials(username);
+
+//   return (
+//     <>
+//       {/* Main card container */}
+//       <div className="bg-lightgray dark:bg-primarybox p-8 rounded-3xl overflow-hidden relative">
+//         {/* Profile initials display */}
+//         <div className="flex flex-col items-center mb-4">
+//           <div className="bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center size-20 overflow-hidden">
+//             {/* Display Initials instead of Icon/Image */}
+//             <span className="text-3xl font-semibold text-neutral-900 dark:text-white select-none">
+//               {initials}
+//             </span>
+//           </div>
+//         </div>
+
+//         {/* User details */}
+//         <h1 className="text-4xl text-mainheading dark:text-white font-black tracking-tighter text-center mb-2">
+//           {username}
+//         </h1>
+//         <p className="text-center text-subheading dark:text-gray-300 font-medium capitalize mb-6">
+//           Your personal account
+//         </p>
+
+//         {/* Logout button */}
+//         <div className="text-center mt-6">
+//           <button
+//             onClick={handleLogout}
+//             className="bg-primary hover:bg-primaryhover text-neutral-900 px-4 py-1.5 rounded-full font-semibold transition-all duration-75 ease-linear cursor-pointer"
+//           >
+//             Log Out
+//           </button>
+//         </div>
+//       </div>
+
+//       {/* Removed the unused confirmation message block */}
+//       {/*
+//       {copyConfirmation && (
+//         <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white py-2 px-4 rounded-md shadow-lg">
+//           Membership number copied!
+//         </div>
+//       )}
+//       */}
+//     </>
+//   );
+// };
+
+// export default AccountCard;
+
+
+
 // src/app/components/AccountCard.tsx
 "use client";
-import React from "react"; // Removed useState as it's no longer needed
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/app/contexts/AuthContext";
 
+import React from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/contexts/AuthContext"; // Adjust path if needed
+import { BsFillCheckCircleFill } from "react-icons/bs"; // Verification icon
+
+// --- Interface for User object from AuthContext ---
+// IMPORTANT: Ensure this structure matches your actual useAuth hook's user object.
+// Especially the path to the KYC status.
+interface AuthUser {
+  fullName?: string; // Or firstName, lastName, etc. depending on your structure
+  kyc?: {
+    status:
+      | "verified"
+      | "pending"
+      | "not_started"
+      | "rejected"
+      | null
+      | undefined;
+  };
+  // Add other fields like email, id, etc., if needed by the component or context
+}
+
+// --- Interface for the AuthContext value ---
+interface AuthContextType {
+  user: AuthUser | null;
+  logout: () => void;
+  loading: boolean; // Include loading if provided and needed
+}
+
+// --- Component Prop Types ---
 type AccountCardProps = {
-  username: string;
+  username: string; // Display name passed as prop
 };
 
-// Helper function to get initials
+// --- Helper function to get initials ---
 const getInitials = (name: string): string => {
   if (!name) return "??"; // Handle empty or null name
 
-  const nameParts = name.trim().split(/\s+/); // Split by one or more spaces, handles multiple spaces
+  const nameParts = name.trim().split(/\s+/); // Split by one or more spaces
 
   if (nameParts.length === 1 && nameParts[0].length > 0) {
-    // If only one name, take the first two letters if possible
+    // Single name: first two letters
     return nameParts[0].substring(0, 2).toUpperCase();
   } else if (nameParts.length > 1) {
-    // If multiple names, take the first letter of the first and last name part
+    // Multiple names: first letter of first and last name part
     const firstInitial = nameParts[0][0] || "";
     const lastInitial = nameParts[nameParts.length - 1][0] || "";
     return (firstInitial + lastInitial).toUpperCase();
   }
 
-  return "??"; // Fallback for unexpected cases
+  return "??"; // Fallback
 };
 
+// --- AccountCard Component ---
 const AccountCard: React.FC<AccountCardProps> = ({ username }) => {
-  // Removed: const [copyConfirmation, setCopyConfirmation] = useState(false);
-  // The state setter `setCopyConfirmation` was never used.
-  // The state variable `copyConfirmation` was used for a confirmation message,
-  // but there was no logic to trigger it (set it to true).
-  // If this confirmation message is needed later for a different feature (like copying something),
-  // re-add the useState hook and implement the logic to call setCopyConfirmation.
-
   const router = useRouter();
-  const { logout } = useAuth();
+  // Explicitly type the context value for better safety
+  const { user, logout } = useAuth() as AuthContextType;
 
   const handleLogout = () => {
-    logout();
-    router.push("/auth/login");
+    logout(); // Call the logout function from context
+    router.push("/auth/login"); // Redirect to login page
   };
 
-  // Calculate initials
+  const isVerified = user?.kyc?.status === 'verified';
+
+  // Calculate initials from the passed username prop
   const initials = getInitials(username);
 
   return (
     <>
       {/* Main card container */}
       <div className="bg-lightgray dark:bg-primarybox p-8 rounded-3xl overflow-hidden relative">
-        {/* Profile initials display */}
+
+        {/* Profile initials display area */}
         <div className="flex flex-col items-center mb-4">
-          <div className="bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center size-20 overflow-hidden">
-            {/* Display Initials instead of Icon/Image */}
+          {/* Initials circle container - Added 'relative' for icon positioning */}
+          <div className="relative bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center size-20 overflow-hidden">
+            {/* Display Initials */}
             <span className="text-3xl font-semibold text-neutral-900 dark:text-white select-none">
               {initials}
             </span>
+
+            {/* --- Verification Icon (Conditionally Rendered) --- */}
+            {isVerified && (
+              <div
+                className="absolute -bottom-1 -right-1 bg-lightgray dark:bg-[#2E2E2E] p-0.5 rounded-full border-2 border-lightgray dark:border-[#2E2E2E]" // Adjusted background/border for visibility
+                title="Verified Account" // Tooltip for accessibility
+              >
+                 <BsFillCheckCircleFill
+                    className="size-5 text-green-500" // Changed to green, adjust size/color as needed
+                 />
+              </div>
+            )}
+             {/* --- End Verification Icon --- */}
+
           </div>
         </div>
 
         {/* User details */}
         <h1 className="text-4xl text-mainheading dark:text-white font-black tracking-tighter text-center mb-2">
-          {username}
+          {username} {/* Display the username passed via props */}
         </h1>
         <p className="text-center text-subheading dark:text-gray-300 font-medium capitalize mb-6">
           Your personal account
@@ -530,15 +660,6 @@ const AccountCard: React.FC<AccountCardProps> = ({ username }) => {
           </button>
         </div>
       </div>
-
-      {/* Removed the unused confirmation message block */}
-      {/*
-      {copyConfirmation && (
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white py-2 px-4 rounded-md shadow-lg">
-          Membership number copied!
-        </div>
-      )}
-      */}
     </>
   );
 };

@@ -154,7 +154,7 @@ export default function DashboardLayout({ children }) {
             sidebarOpen={isSidebarOpen}
             toggleSidebar={toggleSidebar}
           />
-          <div className="flex-1 flex flex-col min-h-screen"> {/* Ensure flex container takes height */}
+          <div className="lg:w-[calc(100%-256px)] w-full"> {/* Ensure flex container takes height */}
             <Header toggleSidebar={toggleSidebar} />
             {/* Main Content */}
             <main className="flex-1">
