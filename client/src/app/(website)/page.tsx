@@ -9,13 +9,12 @@ import Faq from "./components/Faq";
 import StepSendmoney from "./components/StepSendmoney";
 
 export default function Home() {
-  return (  
+  return (
     <>
       <HeroSection />
       <ProtectionSection />
       <SecuritySection />
       <SocialTrustSection />
-      {/* <StepSendmoney /> */}
       <MissionSection />
       <Principles />
       <TransferMoney />

@@ -790,7 +790,7 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
   };
 
   const dropdownContent = (
-    <div>
+    <div className="hidden lg:block">
       {/* Top Content (Optional) */}
       {topContent && (
         <div

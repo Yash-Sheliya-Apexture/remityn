@@ -44,33 +44,186 @@
 //   );
 // }
 
+// // app/(website)/layout.tsx
+// "use client"; // Still needs to be a client component to use the Provider
 
+// import React, { ReactNode } from "react";
+// import Header from "./components/Header/Header"; // Make sure path is correct
+// import Footer from "./components/Footer"; // Make sure path is correct
+// import { WebsiteAppProvider } from "../contexts/WebsiteAppContext"; // Adjust path as needed
+// import "../globals.css"; // Keep this for styles scoped here or globally
+
+// interface LayoutProps {
+//   children: ReactNode;
+//   // Remove initialSelectedSendCurrency prop here, it's handled by the provider now
+// }
+
+// // This default export is the ONLY export Next.js expects (besides metadata etc.)
+// export default function WebsiteLayout({ children }: LayoutProps) {
+//   return (
+//     // Wrap the content with the specific provider for this section
+//     <WebsiteAppProvider>
+//       {/* Header/Footer likely consume the context via useAppContext internally */}
+//       <Header />
+//       <main>{children}</main>
+//       <Footer />
+//     </WebsiteAppProvider>
+//   );
+// }
+
+// // app/(website)/layout.tsx
+// "use client"; // Needs to be a client component for useState, useEffect, and DOM interactions
+
+// import React, { ReactNode, useState, useEffect, useRef } from "react";
+// import Header from "./components/Header/Header"; // Make sure path is correct
+// import Footer from "./components/Footer"; // Make sure path is correct
+// import { WebsiteAppProvider } from "../contexts/WebsiteAppContext"; // Adjust path as needed
+// import { FaArrowUp } from "react-icons/fa6"; // Import the icon
+// import "../globals.css"; // Keep this for styles scoped here or globally
+
+// interface LayoutProps {
+//   children: ReactNode;
+// }
+
+// export default function WebsiteLayout({ children }: LayoutProps) {
+//   // State to control the visibility of the scroll-to-top button
+//   const [isScrollToTopVisible, setIsScrollToTopVisible] = useState(false);
+//   // Optional: Ref for the button if needed later, though not strictly necessary for this basic function
+//   const scrollToTopButtonRef = useRef<HTMLDivElement>(null);
+
+//   // Function to scroll the window to the top smoothly
+//   const scrollToTop = () => {
+//     window.scrollTo({
+//       top: 0,
+//       behavior: "smooth", // Smooth scroll animation
+//     });
+//   };
+
+//   // Effect to add and remove the scroll event listener
+//   useEffect(() => {
+//     // Function to check scroll position and update visibility state
+//     const handleScroll = () => {
+//       // Show button if scrolled down more than, say, 200 pixels
+//       if (window.scrollY > 250) {
+//         setIsScrollToTopVisible(true);
+//       } else {
+//         setIsScrollToTopVisible(false);
+//       }
+//     };
+
+//     // Add event listener when the component mounts
+//     window.addEventListener("scroll", handleScroll);
+
+//     // Clean up the event listener when the component unmounts
+//     return () => {
+//       window.removeEventListener("scroll", handleScroll);
+//     };
+//   }, []); // Empty dependency array ensures this effect runs only once on mount and cleans up on unmount
+
+//   return (
+//     <WebsiteAppProvider>
+//       {/* Header likely consumes the context via useAppContext internally */}
+//       <Header />
+
+//       {/* Main content area */}
+//       <main>{children}</main>
+
+//       {/* Footer likely consumes the context via useAppContext internally */}
+//       <Footer />
+
+//       {/* Scroll to Top Button */}
+//       <div
+//         ref={scrollToTopButtonRef}
+//         className={`fixed md:bottom-10 md:right-5 bottom-6 right-2 z-50 cursor-pointer rounded-full bg-primary lg:p-2.5 p-2 text-mainheading shadow-md transition-opacity duration-300 ease-in-out hover:bg-primaryhover ${
+//           isScrollToTopVisible
+//             ? "opacity-100 pointer-events-auto" // Visible and clickable
+//             : "opacity-0 pointer-events-none" // Hidden and non-interactive
+//         }`}
+//         title="Scroll to Top"
+//         onClick={scrollToTop} // Attach the scroll function to the click event
+//       >
+//         <FaArrowUp className="lg:size-4 size-3 text-mainheading" /> {/* Adjust icon size as needed */}
+//       </div>
+//     </WebsiteAppProvider>
+//   );
+// }
 
 // app/(website)/layout.tsx
-"use client"; // Still needs to be a client component to use the Provider
+"use client"; // Needs to be a client component for useState, useEffect, and DOM interactions
 
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState, useEffect, useRef } from "react";
 import Header from "./components/Header/Header"; // Make sure path is correct
 import Footer from "./components/Footer"; // Make sure path is correct
 import { WebsiteAppProvider } from "../contexts/WebsiteAppContext"; // Adjust path as needed
+import { FaArrowUp } from "react-icons/fa6"; // Import the icon
 import "../globals.css"; // Keep this for styles scoped here or globally
 
 interface LayoutProps {
   children: ReactNode;
-  // Remove initialSelectedSendCurrency prop here, it's handled by the provider now
 }
 
-// This default export is the ONLY export Next.js expects (besides metadata etc.)
 export default function WebsiteLayout({ children }: LayoutProps) {
+  // State to control the visibility of the scroll-to-top button
+  const [isScrollToTopVisible, setIsScrollToTopVisible] = useState(false);
+  // Optional: Ref for the button if needed later
+  const scrollToTopButtonRef = useRef<HTMLDivElement>(null);
+
+  // Function to scroll the window to the top smoothly
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", // Smooth scroll animation
+    });
+  };
+
+  // Effect to add and remove the scroll event listener
+  useEffect(() => {
+    // Function to check scroll position and update visibility state
+    const handleScroll = () => {
+      // Show button if scrolled down more than, say, 250 pixels
+      if (window.scrollY > 200) {
+        setIsScrollToTopVisible(true);
+      } else {
+        setIsScrollToTopVisible(false);
+      }
+    };
+
+    // Add event listener when the component mounts
+    window.addEventListener("scroll", handleScroll);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []); // Empty dependency array ensures this effect runs only once on mount and cleans up on unmount
+
   return (
-    // Wrap the content with the specific provider for this section
     <WebsiteAppProvider>
-      {/* Header/Footer likely consume the context via useAppContext internally */}
+      {/* Header */}
       <Header />
+
+      {/* Main content area */}
       <main>{children}</main>
+
+      {/* Footer */}
       <Footer />
+
+      {/* Scroll to Top Button - Now with Animation */}
+      <div
+        ref={scrollToTopButtonRef}
+        className={`fixed md:right-5 bottom-10 right-2 z-50 cursor-pointer rounded-full bg-primary lg:p-2.5 p-2 text-mainheading shadow-md 
+                   hover:bg-primaryhover 
+                   transition-all duration-300 ease-in-out  // Animate ALL changes (opacity and transform)
+                   ${
+                     isScrollToTopVisible
+                       ? "opacity-100 translate-y-0 pointer-events-auto" // Visible: Full opacity, original position, clickable
+                       : "opacity-0 translate-y-10 pointer-events-none" // Hidden: Zero opacity, moved down (adjust '10' as needed), non-clickable
+                   }`}
+        title="Scroll to Top"
+        onClick={scrollToTop} // Attach the scroll function to the click event
+      >
+        <FaArrowUp className="lg:size-4 size-3 text-mainheading" />{" "}
+      </div>
     </WebsiteAppProvider>
   );
 }
-
-// DO NOT export useAppContext or define context here anymore!

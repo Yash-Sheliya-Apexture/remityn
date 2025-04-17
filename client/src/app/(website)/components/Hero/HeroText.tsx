@@ -54,7 +54,7 @@ const HeroText = () => {
 
         <div className="md:pt-4 pt-0">
           <Link href="auth/register">
-            <button className="bg-primary hover:bg-primaryhover cursor-pointer font-medium py-2 px-8 md:h-12.5 rounded-full transition-colors duration-300 ease-in-out text-mainheading flex items-center justify-center">
+            <button className="bg-primary hover:bg-primaryhover cursor-pointer font-medium py-2 text-sm lg:text-base px-8 md:h-12.5 rounded-full transition-colors duration-300 ease-in-out text-mainheading flex items-center justify-center">
               Get Started Now
             </button>
           </Link>
