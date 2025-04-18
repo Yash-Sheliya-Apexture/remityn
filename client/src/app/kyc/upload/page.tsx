@@ -21,7 +21,6 @@
 //     );
 // };
 
-
 // export default function KycUploadPage() {
 //     const router = useRouter();
 //     const { kycData, prevStep, goToStep, setFile, resetKycProgress } = useKyc();
@@ -53,7 +52,6 @@
 //              router.replace('/kyc/start'); // Or the last incomplete step
 //          }
 //      }, [kycData, router]);
-
 
 //     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, type: 'front' | 'back') => {
 //         const file = event.target.files?.[0];
@@ -107,7 +105,6 @@
 //              return;
 //          }
 
-
 //          // Prepare payload (ensure types match KycSubmissionPayload)
 //          const submissionData: KycSubmissionPayload = {
 //             firstName: kycData.firstName!,
@@ -146,7 +143,6 @@
 //          }
 //     };
 
-
 //      // --- File Input Component (Simplified Example) ---
 //      const FileInput = ({ id, label, file, onChange, onRemove, error }) => (
 //          <div className="space-y-1">
@@ -177,7 +173,6 @@
 //      );
 //      // --- End File Input Component ---
 
-
 //     return (
 //         <div className="space-y-5">
 //              <h2 className="text-xl font-semibold mb-1 text-mainheading dark:text-white">Upload Documents</h2>
@@ -186,7 +181,6 @@
 //             </p>
 
 //              {uploadError && <p className="text-red-500 bg-red-100 dark:bg-red-900/30 p-3 rounded-md text-sm">{uploadError}</p>}
-
 
 //              {/* --- Replace with your actual FileUpload component --- */}
 //              <FileInput
@@ -211,7 +205,6 @@
 //              )}
 //              {/* --- End FileUpload component replacement --- */}
 
-
 //             {/* Navigation Buttons */}
 //             <div className="flex justify-between items-center pt-6">
 //                 <Button type="button" variant="outline" onClick={prevStep} disabled={isSubmitting}>
@@ -231,8 +224,6 @@
 //         </div>
 //     );
 // }
-
-
 
 // // frontend/src/app/kyc/upload/page.tsx
 // 'use client';
@@ -358,7 +349,6 @@
 //         </div>
 //     );
 // };
-
 
 // // --- Helper function to check if essential previous data exists ---
 // const checkPreviousData = (data: any): boolean => {
@@ -533,7 +523,6 @@
 //     return hasRequiredData && hasFrontFile && (!needsBackFile || hasBackFile);
 // };
 
-
 // export default function KycReviewPage() {
 //     const router = useRouter();
 //     const { kycData, fileState, prevStep, goToStep, resetKycProgress } = useKyc();
@@ -638,7 +627,6 @@
 //             );
 //      }
 
-
 //     return (
 //          <Card className="w-full max-w-2xl mx-auto shadow-md">
 //             <CardHeader>
@@ -711,7 +699,6 @@
 //         </Card>
 //     );
 // }
-
 
 // // frontend/src/app/kyc/upload/page.tsx
 // 'use client';
@@ -932,7 +919,6 @@
 //         </Card>
 //     );
 // }
-
 
 // // frontend/src/app/kyc/upload/page.tsx
 // 'use client';
@@ -1167,24 +1153,483 @@
 //     );
 // }
 
+// // frontend/src/app/kyc/upload/page.tsx
+// "use client";
+
+// import React, { useState, useEffect, useCallback, useMemo } from "react";
+// import { useRouter } from "next/navigation";
+// import Image from "next/image";
+// import { cn } from "@/lib/utils";
+
+// // --- UI Components ---
+// import { Button } from "@/components/ui/button";
+// import {
+//   Card,
+//   CardContent,
+//   CardHeader,
+//   CardTitle,
+//   CardDescription,
+// } from "@/components/ui/card";
+// import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+// import {
+//   Loader2,
+//   UploadCloud,
+//   FileCheck,
+//   AlertTriangle,
+//   FileX,
+//   CheckCircle,
+//   ArrowLeft,
+//   ArrowRight,
+//   Image as ImageIcon,
+//   File as FileIcon,
+// } from "lucide-react";
+
+// // --- App Specific Imports ---
+// import { useKyc, formStepOrder } from "../../contexts/KycContext";
+// import type { KycFileState } from "../../contexts/KycContext";
+
+// // --- Constants ---
+// const MAX_FILE_SIZE_MB = 5;
+// const ACCEPTED_FILE_TYPES = "image/jpeg, image/png, application/pdf";
+// const ACCEPTED_FILE_TYPES_STRING = ".jpg, .png, .pdf";
+
+// // ============================================================================
+// // Helper Component: FileInput (Remains the same)
+// // ============================================================================
+// interface FileInputProps {
+//   id: string;
+//   label: string;
+//   required: boolean;
+//   file: File | null;
+//   onFileChange: (file: File | null) => void;
+//   accept?: string;
+//   maxSizeMB?: number;
+//   disabled?: boolean;
+// }
+// const FileInput: React.FC<FileInputProps> = ({
+//   id,
+//   label,
+//   required,
+//   file,
+//   onFileChange,
+//   accept = ACCEPTED_FILE_TYPES,
+//   maxSizeMB = MAX_FILE_SIZE_MB,
+//   disabled,
+// }) => {
+//   /* ... (No changes needed in FileInput component itself) ... */
+//   const [preview, setPreview] = useState<string | null>(null);
+//   const [error, setError] = useState<string | null>(null);
+//   const [isPdf, setIsPdf] = useState(false);
+
+//   useEffect(() => {
+//     let objectUrl: string | null = null;
+//     if (file) {
+//       const fileType = file.type;
+//       setIsPdf(fileType === "application/pdf");
+//       if (fileType.startsWith("image/")) {
+//         objectUrl = URL.createObjectURL(file);
+//         setPreview(objectUrl);
+//       } else {
+//         setPreview(null);
+//       }
+//     } else {
+//       setPreview(null);
+//       setIsPdf(false);
+//     }
+//     return () => {
+//       if (objectUrl) URL.revokeObjectURL(objectUrl);
+//     };
+//   }, [file]);
+
+//   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+//     setError(null);
+//     const selectedFile = event.target.files?.[0];
+//     if (selectedFile) {
+//       const acceptedTypesArray = accept.split(",").map((t) => t.trim());
+//       if (!acceptedTypesArray.includes(selectedFile.type)) {
+//         setError(
+//           `Invalid file type. Please upload ${ACCEPTED_FILE_TYPES_STRING}.`
+//         );
+//         onFileChange(null);
+//         event.target.value = "";
+//         return;
+//       }
+//       const maxSizeBytes = maxSizeMB * 1024 * 1024;
+//       if (selectedFile.size > maxSizeBytes) {
+//         setError(`File is too large. Maximum size is ${maxSizeMB}MB.`);
+//         onFileChange(null);
+//         event.target.value = "";
+//         return;
+//       }
+//       onFileChange(selectedFile);
+//     } else {
+//       onFileChange(null);
+//     }
+//   };
+
+//   const handleRemoveFile = () => {
+//     onFileChange(null);
+//     setError(null);
+//     const inputElement = document.getElementById(id) as HTMLInputElement;
+//     if (inputElement) inputElement.value = "";
+//   };
+
+//   return (
+//     <div className="space-y-2">
+//       <label
+//         htmlFor={id}
+//         className="text-sm text-neutral-900 dark:text-white font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center"
+//       >
+//         {" "}
+//         {label} {required && <span className="text-red-500 ml-1">*</span>}{" "}
+//       </label>
+//       {file ? (
+//         <div
+//           className={cn(
+//             "p-3 border rounded-md flex flex-col sm:flex-row items-center gap-3",
+//             "border-green-600 bg-green-100 dark:bg-green-600/20"
+//           )}
+//         >
+//           <div className="flex-shrink-0 h-16 w-16 flex items-center justify-center bg-white dark:bg-background rounded border">
+//             {" "}
+//             {preview ? (
+//               <Image
+//                 src={preview}
+//                 alt="Preview"
+//                 width={64}
+//                 height={64}
+//                 className="object-contain h-full w-full rounded"
+//               />
+//             ) : isPdf ? (
+//               <FileIcon className="h-8 w-8 text-red-600" />
+//             ) : (
+//               <FileCheck className="h-8 w-8 text-green-600" />
+//             )}{" "}
+//           </div>
+//           <div className="flex-grow text-sm text-center sm:text-left overflow-hidden space-y-1">
+//             {" "}
+//             <p
+//               className="font-medium text-green-800 dark:text-green-200 truncate text-wrap"
+//               title={file.name}
+//             >
+//               {file.name}
+//             </p>{" "}
+//             <p className="text-xs text-gray-500 dark:text=gray-300">
+//               {file.type} - {(file.size / 1024 / 1024).toFixed(2)} MB
+//             </p>{" "}
+//           </div>
+//           <button
+//             type="button"
+//             onClick={handleRemoveFile}
+//             className="inline-flex items-center text-red-600 bg-red-100 dark:bg-red-600/20 hover ml-2 py-1.5 px-4 cursor-pointer rounded-full text-sm"
+//             disabled={disabled}
+//             aria-label={`Remove ${label}`}
+//           >
+//             <FileX className="h-4 w-4 mr-1" /> Remove
+//           </button>
+//         </div>
+//       ) : (
+//         <div className="flex items-center justify-center w-full">
+//           <label
+//             htmlFor={id}
+//             className={cn(
+//               "flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-input hover:border-primary rounded-lg cursor-pointer transition-colors",
+//               "hover:bg-accent bg-popover",
+//               disabled ? "opacity-50 cursor-not-allowed" : "",
+//               error
+//                 ? "border-destructive bg-destructive/5 hover:border-destructive"
+//                 : ""
+//             )}
+//           >
+//             <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center">
+//               {" "}
+//               <UploadCloud
+//                 className={cn(
+//                   "w-8 h-8 mb-3",
+//                   error ? "text-red-400" : "text-gray-500 dark:text-gray-300"
+//                 )}
+//               />{" "}
+//               <p
+//                 className={cn(
+//                   "mb-2 text-sm",
+//                   error
+//                     ? "text-destructive"
+//                     : "text-gray-500 dark:text-gray-300"
+//                 )}
+//               >
+//                 <span className="font-semibold">Click to upload</span> or drag &
+//                 drop
+//               </p>{" "}
+//               <p
+//                 className={cn(
+//                   "text-xs",
+//                   error
+//                     ? "text-destructive/90"
+//                     : "text-gray-500 dark:text-gray-300"
+//                 )}
+//               >
+//                 {ACCEPTED_FILE_TYPES_STRING} (MAX. {maxSizeMB}MB)
+//               </p>{" "}
+//             </div>
+//             <input
+//               id={id}
+//               type="file"
+//               className="hidden"
+//               onChange={handleFileChange}
+//               accept={accept}
+//               disabled={disabled}
+//             />
+//           </label>
+//         </div>
+//       )}
+//       {error && (
+//         <p className="text-sm text-destructive flex items-center gap-1 pt-1">
+//           <AlertTriangle className="h-4 w-4 flex-shrink-0" />
+//           {error}
+//         </p>
+//       )}
+//     </div>
+//   );
+// };
+// // ============================================================================
+// // Main Component: KycUploadPage
+// // ============================================================================
+// export default function KycUploadPage() {
+//   const {
+//     kycData,
+//     fileState,
+//     setFile,
+//     nextStep,
+//     prevStep,
+//     updateCurrentUiStepId,
+//     goToStep,
+//     isInitialized: kycInitialized,
+//     backendStatus,
+//     isLoadingStatus: kycLoadingStatus,
+//   } = useKyc();
+
+//   const [formError, setFormError] = useState<string | null>(null);
+//   const [isProcessing, setIsProcessing] = useState(false); // Local state for "Continue" click
+//   const [isPageLoading, setIsPageLoading] = useState(true); // Local loading for prerequisite check
+
+//   // Effect 1: Set UI step
+//   useEffect(() => {
+//     if (kycInitialized && window.location.pathname === "/kyc/upload") {
+//       updateCurrentUiStepId("upload");
+//     }
+//   }, [kycInitialized, updateCurrentUiStepId]);
+
+//   // Effect 2: Check prerequisites (ID Type) and Status
+//   useEffect(() => {
+//     if (!kycInitialized) {
+//       setIsPageLoading(true);
+//       return;
+//     }
+//     // If status not suitable, context handles redirect
+//     if (
+//       !["not_started", "rejected", "skipped", "loading"].includes(
+//         backendStatus as string
+//       )
+//     ) {
+//       setIsPageLoading(false);
+//       return;
+//     }
+
+//     // CRITICAL CHECK: Ensure idType is present before allowing upload page access
+//     if (!kycData.idType) {
+//       console.warn(
+//         "UploadPage: Prerequisite 'idType' missing. Redirecting to identity step."
+//       );
+//       goToStep("identity"); // Redirect back if idType not set
+//       return; // Stop further processing
+//     }
+//     setIsPageLoading(false); // Prerequisites met
+//   }, [kycInitialized, kycData.idType, backendStatus, goToStep]);
+
+//   const isBackRequired = useMemo(
+//     () => kycData.idType === "resident_permit",
+//     [kycData.idType]
+//   );
+//   const isFormValid = useMemo(() => {
+//     const frontOk = !!fileState.idFrontFile;
+//     const backOk = isBackRequired ? !!fileState.idBackFile : true;
+//     return frontOk && backOk;
+//   }, [fileState.idFrontFile, fileState.idBackFile, isBackRequired]);
+
+//   const handleContinue = useCallback(() => {
+//     setFormError(null);
+//     setIsProcessing(true);
+//     if (!isFormValid) {
+//       const missing = [];
+//       if (!fileState.idFrontFile) missing.push("Front ID Document");
+//       if (isBackRequired && !fileState.idBackFile)
+//         missing.push("Back ID Document");
+//       setFormError(`Please upload required documents: ${missing.join(", ")}.`);
+//       setIsProcessing(false);
+//       return;
+//     }
+//     nextStep(); // Navigate via context
+//     // isProcessing will reset on page unmount
+//   }, [isFormValid, nextStep, fileState, isBackRequired]); // Dependencies
+
+//   const handleFileUpdate = useCallback(
+//     (type: keyof KycFileState, file: File | null) => {
+//       setFile(type, file);
+//       setFormError(null);
+//     },
+//     [setFile]
+//   );
+
+//   // --- Render Logic ---
+//   // Simplified Loading
+//   if (isPageLoading || (kycLoadingStatus && !isPageLoading)) {
+//     return (
+//       <div className="flex justify-center items-center min-h-[400px]">
+//         {" "}
+//         <Loader2 className="h-8 w-8 animate-spin text-primary" />{" "}
+//       </div>
+//     );
+//   }
+//   // Waiting for Redirect
+//   if (
+//     !["not_started", "rejected", "skipped", "loading"].includes(
+//       backendStatus as string
+//     )
+//   ) {
+//     return (
+//       <div className="flex justify-center items-center min-h-[400px]">
+//         <Loader2 className="h-8 w-8 animate-spin text-primary" />
+//       </div>
+//     );
+//   }
+
+//   const idTypeDisplayName =
+//     kycData.idType === "passport"
+//       ? "Passport"
+//       : "Resident Permit / National ID";
+
+//   return (
+//     <Card className="w-full max-w-2xl mx-auto shadow-lg border animate-fadeIn sm:p-8 p-4">
+//       <CardHeader className="border-b mb-6 pb-6 space-y-2">
+//         <CardTitle className="text-2xl font-semibold tracking-tight flex items-start gap-2 text-mainheading dark:text-white">
+//           <UploadCloud className="h-6 w-6 text-primary mt-1" /> Upload Documents&nbsp;(Step {formStepOrder.indexOf("upload") + 1} of {formStepOrder.length})
+//         </CardTitle>
+//         <CardDescription className="text-gray-500 dark:text-gray-300">
+//           Upload clear images or PDFs of your selected&nbsp;
+//           <span className="font-semibold">{idTypeDisplayName}</span>. Ensure all
+//           text and photo are readable.{" "}
+//         </CardDescription>
+//       </CardHeader>
+//       <CardContent className="space-y-4">
+//         {formError && (
+//           <Alert variant="destructive">
+//             <AlertTriangle className="h-4 w-4" />
+//             <AlertTitle>Missing Documents</AlertTitle>
+//             <AlertDescription>{formError}</AlertDescription>
+//           </Alert>
+//         )}
+//         {/* Front ID Upload */}
+//         <FileInput
+//           id="idFrontFile"
+//           label={`Front of ${idTypeDisplayName}`}
+//           required={true}
+//           file={fileState.idFrontFile}
+//           onFileChange={(file) => handleFileUpdate("idFrontFile", file)}
+//           disabled={isProcessing}
+//         />
+//         {/* Back ID Upload (Conditional) */}
+//         {isBackRequired && (
+//           <FileInput
+//             id="idBackFile"
+//             label={`Back of ${idTypeDisplayName}`}
+//             required={true}
+//             file={fileState.idBackFile}
+//             onFileChange={(file) => handleFileUpdate("idBackFile", file)}
+//             disabled={isProcessing}
+//           />
+//         )}
+//         {/* Info for Passport */}
+//         {kycData.idType === "passport" && (
+//           <Alert className="mt-4 border-blue-300 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20">
+            
+//             <CheckCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+//             <AlertTitle className="text-blue-800 dark:text-blue-200 font-semibold">
+//               Passport Upload
+//             </AlertTitle>
+//             <AlertDescription className="text-blue-700 dark:text-blue-300">
+              
+//               Only the main photo page is required.
+//             </AlertDescription>
+//           </Alert>
+//         )}
+//         {/* Navigation Buttons */}
+//         <div className="flex flex-col sm:flex-row justify-between items-center pt-6 border-t mt-6 gap-4">
+//           <button
+//             type="button"
+//             className="inline-flex items-center justify-center bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none"
+//             onClick={prevStep}
+//             disabled={isProcessing}
+//           >
+//             <ArrowLeft className="mr-2 size-4.5" /> Back
+//           </button>
+//           <button
+//             type="button"
+//             className=" inline-flex items-center justify-center bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none"
+//             onClick={handleContinue}
+//             disabled={isProcessing || !isFormValid}
+//           >
+//             Continue to Review
+//             {isProcessing ? (
+//               <Loader2 className="ml-2 size-4.5 animate-spin" />
+//             ) : (
+//               <ArrowRight className="ml-2 size-4.5" />
+//             )}
+//           </button>
+//         </div>
+//       </CardContent>
+//     </Card>
+//   );
+// }
+
+
+
+
+
 
 // frontend/src/app/kyc/upload/page.tsx
-'use client';
+"use client";
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { useRouter } from "next/navigation"; // Keep if needed elsewhere, not used directly here
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 // --- UI Components ---
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader2, UploadCloud, FileCheck, AlertTriangle, FileX, CheckCircle, ArrowLeft, ArrowRight, Image as ImageIcon, File as FileIcon } from 'lucide-react';
+import {
+  Loader2,
+  UploadCloud,
+  FileCheck,
+  AlertTriangle,
+  FileX,
+  CheckCircle,
+  ArrowLeft,
+  ArrowRight,
+  Image as ImageIcon,
+  File as FileIcon,
+} from "lucide-react";
 
 // --- App Specific Imports ---
-import { useKyc, formStepOrder } from '../../contexts/KycContext';
-import type { KycFileState } from '../../contexts/KycContext';
+import { useKyc, formStepOrder } from "../../contexts/KycContext";
+import type { KycFileState } from "../../contexts/KycContext";
 
 // --- Constants ---
 const MAX_FILE_SIZE_MB = 5;
@@ -1192,161 +1637,432 @@ const ACCEPTED_FILE_TYPES = "image/jpeg, image/png, application/pdf";
 const ACCEPTED_FILE_TYPES_STRING = ".jpg, .png, .pdf";
 
 // ============================================================================
-// Helper Component: FileInput (Remains the same)
+// Helper Component: FileInput
 // ============================================================================
-interface FileInputProps { id: string; label: string; required: boolean; file: File | null; onFileChange: (file: File | null) => void; accept?: string; maxSizeMB?: number; disabled?: boolean; }
-const FileInput: React.FC<FileInputProps> = ({ id, label, required, file, onFileChange, accept = ACCEPTED_FILE_TYPES, maxSizeMB = MAX_FILE_SIZE_MB, disabled }) => { /* ... (No changes needed in FileInput component itself) ... */
-    const [preview, setPreview] = useState<string | null>(null);
-    const [error, setError] = useState<string | null>(null);
-    const [isPdf, setIsPdf] = useState(false);
+interface FileInputProps {
+  id: string;
+  label: string;
+  required: boolean;
+  file: File | null;
+  onFileChange: (file: File | null) => void;
+  accept?: string;
+  maxSizeMB?: number;
+  disabled?: boolean;
+}
+const FileInput: React.FC<FileInputProps> = ({
+  id,
+  label,
+  required,
+  file,
+  onFileChange,
+  accept = ACCEPTED_FILE_TYPES,
+  maxSizeMB = MAX_FILE_SIZE_MB,
+  disabled,
+}) => {
+  const [preview, setPreview] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isPdf, setIsPdf] = useState(false);
 
-    useEffect(() => {
-        let objectUrl: string | null = null;
-        if (file) {
-            const fileType = file.type;
-            setIsPdf(fileType === 'application/pdf');
-            if (fileType.startsWith('image/')) {
-                objectUrl = URL.createObjectURL(file); setPreview(objectUrl);
-            } else { setPreview(null); }
-        } else { setPreview(null); setIsPdf(false); }
-        return () => { if (objectUrl) URL.revokeObjectURL(objectUrl); };
-    }, [file]);
-
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setError(null);
-        const selectedFile = event.target.files?.[0];
-        if (selectedFile) {
-            const acceptedTypesArray = accept.split(',').map(t => t.trim());
-            if (!acceptedTypesArray.includes(selectedFile.type)) { setError(`Invalid file type. Please upload ${ACCEPTED_FILE_TYPES_STRING}.`); onFileChange(null); event.target.value = ''; return; }
-            const maxSizeBytes = maxSizeMB * 1024 * 1024;
-             if (selectedFile.size > maxSizeBytes) { setError(`File is too large. Maximum size is ${maxSizeMB}MB.`); onFileChange(null); event.target.value = ''; return; }
-            onFileChange(selectedFile);
-        } else { onFileChange(null); }
+  useEffect(() => {
+    let objectUrl: string | null = null;
+    if (file) {
+      const fileType = file.type;
+      setIsPdf(fileType === "application/pdf");
+      if (fileType.startsWith("image/")) {
+        objectUrl = URL.createObjectURL(file);
+        setPreview(objectUrl);
+      } else {
+        setPreview(null); // Don't show preview for non-image files (like PDF)
+      }
+      setError(null); // Clear error when a file is successfully set
+    } else {
+      setPreview(null);
+      setIsPdf(false);
+      // Don't clear error here, let it persist until a *valid* file is chosen or removed
+    }
+    // Cleanup function to revoke the object URL
+    return () => {
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
+  }, [file]); // Rerun effect only when the file prop changes
 
-    const handleRemoveFile = () => {
-        onFileChange(null); setError(null);
-        const inputElement = document.getElementById(id) as HTMLInputElement;
-        if (inputElement) inputElement.value = '';
-    };
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setError(null); // Clear previous errors on new selection attempt
+    const inputElement = event.target; // Keep reference to input element
+    const selectedFile = inputElement.files?.[0];
 
-    return (
-        <div className="space-y-2">
-            <label htmlFor={id} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center"> {label} {required && <span className="text-destructive ml-1">*</span>} </label>
-            {file ? (
-                <div className={cn("p-3 border rounded-md flex flex-col sm:flex-row items-center gap-3", "border-green-500 bg-green-50 dark:bg-green-900/20")}>
-                    <div className="flex-shrink-0 h-16 w-16 flex items-center justify-center bg-white dark:bg-gray-800 rounded border"> {preview ? (<Image src={preview} alt="Preview" width={64} height={64} className="object-contain h-full w-full rounded" />) : isPdf ? (<FileIcon className="h-8 w-8 text-red-600" />) : (<FileCheck className="h-8 w-8 text-green-600" />)} </div>
-                    <div className="flex-grow text-sm text-center sm:text-left overflow-hidden"> <p className="font-medium text-green-800 dark:text-green-200 truncate" title={file.name}>{file.name}</p> <p className="text-xs text-muted-foreground">{file.type} - {(file.size / 1024 / 1024).toFixed(2)} MB</p> </div>
-                    <Button type="button" variant="ghost" size="sm" onClick={handleRemoveFile} className="text-destructive hover:text-destructive hover:bg-destructive/10 flex-shrink-0" disabled={disabled} aria-label={`Remove ${label}`}><FileX className="h-4 w-4 mr-1" /> Remove</Button>
-                </div>
+    if (selectedFile) {
+      // Validate Type
+      const acceptedTypesArray = accept.split(",").map((t) => t.trim());
+      if (!acceptedTypesArray.includes(selectedFile.type)) {
+        setError(
+          `Invalid file type. Please upload ${ACCEPTED_FILE_TYPES_STRING}.`
+        );
+        onFileChange(null); // Reset file state in parent
+        inputElement.value = ""; // Clear the input value
+        return;
+      }
+      // Validate Size
+      const maxSizeBytes = maxSizeMB * 1024 * 1024;
+      if (selectedFile.size > maxSizeBytes) {
+        setError(`File is too large. Maximum size is ${maxSizeMB}MB.`);
+        onFileChange(null); // Reset file state in parent
+        inputElement.value = ""; // Clear the input value
+        return;
+      }
+      // If valid, update parent state
+      onFileChange(selectedFile);
+    } else {
+      // No file selected (e.g., user cancelled)
+      onFileChange(null);
+    }
+  };
+
+  const handleRemoveFile = () => {
+    onFileChange(null); // Reset file state in parent
+    setError(null); // Clear any errors
+    const inputElement = document.getElementById(id) as HTMLInputElement;
+    if (inputElement) inputElement.value = ""; // Clear the input value
+  };
+
+  return (
+    <div className="space-y-2">
+      <label
+        htmlFor={id}
+        className="text-sm text-neutral-900 dark:text-white font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center"
+      >
+        {label} {/* Add red asterisk if required */}
+        {required && <span className="text-red-500 ml-1">*</span>}
+      </label>
+      {file ? (
+        // Display when file is selected
+        <div
+          className={cn(
+            "p-3 border rounded-md flex flex-col sm:flex-row items-center gap-3 relative", // Added relative for potential absolute positioning inside
+            "border-green-600 bg-green-50 dark:bg-green-900/20 dark:border-green-700" // Adjusted colors
+          )}
+        >
+          {/* Preview Area */}
+          <div className="flex-shrink-0 h-16 w-16 flex items-center justify-center bg-background dark:bg-muted rounded border overflow-hidden">
+            {preview ? (
+              <Image
+                src={preview}
+                alt="Preview"
+                width={64}
+                height={64}
+                className="object-contain h-full w-full" // Use object-contain
+              />
+            ) : isPdf ? (
+              <FileIcon className="h-8 w-8 text-red-600" /> // PDF icon
             ) : (
-                <div className="flex items-center justify-center w-full">
-                    <label htmlFor={id} className={cn("flex flex-col items-center justify-center w-full h-36 border-2 border-dashed rounded-lg cursor-pointer transition-colors", "bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600", "hover:bg-gray-100 hover:border-primary/50 dark:hover:bg-gray-800 dark:hover:border-primary/70", disabled ? "opacity-50 cursor-not-allowed" : "", error ? "border-destructive bg-destructive/5 hover:border-destructive" : "")}>
-                        <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center"> <UploadCloud className={cn("w-8 h-8 mb-3", error ? "text-destructive/80" : "text-gray-400")} /> <p className={cn("mb-2 text-sm", error ? "text-destructive" : "text-gray-500 dark:text-gray-400")}><span className="font-semibold">Click to upload</span> or drag & drop</p> <p className={cn("text-xs", error ? "text-destructive/90" : "text-gray-500 dark:text-gray-400")}>{ACCEPTED_FILE_TYPES_STRING} (MAX. {maxSizeMB}MB)</p> </div>
-                        <input id={id} type="file" className="hidden" onChange={handleFileChange} accept={accept} disabled={disabled} />
-                    </label>
-                </div>
+              <FileCheck className="h-8 w-8 text-green-600" /> // Generic file icon
             )}
-            {error && (<p className="text-sm text-destructive flex items-center gap-1 pt-1"><AlertTriangle className="h-4 w-4 flex-shrink-0"/>{error}</p>)}
+          </div>
+          {/* File Info */}
+          <div className="flex-grow text-sm text-center sm:text-left overflow-hidden space-y-1">
+            <p
+              className="font-medium text-green-800 dark:text-green-400 break-words" // Use break-words
+              title={file.name}
+            >
+              {file.name}
+            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-300">
+              {file.type} - {(file.size / 1024 / 1024).toFixed(2)} MB
+            </p>
+          </div>
+          {/* Remove Button */}
+          <button
+            type="button"
+            onClick={handleRemoveFile}
+            className={cn(
+              "inline-flex items-center justify-center text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300",
+              "bg-red-100 hover:bg-red-200 dark:bg-red-900/30 dark:hover:bg-red-900/50",
+              "ml-0 mt-2 sm:mt-0 sm:ml-2 py-1 px-3 rounded-md text-xs font-medium transition-colors", // Adjusted padding/size
+              disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+            )}
+            disabled={disabled}
+            aria-label={`Remove ${label}`}
+          >
+            <FileX className="h-3.5 w-3.5 mr-1" /> Remove
+          </button>
         </div>
-    );
- };
+      ) : (
+        // Display when no file is selected (upload area)
+        <div className="flex items-center justify-center w-full">
+          <label
+            htmlFor={id}
+            className={cn(
+              "flex flex-col items-center justify-center w-full h-36 border-2 border-dashed rounded-lg transition-colors cursor-pointer",
+              disabled
+                ? "opacity-50 cursor-not-allowed bg-muted/50 border-gray-300 dark:border-gray-700"
+                : "",
+              error
+                ? "bg-red-100 dark:bg-red-600/10 border-red-600 hover:bg-red-500/20 dark:hover:bg-red-500/20"
+                : "bg-background hover:bg-accent border-input hover:border-primary dark:border-input dark:hover:border-primary"
+            )}
+          >
+            <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center px-2">
+              <UploadCloud
+                className={cn(
+                  "w-8 h-8 mb-3",
+                  error
+                    ? "text-red-500 dark:text-red-400"
+                    : "text-gray-400 dark:text-gray-500"
+                )}
+                aria-hidden="true"
+              />
+              <p
+                className={cn(
+                  "mb-1 text-sm",
+                  error
+                    ? "text-red-500 dark:text-red-400"
+                    : "text-gray-500 dark:text-gray-400"
+                )}
+              >
+                <span className="font-semibold">Click to upload</span> or drag &
+                drop
+              </p>
+              <p
+                className={cn(
+                  "text-xs",
+                  error
+                    ? "text-red-500 dark:text-red-400"
+                    : "text-gray-500 dark:text-gray-400"
+                )}
+              >
+                {ACCEPTED_FILE_TYPES_STRING} (MAX. {maxSizeMB}MB)
+              </p>
+            </div>
+            <input
+              id={id}
+              type="file"
+              className="hidden" // Keep hidden
+              onChange={handleFileChange}
+              accept={accept}
+              disabled={disabled}
+              aria-label={`Upload ${label}`} // Add aria-label
+            />
+          </label>
+        </div>
+      )}
+      {/* Error Message Area */}
+      {error && !file && ( // Only show error if there's an error *and* no file is currently selected
+        <p className="text-sm text-destructive flex items-center gap-1 pt-1">
+          <AlertTriangle className="h-4 w-4 flex-shrink-0" />
+          {error}
+        </p>
+      )}
+    </div>
+  );
+};
+
 // ============================================================================
 // Main Component: KycUploadPage
 // ============================================================================
 export default function KycUploadPage() {
-    const {
-        kycData, fileState, setFile, nextStep, prevStep, updateCurrentUiStepId, goToStep,
-        isInitialized: kycInitialized, backendStatus, isLoadingStatus: kycLoadingStatus
-    } = useKyc();
+  const {
+    kycData,
+    fileState,
+    setFile,
+    nextStep,
+    prevStep,
+    updateCurrentUiStepId,
+    goToStep,
+    isInitialized: kycInitialized,
+    backendStatus,
+    isLoadingStatus: kycLoadingStatus,
+  } = useKyc();
 
-    const [formError, setFormError] = useState<string | null>(null);
-    const [isProcessing, setIsProcessing] = useState(false); // Local state for "Continue" click
-    const [isPageLoading, setIsPageLoading] = useState(true); // Local loading for prerequisite check
+  const [formError, setFormError] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [isPageLoading, setIsPageLoading] = useState(true);
 
-    // Effect 1: Set UI step
-    useEffect(() => {
-        if (kycInitialized && window.location.pathname === '/kyc/upload') {
-            updateCurrentUiStepId('upload');
-        }
-     }, [kycInitialized, updateCurrentUiStepId]);
-
-    // Effect 2: Check prerequisites (ID Type) and Status
-    useEffect(() => {
-        if (!kycInitialized) { setIsPageLoading(true); return; }
-        // If status not suitable, context handles redirect
-        if (!["not_started", "rejected", "skipped", "loading"].includes(backendStatus as string)) {
-            setIsPageLoading(false); return;
-        }
-
-        // CRITICAL CHECK: Ensure idType is present before allowing upload page access
-        if (!kycData.idType) {
-            console.warn("UploadPage: Prerequisite 'idType' missing. Redirecting to identity step.");
-            goToStep('identity'); // Redirect back if idType not set
-            return; // Stop further processing
-        }
-        setIsPageLoading(false); // Prerequisites met
-
-    }, [kycInitialized, kycData.idType, backendStatus, goToStep]);
-
-    const isBackRequired = useMemo(() => kycData.idType === 'resident_permit', [kycData.idType]);
-    const isFormValid = useMemo(() => {
-        const frontOk = !!fileState.idFrontFile;
-        const backOk = isBackRequired ? !!fileState.idBackFile : true;
-        return frontOk && backOk;
-    }, [fileState.idFrontFile, fileState.idBackFile, isBackRequired]);
-
-    const handleContinue = useCallback(() => {
-        setFormError(null); setIsProcessing(true);
-        if (!isFormValid) {
-            const missing = [];
-            if (!fileState.idFrontFile) missing.push("Front ID Document");
-            if (isBackRequired && !fileState.idBackFile) missing.push("Back ID Document");
-            setFormError(`Please upload required documents: ${missing.join(', ')}.`);
-            setIsProcessing(false); return;
-        }
-        nextStep(); // Navigate via context
-        // isProcessing will reset on page unmount
-    }, [isFormValid, nextStep, fileState, isBackRequired]); // Dependencies
-
-     const handleFileUpdate = useCallback((type: keyof KycFileState, file: File | null) => {
-        setFile(type, file); setFormError(null);
-    }, [setFile]);
-
-    // --- Render Logic ---
-    // Simplified Loading
-    if (isPageLoading || (kycLoadingStatus && !isPageLoading)) {
-        return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-primary" /> </div> );
+  // Effect 1: Set UI step
+  useEffect(() => {
+    if (kycInitialized && window.location.pathname === "/kyc/upload") {
+      updateCurrentUiStepId("upload");
     }
-    // Waiting for Redirect
-    if (!["not_started", "rejected", "skipped", "loading"].includes(backendStatus as string)) {
-        return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-primary" /> </div> );
+  }, [kycInitialized, updateCurrentUiStepId]);
+
+  // Effect 2: Check prerequisites and status
+  useEffect(() => {
+    if (!kycInitialized) {
+      setIsPageLoading(true);
+      return;
     }
+    if (
+      !["not_started", "rejected", "skipped", "loading"].includes(
+        backendStatus as string
+      )
+    ) {
+      // Context handles redirect based on status usually
+      setIsPageLoading(false);
+      return;
+    }
+    if (!kycData.idType) {
+      console.warn(
+        "UploadPage: Prerequisite 'idType' missing. Redirecting to identity step."
+      );
+      goToStep("identity");
+      return;
+    }
+    setIsPageLoading(false);
+  }, [kycInitialized, kycData.idType, backendStatus, goToStep]);
 
-    const idTypeDisplayName = kycData.idType === 'passport' ? 'Passport' : 'Resident Permit / National ID';
+  // Determine if back side is needed based on ID type
+  const isBackRequired = useMemo(
+    () => kycData.idType === "resident_permit",
+    [kycData.idType]
+  );
 
+  // Determine form validity based on required files
+  const isFormValid = useMemo(() => {
+    const frontOk = !!fileState.idFrontFile;
+    const backOk = isBackRequired ? !!fileState.idBackFile : true; // Back only required if isBackRequired is true
+    return frontOk && backOk;
+  }, [fileState.idFrontFile, fileState.idBackFile, isBackRequired]);
+
+  // Handler for updating file state in context
+  const handleFileUpdate = useCallback(
+    (type: keyof KycFileState, file: File | null) => {
+      setFile(type, file);
+      setFormError(null); // Clear form-level error when a file is updated
+    },
+    [setFile]
+  );
+
+  // Handler for the "Continue" button click
+  const handleContinue = useCallback(() => {
+    setFormError(null); // Clear previous errors
+    if (!isFormValid) {
+      // This check is technically redundant because the button is disabled,
+      // but good as a safeguard or if button state logic changes.
+      const missing = [];
+      if (!fileState.idFrontFile) missing.push(`Front of ${idTypeDisplayName}`);
+      if (isBackRequired && !fileState.idBackFile)
+        missing.push(`Back of ${idTypeDisplayName}`);
+      setFormError(`Please upload required document(s): ${missing.join(", ")}.`);
+      return;
+    }
+    setIsProcessing(true); // Set processing state
+    // Simulate async operation if needed, then navigate
+    // For now, just navigate
+    nextStep();
+    // isProcessing will be reset on component unmount or could be reset after async operation
+  }, [isFormValid, nextStep, fileState, isBackRequired, kycData.idType]); // Added idType dependency for idTypeDisplayName
+
+  // Display name for the selected ID type
+  const idTypeDisplayName = useMemo(() =>
+    kycData.idType === "passport"
+      ? "Passport"
+      : "Resident Permit / National ID"
+  , [kycData.idType]);
+
+  // --- Render Logic ---
+  if (isPageLoading || (kycLoadingStatus && !isPageLoading)) {
     return (
-        <Card className="w-full max-w-2xl mx-auto shadow-lg border border-border/40 animate-fadeIn">
-            <CardHeader>
-                <CardTitle className="text-2xl font-semibold tracking-tight flex items-center gap-2"> <UploadCloud className="h-6 w-6 text-primary" /> Upload Documents (Step {formStepOrder.indexOf('upload') + 1} of {formStepOrder.length}) </CardTitle>
-                <CardDescription> Upload clear images or PDFs of your selected <span className='font-medium'>{idTypeDisplayName}</span>. Ensure all text and photo are readable. </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6 p-6 md:p-8">
-                 {formError && ( <Alert variant="destructive"> <AlertTriangle className="h-4 w-4" /> <AlertTitle>Missing Documents</AlertTitle> <AlertDescription>{formError}</AlertDescription> </Alert> )}
-                {/* Front ID Upload */}
-                <FileInput id="idFrontFile" label={`Front of ${idTypeDisplayName}`} required={true} file={fileState.idFrontFile} onFileChange={(file) => handleFileUpdate('idFrontFile', file)} disabled={isProcessing} />
-                {/* Back ID Upload (Conditional) */}
-                {isBackRequired && ( <FileInput id="idBackFile" label={`Back of ${idTypeDisplayName}`} required={true} file={fileState.idBackFile} onFileChange={(file) => handleFileUpdate('idBackFile', file)} disabled={isProcessing} /> )}
-                {/* Info for Passport */}
-                {kycData.idType === 'passport' && (
-                     <Alert className="mt-4 border-blue-300 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20"> <CheckCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" /> <AlertTitle className="text-blue-800 dark:text-blue-200 font-semibold">Passport Upload</AlertTitle> <AlertDescription className="text-blue-700 dark:text-blue-300"> Only the main photo page is required. </AlertDescription> </Alert>
-                  )}
-                {/* Navigation Buttons */}
-                <div className="flex justify-between items-center pt-6 border-t dark:border-border/50 mt-8">
-                    <Button type="button" variant="outline" onClick={prevStep} disabled={isProcessing}><ArrowLeft className="mr-2 h-4 w-4" /> Back</Button>
-                    <Button type="button" onClick={handleContinue} disabled={isProcessing || !isFormValid}>{isProcessing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ArrowRight className="mr-2 h-4 w-4" />} Continue to Review</Button>
-                </div>
-            </CardContent>
-        </Card>
+      <div className="flex justify-center items-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
     );
+  }
+  if (
+    !["not_started", "rejected", "skipped", "loading"].includes(
+      backendStatus as string
+    )
+  ) {
+    // This state likely means the context is about to redirect or show a status page
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  return (
+    <Card className="w-full max-w-2xl mx-auto shadow border animate-fadeIn sm:p-8 p-4">
+      <CardHeader className="border-b mb-6 pb-6 space-y-2">
+        <CardTitle className="sm:text-2xl text-xl font-semibold tracking-tight flex items-start gap-2 text-mainheading dark:text-white">
+          <UploadCloud className="h-6 w-6 text-primary mt-1" />
+          Upload Documents (Step {formStepOrder.indexOf("upload") + 1} of{" "}
+          {formStepOrder.length})
+        </CardTitle>
+        <CardDescription className="text-gray-500 dark:text-gray-300">
+          Upload clear images or PDFs of your selected 
+          <span className="font-semibold">{idTypeDisplayName}</span>. Ensure all
+          text and photo are readable. Fields marked with{" "}
+          <span className="text-red-500">*</span> are required.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6"> {/* Increased spacing */}
+        {formError && (
+          <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Missing Documents</AlertTitle>
+            <AlertDescription>{formError}</AlertDescription>
+          </Alert>
+        )}
+
+        {/* Front ID Upload */}
+        <FileInput
+          id="idFrontFile"
+          label={`Front of ${idTypeDisplayName}`}
+          required={true} // Always required
+          file={fileState.idFrontFile}
+          onFileChange={(file) => handleFileUpdate("idFrontFile", file)}
+          disabled={isProcessing}
+        />
+
+        {/* Back ID Upload (Conditional) */}
+        {isBackRequired && (
+          <FileInput
+            id="idBackFile"
+            label={`Back of ${idTypeDisplayName}`}
+            required={true} // Required only when isBackRequired is true
+            file={fileState.idBackFile}
+            onFileChange={(file) => handleFileUpdate("idBackFile", file)}
+            disabled={isProcessing}
+          />
+        )}
+
+        {/* Info for Passport */}
+        {kycData.idType === "passport" && (
+          <Alert className="mt-4 border-blue-300 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20">
+            <CheckCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+            <AlertTitle className="text-blue-800 dark:text-blue-200 font-semibold">
+              Passport Upload
+            </AlertTitle>
+            <AlertDescription className="text-blue-700 dark:text-blue-300">
+              Only the main photo page (the page with your photo and personal details) is required.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Navigation Buttons */}
+        <div className="flex flex-col sm:flex-row justify-between items-center pt-6 border-t mt-8 gap-4"> {/* Increased margin-top */}
+          <button
+            type="button"
+            className="inline-flex items-center justify-center bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={prevStep}
+            disabled={isProcessing} // Disable back button while processing next step
+          >
+            <ArrowLeft className="mr-2 size-4.5" /> Back
+          </button>
+          <button
+            type="button"
+            className=" inline-flex items-center justify-center bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styles
+            onClick={handleContinue}
+            disabled={isProcessing || !isFormValid} // Disable if processing OR if required files are missing
+          >
+            Continue to Review
+            {isProcessing ? (
+              <Loader2 className="ml-2 size-4.5 animate-spin" />
+            ) : (
+              <ArrowRight className="ml-2 size-4.5" />
+            )}
+          </button>
+        </div>
+      </CardContent>
+    </Card>
+  );
 }
