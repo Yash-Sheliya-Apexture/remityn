@@ -779,23 +779,20 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { LuFacebook, LuInstagram } from "react-icons/lu";
-import { FaXTwitter } from "react-icons/fa6";
 import { useState, useEffect } from "react";
 import { HiX } from "react-icons/hi";
 import { TiArrowSortedDown } from "react-icons/ti";
-
 import { IconType } from "react-icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppContext } from "../../contexts/WebsiteAppContext";
 import { useRouter } from "next/navigation";
-import ThemeToggle from "../../contexts/ThemeToggle"; // Import ThemeToggle
 import { IoLogoWhatsapp } from "react-icons/io";
 import { FaTelegram } from "react-icons/fa";
+import { ReactNode } from "react";
 
 interface FooterLink {
   href: string;
-  label: string;
+  label: string | ReactNode;
 }
 
 interface SocialLink extends FooterLink {
@@ -822,7 +819,16 @@ const Footer: React.FC = () => {
         title: "Help",
         links: [
           { href: "/privacy-policy", label: "Privacy Policy" },
-          { href: "/terms-and-conditions", label: "Terms and Conditions" },
+          {
+            href: "/terms-and-conditions",
+            label: (
+              <>
+                Terms and
+                <br />
+                Conditions
+              </>
+            ),
+          },
           { href: "#faq", label: "FAQs" },
         ],
       },
@@ -873,8 +879,8 @@ const Footer: React.FC = () => {
   const renderLinkList = (links: FooterLink[] | undefined) => (
     <ul className="space-y-3 text-mainheading font-medium dark:text-white">
       {links?.map((link) => (
-        <li key={link.label}>
-          <div className="relative group w-fit">
+        <li key={link.href}>
+          <div className="relative group w-fit lg:text-base text-sm">
             <Link href={link.href} className="relative z-10">
               {link.label}
             </Link>
@@ -889,18 +895,15 @@ const Footer: React.FC = () => {
     <ul className="flex flex-col w-fit gap-4">
       {socialLinks?.map((link) => (
         <li
-          key={link.label}
+          key={link.href}
           className="p-2.5 bg-black/10 dark:bg-secondary inline-block rounded-full group transition-colors ease-in-out duration-300"
         >
           <Link
             href={link.href}
             className="text-gray-500 dark:text-gray-300"
-            aria-label={link.label}
+            aria-label={typeof link.label === "string" ? link.label : undefined}
           >
-            <link.icon
-              size={18}
-              className="text-mainheading group-hover:text-gray group-dark:hover:text-primary dark:text-white"
-            />
+            {link.label}
           </Link>
         </li>
       ))}
@@ -914,15 +917,15 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="md:py-10 bg-[#F2F4F7] dark:bg-background px-4 pb-4">
-      <div className="container mx-auto flex flex-col md:flex-row justify-between items-start w-full gap-6">
+    <footer className="bg-[#F2F4F7] dark:bg-background px-4 pb-6">
+      <div className="container mx-auto flex flex-col md:flex-row justify-between items-start w-full lg:gap-6">
         <div className="flex flex-col">
           <Image
             src="/assets/images/wise-logo.svg"
             alt="logo"
             height={100}
             width={100}
-            className="lg:size-28 size-22"
+            className="lg:size-28 size-20"
           />
 
           <p className="max-w-3xl text-mainheading dark:text-white lg:text-xl text-sm">
@@ -932,21 +935,19 @@ const Footer: React.FC = () => {
             abroad, trust us to handle your currency needs with transparency and
             speed.
           </p>
-
-          {/* Condinally-button */}
-          <Link href="/dashboard" className="w-fit">
-            <div className="bg-primary cursor-pointer hover:bg-primaryhover inline-block font-medium lg:px-10 px-6 lg:py-2.5 focus:outline-none text-sm lg:text-base py-2 transition-colors duration-300 ease-in-out mt-4 rounded-full text-mainheading">
+          {/* <Link href="/dashboard" className="w-fit">
+            <div className="bg-primary cursor-pointer hover:bg-primaryhover inline-block font-medium lg:px-10 px-6 lg:py-2.5 focus:outline-none text-sm lg:text-base py-2 transition-colors duration-300 ease-in-out mt-5 rounded-full text-mainheading">
               Send-Money
             </div>
-          </Link>
+          </Link> */}
         </div>
 
-        <div className="grid grid-cols-2 gap-10 mt-6">
+        <div className="grid grid-cols-2 lg:gap-10 mt-8">
           {footerData.sections.map((section) => (
             <div key={section.title}>
               <div
                 className={`${
-                  isMobile ? "flex items-center pb-4 cursor-pointer" : "pb-4"
+                  isMobile ? "flex items-center gap-1 pb-4 cursor-pointer" : "pb-4"
                 }`}
                 onClick={
                   isMobile ? () => toggleDropdown(section.title) : undefined
@@ -962,9 +963,9 @@ const Footer: React.FC = () => {
                     aria-controls={`${section.title.toLowerCase()}-dropdown-menu`}
                   >
                     {openDropdown === section.title ? (
-                      <HiX size={24} className="text-white" />
+                      <HiX  className="dark:text-white text-mainheading size-4 mt-0.5" />
                     ) : (
-                      <TiArrowSortedDown size={24} className="text-white" />
+                      <TiArrowSortedDown className="dark:text-white text-mainheading size-4 mt-0.5" />
                     )}
                   </button>
                 )}
@@ -1015,7 +1016,7 @@ const Footer: React.FC = () => {
             <div className="text-mainheading dark:text-white" key={pair}>
               <div className="relative group w-fit inline-block">
                 <button
-                  className="relative z-10 cursor-pointer"
+                  className="relative z-10 cursor-pointer text-sm lg:text-base"
                   onClick={() => handleCurrencyConverterClick(pair)}
                 >
                   {pair}
@@ -1035,7 +1036,6 @@ const Footer: React.FC = () => {
         <p className="text-mainheading dark:text-primary lg:text-lg text-sm font-semibold">
           {footerData.copyright}
         </p>
-
         <div className="flex gap-2">
           <a href="">
             <IoLogoWhatsapp className="lg:size-8 size-6 text-[#25D366]" />

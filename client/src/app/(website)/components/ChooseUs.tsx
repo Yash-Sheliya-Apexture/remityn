@@ -44,13 +44,13 @@ const featuresData: FeatureItem[] = [
 const XeFeaturesSection: React.FC = () => {
   return (
     // Added dummy class names for styling context, replace with your actual ones
-    <div className="bg-[#f2f4f7] dark:bg-background mb-14">
+    <div className="bg-[#f2f4f7] dark:bg-background pb-10">
       <div className="mx-auto max-w-7xl px-4">
         <div className="mx-auto max-w-2xl text-center">
           {/* Removed empty h2, assuming the next one is the main heading */}
-          <h2 className="text-3xl sm:text-5xl lg:text-6xl capitalize font-black text-mainheading dark:text-white mt-6">
-            Find out why{" "}
-            <span className="text-primary">millions choose Apexture</span>{" "}
+          <h2 className="text-3xl sm:text-5xl lg:text-6xl capitalize font-black text-mainheading dark:text-white">
+            Find out why &nbsp;
+            <span className="text-primary">millions choose Apexture</span>
           </h2>
 
           <p className="mt-4 text-lg leading-normal text-gray-500 dark:text-gray-300">

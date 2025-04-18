@@ -3,7 +3,7 @@ import SocialTrust from "../components/SocialTrust";
 
 const page = () => {
   return (
-    <section className="Reviews-Main pb-10">
+    <section className="Reviews-Main">
       <SocialTrust />
     </section>
   );
