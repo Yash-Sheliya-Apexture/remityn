@@ -176,7 +176,7 @@
 
 // export default ThemeToggle;
 
-// src/app/components/ThemeToggle.tsx
+// // src/app/components/ThemeToggle.tsx
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
@@ -185,7 +185,6 @@ import {
   IoSunnyOutline,
   IoContrastOutline,
 } from "react-icons/io5";
-import { HiChevronDown } from "react-icons/hi"; // Icon for dropdown arrow
 import { GoChevronDown } from "react-icons/go";
 
 type ThemePreference = "light" | "dark" | "system";
@@ -317,13 +316,13 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ location, className }) => {
           aria-controls="theme-menu" // Add aria-controls for accessibility
         >
           {theme === "light" && (
-            <IoSunnyOutline className="size-5  dark:text-white" />
+            <IoSunnyOutline className="size-5  dark:text-white dark:group-hover:text-primary" />
           )}
           {theme === "dark" && (
             <IoMoonOutline className="size-5  dark:text-white dark:group-hover:text-primary" />
           )}
           {theme === "system" && (
-            <IoContrastOutline className="size-5  dark:text-white" />
+            <IoContrastOutline className="size-5  dark:text-white dark:group-hover:text-primary" />
           )}
           <GoChevronDown className="size-5 ml-1 mt-0.5 dark:text-white" />
         </button>
@@ -382,3 +381,156 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ location, className }) => {
 };
 
 export default ThemeToggle;
+
+
+
+// // src/app/components/ThemeToggle.tsx
+// "use client";
+
+// import React, { useState, useEffect, useCallback } from "react";
+// import {
+//   IoMoonOutline,
+//   IoSunnyOutline,
+//   IoContrastOutline,
+// } from "react-icons/io5";
+
+// // Define the possible theme preferences
+// type ThemePreference = "light" | "dark" | "system";
+
+// // Define the props for the component, simplifying as location is no longer needed for different UIs
+// interface ThemeToggleProps {
+//   className?: string; // Optional className prop for custom styling
+// }
+
+// const ThemeToggle: React.FC<ThemeToggleProps> = ({ className }) => {
+//   // State to hold the current theme preference. Initialize from localStorage or default to 'system'.
+//   const [theme, setTheme] = useState<ThemePreference>(() => {
+//     // Check if window is defined (avoid SSR issues)
+//     if (typeof window !== "undefined") {
+//       const storedTheme = localStorage.getItem("theme");
+//       if (
+//         storedTheme === "light" ||
+//         storedTheme === "dark" ||
+//         storedTheme === "system"
+//       ) {
+//         return storedTheme;
+//       }
+//     }
+//     return "system"; // Default theme
+//   });
+
+//   // Function to apply the chosen theme to the document root (<html> element)
+//   const applyTheme = useCallback((selectedTheme: ThemePreference) => {
+//     // Guard against running on the server
+//     if (typeof window === "undefined") return;
+
+//     const root = window.document.documentElement;
+//     root.classList.remove("light", "dark"); // Clear previous theme classes
+
+//     if (selectedTheme === "system") {
+//       // If 'system' is chosen, detect the OS preference
+//       const systemPrefersDark = window.matchMedia(
+//         "(prefers-color-scheme: dark)"
+//       ).matches;
+//       root.classList.add(systemPrefersDark ? "dark" : "light");
+//       console.log(
+//         `System theme applied: ${systemPrefersDark ? "dark" : "light"}`
+//       );
+//     } else {
+//       // Apply 'light' or 'dark' directly
+//       root.classList.add(selectedTheme);
+//       console.log(`Explicit theme applied: ${selectedTheme}`);
+//     }
+//     // Store the user's *preference* (light, dark, or system) in localStorage
+//     localStorage.setItem("theme", selectedTheme);
+//   }, []);
+
+//   // Effect 1: Apply the theme when the 'theme' state changes
+//   useEffect(() => {
+//     applyTheme(theme);
+//   }, [theme, applyTheme]); // Re-run whenever theme state or applyTheme function changes
+
+//   // Effect 2: Listen for OS theme changes and re-apply if 'system' is selected
+//   useEffect(() => {
+//     // Guard against running on the server
+//     if (typeof window === "undefined") return undefined;
+
+//     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+//     const handleSystemChange = () => {
+//       // Only re-apply if the *stored preference* is 'system'
+//       const currentStoredPreference =
+//         (localStorage.getItem("theme") as ThemePreference) || "system";
+//       if (currentStoredPreference === "system") {
+//         console.log("System color scheme changed, re-applying 'system' theme.");
+//         applyTheme("system"); // Re-evaluate and apply based on new system setting
+//       }
+//     };
+
+//     // Add listener
+//     mediaQuery.addEventListener("change", handleSystemChange);
+
+//     // Cleanup listener on component unmount
+//     return () => mediaQuery.removeEventListener("change", handleSystemChange);
+//   }, [applyTheme]); // Dependency: only the stable applyTheme function
+
+//   // Function to cycle to the next theme
+//   const cycleTheme = () => {
+//     let nextTheme: ThemePreference;
+//     switch (theme) {
+//       case "system":
+//         nextTheme = "light";
+//         break;
+//       case "light":
+//         nextTheme = "dark";
+//         break;
+//       case "dark":
+//         nextTheme = "system";
+//         break;
+//       default:
+//         nextTheme = "system"; // Fallback just in case
+//     }
+//     setTheme(nextTheme); // Update state, which triggers the first useEffect
+//   };
+
+//   // Helper to determine the next theme for the aria-label
+//   const getNextThemeLabel = (current: ThemePreference): string => {
+//     switch (current) {
+//       case "system":
+//         return "Light";
+//       case "light":
+//         return "Dark";
+//       case "dark":
+//         return "System";
+//       default:
+//         return "System";
+//     }
+//   };
+
+//   return (
+//     <button
+//       onClick={cycleTheme}
+//       className={`flex items-center p-2.5 cursor-pointer rounded-full hover:bg-gray/10 dark:hover:bg-white/10 transition-colors ease-in-out duration-300 ${
+//         className || "dark:bg-white/5 bg-[#E9ECED]"
+//       }`}
+//       // Dynamic aria-label for accessibility
+//       aria-label={`Change to ${getNextThemeLabel(
+//         theme
+//       )} theme (Current: ${theme})`}
+//       title={`Change to ${getNextThemeLabel(theme)} theme`} // Tooltip for hover
+//     >
+//       {/* Render the icon corresponding to the CURRENT theme */}
+//       {theme === "light" && (
+//         <IoSunnyOutline className="size-5 text-neutral-900 dark:text-white " />
+//       )}
+//       {theme === "dark" && (
+//         <IoMoonOutline className="size-5 text-neutral-900 dark:text-white dark:hover:text-primary" />
+//       )}
+//       {theme === "system" && (
+//         <IoContrastOutline className="size-5 text-neutral-900 dark:text-white" />
+//       )}
+//     </button>
+//   );
+// };
+
+// export default ThemeToggle;
