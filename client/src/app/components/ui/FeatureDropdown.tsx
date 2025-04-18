@@ -794,7 +794,7 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
       {/* Top Content (Optional) */}
       {topContent && (
         <div
-          className={`p-8 flex flex-col rounded-t-2xl justify-start bg-white dark:bg-background mt-2 ${
+          className={`p-4 flex flex-col rounded-t-2xl justify-start bg-white dark:bg-background ${
             topContentClassName || ""
           }`}
         >
@@ -806,12 +806,10 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
       <div className="px-4 py-6 flex flex-col gap-4 dark:bg-background bg-white border-t">
         {links.map((link, index) => (
           <div key={index} className="w-fit">
-            {" "}
-            {/* Added key here to the wrapping div */}
             <Link
               href={link.href}
               passHref
-              className={`group relative inline-flex items-center gap-2 text-primary dark:text-white font-medium cursor-pointer ${
+              className={`group relative inline-flex items-center gap-2 text-mainheading dark:text-white font-medium cursor-pointer ${
                 linkClassName || ""
               }`}
               onClick={() => {
@@ -824,9 +822,9 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
               <p>{link.text}</p>
               <IoIosArrowForward
                 size={18}
-                className="opacity-100 translate-x-0 transition-all duration-300  group-hover:translate-x-3"
+                className="opacity-100 translate-x-0 transition-all duration-300 group-hover:translate-x-3"
               />
-              <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full"></span>
+              <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-mainheading dark:bg-primary transition-all duration-300 group-hover:w-full"></span>
             </Link>
           </div>
         ))}
@@ -839,7 +837,7 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
       <Link
         href="/features"
         onClick={myToggleDropdown}
-        className={`rounded-full font-medium cursor-pointer px-4 py-2 dark:hover:text-primary text-mainheading hover:bg-gray/5 hover:dark:bg-secondary dark:text-primary ${
+        className={`rounded-full font-medium cursor-pointer px-4 py-2 dark:hover:text-primary hover:bg-gray/5 hover:dark:bg-secondary text-mainheading dark:text-white ${
           buttonClassName || ""
         }`}
       >

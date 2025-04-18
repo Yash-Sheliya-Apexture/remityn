@@ -65,7 +65,7 @@
 
 // //     return (
 // //         <div className="flex justify-center items-center min-h-screen px-4">
-// //             <div className="w-full max-w-md mt-10">
+// //             <div className="w-full max-w-md mt-1.5">
 // //                 <h2 className="text-3xl text-center text-main font-semibold mb-4">
 // //                     Create your Wise account
 // //                 </h2>
@@ -1885,7 +1885,7 @@
 //               className={`mt-1 block px-4 py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
 //                 fullNameError
 //                   ? "border-red-700 border-2" // Simplified error state
-//                   : "dark:hover:shadow-whitecolor hover:shadow-darkcolor" // Adjusted normal/focus states
+//                   : "dark:hover:shadow-whitecolor" // Adjusted normal/focus states
 //               }`}
 //               value={fullName}
 //               onChange={(e) => {
@@ -2236,7 +2236,6 @@ export default function RegisterPage() {
     return <p>Loading...</p>; // Or a loading spinner
   }
 
-
   const errorVariants = {
     initial: {
       opacity: 0.5,
@@ -2270,14 +2269,14 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex justify-center items-center lg:h-[calc(100vh-73px)] px-4 py-8">
+    <div className="flex justify-center items-center lg:h-[calc(100vh-73px)] px-4 py-8 bg-[#f2f4f7] dark:bg-background">
       {/* Added padding */}
       <div className="w-full max-w-md">
-        <h2 className="lg:text-3xl text-2xl text-center text-mainheading dark:text-white font-semibold mt-5 mb-4">
+        <h2 className="lg:text-3xl text-xl text-center text-mainheading dark:text-white font-semibold mt-5 mb-2">
           Create your Wise account
         </h2>
 
-        <p className="text-base text-center text-gray-500 dark:text-gray-300 mb-4">
+        <p className="lg:text-base text-sm text-center text-gray-500 dark:text-gray-300 mb-6">
           Already have an account? {/* Added space */}
           <Link
             href="/auth/login"
@@ -2291,19 +2290,19 @@ export default function RegisterPage() {
         <AnimatePresence>
           {isErrorVisible && error && (
             <motion.div
-              className="bg-lightgray dark:bg-white/5 rounded-2xl p-4 flex items-center gap-4 relative mb-4"
+              className="bg-white dark:bg-white/5 rounded-2xl p-4 flex items-center gap-4 relative mb-4"
               role="alert"
               initial="initial"
               animate="animate"
               exit="exit"
               variants={errorVariants}
             >
-              <div className="flex bg-red-600/20 justify-center rounded-full items-center size-12 shrink-0">
-                <FiX className="p-0.5 text-lightgray dark:text-red-600 size-8" />
+              <div className="flex dark:bg-red-600/20 bg-red-300 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+                <FiX className="p-0.5 text-mainheading dark:text-red-600 lg:size-8 size-6" />
               </div>
 
               <div>
-                <span className="text-gray-500 dark:text-white block max-w-60 leading-relaxed">
+                <span className="text-mainheading lg:text-base text-sm dark:text-white block max-w-60 leading-relaxed">
                   {error}
                 </span>
               </div>
@@ -2316,7 +2315,7 @@ export default function RegisterPage() {
           {registerSuccess &&
             !error && ( // Show success only if there's no error from a subsequent attempt
               <motion.div
-                className="flex bg-lightgray dark:bg-secondary p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4"
+                className="flex bg-white dark:bg-secondary p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4"
                 role="alert"
                 initial="initial"
                 animate="animate"
@@ -2324,8 +2323,8 @@ export default function RegisterPage() {
                 variants={errorVariants}
               >
                 {/* Adjusted background/padding */}
-                <div className="flex bg-primary/20 justify-center rounded-full items-center size-12 shrink-0">
-                  <FaCheck className="p-0.5 text-mainheading dark:text-primary size-8" />
+                <div className="flex dark:bg-primary/20 bg-green-300 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+                  <FaCheck className="p-0.5 text-white dark:text-primary lg:size-8 size-6" />
                 </div>
                 <div className="flex-grow space-y-0.5">
                   <span className="text-mainheading dark:text-primary block font-medium">
@@ -2343,12 +2342,11 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit} className="mt-0 space-y-4">
           {/* Google Button */}
           <div>
-            
-            <a className="flex bg-white dark:bg-background border justify-center rounded-lg text-mainheading dark:text-white  text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 h-14">
+            <a className="flex bg-white dark:bg-background dark:border justify-center rounded-lg text-mainheading dark:text-white  text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 h-14">
               <Image
                 src="/assets/icon/google.svg"
-                width={24} 
-                height={24} 
+                width={28}
+                height={28}
                 alt="Google icon"
               />
               Continue with Google
@@ -2359,21 +2357,22 @@ export default function RegisterPage() {
           <div>
             <label
               htmlFor="fullName"
-              className="text-gray-500 dark:text-gray-300 font-medium block mb-1" // Adjusted styling
+              className="text-gray-500 dark:text-gray-300 font-medium block mb-1 lg:text-base text-sm" // Adjusted styling
             >
               Full Name <span className="text-error">*</span>
             </label>
             <input
               type="text"
               id="fullName"
+              placeholder="Your Full Name "
               autoComplete="name" // Added autocomplete
               aria-required="true"
               aria-invalid={!!fullNameError}
               aria-describedby={fullNameError ? "fullName-error" : undefined}
-              className={`mt-1 block px-4 py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
+              className={`mt-1.5 block px-4 py-3 h-14 w-full dark:border bg-white dark:bg-background rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
                 fullNameError
                   ? "border-red-700 border-2" // Simplified error state
-                  : "dark:hover:shadow-whitecolor hover:shadow-darkcolor" // Adjusted normal/focus states
+                  : "dark:hover:shadow-whitecolor" // Adjusted normal/focus states
               }`}
               value={fullName}
               onChange={(e) => {
@@ -2400,21 +2399,22 @@ export default function RegisterPage() {
           <div>
             <label
               htmlFor="email"
-              className="text-gray-500 dark:text-gray-300 font-medium block mb-1"
+              className="text-gray-500 dark:text-gray-300 font-medium block mb-1 lg:text-base text-sm"
             >
               Email Address <span className="text-error">*</span>
             </label>
             <input
               type="email"
               id="email"
+              placeholder="Your Email "
               autoComplete="email" // Added autocomplete
               aria-required="true"
               aria-invalid={!!emailError}
               aria-describedby={emailError ? "email-error" : undefined}
-              className={`mt-1 block px-4 py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
+              className={`mt-1.5 block px-4 bg-white dark:bg-background py-3 h-14 w-full dark:border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
                 emailError
                   ? "border-red-700 border-2"
-                  : "dark:hover:shadow-whitecolor hover:shadow-darkcolor"
+                  : "dark:hover:shadow-whitecolor"
               }`}
               value={email}
               onChange={(e) => {
@@ -2436,7 +2436,7 @@ export default function RegisterPage() {
           <div>
             <label
               htmlFor="password"
-              className="text-gray-500 dark:text-gray-300 font-medium block mb-1"
+              className="text-gray-500 dark:text-gray-300 font-medium block mb-1 lg:text-base text-sm"
             >
               Password <span className="text-error">*</span>
             </label>
@@ -2444,14 +2444,15 @@ export default function RegisterPage() {
               <input
                 type={showPassword ? "text" : "password"}
                 id="password"
+                placeholder="Your Password"
                 autoComplete="new-password" // Important for password managers
                 aria-required="true"
                 aria-invalid={!!passwordError}
                 aria-describedby={passwordError ? "password-error" : undefined}
-                className={`mt-1 block px-4 py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
+                className={`mt-1.5 block px-4 py-3 h-14 w-full dark:border bg-white dark:bg-background rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
                   passwordError
                     ? "border-red-700 border-2"
-                    : "dark:hover:shadow-whitecolor hover:shadow-darkcolor"
+                    : "dark:hover:shadow-whitecolor"
                 }`}
                 value={password}
                 onChange={(e) => {
@@ -2486,7 +2487,7 @@ export default function RegisterPage() {
           <div>
             <label
               htmlFor="confirmPassword"
-              className="text-gray-500 dark:text-gray-300 font-medium block mb-1"
+              className="text-gray-500 dark:text-gray-300 font-medium block mb-1 lg:text-base text-sm"
             >
               Confirm Password <span className="text-error">*</span>
             </label>
@@ -2494,16 +2495,17 @@ export default function RegisterPage() {
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 id="confirmPassword"
+                placeholder="Your Confirm Password"
                 autoComplete="new-password"
                 aria-required="true"
                 aria-invalid={!!confirmPasswordError}
                 aria-describedby={
                   confirmPasswordError ? "confirmPassword-error" : undefined
                 }
-                className={`mt-1 block px-4 py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
+                className={`mt-1.5 block px-4 py-3 h-14 w-full dark:border bg-white dark:bg-background rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
                   confirmPasswordError
                     ? "border-red-700 border-2"
-                    : "dark:hover:shadow-whitecolor hover:shadow-darkcolor"
+                    : "dark:hover:shadow-whitecolor"
                 }`}
                 value={confirmPassword}
                 onChange={(e) => {
@@ -2542,26 +2544,26 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={registerSuccess} // Disable button after successful registration to prevent double clicks
-            className={`bg-primary hover:bg-primaryhover rounded-full text-mainheading text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium py-3 h-14 transition-colors`} // Adjusted styles, disabled state
+            className={`bg-primary hover:bg-primaryhover rounded-full text-mainheading text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium  lg:py-3 py-2 lg:h-14 transition-colors`} // Adjusted styles, disabled state
           >
             {registerSuccess ? "Registered!" : "Register"}
           </button>
         </form>
 
         {/* Terms and Policy Links */}
-        <p className="text-center text-gray-500 dark:text-gray-300 my-3 text-sm">
+        <p className="text-center text-mainheading dark:text-gray-300 my-3 text-sm">
           {/* Adjusted styles */}
           By registering, you accept our &nbsp;
           <Link
             href="/terms-and-conditions"
-            className="text-primary font-medium underline underline-offset-4" // Adjusted offset/hover
+            className="text-lime-500 dark:text-primary font-medium underline underline-offset-4" // Adjusted offset/hover
           >
             Terms of use &nbsp;
           </Link>
           and
           <Link
-            href="/privacy-policy-en"
-            className="text-primary font-medium underline underline-offset-4"
+            href="/privacy-policy"
+            className="text-lime-500 dark:text-primary font-medium underline underline-offset-4"
           >
             &nbsp; Privacy Policy
           </Link>

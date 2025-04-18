@@ -1074,7 +1074,7 @@ const FaqSection: React.FC = () => {
               
               <Link
                 href="/faqs"
-                className="px-4 lg:py-1.5 py-1.5 rounded-full font-medium lg:text-base text-sm text-mainheading dark:text-primary hover:bg-gray-100 border dark:bg-secondary transition-colors duration-300"
+                className="px-4 lg:py-1.5 py-1.5 rounded-full font-medium lg:text-base text-xs text-mainheading dark:text-primary hover:bg-gray-100 border dark:bg-secondary transition-colors duration-300"
               >
                 Read more FAQs
               </Link>

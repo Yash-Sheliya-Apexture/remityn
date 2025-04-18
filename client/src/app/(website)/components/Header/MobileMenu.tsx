@@ -919,8 +919,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
 
   return (
     <div
-      // Using template literal for cleaner conditional class application
-      className={`fixed top-20 left-0 w-full h-[calc(100vh-5rem)] bg-white dark:bg-background z-40 overflow-y-auto transition-transform duration-300 ease-in-out ${
+      className={`fixed top-16 left-0 w-full h-[calc(100vh-3rem)] bg-[#f2f4f7] dark:bg-background z-40 overflow-y-auto transition-transform duration-300 ease-in-out ${
         isOpen ? "translate-x-0" : "-translate-x-full" // Correct transform for slide-in
       }`}
       // Add aria attributes for accessibility
@@ -951,7 +950,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
               buttonText="Features"
               links={featureLinks}
               topContent={topContent} // <-- Pass the prop down here
-              buttonClassName="block w-fit text-left py-2 px-4 font-medium text-lg hover:bg-gray-100 dark:hover:bg-gray-800 rounded" // Added hover and rounded
+              buttonClassName="block w-fit text-left py-2 px-4 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 rounded" // Added hover and rounded
               isMobile={true}
               isOpen={isFeaturesOpen}
               toggleDropdown={toggleFeaturesDropdown}
