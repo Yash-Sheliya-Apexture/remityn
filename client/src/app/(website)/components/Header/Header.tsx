@@ -1905,6 +1905,8 @@
 
 // export default Header;
 
+
+
 // "use client";
 // import React, { useState, useEffect } from "react";
 // import Link from "next/link";
@@ -2161,7 +2163,10 @@
 //   );
 // };
 
-// export default Header;
+
+
+
+
 
 "use client";
 import React, { useState, useEffect } from "react";
@@ -2360,9 +2365,9 @@ const Header: React.FC = () => {
             </Link>
 
             {/* Theme Toggle */}
-            {/* <div className="mx-2">
-              <ThemeToggle />
-            </div> */}
+            <div className="mx-2">
+              <ThemeToggle location="header"/>
+            </div>
 
             {/* --- Auth Links --- */}
             <Link
