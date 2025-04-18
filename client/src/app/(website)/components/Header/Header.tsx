@@ -1905,8 +1905,6 @@
 
 // export default Header;
 
-
-
 // "use client";
 // import React, { useState, useEffect } from "react";
 // import Link from "next/link";
@@ -2163,22 +2161,289 @@
 //   );
 // };
 
+// "use client";
+// import React, { useState, useEffect } from "react";
+// import Link from "next/link";
+// import Image from "next/image";
+// import { usePathname } from "next/navigation"; // <--- Import usePathname
+// import { GiHamburgerMenu } from "react-icons/gi";
+// import { IoClose } from "react-icons/io5";
+// import { motion, AnimatePresence } from "framer-motion";
+// import MobileMenu from "./MobileMenu"; // Adjust path if needed
+// import FeatureDropdown from "@/app/components/ui/FeatureDropdown"; // Adjust path if needed
+// import ThemeToggle from "../../../contexts/ThemeToggle"; // Adjust path if needed
 
+// // Define a type for the feature links
+// interface FeatureLink {
+//   href: string;
+//   text: string;
+// }
 
+// const Header: React.FC = () => {
+//   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+//   const [isLargeScreen, setIsLargeScreen] = useState<boolean>(false);
+//   const [isSticky, setIsSticky] = useState<boolean>(false);
+//   const pathname = usePathname(); // <--- Get the current pathname
 
+//   // --- State Toggling Functions ---
+//   const toggleMobileMenu = () => {
+//     setIsMobileMenuOpen((prev) => !prev);
+//   };
 
+//   const closeMobileMenu = () => {
+//     setIsMobileMenuOpen(false);
+//   };
+
+//   // --- Effects --- (Keep existing effects)
+
+//   // Effect for screen size detection and closing menu on resize to large screen
+//   useEffect(() => {
+//     const checkScreenSize = () => {
+//       const large = window.innerWidth >= 1024; // lg breakpoint
+//       setIsLargeScreen(large);
+//       if (large && isMobileMenuOpen) {
+//         closeMobileMenu(); // Close mobile menu if screen becomes large
+//       }
+//     };
+
+//     checkScreenSize(); // Initial check
+//     window.addEventListener("resize", checkScreenSize);
+//     return () => window.removeEventListener("resize", checkScreenSize);
+//   }, [isMobileMenuOpen]); // Re-run if menu state changes
+
+//   // Effect for handling body scroll lock when mobile menu is open
+//   useEffect(() => {
+//     if (isMobileMenuOpen) {
+//       document.body.style.overflow = "hidden"; // Prevent scrolling
+//     } else {
+//       document.body.style.overflow = "auto"; // Allow scrolling
+//     }
+//     // Cleanup function
+//     return () => {
+//       document.body.style.overflow = "auto";
+//     };
+//   }, [isMobileMenuOpen]); // Dependency on menu state
+
+//   // Effect for handling scroll position and setting sticky state
+//   useEffect(() => {
+//     const handleScroll = () => {
+//       setIsSticky(window.scrollY > 300); // Adjust threshold as needed
+//     };
+
+//     window.addEventListener("scroll", handleScroll);
+//     return () => window.removeEventListener("scroll", handleScroll);
+//   }, []); // Run only on mount and unmount
+
+//   // --- Animation Variants ---
+//   const mobileMenuVariants = {
+//     open: { x: 0, opacity: 1, transition: { type: "tween", duration: 0.3 } },
+//     closed: {
+//       x: "-100%",
+//       opacity: 0.8,
+//       transition: { type: "tween", duration: 0.3 },
+//     },
+//   };
+
+//   // --- Data for Dropdowns/Links ---
+//   const featureLinks: FeatureLink[] = [
+//     { href: "/dashboard", text: "Send Money" },
+//     { href: "/sendlargeamount", text: "Send Large Amounts" },
+//     { href: "/feature-3", text: "Another Feature" },
+//   ];
+
+//   const topContent = (
+//     <div>
+//       <Image
+//         src="/assets/images/plane.webp" // Ensure this path is correct
+//         alt="Plane"
+//         width={64}
+//         height={64}
+//         className="size-16 mb-2"
+//       />
+//       <div>
+//         <p className="text-gray-500 max-w-sm leading-normal dark:text-gray-300">
+//           Learn how millions of customers move their money globally right.
+//         </p>
+//       </div>
+//     </div>
+//   );
+
+//   // --- Helper function for link classes ---
+//   const getLinkClasses = (href: string, isFeatureDropdown = false): string => {
+//     const baseClasses =
+//       "px-4 py-1.5 rounded-full font-medium transition-colors duration-300";
+//     const inactiveClasses =
+//       "text-main dark:text-white dark:hover:text-primary hover:bg-gray/5 hover:dark:bg-secondary";
+//     // Define your active classes - example: primary background, white text
+//     const activeClasses =
+//       "bg-gray/5  dark:bg-secondary text-main dark:text-primary"; // Added shadow for active state
+
+//     let isActive = false;
+
+//     if (isFeatureDropdown) {
+//       // Check if the current pathname matches any of the feature links
+//       isActive = featureLinks.some((link) => pathname === link.href);
+//     } else {
+//       isActive = pathname === href;
+//     }
+
+//     // Special case for Home link matching root path '/'
+//     if (href === "/" && pathname === "/") {
+//       isActive = true;
+//     }
+
+//     return `${baseClasses} ${isActive ? activeClasses : inactiveClasses}`;
+//   };
+
+//   // --- Component Return ---
+//   return (
+//     <header
+//       className={`w-full transition-all duration-300 ease-in-out z-50 ${
+//         isSticky
+//           ? "fixed top-0 left-0 right-0 bg-white dark:bg-background shadow-md"
+//           : "relative bg-transparent" // Make initial background transparent or match page bg
+//       }`}
+//       // Add a conditional background if needed when not sticky, e.g., based on path
+//       style={{
+//         backgroundColor: isSticky
+//           ? undefined
+//           : "transparent" /* Or your page's default bg */,
+//       }}
+//     >
+//       <div className="px-4 bg-[#f2f4f7] dark:bg-background">
+//         <nav
+//           className="flex items-center justify-between  gap-4 md:h-20 h-[72px] container mx-auto"
+//           aria-label="Global"
+//         >
+//           {/* Logo */}
+//           <div className="flex-shrink-0">
+//             <Link href="/" onClick={closeMobileMenu}>
+//               <Image
+//                 src="/assets/images/wise-logo.svg"
+//                 alt="Wise Logo"
+//                 width={100}
+//                 height={24}
+//                 priority
+//                 className="md:size-28 size-22"
+//               />
+//             </Link>
+//           </div>
+
+//           {/* Desktop Navigation & Actions */}
+//           <div className="hidden lg:flex flex-grow items-center justify-end gap-2">
+//             {/* --- Desktop Links with Active Styling --- */}
+//             <Link href="/" className={getLinkClasses("/")}>
+//               Home
+//             </Link>
+
+//             <Link href="/about-us" className={getLinkClasses("/about-us")}>
+//               About
+//             </Link>
+
+//             {/* Use getLinkClasses for the Feature Dropdown trigger */}
+//             <FeatureDropdown
+//               buttonText="Features"
+//               links={featureLinks}
+//               topContent={topContent}
+//               // Apply conditional classes to the button itself
+//               buttonClassName={getLinkClasses("/features")} // Pass true for isFeatureDropdown check
+//             />
+
+//             <Link href="/reviews" className={getLinkClasses("/reviews")}>
+//               Reviews
+//             </Link>
+
+//             <Link href="/faqs" className={getLinkClasses("/faqs")}>
+//               Help
+//             </Link>
+
+//             {/* Theme Toggle */}
+//             <div className="mx-2">
+//               <ThemeToggle location="header"/>
+//             </div>
+
+//             {/* --- Auth Links --- */}
+//             <Link
+//               href="/auth/register"
+//               // Apply base styling, active state usually not needed for auth actions
+//               className="px-4 py-1.5 hidden lg:block dark:text-white text-nowrap dark:hover:text-primary font-medium hover:bg-gray/5 dark:hover:bg-secondary rounded-full transition-colors ease-in-out duration-300 text-main"
+//             >
+//               Register
+//             </Link>
+
+//             <Link
+//               href="/auth/login"
+//               // Use specific styling for login button, not the active/inactive logic
+//               className="bg-primary px-4 py-1.5 hidden lg:block text-nowrap font-medium rounded-full hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading" // Ensure text is visible
+//             >
+//               Log in
+//             </Link>
+//           </div>
+
+//           {/* Mobile Actions (Hamburger/Close & Theme Toggle) */}
+//           <div className="flex lg:hidden items-center gap-2">
+//             {/* Hamburger/Close Button */}
+//             {!isMobileMenuOpen ? (
+//               <button
+//                 onClick={toggleMobileMenu}
+//                 className="p-2 text-primary dark:text-primary hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+//                 aria-label="Open Menu"
+//               >
+//                 <GiHamburgerMenu size={26} />
+//               </button>
+//             ) : (
+//               <button
+//                 onClick={closeMobileMenu}
+//                 className="p-1.5 text-mainheading dark:text-white hover:bg-gray-200 dark:hover:bg-primarybox rounded-full transition-colors"
+//                 aria-label="Close Menu"
+//               >
+//                 <IoClose size={26} />
+//               </button>
+//             )}
+//           </div>
+//         </nav>
+//       </div>
+
+//       {/* Mobile Menu Overlay */}
+//       <AnimatePresence>
+//         {isMobileMenuOpen && !isLargeScreen && (
+//           <motion.div
+//             key="mobile-menu"
+//             className="fixed inset-0 z-40 lg:hidden"
+//             variants={mobileMenuVariants}
+//             initial="closed"
+//             animate="open"
+//             exit="closed"
+//           >
+//             {/* Pass pathname to MobileMenu if it needs to highlight active links too */}
+//             <MobileMenu
+//               isOpen={isMobileMenuOpen}
+//               onClose={closeMobileMenu}
+//               featureLinks={featureLinks}
+//               topContent={topContent}
+//             />
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+//     </header>
+//   );
+// };
+
+// export default Header;
 
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation"; // <--- Import usePathname
+import { usePathname } from "next/navigation";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { IoClose } from "react-icons/io5";
+import { IoClose } from "react-icons/io5"; // Keep this for the header bar close button
 import { motion, AnimatePresence } from "framer-motion";
-import MobileMenu from "./MobileMenu"; // Adjust path if needed
+import MobileMenu from "./MobileMenu"; // <--- Adjust path if needed (e.g., '../layout/MobileMenu')
 import FeatureDropdown from "@/app/components/ui/FeatureDropdown"; // Adjust path if needed
 import ThemeToggle from "../../../contexts/ThemeToggle"; // Adjust path if needed
+import { IoMdClose } from "react-icons/io";
+import { FaRocket } from "react-icons/fa6";
 
 // Define a type for the feature links
 interface FeatureLink {
@@ -2188,22 +2453,23 @@ interface FeatureLink {
 
 const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
-  const [isLargeScreen, setIsLargeScreen] = useState<boolean>(false);
+  const [isLargeScreen, setIsLargeScreen] = useState<boolean>(true); // Default to true or check initial size
   const [isSticky, setIsSticky] = useState<boolean>(false);
-  const pathname = usePathname(); // <--- Get the current pathname
+  const pathname = usePathname();
 
   // --- State Toggling Functions ---
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen((prev) => !prev);
   };
 
+  // THIS is the function passed to MobileMenu as onClose
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
   };
 
-  // --- Effects --- (Keep existing effects)
+  // --- Effects ---
 
-  // Effect for screen size detection and closing menu on resize to large screen
+  // Effect for screen size detection
   useEffect(() => {
     const checkScreenSize = () => {
       const large = window.innerWidth >= 1024; // lg breakpoint
@@ -2213,226 +2479,216 @@ const Header: React.FC = () => {
       }
     };
 
-    checkScreenSize(); // Initial check
+    // Initial check
+    checkScreenSize();
+
     window.addEventListener("resize", checkScreenSize);
     return () => window.removeEventListener("resize", checkScreenSize);
-  }, [isMobileMenuOpen]); // Re-run if menu state changes
+  }, [isMobileMenuOpen]); // Dependency ensures check runs if menu state changes
 
-  // Effect for handling body scroll lock when mobile menu is open
+  // Effect for handling body scroll lock
   useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = "hidden"; // Prevent scrolling
+    if (isMobileMenuOpen && !isLargeScreen) {
+      // Only lock scroll if menu is open AND screen is small
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "auto"; // Allow scrolling
+      document.body.style.overflow = "auto";
     }
     // Cleanup function
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isMobileMenuOpen]); // Dependency on menu state
+  }, [isMobileMenuOpen, isLargeScreen]); // Depend on both states
 
-  // Effect for handling scroll position and setting sticky state
+  // Effect for sticky header
   useEffect(() => {
     const handleScroll = () => {
-      setIsSticky(window.scrollY > 300); // Adjust threshold as needed
+      // Only make sticky if not on a small screen with the menu open
+      // or adjust threshold if needed
+      setIsSticky(window.scrollY > 50); // Adjust threshold as needed
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []); // Run only on mount and unmount
+  }, []);
 
   // --- Animation Variants ---
   const mobileMenuVariants = {
-    open: { x: 0, opacity: 1, transition: { type: "tween", duration: 0.3 } },
+    open: {
+      x: 0,
+      opacity: 1,
+      transition: { type: "tween", duration: 0.3, ease: "easeOut" },
+    },
     closed: {
-      x: "-100%",
-      opacity: 0.8,
-      transition: { type: "tween", duration: 0.3 },
+      x: "-100%", // Slide out to the left
+      opacity: 0.8, // Optional fade
+      transition: { type: "tween", duration: 0.3, ease: "easeIn" },
     },
   };
 
   // --- Data for Dropdowns/Links ---
   const featureLinks: FeatureLink[] = [
-    { href: "/dashboard", text: "Send Money" },
-    { href: "/sendlargeamount", text: "Send Large Amounts" },
-    { href: "/feature-3", text: "Another Feature" },
+    { href: "/send-money", text: "Send Money" },
+    { href: "/add-money", text: "Add Money" },
   ];
 
+  // topContent is primarily for the desktop dropdown, might not be needed in MobileMenu
   const topContent = (
-    <div>
-      <Image
-        src="/assets/images/plane.webp" // Ensure this path is correct
-        alt="Plane"
-        width={64}
-        height={64}
-        className="size-16 mb-2"
-      />
-      <div>
-        <p className="text-gray-500 max-w-sm leading-normal dark:text-gray-300">
-          Learn how millions of customers move their money globally right.
-        </p>
-      </div>
+    <div className="space-y-4">
+      <FaRocket className="lg:size-10 size-6 text-primary" />
+      <p className="text-gray-500 max-w-sm leading-normal dark:text-gray-300">
+        Learn how millions of customers move their money globally right.
+      </p>
     </div>
   );
 
   // --- Helper function for link classes ---
   const getLinkClasses = (href: string, isFeatureDropdown = false): string => {
     const baseClasses =
-      "px-4 py-1.5 rounded-full font-medium transition-colors duration-300";
+      "px-4 py-1.5 rounded-full font-medium transition-colors duration-300 ease-in-out"; // Added ease-in-out
     const inactiveClasses =
-      "text-main dark:text-white dark:hover:text-primary hover:bg-gray/5 hover:dark:bg-secondary";
-    // Define your active classes - example: primary background, white text
+      "text-main dark:text-white dark:hover:text-primary hover:bg-gray/5 hover:dark:bg-secondary"; // Adjusted hover backgrounds
     const activeClasses =
-      "bg-gray/5  dark:bg-secondary text-main dark:text-primary"; // Added shadow for active state
+      "bg-gray/5 dark:bg-secondary text-mainheading dark:text-primary"; // Adjusted active backgrounds
 
     let isActive = false;
+    const isRootPath = pathname === "/";
 
     if (isFeatureDropdown) {
-      // Check if the current pathname matches any of the feature links
-      isActive = featureLinks.some((link) => pathname === link.href);
+      isActive = featureLinks.some((link) => pathname?.startsWith(link.href)); // Use startsWith for features pages
+    } else if (href === "/") {
+      isActive = isRootPath; // Only active if exact match for home
     } else {
-      isActive = pathname === href;
-    }
-
-    // Special case for Home link matching root path '/'
-    if (href === "/" && pathname === "/") {
-      isActive = true;
+      // Ensure pathname is not null and handle non-root paths
+      isActive = !!pathname && pathname !== "/" && pathname.startsWith(href);
     }
 
     return `${baseClasses} ${isActive ? activeClasses : inactiveClasses}`;
   };
 
-  // --- Component Return ---
   return (
-    <header
-      className={`w-full transition-all duration-300 ease-in-out z-50 ${
-        isSticky
-          ? "fixed top-0 left-0 right-0 bg-white dark:bg-background shadow-md"
-          : "relative bg-transparent" // Make initial background transparent or match page bg
-      }`}
-      // Add a conditional background if needed when not sticky, e.g., based on path
-      style={{
-        backgroundColor: isSticky
-          ? undefined
-          : "transparent" /* Or your page's default bg */,
-      }}
-    >
-      <div className="px-4 bg-[#f2f4f7] dark:bg-background">
-        <nav
-          className="flex items-center justify-between  gap-4 md:h-20 h-[72px] container mx-auto"
-          aria-label="Global"
+    <>
+      {/* Use Fragment to avoid extra div */}
+      <header
+        className={`w-full transition-all duration-300 ease-in-out z-50 ${
+          isSticky
+            ? "fixed top-0 left-0 right-0 bg-white/5 backdrop-blur-xs" // Added backdrop blur and slight transparency
+            : "relative bg-transparent"
+        }`}
+      >
+        <div
+          className={`transition-colors duration-300 ${
+            isSticky ? "" : "bg-[#f2f4f7] dark:bg-background"
+          }`}
         >
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <Link href="/" onClick={closeMobileMenu}>
-              <Image
-                src="/assets/images/wise-logo.svg"
-                alt="Wise Logo"
-                width={100}
-                height={24}
-                priority
-                className="md:size-28 size-22"
-              />
-            </Link>
-          </div>
-
-          {/* Desktop Navigation & Actions */}
-          <div className="hidden lg:flex flex-grow items-center justify-end gap-2">
-            {/* --- Desktop Links with Active Styling --- */}
-            <Link href="/" className={getLinkClasses("/")}>
-              Home
-            </Link>
-
-            <Link href="/about-us" className={getLinkClasses("/about-us")}>
-              About
-            </Link>
-
-            {/* Use getLinkClasses for the Feature Dropdown trigger */}
-            <FeatureDropdown
-              buttonText="Features"
-              links={featureLinks}
-              topContent={topContent}
-              // Apply conditional classes to the button itself
-              buttonClassName={getLinkClasses("/features")} // Pass true for isFeatureDropdown check
-            />
-
-            <Link href="/reviews" className={getLinkClasses("/reviews")}>
-              Reviews
-            </Link>
-
-            <Link href="/faqs" className={getLinkClasses("/faqs")}>
-              Help
-            </Link>
-
-            {/* Theme Toggle */}
-            <div className="mx-2">
-              <ThemeToggle location="header"/>
-            </div>
-
-            {/* --- Auth Links --- */}
-            <Link
-              href="/auth/register"
-              // Apply base styling, active state usually not needed for auth actions
-              className="px-4 py-1.5 hidden lg:block dark:text-white text-nowrap dark:hover:text-primary font-medium hover:bg-gray/5 dark:hover:bg-secondary rounded-full transition-colors ease-in-out duration-300 text-main"
+          {/* Container for potential bg */}
+          <div className="px-4">
+            {/* Inner padding container */}
+            <nav
+              className="flex items-center justify-between gap-4 md:h-20 h-[72px] container mx-auto"
+              aria-label="Global"
             >
-              Register
-            </Link>
+              {/* Logo */}
+              <div className="flex-shrink-0">
+                <Link
+                  href="/"
+                  onClick={isMobileMenuOpen ? closeMobileMenu : undefined}
+                >
+                  {/* Close menu if clicking logo when open */}
+                  <Image
+                    src="/assets/images/wise-logo.svg"
+                    alt="Wise Logo"
+                    width={100}
+                    height={24}
+                    priority // Good for LCP
+                    className="md:w-28 md:h-auto w-20 h-auto" // Use auto height for aspect ratio
+                  />
+                </Link>
+              </div>
 
-            <Link
-              href="/auth/login"
-              // Use specific styling for login button, not the active/inactive logic
-              className="bg-primary px-4 py-1.5 hidden lg:block text-nowrap font-medium rounded-full hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading" // Ensure text is visible
-            >
-              Log in
-            </Link>
-          </div>
+              {/* Desktop Navigation & Actions */}
+              <div className="hidden lg:flex flex-grow items-center justify-end gap-2">
+                {/* Reduced gap slightly */}
+                <Link href="/" className={getLinkClasses("/")}>
+                  Home
+                </Link>
+                <Link href="/about-us" className={getLinkClasses("/about-us")}>
+                  About
+                </Link>
+                <FeatureDropdown
+                  buttonText="Features"
+                  links={featureLinks}
+                  topContent={topContent}
+                  // Check if any feature link is active, or use a base path like /features
+                  buttonClassName={getLinkClasses("/features", false)} // Pass true or a base feature path
+                />
 
-          {/* Mobile Actions (Hamburger/Close & Theme Toggle) */}
-          <div className="flex lg:hidden items-center gap-2">
-            {/* Hamburger/Close Button */}
-            {!isMobileMenuOpen ? (
-              <button
-                onClick={toggleMobileMenu}
-                className="p-2 text-primary dark:text-primary hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
-                aria-label="Open Menu"
-              >
-                <GiHamburgerMenu size={26} />
-              </button>
-            ) : (
-              <button
-                onClick={closeMobileMenu}
-                className="p-1.5 text-mainheading dark:text-white hover:bg-gray-200 dark:hover:bg-primarybox rounded-full transition-colors"
-                aria-label="Close Menu"
-              >
-                <IoClose size={26} />
-              </button>
-            )}
+                <Link href="/reviews" className={getLinkClasses("/reviews")}>
+                  Reviews
+                </Link>
+                <Link href="/faqs" className={getLinkClasses("/faqs")}>
+                  Help
+                </Link>
+                <div className="mx-2">
+                  <ThemeToggle location="header" />{" "}
+                </div>
+                <Link
+                  href="/auth/register"
+                  className="px-4 py-1.5 dark:text-white text-nowrap dark:hover:text-primary font-medium hover:bg-gray/5 dark:hover:bg-secondary rounded-full transition-colors ease-in-out duration-300 text-main"
+                >
+                  Register
+                </Link>
+                <Link
+                  href="/auth/login"
+                  className="bg-primary ml-1 px-4 py-1.5 text-nowrap font-medium rounded-full hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading"
+                >
+                  Log in
+                </Link>
+              </div>
+
+              {/* Mobile Actions (Hamburger/Close & Theme Toggle) */}
+              <div className="flex lg:hidden items-center gap-2">
+                <button
+                  onClick={toggleMobileMenu} // This button now only toggles
+                  className="p-2 bg-gray/5 dark:bg-secondary text-mainheading dark:text-primary rounded-full transition-colors "
+                  aria-label={isMobileMenuOpen ? "Close Menu" : "Open Menu"} // Dynamic aria-label
+                  aria-expanded={isMobileMenuOpen} // Indicate state for accessibility
+                >
+                  {/* Conditionally render Hamburger or Close icon based on state */}
+                  {isMobileMenuOpen ? (
+                    <IoMdClose className="size-4" />
+                  ) : (
+                    <GiHamburgerMenu className="size-4" />
+                  )}
+                </button>
+              </div>
+            </nav>
           </div>
-        </nav>
-      </div>
+        </div>
+      </header>
 
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {isMobileMenuOpen && !isLargeScreen && (
           <motion.div
             key="mobile-menu"
-            className="fixed inset-0 z-40 lg:hidden"
+            className="fixed inset-0 z-40 lg:hidden" // Ensure it's behind header (z-40 vs z-50) but above content
             variants={mobileMenuVariants}
             initial="closed"
             animate="open"
             exit="closed"
           >
-            {/* Pass pathname to MobileMenu if it needs to highlight active links too */}
+            {/* Pass the close function and necessary data */}
             <MobileMenu
               isOpen={isMobileMenuOpen}
-              onClose={closeMobileMenu}
+              onClose={closeMobileMenu} // <<< Pass the closing function here
               featureLinks={featureLinks}
-              topContent={topContent}
+              // topContent={topContent} // Decide if you need topContent in mobile
             />
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </>
   );
 };
 
