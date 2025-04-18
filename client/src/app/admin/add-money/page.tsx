@@ -4704,7 +4704,7 @@ import PaymentEditModal from '../components/add-money/PaymentEditModal'; // Adju
 import Pagination from '../components/Pagination'; // Adjust path if needed
 
 // Import Shared Types
-import { Payment, PaymentStatus } from '../../../types/payment'; // Adjust path as needed
+import { Payment } from '../../../types/payment'; // Adjust path as needed
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 

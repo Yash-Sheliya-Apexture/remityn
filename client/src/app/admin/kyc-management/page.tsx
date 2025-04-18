@@ -394,8 +394,6 @@ import {
   Inbox, 
   AlertCircle, 
   RefreshCw, 
-  Search,
-  SlidersHorizontal, // Keep if you plan to use filters
   Calendar 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';

@@ -731,7 +731,7 @@
 "use client";
 import React, { useState, useEffect, useMemo, useCallback } from "react"; // Added useCallback
 import { useAuth } from "../../contexts/AuthContext";
-import axios, { AxiosError } from "axios"; // Import AxiosError
+import axios from "axios"; // Import AxiosError
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import apiConfig from "../../config/apiConfig";

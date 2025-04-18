@@ -6,7 +6,6 @@ import MissionSection from "./components/MissionSection";
 import Principles from "./components/Principles";
 import TransferMoney from "./components/TransferMoney";
 import Faq from "./components/Faq";
-import StepSendmoney from "./components/StepSendmoney";
 
 export default function Home() {
   return (
