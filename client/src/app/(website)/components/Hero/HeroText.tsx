@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { AiOutlineClockCircle } from "react-icons/ai";
-import { FaHandHoldingUsd } from "react-icons/fa";
+ import { FaHandHoldingUsd } from "react-icons/fa";
 import { BsShieldLock } from "react-icons/bs";
 import { MdSpeed } from "react-icons/md";
 

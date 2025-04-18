@@ -9344,11 +9344,11 @@ const HeroSection: React.FC = () => {
 
   // --- JSX Render ---
   return (
-    <section className="Hero-Section py-12">
-      <div className="container mx-auto px-4">
+    <section className="Hero-Section bg-[#f2f4f7] dark:bg-background py-12 px-4">
+      <div className="container mx-auto">
         <div className="flex flex-col lg:flex-row items-center gap-12">
           {/* Left Column */}
-          <div className="lg:w-1/2 space-y-5 p-4">
+          <div className="lg:w-1/2 space-y-5">
              {/* Add Skeleton for HeroText if needed, or keep as is if it doesn't load data */}
             <HeroText />
           </div>
