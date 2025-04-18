@@ -2572,7 +2572,7 @@ const Header: React.FC = () => {
       <header
         className={`w-full transition-all duration-300 ease-in-out z-50 ${
           isSticky
-            ? "fixed top-0 left-0 right-0 bg-white/5 backdrop-blur-xs" // Added backdrop blur and slight transparency
+            ? "fixed top-0 left-0 right-0 dark:bg-background bg-white" // Added backdrop blur and slight transparency
             : "relative bg-transparent"
         }`}
       >
