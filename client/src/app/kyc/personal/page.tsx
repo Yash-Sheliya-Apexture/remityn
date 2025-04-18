@@ -315,7 +315,6 @@
 //         goToStep('personal'); // Set step marker for stepper UI
 //     }, [authLoading, user, form.reset, setKycData, goToStep]); // Note: setKycData might cause loops if not careful
 
-
 //     // *** Simplified onSubmit ***
 //     const onSubmit = (data: PersonalDetailsFormData) => {
 //         try {
@@ -407,8 +406,6 @@
 //         </Card>
 //     );
 // }
-
-
 
 // // frontend/src/app/kyc/personal/page.tsx
 // 'use client';
@@ -506,7 +503,6 @@
 //             .sort((a, b) => a.label.localeCompare(b.label)); // Sort alphabetically by label
 //     }, []);
 
-
 //     // Effect to set the current step in the context
 //      useEffect(() => {
 //         if (isInitialized && typeof updateCurrentUiStepId === 'function') {
@@ -556,7 +552,6 @@
 //         setIsPageLoading(false);
 
 //     }, [isInitialized, authLoading, user, kycData.firstName, kycData.lastName, kycData.dateOfBirth, kycData.mobile, form.reset, countryCodeOptions]);
-
 
 //     // Handle Form Submission
 //     const onSubmit = (data: PersonalDetailsFormData) => {
@@ -758,7 +753,6 @@
 //                         </div>
 //                          {/* --- End Mobile Number Section --- */}
 
-
 //                         {/* Navigation Buttons */}
 //                         <div className="flex flex-col sm:flex-row justify-between items-center pt-6 border-t dark:border-gray-700 mt-8 gap-4">
 //                              {(user?.kycStatus === 'not_started' || user?.kycStatus === 'rejected') ? (
@@ -778,8 +772,6 @@
 //         </Card>
 //     );
 // }
-
-
 
 // // frontend/src/app/kyc/personal/page.tsx
 // 'use client';
@@ -1333,7 +1325,6 @@
 //                              <FormDescription>Used for verification and important communications.</FormDescription>
 //                         </div>
 
-
 //                         {/* Navigation Buttons */}
 //                         <div className="flex flex-col sm:flex-row justify-between items-center pt-6 border-t dark:border-border/50 mt-8 gap-4">
 //                              {/* Back Button */}
@@ -1373,265 +1364,1747 @@
 //     );
 // }
 
-// frontend/src/app/kyc/personal/page.tsx
-'use client';
+// // frontend/src/app/kyc/personal/page.tsx
+// 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { format, subYears, startOfDay, isValid as isDateValid, parseISO } from "date-fns";
+// import React, { useState, useEffect, useMemo, useCallback } from 'react';
+// import { useRouter, usePathname } from 'next/navigation';
+// import { useForm } from 'react-hook-form';
+// import { zodResolver } from '@hookform/resolvers/zod';
+// import * as z from 'zod';
+// import { format, subYears, startOfDay, isValid as isDateValid, parseISO } from "date-fns";
+// import { cn } from "@/lib/utils";
+// import * as countryCodes from 'country-codes-list';
+
+// // --- UI Components ---
+// import { Button } from "@/components/ui/button";
+// import { Input } from "@/components/ui/input";
+// import { Calendar } from "@/components/ui/calendar";
+// import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+// import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+// import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+// import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+// import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+// import { Check, ChevronsUpDown, Calendar as CalendarIcon, Loader2, User, Phone, AlertTriangle, ArrowRight, ArrowLeft } from 'lucide-react';
+
+// // --- App Specific Imports ---
+// import { useKyc, formStepOrder } from '../../contexts/KycContext';
+// import { useAuth } from '@/app/contexts/AuthContext';
+// import kycService from '@/app/services/kyc';
+
+// // --- Zod Validation Schema ---
+// const personalDetailsSchema = z.object({
+//     firstName: z.string().trim().min(1, { message: 'First name is required' }).max(100, { message: 'First name cannot exceed 100 characters' }),
+//     lastName: z.string().trim().min(1, { message: 'Last name is required' }).max(100, { message: 'Last name cannot exceed 100 characters' }),
+//     dateOfBirth: z.date({ required_error: "Date of birth is required.", invalid_type_error: "Please enter a valid date." })
+//         .max(startOfDay(subYears(new Date(), 18)), { message: "You must be at least 18 years old." })
+//         .min(new Date("1900-01-01"), { message: "Date of birth seems incorrect (before 1900)." }),
+//     mobileCountryCode: z.string().trim().min(2, { message: 'Code required' }).regex(/^\+\d{1,4}$/, {message: 'Invalid format (e.g., +1, +44)'}),
+//     mobileNumber: z.string().trim().min(5, { message: 'Minimum 5 digits required' }).max(15, { message: 'Maximum 15 digits allowed' }).regex(/^\d+$/, {message: 'Enter only numbers'}),
+// });
+
+// type PersonalDetailsFormData = z.infer<typeof personalDetailsSchema>;
+// type CountryCodeOption = { value: string; label: string; };
+// const DEFAULT_COUNTRY_CODE = '+1';
+
+// // --- Component ---
+// export default function KycPersonalPage() {
+//     const router = useRouter();
+//     const pathname = usePathname();
+//     const { user, loading: authLoading, refetchUser } = useAuth();
+//     const {
+//         kycData, setKycData, nextStep, prevStep,
+//         updateCurrentUiStepId, goToStep,
+//         isInitialized: kycInitialized, backendStatus,
+//         fetchKycStatus,
+//         isLoadingStatus: kycLoadingStatus
+//      } = useKyc();
+
+//     const [isPageLoading, setIsPageLoading] = useState(true);
+//     const [formActionError, setFormActionError] = useState<string | null>(null);
+//     const [isSubmittingForm, setIsSubmittingForm] = useState(false);
+//     const [isSkipping, setIsSkipping] = useState(false);
+//     const [countryCodePopoverOpen, setCountryCodePopoverOpen] = useState(false);
+
+//     const form = useForm<PersonalDetailsFormData>({
+//         resolver: zodResolver(personalDetailsSchema),
+//         defaultValues: { firstName: '', lastName: '', dateOfBirth: undefined, mobileCountryCode: DEFAULT_COUNTRY_CODE, mobileNumber: '' },
+//         mode: 'onChange',
+//     });
+
+//     const countryCodeOptions = useMemo<CountryCodeOption[]>(() => {
+//         try {
+//             const codesObject = countryCodes.customList('countryNameEn', '+{countryCallingCode}');
+//             return Object.entries(codesObject)
+//                 .map(([name, code]) => ({ value: code, label: `${name} (${code})` }))
+//                 .filter(option => option.value && option.value !== '+' && option.label && option.label.trim() !== `(${option.value})`)
+//                  .sort((a, b) => a.label.localeCompare(b.label));
+//         } catch (error) { console.error("Error generating country code list:", error); return [{ value: '+1', label: 'United States (+1)' }]; }
+//     }, []);
+
+//     // Effect 1: Set UI step in context
+//     useEffect(() => {
+//         if (kycInitialized && pathname === '/kyc/personal') {
+//              updateCurrentUiStepId('personal');
+//         }
+//     }, [kycInitialized, updateCurrentUiStepId, pathname]);
+
+//     // Effect 2: Load initial/persisted data OR pre-fill
+//     useEffect(() => {
+//         if (!kycInitialized || authLoading) {
+//             setIsPageLoading(true); return;
+//         }
+//         if (!["not_started", "rejected", "skipped", "loading"].includes(backendStatus as string)) {
+//              setIsPageLoading(false); return;
+//         }
+
+//         setIsPageLoading(true);
+//         let initialValues: Partial<PersonalDetailsFormData> = {};
+//         const parsedDate = kycData.dateOfBirth ? parseISO(kycData.dateOfBirth) : undefined;
+//         initialValues = {
+//             firstName: kycData.firstName || '',
+//             lastName: kycData.lastName || '',
+//             dateOfBirth: parsedDate && isDateValid(parsedDate) ? parsedDate : undefined,
+//             mobileCountryCode: kycData.mobile?.countryCode || DEFAULT_COUNTRY_CODE,
+//             mobileNumber: kycData.mobile?.number || ''
+//         };
+
+//         if (!kycData.firstName && !kycData.lastName && user && (backendStatus === 'not_started' || backendStatus === 'skipped')) {
+//             const nameParts = user.fullName?.trim().split(' ') || [];
+//             initialValues.firstName = nameParts[0] || '';
+//             initialValues.lastName = nameParts.slice(1).join(' ') || '';
+//         }
+
+//         const finalCountryCode = initialValues.mobileCountryCode || DEFAULT_COUNTRY_CODE;
+//         initialValues.mobileCountryCode = countryCodeOptions.some(opt => opt.value === finalCountryCode) ? finalCountryCode : DEFAULT_COUNTRY_CODE;
+
+//         form.reset(initialValues);
+//         setIsPageLoading(false);
+
+//     }, [kycInitialized, authLoading, user, backendStatus, kycData, form.reset, countryCodeOptions]);
+
+//     // --- Event Handlers ---
+//     const onSubmit = useCallback((data: PersonalDetailsFormData) => {
+//         setIsSubmittingForm(true); setFormActionError(null);
+//         try {
+//             const formattedDOB = format(data.dateOfBirth, "yyyy-MM-dd");
+//             setKycData({
+//                 firstName: data.firstName, lastName: data.lastName, dateOfBirth: formattedDOB,
+//                 mobile: { countryCode: data.mobileCountryCode, number: data.mobileNumber }
+//             });
+//             nextStep();
+//         } catch (error: any) {
+//             setFormActionError(error.message || "Failed to save progress.");
+//             setIsSubmittingForm(false);
+//         }
+//     }, [setKycData, nextStep]); // Removed form.getValues dependency
+
+//     const handleSkip = useCallback(async () => {
+//          if (!confirm("Skip identity verification for now? Some features will be limited.")) return;
+//          if (backendStatus !== 'not_started') { setFormActionError("Cannot skip now."); return; }
+
+//         setIsSkipping(true); setFormActionError(null);
+//         try {
+//             await kycService.skipKyc();
+//             await refetchUser();
+//             await fetchKycStatus(true);
+//             router.push('/dashboard');
+//         } catch (err: any) {
+//             setFormActionError(err?.response?.data?.message || err.message || "Skip failed.");
+//             setIsSkipping(false);
+//         }
+//     }, [backendStatus, refetchUser, fetchKycStatus, router]);
+
+//     // --- Render Logic ---
+//     if (isPageLoading || (kycLoadingStatus && !isPageLoading)) {
+//         return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-primary" /> </div> );
+//     }
+//     if (!["not_started", "rejected", "skipped", "loading"].includes(backendStatus as string)) {
+//         return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-primary" /> </div> );
+//     }
+
+//     return (
+//         <Card className="w-full max-w-2xl mx-auto shadow-lg border border-border/40 animate-fadeIn">
+//             <CardHeader>
+//                 <CardTitle className="text-2xl font-semibold tracking-tight flex items-center gap-2"> <User className="h-6 w-6 text-primary" /> Personal Details (Step {formStepOrder.indexOf('personal') + 1} of {formStepOrder.length}) </CardTitle>
+//                 <CardDescription>Enter your legal name, date of birth, and mobile number.</CardDescription>
+//             </CardHeader>
+//             <CardContent className="p-6 md:p-8">
+//                  {formActionError && ( <Alert variant="destructive" className="mb-6"> <AlertTriangle className="h-4 w-4" /> <AlertTitle>Action Failed</AlertTitle> <AlertDescription>{formActionError}</AlertDescription> </Alert> )}
+//                  <Form {...form}>
+//                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+//                         {/* First Name & Last Name Fields */}
+//                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6">
+//                            <FormField control={form.control} name="firstName" render={({ field }) => (<FormItem><FormLabel>Legal First Name *</FormLabel><FormControl><Input placeholder="e.g., Jane" {...field} /></FormControl><FormMessage /></FormItem>)} />
+//                            <FormField control={form.control} name="lastName" render={({ field }) => (<FormItem><FormLabel>Legal Last Name *</FormLabel><FormControl><Input placeholder="e.g., Doe" {...field} /></FormControl><FormMessage /></FormItem>)} />
+//                         </div>
+
+//                         {/* Date of Birth Field */}
+//                         <FormField control={form.control} name="dateOfBirth" render={({ field }) => (
+//                             <FormItem className="flex flex-col">
+//                                 <FormLabel>Date of Birth *</FormLabel>
+//                                 <Popover>
+//                                     <PopoverTrigger asChild>
+//                                         {/* FIX: Removed FormControl wrapper */}
+//                                         <Button
+//                                             variant={"outline"}
+//                                             className={cn("w-full h-12 justify-start text-left font-normal", !field.value && "text-muted-foreground")}
+//                                         >
+//                                             <CalendarIcon className="mr-2 h-4 w-4" />
+//                                             {field.value && isDateValid(field.value) ? format(field.value, "PPP") : <span>Pick a date</span>}
+//                                         </Button>
+//                                     </PopoverTrigger>
+//                                     <PopoverContent align="start" className="sm:w-[450px] max-h-[--radix-popover-content-available-height]">
+//                                         <Calendar className='p-0'
+//                                             mode="single"
+//                                             selected={field.value && isDateValid(field.value) ? field.value : undefined}
+//                                             onSelect={(date) => { field.onChange(date || undefined); form.trigger("dateOfBirth"); }}
+//                                             disabled={(date) => date > startOfDay(subYears(new Date(), 18)) || date < new Date("1900-01-01")}
+//                                             initialFocus
+//                                             defaultMonth={field.value && isDateValid(field.value) ? field.value : subYears(new Date(), 30)}
+//                                         />
+//                                     </PopoverContent>
+//                                 </Popover>
+//                                 <FormDescription>You must be 18 years or older.</FormDescription>
+//                                 <FormMessage />
+//                             </FormItem>
+//                         )} />
+
+//                         {/* Mobile Number Fields */}
+//                         <div className="space-y-2">
+//                              <FormLabel className="flex items-center gap-1.5"><Phone className="h-4 w-4 text-muted-foreground"/> Mobile Number *</FormLabel>
+//                              <div className="flex items-start gap-2">
+//                                 {/* Country Code */}
+//                                 <FormField control={form.control} name="mobileCountryCode" render={({ field }) => (
+//                                     <FormItem className="flex flex-col w-1/3 max-w-[150px] shrink-0">
+//                                         <Popover open={countryCodePopoverOpen} onOpenChange={setCountryCodePopoverOpen}>
+//                                             <PopoverTrigger asChild>
+//                                                 {/* FIX: Removed FormControl wrapper */}
+//                                                 <Button
+//                                                     variant="outline" role="combobox" aria-expanded={countryCodePopoverOpen}
+//                                                     className={cn("w-full h-12 justify-between", !field.value && "text-muted-foreground")}
+//                                                     aria-label="Select country calling code"
+//                                                 >
+//                                                     {field.value ? field.value : "Code"}
+//                                                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+//                                                 </Button>
+//                                             </PopoverTrigger>
+//                                             <PopoverContent align="start" className="sm:w-[450px] max-h-[--radix-popover-content-available-height]">
+//                                                 <Command filter={(value, search) => {
+//                                                     const option = countryCodeOptions.find(opt => opt.label.toLowerCase() === value.toLowerCase());
+//                                                     if (!option) return 0;
+//                                                     const searchTerm = search.toLowerCase();
+//                                                     const isInLabel = option.label.toLowerCase().includes(searchTerm);
+//                                                     const codeSearchTerm = searchTerm.startsWith('+') ? searchTerm.slice(1) : searchTerm; const isInCode = option.value.slice(1).includes(codeSearchTerm); return isInLabel || isInCode ? 1 : 0; }}>
+//                                                     <CommandInput placeholder="Search country or code..." />
+//                                                         <CommandList>
+//                                                             <CommandEmpty>No country found.</CommandEmpty>
+//                                                             <CommandGroup>
+//                                                                 <div className='space-y-1'>
+//                                                                     {countryCodeOptions.map((option) => (
+//                                                                         <CommandItem
+//                                                                             key={option.label}
+//                                                                             value={option.label}
+//                                                                             onSelect={(currentValue) => {
+//                                                                                 const selectedOption = countryCodeOptions.find(opt => opt.label === currentValue);
+//                                                                                 if (selectedOption) {
+//                                                                                     form.setValue("mobileCountryCode", selectedOption.value, { shouldValidate: true });
+//                                                                                 }
+//                                                                                 setCountryCodePopoverOpen(false);
+//                                                                             }}
+//                                                                         >
+//                                                                             {option.label}
+//                                                                             <Check className={cn("ml-2 h-4 w-4", option.value === field.value ? "opacity-100" : "opacity-0")} />
+//                                                                         </CommandItem>
+//                                                                     ))}
+//                                                                 </div>
+//                                                             </CommandGroup>
+//                                                         </CommandList>
+//                                                 </Command>
+//                                             </PopoverContent>
+//                                         </Popover>
+//                                         <FormMessage />
+//                                     </FormItem>
+//                                 )} />
+//                                 {/* Number Input */}
+//                                 <FormField control={form.control} name="mobileNumber" render={({ field }) => (
+//                                     <FormItem className="flex-grow">
+//                                         {/* FormControl is correct here as it wraps the actual Input */}
+//                                         <FormControl><Input type="tel" inputMode="numeric" placeholder="Enter number" {...field} /></FormControl>
+//                                         <FormMessage />
+//                                     </FormItem>
+//                                 )} />
+//                              </div>
+//                              <FormDescription>Used for verification and communications.</FormDescription>
+//                         </div>
+
+//                         {/* Navigation Buttons */}
+//                         <div className="flex flex-col sm:flex-row justify-between items-center pt-6 border-t dark:border-border/50 mt-8 gap-4">
+//                             <Button type="button" variant="outline" onClick={prevStep} disabled={isSubmittingForm || isSkipping}> <ArrowLeft className="mr-2 h-4 w-4" /> Back </Button>
+//                             {backendStatus === 'not_started' && (
+//                                 <Button type="button" variant="ghost" onClick={handleSkip} disabled={isSubmittingForm || isSkipping} className="text-muted-foreground hover:text-foreground order-first sm:order-none" > {isSkipping ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null} Skip for Now </Button>
+//                             )}
+//                             <Button type="submit" disabled={isSubmittingForm || isSkipping || !form.formState.isValid}> {isSubmittingForm ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ArrowRight className="mr-2 h-4 w-4" />} Continue </Button>
+//                         </div>
+//                     </form>
+//                  </Form>
+//             </CardContent>
+//         </Card>
+//     );
+// }
+
+// // frontend/src/app/kyc/personal/page.tsx
+// "use client";
+
+// import React, { useState, useEffect, useMemo, useCallback } from "react";
+// import { useRouter, usePathname } from "next/navigation";
+// import { useForm } from "react-hook-form";
+// import { zodResolver } from "@hookform/resolvers/zod";
+// import * as z from "zod";
+// import {
+//   format,
+//   subYears,
+//   startOfDay,
+//   isValid as isDateValid,
+//   parseISO,
+// } from "date-fns";
+// import { cn } from "@/lib/utils";
+// import * as countryCodes from "country-codes-list";
+
+// // --- UI Components ---
+// import { Button } from "@/components/ui/button";
+// import { Input } from "@/components/ui/input";
+// import { Calendar } from "@/components/ui/calendar";
+// import {
+//   Form,
+//   FormControl,
+//   FormDescription,
+//   FormField,
+//   FormItem,
+//   FormLabel,
+//   FormMessage,
+// } from "@/components/ui/form";
+// import {
+//   Popover,
+//   PopoverContent,
+//   PopoverTrigger,
+// } from "@/components/ui/popover";
+// import {
+//   Card,
+//   CardContent,
+//   CardHeader,
+//   CardTitle,
+//   CardDescription,
+// } from "@/components/ui/card";
+// import {
+//   Command,
+//   CommandEmpty,
+//   CommandGroup,
+//   CommandInput,
+//   CommandItem,
+//   CommandList,
+// } from "@/components/ui/command";
+// import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+// // --- Import Select components ---
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
+// import {
+//   Check,
+//   ChevronsUpDown,
+//   Calendar as CalendarIcon,
+//   Loader2,
+//   User,
+//   Phone,
+//   AlertTriangle,
+//   ArrowRight,
+//   ArrowLeft,
+// } from "lucide-react";
+
+// // --- App Specific Imports ---
+// import { useKyc, formStepOrder } from "../../contexts/KycContext";
+// import { useAuth } from "@/app/contexts/AuthContext";
+// import kycService from "@/app/services/kyc";
+
+// // --- Zod Validation Schema ---
+// const personalDetailsSchema = z.object({
+//   firstName: z
+//     .string()
+//     .trim()
+//     .min(1, { message: "First name is required" })
+//     .max(100, { message: "First name cannot exceed 100 characters" }),
+//   lastName: z
+//     .string()
+//     .trim()
+//     .min(1, { message: "Last name is required" })
+//     .max(100, { message: "Last name cannot exceed 100 characters" }),
+//   dateOfBirth: z
+//     .date({
+//       required_error: "Date of birth is required.",
+//       invalid_type_error: "Please enter a valid date.",
+//     })
+//     .max(startOfDay(subYears(new Date(), 18)), {
+//       message: "You must be at least 18 years old.",
+//     })
+//     .min(new Date("1900-01-01"), {
+//       message: "Date of birth seems incorrect (before 1900).",
+//     }),
+//   mobileCountryCode: z
+//     .string()
+//     .trim()
+//     .min(2, { message: "Code required" })
+//     .regex(/^\+\d{1,4}$/, { message: "Invalid format (e.g., +1, +44)" }),
+//   mobileNumber: z
+//     .string()
+//     .trim()
+//     .min(5, { message: "Minimum 5 digits required" })
+//     .max(15, { message: "Maximum 15 digits allowed" })
+//     .regex(/^\d+$/, { message: "Enter only numbers" }),
+// });
+
+// type PersonalDetailsFormData = z.infer<typeof personalDetailsSchema>;
+// type CountryCodeOption = { value: string; label: string };
+// const DEFAULT_COUNTRY_CODE = "+1";
+
+// // --- Helper Arrays for Date Picker Dropdowns ---
+// const datePickerYears = Array.from(
+//   { length: 100 },
+//   (_, i) => new Date().getFullYear() - i
+// ).reverse(); // Last 100 years
+// const datePickerMonths = [
+//   "January",
+//   "February",
+//   "March",
+//   "April",
+//   "May",
+//   "June",
+//   "July",
+//   "August",
+//   "September",
+//   "October",
+//   "November",
+//   "December",
+// ];
+
+// // --- Component ---
+// export default function KycPersonalPage() {
+//   const router = useRouter();
+//   const pathname = usePathname();
+//   const { user, loading: authLoading, refetchUser } = useAuth();
+//   const {
+//     kycData,
+//     setKycData,
+//     nextStep,
+//     prevStep,
+//     updateCurrentUiStepId,
+//     goToStep,
+//     isInitialized: kycInitialized,
+//     backendStatus,
+//     fetchKycStatus,
+//     isLoadingStatus: kycLoadingStatus,
+//   } = useKyc();
+
+//   const [isPageLoading, setIsPageLoading] = useState(true);
+//   const [formActionError, setFormActionError] = useState<string | null>(null);
+//   const [isSubmittingForm, setIsSubmittingForm] = useState(false);
+//   const [isSkipping, setIsSkipping] = useState(false);
+//   const [countryCodePopoverOpen, setCountryCodePopoverOpen] = useState(false);
+
+//   // --- State for managing the calendar's displayed month/year ---
+//   const [calendarDate, setCalendarDate] = useState<Date>(
+//     subYears(new Date(), 30)
+//   );
+
+//   const form = useForm<PersonalDetailsFormData>({
+//     resolver: zodResolver(personalDetailsSchema),
+//     defaultValues: {
+//       firstName: "",
+//       lastName: "",
+//       dateOfBirth: undefined,
+//       mobileCountryCode: DEFAULT_COUNTRY_CODE,
+//       mobileNumber: "",
+//     },
+//     mode: "onChange",
+//   });
+
+//   const countryCodeOptions = useMemo<CountryCodeOption[]>(() => {
+//     try {
+//       const codesObject = countryCodes.customList(
+//         "countryNameEn",
+//         "+{countryCallingCode}"
+//       );
+//       return Object.entries(codesObject)
+//         .map(([name, code]) => ({ value: code, label: `${name} (${code})` }))
+//         .filter(
+//           (option) =>
+//             option.value &&
+//             option.value !== "+" &&
+//             option.label &&
+//             option.label.trim() !== `(${option.value})`
+//         )
+//         .sort((a, b) => a.label.localeCompare(b.label));
+//     } catch (error) {
+//       console.error("Error generating country code list:", error);
+//       return [{ value: "+1", label: "United States (+1)" }];
+//     }
+//   }, []);
+
+//   // Effect 1: Set UI step in context
+//   useEffect(() => {
+//     if (kycInitialized && pathname === "/kyc/personal") {
+//       updateCurrentUiStepId("personal");
+//     }
+//   }, [kycInitialized, updateCurrentUiStepId, pathname]);
+
+//   // Effect 2: Load initial/persisted data OR pre-fill
+//   useEffect(() => {
+//     if (!kycInitialized || authLoading) {
+//       setIsPageLoading(true);
+//       return;
+//     }
+//     if (
+//       !["not_started", "rejected", "skipped", "loading"].includes(
+//         backendStatus as string
+//       )
+//     ) {
+//       setIsPageLoading(false);
+//       return; // Should ideally redirect based on status
+//     }
+
+//     setIsPageLoading(true);
+//     let initialValues: Partial<PersonalDetailsFormData> = {};
+//     const parsedDate = kycData.dateOfBirth
+//       ? parseISO(kycData.dateOfBirth)
+//       : undefined;
+//     const validInitialDate =
+//       parsedDate && isDateValid(parsedDate) ? parsedDate : undefined;
+
+//     initialValues = {
+//       firstName: kycData.firstName || "",
+//       lastName: kycData.lastName || "",
+//       dateOfBirth: validInitialDate,
+//       mobileCountryCode: kycData.mobile?.countryCode || DEFAULT_COUNTRY_CODE,
+//       mobileNumber: kycData.mobile?.number || "",
+//     };
+
+//     // Pre-fill name from user profile if empty and starting fresh
+//     if (
+//       !kycData.firstName &&
+//       !kycData.lastName &&
+//       user &&
+//       (backendStatus === "not_started" || backendStatus === "skipped")
+//     ) {
+//       const nameParts = user.fullName?.trim().split(" ") || [];
+//       initialValues.firstName = nameParts[0] || "";
+//       initialValues.lastName = nameParts.slice(1).join(" ") || "";
+//     }
+
+//     // Ensure country code is valid
+//     const finalCountryCode =
+//       initialValues.mobileCountryCode || DEFAULT_COUNTRY_CODE;
+//     initialValues.mobileCountryCode = countryCodeOptions.some(
+//       (opt) => opt.value === finalCountryCode
+//     )
+//       ? finalCountryCode
+//       : DEFAULT_COUNTRY_CODE;
+
+//     form.reset(initialValues);
+
+//     // Initialize calendar view based on loaded/default date
+//     setCalendarDate(validInitialDate || subYears(new Date(), 30));
+
+//     setIsPageLoading(false);
+//   }, [
+//     kycInitialized,
+//     authLoading,
+//     user,
+//     backendStatus,
+//     kycData,
+//     form.reset,
+//     countryCodeOptions,
+//   ]); // Removed setCalendarDate from dependencies
+
+//   // --- Event Handlers ---
+//   const onSubmit = useCallback(
+//     (data: PersonalDetailsFormData) => {
+//       setIsSubmittingForm(true);
+//       setFormActionError(null);
+//       try {
+//         const formattedDOB = format(data.dateOfBirth, "yyyy-MM-dd");
+//         setKycData({
+//           firstName: data.firstName,
+//           lastName: data.lastName,
+//           dateOfBirth: formattedDOB,
+//           mobile: {
+//             countryCode: data.mobileCountryCode,
+//             number: data.mobileNumber,
+//           },
+//         });
+//         // Simulate API call if needed here before nextStep()
+//         nextStep();
+//       } catch (error: any) {
+//         setFormActionError(error.message || "Failed to save progress.");
+//       } finally {
+//         setIsSubmittingForm(false); // Ensure this runs even on success/navigation
+//       }
+//     },
+//     [setKycData, nextStep]
+//   );
+
+//   const handleSkip = useCallback(async () => {
+//     if (
+//       !confirm(
+//         "Skip identity verification for now? Some features will be limited."
+//       )
+//     )
+//       return;
+//     // Allow skipping even if rejected/skipped previously, to reset status
+//     // if (backendStatus !== 'not_started' && backendStatus !== 'rejected' && backendStatus !== 'skipped') {
+//     //     setFormActionError("Cannot skip at this stage.");
+//     //     return;
+//     // }
+
+//     setIsSkipping(true);
+//     setFormActionError(null);
+//     try {
+//       await kycService.skipKyc();
+//       await refetchUser();
+//       await fetchKycStatus(true); // Force fetch new status
+//       router.push("/dashboard");
+//     } catch (err: any) {
+//       setFormActionError(
+//         err?.response?.data?.message || err.message || "Skip failed."
+//       );
+//     } finally {
+//       setIsSkipping(false);
+//     }
+//   }, [/* backendStatus, */ refetchUser, fetchKycStatus, router]); // Removed backendStatus check dependency
+
+//   // --- Date Picker Dropdown Handlers ---
+//   const handleYearChange = (year: string) => {
+//     const newDate = new Date(calendarDate); // Clone current calendar view date
+//     newDate.setFullYear(Number.parseInt(year));
+//     // Prevent setting date beyond allowed range if possible, although calendar `disabled` handles selection
+//     const maxDate = startOfDay(subYears(new Date(), 18));
+//     const minDate = new Date("1900-01-01");
+//     if (newDate > maxDate) newDate.setMonth(maxDate.getMonth()); // Adjust month if year makes it invalid
+//     if (newDate < minDate) newDate.setMonth(minDate.getMonth()); // Adjust month if year makes it invalid
+
+//     setCalendarDate(newDate); // Update calendar view
+//   };
+
+//   const handleMonthChange = (month: string) => {
+//     const newDate = new Date(calendarDate); // Clone current calendar view date
+//     newDate.setMonth(datePickerMonths.indexOf(month));
+
+//     // Prevent setting date beyond allowed range if possible
+//     const maxDate = startOfDay(subYears(new Date(), 18));
+//     const minDate = new Date("1900-01-01");
+//     if (newDate > maxDate) newDate.setDate(maxDate.getDate()); // Adjust day if month makes it invalid
+//     if (newDate < minDate) newDate.setDate(minDate.getDate()); // Adjust day if month makes it invalid
+
+//     setCalendarDate(newDate); // Update calendar view
+//   };
+
+//   // --- Render Logic ---
+//   if (isPageLoading || (kycLoadingStatus && !isPageLoading)) {
+//     return (
+//       <div className="flex justify-center items-center min-h-[400px]">
+//         <Loader2 className="h-8 w-8 animate-spin text-primary" />
+//       </div>
+//     );
+//   }
+//   // Redirect or show different UI if KYC status is not one that requires this form
+//   if (
+//     !["not_started", "rejected", "skipped"].includes(backendStatus as string)
+//   ) {
+//     // You might want to redirect or show a status message here
+//     // For now, just showing loading as a placeholder behavior
+//     return (
+//       <div className="flex justify-center items-center min-h-[400px]">
+//         <Loader2 className="h-8 w-8 animate-spin text-primary" />
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <Card className="w-full max-w-2xl mx-auto shadow-lg border animate-fadeIn sm:p-8 p-4">
+//       <CardHeader className="border-b pb-6 mb-6 space-y-2">
+//         <CardTitle className="text-2xl font-semibold tracking-tight flex items-start gap-2 text-mainheading dark:text-white">
+//           <User className="h-6 w-6 text-primary mt-1" /> Personal Details (Step&nbsp;
+//           {formStepOrder.indexOf("personal") + 1} of {formStepOrder.length})
+//         </CardTitle>
+//         <CardDescription className="text-gray-500 dark:text-gray-300">
+//           Enter your legal name, date of birth, and mobile number.
+//         </CardDescription>
+//       </CardHeader>
+//       <CardContent>
+//         {formActionError && (
+//           <Alert variant="destructive" className="mb-6">
+//             {" "}
+//             <AlertTriangle className="h-4 w-4" />{" "}
+//             <AlertTitle>Action Failed</AlertTitle>{" "}
+//             <AlertDescription>{formActionError}</AlertDescription>{" "}
+//           </Alert>
+//         )}
+//         <Form {...form}>
+//           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+//             {/* First Name & Last Name Fields */}
+//             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6">
+//               <FormField
+//                 control={form.control}
+//                 name="firstName"
+//                 render={({ field }) => (
+//                   <FormItem>
+//                     <FormLabel className="text-neutral-900 dark:text-white">Legal First Name *</FormLabel>
+//                     <FormControl>
+//                       <Input placeholder="e.g., Jane" {...field} />
+//                     </FormControl>
+//                     <FormMessage />
+//                   </FormItem>
+//                 )}
+//               />
+//               <FormField
+//                 control={form.control}
+//                 name="lastName"
+//                 render={({ field }) => (
+//                   <FormItem>
+//                     <FormLabel className="text-neutral-900 dark:text-white">Legal Last Name *</FormLabel>
+//                     <FormControl>
+//                       <Input placeholder="e.g., Doe" {...field} />
+//                     </FormControl>
+//                     <FormMessage />
+//                   </FormItem>
+//                 )}
+//               />
+//             </div>
+
+//             {/* Date of Birth Field */}
+//             <FormField
+//               control={form.control}
+//               name="dateOfBirth"
+//               render={({ field }) => (
+//                 <FormItem className="flex flex-col">
+//                   <FormLabel className="text-neutral-900 dark:text-white">Date of Birth *</FormLabel>
+//                   <Popover>
+//                     <PopoverTrigger asChild>
+//                       {/* Button to trigger the popover */}
+//                       <Button
+//                         variant={"outline"}
+//                         className={cn(
+//                           "w-full h-12 justify-start text-left font-normal",
+//                           !field.value && "text-muted-foreground"
+//                         )}
+//                       >
+//                         <CalendarIcon className="mr-2 h-4 w-4" />
+//                         {field.value && isDateValid(field.value) ? (
+//                           format(field.value, "PPP")
+//                         ) : (
+//                           <span>Pick a date</span>
+//                         )}
+//                       </Button>
+//                     </PopoverTrigger>
+//                     <PopoverContent
+//                       align="start"
+//                       className="sm:w-[450px] max-h-[--radix-popover-content-available-height]"
+//                     >
+//                       {/* --- Month/Year Selectors --- */}
+//                       <div className="flex items-center justify-between gap-2 p-3 border-b">
+//                         <Select
+//                           value={datePickerMonths[calendarDate.getMonth()]}
+//                           onValueChange={handleMonthChange}
+//                         >
+//                           <SelectTrigger className="w-36 h-8">
+//                             <SelectValue placeholder="Month" />
+//                           </SelectTrigger>
+//                           <SelectContent className="h-72">
+//                             {datePickerMonths.map((month) => (
+//                               <SelectItem key={month} value={month}>
+//                                 {month}
+//                               </SelectItem>
+//                             ))}
+//                           </SelectContent>
+//                         </Select>
+
+//                         <Select
+//                           value={calendarDate.getFullYear().toString()}
+//                           onValueChange={handleYearChange}
+//                         >
+//                           <SelectTrigger className="w-28 h-8">
+//                             <SelectValue placeholder="Year" />
+//                           </SelectTrigger>
+//                           <SelectContent className="h-72">
+//                             <div className="space-y-1">
+//                               {datePickerYears.map((year) => (
+//                                 <SelectItem key={year} value={year.toString()}>
+//                                   {year}
+//                                 </SelectItem>
+//                               ))}
+//                             </div>
+//                           </SelectContent>
+//                         </Select>
+//                       </div>
+//                       {/* --- Calendar Component --- */}
+//                       <Calendar
+//                         mode="single"
+//                         selected={
+//                           field.value && isDateValid(field.value)
+//                             ? field.value
+//                             : undefined
+//                         }
+//                         onSelect={(date) => {
+//                           field.onChange(date || undefined); // Update RHF state
+//                           if (date) {
+//                             setCalendarDate(date); // Sync calendar view to selected date
+//                           }
+//                           form.trigger("dateOfBirth"); // Trigger validation
+//                         }}
+//                         month={calendarDate} // Control displayed month/year
+//                         onMonthChange={setCalendarDate} // Sync state when calendar arrows are used
+//                         disabled={(date) =>
+//                           date > startOfDay(subYears(new Date(), 18)) ||
+//                           date < new Date("1900-01-01")
+//                         }
+//                         initialFocus // Focus calendar when opened
+//                       />
+//                     </PopoverContent>
+//                   </Popover>
+//                   <FormDescription className="text-gray-500 dark:text-gray-300">
+//                     You must be 18 years or older.
+//                   </FormDescription>
+//                   <FormMessage />
+//                 </FormItem>
+//               )}
+//             />
+
+//             {/* Mobile Number Fields */}
+//             <div className="space-y-2">
+//               <FormLabel className="flex items-center gap-1.5 text-neutral-900 dark:text-white">
+//                 <Phone className="h-4 w-4 text-muted-foreground" /> Mobile
+//                 Number *
+//               </FormLabel>
+//               <div className="flex items-start gap-2">
+//                 {/* Country Code */}
+//                 <FormField
+//                   control={form.control}
+//                   name="mobileCountryCode"
+//                   render={({ field }) => (
+//                     <FormItem className="flex flex-col w-1/3 max-w-[150px] shrink-0">
+//                       <Popover
+//                         open={countryCodePopoverOpen}
+//                         onOpenChange={setCountryCodePopoverOpen}
+//                       >
+//                         <PopoverTrigger asChild>
+//                           <Button
+//                             variant="outline"
+//                             role="combobox"
+//                             aria-expanded={countryCodePopoverOpen}
+//                             className={cn(
+//                               "w-full h-12 justify-between",
+//                               !field.value && "text-muted-foreground"
+//                             )}
+//                             aria-label="Select country calling code"
+//                           >
+//                             {field.value ? field.value : "Code"}
+//                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+//                           </Button>
+//                         </PopoverTrigger>
+//                         <PopoverContent
+//                           align="start"
+//                           className="sm:w-[450px] max-h-[--radix-popover-content-available-height]"
+//                         >
+//                           <Command
+//                             filter={(value, search) => {
+//                               const option = countryCodeOptions.find(
+//                                 (opt) =>
+//                                   opt.label.toLowerCase() ===
+//                                   value.toLowerCase()
+//                               );
+//                               if (!option) return 0;
+//                               const searchTerm = search.toLowerCase();
+//                               const isInLabel = option.label
+//                                 .toLowerCase()
+//                                 .includes(searchTerm);
+//                               const codeSearchTerm = searchTerm.startsWith("+")
+//                                 ? searchTerm.slice(1)
+//                                 : searchTerm;
+//                               const isInCode = option.value
+//                                 .slice(1)
+//                                 .includes(codeSearchTerm);
+//                               return isInLabel || isInCode ? 1 : 0;
+//                             }}
+//                           >
+//                             <CommandInput placeholder="Search country or code..." />
+//                             <CommandList>
+//                               <CommandEmpty>No country found.</CommandEmpty>
+//                               <CommandGroup>
+//                                 <div className="space-y-1">
+//                                   {countryCodeOptions.map((option) => (
+//                                     <CommandItem
+//                                       key={option.label}
+//                                       value={option.label}
+//                                       onSelect={(currentValue) => {
+//                                         const selectedOption =
+//                                           countryCodeOptions.find(
+//                                             (opt) => opt.label === currentValue
+//                                           );
+//                                         if (selectedOption) {
+//                                           form.setValue(
+//                                             "mobileCountryCode",
+//                                             selectedOption.value,
+//                                             { shouldValidate: true }
+//                                           );
+//                                         }
+//                                         setCountryCodePopoverOpen(false);
+//                                       }}
+//                                     >
+//                                       {option.label}
+//                                       <Check
+//                                         className={cn(
+//                                           "ml-2 h-4 w-4",
+//                                           option.value === field.value
+//                                             ? "opacity-100"
+//                                             : "opacity-0"
+//                                         )}
+//                                       />
+//                                     </CommandItem>
+//                                   ))}
+//                                 </div>
+//                               </CommandGroup>
+//                             </CommandList>
+//                           </Command>
+//                         </PopoverContent>
+//                       </Popover>
+//                       <FormMessage />
+//                     </FormItem>
+//                   )}
+//                 />
+//                 {/* Number Input */}
+//                 <FormField
+//                   control={form.control}
+//                   name="mobileNumber"
+//                   render={({ field }) => (
+//                     <FormItem className="flex-grow">
+//                       <FormControl>
+//                         <Input
+//                           type="tel"
+//                           inputMode="numeric"
+//                           placeholder="Enter number"
+//                           {...field}
+//                           className="h-12"
+//                         />
+//                       </FormControl>
+//                       {/* Added h-12 for consistency */}
+//                       <FormMessage />
+//                     </FormItem>
+//                   )}
+//                 />
+//               </div>
+//               <FormDescription className="text-gray-500 dark:text-gray-300">
+//                 Used for verification and communications.
+//               </FormDescription>
+//             </div>
+
+//             {/* Navigation Buttons */}
+//             <div className="flex flex-col sm:flex-row justify-between items-center pt-6 border-t mt-6 gap-4">
+//               <button
+//                 type="button"
+//                 className="inline-flex items-center justify-center bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none"
+//                 onClick={prevStep}
+//                 disabled={isSubmittingForm || isSkipping}
+//               >
+                
+//                 <ArrowLeft className="mr-2 size-4.5" /> Back
+//               </button>
+//               {/* Show skip button if not started, or if previously rejected/skipped */}
+//               {(backendStatus === "not_started" ||
+//                 backendStatus === "rejected" ||
+//                 backendStatus === "skipped") && (
+//                 <button
+//                   type="button"
+//                   onClick={handleSkip}
+//                   disabled={isSubmittingForm || isSkipping}
+//                   className="bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-6 py-3 h-12.5 w-full rounded-full transition-all duration-75 ease-linear focus:outline-none"
+//                 >
+                  
+//                   {isSkipping ? (
+//                     <Loader2 className="mr-2 size-4.5 animate-spin" />
+//                   ) : null}
+//                   Skip for Now
+//                 </button>
+//               )}
+//               {/* Continue Button */}
+//               <button
+//                 type="submit"
+//                 className=" inline-flex items-center justify-center bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none"
+//                 disabled={
+//                   isSubmittingForm || isSkipping || !form.formState.isValid
+//                 }
+//               >
+//                 Continue
+//                 {isSubmittingForm ? (
+//                   <Loader2 className="ml-2 size-4.5 animate-spin" />
+//                 ) : (
+//                   <ArrowRight className="ml-2 size-4.5" />
+//                 )}
+                
+//               </button>
+//             </div>
+//           </form>
+//         </Form>
+//       </CardContent>
+//     </Card>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+// frontend/src/app/kyc/personal/page.tsx
+"use client";
+
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import {
+  format,
+  subYears,
+  startOfDay,
+  isValid as isDateValid,
+  parseISO,
+} from "date-fns";
 import { cn } from "@/lib/utils";
-import * as countryCodes from 'country-codes-list';
+import * as countryCodes from "country-codes-list";
 
 // --- UI Components ---
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Check, ChevronsUpDown, Calendar as CalendarIcon, Loader2, User, Phone, AlertTriangle, ArrowRight, ArrowLeft } from 'lucide-react';
+// --- Import Select components ---
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Check,
+  ChevronsUpDown,
+  Calendar as CalendarIcon,
+  Loader2,
+  User,
+  Phone,
+  AlertTriangle,
+  ArrowRight,
+  ArrowLeft,
+} from "lucide-react";
 
 // --- App Specific Imports ---
-import { useKyc, formStepOrder } from '../../contexts/KycContext';
-import { useAuth } from '@/app/contexts/AuthContext';
-import kycService from '@/app/services/kyc';
+import { useKyc, formStepOrder } from "../../contexts/KycContext";
+import { useAuth } from "@/app/contexts/AuthContext";
+import kycService from "@/app/services/kyc";
 
 // --- Zod Validation Schema ---
+// NOTE: The schema already defines which fields are required via min(1) or required_error.
+// The form.formState.isValid check will leverage this schema.
 const personalDetailsSchema = z.object({
-    firstName: z.string().trim().min(1, { message: 'First name is required' }).max(100, { message: 'First name cannot exceed 100 characters' }),
-    lastName: z.string().trim().min(1, { message: 'Last name is required' }).max(100, { message: 'Last name cannot exceed 100 characters' }),
-    dateOfBirth: z.date({ required_error: "Date of birth is required.", invalid_type_error: "Please enter a valid date." })
-        .max(startOfDay(subYears(new Date(), 18)), { message: "You must be at least 18 years old." })
-        .min(new Date("1900-01-01"), { message: "Date of birth seems incorrect (before 1900)." }),
-    mobileCountryCode: z.string().trim().min(2, { message: 'Code required' }).regex(/^\+\d{1,4}$/, {message: 'Invalid format (e.g., +1, +44)'}),
-    mobileNumber: z.string().trim().min(5, { message: 'Minimum 5 digits required' }).max(15, { message: 'Maximum 15 digits allowed' }).regex(/^\d+$/, {message: 'Enter only numbers'}),
+  firstName: z
+    .string()
+    .trim()
+    .min(1, { message: "First name is required" })
+    .max(100, { message: "First name cannot exceed 100 characters" }),
+  lastName: z
+    .string()
+    .trim()
+    .min(1, { message: "Last name is required" })
+    .max(100, { message: "Last name cannot exceed 100 characters" }),
+  dateOfBirth: z
+    .date({
+      required_error: "Date of birth is required.",
+      invalid_type_error: "Please enter a valid date.",
+    })
+    .max(startOfDay(subYears(new Date(), 18)), {
+      message: "You must be at least 18 years old.",
+    })
+    .min(new Date("1900-01-01"), {
+      message: "Date of birth seems incorrect (before 1900).",
+    }),
+  mobileCountryCode: z
+    .string()
+    .trim()
+    .min(2, { message: "Code required" }) // Min 2 ensures it's not just "+"
+    .regex(/^\+\d{1,4}$/, { message: "Invalid format (e.g., +1, +44)" }),
+  mobileNumber: z
+    .string()
+    .trim()
+    .min(5, { message: "Minimum 5 digits required" })
+    .max(15, { message: "Maximum 15 digits allowed" })
+    .regex(/^\d+$/, { message: "Enter only numbers" }),
 });
 
 type PersonalDetailsFormData = z.infer<typeof personalDetailsSchema>;
-type CountryCodeOption = { value: string; label: string; };
-const DEFAULT_COUNTRY_CODE = '+1';
+type CountryCodeOption = { value: string; label: string };
+const DEFAULT_COUNTRY_CODE = "+1";
+
+// --- Helper Arrays for Date Picker Dropdowns ---
+const datePickerYears = Array.from(
+  { length: 100 },
+  (_, i) => new Date().getFullYear() - i
+).reverse(); // Last 100 years
+const datePickerMonths = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 // --- Component ---
 export default function KycPersonalPage() {
-    const router = useRouter();
-    const pathname = usePathname();
-    const { user, loading: authLoading, refetchUser } = useAuth();
-    const {
-        kycData, setKycData, nextStep, prevStep,
-        updateCurrentUiStepId, goToStep,
-        isInitialized: kycInitialized, backendStatus,
-        fetchKycStatus,
-        isLoadingStatus: kycLoadingStatus
-     } = useKyc();
+  const router = useRouter();
+  const pathname = usePathname();
+  const { user, loading: authLoading, refetchUser } = useAuth();
+  const {
+    kycData,
+    setKycData,
+    nextStep,
+    prevStep,
+    updateCurrentUiStepId,
+    goToStep,
+    isInitialized: kycInitialized,
+    backendStatus,
+    fetchKycStatus,
+    isLoadingStatus: kycLoadingStatus,
+  } = useKyc();
 
-    const [isPageLoading, setIsPageLoading] = useState(true);
-    const [formActionError, setFormActionError] = useState<string | null>(null);
-    const [isSubmittingForm, setIsSubmittingForm] = useState(false);
-    const [isSkipping, setIsSkipping] = useState(false);
-    const [countryCodePopoverOpen, setCountryCodePopoverOpen] = useState(false);
+  const [isPageLoading, setIsPageLoading] = useState(true);
+  const [formActionError, setFormActionError] = useState<string | null>(null);
+  const [isSubmittingForm, setIsSubmittingForm] = useState(false);
+  const [isSkipping, setIsSkipping] = useState(false);
+  const [countryCodePopoverOpen, setCountryCodePopoverOpen] = useState(false);
 
-    const form = useForm<PersonalDetailsFormData>({
-        resolver: zodResolver(personalDetailsSchema),
-        defaultValues: { firstName: '', lastName: '', dateOfBirth: undefined, mobileCountryCode: DEFAULT_COUNTRY_CODE, mobileNumber: '' },
-        mode: 'onChange',
-    });
+  // --- State for managing the calendar's displayed month/year ---
+  const [calendarDate, setCalendarDate] = useState<Date>(
+    subYears(new Date(), 30)
+  );
 
-    const countryCodeOptions = useMemo<CountryCodeOption[]>(() => {
-        try {
-            const codesObject = countryCodes.customList('countryNameEn', '+{countryCallingCode}');
-            return Object.entries(codesObject)
-                .map(([name, code]) => ({ value: code, label: `${name} (${code})` }))
-                .filter(option => option.value && option.value !== '+' && option.label && option.label.trim() !== `(${option.value})`)
-                 .sort((a, b) => a.label.localeCompare(b.label));
-        } catch (error) { console.error("Error generating country code list:", error); return [{ value: '+1', label: 'United States (+1)' }]; }
-    }, []);
+  const form = useForm<PersonalDetailsFormData>({
+    resolver: zodResolver(personalDetailsSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      dateOfBirth: undefined,
+      mobileCountryCode: DEFAULT_COUNTRY_CODE,
+      mobileNumber: "",
+    },
+    mode: "onChange", // Important: Revalidates on field change
+  });
 
-    // Effect 1: Set UI step in context
-    useEffect(() => {
-        if (kycInitialized && pathname === '/kyc/personal') {
-             updateCurrentUiStepId('personal');
-        }
-    }, [kycInitialized, updateCurrentUiStepId, pathname]);
-
-    // Effect 2: Load initial/persisted data OR pre-fill
-    useEffect(() => {
-        if (!kycInitialized || authLoading) {
-            setIsPageLoading(true); return;
-        }
-        if (!["not_started", "rejected", "skipped", "loading"].includes(backendStatus as string)) {
-             setIsPageLoading(false); return;
-        }
-
-        setIsPageLoading(true);
-        let initialValues: Partial<PersonalDetailsFormData> = {};
-        const parsedDate = kycData.dateOfBirth ? parseISO(kycData.dateOfBirth) : undefined;
-        initialValues = {
-            firstName: kycData.firstName || '',
-            lastName: kycData.lastName || '',
-            dateOfBirth: parsedDate && isDateValid(parsedDate) ? parsedDate : undefined,
-            mobileCountryCode: kycData.mobile?.countryCode || DEFAULT_COUNTRY_CODE,
-            mobileNumber: kycData.mobile?.number || ''
-        };
-
-        if (!kycData.firstName && !kycData.lastName && user && (backendStatus === 'not_started' || backendStatus === 'skipped')) {
-            const nameParts = user.fullName?.trim().split(' ') || [];
-            initialValues.firstName = nameParts[0] || '';
-            initialValues.lastName = nameParts.slice(1).join(' ') || '';
-        }
-
-        const finalCountryCode = initialValues.mobileCountryCode || DEFAULT_COUNTRY_CODE;
-        initialValues.mobileCountryCode = countryCodeOptions.some(opt => opt.value === finalCountryCode) ? finalCountryCode : DEFAULT_COUNTRY_CODE;
-
-        form.reset(initialValues);
-        setIsPageLoading(false);
-
-    }, [kycInitialized, authLoading, user, backendStatus, kycData, form.reset, countryCodeOptions]);
-
-    // --- Event Handlers ---
-    const onSubmit = useCallback((data: PersonalDetailsFormData) => {
-        setIsSubmittingForm(true); setFormActionError(null);
-        try {
-            const formattedDOB = format(data.dateOfBirth, "yyyy-MM-dd");
-            setKycData({
-                firstName: data.firstName, lastName: data.lastName, dateOfBirth: formattedDOB,
-                mobile: { countryCode: data.mobileCountryCode, number: data.mobileNumber }
-            });
-            nextStep();
-        } catch (error: any) {
-            setFormActionError(error.message || "Failed to save progress.");
-            setIsSubmittingForm(false);
-        }
-    }, [setKycData, nextStep]); // Removed form.getValues dependency
-
-    const handleSkip = useCallback(async () => {
-         if (!confirm("Skip identity verification for now? Some features will be limited.")) return;
-         if (backendStatus !== 'not_started') { setFormActionError("Cannot skip now."); return; }
-
-        setIsSkipping(true); setFormActionError(null);
-        try {
-            await kycService.skipKyc();
-            await refetchUser();
-            await fetchKycStatus(true);
-            router.push('/dashboard');
-        } catch (err: any) {
-            setFormActionError(err?.response?.data?.message || err.message || "Skip failed.");
-            setIsSkipping(false);
-        }
-    }, [backendStatus, refetchUser, fetchKycStatus, router]);
-
-    // --- Render Logic ---
-    if (isPageLoading || (kycLoadingStatus && !isPageLoading)) {
-        return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-primary" /> </div> );
+  const countryCodeOptions = useMemo<CountryCodeOption[]>(() => {
+    try {
+      const codesObject = countryCodes.customList(
+        "countryNameEn",
+        "+{countryCallingCode}"
+      );
+      return Object.entries(codesObject)
+        .map(([name, code]) => ({ value: code, label: `${name} (${code})` }))
+        .filter(
+          (option) =>
+            option.value &&
+            option.value !== "+" &&
+            option.label &&
+            option.label.trim() !== `(${option.value})`
+        )
+        .sort((a, b) => a.label.localeCompare(b.label));
+    } catch (error) {
+      console.error("Error generating country code list:", error);
+      return [{ value: "+1", label: "United States (+1)" }];
     }
-    if (!["not_started", "rejected", "skipped", "loading"].includes(backendStatus as string)) {
-        return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-primary" /> </div> );
+  }, []);
+
+  // Effect 1: Set UI step in context
+  useEffect(() => {
+    if (kycInitialized && pathname === "/kyc/personal") {
+      updateCurrentUiStepId("personal");
+    }
+  }, [kycInitialized, updateCurrentUiStepId, pathname]);
+
+  // Effect 2: Load initial/persisted data OR pre-fill
+  useEffect(() => {
+    if (!kycInitialized || authLoading) {
+      setIsPageLoading(true);
+      return;
+    }
+    if (
+      !["not_started", "rejected", "skipped", "loading"].includes(
+        backendStatus as string
+      )
+    ) {
+        // Allow loading even if status changes, let the render logic handle redirection/display
+        // If we set loading to false here, it might flicker before the redirect/final UI shows
+        // setIsPageLoading(false);
+        // Instead, rely on the later check in the return statement
     }
 
+    setIsPageLoading(true); // Assume loading until data is processed
+    let initialValues: Partial<PersonalDetailsFormData> = {};
+    const parsedDate = kycData.dateOfBirth
+      ? parseISO(kycData.dateOfBirth)
+      : undefined;
+    const validInitialDate =
+      parsedDate && isDateValid(parsedDate) ? parsedDate : undefined;
+
+    initialValues = {
+      firstName: kycData.firstName || "",
+      lastName: kycData.lastName || "",
+      dateOfBirth: validInitialDate,
+      mobileCountryCode: kycData.mobile?.countryCode || DEFAULT_COUNTRY_CODE,
+      mobileNumber: kycData.mobile?.number || "",
+    };
+
+    // Pre-fill name from user profile if empty and starting fresh
+    if (
+      !kycData.firstName &&
+      !kycData.lastName &&
+      user &&
+      (backendStatus === "not_started" || backendStatus === "skipped")
+    ) {
+      const nameParts = user.fullName?.trim().split(" ") || [];
+      initialValues.firstName = nameParts[0] || "";
+      initialValues.lastName = nameParts.slice(1).join(" ") || "";
+    }
+
+    // Ensure country code is valid
+    const finalCountryCode =
+      initialValues.mobileCountryCode || DEFAULT_COUNTRY_CODE;
+    initialValues.mobileCountryCode = countryCodeOptions.some(
+      (opt) => opt.value === finalCountryCode
+    )
+      ? finalCountryCode
+      : DEFAULT_COUNTRY_CODE;
+
+    form.reset(initialValues);
+
+    // Initialize calendar view based on loaded/default date
+    setCalendarDate(validInitialDate || subYears(new Date(), 30));
+
+    setIsPageLoading(false);
+  }, [
+    kycInitialized,
+    authLoading,
+    user,
+    backendStatus,
+    kycData,
+    form.reset, // form is stable, reset is not
+    countryCodeOptions,
+  ]); // Removed setCalendarDate from dependencies
+
+  // --- Event Handlers ---
+  const onSubmit = useCallback(
+    (data: PersonalDetailsFormData) => {
+      setIsSubmittingForm(true);
+      setFormActionError(null);
+      try {
+        const formattedDOB = format(data.dateOfBirth, "yyyy-MM-dd");
+        setKycData({
+          firstName: data.firstName,
+          lastName: data.lastName,
+          dateOfBirth: formattedDOB,
+          mobile: {
+            countryCode: data.mobileCountryCode,
+            number: data.mobileNumber,
+          },
+        });
+        // Simulate API call if needed here before nextStep()
+        nextStep();
+      } catch (error: any) {
+        console.error("Error during KYC data submission:", error);
+        setFormActionError(
+          error.message || "Failed to save progress. Please try again."
+        );
+        setIsSubmittingForm(false); // Ensure loading state is reset on error
+      }
+      // No finally block needed here as nextStep() navigates away
+      // Resetting isSubmitting might happen too late if navigation is instant
+      // If nextStep() was async and awaited, finally would be appropriate.
+    },
+    [setKycData, nextStep]
+  );
+
+  const handleSkip = useCallback(async () => {
+    if (
+      !confirm(
+        "Skip identity verification for now? Some features will be limited."
+      )
+    )
+      return;
+
+    setIsSkipping(true);
+    setFormActionError(null);
+    try {
+      await kycService.skipKyc();
+      await refetchUser(); // Update user context (might have kycSkipped flag)
+      await fetchKycStatus(true); // Force fetch new backend status (should be 'skipped')
+      router.push("/dashboard"); // Navigate away after successful skip
+    } catch (err: any) {
+      console.error("Error skipping KYC:", err);
+      setFormActionError(
+        err?.response?.data?.message || err.message || "Skip failed."
+      );
+      setIsSkipping(false); // Reset loading state only on error
+    }
+  }, [refetchUser, fetchKycStatus, router]);
+
+  // --- Date Picker Dropdown Handlers ---
+  const handleYearChange = (year: string) => {
+    const newDate = new Date(calendarDate); // Clone current calendar view date
+    newDate.setFullYear(Number.parseInt(year));
+    // Prevent setting date beyond allowed range if possible, although calendar `disabled` handles selection
+    const maxDate = startOfDay(subYears(new Date(), 18));
+    const minDate = new Date("1900-01-01");
+    if (newDate > maxDate) newDate.setMonth(maxDate.getMonth()); // Adjust month if year makes it invalid
+    if (newDate < minDate) newDate.setMonth(minDate.getMonth()); // Adjust month if year makes it invalid
+
+    setCalendarDate(newDate); // Update calendar view
+  };
+
+  const handleMonthChange = (month: string) => {
+    const newDate = new Date(calendarDate); // Clone current calendar view date
+    newDate.setMonth(datePickerMonths.indexOf(month));
+
+    // Prevent setting date beyond allowed range if possible
+    const maxDate = startOfDay(subYears(new Date(), 18));
+    const minDate = new Date("1900-01-01");
+    if (newDate > maxDate) newDate.setDate(maxDate.getDate()); // Adjust day if month makes it invalid
+    if (newDate < minDate) newDate.setDate(minDate.getDate()); // Adjust day if month makes it invalid
+
+    setCalendarDate(newDate); // Update calendar view
+  };
+
+  // --- Render Logic ---
+  // Combined loading state check
+  if (isPageLoading || (!kycInitialized && authLoading) || kycLoadingStatus) {
     return (
-        <Card className="w-full max-w-2xl mx-auto shadow-lg border border-border/40 animate-fadeIn">
-            <CardHeader>
-                <CardTitle className="text-2xl font-semibold tracking-tight flex items-center gap-2"> <User className="h-6 w-6 text-primary" /> Personal Details (Step {formStepOrder.indexOf('personal') + 1} of {formStepOrder.length}) </CardTitle>
-                <CardDescription>Enter your legal name, date of birth, and mobile number.</CardDescription>
-            </CardHeader>
-            <CardContent className="p-6 md:p-8">
-                 {formActionError && ( <Alert variant="destructive" className="mb-6"> <AlertTriangle className="h-4 w-4" /> <AlertTitle>Action Failed</AlertTitle> <AlertDescription>{formActionError}</AlertDescription> </Alert> )}
-                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                        {/* First Name & Last Name Fields */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6">
-                           <FormField control={form.control} name="firstName" render={({ field }) => (<FormItem><FormLabel>Legal First Name *</FormLabel><FormControl><Input placeholder="e.g., Jane" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                           <FormField control={form.control} name="lastName" render={({ field }) => (<FormItem><FormLabel>Legal Last Name *</FormLabel><FormControl><Input placeholder="e.g., Doe" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                        </div>
-
-                        {/* Date of Birth Field */}
-                        <FormField control={form.control} name="dateOfBirth" render={({ field }) => (
-                            <FormItem className="flex flex-col">
-                                <FormLabel>Date of Birth *</FormLabel>
-                                <Popover>
-                                    <PopoverTrigger asChild>
-                                        {/* FIX: Removed FormControl wrapper */}
-                                        <Button
-                                            variant={"outline"}
-                                            className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}
-                                        >
-                                            <CalendarIcon className="mr-2 h-4 w-4" />
-                                            {field.value && isDateValid(field.value) ? format(field.value, "PPP") : <span>Pick a date</span>}
-                                        </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0" align="start">
-                                        <Calendar
-                                            mode="single"
-                                            selected={field.value && isDateValid(field.value) ? field.value : undefined}
-                                            onSelect={(date) => { field.onChange(date || undefined); form.trigger("dateOfBirth"); }}
-                                            disabled={(date) => date > startOfDay(subYears(new Date(), 18)) || date < new Date("1900-01-01")}
-                                            initialFocus
-                                            defaultMonth={field.value && isDateValid(field.value) ? field.value : subYears(new Date(), 30)}
-                                            captionLayout="dropdown-buttons" fromYear={1900} toYear={new Date().getFullYear() - 18}
-                                        />
-                                    </PopoverContent>
-                                </Popover>
-                                <FormDescription>You must be 18 years or older.</FormDescription>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-
-                        {/* Mobile Number Fields */}
-                        <div className="space-y-2">
-                             <FormLabel className="flex items-center gap-1.5"><Phone className="h-4 w-4 text-muted-foreground"/> Mobile Number *</FormLabel>
-                             <div className="flex items-start gap-2">
-                                {/* Country Code */}
-                                <FormField control={form.control} name="mobileCountryCode" render={({ field }) => (
-                                    <FormItem className="flex flex-col w-1/3 max-w-[150px] shrink-0">
-                                        <Popover open={countryCodePopoverOpen} onOpenChange={setCountryCodePopoverOpen}>
-                                            <PopoverTrigger asChild>
-                                                {/* FIX: Removed FormControl wrapper */}
-                                                <Button
-                                                    variant="outline" role="combobox" aria-expanded={countryCodePopoverOpen}
-                                                    className={cn("w-full justify-between", !field.value && "text-muted-foreground")}
-                                                    aria-label="Select country calling code"
-                                                >
-                                                    {field.value ? field.value : "Code"}
-                                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                </Button>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="w-[300px] p-0">
-                                                <Command filter={(value, search) => { const option = countryCodeOptions.find(opt => opt.label.toLowerCase() === value.toLowerCase()); if (!option) return 0; const searchTerm = search.toLowerCase(); const isInLabel = option.label.toLowerCase().includes(searchTerm); const codeSearchTerm = searchTerm.startsWith('+') ? searchTerm.slice(1) : searchTerm; const isInCode = option.value.slice(1).includes(codeSearchTerm); return isInLabel || isInCode ? 1 : 0; }}>
-                                                    <CommandInput placeholder="Search country or code..." />
-                                                    <CommandList><CommandEmpty>No country found.</CommandEmpty><CommandGroup> {countryCodeOptions.map((option) => ( <CommandItem key={option.label} value={option.label} onSelect={(currentValue) => { const selectedOption = countryCodeOptions.find(opt => opt.label === currentValue); if (selectedOption) { form.setValue("mobileCountryCode", selectedOption.value, { shouldValidate: true }); } setCountryCodePopoverOpen(false); }}> <Check className={cn("mr-2 h-4 w-4", option.value === field.value ? "opacity-100" : "opacity-0")} /> {option.label} </CommandItem> ))} </CommandGroup></CommandList>
-                                                </Command>
-                                            </PopoverContent>
-                                        </Popover>
-                                        <FormMessage />
-                                    </FormItem>
-                                )} />
-                                {/* Number Input */}
-                                <FormField control={form.control} name="mobileNumber" render={({ field }) => (
-                                    <FormItem className="flex-grow">
-                                        {/* FormControl is correct here as it wraps the actual Input */}
-                                        <FormControl><Input type="tel" inputMode="numeric" placeholder="Enter number" {...field} /></FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )} />
-                             </div>
-                             <FormDescription>Used for verification and communications.</FormDescription>
-                        </div>
-
-                        {/* Navigation Buttons */}
-                        <div className="flex flex-col sm:flex-row justify-between items-center pt-6 border-t dark:border-border/50 mt-8 gap-4">
-                            <Button type="button" variant="outline" onClick={prevStep} disabled={isSubmittingForm || isSkipping}> <ArrowLeft className="mr-2 h-4 w-4" /> Back </Button>
-                            {backendStatus === 'not_started' && (
-                                <Button type="button" variant="ghost" onClick={handleSkip} disabled={isSubmittingForm || isSkipping} className="text-muted-foreground hover:text-foreground order-first sm:order-none" > {isSkipping ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null} Skip for Now </Button>
-                            )}
-                            <Button type="submit" disabled={isSubmittingForm || isSkipping || !form.formState.isValid}> {isSubmittingForm ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ArrowRight className="mr-2 h-4 w-4" />} Continue </Button>
-                        </div>
-                    </form>
-                 </Form>
-            </CardContent>
-        </Card>
+      <div className="flex justify-center items-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
     );
+  }
+
+  // Redirect or show different UI if KYC status is not one that requires this form
+  // This check happens *after* initial loading is done
+  if (
+    kycInitialized && // Ensure context is ready before checking status
+    !["not_started", "rejected", "skipped"].includes(backendStatus as string)
+  ) {
+    // Example: Redirect to a status page or dashboard
+    console.log(`KYC Status (${backendStatus}) doesn't require this form. Redirecting...`);
+    // router.push('/kyc/status'); // Or '/dashboard'
+    // For now, show a message indicating the state
+     return (
+       <div className="flex justify-center items-center min-h-[400px] text-center">
+         <Card className="p-6">
+           <CardTitle>KYC Status: {backendStatus}</CardTitle>
+           <CardDescription>
+             Personal details cannot be edited at this stage.
+           </CardDescription>
+           <Button onClick={() => router.push('/dashboard')} className="mt-4">Go to Dashboard</Button>
+         </Card>
+       </div>
+     );
+  }
+
+  return (
+    <Card className="w-full max-w-2xl mx-auto shadow border animate-fadeIn sm:p-8 p-4">
+      <CardHeader className="border-b pb-6 mb-6 space-y-2">
+        <CardTitle className="sm:text-2xl text-xl font-semibold tracking-tight flex items-start gap-2 text-mainheading dark:text-white">
+          <User className="h-6 w-6 text-primary mt-1 flex-shrink-0" /> Personal Details (Step 
+          {formStepOrder.indexOf("personal") + 1} of {formStepOrder.length})
+        </CardTitle>
+        <CardDescription className="text-gray-500 dark:text-gray-300">
+          Enter your legal name, date of birth, and mobile number. Fields marked with <span className="text-red-500">*</span> are required.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        {formActionError && (
+          <Alert variant="destructive" className="mb-6">
+            {" "}
+            <AlertTriangle className="h-4 w-4" />{" "}
+            <AlertTitle>Action Failed</AlertTitle>{" "}
+            <AlertDescription>{formActionError}</AlertDescription>{" "}
+          </Alert>
+        )}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {/* First Name & Last Name Fields */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6">
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-neutral-900 dark:text-white">
+                      Legal First Name <span className="text-red-500">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., Jane" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-neutral-900 dark:text-white">
+                      Legal Last Name <span className="text-red-500">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., Doe" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* Date of Birth Field */}
+            <FormField
+              control={form.control}
+              name="dateOfBirth"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel className="text-neutral-900 dark:text-white">
+                    Date of Birth <span className="text-red-500">*</span>
+                  </FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      {/* Button to trigger the popover */}
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-full h-12 justify-start text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {field.value && isDateValid(field.value) ? (
+                          format(field.value, "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      align="start"
+                      className="sm:w-[450px] max-h-[--radix-popover-content-available-height] p-0" // Adjusted padding
+                    >
+                      {/* --- Month/Year Selectors --- */}
+                      <div className="flex items-center justify-between gap-2 p-3 border-b">
+                        <Select
+                          value={datePickerMonths[calendarDate.getMonth()]}
+                          onValueChange={handleMonthChange}
+                        >
+                          <SelectTrigger className="w-36 h-8">
+                            <SelectValue placeholder="Month" />
+                          </SelectTrigger>
+                          <SelectContent className="h-72">
+                            {datePickerMonths.map((month) => (
+                              <SelectItem key={month} value={month}>
+                                {month}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        <Select
+                          value={calendarDate.getFullYear().toString()}
+                          onValueChange={handleYearChange}
+                        >
+                          <SelectTrigger className="w-28 h-8">
+                            <SelectValue placeholder="Year" />
+                          </SelectTrigger>
+                          <SelectContent className="h-72">
+                            {/* Removed extra div for better scrolling */}
+                            {datePickerYears.map((year) => (
+                                <SelectItem key={year} value={year.toString()}>
+                                  {year}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      {/* --- Calendar Component --- */}
+                      <Calendar
+                        mode="single"
+                        selected={
+                          field.value && isDateValid(field.value)
+                            ? field.value
+                            : undefined
+                        }
+                        onSelect={(date) => {
+                          field.onChange(date || undefined); // Update RHF state
+                          if (date) {
+                            setCalendarDate(date); // Sync calendar view to selected date
+                          }
+                          form.trigger("dateOfBirth"); // Trigger validation
+                        }}
+                        month={calendarDate} // Control displayed month/year
+                        onMonthChange={setCalendarDate} // Sync state when calendar arrows are used
+                        disabled={(date) =>
+                          date > startOfDay(subYears(new Date(), 18)) ||
+                          date < new Date("1900-01-01")
+                        }
+                        initialFocus // Focus calendar when opened
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormDescription className="text-gray-500 dark:text-gray-300 pt-1">
+                    You must be 18 years or older.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Mobile Number Fields */}
+            <div className="space-y-2">
+              <FormLabel className="flex items-center gap-1.5 text-neutral-900 dark:text-white">
+                <Phone className="h-4 w-4 text-muted-foreground" /> Mobile
+                Number <span className="text-red-500">*</span>
+              </FormLabel>
+              <div className="flex items-start gap-2">
+                {/* Country Code */}
+                <FormField
+                  control={form.control}
+                  name="mobileCountryCode"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-1/3 max-w-[150px] shrink-0">
+                      <Popover
+                        open={countryCodePopoverOpen}
+                        onOpenChange={setCountryCodePopoverOpen}
+                      >
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={countryCodePopoverOpen}
+                            className={cn(
+                              "w-full h-12 justify-between",
+                              !field.value && "text-muted-foreground"
+                            )}
+                            aria-label="Select country calling code"
+                          >
+                            {field.value
+                              ? field.value
+                              : "Code"}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent
+                          align="start"
+                          className="sm:w-[450px] max-h-[--radix-popover-content-available-height] p-0" // Removed padding for CommandList
+                        >
+                          <Command
+                            filter={(value, search) => {
+                              // Find the option object by its label (which is the 'value' in CommandItem)
+                               const option = countryCodeOptions.find(opt => opt.label.toLowerCase() === value.toLowerCase());
+                               if (!option) return 0;
+
+                               const searchTerm = search.toLowerCase().trim();
+                               if (!searchTerm) return 1; // Show all if search is empty
+
+                               // Check if label contains search term
+                               const isInLabel = option.label.toLowerCase().includes(searchTerm);
+
+                               // Check if code (without '+') contains search term (if search term is numeric)
+                               const codeWithoutPlus = option.value.slice(1);
+                               const searchTermIsNumeric = /^\d+$/.test(searchTerm);
+                               const searchTermMaybePlusNumeric = /^\+?\d+$/.test(searchTerm);
+                               const numericSearchTerm = searchTerm.replace(/^\+/, ''); // Remove leading + if present
+
+                               const isInCode = (searchTermIsNumeric || searchTermMaybePlusNumeric) && codeWithoutPlus.includes(numericSearchTerm);
+
+                              return (isInLabel || isInCode) ? 1 : 0;
+                            }}
+                          >
+                            <CommandInput placeholder="Search country or code..." />
+                            <CommandList>
+                              <CommandEmpty>No country found.</CommandEmpty>
+                              <CommandGroup className="max-h-[250px] overflow-y-auto"> {/* Added scroll */}
+                                {/* Removed extra div for better structure */}
+                                  {countryCodeOptions.map((option) => (
+                                    <CommandItem
+                                      key={option.label} // Use label as key since it's unique
+                                      value={option.label} // Set value to the label for filtering
+                                      onSelect={(currentValueLabel) => { // currentValue is the label string
+                                        const selectedOption =
+                                          countryCodeOptions.find(
+                                            (opt) => opt.label.toLowerCase() === currentValueLabel.toLowerCase() // Case-insensitive match
+                                          );
+                                        if (selectedOption) {
+                                          form.setValue(
+                                            "mobileCountryCode",
+                                            selectedOption.value,
+                                            { shouldValidate: true }
+                                          );
+                                        } else {
+                                           // Fallback or error handling if needed
+                                           console.warn("Could not find selected country code option:", currentValueLabel);
+                                           form.setValue("mobileCountryCode", DEFAULT_COUNTRY_CODE, { shouldValidate: true }); // Reset to default maybe?
+                                        }
+                                        setCountryCodePopoverOpen(false);
+                                      }}
+                                      className="flex justify-between items-center cursor-pointer" // Ensure proper styling
+                                    >
+                                      <span>{option.label}</span> {/* Display text */}
+                                      <Check
+                                        className={cn(
+                                          "ml-2 h-4 w-4",
+                                          option.value === field.value
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                    </CommandItem>
+                                  ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage /> {/* Sits below the popover trigger */}
+                    </FormItem>
+                  )}
+                />
+                {/* Number Input */}
+                <FormField
+                  control={form.control}
+                  name="mobileNumber"
+                  render={({ field }) => (
+                    <FormItem className="flex-grow">
+                      <FormControl>
+                        <Input
+                          type="tel"
+                          inputMode="numeric"
+                          placeholder="Enter number"
+                          {...field}
+                          className="h-12" // Match height of country code button
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormDescription className="text-gray-500 dark:text-gray-300 pt-1">
+                Used for verification and communications.
+              </FormDescription>
+            </div>
+
+            {/* Navigation Buttons */}
+            <div className="flex flex-col sm:flex-row justify-between items-center pt-6 border-t mt-6 gap-4">
+              {/* Back Button - Always visible? (Assuming there's always a step before or a way back) */}
+               <button
+                    type="button"
+                    className="inline-flex items-center justify-center bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={prevStep}
+                    disabled={isSubmittingForm || isSkipping}
+                    aria-label="Go back to previous step"
+                >
+                    <ArrowLeft className="mr-2 h-4 w-4" /> Back
+                </button>
+
+              {/* Skip Button - Conditional */}
+              {(backendStatus === "not_started" ||
+                backendStatus === "rejected" ||
+                backendStatus === "skipped") && (
+                <button
+                  type="button"
+                  onClick={handleSkip}
+                  disabled={isSubmittingForm || isSkipping}
+                  className="bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-6 py-3 h-12.5 w-full rounded-full transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                  aria-label="Skip KYC process for now"
+                >
+                  {isSkipping ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : null}
+                  Skip for Now
+                </button>
+              )}
+
+              {/* Continue Button */}
+              <button
+                type="submit"
+                className="inline-flex items-center justify-center bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={
+                  isSubmittingForm || isSkipping || !form.formState.isValid // Use react-hook-form's validation state
+                }
+                aria-label="Continue to next step"
+              >
+                Continue
+                {isSubmittingForm ? (
+                  <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                )}
+              </button>
+            </div>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
+  );
 }

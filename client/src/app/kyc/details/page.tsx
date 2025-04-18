@@ -187,7 +187,6 @@
 //     );
 // }
 
-
 // // frontend/src/app/kyc/details/page.tsx
 // 'use client';
 
@@ -414,7 +413,6 @@
 //         </Card>
 //     );
 // }
-
 
 // // frontend/src/app/kyc/details/page.tsx
 // 'use client';
@@ -732,7 +730,6 @@
 //     );
 // }
 
-
 // // frontend/src/app/kyc/details/page.tsx
 // 'use client';
 
@@ -886,7 +883,6 @@
 //     // Use form.reset directly in deps as recommended by react-hook-form docs
 //     // Add kycData fields individually if more granular control is needed, otherwise kycData obj is fine
 //     }, [kycInitialized, backendStatus, kycData, form.reset, countryOptions]);
-
 
 //     // --- Event Handlers ---
 //     const onSubmit = (data: DetailsFormData) => {
@@ -1433,219 +1429,908 @@
 //     );
 // }
 
+// // frontend/src/app/kyc/details/page.tsx
+// "use client";
+
+// import React, { useState, useEffect, useMemo, useCallback } from "react"; // Added useCallback
+// import { useForm } from "react-hook-form";
+// import { zodResolver } from "@hookform/resolvers/zod";
+// import * as z from "zod";
+// import { getData as getCountryData } from "country-list";
+
+// // --- UI Components ---
+// import { Button } from "@/components/ui/button";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
+// import {
+//   Form,
+//   FormControl,
+//   FormDescription,
+//   FormField,
+//   FormItem,
+//   FormLabel,
+//   FormMessage,
+// } from "@/components/ui/form";
+// import {
+//   Card,
+//   CardContent,
+//   CardHeader,
+//   CardTitle,
+//   CardDescription,
+// } from "@/components/ui/card";
+// import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+// import {
+//   Loader2,
+//   Briefcase,
+//   BadgeDollarSign,
+//   Globe,
+//   AlertTriangle,
+//   ArrowLeft,
+//   ArrowRight,
+//   Check,
+//   ChevronsUpDown,
+// } from "lucide-react";
+// import {
+//   Popover,
+//   PopoverContent,
+//   PopoverTrigger,
+// } from "@/components/ui/popover";
+// import {
+//   Command,
+//   CommandEmpty,
+//   CommandGroup,
+//   CommandInput,
+//   CommandItem,
+//   CommandList,
+// } from "@/components/ui/command";
+// import { cn } from "@/lib/utils";
+
+// // --- App Specific Imports ---
+// import { useKyc, formStepOrder } from "../../contexts/KycContext";
+// import type { SalaryRange } from "@/app/services/kyc";
+
+// // --- Zod Validation Schema ---
+// const salaryRangeValues: [SalaryRange, ...SalaryRange[]] = [
+//   "0-1000",
+//   "10000-50000",
+//   "50000-100000",
+//   "100000+",
+// ];
+// const salaryRangeEnum = z.enum(salaryRangeValues);
+
+// const detailsSchema = z.object({
+//   occupation: z
+//     .string()
+//     .trim()
+//     .max(100, { message: "Occupation cannot exceed 100 characters" })
+//     .optional()
+//     .transform((val) => (val === "" ? undefined : val)), // Empty string becomes undefined
+//   salaryRange: salaryRangeEnum.nullable().optional(), // Allows null or valid range
+//   nationality: z
+//     .string({ required_error: "Nationality is required." })
+//     .trim()
+//     .min(1, { message: "Nationality is required." }),
+// });
+
+// type DetailsFormData = z.infer<typeof detailsSchema>;
+
+// // --- Select Options ---
+// const salaryOptions: { value: SalaryRange; label: string }[] = [
+//   { value: "0-1000", label: "Below $10,000" },
+//   { value: "10000-50000", label: "$10,000 - $49,999" },
+//   { value: "50000-100000", label: "$50,000 - $99,999" },
+//   { value: "100000+", label: "$100,000 or more" },
+// ];
+// const occupationOptions: string[] = [
+//   "Student",
+//   "Employed",
+//   "Self-Employed",
+//   "Business Owner",
+//   "Investor",
+//   "Retired",
+//   "Unemployed",
+//   "Other",
+// ];
+
+// type CountryOption = { value: string; label: string };
+
+// // --- Component ---
+// export default function KycDetailsPage() {
+//   const {
+//     kycData,
+//     setKycData,
+//     nextStep,
+//     prevStep,
+//     updateCurrentUiStepId,
+//     isInitialized: kycInitialized,
+//     backendStatus,
+//     isLoadingStatus: kycLoadingStatus,
+//   } = useKyc();
+
+//   const [formError, setFormError] = useState<string | null>(null);
+//   const [isSubmitting, setIsSubmitting] = useState(false);
+//   const [isPageLoading, setIsPageLoading] = useState(true); // Local loading for form init
+//   const [nationalityPopoverOpen, setNationalityPopoverOpen] = useState(false);
+
+//   const countryOptions = useMemo<CountryOption[]>(() => {
+//     try {
+//       return getCountryData()
+//         .map((country: { name: string; code: string }) => ({
+//           value: country.name,
+//           label: country.name,
+//         }))
+//         .sort((a, b) => a.label.localeCompare(b.label));
+//     } catch (error) {
+//       console.error("Failed to load country data:", error);
+//       return [];
+//     }
+//   }, []);
+
+//   const form = useForm<DetailsFormData>({
+//     resolver: zodResolver(detailsSchema),
+//     defaultValues: {
+//       occupation: undefined,
+//       salaryRange: null,
+//       nationality: "",
+//     },
+//     mode: "onChange",
+//   });
+
+//   // Effect 1: Set UI step
+//   useEffect(() => {
+//     if (kycInitialized && window.location.pathname === "/kyc/details") {
+//       updateCurrentUiStepId("details");
+//     }
+//   }, [kycInitialized, updateCurrentUiStepId]);
+
+//   // Effect 2: Load data from context
+//   useEffect(() => {
+//     if (!kycInitialized || !countryOptions.length) {
+//       setIsPageLoading(true);
+//       return;
+//     }
+//     // If status not suitable, context handles redirect, stop loading
+//     if (
+//       !["not_started", "rejected", "skipped", "loading"].includes(
+//         backendStatus as string
+//       )
+//     ) {
+//       setIsPageLoading(false);
+//       return;
+//     }
+
+//     setIsPageLoading(true);
+//     form.reset({
+//       occupation: kycData.occupation || undefined,
+//       salaryRange:
+//         kycData.salaryRange && salaryRangeValues.includes(kycData.salaryRange)
+//           ? kycData.salaryRange
+//           : null,
+//       nationality: countryOptions.some((c) => c.value === kycData.nationality)
+//         ? kycData.nationality ?? ""
+//         : "",
+//     });
+//     setIsPageLoading(false);
+//   }, [kycInitialized, backendStatus, kycData, form.reset, countryOptions]);
+
+//   // --- Event Handlers ---
+//   const onSubmit = useCallback(
+//     (data: DetailsFormData) => {
+//       setIsSubmitting(true);
+//       setFormError(null);
+//       try {
+//         setKycData({
+//           occupation: data.occupation || undefined,
+//           salaryRange: data.salaryRange || null,
+//           nationality: data.nationality,
+//         });
+//         nextStep();
+//       } catch (error: any) {
+//         setFormError(error.message || "Failed to save progress.");
+//         setIsSubmitting(false); // Only reset on error
+//       }
+//     },
+//     [setKycData, nextStep]
+//   ); // Minimal deps
+
+//   // --- Render Logic ---
+//   // Simplified Loading
+//   if (isPageLoading || (kycLoadingStatus && !isPageLoading)) {
+//     return (
+//       <div className="flex justify-center items-center min-h-[400px]">
+//         {" "}
+//         <Loader2 className="h-8 w-8 animate-spin text-primary" />{" "}
+//       </div>
+//     );
+//   }
+//   // Waiting for Redirect
+//   if (
+//     !["not_started", "rejected", "skipped", "loading"].includes(
+//       backendStatus as string
+//     )
+//   ) {
+//     return (
+//       <div className="flex justify-center items-center min-h-[400px]">
+//         {" "}
+//         <Loader2 className="h-8 w-8 animate-spin text-primary" />{" "}
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <Card className="w-full max-w-2xl mx-auto shadow-lg border animate-fadeIn sm:p-8 p-4">
+//       <CardHeader className="border-b pb-6 mb-6 space-y-2">
+//         <CardTitle className="text-2xl font-semibold tracking-tight flex items-start gap-2 text-mainheading dark:text-white">
+//           {" "}
+//           <Briefcase className="h-6 w-6 text-primary mt-1" /> Additional
+//           Details&nbsp;(Step {formStepOrder.indexOf("details") + 1}
+//           &nbsp;of&nbsp;{formStepOrder.length}){" "}
+//         </CardTitle>
+//         <CardDescription className="text-gray-500 dark:text-gray-300">
+//           {" "}
+//           Please provide your occupation, annual income range and nationality.{" "}
+//         </CardDescription>
+//       </CardHeader>
+//       <CardContent>
+//         {formError && (
+//           <Alert variant="destructive" className="mb-6">
+//             {" "}
+//             <AlertTriangle className="h-4 w-4" /> <AlertTitle>Error</AlertTitle>{" "}
+//             <AlertDescription>{formError}</AlertDescription>{" "}
+//           </Alert>
+//         )}
+//         <Form {...form}>
+//           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+//             {/* Occupation Select (Required) */}
+//             <FormField
+//               control={form.control}
+//               name="occupation"
+//               render={({ field }) => (
+//                 <FormItem>
+//                   <FormLabel className="flex items-center gap-1.5 text-neutral-900 dark:text-white">
+//                     {" "}
+//                     <Briefcase className="h-4 w-4 text-muted-foreground" />{" "}
+//                     Occupation *{" "}
+//                   </FormLabel>
+//                   <Select
+//                     onValueChange={field.onChange} // Pass undefined if value is "" (handled by zod transform)
+//                     value={field.value ?? ""} // Map undefined/null to "" for Select state
+//                   >
+//                     <FormControl>
+//                       <SelectTrigger className="w-full">
+//                         {" "}
+//                         <SelectValue placeholder="Select your occupation" />{" "}
+//                       </SelectTrigger>
+//                     </FormControl>
+//                     <SelectContent>
+//                       {/* Removed explicit empty item */}
+//                       {occupationOptions.map((opt) => (
+//                         <SelectItem key={opt} value={opt}>
+//                           {opt}
+//                         </SelectItem>
+//                       ))}
+//                     </SelectContent>
+//                   </Select>
+//                   <FormDescription className="text-gray-500 dark:text-gray-300">
+//                     Your primary professional activity.
+//                   </FormDescription>{" "}
+//                   <FormMessage />
+//                 </FormItem>
+//               )}
+//             />
+
+//             {/* Salary Range Select (Required) */}
+//             <FormField
+//               control={form.control}
+//               name="salaryRange"
+//               render={({ field }) => (
+//                 <FormItem>
+//                   <FormLabel className="flex items-center gap-1.5 text-neutral-900 dark:text-white">
+//                     {" "}
+//                     <BadgeDollarSign className="h-4 w-4 text-muted-foreground" />{" "}
+//                     Annual Income Range *{" "}
+//                   </FormLabel>
+//                   <Select
+//                     onValueChange={(value) => field.onChange(value || null)} // Pass null if value is ""
+//                     value={field.value ?? ""} // Map null/undefined to "" for Select state
+//                   >
+//                     <FormControl>
+//                       <SelectTrigger className="w-full">
+//                         {" "}
+//                         <SelectValue placeholder="Select income range" />{" "}
+//                       </SelectTrigger>
+//                     </FormControl>
+//                     <SelectContent>
+//                       {/* Removed explicit empty item */}
+//                       {salaryOptions.map((opt) => (
+//                         <SelectItem key={opt.value} value={opt.value}>
+//                           {opt.label}
+//                         </SelectItem>
+//                       ))}
+//                     </SelectContent>
+//                   </Select>
+//                   <FormDescription className="text-gray-500 dark:text-gray-300">
+//                     Approximate yearly income.
+//                   </FormDescription>{" "}
+//                   <FormMessage />
+//                 </FormItem>
+//               )}
+//             />
+
+//             {/* Nationality Combobox (Required) */}
+//             <FormField
+//               control={form.control}
+//               name="nationality"
+//               render={({ field }) => (
+//                 <FormItem className="flex flex-col">
+//                   <FormLabel className="flex items-center gap-1.5 text-neutral-900 dark:text-white">
+//                     <Globe className="h-4 w-4 text-muted-foreground" />{" "}
+//                     Nationality *
+//                   </FormLabel>
+//                   <Popover
+//                     open={nationalityPopoverOpen}
+//                     onOpenChange={setNationalityPopoverOpen}
+//                   >
+//                     <PopoverTrigger asChild>
+//                       {/* FIX: Removed FormControl wrapper */}
+//                       <Button
+//                         variant="outline"
+//                         role="combobox"
+//                         aria-expanded={nationalityPopoverOpen}
+//                         aria-label="Select nationality"
+//                         className={cn(
+//                           "w-full h-12 justify-between",
+//                           !field.value && "text-muted-foreground"
+//                         )}
+//                       >
+//                         {" "}
+//                         {field.value
+//                           ? countryOptions.find(
+//                               (country) => country.value === field.value
+//                             )?.label
+//                           : "Select nationality..."}{" "}
+//                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />{" "}
+//                       </Button>
+//                     </PopoverTrigger>
+//                     <PopoverContent
+//                       align="start"
+//                       className="w-[--radix-popover-trigger-width] max-h-[--radix-popover-content-available-height]"
+//                     >
+//                       <Command
+//                         filter={(value, search) => {
+//                           const label =
+//                             countryOptions.find(
+//                               (c) =>
+//                                 c.value.toLowerCase() === value.toLowerCase()
+//                             )?.label ?? "";
+//                           return label
+//                             .toLowerCase()
+//                             .includes(search.toLowerCase())
+//                             ? 1
+//                             : 0;
+//                         }}
+//                       >
+//                         <CommandInput placeholder="Search nationality..." />
+//                         <CommandList>
+//                           {" "}
+//                           <CommandEmpty>
+//                             No nationality found.
+//                           </CommandEmpty>{" "}
+//                           <CommandGroup>
+//                             <div className="space-y-1">
+//                               {countryOptions.map((country) => (
+//                                 <CommandItem
+//                                   value={country.value}
+//                                   key={country.value}
+//                                   onSelect={(currentValue) => {
+//                                     form.setValue("nationality", currentValue, {
+//                                       shouldValidate: true,
+//                                     });
+//                                     setNationalityPopoverOpen(false);
+//                                   }}
+//                                 >
+//                                   {" "}
+//                                   {country.label}{" "}
+//                                   <Check
+//                                     className={cn(
+//                                       "ml-2 h-4 w-4",
+//                                       country.value === field.value
+//                                         ? "opacity-100"
+//                                         : "opacity-0"
+//                                     )}
+//                                   />{" "}
+//                                 </CommandItem>
+//                               ))}
+//                             </div>
+//                           </CommandGroup>{" "}
+//                         </CommandList>
+//                       </Command>
+//                     </PopoverContent>
+//                   </Popover>
+//                   <FormDescription className="text-gray-500 dark:text-gray-300">
+//                     Your country of citizenship.
+//                   </FormDescription>{" "}
+//                   <FormMessage />
+//                 </FormItem>
+//               )}
+//             />
+
+//             {/* Navigation Buttons */}
+//             <div className="flex flex-col sm:flex-row justify-between items-center pt-6 border-t mt-6  gap-4">
+//               <button
+//                 type="button"
+//                 className="inline-flex items-center justify-center bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none"
+//                 onClick={prevStep}
+//                 disabled={isSubmitting}
+//               >
+//                 {" "}
+//                 <ArrowLeft className="mr-2 size-4.5" /> Back{" "}
+//               </button>
+
+//               {/* Continue Button */}
+//               <button
+//                 type="submit"
+//                 className=" inline-flex items-center justify-center bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none"
+//                 disabled={isSubmitting || !form.formState.isValid}
+//               >
+//                 {" "}
+//                 Continue{" "}
+//                 {isSubmitting ? (
+//                   <Loader2 className="ml-2 size-4.5 animate-spin" />
+//                 ) : (
+//                   <ArrowRight className="ml-2 size-4.5" />
+//                 )}{" "}
+//               </button>
+//             </div>
+//           </form>
+//         </Form>
+//       </CardContent>
+//     </Card>
+//   );
+// }
+
+
+
+
 
 // frontend/src/app/kyc/details/page.tsx
-'use client';
+"use client";
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react'; // Added useCallback
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { getData as getCountryData } from 'country-list';
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { getData as getCountryData } from "country-list";
 
 // --- UI Components ---
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+// Removed Form components tied to react-hook-form
+import { Label } from "@/components/ui/label"; // Using Label component
+import { Input } from "@/components/ui/input"; // Although not used, kept for potential future use
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader2, Briefcase, BadgeDollarSign, Globe, AlertTriangle, ArrowLeft, ArrowRight, Check, ChevronsUpDown } from 'lucide-react';
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { cn } from '@/lib/utils';
+import {
+  Loader2,
+  Briefcase,
+  BadgeDollarSign,
+  Globe,
+  AlertTriangle,
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  ChevronsUpDown,
+} from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { cn } from "@/lib/utils";
 
 // --- App Specific Imports ---
-import { useKyc, formStepOrder } from '../../contexts/KycContext';
-import type { SalaryRange } from '@/app/services/kyc';
+import { useKyc, formStepOrder } from "../../contexts/KycContext";
+import type { SalaryRange } from "@/app/services/kyc";
 
-// --- Zod Validation Schema ---
-const salaryRangeValues: [SalaryRange, ...SalaryRange[]] = ['0-1000', '10000-50000', '50000-100000', '100000+'];
-const salaryRangeEnum = z.enum(salaryRangeValues);
+// Removed Zod Validation Schema
 
-const detailsSchema = z.object({
-    occupation: z.string().trim()
-        .max(100, { message: 'Occupation cannot exceed 100 characters' })
-        .optional()
-        .transform(val => val === '' ? undefined : val), // Empty string becomes undefined
-    salaryRange: salaryRangeEnum.nullable().optional(), // Allows null or valid range
-    nationality: z.string({ required_error: "Nationality is required." })
-        .trim()
-        .min(1, { message: 'Nationality is required.' }),
-});
-
-type DetailsFormData = z.infer<typeof detailsSchema>;
+// Define salary range values explicitly for type safety and usage
+const salaryRangeValues: SalaryRange[] = [
+  "0-1000",
+  "10000-50000",
+  "50000-100000",
+  "100000+",
+];
 
 // --- Select Options ---
 const salaryOptions: { value: SalaryRange; label: string }[] = [
-    { value: '0-1000', label: 'Below $10,000' },
-    { value: '10000-50000', label: '$10,000 - $49,999' },
-    { value: '50000-100000', label: '$50,000 - $99,999' },
-    { value: '100000+', label: '$100,000 or more' },
+  { value: "0-1000", label: "Below $10,000" },
+  { value: "10000-50000", label: "$10,000 - $49,999" },
+  { value: "50000-100000", label: "$50,000 - $99,999" },
+  { value: "100000+", label: "$100,000 or more" },
 ];
-const occupationOptions: string[] = ['Student', 'Employed', 'Self-Employed', 'Business Owner', 'Investor', 'Retired', 'Unemployed', 'Other'];
+const occupationOptions: string[] = [
+  "Student",
+  "Employed",
+  "Self-Employed",
+  "Business Owner",
+  "Investor",
+  "Retired",
+  "Unemployed",
+  "Other",
+];
 
-type CountryOption = { value: string; label: string; };
+type CountryOption = { value: string; label: string };
 
 // --- Component ---
 export default function KycDetailsPage() {
-    const {
-        kycData, setKycData, nextStep, prevStep, updateCurrentUiStepId,
-        isInitialized: kycInitialized, backendStatus, isLoadingStatus: kycLoadingStatus
-    } = useKyc();
+  const {
+    kycData,
+    setKycData,
+    nextStep,
+    prevStep,
+    updateCurrentUiStepId,
+    isInitialized: kycInitialized,
+    backendStatus,
+    isLoadingStatus: kycLoadingStatus,
+  } = useKyc();
 
-    const [formError, setFormError] = useState<string | null>(null);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [isPageLoading, setIsPageLoading] = useState(true); // Local loading for form init
-    const [nationalityPopoverOpen, setNationalityPopoverOpen] = useState(false);
+  // --- State Management ---
+  const [occupation, setOccupation] = useState<string | undefined>(undefined);
+  const [salaryRange, setSalaryRange] = useState<SalaryRange | null>(null);
+  const [nationality, setNationality] = useState<string>("");
+  const [formError, setFormError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPageLoading, setIsPageLoading] = useState(true);
+  const [nationalityPopoverOpen, setNationalityPopoverOpen] = useState(false);
 
-    const countryOptions = useMemo<CountryOption[]>(() => {
-        try {
-            return getCountryData()
-                .map((country: { name: string; code: string }) => ({ value: country.name, label: country.name }))
-                .sort((a, b) => a.label.localeCompare(b.label));
-        } catch (error) { console.error("Failed to load country data:", error); return []; }
-    }, []);
-
-    const form = useForm<DetailsFormData>({
-        resolver: zodResolver(detailsSchema),
-        defaultValues: { occupation: undefined, salaryRange: null, nationality: '' },
-        mode: 'onChange',
-    });
-
-    // Effect 1: Set UI step
-    useEffect(() => {
-        if (kycInitialized && window.location.pathname === '/kyc/details') {
-            updateCurrentUiStepId('details');
-        }
-    }, [kycInitialized, updateCurrentUiStepId]);
-
-    // Effect 2: Load data from context
-    useEffect(() => {
-        if (!kycInitialized || !countryOptions.length) {
-            setIsPageLoading(true); return;
-        }
-        // If status not suitable, context handles redirect, stop loading
-        if (!["not_started", "rejected", "skipped", "loading"].includes(backendStatus as string)) {
-            setIsPageLoading(false); return;
-        }
-
-        setIsPageLoading(true);
-        form.reset({
-            occupation: kycData.occupation || undefined,
-            salaryRange: kycData.salaryRange && salaryRangeValues.includes(kycData.salaryRange) ? kycData.salaryRange : null,
-            nationality: countryOptions.some(c => c.value === kycData.nationality) ? kycData.nationality ?? '' : '',
-        });
-        setIsPageLoading(false);
-    }, [kycInitialized, backendStatus, kycData, form.reset, countryOptions]);
-
-    // --- Event Handlers ---
-    const onSubmit = useCallback((data: DetailsFormData) => {
-        setIsSubmitting(true); setFormError(null);
-        try {
-            setKycData({
-                occupation: data.occupation || undefined,
-                salaryRange: data.salaryRange || null,
-                nationality: data.nationality,
-            });
-            nextStep();
-        } catch (error: any) {
-            setFormError(error.message || "Failed to save progress.");
-            setIsSubmitting(false); // Only reset on error
-        }
-    }, [setKycData, nextStep]); // Minimal deps
-
-    // --- Render Logic ---
-    // Simplified Loading
-    if (isPageLoading || (kycLoadingStatus && !isPageLoading)) {
-        return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-primary" /> </div> );
+  const countryOptions = useMemo<CountryOption[]>(() => {
+    try {
+      return getCountryData()
+        .map((country: { name: string; code: string }) => ({
+          value: country.name, // Use full name as value to match selection logic
+          label: country.name,
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label));
+    } catch (error) {
+      console.error("Failed to load country data:", error);
+      return [];
     }
-    // Waiting for Redirect
-    if (!["not_started", "rejected", "skipped", "loading"].includes(backendStatus as string)) {
-        return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-primary" /> </div> );
+  }, []);
+
+  // Effect 1: Set UI step
+  useEffect(() => {
+    if (kycInitialized && window.location.pathname === "/kyc/details") {
+      updateCurrentUiStepId("details");
+    }
+  }, [kycInitialized, updateCurrentUiStepId]);
+
+  // Effect 2: Load data from context
+  useEffect(() => {
+    if (!kycInitialized || !countryOptions.length) {
+      setIsPageLoading(true);
+      return;
+    }
+    // If status not suitable, context handles redirect, stop loading
+    if (
+      !["not_started", "rejected", "skipped", "loading"].includes(
+        backendStatus as string
+      )
+    ) {
+      setIsPageLoading(false);
+      return;
     }
 
-    return (
-        <Card className="w-full max-w-2xl mx-auto shadow-lg border border-border/40 animate-fadeIn">
-             <CardHeader>
-                <CardTitle className="text-2xl font-semibold tracking-tight flex items-center gap-2"> <Briefcase className="h-6 w-6 text-primary" /> Additional Details (Step {formStepOrder.indexOf('details') + 1} of {formStepOrder.length}) </CardTitle>
-                <CardDescription> Please provide your nationality. Other details are optional. </CardDescription>
-            </CardHeader>
-             <CardContent className="p-6 md:p-8">
-                 {formError && ( <Alert variant="destructive" className="mb-6"> <AlertTriangle className="h-4 w-4" /> <AlertTitle>Error</AlertTitle> <AlertDescription>{formError}</AlertDescription> </Alert> )}
-                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-
-                        {/* Occupation Select (Optional) */}
-                        <FormField control={form.control} name="occupation" render={({ field }) => (
-                             <FormItem>
-                                <FormLabel className="flex items-center gap-1.5"> <Briefcase className="h-4 w-4 text-muted-foreground"/> Occupation (Optional) </FormLabel>
-                                <Select
-                                    onValueChange={field.onChange} // Pass undefined if value is "" (handled by zod transform)
-                                    value={field.value ?? ""} // Map undefined/null to "" for Select state
-                                >
-                                    <FormControl>
-                                        <SelectTrigger> <SelectValue placeholder="Select your occupation" /> </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        {/* Removed explicit empty item */}
-                                        {occupationOptions.map(opt => ( <SelectItem key={opt} value={opt}>{opt}</SelectItem> ))}
-                                    </SelectContent>
-                                </Select>
-                                <FormDescription>Your primary professional activity.</FormDescription> <FormMessage />
-                            </FormItem>
-                        )} />
-
-                        {/* Salary Range Select (Optional) */}
-                        <FormField control={form.control} name="salaryRange" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel className="flex items-center gap-1.5"> <BadgeDollarSign className="h-4 w-4 text-muted-foreground"/> Annual Income Range (Optional) </FormLabel>
-                                <Select
-                                    onValueChange={(value) => field.onChange(value || null)} // Pass null if value is ""
-                                    value={field.value ?? ""} // Map null/undefined to "" for Select state
-                                >
-                                    <FormControl>
-                                        <SelectTrigger> <SelectValue placeholder="Select income range" /> </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        {/* Removed explicit empty item */}
-                                        {salaryOptions.map(opt => ( <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem> ))}
-                                    </SelectContent>
-                                </Select>
-                                 <FormDescription>Approximate yearly income.</FormDescription> <FormMessage />
-                            </FormItem>
-                        )} />
-
-                        {/* Nationality Combobox (Required) */}
-                        <FormField control={form.control} name="nationality" render={({ field }) => (
-                                <FormItem className="flex flex-col">
-                                    <FormLabel className="flex items-center gap-1.5"><Globe className="h-4 w-4 text-muted-foreground"/> Nationality *</FormLabel>
-                                    <Popover open={nationalityPopoverOpen} onOpenChange={setNationalityPopoverOpen}>
-                                        <PopoverTrigger asChild>
-                                            {/* FIX: Removed FormControl wrapper */}
-                                            <Button variant="outline" role="combobox" aria-expanded={nationalityPopoverOpen} aria-label="Select nationality" className={cn( "w-full justify-between", !field.value && "text-muted-foreground" )} > {field.value ? countryOptions.find((country) => country.value === field.value)?.label : "Select nationality..."} <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" /> </Button>
-                                        </PopoverTrigger>
-                                        <PopoverContent align="start" className="w-[--radix-popover-trigger-width] max-h-[--radix-popover-content-available-height] p-0">
-                                            <Command filter={(value, search) => { const label = countryOptions.find(c => c.value.toLowerCase() === value.toLowerCase())?.label ?? ''; return label.toLowerCase().includes(search.toLowerCase()) ? 1 : 0; }}>
-                                                <CommandInput placeholder="Search nationality..." />
-                                                <CommandList> <CommandEmpty>No nationality found.</CommandEmpty> <CommandGroup>
-                                                        {countryOptions.map((country) => ( <CommandItem value={country.value} key={country.value} onSelect={(currentValue) => { form.setValue("nationality", currentValue, { shouldValidate: true }); setNationalityPopoverOpen(false); }} > <Check className={cn( "mr-2 h-4 w-4", country.value === field.value ? "opacity-100" : "opacity-0" )} /> {country.label} </CommandItem> ))}
-                                                </CommandGroup> </CommandList>
-                                            </Command>
-                                        </PopoverContent>
-                                    </Popover>
-                                    <FormDescription>Your country of citizenship.</FormDescription> <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        {/* Navigation Buttons */}
-                        <div className="flex justify-between items-center pt-6 border-t dark:border-border/50 mt-8">
-                            <Button type="button" variant="outline" onClick={prevStep} disabled={isSubmitting}> <ArrowLeft className="mr-2 h-4 w-4" /> Back </Button>
-                            <Button type="submit" disabled={isSubmitting || !form.formState.isValid}> {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ArrowRight className="mr-2 h-4 w-4" />} Continue </Button>
-                        </div>
-                    </form>
-                 </Form>
-             </CardContent>
-        </Card>
+    setIsPageLoading(true);
+    // Set state directly from kycData
+    setOccupation(kycData.occupation || undefined);
+    setSalaryRange(
+      kycData.salaryRange && salaryRangeValues.includes(kycData.salaryRange)
+        ? kycData.salaryRange
+        : null
     );
+    setNationality(
+      countryOptions.some((c) => c.value === kycData.nationality)
+        ? kycData.nationality ?? ""
+        : ""
+    );
+    setIsPageLoading(false);
+  }, [kycInitialized, backendStatus, kycData, countryOptions]); // Removed form.reset dependency
+
+  // --- Input Handlers ---
+  const handleOccupationChange = useCallback((value: string) => {
+    setOccupation(value === "" ? undefined : value);
+  }, []);
+
+  const handleSalaryChange = useCallback((value: string) => {
+    // Ensure value is a valid SalaryRange or null
+    const validRange = salaryRangeValues.find((r) => r === value);
+    setSalaryRange(validRange ?? null);
+  }, []);
+
+  const handleNationalityChange = useCallback((value: string) => {
+    // Find the country object to ensure we store the correct value format if needed
+    // Here, we assume the value passed from CommandItem is the correct one (country.name)
+    setNationality(value);
+    setNationalityPopoverOpen(false); // Close popover on selection
+  }, []);
+
+  // --- Form Submission ---
+  const handleSubmit = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault(); // Prevent default form submission
+      setIsSubmitting(true);
+      setFormError(null);
+
+      // Basic validation (redundant due to button disable, but good practice)
+      if (!occupation || !salaryRange || !nationality) {
+        setFormError("Please fill in all required fields.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      try {
+        setKycData({
+          occupation: occupation,
+          salaryRange: salaryRange,
+          nationality: nationality,
+        });
+        nextStep();
+      } catch (error: any) {
+        setFormError(error.message || "Failed to save progress.");
+        setIsSubmitting(false); // Only reset on error
+      }
+      // Do not setIsSubmitting(false) here on success, as nextStep() handles navigation
+    },
+    [occupation, salaryRange, nationality, setKycData, nextStep]
+  );
+
+  // --- Derived State ---
+  const isFormValid = !!occupation && !!salaryRange && !!nationality;
+
+  // --- Render Logic ---
+  if (isPageLoading || (kycLoadingStatus && !isPageLoading)) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+  // Waiting for Redirect
+  if (
+    !["not_started", "rejected", "skipped", "loading"].includes(
+      backendStatus as string
+    )
+  ) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  return (
+    <Card className="w-full max-w-2xl mx-auto shadow border animate-fadeIn sm:p-8 p-4">
+      <CardHeader className="border-b pb-6 mb-6 space-y-2">
+        <CardTitle className="sm:text-2xl text-xl font-semibold tracking-tight flex items-start gap-2 text-mainheading dark:text-white">
+          <Briefcase className="h-6 w-6 text-primary mt-1" /> Additional
+          Details (Step {formStepOrder.indexOf("details") + 1}
+           of {formStepOrder.length})
+        </CardTitle>
+        <CardDescription className="text-gray-500 dark:text-gray-300">
+          Please provide your occupation, annual income range and nationality. Fields marked with <span className="text-red-500">*</span> are required.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        {formError && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{formError}</AlertDescription>
+          </Alert>
+        )}
+        {/* Use standard form element */}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Occupation Select */}
+          <div className="space-y-2">
+            {" "}
+            {/* Mimics FormItem spacing */}
+            <Label className="flex items-center gap-1.5 text-neutral-900 dark:text-white">
+              {" "}
+              {/* Replaces FormLabel */}
+              <Briefcase className="h-4 w-4 text-muted-foreground" /> Occupation{" "}
+              <span className="text-red-500">*</span>{" "}
+            </Label>
+            <Select
+              onValueChange={handleOccupationChange}
+              value={occupation ?? ""} // Map undefined/null to "" for Select state
+            >
+              {/* Removed FormControl */}
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select your occupation" />
+              </SelectTrigger>
+              <SelectContent>
+                {occupationOptions.map((opt) => (
+                  <SelectItem key={opt} value={opt}>
+                    {opt}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-sm text-gray-500 dark:text-gray-300">
+              {" "}
+              {/* Replaces FormDescription */}
+              Your primary professional activity.
+            </p>
+            {/* Removed FormMessage - add manual error display if needed */}
+          </div>
+
+          {/* Salary Range Select */}
+          <div className="space-y-2">
+            <Label className="flex items-center gap-1.5 text-neutral-900 dark:text-white">
+              <BadgeDollarSign className="h-4 w-4 text-muted-foreground" />{" "}
+              Annual Income Range <span className="text-red-500">*</span>
+            </Label>
+            <Select
+              onValueChange={handleSalaryChange}
+              value={salaryRange ?? ""} // Map null/undefined to "" for Select state
+            >
+              {/* Removed FormControl */}
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select income range" />
+              </SelectTrigger>
+              <SelectContent>
+                {salaryOptions.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-sm text-gray-500 dark:text-gray-300">
+              Approximate yearly income.
+            </p>
+          </div>
+
+          {/* Nationality Combobox */}
+          <div className="space-y-2 flex flex-col">
+            {" "}
+            {/* Mimics FormItem structure */}
+            <Label className="flex items-center gap-1.5 text-neutral-900 dark:text-white">
+              <Globe className="h-4 w-4 text-muted-foreground" /> Nationality{" "}
+              <span className="text-red-500">*</span>
+            </Label>
+            <Popover
+              open={nationalityPopoverOpen}
+              onOpenChange={setNationalityPopoverOpen}
+            >
+              <PopoverTrigger asChild>
+                {/* No FormControl wrapper */}
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={nationalityPopoverOpen}
+                  aria-label="Select nationality"
+                  className={cn(
+                    "w-full h-12 justify-between", // Adjusted height to match input
+                    !nationality && "text-muted-foreground"
+                  )}
+                >
+                  {nationality
+                    ? countryOptions.find(
+                        (country) => country.value === nationality // Compare value
+                      )?.label
+                    : "Select nationality..."}
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                align="start"
+                className="w-[--radix-popover-trigger-width] max-h-[--radix-popover-content-available-height]"
+              >
+                <Command
+                  filter={(value, search) => {
+                    // Ensure comparison happens correctly (using label for search)
+                    const country = countryOptions.find(
+                      (c) => c.value.toLowerCase() === value.toLowerCase()
+                    );
+                    const label = country?.label ?? "";
+                    return label.toLowerCase().includes(search.toLowerCase())
+                      ? 1
+                      : 0;
+                  }}
+                >
+                  <CommandInput placeholder="Search nationality..." />
+                  <CommandList>
+                    <CommandEmpty>No nationality found.</CommandEmpty>
+                    <CommandGroup>
+                      <div className="space-y-1">
+                        {countryOptions.map((country) => (
+                          <CommandItem
+                            value={country.value} // Use the value for selection logic
+                            key={country.value}
+                            onSelect={(currentValue) => {
+                               // Find the selected country's full name (value)
+                               const selectedValue = countryOptions.find(c => c.value.toLowerCase() === currentValue.toLowerCase())?.value || "";
+                               handleNationalityChange(selectedValue); // Update state
+                            }}
+                          >
+                            {country.label}
+                            <Check
+                              className={cn(
+                                "ml-2 h-4 w-4",
+                                country.value === nationality
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                              )}
+                            />
+                          </CommandItem>
+                        ))}
+                      </div>
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+            <p className="text-sm text-gray-500 dark:text-gray-300">
+              Your country of citizenship.
+            </p>
+            {/* Display error manually if needed */}
+            {!nationality && formError && (
+                <p className="text-sm font-medium text-destructive">{formError}</p> // Example error display
+            )}
+          </div>
+
+          {/* Navigation Buttons */}
+          <div className="flex flex-col sm:flex-row justify-between items-center pt-6 border-t mt-6 gap-4">
+            <button
+              type="button"
+              className="inline-flex items-center justify-center bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={prevStep}
+              disabled={isSubmitting} // Disable back button during submission? Optional.
+            >
+              <ArrowLeft className="mr-2 size-4.5" /> Back
+            </button>
+
+            {/* Continue Button */}
+            <button
+              type="submit"
+              className="inline-flex items-center justify-center bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isSubmitting || !isFormValid} // Disable if submitting OR form is invalid
+            >
+              Continue
+              {isSubmitting ? (
+                <Loader2 className="ml-2 size-4.5 animate-spin" />
+              ) : (
+                <ArrowRight className="ml-2 size-4.5" />
+              )}
+            </button>
+          </div>
+        </form>
+        {/* </Form> component removed */}
+      </CardContent>
+    </Card>
+  );
 }

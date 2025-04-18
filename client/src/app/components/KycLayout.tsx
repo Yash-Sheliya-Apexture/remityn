@@ -255,7 +255,7 @@ const KycLayoutComponent: React.FC<KycLayoutProps> = ({ children }) => {
     // 3. Render the actual KYC layout ONLY if authenticated.
     // The KycProvider's internal logic will handle redirection based on KYC status if needed.
     return (
-        <div className="flex flex-col min-h-screen bg-gradient-to-b from-background to-secondary/10 dark:from-background dark:to-black/20">
+        <div className="flex flex-col min-h-screen bg-white dark:bg-background">
             <KycHeader />
             <main className="flex-grow container mx-auto px-4 py-8 md:py-12 flex flex-col items-center">
                 {/* Show stepper only if KYC context is initialized and on a form step */}

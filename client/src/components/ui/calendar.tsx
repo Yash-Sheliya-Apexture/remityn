@@ -108,8 +108,8 @@ function Calendar({
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
       classNames={{
-        months: "flex flex-col sm:flex-row gap-2",
-        month: "flex flex-col gap-4",
+        months: "flex flex-col sm:flex-row gap-2 w-full",
+        month: "flex flex-col gap-4 w-full ",
         caption: "flex justify-center pt-1 relative items-center w-full",
         caption_label: "text-sm font-medium",
         nav: "flex items-center gap-1",
@@ -120,10 +120,10 @@ function Calendar({
         nav_button_previous: "absolute left-1",
         nav_button_next: "absolute right-1",
         table: "w-full border-collapse space-x-1",
-        head_row: "flex",
+        head_row: "flex justify-between w-full",
         head_cell:
           "text-muted-foreground rounded-md w-8 font-normal text-[0.8rem]",
-        row: "flex w-full mt-2",
+        row: "flex justify-between w-full mt-2",
         cell: cn(
           "relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent [&:has([aria-selected].day-range-end)]:rounded-r-md",
           props.mode === "range"
