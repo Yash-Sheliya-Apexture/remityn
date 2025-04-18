@@ -1596,125 +1596,613 @@
 
 
 
+// // app/components/ui/CountryDropdown.tsx
+// "use client";
+// import React, { useState, useRef, useEffect } from "react";
+// import Image, { StaticImageData } from "next/image"; // Import StaticImageData
+// import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+// import { BiSearch } from "react-icons/bi";
+// import { AiOutlineCheck } from "react-icons/ai";
+
+// // Import only the required SVG files (assuming they resolve correctly)
+// import aed from "../../../../public/assets/icon/aed.svg";
+// import aud from "../../../../public/assets/icon/aud.svg";
+// import cad from "../../../../public/assets/icon/cad.svg";
+// import eur from "../../../../public/assets/icon/eur.svg";
+// import inr from "../../../../public/assets/icon/inr.svg"; // Keep this, but we'll filter it out
+// import usd from "../../../../public/assets/icon/usd.svg";
+// import { GiCheckMark } from "react-icons/gi";
+
+// interface Currency {
+//   code: string;
+//   name: string;
+//   flag: StaticImageData | string; // Use StaticImageData or string if it's just a path
+// }
+
+// // Type the flags explicitly if possible, otherwise keep as string/StaticImageData
+// const currenciesData: Currency[] = [
+//   { code: "USD", name: "United States dollar", flag: usd },
+//   { code: "INR", name: "Indian rupee", flag: inr },
+//   { code: "EUR", name: "Euro", flag: eur },
+//   { code: "AED", name: "United Arab Emirates dirham", flag: aed },
+//   { code: "CAD", name: "Canadian dollar", flag: cad },
+//   { code: "AUD", name: "Australian dollar", flag: aud },
+// ];
+
+// interface CurrencyDropdownProps {
+//   selectedCurrency: string;
+//   onCurrencyChange: (currencyCode: string) => void;
+// }
+
+// const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
+//   selectedCurrency,
+//   onCurrencyChange,
+// }) => {
+//   const [isOpen, setIsOpen] = useState(false);
+//   const [searchQuery, setSearchQuery] = useState("");
+//   const dropdownRef = useRef<HTMLDivElement>(null);
+
+//   const toggleDropdown = () => setIsOpen(!isOpen);
+
+//   const handleCurrencyChange = (currencyCode: string) => {
+//     onCurrencyChange(currencyCode);
+//     setIsOpen(false);
+//   };
+
+//   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+//     setSearchQuery(event.target.value);
+//   };
+
+//   // Correctly filter out INR *before* applying search
+//   const filteredCurrencies = currenciesData
+//     .filter((currency) => currency.code !== "INR") // Exclude INR FIRST
+//     .filter(
+//       (currency) =>
+//         currency.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+//         currency.code.toLowerCase().includes(searchQuery.toLowerCase())
+//     );
+
+
+//   useEffect(() => {
+//     const handleClickOutside = (event: MouseEvent) => {
+//       if (
+//         dropdownRef.current &&
+//         !dropdownRef.current.contains(event.target as Node)
+//       ) {
+//         setIsOpen(false);
+//       }
+//     };
+
+//     if (isOpen) {
+//       document.addEventListener("mousedown", handleClickOutside);
+//     }
+
+//     return () => {
+//       document.removeEventListener("mousedown", handleClickOutside);
+//     };
+//   }, [isOpen]);
+
+//   // Removed 'currenciesData' from dependency array
+//   const selectedCurrencyData = React.useMemo(() => {
+//     return currenciesData.find((c) => c.code === selectedCurrency);
+//   }, [selectedCurrency]);
+
+//   return (
+//     <div className="relative" ref={dropdownRef}>
+//       <button // Changed div to button for better accessibility
+//         type="button"
+//         className="flex items-center gap-2 w-24 cursor-pointer"
+//         onClick={toggleDropdown}
+//         aria-haspopup="listbox" // Added aria attributes
+//         aria-expanded={isOpen}
+//       >
+//         <div className="flex items-center gap-2">
+//           {selectedCurrencyData && (
+//             <Image
+//               src={selectedCurrencyData.flag}
+//               alt={`${selectedCurrency}-Flag`}
+//               width={24}
+//               height={24}
+//               className="rounded-full" // Added rounded-full for consistency
+//             />
+//           )}
+//           <p className="text-mainheading dark:text-white font-semibold">{selectedCurrency}</p>
+//         </div>
+//         {isOpen ? <IoIosArrowUp size={18} className="text-mainheading dark:text-white"/> : <IoIosArrowDown size={18} className="text-mainheading dark:text-white"/>}
+//       </button>
+
+//       {isOpen && (
+//         <div className="absolute z-10 w-[400px] top-12 right-0 bg-white dark:bg-background rounded-lg  border overflow-hidden">
+//           {/* Search Input */}
+//           <div className="sticky top-0 bg-white dark:bg-background p-2 border-b">
+//             <div className="relative">
+//               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+//                 <BiSearch className="h-5 w-5 text-gray-400" />
+//               </div>
+//               <input
+//                 type="text"
+//                 placeholder="Type a currency / country"
+//                 className=" shadow-inner border text-mainheading dark:text-white text-sm rounded-lg focus:outline-none block w-full pl-10 px-4 py-3 hover:shadow-darkcolor dark:hover:shadow-whitecolor transition-shadow ease-in-out duration-300"
+//                 value={searchQuery}
+//                 onChange={handleSearchChange}
+//                 aria-label="Search Currencies" // Added aria-label
+//               />
+//             </div>
+//           </div>
+
+//           <div
+//             className="p-2 pb-4 max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400"
+//             role="listbox" // Added role
+//           >
+//             {/*  Currencies */}
+//             {filteredCurrencies.length > 0 && (
+//               <ul className="space-y-2">
+//                 {filteredCurrencies.map((currency) => (
+//                   <li // Changed to button for better interaction
+//                     key={currency.code}
+//                     onClick={() => handleCurrencyChange(currency.code)}
+//                     className="flex items-center justify-between p-2 rounded-md dark:hover:bg-secondary hover:bg-lightgray  cursor-pointer focus:outline-none focus:bg-gray-100"
+//                     role="option" // Added role
+//                     aria-selected={selectedCurrency === currency.code} // Added aria-selected
+//                     tabIndex={0} // Make focusable
+//                     onKeyDown={(e) => { // Allow selection with Enter/Space
+//                         if (e.key === 'Enter' || e.key === ' ') {
+//                             e.preventDefault(); // Prevent default space scroll
+//                            handleCurrencyChange(currency.code);
+//                         }
+//                     }}
+//                   >
+//                     <div className="flex items-center gap-2.5">
+//                       <Image
+//                         src={currency.flag}
+//                         alt={`${currency.code}-Flag`}
+//                         width={100}
+//                         height={100}
+//                         className="size-8"
+//                       />
+//                       <span>{currency.code}</span>
+//                       <span className="text-gray-500 dark:text-gray-300 text-sm ml-1">
+//                         {currency.name}
+//                       </span>
+//                     </div>
+//                     {selectedCurrency === currency.code && (
+//                       <GiCheckMark  className="text-mainheading dark:text-white size-5" />
+//                     )}
+//                   </li>
+//                 ))}
+//               </ul>
+//             )}
+
+//             {filteredCurrencies.length === 0 && searchQuery && (
+//               <div className="p-3 text-center text-gray-500 dark:text-gray-300">
+//                  {/* FIXED: Replaced literal quotes with HTML entities */}
+//                 No currencies found for &quot;{searchQuery}&quot;
+//               </div>
+//             )}
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default CurrencyDropdown;
+
+
+
+// // app/components/ui/CountryDropdown.tsx
+// "use client";
+// import React, { useState, useRef, useEffect, useMemo } from "react"; // Added useMemo
+// import Image, { StaticImageData } from "next/image";
+// import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+// import { BiSearch } from "react-icons/bi";
+// import { GiCheckMark } from "react-icons/gi";
+// import { Loader2 } from "lucide-react"; // For loading state
+
+// // Import currency service and type
+// import currencyService, { Currency } from "../../services/currency"; // Adjust path as needed
+
+// // Default flag if flagImage is missing (optional)
+// import defaultFlag from "../../../../public/assets/icon/inr.svg"; // Create or find a default flag image
+
+// interface CurrencyDropdownProps {
+//   selectedCurrency: string;
+//   onCurrencyChange: (currencyCode: string) => void;
+//   // Optional: Add a prop to pass pre-fetched currencies to avoid double fetching
+//   // initialCurrencies?: Currency[];
+// }
+
+// const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
+//   selectedCurrency,
+//   onCurrencyChange,
+//   // initialCurrencies
+// }) => {
+//   const [isOpen, setIsOpen] = useState(false);
+//   const [searchQuery, setSearchQuery] = useState("");
+//   const dropdownRef = useRef<HTMLDivElement>(null);
+
+//   // --- State for dynamic currencies ---
+//   const [availableCurrencies, setAvailableCurrencies] = useState<Currency[]>([]);
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+//   // --- End State ---
+
+//   // --- Fetch Currencies Effect ---
+//   useEffect(() => {
+//     // Optional: Use initialCurrencies if provided
+//     // if (initialCurrencies && initialCurrencies.length > 0) {
+//     //   setAvailableCurrencies(initialCurrencies);
+//     //   setIsLoading(false);
+//     //   return;
+//     // }
+
+//     const fetchCurrencies = async () => {
+//       setIsLoading(true);
+//       setError(null);
+//       try {
+//         // Fetch WITHOUT rate adjustments for the dropdown
+//         const currencies = await currencyService.getAllCurrencies(false);
+//         setAvailableCurrencies(currencies);
+//       } catch (err: any) {
+//         console.error("Error fetching currencies for dropdown:", err);
+//         setError(err.message || "Failed to load currencies");
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     };
+
+//     fetchCurrencies();
+//     // }, [initialCurrencies]); // Add initialCurrencies if using the optional prop
+//   }, []); // Run once on mount
+
+//   // --- Event Handlers (mostly unchanged) ---
+//   const toggleDropdown = () => setIsOpen(!isOpen);
+
+//   const handleCurrencyChange = (currencyCode: string) => {
+//     onCurrencyChange(currencyCode);
+//     setIsOpen(false);
+//     setSearchQuery(""); // Clear search on selection
+//   };
+
+//   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+//     setSearchQuery(event.target.value);
+//   };
+
+//   // --- Filtered Currencies Logic ---
+//   const filteredCurrencies = useMemo(() => {
+//     // Start with fetched available currencies
+//     return availableCurrencies
+//       .filter((currency) => currency.code !== "INR") // Exclude INR
+//       .filter( // Apply search
+//         (currency) =>
+//           currency.currencyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+//           currency.code.toLowerCase().includes(searchQuery.toLowerCase())
+//       )
+//       .sort((a, b) => a.code.localeCompare(b.code)); // Optional: Sort alphabetically by code
+//   }, [availableCurrencies, searchQuery]);
+
+//   // --- Click Outside Handler (unchanged) ---
+//   useEffect(() => {
+//     const handleClickOutside = (event: MouseEvent) => {
+//       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+//         setIsOpen(false);
+//       }
+//     };
+//     if (isOpen) {
+//       document.addEventListener("mousedown", handleClickOutside);
+//     }
+//     return () => {
+//       document.removeEventListener("mousedown", handleClickOutside);
+//     };
+//   }, [isOpen]);
+
+//   // --- Get Selected Currency Data ---
+//   const selectedCurrencyData = useMemo(() => {
+//     // Find from the fetched list
+//     return availableCurrencies.find((c) => c.code === selectedCurrency);
+//   }, [selectedCurrency, availableCurrencies]);
+
+//   // --- Get Flag Source ---
+//   const getFlagSrc = (currency: Currency | undefined): StaticImageData | string => {
+//      // Check if flagImage exists and is not an empty string
+//     if (currency?.flagImage) {
+//         // If flagImage is a full URL (starts with http/https) or a local path (/assets/...), use it directly
+//         if (currency.flagImage.startsWith('http') || currency.flagImage.startsWith('/')) {
+//             return currency.flagImage;
+//         } else {
+//             // Assume it's just the filename like 'usd.svg' and prepend the path
+//             // IMPORTANT: Adjust this path if your assets are structured differently
+//             return `/assets/icon/${currency.flagImage}`;
+//         }
+//     }
+//     // Fallback to default flag if flagImage is missing or empty
+//     return defaultFlag;
+//   };
+
+
+//   return (
+//     <div className="relative" ref={dropdownRef}>
+//       <button
+//         type="button"
+//         className="flex items-center justify-between gap-2 w-28 px-3 h-full cursor-pointer" // Adjusted width & added padding/height
+//         onClick={toggleDropdown}
+//         aria-haspopup="listbox"
+//         aria-expanded={isOpen}
+//         disabled={isLoading} // Disable while loading currencies
+//       >
+//         {isLoading ? (
+//           <Loader2 className="size-5 animate-spin mx-auto" />
+//         ) : (
+//           <>
+//             <div className="flex items-center gap-2 overflow-hidden"> {/* Added overflow-hidden */}
+//               <Image
+//                   src={getFlagSrc(selectedCurrencyData)}
+//                   alt={`${selectedCurrency}-Flag`}
+//                   width={24}
+//                   height={24}
+//                   className="rounded-full flex-shrink-0" // Added flex-shrink-0
+//                   unoptimized={typeof getFlagSrc(selectedCurrencyData) === 'string' && getFlagSrc(selectedCurrencyData).startsWith('http')} // Add unoptimized for external URLs
+//                   onError={(e) => { (e.target as HTMLImageElement).src = defaultFlag.src; }} // Fallback on error
+//               />
+//               <p className="text-mainheading dark:text-white font-semibold truncate">{selectedCurrency}</p> {/* Added truncate */}
+//             </div>
+//             {isOpen ? <IoIosArrowUp size={18} className="text-mainheading dark:text-white flex-shrink-0"/> : <IoIosArrowDown size={18} className="text-mainheading dark:text-white flex-shrink-0"/>}
+//           </>
+//         )}
+//       </button>
+
+//       {isOpen && (
+//         <div className="absolute z-10 w-[400px] max-w-[90vw] top-14 -right-4 sm:right-0 bg-white dark:bg-background rounded-lg border shadow-lg overflow-hidden">
+//           {/* Search Input */}
+//           <div className="sticky top-0 bg-white dark:bg-background p-2 border-b z-10">
+//             <div className="relative">
+//               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+//                 <BiSearch className="h-5 w-5 text-gray-400" />
+//               </div>
+//               <input
+//                 type="text"
+//                 placeholder="Type a currency / country"
+//                 className="border text-mainheading dark:text-white text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-primary block w-full pl-10 px-4 py-3"
+//                 value={searchQuery}
+//                 onChange={handleSearchChange}
+//                 aria-label="Search Currencies"
+//               />
+//             </div>
+//           </div>
+
+//           <div
+//             className="p-2 pb-4 max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400"
+//             role="listbox"
+//           >
+//             {/* Loading State */}
+//             {isLoading && (
+//                  <div className="flex justify-center items-center py-10">
+//                     <Loader2 className="h-8 w-8 animate-spin text-primary" />
+//                  </div>
+//             )}
+
+//             {/* Error State */}
+//             {!isLoading && error && (
+//                 <div className="p-3 text-center text-red-600">
+//                     Error: {error}
+//                 </div>
+//             )}
+
+//             {/* Currency List */}
+//             {!isLoading && !error && filteredCurrencies.length > 0 && (
+//               <ul className="space-y-1">
+//                 {filteredCurrencies.map((currency) => (
+//                   <li
+//                     key={currency.code}
+//                     onClick={() => handleCurrencyChange(currency.code)}
+//                     className={`flex items-center justify-between p-3 rounded-md dark:hover:bg-secondary hover:bg-lightgray cursor-pointer focus:outline-none focus:bg-gray-100 ${selectedCurrency === currency.code ? 'bg-primary/10' : ''}`}
+//                     role="option"
+//                     aria-selected={selectedCurrency === currency.code}
+//                     tabIndex={0}
+//                     onKeyDown={(e) => {
+//                         if (e.key === 'Enter' || e.key === ' ') {
+//                             e.preventDefault();
+//                            handleCurrencyChange(currency.code);
+//                         }
+//                     }}
+//                   >
+//                     <div className="flex items-center gap-3">
+//                        <Image
+//                            src={getFlagSrc(currency)}
+//                            alt={`${currency.code}-Flag`}
+//                            width={32} // Slightly larger in list
+//                            height={32}
+//                            className="size-8 rounded-full"
+//                            unoptimized={typeof getFlagSrc(currency) === 'string' && getFlagSrc(currency).startsWith('http')}
+//                            onError={(e) => { (e.target as HTMLImageElement).src = defaultFlag.src; }}
+//                        />
+//                        <div className="flex flex-col">
+//                          <span className="font-medium text-mainheading dark:text-white">{currency.code}</span>
+//                          <span className="text-gray-500 dark:text-gray-400 text-xs">
+//                             {currency.currencyName}
+//                          </span>
+//                        </div>
+//                     </div>
+//                     {selectedCurrency === currency.code && (
+//                       <GiCheckMark className="text-primary size-5" />
+//                     )}
+//                   </li>
+//                 ))}
+//               </ul>
+//             )}
+
+//             {/* No Results */}
+//             {!isLoading && !error && filteredCurrencies.length === 0 && searchQuery && (
+//               <div className="p-3 text-center text-gray-500 dark:text-gray-300">
+//                 No currencies found for "{searchQuery}"
+//               </div>
+//             )}
+//              {/* No Currencies Loaded */}
+//             {!isLoading && !error && availableCurrencies.length === 0 && !searchQuery && (
+//               <div className="p-3 text-center text-gray-500 dark:text-gray-300">
+//                 No currencies available.
+//               </div>
+//             )}
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default CurrencyDropdown;
+
+
+
 // app/components/ui/CountryDropdown.tsx
 "use client";
-import React, { useState, useRef, useEffect } from "react";
-import Image, { StaticImageData } from "next/image"; // Import StaticImageData
+import React, { useState, useRef, useEffect, useMemo } from "react";
+import Image, { StaticImageData } from "next/image";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { BiSearch } from "react-icons/bi";
-import { AiOutlineCheck } from "react-icons/ai";
-
-// Import only the required SVG files (assuming they resolve correctly)
-import aed from "../../../../public/assets/icon/aed.svg";
-import aud from "../../../../public/assets/icon/aud.svg";
-import cad from "../../../../public/assets/icon/cad.svg";
-import eur from "../../../../public/assets/icon/eur.svg";
-import inr from "../../../../public/assets/icon/inr.svg"; // Keep this, but we'll filter it out
-import usd from "../../../../public/assets/icon/usd.svg";
 import { GiCheckMark } from "react-icons/gi";
+import { Loader2 } from "lucide-react";
 
-interface Currency {
-  code: string;
-  name: string;
-  flag: StaticImageData | string; // Use StaticImageData or string if it's just a path
-}
-
-// Type the flags explicitly if possible, otherwise keep as string/StaticImageData
-const currenciesData: Currency[] = [
-  { code: "USD", name: "United States dollar", flag: usd },
-  { code: "INR", name: "Indian rupee", flag: inr },
-  { code: "EUR", name: "Euro", flag: eur },
-  { code: "AED", name: "United Arab Emirates dirham", flag: aed },
-  { code: "CAD", name: "Canadian dollar", flag: cad },
-  { code: "AUD", name: "Australian dollar", flag: aud },
-];
+import currencyService, { Currency } from "../../services/currency"; // Adjust path as needed
+import defaultFlag from "../../../../public/assets/icon/inr.svg"; // Adjust path if needed
 
 interface CurrencyDropdownProps {
   selectedCurrency: string;
   onCurrencyChange: (currencyCode: string) => void;
+  disabled?: boolean; // <-- Add the optional disabled prop here
+  // initialCurrencies?: Currency[];
 }
 
 const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
   selectedCurrency,
   onCurrencyChange,
+  disabled = false, // <-- Provide a default value
+  // initialCurrencies
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const toggleDropdown = () => setIsOpen(!isOpen);
+  const [availableCurrencies, setAvailableCurrencies] = useState<Currency[]>([]);
+  const [isLoading, setIsLoading] = useState(true); // Keep internal loading state for fetching
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCurrencies = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const currencies = await currencyService.getAllCurrencies(false);
+        setAvailableCurrencies(currencies);
+      } catch (err: any) {
+        console.error("Error fetching currencies for dropdown:", err);
+        setError(err.message || "Failed to load currencies");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchCurrencies();
+  }, []);
+
+  const toggleDropdown = () => {
+    if (!disabled && !isLoading) { // Only toggle if not disabled or loading internally
+       setIsOpen(!isOpen);
+    }
+  };
 
   const handleCurrencyChange = (currencyCode: string) => {
     onCurrencyChange(currencyCode);
     setIsOpen(false);
+    setSearchQuery("");
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
 
-  // Correctly filter out INR *before* applying search
-  const filteredCurrencies = currenciesData
-    .filter((currency) => currency.code !== "INR") // Exclude INR FIRST
-    .filter(
-      (currency) =>
-        currency.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        currency.code.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
+  const filteredCurrencies = useMemo(() => {
+    return availableCurrencies
+      .filter((currency) => currency.code !== "INR")
+      .filter(
+        (currency) =>
+          currency.currencyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          currency.code.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+      .sort((a, b) => a.code.localeCompare(b.code));
+  }, [availableCurrencies, searchQuery]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
-
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
 
-  // Removed 'currenciesData' from dependency array
-  const selectedCurrencyData = React.useMemo(() => {
-    return currenciesData.find((c) => c.code === selectedCurrency);
-  }, [selectedCurrency]);
+  const selectedCurrencyData = useMemo(() => {
+    return availableCurrencies.find((c) => c.code === selectedCurrency);
+  }, [selectedCurrency, availableCurrencies]);
+
+  // --- Get Flag Source (Type Guard added) ---
+  const getFlagSrc = (currency: Currency | undefined): StaticImageData | string => {
+    if (currency?.flagImage) {
+      if (currency.flagImage.startsWith('http') || currency.flagImage.startsWith('/')) {
+        return currency.flagImage;
+      } else {
+        return `/assets/icon/${currency.flagImage}`; // Adjust path if needed
+      }
+    }
+    return defaultFlag;
+  };
+
+  // Helper to check if src is a string URL
+  const isExternalUrl = (src: string | StaticImageData): src is string => {
+    return typeof src === 'string' && src.startsWith('http');
+  };
+
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <button // Changed div to button for better accessibility
+      <button
         type="button"
-        className="flex items-center gap-2 w-24 cursor-pointer"
+        className={`flex items-center justify-between gap-2 w-28 px-3 h-full cursor-pointer ${ (disabled || isLoading) ? 'opacity-50 cursor-not-allowed' : ''}`} // Style disabled state
         onClick={toggleDropdown}
-        aria-haspopup="listbox" // Added aria attributes
+        aria-haspopup="listbox"
         aria-expanded={isOpen}
+        disabled={disabled || isLoading} // Use combined disabled state
       >
-        <div className="flex items-center gap-2">
-          {selectedCurrencyData && (
-            <Image
-              src={selectedCurrencyData.flag}
-              alt={`${selectedCurrency}-Flag`}
-              width={24}
-              height={24}
-              className="rounded-full" // Added rounded-full for consistency
-            />
-          )}
-          <p className="text-mainheading dark:text-white font-semibold">{selectedCurrency}</p>
-        </div>
-        {isOpen ? <IoIosArrowUp size={18} className="text-mainheading dark:text-white"/> : <IoIosArrowDown size={18} className="text-mainheading dark:text-white"/>}
+        {isLoading ? ( // Internal loading state for fetching currencies
+          <Loader2 className="size-5 animate-spin mx-auto text-gray-500" />
+        ) : (
+          <>
+            <div className="flex items-center gap-2 overflow-hidden">
+              <Image
+                  src={getFlagSrc(selectedCurrencyData)}
+                  alt={`${selectedCurrency}-Flag`}
+                  width={24}
+                  height={24}
+                  className="rounded-full flex-shrink-0"
+                  // --- Updated unoptimized logic ---
+                  unoptimized={isExternalUrl(getFlagSrc(selectedCurrencyData))}
+                  onError={(e) => { (e.target as HTMLImageElement).src = defaultFlag.src; }}
+              />
+              <p className="text-mainheading dark:text-white font-semibold truncate">{selectedCurrency || "..."}</p> {/* Show ... if no currency yet */}
+            </div>
+            {isOpen ? <IoIosArrowUp size={18} className="text-mainheading dark:text-white flex-shrink-0"/> : <IoIosArrowDown size={18} className="text-mainheading dark:text-white flex-shrink-0"/>}
+          </>
+        )}
       </button>
 
       {isOpen && (
-        <div className="absolute z-10 w-[400px] top-12 right-0 bg-white dark:bg-background rounded-lg  border overflow-hidden">
+        <div className="absolute z-10 w-[400px] max-w-[90vw] top-14 -right-4 sm:right-0 bg-white dark:bg-background rounded-lg border shadow-lg overflow-hidden">
           {/* Search Input */}
-          <div className="sticky top-0 bg-white dark:bg-background p-2 border-b">
+          <div className="sticky top-0 bg-white dark:bg-background p-2 border-b z-10">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <BiSearch className="h-5 w-5 text-gray-400" />
@@ -1722,61 +2210,90 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
               <input
                 type="text"
                 placeholder="Type a currency / country"
-                className=" shadow-inner border text-mainheading dark:text-white text-sm rounded-lg focus:outline-none block w-full pl-10 px-4 py-3 hover:shadow-darkcolor dark:hover:shadow-whitecolor transition-shadow ease-in-out duration-300"
+                className="border text-mainheading dark:text-white text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-primary block w-full pl-10 px-4 py-3 bg-white dark:bg-background" // Ensure bg color for input
                 value={searchQuery}
                 onChange={handleSearchChange}
-                aria-label="Search Currencies" // Added aria-label
+                aria-label="Search Currencies"
+                autoFocus // Focus input when dropdown opens
               />
             </div>
           </div>
 
           <div
-            className="p-2 pb-4 max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400"
-            role="listbox" // Added role
+            className="p-2 pb-4 max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600 dark:hover:scrollbar-thumb-gray-500" // Added dark scrollbar styles
+            role="listbox"
           >
-            {/*  Currencies */}
-            {filteredCurrencies.length > 0 && (
-              <ul className="space-y-2">
-                {filteredCurrencies.map((currency) => (
-                  <li // Changed to button for better interaction
-                    key={currency.code}
-                    onClick={() => handleCurrencyChange(currency.code)}
-                    className="flex items-center justify-between p-2 rounded-md dark:hover:bg-secondary hover:bg-lightgray  cursor-pointer focus:outline-none focus:bg-gray-100"
-                    role="option" // Added role
-                    aria-selected={selectedCurrency === currency.code} // Added aria-selected
-                    tabIndex={0} // Make focusable
-                    onKeyDown={(e) => { // Allow selection with Enter/Space
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault(); // Prevent default space scroll
-                           handleCurrencyChange(currency.code);
-                        }
-                    }}
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <Image
-                        src={currency.flag}
-                        alt={`${currency.code}-Flag`}
-                        width={100}
-                        height={100}
-                        className="size-8"
-                      />
-                      <span>{currency.code}</span>
-                      <span className="text-gray-500 dark:text-gray-300 text-sm ml-1">
-                        {currency.name}
-                      </span>
-                    </div>
-                    {selectedCurrency === currency.code && (
-                      <GiCheckMark  className="text-mainheading dark:text-white size-5" />
-                    )}
-                  </li>
-                ))}
+            {/* Loading State (Internal) */}
+            {isLoading && (
+                 <div className="flex justify-center items-center py-10">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                 </div>
+            )}
+
+            {/* Error State */}
+            {!isLoading && error && (
+                <div className="p-3 text-center text-red-600">
+                    Error: {error}
+                </div>
+            )}
+
+            {/* Currency List */}
+            {!isLoading && !error && filteredCurrencies.length > 0 && (
+              <ul className="space-y-1">
+                {filteredCurrencies.map((currency) => {
+                    const flagSrc = getFlagSrc(currency); // Get src once
+                    return (
+                      <li
+                        key={currency.code}
+                        onClick={() => handleCurrencyChange(currency.code)}
+                        className={`flex items-center justify-between p-3 rounded-md dark:hover:bg-secondary hover:bg-lightgray cursor-pointer focus:outline-none focus:bg-gray-100 ${selectedCurrency === currency.code ? 'bg-primary/10 dark:bg-primary/20' : ''}`} // Added dark mode selection style
+                        role="option"
+                        aria-selected={selectedCurrency === currency.code}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                               handleCurrencyChange(currency.code);
+                            }
+                        }}
+                      >
+                        <div className="flex items-center gap-3">
+                           <Image
+                               src={flagSrc}
+                               alt={`${currency.code}-Flag`}
+                               width={32}
+                               height={32}
+                               className="size-8 rounded-full"
+                               // --- Updated unoptimized logic ---
+                               unoptimized={isExternalUrl(flagSrc)}
+                               onError={(e) => { (e.target as HTMLImageElement).src = defaultFlag.src; }}
+                           />
+                           <div className="flex flex-col">
+                             <span className="font-medium text-mainheading dark:text-white">{currency.code}</span>
+                             <span className="text-gray-500 dark:text-gray-400 text-xs">
+                                {currency.currencyName}
+                             </span>
+                           </div>
+                        </div>
+                        {selectedCurrency === currency.code && (
+                          <GiCheckMark className="text-primary size-5" />
+                        )}
+                      </li>
+                    );
+                })}
               </ul>
             )}
 
-            {filteredCurrencies.length === 0 && searchQuery && (
+            {/* No Results */}
+            {!isLoading && !error && filteredCurrencies.length === 0 && searchQuery && (
               <div className="p-3 text-center text-gray-500 dark:text-gray-300">
-                 {/* FIXED: Replaced literal quotes with HTML entities */}
-                No currencies found for &quot;{searchQuery}&quot;
+                No currencies found for "{searchQuery}"
+              </div>
+            )}
+             {/* No Currencies Loaded */}
+            {!isLoading && !error && availableCurrencies.length === 0 && !searchQuery && (
+              <div className="p-3 text-center text-gray-500 dark:text-gray-300">
+                No currencies available.
               </div>
             )}
           </div>

@@ -65,6 +65,6 @@
      "src/app/contexts/AuthContext.tsx", // Already covered by **/*.tsx
      "src/app/services/transfer.ts", // Already covered by **/*.ts
      "src/app/auth/forgot-password/page.tsx" // Already covered by **/*.tsx
-, "src/app/components/layout/DashboardLayout.js"    ],
+, "src/app/components/layout/DashboardLayout.js", "src/app/services/exchangeRate.js"    ],
   "exclude": ["node_modules"] // CRUCIAL: Tells TS to ignore node_modules for compilation checks
 }
