@@ -886,130 +886,26 @@
 
 // export default MobileMenu;
 
-
-
 // components/MobileMenu.tsx
-// "use client";
-// import React, { useState } from "react";
-// import Link from "next/link";
-// import FeatureDropdown from "@/app/components/ui/FeatureDropdown"; // Import FeatureDropdown, adjust path
-
-// interface MobileMenuProps {
-//   isOpen: boolean;
-//   onClose: () => void;
-//   featureLinks: { href: string; text: string }[];
-//   topContent?: React.ReactNode; // <-- Add this line (make it optional '?' or required based on need)
-// }
-
-// const MobileMenu: React.FC<MobileMenuProps> = ({
-//   isOpen,
-//   onClose,
-//   featureLinks,
-//   topContent, // <-- Destructure the prop here
-// }) => {
-//   const [isFeaturesOpen, setIsFeaturesOpen] = useState(false); // State for Features dropdown
-
-//   const toggleFeaturesDropdown = () => {
-//     setIsFeaturesOpen(!isFeaturesOpen);
-//   };
-
-//   return (
-//     <div
-//       // Using template literal for cleaner conditional class application
-//       className={`fixed top-20 left-0 w-full h-[calc(100vh-5rem)] bg-white dark:bg-background z-40 overflow-y-auto transition-transform duration-300 ease-in-out ${
-//         isOpen ? "translate-x-0" : "-translate-x-full" // Correct transform for slide-in
-//       }`}
-//       // Add aria attributes for accessibility
-//       aria-hidden={!isOpen}
-//       role="dialog"
-//       aria-modal="true"
-//     >
-//       <div className="flex flex-col justify-between h-full">
-//         <div className="p-4 space-y-4 border-t">
-//           <div className="flex flex-col gap-2 w-full">
-//             <Link
-//               href="/"
-//               className="px-4 py-1.5 w-fit rounded-full font-medium hover:bg-lightgray dark:hover:bg-primarybox"
-//             >
-//               Home
-//             </Link>
-
-//             <Link
-//               href="/"
-//               className="px-4 py-1.5 rounded-full w-fit font-medium hover:bg-lightgray dark:hover:bg-primarybox"
-//             >
-//               About
-//             </Link>
-
-//             <FeatureDropdown
-//               buttonText="Features"
-//               links={featureLinks}
-//               topContent={topContent} // <-- Pass the prop down here
-//               buttonClassName="block w-fit text-left py-2 px-4 font-medium text-lg hover:bg-gray-100 dark:hover:bg-gray-800 rounded" // Added hover and rounded
-//               isMobile={true}
-//               isOpen={isFeaturesOpen}
-//               toggleDropdown={toggleFeaturesDropdown}
-//               onLinkClick={onClose} // Close main menu when a feature link is clicked
-//             />
-
-//             <Link
-//               href="/help"
-//               className="px-4 py-1.5 w-fit rounded-full font-medium hover:bg-lightgray dark:hover:bg-primarybox"
-//             >
-//               Help
-//             </Link>
-//           </div>
-//         </div>
-
-//         {/* Ensure bottom buttons are sticky or at the bottom */}
-//         <div className="p-6 mt-auto border-t">
-//           <div className="flex flex-col sm:flex-row items-center gap-4">
-//             {/* Login and Register */}
-//             <Link
-//               href="/auth/login" // Corrected path based on Header
-//               passHref
-//               className="block w-full px-4 lg:py-3 py-2 bg-white dark:bg-background border rounded-full font-medium lg:text-lg text-base text-center dark:text-white text-mainheading"
-//               onClick={onClose}
-//             >
-//               Log in
-//             </Link>
-//             <Link
-//               href="/auth/register" // Corrected path based on Header
-//               passHref
-//               className="block w-full px-4 lg:py-3 border py-2 bg-primary hover:bg-primaryhover rounded-full font-medium lg:text-lg text-base text-center text-mainheading" // Assuming lightgreen requires black text
-//               onClick={onClose}
-//             >
-//               Register
-//             </Link>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default MobileMenu;
-
-
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import FeatureDropdown from "@/app/components/ui/FeatureDropdown"; // Adjust path if needed
+import FeatureDropdown from "@/app/components/ui/FeatureDropdown"; // Import FeatureDropdown, adjust path
 
 interface MobileMenuProps {
   isOpen: boolean;
-  onClose: () => void; // Function to close the menu
+  onClose: () => void;
   featureLinks: { href: string; text: string }[];
-  topContent?: React.ReactNode;
+  topContent?: React.ReactNode; // <-- Add this line (make it optional '?' or required based on need)
 }
 
 const MobileMenu: React.FC<MobileMenuProps> = ({
   isOpen,
-  onClose, // Receive the onClose function
+  onClose,
   featureLinks,
-  topContent,
+  topContent, // <-- Destructure the prop here
 }) => {
-  const [isFeaturesOpen, setIsFeaturesOpen] = useState(false);
+  const [isFeaturesOpen, setIsFeaturesOpen] = useState(false); // State for Features dropdown
 
   const toggleFeaturesDropdown = () => {
     setIsFeaturesOpen(!isFeaturesOpen);
@@ -1022,17 +918,16 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
   };
 
   return (
-    // The motion.div is handled in the Header component now
-    // This div is the actual content container
     <div
-      className={`absolute top-0 left-0 w-full max-w-md h-screen bg-white dark:bg-background z-50 overflow-y-auto shadow-xl flex flex-col justify-between`}
-      // Apply transform directly if not using motion.div wrapper here, otherwise remove transform classes
-      // The motion.div in Header handles the animation based on variants
+      // Using template literal for cleaner conditional class application
+      className={`fixed top-20 left-0 w-full h-[calc(100vh-5rem)] bg-white dark:bg-background z-40 overflow-y-auto transition-transform duration-300 ease-in-out ${
+        isOpen ? "translate-x-0" : "-translate-x-full" // Correct transform for slide-in
+      }`}
+      // Add aria attributes for accessibility
       aria-hidden={!isOpen}
       role="dialog"
       aria-modal="true"
     >
-      {/* Top Navigation Links */}
       <div className="flex flex-col justify-between h-full">
         <div className="p-4 space-y-4 border-t">
           <div className="flex flex-col gap-2 w-full">
@@ -1045,62 +940,54 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             </Link>
 
             <Link
-              href="/about-us" // Use correct path
-              className="px-4 py-1.5 w-fit rounded-full font-medium hover:bg-lightgray dark:hover:bg-primarybox"
+              href="/about-us"
+              className="px-4 py-1.5 rounded-full w-fit font-medium hover:bg-lightgray dark:hover:bg-primarybox"
               onClick={handleLinkClick} // *** ADD onClick HANDLER ***
             >
               About
             </Link>
 
-            {/* Feature Dropdown specific for Mobile */}
             <FeatureDropdown
               buttonText="Features"
               links={featureLinks}
-              topContent={topContent}
-              buttonClassName="nav-link-mobile w-full text-left justify-between" // Make it look like other links but full width
-              isMobile={true} // Indicate it's the mobile version
+              topContent={topContent} // <-- Pass the prop down here
+              buttonClassName="block w-fit text-left py-2 px-4 font-medium text-lg hover:bg-gray-100 dark:hover:bg-gray-800 rounded" // Added hover and rounded
+              isMobile={true}
               isOpen={isFeaturesOpen}
               toggleDropdown={toggleFeaturesDropdown}
-              onLinkClick={handleLinkClick} // *** CRITICAL: Ensure dropdown links also close the main menu ***
+              onLinkClick={handleLinkClick} // Close main menu when a feature link is clicked
             />
 
             <Link
-              href="/reviews" // Use correct path
-              className="px-4 py-1.5 w-fit rounded-full font-medium hover:bg-lightgray dark:hover:bg-primarybox"
-              onClick={handleLinkClick} // *** ADD onClick HANDLER ***
-            >
-              Reviews
-            </Link>
-
-            <Link
-              href="/faqs" // Use correct path
+              href="/faqs"
               className="px-4 py-1.5 w-fit rounded-full font-medium hover:bg-lightgray dark:hover:bg-primarybox"
               onClick={handleLinkClick} // *** ADD onClick HANDLER ***
             >
               Help
             </Link>
           </div>
+        </div>
 
-          {/* Bottom Auth Buttons */}
-          <div className="p-5 mt-auto border-t dark:border-gray-700">
-            <div className="flex flex-col gap-3">
-              <Link
-                href="/auth/login"
-                passHref
-                className="block w-full px-4 py-2.5 bg-white dark:bg-background border border-gray-300 dark:border-gray-600 rounded-full font-medium text-base text-center dark:text-white text-mainheading hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                onClick={handleLinkClick} // *** ADD onClick HANDLER ***
-              >
-                Log in
-              </Link>
-              <Link
-                href="/auth/register"
-                passHref
-                className="block w-full px-4 py-2.5 bg-primary hover:bg-primaryhover rounded-full font-medium text-base text-center text-white transition-colors" // Assuming primary needs white text
-                onClick={handleLinkClick} // *** ADD onClick HANDLER ***
-              >
-                Register
-              </Link>
-            </div>
+        {/* Ensure bottom buttons are sticky or at the bottom */}
+        <div className="p-6 mt-auto border-t">
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            {/* Login and Register */}
+            <Link
+              href="/auth/login" // Corrected path based on Header
+              passHref
+              className="block w-full px-4 lg:py-3 py-2 bg-white dark:bg-background border rounded-full font-medium lg:text-lg text-base text-center dark:text-white text-mainheading"
+              onClick={handleLinkClick}
+            >
+              Log in
+            </Link>
+            <Link
+              href="/auth/register" // Corrected path based on Header
+              passHref
+              className="block w-full px-4 lg:py-3 border py-2 bg-primary hover:bg-primaryhover rounded-full font-medium lg:text-lg text-base text-center text-mainheading" // Assuming lightgreen requires black text
+              onClick={handleLinkClick}
+            >
+              Register
+            </Link>
           </div>
         </div>
       </div>

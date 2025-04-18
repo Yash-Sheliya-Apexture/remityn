@@ -822,7 +822,6 @@ const Footer: React.FC = () => {
         title: "Help",
         links: [
           { href: "/privacy-policy", label: "Privacy Policy" },
-          { href: "/cookie-policy", label: "Cookie Policy" },
           { href: "/terms-and-conditions", label: "Terms and Conditions" },
           { href: "#faq", label: "FAQs" },
         ],
@@ -834,7 +833,7 @@ const Footer: React.FC = () => {
           { href: "/about-us", label: "About" },
           { href: "/features", label: "Features" },
           { href: "/reviews", label: "Reviews" },
-          { href: "/helps", label: "Help" },
+          { href: "/faqs", label: "Help" },
         ],
       },
     ],
@@ -915,7 +914,7 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="md:py-10 py-5 bg-[#F2F4F7] dark:bg-background px-4">
+    <footer className="md:py-10 bg-[#F2F4F7] dark:bg-background px-4 pb-4">
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-start w-full gap-6">
         <div className="flex flex-col">
           <Image
@@ -923,10 +922,10 @@ const Footer: React.FC = () => {
             alt="logo"
             height={100}
             width={100}
-            className="mb-5"
+            className="lg:size-28 size-22"
           />
 
-          <p className="max-w-3xl text-mainheading dark:text-white lg:text-xl text-base">
+          <p className="max-w-3xl text-mainheading dark:text-white lg:text-xl text-sm">
             We provide reliable and competitive currency exchange services with
             real-time rates, secure transactions, and excellent customer
             support. Whether you're traveling, investing, or sending money
@@ -936,14 +935,13 @@ const Footer: React.FC = () => {
 
           {/* Condinally-button */}
           <Link href="/dashboard" className="w-fit">
-            <div className="bg-primary cursor-pointer hover:bg-primaryhover inline-block font-medium px-10 lg:py-3 focus:outline-none py-2 h-12.5 transition-colors duration-300 ease-in-out mt-4 rounded-full text-mainheading">
+            <div className="bg-primary cursor-pointer hover:bg-primaryhover inline-block font-medium lg:px-10 px-6 lg:py-2.5 focus:outline-none text-sm lg:text-base py-2 transition-colors duration-300 ease-in-out mt-4 rounded-full text-mainheading">
               Send-Money
             </div>
           </Link>
-
         </div>
 
-        <div className="grid grid-cols-2 gap-10">
+        <div className="grid grid-cols-2 gap-10 mt-6">
           {footerData.sections.map((section) => (
             <div key={section.title}>
               <div
@@ -964,9 +962,9 @@ const Footer: React.FC = () => {
                     aria-controls={`${section.title.toLowerCase()}-dropdown-menu`}
                   >
                     {openDropdown === section.title ? (
-                      <HiX size={24} className="text-green" />
+                      <HiX size={24} className="text-white" />
                     ) : (
-                      <TiArrowSortedDown size={24} className="text-green" />
+                      <TiArrowSortedDown size={24} className="text-white" />
                     )}
                   </button>
                 )}
@@ -1008,7 +1006,7 @@ const Footer: React.FC = () => {
 
       <hr className="my-6 container mx-auto" />
       <div className="container mx-auto">
-        <h3 className="text-primary text-lg font-semibold pb-4">
+        <h3 className="text-primary lg:text-lg text-base font-semibold pb-4">
           Currency Converters
         </h3>
 
@@ -1033,18 +1031,17 @@ const Footer: React.FC = () => {
       </div>
 
       <hr className="container mx-auto my-5" />
-
-      <div className="flex justify-between container mx-auto">
-        <p className="text-mainheading dark:text-primary lg:text-lg text-base font-semibold">
+      <div className="flex justify-between items-center container mx-auto">
+        <p className="text-mainheading dark:text-primary lg:text-lg text-sm font-semibold">
           {footerData.copyright}
         </p>
 
-        <div className="flex gap-2.5">
+        <div className="flex gap-2">
           <a href="">
-            <IoLogoWhatsapp className="size-8 text-[#25D366]" />
+            <IoLogoWhatsapp className="lg:size-8 size-6 text-[#25D366]" />
           </a>
           <a href="">
-            <FaTelegram className="size-8 text-[#3390EC]" />
+            <FaTelegram className="lg:size-8 size-6 text-[#3390EC]" />
           </a>
         </div>
       </div>

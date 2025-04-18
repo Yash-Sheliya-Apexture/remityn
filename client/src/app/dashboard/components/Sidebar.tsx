@@ -3085,7 +3085,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                     <motion.div
                         initial={{ opacity: 0 }} animate={{ opacity: 0.5 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}
                         onClick={toggleSidebar}
-                        className="fixed inset-0 bg-black/50 dark:bg-white/30 z-20 lg:hidden"
+                        className="fixed inset-0 bg-black/50 dark:bg-white/30 z-30 lg:hidden"
                         aria-hidden="true"
                     />
                 )}
@@ -3096,7 +3096,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                 {renderFullSidebar && (
                     <motion.div
                         key="full-sidebar" ref={sidebarRef}
-                        className={`w-64 sticky  bg-white dark:bg-background h-screen inset-y-0 left-0 lg:translate-x-0 lg:z-0 z-30 px-4 flex flex-col`}
+                        className={`w-64 fixed lg:sticky bg-white dark:bg-background h-screen inset-y-0 left-0 lg:translate-x-0 lg:z-0 z-30 flex flex-col`}
                         initial={isMobileView ? { x: "-100%" } : { x: 0 }}
                         animate={{ x: 0 }} exit={isMobileView ? { x: "-100%" } : { x: 0 }}
                         transition={{ duration: 0.3, ease: "easeInOut" }}

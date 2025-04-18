@@ -16,6 +16,7 @@ import Image from "next/image";
 import { FaChartLine, FaHeadset } from "react-icons/fa6";
 import { MdSend } from "react-icons/md";
 import { FiGlobe } from "react-icons/fi";
+import { FaFastForward } from "react-icons/fa";
 
 const FeaturesSection: React.FC = () => {
   return (
@@ -34,8 +35,6 @@ const FeaturesSection: React.FC = () => {
 
         {/* Features Grid */}
         <div className="grid gap-y-6 lg:grid-cols-2 md:grid-rows-6 md:gap-x-8 md:gap-y-8">
-
-          
           {/* Feature Card 1: Security (Large) */}
           <div className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-white dark:bg-white/5">
             <Image
@@ -47,7 +46,7 @@ const FeaturesSection: React.FC = () => {
             />
 
             <div className="flex flex-col gap-3 p-4">
-              <h3 className="text-lg font-medium text-mainheading dark:text-white md:text-2xl">
+              <h3 className="lg:text-2xl md:text-xl text-base font-medium text-mainheading dark:text-white">
                 <span className="text-primary font-bold">Secure</span> Every
                 Step of the Way
               </h3>
@@ -60,10 +59,10 @@ const FeaturesSection: React.FC = () => {
           </div>
 
           {/* Feature Card 2: Speed (Small) */}
-          <div className="row-span-2 flex flex-col gap-6 overflow-hidden rounded-3xl bg-white dark:bg-white/5 p-6">
-            <MdSend className="size-10 text-mainheading dark:text-primary" />
+          <div className="row-span-2 flex flex-col lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-white dark:bg-white/5 p-6">
+            <FaFastForward className="lg:size-8 size-6 text-mainheading dark:text-primary" />
             <div className="flex flex-col gap-3">
-              <h3 className="text-xl font-medium text-mainheading dark:text-white md:text-2xl">
+              <h3 className="lg:text-2xl md:text-xl text-base font-medium text-mainheading dark:text-white">
                 <span>
                   Our transfers are{" "}
                   <span className="text-primary font-bold">Speedy</span>
@@ -87,7 +86,7 @@ const FeaturesSection: React.FC = () => {
             />
 
             <div className="flex flex-col gap-3 p-4">
-              <h3 className="text-xl font-medium text-mainheading dark:text-white md:text-2xl">
+              <h3 className="lg:text-2xl md:text-xl text-base font-medium text-mainheading dark:text-white">
                 <span>
                   Need{" "}
                   <span className="text-primary font-bold">Support &nbsp;</span>
@@ -102,10 +101,10 @@ const FeaturesSection: React.FC = () => {
           </div>
 
           {/* Feature Card 4: Savings (Small) */}
-          <div className="row-span-2 flex flex-col gap-6 overflow-hidden rounded-3xl bg-white dark:bg-white/5 p-6 ">
-            <FaChartLine className="size-10 text-mainheading  dark:text-primary" />
+          <div className="row-span-2 flex flex-col lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-white dark:bg-white/5 p-6 ">
+            <FaChartLine className="lg:size-8 size-6 text-mainheading  dark:text-primary" />
             <div className="flex flex-col gap-3">
-              <h3 className="text-xl font-medium text-mainheading dark:text-white md:text-2xl">
+              <h3 className="lg:text-2xl md:text-xl text-base font-medium text-mainheading dark:text-white">
                 <span>
                   <span className="text-primary font-bold">Save</span> with high
                   exchange rates
@@ -129,7 +128,7 @@ const FeaturesSection: React.FC = () => {
             />
 
             <div className="flex flex-col gap-3 p-4">
-              <h3 className="text-xl font-medium text-mainheading dark:text-white md:text-2xl">
+              <h3 className="lg:text-2xl md:text-xl text-base font-medium text-mainheading dark:text-white">
                 <span>
                   Stay ahead with live &nbsp;
                   <span className="text-primary font-bold capitalize">
@@ -146,10 +145,10 @@ const FeaturesSection: React.FC = () => {
           </div>
 
           {/* Feature Card 6: Reach (Small) */}
-          <div className="row-span-2 flex flex-col gap-6 overflow-hidden rounded-3xl bg-white dark:bg-white/5 p-6 ">
-            <FiGlobe className="size-10 text-mainheading  dark:text-primary" />
+          <div className="row-span-2 flex flex-col lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-white dark:bg-white/5 p-6 ">
+            <FiGlobe className="lg:size-8 size-6 text-mainheading dark:text-primary" />
             <div className="flex flex-col gap-3">
-              <h3 className="text-xl font-medium text-mainheading dark:text-white md:text-2xl">
+              <h3 className="lg:text-2xl md:text-xl text-base font-medium text-mainheading dark:text-white">
                 <span>
                   <span className="text-primary font-bold">
                     Worldwide Reach
@@ -176,7 +175,7 @@ const FeaturesSection: React.FC = () => {
             />
 
             <div className="flex flex-col gap-3 p-4">
-              <h3 className="text-xl font-medium text-mainheading dark:text-white md:text-2xl">
+              <h3 className="lg:text-2xl md:text-xl text-base font-medium text-mainheading dark:text-white">
                 <span>
                   Exchange &nbsp;
                   <span className="text-primary font-bold capitalize">
@@ -194,15 +193,12 @@ const FeaturesSection: React.FC = () => {
           </div>
 
           {/* Feature Card 8: Reach (Small) */}
-          <div className="row-span-2 flex flex-col gap-6 overflow-hidden rounded-3xl bg-white dark:bg-white/5 p-6 ">
-            <FaHeadset className="size-10 text-mainheading  dark:text-primary" />
+          <div className="row-span-2 flex flex-col lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-white dark:bg-white/5 p-6 ">
+            <FaHeadset className="lg:size-8 size-6 text-mainheading  dark:text-primary" />
             <div className="flex flex-col gap-3">
-              <h3 className="text-xl font-medium text-mainheading dark:text-white md:text-2xl">
+              <h3 className="lg:text-2xl md:text-xl text-base font-medium text-mainheading dark:text-white">
                 <span>
-                  <span className="text-primary font-bold">
-                    {" "} 
-                    24/7 Customer{" "}
-                  </span>{" "}
+                  <span className="text-primary font-bold">24/7 Customer </span>
                   Support
                 </span>
               </h3>
