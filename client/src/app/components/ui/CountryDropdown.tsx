@@ -2178,10 +2178,10 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
         disabled={disabled || isLoading} // Use combined disabled state
       >
         {isLoading ? ( // Internal loading state for fetching currencies
-          <Loader2 className="size-5 animate-spin mx-auto text-gray-500" />
+          <Loader2 className="size-5 animate-spin mx-auto text-primary" />
         ) : (
           <>
-            <div className="flex items-center gap-2 overflow-hidden">
+            <div className="flex items-center gap-2">
               <Image
                   src={getFlagSrc(selectedCurrencyData)}
                   alt={`${selectedCurrency}-Flag`}
@@ -2192,20 +2192,20 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
                   unoptimized={isExternalUrl(getFlagSrc(selectedCurrencyData))}
                   onError={(e) => { (e.target as HTMLImageElement).src = defaultFlag.src; }}
               />
-              <p className="text-mainheading dark:text-white font-semibold">{selectedCurrency || "..."}</p> {/* Show ... if no currency yet */}
+              <p className="text-mainheading dark:text-white lg:text-base text-sm font-semibold">{selectedCurrency || "..."}</p> {/* Show ... if no currency yet */}
             </div>
-            {isOpen ? <IoIosArrowUp size={18} className="text-mainheading dark:text-white flex-shrink-0"/> : <IoIosArrowDown size={18} className="text-mainheading dark:text-white flex-shrink-0"/>}
+            {isOpen ? <IoIosArrowUp size={20} className="text-mainheading size-4 dark:text-white flex-shrink-0"/> : <IoIosArrowDown size={20} className="text-mainheading size-4 dark:text-white flex-shrink-0"/>}
           </>
         )}
       </button>
 
       {isOpen && (
-        <div className="absolute z-10 w-[400px] max-w-[90vw] top-14 -right-4 sm:right-0 bg-white dark:bg-background rounded-lg border shadow-lg overflow-hidden">
+        <div className="absolute z-10 lg:w-[400px] w-72 max-w-[90vw] top-14 -right-5 sm:right-0 bg-white dark:bg-background rounded-lg border shadow-lg overflow-hidden">
           {/* Search Input */}
           <div className="sticky top-0 bg-white dark:bg-background p-2 border-b z-10">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <BiSearch className="h-5 w-5 text-gray-400" />
+                <BiSearch className="lg:size-5 size-4 text-gray-400" />
               </div>
               <input
                 type="text"
@@ -2220,7 +2220,7 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
           </div>
 
           <div
-            className="p-2 pb-4 max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600 dark:hover:scrollbar-thumb-gray-500" // Added dark scrollbar styles
+            className="p-2 pb-4 max-h-[370px] overflow-x-hidden overflow-y-auto [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox" // Added dark scrollbar styles
             role="listbox"
           >
             {/* Loading State (Internal) */}
@@ -2239,7 +2239,7 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
 
             {/* Currency List */}
             {!isLoading && !error && filteredCurrencies.length > 0 && (
-              <ul className="space-y-1">
+              <ul className="space-y-2">
                 {filteredCurrencies.map((currency) => {
                     const flagSrc = getFlagSrc(currency); // Get src once
                     return (
@@ -2269,8 +2269,8 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
                                onError={(e) => { (e.target as HTMLImageElement).src = defaultFlag.src; }}
                            />
                            <div className="flex flex-col">
-                             <span className="font-medium text-mainheading dark:text-white">{currency.code}</span>
-                             <span className="text-gray-500 dark:text-gray-400 text-xs">
+                             <span className="font-medium text-mainheading lg:text-base text-sm dark:text-white">{currency.code}</span>
+                             <span className="text-gray-500 dark:text-gray-300 lg:text-sm text-[10px]">
                                 {currency.currencyName}
                              </span>
                            </div>

@@ -94,8 +94,6 @@
 
 // export default RemittanceFeature;
 
-
-
 import React from "react";
 import { FaFingerprint, FaRocket } from "react-icons/fa6";
 import { FaExchangeAlt, FaMoneyBillAlt } from "react-icons/fa";
@@ -114,7 +112,7 @@ const FeatureItem: React.FC<FeatureItemProps> = ({
   description,
 }) => {
   return (
-    <div className="bg-white dark:bg-white/5 lg:p-6 p-4 rounded-2xl shadow-sm">
+    <div className="bg-white dark:bg-white/5 lg:p-6 p-4 rounded-2xl">
       {/* Added shadow-sm for subtle lift */}
       <div className="flex items-center gap-6">
         <span className="text-primary dark:text-primary">{icon}</span>
@@ -133,15 +131,14 @@ const FeatureItem: React.FC<FeatureItemProps> = ({
 
 const RemittanceFeature: React.FC = () => {
   return (
-    <section className="bg-gray-100 dark:bg-background px-4 lg:py-20 py-10">
+    <section className="bg-gray-100 dark:bg-background px-4 lg:py-10 py-5">
       {/* Replaced bg-[#f2f4f7] with bg-gray-100 for Tailwind consistency */}
       <div className="container mx-auto">
         <div className="flex justify-center">
           {/* Removed 'row' and used flex directly for simpler layout */}
-          <div className="md:w-7/12">
+          <div className="md:w-7/12 w-full">
             {/* Removed 'col-md-7' and used md:w-7/12 directly */}
             <div className="text-center">
-              {/* Removed 'section-header' and used text-center directly */}
               {/* sub-title */}
               <p className="text-base font-medium text-gray-500 dark:text-gray-300 mb-2">
                 Payments without borders
@@ -156,7 +153,7 @@ const RemittanceFeature: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-2 grid-cols-1 lg:gap-8 gap-6 lg:mt-14 mt-5">
+        <div className="grid lg:grid-cols-2 grid-cols-1 lg:gap-8 gap-6 lg:mt-10 mt-5">
           <FeatureItem
             icon={<FaFingerprint className="size-10" />}
             title="Always at Your Fingertips"
