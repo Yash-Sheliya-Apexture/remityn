@@ -1327,9 +1327,855 @@
 
 // export default UserDetailPage;
 
+// // frontend/src/app/admin/users/[userId]/page.tsx
+// "use client";
 
+// import React, { useState, useEffect, useCallback } from "react";
+// import { useParams, useRouter } from "next/navigation";
+// import Link from "next/link";
+// import Image from "next/image";
+// import userAdminService from "../../../services/admin/user.admin";
+// // Import specific types needed
+// import type { AdminUserDetailResponse } from "../../../services/admin/user.admin";
+// import type { KycMobile, KycStatus } from "../../../services/kyc";
+// import type { Payment } from "@/types/payment";
+// import type { Transfer } from "@/types/transfer";
+// import { useAuth } from "../../../contexts/AuthContext";
 
+// // Components
+// import {
+//   Card,
+//   CardContent,
+//   CardHeader,
+//   CardTitle,
+//   CardDescription,
+// } from "@/components/ui/card";
+// import { Badge } from "@/components/ui/badge";
+// import { Skeleton } from "@/components/ui/skeleton";
+// import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+// import { Button } from "@/components/ui/button";
+// import {
+//   Table,
+//   TableBody,
+//   TableCell,
+//   TableHead,
+//   TableHeader,
+//   TableRow,
+// } from "@/components/ui/table";
+// import {
+//   Tooltip,
+//   TooltipContent,
+//   TooltipProvider,
+//   TooltipTrigger,
+// } from "@/components/ui/tooltip";
+// import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+// import { Separator } from "@/components/ui/separator";
+// // --- NEW: Import Tabs components ---
+// import {
+//   Tabs,
+//   TabsContent,
+//   TabsList,
+//   TabsTrigger,
+// } from "@/components/ui/tabs";
 
+// // Icons
+// import {
+//   ArrowLeft,
+//   User,
+//   Mail,
+//   ShieldCheck,
+//   CalendarDays,
+//   Phone,
+//   Briefcase,
+//   UserCheck,
+//   UserX,
+//   HelpCircle,
+//   BadgeDollarSign,
+//   Fingerprint,
+//   Globe,
+//   FileText,
+//   AlertCircle,
+//   Info,
+//   Workflow,
+//   ExternalLink,
+//   Eye,
+//   Wallet,
+//   Send,
+//   Download,
+//   Landmark,
+//   Clock,
+// } from "lucide-react";
+// import { cn } from "@/lib/utils";
+
+// // --- Helper Functions (Keep as they are - No changes needed) ---
+// const formatDate = (
+//   dateInput?: string | Date | null,
+//   includeTime = false
+// ): string => {
+//   if (!dateInput) return "N/A";
+//   try {
+//     const date = new Date(dateInput);
+//     if (isNaN(date.getTime())) return "Invalid Date";
+//     const options: Intl.DateTimeFormatOptions = {
+//       year: "numeric",
+//       month: "short",
+//       day: "numeric",
+//       ...(includeTime && { hour: "2-digit", minute: "2-digit", hour12: true }),
+//     };
+//     return date.toLocaleDateString("en-US", options);
+//   } catch (e) {
+//     return "Invalid Date";
+//   }
+// };
+
+// const formatMobile = (mobile?: KycMobile | null): string => {
+//   if (!mobile || !mobile.countryCode?.trim() || !mobile.number?.trim())
+//     return "N/A";
+//   return `${mobile.countryCode} ${mobile.number}`;
+// };
+
+// const getKycStatusConfig = (status?: KycStatus | null) => {
+//   const statusMap: Record<
+//     KycStatus | "unknown",
+//     { color: string; icon: React.ElementType; label: string }
+//   > = {
+//     verified: {
+//       color:
+//         "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 border-green-200 dark:border-green-700/50",
+//       icon: ShieldCheck,
+//       label: "Verified",
+//     },
+//     rejected: {
+//       color:
+//         "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 border-red-200 dark:border-red-700/50",
+//       icon: UserX,
+//       label: "Rejected",
+//     },
+//     pending: {
+//       color:
+//         "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 border-yellow-200 dark:border-yellow-700/50",
+//       icon: Clock,
+//       label: "Pending",
+//     },
+//     skipped: {
+//       color:
+//         "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border-blue-200 dark:border-blue-700/50",
+//       icon: ArrowLeft, // Changed from HelpCircle to fit "skipped" better
+//       label: "Skipped",
+//     },
+//     not_started: {
+//       color:
+//         "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600/50",
+//       icon: HelpCircle,
+//       label: "Not Started",
+//     },
+//     unknown: {
+//       color:
+//         "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600/50",
+//       icon: HelpCircle,
+//       label: "Unknown",
+//     }, // Fallback
+//   };
+//   return statusMap[status || "not_started"] || statusMap.unknown;
+// };
+
+// const getTransactionStatusColor = (status?: string | null): string => {
+//   switch (status?.toLowerCase()) {
+//     case "completed":
+//       return "text-green-600 bg-green-100 dark:bg-green-600/20 dark:text-green-400 border-green-200 dark:border-green-600/30";
+//     case "pending":
+//       return "text-yellow-600 bg-yellow-100 dark:bg-yellow-600/20 dark:text-yellow-400 border-yellow-200 dark:border-yellow-600/30";
+//     case "processing":
+//     case "in progress":
+//       return "text-blue-600 bg-blue-100 dark:bg-blue-600/20 dark:text-blue-400 border-blue-200 dark:border-blue-600/30";
+//     case "failed":
+//       return "text-rose-600 bg-rose-100 dark:bg-rose-600/20 dark:text-rose-400 border-rose-200 dark:border-rose-600/30";
+//     case "canceled":
+//     case "cancelled":
+//       return "text-red-600 bg-red-100 dark:bg-red-600/20 dark:text-red-400 border-red-200 dark:border-red-600/30";
+//     default:
+//       return "text-gray-600 bg-gray-100 dark:bg-gray-600/20 dark:text-gray-400 border-gray-200 dark:border-gray-600/30";
+//   }
+// };
+
+// const getInitials = (name?: string): string => {
+//   if (!name) return "??";
+//   return name
+//     .split(" ")
+//     .map((part) => part[0])
+//     .filter(Boolean)
+//     .join("")
+//     .substring(0, 2)
+//     .toUpperCase();
+// };
+
+// const salaryDisplayMap: Record<string, string> = {
+//   "0-1000": "Below $10,000",
+//   "10000-50000": "$10,000 - $49,999",
+//   "50000-100000": "$50,000 - $99,999",
+//   "100000+": "$100,000 or more",
+// };
+
+// // --- DetailItem Component (Keep as is) ---
+// const DetailItem = ({
+//   label,
+//   value,
+//   icon: Icon,
+//   isImportant = false,
+//   className = "",
+// }: {
+//   label: string;
+//   value: React.ReactNode;
+//   icon?: React.ElementType;
+//   isImportant?: boolean;
+//   className?: string;
+// }) => (
+//   <div className={cn("py-2 space-y-2", className)}>
+//     <dt className="text-sm font-medium text-neutral-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+//       {Icon && (
+//         <Icon className="h-4 w-4 flex-shrink-0 text-primary" />
+//       )}
+//       {label}
+//     </dt>
+//     <dd
+//       className={cn(
+//         "text-sm  break-words text-gray-500 dark:text-gray-300",
+//         isImportant ? "font-semibold" : ""
+//       )}
+//     >
+//       {value || <span className="italic">N/A</span>}
+//     </dd>
+//   </div>
+// );
+
+// // --- Loading Skeleton Component (Keep as is - already adapted to border style) ---
+// const LoadingSkeleton = () => (
+//   <div className="container mx-auto px-4 py-8 relative">
+//     <div className="space-y-6 animate-pulse">
+//       <div className="flex items-center gap-2 mb-4">
+//         <Skeleton className="h-8 w-8 rounded-full bg-muted" />
+//         <Skeleton className="h-5 w-36 bg-muted rounded" />
+//       </div>
+//       {/* Main Profile Card Skeleton */}
+//       <div className="border border-border rounded-lg bg-card overflow-hidden">
+//         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 border-b border-border">
+//           <Skeleton className="h-16 w-16 rounded-full flex-shrink-0 bg-muted" />
+//           <div className="space-y-2 flex-1">
+//             <Skeleton className="h-6 w-3/4 bg-muted rounded" />
+//             <Skeleton className="h-4 w-1/2 bg-muted rounded" />
+//             <Skeleton className="h-5 w-20 bg-muted rounded-md" />
+//           </div>
+//           <div className="space-y-1 text-right flex-shrink-0">
+//             <Skeleton className="h-3 w-28 bg-muted rounded" />
+//             <Skeleton className="h-3 w-24 bg-muted rounded" />
+//             <Skeleton className="h-3 w-32 bg-muted rounded" />
+//           </div>
+//         </div>
+//         <div className="p-4 sm:p-6 bg-muted/30 dark:bg-card">
+//           <Skeleton className="h-4 w-1/4 bg-muted rounded mb-3" />
+//           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+//             {[...Array(4)].map((_, i) => (
+//               <Skeleton key={i} className="h-16 w-full bg-muted rounded-md" />
+//             ))}
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* Tab Skeleton */}
+//       <div className="space-y-4">
+//         <div className="flex space-x-1 rounded-md bg-muted p-1 w-full">
+//           <Skeleton className="h-9 w-1/3 rounded-sm flex-1 bg-background" />
+//           <Skeleton className="h-9 w-1/3 rounded-sm flex-1 bg-background" />
+//           <Skeleton className="h-9 w-1/3 rounded-sm flex-1 bg-background" />
+//         </div>
+//         <div className="border border-border rounded-lg bg-card p-4 sm:p-6">
+//            <Skeleton className="h-40 w-full bg-muted rounded-md" />
+//         </div>
+//       </div>
+//     </div>
+//   </div>
+// );
+
+// // --- Error Display Component (Keep as is) ---
+// const ErrorDisplay = ({
+//   error,
+//   onRetry,
+// }: {
+//   error: string | null;
+//   onRetry: () => void;
+// }) => (
+//   <Alert variant="destructive" className="mt-6">
+//     <AlertCircle className="h-4 w-4" />
+//     <AlertTitle>Error Loading User Details</AlertTitle>
+//     <AlertDescription>
+//       {error || "An unexpected error occurred."}
+//       <Button
+//         variant="destructive"
+//         size="sm"
+//         onClick={onRetry}
+//         className="mt-2 ml-auto block"
+//       >
+//         Retry
+//       </Button>
+//     </AlertDescription>
+//   </Alert>
+// );
+
+// // --- Transaction Table Component ---
+// const TransactionTable = ({
+//   data,
+//   type,
+// }: {
+//   data: (Transfer | Payment)[];
+//   type: "transfer" | "payment";
+// }) => {
+//   if (!data || data.length === 0) {
+//     return (
+//       <p className="text-sm text-muted-foreground text-center py-8 px-4">
+//         No {type}s found for this user.
+//       </p>
+//     );
+//   }
+
+//   const isTransfer = (item: Transfer | Payment): item is Transfer =>
+//     type === "transfer";
+
+//   return (
+//     <div className="overflow-x-auto">
+//       <Table className="text-base">
+//         <TableHeader className="bg-muted/50 dark:bg-muted/30">
+//           <TableRow className="border-b-border">
+//             <TableHead className="w-[100px] px-3 py-2 h-9">ID</TableHead>
+//             {type === "transfer" && (
+//               <TableHead className="px-3 py-2 h-9">Recipient</TableHead>
+//             )}
+//             <TableHead className="px-3 py-2 h-9">Amount</TableHead>
+//             <TableHead className="px-3 py-2 h-9">Currency</TableHead>
+//             <TableHead className="px-3 py-2 h-9">Status</TableHead>
+//             <TableHead className="px-3 py-2 h-9">Date</TableHead>
+//             <TableHead className="text-right px-3 py-2 h-9">Details</TableHead>
+//           </TableRow>
+//         </TableHeader>
+//         <TableBody>
+//           {data.slice(0, 5).map((item) => {
+//             const statusColor = getTransactionStatusColor(item.status);
+//             const amount = isTransfer(item)
+//               ? item.sendAmount
+//               : (item as Payment).amountToAdd;
+//             const currencyCode = isTransfer(item)
+//               ? typeof item.sendCurrency === "object"
+//                 ? item.sendCurrency?.code
+//                 : "N/A"
+//               : (item as Payment).payInCurrency?.code;
+//             const recipientName = isTransfer(item)
+//               ? item.recipient?.accountHolderName
+//               : undefined;
+//             const detailLink =
+//               type === "transfer"
+//                 ? `/admin/transfer/${item._id}`
+//                 : `/admin/add-money`; // Maybe link to payment list for now
+
+//             return (
+//               <TableRow
+//                 key={item._id}
+//                 className="border-b-border hover:bg-muted/30 dark:hover:bg-muted/20"
+//               >
+//                 <TableCell className="px-3 py-2">
+//                   <TooltipProvider delayDuration={100}>
+//                     <Tooltip>
+//                       <TooltipTrigger asChild>
+//                         <span className="font-mono cursor-help underline decoration-dashed decoration-border">
+//                           {item._id.substring(item._id.length - 6)}
+//                         </span>
+//                       </TooltipTrigger>
+//                       <TooltipContent>
+//                         <p>{item._id}</p>
+//                       </TooltipContent>
+//                     </Tooltip>
+//                   </TooltipProvider>
+//                 </TableCell>
+//                 {type === "transfer" && (
+//                   <TableCell className="max-w-[150px] truncate px-3 py-2">
+//                     {recipientName || "N/A"}
+//                   </TableCell>
+//                 )}
+//                 <TableCell className="font-medium px-3 py-2">
+//                   {amount != null ? Number(amount).toFixed(2) : "N/A"}
+//                 </TableCell>
+//                 <TableCell className="px-3 py-2">
+//                   {currencyCode || "N/A"}
+//                 </TableCell>
+//                 <TableCell className="px-3 py-2">
+//                   <Badge
+//                     variant="outline"
+//                     className={cn(
+//                       "text-[10px] capitalize px-1.5 py-0.5 border",
+//                       statusColor
+//                     )}
+//                   >
+//                     {item.status || "Unknown"}
+//                   </Badge>
+//                 </TableCell>
+//                 <TableCell className="px-3 py-2 whitespace-nowrap">
+//                   {formatDate(item.createdAt, true)}
+//                 </TableCell>
+//                 <TableCell className="text-right px-3 py-2">
+//                   <Button
+//                     asChild
+//                     variant="ghost"
+//                     size="icon"
+//                     className="h-6 w-6"
+//                     title={`View ${type} details`}
+//                   >
+//                     <Link
+//                       href={detailLink}
+//                       rel="noopener noreferrer"
+//                     >
+//                       <ExternalLink className="h-3.5 w-3.5" />
+//                     </Link>
+//                   </Button>
+//                 </TableCell>
+//               </TableRow>
+//             );
+//           })}
+//         </TableBody>
+//       </Table>
+//     </div>
+//   );
+// };
+
+// // --- Main Detail Page Component ---
+// const UserDetailPage: React.FC = () => {
+//   const params = useParams();
+//   const router = useRouter();
+//   const { token, isAdmin, loading: authLoading } = useAuth();
+//   const userId = params.userId as string;
+
+//   const [userData, setUserData] = useState<AdminUserDetailResponse | null>(
+//     null
+//   );
+//   const [loading, setLoading] = useState<boolean>(true);
+//   const [error, setError] = useState<string | null>(null);
+
+//   // Fetching Logic (Keep as is)
+//   const fetchUserDetails = useCallback(async () => {
+//     if (!isAdmin) {
+//       setError("Access Denied: Administrator privileges required.");
+//       setLoading(false);
+//       return;
+//     }
+//     if (!userId) {
+//       setError("User ID is missing from the URL.");
+//       setLoading(false);
+//       return;
+//     }
+//     setLoading(true);
+//     setError(null);
+//     try {
+//       const data = await userAdminService.getUserDetailsAdmin(userId);
+//       setUserData(data);
+//     } catch (err: any) {
+//       setError(err.message || "Failed to load user details.");
+//       setUserData(null);
+//     } finally {
+//       setLoading(false);
+//     }
+//   }, [userId, isAdmin]);
+
+//   useEffect(() => {
+//     if (authLoading) return;
+
+//     if (token && isAdmin) {
+//       fetchUserDetails();
+//     } else if (!token) {
+//       router.push("/auth/login?message=login_required");
+//     } else if (!isAdmin) {
+//       setError("Access Denied: Administrator privileges required.");
+//       setLoading(false);
+//     }
+//   }, [token, isAdmin, authLoading, userId, router, fetchUserDetails]);
+
+//   // --- Render Logic ---
+//   if (loading || authLoading)
+//     return (
+//       <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8">
+//         <LoadingSkeleton />
+//       </div>
+//     );
+//   if (error)
+//     return (
+//       <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8">
+//         <ErrorDisplay error={error} onRetry={fetchUserDetails} />
+//       </div>
+//     );
+//   if (!userData)
+//     return (
+//       <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8 text-center py-16 text-muted-foreground">
+//         User data could not be loaded.
+//       </div>
+//     );
+
+//   const { kyc, accounts, transfers, payments } = userData;
+//   const kycStatusConfig = getKycStatusConfig(kyc?.status);
+
+//   return (
+//     <div className="container mx-auto px-4 py-8 relative">
+//       <div className="space-y-6 pb-10">
+//         {" "}
+//         {/* Added space-y-6 for spacing */}
+//         {/* Back Navigation */}
+//         <Button
+//           variant="outline"
+//           size="sm"
+//           className="gap-1.5 h-8 px-3 bg-card hover:bg-muted" // Removed mb-4, handled by parent space-y
+//           onClick={() => router.push("/admin/users")}
+//         >
+//           <ArrowLeft className="h-4 w-4" />
+//           Back to User List
+//         </Button>
+//         {/* User Profile Card - Remains the same */}
+//         <Card className="overflow-hidden border border-border bg-card shadow-none">
+//           <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-5 border-b border-border">
+//             {/* User Info */}
+//             <div className="flex items-center gap-4">
+//               <Avatar className="h-14 w-14 sm:h-16 sm:w-16 flex-shrink-0 border-2 border-border">
+//                 <AvatarFallback className="text-xl font-semibold bg-muted text-muted-foreground">
+//                   {getInitials(userData.fullName)}
+//                 </AvatarFallback>
+//               </Avatar>
+//               <div className="space-y-0.5">
+//                 <CardTitle className="text-lg sm:text-xl text-foreground">
+//                   {userData.fullName}
+//                 </CardTitle>
+//                 <CardDescription className="text-sm text-muted-foreground">
+//                   {userData.email}
+//                 </CardDescription>
+//                 <Badge
+//                   variant={userData.role === "admin" ? "default" : "secondary"}
+//                   className={cn(
+//                     "mt-1.5 text-xs capitalize",
+//                     userData.role === "admin"
+//                       ? "bg-primary text-primary-foreground"
+//                       : "bg-muted text-muted-foreground"
+//                   )}
+//                 >
+//                   {userData.role} Account
+//                 </Badge>
+//               </div>
+//             </div>
+//             {/* Meta Info */}
+//             <div className="flex flex-col items-start sm:items-end gap-1 text-xs text-muted-foreground flex-shrink-0 mt-2 sm:mt-0">
+//               <span className="flex items-center gap-1.5">
+//                 <CalendarDays className="h-3 w-3" /> Joined:
+//                 {formatDate(userData.createdAt)}
+//               </span>
+//               <span className="flex items-center gap-1.5">
+//                 <Clock className="h-3 w-3" /> Updated:
+//                 {formatDate(userData.updatedAt)}
+//               </span>
+//               <TooltipProvider delayDuration={100}>
+//                 <Tooltip>
+//                   <TooltipTrigger asChild>
+//                     <span className="font-mono cursor-help underline decoration-dotted decoration-border">
+//                       ID: {userData._id.substring(userData._id.length - 8)}
+//                     </span>
+//                   </TooltipTrigger>
+//                   <TooltipContent side="bottom">
+//                     <p>{userData._id}</p>
+//                   </TooltipContent>
+//                 </Tooltip>
+//               </TooltipProvider>
+//             </div>
+//           </CardHeader>
+//           {/* Account Balances */}
+//           <CardContent className="p-4 sm:p-6 bg-muted/30 dark:bg-muted/20">
+//             <h3 className="text-sm font-medium text-muted-foreground mb-3 flex items-center gap-1.5">
+//               <Wallet className="h-4 w-4" /> Account Balances
+//             </h3>
+//             {accounts && accounts.length > 0 ? (
+//               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+//                 {accounts.map((acc) => (
+//                   <div
+//                     key={acc._id}
+//                     className="border border-border/70 rounded-md p-3 bg-card"
+//                   >
+//                     <div className="flex items-center justify-between mb-0.5">
+//                       <span className="text-xs font-semibold text-foreground">
+//                         {acc.currency?.code}
+//                       </span>
+//                     </div>
+//                     <div className="text-base sm:text-lg font-bold text-foreground tracking-tight">
+//                       {acc.balance != null
+//                         ? acc.balance.toLocaleString(undefined, {
+//                             minimumFractionDigits: 2,
+//                             maximumFractionDigits: 2,
+//                           })
+//                         : "N/A"}
+//                     </div>
+//                     <div
+//                       className="text-[11px] text-muted-foreground truncate"
+//                       title={acc.currency?.currencyName ?? ""}
+//                     >
+//                       {acc.currency?.currencyName || "Unknown Currency"}
+//                     </div>
+//                   </div>
+//                 ))}
+//               </div>
+//             ) : (
+//               <p className="text-sm text-muted-foreground italic py-2">
+//                 No accounts found for this user.
+//               </p>
+//             )}
+//           </CardContent>
+//         </Card>
+//         {/* --- NEW: Tabs Section --- */}
+//         <Tabs defaultValue="kyc" className="w-full">
+//           <TabsList className="grid w-full grid-cols-3 h-11 mb-4">
+//             {" "}
+//             {/* Adjusted height and added mb */}
+//             <TabsTrigger
+//               value="kyc"
+//               className="gap-1.5 text-xs sm:text-sm text-neutral-900 dark:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-background data-[state=active]:text-primary dark:data-[state=active]:text-primary cursor-pointer"
+//             >
+//               <UserCheck className="h-4 w-4" />
+//               KYC & Documents
+//             </TabsTrigger>
+//             <TabsTrigger
+//               value="transfers"
+//               className="gap-1.5 text-xs sm:text-sm text-neutral-900 dark:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-background data-[state=active]:text-primary dark:data-[state=active]:text-primary cursor-pointer"
+//             >
+//               <Send className="h-4 w-4" />
+//               Transfers (Send)
+//             </TabsTrigger>
+//             <TabsTrigger
+//               value="payments"
+//               className="gap-1.5 text-xs sm:text-sm text-neutral-900 dark:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-background data-[state=active]:text-primary dark:data-[state=active]:text-primary cursor-pointer"
+//             >
+//               <Landmark className="h-4 w-4" />
+//               Payments (Add)
+//             </TabsTrigger>
+//           </TabsList>
+
+//           {/* KYC Information Tab Content */}
+//           <TabsContent value="kyc">
+//             <Card className="border overflow-hidden mb-4">
+//               <CardHeader className="border-b border-border px-6 py-4 bg-lightgray dark:bg-primarybox ">
+//                 <div className="flex items-center justify-between">
+//                   <CardTitle className="text-lg font-semibold flex items-center gap-2 text-neutral-900 dark:text-white ">
+//                     <UserCheck className="h-5 w-5 text-primary" /> KYC
+//                     Information
+//                   </CardTitle>
+//                   <Badge
+//                     variant="outline"
+//                     className={cn(
+//                       "text-sm capitalize px-4 py-2 font-medium border",
+//                       kycStatusConfig.color
+//                     )}
+//                   >
+//                     <kycStatusConfig.icon className="h-4 w-4 mr-1 flex-shrink-0" />
+//                     {kycStatusConfig.label}
+//                   </Badge>
+//                 </div>
+//                 {kyc?.status === "rejected" && kyc.rejectionReason && (
+//                   <p className="text-xs text-destructive pt-2 mt-2 border-t border-destructive/20">
+//                     <span className="font-medium">Rejection Reason:</span>{" "}
+//                     {kyc.rejectionReason}
+//                   </p>
+//                 )}
+//               </CardHeader>
+//               <CardContent>
+//                 {kyc ? (
+//                   <>
+//                     <div className="p-4">
+//                       <h4 className="border-b pb-2 mb-2 font-medium text-neutral-900 dark:text-white">Personal Details</h4>
+//                       <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
+//                         <DetailItem label="First Name" value={kyc.firstName} />
+//                         <DetailItem label="Last Name" value={kyc.lastName} />
+//                         <DetailItem
+//                           label="Date of Birth"
+//                           value={formatDate(kyc.dateOfBirth)}
+//                           icon={CalendarDays}
+//                         />
+//                         <DetailItem
+//                           label="Mobile"
+//                           value={formatMobile(kyc.mobile)}
+//                           icon={Phone}
+//                         />
+//                         <DetailItem
+//                           label="Nationality"
+//                           value={kyc.nationality}
+//                           icon={Globe}
+//                         />
+//                         <DetailItem
+//                           label="Occupation"
+//                           value={kyc.occupation}
+//                           icon={Briefcase}
+//                         />
+//                         <DetailItem
+//                           label="Salary Range"
+//                           value={
+//                             kyc.salaryRange
+//                               ? salaryDisplayMap[kyc.salaryRange]
+//                               : undefined
+//                           }
+//                           icon={BadgeDollarSign}
+//                         />
+//                       </div>
+//                     </div>
+
+//                     <div className="p-4">
+//                       <h4 className="border-b pb-2 mb-2 text-neutral-900 dark:text-white">Identification Details</h4>
+//                       <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
+//                         <DetailItem
+//                           label="ID Type"
+//                           value={
+//                             <span className="capitalize">
+//                               {kyc.idType?.replace("_", " ")}
+//                             </span>
+//                           }
+//                           icon={Fingerprint}
+//                         />
+//                         <DetailItem label="ID Number" value={kyc.idNumber} />
+//                         <DetailItem
+//                           label="ID Issue Date"
+//                           value={formatDate(kyc.idIssueDate)}
+//                           icon={CalendarDays}
+//                         />
+//                         <DetailItem
+//                           label="ID Expiry Date"
+//                           value={formatDate(kyc.idExpiryDate)}
+//                           icon={CalendarDays}
+//                         />
+//                       </div>
+//                     </div>
+
+//                     <div className="p-4">
+//                       <h4 className="border-b pb-2 mb-2 text-neutral-900 dark:text-white">Updating Information</h4>
+//                       <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
+//                         <DetailItem
+//                           label="Submitted At"
+//                           value={formatDate(kyc.submittedAt, true)}
+//                           icon={Clock}
+//                         />
+//                         <DetailItem
+//                           label="Last Updated"
+//                           value={formatDate(kyc.lastUpdatedAt, true)}
+//                           icon={Clock}
+//                         />
+//                       </div>
+//                     </div>
+//                   </>
+//                 ) : (
+//                   <p className="text-sm text-muted-foreground italic py-4 text-center">
+//                     KYC details not submitted.
+//                   </p>
+//                 )}
+//               </CardContent>
+//             </Card>
+//             <Card className="border overflow-hidden mb-4">
+//               <CardHeader className="border-b border-border px-6 py-4 bg-lightgray dark:bg-primarybox ">
+//                 <CardTitle className="text-lg font-semibold flex items-center gap-2 text-neutral-900 dark:text-white ">
+//                   <FileText className="h-5 w-5 text-primary" /> Submitted
+//                   Documents
+//                 </CardTitle>
+//               </CardHeader>
+//               {/* Documents Section */}
+//               {kyc?.documents && kyc.documents.length > 0 && (
+//                 <div className="p-4">
+//                   <div className="flex md:flex-row flex-col gap-4">
+//                     {kyc.documents.map((doc) => (
+//                       <div
+//                         key={doc.public_id}
+//                         className="border border-border rounded-lg overflow-hidden bg-muted/30 dark:bg-muted/20 md:w-1/2 w-full"
+//                       >
+//                         <div className="p-3 border-b border-border text-neutral-900 dark:text-white">
+//                           <h4 className="text-sm font-medium capitalize">
+//                             {doc.docType.replace("_", " ")}
+//                           </h4>
+//                         </div>
+//                         <div className="p-2 flex items-center justify-center aspect-video bg-white dark:bg-background overflow-hidden relative group">
+//                           {doc.url ? (
+//                             <>
+//                               {doc.url.toLowerCase().endsWith(".pdf") ? (
+//                                 <FileText className="h-12 w-12 text-gray-500 dark:text-gray-300" />
+//                               ) : (
+//                                 <Image
+//                                   src={doc.url}
+//                                   alt={`${doc.docType} preview`}
+//                                   fill
+//                                   className="object-contain"
+//                                   unoptimized
+//                                 />
+//                               )}
+//                               <a
+//                                 href={doc.url}
+//                                 target="_blank"
+//                                 rel="noopener noreferrer"
+//                                 className="absolute inset-0 bg-black/50 dark:bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
+//                                 aria-label={`View full ${doc.docType.replace(
+//                                   "_",
+//                                   " "
+//                                 )} document`}
+//                               >
+//                                 <Eye className="h-6 w-6 text-white" />
+//                               </a>
+//                             </>
+//                           ) : (
+//                             <p className="text-xs text-gray-500 dark:text-gray-300 italic">
+//                               No preview
+//                             </p>
+//                           )}
+//                         </div>
+//                       </div>
+//                     ))}
+//                   </div>
+//                 </div>
+//               )}
+//             </Card>
+//           </TabsContent>
+
+//           {/* Recent Transfers Tab Content */}
+//           <TabsContent value="transfers">
+//             <Card className="border border-border bg-card shadow-none">
+//               <CardHeader className="p-4 border-b border-border">
+//                 <CardTitle className="text-base font-semibold flex items-center gap-2">
+//                   <Send className="h-5 w-5 text-primary" /> Recent Transfers
+//                   (Send Money)
+//                 </CardTitle>
+//                 <CardDescription className="text-xs !mt-1">
+//                   Last 5 transfers initiated by this user.
+//                 </CardDescription>
+//               </CardHeader>
+//               <CardContent className="p-0">
+//                 <TransactionTable data={transfers} type="transfer" />
+//               </CardContent>
+//             </Card>
+//           </TabsContent>
+
+//           {/* Recent Payments Tab Content */}
+//           <TabsContent value="payments">
+//             <Card className="border border-border bg-card shadow-none">
+//               <CardHeader className="p-4 border-b border-border">
+//                 <CardTitle className="text-base font-semibold flex items-center gap-2">
+//                   <Landmark className="h-5 w-5 text-primary" /> Recent Payments
+//                   (Add Money)
+//                 </CardTitle>
+//                 <CardDescription className="text-xs !mt-1">
+//                   Last 5 payment attempts by this user.
+//                 </CardDescription>
+//               </CardHeader>
+//               <CardContent className="p-0">
+//                 <TransactionTable data={payments} type="payment" />
+//               </CardContent>
+//             </Card>
+//           </TabsContent>
+//         </Tabs>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default UserDetailPage;
 
 // frontend/src/app/admin/users/[userId]/page.tsx
 "use client";
@@ -1338,12 +2184,39 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { motion } from "framer-motion"; // Import motion
+
 import userAdminService from "../../../services/admin/user.admin";
-// Import specific types needed
-import type { AdminUserDetailResponse } from "../../../services/admin/user.admin";
+// Import specific types needed from the service
+import type { AdminUserDetailResponse as OriginalAdminUserDetailResponse } from "../../../services/admin/user.admin";
 import type { KycMobile, KycStatus } from "../../../services/kyc";
 import type { Payment } from "@/types/payment";
-import type { Transfer } from "@/types/transfer";
+
+// --- Define Local Transfer type used WITHIN UserDetailPage ---
+interface Transfer {
+  _id: string;
+  user?: {
+    _id?: string;
+    fullName?: string;
+    email?: string;
+  };
+  recipient?: {
+    _id?: string;
+    accountHolderName?: string;
+  };
+  sendAmount: string;
+  sendCurrency?: {
+    code?: string;
+  };
+  status: string;
+  createdAt: string;
+}
+
+// --- Define Local State Type based on Service Response but with modified Transfer type ---
+interface UserDetailState extends Omit<OriginalAdminUserDetailResponse, 'transfers'> {
+  transfers: Transfer[];
+}
+
 import { useAuth } from "../../../contexts/AuthContext";
 
 // Components
@@ -1359,14 +2232,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -1374,13 +2239,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
-// --- NEW: Import Tabs components ---
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Icons
 import {
@@ -1399,19 +2258,17 @@ import {
   Globe,
   FileText,
   AlertCircle,
-  Info,
-  Workflow,
-  ExternalLink,
   Eye,
   Wallet,
   Send,
-  Download,
   Landmark,
   Clock,
+  Copy,
+  Check,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// --- Helper Functions (Keep as they are - No changes needed) ---
+// --- Helper Functions (Keep as they are) ---
 const formatDate = (
   dateInput?: string | Date | null,
   includeTime = false
@@ -1464,7 +2321,7 @@ const getKycStatusConfig = (status?: KycStatus | null) => {
     skipped: {
       color:
         "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border-blue-200 dark:border-blue-700/50",
-      icon: ArrowLeft, // Changed from HelpCircle to fit "skipped" better
+      icon: ArrowLeft,
       label: "Skipped",
     },
     not_started: {
@@ -1478,27 +2335,28 @@ const getKycStatusConfig = (status?: KycStatus | null) => {
         "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600/50",
       icon: HelpCircle,
       label: "Unknown",
-    }, // Fallback
+    },
   };
   return statusMap[status || "not_started"] || statusMap.unknown;
 };
 
-const getTransactionStatusColor = (status?: string | null): string => {
+const getTransactionStatusColorClasses = (status?: string | null): string => {
   switch (status?.toLowerCase()) {
     case "completed":
-      return "text-green-600 bg-green-100 dark:bg-green-600/20 dark:text-green-400 border-green-200 dark:border-green-600/30";
+    case "credited":
+      return "text-green-600 bg-green-100 dark:bg-green-600/20 dark:text-green-400";
     case "pending":
-      return "text-yellow-600 bg-yellow-100 dark:bg-yellow-600/20 dark:text-yellow-400 border-yellow-200 dark:border-yellow-600/30";
+      return "text-yellow-600 bg-yellow-100 dark:bg-yellow-600/20 dark:text-yellow-400";
     case "processing":
     case "in progress":
-      return "text-blue-600 bg-blue-100 dark:bg-blue-600/20 dark:text-blue-400 border-blue-200 dark:border-blue-600/30";
+      return "text-blue-600 bg-blue-100 dark:bg-blue-600/20 dark:text-blue-400";
     case "failed":
-      return "text-rose-600 bg-rose-100 dark:bg-rose-600/20 dark:text-rose-400 border-rose-200 dark:border-rose-600/30";
+      return "text-rose-600 bg-rose-100 dark:bg-rose-600/20 dark:text-rose-400";
     case "canceled":
     case "cancelled":
-      return "text-red-600 bg-red-100 dark:bg-red-600/20 dark:text-red-400 border-red-200 dark:border-red-600/30";
+      return "text-red-600 bg-red-100 dark:bg-red-600/20 dark:text-red-400";
     default:
-      return "text-gray-600 bg-gray-100 dark:bg-gray-600/20 dark:text-gray-400 border-gray-200 dark:border-gray-600/30";
+      return "text-gray-600 bg-gray-100 dark:bg-gray-600/20 dark:text-gray-400";
   }
 };
 
@@ -1536,14 +2394,12 @@ const DetailItem = ({
 }) => (
   <div className={cn("py-2 space-y-2", className)}>
     <dt className="text-sm font-medium text-neutral-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
-      {Icon && (
-        <Icon className="h-4 w-4 flex-shrink-0 text-primary" />
-      )}
+      {Icon && <Icon className="h-4 w-4 flex-shrink-0 text-primary" />}
       {label}
     </dt>
     <dd
       className={cn(
-        "text-sm  break-words text-gray-500 dark:text-gray-300",
+        "text-sm break-words text-gray-500 dark:text-gray-300",
         isImportant ? "font-semibold" : ""
       )}
     >
@@ -1552,7 +2408,7 @@ const DetailItem = ({
   </div>
 );
 
-// --- Loading Skeleton Component (Keep as is - already adapted to border style) ---
+// --- Loading Skeleton Component (Keep as is) ---
 const LoadingSkeleton = () => (
   <div className="container mx-auto px-4 py-8 relative">
     <div className="space-y-6 animate-pulse">
@@ -1560,7 +2416,6 @@ const LoadingSkeleton = () => (
         <Skeleton className="h-8 w-8 rounded-full bg-muted" />
         <Skeleton className="h-5 w-36 bg-muted rounded" />
       </div>
-      {/* Main Profile Card Skeleton */}
       <div className="border border-border rounded-lg bg-card overflow-hidden">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 border-b border-border">
           <Skeleton className="h-16 w-16 rounded-full flex-shrink-0 bg-muted" />
@@ -1584,22 +2439,19 @@ const LoadingSkeleton = () => (
           </div>
         </div>
       </div>
-
-      {/* Tab Skeleton */}
       <div className="space-y-4">
-        <div className="flex space-x-1 rounded-md bg-muted p-1 w-full">
-          <Skeleton className="h-9 w-1/3 rounded-sm flex-1 bg-background" />
-          <Skeleton className="h-9 w-1/3 rounded-sm flex-1 bg-background" />
-          <Skeleton className="h-9 w-1/3 rounded-sm flex-1 bg-background" />
+        <div className="flex space-x-1 rounded-md bg-muted p-1 w-full h-11"> {/* Match TabsList height */}
+          <Skeleton className="h-full w-1/3 rounded-sm flex-1 bg-background" />
+          <Skeleton className="h-full w-1/3 rounded-sm flex-1 bg-background" />
+          <Skeleton className="h-full w-1/3 rounded-sm flex-1 bg-background" />
         </div>
         <div className="border border-border rounded-lg bg-card p-4 sm:p-6">
-           <Skeleton className="h-40 w-full bg-muted rounded-md" />
+          <Skeleton className="h-40 w-full bg-muted rounded-md" />
         </div>
       </div>
     </div>
   </div>
 );
-
 
 // --- Error Display Component (Keep as is) ---
 const ErrorDisplay = ({
@@ -1626,7 +2478,7 @@ const ErrorDisplay = ({
   </Alert>
 );
 
-// --- Transaction Table Component (Keep as is - already adapted) ---
+// --- Transaction Table Component (Keep as is) ---
 const TransactionTable = ({
   data,
   type,
@@ -1634,120 +2486,178 @@ const TransactionTable = ({
   data: (Transfer | Payment)[];
   type: "transfer" | "payment";
 }) => {
-  if (!data || data.length === 0) {
-    return (
-      <p className="text-sm text-muted-foreground text-center py-8 px-4">
-        No {type}s found for this user.
-      </p>
-    );
-  }
-
   const isTransfer = (item: Transfer | Payment): item is Transfer =>
     type === "transfer";
 
-  return (
-    <div className="overflow-x-auto">
-      <Table className="text-xs">
-        <TableHeader className="bg-muted/50 dark:bg-muted/30">
-          <TableRow className="border-b-border">
-            <TableHead className="w-[100px] px-3 py-2 h-9">ID</TableHead>
-            {type === "transfer" && (
-              <TableHead className="px-3 py-2 h-9">Recipient</TableHead>
-            )}
-            <TableHead className="px-3 py-2 h-9">Amount</TableHead>
-            <TableHead className="px-3 py-2 h-9">Currency</TableHead>
-            <TableHead className="px-3 py-2 h-9">Status</TableHead>
-            <TableHead className="px-3 py-2 h-9">Date</TableHead>
-            <TableHead className="text-right px-3 py-2 h-9">Details</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data.slice(0, 5).map((item) => {
-            const statusColor = getTransactionStatusColor(item.status);
-            const amount = isTransfer(item)
-              ? item.sendAmount
-              : (item as Payment).amountToAdd;
-            const currencyCode = isTransfer(item)
-              ? typeof item.sendCurrency === "object"
-                ? item.sendCurrency?.code
-                : "N/A"
-              : (item as Payment).payInCurrency?.code;
-            const recipientName = isTransfer(item)
-              ? item.recipient?.accountHolderName
-              : undefined;
-            const detailLink =
-              type === "transfer"
-                ? `/admin/transfer/${item._id}`
-                : `/admin/add-money`; // Maybe link to payment list for now
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
-            return (
-              <TableRow
-                key={item._id}
-                className="border-b-border hover:bg-muted/30 dark:hover:bg-muted/20"
+  const handleCopy = (idToCopy: string) => {
+    navigator.clipboard.writeText(idToCopy).then(
+      () => {
+        setCopiedId(idToCopy);
+        setTimeout(() => setCopiedId(null), 1500);
+      },
+      (err) => {
+        console.error("Failed to copy ID: ", err);
+        // Consider a more user-friendly error feedback (e.g., toast)
+        alert("Failed to copy ID to clipboard.");
+      }
+    );
+  };
+
+  const numberOfColumns = type === "transfer" ? 7 : 6;
+
+  return (
+    <div className="rounded-xl border overflow-hidden overflow-x-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
+      <table className="min-w-full overflow-hidden">
+        <thead className="bg-lightgray dark:bg-primarybox ">
+          <tr className="border-b border-border">
+            <th className="px-6 py-4 text-left font-medium text-neutral-900 dark:text-white tracking-wider uppercase">
+              ID
+            </th>
+            {type === "transfer" && (
+              <th className="px-6 py-4 text-left font-medium text-neutral-900 dark:text-white tracking-wider uppercase">
+                Recipient
+              </th>
+            )}
+            <th className="px-6 py-4 text-left font-medium text-neutral-900 dark:text-white tracking-wider uppercase">
+              Amount
+            </th>
+            <th className="px-6 py-4 text-left font-medium text-neutral-900 dark:text-white tracking-wider uppercase">
+              Currency
+            </th>
+            <th className="px-6 py-4 text-left font-medium text-neutral-900 dark:text-white tracking-wider uppercase">
+              Status
+            </th>
+            <th className="px-6 py-4 text-left font-medium text-neutral-900 dark:text-white tracking-wider uppercase">
+              Date
+            </th>
+            <th className="px-6 py-4 text-left font-medium text-neutral-900 dark:text-white tracking-wider uppercase">
+              Details
+            </th>
+          </tr>
+        </thead>
+        <tbody className="divide-y overflow-hidden">
+          {!data || data.length === 0 ? (
+            <tr>
+              <td
+                colSpan={numberOfColumns}
+                className="px-6 py-10 text-center text-gray-500 dark:text-gray-300"
               >
-                <TableCell className="px-3 py-2">
-                  <TooltipProvider delayDuration={100}>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <span className="font-mono cursor-help underline decoration-dashed decoration-border">
-                          {item._id.substring(item._id.length - 6)}
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>{item._id}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </TableCell>
-                {type === "transfer" && (
-                  <TableCell className="max-w-[150px] truncate px-3 py-2">
-                    {recipientName || "N/A"}
-                  </TableCell>
-                )}
-                <TableCell className="font-medium px-3 py-2">
-                  {amount != null ? Number(amount).toFixed(2) : "N/A"}
-                </TableCell>
-                <TableCell className="px-3 py-2">
-                  {currencyCode || "N/A"}
-                </TableCell>
-                <TableCell className="px-3 py-2">
-                  <Badge
-                    variant="outline"
-                    className={cn(
-                      "text-[10px] capitalize px-1.5 py-0.5 border",
-                      statusColor
-                    )}
-                  >
-                    {item.status || "Unknown"}
-                  </Badge>
-                </TableCell>
-                <TableCell className="px-3 py-2 whitespace-nowrap">
-                  {formatDate(item.createdAt, true)}
-                </TableCell>
-                <TableCell className="text-right px-3 py-2">
-                  <Button
-                    asChild
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6"
-                    title={`View ${type} details`}
-                  >
-                    <Link
-                      href={detailLink}
-                      rel="noopener noreferrer"
+                No {type}s found for this user.
+              </td>
+            </tr>
+          ) : (
+            data.slice(0, 5).map((item) => {
+              const statusColorClasses = getTransactionStatusColorClasses(
+                item.status
+              );
+              const amountValue = isTransfer(item)
+                ? item.sendAmount
+                : String((item as Payment).amountToAdd ?? "0");
+
+              const formattedAmount =
+                amountValue != null
+                  ? Number(amountValue).toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })
+                  : "N/A";
+
+              const currencyCode = isTransfer(item)
+                ? item.sendCurrency?.code
+                : (item as Payment).payInCurrency?.code;
+
+              const recipientName = isTransfer(item)
+                ? item.recipient?.accountHolderName
+                : undefined;
+
+              const detailLink =
+                type === "transfer"
+                  ? `/admin/transfer/${item._id}`
+                  : `/admin/add-money`; // TODO: Update payment link if specific detail page exists
+
+              const isCopied = copiedId === item._id;
+
+              return (
+                <tr key={item._id}>
+                  <td className="px-4 py-3 whitespace-nowrap font-medium text-neutral-900 dark:text-white">
+                    <div className="flex items-center gap-1.5">
+                      <span className="underline decoration-dashed decoration-border cursor-default">
+                        {item._id.substring(item._id.length - 6)}
+                      </span>
+                      <TooltipProvider delayDuration={100}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className={cn(
+                                "h-5 w-5 p-0 text-muted-foreground hover:text-foreground transition-colors",
+                                isCopied && "text-green-500 hover:text-green-600"
+                              )}
+                              onClick={() => handleCopy(item._id)}
+                              aria-label={isCopied ? "Copied!" : "Copy transaction ID"}
+                            >
+                              {isCopied ? (
+                                <Check className="h-3.5 w-3.5" />
+                              ) : (
+                                <Copy className="h-3.5 w-3.5" />
+                              )}
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent side="top">
+                            <p>{isCopied ? "Copied!" : "Copy ID"}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                  </td>
+                  {type === "transfer" && (
+                    <td className="px-4 py-3 whitespace-nowrap font-medium capitalize text-neutral-900 dark:text-white">
+                      {recipientName || "N/A"}
+                    </td>
+                  )}
+                  <td className="px-4 py-3 whitespace-nowrap font-medium text-neutral-900 dark:text-white">
+                    {formattedAmount}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap font-medium text-neutral-900 dark:text-white">
+                    {currencyCode || "N/A"}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <span
+                      className={cn(
+                        "inline-flex justify-center items-center px-4 py-1 w-28 font-medium rounded-3xl capitalize",
+                        statusColorClasses
+                      )}
                     >
-                      <ExternalLink className="h-3.5 w-3.5" />
-                    </Link>
-                  </Button>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+                      {item.status || "Unknown"}
+                    </span>
+                  </td>
+                  <td className="px-6 py-3 whitespace-nowrap font-medium">
+                    {formatDate(item.createdAt, true)}
+                  </td>
+                  <td className="px-6 py-3 whitespace-nowrap ">
+                    <Button
+                      asChild
+                      className="inline-flex items-center group px-6 py-2 rounded-3xl space-x-1 transition-colors duration-300 font-medium bg-primary hover:bg-primaryhover dark:bg-primarybox hover:dark:bg-secondarybox text-neutral-900 dark:text-primary focus:outline-none"
+                      title={`View ${type} details`}
+                    >
+                      <Link href={detailLink}>
+                        <span>View Details</span>
+                      </Link>
+                    </Button>
+                  </td>
+                </tr>
+              );
+            })
+          )}
+        </tbody>
+      </table>
     </div>
   );
 };
+
 
 // --- Main Detail Page Component ---
 const UserDetailPage: React.FC = () => {
@@ -1756,19 +2666,14 @@ const UserDetailPage: React.FC = () => {
   const { token, isAdmin, loading: authLoading } = useAuth();
   const userId = params.userId as string;
 
-  const [userData, setUserData] = useState<AdminUserDetailResponse | null>(
-    null
-  );
+  const [userData, setUserData] = useState<UserDetailState | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState("kyc"); // State to track active tab for Framer Motion
 
-  // Fetching Logic (Keep as is)
+  // Fetching Logic
   const fetchUserDetails = useCallback(async () => {
-    if (!isAdmin) {
-      setError("Access Denied: Administrator privileges required.");
-      setLoading(false);
-      return;
-    }
+    // Removed isAdmin check here as it's done in useEffect
     if (!userId) {
       setError("User ID is missing from the URL.");
       setLoading(false);
@@ -1777,28 +2682,48 @@ const UserDetailPage: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await userAdminService.getUserDetailsAdmin(userId);
-      setUserData(data);
+      const data: OriginalAdminUserDetailResponse = await userAdminService.getUserDetailsAdmin(userId);
+
+      const processedData: UserDetailState = {
+        ...data,
+        transfers: data.transfers.map((t) => ({
+          _id: t._id,
+          user: t.user,
+          recipient: t.recipient,
+          sendAmount: String(t.sendAmount ?? "0"),
+          sendCurrency: t.sendCurrency,
+          status: t.status,
+          createdAt: t.createdAt,
+        })),
+        payments: data.payments.map(p => ({ ...p })) // Simple spread for payments
+      };
+
+      setUserData(processedData);
+
     } catch (err: any) {
-      setError(err.message || "Failed to load user details.");
+      console.error("Fetch user details error:", err); // Log the actual error
+      setError(
+        err.response?.data?.message || err.message || "Failed to load user details."
+      );
       setUserData(null);
     } finally {
       setLoading(false);
     }
-  }, [userId, isAdmin]);
+  }, [userId]); // Removed isAdmin from dependency as it's checked before calling
 
   useEffect(() => {
     if (authLoading) return;
 
-    if (token && isAdmin) {
-      fetchUserDetails();
-    } else if (!token) {
+    if (!token) {
       router.push("/auth/login?message=login_required");
     } else if (!isAdmin) {
       setError("Access Denied: Administrator privileges required.");
       setLoading(false);
+    } else {
+      fetchUserDetails();
     }
-  }, [token, isAdmin, authLoading, userId, router, fetchUserDetails]);
+  }, [token, isAdmin, authLoading, userId, router, fetchUserDetails]); // fetchUserDetails added
+
 
   // --- Render Logic ---
   if (loading || authLoading)
@@ -1816,72 +2741,76 @@ const UserDetailPage: React.FC = () => {
   if (!userData)
     return (
       <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8 text-center py-16 text-muted-foreground">
-        User data could not be loaded.
+        User data could not be loaded or found. Please try again or check the user ID.
       </div>
     );
 
+  // Destructure from userData
   const { kyc, accounts, transfers, payments } = userData;
   const kycStatusConfig = getKycStatusConfig(kyc?.status);
+
+  // Define Tabs for dynamic rendering and Framer Motion
+  const tabs = [
+    { value: "kyc", label: "KYC & Documents", icon: UserCheck },
+    { value: "transfers", label: "Transfers (Send)", icon: Send },
+    { value: "payments", label: "Payments (Add)", icon: Landmark },
+  ];
 
   return (
     <div className="container mx-auto px-4 py-8 relative">
       <div className="space-y-6 pb-10">
-        {" "}
-        {/* Added space-y-6 for spacing */}
-        {/* Back Navigation */}
+        {/* Back Button */}
         <Button
           variant="outline"
-          size="sm"
-          className="gap-1.5 h-8 px-3 bg-card hover:bg-muted" // Removed mb-4, handled by parent space-y
+          className="border-0 cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 h-12 rounded-full transition-all duration-75 ease-linear"
           onClick={() => router.push("/admin/users")}
         >
-          <ArrowLeft className="h-4 w-4" />
-          Back to User List
+          <ArrowLeft className="h-4 w-4" /> Back to User List
         </Button>
-        {/* User Profile Card - Remains the same */}
-        <Card className="overflow-hidden border border-border bg-card shadow-none">
-          <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-5 border-b border-border">
-            {/* User Info */}
+
+        {/* User Profile Card */}
+        <Card className="overflow-hidden border shadow-none">
+          {/* --- User Profile Header (Always Renders) --- */}
+          <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-5 border-b">
             <div className="flex items-center gap-4">
-              <Avatar className="h-14 w-14 sm:h-16 sm:w-16 flex-shrink-0 border-2 border-border">
-                <AvatarFallback className="text-xl font-semibold bg-muted text-muted-foreground">
+              <Avatar className="h-14 w-14 sm:h-16 sm:w-16 flex-shrink-0 bg-lightgray dark:bg-primarybox">
+                <AvatarFallback className="text-xl font-semibold text-neutral-900 dark:text-white">
                   {getInitials(userData.fullName)}
                 </AvatarFallback>
               </Avatar>
               <div className="space-y-0.5">
-                <CardTitle className="text-lg sm:text-xl text-foreground">
+                <CardTitle className="text-lg sm:text-xl text-neutral-900 dark:text-white">
                   {userData.fullName}
                 </CardTitle>
-                <CardDescription className="text-sm text-muted-foreground">
+                <CardDescription className="text-sm text-gray-500 dark:text-gray-300">
                   {userData.email}
                 </CardDescription>
                 <Badge
                   variant={userData.role === "admin" ? "default" : "secondary"}
                   className={cn(
-                    "mt-1.5 text-xs capitalize",
+                    "mt-1.5 text-xs capitalize px-3 py-2",
                     userData.role === "admin"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground"
+                      ? "bg-primary text-neutral-900"
+                      : "bg-lightgray dark:bg-primarybox text-neutral-900 dark:text-white"
                   )}
                 >
                   {userData.role} Account
                 </Badge>
               </div>
             </div>
-            {/* Meta Info */}
-            <div className="flex flex-col items-start sm:items-end gap-1 text-xs text-muted-foreground flex-shrink-0 mt-2 sm:mt-0">
+            <div className="flex flex-col items-start sm:items-end gap-1 text-sm text-gray-500 dark:text-gray-300 flex-shrink-0">
               <span className="flex items-center gap-1.5">
-                <CalendarDays className="h-3 w-3" /> Joined:
+                <CalendarDays className="h-4 w-4" /> Joined:{" "}
                 {formatDate(userData.createdAt)}
               </span>
               <span className="flex items-center gap-1.5">
-                <Clock className="h-3 w-3" /> Updated:
+                <Clock className="h-4 w-4" /> Updated:{" "}
                 {formatDate(userData.updatedAt)}
               </span>
               <TooltipProvider delayDuration={100}>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className="font-mono cursor-help underline decoration-dotted decoration-border">
+                    <span className="cursor-help underline decoration-dotted decoration-border">
                       ID: {userData._id.substring(userData._id.length - 8)}
                     </span>
                   </TooltipTrigger>
@@ -1892,92 +2821,106 @@ const UserDetailPage: React.FC = () => {
               </TooltipProvider>
             </div>
           </CardHeader>
-          {/* Account Balances */}
-          <CardContent className="p-4 sm:p-6 bg-muted/30 dark:bg-muted/20">
-            <h3 className="text-sm font-medium text-muted-foreground mb-3 flex items-center gap-1.5">
-              <Wallet className="h-4 w-4" /> Account Balances
-            </h3>
-            {accounts && accounts.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+
+          {/* --- Conditional Rendering for Account Balances Section --- */}
+          {/* Only render this CardContent if accounts exist and the array is not empty */}
+          {accounts && accounts.length > 0 && (
+            <CardContent className="p-4 sm:p-6">
+              <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-4 flex items-center gap-2">
+                <Wallet className="h-5 w-5 text-primary" />
+                Account Balances
+              </h3>
+              {/* The container for account boxes - no longer needs internal conditional rendering */}
+              <div className="flex flex-nowrap overflow-x-auto space-x-4 pb-2 sm:grid sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 sm:space-x-0 sm:pb-0 sm:overflow-x-visible">
                 {accounts.map((acc) => (
                   <div
                     key={acc._id}
-                    className="border border-border/70 rounded-md p-3 bg-card"
+                    // Added min-h for consistency & currency name section back
+                    className="flex-shrink-0 w-36 sm:w-auto border rounded-lg p-4 hover:bg-lightgray dark:hover:bg-primarybox transition-all duration-75 ease-linear flex flex-col justify-between"
                   >
-                    <div className="flex items-center justify-between mb-0.5">
-                      <span className="text-xs font-semibold text-foreground">
-                        {acc.currency?.code}
-                      </span>
-                    </div>
-                    <div className="text-base sm:text-lg font-bold text-foreground tracking-tight">
-                      {acc.balance != null
-                        ? acc.balance.toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })
-                        : "N/A"}
-                    </div>
-                    <div
-                      className="text-[11px] text-muted-foreground truncate"
-                      title={acc.currency?.currencyName ?? ""}
-                    >
-                      {acc.currency?.currencyName || "Unknown Currency"}
+                    {/* Top Section */}
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                          {acc.currency?.code || "N/A"}
+                        </span>
+                        {/* Optional: Add a small icon/flag here if available */}
+                      </div>
+                      <div className="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-white tracking-tight mb-1">
+                        {acc.balance != null
+                          ? acc.balance.toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })
+                          : "--.--"}
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
-            ) : (
-              <p className="text-sm text-muted-foreground italic py-2">
-                No accounts found for this user.
-              </p>
-            )}
-          </CardContent>
+              {/* The "No accounts found" message is entirely removed */}
+            </CardContent>
+          )}
+          {/* --- End Conditional Rendering --- */}
         </Card>
-        {/* --- NEW: Tabs Section --- */}
-        <Tabs defaultValue="kyc" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 h-11 mb-4">
-            {" "}
-            {/* Adjusted height and added mb */}
-            <TabsTrigger
-              value="kyc"
-              className="gap-1.5 text-xs sm:text-sm text-neutral-900 dark:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-background data-[state=active]:text-primary dark:data-[state=active]:text-primary cursor-pointer"
-            >
-              <UserCheck className="h-4 w-4" />
-              KYC & Documents
-            </TabsTrigger>
-            <TabsTrigger
-              value="transfers"
-              className="gap-1.5 text-xs sm:text-sm text-neutral-900 dark:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-background data-[state=active]:text-primary dark:data-[state=active]:text-primary cursor-pointer"
-            >
-              <Send className="h-4 w-4" />
-              Transfers (Send)
-            </TabsTrigger>
-            <TabsTrigger
-              value="payments"
-              className="gap-1.5 text-xs sm:text-sm text-neutral-900 dark:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-background data-[state=active]:text-primary dark:data-[state=active]:text-primary cursor-pointer"
-            >
-              <Landmark className="h-4 w-4" />
-              Payments (Add)
-            </TabsTrigger>
-          </TabsList>
 
-          {/* KYC Information Tab Content */}
+        {/* Tabs Section with Framer Motion */}
+        <Tabs
+          defaultValue="kyc"
+          value={activeTab} // Control the active tab using state
+          onValueChange={setActiveTab} // Update state when tab changes
+          className="w-full"
+        >
+          <div className="overflow-hidden mb-4 ">
+
+          <TabsList className="relative z-10 flex w-full h-full overflow-x-auto whitespace-nowrap bg-lightgray dark:bg-primarybox p-1.5 rounded-full justify-normal items-center">
+            {tabs.map((tab) => (
+              <TabsTrigger
+                key={tab.value}
+                value={tab.value}
+                className={cn(
+                  "relative px-4 py-3 flex items-center justify-center gap-2 text-base shrink-0 min-w-max rounded-full", // Added rounded-full here
+                  "text-neutral-900 dark:text-white data-[state=active]:text-primary dark:data-[state=active]:text-primary",
+                  "border-none", // Ensure no borders interfere
+                  "data-[state=active]:bg-transparent dark:data-[state=active]:bg-transparent",
+                  "data-[state=active]:shadow-none cursor-pointer transition-colors duration-150 ease-in-out",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" // Standard focus styling
+                )}
+              >
+                {/* Motion Div for Animated Pill Background */}
+                {activeTab === tab.value && (
+                  <motion.div
+                    layoutId="active-tab-indicator" // Unique ID for layout animation
+                    className="absolute inset-0 -z-10 bg-neutral-900 dark:bg-secondarybox rounded-full shadow-sm"
+                    transition={{ stiffness: 350, damping: 30 }} // Animation (spring)
+                  />
+                )}
+                {/* Icon and Label */}
+                <tab.icon className="h-5 w-5" />{" "}
+                {/* Using h-5 w-5 for clarity */}
+                <span className="truncate">{tab.label}</span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          </div>
+
+          {/* KYC Tab Content */}
           <TabsContent value="kyc">
             <Card className="border overflow-hidden mb-4">
-              <CardHeader className="border-b border-border p-4 bg-lightgray dark:bg-primarybox ">
+              <CardHeader className="border-b border-border px-6 py-4 bg-lightgray dark:bg-primarybox ">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-base font-semibold flex items-center gap-2 text-neutral-900 dark:text-white ">
+                  <CardTitle className="text-lg font-semibold flex items-center gap-2 text-neutral-900 dark:text-white ">
                     <UserCheck className="h-5 w-5 text-primary" /> KYC
                     Information
                   </CardTitle>
                   <Badge
                     variant="outline"
                     className={cn(
-                      "text-xs capitalize px-2 py-0.5 font-medium border",
+                      "text-sm capitalize px-4 py-2 font-medium border",
                       kycStatusConfig.color
                     )}
                   >
-                    <kycStatusConfig.icon className="h-3 w-3 mr-1 flex-shrink-0" />
+                    <kycStatusConfig.icon className="h-4 w-4 mr-1 flex-shrink-0" />{" "}
                     {kycStatusConfig.label}
                   </Badge>
                 </div>
@@ -1988,12 +2931,14 @@ const UserDetailPage: React.FC = () => {
                   </p>
                 )}
               </CardHeader>
-              <CardContent className="p-4">
+              <CardContent>
                 {kyc ? (
                   <>
-                    <div>
-                      <h4 className="border-b pb-2 mb-2">Personal Details</h4>
-                      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
+                    <div className="p-4">
+                      <h4 className="border-b pb-2 mb-2 font-medium text-neutral-900 dark:text-white">
+                        Personal Details
+                      </h4>
+                      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
                         <DetailItem label="First Name" value={kyc.firstName} />
                         <DetailItem label="Last Name" value={kyc.lastName} />
                         <DetailItem
@@ -2027,10 +2972,11 @@ const UserDetailPage: React.FC = () => {
                         />
                       </div>
                     </div>
-
-                    <div>
-                      <h4 className="border-b pb-2 mb-2">Identification Details</h4>
-                      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
+                    <div className="p-4">
+                      <h4 className="border-b pb-2 mb-2 text-neutral-900 dark:text-white">
+                        Identification Details
+                      </h4>
+                      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
                         <DetailItem
                           label="ID Type"
                           value={
@@ -2053,10 +2999,11 @@ const UserDetailPage: React.FC = () => {
                         />
                       </div>
                     </div>
-
-                    <div>
-                      <h4 className="border-b pb-2 mb-2">Updating Information</h4>
-                      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
+                    <div className="p-4">
+                      <h4 className="border-b pb-2 mb-2 text-neutral-900 dark:text-white">
+                        Updating Information
+                      </h4>
+                      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
                         <DetailItem
                           label="Submitted At"
                           value={formatDate(kyc.submittedAt, true)}
@@ -2071,21 +3018,20 @@ const UserDetailPage: React.FC = () => {
                     </div>
                   </>
                 ) : (
-                  <p className="text-sm text-muted-foreground italic py-4 text-center">
+                  <p className="text-sm text-gray-500 dark:text-gray-300 italic py-4 text-center">
                     KYC details not submitted.
                   </p>
                 )}
               </CardContent>
             </Card>
             <Card className="border overflow-hidden mb-4">
-              <CardHeader className="border-b border-border p-4 bg-lightgray dark:bg-primarybox ">
-                <CardTitle className="text-base font-semibold flex items-center gap-2 text-neutral-900 dark:text-white ">
+              <CardHeader className="border-b px-6 py-4 bg-lightgray dark:bg-primarybox ">
+                <CardTitle className="text-lg font-semibold flex items-center gap-2 text-neutral-900 dark:text-white ">
                   <FileText className="h-5 w-5 text-primary" /> Submitted
                   Documents
                 </CardTitle>
               </CardHeader>
-              {/* Documents Section */}
-              {kyc?.documents && kyc.documents.length > 0 && (
+              {kyc?.documents && kyc.documents.length > 0 ? (
                 <div className="p-4">
                   <div className="flex md:flex-row flex-col gap-4">
                     {kyc.documents.map((doc) => (
@@ -2093,8 +3039,8 @@ const UserDetailPage: React.FC = () => {
                         key={doc.public_id}
                         className="border border-border rounded-lg overflow-hidden bg-muted/30 dark:bg-muted/20 md:w-1/2 w-full"
                       >
-                        <div className="p-2 border-b border-border text-neutral-900 dark:text-white">
-                          <h4 className="text-xs font-medium capitalize">
+                        <div className="p-3 border-b border-border text-neutral-900 dark:text-white">
+                          <h4 className="text-sm font-medium capitalize">
                             {doc.docType.replace("_", " ")}
                           </h4>
                         </div>
@@ -2102,32 +3048,38 @@ const UserDetailPage: React.FC = () => {
                           {doc.url ? (
                             <>
                               {doc.url.toLowerCase().endsWith(".pdf") ? (
-                                <FileText className="h-12 w-12 text-gray-500 dark:text-gray-300" />
+                                <div className="flex flex-col items-center justify-center text-center text-muted-foreground">
+                                  <FileText className="h-12 w-12 mb-2" />
+                                  <span className="text-xs">PDF Document</span>
+                                </div>
                               ) : (
                                 <Image
                                   src={doc.url}
                                   alt={`${doc.docType} preview`}
                                   fill
                                   className="object-contain"
-                                  unoptimized
+                                  unoptimized // Consider removing if optimization works
                                 />
                               )}
                               <a
                                 href={doc.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="absolute inset-0 bg-black/50 dark:bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
+                                className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white transition-opacity cursor-pointer"
                                 aria-label={`View full ${doc.docType.replace(
                                   "_",
                                   " "
                                 )} document`}
                               >
-                                <Eye className="h-6 w-6 text-white" />
+                                <Eye className="h-6 w-6 mb-1" />
+                                <span className="text-xs font-medium">
+                                  View Full
+                                </span>
                               </a>
                             </>
                           ) : (
-                            <p className="text-xs text-gray-500 dark:text-gray-300 italic">
-                              No preview
+                            <p className="text-xs text-muted-foreground italic">
+                              Document URL missing or invalid.
                             </p>
                           )}
                         </div>
@@ -2135,19 +3087,25 @@ const UserDetailPage: React.FC = () => {
                     ))}
                   </div>
                 </div>
+              ) : (
+                <CardContent className="p-4">
+                  <p className="text-sm text-gray-500 dark:text-gray-300 italic text-center">
+                    No documents submitted.
+                  </p>
+                </CardContent>
               )}
             </Card>
           </TabsContent>
 
           {/* Recent Transfers Tab Content */}
           <TabsContent value="transfers">
-            <Card className="border border-border bg-card shadow-none">
-              <CardHeader className="p-4 border-b border-border">
-                <CardTitle className="text-base font-semibold flex items-center gap-2">
+            <Card className="border-0 bg-transparent shadow-none overflow-hidden">
+              <CardHeader className="p-4 ">
+                <CardTitle className="text-lg font-semibold flex items-center gap-2 text-neutral-900 dark:text-white">
                   <Send className="h-5 w-5 text-primary" /> Recent Transfers
                   (Send Money)
                 </CardTitle>
-                <CardDescription className="text-xs !mt-1">
+                <CardDescription className="text-sm !mt-1 text-gray-500 dark:text-gray-300">
                   Last 5 transfers initiated by this user.
                 </CardDescription>
               </CardHeader>
@@ -2159,13 +3117,13 @@ const UserDetailPage: React.FC = () => {
 
           {/* Recent Payments Tab Content */}
           <TabsContent value="payments">
-            <Card className="border border-border bg-card shadow-none">
-              <CardHeader className="p-4 border-b border-border">
-                <CardTitle className="text-base font-semibold flex items-center gap-2">
+            <Card className="border-0 bg-transparent shadow-none overflow-hidden">
+              <CardHeader className="p-4">
+                <CardTitle className="text-lg font-semibold flex items-center gap-2 text-neutral-900 dark:text-white">
                   <Landmark className="h-5 w-5 text-primary" /> Recent Payments
                   (Add Money)
                 </CardTitle>
-                <CardDescription className="text-xs !mt-1">
+                <CardDescription className="text-sm !mt-1 text-gray-500 dark:text-gray-300">
                   Last 5 payment attempts by this user.
                 </CardDescription>
               </CardHeader>
