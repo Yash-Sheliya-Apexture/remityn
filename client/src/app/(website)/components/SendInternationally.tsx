@@ -13,13 +13,13 @@ const RemittanceSection: React.FC = () => {
           </p>
 
           {/* Main Heading */}
-          <h1 className="text-4xl md:text-5xl lgt:ext-6xl font-black font-mont text-mainheading dark:text-white uppercase">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase">
             Send Money Across
             <span className="text-primary"> Borders with Confidence </span>
           </h1>
 
           {/* Description */}
-          <p className="text-sm md:text-base text-gray-500 dark:text-gray-300">
+          <p className="text-sm md:text-lg text-gray-500 dark:text-gray-300">
             Experience hassle-free money transfers to over 100 countries
             worldwide. Whether you're supporting loved ones, paying bills, or
             handling business payments, our platform ensures your money gets
@@ -30,8 +30,8 @@ const RemittanceSection: React.FC = () => {
 
           {/* Download Buttons */}
           <div className="flex justify-center md:justify-start">
-            <Link href="/dashboard" className="inline-block mt-5">
-              <button className="bg-primary px-10 lg:py-3 py-2 lg:h-12.5 cursor-pointer hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading font-medium rounded-md lg:text-lg">
+            <Link href="/dashboard" className="inline-block mt-3">
+              <button className="bg-primary px-10 lg:py-3 py-2 lg:h-12.5 lg:text-base text-sm cursor-pointer hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading font-medium rounded-full">
                 Send Money
               </button>
             </Link>

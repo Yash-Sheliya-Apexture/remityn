@@ -763,7 +763,7 @@
 //                   >
 //                     {/* Inner div for padding, applied only when content is visible */}
 //                     <div className="pt-4 pb-1">
-//                       {" "}
+//
 //                       {/* Adjusted padding */}
 //                       {item.answer}
 //                     </div>
@@ -776,7 +776,7 @@
 
 //         {/* Bottom Left: More Questions Box */}
 //         <div className="lg:col-span-2 md:col-span-3 md:self-end sticky top-0">
-//           {" "}
+//
 //           {/* Made sticky */}
 //           <div className="flex flex-col items-start gap-5 rounded-2xl bg-white dark:bg-white/5 p-4 md:p-6">
 //             <div>
@@ -814,12 +814,282 @@
 
 // export default FaqSection;
 
-"use client";
+// "use client";
+// import Link from "next/link";
+// import React, { useState, useRef, useEffect, useCallback } from "react";
+// import { FaTelegramPlane } from "react-icons/fa";
+// import { FaTelegram } from "react-icons/fa6";
+// import { IoLogoWhatsapp } from "react-icons/io";
+// import { SlArrowDown } from "react-icons/sl";
 
+// // Define the structure for each FAQ item
+// interface FaqItemData {
+//   id: string;
+//   question: string;
+//   answer: string;
+// }
+
+// // Sample FAQ Data - Replace with your actual data or fetch from an API
+// const faqData: FaqItemData[] = [
+//   {
+//     id: "1",
+//     question: "What is Apexture?",
+//     answer:
+//       "Apexture is a digital banking platform providing powerful APIs for real-time currency exchange, helping financial institutions and websites deliver secure, modern FX services",
+//   },
+//   {
+//     id: "2",
+//     question: "What documents do I need to verify my account? ",
+//     answer:
+//       "To verify your account, you’ll need to submit a valid government-issued ID, proof of address, and any additional documents required to meet compliance and security standards",
+//   },
+//   {
+//     id: "3",
+//     question: "How fast are Apexture transfers? ",
+//     answer:
+//       "Apexture transfers are typically processed within minutes, with most transactions completed the same day, depending on the currency and destination",
+//   },
+//   {
+//     id: "4",
+//     question: "How much money can I transfer with Apexture at once? ",
+//     answer:
+//       "With Apexture, transfer limits vary based on account type and verification level, but high-value transfers are supported with enhanced security and compliance checks",
+//   },
+//   {
+//     id: "5",
+//     question:
+//       "What security measures does Apexture take to safeguard my money? ",
+//     answer:
+//       "Apexture uses advanced encryption, two-factor authentication, and strict regulatory compliance to ensure your money and personal data are always protected",
+//   },
+// ];
+
+// // React Functional Component for the FAQ Section using Accordion Pattern
+// const FaqSection: React.FC = () => {
+//   // Initialize state with the ID of the first FAQ item, if faqData is not empty
+//   const [openItemId, setOpenItemId] = useState<string | null>(
+//     faqData.length > 0 ? faqData[0].id : null
+//   );
+
+//   // Use a Map to store refs for each *container* content div
+//   const contentRefs = useRef<Map<string, HTMLDivElement | null>>(new Map());
+
+//   // Toggle function: close if clicking the open one, otherwise open the clicked one
+//   const handleToggle = useCallback((id: string) => {
+//     setOpenItemId((prevOpenId) => (prevOpenId === id ? null : id));
+//   }, []);
+
+//   // Effect to handle the height transition of the container div
+//   useEffect(() => {
+//     contentRefs.current.forEach((contentDiv, id) => {
+//       if (contentDiv) {
+//         const isOpen = id === openItemId;
+//         if (isOpen) {
+//           // When opening, set height to scrollHeight AFTER content is rendered (next frame)
+//           // We need to ensure the inner content (conditionally rendered) is present
+//           // before calculating scrollHeight. requestAnimationFrame helps here.
+//           requestAnimationFrame(() => {
+//             // Check again inside rAF in case state changed rapidly
+//             if (id === openItemId && contentRefs.current.get(id)) {
+//               contentDiv.style.height = `${contentDiv.scrollHeight}px`;
+//               contentDiv.style.visibility = "visible";
+//               contentDiv.style.opacity = "1";
+//             }
+//           });
+//         } else {
+//           // When closing, set height to 0
+//           contentDiv.style.height = "0px";
+//           contentDiv.style.visibility = "hidden";
+//           contentDiv.style.opacity = "0";
+//         }
+//       }
+//     });
+//   }, [openItemId]); // Rerun this effect whenever the openItemId changes
+
+//   // Effect to set initial height correctly on mount (handles default open item)
+//   // This effect might be redundant now due to the main useEffect handling
+//   // initial state via openItemId, but keep it for robustness if needed.
+//   useEffect(() => {
+//     contentRefs.current.forEach((contentDiv, id) => {
+//       if (contentDiv) {
+//         if (id === openItemId) {
+//           requestAnimationFrame(() => {
+//             // Check again inside rAF
+//             if (id === openItemId && contentRefs.current.get(id)) {
+//               contentDiv.style.height = `${contentDiv.scrollHeight}px`;
+//               contentDiv.style.visibility = "visible";
+//               contentDiv.style.opacity = "1";
+//             }
+//           });
+//         } else {
+//           contentDiv.style.height = "0px";
+//           contentDiv.style.visibility = "hidden";
+//           contentDiv.style.opacity = "0";
+//         }
+//       }
+//     });
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, []); // Empty dependency array ensures this runs only once on mount
+
+//   return (
+//     <div className="lg:py-10 py-5 bg-[#F2F4F7] dark:bg-background border-b">
+//       <section
+//         className="grid items-start lg:gap-14 gap-5 lg:grid-cols-5 container mx-auto px-4"
+//         id="faq"
+//       >
+//         {/* Left Side: Title and Description */}
+//         <div className="flex flex-col gap-5 self-start md:col-span-2">
+//           <h1 className="text-4xl md:text-5xl xl:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+//             Quick Currency
+//             <span className="text-primary"> Exchange Help </span>
+//           </h1>
+//           <p className="lg:text-lg sm:text-base text-sm text-gray-500 leading-relaxed dark:text-gray-300">
+//             Get quick answers to common currency exchange questions — rates,
+//             fees, timing, and more. Simple, clear, and reliable info at your
+//             fingertips.
+//           </p>
+//         </div>
+
+//         {/* Right Side: Accordion */}
+//         <div className="md:col-span-3 md:row-span-2">
+//           <div className="flex flex-col gap-3" data-orientation="vertical">
+//             {faqData.map((item) => {
+//               const isOpen = openItemId === item.id;
+//               const uniqueTriggerId = `faq-trigger-${item.id}`;
+//               const uniqueContentId = `faq-content-${item.id}`;
+
+//               return (
+//                 <div
+//                   key={item.id}
+//                   data-state={isOpen ? "open" : "closed"}
+//                   data-orientation="vertical"
+//                   className="rounded-xl bg-white md:p-6 p-4 dark:bg-white/5"
+//                 >
+//                   {/* Accordion Trigger (Question) */}
+//                   <h3
+//                     data-orientation="vertical"
+//                     data-state={isOpen ? "open" : "closed"}
+//                     className="flex m-0"
+//                   >
+//                     <button
+//                       type="button"
+//                       aria-controls={uniqueContentId}
+//                       aria-expanded={isOpen}
+//                       data-state={isOpen ? "open" : "closed"}
+//                       data-orientation="vertical"
+//                       id={uniqueTriggerId}
+//                       className="flex w-full cursor-pointer flex-1 gap-2 items-center justify-between text-start lg:text-xl md:text-lg text-sm text-mainheading dark:text-gray-100 transition-all font-medium"
+//                       onClick={() => handleToggle(item.id)}
+//                       data-radix-collection-item=""
+//                     >
+//                       {item.question}
+//                       <SlArrowDown
+//                         className={`lg:size-3 size-2.5 shrink-0 text-gray-500 dark:text-gray-300 transition-transform duration-300 ${
+//                           isOpen ? "rotate-180" : ""
+//                         }`}
+//                         aria-hidden
+//                       />
+//                     </button>
+//                   </h3>
+
+//                   {/* Accordion Content Container (Handles Animation) */}
+//                   {isOpen && (
+//                     <div
+//                       ref={(el) => {
+//                         if (el) {
+//                           contentRefs.current.set(item.id, el);
+//                         } else {
+//                           contentRefs.current.delete(item.id);
+//                         }
+//                       }}
+//                       id={uniqueContentId}
+//                       role="region"
+//                       aria-labelledby={uniqueTriggerId}
+//                       data-state={isOpen ? "open" : "closed"}
+//                       data-orientation="vertical"
+//                       // Styles for animation: overflow-hidden and transitions
+//                       className="overflow-hidden text-sm md:text-base lg:text-lg leading-relaxed text-[#667085] dark:text-gray-300 transition-all duration-300 ease-in-out"
+//                       // Initial style set to height 0 and invisible/opacity 0
+//                       style={{
+//                         height: "0px",
+//                         visibility: "hidden",
+//                         opacity: "0",
+//                       }}
+//                     >
+//                       <div className="pt-4 pb-1">{item.answer}</div>
+//                     </div>
+//                   )}
+//                 </div>
+//               );
+//             })}
+//           </div>
+//         </div>
+
+//         {/* Bottom Left: More Questions Box */}
+//         <div className="lg:col-span-2 md:col-span-3 md:self-end sticky top-0">
+//           <div className="flex flex-col items-start gap-5 rounded-2xl bg-white dark:bg-white/5 p-4 md:p-6">
+//             <div>
+//               <h3 className="md:text-2xl text-lg font-semibold text-gray-900 dark:text-gray-300">
+//                 More questions?
+//               </h3>
+//               <p className="mt-1 lg:text-lg text-xs font-normal text-gray-500 dark:text-gray-300">
+//                 We're always ready to help you out.
+//               </p>
+//             </div>
+//             <div className="flex w-full flex-wrap items-center justify-between gap-4 md:flex-nowrap">
+//               <div className="flex gap-2">
+//                 <a href="#" aria-label="Chat on WhatsApp">
+//                   <button className="inline-flex items-center justify-center rounded-full text-sm bg-[#25D366] lg:text-base px-4 lg:py-2 py-1.5 text-white font-medium transition-colors duration-200 ease-in-out hover:bg-[#1ebe5a] focus:outline-none">
+//                     <IoLogoWhatsapp className="mr-2 lg:size-6 size-4" />
+//                     <span>WhatsApp</span>
+//                   </button>
+//                 </a>
+
+//                 <a href="#" aria-label="Chat on Telegram">
+//                   <button
+//                     className="
+//       inline-flex items-center justify-center
+//       rounded-full
+//       bg-[#2DA5E0]
+//       px-4
+//       lg:py-2
+//       py-1.5
+//       text-sm
+//       text-white
+//       font-medium
+//       transition-colors duration-200 ease-in-out
+//       focus:outline-none
+//       lg:text-base
+//     "
+//                   >
+//                     <FaTelegramPlane className="mr-2 lg:size-6 size-4" />
+//                     <span>Telegram</span>
+//                   </button>
+//                 </a>
+//               </div>
+
+//               <Link
+//                 href="/faqs"
+//                 className="px-4 lg:py-1.5 py-1.5 rounded-full font-medium lg:text-base text-xs text-mainheading dark:text-primary hover:bg-gray-100 border dark:bg-secondary transition-colors duration-300"
+//               >
+//                 Read more FAQs
+//               </Link>
+//             </div>
+//           </div>
+//         </div>
+//       </section>
+//     </div>
+//   );
+// };
+
+// export default FaqSection;
+
+"use client";
 import Link from "next/link";
 import React, { useState, useRef, useEffect, useCallback } from "react";
+// Assuming icons are correctly imported, if not, adjust paths or imports
 import { FaTelegramPlane } from "react-icons/fa";
-import { FaTelegram } from "react-icons/fa6";
+// import { FaTelegram } from "react-icons/fa6"; // This seemed unused, removed for clarity unless needed elsewhere
 import { IoLogoWhatsapp } from "react-icons/io";
 import { SlArrowDown } from "react-icons/sl";
 
@@ -872,7 +1142,7 @@ const FaqSection: React.FC = () => {
     faqData.length > 0 ? faqData[0].id : null
   );
 
-  // Use a Map to store refs for each *container* content div
+  // Use a Map to store refs for each *content* div (the answer container)
   const contentRefs = useRef<Map<string, HTMLDivElement | null>>(new Map());
 
   // Toggle function: close if clicking the open one, otherwise open the clicked one
@@ -880,60 +1150,42 @@ const FaqSection: React.FC = () => {
     setOpenItemId((prevOpenId) => (prevOpenId === id ? null : id));
   }, []);
 
-  // Effect to handle the height transition of the container div
+  // Effect to handle the height transition of the answer container div
   useEffect(() => {
     contentRefs.current.forEach((contentDiv, id) => {
       if (contentDiv) {
         const isOpen = id === openItemId;
+        // Set height based on scrollHeight if open, otherwise 0
+        // Control visibility and opacity for fade effect alongside height transition
         if (isOpen) {
-          // When opening, set height to scrollHeight AFTER content is rendered (next frame)
-          // We need to ensure the inner content (conditionally rendered) is present
-          // before calculating scrollHeight. requestAnimationFrame helps here.
+          // Use rAF to ensure scrollHeight calculation happens after potential DOM updates
           requestAnimationFrame(() => {
-            // Check again inside rAF in case state changed rapidly
             if (id === openItemId && contentRefs.current.get(id)) {
+              // Check again inside rAF
               contentDiv.style.height = `${contentDiv.scrollHeight}px`;
               contentDiv.style.visibility = "visible";
               contentDiv.style.opacity = "1";
             }
           });
         } else {
-          // When closing, set height to 0
           contentDiv.style.height = "0px";
-          contentDiv.style.visibility = "hidden";
+          // Delay hiding visibility until after transition
+          const transitionDuration = 300; // Match CSS duration
+          setTimeout(() => {
+            // Check if it's still closed before hiding
+            if (openItemId !== id) {
+              contentDiv.style.visibility = "hidden";
+            }
+          }, transitionDuration);
           contentDiv.style.opacity = "0";
         }
       }
     });
   }, [openItemId]); // Rerun this effect whenever the openItemId changes
 
-  // Effect to set initial height correctly on mount (handles default open item)
-  // This effect might be redundant now due to the main useEffect handling
-  // initial state via openItemId, but keep it for robustness if needed.
-  useEffect(() => {
-    contentRefs.current.forEach((contentDiv, id) => {
-      if (contentDiv) {
-        if (id === openItemId) {
-          requestAnimationFrame(() => {
-            // Check again inside rAF
-            if (id === openItemId && contentRefs.current.get(id)) {
-              contentDiv.style.height = `${contentDiv.scrollHeight}px`;
-              contentDiv.style.visibility = "visible";
-              contentDiv.style.opacity = "1";
-            }
-          });
-        } else {
-          contentDiv.style.height = "0px";
-          contentDiv.style.visibility = "hidden";
-          contentDiv.style.opacity = "0";
-        }
-      }
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty dependency array ensures this runs only once on mount
-
   return (
-    <div className="lg:py-10 py-5 bg-[#F2F4F7] dark:bg-background border-b">
+    // Main container for the FAQ section
+    <div className="lg:py-10 py-5 bg-white dark:bg-background border-b dark:border-white/10">
       <section
         className="grid items-start lg:gap-14 gap-5 lg:grid-cols-5 container mx-auto px-4"
         id="faq"
@@ -960,17 +1212,19 @@ const FaqSection: React.FC = () => {
               const uniqueContentId = `faq-content-${item.id}`;
 
               return (
+                // Outer container for each FAQ item - background and rounding
                 <div
                   key={item.id}
                   data-state={isOpen ? "open" : "closed"}
                   data-orientation="vertical"
-                  className="rounded-xl bg-white md:p-6 p-4 dark:bg-white/5"
+                  // Removed padding here, it's moved to the button
+                  className="rounded-xl bg-gray-100 dark:bg-white/5 overflow-hidden" // Added overflow-hidden for rounded corners
                 >
-                  {/* Accordion Trigger (Question) */}
+                  {/* Accordion Trigger (Question) - Now a full-width button */}
                   <h3
                     data-orientation="vertical"
                     data-state={isOpen ? "open" : "closed"}
-                    className="flex m-0"
+                    className="flex m-0" // Removed padding/margin just in case
                   >
                     <button
                       type="button"
@@ -979,7 +1233,8 @@ const FaqSection: React.FC = () => {
                       data-state={isOpen ? "open" : "closed"}
                       data-orientation="vertical"
                       id={uniqueTriggerId}
-                      className="flex w-full cursor-pointer flex-1 gap-2 items-center justify-between text-start lg:text-xl md:text-lg text-sm text-mainheading dark:text-gray-100 transition-all font-medium hover:underline underline-offset-2"
+                      // Button now takes full width and padding, making the whole area clickable
+                      className="flex w-full cursor-pointer flex-1 gap-2 items-center justify-between text-start lg:text-xl md:text-lg text-sm text-mainheading dark:text-gray-100 transition-colors duration-200 font-medium hover:bg-gray-200 dark:hover:bg-white/5 md:p-6 p-4" // Added padding here and hover effect
                       onClick={() => handleToggle(item.id)}
                       data-radix-collection-item=""
                     >
@@ -994,35 +1249,37 @@ const FaqSection: React.FC = () => {
                   </h3>
 
                   {/* Accordion Content Container (Handles Animation) */}
-                  {isOpen && (
-                    <div
-                      ref={(el) => {
-                        if (el) {
-                          contentRefs.current.set(item.id, el);
-                        } else {
-                          contentRefs.current.delete(item.id);
-                        }
-                      }}
-                      id={uniqueContentId}
-                      role="region"
-                      aria-labelledby={uniqueTriggerId}
-                      data-state={isOpen ? "open" : "closed"}
-                      data-orientation="vertical"
-                      // Styles for animation: overflow-hidden and transitions
-                      className="overflow-hidden text-sm md:text-base lg:text-lg leading-relaxed text-[#667085] dark:text-gray-300 transition-all duration-300 ease-in-out"
-                      // Initial style set to height 0 and invisible/opacity 0
-                      style={{
-                        height: "0px",
-                        visibility: "hidden",
-                        opacity: "0",
-                      }}
-                    >
-                      {/* Inner div with padding and content - CONDITIONALLY RENDERED */}
-                      {/* This div is only added to the DOM when isOpen is true */}
-
-                      <div className="pt-4 pb-1">{item.answer}</div>
+                  <div
+                    ref={(el) => {
+                      // Store or remove the ref in the map
+                      if (el) {
+                        contentRefs.current.set(item.id, el);
+                      } else {
+                        contentRefs.current.delete(item.id);
+                      }
+                    }}
+                    id={uniqueContentId}
+                    role="region"
+                    aria-labelledby={uniqueTriggerId}
+                    data-state={isOpen ? "open" : "closed"} // Keep state for styling/debugging
+                    data-orientation="vertical"
+                    // Styles for animation: overflow-hidden and transitions
+                    // Height, visibility, and opacity controlled by useEffect
+                    className="overflow-hidden text-sm md:text-base lg:text-lg leading-relaxed text-[#667085] dark:text-gray-300 transition-all duration-300 ease-in-out"
+                    // Initial style set to height 0 and invisible/opacity 0
+                    style={{
+                      height: "0px",
+                      visibility: "hidden", // Start hidden
+                      opacity: "0", // Start faded out
+                    }}
+                  >
+                    {/* Inner div for padding the answer content */}
+                    <div className="pt-2 pb-4 md:px-6 px-4">
+                      {" "}
+                      {/* Adjusted padding for content */}
+                      {item.answer}
                     </div>
-                  )}
+                  </div>
                 </div>
               );
             })}
@@ -1030,51 +1287,54 @@ const FaqSection: React.FC = () => {
         </div>
 
         {/* Bottom Left: More Questions Box */}
-        <div className="lg:col-span-2 md:col-span-3 md:self-end sticky top-0">
-          <div className="flex flex-col items-start gap-5 rounded-2xl bg-white dark:bg-white/5 p-4 md:p-6">
+        <div className="lg:col-span-2 md:col-span-3 md:self-end">
+          {" "}
+          {/* Removed sticky for simplicity, add back if needed */}
+          <div className="flex flex-col items-start gap-5 rounded-2xl bg-gray-100 dark:bg-white/5 p-4 md:p-6">
             <div>
-              <h3 className="md:text-2xl text-lg font-semibold text-gray-900 dark:text-gray-300">
+              <h3 className="md:text-2xl text-lg font-semibold text-gray-900 dark:text-gray-100">
                 More questions?
               </h3>
-              <p className="mt-1 lg:text-lg text-xs font-normal text-gray-500 dark:text-gray-300">
+              <p className="mt-1 lg:text-lg text-sm font-normal text-gray-500 dark:text-gray-300">
                 We're always ready to help you out.
               </p>
             </div>
             <div className="flex w-full flex-wrap items-center justify-between gap-4 md:flex-nowrap">
               <div className="flex gap-2">
-                <a href="#" aria-label="Chat on WhatsApp">
-                  <button className="inline-flex items-center justify-center rounded-full text-sm bg-[#25D366] lg:text-base px-4 lg:py-2 py-1.5 text-white font-medium transition-colors duration-200 ease-in-out hover:bg-[#1ebe5a] focus:outline-none">
+                {/* WhatsApp Button */}
+                <Link
+                  href="/WhatsApp"
+                  aria-label="Chat on WhatsApp"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {" "}
+                  {/* Added target/rel */}
+                  <button className="inline-flex items-center justify-center rounded-full text-sm bg-[#25D366] lg:text-base px-4 lg:py-2 py-1.5 text-white font-medium transition-colors duration-200 ease-in-out hover:bg-[#1ebe5a] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#25D366]">
                     <IoLogoWhatsapp className="mr-2 lg:size-6 size-4" />
                     <span>WhatsApp</span>
                   </button>
-                </a>
+                </Link>
 
-                <a href="#" aria-label="Chat on Telegram">
-                  <button
-                    className="
-      inline-flex items-center justify-center
-      rounded-full 
-      bg-[#2DA5E0] 
-      px-4 
-      lg:py-2 
-      py-1.5
-      text-sm
-      text-white 
-      font-medium
-      transition-colors duration-200 ease-in-out 
-      focus:outline-none
-      lg:text-base
-    "
-                  >
+                {/* Telegram Button */}
+                <Link
+                  href="/Telegram"
+                  aria-label="Chat on Telegram"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {/* Added target/rel */}
+                  <button className="inline-flex items-center justify-center rounded-full bg-[#2DA5E0] px-4 lg:py-2 py-1.5 text-sm text-white font-medium transition-colors duration-200 ease-in-out hover:bg-[#249bd4] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#2DA5E0] lg:text-base">
                     <FaTelegramPlane className="mr-2 lg:size-6 size-4" />
                     <span>Telegram</span>
                   </button>
-                </a>
+                </Link>
               </div>
-              
+
+              {/* Read More FAQs Link */}
               <Link
-                href="/faqs"
-                className="px-4 lg:py-1.5 py-1.5 rounded-full font-medium lg:text-base text-xs text-mainheading dark:text-primary hover:bg-gray-100 border dark:bg-secondary transition-colors duration-300"
+                href="/faqs" // Ensure this path is correct
+                className="px-4 lg:py-2 py-1.5 rounded-full font-medium lg:text-base text-xs text-mainheading dark:text-primary hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-300 dark:border-white/20 dark:bg-secondary transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
               >
                 Read more FAQs
               </Link>

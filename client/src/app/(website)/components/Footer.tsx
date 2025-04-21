@@ -821,13 +821,7 @@ const Footer: React.FC = () => {
           { href: "/privacy-policy", label: "Privacy Policy" },
           {
             href: "/terms-and-conditions",
-            label: (
-              <>
-                Terms and
-                <br />
-                Conditions
-              </>
-            ),
+            label: <>Terms and Conditions</>,
           },
           { href: "#faq", label: "FAQs" },
         ],
@@ -935,19 +929,16 @@ const Footer: React.FC = () => {
             abroad, trust us to handle your currency needs with transparency and
             speed.
           </p>
-          {/* <Link href="/dashboard" className="w-fit">
-            <div className="bg-primary cursor-pointer hover:bg-primaryhover inline-block font-medium lg:px-10 px-6 lg:py-2.5 focus:outline-none text-sm lg:text-base py-2 transition-colors duration-300 ease-in-out mt-5 rounded-full text-mainheading">
-              Send-Money
-            </div>
-          </Link> */}
         </div>
 
-        <div className="grid grid-cols-2 lg:gap-10 mt-8">
+        <div className="grid grid-cols-2 lg:gap-10 gap-5 mt-8">
           {footerData.sections.map((section) => (
             <div key={section.title}>
               <div
                 className={`${
-                  isMobile ? "flex items-center gap-1 pb-4 cursor-pointer" : "pb-4"
+                  isMobile
+                    ? "flex items-center gap-1 pb-4 cursor-pointer"
+                    : "pb-4"
                 }`}
                 onClick={
                   isMobile ? () => toggleDropdown(section.title) : undefined
@@ -963,7 +954,7 @@ const Footer: React.FC = () => {
                     aria-controls={`${section.title.toLowerCase()}-dropdown-menu`}
                   >
                     {openDropdown === section.title ? (
-                      <HiX  className="dark:text-white text-mainheading size-4 mt-0.5" />
+                      <HiX className="dark:text-white text-mainheading size-4 mt-0.5" />
                     ) : (
                       <TiArrowSortedDown className="dark:text-white text-mainheading size-4 mt-0.5" />
                     )}
