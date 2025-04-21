@@ -2192,7 +2192,7 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
                   unoptimized={isExternalUrl(getFlagSrc(selectedCurrencyData))}
                   onError={(e) => { (e.target as HTMLImageElement).src = defaultFlag.src; }}
               />
-              <p className="text-mainheading dark:text-white font-semibold truncate">{selectedCurrency || "..."}</p> {/* Show ... if no currency yet */}
+              <p className="text-mainheading dark:text-white font-semibold">{selectedCurrency || "..."}</p> {/* Show ... if no currency yet */}
             </div>
             {isOpen ? <IoIosArrowUp size={18} className="text-mainheading dark:text-white flex-shrink-0"/> : <IoIosArrowDown size={18} className="text-mainheading dark:text-white flex-shrink-0"/>}
           </>
