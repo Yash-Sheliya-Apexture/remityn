@@ -419,7 +419,7 @@ export default function KycStepper() {
   const currentStepIndex = steps.findIndex(step => step.id === currentUiStepId);
 
   return (
-    <div className="w-full mb-8 px-2 sm:px-0">
+    <div className="w-full mb-8">
       {/* Floating card design */}
       <div className="bg-white dark:bg-background rounded-xl p-3 sm:p-6 relative overflow-hidden">
 
@@ -511,7 +511,7 @@ export default function KycStepper() {
                         className={cn(
                           "flex h-8 w-8 md:h-12 md:w-12 items-center justify-center rounded-full border-2",
                           status === 'complete' ? 'border-primary bg-primary text-white' :
-                          status === 'current' ? 'border-primary text-primary bg-[#2E2E2E]' :
+                          status === 'current' ? 'border-primary text-white bg-primary' :
                           ''
                         )}
                         whileHover={{ scale: 1.05 }}

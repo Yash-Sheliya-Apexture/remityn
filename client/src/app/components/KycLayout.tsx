@@ -260,7 +260,7 @@ const KycLayoutComponent: React.FC<KycLayoutProps> = ({ children }) => {
             <main className="flex-grow container mx-auto px-4 py-8 md:py-12 flex flex-col items-center">
                 {/* Show stepper only if KYC context is initialized and on a form step */}
                 {showStepper && (
-                    <div className="w-full max-w-3xl mb-8 md:mb-12 px-4">
+                    <div className="w-full max-w-3xl ">
                         <KycStepper />
                     </div>
                 )}
