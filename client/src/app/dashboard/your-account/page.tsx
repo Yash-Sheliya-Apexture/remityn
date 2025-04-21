@@ -7,7 +7,6 @@ import { FiUser } from "react-icons/fi";
 import { RxQuestionMark } from "react-icons/rx";
 import { RiShieldLine } from "react-icons/ri";
 import { FaRegBell } from "react-icons/fa6";
-import { IoMdCopy } from "react-icons/io";
 import { IoMoonOutline } from "react-icons/io5"; // <-- Import the new icon
 import { useAuth } from '@/app/contexts/AuthContext'; // Import the useAuth hook
 
@@ -44,12 +43,7 @@ const AccountSettings: React.FC = () => {
           <MenuItem
             icon={<RxQuestionMark className="size-6 text-neutral-900 dark:text-white" />}
             label="Help"
-            href="help"
-          />
-          <MenuItem
-            icon={<IoMdCopy className="size-6 text-neutral-900 dark:text-white" />}
-            label="Statements and reports"
-            href="statements"
+            href="/faqs"
           />
         </div>
 
@@ -58,9 +52,9 @@ const AccountSettings: React.FC = () => {
            {/* --- Start: Added Language and Appearance Item --- */}
            <MenuItem
             icon={<IoMoonOutline className="size-6 text-neutral-900 dark:text-white" />} // Use the moon icon
-            label="Language and appearance"
-            description="Customise language settings and which theme is used."
-            href="your-account/language-and-appearance" // Link to the dedicated page
+            label="Theme Settings"
+            description="Customize appearance with light, dark, or system themes."
+            href="your-account/theme-settings" // Link to the dedicated page
           />
           {/* --- End: Added Language and Appearance Item --- */}
 

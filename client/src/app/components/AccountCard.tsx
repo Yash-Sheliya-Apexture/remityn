@@ -620,7 +620,7 @@ const AccountCard: React.FC<AccountCardProps> = ({ username }) => {
         {/* Profile initials display area */}
         <div className="flex flex-col items-center mb-4">
           {/* Initials circle container - Added 'relative' for icon positioning */}
-          <div className="relative bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center size-20 overflow-hidden">
+          <div className="relative bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center size-20">
             {/* Display Initials */}
             <span className="text-3xl font-semibold text-neutral-900 dark:text-white select-none">
               {initials}

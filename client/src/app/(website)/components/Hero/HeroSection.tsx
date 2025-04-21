@@ -9850,24 +9850,34 @@ const HeroSection: React.FC = () => {
     )} ${receiveCurrencyCode}`;
   }, [error, marketRate, selectedSendCurrency, receiveCurrencyCode]);
 
-  const savingsAmount = useMemo(() => {
+ const savingsAmount = useMemo(() => {
     const numericSendAmount = parseFloat(sendAmount.replace(/,/g, "")) || 0;
+
     // Cannot calculate savings without both rates or a send amount
     if (numericSendAmount <= 0 || marketRate === null || ourRate === null) {
       return null;
     }
-    // Don't show "savings" if our rate isn't better
-    if (ourRate >= marketRate) {
-      return null;
+
+    // Only calculate savings if Our Rate is strictly better than Market Rate
+    // (A higher rate means recipient gets more INR per unit of send currency)
+    if (ourRate <= marketRate) {
+        // If our rate is the same or worse, there's no "savings" in this context
+        return null;
     }
-    // Calculate difference based *only* on the rate spread for the entered amount
-    const marketConverted = numericSendAmount * marketRate;
+
+    // Calculate the difference: (Amount * OurRate) - (Amount * MarketRate)
+    // This represents how much *more* INR the recipient gets with our rate.
     const ourConverted = numericSendAmount * ourRate;
-    const rateDifferenceValue = marketConverted - ourConverted;
-    // Only show meaningful savings
-    if (rateDifferenceValue <= 0.01) return null;
-    return rateDifferenceValue.toFixed(2);
-  }, [sendAmount, marketRate, ourRate]);
+    const marketConverted = numericSendAmount * marketRate;
+    const rateDifferenceValue = ourConverted - marketConverted;
+
+    // Only show meaningful savings (e.g., more than 1 paisa)
+    if (rateDifferenceValue <= 0.01) {
+       return null;
+    }
+
+    return rateDifferenceValue.toFixed(2); // Format to 2 decimal places
+  }, [sendAmount, marketRate, ourRate]); // Dependencies are correct
 
   // --- JSX Render ---
   return (
@@ -10014,33 +10024,28 @@ const HeroSection: React.FC = () => {
 
                   {/* You Send Input */}
                   <div className="mb-3">
-                    <label
-                      htmlFor="sendAmountInput"
-                      className="block font-medium lg:text-base text-sm text-main dark:text-gray-300 mb-1"
-                    >
-                      You send exactly
-                    </label>
-                    <div className="w-full border rounded-xl flex items-center justify-between transition-all duration-300">
-                      <input
-                        id="sendAmountInput"
-                        type="text"
-                        inputMode="decimal"
-                        placeholder="0"
-                        value={sendAmount}
-                        onChange={handleSendAmountChange}
-                        className="block w-full lg:h-16 h-14 ps-4 text-mainheading dark:text-white text-xl font-semibold focus:outline-none bg-transparent rounded-l-xl placeholder-gray-400 dark:placeholder-gray-500"
-                        disabled={isLoading} // Disable input while initial data is loading
-                        aria-label="Amount to send"
-                      />
-                      <div className="flex-shrink-0 h-full">
-                        <CountryDropdown
-                          selectedCurrency={selectedSendCurrency}
-                          onCurrencyChange={handleCurrencyChange}
-                          disabled={isLoading} // Disable dropdown while initial data is loading
-                        />
-                      </div>
-                    </div>
-                  </div>
+                     <label htmlFor="sendAmountInput" className="block font-medium text-main dark:text-gray-200 mb-1"> You send exactly </label>
+                     <div className="w-full border border-gray-300 dark:border-secondarybox rounded-xl shadow-sm flex items-center justify-between transition-all duration-150">
+                       <input
+                         id="sendAmountInput"
+                         type="text"
+                         inputMode="decimal"
+                         placeholder="0"
+                         value={sendAmount}
+                         onChange={handleSendAmountChange}
+                         className="block w-full h-16 p-3 text-main dark:text-white text-xl font-semibold focus:outline-none bg-transparent rounded-l-xl placeholder-gray-400 dark:placeholder-gray-500"
+                         disabled={isLoading} // Disable input while initial data is loading
+                         aria-label="Amount to send"
+                       />
+                       <div className="flex-shrink-0 h-full">
+                         <CountryDropdown
+                            selectedCurrency={selectedSendCurrency}
+                            onCurrencyChange={handleCurrencyChange}
+                            disabled={isLoading} // Disable dropdown while initial data is loading
+                          />
+                       </div>
+                     </div>
+                   </div>
 
                   {/* Recipient Gets Input */}
                   <div className="mb-3">

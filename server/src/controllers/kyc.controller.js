@@ -511,6 +511,283 @@
 
 
 
+// // backend/controllers/kyc.controller.js
+// import kycService from '../services/kyc.service.js';
+// import mongoose from 'mongoose';
+// import AppError from '../utils/AppError.js'; // Assuming AppError is in utils
+
+// // --- User KYC Controller Functions ---
+
+// const submitKyc = async (req, res, next) => {
+//     // --- Start of Controller ---
+//     console.log('===========================================');
+//     console.log('[KYC Controller] === ENTERED submitKyc ===');
+//     console.log('[KYC Controller] Timestamp:', new Date().toISOString());
+//     console.log('[KYC Controller] User ID from req.user:', req.user?._id);
+//     console.log('[KYC Controller] Request Content-Type Header:', req.headers['content-type']);
+
+//     // Log received data immediately
+//     console.log('[KYC Controller] Raw req.body RECEIVED:', JSON.stringify(req.body, null, 2));
+//     console.log('[KYC Controller] Raw req.files RECEIVED:', JSON.stringify(req.files, null, 2));
+//     // --- End Initial Logs ---
+
+//     try {
+//         const userId = req.user?._id; // Use optional chaining for safety
+//         const kycDataInput = req.body; // Raw input from FormData
+//         const files = req.files; // This SHOULD be populated by the middleware
+
+//         // --- Critical Pre-checks ---
+//         if (!userId) {
+//             console.error('[KYC Controller] CRITICAL CHECK FAILED: User ID missing from req.user.');
+//             return res.status(401).json({ message: 'Authentication error: User ID not found.' });
+//         }
+//         // Check if kycDataInput exists and is an object
+//         if (typeof kycDataInput !== 'object' || kycDataInput === null) {
+//              console.error('[KYC Controller] CRITICAL CHECK FAILED: req.body is not a valid object.', kycDataInput);
+//              return res.status(400).json({ message: 'Invalid request format: Body is missing or not an object.' });
+//         }
+
+//          // Check if files object exists AND is an object (Multer populates it as {} if no files, which is OK)
+//          if (typeof files === 'undefined' || files === null ) {
+//              console.error('[KYC Controller] CRITICAL CHECK FAILED: req.files is undefined or null. Multer middleware likely failed or Content-Type was wrong.');
+//              console.log('[KYC Controller] Headers at file check failure:', JSON.stringify(req.headers, null, 2));
+//              return res.status(500).json({ message: 'Internal server error: File processing middleware failed.' });
+//          }
+//          if (typeof files !== 'object' || Array.isArray(files)) { // Should be an object like { id_front: [], id_back: [] }
+//              console.error('[KYC Controller] CRITICAL CHECK FAILED: req.files is not the expected object format.', files);
+//              return res.status(500).json({ message: 'Internal server error: File processing resulted in invalid format.' });
+//          }
+//         // --- End Critical Pre-checks ---
+
+//         console.log('[KYC Controller] Passed initial critical checks.');
+
+//         // --- Data Parsing & Validation from req.body ---
+//         // Create a new object to hold parsed/validated data
+//         const validatedKycData = {};
+
+//         // Helper function for date parsing
+//         const parseDate = (dateString, fieldName) => {
+//             if (!dateString) throw new Error(`Missing required field: ${fieldName}`);
+//             const date = new Date(dateString);
+//             if (isNaN(date.getTime())) {
+//                  throw new Error(`Invalid date format for ${fieldName}: ${dateString}. Expected YYYY-MM-DD.`);
+//             }
+//             return date;
+//         };
+
+//         try {
+//             // Required Fields
+//             validatedKycData.firstName = kycDataInput.firstName?.trim();
+//             validatedKycData.lastName = kycDataInput.lastName?.trim();
+//             validatedKycData.nationality = kycDataInput.nationality?.trim();
+//             validatedKycData.idType = kycDataInput.idType; // Validation happens in service/schema
+//             validatedKycData.idNumber = kycDataInput.idNumber?.trim();
+
+//             if (!validatedKycData.firstName) throw new Error('Missing required field: First Name');
+//             if (!validatedKycData.lastName) throw new Error('Missing required field: Last Name');
+//             if (!validatedKycData.nationality) throw new Error('Missing required field: Nationality');
+//             if (!validatedKycData.idType) throw new Error('Missing required field: ID Type');
+//             if (!validatedKycData.idNumber) throw new Error('Missing required field: ID Number');
+
+
+//             // Dates
+//             validatedKycData.dateOfBirth = parseDate(kycDataInput.dateOfBirth, 'Date of Birth');
+//             validatedKycData.idIssueDate = parseDate(kycDataInput.idIssueDate, 'ID Issue Date');
+//             validatedKycData.idExpiryDate = parseDate(kycDataInput.idExpiryDate, 'ID Expiry Date');
+//             console.log('[KYC Controller] Dates parsed successfully.');
+
+//             // Mobile Parsing & Basic Validation
+//             if (!kycDataInput.mobile) throw new Error('Missing mobile data');
+//             let parsedMobile;
+//             if (typeof kycDataInput.mobile === 'string') {
+//                  try {
+//                     parsedMobile = JSON.parse(kycDataInput.mobile);
+//                     console.log('[KYC Controller] Mobile JSON parsed successfully.');
+//                  } catch (jsonError) {
+//                      throw new Error('Invalid mobile data format. Expected JSON string.');
+//                  }
+//             } else if (typeof kycDataInput.mobile === 'object') { // Should not happen with FormData usually
+//                  parsedMobile = kycDataInput.mobile;
+//                  console.warn('[KYC Controller] Mobile data received unexpectedly as object.');
+//             } else {
+//                  throw new Error('Mobile data is not a string or object.');
+//             }
+
+//             // Mobile Structure Validation
+//             if (typeof parsedMobile !== 'object' || !parsedMobile?.countryCode?.trim() || !parsedMobile?.number?.trim()) {
+//                  throw new Error('Invalid mobile structure: countryCode and number (trimmed) are required.');
+//             }
+//             // Further mobile number validation (e.g., digits only) could be added here or in service
+//             validatedKycData.mobile = {
+//                 countryCode: parsedMobile.countryCode.trim(),
+//                 number: parsedMobile.number.trim()
+//             };
+//             console.log('[KYC Controller] Mobile data validated successfully.');
+
+//             // Optional Fields
+//             validatedKycData.occupation = kycDataInput.occupation?.trim() || null; // Use null if empty/missing
+//             validatedKycData.salaryRange = kycDataInput.salaryRange || null; // Use null if empty/missing
+//              // Validate salary range if provided
+//              const validSalaryRanges = ['0-1000', '10000-50000', '50000-100000', '100000+', null];
+//              if (validatedKycData.salaryRange !== null && !validSalaryRanges.includes(validatedKycData.salaryRange)) {
+//                   throw new Error(`Invalid salary range value: ${validatedKycData.salaryRange}`);
+//              }
+
+
+//         } catch (validationError) {
+//              console.error(`[KYC Controller] Data parsing/validation error for User ${userId}:`, validationError.message);
+//              console.log('[KYC Controller] Body data at point of validation error:', kycDataInput);
+//              return res.status(400).json({ message: validationError.message }); // Send specific error
+//         }
+//         // --- End Data Parsing & Validation ---
+
+
+//         // --- File Validation (Based on req.files populated by Multer) ---
+//         console.log('[KYC Controller] Performing file validation...');
+//         // Check 'id_front' exists in the 'files' object AND is a non-empty array with at least one file
+//         if (!files.id_front || !Array.isArray(files.id_front) || files.id_front.length === 0) {
+//              console.error('[KYC Controller] VALIDATION FAILED: id_front missing or invalid in req.files.', files);
+//              return res.status(400).json({ message: 'Required Front ID document was not uploaded or received correctly.' });
+//         } else {
+//              console.log(`[KYC Controller] Found id_front: ${files.id_front[0]?.filename || 'details unavailable'}`);
+//         }
+
+//         // Check 'id_back' only if required based on the *validated* idType
+//         if (validatedKycData.idType === 'resident_permit') {
+//             if (!files.id_back || !Array.isArray(files.id_back) || files.id_back.length === 0) {
+//                 console.error('[KYC Controller] VALIDATION FAILED: id_back missing for resident_permit.', files);
+//                 return res.status(400).json({ message: 'Required Back ID document for Resident Permit was not uploaded or received correctly.' });
+//             } else {
+//                  console.log(`[KYC Controller] Found id_back: ${files.id_back[0]?.filename || 'details unavailable'}`);
+//             }
+//         }
+//         console.log('[KYC Controller] File presence validation passed.');
+//         // --- End File Validation ---
+
+
+//         // --- Call Service ---
+//         console.log(`[KYC Controller] Calling kycService.submitKyc for User: ${userId}`);
+//         // Pass the *validated* kycData and the original files object
+//         const submittedKyc = await kycService.submitKyc(userId, validatedKycData, files);
+//         console.log(`[KYC Controller] kycService.submitKyc completed successfully.`);
+
+//         // --- Success Response ---
+//         res.status(201).json({
+//             message: 'KYC submitted successfully and is pending review.',
+//             kyc: submittedKyc // Return the saved KYC subdocument
+//         });
+//         console.log('[KYC Controller] === submitKyc Responded 201 ===');
+
+//     } catch (error) {
+//         // --- Error Handling ---
+//         console.error("[KYC Controller] --- ERROR Caught in submitKyc ---", error);
+//         // Log specific details if available
+//         if (error instanceof AppError) {
+//             console.error(`[KYC Controller] AppError: ${error.message}, Status: ${error.statusCode}, Operational: ${error.isOperational}`);
+//         } else if (error.name === 'ValidationError') { // Mongoose validation error from service save
+//              console.error(`[KYC Controller] Mongoose Validation Error: ${error.message}`);
+//              const messages = Object.values(error.errors).map(el => el.message);
+//              return res.status(400).json({ message: `Validation failed: ${messages.join('. ')}` });
+//         } else if (error.message.includes('User not found') || error.message.includes('Invalid user ID')) {
+//              return res.status(404).json({ message: error.message });
+//         } else if (error.message.includes('KYC is already verified') || error.message.includes('KYC submission is currently pending')) {
+//              return res.status(409).json({ message: error.message }); // Conflict
+//         }
+
+//         // Let the global error handler deal with other errors
+//         next(error);
+//          console.log('[KYC Controller] === submitKyc Passed error to next() ===');
+//     }
+//     console.log('===========================================');
+// };
+
+
+// // --- Other controller functions (getMyKycStatus, updateMyKycDetails, skipKyc) ---
+// // (Keep them as they were, but ensure they use lean() or appropriate selection in service)
+// const getMyKycStatus = async (req, res, next) => {
+//     console.log('[KYC Controller] GET /status');
+//     try {
+//         const userId = req.user?._id;
+//         if (!userId) return res.status(401).json({ message: 'Authentication error: User ID not found.' });
+//         console.log(`[KYC Controller] Getting KYC status for User: ${userId}`);
+//         const status = await kycService.getKycStatus(userId); // Service should return lean object
+//         res.status(200).json(status);
+//     } catch (error) {
+//         console.error("[KYC Controller - User] Error during getMyKycStatus:", error);
+//          if (error.message.includes('User not found') || error.message.includes('Invalid user ID')) {
+//             // Service should return { status: 'not_started' } if KYC doesn't exist but user does
+//             return res.status(404).json({ message: error.message });
+//         }
+//         next(error);
+//     }
+// };
+
+// const updateMyKycDetails = async (req, res, next) => {
+//      console.log('[KYC Controller] PUT /update-details');
+//     try {
+//         const userId = req.user?._id;
+//         if (!userId) return res.status(401).json({ message: 'Authentication error: User ID not found.' });
+//         const updateData = req.body; // Expecting JSON body
+//         console.log(`[KYC Controller] Received update details request for User: ${userId}`, updateData);
+
+//         // Basic validation on controller level (more robust in service)
+//         if (updateData.mobile && (typeof updateData.mobile !== 'object' || !updateData.mobile.countryCode?.trim() || !updateData.mobile.number?.trim())) {
+//             return res.status(400).json({ message: 'Invalid mobile format. Expected { countryCode, number }.' });
+//         }
+//         const validSalaryRanges = ['0-1000', '10000-50000', '50000-100000', '100000+', null];
+//         if (updateData.salaryRange && !validSalaryRanges.includes(updateData.salaryRange)) {
+//              return res.status(400).json({ message: 'Invalid salary range value provided.' });
+//         }
+
+//         console.log(`[KYC Controller] Calling kycService.updateKycDetails for User: ${userId}`);
+//         const updatedKyc = await kycService.updateKycDetails(userId, updateData); // Service returns updated lean KYC
+//         res.status(200).json({ message: 'KYC details updated successfully.', kyc: updatedKyc });
+//     } catch (error) {
+//         console.error("[KYC Controller - User] Error during updateMyKycDetails:", error);
+//         // Handle specific error types/messages from the service
+//         if (error.message.includes('Invalid') || error.message.includes('No valid fields') || error.message.includes('Expected')) {
+//              return res.status(400).json({ message: error.message });
+//         }
+//          if (error.message.includes('not found')) { // User not found by service
+//             return res.status(404).json({ message: error.message });
+//         }
+//         if (error.message.includes('Cannot update details')) { // Status conflict etc.
+//              return res.status(409).json({ message: error.message });
+//         }
+//         next(error);
+//     }
+// };
+
+// const skipKyc = async (req, res, next) => {
+//     console.log('[KYC Controller] POST /skip');
+//     try {
+//         const userId = req.user?._id;
+//         if (!userId) return res.status(401).json({ message: 'Authentication error: User ID not found.' });
+//         console.log(`[KYC Controller] Received skip request for User: ${userId}`);
+//         const result = await kycService.skipKyc(userId); // Service returns lean { status }
+//         res.status(200).json({ message: 'KYC process skipped successfully.', status: result.status });
+//     } catch (error) {
+//         console.error("[KYC Controller - User] Error during skipKyc:", error);
+//         if (error.message.includes('not found') || error.message.includes('Invalid user ID')) {
+//             return res.status(404).json({ message: error.message });
+//         }
+//         if (error.message.includes('Cannot skip KYC')) { // Status conflict
+//             return res.status(409).json({ message: error.message });
+//         }
+//         next(error);
+//     }
+// };
+
+
+// export default {
+//     submitKyc,
+//     getMyKycStatus,
+//     updateMyKycDetails,
+//     skipKyc,
+// };
+
+
+
 // backend/controllers/kyc.controller.js
 import kycService from '../services/kyc.service.js';
 import mongoose from 'mongoose';
@@ -518,6 +795,7 @@ import AppError from '../utils/AppError.js'; // Assuming AppError is in utils
 
 // --- User KYC Controller Functions ---
 
+// submitKyc function remains the same as provided previously
 const submitKyc = async (req, res, next) => {
     // --- Start of Controller ---
     console.log('===========================================');
@@ -617,7 +895,10 @@ const submitKyc = async (req, res, next) => {
             if (typeof parsedMobile !== 'object' || !parsedMobile?.countryCode?.trim() || !parsedMobile?.number?.trim()) {
                  throw new Error('Invalid mobile structure: countryCode and number (trimmed) are required.');
             }
-            // Further mobile number validation (e.g., digits only) could be added here or in service
+             // Further mobile number validation (e.g., digits only) could be added here or in service
+             if (!/^[0-9]+$/.test(parsedMobile.number.trim())) {
+                 throw new Error('Invalid mobile number format. Please enter only numbers.');
+             }
             validatedKycData.mobile = {
                 countryCode: parsedMobile.countryCode.trim(),
                 number: parsedMobile.number.trim()
@@ -701,9 +982,7 @@ const submitKyc = async (req, res, next) => {
     console.log('===========================================');
 };
 
-
-// --- Other controller functions (getMyKycStatus, updateMyKycDetails, skipKyc) ---
-// (Keep them as they were, but ensure they use lean() or appropriate selection in service)
+// getMyKycStatus function remains the same as provided previously
 const getMyKycStatus = async (req, res, next) => {
     console.log('[KYC Controller] GET /status');
     try {
@@ -722,6 +1001,7 @@ const getMyKycStatus = async (req, res, next) => {
     }
 };
 
+// *** MODIFIED updateMyKycDetails function's error handling ***
 const updateMyKycDetails = async (req, res, next) => {
      console.log('[KYC Controller] PUT /update-details');
     try {
@@ -731,8 +1011,9 @@ const updateMyKycDetails = async (req, res, next) => {
         console.log(`[KYC Controller] Received update details request for User: ${userId}`, updateData);
 
         // Basic validation on controller level (more robust in service)
-        if (updateData.mobile && (typeof updateData.mobile !== 'object' || !updateData.mobile.countryCode?.trim() || !updateData.mobile.number?.trim())) {
-            return res.status(400).json({ message: 'Invalid mobile format. Expected { countryCode, number }.' });
+        // This validation might be redundant now service handles it better, but can stay as quick check
+        if (updateData.mobile && (typeof updateData.mobile !== 'object' || !updateData.mobile.countryCode?.trim() || !updateData.mobile.number?.trim() || !/^[0-9]+$/.test(updateData.mobile.number.trim()))) {
+            return res.status(400).json({ message: 'Invalid mobile format. Expected { countryCode, number (digits only) }.' });
         }
         const validSalaryRanges = ['0-1000', '10000-50000', '50000-100000', '100000+', null];
         if (updateData.salaryRange && !validSalaryRanges.includes(updateData.salaryRange)) {
@@ -744,20 +1025,44 @@ const updateMyKycDetails = async (req, res, next) => {
         res.status(200).json({ message: 'KYC details updated successfully.', kyc: updatedKyc });
     } catch (error) {
         console.error("[KYC Controller - User] Error during updateMyKycDetails:", error);
-        // Handle specific error types/messages from the service
-        if (error.message.includes('Invalid') || error.message.includes('No valid fields') || error.message.includes('Expected')) {
-             return res.status(400).json({ message: error.message });
+
+        // --- UPDATED Error Handling Block ---
+        const errorMessage = error.message || 'An unexpected error occurred';
+
+        // Handle specific validation/logic errors from the service with 400 Bad Request
+        if (errorMessage.startsWith('Invalid') || errorMessage.includes('Expected') || errorMessage.includes('Missing') || errorMessage.includes('format')) {
+             return res.status(400).json({ message: errorMessage });
         }
-         if (error.message.includes('not found')) { // User not found by service
-            return res.status(404).json({ message: error.message });
+        // Handle "No valid fields provided" error with 400
+        if (errorMessage.includes('No valid or permitted fields')) {
+             return res.status(400).json({ message: errorMessage });
         }
-        if (error.message.includes('Cannot update details')) { // Status conflict etc.
-             return res.status(409).json({ message: error.message });
+        // **** NEW: Handle specific "Cannot update field..." error with 400 ****
+        if (errorMessage.startsWith('Cannot update field')) {
+            return res.status(400).json({ message: errorMessage });
         }
+        // Handle "User not found" error with 404
+         if (errorMessage.includes('not found')) { // User not found by service
+            return res.status(404).json({ message: errorMessage });
+        }
+        // Handle status conflicts (e.g., trying to update when pending) with 409 Conflict
+        if (errorMessage.includes('Cannot update details while KYC status is')) {
+             return res.status(409).json({ message: errorMessage });
+        }
+
+        // Mongoose Validation Error (if service save fails validation) -> 400
+        if (error.name === 'ValidationError') {
+            const messages = Object.values(error.errors).map(el => el.message);
+            return res.status(400).json({ message: `Validation failed: ${messages.join('. ')}` });
+        }
+
+        // Pass any other unexpected errors to the global error handler (which might result in 500)
         next(error);
+        // --- END Updated Error Handling ---
     }
 };
 
+// skipKyc function remains the same as provided previously
 const skipKyc = async (req, res, next) => {
     console.log('[KYC Controller] POST /skip');
     try {
