@@ -1148,10 +1148,315 @@
 
 // export default FAQPage;
 
+// "use client";
+
+// import React, { useState, useRef, useEffect } from "react";
+// // Removed FaArrowUp as it's no longer used for scroll-to-top
+// import { SlArrowDown } from "react-icons/sl";
+
+// // Define the structure for a single FAQ item
+// interface FAQItem {
+//   id: string;
+//   question: string;
+//   answer: string;
+// }
+
+// // Define the structure for a section containing FAQ items
+// interface FAQSectionData {
+//   title: string;
+//   items: FAQItem[];
+// }
+
+// // Data structured according to the image sections
+// const faqSections: FAQSectionData[] = [
+//   {
+//     title: "About Wise",
+//     items: [
+//       {
+//         id: "whatIsWise", // <<< This is the ID for the first item
+//         question: "What is Wise? ",
+//         answer:
+//           "wise is a digital banking platform providing powerful APIs for real-time currency exchange, helping financial institutions and websites deliver secure, modern FX services",
+//       },
+//       {
+//         id: "whereOperate",
+//         question: "Where does Wise operate?",
+//         answer:
+//           "Wise operates in more than USD, AED, AUD, CAD, EUR, INR, allowing you to send, spend and receive money internationally with free fees and real exchange rates. If you visit them,",
+//       },
+//     ],
+//   },
+//   {
+//     title: "Using Wise",
+//     items: [
+//       {
+//         id: "transferTime",
+//         question: "How long does a transfer take with Wise?",
+//         answer:
+//           "Transfer times with Wise vary by destination, but most transfers arrive within minutes to 1–2 business days, depending on the currency and payment method.",
+//       },
+//       {
+//         id: "transferAmount",
+//         question: "How much money can be transferred at once with Wise?",
+//         answer:
+//           "Wise lets you transfer large amounts of money, but the exact limits depend on the currency and the countries involved. Personal account limits may vary, typically ranging from a few thousand to hundreds of thousands, depending on the payment method, regulatory requirements, and destination.",
+//       },
+//       {
+//         id: "transferSecurity",
+//         question: "How does Wise ensure the security of my transfers?",
+//         answer:
+//           "Wise uses advanced security measures like encryption, two-factor authentication, and strict regulatory compliance to keep your money and data safe throughout every transfer.",
+//       },
+//       {
+//         id: "trackTransfer",
+//         question: "How do I track my Wise transfer?",
+//         answer:
+//           "You can easily track your Wise transfer in real time through the Wise app or website, with updates provided at every step until the money reaches its destination.",
+//       },
+//     ],
+//   },
+//   {
+//     title: "Safety and Security",
+//     items: [
+//       {
+//         id: "howSafe",
+//         question: "How safe is Wise?",
+//         answer:
+//           "Wise is fully regulated by financial authorities around the world and uses bank-level encryption, making it a safe and trusted platform for sending and receiving money globally.",
+//       },
+//       {
+//         id: "fraudsters",
+//         question: "How do I stay away from fraudsters?",
+//         answer:
+//           "To avoid fraud, always double-check recipient details, beware of unexpected messages or requests, and never share your Wise login or security codes. Wise will never ask for sensitive info via email or phone.",
+//       },
+//       {
+//         id: "affiliatedBank",
+//         question: "Is Wise affiliated with any bank?",
+//         answer:
+//           "Wise is not a bank, but it is regulated like one. It operates independently while partnering with licensed financial institutions and holding customer funds in safeguarded accounts for maximum security.",
+//       },
+//     ],
+//   },
+//   {
+//     title: "General Information",
+//     items: [
+//       {
+//         id: "whatRemittance",
+//         question: "What is remittance?",
+//         answer:
+//           "Remittance refers to the transfer of money, typically by a foreign worker, back to their home country to support family members or friends. It’s a key part of global financial systems and is often done via money transfer services like Wise.",
+//       },
+//       {
+//         id: "remittanceImpact",
+//         question: "How does remittance impact economies?",
+//         answer:
+//           "Remittances play a crucial role in supporting the economies of developing countries by providing families with vital financial resources. They help improve living standards, boost local businesses, and contribute to poverty reduction. In many countries, remittances are a significant source of foreign income.",
+//       },
+//       {
+//         id: "remittanceParticipants",
+//         question: "Who participates in a remittance transaction?",
+//         answer:
+//           "A remittance transaction typically involves three key participants: the sender (who sends the money), the recipient (who receives the funds), and the service provider (such as Wise, which facilitates the transfer). The sender and recipient can be in different countries, while the service provider ensures the safe and timely transfer of funds.",
+//       },
+//     ],
+//   },
+//   {
+//     title: "Account Management",
+//     items: [
+//       {
+//         id: "deleteAccount",
+//         question: "How do I delete my Wise account?",
+//         answer:
+//           'To delete your Wise account, simply log in to your account, go to the "Settings" section, and follow the prompts to close your account. Make sure all transactions are completed, and there are no pending balances before proceeding. For security reasons, Wise may ask you to verify your identity.',
+//       },
+//       {
+//         id: "transactionReceipt",
+//         question: "Do I get a receipt for my transactions?",
+//         answer:
+//           'Yes, Wise provides a receipt for every transaction. You can easily view and download your receipts directly from your account under the "Transaction History" section, which includes all the details like the amount sent, fees, and exchange rate.',
+//       },
+//       {
+//         id: "verificationDocuments",
+//         question: "What documents are required for verification?",
+//         answer:
+//           "To verify your account with Wise, you may need to provide a government-issued ID (like a passport or Permanent Residency ID) and proof of address (such as a utility bill or bank statement). These documents help ensure the security of your account and comply with financial regulations.",
+//       },
+//     ],
+//   },
+// ];
+
+// // Accordion Item Component
+// interface AccordionItemProps {
+//   item: FAQItem;
+//   isOpen: boolean;
+//   onToggle: () => void;
+// }
+
+// const AccordionItem: React.FC<AccordionItemProps> = ({
+//   item,
+//   isOpen,
+//   onToggle,
+// }) => {
+//   // Use a ref for the content div to calculate height for animation
+//   const contentRef = useRef<HTMLDivElement>(null);
+//   const [contentHeight, setContentHeight] = useState<string>("0px");
+
+//   useEffect(() => {
+//     // Adjust height when isOpen changes or contentRef is available
+//     if (contentRef.current) {
+//       setContentHeight(isOpen ? `${contentRef.current.scrollHeight}px` : "0px");
+//     }
+//   }, [isOpen, contentRef]); // Recalculate height if contentRef changes
+
+//   // Ensure initial height is set correctly if starting open
+//   // This useEffect handles the case where the component mounts already open
+//   useEffect(() => {
+//     if (isOpen && contentRef.current) {
+//       // Use requestAnimationFrame to ensure layout has happened before measuring scrollHeight
+//       requestAnimationFrame(() => {
+//         if (contentRef.current) {
+//           setContentHeight(`${contentRef.current.scrollHeight}px`);
+//         }
+//       });
+//     } else if (!isOpen) {
+//       setContentHeight("0px"); // Ensure it's closed if isOpen becomes false
+//     }
+//     // We only want this to run when `isOpen` changes or initially mounts.
+//     // Adding contentRef.current dependency might cause unnecessary runs if ref instance changes.
+//   }, [isOpen]);
+
+//   return (
+//     <div
+//       data-state={isOpen ? "open" : "closed"}
+//       data-orientation="vertical"
+//       className="rounded-2xl bg-white dark:bg-white/5 p-5 mb-4" // Keep mb-4 for spacing between items
+//     >
+//       <h3
+//         data-orientation="vertical"
+//         data-state={isOpen ? "open" : "closed"}
+//         className="flex"
+//       >
+//         <button
+//           type="button"
+//           aria-controls={`radix-${item.id}-content`}
+//           aria-expanded={isOpen}
+//           data-state={isOpen ? "open" : "closed"}
+//           data-orientation="vertical"
+//           id={`radix-${item.id}-trigger`}
+//           className={`flex w-full flex-1 items-center justify-between text-start text-sm md:text-lg font-medium cursor-pointer text-mainheading dark:text-white transition-all hover:underline`}
+//           data-radix-collection-item=""
+//           onClick={onToggle}
+//         >
+//           {item.question}
+//           <SlArrowDown
+//             className={`size-3 shrink-0 text-muted-foreground transition-transform duration-300 ${
+//               isOpen ? "rotate-180" : ""
+//             }`}
+//             aria-hidden // Add aria-hidden for decorative icons
+//           />
+//         </button>
+//       </h3>
+//       {/* Content Div with dynamic height for animation */}
+//       <div
+//         ref={contentRef}
+//         data-state={isOpen ? "open" : "closed"}
+//         id={`radix-${item.id}-content`}
+//         role="region"
+//         aria-labelledby={`radix-${item.id}-trigger`}
+//         data-orientation="vertical"
+//         className="overflow-hidden text-sm md:text-base leading-relaxed text-gray-500 dark:text-gray-300 transition-all duration-300 ease-in-out"
+//         style={{ height: contentHeight }}
+//         // Use hidden attribute for better accessibility when closed
+//         hidden={!isOpen}
+//       >
+//         {/* Add padding-top only when open and content is visible */}
+//         {/* The conditional rendering here ensures the content only appears when open */}
+//         {isOpen && (
+//           <div
+//             className={`pt-3 transition-opacity duration-300 ${
+//               contentHeight !== "0px" ? "opacity-100" : "opacity-0" // Fade in based on height calculation
+//             }`}
+//           >
+//             {item.answer}
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// // Main FAQ Component
+// const FAQPage: React.FC = () => {
+//   // Initialize state with the ID of the item you want open by default
+//   const [openAccordionId, setOpenAccordionId] = useState<string | null>(
+//     "whatIsWise" // <<< Set the ID of the first FAQ item here
+//   );
+
+//   // Toggle function: close if clicking the open one, otherwise open the clicked one
+//   const toggleAccordion = (id: string) => {
+//     setOpenAccordionId(openAccordionId === id ? null : id);
+//   };
+
+//   return (
+//     <>
+//       {/* Header Section */}
+//       <div className="bg-[#f2f4f7] dark:bg-background py-10">
+//         <div className="space-y-2.5 container mx-auto px-4 ">
+//           {/* Title */}
+//           <h1 className="text-4xl md:text-5xl xl:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+//             Frequently Asked
+//             {/* Highlighted part */}
+//             <span className="text-primary"> Questions </span>
+//           </h1>
+//           {/* Subtitle */}
+//           <p className="lg:text-lg sm:text-base text-sm text-gray-500 max-w-2xl leading-relaxed dark:text-gray-300">
+//             Got questions about currency exchange? We’ve got answers. Explore
+//             our most common queries to understand how our services work,
+//             exchange rates, transfer times, and more.
+//           </p>
+//         </div>
+//       </div>
+
+//       {/* FAQ Content Section */}
+//       <div className="bg-[#f2f4f7] dark:bg-background min-h-screen">
+//         <main className="mx-auto mb-10 container max-w-3xl px-4">
+//           {/* Map through each FAQ section */}
+//           <div className="lg:space-y-8 space-y-5">
+//             {faqSections.map((section) => (
+//               <div key={section.title}>
+//                 {/* Section Title */}
+//                 <h2 className="text-lg lg:text-2xl font-semibold text-mainheading dark:text-white lg:mb-10 mb-8 text-center">
+//                   {section.title}
+//                 </h2>
+//                 {/* Container for accordion items in this section */}
+//                 <div className="flex flex-col gap-0">
+//                   {/* Map through each item within the section */}
+//                   {section.items.map((item) => (
+//                     <AccordionItem
+//                       key={item.id}
+//                       item={item}
+//                       // Determine if this item should be open based on the state
+//                       isOpen={openAccordionId === item.id}
+//                       // Pass the toggle function, specific to this item's ID
+//                       onToggle={() => toggleAccordion(item.id)}
+//                     />
+//                   ))}
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         </main>
+//       </div>
+//     </>
+//   );
+// };
+
+// export default FAQPage;
+
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-// Removed FaArrowUp as it's no longer used for scroll-to-top
 import { SlArrowDown } from "react-icons/sl";
 
 // Define the structure for a single FAQ item
@@ -1167,7 +1472,7 @@ interface FAQSectionData {
   items: FAQItem[];
 }
 
-// Data structured according to the image sections
+// Data structured according to the image sections (same as before)
 const faqSections: FAQSectionData[] = [
   {
     title: "About Wise",
@@ -1298,45 +1603,41 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
   isOpen,
   onToggle,
 }) => {
-  // Use a ref for the content div to calculate height for animation
   const contentRef = useRef<HTMLDivElement>(null);
   const [contentHeight, setContentHeight] = useState<string>("0px");
 
   useEffect(() => {
-    // Adjust height when isOpen changes or contentRef is available
     if (contentRef.current) {
       setContentHeight(isOpen ? `${contentRef.current.scrollHeight}px` : "0px");
     }
-  }, [isOpen, contentRef]); // Recalculate height if contentRef changes
+  }, [isOpen, contentRef]);
 
-  // Ensure initial height is set correctly if starting open
-  // This useEffect handles the case where the component mounts already open
   useEffect(() => {
     if (isOpen && contentRef.current) {
-      // Use requestAnimationFrame to ensure layout has happened before measuring scrollHeight
       requestAnimationFrame(() => {
         if (contentRef.current) {
           setContentHeight(`${contentRef.current.scrollHeight}px`);
         }
       });
     } else if (!isOpen) {
-      setContentHeight("0px"); // Ensure it's closed if isOpen becomes false
+      setContentHeight("0px");
     }
-    // We only want this to run when `isOpen` changes or initially mounts.
-    // Adding contentRef.current dependency might cause unnecessary runs if ref instance changes.
   }, [isOpen]);
 
   return (
+    // Outer div: Removed p-5, added overflow-hidden for safety
     <div
       data-state={isOpen ? "open" : "closed"}
       data-orientation="vertical"
-      className="rounded-2xl bg-white dark:bg-white/5 p-5 mb-4" // Keep mb-4 for spacing between items
+      className="rounded-2xl bg-white dark:bg-white/5 mb-4 overflow-hidden" // Keep mb-4 for spacing
     >
+      {/* H3: Can remain for semantic structure, removed flex class */}
       <h3
         data-orientation="vertical"
         data-state={isOpen ? "open" : "closed"}
-        className="flex"
+        className="" // Removed flex as button handles layout now
       >
+        {/* Button: Now has p-5 and handles the click for the entire header area */}
         <button
           type="button"
           aria-controls={`radix-${item.id}-content`}
@@ -1344,20 +1645,21 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
           data-state={isOpen ? "open" : "closed"}
           data-orientation="vertical"
           id={`radix-${item.id}-trigger`}
-          className={`flex w-full flex-1 items-center justify-between text-start text-sm md:text-lg font-medium cursor-pointer text-mainheading dark:text-white transition-all hover:underline`}
+          // *** ADDED p-5 HERE ***
+          className={`flex w-full flex-1 items-center gap-4 justify-between lg:p-6 p-4 text-start text-sm md:text-xl font-medium cursor-pointer text-mainheading hover:bg-gray-200 dark:hover:bg-white/5 dark:text-white transition-all`}
           data-radix-collection-item=""
-          onClick={onToggle}
+          onClick={onToggle} // The click handler remains on the button
         >
           {item.question}
           <SlArrowDown
-            className={`size-3 shrink-0 text-muted-foreground transition-transform duration-300 ${
+            className={`lg:size-3 size-2.5 shrink-0 text-muted-foreground transition-transform duration-300 ${
               isOpen ? "rotate-180" : ""
             }`}
             aria-hidden // Add aria-hidden for decorative icons
           />
         </button>
       </h3>
-      {/* Content Div with dynamic height for animation */}
+      {/* Content Div (structure and logic remain the same) */}
       <div
         ref={contentRef}
         data-state={isOpen ? "open" : "closed"}
@@ -1365,35 +1667,26 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
         role="region"
         aria-labelledby={`radix-${item.id}-trigger`}
         data-orientation="vertical"
-        className="overflow-hidden text-sm md:text-base leading-relaxed text-gray-500 dark:text-gray-300 transition-all duration-300 ease-in-out"
+        // Added px-5 pb-5 for padding *only* on the content, not the header
+        className="overflow-hidden text-sm mt-2 md:text-lg leading-relaxed text-gray-500 dark:text-gray-300 transition-all duration-300 ease-in-out lg:ps-6 ps-4 pb-4"
         style={{ height: contentHeight }}
-        // Use hidden attribute for better accessibility when closed
         hidden={!isOpen}
       >
-        {/* Add padding-top only when open and content is visible */}
-        {/* The conditional rendering here ensures the content only appears when open */}
-        {isOpen && (
-          <div
-            className={`pt-3 transition-opacity duration-300 ${
-              contentHeight !== "0px" ? "opacity-100" : "opacity-0" // Fade in based on height calculation
-            }`}
-          >
-            {item.answer}
-          </div>
-        )}
+        {/* No extra div needed here, padding is handled above */}
+        {/* Content only renders when open */}
+        {isOpen && item.answer}
+        {/* Removed inner div with pt-3 and opacity logic - simplified */}
       </div>
     </div>
   );
 };
 
-// Main FAQ Component
+// Main FAQ Component (remains the same)
 const FAQPage: React.FC = () => {
-  // Initialize state with the ID of the item you want open by default
   const [openAccordionId, setOpenAccordionId] = useState<string | null>(
-    "whatIsWise" // <<< Set the ID of the first FAQ item here
+    "whatIsWise"
   );
 
-  // Toggle function: close if clicking the open one, otherwise open the clicked one
   const toggleAccordion = (id: string) => {
     setOpenAccordionId(openAccordionId === id ? null : id);
   };
@@ -1403,13 +1696,10 @@ const FAQPage: React.FC = () => {
       {/* Header Section */}
       <div className="bg-[#f2f4f7] dark:bg-background py-10">
         <div className="space-y-2.5 container mx-auto px-4 ">
-          {/* Title */}
           <h1 className="text-4xl md:text-5xl xl:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
             Frequently Asked
-            {/* Highlighted part */}
             <span className="text-primary"> Questions </span>
           </h1>
-          {/* Subtitle */}
           <p className="lg:text-lg sm:text-base text-sm text-gray-500 max-w-2xl leading-relaxed dark:text-gray-300">
             Got questions about currency exchange? We’ve got answers. Explore
             our most common queries to understand how our services work,
@@ -1421,24 +1711,20 @@ const FAQPage: React.FC = () => {
       {/* FAQ Content Section */}
       <div className="bg-[#f2f4f7] dark:bg-background min-h-screen">
         <main className="mx-auto mb-10 container max-w-3xl px-4">
-          {/* Map through each FAQ section */}
           <div className="lg:space-y-8 space-y-5">
             {faqSections.map((section) => (
               <div key={section.title}>
-                {/* Section Title */}
                 <h2 className="text-lg lg:text-2xl font-semibold text-mainheading dark:text-white lg:mb-10 mb-8 text-center">
                   {section.title}
                 </h2>
-                {/* Container for accordion items in this section */}
                 <div className="flex flex-col gap-0">
-                  {/* Map through each item within the section */}
+                  {" "}
+                  {/* Changed gap-4 to gap-0 as mb-4 on item handles spacing */}
                   {section.items.map((item) => (
                     <AccordionItem
                       key={item.id}
                       item={item}
-                      // Determine if this item should be open based on the state
                       isOpen={openAccordionId === item.id}
-                      // Pass the toggle function, specific to this item's ID
                       onToggle={() => toggleAccordion(item.id)}
                     />
                   ))}
