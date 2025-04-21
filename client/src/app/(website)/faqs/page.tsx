@@ -1694,7 +1694,7 @@ const FAQPage: React.FC = () => {
   return (
     <>
       {/* Header Section */}
-      <div className="bg-[#f2f4f7] dark:bg-background py-10">
+      <div className="bg-white dark:bg-background py-10">
         <div className="space-y-2.5 container mx-auto px-4 ">
           <h1 className="text-4xl md:text-5xl xl:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
             Frequently Asked
@@ -1709,7 +1709,7 @@ const FAQPage: React.FC = () => {
       </div>
 
       {/* FAQ Content Section */}
-      <div className="bg-[#f2f4f7] dark:bg-background min-h-screen">
+      <div className="bg-white dark:bg-background min-h-screen">
         <main className="mx-auto mb-10 container max-w-3xl px-4">
           <div className="lg:space-y-8 space-y-5">
             {faqSections.map((section) => (

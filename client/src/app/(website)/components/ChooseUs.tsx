@@ -44,7 +44,7 @@ const featuresData: FeatureItem[] = [
 const XeFeaturesSection: React.FC = () => {
   return (
     // Added dummy class names for styling context, replace with your actual ones
-    <div className="bg-[#f2f4f7] dark:bg-background pb-10">
+    <div className="bg-white dark:bg-background pb-10">
       <div className="mx-auto max-w-7xl px-4">
         <div className="mx-auto max-w-2xl text-center">
           {/* Removed empty h2, assuming the next one is the main heading */}
@@ -53,7 +53,7 @@ const XeFeaturesSection: React.FC = () => {
             <span className="text-primary">millions choose Apexture</span>
           </h2>
 
-          <p className="mt-4 text-lg leading-normal text-gray-500 dark:text-gray-300">
+          <p className="mt-4 text-lg leading-normal text-gray-700 dark:text-gray-300">
             For over 10 years, Apexture Corporation Inc. customers have been
             trusting us to manage and send international money transfers. It's
             what we do.
@@ -61,23 +61,23 @@ const XeFeaturesSection: React.FC = () => {
         </div>
 
         {/* Features Grid */}
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
           {featuresData.map((feature) => (
             <div
               key={feature.title}
               // Added some potential styling classes
-              className="bg-white dark:bg-white/5 rounded-lg p-4 space-y-3 h-full transition-shadow duration-300 border-t-4 border-primary"
+              className="bg-white dark:bg-white/5 shadow-md border rounded-lg lg:p-6 p-4 lg:space-y-4 space-y-2.5 h-full transition-shadow duration-300"
             >
               {/* Ensure text-mainheading works correctly, consider icon size */}
               <div className="bg-primary p-2 rounded-full inline-block">
-                <span className="text-mainheading text-2xl flex items-center justify-center size-8">
+                <span className="text-mainheading text-2xl flex items-center justify-center lg:size-8 size-6">
                   {feature.icons}
                 </span>
               </div>
-              <h3 className="text-xl font-medium dark:text-primary text-mainheading capitalize">
+              <h3 className="lg:text-xl text-lg font-medium dark:text-primary text-mainheading capitalize">
                 {feature.title}
               </h3>
-              <p className="text-base text-gray-500 dark:text-gray-300">
+              <p className="lg:text-base text-sm text-gray-700 dark:text-gray-300">
                 {feature.description}
               </p>
             </div>

@@ -6,7 +6,7 @@ import { RiCustomerService2Fill } from "react-icons/ri";
 const ProtectionSection = () => {
   return (
     <section
-      className="Protection-Section md:py-12 py-5 bg-[#f2f4f7] dark:bg-background"
+      className="Protection-Section md:py-12 py-5 bg-white dark:bg-background"
       id="protect"
     >
       <div className="container mx-auto px-4">
@@ -14,13 +14,13 @@ const ProtectionSection = () => {
 
           {/* Real-Time Exchange Rates */}
           <div className="flex flex-col items-center text-center space-y-4">
-            <div className="lg:size-16 size-12 rounded-full bg-secondary dark:bg-primarybox flex items-center justify-center">
+            <div className="lg:size-16 size-12 rounded-full bg-gray dark:bg-primarybox flex items-center justify-center">
               <MdSyncAlt className="lg:size-8 size-6 text-white dark:text-primary" />
             </div>
             <h3 className="lg:text-xl text-lg font-medium text-mainheading dark:text-white">
               Real-Time Exchange Rates
             </h3>
-            <p className="text-gray-500 md:text-base text-sm dark:text-gray-300 leading-relaxed">
+            <p className="text-gray-700 md:text-base text-sm dark:text-gray-300 leading-relaxed">
               Get the most accurate and up-to-date exchange rates sourced from
               global financial markets.
             </p>
@@ -28,13 +28,13 @@ const ProtectionSection = () => {
 
           {/* Multi-Currency Support */}
           <div className="flex flex-col items-center text-center space-y-4">
-            <div className="lg:size-16 size-12 rounded-full bg-secondary dark:bg-primarybox flex items-center justify-center">
+            <div className="lg:size-16 size-12 rounded-full bg-gray dark:bg-primarybox flex items-center justify-center">
               <FaGlobe className="lg:size-8 size-6 text-white dark:text-primary" />
             </div>
             <h3 className="lg:text-xl text-lg font-medium text-mainheading dark:text-white">
               Multi-Currency Support
             </h3>
-            <p className="text-gray-500 md:text-base text-sm dark:text-gray-300 leading-relaxed">
+            <p className="text-gray-700 md:text-base text-sm dark:text-gray-300 leading-relaxed">
               Exchange between dozens of global currencies including USD, EUR,
               GBP, JPY, INR, and more.
             </p>
@@ -42,13 +42,13 @@ const ProtectionSection = () => {
 
           {/* Fast Processing */}
           <div className="flex flex-col items-center text-center space-y-4">
-            <div className="lg:size-16 size-12 rounded-full bg-secondary dark:bg-primarybox flex items-center justify-center">
+            <div className="lg:size-16 size-12 rounded-full bg-gray dark:bg-primarybox flex items-center justify-center">
               <FaClock className="lg:size-8 size-6 text-white dark:text-primary" />
             </div>
             <h3 className="lg:text-xl text-lg font-medium text-mainheading dark:text-white">
               Fast Processing
             </h3>
-            <p className="text-gray-500 md:text-base text-sm dark:text-gray-300 leading-relaxed">
+            <p className="text-gray-700 md:text-base text-sm dark:text-gray-300 leading-relaxed">
               Instant conversions with real-time confirmation — no more waiting
               hours for currency updates.
             </p>
@@ -56,13 +56,13 @@ const ProtectionSection = () => {
 
           {/* 24/7 Customer Support */}
           <div className="flex flex-col items-center text-center space-y-4">
-            <div className="lg:size-16 size-12 rounded-full bg-secondary dark:bg-primarybox flex items-center justify-center">
+            <div className="lg:size-16 size-12 rounded-full bg-gray dark:bg-primarybox flex items-center justify-center">
               <RiCustomerService2Fill className="lg:size-8 size-6 text-white dark:text-primary" />
             </div>
             <h3 className="lg:text-xl text-lg font-medium text-mainheading dark:text-white">
               24/7 Customer Support
             </h3>
-            <p className="text-gray-500 md:text-base text-sm dark:text-gray-300 leading-relaxed">
+            <p className="text-gray-700 md:text-base text-sm dark:text-gray-300 leading-relaxed">
               Round-the-clock support to help you with your currency-related
               queries and transactions.
             </p>

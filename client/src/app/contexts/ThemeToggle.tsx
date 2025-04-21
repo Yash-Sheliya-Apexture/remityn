@@ -311,7 +311,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ location, className }) => {
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="flex items-center px-2 py-1.5 cursor-pointer group rounded-full hover:bg-gray/5 dark:hover:bg-primarybox group transition-colors ease-in-out duration-300"
+          className="flex items-center px-2 py-1.5 cursor-pointer group rounded-full hover:bg-gray/10 dark:hover:bg-primarybox group transition-colors ease-in-out duration-300"
           aria-label="Toggle Theme Dropdown"
           aria-expanded={isDropdownOpen} // Add aria-expanded for accessibility
           aria-controls="theme-menu" // Add aria-controls for accessibility

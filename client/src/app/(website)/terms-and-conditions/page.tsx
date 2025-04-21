@@ -297,7 +297,7 @@ const sections: TermSection[] = [
 const TermsAndConditionsPage: React.FC = () => {
   return (
     // Added font-landing class assumption from outer div
-    <div className="terms-condtion lg:py-10 py-5 bg-[#f2f4f7] dark:bg-background px-4">
+    <div className="terms-condtion lg:py-10 py-5 bg-white dark:bg-background px-4">
       <div className="container mx-auto">
         {/* Removed extra wrapping div */}
         <div className="mb-3">

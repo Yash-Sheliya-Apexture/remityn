@@ -1435,12 +1435,12 @@ const ResetPasswordForm = () => {
             Check your email
           </h2>
 
-          <p className="text-center text-lg text-gray-500 dark:text-gray-300 text-nowrap mb-6">
+          <p className="text-center text-lg text-gray-700 dark:text-gray-300 text-nowrap mb-6">
             We sent an email to &nbsp;
-            <span className="font-semibold text-primary">{email}</span>
+            <span className="font-semibold text-lime-500">{email}</span>
           </p>
 
-          <p className="text-center text-lg  text-gray-500 dark:text-gray-300 mb-6">
+          <p className="text-center text-lg  text-gray-700 dark:text-gray-300 mb-6">
             If the email hasn&apos;t arrived yet, please check your spam folder.
             Alternatively, you can also request the email again:
           </p>
@@ -1448,18 +1448,18 @@ const ResetPasswordForm = () => {
           <AnimatePresence>
             {showCheckAgainMessage && (
               <motion.div
-                className="flex bg-lightgray dark:bg-secondary p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4"
+                className="flex bg-gray/10 dark:bg-secondary p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4"
                 role="alert"
                 initial="initial"
                 animate="animate"
                 exit="exit"
                 variants={errorVariants}
               >
-                <div className="flex bg-primary/20 justify-center rounded-full items-center size-12 shrink-0">
+                <div className="flex dark:bg-primary/20 bg-white justify-center rounded-full items-center size-12 shrink-0">
                   <FaCheck className="p-0.5 text-mainheading dark:text-primary size-8" />
                 </div>
 
-                <p className="text-gray-500 dark:text-gray-300 block font-medium">
+                <p className="text-mainheading dark:text-gray-300 block font-medium">
                   Please check your email inbox again.
                 </p>
               </motion.div>
@@ -1485,7 +1485,7 @@ const ResetPasswordForm = () => {
           <button
             onClick={handleSendAgain}
             disabled={isLoading || resendAttemptFailed}
-            className={`bg-primary hover:bg-primaryhover cursor-pointer capitalize h-14 rounded-full text-mainheading text-lg w-full block duration-300 ease-in-out focus:outline-none focus:shadow-outline font-medium mx-auto py-3 transition-colors
+            className={`bg-primary hover:bg-primaryhover cursor-pointer capitalize lg:h-12.5 rounded-full text-mainheading w-full block duration-300 ease-in-out focus:outline-none focus:shadow-outline font-medium mx-auto lg:py-3 py-2 transition-colors
                             ${
                               isLoading || resendAttemptFailed
                                 ? "opacity-50 cursor-not-allowed"
@@ -1502,11 +1502,11 @@ const ResetPasswordForm = () => {
             </p>
           )}
 
-          <p className="text-base text-center text-gray-500 dark:text-gray-300 mt-5">
+          <p className="text-base text-center text-gray-700 dark:text-gray-300 mt-5">
             Still need help? &nbsp;
             <a
               href="#"
-              className="text-primary underline font-medium underline-offset-4"
+              className="text-lime-500 underline font-medium underline-offset-4"
             >
               Read this article.
             </a>
@@ -1531,7 +1531,7 @@ const ResetPasswordForm = () => {
       <h2 className="lg:text-5xl text-3xl capitalize font-black mb-4">
         Reset password
       </h2>
-      <p className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base max-w-lg mb-4">
+      <p className="text-center text-gray-700 dark:text-gray-300 lg:text-lg text-base max-w-lg mb-4">
         Just enter the email address you registered with and we&apos;ll send you
         a link to reset your password.
       </p>
@@ -1577,7 +1577,7 @@ const ResetPasswordForm = () => {
 
         <div className="flex justify-between items-center">
           <button
-            className={`bg-primary hover:bg-primaryhover cursor-pointer text-mainheading font-medium text-lg py-3 h-14 w-full px-4 rounded-full transition-colors duration-300 ease-in-out focus:outline-none focus:shadow-outline ${
+            className={`bg-primary hover:bg-primaryhover cursor-pointer text-mainheading font-medium py-3 lg:h-12.5 w-full px-4 rounded-full transition-colors duration-300 ease-in-out focus:outline-none focus:shadow-outline ${
               isLoading ? "opacity-50 cursor-not-allowed" : ""
             }`}
             type="submit"
@@ -1588,11 +1588,11 @@ const ResetPasswordForm = () => {
         </div>
       </form>
 
-      <p className="text-base text-gray-500 dark:text-gray-300 my-6">
+      <p className="text-base text-gray-700 dark:text-gray-300 my-6">
         Need help? Read this &nbsp;
         <a
           href="#"
-          className="text-primary font-medium underline underline-offset-4"
+          className="text-lime-500 font-medium underline underline-offset-4"
         >
           Help Centre article.
         </a>

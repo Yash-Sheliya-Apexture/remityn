@@ -169,13 +169,13 @@ const AboutSection: React.FC<AboutSectionProps> = ({
   const buttonLink = user ? "/dashboard" : "/auth/register"; // Link to register or dashboard
 
   return (
-    <section className="relative bg-[#f2f4f7] dark:bg-background md:py-12 py-10 overflow-hidden">
+    <section className="relative bg-white dark:bg-background md:py-12 py-10 overflow-hidden">
       <div className="container mx-auto px-4 relative z-20">
         <div className="flex flex-col md:flex-row items-center gap-6">
           {/* Content Area */}
           <div className="w-full md:w-1/2 space-y-6">
             <div className="space-y-6 text-center md:text-left">
-              <span className="font-semibold uppercase tracking-wider text-xs md:text-base text-gray dark:text-gray-300">
+              <span className="font-semibold uppercase tracking-wider text-xs md:text-base text-gray-700 dark:text-gray-300">
                 ABOUT US
               </span>
 
@@ -183,7 +183,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({
                 {title} <span className="text-primary">{subtitle}</span>
               </h2>
 
-              <p className="text-gray-500 dark:text-gray-300 md:text-lg text-base max-w-prose">
+              <p className="text-gray-700 dark:text-gray-300 md:text-lg text-base max-w-prose">
                 {description}
               </p>
 
