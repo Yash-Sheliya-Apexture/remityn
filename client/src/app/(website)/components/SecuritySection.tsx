@@ -111,7 +111,6 @@ const SecuritySection = () => {
     <section className="Security-section md:py-12 py-10 bg-[#F2F4F7] dark:bg-background">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          {/* Left Content */}
           <div className="w-full md:w-3/5 order-2 md:order-1">
             <div className="mb-10">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
@@ -137,16 +136,14 @@ const SecuritySection = () => {
             </div>
           </div>
 
-          {/* Right Image Section */}
           <div className="w-full md:w-2/5 h-auto order-1 md:order-2 flex md:justify-end justify-center">
             <Image
-              // Use the imported 'img' variable here
-              src="/assets/images/Frame2.svg"
+              src="/assets/images/secure.svg"
               alt="Padlock symbolizing security"
               width={500}
               height={500}
               className="md:w-[300px] w-[250px] lg:w-[400px] h-auto md:mb-0 mb-5"
-              priority // Optional: Add priority if this image is above the fold
+              priority 
             />
           </div>
         </div>

@@ -108,8 +108,60 @@ const getMe = async (req, res, next) => {
 };
 // --- End Controller ---
 
+
+// --- Controller for PUT /api/dashboard/users/me/password ---
+const changePassword = async (req, res, next) => {
+    try {
+        // User ID comes from the authenticated request (set by authMiddleware.protect)
+        const userId = req.user?._id;
+        if (!userId) {
+            // Should not happen if auth middleware is working
+            return res.status(401).json({ message: 'Not authorized, user ID missing from token.' });
+        }
+
+        const { currentPassword, newPassword } = req.body;
+
+        // Basic check for required fields (validator should handle more)
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ message: 'Current password and new password are required.' });
+        }
+
+        // Call the service function
+        await userService.changeUserPassword(userId, currentPassword, newPassword);
+
+        // Send success response
+        res.status(200).json({ message: 'Password changed successfully.' }); // Or 204 No Content if preferred
+
+    } catch (error) {
+        console.error("Error in changePassword controller:", error.message);
+
+        // Handle specific errors from the service
+        if (error.message === 'Incorrect current password.') {
+            // 401 Unauthorized or 400 Bad Request are possibilities. 400 might be better as it's user input error.
+            return res.status(400).json({ message: error.message });
+        }
+        if (error.message === 'New password cannot be the same as the current one.') {
+            return res.status(400).json({ message: error.message });
+        }
+        if (error.message.includes('validation failed')) { // Catch validation errors from service/model
+             return res.status(400).json({ message: error.message });
+        }
+         if (error.message.includes('User not found')) { // Should be rare
+             return res.status(404).json({ message: 'User not found.' });
+         }
+        if (error.message.includes('Invalid user ID format') || error.message.includes('Missing required fields')) {
+             return res.status(400).json({ message: 'Invalid request data.' });
+         }
+
+        // Pass other errors to the global error handler
+        next(new Error('Failed to change password. Please try again.')); // Generic message for other errors
+    }
+};
+
+
 export default {
     getMe, // Export the new method
     getAllUsers,
     getUserById,
+    changePassword,
 };
