@@ -2285,6 +2285,7 @@ export default function RegisterPage() {
             Log in
           </Link>
         </p>
+        
 
         {/* Error Message Display */}
         <AnimatePresence>

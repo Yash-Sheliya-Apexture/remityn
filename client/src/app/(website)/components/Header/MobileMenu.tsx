@@ -886,6 +886,8 @@
 
 // export default MobileMenu;
 
+
+
 // // components/MobileMenu.tsx
 // "use client";
 // import React, { useState } from "react";
@@ -996,6 +998,8 @@
 
 // export default MobileMenu;
 
+
+
 // frontend/src/app/components/layout/MobileMenu.tsx // Or your actual path
 "use client";
 import React, { useState } from "react";
@@ -1040,7 +1044,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
 
   return (
     <div
-      className={`fixed top-16 md:top-20 left-0 w-full h-[calc(100vh-4rem)] md:h-[calc(100vh-5rem)] bg-[#f2f4f7] dark:bg-background z-40 overflow-y-auto transition-transform duration-300 ease-in-out ${
+      className={`fixed top-20 left-0 w-full h-[calc(100vh-80px)] bg-[#f2f4f7] dark:bg-background z-40 overflow-y-auto transition-transform duration-300 ease-in-out ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       }`}
       aria-hidden={!isOpen}
@@ -1057,14 +1061,14 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             {/* Reduced gap */}
             <Link
               href="/"
-              className="block px-4 py-2 rounded-md font-medium hover:bg-gray-100 dark:hover:bg-secondary"
+              className="block py-2 rounded-md font-medium hover:bg-gray-100 dark:hover:bg-secondary"
               onClick={handleLinkClick}
             >
               Home
             </Link>
             <Link
               href="/about-us"
-              className="block px-4 py-2 rounded-md font-medium hover:bg-gray-100 dark:hover:bg-secondary"
+              className="block py-2 rounded-md font-medium hover:bg-gray-100 dark:hover:bg-secondary"
               onClick={handleLinkClick}
             >
               About
@@ -1073,8 +1077,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             <FeatureDropdown
               buttonText="Features"
               links={featureLinks}
-              // topContent={topContent} // Only include if desired on mobile
-              buttonClassName="block w-full text-left py-2 px-4 font-medium hover:bg-gray-100 dark:hover:bg-secondary rounded-md" // Consistent styling
+              buttonClassName="block w-full text-left py-2 font-medium hover:bg-gray-100 dark:hover:bg-secondary rounded-md" // Consistent styling
               isMobile={true}
               isOpen={isFeaturesOpen}
               toggleDropdown={toggleFeaturesDropdown}
@@ -1082,7 +1085,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             />
             <Link
               href="/faqs"
-              className="block px-4 py-2 rounded-md font-medium hover:bg-gray-100 dark:hover:bg-secondary"
+              className="block py-2 rounded-md font-medium hover:bg-gray-100 dark:hover:bg-secondary"
               onClick={handleLinkClick}
             >
               Help
@@ -1110,7 +1113,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
                 </Link>
                 <button
                   onClick={handleLogoutClick} // Use specific handler
-                  className="block w-full px-4 py-2.5 bg-gray-100 dark:bg-secondary border border-gray-300 dark:border-gray-600 text-main dark:text-white rounded-full font-medium text-base text-center hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                  className="block w-full px-4 py-2.5 bg-gray-100 dark:bg-secondary text-main dark:text-white rounded-full font-medium text-base text-center hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                 >
                   Log out
                 </button>
@@ -1120,7 +1123,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
                 <Link
                   href="/auth/login"
                   passHref
-                  className="block w-full px-4 py-2.5 bg-white dark:bg-secondary border border-gray-300 dark:border-gray-600 rounded-full font-medium text-base text-center dark:text-white text-mainheading hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  className="block w-full px-4 py-2.5 bg-white dark:bg-secondary rounded-full font-medium text-base text-center dark:text-white text-mainheading hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                   onClick={handleLinkClick}
                 >
                   Log in

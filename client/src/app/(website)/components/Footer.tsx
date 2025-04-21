@@ -816,6 +816,15 @@ const Footer: React.FC = () => {
   const footerData: FooterData = {
     sections: [
       {
+        title: "Company",
+        links: [
+          { href: "/", label: "Home" },
+          { href: "/about-us", label: "About" },
+          { href: "/features", label: "Features" },
+          { href: "/reviews", label: "Reviews" },
+        ],
+      },
+      {
         title: "Help",
         links: [
           { href: "/privacy-policy", label: "Privacy Policy" },
@@ -824,16 +833,6 @@ const Footer: React.FC = () => {
             label: <>Terms and Conditions</>,
           },
           { href: "#faq", label: "FAQs" },
-        ],
-      },
-      {
-        title: "Company",
-        links: [
-          { href: "/", label: "Home" },
-          { href: "/about-us", label: "About" },
-          { href: "/features", label: "Features" },
-          { href: "/reviews", label: "Reviews" },
-          { href: "/faqs", label: "Help" },
         ],
       },
     ],
@@ -931,13 +930,13 @@ const Footer: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 lg:gap-10 gap-5 mt-8">
+        <div className="grid grid-cols-1 mt-8">
           {footerData.sections.map((section) => (
             <div key={section.title}>
               <div
                 className={`${
                   isMobile
-                    ? "flex items-center gap-1 pb-4 cursor-pointer"
+                    ? "flex items-center justify-between gap-1 pb-4 cursor-pointer"
                     : "pb-4"
                 }`}
                 onClick={

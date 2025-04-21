@@ -112,7 +112,7 @@ const AuthHeader: React.FC = () => {
           )}
         </Link>
         <Link href="/" >
-          <IoClose className="lg:size-10 size-8 p-1 bg-gray/5 dark:bg-secondary text-mainheading dark:text-primary rounded-full transition-colors" />
+          <IoClose className="lg:size-10 size-8 p-1.5 bg-gray/5 dark:bg-secondary text-mainheading dark:text-primary rounded-full transition-colors" />
         </Link>
       </div>
     </div>
