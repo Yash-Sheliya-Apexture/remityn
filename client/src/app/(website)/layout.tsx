@@ -198,7 +198,7 @@ export default function WebsiteLayout({ children }: LayoutProps) {
   }, []); // Empty dependency array ensures this effect runs only once on mount and cleans up on unmount
 
   return (
-    <WebsiteAppProvider initialSelectedSendCurrency="USD">
+    <WebsiteAppProvider>
       {/* Header */}
       <Header />
 
