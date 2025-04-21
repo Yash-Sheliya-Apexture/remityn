@@ -99,8 +99,6 @@
 // };
 // export default SecuritySection;
 
-
-
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -128,11 +126,14 @@ const SecuritySection = () => {
               </p>
             </div>
             <div>
-              <button className="bg-primary rounded-full px-6 md:py-3 py-2 md:h-14 hover:bg-primaryhover text-mainheading font-medium text-base lg:text-lg transition-colors duration-300 ease-in-out">
-                <Link href={""} className="text-mainheading font-medium">
+              <Link
+                href="/faqs"
+                className="bg-primary rounded-full px-6 md:py-3 py-2 h-12.5 lg:text-lg text-base hover:bg-primaryhover text-mainheading font-medium cursor-pointer transition-colors duration-300 ease-in-out"
+              >
+                <button className="text-mainheading font-medium">
                   How we keep your money safe
-                </Link>
-              </button>
+                </button>
+              </Link>
             </div>
           </div>
 

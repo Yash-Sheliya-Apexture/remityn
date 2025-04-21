@@ -3121,7 +3121,7 @@ const Header: React.FC = () => {
       <header
         className={`w-full z-50 transition-[transform,background-color,box-shadow] duration-300 ease-in-out ${
           isSticky
-            ? "fixed top-0 left-0 right-0 bg-white/80 dark:bg-background/80 backdrop-blur-sm shadow-md transform translate-y-0" // Sticky state: Fixed, blurred bg, shadow, visible
+            ? "fixed top-0 left-0 right-0 bg-[#f2f4f7] dark:bg-background transform translate-y-0" // Sticky state: Fixed, blurred bg, shadow, visible
             : "relative bg-[#f2f4f7] dark:bg-background transform translate-y-0" // Non-sticky state: Relative, initial bg, visible
         }`}
         // --- Add a style property to handle the initial transform for the slide-down effect ---

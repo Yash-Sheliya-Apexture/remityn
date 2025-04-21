@@ -10009,7 +10009,7 @@ const HeroSection: React.FC = () => {
                       <Link href="/auth/register" passHref>
                         <button
                           type="button"
-                          className="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent font-medium rounded-full text-black dark:text-black bg-primary hover:bg-primary-hover focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background transition-colors duration-150 ease-in-out h-12 text-base shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent cursor-pointer hover:bg-primaryhover font-medium rounded-full text-black dark:text-black bg-primary hover:bg-primary-hover transition-colors duration-150 ease-in-out h-12 text-base disabled:opacity-50 disabled:cursor-not-allowed"
                           disabled={isLoading || authLoading}
                           aria-disabled={isLoading || authLoading}
                         >
