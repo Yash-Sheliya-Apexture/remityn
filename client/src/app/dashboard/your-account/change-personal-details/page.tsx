@@ -1466,7 +1466,7 @@ export default function ChangePersonalDetails() {
 
                                 {/* Personal details Section */}
                                 <div className="space-y-6">
-                                    <h3 className="text-lg font-semibold text-gray-700 dark:text-white mb-4 border-b pb-2 dark:border-border/50">
+                                    <h3 className="text-lg font-semibold text-mainheading dark:text-white mb-4 border-b pb-2 dark:border-border/50">
                                         Personal Details
                                     </h3>
 
@@ -1505,7 +1505,7 @@ export default function ChangePersonalDetails() {
                                                          </Button>
                                                     </FormControl>
                                                 </PopoverTrigger>
-                                                <PopoverContent align="start" className="w-[--radix-popover-trigger-width] max-h-[--radix-popover-content-available-height]">
+                                                <PopoverContent align="start" className="sm:w-[450px] max-h-[--radix-popover-content-available-height]">
                                                     <Command filter={(value, search) => { // Filter based on label matching search
                                                         const country = countryOptions.find(c => c.value.toLowerCase() === value.toLowerCase());
                                                         const label = country?.label ?? '';
@@ -1515,19 +1515,21 @@ export default function ChangePersonalDetails() {
                                                         <CommandList>
                                                             <CommandEmpty>No nationality found.</CommandEmpty>
                                                             <CommandGroup>
-                                                                {countryOptions.map((country) => (
-                                                                    <CommandItem
-                                                                        value={country.value} // Value submitted is the code
-                                                                        key={country.value} // Use unique code as key
-                                                                        onSelect={(currentValue) => { // currentValue is the code
-                                                                            form.setValue("nationality", currentValue === field.value ? "" : currentValue, { shouldValidate: true });
-                                                                            setNationalityPopoverOpen(false);
-                                                                        }}
-                                                                    >
-                                                                        <Check className={cn( "mr-2 h-4 w-4", country.value === field.value ? "opacity-100" : "opacity-0" )} />
-                                                                        {country.label} {/* Display the name */}
-                                                                    </CommandItem>
-                                                                ))}
+                                                                <div className="space-y-1">
+                                                                    {countryOptions.map((country) => (
+                                                                        <CommandItem
+                                                                            value={country.value} // Value submitted is the code
+                                                                            key={country.value} // Use unique code as key
+                                                                            onSelect={(currentValue) => { // currentValue is the code
+                                                                                form.setValue("nationality", currentValue === field.value ? "" : currentValue, { shouldValidate: true });
+                                                                                setNationalityPopoverOpen(false);
+                                                                            }} >
+                                                                            {country.label} {/* Display the name */}
+                                                                            <Check className={cn( "ml-2 h-4 w-4", country.value === field.value ? "opacity-100" : "opacity-0" )} />
+                                                                        </CommandItem>
+                                                                    ))}
+                                                                </div>
+
                                                             </CommandGroup>
                                                         </CommandList>
                                                     </Command>
@@ -1540,9 +1542,9 @@ export default function ChangePersonalDetails() {
 
                                     {/* Date of birth - Read Only Section */}
                                     <div>
-                                        <h4 className="text-md font-semibold text-gray-600 dark:text-gray-300 mb-3">
+                                        <h3 className="text-lg font-semibold text-mainheading dark:text-white mb-4 border-b pb-2 dark:border-border/50">
                                             Date of birth (Read-only)
-                                        </h4>
+                                        </h3>
                                         <div className="flex gap-2">
                                             <div className="w-1/3">
                                                 <Label htmlFor="dob-day" className="block text-sm font-medium text-gray dark:text-gray-300 mb-1">Day</Label>
@@ -1570,13 +1572,13 @@ export default function ChangePersonalDetails() {
                                                     <Popover open={countryCodePopoverOpen} onOpenChange={setCountryCodePopoverOpen}>
                                                         <PopoverTrigger asChild>
                                                           <FormControl>
-                                                            <Button variant="outline" role="combobox" aria-expanded={countryCodePopoverOpen} className={cn("w-full justify-between", !field.value && "text-muted-foreground")} aria-label="Select country calling code" >
+                                                            <Button variant="outline" role="combobox" aria-expanded={countryCodePopoverOpen} className={cn("w-full h-12 justify-between", !field.value && "text-muted-foreground")} aria-label="Select country calling code" >
                                                                 {field.value || "Code"} {/* Display selected code or "Code" */}
                                                                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                             </Button>
                                                           </FormControl>
                                                         </PopoverTrigger>
-                                                        <PopoverContent className="w-[300px] p-0">
+                                                        <PopoverContent align="start" className="sm:w-[450px] max-h-[--radix-popover-content-available-height]">
                                                             <Command filter={(value, search) => { // Enhanced filter for name and code
                                                                 const option = countryCodeOptions.find(opt => opt.value.toLowerCase() === value.toLowerCase());
                                                                 if (!option) return 0;
@@ -1590,19 +1592,21 @@ export default function ChangePersonalDetails() {
                                                                  <CommandList>
                                                                     <CommandEmpty>No country found.</CommandEmpty>
                                                                     <CommandGroup>
-                                                                        {countryCodeOptions.map((option) => (
-                                                                            <CommandItem
-                                                                                key={option.label} // Use label as key for display items
-                                                                                value={option.value} // Use code (+1) as value
-                                                                                onSelect={(currentValue) => { // currentValue is code (+1)
-                                                                                    form.setValue("mobileCountryCode", currentValue === field.value ? "" : currentValue, { shouldValidate: true });
-                                                                                    setCountryCodePopoverOpen(false);
-                                                                                }}
-                                                                            >
-                                                                                <Check className={cn("mr-2 h-4 w-4", option.value === field.value ? "opacity-100" : "opacity-0")} />
-                                                                                {option.label} {/* Display "Country Name (+Code)" */}
-                                                                            </CommandItem>
-                                                                        ))}
+                                                                        <div className="space-y-1">
+                                                                            {countryCodeOptions.map((option) => (
+                                                                                <CommandItem
+                                                                                    key={option.label} // Use label as key for display items
+                                                                                    value={option.value} // Use code (+1) as value
+                                                                                    onSelect={(currentValue) => { // currentValue is code (+1)
+                                                                                        form.setValue("mobileCountryCode", currentValue === field.value ? "" : currentValue, { shouldValidate: true });
+                                                                                        setCountryCodePopoverOpen(false);
+                                                                                    }}
+                                                                                >
+                                                                                    {option.label} {/* Display "Country Name (+Code)" */}
+                                                                                    <Check className={cn("ml-2 h-4 w-4", option.value === field.value ? "opacity-100" : "opacity-0")} />
+                                                                                </CommandItem>
+                                                                            ))}
+                                                                        </div>
                                                                     </CommandGroup>
                                                                 </CommandList>
                                                             </Command>
@@ -1628,7 +1632,7 @@ export default function ChangePersonalDetails() {
 
                                 {/* Additional Information Section */}
                                 <div className="space-y-6 pt-4 border-t dark:border-border/50">
-                                    <h3 className="text-lg font-semibold text-gray-700 dark:text-white mb-4">
+                                    <h3 className="text-lg font-semibold text-mainheading dark:text-white mb-4 border-b pb-2 dark:border-border/50">
                                         Additional Information
                                     </h3>
 
@@ -1639,13 +1643,13 @@ export default function ChangePersonalDetails() {
                                              <Popover open={occupationPopoverOpen} onOpenChange={setOccupationPopoverOpen}>
                                                 <PopoverTrigger asChild>
                                                     <FormControl>
-                                                        <Button variant="outline" role="combobox" aria-label="Select occupation" className={cn( "w-full justify-between", !field.value && "text-muted-foreground" )} >
+                                                        <Button variant="outline" role="combobox" aria-label="Select occupation" className={cn( "w-full h-12 justify-between", !field.value && "text-muted-foreground" )} >
                                                              {field.value ? occupationOptions.find( (option) => option.value === field.value )?.label : "Select Occupation"}
                                                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                          </Button>
                                                     </FormControl>
                                                 </PopoverTrigger>
-                                                <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                                                <PopoverContent align="start" className="sm:w-[450px] max-h-[--radix-popover-content-available-height]">
                                                     <Command>
                                                         <CommandInput placeholder="Search occupation..." />
                                                          <CommandList>
@@ -1660,8 +1664,8 @@ export default function ChangePersonalDetails() {
                                                                              setOccupationPopoverOpen(false);
                                                                          }}
                                                                      >
-                                                                         <Check className={cn( "mr-2 h-4 w-4", option.value === field.value ? "opacity-100" : "opacity-0" )} />
                                                                          {option.label}
+                                                                         <Check className={cn( "ml-2 h-4 w-4", option.value === field.value ? "opacity-100" : "opacity-0" )} />
                                                                       </CommandItem>
                                                                 ))}
                                                             </CommandGroup>
@@ -1678,9 +1682,8 @@ export default function ChangePersonalDetails() {
                                 <div className="mt-8 pt-6 border-t dark:border-border/50">
                                     <Button
                                         type="submit"
-                                        className="w-full"
+                                        className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                                         disabled={isSubmitting || !form.formState.isDirty} // Disable if submitting or no changes
-                                        size="lg"
                                     >
                                         {isSubmitting ? (
                                             <> <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving... </>

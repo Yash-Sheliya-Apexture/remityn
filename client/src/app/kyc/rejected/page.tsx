@@ -32,7 +32,6 @@
 //         router.push('/dashboard');
 //     };
 
-
 //     if (authLoading) {
 //         return (
 //             <div className="flex justify-center items-center min-h-[300px]">
@@ -198,7 +197,6 @@
 //     );
 // }
 
-
 // // frontend/src/app/kyc/rejected/page.tsx
 // 'use client';
 
@@ -329,8 +327,6 @@
 //         </Card>
 //     );
 // }
-
-
 
 // // frontend/src/app/kyc/rejected/page.tsx
 // 'use client';
@@ -750,7 +746,6 @@
 //     );
 // }
 
-
 // // frontend/src/app/kyc/rejected/page.tsx
 // 'use client';
 
@@ -978,7 +973,6 @@
 //         );
 //     }
 
-
 //     // --- Main Rejected Content (Render only if user exists and status is 'rejected') ---
 //     return (
 //         <div className="flex justify-center items-center min-h-[calc(100vh-200px)] px-4 py-8">
@@ -1024,105 +1018,324 @@
 //     );
 // }
 
+// // frontend/src/app/kyc/rejected/page.tsx
+// 'use client';
+
+// import React, { useEffect, useCallback } from 'react'; // Added useCallback
+// import { useRouter } from 'next/navigation';
+// import { Button } from '@/components/ui/button';
+// import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+// import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+// import { Loader2, AlertTriangle, RotateCcw, LayoutDashboard, FileWarning, HelpCircle } from 'lucide-react';
+// import { useAuth } from '@/app/contexts/AuthContext';
+// import { useKyc } from '../../contexts/KycContext'; // Correct path
+// import Link from 'next/link';
+
+// export default function KycRejectedPage() {
+//     const router = useRouter();
+//     const { user, loading: authLoading } = useAuth();
+//     const {
+//         resetKycProgress, // Use this for retry
+//         updateCurrentUiStepId,
+//         backendStatus,
+//         rejectionReason, // Get reason directly from KycContext
+//         isInitialized: kycInitialized,
+//         isLoadingStatus: kycLoadingStatus
+//     } = useKyc();
+
+//     // Effect 1: Set UI step
+//     useEffect(() => {
+//         if (kycInitialized && window.location.pathname === '/kyc/rejected') {
+//             updateCurrentUiStepId('rejected');
+//         }
+//     }, [kycInitialized, updateCurrentUiStepId]);
+
+//     // Effect 2: Check login status (context handles redirection)
+//     useEffect(() => {
+//         if (!authLoading && !user && kycInitialized) { /* Let context redirect */ }
+//     }, [user, authLoading, kycInitialized, router]);
+
+//     // Effect 3: Rely on KycContext for redirection if status changes
+
+//     // --- Action Handlers ---
+//     const handleRetryVerification = useCallback(async () => { // Make async
+//         console.log("KYC Rejected: Retrying verification via resetKycProgress...");
+//         // Call resetKycProgress with true to clear state AND navigate to start page
+//         await resetKycProgress(true);
+//     }, [resetKycProgress]); // Dependency
+
+//     const handleGoToDashboard = useCallback(() => {
+//         router.push('/dashboard');
+//     }, [router]);
+
+//     // --- Render Logic ---
+
+//     // Primary Loading
+//     if (authLoading || !kycInitialized) {
+//         return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-primary" /> </div> );
+//     }
+
+//     // Context Status Loading
+//     if (kycLoadingStatus) {
+//         return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-primary" /> </div> );
+//     }
+
+//     // Waiting for Redirect (if status is not 'rejected')
+//     if (user && backendStatus !== 'rejected') {
+//         return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-primary" /> </div> );
+//     }
+
+//     // Not Logged In
+//     if (!user) {
+//         return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /> </div> );
+//     }
+
+//     // --- Main Rejected Content ---
+//     return (
+//         <div className="flex justify-center items-center min-h-[calc(100vh-200px)] px-4 py-8">
+//             <Card className="w-full max-w-lg mx-auto shadow-xl border border-destructive/50 bg-gradient-to-br from-background to-red-50 dark:from-secondary dark:to-red-900/20 animate-fadeIn overflow-hidden">
+//                 <CardHeader className="text-center items-center p-6 md:p-8 bg-destructive/10 dark:bg-destructive/20 border-b border-destructive/20 dark:border-red-800/60">
+//                     {/* ... Header content ... */}
+//                     <div className="p-4 bg-red-100 dark:bg-red-900/40 rounded-full mb-4 border border-destructive/30 dark:border-red-800/50 shadow-inner"> <AlertTriangle className="h-10 w-10 text-destructive stroke-[1.5]" /> </div>
+//                     <CardTitle className="text-2xl md:text-3xl font-bold tracking-tight text-destructive"> Verification Action Required </CardTitle>
+//                     <CardDescription className="text-base text-destructive/90 dark:text-red-300/90 pt-1 max-w-md mx-auto"> Unfortunately, we couldn't verify your identity. </CardDescription>
+//                 </CardHeader>
+//                 <CardContent className="p-6 md:p-8 text-center space-y-6">
+//                     <Alert variant="destructive" className="text-left">
+//                         <FileWarning className="h-4 w-4" />
+//                         <AlertTitle className="font-semibold">Reason for Rejection</AlertTitle>
+//                         <AlertDescription>
+//                             {/* Display reason from KycContext state */}
+//                             {rejectionReason || "No specific reason provided. Please review common issues like document clarity or validity and try again."}
+//                         </AlertDescription>
+//                     </Alert>
+//                     <p className="text-foreground/90 dark:text-foreground/80 px-2 text-base"> Please review the reason above. You can restart the verification process. </p>
+//                     <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+//                         <Button onClick={handleRetryVerification} size="lg" className="w-full sm:w-auto bg-destructive hover:bg-destructive/90 text-destructive-foreground flex-1"> <RotateCcw className="mr-2 h-4 w-4" /> Retry Verification </Button>
+//                         <Button onClick={handleGoToDashboard} variant="outline" size="lg" className="w-full sm:w-auto flex-1"> <LayoutDashboard className="mr-2 h-4 w-4" /> Go to Dashboard </Button>
+//                     </div>
+//                     <p className="text-xs text-muted-foreground pt-4"> Need help? <Link href="/support" className="underline hover:text-primary">Contact support</Link> <HelpCircle className="inline h-3 w-3 ml-0.5"/> </p>
+//                 </CardContent>
+//             </Card>
+//         </div>
+//     );
+// }
+
 // frontend/src/app/kyc/rejected/page.tsx
-'use client';
+"use client";
 
-import React, { useEffect, useCallback } from 'react'; // Added useCallback
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import React, { useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+
+// --- UI Components ---
+// Removed Button from shadcn/ui as we'll use custom styled <button>
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader2, AlertTriangle, RotateCcw, LayoutDashboard, FileWarning, HelpCircle } from 'lucide-react';
-import { useAuth } from '@/app/contexts/AuthContext';
-import { useKyc } from '../../contexts/KycContext'; // Correct path
-import Link from 'next/link';
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import {
+  Loader2,
+  AlertTriangle, // Good icon for general warning
+  RotateCcw,
+  LayoutDashboard,
+  FileWarning, // Specific for document issues
+  HelpCircle,
+  XCircle, // Explicit rejection icon
+} from "lucide-react";
+import { cn } from "@/lib/utils"; // Ensure cn is imported
 
+// --- App Specific Imports ---
+import { useAuth } from "@/app/contexts/AuthContext";
+import { useKyc } from "../../contexts/KycContext";
+
+// --- Component ---
 export default function KycRejectedPage() {
-    const router = useRouter();
-    const { user, loading: authLoading } = useAuth();
-    const {
-        resetKycProgress, // Use this for retry
-        updateCurrentUiStepId,
-        backendStatus,
-        rejectionReason, // Get reason directly from KycContext
-        isInitialized: kycInitialized,
-        isLoadingStatus: kycLoadingStatus
-    } = useKyc();
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
+  const {
+    resetKycProgress,
+    updateCurrentUiStepId,
+    backendStatus,
+    rejectionReason,
+    isInitialized: kycInitialized,
+    isLoadingStatus: kycLoadingStatus,
+  } = useKyc();
 
-    // Effect 1: Set UI step
-    useEffect(() => {
-        if (kycInitialized && window.location.pathname === '/kyc/rejected') {
-            updateCurrentUiStepId('rejected');
-        }
-    }, [kycInitialized, updateCurrentUiStepId]);
-
-    // Effect 2: Check login status (context handles redirection)
-    useEffect(() => {
-        if (!authLoading && !user && kycInitialized) { /* Let context redirect */ }
-    }, [user, authLoading, kycInitialized, router]);
-
-    // Effect 3: Rely on KycContext for redirection if status changes
-
-    // --- Action Handlers ---
-    const handleRetryVerification = useCallback(async () => { // Make async
-        console.log("KYC Rejected: Retrying verification via resetKycProgress...");
-        // Call resetKycProgress with true to clear state AND navigate to start page
-        await resetKycProgress(true);
-    }, [resetKycProgress]); // Dependency
-
-    const handleGoToDashboard = useCallback(() => {
-        router.push('/dashboard');
-    }, [router]);
-
-    // --- Render Logic ---
-
-    // Primary Loading
-    if (authLoading || !kycInitialized) {
-        return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-primary" /> </div> );
+  // Effect 1: Set UI step
+  useEffect(() => {
+    if (kycInitialized && window.location.pathname === "/kyc/rejected") {
+      updateCurrentUiStepId("rejected");
     }
+  }, [kycInitialized, updateCurrentUiStepId]);
 
-    // Context Status Loading
-    if (kycLoadingStatus) {
-        return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-primary" /> </div> );
+  // Effect 2: Check login (context handles redirection)
+  useEffect(() => {
+    if (!authLoading && !user && kycInitialized) {
+      /* Context redirects */
     }
+  }, [user, authLoading, kycInitialized]);
 
-    // Waiting for Redirect (if status is not 'rejected')
-    if (user && backendStatus !== 'rejected') {
-        return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-primary" /> </div> );
-    }
+  // Effect 3: Rely on context for redirection if status changes from 'rejected'
 
-    // Not Logged In
-    if (!user) {
-        return ( <div className="flex justify-center items-center min-h-[400px]"> <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /> </div> );
-    }
+  const handleRetryVerification = useCallback(async () => {
+    console.log("KYC Rejected: Retrying verification via resetKycProgress...");
+    await resetKycProgress(true); // Clear state and navigate
+  }, [resetKycProgress]);
 
-    // --- Main Rejected Content ---
+  const handleGoToDashboard = useCallback(() => {
+    router.push("/dashboard");
+  }, [router]);
+
+  // --- Render Logic ---
+  // Primary Loading
+  if (authLoading || !kycInitialized) {
     return (
-        <div className="flex justify-center items-center min-h-[calc(100vh-200px)] px-4 py-8">
-            <Card className="w-full max-w-lg mx-auto shadow-xl border border-destructive/50 bg-gradient-to-br from-background to-red-50 dark:from-secondary dark:to-red-900/20 animate-fadeIn overflow-hidden">
-                <CardHeader className="text-center items-center p-6 md:p-8 bg-destructive/10 dark:bg-destructive/20 border-b border-destructive/20 dark:border-red-800/60">
-                    {/* ... Header content ... */}
-                    <div className="p-4 bg-red-100 dark:bg-red-900/40 rounded-full mb-4 border border-destructive/30 dark:border-red-800/50 shadow-inner"> <AlertTriangle className="h-10 w-10 text-destructive stroke-[1.5]" /> </div>
-                    <CardTitle className="text-2xl md:text-3xl font-bold tracking-tight text-destructive"> Verification Action Required </CardTitle>
-                    <CardDescription className="text-base text-destructive/90 dark:text-red-300/90 pt-1 max-w-md mx-auto"> Unfortunately, we couldn't verify your identity. </CardDescription>
-                </CardHeader>
-                <CardContent className="p-6 md:p-8 text-center space-y-6">
-                    <Alert variant="destructive" className="text-left">
-                        <FileWarning className="h-4 w-4" />
-                        <AlertTitle className="font-semibold">Reason for Rejection</AlertTitle>
-                        <AlertDescription>
-                            {/* Display reason from KycContext state */}
-                            {rejectionReason || "No specific reason provided. Please review common issues like document clarity or validity and try again."}
-                        </AlertDescription>
-                    </Alert>
-                    <p className="text-foreground/90 dark:text-foreground/80 px-2 text-base"> Please review the reason above. You can restart the verification process. </p>
-                    <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
-                        <Button onClick={handleRetryVerification} size="lg" className="w-full sm:w-auto bg-destructive hover:bg-destructive/90 text-destructive-foreground flex-1"> <RotateCcw className="mr-2 h-4 w-4" /> Retry Verification </Button>
-                        <Button onClick={handleGoToDashboard} variant="outline" size="lg" className="w-full sm:w-auto flex-1"> <LayoutDashboard className="mr-2 h-4 w-4" /> Go to Dashboard </Button>
-                    </div>
-                    <p className="text-xs text-muted-foreground pt-4"> Need help? <Link href="/support" className="underline hover:text-primary">Contact support</Link> <HelpCircle className="inline h-3 w-3 ml-0.5"/> </p>
-                </CardContent>
-            </Card>
+      <div className="flex justify-center items-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+  // Context Status Loading
+   if (kycLoadingStatus && !user) {
+     return (
+        <div className="flex justify-center items-center min-h-[400px]">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
     );
+  }
+  // Waiting for Redirect (if status not 'rejected' or not logged in after initial check)
+  if (user && backendStatus !== "rejected") {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+   if (!user) {
+      return (
+          <div className="flex justify-center items-center min-h-[400px]">
+              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          </div>
+      );
+  }
+
+
+  // --- Main Rejected Content ---
+  return (
+    // Adopt layout and max-width from other pages
+    <div className="mx-auto max-w-2xl py-8 px-4">
+      {/* Adopt Card styling from other pages - standard border, shadow, animation */}
+      <Card className="w-full border-border/50 shadow animate-fadeIn overflow-hidden">
+        {/* Adopt Header structure and styling, use Accent background */}
+        <CardHeader className="items-center text-center p-4 md:p-8 bg-accent">
+          {/* Icon Container - styled with Destructive theme */}
+          <div className="mb-4 w-full inline-flex justify-center">
+            {/* Use destructive colors */}
+            <div className="h-16 w-16 flex items-center justify-center rounded-full bg-red-100 dark:bg-red-900/40 text-destructive dark:text-red-400 border border-red-200 dark:border-red-700 shadow-inner">
+              {/* <AlertTriangle className="h-8 w-8" /> */}
+              <XCircle className="h-8 w-8" /> {/* More explicit rejection */}
+            </div>
+          </div>
+          {/* Title - Adopt font styling */}
+          <CardTitle className="sm:text-2xl text-xl font-semibold tracking-tight text-mainheading dark:text-white">
+            Verification Action Required
+          </CardTitle>
+          {/* Description - Adopt styling */}
+          <CardDescription className="sm:text-base text-sm text-gray-500 dark:text-gray-300 mt-1 px-4">
+            Unfortunately, we couldn't verify your identity based on the
+            information provided.
+          </CardDescription>
+          {/* Badge - Adopt structure/styling, use Destructive theme */}
+          <Badge
+            variant="destructive" // Use destructive variant for styling
+            className="mt-3 text-sm border-0 rounded-full font-medium text-red-700 bg-red-100 dark:bg-red-600/20 dark:text-red-400 px-4 py-2 w-28"
+          >
+            Rejected
+          </Badge>
+        </CardHeader>
+
+        {/* Adopt Content structure */}
+        <CardContent className="p-4 md:p-8 space-y-6">
+          {/* Rejection Reason Alert - Crucial information */}
+          <Alert variant="destructive" className="text-left">
+            <FileWarning className="h-5 w-5" />
+            <AlertTitle className="font-semibold">
+              Reason for Rejection
+            </AlertTitle>
+            <AlertDescription>
+              {rejectionReason ||
+                "No specific reason provided. Common issues include unclear document images, expired documents, or mismatched information. Please review your submission carefully."}
+            </AlertDescription>
+          </Alert>
+
+          {/* Optional: Add separator for visual structure */}
+          <Separator className="my-6" />
+
+          {/* Introductory Text - Guide user */}
+          <div className="text-center text-gray-500 dark:text-gray-300 sm:text-lg text-base">
+            <p className="">Please review the feedback above.</p>
+            <p className="mt-1">
+              You can{" "}
+              <span className="font-semibold text-primary">
+                retry the verification
+              </span>{" "}
+              process with corrected information or documents.
+            </p>
+          </div>
+
+          {/* Optional: Second Alert for Guidance */}
+          {/*
+          <Alert>
+             <HelpCircle className="h-5 w-5" />
+             <AlertTitle className="font-medium text-neutral-900 dark:text-white">Need Assistance?</AlertTitle>
+             <AlertDescription className="text-gray-500 dark:text-gray-300">
+                 If you're unsure how to proceed or believe this is an error, please <Link href="/support" className="font-medium underline text-primary hover:text-primary/80">contact our support team</Link>.
+             </AlertDescription>
+          </Alert>
+          */}
+        </CardContent>
+
+        {/* Adopt Footer structure */}
+        <CardFooter className="flex flex-col gap-3 p-4 md:p-8 bg-bg-accent border-t">
+          <div className="flex flex-col sm:flex-row gap-3 w-full">
+            {/* Dashboard Button - Secondary Action (Dark Style) */}
+            <button
+              onClick={handleGoToDashboard}
+              // Use secondary button style from KycPendingPage
+              className="inline-flex items-center justify-center bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none"
+            >
+              <LayoutDashboard className="mr-2 h-4 w-4" /> Go to Dashboard
+            </button>
+
+            {/* Retry Button - Primary Action (Destructive Style) */}
+            <button
+              onClick={handleRetryVerification}
+              // Use destructive color scheme, similar structure to other primary buttons
+              className="inline-flex items-center justify-center bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none"
+            >
+              <RotateCcw className="mr-2 h-4 w-4" /> Retry Verification
+            </button>
+          </div>
+          {/* Support Link - Moved to footer */}
+          <div className="w-full text-center pt-4">
+            <p className="text-sm text-neutral-900 dark:text-white">
+              Need help?
+              <Link href="/support" className="underline hover:text-primary">
+                Contact support
+              </Link>
+              <HelpCircle className="inline h-4 w-4 ml-1" />
+            </p>
+          </div>
+        </CardFooter>
+      </Card>
+    </div>
+  );
 }

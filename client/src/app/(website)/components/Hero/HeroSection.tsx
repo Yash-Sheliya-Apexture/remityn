@@ -9092,23 +9092,456 @@
 // export default HeroSection;
 
 
+// // app/(website)/components/Hero/HeroSection.tsx
+// "use client";
+// import {
+//   IoIosInformationCircleOutline,
+// } from "react-icons/io";
+// import { CiBank } from "react-icons/ci";
+// import { useState, useEffect, useMemo } from "react";
+// import CountryDropdown from "../../../components/ui/CountryDropdown";
+// import HeroText from "./HeroText";
+// import Image from "next/image";
+// import inr from "../../../../../public/assets/icon/inr.svg";
+// import { useAppContext } from "../../../contexts/WebsiteAppContext";
+// import exchangeRateService from "../../../services/exchangeRate";
+// import currencyService, { Currency } from "../../../services/currency";
+// import { FaLock, FaInfoCircle, FaPiggyBank } from "react-icons/fa";
+// import {TrendingUp } from "lucide-react"; // Make sure TrendingUp is imported
+// import { Skeleton } from "@/components/ui/skeleton"; // Import Skeleton
+
+// // Interface for the raw rates object received from the API (e.g., { USD: 1, EUR: 0.9, ... })
+// interface RawExchangeRates {
+//   [key: string]: number | string; // Allow string initially for robust parsing
+// }
+
+// const HeroSection: React.FC = () => {
+//   const { selectedSendCurrency, setSelectedSendCurrency } = useAppContext();
+//   const [sendAmount, setSendAmount] = useState("");
+//   const [receiveAmount, setReceiveAmount] = useState("");
+//   const receiveCurrencyCode = "INR"; // Fixed receive currency
+
+//   // State for fetched data
+//   const [rawRates, setRawRates] = useState<RawExchangeRates | null>(null);
+//   const [currencies, setCurrencies] = useState<Currency[]>([]);
+
+//   // State for calculated rates & adjustments
+//   const [marketRate, setMarketRate] = useState<number | null>(null);
+//   const [ourRate, setOurRate] = useState<number | null>(null);
+//   const [rateAdjustment, setRateAdjustment] = useState<number>(0);
+
+//   // State for calculated fees
+//   const [ourFeeAmount, setOurFeeAmount] = useState<number>(0);
+//   const [bankTransferFeeAmount, setBankTransferFeeAmount] = useState<number>(0);
+//   const [wiseFeePercentage, setWiseFeePercentage] = useState<number>(0); // Store percentage for display/calc (assuming this represents Wise fee)
+
+//   // Operational State
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+
+//   // Arrival Date
+//   const [arrivalDate, setArrivalDate] = useState<string | null>(null);
+
+//   // --- Data Fetching Effect ---
+//   useEffect(() => {
+//     const fetchInitialData = async () => {
+//       console.log("HeroSection: Fetching initial data...");
+//       setIsLoading(true); // Start loading
+//       setError(null);
+//       setRawRates(null); setCurrencies([]);
+//       setMarketRate(null); setOurRate(null); setRateAdjustment(0);
+//       setOurFeeAmount(0); setBankTransferFeeAmount(0); setWiseFeePercentage(0); // Reset all states
+
+//       // Simulate loading delay for visibility (remove in production)
+//       // await new Promise(resolve => setTimeout(resolve, 1500));
+
+//       try {
+//         const [ratesResponse, currenciesResponse] = await Promise.all([
+//           exchangeRateService.getExchangeRatesForCurrencies(),
+//           currencyService.getAllCurrencies(true), // Fetch currency details WITH fees/adjustments
+//         ]);
+
+//         console.log("HeroSection: Rates Response Raw", ratesResponse);
+//         console.log("HeroSection: Currencies Response", currenciesResponse);
+
+//         // Validate and set raw rates
+//         if (ratesResponse && typeof ratesResponse.rates === "object" && ratesResponse.rates !== null && Object.keys(ratesResponse.rates).length > 0) {
+//           setRawRates(ratesResponse.rates);
+//           console.log("HeroSection: Raw Rates Set", ratesResponse.rates);
+//         } else {
+//           console.error("HeroSection: Invalid raw exchange rate data received:", ratesResponse);
+//           throw new Error("Could not load current exchange rates.");
+//         }
+
+//         // Validate and set currencies
+//         if (Array.isArray(currenciesResponse)) {
+//           setCurrencies(currenciesResponse);
+//           console.log("HeroSection: Currencies Set", currenciesResponse);
+//         } else {
+//           console.error("HeroSection: Invalid currency data received:", currenciesResponse);
+//           throw new Error("Could not load currency details.");
+//         }
+//       } catch (err: any) {
+//         console.error("HeroSection: Error fetching initial data:", err);
+//         setError(err.message || "Failed to load required conversion data.");
+//         setRawRates(null); setCurrencies([]); // Ensure reset on error
+//       } finally {
+//         console.log("HeroSection: Initial data fetch complete.");
+//         setIsLoading(false); // Stop loading
+//       }
+//     };
+//     fetchInitialData();
+//   }, []); // Run only once on mount
+
+//   // --- Rate and Fee Calculation Effect ---
+//   useEffect(() => {
+//     // Skip calculations if initial data is still loading
+//     if (isLoading || !rawRates || currencies.length === 0 || !selectedSendCurrency) {
+//         console.log("HeroSection: Skipping calculations (loading or missing data/currency).");
+//         // Keep calculated values null/zero while loading
+//         if (!isLoading && (!rawRates || currencies.length === 0)) { // If loading finished but data missing
+//           setMarketRate(null); setOurRate(null); setRateAdjustment(0);
+//           setWiseFeePercentage(0); setBankTransferFeeAmount(0);
+//         }
+//         return;
+//       }
+
+//     // Proceed with calculations only after isLoading is false and data is available
+//     console.log("HeroSection Rate & Fee Effect Triggered:", { isLoading, rawRatesExists: !!rawRates, currenciesLength: currencies.length, selectedSendCurrency });
+
+//     try {
+//       // --- 1. Calculate Market Rate ---
+//       const baseCurrency = "USD"; // Adjust if API base is different
+//       let rawRateSelectedValue = rawRates[selectedSendCurrency];
+//       let rawRateINRValue = rawRates[receiveCurrencyCode];
+
+//       // (Keep the rest of the calculation logic as before)
+//       // ... [Calculation logic remains the same] ...
+//       const rateBaseToSelected = typeof rawRateSelectedValue === 'string' ? parseFloat(rawRateSelectedValue) : (typeof rawRateSelectedValue === 'number' ? rawRateSelectedValue : NaN);
+//       const rateBaseToINR = typeof rawRateINRValue === 'string' ? parseFloat(rawRateINRValue) : (typeof rawRateINRValue === 'number' ? rawRateINRValue : NaN);
+
+//       if (typeof rateBaseToSelected !== "number" || isNaN(rateBaseToSelected) || typeof rateBaseToINR !== "number" || isNaN(rateBaseToINR)) {
+//         console.error(`HeroSection: Failed numeric check after conversion. Selected: ${rateBaseToSelected}, INR: ${rateBaseToINR}. Raw Rates Object:`, rawRates);
+//         let specificError = `Market rate unavailable for ${selectedSendCurrency} to ${receiveCurrencyCode}.`;
+//         if (isNaN(rateBaseToSelected)) specificError += ` Invalid rate value for ${selectedSendCurrency}.`;
+//         if (isNaN(rateBaseToINR)) specificError += ` Invalid rate value for ${receiveCurrencyCode}.`;
+//         throw new Error(specificError);
+//       }
+//       if (rateBaseToSelected === 0) {
+//         throw new Error(`Invalid market rate (zero) for ${selectedSendCurrency}.`);
+//       }
+
+//       const calculatedMarketRate = rateBaseToINR / rateBaseToSelected;
+//       setMarketRate(calculatedMarketRate);
+
+//       // --- 2. Find Currency Details & Set Fees/Adjustments ---
+//       const sendingCurrencyDetails = currencies.find(c => c.code === selectedSendCurrency);
+//       const adjustmentPercent = sendingCurrencyDetails?.rateAdjustmentPercentage ?? 0;
+//       const fetchedWiseFeePercent = sendingCurrencyDetails?.wiseFeePercentage ?? 0;
+//       const fetchedBankFee = sendingCurrencyDetails?.bankTransferFee ?? 0;
+
+//       setRateAdjustment(adjustmentPercent);
+//       setWiseFeePercentage(fetchedWiseFeePercent);
+//       setBankTransferFeeAmount(fetchedBankFee);
+
+//       // --- 3. Calculate "Our Rate" (Wise Rate) ---
+//       const calculatedOurRate = calculatedMarketRate * (1 + adjustmentPercent / 100);
+//       setOurRate(calculatedOurRate);
+
+//       // --- 4. Clear specific calculation errors if successful ---
+//       if (error && (error.startsWith("Market rate unavailable") || error.startsWith("Invalid market rate"))) {
+//         setError(null);
+//       }
+
+//     } catch (err: any) {
+//       console.error("HeroSection: Error calculating rates/fees:", err);
+//       setError(err.message || `Could not calculate rates/fees for ${selectedSendCurrency}.`);
+//       setMarketRate(null); setOurRate(null); setRateAdjustment(0);
+//       setWiseFeePercentage(0); setBankTransferFeeAmount(0); setOurFeeAmount(0);
+//     }
+//   }, [selectedSendCurrency, rawRates, currencies, isLoading, error, receiveCurrencyCode]); // Dependencies include isLoading now
+
+//   // --- Amount & Variable Fee Calculation Effect ---
+//   useEffect(() => {
+//     // This effect depends on calculated rates/fees, so it should implicitly wait for isLoading to be false
+//     let calculatedReceive = 0;
+//     let calculatedOurFee = 0;
+//     const numericSendAmount = parseFloat(sendAmount.replace(/,/g, "")) || 0;
+
+//     if (ourRate !== null && !isNaN(ourRate) && numericSendAmount > 0) {
+//       const amountToSendAfterFees = numericSendAmount - (numericSendAmount * (wiseFeePercentage / 100)) - bankTransferFeeAmount;
+//       if (amountToSendAfterFees > 0) {
+//           calculatedReceive = amountToSendAfterFees * ourRate;
+//       } else {
+//           calculatedReceive = 0;
+//       }
+//     }
+
+//     if (wiseFeePercentage > 0 && numericSendAmount > 0) {
+//       calculatedOurFee = numericSendAmount * (wiseFeePercentage / 100);
+//     }
+//     setOurFeeAmount(calculatedOurFee);
+
+//     setReceiveAmount(calculatedReceive > 0 ? calculatedReceive.toFixed(2) : (numericSendAmount > 0 ? "0.00" : ""));
+
+//   }, [sendAmount, ourRate, wiseFeePercentage, bankTransferFeeAmount]);
+
+//   // --- Input Handlers ---
+//   const handleSendAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+//     const sanitizedAmount = event.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+//     setSendAmount(sanitizedAmount);
+//   };
+
+//   const handleCurrencyChange = (newCurrency: string) => {
+//     console.log("HeroSection: Currency changed to:", newCurrency);
+//     setSelectedSendCurrency(newCurrency);
+//     // Reset dependent states immediately, but rely on useEffect for recalculation after data fetch if needed
+//     setSendAmount(""); setReceiveAmount("");
+//     setMarketRate(null); setOurRate(null); setRateAdjustment(0);
+//     setError(null);
+//     setWiseFeePercentage(0); setBankTransferFeeAmount(0); setOurFeeAmount(0);
+//     // No need to manually set isLoading here, the main useEffect handles it
+//   };
+
+//   // --- Display Logic ---
+//   const displayOurRate = useMemo(() => {
+//     // No need to check isLoading here, relying on the conditional rendering in JSX
+//     if (error && !ourRate) return "Rate unavailable";
+//     if (ourRate === null && selectedSendCurrency && !error) return "Calculating...";
+//     if (ourRate === null) return "Select currency";
+//     return `1 ${selectedSendCurrency} = ${ourRate.toFixed(4)} ${receiveCurrencyCode}`;
+//   }, [error, ourRate, selectedSendCurrency, receiveCurrencyCode]); // Removed isLoading dependency
+
+//   const displayMarketRate = useMemo(() => {
+//     // No need to check isLoading here
+//     if (marketRate === null || (error && !marketRate)) return null;
+//     return `1 ${selectedSendCurrency} ≈ ${marketRate.toFixed(4)} ${receiveCurrencyCode}`;
+//   }, [error, marketRate, selectedSendCurrency, receiveCurrencyCode]); // Removed isLoading dependency
+
+//   // Calculate Savings/Difference
+//   const savingsAmount = useMemo(() => {
+//     // This calculation depends on rates, will be null if rates are null (which happens during loading)
+//     const numericSendAmount = parseFloat(sendAmount.replace(/,/g, "")) || 0;
+//     if (numericSendAmount <= 0 || marketRate === null || ourRate === null || ourRate >= marketRate) {
+//       return null;
+//     }
+//     const amountToConvert = numericSendAmount;
+//     const receivedAtMarket = amountToConvert * marketRate;
+//     const receivedAtOurRate = amountToConvert * ourRate;
+//     const marketDifference = receivedAtMarket - receivedAtOurRate;
+//     if (marketDifference <= 0.01) return null;
+//     return marketDifference.toFixed(2);
+//   }, [sendAmount, marketRate, ourRate]);
+
+//   // --- Arrival Date Effect ---
+//   useEffect(() => {
+//     const today = new Date();
+//     const arrival = new Date(today);
+//     arrival.setDate(today.getDate() + 2); // Example: 2 days
+//     const options: Intl.DateTimeFormatOptions = { weekday: "long" };
+//     setArrivalDate(arrival.toLocaleDateString(undefined, options));
+//   }, []);
+
+//   // --- JSX Render ---
+//   return (
+//     <section className="Hero-Section bg-[#f2f4f7] dark:bg-background py-12 px-4">
+//       <div className="container mx-auto">
+//         <div className="flex flex-col lg:flex-row items-center gap-12">
+//           {/* Left Column */}
+//           <div className="lg:w-1/2 space-y-5">
+//              {/* Add Skeleton for HeroText if needed, or keep as is if it doesn't load data */}
+//             <HeroText />
+//           </div>
+
+//           {/* Right Column: Calculator Card */}
+//           <div className="lg:w-xl lg:ml-auto w-full max-w-lg">
+//             <div className="bg-white dark:bg-background rounded-3xl shadow-lg md:p-8 p-4 border border-gray-200 dark:border-secondarybox">
+
+//               {/* --- Loading State --- */}
+//               {isLoading && (
+//                 <div className="space-y-6 animate-pulse">
+//                   {/* Skeleton for Rate Display */}
+//                   <div className="flex flex-col items-end space-y-2 mb-4">
+//                     <Skeleton className="h-8 w-48 rounded-full" />
+//                     <Skeleton className="h-5 w-40 rounded-full" />
+//                   </div>
+//                   {/* Skeleton for Inputs */}
+//                   <div className="space-y-3">
+//                     <Skeleton className="h-4 w-32" />
+//                     <Skeleton className="h-16 w-full rounded-xl" />
+//                   </div>
+//                   <div className="space-y-3">
+//                     <Skeleton className="h-4 w-40" />
+//                     <Skeleton className="h-16 w-full rounded-xl" />
+//                   </div>
+//                   {/* Skeleton for Paying With */}
+//                   <div className="space-y-3">
+//                      <Skeleton className="h-4 w-24" />
+//                      <Skeleton className="h-16 w-full rounded-xl" />
+//                   </div>
+//                   {/* Skeleton for Fee Details */}
+//                   <div className="border border-gray-200 dark:border-secondarybox rounded-xl p-4 space-y-3">
+//                      <div className="flex justify-between items-center"> <Skeleton className="h-4 w-2/5" /> <Skeleton className="h-4 w-1/4" /> </div>
+//                      <div className="flex justify-between items-center"> <Skeleton className="h-4 w-2/5" /> <Skeleton className="h-4 w-1/4" /> </div>
+//                      <Skeleton className="h-px w-full bg-gray-200 dark:bg-secondarybox my-2" />
+//                      <div className="flex justify-between items-center"> <Skeleton className="h-5 w-1/3" /> <Skeleton className="h-5 w-1/4" /> </div>
+//                   </div>
+//                    {/* Skeleton for Arrival Info */}
+//                    <Skeleton className="h-4 w-3/4 mt-2" />
+//                   {/* Skeleton for Actions */}
+//                   <div className="mt-6 flex sm:flex-row flex-col items-center gap-3">
+//                     <Skeleton className="h-12 w-full rounded-full" />
+//                     <Skeleton className="h-12 w-full rounded-full" />
+//                   </div>
+//                 </div>
+//               )}
+
+//               {/* --- Loaded State --- */}
+//               {!isLoading && (
+//                 <>
+//                   {/* Rate Display Section */}
+//                   <div className="text-right mb-4 min-h-[60px] space-y-2 flex flex-col items-end">
+//                      {/* Error Display */}
+//                      {error && ( <div className="font-medium text-sm p-1.5 px-2.5 rounded-md bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 text-red-700 dark:text-red-300 inline-flex items-center gap-1.5"> <IoIosInformationCircleOutline size={16} /> Error: {error} </div> )}
+//                      {/* Our Rate Display */}
+//                      {!error && ourRate !== null && (
+//                         <div className="font-semibold p-2 px-4 rounded-full bg-primary text-neutral-900 inline-flex items-center gap-1.5 cursor-default text-sm"
+//                              title={`Rate includes our rates of ${rateAdjustment.toFixed(2)}%. This is the rate applied to your transfer.`}>
+//                             <FaLock size={14} /> Our Rate: {displayOurRate}
+//                         </div>
+//                      )}
+//                      {/* Calculating Rate */}
+//                      {!error && ourRate === null && selectedSendCurrency && ( <div className="text-sm text-gray-500 dark:text-gray-400">Calculating rate...</div> )}
+//                       {/* Market Rate Display */}
+//                      {!error && marketRate !== null && displayMarketRate && (
+//                          <div className="font-medium text-xs p-1.5 px-2.5 rounded-full bg-lightgray dark:bg-secondarybox text-gray-300 dark:text-gray-400 inline-flex items-center gap-1.5 cursor-help"
+//                               title="Current mid-market rate. For comparison only.">
+//                             <FaInfoCircle size={14} /> Market Rate: {displayMarketRate}
+//                          </div>
+//                      )}
+//                       {/* Default message if no currency selected */}
+//                       {!selectedSendCurrency && !error && ( <div className="text-sm text-gray-500 dark:text-gray-400">Select sending currency</div> )}
+//                   </div>
+
+//                   {/* --- Wise Savings Banner --- */}
+//                   {/* Conditionally rendered when there are calculated savings */}
+//                   {savingsAmount && !error && ourRate !== null && marketRate !== null && (
+//                     <div className="mb-4 bg-gradient-to-r from-green-50 to-primary/10 dark:from-green-900/30 dark:to-primary/20 rounded-xl p-3 border-l-4 border-primary shadow-sm">
+//                       <div className="flex items-center gap-2">
+//                         <div className="bg-primary rounded-full p-2 text-white dark:text-black flex-shrink-0">
+//                           <FaPiggyBank size={20} /> {/* Piggy bank icon */}
+//                         </div>
+//                         <div>
+//                           <p className="font-bold text-primary-dark dark:text-primary-light flex items-center gap-1">
+//                             <span>Save up to ₹{savingsAmount} with Wise</span> {/* Changed Wise to Wise */}
+//                             <TrendingUp size={16} className="text-green-600 dark:text-green-400" /> {/* Trend up icon */}
+//                           </p>
+//                           <p className="text-xs text-gray-700 dark:text-gray-300">
+//                             Better rates than traditional banks! {/* Supporting text */}
+//                           </p>
+//                         </div>
+//                       </div>
+//                     </div>
+//                   )}
+//                   {/* --- End Wise Savings Banner --- */}
+
+
+//                   {/* You Send Input */}
+//                   <div className="mb-3">
+//                     <label className="block font-medium text-main dark:text-gray-200 mb-1"> You send exactly </label>
+//                     <div className="w-full border border-gray-300 dark:border-secondarybox rounded-xl shadow-sm flex items-center justify-between focus-within:ring-2 focus-within:ring-primary focus-within:border-primary dark:focus-within:border-primary transition-all duration-150">
+//                       <input type="text" inputMode="decimal" placeholder="0" value={sendAmount} onChange={handleSendAmountChange} className="block w-full h-16 p-3 text-main dark:text-white text-xl font-semibold focus:outline-none bg-transparent rounded-l-xl placeholder-gray-400 dark:placeholder-gray-500" disabled={isLoading} aria-label="Amount to send" />
+//                       {/* CountryDropdown now only renders when not loading */}
+//                       <div className="flex-shrink-0 h-full"> <CountryDropdown selectedCurrency={selectedSendCurrency} onCurrencyChange={handleCurrencyChange} disabled={isLoading} /> </div>
+//                     </div>
+//                   </div>
+
+//                   {/* Recipient Gets Input */}
+//                   <div className="mb-3">
+//                     <label className="block font-medium text-main dark:text-gray-200 mb-1"> Recipient gets (approx.) </label>
+//                     <div className="w-full border border-gray-300 dark:border-secondarybox rounded-xl shadow-sm flex items-center justify-between bg-gray-50 dark:bg-secondarybox/30">
+//                       <input type="text" inputMode="decimal" placeholder="0.00" value={receiveAmount} readOnly className="block w-full h-16 p-3 text-main dark:text-gray-300 text-xl font-semibold focus:outline-none bg-transparent rounded-l-xl placeholder-gray-400 dark:placeholder-gray-500" aria-label="Amount recipient gets" />
+//                       <div className="flex items-center gap-2 w-auto px-3 flex-shrink-0"> <Image src={inr} alt="INR-Flag" width={24} height={24} className="rounded-full" /> <p className="text-main dark:text-gray-200 font-semibold"> INR </p> </div>
+//                     </div>
+//                   </div>
+
+//                   {/* Paying With */}
+//                   <div className="mb-4">
+//                      <label className="block font-medium text-main dark:text-gray-200 mb-1">Paying with</label>
+//                      <div className="p-3 h-16 border border-gray-300 dark:border-secondarybox rounded-xl flex items-center justify-between text-main dark:text-gray-200">
+//                        <div className="flex items-center gap-2"> <CiBank size={24} /> <span className="font-semibold">Bank transfer</span> </div>
+//                        {/* Optionally add back the change button if needed */}
+//                        {/* <button className="text-green dark:text-green-light font-medium bg-green/10 dark:bg-green/20 px-3 py-2 rounded-full text-sm inline-flex items-center gap-2 hover:bg-green/20 dark:hover:bg-green/30"> Change <IoIosArrowForward size={18} /> </button> */}
+//                      </div>
+//                   </div>
+
+//                   {/* Fee Details (Dynamically Calculated) */}
+//                   <div className="text-sm border border-gray-300 dark:border-secondarybox rounded-xl p-4 space-y-2.5">
+//                     <div className="flex justify-between">
+//                       <span className="text-main dark:text-gray-300"> Bank transfer fee </span>
+//                       <span className="text-gray-600 dark:text-gray-400">
+//                         {/* Show actual fee or '...' if rate not yet calculated */}
+//                         {ourRate !== null ? `${bankTransferFeeAmount.toFixed(2)} ${selectedSendCurrency}` : '...'}
+//                       </span>
+//                     </div>
+//                     <div className="flex justify-between">
+//                        <span className="text-main dark:text-gray-300"> Wise fee ({wiseFeePercentage > 0 ? `${wiseFeePercentage.toFixed(2)}%` : '...'}) </span>
+//                        <span className="text-gray-600 dark:text-gray-400">
+//                         {/* Show actual fee or '...' if rate not yet calculated */}
+//                         {ourRate !== null ? `${ourFeeAmount.toFixed(2)} ${selectedSendCurrency}` : '...'}
+//                       </span>
+//                     </div>
+//                     <hr className="my-2 border-gray-200 dark:border-secondarybox" />
+//                     <div className="flex justify-between text-main dark:text-gray-200 font-semibold">
+//                       <span>Total included fees</span>
+//                       <span>
+//                         {/* Show total fee or '...' if rate not yet calculated */}
+//                         {ourRate !== null ? `${(bankTransferFeeAmount + ourFeeAmount).toFixed(2)} ${selectedSendCurrency}` : '...'}
+//                       </span>
+//                     </div>
+//                   </div>
+
+//                   {/* Arrival Info */}
+//                   <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+//                      <p> Should arrive around <span className="text-main dark:text-gray-300 font-medium">{arrivalDate || '...'}</span> </p>
+//                   </div>
+
+//                   {/* Actions */}
+//                   <div className="mt-6 flex sm:flex-row flex-col items-center gap-3">
+//                      <button className="w-full inline-flex items-center justify-center px-6 py-3 border border-gray-300 dark:border-secondarybox hover:bg-gray-100 dark:hover:bg-secondarybox font-medium rounded-full text-green dark:text-primary bg-white dark:bg-background hover:text-green-dark dark:hover:text-primary-light transition-colors duration-150 ease-in-out h-12 text-base" disabled={isLoading || !ourRate}> Compare fees </button>
+//                      <button className="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent font-medium rounded-full text-black dark:text-black bg-primary hover:bg-primary-hover focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background transition-colors duration-150 ease-in-out h-12 text-base shadow-sm" disabled={isLoading || !ourRate || !sendAmount || parseFloat(sendAmount) <= 0}> Send money </button>
+//                   </div>
+//                 </>
+//               )}
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default HeroSection;
+
+
 // app/(website)/components/Hero/HeroSection.tsx
 "use client";
-import {
-  IoIosInformationCircleOutline,
-} from "react-icons/io";
-import { CiBank } from "react-icons/ci";
-import { useState, useEffect, useMemo } from "react";
-import CountryDropdown from "../../../components/ui/CountryDropdown";
-import HeroText from "./HeroText";
+import React, { useState, useEffect, useMemo } from "react";
+import Link from 'next/link';
 import Image from "next/image";
-import inr from "../../../../../public/assets/icon/inr.svg";
-import { useAppContext } from "../../../contexts/WebsiteAppContext";
-import exchangeRateService from "../../../services/exchangeRate";
-import currencyService, { Currency } from "../../../services/currency";
+import { IoIosInformationCircleOutline } from "react-icons/io";
+import { CiBank } from "react-icons/ci";
 import { FaLock, FaInfoCircle, FaPiggyBank } from "react-icons/fa";
-import { Loader2, TrendingUp } from "lucide-react"; // Make sure TrendingUp is imported
-import { Skeleton } from "@/components/ui/skeleton"; // Import Skeleton
+import { TrendingUp } from "lucide-react";
+
+import CountryDropdown from "../../../components/ui/CountryDropdown"; // Adjust path if needed
+import HeroText from "./HeroText"; // Adjust path if needed
+import { Skeleton } from "@/components/ui/skeleton"; // Adjust path if needed
+import { useAppContext } from "../../../contexts/WebsiteAppContext"; // Adjust path if needed
+import { useAuth } from "../../../contexts/AuthContext"; // Adjust path if needed
+import exchangeRateService from "../../../services/exchangeRate"; // Adjust path if needed
+import currencyService, { Currency } from "../../../services/currency"; // Adjust path if needed
+import inrFlag from "../../../../../public/assets/icon/inr.svg"; // Adjust path if needed, ensure 'inrFlag' is a good name
 
 // Interface for the raw rates object received from the API (e.g., { USD: 1, EUR: 0.9, ... })
 interface RawExchangeRates {
@@ -9116,7 +9549,11 @@ interface RawExchangeRates {
 }
 
 const HeroSection: React.FC = () => {
+  // --- Contexts ---
   const { selectedSendCurrency, setSelectedSendCurrency } = useAppContext();
+  const { user, loading: authLoading } = useAuth();
+
+  // --- State Declarations ---
   const [sendAmount, setSendAmount] = useState("");
   const [receiveAmount, setReceiveAmount] = useState("");
   const receiveCurrencyCode = "INR"; // Fixed receive currency
@@ -9133,10 +9570,10 @@ const HeroSection: React.FC = () => {
   // State for calculated fees
   const [ourFeeAmount, setOurFeeAmount] = useState<number>(0);
   const [bankTransferFeeAmount, setBankTransferFeeAmount] = useState<number>(0);
-  const [wiseFeePercentage, setWiseFeePercentage] = useState<number>(0); // Store percentage for display/calc (assuming this represents ScopeX fee)
+  const [wiseFeePercentage, setWiseFeePercentage] = useState<number>(0);
 
   // Operational State
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true); // Component data loading
   const [error, setError] = useState<string | null>(null);
 
   // Arrival Date
@@ -9146,14 +9583,13 @@ const HeroSection: React.FC = () => {
   useEffect(() => {
     const fetchInitialData = async () => {
       console.log("HeroSection: Fetching initial data...");
-      setIsLoading(true); // Start loading
+      setIsLoading(true);
       setError(null);
+      // Reset all relevant states at the beginning of the fetch
       setRawRates(null); setCurrencies([]);
       setMarketRate(null); setOurRate(null); setRateAdjustment(0);
-      setOurFeeAmount(0); setBankTransferFeeAmount(0); setWiseFeePercentage(0); // Reset all states
-
-      // Simulate loading delay for visibility (remove in production)
-      // await new Promise(resolve => setTimeout(resolve, 1500));
+      setOurFeeAmount(0); setBankTransferFeeAmount(0); setWiseFeePercentage(0);
+      setReceiveAmount(""); // Reset receive amount too
 
       try {
         const [ratesResponse, currenciesResponse] = await Promise.all([
@@ -9165,20 +9601,16 @@ const HeroSection: React.FC = () => {
         console.log("HeroSection: Currencies Response", currenciesResponse);
 
         // Validate and set raw rates
-        if (ratesResponse && typeof ratesResponse.rates === "object" && ratesResponse.rates !== null && Object.keys(ratesResponse.rates).length > 0) {
+        if (ratesResponse?.rates && typeof ratesResponse.rates === "object" && Object.keys(ratesResponse.rates).length > 0) {
           setRawRates(ratesResponse.rates);
-          console.log("HeroSection: Raw Rates Set", ratesResponse.rates);
         } else {
-          console.error("HeroSection: Invalid raw exchange rate data received:", ratesResponse);
           throw new Error("Could not load current exchange rates.");
         }
 
         // Validate and set currencies
         if (Array.isArray(currenciesResponse)) {
           setCurrencies(currenciesResponse);
-          console.log("HeroSection: Currencies Set", currenciesResponse);
         } else {
-          console.error("HeroSection: Invalid currency data received:", currenciesResponse);
           throw new Error("Could not load currency details.");
         }
       } catch (err: any) {
@@ -9195,60 +9627,55 @@ const HeroSection: React.FC = () => {
 
   // --- Rate and Fee Calculation Effect ---
   useEffect(() => {
-    // Skip calculations if initial data is still loading
+    // Skip calculations if initial data is loading, missing, or no currency selected
     if (isLoading || !rawRates || currencies.length === 0 || !selectedSendCurrency) {
-        console.log("HeroSection: Skipping calculations (loading or missing data/currency).");
-        // Keep calculated values null/zero while loading
-        if (!isLoading && (!rawRates || currencies.length === 0)) { // If loading finished but data missing
-          setMarketRate(null); setOurRate(null); setRateAdjustment(0);
-          setWiseFeePercentage(0); setBankTransferFeeAmount(0);
-        }
-        return;
+      console.log("HeroSection: Skipping calculations (loading or missing data/currency).");
+      // Ensure rates/fees are nullified if data becomes unavailable after load
+      if (!isLoading && (!rawRates || currencies.length === 0)) {
+        setMarketRate(null); setOurRate(null); setRateAdjustment(0);
+        setWiseFeePercentage(0); setBankTransferFeeAmount(0);
       }
+      return;
+    }
 
-    // Proceed with calculations only after isLoading is false and data is available
-    console.log("HeroSection Rate & Fee Effect Triggered:", { isLoading, rawRatesExists: !!rawRates, currenciesLength: currencies.length, selectedSendCurrency });
+    console.log("HeroSection Rate & Fee Effect Triggered:", { selectedSendCurrency });
 
     try {
-      // --- 1. Calculate Market Rate ---
-      const baseCurrency = "USD"; // Adjust if API base is different
+      const baseCurrency = "USD"; // Assuming API base currency
       let rawRateSelectedValue = rawRates[selectedSendCurrency];
       let rawRateINRValue = rawRates[receiveCurrencyCode];
 
-      // (Keep the rest of the calculation logic as before)
-      // ... [Calculation logic remains the same] ...
       const rateBaseToSelected = typeof rawRateSelectedValue === 'string' ? parseFloat(rawRateSelectedValue) : (typeof rawRateSelectedValue === 'number' ? rawRateSelectedValue : NaN);
       const rateBaseToINR = typeof rawRateINRValue === 'string' ? parseFloat(rawRateINRValue) : (typeof rawRateINRValue === 'number' ? rawRateINRValue : NaN);
 
-      if (typeof rateBaseToSelected !== "number" || isNaN(rateBaseToSelected) || typeof rateBaseToINR !== "number" || isNaN(rateBaseToINR)) {
-        console.error(`HeroSection: Failed numeric check after conversion. Selected: ${rateBaseToSelected}, INR: ${rateBaseToINR}. Raw Rates Object:`, rawRates);
-        let specificError = `Market rate unavailable for ${selectedSendCurrency} to ${receiveCurrencyCode}.`;
-        if (isNaN(rateBaseToSelected)) specificError += ` Invalid rate value for ${selectedSendCurrency}.`;
-        if (isNaN(rateBaseToINR)) specificError += ` Invalid rate value for ${receiveCurrencyCode}.`;
-        throw new Error(specificError);
+      // Validate parsed rates
+      if (isNaN(rateBaseToSelected) || isNaN(rateBaseToINR)) {
+        console.error(`HeroSection: Invalid numeric rate value. Selected: ${rateBaseToSelected} (${typeof rawRateSelectedValue}), INR: ${rateBaseToINR} (${typeof rawRateINRValue}). Raw Rates:`, rawRates);
+        throw new Error(`Market rate unavailable for ${selectedSendCurrency} to ${receiveCurrencyCode}.`);
       }
       if (rateBaseToSelected === 0) {
         throw new Error(`Invalid market rate (zero) for ${selectedSendCurrency}.`);
       }
 
+      // Calculate Market Rate
       const calculatedMarketRate = rateBaseToINR / rateBaseToSelected;
       setMarketRate(calculatedMarketRate);
 
-      // --- 2. Find Currency Details & Set Fees/Adjustments ---
+      // Find Currency Details & Set Fees/Adjustments
       const sendingCurrencyDetails = currencies.find(c => c.code === selectedSendCurrency);
       const adjustmentPercent = sendingCurrencyDetails?.rateAdjustmentPercentage ?? 0;
-      const fetchedScopeXFeePercent = sendingCurrencyDetails?.wiseFeePercentage ?? 0;
+      const fetchedWiseFeePercent = sendingCurrencyDetails?.wiseFeePercentage ?? 0;
       const fetchedBankFee = sendingCurrencyDetails?.bankTransferFee ?? 0;
 
       setRateAdjustment(adjustmentPercent);
-      setWiseFeePercentage(fetchedScopeXFeePercent);
+      setWiseFeePercentage(fetchedWiseFeePercent);
       setBankTransferFeeAmount(fetchedBankFee);
 
-      // --- 3. Calculate "Our Rate" (ScopeX Rate) ---
-      const calculatedOurRate = calculatedMarketRate * (1 - adjustmentPercent / 100);
+      // Calculate "Our Rate" (Wise Rate)
+      const calculatedOurRate = calculatedMarketRate * (1 + adjustmentPercent / 100);
       setOurRate(calculatedOurRate);
 
-      // --- 4. Clear specific calculation errors if successful ---
+      // Clear specific calculation errors if successful
       if (error && (error.startsWith("Market rate unavailable") || error.startsWith("Invalid market rate"))) {
         setError(null);
       }
@@ -9256,91 +9683,124 @@ const HeroSection: React.FC = () => {
     } catch (err: any) {
       console.error("HeroSection: Error calculating rates/fees:", err);
       setError(err.message || `Could not calculate rates/fees for ${selectedSendCurrency}.`);
+      // Reset calculated values on error
       setMarketRate(null); setOurRate(null); setRateAdjustment(0);
       setWiseFeePercentage(0); setBankTransferFeeAmount(0); setOurFeeAmount(0);
+      setReceiveAmount(""); // Also reset receive amount
     }
-  }, [selectedSendCurrency, rawRates, currencies, isLoading, error, receiveCurrencyCode]); // Dependencies include isLoading now
+  }, [selectedSendCurrency, rawRates, currencies, isLoading, error, receiveCurrencyCode]); // Dependencies
 
   // --- Amount & Variable Fee Calculation Effect ---
   useEffect(() => {
-    // This effect depends on calculated rates/fees, so it should implicitly wait for isLoading to be false
     let calculatedReceive = 0;
     let calculatedOurFee = 0;
     const numericSendAmount = parseFloat(sendAmount.replace(/,/g, "")) || 0;
 
+    // Calculate only if rates and send amount are valid
     if (ourRate !== null && !isNaN(ourRate) && numericSendAmount > 0) {
-      const amountToSendAfterFees = numericSendAmount - (numericSendAmount * (wiseFeePercentage / 100)) - bankTransferFeeAmount;
-      if (amountToSendAfterFees > 0) {
-          calculatedReceive = amountToSendAfterFees * ourRate;
-      } else {
-          calculatedReceive = 0;
-      }
-    }
-
-    if (wiseFeePercentage > 0 && numericSendAmount > 0) {
+      // Calculate Wise fee based on the send amount
       calculatedOurFee = numericSendAmount * (wiseFeePercentage / 100);
+      setOurFeeAmount(calculatedOurFee);
+
+      // Calculate the amount remaining after ALL fees (bank + Wise)
+      const totalFeesDeducted = bankTransferFeeAmount + calculatedOurFee;
+      const amountToSendAfterFees = numericSendAmount - totalFeesDeducted;
+
+      // Calculate received amount only if there's a positive amount left after fees
+      if (amountToSendAfterFees > 0) {
+        calculatedReceive = amountToSendAfterFees * ourRate;
+      } else {
+        calculatedReceive = 0; // Avoid negative receive amount
+      }
+    } else {
+      // If no rate or zero send amount, Wise fee is zero
+      setOurFeeAmount(0);
     }
-    setOurFeeAmount(calculatedOurFee);
 
-    setReceiveAmount(calculatedReceive > 0 ? calculatedReceive.toFixed(2) : (numericSendAmount > 0 ? "0.00" : ""));
+    // Update receive amount display: show calculated, "0.00", or empty
+    setReceiveAmount(
+      calculatedReceive > 0 ? calculatedReceive.toFixed(2)
+      : (numericSendAmount > 0 && ourRate !== null ? "0.00" : "") // Show "0.00" if user typed amount but fees exceed it
+    );
 
-  }, [sendAmount, ourRate, wiseFeePercentage, bankTransferFeeAmount]);
+  }, [sendAmount, ourRate, wiseFeePercentage, bankTransferFeeAmount]); // Dependencies
+
+  // --- Arrival Date Effect ---
+  useEffect(() => {
+    const calculateArrivalDate = () => {
+        const today = new Date();
+        const arrival = new Date(today);
+        // Simple logic: Add 2 business days (skip weekends)
+        let daysToAdd = 2;
+        let addedDays = 0;
+        while (addedDays < daysToAdd) {
+            arrival.setDate(arrival.getDate() + 1);
+            const dayOfWeek = arrival.getDay(); // 0 = Sun, 6 = Sat
+            if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                addedDays++;
+            }
+        }
+        const options: Intl.DateTimeFormatOptions = { weekday: "long" };
+        setArrivalDate(arrival.toLocaleDateString(undefined, options));
+    }
+    calculateArrivalDate();
+  }, []); // Run once on mount
 
   // --- Input Handlers ---
   const handleSendAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const sanitizedAmount = event.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+    // Allow only numbers and a single decimal point
+    const sanitizedAmount = event.target.value.replace(/[^0-9.]/g, "").replace(/(\..*)\./g, "$1");
     setSendAmount(sanitizedAmount);
   };
 
   const handleCurrencyChange = (newCurrency: string) => {
     console.log("HeroSection: Currency changed to:", newCurrency);
     setSelectedSendCurrency(newCurrency);
-    // Reset dependent states immediately, but rely on useEffect for recalculation after data fetch if needed
-    setSendAmount(""); setReceiveAmount("");
-    setMarketRate(null); setOurRate(null); setRateAdjustment(0);
-    setError(null);
-    setWiseFeePercentage(0); setBankTransferFeeAmount(0); setOurFeeAmount(0);
-    // No need to manually set isLoading here, the main useEffect handles it
+    // Reset dependent states immediately for responsiveness
+    setSendAmount("");
+    setReceiveAmount("");
+    setMarketRate(null);
+    setOurRate(null);
+    setRateAdjustment(0);
+    setError(null); // Clear previous errors
+    setWiseFeePercentage(0);
+    setBankTransferFeeAmount(0);
+    setOurFeeAmount(0);
+    // Recalculations will happen via the useEffect hooks
   };
 
   // --- Display Logic ---
   const displayOurRate = useMemo(() => {
-    // No need to check isLoading here, relying on the conditional rendering in JSX
-    if (error && !ourRate) return "Rate unavailable";
-    if (ourRate === null && selectedSendCurrency && !error) return "Calculating...";
-    if (ourRate === null) return "Select currency";
+    if (error && !ourRate) return "Rate unavailable"; // Prioritize error message
+    if (ourRate === null && selectedSendCurrency && !error && !isLoading) return "Calculating..."; // Show calc only when not loading/error
+    if (ourRate === null) return "Select currency"; // Default if no rate or still loading initial data
     return `1 ${selectedSendCurrency} = ${ourRate.toFixed(4)} ${receiveCurrencyCode}`;
-  }, [error, ourRate, selectedSendCurrency, receiveCurrencyCode]); // Removed isLoading dependency
+  }, [error, ourRate, selectedSendCurrency, receiveCurrencyCode, isLoading]);
 
   const displayMarketRate = useMemo(() => {
-    // No need to check isLoading here
-    if (marketRate === null || (error && !marketRate)) return null;
+    // Don't show market rate if there's an error or rate is null
+    if (error || marketRate === null) return null;
     return `1 ${selectedSendCurrency} ≈ ${marketRate.toFixed(4)} ${receiveCurrencyCode}`;
-  }, [error, marketRate, selectedSendCurrency, receiveCurrencyCode]); // Removed isLoading dependency
+  }, [error, marketRate, selectedSendCurrency, receiveCurrencyCode]);
 
-  // Calculate Savings/Difference
   const savingsAmount = useMemo(() => {
-    // This calculation depends on rates, will be null if rates are null (which happens during loading)
     const numericSendAmount = parseFloat(sendAmount.replace(/,/g, "")) || 0;
-    if (numericSendAmount <= 0 || marketRate === null || ourRate === null || ourRate >= marketRate) {
+    // Cannot calculate savings without both rates or a send amount
+    if (numericSendAmount <= 0 || marketRate === null || ourRate === null) {
       return null;
     }
-    const amountToConvert = numericSendAmount;
-    const receivedAtMarket = amountToConvert * marketRate;
-    const receivedAtOurRate = amountToConvert * ourRate;
-    const marketDifference = receivedAtMarket - receivedAtOurRate;
-    if (marketDifference <= 0.01) return null;
-    return marketDifference.toFixed(2);
+    // Don't show "savings" if our rate isn't better
+    if (ourRate >= marketRate) {
+        return null;
+    }
+    // Calculate difference based *only* on the rate spread for the entered amount
+    const marketConverted = numericSendAmount * marketRate;
+    const ourConverted = numericSendAmount * ourRate;
+    const rateDifferenceValue = marketConverted - ourConverted;
+    // Only show meaningful savings
+    if (rateDifferenceValue <= 0.01) return null;
+    return rateDifferenceValue.toFixed(2);
   }, [sendAmount, marketRate, ourRate]);
-
-  // --- Arrival Date Effect ---
-  useEffect(() => {
-    const today = new Date();
-    const arrival = new Date(today);
-    arrival.setDate(today.getDate() + 2); // Example: 2 days
-    const options: Intl.DateTimeFormatOptions = { weekday: "long" };
-    setArrivalDate(arrival.toLocaleDateString(undefined, options));
-  }, []);
 
   // --- JSX Render ---
   return (
@@ -9349,7 +9809,6 @@ const HeroSection: React.FC = () => {
         <div className="flex flex-col lg:flex-row items-center gap-12">
           {/* Left Column */}
           <div className="lg:w-1/2 space-y-5">
-             {/* Add Skeleton for HeroText if needed, or keep as is if it doesn't load data */}
             <HeroText />
           </div>
 
@@ -9357,111 +9816,118 @@ const HeroSection: React.FC = () => {
           <div className="lg:w-xl lg:ml-auto w-full max-w-lg">
             <div className="bg-white dark:bg-background rounded-3xl shadow-lg md:p-8 p-4 border border-gray-200 dark:border-secondarybox">
 
-              {/* --- Loading State --- */}
-              {isLoading && (
-                <div className="space-y-6 animate-pulse">
-                  {/* Skeleton for Rate Display */}
-                  <div className="flex flex-col items-end space-y-2 mb-4">
-                    <Skeleton className="h-8 w-48 rounded-full" />
-                    <Skeleton className="h-5 w-40 rounded-full" />
-                  </div>
-                  {/* Skeleton for Inputs */}
-                  <div className="space-y-3">
-                    <Skeleton className="h-4 w-32" />
-                    <Skeleton className="h-16 w-full rounded-xl" />
-                  </div>
-                  <div className="space-y-3">
-                    <Skeleton className="h-4 w-40" />
-                    <Skeleton className="h-16 w-full rounded-xl" />
-                  </div>
-                  {/* Skeleton for Paying With */}
-                  <div className="space-y-3">
-                     <Skeleton className="h-4 w-24" />
-                     <Skeleton className="h-16 w-full rounded-xl" />
-                  </div>
-                  {/* Skeleton for Fee Details */}
-                  <div className="border border-gray-200 dark:border-secondarybox rounded-xl p-4 space-y-3">
-                     <div className="flex justify-between items-center"> <Skeleton className="h-4 w-2/5" /> <Skeleton className="h-4 w-1/4" /> </div>
-                     <div className="flex justify-between items-center"> <Skeleton className="h-4 w-2/5" /> <Skeleton className="h-4 w-1/4" /> </div>
-                     <Skeleton className="h-px w-full bg-gray-200 dark:bg-secondarybox my-2" />
-                     <div className="flex justify-between items-center"> <Skeleton className="h-5 w-1/3" /> <Skeleton className="h-5 w-1/4" /> </div>
-                  </div>
-                   {/* Skeleton for Arrival Info */}
-                   <Skeleton className="h-4 w-3/4 mt-2" />
-                  {/* Skeleton for Actions */}
-                  <div className="mt-6 flex sm:flex-row flex-col items-center gap-3">
-                    <Skeleton className="h-12 w-full rounded-full" />
-                    <Skeleton className="h-12 w-full rounded-full" />
-                  </div>
+              {/* --- Loading State Skeleton --- */}
+              {(isLoading || authLoading) && (
+                 <div className="space-y-6 animate-pulse">
+                    {/* Rate Skeletons */}
+                    <div className="flex flex-col items-end space-y-2 mb-4 min-h-[60px]">
+                        <Skeleton className="h-8 w-48 rounded-full" />
+                        <Skeleton className="h-5 w-40 rounded-full" />
+                    </div>
+                    {/* Input Skeletons */}
+                    <div className="space-y-3"> <Skeleton className="h-4 w-32" /> <Skeleton className="h-16 w-full rounded-xl" /> </div>
+                    <div className="space-y-3"> <Skeleton className="h-4 w-40" /> <Skeleton className="h-16 w-full rounded-xl" /> </div>
+                    {/* Paying With Skeleton */}
+                    <div className="space-y-3"> <Skeleton className="h-4 w-24" /> <Skeleton className="h-16 w-full rounded-xl" /> </div>
+                    {/* Fee Details Skeleton */}
+                    <div className="border border-gray-200 dark:border-secondarybox rounded-xl p-4 space-y-3">
+                        <div className="flex justify-between items-center"> <Skeleton className="h-4 w-2/5" /> <Skeleton className="h-4 w-1/4" /> </div>
+                        <div className="flex justify-between items-center"> <Skeleton className="h-4 w-2/5" /> <Skeleton className="h-4 w-1/4" /> </div>
+                        <Skeleton className="h-px w-full bg-gray-200 dark:bg-secondarybox my-2" />
+                        <div className="flex justify-between items-center"> <Skeleton className="h-5 w-1/3" /> <Skeleton className="h-5 w-1/4" /> </div>
+                    </div>
+                    {/* Arrival Skeleton */}
+                    <Skeleton className="h-4 w-3/4 mt-2" />
+                    {/* Action Button Skeleton */}
+                    <div className="mt-6"> <Skeleton className="h-12 w-full rounded-full" /> </div>
                 </div>
               )}
 
-              {/* --- Loaded State --- */}
-              {!isLoading && (
+              {/* --- Loaded State Content --- */}
+              {!isLoading && !authLoading && (
                 <>
                   {/* Rate Display Section */}
-                  <div className="text-right mb-4 min-h-[60px] space-y-2 flex flex-col items-end">
-                     {/* Error Display */}
-                     {error && ( <div className="font-medium text-sm p-1.5 px-2.5 rounded-md bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 text-red-700 dark:text-red-300 inline-flex items-center gap-1.5"> <IoIosInformationCircleOutline size={16} /> Error: {error} </div> )}
-                     {/* Our Rate Display */}
-                     {!error && ourRate !== null && (
-                        <div className="font-semibold p-2 px-4 rounded-full bg-primary text-neutral-900 inline-flex items-center gap-1.5 cursor-default text-sm"
-                             title={`Rate includes our margin of ${rateAdjustment.toFixed(2)}%. This is the rate applied to your transfer.`}>
-                            <FaLock size={14} /> Our Rate: {displayOurRate}
-                        </div>
-                     )}
-                     {/* Calculating Rate */}
-                     {!error && ourRate === null && selectedSendCurrency && ( <div className="text-sm text-gray-500 dark:text-gray-400">Calculating rate...</div> )}
-                      {/* Market Rate Display */}
-                     {!error && marketRate !== null && displayMarketRate && (
-                         <div className="font-medium text-xs p-1.5 px-2.5 rounded-full bg-lightgray dark:bg-secondarybox text-gray-300 dark:text-gray-400 inline-flex items-center gap-1.5 cursor-help"
-                              title="Current mid-market rate. For comparison only.">
-                            <FaInfoCircle size={14} /> Market Rate: {displayMarketRate}
+                   <div className="text-right mb-4 min-h-[60px] space-y-2 flex flex-col items-end">
+                      {/* Error Display */}
+                      {error && ( <div className="font-medium text-sm p-1.5 px-2.5 rounded-md bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 text-red-700 dark:text-red-300 inline-flex items-center gap-1.5"> <IoIosInformationCircleOutline size={16} /> Error: {error} </div> )}
+                      {/* Our Rate Display */}
+                      {!error && ourRate !== null && (
+                         <div className="font-semibold p-2 px-4 rounded-full bg-primary text-neutral-900 inline-flex items-center gap-1.5 cursor-default text-sm" title={`Rate includes our adjustment of ${rateAdjustment.toFixed(2)}%. This is the rate applied to your transfer.`}>
+                             <FaLock size={14} /> Our Rate: {displayOurRate}
                          </div>
-                     )}
+                      )}
+                      {/* Calculating Rate Placeholder */}
+                      {!error && ourRate === null && selectedSendCurrency && ( <div className="text-sm text-gray-500 dark:text-gray-400 animate-pulse">Calculating rate...</div> )}
+                      {/* Market Rate Display */}
+                      {displayMarketRate && ( // Render only if displayMarketRate returns a string
+                          <div className="font-medium text-xs p-1.5 px-2.5 rounded-full bg-lightgray dark:bg-secondarybox text-gray-600 dark:text-gray-400 inline-flex items-center gap-1.5 cursor-help" title="Current mid-market rate. For comparison only.">
+                             <FaInfoCircle size={14} /> Market Rate: {displayMarketRate}
+                          </div>
+                      )}
                       {/* Default message if no currency selected */}
                       {!selectedSendCurrency && !error && ( <div className="text-sm text-gray-500 dark:text-gray-400">Select sending currency</div> )}
-                  </div>
+                   </div>
 
-                  {/* --- ScopeX Savings Banner --- */}
-                  {/* Conditionally rendered when there are calculated savings */}
-                  {savingsAmount && !error && ourRate !== null && marketRate !== null && (
-                    <div className="mb-4 bg-gradient-to-r from-green-50 to-primary/10 dark:from-green-900/30 dark:to-primary/20 rounded-xl p-3 border-l-4 border-primary shadow-sm">
-                      <div className="flex items-center gap-2">
-                        <div className="bg-primary rounded-full p-2 text-white dark:text-black flex-shrink-0">
-                          <FaPiggyBank size={20} /> {/* Piggy bank icon */}
-                        </div>
-                        <div>
-                          <p className="font-bold text-primary-dark dark:text-primary-light flex items-center gap-1">
-                            <span>Save up to ₹{savingsAmount} with ScopeX</span> {/* Changed Wise to ScopeX */}
-                            <TrendingUp size={16} className="text-green-600 dark:text-green-400" /> {/* Trend up icon */}
-                          </p>
-                          <p className="text-xs text-gray-700 dark:text-gray-300">
-                            Better rates than traditional banks! {/* Supporting text */}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {/* --- End ScopeX Savings Banner --- */}
-
+                  {/* --- Savings Banner --- */}
+                  {savingsAmount && ( // Render only if savingsAmount has a value
+                     <div className="mb-4 bg-gradient-to-r from-green-50 to-primary/10 dark:from-green-900/30 dark:to-primary/20 rounded-xl p-3 border-l-4 border-primary shadow-sm">
+                       <div className="flex items-center gap-2">
+                         <div className="bg-primary rounded-full p-2 text-white dark:text-black flex-shrink-0"> <FaPiggyBank size={20} /> </div>
+                         <div>
+                           <p className="font-bold text-primary-dark dark:text-primary-light flex items-center gap-1">
+                             <span>Save up to ₹{savingsAmount} with Wise</span>
+                             <TrendingUp size={16} className="text-green-600 dark:text-green-400" />
+                           </p>
+                           <p className="text-xs text-gray-700 dark:text-gray-300"> Better rates than traditional banks! </p>
+                         </div>
+                       </div>
+                     </div>
+                   )}
+                  {/* --- End Savings Banner --- */}
 
                   {/* You Send Input */}
                   <div className="mb-3">
-                    <label className="block font-medium text-main dark:text-gray-200 mb-1"> You send exactly </label>
-                    <div className="w-full border border-gray-300 dark:border-secondarybox rounded-xl shadow-sm flex items-center justify-between focus-within:ring-2 focus-within:ring-primary focus-within:border-primary dark:focus-within:border-primary transition-all duration-150">
-                      <input type="text" inputMode="decimal" placeholder="0" value={sendAmount} onChange={handleSendAmountChange} className="block w-full h-16 p-3 text-main dark:text-white text-xl font-semibold focus:outline-none bg-transparent rounded-l-xl placeholder-gray-400 dark:placeholder-gray-500" disabled={isLoading} aria-label="Amount to send" />
-                      {/* CountryDropdown now only renders when not loading */}
-                      <div className="flex-shrink-0 h-full"> <CountryDropdown selectedCurrency={selectedSendCurrency} onCurrencyChange={handleCurrencyChange} disabled={isLoading} /> </div>
-                    </div>
-                  </div>
+                     <label htmlFor="sendAmountInput" className="block font-medium text-main dark:text-gray-200 mb-1"> You send exactly </label>
+                     <div className="w-full border border-gray-300 dark:border-secondarybox rounded-xl shadow-sm flex items-center justify-between focus-within:ring-2 focus-within:ring-primary focus-within:border-primary dark:focus-within:border-primary transition-all duration-150">
+                       <input
+                         id="sendAmountInput"
+                         type="text"
+                         inputMode="decimal"
+                         placeholder="0"
+                         value={sendAmount}
+                         onChange={handleSendAmountChange}
+                         className="block w-full h-16 p-3 text-main dark:text-white text-xl font-semibold focus:outline-none bg-transparent rounded-l-xl placeholder-gray-400 dark:placeholder-gray-500"
+                         disabled={isLoading} // Disable input while initial data is loading
+                         aria-label="Amount to send"
+                       />
+                       <div className="flex-shrink-0 h-full">
+                         <CountryDropdown
+                            selectedCurrency={selectedSendCurrency}
+                            onCurrencyChange={handleCurrencyChange}
+                            disabled={isLoading} // Disable dropdown while initial data is loading
+                          />
+                       </div>
+                     </div>
+                   </div>
 
                   {/* Recipient Gets Input */}
-                  <div className="mb-3">
-                    <label className="block font-medium text-main dark:text-gray-200 mb-1"> Recipient gets (approx.) </label>
+                   <div className="mb-3">
+                    <label htmlFor="receiveAmountInput" className="block font-medium text-main dark:text-gray-200 mb-1"> Recipient gets (approx.) </label>
                     <div className="w-full border border-gray-300 dark:border-secondarybox rounded-xl shadow-sm flex items-center justify-between bg-gray-50 dark:bg-secondarybox/30">
-                      <input type="text" inputMode="decimal" placeholder="0.00" value={receiveAmount} readOnly className="block w-full h-16 p-3 text-main dark:text-gray-300 text-xl font-semibold focus:outline-none bg-transparent rounded-l-xl placeholder-gray-400 dark:placeholder-gray-500" aria-label="Amount recipient gets" />
-                      <div className="flex items-center gap-2 w-auto px-3 flex-shrink-0"> <Image src={inr} alt="INR-Flag" width={24} height={24} className="rounded-full" /> <p className="text-main dark:text-gray-200 font-semibold"> INR </p> </div>
+                      <input
+                        id="receiveAmountInput"
+                        type="text"
+                        inputMode="decimal"
+                        placeholder="0.00"
+                        value={receiveAmount}
+                        readOnly
+                        className="block w-full h-16 p-3 text-main dark:text-gray-300 text-xl font-semibold focus:outline-none bg-transparent rounded-l-xl placeholder-gray-400 dark:placeholder-gray-500 cursor-default"
+                        aria-label="Amount recipient gets"
+                      />
+                      <div className="flex items-center gap-2 w-auto px-3 flex-shrink-0">
+                        <Image src={inrFlag} alt="INR-Flag" width={24} height={24} className="rounded-full" />
+                        <p className="text-main dark:text-gray-200 font-semibold"> INR </p>
+                      </div>
                     </div>
                   </div>
 
@@ -9470,46 +9936,87 @@ const HeroSection: React.FC = () => {
                      <label className="block font-medium text-main dark:text-gray-200 mb-1">Paying with</label>
                      <div className="p-3 h-16 border border-gray-300 dark:border-secondarybox rounded-xl flex items-center justify-between text-main dark:text-gray-200">
                        <div className="flex items-center gap-2"> <CiBank size={24} /> <span className="font-semibold">Bank transfer</span> </div>
-                       {/* Optionally add back the change button if needed */}
-                       {/* <button className="text-green dark:text-green-light font-medium bg-green/10 dark:bg-green/20 px-3 py-2 rounded-full text-sm inline-flex items-center gap-2 hover:bg-green/20 dark:hover:bg-green/30"> Change <IoIosArrowForward size={18} /> </button> */}
+                       {/* Optional: Add a tooltip or info icon explaining this is the assumed method */}
                      </div>
                   </div>
 
-                  {/* Fee Details (Dynamically Calculated) */}
+                  {/* Fee Details */}
                   <div className="text-sm border border-gray-300 dark:border-secondarybox rounded-xl p-4 space-y-2.5">
+                    {/* Bank Transfer Fee */}
                     <div className="flex justify-between">
                       <span className="text-main dark:text-gray-300"> Bank transfer fee </span>
                       <span className="text-gray-600 dark:text-gray-400">
-                        {/* Show actual fee or '...' if rate not yet calculated */}
+                        {/* Show '...' if rate/fees not yet calculated */}
                         {ourRate !== null ? `${bankTransferFeeAmount.toFixed(2)} ${selectedSendCurrency}` : '...'}
                       </span>
                     </div>
+                    {/* Wise Fee */}
                     <div className="flex justify-between">
-                       <span className="text-main dark:text-gray-300"> ScopeX fee ({wiseFeePercentage > 0 ? `${wiseFeePercentage.toFixed(2)}%` : '...'}) </span>
+                       <span className="text-main dark:text-gray-300"> Wise fee ({wiseFeePercentage > 0 ? `${wiseFeePercentage.toFixed(2)}%` : '...'}) </span>
                        <span className="text-gray-600 dark:text-gray-400">
-                        {/* Show actual fee or '...' if rate not yet calculated */}
-                        {ourRate !== null ? `${ourFeeAmount.toFixed(2)} ${selectedSendCurrency}` : '...'}
+                        {/* Show calculated fee or '...' */}
+                        {(ourRate !== null && ourFeeAmount > 0) ? `${ourFeeAmount.toFixed(2)} ${selectedSendCurrency}` : (ourRate !== null ? '0.00 '+ selectedSendCurrency : '...')}
                       </span>
                     </div>
                     <hr className="my-2 border-gray-200 dark:border-secondarybox" />
+                    {/* Total Fees */}
                     <div className="flex justify-between text-main dark:text-gray-200 font-semibold">
                       <span>Total included fees</span>
                       <span>
-                        {/* Show total fee or '...' if rate not yet calculated */}
+                        {/* Show total or '...' */}
                         {ourRate !== null ? `${(bankTransferFeeAmount + ourFeeAmount).toFixed(2)} ${selectedSendCurrency}` : '...'}
                       </span>
                     </div>
                   </div>
 
                   {/* Arrival Info */}
-                  <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                     <p> Should arrive around{" "} <span className="text-main dark:text-gray-300 font-medium">{arrivalDate || '...'}</span> </p>
-                  </div>
+                   <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                      <p> Should arrive around <span className="text-main dark:text-gray-300 font-medium">{arrivalDate || '...'}</span> </p>
+                   </div>
 
-                  {/* Actions */}
-                  <div className="mt-6 flex sm:flex-row flex-col items-center gap-3">
-                     <button className="w-full inline-flex items-center justify-center px-6 py-3 border border-gray-300 dark:border-secondarybox hover:bg-gray-100 dark:hover:bg-secondarybox font-medium rounded-full text-green dark:text-primary bg-white dark:bg-background hover:text-green-dark dark:hover:text-primary-light transition-colors duration-150 ease-in-out h-12 text-base" disabled={isLoading || !ourRate}> Compare fees </button>
-                     <button className="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent font-medium rounded-full text-black dark:text-black bg-primary hover:bg-primary-hover focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background transition-colors duration-150 ease-in-out h-12 text-base shadow-sm" disabled={isLoading || !ourRate || !sendAmount || parseFloat(sendAmount) <= 0}> Send money </button>
+                  {/* --- Conditional Action Button --- */}
+                  <div className="mt-6">
+                    {user ? (
+                      // --- Logged In: Send Money Button ---
+                      <Link href="/send-money" passHref> {/* Adjust href if needed */}
+                        <button
+                          type="button"
+                          className="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent font-medium rounded-full text-black dark:text-black bg-primary hover:bg-primary-hover focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background transition-colors duration-150 ease-in-out h-12 text-base shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                          disabled={
+                            isLoading ||
+                            authLoading ||
+                            !ourRate ||
+                            !!error || // <--- CORRECTED: Use double negation
+                            !sendAmount ||
+                            parseFloat(sendAmount.replace(/,/g, '')) <= 0 ||
+                            (parseFloat(sendAmount.replace(/,/g, '')) > 0 && receiveAmount === "0.00")
+                          }
+                          aria-disabled={ // <--- APPLY SAME CORRECTION HERE ---
+                            isLoading ||
+                            authLoading ||
+                            !ourRate ||
+                            !!error || // <--- CORRECTED: Use double negation
+                            !sendAmount ||
+                            parseFloat(sendAmount.replace(/,/g, '')) <= 0 ||
+                            (parseFloat(sendAmount.replace(/,/g, '')) > 0 && receiveAmount === "0.00")
+                          }
+                        >
+                          Send money
+                        </button>
+                      </Link>
+                    ) : (
+                      // --- Logged Out: Create Account Button ---
+                      <Link href="/auth/register" passHref>
+                        <button
+                          type="button"
+                          className="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent cursor-pointer hover:bg-primaryhover font-medium rounded-full text-black dark:text-black bg-primary hover:bg-primary-hover transition-colors duration-150 ease-in-out h-12 text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                          disabled={isLoading || authLoading}
+                          aria-disabled={isLoading || authLoading}
+                        >
+                          Create A Free Account
+                        </button>
+                      </Link>
+                    )}
                   </div>
                 </>
               )}

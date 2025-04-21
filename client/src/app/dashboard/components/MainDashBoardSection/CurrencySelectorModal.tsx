@@ -1647,7 +1647,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
     <AnimatePresence mode="wait">
       {isOpen && (
         <motion.div
-          className="fixed inset-0 bg-black/60 dark:bg-white/30 z-[100] flex sm:items-center items-end justify-center" // Use inset-0, slightly darker bg, added backdrop-blur
+          className="fixed inset-0 bg-black/50 dark:bg-white/30 z-[100] flex sm:items-center items-end justify-center" // Use inset-0, slightly darker bg, added backdrop-blur
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
