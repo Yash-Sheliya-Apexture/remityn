@@ -2171,7 +2171,7 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
     <div className="relative" ref={dropdownRef}>
       <button
         type="button"
-        className={`flex items-center justify-between gap-2 w-28 px-3 h-full cursor-pointer ${ (disabled || isLoading) ? 'opacity-50 cursor-not-allowed' : ''}`} // Style disabled state
+        className={`flex items-center justify-between gap-2 px-3 h-full cursor-pointer ${ (disabled || isLoading) ? 'opacity-50 cursor-not-allowed' : ''}`} // Style disabled state
         onClick={toggleDropdown}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
@@ -2210,7 +2210,7 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
               <input
                 type="text"
                 placeholder="Type a currency / country"
-                className="border text-mainheading dark:text-white text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-primary block w-full pl-10 px-4 py-3 bg-white dark:bg-background" // Ensure bg color for input
+                className="border text-mainheading dark:text-white text-sm rounded-lg focus:outline-none block w-full pl-10 px-4 py-3 bg-white dark:bg-background" // Ensure bg color for input
                 value={searchQuery}
                 onChange={handleSearchChange}
                 aria-label="Search Currencies"
@@ -2246,7 +2246,7 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
                       <li
                         key={currency.code}
                         onClick={() => handleCurrencyChange(currency.code)}
-                        className={`flex items-center justify-between p-3 rounded-md dark:hover:bg-secondary hover:bg-lightgray cursor-pointer focus:outline-none focus:bg-gray-100 ${selectedCurrency === currency.code ? 'bg-primary/10 dark:bg-primary/20' : ''}`} // Added dark mode selection style
+                        className={`flex items-center justify-between p-3 rounded-md dark:hover:bg-secondary hover:bg-lightgray cursor-pointer focus:outline-none focus:bg-gray-100 ${selectedCurrency === currency.code ? 'bg-lightgray dark:hover:bg-secondary' : ''}`} // Added dark mode selection style
                         role="option"
                         aria-selected={selectedCurrency === currency.code}
                         tabIndex={0}

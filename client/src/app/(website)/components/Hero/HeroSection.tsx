@@ -9783,24 +9783,34 @@ const HeroSection: React.FC = () => {
     return `1 ${selectedSendCurrency} ≈ ${marketRate.toFixed(4)} ${receiveCurrencyCode}`;
   }, [error, marketRate, selectedSendCurrency, receiveCurrencyCode]);
 
-  const savingsAmount = useMemo(() => {
+ const savingsAmount = useMemo(() => {
     const numericSendAmount = parseFloat(sendAmount.replace(/,/g, "")) || 0;
+
     // Cannot calculate savings without both rates or a send amount
     if (numericSendAmount <= 0 || marketRate === null || ourRate === null) {
       return null;
     }
-    // Don't show "savings" if our rate isn't better
-    if (ourRate >= marketRate) {
+
+    // Only calculate savings if Our Rate is strictly better than Market Rate
+    // (A higher rate means recipient gets more INR per unit of send currency)
+    if (ourRate <= marketRate) {
+        // If our rate is the same or worse, there's no "savings" in this context
         return null;
     }
-    // Calculate difference based *only* on the rate spread for the entered amount
-    const marketConverted = numericSendAmount * marketRate;
+
+    // Calculate the difference: (Amount * OurRate) - (Amount * MarketRate)
+    // This represents how much *more* INR the recipient gets with our rate.
     const ourConverted = numericSendAmount * ourRate;
-    const rateDifferenceValue = marketConverted - ourConverted;
-    // Only show meaningful savings
-    if (rateDifferenceValue <= 0.01) return null;
-    return rateDifferenceValue.toFixed(2);
-  }, [sendAmount, marketRate, ourRate]);
+    const marketConverted = numericSendAmount * marketRate;
+    const rateDifferenceValue = ourConverted - marketConverted;
+
+    // Only show meaningful savings (e.g., more than 1 paisa)
+    if (rateDifferenceValue <= 0.01) {
+       return null;
+    }
+
+    return rateDifferenceValue.toFixed(2); // Format to 2 decimal places
+  }, [sendAmount, marketRate, ourRate]); // Dependencies are correct
 
   // --- JSX Render ---
   return (
@@ -9888,7 +9898,7 @@ const HeroSection: React.FC = () => {
                   {/* You Send Input */}
                   <div className="mb-3">
                      <label htmlFor="sendAmountInput" className="block font-medium text-main dark:text-gray-200 mb-1"> You send exactly </label>
-                     <div className="w-full border border-gray-300 dark:border-secondarybox rounded-xl shadow-sm flex items-center justify-between focus-within:ring-2 focus-within:ring-primary focus-within:border-primary dark:focus-within:border-primary transition-all duration-150">
+                     <div className="w-full border border-gray-300 dark:border-secondarybox rounded-xl shadow-sm flex items-center justify-between transition-all duration-150">
                        <input
                          id="sendAmountInput"
                          type="text"
