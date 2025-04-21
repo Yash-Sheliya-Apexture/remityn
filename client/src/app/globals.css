@@ -415,5 +415,20 @@ input:-webkit-autofill:active {
 }
 
 
-/* Faq Answer css */
+/* Animation animate-spin */
 
+
+@theme {
+  --animate-wiggle: wiggle 2s linear infinite;
+
+  @keyframes wiggle {
+    0%,
+    {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(180deg);
+  }
+}
+}
