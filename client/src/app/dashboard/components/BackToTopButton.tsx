@@ -41,7 +41,7 @@ const BackToTopButton: React.FC = () => {
           animate={{ y: 0, opacity: 1 }}   // Animate to final position (y=0) and fully visible
           exit={{ y: 100, opacity: 0 }}     // Animate back down 100px and fade out
           transition={{ duration: 0.3 }}    // Animation speed
-          className="fixed cursor-pointer bottom-5 right-5 p-1.5 px-5 rounded-full bg-lime-400 text-neutral-900 shadow-md hover:bg-lime-500 focus:outline-none z-50 cinder animasu"
+          className="fixed cursor-pointer bottom-5 right-5 p-1.5 px-5 rounded-full bg-lime-400 text-neutral-900 shadow-md hover:bg-lime-500 focus:outline-none z-50 cinder animasu sm:block hidden"
           onClick={scrollToTop}
         >
           Back to top

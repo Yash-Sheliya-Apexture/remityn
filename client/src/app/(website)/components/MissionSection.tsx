@@ -146,29 +146,53 @@ const MobileDownloadSection: React.FC = () => {
         <aside className="flex flex-1 items-center justify-center">
           <div className="relative flex aspect-square w-full flex-shrink-0 justify-center overflow-hidden rounded-bl-lg rounded-br-3xl rounded-tl-3xl rounded-tr-lg bg-gray dark:bg-white/5  dark:border pt-12 md:h-[572px] md:w-[500px] md:rounded-bl-[30px] md:rounded-br-[120px] md:rounded-tl-[120px] md:rounded-tr-[30px]">
             <Image
-              src="/assets/images/Send-Monyes.svg"
+              src="/assets/images/send-money-light.svg"
               width={500}
               height={500}
               alt="Picture of the author"
-              className="z-10 flex-shrink-0 md:h-[550px] md:w-[500px]"
+              className="z-10 flex-shrink-0 md:h-[550px] md:w-[500px] block dark:hidden "
               style={{ color: "transparent" }}
             />
             <Image
+              src="/assets/images/send-money-dark.svg"
+              width={500}
+              height={500}
+              alt="Picture of the author"
+              className="z-10 flex-shrink-0 md:h-[550px] md:w-[500px] hidden dark:block"
+              style={{ color: "transparent" }}
+            />
+            {/* <Image
               src="/assets/images/curve-1.svg"
               width={500}
               height={500}
               alt="Picture of the author"
               className="absolute bottom-0 left-0 right-0 z-10 w-full"
               style={{ color: "transparent" }}
-            />
-            <Image
+            /> */}
+            <div className="absolute bottom-0 left-0 right-0 z-10 w-full">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="fill-neutral-500 dark:fill-neutral-800">
+                <path
+                  fillOpacity="1"
+                  d="M0,256L48,261.3C96,267,192,277,288,245.3C384,213,480,139,576,144C672,149,768,235,864,256C960,277,1056,235,1152,192C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+                ></path>
+              </svg>
+            </div>
+            <div className="absolute bottom-0 left-0 right-0 w-full ">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="fill-neutral-300 dark:fill-neutral-400">
+                <path
+                  fillOpacity="1"
+                  d="M0,64L48,90.7C96,117,192,171,288,181.3C384,192,480,160,576,128C672,96,768,64,864,69.3C960,75,1056,117,1152,154.7C1248,192,1344,224,1392,240L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+                ></path>
+              </svg>
+            </div>
+            {/* <Image
               src="/assets/images/curve-2.svg"
               width={500}
               height={500}
               alt="Picture of the author"
               className="absolute bottom-0 left-0 right-0 w-full "
               style={{ color: "transparent" }}
-            />
+            /> */}
           </div>
         </aside>
       </section>
