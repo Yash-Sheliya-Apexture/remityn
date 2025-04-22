@@ -1668,7 +1668,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
         aria-labelledby={`radix-${item.id}-trigger`}
         data-orientation="vertical"
         // Added px-5 pb-5 for padding *only* on the content, not the header
-        className="overflow-hidden text-sm md:text-base ps-6 pb-4 lg:text-lg leading-relaxed text-gray-700 dark:text-gray-300 transition-all duration-300 ease-in-out"
+        className="overflow-hidden text-sm md:text-base px-4 pb-4 lg:text-lg leading-relaxed text-gray-700 dark:text-gray-300 transition-all duration-300 ease-in-out"
         style={{ height: contentHeight }}
         hidden={!isOpen}
       >
