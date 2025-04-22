@@ -1088,7 +1088,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
         </div>
 
         {/* Bottom Auth Buttons (Dynamic) */}
-        <div className="p-4 mt-auto border-t">
+        <div className="p-4 border-t">
           {/* Optional: Theme Toggle inside Mobile Menu */}
           <div className="mb-4 flex justify-center">
             <ThemeToggle location="admin" />
