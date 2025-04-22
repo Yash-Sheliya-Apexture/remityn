@@ -1875,7 +1875,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
   comment,
 }) => {
   return (
-    <div className="bg-gray/10 dark:bg-white/5 rounded-2xl lg:p-6 p-4 flex flex-col items-start relative mb-4 flex-shrink-0">
+    <div className="bg-lightgray dark:bg-white/5 rounded-2xl lg:p-6 p-4 flex flex-col items-start relative mb-4 flex-shrink-0">
       <div className="flex md:flex-row items-center w-full justify-center md:justify-start">
         <div className="flex flex-col md:flex-row items-center">
           <img

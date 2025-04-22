@@ -3198,7 +3198,7 @@ const Header: React.FC = () => {
                       </Link>
                       <Link
                         href="/auth/login"
-                        className="bg-primary ml-1 px-4 py-1.5 text-nowrap font-medium rounded-full hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading cursor-pointer"
+                        className="bg-primary ml-1 px-5 py-1.5 text-nowrap font-medium rounded-full hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading cursor-pointer"
                       >
                         Log in
                       </Link>
