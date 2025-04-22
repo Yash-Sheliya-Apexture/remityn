@@ -1293,7 +1293,7 @@ export default function RecipientsPage() {
   if (isLoading) { // *** Use combined loading state ***
     return (
       <section className="py-10">
-        <div className="container mx-auto">
+        <div className="">
           {/* Header Skeleton */}
           <div className="flex justify-between items-center mb-6">
             <Skeleton className="h-8 w-36 rounded-md" />
@@ -1351,8 +1351,8 @@ export default function RecipientsPage() {
   // --- Main Content ---
   return (
     <>
-      <section className="Beneficiaries-Page py-10">
-        <div className="container mx-auto">
+      <section className="Recipients-Page-Wrapper">
+        <div className="Recipients-Page">
           {/* Header */}
           <div className="mb-6 flex items-center justify-between ">
             <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
@@ -1416,7 +1416,7 @@ export default function RecipientsPage() {
             </div>
           ) : filteredRecipients.length > 0 ? (
             // Display List
-            <div>
+            <div className="All-+Recipients">
               <h3 className="font-medium text-sm text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wide">
                 All Recipients
               </h3>
@@ -1433,7 +1433,7 @@ export default function RecipientsPage() {
             </div>
           ) : (
             // Display "Add New" Prompt
-            <div>
+            <div className="Add-New-Recipients">
               <h3 className="font-medium text-sm text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wide">
                 {searchTerm
                   ? "No matching recipients found"
