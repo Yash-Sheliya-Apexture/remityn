@@ -97,7 +97,7 @@ const AuthHeader: React.FC = () => {
         <Link href="/" className="text-xl font-semibold text-primary">
           {isMobile ? (
             <Image
-              src="/assets/images/mobile-wise-logo.svg" // Replace with your mobile logo
+              src="/assets/images/wise-logo2.svg" // Replace with your mobile logo
               width={30} // Adjust as needed
               height={30} // Adjust as needed
               alt="Wise Logo (Mobile)"

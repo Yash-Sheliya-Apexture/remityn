@@ -1927,8 +1927,8 @@ const stepsData: StepData[] = [
         Identify yourself with our inbuilt KYC process
       </>
     ),
-    contentImage1: "/assets/images/Frame.svg",
-    contentImage2: "/assets/images/reg-2.1d035221.svg",
+    contentImage1: "/assets/images/reg.997f6e4c2.svg",
+    contentImage2: "/assets/images/reg-654534534521.svg",
   },
   {
     id: 1,
@@ -1938,7 +1938,7 @@ const stepsData: StepData[] = [
     subtitle: "Add transfer amount",
     contentTitle: "Create Digital Wallet With Passkey",
     contentSubtitle: "Our passkey security feature safeguards your money",
-    contentImage1: "/assets/images/wallet.8ef702f3.svg",
+    contentImage1: "/assets/images/wallet.6868768671.svg",
     contentBlocks: [
       { text: "Passkeys : Robust alternative to passwords", type: "default" },
       { text: "Prevents phishing and password hacks", type: "default" },
