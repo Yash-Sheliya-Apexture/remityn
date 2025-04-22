@@ -3189,7 +3189,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                 {renderBottomNav && (
                 <motion.div
                     key="bottom-nav"
-                    className="sm:hidden fixed bottom-0 left-0 w-full z-80 bg-white dark:bg-background border-t"
+                    className="sm:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-background border-t"
                     initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 >
