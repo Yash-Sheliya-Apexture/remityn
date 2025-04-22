@@ -1454,18 +1454,25 @@ const CountryCard = () => {
   if (isLoading) {
     return (
       <section className="Country-card pt-4">
-        <div className="container mx-auto">
-          <div
-            className="flex overflow-x-scroll scroll-smooth scrollbar-hide gap-3 py-4 px-2"
-            style={{
-              scrollBehavior: 'smooth',
-              scrollSnapType: 'x mandatory',
-              WebkitOverflowScrolling: 'touch'
-            }}
-          >
-            {Array(4).fill(0).map((_, index) => (
-              <div key={index} className="w-64 shrink-0" style={{ scrollSnapAlign: 'start' }}>
-                <div className="p-6 bg-lightgray dark:bg-primarybox rounded-2xl flex flex-col justify-between h-[176px]"> {/* Give skeleton fixed height */}
+        <div
+          className="flex overflow-x-scroll scroll-smooth scrollbar-hide gap-3 py-4 px-2"
+          style={{
+            scrollBehavior: "smooth",
+            scrollSnapType: "x mandatory",
+            WebkitOverflowScrolling: "touch",
+          }}
+        >
+          {Array(4)
+            .fill(0)
+            .map((_, index) => (
+              <div
+                key={index}
+                className="w-64 shrink-0"
+                style={{ scrollSnapAlign: "start" }}
+              >
+                <div className="p-6 bg-lightgray dark:bg-primarybox rounded-2xl flex flex-col justify-between h-[176px]">
+                  {" "}
+                  {/* Give skeleton fixed height */}
                   <div className="flex items-center gap-4">
                     <Skeleton className="h-12 w-12 rounded-full" />
                     <Skeleton className="h-5 w-24" />
@@ -1476,10 +1483,9 @@ const CountryCard = () => {
                 </div>
               </div>
             ))}
-             {/* Skeleton for Add Card */}
-             <div className="w-64 shrink-0" style={{ scrollSnapAlign: 'start' }}>
-                 <Skeleton className="p-6 h-[176px] bg-lightgray dark:bg-primarybox/70 rounded-2xl flex flex-col justify-center items-center border-2 border-dashed border-neutral-900 dark:border-neutral-300"/>
-             </div>
+          {/* Skeleton for Add Card */}
+          <div className="w-64 shrink-0" style={{ scrollSnapAlign: "start" }}>
+            <Skeleton className="p-6 h-[176px] bg-lightgray dark:bg-primarybox/70 rounded-2xl flex flex-col justify-center items-center border-2 border-dashed border-neutral-900 dark:border-neutral-300" />
           </div>
         </div>
       </section>

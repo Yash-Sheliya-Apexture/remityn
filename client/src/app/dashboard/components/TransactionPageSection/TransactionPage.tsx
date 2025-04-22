@@ -4829,8 +4829,8 @@ const TransactionsPage: React.FC = () => {
             <div className="space-y-4">
               {/* In Progress Section (Now Sorted by Latest Date) */}
               {inProgressTransactions.length > 0 && (
-                <div>
-                  <h3 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
+                <div className="InProcess-Transaction-Lists">
+                  <h3 className="font-medium text-gray-600 dark:text-white mb-3 leading-8 border-b border-gray-200 dark:border-primarybox">
                     In progress
                   </h3>
                   <div className="space-y-2">
@@ -4874,8 +4874,8 @@ const TransactionsPage: React.FC = () => {
                 <div className="space-y-4">
                   {Object.entries(groupedProcessedTransactions).map(
                     ([date, transactionsForDate]) => (
-                      <div key={date}>
-                        <h3 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
+                      <div key={date} className="Transaction-Lists">
+                        <h3 className="font-medium text-gray-600 dark:text-white mb-3 leading-8 border-b border-gray-200 dark:border-primarybox">
                           {date}
                         </h3>
                         <div className="space-y-2">
