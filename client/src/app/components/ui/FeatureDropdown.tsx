@@ -836,7 +836,7 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
         href="/features"
         onClick={myToggleDropdown}
         className={`rounded-full font-medium cursor-pointer
-           py-2 dark:hover:text-primary hover:bg-gray/5 hover:dark:bg-secondary text-mainheading dark:text-white ${
+           py-2 dark:hover:text-primary hover:bg-gray/10 hover:dark:bg-secondary text-mainheading dark:text-white ${
           buttonClassName || ""
         }`}
       >

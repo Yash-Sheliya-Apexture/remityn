@@ -775,6 +775,8 @@
 
 // export default Footer;
 
+
+
 // app/components/Footer.tsx
 "use client";
 import Link from "next/link";
@@ -910,7 +912,7 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-[#F2F4F7] dark:bg-background px-4 pb-6">
+    <footer className="bg-white dark:bg-background px-4 pb-6">
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-start w-full lg:gap-6">
         <div className="flex flex-col">
           <Image
@@ -921,7 +923,7 @@ const Footer: React.FC = () => {
             className="lg:size-28 size-20"
           />
 
-          <p className="max-w-3xl text-mainheading dark:text-white lg:text-xl text-sm">
+          <p className="max-w-3xl text-mainheading dark:text-white lg:text-lg text-sm">
             We provide reliable and competitive currency exchange services with
             real-time rates, secure transactions, and excellent customer
             support. Whether you're traveling, investing, or sending money
@@ -930,7 +932,7 @@ const Footer: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 mt-5">
           {footerData.sections.map((section) => (
             <div key={section.title}>
               <div
@@ -943,7 +945,7 @@ const Footer: React.FC = () => {
                   isMobile ? () => toggleDropdown(section.title) : undefined
                 }
               >
-                <h3 className="text-primary dark:text-primary lg:text-xl font-medium">
+                <h3 className="text-lime-500 dark:text-primary lg:text-xl font-medium">
                   {section.title}
                 </h3>
 
@@ -997,7 +999,7 @@ const Footer: React.FC = () => {
 
       <hr className="my-6 container mx-auto" />
       <div className="container mx-auto">
-        <h3 className="text-primary lg:text-lg text-base font-semibold pb-4">
+        <h3 className="text-lime-500 lg:text-lg text-base font-semibold pb-4">
           Currency Converters
         </h3>
 
@@ -1023,7 +1025,7 @@ const Footer: React.FC = () => {
 
       <hr className="container mx-auto my-5" />
       <div className="flex justify-between items-center container mx-auto">
-        <p className="text-mainheading dark:text-primary lg:text-lg text-sm font-semibold">
+        <p className="text-mainheading dark:text-primary lg:text-lg text-sm">
           {footerData.copyright}
         </p>
         <div className="flex gap-2">

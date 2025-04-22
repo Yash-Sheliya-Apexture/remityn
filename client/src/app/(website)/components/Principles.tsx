@@ -20,7 +20,7 @@ import { FaFastForward } from "react-icons/fa";
 
 const FeaturesSection: React.FC = () => {
   return (
-    <div className="bg-[#F2F4F7] lg:py-10 py-5 dark:bg-background">
+    <div className="bg-white lg:py-10 py-5 dark:bg-background">
       <section
         className="flex flex-col lg:gap-10 gap-8 container mx-auto px-4"
         id="features"
@@ -36,7 +36,7 @@ const FeaturesSection: React.FC = () => {
         {/* Features Grid */}
         <div className="grid gap-y-6 lg:grid-cols-2 md:grid-rows-6 md:gap-x-8 md:gap-y-8">
           {/* Feature Card 1: Security (Large) */}
-          <div className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-white dark:bg-white/5">
+          <div className="row-span-4 flex flex-col border shadow-md overflow-hidden rounded-3xl bg-white dark:bg-white/5">
             <Image
               src="/assets/images/colorful-illustration-colorful-padlock-with-colorful-leaves-flowers_1122354-15513.jpg"
               width={500}
@@ -59,7 +59,7 @@ const FeaturesSection: React.FC = () => {
           </div>
 
           {/* Feature Card 2: Speed (Small) */}
-          <div className="row-span-2 flex flex-col lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-white dark:bg-white/5 p-6">
+          <div className="row-span-2 flex flex-col lg:gap-6 border shadow-md gap-3 overflow-hidden rounded-3xl bg-white dark:bg-white/5 p-6">
             <FaFastForward className="lg:size-8 size-6 text-mainheading dark:text-primary" />
             <div className="flex flex-col gap-3">
               <h3 className="lg:text-2xl md:text-xl text-base font-medium text-mainheading dark:text-white">
@@ -76,7 +76,7 @@ const FeaturesSection: React.FC = () => {
           </div>
 
           {/* Feature Card 3: Support (Large) */}
-          <div className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-white dark:bg-white/5">
+          <div className="row-span-4 flex flex-col border shadow-md overflow-hidden rounded-3xl bg-white dark:bg-white/5">
             <Image
               src="/assets/images/friendly-customer.jpg"
               width={500}
@@ -101,7 +101,7 @@ const FeaturesSection: React.FC = () => {
           </div>
 
           {/* Feature Card 4: Savings (Small) */}
-          <div className="row-span-2 flex flex-col lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-white dark:bg-white/5 p-6 ">
+          <div className="row-span-2 flex flex-col lg:gap-6 border shadow-md gap-3 overflow-hidden rounded-3xl bg-white dark:bg-white/5 p-6 ">
             <FaChartLine className="lg:size-8 size-6 text-mainheading  dark:text-primary" />
             <div className="flex flex-col gap-3">
               <h3 className="lg:text-2xl md:text-xl text-base font-medium text-mainheading dark:text-white">
@@ -118,7 +118,7 @@ const FeaturesSection: React.FC = () => {
           </div>
 
           {/* Feature Card 5: Support (Large) */}
-          <div className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-white dark:bg-white/5">
+          <div className="row-span-4 flex flex-col border shadow-md overflow-hidden rounded-3xl bg-white dark:bg-white/5">
             <Image
               src="/assets/images/dynamicRate.png"
               width={500}
@@ -145,7 +145,7 @@ const FeaturesSection: React.FC = () => {
           </div>
 
           {/* Feature Card 6: Reach (Small) */}
-          <div className="row-span-2 flex flex-col lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-white dark:bg-white/5 p-6 ">
+          <div className="row-span-2 flex flex-col border shadow-md lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-white dark:bg-white/5 p-6 ">
             <FiGlobe className="lg:size-8 size-6 text-mainheading dark:text-primary" />
             <div className="flex flex-col gap-3">
               <h3 className="lg:text-2xl md:text-xl text-base font-medium text-mainheading dark:text-white">
@@ -165,7 +165,7 @@ const FeaturesSection: React.FC = () => {
           </div>
 
           {/* Feature Card 7: Money (Large) */}
-          <div className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-white dark:bg-white/5">
+          <div className="row-span-4 flex flex-col border shadow-md overflow-hidden rounded-3xl bg-white dark:bg-white/5">
             <Image
               src="/assets/images/withoutborder.png"
               width={500}
@@ -193,7 +193,7 @@ const FeaturesSection: React.FC = () => {
           </div>
 
           {/* Feature Card 8: Reach (Small) */}
-          <div className="row-span-2 flex flex-col lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-white dark:bg-white/5 p-6 ">
+          <div className="row-span-2 flex flex-col border shadow-md lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-white dark:bg-white/5 p-6 ">
             <FaHeadset className="lg:size-8 size-6 text-mainheading  dark:text-primary" />
             <div className="flex flex-col gap-3">
               <h3 className="lg:text-2xl md:text-xl text-base font-medium text-mainheading dark:text-white">

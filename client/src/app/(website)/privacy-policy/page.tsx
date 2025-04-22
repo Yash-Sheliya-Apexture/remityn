@@ -506,7 +506,7 @@ const sections: PolicySection[] = [
 
 const PrivacyPolicyPage: React.FC = () => {
   return (
-    <div className="lg:py-10 py-5 bg-[#f2f4f7] dark:bg-background">
+    <div className="lg:py-10 py-5 bg-white dark:bg-background">
       <div className="container mx-auto">
         <div className="mb-3">
           <h2 className="text-4xl md:text-5xl lg:text-6xl capitalize font-black text-mainheading dark:text-white mt-6">

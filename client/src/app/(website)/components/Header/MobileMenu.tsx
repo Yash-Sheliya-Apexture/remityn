@@ -1044,7 +1044,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
 
   return (
     <div
-      className={`fixed top-20 left-0 w-full h-[calc(100vh-80px)] bg-[#f2f4f7] dark:bg-background z-40 overflow-y-auto transition-transform duration-300 ease-in-out ${
+      className={`fixed top-20 left-0 w-full h-[calc(100vh-80px)] bg-white dark:bg-background z-40 overflow-y-auto transition-transform duration-300 ease-in-out ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       }`}
       aria-hidden={!isOpen}

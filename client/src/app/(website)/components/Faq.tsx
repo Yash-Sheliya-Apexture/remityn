@@ -1196,7 +1196,7 @@ const FaqSection: React.FC = () => {
             Quick Currency
             <span className="text-primary"> Exchange Help </span>
           </h1>
-          <p className="lg:text-lg sm:text-base text-sm text-gray-500 leading-relaxed dark:text-gray-300">
+          <p className="lg:text-lg sm:text-base text-sm text-gray-700 leading-relaxed dark:text-gray-300">
             Get quick answers to common currency exchange questions — rates,
             fees, timing, and more. Simple, clear, and reliable info at your
             fingertips.
@@ -1218,7 +1218,7 @@ const FaqSection: React.FC = () => {
                   data-state={isOpen ? "open" : "closed"}
                   data-orientation="vertical"
                   // Removed padding here, it's moved to the button
-                  className="rounded-xl bg-gray-100 dark:bg-white/5 overflow-hidden" // Added overflow-hidden for rounded corners
+                  className="rounded-xl bg-gray/10 dark:bg-white/5 overflow-hidden" // Added overflow-hidden for rounded corners
                 >
                   {/* Accordion Trigger (Question) - Now a full-width button */}
                   <h3
@@ -1234,7 +1234,7 @@ const FaqSection: React.FC = () => {
                       data-orientation="vertical"
                       id={uniqueTriggerId}
                       // Button now takes full width and padding, making the whole area clickable
-                      className="flex w-full cursor-pointer flex-1 gap-2 items-center justify-between text-start lg:text-xl md:text-lg text-sm text-mainheading dark:text-gray-100 transition-colors duration-200 font-medium hover:bg-gray-200 dark:hover:bg-white/5 md:p-6 p-4" // Added padding here and hover effect
+                      className="flex w-full cursor-pointer flex-1 gap-2 items-center font-medium justify-between text-start lg:text-xl md:text-lg text-sm text-mainheading dark:text-gray-100 transition-colors duration-200 font-medium dark:hover:bg-white/5 md:p-6 p-4" // Added padding here and hover effect
                       onClick={() => handleToggle(item.id)}
                       data-radix-collection-item=""
                     >
@@ -1265,7 +1265,7 @@ const FaqSection: React.FC = () => {
                     data-orientation="vertical"
                     // Styles for animation: overflow-hidden and transitions
                     // Height, visibility, and opacity controlled by useEffect
-                    className="overflow-hidden text-sm md:text-base lg:text-lg leading-relaxed text-[#667085] dark:text-gray-300 transition-all duration-300 ease-in-out"
+                    className="overflow-hidden text-sm md:text-base lg:text-lg leading-relaxed text-gray-700 dark:text-gray-300 transition-all duration-300 ease-in-out"
                     // Initial style set to height 0 and invisible/opacity 0
                     style={{
                       height: "0px",
@@ -1290,12 +1290,12 @@ const FaqSection: React.FC = () => {
         <div className="lg:col-span-2 md:col-span-3 md:self-end">
           {" "}
           {/* Removed sticky for simplicity, add back if needed */}
-          <div className="flex flex-col items-start gap-5 rounded-2xl bg-gray-100 dark:bg-white/5 p-4 md:p-6">
+          <div className="flex flex-col items-start gap-5 rounded-2xl bg-gray/10 dark:bg-white/5 p-4 md:p-6">
             <div>
-              <h3 className="md:text-2xl text-lg font-semibold text-gray-900 dark:text-gray-100">
+              <h3 className="md:text-2xl text-lg font-semibold text-mainheading dark:text-gray-100">
                 More questions?
               </h3>
-              <p className="mt-1 lg:text-lg text-sm font-normal text-gray-500 dark:text-gray-300">
+              <p className="mt-1 lg:text-lg text-sm font-normal text-gray-700 dark:text-gray-300">
                 We're always ready to help you out.
               </p>
             </div>
@@ -1310,7 +1310,7 @@ const FaqSection: React.FC = () => {
                 >
                   {" "}
                   {/* Added target/rel */}
-                  <button className="inline-flex items-center justify-center rounded-full text-sm bg-[#25D366] lg:text-base px-4 lg:py-2 py-1.5 text-white font-medium transition-colors duration-200 ease-in-out hover:bg-[#1ebe5a] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#25D366]">
+                  <button className="inline-flex items-center cursor-pointer justify-center rounded-full text-sm bg-[#25D366] lg:text-base px-4 lg:py-2 py-1.5 text-white font-medium transition-colors duration-200 ease-in-out hover:bg-[#1ebe5a] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#25D366]">
                     <IoLogoWhatsapp className="mr-2 lg:size-6 size-4" />
                     <span>WhatsApp</span>
                   </button>
@@ -1324,7 +1324,7 @@ const FaqSection: React.FC = () => {
                   rel="noopener noreferrer"
                 >
                   {/* Added target/rel */}
-                  <button className="inline-flex items-center justify-center rounded-full bg-[#2DA5E0] px-4 lg:py-2 py-1.5 text-sm text-white font-medium transition-colors duration-200 ease-in-out hover:bg-[#249bd4] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#2DA5E0] lg:text-base">
+                  <button className="inline-flex items-center justify-center cursor-pointer rounded-full bg-[#2DA5E0] px-4 lg:py-2 py-1.5 text-sm text-white font-medium transition-colors duration-200 ease-in-out hover:bg-[#249bd4] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#2DA5E0] lg:text-base">
                     <FaTelegramPlane className="mr-2 lg:size-6 size-4" />
                     <span>Telegram</span>
                   </button>
@@ -1334,7 +1334,7 @@ const FaqSection: React.FC = () => {
               {/* Read More FAQs Link */}
               <Link
                 href="/faqs" // Ensure this path is correct
-                className="px-4 lg:py-2 py-1.5 rounded-full font-medium lg:text-base text-xs text-mainheading dark:text-primary hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-300 dark:border-white/20 dark:bg-secondary transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+                className="px-4 lg:py-2 py-1.5 rounded-full font-medium lg:text-base text-xs text-mainheading dark:text-primary dark:hover:bg-white/10 dark:border-white/20 dark:bg-secondary transition-colors duration-300 focus:outline-none"
               >
                 Read more FAQs
               </Link>

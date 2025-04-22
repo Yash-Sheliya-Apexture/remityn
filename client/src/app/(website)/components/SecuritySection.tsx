@@ -108,7 +108,7 @@ import { FaShieldAlt, FaUniversity } from "react-icons/fa";
 
 const SecuritySection = () => {
   return (
-    <section className="Security-section md:py-12 py-10 bg-[#F2F4F7] dark:bg-background">
+    <section className="Security-section md:py-12 py-10 bg-white dark:bg-background">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="w-full md:w-3/5 order-2 md:order-1">
@@ -118,7 +118,7 @@ const SecuritySection = () => {
                 <span className="text-primary"> You Can Trust </span>
               </h1>
 
-              <p className="lg:text-lg sm:text-base text-sm text-gray-500 leading-relaxed dark:text-gray-300 mt-5">
+              <p className="lg:text-lg sm:text-base text-sm text-gray-700 leading-relaxed dark:text-gray-300 mt-5">
                 Experience fast, reliable, and secure currency exchange with
                 full transparency and top-level protection for your
                 money—trusted by thousands worldwide
@@ -151,11 +151,11 @@ const SecuritySection = () => {
         <div className="mt-10">
           <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 lg:gap-10 gap-8">
             <div className="space-y-4">
-              <div className="lg:p-4 p-3 bg-secondary dark:text-primary text-white rounded-full inline-flex items-center ">
+              <div className="lg:p-4 p-3 bg-gray dark:text-primary text-white rounded-full inline-flex items-center ">
                 <FaLock className="lg:size-8 size-6" aria-hidden="true" />
               </div>
               <div>
-                <p className="font-medium lg:text-lg text-base text-gray-500 dark:text-gray-300 leading-relaxed">
+                <p className="font-medium lg:text-lg text-base text-gray-700 dark:text-gray-300 leading-relaxed">
                   We use 256-bit encryption to protect your data and
                   transactions—just like the biggest banks
                 </p>
@@ -163,11 +163,11 @@ const SecuritySection = () => {
             </div>
 
             <div className="space-y-4">
-              <div className="lg:p-4 p-3 bg-secondary dark:text-primary text-white rounded-full inline-flex items-center ">
+              <div className="lg:p-4 p-3 bg-gray dark:text-primary text-white rounded-full inline-flex items-center ">
                 <FaShieldAlt className="lg:size-8 size-6" aria-hidden="true" />
               </div>
               <div>
-                <p className="font-medium lg:text-lg text-base text-gray-500 dark:text-gray-300">
+                <p className="font-medium lg:text-lg text-base text-gray-700 dark:text-gray-300">
                   Real-time monitoring detects suspicious activity instantly to
                   stop fraud before it happens.
                 </p>
@@ -175,11 +175,11 @@ const SecuritySection = () => {
             </div>
 
             <div className="space-y-4">
-              <div className="lg:p-4 p-3 bg-secondary dark:text-primary text-white rounded-full inline-flex items-center">
+              <div className="lg:p-4 p-3 bg-gray dark:text-primary text-white rounded-full inline-flex items-center">
                 <FaUniversity className="lg:size-8 size-6" aria-hidden="true" />
               </div>
               <div>
-                <p className="font-medium lg:text-lg text-base text-gray-500 dark:text-gray-300">
+                <p className="font-medium lg:text-lg text-base text-gray-700 dark:text-gray-300">
                   Your money is stored with top-tier, FDIC-insured partner banks
                   for added security.
                 </p>

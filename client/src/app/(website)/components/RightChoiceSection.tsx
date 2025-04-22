@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const RightChoiceSection: React.FC = () => {
   return (
-    <section className="py-10 bg-[#f2f4f7] dark:bg-background px-4">
+    <section className="py-10 bg-white dark:bg-background px-4">
       <div className="container mx-auto">
         <div className="flex flex-col lg:flex-row items-center ">
           <div className="lg:w-1/2 w-full order-2 lg:order-1 flex justify-center">
@@ -21,7 +21,7 @@ const RightChoiceSection: React.FC = () => {
 
           <div className="lg:w-1/2 w-full order-1 lg:order-2">
             <div className="top-section md:text-left text-center">
-              <p className="lg:text-base text-sm text-gray-500 dark:text-gray-300 font-medium mb-2">
+              <p className="lg:text-base text-sm text-gray-700 dark:text-gray-300 font-medium mb-2">
                 {/* Example sub-title styling */}
                 Learn why Wise is the right choice for you
               </p>
@@ -32,7 +32,7 @@ const RightChoiceSection: React.FC = () => {
                 <span className="text-primary"> the comfort of home.</span>
               </h1>
 
-              <p className="text-gray-500 lg:text-lg text-sm dark:text-gray-300 mt-5">
+              <p className="text-gray-700 lg:text-lg text-sm dark:text-gray-300 mt-5">
                 Send money from the comfort of your home with ease and
                 confidence. Our fast and secure online transfer service allows
                 you to send funds to your loved ones anytime, anywhere—no need

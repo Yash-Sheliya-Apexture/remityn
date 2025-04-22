@@ -129,11 +129,11 @@ const RemittanceSection: React.FC = () => {
   const buttonLink = user ? "/dashboard/send/select-balance" : "/auth/register"; // Link to register or send money flow
 
   return (
-    <section className="py-10 bg-[#f2f4f7] dark:bg-background px-4">
+    <section className="py-10 bg-white dark:bg-background px-4">
       <div className="container mx-auto flex gap-10 flex-col md:flex-row items-center justify-end">
         {/* Left Content Section */}
         <div className="md:w-1/2 w-full text-center md:text-left space-y-2.5">
-          <p className="lg:text-base text-sm text-gray-500 dark:text-gray-300 font-medium">
+          <p className="lg:text-base text-sm text-gray-700 dark:text-gray-300 font-medium">
             Send Money Across Borders with Confidence
           </p>
 
@@ -144,7 +144,7 @@ const RemittanceSection: React.FC = () => {
           </h1>
 
           {/* Description */}
-          <p className="text-sm md:text-lg text-gray-500 dark:text-gray-300">
+          <p className="text-sm md:text-lg text-gray-700 dark:text-gray-300">
             Experience hassle-free money transfers to over 100 countries
             worldwide. Whether you're supporting loved ones, paying bills, or
             handling business payments, our platform ensures your money gets
@@ -174,35 +174,35 @@ const RemittanceSection: React.FC = () => {
                 width={40} // Consistent smaller size
                 height={40}
                 alt="User avatar 1"
-                className="rounded-full border-2 border-white dark:border-background"
+                className="rounded-full border-2 border-gray dark:border-background"
               />
               <Image
                 src="/assets/images/user2.png"
                  width={40}
                  height={40}
                  alt="User avatar 2"
-                 className="rounded-full border-2 border-white dark:border-background"
+                 className="rounded-full border-2 border-gray dark:border-background"
               />
               <Image
                 src="/assets/images/user3.png"
                  width={40}
                  height={40}
                  alt="User avatar 3"
-                 className="rounded-full border-2 border-white dark:border-background"
+                 className="rounded-full border-2 border-gray dark:border-background"
               />
               <Image
                 src="/assets/images/Lisa-Carter.jpg"
                  width={40}
                  height={40}
                  alt="User avatar 4"
-                 className="rounded-full border-2 border-white dark:border-background"
+                 className="rounded-full border-2 border-gray dark:border-background"
               />
               <Image
                 src="/assets/images/Emily.jpg"
                  width={40}
                  height={40}
                  alt="User avatar 5"
-                 className="rounded-full border-2 border-white dark:border-background"
+                 className="rounded-full border-2 border-gray dark:border-background"
               />
             </div>
 

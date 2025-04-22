@@ -87,7 +87,7 @@ const HeroText = () => {
           <span className="text-primary"> at 0% Fees </span>
         </h1>
 
-        <p className="lg:text-lg sm:text-base text-sm text-gray-500  leading-relaxed dark:text-gray-300">
+        <p className="lg:text-lg sm:text-base text-sm text-gray-700 leading-relaxed dark:text-gray-300">
           Experience hassle-free currency conversion with Worldwide Currency
           Exchange. Enjoy competitive rates, fast service, and secure
           transactions—perfect for travel, investments, and global business.
@@ -97,26 +97,26 @@ const HeroText = () => {
           {/* Tags */}
           <div className="flex items-center gap-2.5 text-primary">
             <AiOutlineClockCircle className="sm:size-6 size-5" />
-            <span className="dark:text-white text-mainheading font-medium text-sm sm:text-base">
+            <span className="dark:text-white text-mainheading font-semibold text-sm sm:text-base">
               Real-Time Conversion
             </span>
           </div>
           {/* ... other tags ... */}
           <div className="flex items-center gap-2.5 text-primary">
             <FaHandHoldingUsd className="sm:size-6 size-5" />
-            <span className="dark:text-white text-mainheading font-medium text-sm sm:text-base">
+            <span className="dark:text-white text-mainheading font-semibold text-sm sm:text-base">
               Competitive Rates
             </span>
           </div>
           <div className="flex items-center gap-2.5 text-primary">
             <BsShieldLock className="sm:size-6 size-5" />
-            <span className="dark:text-white text-mainheading font-medium text-sm sm:text-base">
+            <span className="dark:text-white text-mainheading font-semibold text-sm sm:text-base">
               Secure Transactions
             </span>
           </div>
           <div className="flex items-center gap-2.5 text-primary">
             <MdSpeed className="sm:size-6 size-5" />
-            <span className="dark:text-white text-mainheading font-medium text-sm sm:text-base">
+            <span className="dark:text-white text-mainheading font-semibold text-sm sm:text-base">
               Fast & Easy
             </span>
           </div>

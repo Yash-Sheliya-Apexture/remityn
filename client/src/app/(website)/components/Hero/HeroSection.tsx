@@ -9881,7 +9881,7 @@ const HeroSection: React.FC = () => {
 
   // --- JSX Render ---
   return (
-    <section className="Hero-Section bg-[#f2f4f7] dark:bg-background lg:py-12 py-5 px-4">
+    <section className="Hero-Section bg-white dark:bg-background lg:py-12 py-5 px-4">
       <div className="container mx-auto">
         <div className="flex flex-col lg:flex-row items-center gap-12">
           {/* Left Column */}
@@ -9891,7 +9891,7 @@ const HeroSection: React.FC = () => {
 
           {/* Right Column: Calculator Card */}
           <div className="lg:w-xl lg:ml-auto w-full max-w-lg">
-            <div className="bg-white dark:bg-background rounded-3xl shadow-lg md:p-8 p-4 dark:border">
+            <div className="bg-white dark:bg-background border rounded-3xl shadow-lg md:p-8 p-4 dark:border">
               {/* --- Loading State Skeleton --- */}
               {(isLoading || authLoading) && (
                 <div className="space-y-6 animate-pulse">

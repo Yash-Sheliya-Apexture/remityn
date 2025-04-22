@@ -2993,6 +2993,7 @@ import ThemeToggle from "../../../contexts/ThemeToggle"; // Adjust path if neede
 import { IoMdClose } from "react-icons/io";
 import { FaRocket } from "react-icons/fa6";
 import { useAuth } from "@/app/contexts/AuthContext";
+import { flatMapDeep } from "lodash";
 
 interface FeatureLink {
   href: string;
@@ -3080,8 +3081,8 @@ const Header: React.FC = () => {
   ];
   const topContent = (
     <div className="space-y-4">
-      <FaRocket className="lg:size-10 size-6 text-primary" />
-      <p className="text-gray-500 max-w-sm leading-normal dark:text-gray-300">
+      <FaRocket className="lg:size-10 size-6 text-mainheading dark:text-primary " />
+      <p className="text-gray-700 max-w-sm leading-normal dark:text-gray-300">
         Learn how millions of customers move their money globally right.
       </p>
     </div>
@@ -3091,9 +3092,9 @@ const Header: React.FC = () => {
     const baseClasses =
       "px-4 py-1.5 rounded-full font-medium transition-colors duration-300 ease-in-out";
     const inactiveClasses =
-      "text-main dark:text-white dark:hover:text-primary hover:bg-gray/5 hover:dark:bg-secondary";
+      "text-main dark:text-white dark:hover:text-primary hover:bg-gray/10 hover:dark:bg-secondary";
     const activeClasses =
-      "bg-gray/5 dark:bg-secondary text-mainheading dark:text-primary"; // Active style
+      "bg-gray/10 dark:bg-secondary text-mainheading dark:text-primary"; // Active style
 
     let isActive = false;
     const isRootPath = pathname === "/";
@@ -3118,8 +3119,8 @@ const Header: React.FC = () => {
       <header
         className={`w-full z-50 transition-[transform,background-color,box-shadow] duration-300 ease-in-out ${
           isSticky
-            ? "fixed top-0 left-0 right-0 bg-[#f2f4f7] dark:bg-background transform translate-y-0" // Sticky state: Fixed, blurred bg, shadow, visible
-            : "relative bg-[#f2f4f7] dark:bg-background transform translate-y-0" // Non-sticky state: Relative, initial bg, visible
+            ? "fixed top-0 left-0 right-0 bg-white dark:bg-background transform shadow-md translate-y-0" // Sticky state: Fixed, blurred bg, shadow, visible
+            : "relative bg-white  dark:bg-background transform translate-y-0" // Non-sticky state: Relative, initial bg, visible
         }`}
       >
         <div className="px-4">
@@ -3157,7 +3158,7 @@ const Header: React.FC = () => {
                 buttonText="Features"
                 links={featureLinks}
                 topContent={topContent}
-                buttonClassName={getLinkClasses("/features",true)}
+                buttonClassName={getLinkClasses("/features",false)}
               />
               <Link href="/reviews" className={getLinkClasses("/reviews")}>
                 Reviews
@@ -3191,7 +3192,7 @@ const Header: React.FC = () => {
                     <>
                       <Link
                         href="/auth/register"
-                        className="px-4 py-1.5 dark:text-white text-nowrap dark:hover:text-primary font-medium hover:bg-gray/5 dark:hover:bg-secondary rounded-full transition-colors ease-in-out duration-300 text-main cursor-pointer"
+                        className="px-4 py-1.5 dark:text-white text-nowrap dark:hover:text-primary font-medium hover:bg-gray/10 dark:hover:bg-secondary rounded-full transition-colors ease-in-out duration-300 text-main cursor-pointer"
                       >
                         Register
                       </Link>
@@ -3211,7 +3212,7 @@ const Header: React.FC = () => {
             <div className="flex lg:hidden items-center gap-2">
               <button
                 onClick={toggleMobileMenu}
-                className="p-2.5 bg-gray/5 dark:bg-secondary text-mainheading dark:text-primary rounded-full transition-colors"
+                className="p-2.5 bg-gray/10 dark:bg-secondary text-mainheading dark:text-primary rounded-full transition-colors"
                 aria-label={isMobileMenuOpen ? "Close Menu" : "Open Menu"}
                 aria-expanded={isMobileMenuOpen}
               >
