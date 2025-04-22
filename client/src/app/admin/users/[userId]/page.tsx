@@ -2248,6 +2248,7 @@ import {
   Mail,
   ShieldCheck,
   CalendarDays,
+  ChevronRight,
   Phone,
   Briefcase,
   UserCheck,
@@ -2659,6 +2660,7 @@ const TransactionTable = ({
 };
 
 
+
 // --- Main Detail Page Component ---
 const UserDetailPage: React.FC = () => {
   const params = useParams();
@@ -2756,17 +2758,72 @@ const UserDetailPage: React.FC = () => {
     { value: "payments", label: "Payments (Add)", icon: Landmark },
   ];
 
+    // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100 },
+    },
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 relative">
       <div className="space-y-6 pb-10">
-        {/* Back Button */}
-        <Button
-          variant="outline"
-          className="border-0 cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 h-12 rounded-full transition-all duration-75 ease-linear"
-          onClick={() => router.push("/admin/users")}
-        >
-          <ArrowLeft className="h-4 w-4" /> Back to User List
-        </Button>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+          <div className="Heading">
+            {/* Corrected typo */}
+            <div className="flex items-center text-sm text-gray-500 mb-2 flex-wrap">
+              <Link
+                href="/admin"
+                className="text-gray-500 hover:text-primary dark:text-gray-300 hover:dark:text-primary"
+              >
+                Admin
+              </Link>
+              <ChevronRight className="size-4 mx-1 flex-shrink-0 dark:text-white" />
+              <Link
+                href="/admin/users"
+                className="text-gray-500 hover:text-primary dark:text-gray-300 hover:dark:text-primary"
+              >
+                Users
+              </Link>
+              <ChevronRight className="size-4 mx-1 flex-shrink-0 dark:text-white" />
+              <span
+                className="text-neutral-900 dark:text-white truncate"
+                title={userId}
+              >
+                Details (
+                {userId ? `${userId.substring(0, 8)}...` : "Loading..."})
+              </span>
+            </div>
+            <h1 className="text-2xl md:text-3xl font-bold text-neutral-900 dark:text-white">
+              User Details
+            </h1>
+          </div>
+
+          <Button
+            asChild
+            variant="link"
+            className="text-neutral-900 dark:text-white hover:text-primary dark:hover:text-primary p-0 h-auto self-start sm:self-center"
+          >
+            <Link href="/admin/users">
+              <ArrowLeft className="size-5 mr-1.5" />
+              All Users
+            </Link>
+          </Button>
+        </div>
 
         {/* User Profile Card */}
         <Card className="overflow-hidden border shadow-none">
@@ -2872,265 +2929,306 @@ const UserDetailPage: React.FC = () => {
           className="w-full"
         >
           <div className="overflow-hidden mb-4 ">
-
-          <TabsList className="relative z-10 flex w-full h-full overflow-x-auto whitespace-nowrap bg-lightgray dark:bg-primarybox p-1.5 rounded-full justify-normal items-center">
-            {tabs.map((tab) => (
-              <TabsTrigger
-                key={tab.value}
-                value={tab.value}
-                className={cn(
-                  "relative px-4 py-3 flex items-center justify-center gap-2 text-base shrink-0 min-w-max rounded-full", // Added rounded-full here
-                  "text-neutral-900 dark:text-white data-[state=active]:text-primary dark:data-[state=active]:text-primary",
-                  "border-none", // Ensure no borders interfere
-                  "data-[state=active]:bg-transparent dark:data-[state=active]:bg-transparent",
-                  "data-[state=active]:shadow-none cursor-pointer transition-colors duration-150 ease-in-out",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" // Standard focus styling
-                )}
-              >
-                {/* Motion Div for Animated Pill Background */}
-                {activeTab === tab.value && (
-                  <motion.div
-                    layoutId="active-tab-indicator" // Unique ID for layout animation
-                    className="absolute inset-0 -z-10 bg-neutral-900 dark:bg-secondarybox rounded-full shadow-sm"
-                    transition={{ stiffness: 350, damping: 30 }} // Animation (spring)
-                  />
-                )}
-                {/* Icon and Label */}
-                <tab.icon className="h-5 w-5" />{" "}
-                {/* Using h-5 w-5 for clarity */}
-                <span className="truncate">{tab.label}</span>
-              </TabsTrigger>
-            ))}
-          </TabsList>
+            <TabsList className="relative z-20 flex w-full h-full overflow-x-auto whitespace-nowrap bg-lightborder dark:bg-primarybox p-1.5 rounded-full justify-normal items-center">
+              {tabs.map((tab) => (
+                <TabsTrigger
+                  key={tab.value}
+                  value={tab.value}
+                  className={cn(
+                    "relative px-4 py-3 flex items-center justify-center gap-2 text-base shrink-0 min-w-max rounded-full", // Added rounded-full here
+                    "text-neutral-900 dark:text-white data-[state=active]:text-neutral-900 dark:data-[state=active]:text-primary",
+                    "border-none", // Ensure no borders interfere
+                    "data-[state=active]:bg-transparent dark:data-[state=active]:bg-transparent",
+                    "data-[state=active]:shadow-none cursor-pointer transition-colors duration-150 ease-in-out",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" // Standard focus styling
+                  )}
+                >
+                  {/* Motion Div for Animated Pill Background */}
+                  {activeTab === tab.value && (
+                    <motion.div
+                      layoutId="active-tab-indicator" // Unique ID for layout animation
+                      className="absolute inset-0 -z-10 bg-primary dark:bg-secondarybox rounded-full shadow-sm"
+                      transition={{ stiffness: 350, damping: 30 }} // Animation (spring)
+                    />
+                  )}
+                  {/* Icon and Label */}
+                  <tab.icon className="size-5" />{" "}
+                  {/* Using h-5 w-5 for clarity */}
+                  <span className="truncate">{tab.label}</span>
+                </TabsTrigger>
+              ))}
+            </TabsList>
           </div>
 
           {/* KYC Tab Content */}
           <TabsContent value="kyc">
-            <Card className="border overflow-hidden mb-4">
-              <CardHeader className="border-b border-border px-6 py-4 bg-lightgray dark:bg-primarybox ">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg font-semibold flex items-center gap-2 text-neutral-900 dark:text-white ">
-                    <UserCheck className="h-5 w-5 text-primary" /> KYC
-                    Information
-                  </CardTitle>
-                  <Badge
-                    variant="outline"
-                    className={cn(
-                      "text-sm capitalize px-4 py-2 font-medium border",
-                      kycStatusConfig.color
-                    )}
-                  >
-                    <kycStatusConfig.icon className="h-4 w-4 mr-1 flex-shrink-0" />{" "}
-                    {kycStatusConfig.label}
-                  </Badge>
-                </div>
-                {kyc?.status === "rejected" && kyc.rejectionReason && (
-                  <p className="text-xs text-destructive pt-2 mt-2 border-t border-destructive/20">
-                    <span className="font-medium">Rejection Reason:</span>{" "}
-                    {kyc.rejectionReason}
-                  </p>
-                )}
-              </CardHeader>
-              <CardContent>
-                {kyc ? (
-                  <>
-                    <div className="p-4">
-                      <h4 className="border-b pb-2 mb-2 font-medium text-neutral-900 dark:text-white">
-                        Personal Details
-                      </h4>
-                      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
-                        <DetailItem label="First Name" value={kyc.firstName} />
-                        <DetailItem label="Last Name" value={kyc.lastName} />
-                        <DetailItem
-                          label="Date of Birth"
-                          value={formatDate(kyc.dateOfBirth)}
-                          icon={CalendarDays}
-                        />
-                        <DetailItem
-                          label="Mobile"
-                          value={formatMobile(kyc.mobile)}
-                          icon={Phone}
-                        />
-                        <DetailItem
-                          label="Nationality"
-                          value={kyc.nationality}
-                          icon={Globe}
-                        />
-                        <DetailItem
-                          label="Occupation"
-                          value={kyc.occupation}
-                          icon={Briefcase}
-                        />
-                        <DetailItem
-                          label="Salary Range"
-                          value={
-                            kyc.salaryRange
-                              ? salaryDisplayMap[kyc.salaryRange]
-                              : undefined
-                          }
-                          icon={BadgeDollarSign}
-                        />
-                      </div>
-                    </div>
-                    <div className="p-4">
-                      <h4 className="border-b pb-2 mb-2 text-neutral-900 dark:text-white">
-                        Identification Details
-                      </h4>
-                      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
-                        <DetailItem
-                          label="ID Type"
-                          value={
-                            <span className="capitalize">
-                              {kyc.idType?.replace("_", " ")}
-                            </span>
-                          }
-                          icon={Fingerprint}
-                        />
-                        <DetailItem label="ID Number" value={kyc.idNumber} />
-                        <DetailItem
-                          label="ID Issue Date"
-                          value={formatDate(kyc.idIssueDate)}
-                          icon={CalendarDays}
-                        />
-                        <DetailItem
-                          label="ID Expiry Date"
-                          value={formatDate(kyc.idExpiryDate)}
-                          icon={CalendarDays}
-                        />
-                      </div>
-                    </div>
-                    <div className="p-4">
-                      <h4 className="border-b pb-2 mb-2 text-neutral-900 dark:text-white">
-                        Updating Information
-                      </h4>
-                      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
-                        <DetailItem
-                          label="Submitted At"
-                          value={formatDate(kyc.submittedAt, true)}
-                          icon={Clock}
-                        />
-                        <DetailItem
-                          label="Last Updated"
-                          value={formatDate(kyc.lastUpdatedAt, true)}
-                          icon={Clock}
-                        />
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <p className="text-sm text-gray-500 dark:text-gray-300 italic py-4 text-center">
-                    KYC details not submitted.
-                  </p>
-                )}
-              </CardContent>
-            </Card>
-            <Card className="border overflow-hidden mb-4">
-              <CardHeader className="border-b px-6 py-4 bg-lightgray dark:bg-primarybox ">
-                <CardTitle className="text-lg font-semibold flex items-center gap-2 text-neutral-900 dark:text-white ">
-                  <FileText className="h-5 w-5 text-primary" /> Submitted
-                  Documents
-                </CardTitle>
-              </CardHeader>
-              {kyc?.documents && kyc.documents.length > 0 ? (
-                <div className="p-4">
-                  <div className="flex md:flex-row flex-col gap-4">
-                    {kyc.documents.map((doc) => (
-                      <div
-                        key={doc.public_id}
-                        className="border border-border rounded-lg overflow-hidden bg-muted/30 dark:bg-muted/20 md:w-1/2 w-full"
+            <motion.div
+              key="kyc-content" // Ensures re-animation on tab switch
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="space-y-4"
+            >
+              <motion.div variants={itemVariants}>
+                <Card className="border overflow-hidden mb-4 shadow-none">
+                  <CardHeader className="border-b border-border px-6 py-4 bg-lightgray dark:bg-primarybox ">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-lg font-semibold flex items-center gap-2 text-neutral-900 dark:text-white ">
+                        <UserCheck className="h-5 w-5 text-primary" /> KYC
+                        Information
+                      </CardTitle>
+                      <Badge
+                        variant="outline"
+                        className={cn(
+                          "text-sm capitalize px-4 py-2 font-medium border",
+                          kycStatusConfig.color
+                        )}
                       >
-                        <div className="p-3 border-b border-border text-neutral-900 dark:text-white">
-                          <h4 className="text-sm font-medium capitalize">
-                            {doc.docType.replace("_", " ")}
+                        <kycStatusConfig.icon className="h-4 w-4 mr-1 flex-shrink-0" />{" "}
+                        {kycStatusConfig.label}
+                      </Badge>
+                    </div>
+                    {kyc?.status === "rejected" && kyc.rejectionReason && (
+                      <p className="text-xs text-destructive pt-2 mt-2 border-t border-destructive/20">
+                        <span className="font-medium">Rejection Reason:</span>{" "}
+                        {kyc.rejectionReason}
+                      </p>
+                    )}
+                  </CardHeader>
+                  <CardContent>
+                    {kyc ? (
+                      <>
+                        <div className="p-4">
+                          <h4 className="border-b pb-2 mb-2 font-medium text-neutral-900 dark:text-white">
+                            Personal Details
                           </h4>
+                          <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
+                            <DetailItem
+                              label="First Name"
+                              value={kyc.firstName}
+                            />
+                            <DetailItem
+                              label="Last Name"
+                              value={kyc.lastName}
+                            />
+                            <DetailItem
+                              label="Date of Birth"
+                              value={formatDate(kyc.dateOfBirth)}
+                              icon={CalendarDays}
+                            />
+                            <DetailItem
+                              label="Mobile"
+                              value={formatMobile(kyc.mobile)}
+                              icon={Phone}
+                            />
+                            <DetailItem
+                              label="Nationality"
+                              value={kyc.nationality}
+                              icon={Globe}
+                            />
+                            <DetailItem
+                              label="Occupation"
+                              value={kyc.occupation}
+                              icon={Briefcase}
+                            />
+                            <DetailItem
+                              label="Salary Range"
+                              value={
+                                kyc.salaryRange
+                                  ? salaryDisplayMap[kyc.salaryRange]
+                                  : undefined
+                              }
+                              icon={BadgeDollarSign}
+                            />
+                          </div>
                         </div>
-                        <div className="p-2 flex items-center justify-center aspect-video bg-white dark:bg-background overflow-hidden relative group">
-                          {doc.url ? (
-                            <>
-                              {doc.url.toLowerCase().endsWith(".pdf") ? (
-                                <div className="flex flex-col items-center justify-center text-center text-muted-foreground">
-                                  <FileText className="h-12 w-12 mb-2" />
-                                  <span className="text-xs">PDF Document</span>
-                                </div>
-                              ) : (
-                                <Image
-                                  src={doc.url}
-                                  alt={`${doc.docType} preview`}
-                                  fill
-                                  className="object-contain"
-                                  unoptimized // Consider removing if optimization works
-                                />
-                              )}
-                              <a
-                                href={doc.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white transition-opacity cursor-pointer"
-                                aria-label={`View full ${doc.docType.replace(
-                                  "_",
-                                  " "
-                                )} document`}
-                              >
-                                <Eye className="h-6 w-6 mb-1" />
-                                <span className="text-xs font-medium">
-                                  View Full
+                        <div className="p-4">
+                          <h4 className="border-b pb-2 mb-2 text-neutral-900 dark:text-white">
+                            Identification Details
+                          </h4>
+                          <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
+                            <DetailItem
+                              label="ID Type"
+                              value={
+                                <span className="capitalize">
+                                  {kyc.idType?.replace("_", " ")}
                                 </span>
-                              </a>
-                            </>
-                          ) : (
-                            <p className="text-xs text-muted-foreground italic">
-                              Document URL missing or invalid.
-                            </p>
-                          )}
+                              }
+                              icon={Fingerprint}
+                            />
+                            <DetailItem
+                              label="ID Number"
+                              value={kyc.idNumber}
+                            />
+                            <DetailItem
+                              label="ID Issue Date"
+                              value={formatDate(kyc.idIssueDate)}
+                              icon={CalendarDays}
+                            />
+                            <DetailItem
+                              label="ID Expiry Date"
+                              value={formatDate(kyc.idExpiryDate)}
+                              icon={CalendarDays}
+                            />
+                          </div>
                         </div>
+                        <div className="p-4">
+                          <h4 className="border-b pb-2 mb-2 text-neutral-900 dark:text-white">
+                            Updating Information
+                          </h4>
+                          <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
+                            <DetailItem
+                              label="Submitted At"
+                              value={formatDate(kyc.submittedAt, true)}
+                              icon={Clock}
+                            />
+                            <DetailItem
+                              label="Last Updated"
+                              value={formatDate(kyc.lastUpdatedAt, true)}
+                              icon={Clock}
+                            />
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <p className="text-sm text-gray-500 dark:text-gray-300 italic py-4 text-center">
+                        KYC details not submitted.
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              <motion.div variants={itemVariants}>
+                <Card className="border overflow-hidden mb-4  shadow-none">
+                  <CardHeader className="border-b px-6 py-4 bg-lightgray dark:bg-primarybox ">
+                    <CardTitle className="text-lg font-semibold flex items-center gap-2 text-neutral-900 dark:text-white ">
+                      <FileText className="h-5 w-5 text-primary" /> Submitted
+                      Documents
+                    </CardTitle>
+                  </CardHeader>
+                  {kyc?.documents && kyc.documents.length > 0 ? (
+                    <div className="p-4">
+                      <div className="flex md:flex-row flex-col gap-4">
+                        {kyc.documents.map((doc) => (
+                          <div
+                            key={doc.public_id}
+                            className="border border-border rounded-lg overflow-hidden bg-muted/30 dark:bg-muted/20 md:w-1/2 w-full"
+                          >
+                            <div className="p-3 border-b border-border text-neutral-900 dark:text-white">
+                              <h4 className="text-sm font-medium capitalize">
+                                {doc.docType.replace("_", " ")}
+                              </h4>
+                            </div>
+                            <div className="p-2 flex items-center justify-center aspect-video bg-white dark:bg-background overflow-hidden relative group">
+                              {doc.url ? (
+                                <>
+                                  {doc.url.toLowerCase().endsWith(".pdf") ? (
+                                    <div className="flex flex-col items-center justify-center text-center text-muted-foreground">
+                                      <FileText className="h-12 w-12 mb-2" />
+                                      <span className="text-xs">
+                                        PDF Document
+                                      </span>
+                                    </div>
+                                  ) : (
+                                    <Image
+                                      src={doc.url}
+                                      alt={`${doc.docType} preview`}
+                                      fill
+                                      className="object-contain"
+                                      unoptimized // Consider removing if optimization works
+                                    />
+                                  )}
+                                  <a
+                                    href={doc.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white transition-opacity cursor-pointer"
+                                    aria-label={`View full ${doc.docType.replace(
+                                      "_",
+                                      " "
+                                    )} document`}
+                                  >
+                                    <Eye className="h-6 w-6 mb-1" />
+                                    <span className="text-xs font-medium">
+                                      View Full
+                                    </span>
+                                  </a>
+                                </>
+                              ) : (
+                                <p className="text-xs text-muted-foreground italic">
+                                  Document URL missing or invalid.
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <CardContent className="p-4">
-                  <p className="text-sm text-gray-500 dark:text-gray-300 italic text-center">
-                    No documents submitted.
-                  </p>
-                </CardContent>
-              )}
-            </Card>
+                    </div>
+                  ) : (
+                    <CardContent className="p-4">
+                      <p className="text-sm text-gray-500 dark:text-gray-300 italic text-center">
+                        No documents submitted.
+                      </p>
+                    </CardContent>
+                  )}
+                </Card>
+              </motion.div>
+            </motion.div>
           </TabsContent>
 
           {/* Recent Transfers Tab Content */}
           <TabsContent value="transfers">
-            <Card className="border-0 bg-transparent shadow-none overflow-hidden">
-              <CardHeader className="p-4 ">
-                <CardTitle className="text-lg font-semibold flex items-center gap-2 text-neutral-900 dark:text-white">
-                  <Send className="h-5 w-5 text-primary" /> Recent Transfers
-                  (Send Money)
-                </CardTitle>
-                <CardDescription className="text-sm !mt-1 text-gray-500 dark:text-gray-300">
-                  Last 5 transfers initiated by this user.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-0">
-                <TransactionTable data={transfers} type="transfer" />
-              </CardContent>
-            </Card>
+            <motion.div
+              key="transfers-content" // Ensures re-animation on tab switch
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <motion.div variants={itemVariants}>
+                <Card className="border-0 bg-transparent shadow-none overflow-hidden">
+                  <CardHeader className="p-4 ">
+                    <CardTitle className="text-lg font-semibold flex items-center gap-2 text-neutral-900 dark:text-white">
+                      <Send className="h-5 w-5 text-primary" /> Recent Transfers
+                      (Send Money)
+                    </CardTitle>
+                    <CardDescription className="text-sm !mt-1 text-gray-500 dark:text-gray-300">
+                      Last 5 transfers initiated by this user.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <TransactionTable data={transfers} type="transfer" />
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </motion.div>
           </TabsContent>
 
           {/* Recent Payments Tab Content */}
           <TabsContent value="payments">
-            <Card className="border-0 bg-transparent shadow-none overflow-hidden">
-              <CardHeader className="p-4">
-                <CardTitle className="text-lg font-semibold flex items-center gap-2 text-neutral-900 dark:text-white">
-                  <Landmark className="h-5 w-5 text-primary" /> Recent Payments
-                  (Add Money)
-                </CardTitle>
-                <CardDescription className="text-sm !mt-1 text-gray-500 dark:text-gray-300">
-                  Last 5 payment attempts by this user.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-0">
-                <TransactionTable data={payments} type="payment" />
-              </CardContent>
-            </Card>
+            <motion.div
+              key="payments-content" // Ensures re-animation on tab switch
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <motion.div variants={itemVariants}>
+                <Card className="border-0 bg-transparent shadow-none overflow-hidden">
+                  <CardHeader className="p-4">
+                    <CardTitle className="text-lg font-semibold flex items-center gap-2 text-neutral-900 dark:text-white">
+                      <Landmark className="h-5 w-5 text-primary" /> Recent
+                      Payments (Add Money)
+                    </CardTitle>
+                    <CardDescription className="text-sm !mt-1 text-gray-500 dark:text-gray-300">
+                      Last 5 payment attempts by this user.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <TransactionTable data={payments} type="payment" />
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </motion.div>
           </TabsContent>
         </Tabs>
       </div>

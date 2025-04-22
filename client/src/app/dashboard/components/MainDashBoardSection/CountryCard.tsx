@@ -1489,7 +1489,7 @@ const CountryCard = () => {
   if (error) {
     return (
       <section className="Country-card pt-4">
-        <div className="container mx-auto text-red-500 px-4"> {/* Add padding for error message */}
+        <div className="text-red-500 px-4"> {/* Add padding for error message */}
           Error loading accounts: {error}
         </div>
       </section>
@@ -1498,11 +1498,11 @@ const CountryCard = () => {
 
   return (
     <section className="Country-card pt-4">
-      <div className="container mx-auto">
+
         <div
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
-          className="relative z-10"
+          className="relative z-0"
         >
           {/* Conditionally render buttons only if scrolling is possible */}
           {canScrollLeft && (
@@ -1600,7 +1600,7 @@ const CountryCard = () => {
             </div>
           </div>
         </div>
-      </div>
+
       <CurrencySelectorModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
