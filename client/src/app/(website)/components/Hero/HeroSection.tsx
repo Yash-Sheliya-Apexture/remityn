@@ -9850,7 +9850,7 @@ const HeroSection: React.FC = () => {
     )} ${receiveCurrencyCode}`;
   }, [error, marketRate, selectedSendCurrency, receiveCurrencyCode]);
 
- const savingsAmount = useMemo(() => {
+  const savingsAmount = useMemo(() => {
     const numericSendAmount = parseFloat(sendAmount.replace(/,/g, "")) || 0;
 
     // Cannot calculate savings without both rates or a send amount
@@ -9861,8 +9861,8 @@ const HeroSection: React.FC = () => {
     // Only calculate savings if Our Rate is strictly better than Market Rate
     // (A higher rate means recipient gets more INR per unit of send currency)
     if (ourRate <= marketRate) {
-        // If our rate is the same or worse, there's no "savings" in this context
-        return null;
+      // If our rate is the same or worse, there's no "savings" in this context
+      return null;
     }
 
     // Calculate the difference: (Amount * OurRate) - (Amount * MarketRate)
@@ -9873,7 +9873,7 @@ const HeroSection: React.FC = () => {
 
     // Only show meaningful savings (e.g., more than 1 paisa)
     if (rateDifferenceValue <= 0.01) {
-       return null;
+      return null;
     }
 
     return rateDifferenceValue.toFixed(2); // Format to 2 decimal places
@@ -9891,7 +9891,7 @@ const HeroSection: React.FC = () => {
 
           {/* Right Column: Calculator Card */}
           <div className="lg:w-xl lg:ml-auto w-full max-w-lg">
-            <div className="bg-white dark:bg-background border rounded-3xl shadow-lg md:p-8 p-4 dark:border">
+            <div className="bg-white dark:bg-background border rounded-3xl shadow-lg lg:p-6 p-4 dark:border">
               {/* --- Loading State Skeleton --- */}
               {(isLoading || authLoading) && (
                 <div className="space-y-6 animate-pulse">
@@ -9916,7 +9916,7 @@ const HeroSection: React.FC = () => {
                     {" "}
                     <Skeleton className="h-4 w-24" />{" "}
                     <Skeleton className="lg:h-16 h-14 w-full rounded-xl" />{" "}
-                  </div> 
+                  </div>
                   {/* Fee Details Skeleton */}
                   <div className="border rounded-xl p-4 space-y-3">
                     <div className="flex justify-between items-center">
@@ -9953,18 +9953,17 @@ const HeroSection: React.FC = () => {
                   <div className="text-right mb-4 min-h-[60px] space-y-2 flex flex-col items-end">
                     {/* Error Display */}
                     {error && (
-                      <div className="font-medium text-sm p-2 px-2.5 rounded-md bg-red-50 dark:bg-red-700/20 text-red-700 dark:text-white inline-flex items-center gap-1.5">
-                        {" "}
-                        <IoIosInformationCircleOutline size={16} /> Error:
+                      <div className="font-medium text-sm p-2.5 rounded-md bg-red-700/20 dark:bg-red-700/20 text-red-700 dark:text-white inline-flex items-center gap-1.5">
+                        <IoIosInformationCircleOutline className="size-4" />{" "}
+                        Error:
                         {error}
                       </div>
                     )}
 
-
                     {/* Our Rate Display */}
                     {!error && ourRate !== null && (
                       <div
-                        className="font-semibold lg:p-2 p-1 px-4 rounded-full bg-primary text-neutral-900 inline-flex items-center gap-1.5 cursor-default text-sm"
+                        className="font-semibold lg:p-2.5 p-1.5 lg:px-6 px-4 rounded-full bg-primary text-neutral-900 inline-flex items-center gap-1.5 cursor-default text-sm"
                         title={`Rate includes our adjustment of ${rateAdjustment.toFixed(
                           2
                         )}%. This is the rate applied to your transfer.`}
@@ -9978,10 +9977,11 @@ const HeroSection: React.FC = () => {
                         Calculating rate...
                       </div>
                     )}
+
                     {/* Market Rate Display */}
                     {displayMarketRate && ( // Render only if displayMarketRate returns a string
                       <div
-                        className="font-medium text-xs lg:p-2 p-1 px-2 rounded-full bg-lightgray dark:bg-white/5 text-gray-600 dark:text-gray-400 inline-flex items-center gap-1.5 cursor-help"
+                        className="font-medium text-xs lg:p-2.5 p-1.5 px-2 rounded-full bg-gray/10 dark:bg-white/5 text-mainheading dark:text-gray-400 inline-flex items-center gap-1.5 cursor-help"
                         title="Current mid-market rate. For comparison only."
                       >
                         <FaInfoCircle size={14} /> Market Rate:{" "}
@@ -9998,23 +9998,21 @@ const HeroSection: React.FC = () => {
 
                   {/* --- Savings Banner --- */}
                   {savingsAmount && ( // Render only if savingsAmount has a value
-                    <div className="mb-4 bg-gradient-to-r from-green-50 to-primary/10 dark:from-green-900/30 dark:to-primary/20 rounded-xl p-3 border-l-4 border-primary shadow-sm">
+                    <div className="mb-4 bg-lightgray dark:bg-white/5 rounded-xl lg:p-3 p-2 border-l-4 border-gray/50 dark:border-primary">
                       <div className="flex items-center gap-2">
-                        <div className="bg-primary rounded-full p-2 text-white dark:text-black flex-shrink-0">
-                          {" "}
-                          <FaPiggyBank size={20} />
+                        <div className="dark:bg-primary bg-gray rounded-full p-2 text-white dark:text-black flex-shrink-0">
+                          <FaPiggyBank size={20} className="lg:size-6 size-4" />
                         </div>
                         <div>
-                          <p className="font-bold text-primary-dark dark:text-primary-light flex items-center gap-1">
+                          <p className="font-bold text-primary-dark dark:text-primary-light lg:text-base text-sm flex items-center gap-2">
                             <span>Save up to ₹{savingsAmount} with Wise</span>
                             <TrendingUp
                               size={16}
                               className="text-green-600 dark:text-green-400"
                             />
                           </p>
-                          <p className="text-xs text-gray-700 dark:text-gray-300">
-                            {" "}
-                            Better rates than traditional banks!{" "}
+                          <p className="lg:text-xs text-[12px] text-gray-700 dark:text-gray-300">
+                            Better rates than traditional banks!
                           </p>
                         </div>
                       </div>
@@ -10024,34 +10022,39 @@ const HeroSection: React.FC = () => {
 
                   {/* You Send Input */}
                   <div className="mb-3">
-                     <label htmlFor="sendAmountInput" className="block font-medium text-main dark:text-gray-200 mb-1"> You send exactly </label>
-                     <div className="w-full border border-gray-300 dark:border-secondarybox rounded-xl shadow-sm flex items-center justify-between transition-all duration-150">
-                       <input
-                         id="sendAmountInput"
-                         type="text"
-                         inputMode="decimal"
-                         placeholder="0"
-                         value={sendAmount}
-                         onChange={handleSendAmountChange}
-                         className="block w-full h-16 p-3 text-main dark:text-white text-xl font-semibold focus:outline-none bg-transparent rounded-l-xl placeholder-gray-400 dark:placeholder-gray-500"
-                         disabled={isLoading} // Disable input while initial data is loading
-                         aria-label="Amount to send"
-                       />
-                       <div className="flex-shrink-0 h-full">
-                         <CountryDropdown
-                            selectedCurrency={selectedSendCurrency}
-                            onCurrencyChange={handleCurrencyChange}
-                            disabled={isLoading} // Disable dropdown while initial data is loading
-                          />
-                       </div>
-                     </div>
-                   </div>
+                    <label
+                      htmlFor="sendAmountInput"
+                      className="block text-gray-500 lg:text-base text-sm dark:text-gray-300 mb-1"
+                    >
+                      You send exactly
+                    </label>
+                    <div className="w-full border border-gray-300 dark:border-secondarybox rounded-xl flex items-center justify-between">
+                      <input
+                        id="sendAmountInput"
+                        type="text"
+                        inputMode="decimal"
+                        placeholder="0"
+                        value={sendAmount}
+                        onChange={handleSendAmountChange}
+                        className="block w-full lg:h-16  p-3 text-main dark:text-white text-xl font-bold focus:outline-none bg-transparent rounded-l-xl placeholder-gray-700 dark:placeholder-gray-500"
+                        disabled={isLoading} // Disable input while initial data is loading
+                        aria-label="Amount to send"
+                      />
+                      <div className="flex-shrink-0 h-full">
+                        <CountryDropdown
+                          selectedCurrency={selectedSendCurrency}
+                          onCurrencyChange={handleCurrencyChange}
+                          disabled={isLoading} // Disable dropdown while initial data is loading
+                        />
+                      </div>
+                    </div>
+                  </div>
 
                   {/* Recipient Gets Input */}
                   <div className="mb-3">
                     <label
                       htmlFor="receiveAmountInput"
-                      className="block font-medium text-mainheading dark:text-gray-200 mb-1"
+                      className="block text-gray-500 lg:text-base text-sm dark:text-gray-300 mb-1"
                     >
                       Recipient gets (approx.)
                     </label>
@@ -10063,7 +10066,7 @@ const HeroSection: React.FC = () => {
                         placeholder="0.00"
                         value={receiveAmount}
                         readOnly
-                        className="block w-full h-16 ps-4 text-mainheading dark:text-gray-300 text-xl font-semibold focus:outline-none bg-transparent rounded-l-xl placeholder-gray-400 dark:placeholder-gray-500 cursor-default"
+                        className="block w-full lg:h-16 p-3 text-mainheading dark:text-gray-300 text-xl font-bold focus:outline-none bg-transparent rounded-l-xl placeholder-gray-700 dark:placeholder-gray-500 cursor-default"
                         aria-label="Amount recipient gets"
                       />
                       <div className="flex items-center gap-2 w-auto px-10 flex-shrink-0">
@@ -10083,26 +10086,26 @@ const HeroSection: React.FC = () => {
 
                   {/* Paying With */}
                   <div className="mb-4">
-                    <label className="block font-medium text-mainheading dark:text-gray-200 mb-1">
+                    <label className="block text-gray-500 lg:text-base text-sm dark:text-gray-300 mb-1">
                       Paying with
                     </label>
-                    <div className="p-3 h-16 border rounded-xl flex items-center justify-between text-main dark:text-gray-200">
+                    <div className="p-3 lg:h-16 border rounded-xl flex items-center justify-between text-gray-700 dark:text-gray-200">
                       <div className="flex items-center gap-2">
                         <CiBank size={24} />{" "}
-                        <span className="font-semibold">Bank transfer</span>{" "}
+                        <span className="font-medium lg:text-base text-sm">Bank transfer</span>{" "}
                       </div>
                       {/* Optional: Add a tooltip or info icon explaining this is the assumed method */}
                     </div>
                   </div>
 
                   {/* Fee Details */}
-                  <div className="text-sm border rounded-xl p-4 space-y-2.5">
+                  <div className="lg:text-sm text-xs border rounded-xl lg:p-4 p-3 space-y-2.5">
                     {/* Bank Transfer Fee */}
                     <div className="flex justify-between">
-                      <span className="text-gray-500 dark:text-gray-300">
-                        Bank transfer fee{" "}
+                      <span className="text-gray-700 dark:text-gray-300">
+                        Bank transfer fee
                       </span>
-                      <span className="text-gray-500 dark:text-gray-300">
+                      <span className="text-gray-700 dark:text-gray-300">
                         {/* Show '...' if rate/fees not yet calculated */}
                         {ourRate !== null
                           ? `${bankTransferFeeAmount.toFixed(
@@ -10113,14 +10116,14 @@ const HeroSection: React.FC = () => {
                     </div>
                     {/* Wise Fee */}
                     <div className="flex justify-between">
-                      <span className="text-gray-500 dark:text-gray-300">
+                      <span className="text-gray-700 dark:text-gray-300">
                         Wise fee (
                         {wiseFeePercentage > 0
                           ? `${wiseFeePercentage.toFixed(2)}%`
                           : "..."}
                         )
                       </span>
-                      <span className="text-gray-500 dark:text-gray-300">
+                      <span className="text-gray-700 dark:text-gray-300">
                         {/* Show calculated fee or '...' */}
                         {ourRate !== null && ourFeeAmount > 0
                           ? `${ourFeeAmount.toFixed(2)} ${selectedSendCurrency}`
@@ -10131,7 +10134,7 @@ const HeroSection: React.FC = () => {
                     </div>
                     <hr className="my-2" />
                     {/* Total Fees */}
-                    <div className="flex justify-between text-gray-500 dark:text-gray-300 font-semibold">
+                    <div className="flex justify-between text-gray-700 dark:text-gray-300">
                       <span>Total included fees</span>
                       <span>
                         {/* Show total or '...' */}
@@ -10145,12 +10148,12 @@ const HeroSection: React.FC = () => {
                   </div>
 
                   {/* Arrival Info */}
-                  <div className="mt-2 text-sm text-gray-500 dark:text-gray-300">
+                  <div className="mt-2 ml-2 lg:text-sm text-xs text-gray-700 dark:text-gray-300 font-medium">
                     <p>
                       Should arrive around{" "}
-                      <span className="text-mainheading dark:text-primary font-medium">
+                      <span className="text-lime-500 font-bold">
                         {arrivalDate || "..."}
-                      </span>{" "}
+                      </span>
                     </p>
                   </div>
 
@@ -10193,7 +10196,7 @@ const HeroSection: React.FC = () => {
                       <Link href="/auth/register" passHref>
                         <button
                           type="button"
-                          className="w-full inline-flex items-center lg:text-base text-sm justify-center px-6 lg:py-3 py-2 border border-transparent cursor-pointer hover:bg-primaryhover font-medium rounded-full text-mainheading bg-primary hover:bg-primary-hover transition-colors duration-300 ease-in-out lg:h-12.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="w-full inline-flex items-center lg:text-base text-sm justify-center px-6 lg:py-3 py-2.5 border border-transparent cursor-pointer hover:bg-primaryhover font-medium rounded-full text-mainheading bg-primary hover:bg-primary-hover transition-colors duration-300 ease-in-out lg:h-12.5 disabled:opacity-50 disabled:cursor-not-allowed"
                           disabled={isLoading || authLoading}
                           aria-disabled={isLoading || authLoading}
                         >

@@ -1218,7 +1218,7 @@ const FaqSection: React.FC = () => {
                   data-state={isOpen ? "open" : "closed"}
                   data-orientation="vertical"
                   // Removed padding here, it's moved to the button
-                  className="rounded-xl bg-gray/10 dark:bg-white/5 overflow-hidden" // Added overflow-hidden for rounded corners
+                  className="rounded-lg bg-gray/10 dark:bg-white/5 overflow-hidden" // Added overflow-hidden for rounded corners
                 >
                   {/* Accordion Trigger (Question) - Now a full-width button */}
                   <h3
@@ -1234,7 +1234,7 @@ const FaqSection: React.FC = () => {
                       data-orientation="vertical"
                       id={uniqueTriggerId}
                       // Button now takes full width and padding, making the whole area clickable
-                      className="flex w-full cursor-pointer flex-1 gap-2 items-center font-medium justify-between text-start lg:text-xl md:text-lg text-sm text-mainheading dark:text-gray-100 transition-colors duration-200 font-medium dark:hover:bg-white/5 md:p-6 p-4" // Added padding here and hover effect
+                      className="flex w-full cursor-pointer flex-1 gap-2 items-center justify-between text-start lg:text-xl md:text-lg text-sm text-mainheading dark:text-gray-100 transition-colors duration-200 font-medium dark:hover:bg-white/5 md:p-5 p-4" // Added padding here and hover effect
                       onClick={() => handleToggle(item.id)}
                       data-radix-collection-item=""
                     >
@@ -1334,7 +1334,7 @@ const FaqSection: React.FC = () => {
               {/* Read More FAQs Link */}
               <Link
                 href="/faqs" // Ensure this path is correct
-                className="px-4 lg:py-2 py-1.5 rounded-full font-medium lg:text-base text-xs text-mainheading dark:text-primary dark:hover:bg-white/10 dark:border-white/20 dark:bg-secondary transition-colors duration-300 focus:outline-none"
+                className="px-4 py-1.5 rounded-full font-medium lg:text-base text-xs border border-gray text-mainheading dark:text-primary dark:hover:bg-white/10 dark:border-white/20 dark:bg-secondary transition-colors duration-300 focus:outline-none"
               >
                 Read more FAQs
               </Link>
