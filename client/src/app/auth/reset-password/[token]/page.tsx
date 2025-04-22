@@ -660,7 +660,7 @@ const NewPasswordPage = () => {
             <AnimatePresence>
               {resetError && (
                 <motion.div
-                  className="bg-lightgray dark:bg-white/5 rounded-2xl p-4 flex items-center gap-4 relative" // Original padding/gap
+                  className="bg-gray/10 dark:bg-white/5 rounded-2xl p-4 flex items-center gap-4 relative" // Original padding/gap
                   role="alert"
                   initial="initial"
                   animate="animate"
@@ -684,7 +684,7 @@ const NewPasswordPage = () => {
             <AnimatePresence>
               {resetSuccess && (
                 <motion.div
-                  className="flex bg-lightgray dark:bg-secondary p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4"
+                  className="flex bg-gray/10 dark:bg-secondary p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4"
                   role="alert"
                   initial="initial"
                   animate="animate"
@@ -717,7 +717,7 @@ const NewPasswordPage = () => {
                 <div>
                   <label
                     htmlFor="password"
-                    className="text-gray-500 dark:text-gray-300 block capitalize font-medium"
+                    className="text-gray-500 dark:text-gray-300 block capitalize"
                   >
                     New Password <span className="text-error">*</span>
                   </label>
@@ -830,7 +830,7 @@ const NewPasswordPage = () => {
                 <div>
                   <label
                     htmlFor="confirm-password"
-                    className="text-gray-500  dark:text-gray-300 block capitalize font-medium"
+                    className="text-gray-500  dark:text-gray-300 block capitalize"
                   >
                     Confirm New Password <span className="text-error">*</span>
                   </label>
@@ -895,9 +895,9 @@ const NewPasswordPage = () => {
                   <button
                     type="submit"
                     // --- Original Button Classes + Dynamic Disabled State ---
-                    className={`rounded-full text-lg w-full h-14 cursor-pointer duration-300 ease-in-out focus:outline-none font-medium py-3 transition-colors ${
+                    className={`rounded-full w-full lg:h-12.5 cursor-pointer duration-300 ease-in-out focus:outline-none font-medium lg:py-3 py-2 transition-colors ${
                       isSubmitDisabled
-                        ? "bg-lightgray dark:bg-background border text-mainheading dark:text-white cursor-not-allowed" // Original disabled style
+                        ? "bg-gray/10 dark:bg-background dark:border text-mainheading dark:text-white cursor-not-allowed" // Original disabled style
                         : "bg-primary hover:bg-primaryhover font-medium text-secondary" // Original enabled style
                     }`}
                     disabled={isSubmitDisabled} // Use combined disabled logic
@@ -948,12 +948,12 @@ const NewPasswordPage = () => {
             {/* Back to Login Link (Original Structure/Styling) */}
             {!resetSuccess && (
               <div className="text-center mt-6">
-                <p className="text-gray-500 dark:text-gray-300">
+                <p className="text-gray-700 dark:text-gray-300">
                   {/* Kept dark mode class if it was there */}
                   Go back to&nbsp;
                   <Link
                     href="/auth/login"
-                    className="text-primary font-medium underline underline-offset-4" // Kept dark mode class
+                    className="text-lime-500 font-medium underline underline-offset-4" // Kept dark mode class
                   >
                     Login
                   </Link>

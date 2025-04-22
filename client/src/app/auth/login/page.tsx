@@ -2096,7 +2096,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="bg-[#f2f4f7] dark:bg-background">
+    <div className="bg-white dark:bg-background">
       <div className="flex flex-col justify-center items-center lg:h-[calc(100vh-73px)] px-4">
         <div className="w-full max-w-md lg:mt-20 mt-10">
           {/* User Inactive-LogoutMessage */}
@@ -2104,7 +2104,7 @@ export default function LoginPage() {
           <AnimatePresence>
             {inactiveLogoutMessage && (
               <motion.div
-                className="bg-white dark:bg-white/5 rounded-2xl p-4 flex items-center gap-4 relative mb-4"
+                className="bg-gray/10 dark:bg-white/5 rounded-2xl p-4 flex items-center gap-4 relative mb-4"
                 role="alert"
                 initial="initial"
                 animate="animate"
@@ -2128,7 +2128,7 @@ export default function LoginPage() {
           <AnimatePresence>
             {sessionExpiredMessage && (
               <motion.div
-                className="bg-white dark:bg-white/5 rounded-2xl p-4 flex items-center gap-4 relative mb-4"
+                className="bg-gray/10 dark:bg-white/5 rounded-2xl p-4 flex items-center gap-4 relative mb-4"
                 role="alert"
                 initial="initial"
                 animate="animate"
@@ -2155,7 +2155,7 @@ export default function LoginPage() {
               Welcome back.
             </h2>
 
-            <p className="text-center text-gray-500 dark:text-gray-300 font-light mb-4">
+            <p className="text-center text-gray-700 dark:text-gray-300 font-light mb-4">
               New to Wise?{" "}
               <Link
                 href="/auth/register"
@@ -2169,7 +2169,7 @@ export default function LoginPage() {
             <AnimatePresence>
               {isLoginErrorVisible && loginError && (
                 <motion.div
-                  className={`bg-white dark:bg-white/5 rounded-2xl p-4 flex items-center gap-4 relative`}
+                  className={`dark:bg-white/5 bg-gray/10 rounded-2xl p-4 flex items-center gap-4 relative`}
                   role="alert"
                   initial="initial"
                   animate="animate"
@@ -2192,7 +2192,7 @@ export default function LoginPage() {
             <AnimatePresence>
               {isLoginSuccessVisible && loginSuccess && (
                 <motion.div
-                  className="flex bg-white dark:bg-white/5 p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4"
+                  className="flex bg-gray/10 dark:bg-white/5 p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4"
                   role="alert"
                   initial="initial"
                   animate="animate"
@@ -2218,7 +2218,7 @@ export default function LoginPage() {
               <div>
                 <button
                   type="button" // Changed to button type for accessibility and preventing form submission
-                  className="flex bg-white dark:bg-background dark:border justify-center rounded-lg text-mainheading dark:text-white text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 text-sm lg:text-base"
+                  className="flex dark:bg-background border justify-center rounded-lg text-mainheading dark:text-white text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 text-sm lg:text-base"
                   onClick={() =>
                     alert("Continue with Google functionality not implemented.")
                   } // Example action
@@ -2236,7 +2236,7 @@ export default function LoginPage() {
               <div>
                 <label
                   htmlFor="email"
-                  className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base font-medium"
+                  className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
                 >
                   Your email address <span className="text-error">*</span>
                 </label>
@@ -2244,10 +2244,10 @@ export default function LoginPage() {
                   type="email"
                   id="email"
                   placeholder="Your Email"
-                  className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full dark:border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
+                  className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
                     emailError
                       ? "border-red-700 border-2 !shadow-none"
-                      : "hover:!shadow-none dark:hover:shadow-whitecolor"
+                      : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
                   }`}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -2272,7 +2272,7 @@ export default function LoginPage() {
               <div>
                 <label
                   htmlFor="password"
-                  className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base font-medium"
+                  className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
                 >
                   Your password <span className="text-error">*</span>
                 </label>
@@ -2281,10 +2281,10 @@ export default function LoginPage() {
                     type={showPassword ? "text" : "password"}
                     id="password"
                     placeholder="Your Password"
-                    className={`mt-1 block px-4 bg-white dark:bg-background py-3 h-14 dark:border w-full rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
+                    className={`mt-1 block px-4 dark:bg-background py-3 h-14 border w-full rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
                       passwordError
                         ? "border-red-700 border-2 !shadow-none"
-                        : "hover:!shadow-none dark:hover:shadow-whitecolor"
+                        : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
                     }`}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -2335,7 +2335,7 @@ export default function LoginPage() {
               <div className="flex justify-between items-center mb-4">
                 <button
                   type="submit"
-                  className={`rounded-full text-mainheading text-lg w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium lg:py-3 py-2 lg:h-14 transition-colors
+                  className={`rounded-full text-mainheading w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium lg:py-3 py-2 lg:h-12.5 transition-colors
                                     ${
                                       isSubmitting
                                         ? "bg-gray-300 dark:bg-background border dark:text-white text-mainheading cursor-not-allowed"

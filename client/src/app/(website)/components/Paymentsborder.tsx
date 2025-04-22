@@ -112,15 +112,15 @@ const FeatureItem: React.FC<FeatureItemProps> = ({
   description,
 }) => {
   return (
-    <div className="bg-white dark:bg-white/5 lg:p-6 p-4 rounded-2xl">
+    <div className="bg-gray/5 dark:bg-white/5 lg:p-6 p-4 rounded-2xl">
       {/* Added shadow-sm for subtle lift */}
       <div className="flex items-center gap-6">
-        <span className="text-primary dark:text-primary">{icon}</span>
+        <span className="text-mainheading dark:text-primary">{icon}</span>
         <div className="space-y-1">
           <h5 className="lg:text-lg text-sm font-medium text-mainheading dark:text-white">
             {title}
           </h5>
-          <p className="text-gray-500 text-xs lg:text-base dark:text-gray-300">
+          <p className="text-gray-700 text-xs lg:text-base dark:text-gray-300">
             {description}
           </p>
         </div>
@@ -131,7 +131,7 @@ const FeatureItem: React.FC<FeatureItemProps> = ({
 
 const RemittanceFeature: React.FC = () => {
   return (
-    <section className="bg-gray-100 dark:bg-background px-4 lg:py-10 py-5">
+    <section className="bg-white dark:bg-background px-4 lg:py-10 py-5">
       {/* Replaced bg-[#f2f4f7] with bg-gray-100 for Tailwind consistency */}
       <div className="container mx-auto">
         <div className="flex justify-center">
@@ -140,7 +140,7 @@ const RemittanceFeature: React.FC = () => {
             {/* Removed 'col-md-7' and used md:w-7/12 directly */}
             <div className="text-center">
               {/* sub-title */}
-              <p className="text-base font-medium text-gray-500 dark:text-gray-300 mb-2">
+              <p className="text-base font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Payments without borders
               </p>
               {/* title */}

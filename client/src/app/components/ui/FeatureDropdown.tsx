@@ -807,7 +807,7 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
             <Link
               href={link.href}
               passHref
-              className={`group relative inline-flex items-center gap-2 text-sm text-mainheading dark:text-white font-medium cursor-pointer ${
+              className={`group relative inline-flex items-center gap-1 text-sm text-mainheading dark:text-white font-medium cursor-pointer ${
                 linkClassName || ""
               }`}
               onClick={() => {
@@ -836,7 +836,7 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
         href="/features"
         onClick={myToggleDropdown}
         className={`rounded-full font-medium cursor-pointer
-           py-2 dark:hover:text-primary hover:bg-gray/5 hover:dark:bg-secondary text-mainheading dark:text-white ${
+           py-2 text-mainheading dark:text-white ${
           buttonClassName || ""
         }`}
       >
@@ -853,7 +853,7 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
             className={
               isMobile
                 ? `mt-2 pl-4`
-                : `absolute right-0 top-12 w-md bg-white border dark:bg-background rounded-xl overflow-hidden shadow-lg z-50 ${
+                : `absolute right-0 top-12 w-md bg-white border dark:bg-background rounded-xl overflow-hidden z-50 ${
                     dropdownClassName || ""
                   }`
             }
