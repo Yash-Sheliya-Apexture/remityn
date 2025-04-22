@@ -12,7 +12,7 @@ const PayingWithDisplay: React.FC<PayingWithDisplayProps> = ({
 }) => {
   return (
     <>
-      <label className="block font-medium mb-2 ml-2 text-neutral-900">
+      <label className="block font-medium mb-2 ml-2 text-neutral-900 dark:text-white">
         Paying with
       </label>
       <div className="bg-lightgray dark:bg-primarybox rounded-2xl p-4">
