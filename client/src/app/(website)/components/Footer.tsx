@@ -1213,12 +1213,11 @@ const Footer: React.FC = () => {
           <Image
             src="/assets/images/wise-logo.svg" // Ensure this path is correct
             alt="7Wise logo"
-            height={40} // Adjusted size
-            width={150} // Adjusted size
-            className="mb-4" // Removed specific size classes, using width/height props
+            height={100} // Adjusted size
+            width={100} // Adjusted size
+            className="mb-4 lg:h-10 h-5 -ml-2"  // Removed specific size classes, using width/height props
           />
-          <p className="text-mainheading dark:text-white lg:text-base text-sm leading-relaxed">
-            {" "}
+          <p className="text-mainheading dark:text-white lg:text-lg text-sm leading-relaxed">
             {/* Adjusted text size and leading */}
             We provide reliable and competitive currency exchange services with
             real-time rates, secure transactions, and excellent customer
@@ -1299,7 +1298,7 @@ const Footer: React.FC = () => {
         </div>
       </div>
       {/* Currency Converters Section */}
-      <hr className="lg:my-8 my-6 container mx-auto border-gray-300" />
+      <hr className="lg:my-8 my-6 container mx-auto" />
       {/* Adjusted margin and color */}
       <div className="container mx-auto">
         <h3 className="text-lime-500 dark:text-primary lg:text-lg text-base font-semibold pb-4">
@@ -1332,7 +1331,7 @@ const Footer: React.FC = () => {
         </div>
       </div>
       {/* Copyright and Social Icons Section */}
-      <hr className="container mx-auto lg:my-8 my-6 border-gray-300" />{" "}
+      <hr className="container mx-auto lg:my-8 my-6" />{" "}
       {/* Adjusted margin and color */}
       <div className="flex flex-col md:flex-row justify-between items-center container mx-auto gap-4">
         {" "}
@@ -1359,12 +1358,6 @@ const Footer: React.FC = () => {
             {/* Adjusted size, added hover */}
           </a>
         </div>
-      </div>
-      {/* Optional Disclaimer Section */}
-      <div className="container mx-auto mt-6 pt-6 border-t border-gray-300">
-        <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
-          {footerData.disclaimer}
-        </p>
       </div>
     </footer>
   );

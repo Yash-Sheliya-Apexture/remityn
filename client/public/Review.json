@@ -5,33 +5,33 @@
             "reviews": [
                 {
                     "reviewerName": "Tom Diaz",
-                    "avatarUrl": "/assets/images/Tom.jpg",
+                    "avatarUrl": "./assets/images/Tom.jpg",
                     "rating": 4.5,
-                    "comment": "As a blogger, I spent too much time updating plugins and dealing with minor issues that slowed down my site. After using their WordPress maintenance service for just 2 months, my site is now 40% faster, and I've seen a 25% increase in search engine rankings. The best part? I haven't had a single technical issue in over 8 weeks. Their team knows what they're doing."
+                    "comment": "Sending payments to my international contractors used to be a headache with high bank fees. This service is a game-changer! Transfers are incredibly fast, often arriving within minutes, and the exchange rates are much better than my bank. Saved me a significant amount last quarter. Highly recommend for small businesses."
                 },
                 {
                     "reviewerName": "James Collins",
-                    "avatarUrl": "/assets/images/John-Taylor.jpg",
+                    "avatarUrl": "./assets/images/John-Taylor.jpg",
                     "rating": 5,
-                    "comment": "Thir WordPresse consistency services are excellent! I have never experience any downtime since I signed up, and my e-commerce site is always current. small business owners require peace of mind."
+                    "comment": "Excellent and reliable service! I send money to my family in the Philippines every month. Never had an issue, the app is simple to use, and the transparency on fees is great. Gives me peace of mind knowing the money arrives safely and quickly."
                 },
                 {
                     "reviewerName": "Ryan Cooper",
-                    "avatarUrl": "/assets/images/Ryan.jpg",
+                    "avatarUrl": "./assets/images/Ryan.jpg",
                     "rating": 5,
-                    "comment": "As a first-time blogger, I was overwhelmed by WordPress, but their tutorials made it so much easier! I set up my blog and even made it look professional in just one week. Their detailed instructions are ideal for beginners. My traffic has already started to increase."
+                    "comment": "As someone new to sending money abroad, I was nervous. Their platform made it surprisingly easy! The step-by-step process was clear, and my first transfer to Germany went smoothly. Customer support was also helpful when I had a question about verification. Great for beginners!"
                 },
                 {
                     "reviewerName": "Mark Evans",
-                    "avatarUrl": "/assets/images/Mark.jpg",
+                    "avatarUrl": "./assets/images/Mark.jpg",
                     "rating": 5,
-                    "comment": "Their security services gave me peace of mind after my site was hacked. They cleaned everything up and set up protections to prevent it from happening.Outstanding helpful in getting things working properly..."
+                    "comment": "After a terrible experience with another provider where my transfer got stuck, I switched here. The security measures feel robust, and their tracking system is very clear. When I needed clarification on a recipient detail, their support team resolved it promptly. Feels much safer now."
                 },
                 {
                     "reviewerName": "Rachel Thompson",
-                    "avatarUrl": "/assets/images/Rachel.jpg",
+                    "avatarUrl": "./assets/images/Rachel.jpg",
                     "rating": 4.5,
-                    "comment": "My life has been changed by this service. I used what to do. be connected to my pc for hours at a time, trying to solve problems and handle things that I didn’t know They take care of the rest with comfort, and I can now finally focus entirely on what I do best. genuinely transformative!"
+                    "comment": "This service has saved me so much time! No more trips to the bank or complicated wire transfer forms. I can send money to my relatives in Mexico directly from my phone in minutes. The convenience is unbeatable, and the rates are fair. Truly makes life easier!"
                 }
             ]
         },
@@ -42,31 +42,31 @@
                     "reviewerName": "John Taylor",
                     "avatarUrl": "./assets/images/John-Taylor.jpg",
                     "rating": 4,
-                    "comment": "Their WordPress consistency services are excellent! I have never experience any downtime since I signed up, and my e-commerce is always current. The solution for small business owners require peace of mind."
+                    "comment": "Their international payment service is consistently reliable. We use it for paying overseas suppliers, and the funds always arrive on time. The exchange rates are competitive, which helps our bottom line. A dependable solution for small businesses needing international reach."
                 },
                 {
                     "reviewerName": "Lisa Carter",
                     "avatarUrl": "./assets/images/Lisa-Carter.jpg",
                     "rating": 4.5,
-                    "comment": "My site’s performance to significantly improved since I signed up. I’ve learned a lot from their, and their staff is always quick to reply. They’re consistently spot on whether it’s error correction, feature addition, speed optimization. Highly recommend their services!"
+                    "comment": "The exchange rates and low fees significantly beat my old bank transfer method. I've saved a noticeable amount sending tuition fees abroad for my daughter. Their support team is also very responsive; they quickly answered my query about transfer limits. Highly recommend!"
                 },
                 {
                     "reviewerName": "Amelia Brown",
                     "avatarUrl": "./assets/images/Amelia.jpg",
                     "rating": 5,
-                    "comment": "This service is a lifesaver for my business. Their team optimizes my site regularly, keeps it secure, and ensures lightning-fast loading times. My clients have even complimented how smooth the site feels now..."
+                    "comment": "Absolutely essential for my online store with international customers. Processing refunds or paying affiliates abroad is lightning fast and incredibly straightforward through their platform. Clients have even mentioned how easy it was to receive payments. A lifesaver!"
                 },
                 {
                     "reviewerName": "Henry Walker",
                     "avatarUrl": "./assets/images/Henry.jpg",
                     "rating": 5,
-                    "comment": "Their blogging tutorials helped me grow my site from 100 monthly visitors to over 5,000! Their advice on content creation and SEO is priceless. I wouldn’t be where I am today without them."
+                    "comment": "I regularly send money to family in both Nigeria and the UK. This platform makes it easy to manage multiple recipients and currencies. The transfers are quick, and I appreciate the clear fee structure. It simplifies what used to be a complex process."
                 },
                 {
                     "reviewerName": "Hannah Smith",
                     "avatarUrl": "./assets/images/Hannah.jpg",
                     "rating": 4.5,
-                    "comment": "I’ve only been using VCGA for a few days, but I’m already blown away by how much they’ve helped. It feels like I’m working with a trusted friend who truly understands WordPress and handles every issue right away. Where have you been all this time? This service is a total game-changer!"
+                    "comment": "Just started using this service a week ago to send money to Australia, and I'm already impressed. The sign-up was quick, the interface is intuitive, and the first transfer was completed much faster than I expected. Feels like a trustworthy and efficient service. Wish I'd found it sooner!"
                 }
             ]
         },
@@ -77,26 +77,26 @@
                     "reviewerName": "Sarah Mitchell",
                     "avatarUrl": "./assets/images/Sarah-Mitchell-1.jpg",
                     "rating": 4.5,
-                    "comment": "This is hands down one of the best services we’ve ever partnered with. The pricing is fair, the customer service is outstanding, and the quality of their work is top-tier. We’ve been with them for about eight months now, and we can’t imagine managing our site without their support. Their service is incredibly valuable and has made a huge difference for us. Big thanks to the team!"
+                    "comment": "We've been using this service for almost a year for our business's international payroll to India and Poland. It's hands down the best value we've found. The pricing is transparent, transfers are reliable, and their customer service is outstanding whenever we've had questions. Can't imagine going back to traditional bank wires. Highly valuable!"
                 },
                 {
                     "reviewerName": "Emily Clarke",
                     "avatarUrl": "./assets/images/Emily.jpg",
                     "rating": 3.5,
-                    "comment": "I was having trouble getting my first blog up and running, but these tutorials made it so easy! Even for beginners like me, following the detailed instructions is simple. I’ve now launched a fully functional blog. I heartily recommend it!"
+                    "comment": "Setting up my first international transfer to Canada was pretty easy with their app, which was great for a beginner like me. The instructions were clear. The transfer went through, though it took slightly longer than the estimate given. Overall good, but speed could be more consistent. Still recommend it for ease of use."
                 },
                 {
                     "reviewerName": "Jake Miller",
                     "avatarUrl": "./assets/images/Jake.jpg",
-                    "location": "Denver, CO",
+                    "location": "Austin, TX",
                     "rating": 5,
-                    "comment": "“I’ve been using their maintenance plan for almost a year now, and my site has never been more stable. They handle everything, from plugin updates to security patches. It’s a relief knowing my site is in good hands."
+                    "comment": "Been using this service for over a year now to support my parents overseas in Spain. Rock solid reliability. Never had a transfer fail or get delayed unexpectedly. Fees are reasonable, and the exchange rate is always clearly displayed. It’s a relief knowing the money gets there safely every time."
                 },
                 {
                     "reviewerName": "Liam Brown",
                     "avatarUrl": "./assets/images/Liam.jpg",
                     "rating": 4.5,
-                    "comment": "This team is incredibly reliable. Whenever I have a question or issue, respond quickly and resolve it effectively. Their support has been invaluable for my online store my site has never been more reliable"
+                    "comment": "This company provides an incredibly reliable money transfer service. Whenever I've had a question about a transfer status to Colombia, their support team responded quickly and effectively via chat. The app is straightforward, and my transfers have always been dependable. Great peace of mind."
                 }
             ]
         }
