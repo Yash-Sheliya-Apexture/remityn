@@ -91,7 +91,7 @@ const TransferHeader: React.FC<TransferHeaderProps> = ({ transferId }) => {
       <Button
         asChild
         variant="link"
-        className="text-neutral-900 hover:text-primary p-0 h-auto self-start sm:self-center"
+        className="text-neutral-900 dark:text-white hover:text-primary dark:hover:text-primary p-0 h-auto self-start sm:self-center"
       >
         <Link href="/admin/transfer">
           <ArrowLeft className="size-5 mr-1.5" />

@@ -2478,62 +2478,415 @@
 
 
 
+// // frontend/src/app/components/layout/AdminSidebar.tsx
+// "use client";
+
+// import Link from "next/link";
+// import { usePathname } from "next/navigation";
+// import { useAuth } from "../../contexts/AuthContext";
+// import React, { useState, useEffect, useRef } from "react"; // Import React and hooks
+// import Image from "next/image";
+// import { IconType } from "react-icons";
+// import { motion } from "framer-motion"; // Import motion
+// import {
+//   FaChartPie,
+//   FaCoins,
+//   FaUsers,
+//   FaMoneyBillWave,
+//   FaChevronRight,
+//   FaTimes,
+// } from "react-icons/fa";
+// import { MdManageAccounts } from "react-icons/md";
+// import { GrLogout } from "react-icons/gr";
+// import { IoMdAddCircleOutline } from "react-icons/io";
+// import ThemeToggle from "../../contexts/ThemeToggle";
+
+// // --- Reusable Nav Item Component (Keep as is) ---
+// interface SidebarNavItemProps {
+//   href: string;
+//   icon: IconType;
+//   label: string;
+//   isActive: boolean;
+//   onClick?: () => void; // Add onClick prop for mobile close
+// }
+
+// const SidebarNavItem: React.FC<SidebarNavItemProps> = ({ href, icon: Icon, label, isActive, onClick }) => {
+//   return (
+//     <Link
+//       href={href}
+//       onClick={onClick} // Call onClick when link is clicked
+//       className={`flex items-center gap-3 py-2 pl-2 rounded-4xl transition-all duration-200 group ${
+//         isActive
+//           ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
+//           : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
+//       }`}
+//     >
+//       <div className={`p-2 rounded-full transition-colors duration-200`}>
+//         <Icon className={`size-5 transition-colors duration-200 ${
+//             isActive ? "text-neutral-900 dark:text-primary" : ""
+//         }`} />
+//       </div>
+//       <span className="font-medium">{label}</span>
+//     </Link>
+//   );
+// };
+// // --- End Reusable Nav Item Component ---
+
+// interface AdminSidebarProps {
+//   isSidebarOpen: boolean; // Renamed from sidebarOpen for clarity if preferred, keep AdminSidebar prop name consistent
+//   toggleSidebar: () => void;
+// }
+
+// const AdminSidebar: React.FC<AdminSidebarProps> = ({
+//   isSidebarOpen,
+//   toggleSidebar,
+// }) => {
+//   const pathname = usePathname();
+//   const sidebarRef = useRef<HTMLDivElement>(null); // Use HTMLDivElement or HTMLAsideElement
+//   const [isMobileView, setIsMobileView] = useState<boolean | null>(null);
+//   const { user, logout } = useAuth();
+//   const [dashboardDropdownOpen, setDashboardDropdownOpen] = useState<boolean>(false);
+
+//   // --- Effect for Mobile View Detection ---
+//   useEffect(() => {
+//     const checkMobileView = () => setIsMobileView(window.innerWidth < 1024);
+//     checkMobileView(); // Initial check
+//     window.addEventListener("resize", checkMobileView);
+//     return () => window.removeEventListener("resize", checkMobileView);
+//   }, []);
+
+//   // --- Effect for Click Outside ---
+//   useEffect(() => {
+//     const handleClickOutside = (event: MouseEvent) => {
+//       if (
+//         sidebarRef.current &&
+//         !sidebarRef.current.contains(event.target as Node) &&
+//         isSidebarOpen && // Use the prop directly
+//         isMobileView === true // Only on mobile
+//       ) {
+//         toggleSidebar(); // Call the passed toggle function
+//       }
+//     };
+
+//     // Add listener only when sidebar is open on mobile
+//     if (isSidebarOpen && isMobileView === true) {
+//       document.addEventListener("mousedown", handleClickOutside);
+//     } else {
+//       document.removeEventListener("mousedown", handleClickOutside);
+//     }
+
+//     // Cleanup
+//     return () => {
+//       document.removeEventListener("mousedown", handleClickOutside);
+//     };
+//   }, [isSidebarOpen, isMobileView, toggleSidebar]); // Dependencies
+
+//   // --- Active State Logic (Keep as is) ---
+//   const isDashboardRoute = pathname === "/admin";
+//   const isDashboardSubRoute = pathname?.startsWith("/admin/dashboard");
+//   const isCurrenciesRoute = pathname === "/admin/currencies";
+//   const isUsersRoute = pathname === "/admin/users";
+//   const isAddMoneyRoute = pathname === "/admin/add-money";
+//   const isTransferRoute = pathname === "/admin/transfer";
+//   const isKycManagementRoute = pathname === "/admin/kyc-management";
+
+//   const isDashboardSectionActive = isDashboardRoute || isDashboardSubRoute;
+
+//   // --- Effect for Dropdown (Keep as is, but maybe close on mobile nav click?) ---
+//   useEffect(() => {
+//     if (isDashboardSubRoute) {
+//       setDashboardDropdownOpen(true);
+//     } else if (!isDashboardRoute && !isDashboardSubRoute) {
+//       setDashboardDropdownOpen(false);
+//     }
+//   }, [pathname, isDashboardRoute, isDashboardSubRoute]);
+
+//   // --- Handlers ---
+//   const handleLogout = async () => {
+//     await logout();
+//     if (isSidebarOpen && isMobileView) { // Close sidebar on mobile after action
+//         toggleSidebar();
+//     }
+//     window.location.href = "/auth/login"; // Or use Next router if preferred
+//   };
+
+//   const toggleDashboardSubmenu = () => {
+//     setDashboardDropdownOpen((prevOpen) => !prevOpen);
+//   };
+
+//   // Helper to close sidebar on mobile when a nav item is clicked
+//   const handleMobileNavClick = () => {
+//     if (isSidebarOpen && isMobileView) {
+//       toggleSidebar();
+//     }
+//     // Optional: Close dropdown when navigating away on mobile?
+//     // setDashboardDropdownOpen(false);
+//   };
+
+//    const handleDashboardLinkClick = () => {
+//      if (isSidebarOpen && isMobileView) {
+//        toggleSidebar();
+//      }
+//      // Don't toggle the submenu here, just navigate
+//    };
+
+//   const isSubmenuActive = (path: string): boolean => pathname === path;
+
+//   return (
+//     <>
+//       {/* Backdrop for mobile sidebar */}
+//       {isSidebarOpen && isMobileView === true && ( // Condition based on state and prop
+//         <motion.div
+//         initial={{ opacity: 0 }}
+//         animate={{ opacity: 0.5 }}
+//         exit={{ opacity: 0 }}
+//         transition={{ duration: 0.2 }}
+//           onClick={toggleSidebar} // Allow closing by clicking backdrop
+//           className="fixed inset-0 bg-black/50 z-40 lg:hidden" // Use z-index lower than sidebar
+//           aria-hidden="true"
+//         />
+//       )}
+
+//       {/* Conditionally render Sidebar based on screen size and open state */}
+//       {/* Logic: Render if isMobileView isn't determined yet (null), OR if it's desktop (false), OR if it's mobile AND open (true && true) */}
+//       {isMobileView === null || isMobileView === false || (isSidebarOpen && isMobileView === true) ? (
+//         <motion.aside
+//           ref={sidebarRef} // Attach ref for click outside detection
+//           className={`w-64 fixed bg-white dark:bg-neutral-900 h-full inset-y-0 left-0 lg:relative lg:z-auto z-50 border-r dark:border-neutral-700 flex flex-col`} // Base styles + z-index
+//           // Framer Motion props based on Sidebar component
+//           initial={isMobileView ? { x: "-100%" } : {}} // Start off-screen on mobile
+//           animate={isMobileView ? { x: isSidebarOpen ? 0 : "-100%" } : {}} // Animate based on open state on mobile, always visible on desktop
+//           exit={isMobileView ? { x: "-100%" } : {}} // Animate out on mobile
+//           transition={isMobileView ? { duration: 0.3, ease: "easeInOut" } : { duration: 0 }} // Only transition on mobile
+//         >
+//           {/* Mobile Close Button - Render only on mobile */}
+//           {isMobileView && (
+//             <button
+//               className="absolute top-4 right-4 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 z-10" // z-10 to be above content
+//               onClick={toggleSidebar}
+//               aria-label="Close sidebar"
+//             >
+//               <FaTimes className="size-5" />
+//             </button>
+//           )}
+
+//           {/* Logo Section (Keep as is) */}
+//           <div className="p-3 border-b dark:border-neutral-700">
+//             <div className="h-14 flex justify-center items-center">
+//               <Image
+//                 src="/assets/images/wise-logo.svg"
+//                 height={100}
+//                 width={100}
+//                 alt="Wise Admin Logo"
+//                 className="h-auto w-auto max-h-10"
+//                 priority
+//               />
+//             </div>
+//           </div>
+
+//           {/* User Profile Summary (Keep as is) */}
+//           {user && (
+//             <div className="flex items-center gap-3 p-3 border-b dark:border-neutral-700">
+//               <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center relative flex-shrink-0">
+//                 <span className="text-neutral-900 font-semibold uppercase text-lg">
+//                   {user.email?.charAt(0) || "A"}
+//                 </span>
+//               </div>
+//               <div className="overflow-hidden space-y-0.5">
+//                 <p className="font-semibold capitalize text-neutral-900 dark:text-white truncate text-sm">
+//                   {user.fullName || "Admin User"}
+//                 </p>
+//                 <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+//                   {user.email || "admin@example.com"}
+//                 </p>
+//               </div>
+//             </div>
+//           )}
+
+//           {/* Navigation */}
+//           {/* Add scrollbar styling */}
+//           <nav className="flex-1 py-4 overflow-x-hidden overflow-y-auto [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
+//             <div className="px-4 mb-4">
+//               <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 px-3">
+//                 Main
+//               </span>
+//             </div>
+
+//             <ul className="space-y-1 px-3">
+//               {/* Dashboard Section */}
+//               <li>
+//                 <div
+//                   className={`flex items-center justify-between w-full py-2 pl-2 rounded-4xl transition-all duration-200 group ${
+//                     isDashboardSectionActive
+//                       ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
+//                       : "text-neutral-500 dark:text-gray-300"
+//                   }`}
+//                 >
+//                   <Link
+//                     href="/admin"
+//                     onClick={handleDashboardLinkClick} // Close sidebar on mobile click
+//                     className={`flex items-center gap-3 flex-grow ${!isDashboardSectionActive ? "hover:text-neutral-900 dark:hover:text-primary" : ""}`}
+//                   >
+//                     <div className={`p-2 rounded-full transition-colors duration-200`}>
+//                       <FaChartPie className={`size-5 transition-colors duration-200 ${ isDashboardSectionActive ? "text-neutral-900 dark:text-primary" : "" }`} />
+//                     </div>
+//                     <span className="font-medium">Dashboard</span>
+//                   </Link>
+//                   <button
+//                     onClick={toggleDashboardSubmenu}
+//                     className={`p-2 mr-1 rounded-full transition-colors duration-200 ${
+//                       !isDashboardSectionActive ? "hover:bg-gray-500/10 dark:hover:bg-gray-700/30" : ""
+//                     }`}
+//                     aria-label="Toggle dashboard submenu"
+//                     aria-expanded={dashboardDropdownOpen}
+//                   >
+//                     <FaChevronRight
+//                       className={`size-3.5 transition-transform duration-200 ${ dashboardDropdownOpen ? "rotate-90" : "" } ${
+//                           isDashboardSectionActive ? "" : "text-neutral-500 dark:text-gray-400"
+//                       }`}
+//                     />
+//                   </button>
+//                 </div>
+
+//                 {/* Sub-menu */}
+//                 {dashboardDropdownOpen && (
+//                   <ul className="mt-1 ml-7 space-y-1 border-l-2 border-gray-200 dark:border-gray-700 pl-4 py-1">
+//                     {[
+//                       { href: "/admin/dashboard/demo1", label: "Demo 1" },
+//                       { href: "/admin/dashboard/demo2", label: "Demo 2" },
+//                       { href: "/admin/dashboard/demo3", label: "Demo 3" }
+//                     ].map(item => (
+//                       <li key={item.href}>
+//                         <Link
+//                           href={item.href}
+//                           onClick={handleMobileNavClick} // Close sidebar on mobile click
+//                           className={`block px-3 py-2 rounded-md text-sm transition-colors duration-200 ${
+//                             isSubmenuActive(item.href)
+//                               ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary font-medium"
+//                               : "text-neutral-500 hover:text-neutral-900 dark:text-gray-400 dark:hover:text-primary hover:bg-gray-500/5 dark:hover:bg-gray-700/20"
+//                           }`}
+//                         >
+//                           {item.label}
+//                         </Link>
+//                       </li>
+//                     ))}
+//                   </ul>
+//                 )}
+//               </li>
+
+//               {/* Other Nav Items using SidebarNavItem */}
+//               {/* Pass handleMobileNavClick to close sidebar on mobile */}
+//               <li> <SidebarNavItem href="/admin/currencies" icon={FaCoins} label="Currencies" isActive={isCurrenciesRoute} onClick={handleMobileNavClick} /> </li>
+//               <li> <SidebarNavItem href="/admin/users" icon={FaUsers} label="Users" isActive={isUsersRoute} onClick={handleMobileNavClick} /> </li>
+//               <li> <SidebarNavItem href="/admin/add-money" icon={IoMdAddCircleOutline} label="Add-Money" isActive={isAddMoneyRoute} onClick={handleMobileNavClick} /> </li>
+//               <li> <SidebarNavItem href="/admin/transfer" icon={FaMoneyBillWave} label="Send-Money" isActive={isTransferRoute} onClick={handleMobileNavClick} /> </li>
+//               <li> <SidebarNavItem href="/admin/kyc-management" icon={MdManageAccounts} label="KYC Management" isActive={isKycManagementRoute} onClick={handleMobileNavClick} /> </li>
+            
+//             </ul>
+//           </nav>
+
+//           {/* Footer Actions (Keep as is, but inside motion.aside) */}
+//           <div className="p-4 border-t dark:border-neutral-700 mt-auto space-y-3">
+//             <div className="flex justify-center">
+//               <ThemeToggle location="admin" className="inline-block" />
+//             </div>
+//             {user && (
+//               <button
+//                 onClick={handleLogout} // handleLogout already closes sidebar on mobile
+//                 className="flex items-center justify-center gap-3 w-full px-4 py-2.5 rounded-lg text-red-600 dark:text-red-500 bg-red-500/10 hover:bg-red-500/20 dark:bg-red-500/15 dark:hover:bg-red-500/25 transition-colors duration-200"
+//               >
+//                 <GrLogout className="size-5" aria-hidden="true"/>
+//                 <span className="font-medium text-sm">Logout</span>
+//               </button>
+//             )}
+//           </div>
+//         </motion.aside>
+//       ) : null /* Render nothing if mobile and closed */}
+//     </>
+//   );
+// };
+
+// export default AdminSidebar;
+
+
+
+
 // frontend/src/app/components/layout/AdminSidebar.tsx
 "use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "../../contexts/AuthContext";
-import React, { useState, useEffect, useRef } from "react"; // Import React and hooks
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { IconType } from "react-icons";
-import { motion } from "framer-motion"; // Import motion
+// Import motion
+import { motion, AnimatePresence } from "framer-motion"; // Added AnimatePresence, might be useful later
 import {
   FaChartPie,
   FaCoins,
   FaUsers,
   FaMoneyBillWave,
-  FaChevronRight,
   FaTimes,
 } from "react-icons/fa";
 import { MdManageAccounts } from "react-icons/md";
 import { GrLogout } from "react-icons/gr";
 import { IoMdAddCircleOutline } from "react-icons/io";
-import ThemeToggle from "../../contexts/ThemeToggle";
+import ThemeToggle from "../../contexts/ThemeToggle"; // Ensure path is correct
 
-// --- Reusable Nav Item Component (Keep as is) ---
+// --- Reusable Nav Item Component (Modified for Animation) ---
 interface SidebarNavItemProps {
   href: string;
   icon: IconType;
   label: string;
   isActive: boolean;
-  onClick?: () => void; // Add onClick prop for mobile close
+  onClick?: () => void;
 }
 
 const SidebarNavItem: React.FC<SidebarNavItemProps> = ({ href, icon: Icon, label, isActive, onClick }) => {
   return (
+    // 1. Add position: relative to the Link container
     <Link
       href={href}
-      onClick={onClick} // Call onClick when link is clicked
-      className={`flex items-center gap-3 py-2 pl-2 rounded-4xl transition-all duration-200 group ${
+      onClick={onClick}
+      // 5. Remove active background style from Link itself
+      //    Keep hover styles for inactive items
+      className={`relative flex items-center gap-3 py-2 pl-2 rounded-4xl transition-all duration-200 group ${ // Use rounded-md to match indicator shape
         isActive
-          ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
-          : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
+          ? "text-neutral-900 dark:text-primary" // Active text color remains
+          : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary" // Inactive + hover styles
       }`}
     >
-      <div className={`p-2 rounded-full transition-colors duration-200`}>
-        <Icon className={`size-5 transition-colors duration-200 ${
-            isActive ? "text-neutral-900 dark:text-primary" : ""
-        }`} />
-      </div>
-      <span className="font-medium">{label}</span>
+       {/* 6. Ensure Icon and Text are above the indicator */}
+       {/* Icon Container */}
+       <div className={`relative z-10 p-2 rounded-full transition-colors duration-200`}>
+           <Icon className={`size-5 transition-colors duration-200 `} />
+       </div>
+       {/* Label */}
+       <span className="relative z-10 font-medium">{label}</span>
+
+       {/* 2. Conditionally render the animated background */}
+       {isActive && (
+        <motion.div
+          // 3. Unique layoutId tells Framer Motion to animate between elements with the same ID
+          layoutId="active-sidebar-indicator"
+          // 4. Style the indicator: absolute positioning, fills the link, rounded, background color, behind content
+          className="absolute inset-0 bg-primary/60 dark:bg-primarybox rounded-full -z-10"
+          transition={{
+             type: "spring", // Or "tween"
+             stiffness: 350,
+             damping: 30,
+             // duration: 0.2 // if using tween
+          }}
+        />
+      )}
     </Link>
   );
 };
 // --- End Reusable Nav Item Component ---
 
 interface AdminSidebarProps {
-  isSidebarOpen: boolean; // Renamed from sidebarOpen for clarity if preferred, keep AdminSidebar prop name consistent
+  isSidebarOpen: boolean;
   toggleSidebar: () => void;
 }
 
@@ -2542,266 +2895,264 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
   toggleSidebar,
 }) => {
   const pathname = usePathname();
-  const sidebarRef = useRef<HTMLDivElement>(null); // Use HTMLDivElement or HTMLAsideElement
+  const sidebarRef = useRef<HTMLDivElement>(null);
   const [isMobileView, setIsMobileView] = useState<boolean | null>(null);
   const { user, logout } = useAuth();
-  const [dashboardDropdownOpen, setDashboardDropdownOpen] = useState<boolean>(false);
 
-  // --- Effect for Mobile View Detection ---
+  // --- Effects (Keep as is) ---
   useEffect(() => {
     const checkMobileView = () => setIsMobileView(window.innerWidth < 1024);
-    checkMobileView(); // Initial check
+    checkMobileView();
     window.addEventListener("resize", checkMobileView);
     return () => window.removeEventListener("resize", checkMobileView);
   }, []);
 
-  // --- Effect for Click Outside ---
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         sidebarRef.current &&
         !sidebarRef.current.contains(event.target as Node) &&
-        isSidebarOpen && // Use the prop directly
-        isMobileView === true // Only on mobile
+        isSidebarOpen &&
+        isMobileView === true
       ) {
-        toggleSidebar(); // Call the passed toggle function
+        toggleSidebar();
       }
     };
 
-    // Add listener only when sidebar is open on mobile
     if (isSidebarOpen && isMobileView === true) {
       document.addEventListener("mousedown", handleClickOutside);
     } else {
       document.removeEventListener("mousedown", handleClickOutside);
     }
 
-    // Cleanup
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isSidebarOpen, isMobileView, toggleSidebar]); // Dependencies
+  }, [isSidebarOpen, isMobileView, toggleSidebar]);
 
   // --- Active State Logic (Keep as is) ---
   const isDashboardRoute = pathname === "/admin";
-  const isDashboardSubRoute = pathname?.startsWith("/admin/dashboard");
   const isCurrenciesRoute = pathname === "/admin/currencies";
   const isUsersRoute = pathname === "/admin/users";
   const isAddMoneyRoute = pathname === "/admin/add-money";
   const isTransferRoute = pathname === "/admin/transfer";
   const isKycManagementRoute = pathname === "/admin/kyc-management";
 
-  const isDashboardSectionActive = isDashboardRoute || isDashboardSubRoute;
-
-  // --- Effect for Dropdown (Keep as is, but maybe close on mobile nav click?) ---
-  useEffect(() => {
-    if (isDashboardSubRoute) {
-      setDashboardDropdownOpen(true);
-    } else if (!isDashboardRoute && !isDashboardSubRoute) {
-      setDashboardDropdownOpen(false);
-    }
-  }, [pathname, isDashboardRoute, isDashboardSubRoute]);
-
-  // --- Handlers ---
+  // --- Handlers (Keep as is) ---
   const handleLogout = async () => {
     await logout();
-    if (isSidebarOpen && isMobileView) { // Close sidebar on mobile after action
-        toggleSidebar();
+    if (isSidebarOpen && isMobileView) {
+      toggleSidebar();
     }
-    window.location.href = "/auth/login"; // Or use Next router if preferred
+    window.location.href = "/auth/login";
   };
 
-  const toggleDashboardSubmenu = () => {
-    setDashboardDropdownOpen((prevOpen) => !prevOpen);
-  };
-
-  // Helper to close sidebar on mobile when a nav item is clicked
   const handleMobileNavClick = () => {
     if (isSidebarOpen && isMobileView) {
       toggleSidebar();
     }
-    // Optional: Close dropdown when navigating away on mobile?
-    // setDashboardDropdownOpen(false);
   };
 
-   const handleDashboardLinkClick = () => {
-     if (isSidebarOpen && isMobileView) {
-       toggleSidebar();
-     }
-     // Don't toggle the submenu here, just navigate
-   };
+  // Define sidebar animation variants
+  const sidebarVariants = {
+      open: { x: 0 },
+      closed: { x: "-100%" },
+  };
 
-  const isSubmenuActive = (path: string): boolean => pathname === path;
+  const backdropVariants = {
+      visible: { opacity: 0.5 },
+      hidden: { opacity: 0 },
+  };
+
+  // --- *** CRITICAL CHANGE: Wait for isMobileView *** ---
+  // If we haven't determined the view type yet, don't render the sidebar
+  // to avoid incorrect initial animation states.
+  if (isMobileView === null) {
+    return null; // Or a loading skeleton/placeholder if preferred
+  }
+  // --- *** END CRITICAL CHANGE *** ---
 
   return (
     <>
       {/* Backdrop for mobile sidebar */}
-      {isSidebarOpen && isMobileView === true && ( // Condition based on state and prop
-        <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.5 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.2 }}
-          onClick={toggleSidebar} // Allow closing by clicking backdrop
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden" // Use z-index lower than sidebar
-          aria-hidden="true"
-        />
-      )}
+      <AnimatePresence>
+        {isSidebarOpen && isMobileView === true && (
+          <motion.div
+            key="backdrop" // Add key for AnimatePresence
+            variants={backdropVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            transition={{ duration: 0.2 }}
+            onClick={toggleSidebar}
+            className="fixed inset-0 bg-black/50 dark:bg-white/30 z-40 lg:hidden"
+            aria-hidden="true"
+          />
+        )}
+      </AnimatePresence>
 
-      {/* Conditionally render Sidebar based on screen size and open state */}
-      {/* Logic: Render if isMobileView isn't determined yet (null), OR if it's desktop (false), OR if it's mobile AND open (true && true) */}
-      {isMobileView === null || isMobileView === false || (isSidebarOpen && isMobileView === true) ? (
-        <motion.aside
-          ref={sidebarRef} // Attach ref for click outside detection
-          className={`w-64 fixed bg-white dark:bg-neutral-900 h-full inset-y-0 left-0 lg:relative lg:z-auto z-50 border-r dark:border-neutral-700 flex flex-col`} // Base styles + z-index
-          // Framer Motion props based on Sidebar component
-          initial={isMobileView ? { x: "-100%" } : {}} // Start off-screen on mobile
-          animate={isMobileView ? { x: isSidebarOpen ? 0 : "-100%" } : {}} // Animate based on open state on mobile, always visible on desktop
-          exit={isMobileView ? { x: "-100%" } : {}} // Animate out on mobile
-          transition={isMobileView ? { duration: 0.3, ease: "easeInOut" } : { duration: 0 }} // Only transition on mobile
-        >
-          {/* Mobile Close Button - Render only on mobile */}
-          {isMobileView && (
-            <button
-              className="absolute top-4 right-4 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 z-10" // z-10 to be above content
-              onClick={toggleSidebar}
-              aria-label="Close sidebar"
-            >
-              <FaTimes className="size-5" />
-            </button>
-          )}
-
-          {/* Logo Section (Keep as is) */}
-          <div className="p-3 border-b dark:border-neutral-700">
-            <div className="h-14 flex justify-center items-center">
-              <Image
-                src="/assets/images/wise-logo.svg"
-                height={100}
-                width={100}
-                alt="Wise Admin Logo"
-                className="h-auto w-auto max-h-10"
-                priority
-              />
-            </div>
-          </div>
-
-          {/* User Profile Summary (Keep as is) */}
-          {user && (
-            <div className="flex items-center gap-3 p-3 border-b dark:border-neutral-700">
-              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center relative flex-shrink-0">
-                <span className="text-neutral-900 font-semibold uppercase text-lg">
-                  {user.email?.charAt(0) || "A"}
-                </span>
-              </div>
-              <div className="overflow-hidden space-y-0.5">
-                <p className="font-semibold capitalize text-neutral-900 dark:text-white truncate text-sm">
-                  {user.fullName || "Admin User"}
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                  {user.email || "admin@example.com"}
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Navigation */}
-          {/* Add scrollbar styling */}
-          <nav className="flex-1 py-4 overflow-x-hidden overflow-y-auto [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
-            <div className="px-4 mb-4">
-              <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 px-3">
-                Main
-              </span>
-            </div>
-
-            <ul className="space-y-1 px-3">
-              {/* Dashboard Section */}
-              <li>
-                <div
-                  className={`flex items-center justify-between w-full py-2 pl-2 rounded-4xl transition-all duration-200 group ${
-                    isDashboardSectionActive
-                      ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary"
-                      : "text-neutral-500 dark:text-gray-300"
-                  }`}
-                >
-                  <Link
-                    href="/admin"
-                    onClick={handleDashboardLinkClick} // Close sidebar on mobile click
-                    className={`flex items-center gap-3 flex-grow ${!isDashboardSectionActive ? "hover:text-neutral-900 dark:hover:text-primary" : ""}`}
-                  >
-                    <div className={`p-2 rounded-full transition-colors duration-200`}>
-                      <FaChartPie className={`size-5 transition-colors duration-200 ${ isDashboardSectionActive ? "text-neutral-900 dark:text-primary" : "" }`} />
-                    </div>
-                    <span className="font-medium">Dashboard</span>
-                  </Link>
-                  <button
-                    onClick={toggleDashboardSubmenu}
-                    className={`p-2 mr-1 rounded-full transition-colors duration-200 ${
-                      !isDashboardSectionActive ? "hover:bg-gray-500/10 dark:hover:bg-gray-700/30" : ""
-                    }`}
-                    aria-label="Toggle dashboard submenu"
-                    aria-expanded={dashboardDropdownOpen}
-                  >
-                    <FaChevronRight
-                      className={`size-3.5 transition-transform duration-200 ${ dashboardDropdownOpen ? "rotate-90" : "" } ${
-                          isDashboardSectionActive ? "" : "text-neutral-500 dark:text-gray-400"
-                      }`}
-                    />
-                  </button>
-                </div>
-
-                {/* Sub-menu */}
-                {dashboardDropdownOpen && (
-                  <ul className="mt-1 ml-7 space-y-1 border-l-2 border-gray-200 dark:border-gray-700 pl-4 py-1">
-                    {[
-                      { href: "/admin/dashboard/demo1", label: "Demo 1" },
-                      { href: "/admin/dashboard/demo2", label: "Demo 2" },
-                      { href: "/admin/dashboard/demo3", label: "Demo 3" }
-                    ].map(item => (
-                      <li key={item.href}>
-                        <Link
-                          href={item.href}
-                          onClick={handleMobileNavClick} // Close sidebar on mobile click
-                          className={`block px-3 py-2 rounded-md text-sm transition-colors duration-200 ${
-                            isSubmenuActive(item.href)
-                              ? "bg-primary/60 dark:bg-primarybox text-neutral-900 dark:text-primary font-medium"
-                              : "text-neutral-500 hover:text-neutral-900 dark:text-gray-400 dark:hover:text-primary hover:bg-gray-500/5 dark:hover:bg-gray-700/20"
-                          }`}
-                        >
-                          {item.label}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-
-              {/* Other Nav Items using SidebarNavItem */}
-              {/* Pass handleMobileNavClick to close sidebar on mobile */}
-              <li> <SidebarNavItem href="/admin/currencies" icon={FaCoins} label="Currencies" isActive={isCurrenciesRoute} onClick={handleMobileNavClick} /> </li>
-              <li> <SidebarNavItem href="/admin/users" icon={FaUsers} label="Users" isActive={isUsersRoute} onClick={handleMobileNavClick} /> </li>
-              <li> <SidebarNavItem href="/admin/add-money" icon={IoMdAddCircleOutline} label="Add-Money" isActive={isAddMoneyRoute} onClick={handleMobileNavClick} /> </li>
-              <li> <SidebarNavItem href="/admin/transfer" icon={FaMoneyBillWave} label="Send-Money" isActive={isTransferRoute} onClick={handleMobileNavClick} /> </li>
-              <li> <SidebarNavItem href="/admin/kyc-management" icon={MdManageAccounts} label="KYC Management" isActive={isKycManagementRoute} onClick={handleMobileNavClick} /> </li>
-            
-            </ul>
-          </nav>
-
-          {/* Footer Actions (Keep as is, but inside motion.aside) */}
-          <div className="p-4 border-t dark:border-neutral-700 mt-auto space-y-3">
-            <div className="flex justify-center">
-              <ThemeToggle location="admin" className="inline-block" />
-            </div>
-            {user && (
+      {/* Sidebar uses AnimatePresence for mobile slide in/out */}
+      {/* Logic adjusted slightly: Use AnimatePresence for mobile animation control */}
+      <AnimatePresence>
+        {/* Render sidebar always on desktop OR when open on mobile */}
+        {(!isMobileView || isSidebarOpen) && (
+          <motion.aside
+            key="sidebar" // Add key for AnimatePresence
+            ref={sidebarRef}
+            className={`w-64 fixed bg-white dark:bg-neutral-900 h-full inset-y-0 left-0 lg:relative lg:translate-x-0 lg:z-auto z-50 border-r dark:border-neutral-700 flex flex-col`} // Ensure lg:translate-x-0 overrides mobile animation
+            // Animate only on mobile view
+            variants={sidebarVariants}
+            initial={isMobileView ? "closed" : "open"} // Start closed on mobile, open on desktop
+            animate={
+              isMobileView ? (isSidebarOpen ? "open" : "closed") : "open"
+            } // Control based on state only on mobile
+            exit={isMobileView ? "closed" : "open"} // Exit to closed state on mobile
+            transition={
+              isMobileView
+                ? { duration: 0.3, ease: "easeInOut" }
+                : { duration: 0 }
+            } // Only transition on mobile
+          >
+            {/* Mobile Close Button */}
+            {isMobileView && (
               <button
-                onClick={handleLogout} // handleLogout already closes sidebar on mobile
-                className="flex items-center justify-center gap-3 w-full px-4 py-2.5 rounded-lg text-red-600 dark:text-red-500 bg-red-500/10 hover:bg-red-500/20 dark:bg-red-500/15 dark:hover:bg-red-500/25 transition-colors duration-200"
+                className="absolute top-4 right-4 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 z-10 p-1 rounded-full" // Added padding/rounding
+                onClick={toggleSidebar}
+                aria-label="Close sidebar"
               >
-                <GrLogout className="size-5" aria-hidden="true"/>
-                <span className="font-medium text-sm">Logout</span>
+                <FaTimes className="size-5" />
               </button>
             )}
-          </div>
-        </motion.aside>
-      ) : null /* Render nothing if mobile and closed */}
+
+            {/* Logo Section */}
+            <div className="p-3 border-b dark:border-neutral-700">
+              <div className="h-14 flex justify-center items-center">
+                <Link href="/admin" className="inline-block">
+                  <Image
+                    src="/assets/images/wise-logo.svg" // Ensure path is correct
+                    height={100}
+                    width={100}
+                    alt="Wise Admin Logo"
+                    className="h-auto w-auto max-h-10"
+                    priority
+                  />
+                </Link>
+              </div>
+            </div>
+
+            {/* User Profile Summary */}
+            {user && (
+              <div className="flex items-center gap-3 p-3 border-b dark:border-neutral-700">
+                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center relative flex-shrink-0">
+                  <span className="text-neutral-900 font-semibold uppercase text-lg">
+                    {user.email?.charAt(0) || "A"}
+                  </span>
+                </div>
+                <div className="overflow-hidden space-y-0.5">
+                  <p className="font-semibold capitalize text-neutral-900 dark:text-white truncate text-sm">
+                    {user.fullName || "Admin User"}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                    {user.email || "admin@example.com"}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Navigation */}
+            <nav className="flex-1 py-4 overflow-x-hidden overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox [&::-webkit-scrollbar-thumb]:rounded-full">
+              {" "}
+              {/* Slimmer scrollbar */}
+              <div className="px-4 mb-4">
+                <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 px-2">
+                  {" "}
+                  {/* Adjusted padding */}
+                  Main
+                </span>
+              </div>
+              {/* Use the modified SidebarNavItem */}
+              <ul className="space-y-1 px-3">
+                <li>
+                  {" "}
+                  <SidebarNavItem
+                    href="/admin"
+                    icon={FaChartPie}
+                    label="Dashboard"
+                    isActive={isDashboardRoute}
+                    onClick={handleMobileNavClick}
+                  />{" "}
+                </li>
+                <li>
+                  {" "}
+                  <SidebarNavItem
+                    href="/admin/currencies"
+                    icon={FaCoins}
+                    label="Currencies"
+                    isActive={isCurrenciesRoute}
+                    onClick={handleMobileNavClick}
+                  />{" "}
+                </li>
+                <li>
+                  {" "}
+                  <SidebarNavItem
+                    href="/admin/users"
+                    icon={FaUsers}
+                    label="Users"
+                    isActive={isUsersRoute}
+                    onClick={handleMobileNavClick}
+                  />{" "}
+                </li>
+                <li>
+                  {" "}
+                  <SidebarNavItem
+                    href="/admin/add-money"
+                    icon={IoMdAddCircleOutline}
+                    label="Add-Money"
+                    isActive={isAddMoneyRoute}
+                    onClick={handleMobileNavClick}
+                  />{" "}
+                </li>
+                <li>
+                  {" "}
+                  <SidebarNavItem
+                    href="/admin/transfer"
+                    icon={FaMoneyBillWave}
+                    label="Send-Money"
+                    isActive={isTransferRoute}
+                    onClick={handleMobileNavClick}
+                  />{" "}
+                </li>
+                <li>
+                  {" "}
+                  <SidebarNavItem
+                    href="/admin/kyc-management"
+                    icon={MdManageAccounts}
+                    label="KYC Management"
+                    isActive={isKycManagementRoute}
+                    onClick={handleMobileNavClick}
+                  />{" "}
+                </li>
+              </ul>
+            </nav>
+
+            {/* Footer Actions */}
+            <div className="p-4 border-t dark:border-neutral-700 mt-auto space-y-3">
+              <div className="flex justify-center">
+                <ThemeToggle location="admin" className="inline-block" />
+              </div>
+              {user && (
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center justify-center gap-3 w-full px-4 py-2.5 rounded-lg text-red-600 dark:text-red-500 bg-red-500/10 hover:bg-red-500/20 dark:bg-red-500/15 dark:hover:bg-red-500/25 transition-colors duration-200"
+                >
+                  <GrLogout className="size-5" aria-hidden="true" />
+                  <span className="font-medium text-sm">Logout</span>
+                </button>
+              )}
+            </div>
+          </motion.aside>
+        )}
+      </AnimatePresence>
     </>
   );
 };

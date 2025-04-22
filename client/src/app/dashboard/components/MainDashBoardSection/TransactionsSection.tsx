@@ -1922,33 +1922,40 @@ const TransactionsSection: React.FC = () => {
         className="block"
       >
         <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
-          <div className="flex items-center gap-4">
+          <div className="flex sm:items-center items-start gap-4">
             {/* Icon container */}
-            <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center flex-shrink-0">
+            <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center">
               {icon}
             </div>
+
             {/* Transaction details and amount */}
-            <div className="flex justify-between w-full items-center flex-grow gap-2">
+            <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
               {/* Name and Description */}
-              <div className="flex-grow overflow-hidden">
-                {/* This h3 now uses the correctly formatted 'name' */}
-                <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg truncate">
+              {/* This h3 now uses the correctly formatted 'name' */}
+              <div className="text-wrap">
+                <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg">
                   {name}
                 </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-300 mt-1 truncate">
+                <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
                   {description}
-                  {(status === 'processing' || status === 'pending' || status === 'in progress') && (
-                     <span className="italic text-xs"> ({status})</span>
+                  {(status === "processing" ||
+                    status === "pending" ||
+                    status === "in progress") && (
+                    <span className="italic text-xs"> ({status})</span>
                   )}
                 </p>
               </div>
+
               {/* Amount and Currency */}
               {/* Use the pre-formatted amount and the display currency code */}
-              <div className={`font-medium ${amountClass} whitespace-nowrap flex-shrink-0`}>
+              <div
+                className={`font-medium ${amountClass} whitespace-nowrap flex-shrink-0`}
+              >
                 {amountPrefix}
                 {formattedAmount} {/* Use the formatted amount */}
                 {/* Conditionally render currency code only if available */}
-                {displayCurrencyCode && ` ${displayCurrencyCode}`} {/* Use the display code */}
+                {displayCurrencyCode && ` ${displayCurrencyCode}`}{" "}
+                {/* Use the display code */}
               </div>
             </div>
           </div>
@@ -1960,8 +1967,8 @@ const TransactionsSection: React.FC = () => {
 
   // --- Return JSX ---
   return (
-     <section className="Transactions py-10">
-      <div className="container mx-auto">
+     <section className="Transactions-Wrapper">
+      <div className="Transactions">
         {/* Section Header */}
         <div className="flex justify-between items-center mb-6 px-2 sm:px-0">
           <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">

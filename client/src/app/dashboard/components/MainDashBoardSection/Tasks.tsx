@@ -913,8 +913,8 @@ const TasksPage: React.FC = () => {
 
   // --- Render Logic ---
   return (
-    <section className="Tasks pt-10">
-      <div className="container mx-auto">
+    <section className="Tasks-Wrapper">
+      <div className="Tasks">
         {/* --- Heading --- */}
         <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white mb-6">
           Tasks
