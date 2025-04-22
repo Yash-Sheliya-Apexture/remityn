@@ -1257,7 +1257,7 @@ export default function RecipientsPage() {
   const handleCloseKycModal = useCallback(() => setIsKycModalOpen(false), []);
   const handleStartVerification = useCallback(() => {
     // *** Ensure this path matches your KYC start page ***
-    router.push("/dashboard/kyc"); // Or maybe '/kyc/start' depending on your routes
+    router.push("/kyc/start"); // Or maybe '/kyc/start' depending on your routes
     handleCloseKycModal();
   }, [router, handleCloseKycModal]);
 
@@ -1361,7 +1361,7 @@ export default function RecipientsPage() {
             {/* Add Button (Small Screens) */}
             {isSmallScreen && (
               <button
-                className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium px-4 py-1 h-10 rounded-full transition-all duration-75 ease-linear cursor-pointer flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styles
+                className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium px-4 py-1 h-12.5 w-12.5 rounded-full transition-all duration-75 ease-linear cursor-pointer flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styles
                 onClick={handleAddRecipientClick}
                 disabled={isAuthLoading} // *** Disable button while auth is loading ***
               >
@@ -1399,7 +1399,7 @@ export default function RecipientsPage() {
             {!isSmallScreen && (
               <button
                 type="button"
-                className="inline-flex items-center bg-primary text-neutral-900 hover:bg-primaryhover space-x-3 py-3 px-4 h-12.5 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styles
+                className="inline-flex items-center bg-primary text-neutral-900 hover:bg-primaryhover space-x-3 py-3 px-8 h-12.5 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styles
                 onClick={handleAddRecipientClick}
                 disabled={isAuthLoading} // *** Disable button while auth is loading ***
               >
