@@ -428,7 +428,7 @@ const MoneyTransferSteps: React.FC = () => {
   }, [activeStepIndex, moneyTransferSteps.length]); // Re-run effect when activeStepIndex changes
 
   return (
-    <div className="text-white bg-[#f2f4f7] dark:bg-background md:py-10 py-5 overflow-x-hidden">
+    <div className="text-white bg-white dark:bg-background md:py-10 py-5 overflow-x-hidden">
       {/* Added overflow-x-hidden */}
       <div className="container mx-auto px-4">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">

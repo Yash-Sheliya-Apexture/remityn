@@ -886,8 +886,6 @@
 
 // export default MobileMenu;
 
-
-
 // // components/MobileMenu.tsx
 // "use client";
 // import React, { useState } from "react";
@@ -998,8 +996,6 @@
 
 // export default MobileMenu;
 
-
-
 // frontend/src/app/components/layout/MobileMenu.tsx // Or your actual path
 "use client";
 import React, { useState } from "react";
@@ -1044,31 +1040,29 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
 
   return (
     <div
-      className={`fixed top-20 left-0 w-full h-[calc(100vh-80px)] bg-[#f2f4f7] dark:bg-background z-40 overflow-y-auto transition-transform duration-300 ease-in-out ${
+      className={`fixed top-20 left-0 w-full h-[calc(100vh-80px)] bg-white dark:bg-background z-40 overflow-y-auto transition-transform duration-300 ease-in-out ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       }`}
       aria-hidden={!isOpen}
       role="dialog"
       aria-modal="true"
     >
-      <div className="flex flex-col justify-between h-full">
+      <div className="flex flex-col justify-between h-full -mt-2">
         {/* Top Navigation Links */}
         <div className="p-4 space-y-2 border-t">
-          {" "}
           {/* Reduced space-y */}
           <div className="flex flex-col gap-1 w-full">
-            {" "}
             {/* Reduced gap */}
             <Link
               href="/"
-              className="block py-2 rounded-md font-medium hover:bg-gray-100 dark:hover:bg-secondary"
+              className="inline-block py-2 rounded-md font-medium"
               onClick={handleLinkClick}
             >
               Home
             </Link>
             <Link
               href="/about-us"
-              className="block py-2 rounded-md font-medium hover:bg-gray-100 dark:hover:bg-secondary"
+              className="inline-block py-2 rounded-md font-medium"
               onClick={handleLinkClick}
             >
               About
@@ -1077,7 +1071,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             <FeatureDropdown
               buttonText="Features"
               links={featureLinks}
-              buttonClassName="block w-full text-left py-2 font-medium hover:bg-gray-100 dark:hover:bg-secondary rounded-md" // Consistent styling
+              buttonClassName="inline-block w-full text-left py-2 font-medium rounded-md" // Consistent styling
               isMobile={true}
               isOpen={isFeaturesOpen}
               toggleDropdown={toggleFeaturesDropdown}
@@ -1085,7 +1079,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             />
             <Link
               href="/faqs"
-              className="block py-2 rounded-md font-medium hover:bg-gray-100 dark:hover:bg-secondary"
+              className="inline-block py-2 rounded-md font-medium"
               onClick={handleLinkClick}
             >
               Help
@@ -1106,14 +1100,14 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
                 <Link
                   href="/dashboard" // Adjust dashboard route if needed
                   passHref
-                  className="block w-full px-4 py-2.5 bg-primary hover:bg-primaryhover rounded-full font-medium text-base text-center text-mainheading transition-colors"
+                  className="inline-block w-full px-4 py-2.5 bg-primary hover:bg-primaryhover rounded-full font-medium text-base text-center text-mainheading transition-colors"
                   onClick={handleLinkClick} // Close menu on click
                 >
                   Dashboard
                 </Link>
                 <button
                   onClick={handleLogoutClick} // Use specific handler
-                  className="block w-full px-4 py-2.5 bg-gray-100 dark:bg-secondary text-main dark:text-white rounded-full font-medium text-base text-center hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                  className="inline-block w-full px-4 py-2.5 bg-gray-100 dark:bg-secondary text-main dark:text-white rounded-full font-medium text-base text-center hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                 >
                   Log out
                 </button>
@@ -1123,7 +1117,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
                 <Link
                   href="/auth/login"
                   passHref
-                  className="block w-full px-4 py-2.5 bg-white dark:bg-secondary rounded-full font-medium text-base text-center dark:text-white text-mainheading hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  className="inline-block w-full px-4 py-3 border dark:border-none bg-white dark:bg-secondary font-medium rounded-full text-base text-center dark:text-white text-mainheading hover:bg-gray-50 transition-colors"
                   onClick={handleLinkClick}
                 >
                   Log in
@@ -1131,7 +1125,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
                 <Link
                   href="/auth/register"
                   passHref
-                  className="block w-full px-4 py-2.5 bg-primary hover:bg-primaryhover rounded-full font-medium text-base text-center text-mainheading transition-colors"
+                  className="inline-block w-full px-4 py-3 bg-primary hover:bg-primaryhover rounded-full font-medium text-base text-center text-mainheading transition-colors duration-300 ease-in-out"
                   onClick={handleLinkClick}
                 >
                   Register

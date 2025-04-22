@@ -19,11 +19,11 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ toggleSidebar }) => {
   return (
     <header className="border-b">
       {/* Subtle shadow and border */}
-      <div className="px-4 py-3 flex justify-between items-center">
+      <div className="p-4 flex justify-between items-center">
         {/* Mobile Menu Button */}
         <button
           onClick={toggleSidebar}
-          className="lg:hidden text-gray-600 hover:text-gray-700 focus:outline-none"
+          className="lg:hidden text-primary hover:text-primaryhover transition-all duration-75 ease-linear focus:outline-none"
         >
           <FaBars className="h-5 w-5" /> {/* Smaller menu icon */}
         </button>

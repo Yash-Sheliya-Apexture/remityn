@@ -6748,7 +6748,7 @@ const BalanceDetailPage = () => {
   // Updated Loading State: Show skeleton if balance data is loading OR auth is loading (before user/KYC is known)
   if (isLoading && !typedBalanceDetail && !error) {
      return (
-        <div className="container mx-auto px-4 py-8 animate-pulse">
+        <div className="py-8 animate-pulse">
              {/* Mimic BalanceHeader structure */}
              <div className="pb-6 mb-8 border-b">
                 <div className="flex sm:flex-row flex-col gap-4 justify-between">
@@ -6787,11 +6787,11 @@ const BalanceDetailPage = () => {
              </div>
 
              {/* Mimic Transaction List Loading */}
-             <div className="space-y-4">
+             {/* <div className="space-y-4">
                  <Skeleton className="h-16 w-full rounded-lg" />
                  <Skeleton className="h-16 w-full rounded-lg" />
                  <Skeleton className="h-16 w-full rounded-lg" />
-             </div>
+             </div> */}
         </div>
      );
   }
@@ -6826,7 +6826,7 @@ const BalanceDetailPage = () => {
 
   // --- Main Render Structure ---
   return (
-    <div className="container mx-auto py-8">
+    <div className="py-8">
       <BalanceHeader
           balanceDetail={typedBalanceDetail} // Pass the non-null, typed detail
           isLoading={isBalanceLoading} // Pass only balance loading state here, overall handled above
@@ -6839,7 +6839,7 @@ const BalanceDetailPage = () => {
 
       {/* --- Transactions Section --- */}
       <div className="mt-10">
-         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky top-0 z-10 bg-background dark:bg-background"> {/* Use theme background */}
+         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky lg:top-28 top-20 z-10 bg-background dark:bg-background"> {/* Use theme background */}
             <h3 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">Transactions</h3>
             {/* Show actions only if NOT loading AND there are transactions */}
             {!isTransactionsLoading && balanceSpecificTransactions.length > 0 && (

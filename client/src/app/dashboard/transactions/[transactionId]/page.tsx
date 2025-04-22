@@ -4348,10 +4348,10 @@ const TransactionDetailsPage = () => {
 
     // --- Main Component Return ---
     return (
-        <> {/* Fragment wrapping page content and modal */}
-            <div className="container mx-auto">
+        <section className="Transaction-Detial-Page-Wrapper"> {/* Fragment wrapping page content and modal */}
+            <div className="Transaction-Detial">
                 {/* Main Content Card */}
-                <div className="bg-white dark:bg-background rounded-2xl border dark:border-border shadow-sm mx-auto max-w-4xl">
+                <div className="bg-white dark:bg-background rounded-2xl border dark:border-border shadow-sm mx-auto lg:max-w-4xl">
                     {/* Card Header */}
                     <TransactionHeader
                         transaction={transactionDetails}
@@ -4443,7 +4443,7 @@ const TransactionDetailsPage = () => {
                     isSubmitting={isSubmitting} // Pass loading state
                 />
             )}
-        </> // End Fragment
+        </section> // End Fragment
     );
 };
 

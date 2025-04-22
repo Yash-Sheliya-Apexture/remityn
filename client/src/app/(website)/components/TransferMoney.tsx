@@ -2058,7 +2058,7 @@ const TransferSteps: React.FC = () => {
   };
 
   return (
-    <div className="py-10 bg-[#F2F4F7] dark:bg-background">
+    <div className="py-10 bg-white dark:bg-background">
       <section
         className="flex flex-col justify-center container mx-auto px-4"
         id="transfer-steps"
@@ -2072,7 +2072,7 @@ const TransferSteps: React.FC = () => {
 
         <article className="grid gap-8 lg:grid-cols-3 lg:gap-8">
           <div className="w-full h-full">
-            <div className="rounded-3xl bg-white dark:bg-white/5 lg:p-8 p-6 h-full">
+            <div className="rounded-3xl bg-white dark:bg-white/5 lg:p-8 p-6 h-full border shadow-md">
               <ul className="lg:flex md:grid md:grid-cols-2 grid-cols-1 flex-col space-y-6 justify-between h-full gap-8">
                 {stepsData.map((step, index) => {
                   const isActive = activeIndex === index;
@@ -2150,7 +2150,7 @@ const TransferSteps: React.FC = () => {
 
                         <div className="flex flex-col items-center lg:items-start gap-1 mt-2">
                           <h3
-                            className={`text-center lg:text-left capitalize text-base font-bold leading-tight transition-colors duration-300 lg:text-xl ${
+                            className={`text-center lg:text-left capitalize text-base font-medium leading-tight transition-colors duration-300 lg:text-xl ${
                               isActive
                                 ? "text-[#182230] dark:text-white"
                                 : "text-[#97A2B3] dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300"
@@ -2189,10 +2189,10 @@ const TransferSteps: React.FC = () => {
           >
             <div
               key={activeIndex}
-              className="absolute inset-0 flex flex-col rounded-3xl bg-white dark:bg-white/5 lg:p-8 p-6 animate-in fade-in duration-700 overflow-hidden"
+              className="absolute inset-0 flex flex-col border shadow-md rounded-2xl bg-white dark:bg-white/5 lg:p-8 p-6 animate-in fade-in duration-700 overflow-hidden"
             >
               <div className="space-y-2 animate-in slide-in-from-top-5 duration-500 z-10 mb-4 lg:mb-8">
-                <h3 className="text-xl lg:text-3xl font-medium text-mainheading dark:text-white">
+                <h3 className="text-xl lg:text-3xl font-normal text-mainheading dark:text-white">
                   {currentStep.contentTitle}
                 </h3>
                 <p className="text-gray-700 dark:text-gray-300 lg:text-base text-xs leading-relaxed">
@@ -2205,7 +2205,7 @@ const TransferSteps: React.FC = () => {
                   {currentStep.contentBlocks.map((block, blockIndex) => (
                     <div
                       key={blockIndex}
-                      className={`px-4 lg:py-3 py-2 rounded-full font-medium ${getBlockClasses(
+                      className={`px-4 lg:py-3 py-2 rounded-full ${getBlockClasses(
                         block.type
                       )}`}
                     >

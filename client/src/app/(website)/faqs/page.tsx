@@ -1629,7 +1629,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
     <div
       data-state={isOpen ? "open" : "closed"}
       data-orientation="vertical"
-      className="rounded-2xl bg-white dark:bg-white/5 mb-4 overflow-hidden" // Keep mb-4 for spacing
+      className="rounded-lg bg-gray/10 dark:bg-white/5 mb-4 overflow-hidden" // Keep mb-4 for spacing
     >
       {/* H3: Can remain for semantic structure, removed flex class */}
       <h3
@@ -1646,13 +1646,13 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
           data-orientation="vertical"
           id={`radix-${item.id}-trigger`}
           // *** ADDED p-5 HERE ***
-          className={`flex w-full flex-1 items-center gap-4 justify-between lg:p-6 p-4 text-start text-sm md:text-xl font-medium cursor-pointer text-mainheading hover:bg-gray-200 dark:hover:bg-white/5 dark:text-white transition-all`}
+          className={`flex w-full cursor-pointer flex-1 gap-2 items-center justify-between text-start lg:text-xl md:text-lg text-sm text-mainheading dark:text-gray-100 transition-colors duration-200 font-medium dark:hover:bg-white/5 md:p-5 p-4`}
           data-radix-collection-item=""
           onClick={onToggle} // The click handler remains on the button
         >
           {item.question}
           <SlArrowDown
-            className={`lg:size-3 size-2.5 shrink-0 text-muted-foreground transition-transform duration-300 ${
+            className={`lg:size-3 size-2.5 shrink-0 text-gray-500 dark:text-gray-300 transition-transform duration-300 ${
               isOpen ? "rotate-180" : ""
             }`}
             aria-hidden // Add aria-hidden for decorative icons
@@ -1668,7 +1668,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
         aria-labelledby={`radix-${item.id}-trigger`}
         data-orientation="vertical"
         // Added px-5 pb-5 for padding *only* on the content, not the header
-        className="overflow-hidden text-sm mt-2 md:text-lg leading-relaxed text-gray-500 dark:text-gray-300 transition-all duration-300 ease-in-out lg:ps-6 ps-4 pb-4"
+        className="overflow-hidden text-sm md:text-base ps-6 pb-4 lg:text-lg leading-relaxed text-gray-700 dark:text-gray-300 transition-all duration-300 ease-in-out"
         style={{ height: contentHeight }}
         hidden={!isOpen}
       >
@@ -1694,7 +1694,7 @@ const FAQPage: React.FC = () => {
   return (
     <>
       {/* Header Section */}
-      <div className="bg-[#f2f4f7] dark:bg-background py-10">
+      <div className="bg-white dark:bg-background py-10">
         <div className="space-y-2.5 container mx-auto px-4 ">
           <h1 className="text-4xl md:text-5xl xl:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
             Frequently Asked
@@ -1709,7 +1709,7 @@ const FAQPage: React.FC = () => {
       </div>
 
       {/* FAQ Content Section */}
-      <div className="bg-[#f2f4f7] dark:bg-background min-h-screen">
+      <div className="bg-white dark:bg-background min-h-screen">
         <main className="mx-auto mb-10 container max-w-3xl px-4">
           <div className="lg:space-y-8 space-y-5">
             {faqSections.map((section) => (

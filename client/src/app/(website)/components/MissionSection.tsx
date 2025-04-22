@@ -58,7 +58,7 @@ import { FaStar } from "react-icons/fa6";
 // Define the component using React's FunctionComponent type (React.FC)
 const MobileDownloadSection: React.FC = () => {
   return (
-    <div className="lg:py-10 py-5 bg-[#F2F4F7] dark:bg-background">
+    <div className="lg:py-10 py-5 bg-white dark:bg-background">
       <section
         className="flex flex-col gap-8 md:gap-6 lg:flex-row lg:items-center lg:justify-between container mx-auto px-4"
         id="mobile-download"
@@ -133,7 +133,7 @@ const MobileDownloadSection: React.FC = () => {
               <span className="text-primary"> with Wise </span>
             </h1>
 
-            <p className="lg:text-lg sm:text-base text-sm font-medium text-mainheading leading-relaxed dark:text-gray-300 mt-5">
+            <p className="lg:text-lg sm:text-base text-sm font-medium text-gray-700 leading-relaxed dark:text-gray-300 mt-5">
               Wise makes sending money to India simple, reliable, and
               stress-free. Whether you're supporting your family, paying for
               education, or managing personal commitments, we ensure your money
@@ -144,7 +144,7 @@ const MobileDownloadSection: React.FC = () => {
 
         {/* Right Column: Phone Image */}
         <aside className="flex flex-1 items-center justify-center">
-          <div className="relative flex aspect-square w-full flex-shrink-0 justify-center overflow-hidden rounded-bl-lg rounded-br-3xl rounded-tl-3xl rounded-tr-lg bg-white dark:bg-white/5  dark:border pt-12 md:h-[572px] md:w-[550px] md:rounded-bl-[30px] md:rounded-br-[120px] md:rounded-tl-[120px] md:rounded-tr-[30px]">
+          <div className="relative flex aspect-square w-full flex-shrink-0 justify-center overflow-hidden rounded-bl-lg rounded-br-3xl rounded-tl-3xl rounded-tr-lg bg-gray dark:bg-white/5  dark:border pt-12 md:h-[572px] md:w-[500px] md:rounded-bl-[30px] md:rounded-br-[120px] md:rounded-tl-[120px] md:rounded-tr-[30px]">
             <Image
               src="/assets/images/send-money-light.svg"
               width={500}

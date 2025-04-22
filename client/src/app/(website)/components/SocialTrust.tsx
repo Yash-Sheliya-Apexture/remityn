@@ -979,7 +979,7 @@
 //             <span className="text-primary"> Real Travelers</span>
 //           </h1>
 
-//           <p className="lg:text-lg sm:text-base text-sm max-w-1/2 text-gray-500 leading-relaxed dark:text-gray-300 mt-5">
+//           <p className="lg:text-lg sm:text-base text-sm max-w-1/2 text-gray-700 leading-relaxed dark:text-gray-300 mt-5">
 //             Hear directly from globetrotters who’ve trusted us for their
 //             currency exchange needs. From smooth transactions to unbeatable
 //             rates, see why travelers around the world choose us every time.
@@ -1493,7 +1493,7 @@
 
 //   if (reviewGroups.length === 0) {
 //     return (
-//       <div className="text-center p-10 text-gray-500">
+//       <div className="text-center p-10 text-gray-700">
 //         No reviews available yet.
 //       </div>
 //     );
@@ -1510,7 +1510,7 @@
 //             <span className="text-primary"> Real Travelers Like You </span>
 //           </h1>
 
-//           <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-500 leading-relaxed dark:text-gray-300 mt-5 text-left">
+//           <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-700 leading-relaxed dark:text-gray-300 mt-5 text-left">
 //             {/* Adjusted max-width and alignment */}
 //             Hear directly from globetrotters who’ve trusted us for their
 //             currency exchange needs. From smooth transactions to unbeatable
@@ -1740,7 +1740,7 @@
 
 //   if (reviewGroups.length === 0) {
 //     return (
-//       <div className="text-center p-10 text-gray-500">
+//       <div className="text-center p-10 text-gray-700">
 //         No reviews available yet.
 //       </div>
 //     );
@@ -1756,7 +1756,7 @@
 //             <span className="text-primary"> Real Travelers Like You </span>
 //           </h1>
 
-//           <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-500 leading-relaxed dark:text-gray-300 mt-5 text-left">
+//           <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-700 leading-relaxed dark:text-gray-300 mt-5 text-left">
 //             Hear directly from globetrotters who’ve trusted us for their
 //             currency exchange needs. From smooth transactions to unbeatable
 //             rates, see why travelers around the world choose us every time.
@@ -1875,7 +1875,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
   comment,
 }) => {
   return (
-    <div className="bg-white dark:bg-white/5 rounded-2xl lg:p-6 p-4 flex flex-col items-start relative mb-4 flex-shrink-0">
+    <div className="bg-lightgray dark:bg-white/5 rounded-2xl lg:p-6 p-4 flex flex-col items-start relative mb-4 flex-shrink-0">
       <div className="flex md:flex-row items-center w-full justify-center md:justify-start">
         <div className="flex flex-col md:flex-row items-center">
           <img
@@ -1891,7 +1891,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
           </div>
         </div>
       </div>
-      <div className="text-mainheading dark:text-gray-300 leading-relaxed font-normal mt-4 md:mt-6 text-sm lg:text-xl">
+      <div className="text-mainheading dark:text-gray-300 leading-relaxed font-normal mt-4 md:mt-6 text-sm lg:text-lg">
         {comment}
       </div>
     </div>
@@ -1999,7 +1999,7 @@ const ReviewCards: React.FC = () => {
 
   if (reviewGroups.length === 0) {
     return (
-      <div className="text-center p-10 text-gray-500">
+      <div className="text-center p-10 text-gray-700">
         No reviews available yet.
       </div>
     );
@@ -2020,13 +2020,13 @@ const ReviewCards: React.FC = () => {
   );
 
   const paragraph = isHomePage ? (
-    <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-500 leading-relaxed dark:text-gray-300 mt-5 text-left">
+    <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-700 leading-relaxed dark:text-gray-300 mt-5 text-left">
       Hear directly from globetrotters who’ve trusted us for their currency
       exchange needs. From smooth transactions to unbeatable rates, see why
       travelers around the world choose us every time.
     </p>
   ) : (
-    <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-500 leading-relaxed dark:text-gray-300 mt-5 text-left">
+    <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-700 leading-relaxed dark:text-gray-300 mt-5 text-left">
       Read honest customer reviews about our currency exchange services. See why
       travelers, investors, and expats trust us for fast, reliable, and
       competitive rates. Our clients appreciate the transparency, excellent
@@ -2036,7 +2036,7 @@ const ReviewCards: React.FC = () => {
 
   return (
     <section
-      className="Reviews md:py-14 py-10 bg-[#F2F4F7] dark:bg-background"
+      className="Reviews md:py-14 py-10 bg-white dark:bg-background"
       id="review"
     >
       <div className="container mx-auto px-4">
@@ -2063,8 +2063,8 @@ const ReviewCards: React.FC = () => {
             </div>
           ))}
           {/* Gradient Fades */}
-          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#F2F4F7] via-gray-50 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none"></div>
-          <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#F2F4F7] via-gray-50 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none"></div>
+          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white via-gray-50 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none"></div>
+          <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white via-gray-50 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none"></div>
         </div>
       </div>
 
