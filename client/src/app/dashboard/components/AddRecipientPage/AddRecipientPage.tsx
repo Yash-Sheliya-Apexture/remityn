@@ -4651,7 +4651,7 @@ const AddRecipientPage = () => {
         title="Recipients"
         onBack={handleBackStep}
       />
-      <div className="container mx-auto px-4"> {/* Added horizontal padding */}
+      <div className=""> {/* Added horizontal padding */}
         {step === 1 && (
           <div
             key="currency-step"
@@ -4862,14 +4862,14 @@ const AddRecipientPage = () => {
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-sm font-semibold text-gray dark:text-gray-300 mb-1.5"
+                  className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
                 >
                   Their email (optional)
                 </label>
                 <input
                   type="email"
                   id="email"
-                  className={`autofill:!bg-transparent dark:autofill:!bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-600 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-none placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white bg-white dark:bg-background`}
+                  className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 hover:shadow-darkcolor dark:hover:shadow-whitecolor`}
                   value={email}
                   placeholder="example@domain.com"
                   onChange={(e) => setEmail(e.target.value)}
@@ -4886,7 +4886,7 @@ const AddRecipientPage = () => {
                 <div>
                   <label
                     htmlFor="accountHolderName"
-                    className="block text-sm font-semibold text-gray dark:text-gray-300 mb-1.5"
+                    className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
                   >
                     Full name of the account holder
                     <span className="text-error ml-1">*</span>
@@ -4894,10 +4894,10 @@ const AddRecipientPage = () => {
                   <input
                     type="text"
                     id="accountHolderName"
-                    className={`autofill:!bg-transparent dark:autofill:!bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white bg-white dark:bg-background ${
+                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
                       accountHolderNameError
                         ? "border-error border-2 !shadow-none focus:!ring-error"
-                        : "border-neutral-600 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-none"
+                        : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
                     }`}
                     value={accountHolderName}
                     placeholder="e.g., John Doe"
@@ -4920,17 +4920,17 @@ const AddRecipientPage = () => {
                  <div>
                   <label
                     htmlFor="ifscCode"
-                    className="block text-sm font-semibold text-gray dark:text-gray-300 mb-1.5"
+                    className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
                   >
                     IFSC code <span className="text-error ml-1">*</span>
                   </label>
                   <input
                     type="text"
                     id="ifscCode"
-                     className={`autofill:!bg-transparent dark:autofill:!bg-transparent uppercase w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white bg-white dark:bg-background ${
+                     className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
                       ifscCodeError
                         ? "border-error border-2 !shadow-none focus:!ring-error"
-                        : "border-neutral-600  hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-none"
+                        : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
                     }`}
                     value={ifscCode}
                     placeholder="e.g., YESB0123456"
@@ -4953,7 +4953,7 @@ const AddRecipientPage = () => {
                 <div>
                   <label
                     htmlFor="accountNumber"
-                    className="block text-sm font-semibold text-gray dark:text-gray-300 mb-1.5"
+                    className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
                   >
                     Account number <span className="text-error ml-1">*</span>
                   </label>
@@ -4961,10 +4961,10 @@ const AddRecipientPage = () => {
                     type="text"
                     inputMode="numeric"
                     id="accountNumber"
-                     className={`autofill:!bg-transparent dark:autofill:!bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white bg-white dark:bg-background ${
+                     className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
                       accountNumberError
                         ? "border-error border-2 !shadow-none focus:!ring-error"
-                        : "border-neutral-600 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-none"
+                        : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
                     }`}
                     value={accountNumber}
                     placeholder="Enter account number"
@@ -4984,7 +4984,7 @@ const AddRecipientPage = () => {
                 {/* Account Type Dropdown */}
                 <div>
                   <label
-                    className="block text-sm font-semibold text-gray dark:text-gray-300 mb-1.5"
+                    className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
                   >
                     Account type <span className="text-error ml-1">*</span>
                   </label>
@@ -5003,17 +5003,17 @@ const AddRecipientPage = () => {
                  <div>
                   <label
                     htmlFor="bankName"
-                    className="block text-sm font-semibold text-gray dark:text-gray-300 mb-1.5"
+                    className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
                   >
                     Bank name <span className="text-error ml-1">*</span>
                   </label>
                   <input
                     type="text"
                     id="bankName"
-                     className={`autofill:!bg-transparent dark:autofill:!bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white bg-white dark:bg-background ${
+                     className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
                       bankNameError
                         ? "border-error border-2 !shadow-none focus:!ring-error"
-                        : "border-neutral-600 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-none"
+                        : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
                     }`}
                     value={bankName}
                     placeholder="e.g., State Bank of India"
@@ -5034,7 +5034,7 @@ const AddRecipientPage = () => {
                 <div>
                   <label
                     htmlFor="address"
-                    className="block text-sm font-semibold text-gray dark:text-gray-300 mb-1.5"
+                    className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
                   >
                     Recipient Address (Street, City, Postcode, Country)
                     <span className="text-error ml-1">*</span>
@@ -5042,10 +5042,10 @@ const AddRecipientPage = () => {
                   <input
                     type="text"
                     id="address"
-                    className={`autofill:!bg-transparent dark:autofill:!bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white bg-white dark:bg-background ${
+                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
                       addressError
                         ? "border-error border-2 !shadow-none focus:!ring-error"
-                        : "border-neutral-600 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-none"
+                        : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
                     }`}
                     value={address}
                     placeholder="e.g., 123 Main St, Anytown, 12345, India"

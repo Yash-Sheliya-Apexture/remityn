@@ -1257,7 +1257,7 @@ export default function RecipientsPage() {
   const handleCloseKycModal = useCallback(() => setIsKycModalOpen(false), []);
   const handleStartVerification = useCallback(() => {
     // *** Ensure this path matches your KYC start page ***
-    router.push("/dashboard/kyc"); // Or maybe '/kyc/start' depending on your routes
+    router.push("/kyc/start"); // Or maybe '/kyc/start' depending on your routes
     handleCloseKycModal();
   }, [router, handleCloseKycModal]);
 
@@ -1293,7 +1293,7 @@ export default function RecipientsPage() {
   if (isLoading) { // *** Use combined loading state ***
     return (
       <section className="py-10">
-        <div className="container mx-auto">
+        <div className="">
           {/* Header Skeleton */}
           <div className="flex justify-between items-center mb-6">
             <Skeleton className="h-8 w-36 rounded-md" />
@@ -1351,8 +1351,8 @@ export default function RecipientsPage() {
   // --- Main Content ---
   return (
     <>
-      <section className="Beneficiaries-Page py-10">
-        <div className="container mx-auto">
+      <section className="Recipients-Page-Wrapper">
+        <div className="Recipients-Page">
           {/* Header */}
           <div className="mb-6 flex items-center justify-between ">
             <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
@@ -1361,7 +1361,7 @@ export default function RecipientsPage() {
             {/* Add Button (Small Screens) */}
             {isSmallScreen && (
               <button
-                className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium px-4 py-1 h-10 rounded-full transition-all duration-75 ease-linear cursor-pointer flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styles
+                className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium px-4 py-1 h-12.5 w-12.5 rounded-full transition-all duration-75 ease-linear cursor-pointer flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styles
                 onClick={handleAddRecipientClick}
                 disabled={isAuthLoading} // *** Disable button while auth is loading ***
               >
@@ -1399,7 +1399,7 @@ export default function RecipientsPage() {
             {!isSmallScreen && (
               <button
                 type="button"
-                className="inline-flex items-center bg-primary text-neutral-900 hover:bg-primaryhover space-x-3 py-3 px-4 h-12.5 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styles
+                className="inline-flex items-center bg-primary text-neutral-900 hover:bg-primaryhover space-x-3 py-3 px-8 h-12.5 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styles
                 onClick={handleAddRecipientClick}
                 disabled={isAuthLoading} // *** Disable button while auth is loading ***
               >
@@ -1416,7 +1416,7 @@ export default function RecipientsPage() {
             </div>
           ) : filteredRecipients.length > 0 ? (
             // Display List
-            <div>
+            <div className="All-+Recipients">
               <h3 className="font-medium text-sm text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wide">
                 All Recipients
               </h3>
@@ -1433,7 +1433,7 @@ export default function RecipientsPage() {
             </div>
           ) : (
             // Display "Add New" Prompt
-            <div>
+            <div className="Add-New-Recipients">
               <h3 className="font-medium text-sm text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wide">
                 {searchTerm
                   ? "No matching recipients found"

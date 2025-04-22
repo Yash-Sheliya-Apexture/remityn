@@ -62,20 +62,21 @@ const AccountTypeDropdown: React.FC<AccountTypeDropdownProps> = ({ value, onChan
     <div className="relative" ref={dropdownRef}>
       <button
         type="button"
-        className={`flex items-center justify-between autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-shadow ease-in-out duration-300 border-neutral-600 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white ${
+        className={`flex items-center justify-between mt-1 px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white ${
           error
             ? "border-error border-2 !shadow-none"
-            : "border-[#c9cbce] hover:shadow-color"
+            : ""
         }`}
+        
         onClick={toggleOpen}
       >
-        <span>{value || <span className="text-neutral-600 dark:text-white/80">Select account type</span>}</span>
+        <span>{value || <span className="text-neutral-400 dark:text-white/50">Select account type</span>}</span>
         {isOpen ? <IoChevronUp className="text-neutral-600 dark:text-white/80" /> : <IoChevronDown className="text-neutral-600 dark:text-white/80" />}
       </button>
       <AnimatePresence initial={false} > {/* AnimatePresence to handle mount/unmount animations */}
         {isOpen && ( // Conditionally render dropdown only when isOpen is true
           <motion.div
-            className="absolute z-0 mt-0.5 w-full rounded-xl shadow-lg bg-white dark:bg-background dark:border dark:border-white"
+            className="absolute z-0 mt-0.5 w-full rounded-xl shadow-lg bg-white dark:bg-background border"
             variants={dropdownVariants}
             initial="closed"
             animate="open"

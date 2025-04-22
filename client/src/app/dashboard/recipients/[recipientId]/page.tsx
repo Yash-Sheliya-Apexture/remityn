@@ -2227,8 +2227,8 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
   if (loadingRecipient) {
     return (
       <div className="RecipientDetailsPage py-10">
-        <DashboardHeader title="Recipients" />
-        <div className="container mx-auto">
+        <Skeleton className="h-8 w-48 rounded-md mb-6" />
+        
             {/* Enhanced Skeleton Loading State */}
             <div className="flex flex-col mb-8 space-y-4">
                 <Skeleton className="w-20 h-20 rounded-full" />
@@ -2247,7 +2247,7 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
                     </div>
                 ))}
              </div>
-        </div>
+        
       </div>
     );
   }
@@ -2374,9 +2374,9 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
 
   // --- Render ---
   return (
-    <div className="RecipientDetailsPage py-10">
+    <section className="Recipient-Details-Page">
       <DashboardHeader title="Recipients" />
-      <div className="container mx-auto">
+      <div className="">
         {/* Profile Section */}
         <div className="flex flex-col mb-8 space-y-4">
           <div className="relative w-20 h-20 rounded-full bg-lightborder dark:bg-secondarybox flex items-center justify-center">
@@ -2594,7 +2594,7 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
           onConfirmDelete={handleConfirmDeleteRecipient}
         />
       </div>
-    </div>
+    </section>
   );
 };
 

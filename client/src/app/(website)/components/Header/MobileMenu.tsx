@@ -1040,7 +1040,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
 
   return (
     <div
-      className={`fixed top-20 left-0 w-full h-[calc(100vh-80px)] bg-white dark:bg-background z-40 overflow-y-auto transition-transform duration-300 ease-in-out ${
+      className={`fixed top-20 left-0 w-full h-[calc(100dvh-80px)] bg-white dark:bg-background z-40 overflow-y-auto transition-transform duration-300 ease-in-out ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       }`}
       aria-hidden={!isOpen}
@@ -1088,7 +1088,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
         </div>
 
         {/* Bottom Auth Buttons (Dynamic) */}
-        <div className="p-4 mt-auto border-t">
+        <div className="p-4 border-t">
           {/* Optional: Theme Toggle inside Mobile Menu */}
           <div className="mb-4 flex justify-center">
             <ThemeToggle location="admin" />
