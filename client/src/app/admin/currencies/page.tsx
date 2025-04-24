@@ -1087,7 +1087,7 @@ const AdminCurrenciesPage: React.FC = () => {
           theme="light"
         />
         {/* Header Section */}
-        <div className="py-6 mb-6 border-b">
+        <div className="pb-6 mb-6 border-b">
           <h1 className="lg:text-3xl text-2xl font-bold text-neutral-900 dark:text-white mb-2.5">
             Currency Management
           </h1>
@@ -1103,7 +1103,7 @@ const AdminCurrenciesPage: React.FC = () => {
               onClick={() => {
                 setIsCreateModalOpen(true);
               }} // Clear error on open
-              className="bg-primary text-neutral-900 flex hover:bg-primaryhover text-nowrap font-medium rounded-full text-center lg:px-6 p-2 lg:py-3 lg:h-12.5  items-center gap-1 cursor-pointer transition-all duration-75 ease-linear"
+              className="bg-primary text-neutral-900 flex items-center justify-center gap-1  hover:bg-primaryhover text-nowrap font-medium rounded-full text-center sm:px-8 sm:py-3 h-12.5 sm:w-auto w-12.5 cursor-pointer transition-all duration-75 ease-linear"
             >
               <IoMdAdd
                 className="size-8"
@@ -1239,7 +1239,7 @@ const AdminCurrenciesPage: React.FC = () => {
                 </div>
 
                 {/* Actions Footer */}
-                <div className=" border-t p-3">
+                <div className=" border-t p-4">
                   {editingCurrencyId === currency._id ? (
                     // --- Save/Cancel Buttons ---
                     <div className="flex gap-2">
@@ -1470,13 +1470,13 @@ const AdminCurrenciesPage: React.FC = () => {
               >
                 <div className="absolute sm:top-2 sm:right-2 top-1 right-1">
                   <button
-                    className="p-3 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
+                    className="p-3 bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
                     onClick={() => setIsDeleteConfirmationOpen(false)}
                     aria-label="Close modal"
                   >
                     <IoClose
                       size={28}
-                      className="text-neutral-900 dark:text-white"
+                      className="text-neutral-900 dark:text-primary"
                     />
                   </button>
                 </div>

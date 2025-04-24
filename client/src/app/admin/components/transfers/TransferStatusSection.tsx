@@ -556,11 +556,11 @@ const TransferStatusSection: React.FC<TransferStatusSectionProps> = ({
         <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">Transfer Status</h3>
       </div>
 
-      <div className="p-6">
+      <div className="sm:p-6 p-4">
         {/* Current Status */}
         <div className="mb-6">
-          <div className="flex justify-between items-center mb-2">
-            <h4 className="text-sm font-medium text-gray-500 dark:text-gray-300">Current Status</h4>
+          <div className="flex justify-between items-center flex-wrap mb-2 gap-2">
+            <h4 className="text-sm font-medium text-neutral-900 dark:text-white">Current Status</h4>
             <span className="text-xs font-medium text-gray-500 dark:text-gray-300">
                {/* FIX: Pass the pre-formatted value which is string | undefined */}
               Updated {getTimeAgo(formattedUpdatedAt)}

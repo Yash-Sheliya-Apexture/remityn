@@ -3664,13 +3664,13 @@ const AdminTransferDetailPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Toaster richColors position="top-right" />
-      <div className="container mx-auto p-6 py-8">
+      <div className="container mx-auto px-4 py-8">
         <TransferHeader transferId={transfer._id} />
 
         {/* Pass the prepared overviewData */}
         <TransferOverviewCard transfer={overviewData} />
 
-        <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column */}
           <div className="lg:col-span-1 space-y-6">
             <TransferStatusSection
@@ -3684,13 +3684,13 @@ const AdminTransferDetailPage = () => {
 
           {/* Right Column */}
           <div className="lg:col-span-2">
-             <div className="rounded-xl bg-white dark:bg-primarybox border dark:border-secondarybox overflow-hidden shadow-sm">
+             <div className="rounded-xl bg-white dark:bg-primarybox border dark:border-secondarybox overflow-hidden">
               <div className="bg-lightgray dark:bg-secondarybox px-6 py-4 border-b dark:border-b-neutral-700">
                 <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">
                   Detailed Information
                 </h3>
               </div>
-              <div className="p-6 space-y-8">
+              <div className="sm:p-6 p-4 space-y-8">
                  <SenderInfoCard user={transfer.user} />
                  <RecipientInfoCard recipient={transfer.recipient} />
                  {/* TransactionDetailsCard receives the original transfer and the map for its own resolutions */}

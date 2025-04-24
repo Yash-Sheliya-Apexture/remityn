@@ -129,20 +129,20 @@ const UserTableHeader: React.FC<UserTableHeaderProps> = ({
     const renderSortIcon = (field: UserSortField) => {
         if (sortField === field) {
             // Active sort field: show icon and rotation based on direction
-            return <ArrowDownUp size={14} className={`ml-1 transition-transform duration-150 ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />;
+            return <ArrowDownUp size={16} className={`ml-1 transition-transform duration-150 ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />;
         }
         // Inactive sort field: show a subtle icon on hover
-        return <ArrowDownUp size={14} className="ml-1 opacity-0 group-hover:opacity-40 transition-opacity duration-150" />;
+        return <ArrowDownUp size={16} className="ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150" />;
     };
 
     // Common classes for header cells and buttons (like PaymentTableHeader)
-    const headerCellClasses = "px-4 py-4 text-left font-medium text-neutral-900 dark:text-white tracking-wider"; // Adjusted padding to px-4 like UserTable cells
-    const buttonClasses = "flex items-center gap-1 hover:text-primary uppercase group"; // Added group class for hover effect on icon
+    const headerCellClasses = "px-6 py-4 text-left font-medium text-neutral-900 dark:text-white tracking-wider whitespace-nowrap"; // Adjusted padding to px-4 like UserTable cells
+    const buttonClasses = "flex items-center gap-1 hover:text-primary uppercase group cursor-pointer"; // Added group class for hover effect on icon
 
     return (
         // Apply background color directly to the thead (like PaymentTableHeader)
         <thead className='bg-lightgray dark:bg-primarybox '>
-            <tr className="border-b dark:border-neutral-800">
+            <tr className="border-b">
                 {/* --- Full Name Column (Sortable) --- */}
                 <th className={headerCellClasses}>
                     <button onClick={() => toggleSort('fullName')} className={buttonClasses}>
@@ -182,8 +182,8 @@ const UserTableHeader: React.FC<UserTableHeaderProps> = ({
                 </th>
 
                 {/* --- Actions Column (Not Sortable) --- */}
-                {/* Apply headerCellClasses and text-right for alignment */}
-                <th className={`${headerCellClasses} text-right uppercase`}>Actions</th>
+                {/* Apply headerCellClasses */}
+                <th className={`${headerCellClasses} uppercase`}>Actions</th>
             </tr>
         </thead>
     );

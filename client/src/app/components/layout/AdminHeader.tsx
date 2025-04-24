@@ -25,7 +25,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ toggleSidebar }) => {
           onClick={toggleSidebar}
           className="lg:hidden text-primary hover:text-primaryhover transition-all duration-75 ease-linear focus:outline-none"
         >
-          <FaBars className="h-5 w-5" /> {/* Smaller menu icon */}
+          <FaBars className="h-6 w-6" /> {/* Smaller menu icon */}
         </button>
         <div className="hidden lg:block">
           {/* You can add header content here if needed for larger screens */}

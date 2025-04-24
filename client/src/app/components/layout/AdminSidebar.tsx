@@ -2833,6 +2833,7 @@ import { MdManageAccounts } from "react-icons/md";
 import { GrLogout } from "react-icons/gr";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import ThemeToggle from "../../contexts/ThemeToggle"; // Ensure path is correct
+import { FiX } from "react-icons/fi";
 
 // --- Reusable Nav Item Component (Modified for Animation) ---
 interface SidebarNavItemProps {
@@ -3016,11 +3017,11 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
             {/* Mobile Close Button */}
             {isMobileView && (
               <button
-                className="absolute top-4 right-4 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 z-10 p-1 rounded-full" // Added padding/rounding
+                className="absolute top-1 right-1 bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox z-10 p-2 rounded-full" // Added padding/rounding
                 onClick={toggleSidebar}
                 aria-label="Close sidebar"
               >
-                <FaTimes className="size-5" />
+                <FiX className="size-5 text-neutral-900 dark:text-primary" />
               </button>
             )}
 
@@ -3042,7 +3043,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
             {/* User Profile Summary */}
             {user && (
-              <div className="flex items-center gap-3 p-3 border-b dark:border-neutral-700">
+              <div className="flex items-center gap-3 p-4 border-b dark:border-neutral-700">
                 <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center relative flex-shrink-0">
                   <span className="text-neutral-900 font-semibold uppercase text-lg">
                     {user.email?.charAt(0) || "A"}
@@ -3060,7 +3061,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
             )}
 
             {/* Navigation */}
-            <nav className="flex-1 py-4 overflow-x-hidden overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox [&::-webkit-scrollbar-thumb]:rounded-full">
+            <nav className="flex-1 py-4 overflow-x-hidden overflow-y-auto">
               {" "}
               {/* Slimmer scrollbar */}
               <div className="px-4 mb-4">
@@ -3071,7 +3072,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 </span>
               </div>
               {/* Use the modified SidebarNavItem */}
-              <ul className="space-y-1 px-3">
+              <ul className="space-y-1 px-4">
                 <li>
                   {" "}
                   <SidebarNavItem

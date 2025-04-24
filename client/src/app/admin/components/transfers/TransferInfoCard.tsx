@@ -207,7 +207,7 @@ const TransferInfoCard: React.FC<TransferInfoCardProps> = ({ transfer }) => {
       <div className="bg-lightgray dark:bg-secondarybox px-6 py-4">
         <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">Transfer Information</h3>
       </div>
-      <div className="p-6 space-y-4">
+      <div className="sm:p-6 p-4 space-y-4">
         <div>
           <p className="text-sm font-medium text-gray-500 dark:text-gray-300 mb-1">Transfer ID</p>
           <div className="text-sm bg-lightgray dark:bg-primarybox px-3 py-3 rounded-lg border break-all">
