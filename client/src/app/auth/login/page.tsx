@@ -1894,6 +1894,497 @@
 //     );
 // }
 
+// // frontend/src/app/auth/login/page.tsx
+// "use client";
+
+// import { useState, useEffect, FormEvent } from "react"; // Import FormEvent
+// import authService from "../../services/auth"; // Assuming this service exists and is correctly implemented
+// import { useAuth } from "../../contexts/AuthContext"; // Assuming this hook exists and is correctly implemented
+// import { useRouter, useSearchParams } from "next/navigation";
+// import Image from "next/image";
+// import Link from "next/link";
+// import { IoMdCloseCircle } from "react-icons/io";
+// import { VscEye } from "react-icons/vsc";
+// import { RiEyeCloseLine } from "react-icons/ri";
+// import { AiOutlineInfo } from "react-icons/ai";
+// import { FiX } from "react-icons/fi";
+// import { motion, AnimatePresence } from "framer-motion";
+// import { FaCheck } from "react-icons/fa6";
+
+// export default function LoginPage() {
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [showPassword, setShowPassword] = useState(false);
+//   const [emailError, setEmailError] = useState("");
+//   const [passwordError, setPasswordError] = useState("");
+//   const [loginError, setLoginError] = useState("");
+//   const { login, user, loading, isAdmin } = useAuth(); // Get user and loading state
+//   const router = useRouter();
+//   const searchParams = useSearchParams();
+//   const [isSubmitting, setIsSubmitting] = useState(false);
+//   const [inactiveLogoutMessage, setInactiveLogoutMessage] = useState("");
+//   const [sessionExpiredMessage, setSessionExpiredMessage] = useState("");
+//   const [isLoginErrorVisible, setIsLoginErrorVisible] = useState(false);
+//   const [loginSuccess, setLoginSuccess] = useState(false);
+//   const [isLoginSuccessVisible, setIsLoginSuccessVisible] = useState(false);
+
+//   useEffect(() => {
+//     const urlParams = new URLSearchParams(searchParams.toString());
+//     const autoLogout = urlParams.get("autoLogout");
+//     const sessionExpired = urlParams.get("sessionExpired");
+
+//     if (sessionExpired === "true") {
+//       setSessionExpiredMessage(
+//         "Your session has expired. Please log in again."
+//       );
+//       setInactiveLogoutMessage("");
+//     } else if (autoLogout === "true") {
+//       setInactiveLogoutMessage(
+//         "We logged you out because you were inactive for a while — it's to help keep your account secure."
+//       );
+//       setSessionExpiredMessage("");
+//     } else {
+//       setInactiveLogoutMessage("");
+//       setSessionExpiredMessage("");
+//     }
+//   }, [searchParams]);
+
+//   useEffect(() => {
+//     // This effect handles redirection *after* the user state is updated by login()
+//     if (!loading && user) {
+//       console.log("Login successful, checking KYC status:", user.kyc?.status);
+
+//       let redirectUrl = "";
+
+//       // Determine redirect based on role and KYC status
+//       if (isAdmin) {
+//         redirectUrl = "/admin"; // Admins go straight to admin panel
+//       } else {
+//         switch (user.kyc?.status) {
+//           case "not_started":
+//           case "rejected":
+//           case "skipped": // Treat skipped like not_started for initial flow
+//             redirectUrl = "/kyc/start"; // Start the KYC flow
+//             break;
+//           case "pending":
+//             redirectUrl = "/kyc/pending"; // Go to a pending status page
+//             break;
+//           case "verified":
+//             redirectUrl = "/dashboard"; // Go to the main dashboard
+//             break;
+//           default:
+//             redirectUrl = "/dashboard"; // Fallback to dashboard
+//         }
+//       }
+
+//       console.log("Redirecting logged-in user to:", redirectUrl);
+//       // Delay redirection slightly to allow success message to show
+//       const timeoutId = setTimeout(() => {
+//         router.push(redirectUrl);
+//       }, 500); // Adjust delay as needed
+
+//       return () => clearTimeout(timeoutId); // Cleanup timeout on unmount
+//     }
+//   }, [user, loading, router, isAdmin]); // Depend on user, loading, router, isAdmin
+
+//   useEffect(() => {
+//     setIsLoginErrorVisible(!!loginError);
+//   }, [loginError]);
+
+//   useEffect(() => {
+//     setIsLoginSuccessVisible(loginSuccess);
+//   }, [loginSuccess]);
+
+//   // Fix 1: Add type React.FormEvent<HTMLFormElement> to 'e'
+//   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+//     e.preventDefault();
+//     setEmailError("");
+//     setPasswordError("");
+//     setLoginError("");
+//     setIsLoginErrorVisible(false);
+//     setInactiveLogoutMessage("");
+//     setSessionExpiredMessage("");
+//     setLoginSuccess(false);
+//     setIsLoginSuccessVisible(false);
+
+//     let isValid = true;
+//     if (!email) {
+//       setEmailError("Email is required");
+//       isValid = false;
+//     }
+//     if (!password) {
+//       setPasswordError("Password is required");
+//       isValid = false;
+//     }
+//     if (!isValid) return;
+
+//     setIsSubmitting(true);
+//     try {
+//       // The login function updates the AuthContext state (user)
+//       const { user: loggedInUser, token } = await authService.login({
+//         email,
+//         password,
+//       });
+//       console.log("Login successful in component");
+//       setLoginSuccess(true); // Show success message
+//       login(loggedInUser, token); // This triggers the useEffect above
+//       // **Remove direct redirection from here**
+//     } catch (err) {
+//       // 'err' is initially 'unknown'
+//       console.error("Login error in component:", err);
+
+//       // Fix 2: Check the type of 'err' before accessing properties
+//       let message = "Sorry, that email or password didn't work."; // Default message
+//       if (err instanceof Error) {
+//         // If it's an Error instance, use its message
+//         message = err.message || message;
+//       } else if (typeof err === "string") {
+//         // If it's just a string, use the string as the message
+//         message = err;
+//       }
+//       // Potentially add more checks here if your authService can throw other types of errors
+
+//       // Now use the determined message
+//       if (message.toLowerCase().includes("invalid credentials")) {
+//         setLoginError("Invalid email address and password combination.");
+//       } else {
+//         setLoginError(message);
+//       }
+//       setIsLoginErrorVisible(true);
+//       setLoginSuccess(false);
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   const togglePasswordVisibility = () => {
+//     setShowPassword(!showPassword);
+//   };
+
+//   const errorVariants = {
+//     initial: { opacity: 0.5, y: 10, scale: 0.95, rotate: "2deg" },
+//     animate: {
+//       opacity: 1,
+//       y: 0,
+//       scale: 1,
+//       rotate: "0deg",
+//       transition: {
+//         duration: 0.3,
+//         ease: "easeInOut",
+//         type: "spring",
+//         stiffness: 95,
+//         damping: 10,
+//       },
+//     },
+//     exit: {
+//       opacity: 0,
+//       y: 10,
+//       scale: 0.95,
+//       rotate: "-2deg",
+//       transition: { duration: 0.2, ease: "easeIn" },
+//     },
+//   };
+
+//   const successVariants = {
+//     initial: { opacity: 0, y: -20 },
+//     animate: {
+//       opacity: 1,
+//       y: 0,
+//       transition: { duration: 0.3, ease: "easeOut" },
+//     },
+//     exit: { opacity: 0, y: -20, transition: { duration: 0.2, ease: "easeIn" } },
+//   };
+
+//   return (
+//     <div className="bg-white dark:bg-background">
+//       <div className="flex flex-col justify-center items-center lg:h-[calc(100vh-73px)] px-4">
+//         <div className="w-full max-w-md lg:mt-20 mt-10">
+//           {/* User Inactive-LogoutMessage */}
+
+//           <AnimatePresence>
+//             {inactiveLogoutMessage && (
+//               <motion.div
+//                 className="bg-gray/10 dark:bg-white/5 rounded-2xl p-4 flex items-center gap-4 relative mb-4"
+//                 role="alert"
+//                 initial="initial"
+//                 animate="animate"
+//                 exit="exit"
+//                 variants={errorVariants}
+//               >
+//                 <div className="flex dark:bg-yellow-600/20 bg-main/60 justify-center rounded-full items-center lg:size-12 size-10">
+//                   <AiOutlineInfo className="p-0.5 dark:text-yellow-600 text-white size-8" />
+//                 </div>
+
+//                 <div>
+//                   <span className="text-gray-500 dark:text-gray-300 text-sm lg:text-base block max-w-60 leading-relaxed">
+//                     {inactiveLogoutMessage}
+//                   </span>
+//                 </div>
+//               </motion.div>
+//             )}
+//           </AnimatePresence>
+
+//           {/* User SessionExpiredMessage */}
+//           <AnimatePresence>
+//             {sessionExpiredMessage && (
+//               <motion.div
+//                 className="bg-gray/10 dark:bg-white/5 rounded-2xl p-4 flex items-center gap-4 relative mb-4"
+//                 role="alert"
+//                 initial="initial"
+//                 animate="animate"
+//                 exit="exit"
+//                 variants={errorVariants}
+//               >
+//                 <div className="flex dark:bg-red-600/20 bg-red-300 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+//                   <FiX className="p-0.5 text-mainheading dark:text-red-600 lg:size-8 size-6" />
+//                 </div>
+//                 <div>
+//                   <p className="font-medium">
+//                     Session Expired Please Try Again!
+//                   </p>
+//                   <p className="text-mainheading dark:text-whit text-sm lg:text-base block max-w-60 leading-relaxed">
+//                     {sessionExpiredMessage}
+//                   </p>
+//                 </div>
+//               </motion.div>
+//             )}
+//           </AnimatePresence>
+
+//           <div className="py-3">
+//             <h2 className="lg:text-3xl text-2xl text-center text-main dark:text-white  font-semibold mb-4">
+//               Welcome back.
+//             </h2>
+
+//             <p className="text-center text-gray-700 dark:text-gray-300 font-light mb-4">
+//               New to Wise?{" "}
+//               <Link
+//                 href="/auth/register"
+//                 className="text-primary font-medium underline underline-offset-4"
+//               >
+//                 Sign up
+//               </Link>
+//             </p>
+
+//             {/* User LoginError Massage */}
+//             <AnimatePresence>
+//               {isLoginErrorVisible && loginError && (
+//                 <motion.div
+//                   className={`dark:bg-white/5 bg-gray/10 rounded-2xl p-4 flex items-center gap-4 relative`}
+//                   role="alert"
+//                   initial="initial"
+//                   animate="animate"
+//                   exit="exit"
+//                   variants={errorVariants}
+//                 >
+//                   <div className="flex dark:bg-red-600/20 bg-red-300 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+//                     <FiX className="p-0.5 text-mainheading dark:text-red-600 lg:size-8 size-6" />
+//                   </div>
+//                   <div>
+//                     <span className="text-mainheading dark:text-white text-sm lg:text-base block max-w-60 leading-relaxed">
+//                       {loginError}
+//                     </span>
+//                   </div>
+//                 </motion.div>
+//               )}
+//             </AnimatePresence>
+
+//             {/* User Success Message Display */}
+//             <AnimatePresence>
+//               {isLoginSuccessVisible && loginSuccess && (
+//                 <motion.div
+//                   className="flex bg-gray/10 dark:bg-white/5 p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4"
+//                   role="alert"
+//                   initial="initial"
+//                   animate="animate"
+//                   exit="exit"
+//                   variants={successVariants}
+//                 >
+//                   <div className="flex dark:bg-primary/20 bg-green-300 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+//                     <FaCheck className="p-0.5 text-white dark:text-primary lg:size-8 size-6" />
+//                   </div>
+//                   <div className="flex-grow space-y-0.5">
+//                     <span className="text-mainheading dark:text-primary block font-medium">
+//                       Login successful!
+//                     </span>
+//                     <span className="text-mainheading dark:text-gray-300 block text-sm">
+//                       Checking account status... {/* Updated message */}
+//                     </span>
+//                   </div>
+//                 </motion.div>
+//               )}
+//             </AnimatePresence>
+
+//             <form className="mt-10 space-y-5" onSubmit={handleSubmit}>
+//               <div>
+//                 <button
+//                   type="button" // Changed to button type for accessibility and preventing form submission
+//                   className="flex dark:bg-background border justify-center rounded-lg text-mainheading dark:text-white text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 text-sm lg:text-base"
+//                   onClick={() =>
+//                     alert("Continue with Google functionality not implemented.")
+//                   } // Example action
+//                 >
+//                   <Image
+//                     src="/assets/icon/google.svg"
+//                     width={30}
+//                     height={30}
+//                     alt="Continue with Google"
+//                   />
+//                   Continue with Google
+//                 </button>
+//               </div>
+
+//               <div>
+//                 <label
+//                   htmlFor="email"
+//                   className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
+//                 >
+//                   Your email address <span className="text-error">*</span>
+//                 </label>
+//                 <input
+//                   type="email"
+//                   id="email"
+//                   placeholder="Your Email"
+//                   className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
+//                     emailError
+//                       ? "border-red-700 border-2 !shadow-none"
+//                       : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
+//                   }`}
+//                   value={email}
+//                   onChange={(e) => setEmail(e.target.value)}
+//                   aria-invalid={!!emailError} // Added for accessibility
+//                   aria-describedby={emailError ? "email-error" : undefined} // Added for accessibility
+//                 />
+//                 {emailError && (
+//                   <p
+//                     id="email-error"
+//                     className="flex text-red-700 text-base items-center mt-0.5"
+//                   >
+//                     {" "}
+//                     {/* Added id */}
+//                     <span className="mr-1">
+//                       <IoMdCloseCircle className="size-5" />
+//                     </span>
+//                     {emailError}
+//                   </p>
+//                 )}
+//               </div>
+
+//               <div>
+//                 <label
+//                   htmlFor="password"
+//                   className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
+//                 >
+//                   Your password <span className="text-error">*</span>
+//                 </label>
+//                 <div className="relative">
+//                   <input
+//                     type={showPassword ? "text" : "password"}
+//                     id="password"
+//                     placeholder="Your Password"
+//                     className={`mt-1 block px-4 dark:bg-background py-3 h-14 border w-full rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
+//                       passwordError
+//                         ? "border-red-700 border-2 !shadow-none"
+//                         : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
+//                     }`}
+//                     value={password}
+//                     onChange={(e) => setPassword(e.target.value)}
+//                     aria-invalid={!!passwordError} // Added for accessibility
+//                     aria-describedby={
+//                       passwordError ? "password-error" : undefined
+//                     } // Added for accessibility
+//                   />
+//                   <button
+//                     type="button"
+//                     className="text-gray-500 -translate-y-1/2 absolute cursor-pointer focus:outline-none hover:text-gray-700 right-1 top-1/2 transform dark:bg-background  bg-white p-3 rounded-md"
+//                     onClick={togglePasswordVisibility}
+//                     aria-label={
+//                       showPassword ? "Hide password" : "Show password"
+//                     } // Added for accessibility
+//                   >
+//                     {showPassword ? (
+//                       <RiEyeCloseLine className="text-mainheading size-5 dark:text-white" />
+//                     ) : (
+//                       <VscEye className="text-mainheading size-5 dark:text-white" />
+//                     )}
+//                   </button>
+//                 </div>
+//                 {passwordError && (
+//                   <p
+//                     id="password-error"
+//                     className="flex text-red-700 text-base items-center mt-0.5"
+//                   >
+//                     {" "}
+//                     {/* Added id */}
+//                     <span className="mr-1">
+//                       <IoMdCloseCircle className="size-5" />
+//                     </span>
+//                     {passwordError}
+//                   </p>
+//                 )}
+//               </div>
+
+//               <div className="text-right">
+//                 <Link
+//                   href="/auth/forgot-password"
+//                   className="text-mainheading dark:text-primary inline-block font-medium underline text-sm lg:text-base underline-offset-4"
+//                 >
+//                   Forgot Password ?
+//                 </Link>
+//               </div>
+
+//               <div className="flex justify-between items-center mb-4">
+//                 <button
+//                   type="submit"
+//                   className={`rounded-full text-mainheading w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium lg:py-3 py-2 lg:h-12.5 transition-colors
+//                                     ${
+//                                       isSubmitting
+//                                         ? "bg-gray-300 dark:bg-background border dark:text-white text-mainheading cursor-not-allowed"
+//                                         : "bg-primary hover:bg-primaryhover text-mainheading"
+//                                     }
+//                                 `}
+//                   disabled={isSubmitting}
+//                 >
+//                   {isSubmitting ? (
+//                     <div className="flex gap-4 justify-center items-center">
+//                       <svg
+//                         className="size-5 text-mainheading dark:text-white font-medium animate-spin"
+//                         viewBox="0 0 24 24"
+//                         aria-hidden="true"
+//                       >
+//                         {" "}
+//                         {/* Added aria-hidden */}
+//                         <circle
+//                           className="opacity-25"
+//                           cx="12"
+//                           cy="12"
+//                           r="10"
+//                           stroke="currentColor"
+//                           strokeWidth="4"
+//                         ></circle>
+//                         <path
+//                           className="opacity-75"
+//                           fill="currentColor"
+//                           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+//                         ></path>
+//                       </svg>
+//                       Logging in...
+//                     </div>
+//                   ) : (
+//                     "Log in"
+//                   )}
+//                 </button>
+//               </div>
+//             </form>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
 // frontend/src/app/auth/login/page.tsx
 "use client";
 
@@ -1910,6 +2401,8 @@ import { AiOutlineInfo } from "react-icons/ai";
 import { FiX } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaCheck } from "react-icons/fa6";
+import apiConfig from "../../config/apiConfig"; // Import API config for base URL
+
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -1927,129 +2420,91 @@ export default function LoginPage() {
   const [isLoginErrorVisible, setIsLoginErrorVisible] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(false);
   const [isLoginSuccessVisible, setIsLoginSuccessVisible] = useState(false);
+  const [googleError, setGoogleError] = useState(""); // State for Google-specific errors
 
   useEffect(() => {
     const urlParams = new URLSearchParams(searchParams.toString());
     const autoLogout = urlParams.get("autoLogout");
     const sessionExpired = urlParams.get("sessionExpired");
+ const googleErr = urlParams.get("googleError"); // Check for Google errors from backend redirect
+    const registerSuccessParam = urlParams.get("registerSuccess"); // Check for successful registration redirect
 
-    if (sessionExpired === "true") {
-      setSessionExpiredMessage(
-        "Your session has expired. Please log in again."
-      );
-      setInactiveLogoutMessage("");
+    if (googleErr) {
+        setGoogleError(decodeURIComponent(googleErr));
+        setLoginError(""); // Clear general login error
+        setInactiveLogoutMessage("");
+        setSessionExpiredMessage("");
+        setIsLoginErrorVisible(false); // Don't show general error box
+        // Clean the URL
+        router.replace('/auth/login', undefined); // Use replace to remove query params
+    } else if (sessionExpired === "true") {
+        setSessionExpiredMessage("Your session has expired. Please log in again.");
+        setInactiveLogoutMessage("");
+        setGoogleError("");
     } else if (autoLogout === "true") {
-      setInactiveLogoutMessage(
-        "We logged you out because you were inactive for a while — it's to help keep your account secure."
-      );
-      setSessionExpiredMessage("");
+        setInactiveLogoutMessage("We logged you out because you were inactive for a while — it's to help keep your account secure.");
+        setSessionExpiredMessage("");
+        setGoogleError("");
+    } else if (registerSuccessParam === "true") {
+         // Optionally show a success message after registration redirect
+         // setLoginSuccess(true); // Maybe reuse success state? Or a dedicated one.
+         // setIsLoginSuccessVisible(true);
+         console.log("Registration successful!");
+         // Clean the URL
+         router.replace('/auth/login', undefined);
     } else {
-      setInactiveLogoutMessage("");
-      setSessionExpiredMessage("");
+        setInactiveLogoutMessage("");
+        setSessionExpiredMessage("");
+        setGoogleError("");
     }
-  }, [searchParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]); // Rerun when searchParams change
 
   useEffect(() => {
-    // This effect handles redirection *after* the user state is updated by login()
     if (!loading && user) {
-      console.log("Login successful, checking KYC status:", user.kyc?.status);
-
-      let redirectUrl = "";
-
-      // Determine redirect based on role and KYC status
-      if (isAdmin) {
-        redirectUrl = "/admin"; // Admins go straight to admin panel
-      } else {
-        switch (user.kyc?.status) {
-          case "not_started":
-          case "rejected":
-          case "skipped": // Treat skipped like not_started for initial flow
-            redirectUrl = "/kyc/start"; // Start the KYC flow
-            break;
-          case "pending":
-            redirectUrl = "/kyc/pending"; // Go to a pending status page
-            break;
-          case "verified":
-            redirectUrl = "/dashboard"; // Go to the main dashboard
-            break;
-          default:
-            redirectUrl = "/dashboard"; // Fallback to dashboard
+        console.log("Login successful (or already logged in), checking KYC status:", user.kyc?.status);
+        let redirectUrl = "";
+        if (isAdmin) { redirectUrl = "/admin"; }
+        else {
+            switch (user.kyc?.status) {
+                case "not_started": case "rejected": case "skipped": redirectUrl = "/kyc/start"; break;
+                case "pending": redirectUrl = "/kyc/pending"; break;
+                case "verified": redirectUrl = "/dashboard"; break;
+                default: redirectUrl = "/dashboard";
+            }
         }
-      }
-
-      console.log("Redirecting logged-in user to:", redirectUrl);
-      // Delay redirection slightly to allow success message to show
-      const timeoutId = setTimeout(() => {
-        router.push(redirectUrl);
-      }, 500); // Adjust delay as needed
-
-      return () => clearTimeout(timeoutId); // Cleanup timeout on unmount
+        console.log("Redirecting logged-in user to:", redirectUrl);
+        const timeoutId = setTimeout(() => { router.push(redirectUrl); }, loginSuccess ? 500 : 0); // Delay only if showing success message
+        return () => clearTimeout(timeoutId);
     }
-  }, [user, loading, router, isAdmin]); // Depend on user, loading, router, isAdmin
+  }, [user, loading, router, isAdmin, loginSuccess]); // Added loginSuccess dependency
 
-  useEffect(() => {
-    setIsLoginErrorVisible(!!loginError);
-  }, [loginError]);
-
-  useEffect(() => {
-    setIsLoginSuccessVisible(loginSuccess);
-  }, [loginSuccess]);
+  useEffect(() => { setIsLoginErrorVisible(!!loginError); }, [loginError]);
+  useEffect(() => { setIsLoginSuccessVisible(loginSuccess); }, [loginSuccess]);
 
   // Fix 1: Add type React.FormEvent<HTMLFormElement> to 'e'
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setEmailError("");
-    setPasswordError("");
-    setLoginError("");
-    setIsLoginErrorVisible(false);
-    setInactiveLogoutMessage("");
-    setSessionExpiredMessage("");
-    setLoginSuccess(false);
-    setIsLoginSuccessVisible(false);
+    setEmailError(""); setPasswordError(""); setLoginError(""); setGoogleError(""); // Reset all errors
+    setIsLoginErrorVisible(false); setInactiveLogoutMessage(""); setSessionExpiredMessage("");
+    setLoginSuccess(false); setIsLoginSuccessVisible(false);
 
     let isValid = true;
-    if (!email) {
-      setEmailError("Email is required");
-      isValid = false;
-    }
-    if (!password) {
-      setPasswordError("Password is required");
-      isValid = false;
-    }
+    if (!email) { setEmailError("Email is required"); isValid = false; }
+    if (!password) { setPasswordError("Password is required"); isValid = false; }
     if (!isValid) return;
 
     setIsSubmitting(true);
     try {
-      // The login function updates the AuthContext state (user)
-      const { user: loggedInUser, token } = await authService.login({
-        email,
-        password,
-      });
+      const { user: loggedInUser, token } = await authService.login({ email, password });
       console.log("Login successful in component");
-      setLoginSuccess(true); // Show success message
-      login(loggedInUser, token); // This triggers the useEffect above
-      // **Remove direct redirection from here**
-    } catch (err) {
-      // 'err' is initially 'unknown'
+      setLoginSuccess(true);
+      login(loggedInUser, token); // Triggers useEffect for redirection
+    } catch (err: any) { // Catch any type
       console.error("Login error in component:", err);
-
-      // Fix 2: Check the type of 'err' before accessing properties
-      let message = "Sorry, that email or password didn't work."; // Default message
-      if (err instanceof Error) {
-        // If it's an Error instance, use its message
-        message = err.message || message;
-      } else if (typeof err === "string") {
-        // If it's just a string, use the string as the message
-        message = err;
-      }
-      // Potentially add more checks here if your authService can throw other types of errors
-
-      // Now use the determined message
-      if (message.toLowerCase().includes("invalid credentials")) {
-        setLoginError("Invalid email address and password combination.");
-      } else {
-        setLoginError(message);
-      }
+      // Extract message more reliably
+      let message = err?.response?.data?.message || err?.message || "Sorry, that email or password didn't work.";
+      setLoginError(message); // Use the extracted message
       setIsLoginErrorVisible(true);
       setLoginSuccess(false);
     } finally {
@@ -2060,6 +2515,14 @@ export default function LoginPage() {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+   // --- Google Login Handler ---
+   const handleGoogleLogin = () => {
+    setLoginError(""); // Clear previous errors
+    setGoogleError("");
+    // Redirect browser to the backend endpoint that starts the Google flow
+    window.location.href = `${apiConfig.baseUrl}/auth/google`; // Use configured base URL
+};
 
   const errorVariants = {
     initial: { opacity: 0.5, y: 10, scale: 0.95, rotate: "2deg" },
@@ -2216,21 +2679,16 @@ export default function LoginPage() {
 
             <form className="mt-10 space-y-5" onSubmit={handleSubmit}>
               <div>
+                {/* --- Updated Google Button --- */}
                 <button
-                  type="button" // Changed to button type for accessibility and preventing form submission
-                  className="flex dark:bg-background border justify-center rounded-lg text-mainheading dark:text-white text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 text-sm lg:text-base"
-                  onClick={() =>
-                    alert("Continue with Google functionality not implemented.")
-                  } // Example action
+                  type="button" // Keep type="button"
+                  className="flex dark:bg-background border justify-center rounded-lg text-mainheading dark:text-white text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 text-sm lg:text-base hover:shadow-md transition-shadow" // Added hover effect
+                  onClick={handleGoogleLogin} // Use the new handler
                 >
-                  <Image
-                    src="/assets/icon/google.svg"
-                    width={30}
-                    height={30}
-                    alt="Continue with Google"
-                  />
+                  <Image src="/assets/icon/google.svg" width={30} height={30} alt="Continue with Google" />
                   Continue with Google
                 </button>
+                {/* --------------------------- */}
               </div>
 
               <div>
@@ -2381,6 +2839,8 @@ export default function LoginPage() {
     </div>
   );
 }
+
+
 
 // // frontend/src/app/auth/login/page.tsx
 // 'use client';
