@@ -2086,6 +2086,498 @@
 //   );
 // }
 
+// // frontend/src/app/auth/register/page.tsx
+// "use client";
+
+// import { useState, useEffect } from "react";
+// import authService from "../../services/auth"; // Correct import path using alias
+// import { useRouter } from "next/navigation";
+// import { useAuth } from "../../contexts/AuthContext"; // Import useAuth
+// import Link from "next/link";
+// import Image from "next/image";
+// import { IoMdCloseCircle } from "react-icons/io";
+// import { RiEyeCloseLine } from "react-icons/ri";
+// import { VscEye } from "react-icons/vsc";
+// import { motion, AnimatePresence } from "framer-motion"; // Import Framer Motion
+// import { FiX } from "react-icons/fi";
+// import { FaCheck } from "react-icons/fa6";
+
+// export default function RegisterPage() {
+//   const [fullName, setFullName] = useState("");
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [confirmPassword, setConfirmPassword] = useState("");
+//   const [error, setError] = useState("");
+//   const [showPassword, setShowPassword] = useState(false);
+//   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+//   const router = useRouter();
+//   const { user, loading } = useAuth(); // Get user and loading from AuthContext
+
+//   const [fullNameError, setFullNameError] = useState("");
+//   const [emailError, setEmailError] = useState("");
+//   const [passwordError, setPasswordError] = useState("");
+//   const [confirmPasswordError, setConfirmPasswordError] = useState("");
+//   const [registerSuccess, setRegisterSuccess] = useState(false); // State for successful registration
+//   const [isErrorVisible, setIsErrorVisible] = useState(false); // State to control error visibility for animation
+
+//   // Redirect if user is already logged in
+//   useEffect(() => {
+//     if (!loading && user) {
+//       router.push("/dashboard");
+//     }
+//   }, [user, loading, router]);
+
+//   // Check for success message on mount (e.g., after redirection from register)
+//   useEffect(() => {
+//     const params = new URLSearchParams(window.location.search);
+//     if (params.get("registerSuccess") === "true") {
+//       setRegisterSuccess(true);
+//     }
+//   }, []); // Run only once on mount
+
+//   useEffect(() => {
+//     if (error) {
+//       setIsErrorVisible(true);
+//     } else {
+//       setIsErrorVisible(false);
+//     }
+//   }, [error]);
+
+//   const validateForm = () => {
+//     let isValid = true;
+
+//     setFullNameError(""); // Reset errors on validation
+//     setEmailError("");
+//     setPasswordError("");
+//     setConfirmPasswordError("");
+
+//     if (!fullName.trim()) {
+//       setFullNameError("Full Name is required");
+//       isValid = false;
+//     }
+
+//     if (!email.trim()) {
+//       setEmailError("Email is required");
+//       isValid = false;
+//     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+//       setEmailError("Invalid email format");
+//       isValid = false;
+//     }
+
+//     if (!password.trim()) {
+//       setPasswordError("Password is required");
+//       isValid = false;
+//     } else if (password.length < 8) {
+//       setPasswordError("Password must be at least 8 characters");
+//       isValid = false;
+//     }
+
+//     if (!confirmPassword.trim()) {
+//       setConfirmPasswordError("Confirm Password is required");
+//       isValid = false;
+//     } else if (password !== confirmPassword) {
+//       setConfirmPasswordError("Passwords do not match");
+//       isValid = false;
+//     }
+
+//     return isValid;
+//   };
+
+//   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+//     e.preventDefault();
+//     setError("");
+//     setRegisterSuccess(false); // Reset success state on new submission
+
+//     if (!validateForm()) {
+//       return;
+//     }
+
+//     try {
+//       await authService.register({ fullName, email, password });
+//       setRegisterSuccess(true); // Set success state to true
+//       // Redirect to login page with a success indicator after a short delay
+//       setTimeout(() => {
+//         router.push("/auth/login?registerSuccess=true");
+//       }, 300); // Delay allows user to see the success message
+//     } catch (err: unknown) {
+//       // <-- Use unknown instead of any
+//       let errorMessage = "Registration failed. Please try again."; // Default error message
+
+//       // Check if the error object has a structure typical of Axios errors
+//       // (or similar HTTP client errors) where the backend message is nested.
+//       if (typeof err === "object" && err !== null) {
+//         // Type assertion to check for nested properties safely
+//         const potentialError = err as {
+//           response?: { data?: { message?: string } };
+//           message?: string;
+//         };
+
+//         if (potentialError.response?.data?.message) {
+//           errorMessage = potentialError.response.data.message;
+//         } else if (potentialError.message) {
+//           // Fallback to the top-level message property if response.data.message doesn't exist
+//           errorMessage = potentialError.message;
+//         }
+//       }
+
+//       setError(errorMessage);
+//     }
+//   };
+
+//   const togglePasswordVisibility = () => {
+//     setShowPassword(!showPassword);
+//   };
+
+//   const toggleConfirmPasswordVisibility = () => {
+//     setShowConfirmPassword(!showConfirmPassword);
+//   };
+
+//   if (loading) {
+//     return <p>Loading...</p>; // Or a loading spinner
+//   }
+
+//   const errorVariants = {
+//     initial: {
+//       opacity: 0.5,
+//       y: 10, // Start slightly below to gently rise up
+//       scale: 0.95, // Start slightly smaller to subtly scale up
+//       rotate: "2deg", // A very slight initial rotation for a soft lean-in
+//     },
+//     animate: {
+//       opacity: 1,
+//       y: 0, // Move to its natural position
+//       scale: 1, // Scale to its normal size
+//       rotate: "0deg", // Rotate to straight position
+//       transition: {
+//         duration: 0.3, // Slightly longer duration for a smoother feel
+//         ease: "easeInOut", // Smooth start and end
+//         type: "spring", // Use spring for a gentle, bouncy settle
+//         stiffness: 95, // Adjust stiffness for desired bounce
+//         damping: 10, // Adjust damping to control oscillation
+//       },
+//     },
+//     exit: {
+//       opacity: 0,
+//       y: 10, // Move down slightly as it fades out
+//       scale: 0.95, // Scale down slightly as it fades out
+//       rotate: "-2deg", // Rotate slightly in the opposite direction for exit
+//       transition: {
+//         duration: 0.2, // Slightly faster exit
+//         ease: "easeIn", // Ease in for a smooth fade out
+//       },
+//     },
+//   };
+
+//   return (
+//     <div className="flex justify-center items-center lg:h-[calc(100vh-73px)] px-4 py-8 bg-white dark:bg-background">
+//       {/* Added padding */}
+//       <div className="w-full max-w-md">
+//         <h2 className="lg:text-3xl text-xl text-center text-mainheading dark:text-white font-semibold mt-5 mb-2">
+//           Create your Wise account
+//         </h2>
+
+//         <p className="lg:text-base text-sm text-center text-gray-700 dark:text-gray-300 mb-6">
+//           Already have an account? {/* Added space */}
+//           <Link
+//             href="/auth/login"
+//             className="text-primary font-medium underline underline-offset-4"
+//           >
+//             Log in
+//           </Link>
+//         </p>
+        
+
+//         {/* Error Message Display */}
+//         <AnimatePresence>
+//           {isErrorVisible && error && (
+//             <motion.div
+//               className="bg-gray/10 dark:bg-white/5 rounded-2xl p-4 flex items-center gap-4 relative mb-4"
+//               role="alert"
+//               initial="initial"
+//               animate="animate"
+//               exit="exit"
+//               variants={errorVariants}
+//             >
+//               <div className="flex dark:bg-red-600/20 bg-red-300 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+//                 <FiX className="p-0.5 text-mainheading dark:text-red-600 lg:size-8 size-6" />
+//               </div>
+
+//               <div>
+//                 <span className="text-mainheading lg:text-base text-sm dark:text-white block max-w-60 leading-relaxed">
+//                   {error}
+//                 </span>
+//               </div>
+//             </motion.div>
+//           )}
+//         </AnimatePresence>
+
+//         {/* Success Message Display */}
+//         <AnimatePresence>
+//           {registerSuccess &&
+//             !error && ( // Show success only if there's no error from a subsequent attempt
+//               <motion.div
+//                 className="flex bg-gray/10 dark:bg-secondary p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4"
+//                 role="alert"
+//                 initial="initial"
+//                 animate="animate"
+//                 exit="exit"
+//                 variants={errorVariants}
+//               >
+//                 {/* Adjusted background/padding */}
+//                 <div className="flex dark:bg-primary/20 bg-green-300 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+//                   <FaCheck className="p-0.5 text-white dark:text-primary lg:size-8 size-6" />
+//                 </div>
+//                 <div className="flex-grow space-y-0.5">
+//                   <span className="text-mainheading dark:text-primary block font-medium">
+//                     Registration successful!
+//                   </span>
+//                   {/* Improved text */}
+//                   <span className="text-gray-500 dark:text-gray-300 block text-sm">
+//                     Redirecting to login...
+//                   </span>
+//                 </div>
+//               </motion.div>
+//             )}
+//         </AnimatePresence>
+
+//         <form onSubmit={handleSubmit} className="mt-0 space-y-4">
+//           {/* Google Button */}
+//           <div>
+//             <a className="flex bg-white dark:bg-background border justify-center rounded-lg text-mainheading dark:text-white  text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 h-14">
+//               <Image
+//                 src="/assets/icon/google.svg"
+//                 width={28}
+//                 height={28}
+//                 alt="Google icon"
+//               />
+//               Continue with Google
+//             </a>
+//           </div>
+
+//           {/* Full Name Input */}
+//           <div>
+//             <label
+//               htmlFor="fullName"
+//               className="text-gray-500 dark:text-gray-300 block mb-1 lg:text-base text-sm" // Adjusted styling
+//             >
+//               Full Name <span className="text-error">*</span>
+//             </label>
+//             <input
+//               type="text"
+//               id="fullName"
+//               placeholder="Your Full Name "
+//               autoComplete="name" // Added autocomplete
+//               aria-required="true"
+//               aria-invalid={!!fullNameError}
+//               aria-describedby={fullNameError ? "fullName-error" : undefined}
+//               className={`mt-1.5 block px-4 py-3 h-14 w-full border bg-white dark:bg-background rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
+//                 fullNameError
+//                   ? "border-red-700 border-2" // Simplified error state
+//                   : "hover:shadow-darkcolor dark:hover:shadow-whitecolor" // Adjusted normal/focus states
+//               }`}
+//               value={fullName}
+//               onChange={(e) => {
+//                 setFullName(e.target.value);
+//                 if (fullNameError) setFullNameError("");
+//               }} // Clear error on change
+//             />
+//             {fullNameError && (
+//               <p
+//                 id="fullName-error"
+//                 className="flex text-red-700 text-base items-center mt-0.5"
+//                 role="alert"
+//               >
+//                 {/* Adjusted style/role */}
+//                 <span className="mr-1">
+//                   <IoMdCloseCircle className="size-5" />
+//                 </span>
+//                 {fullNameError}
+//               </p>
+//             )}
+//           </div>
+
+//           {/* Email Input */}
+//           <div>
+//             <label
+//               htmlFor="email"
+//               className="text-gray-500 dark:text-gray-300 block mb-1 lg:text-base text-sm"
+//             >
+//               Email Address <span className="text-error">*</span>
+//             </label>
+//             <input
+//               type="email"
+//               id="email"
+//               placeholder="Your Email "
+//               autoComplete="email" // Added autocomplete
+//               aria-required="true"
+//               aria-invalid={!!emailError}
+//               aria-describedby={emailError ? "email-error" : undefined}
+//               className={`mt-1.5 block px-4 bg-white dark:bg-background py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
+//                 emailError
+//                   ? "border-red-700 border-2"
+//                   : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
+//               }`}
+//               value={email}
+//               onChange={(e) => {
+//                 setEmail(e.target.value);
+//                 if (emailError) setEmailError("");
+//               }} // Clear error on change
+//             />
+//             {emailError && (
+//               <p className="flex text-red-700 text-base items-center mt-0.5">
+//                 <span className="mr-1">
+//                   <IoMdCloseCircle className="size-5" />
+//                 </span>
+//                 {emailError}
+//               </p>
+//             )}
+//           </div>
+
+//           {/* Password Input */}
+//           <div>
+//             <label
+//               htmlFor="password"
+//               className="text-gray-500 dark:text-gray-300 block mb-1 lg:text-base text-sm"
+//             >
+//               Password <span className="text-error">*</span>
+//             </label>
+//             <div className="relative">
+//               <input
+//                 type={showPassword ? "text" : "password"}
+//                 id="password"
+//                 placeholder="Your Password"
+//                 autoComplete="new-password" // Important for password managers
+//                 aria-required="true"
+//                 aria-invalid={!!passwordError}
+//                 aria-describedby={passwordError ? "password-error" : undefined}
+//                 className={`mt-1.5 block px-4 py-3 h-14 w-full border bg-white dark:bg-background rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
+//                   passwordError
+//                     ? "border-red-700 border-2"
+//                     : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
+//                 }`}
+//                 value={password}
+//                 onChange={(e) => {
+//                   setPassword(e.target.value);
+//                   if (passwordError) setPasswordError("");
+//                 }} // Clear error on change
+//               />
+//               <button
+//                 type="button"
+//                 className="text-gray-500 dark:text-white cursor-pointer -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-1 top-1/2 transform bg-white dark:bg-background p-3 rounded-md" // Adjusted focus style
+//                 onClick={togglePasswordVisibility}
+//                 aria-label={showPassword ? "Hide password" : "Show password"}
+//               >
+//                 {showPassword ? (
+//                   <RiEyeCloseLine className="text-mainheading dark:text-white size-5" />
+//                 ) : (
+//                   <VscEye className="text-mainheading dark:text-white size-5" />
+//                 )}
+//               </button>
+//             </div>
+//             {passwordError && (
+//               <p className="flex text-red-700 text-base items-center mt-0.5">
+//                 <span className="mr-1">
+//                   <IoMdCloseCircle className="size-5" />
+//                 </span>
+//                 {passwordError}
+//               </p>
+//             )}
+//           </div>
+
+//           {/* Confirm Password Input */}
+//           <div>
+//             <label
+//               htmlFor="confirmPassword"
+//               className="text-gray-500 dark:text-gray-300 block mb-1 lg:text-base text-sm"
+//             >
+//               Confirm Password <span className="text-error">*</span>
+//             </label>
+//             <div className="relative">
+//               <input
+//                 type={showConfirmPassword ? "text" : "password"}
+//                 id="confirmPassword"
+//                 placeholder="Your Confirm Password"
+//                 autoComplete="new-password"
+//                 aria-required="true"
+//                 aria-invalid={!!confirmPasswordError}
+//                 aria-describedby={
+//                   confirmPasswordError ? "confirmPassword-error" : undefined
+//                 }
+//                 className={`mt-1.5 block px-4 py-3 h-14 w-full border bg-white dark:bg-background rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
+//                   confirmPasswordError
+//                     ? "border-red-700 border-2"
+//                     : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
+//                 }`}
+//                 value={confirmPassword}
+//                 onChange={(e) => {
+//                   setConfirmPassword(e.target.value);
+//                   if (confirmPasswordError) setConfirmPasswordError("");
+//                 }} // Clear error on change
+//               />
+//               <button
+//                 type="button"
+//                 className="text-gray-500 dark:text-white cursor-pointer -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-1 top-1/2 transform bg-white dark:bg-background p-3 rounded-md"
+//                 onClick={toggleConfirmPasswordVisibility}
+//                 aria-label={
+//                   showConfirmPassword
+//                     ? "Hide confirm password"
+//                     : "Show confirm password"
+//                 }
+//               >
+//                 {showConfirmPassword ? (
+//                   <RiEyeCloseLine className="text-mainheading dark:text-white size-5" />
+//                 ) : (
+//                   <VscEye className="text-mainheading dark:text-white size-5" />
+//                 )}
+//               </button>
+//             </div>
+//             {confirmPasswordError && (
+//               <p className="flex text-red-700 text-base items-center mt-0.5">
+//                 <span className="mr-1">
+//                   <IoMdCloseCircle className="size-5" />
+//                 </span>
+//                 {confirmPasswordError}
+//               </p>
+//             )}
+//           </div>
+
+//           {/* Register Button */}
+//           <button
+//             type="submit"
+//             disabled={registerSuccess} // Disable button after successful registration to prevent double clicks
+//             className={`bg-primary hover:bg-primaryhover rounded-full text-mainheading w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium  lg:py-3 py-2 lg:h-12.5 transition-colors`} // Adjusted styles, disabled state
+//           >
+//             {registerSuccess ? "Registered!" : "Register"}
+//           </button>
+//         </form>
+
+//         {/* Terms and Policy Links */}
+//         <p className="text-center text-mainheading dark:text-gray-300 my-3 text-sm">
+//           {/* Adjusted styles */}
+//           By registering, you accept our &nbsp;
+//           <Link
+//             href="/terms-and-conditions"
+//             className="text-lime-500 dark:text-primary font-medium underline underline-offset-4" // Adjusted offset/hover
+//           >
+//             Terms of use &nbsp;
+//           </Link>
+//           and
+//           <Link
+//             href="/privacy-policy"
+//             className="text-lime-500 dark:text-primary font-medium underline underline-offset-4"
+//           >
+//             &nbsp; Privacy Policy
+//           </Link>
+//           .
+//         </p>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
 // frontend/src/app/auth/register/page.tsx
 "use client";
 
@@ -2101,6 +2593,8 @@ import { VscEye } from "react-icons/vsc";
 import { motion, AnimatePresence } from "framer-motion"; // Import Framer Motion
 import { FiX } from "react-icons/fi";
 import { FaCheck } from "react-icons/fa6";
+import apiConfig from "../../config/apiConfig"; // Import API config
+
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
@@ -2119,7 +2613,8 @@ export default function RegisterPage() {
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [registerSuccess, setRegisterSuccess] = useState(false); // State for successful registration
   const [isErrorVisible, setIsErrorVisible] = useState(false); // State to control error visibility for animation
-
+  const [isSubmitting, setIsSubmitting] = useState(false); // Add submitting state
+  
   // Redirect if user is already logged in
   useEffect(() => {
     if (!loading && user) {
@@ -2186,41 +2681,25 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
-    setRegisterSuccess(false); // Reset success state on new submission
+    setRegisterSuccess(false);
 
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) { return; }
 
+    setIsSubmitting(true); // Set submitting true
     try {
       await authService.register({ fullName, email, password });
-      setRegisterSuccess(true); // Set success state to true
-      // Redirect to login page with a success indicator after a short delay
-      setTimeout(() => {
-        router.push("/auth/login?registerSuccess=true");
-      }, 300); // Delay allows user to see the success message
+      setRegisterSuccess(true);
+      setTimeout(() => { router.push("/auth/login?registerSuccess=true"); }, 300);
     } catch (err: unknown) {
-      // <-- Use unknown instead of any
-      let errorMessage = "Registration failed. Please try again."; // Default error message
-
-      // Check if the error object has a structure typical of Axios errors
-      // (or similar HTTP client errors) where the backend message is nested.
+      let errorMessage = "Registration failed. Please try again.";
       if (typeof err === "object" && err !== null) {
-        // Type assertion to check for nested properties safely
-        const potentialError = err as {
-          response?: { data?: { message?: string } };
-          message?: string;
-        };
-
-        if (potentialError.response?.data?.message) {
-          errorMessage = potentialError.response.data.message;
-        } else if (potentialError.message) {
-          // Fallback to the top-level message property if response.data.message doesn't exist
-          errorMessage = potentialError.message;
-        }
+        const potentialError = err as { response?: { data?: { message?: string } }; message?: string; };
+        if (potentialError.response?.data?.message) { errorMessage = potentialError.response.data.message; }
+        else if (potentialError.message) { errorMessage = potentialError.message; }
       }
-
       setError(errorMessage);
+    } finally {
+        setIsSubmitting(false); // Set submitting false
     }
   };
 
@@ -2231,6 +2710,13 @@ export default function RegisterPage() {
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
+// --- Google Login/Register Handler ---
+const handleGoogleRegister = () => {
+  setError(""); // Clear previous errors
+  // Redirect browser to the backend endpoint that starts the Google flow
+  window.location.href = `${apiConfig.baseUrl}/auth/google`; // Same endpoint as login
+};
+// ----------------------------------
 
   if (loading) {
     return <p>Loading...</p>; // Or a loading spinner
@@ -2341,18 +2827,19 @@ export default function RegisterPage() {
         </AnimatePresence>
 
         <form onSubmit={handleSubmit} className="mt-0 space-y-4">
-          {/* Google Button */}
+          {/* --- Updated Google Button --- */}
           <div>
-            <a className="flex bg-white dark:bg-background border justify-center rounded-lg text-mainheading dark:text-white  text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 h-14">
-              <Image
-                src="/assets/icon/google.svg"
-                width={28}
-                height={28}
-                alt="Google icon"
-              />
+            <button
+              type="button" // Keep type="button"
+              className="flex bg-white dark:bg-background border justify-center rounded-lg text-mainheading dark:text-white text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 h-14 hover:shadow-md transition-shadow" // Added hover effect
+              onClick={handleGoogleRegister} // Use the new handler
+             >
+              <Image src="/assets/icon/google.svg" width={28} height={28} alt="Google icon" />
               Continue with Google
-            </a>
+            </button>
           </div>
+          {/* --------------------------- */}
+
 
           {/* Full Name Input */}
           <div>
