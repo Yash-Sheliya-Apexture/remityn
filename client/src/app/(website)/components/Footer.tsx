@@ -1359,7 +1359,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { HiX } from "react-icons/hi";
-import { TiArrowSortedDown } from "react-icons/ti";
+import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import { IconType } from "react-icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppContext } from "../../contexts/WebsiteAppContext"; // Adjust path if needed
@@ -1367,6 +1367,7 @@ import { useRouter } from "next/navigation";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { FaTelegram } from "react-icons/fa";
 import { ReactNode } from "react";
+import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 
 interface FooterLink {
   href: string;
@@ -1410,7 +1411,7 @@ const Footer: React.FC = () => {
             href: "/terms-and-conditions",
             label: <>Terms and Conditions</>,
           },
-          { href: "#faq", label: "FAQs" }, // Assuming FAQ might be a section on the page
+          { href: "/faqs", label: "FAQs" }, // Assuming FAQ might be a section on the page
         ],
       },
     ],
@@ -1468,7 +1469,7 @@ const Footer: React.FC = () => {
   // --- END EFFECT ---
 
   const renderLinkList = (links: FooterLink[] | undefined) => (
-    <ul className="space-y-3 text-mainheading font-medium dark:text-white">
+    <ul className="space-y-3 text-mainheading font-medium dark:text-white pt-2">
       {links?.map((link) => (
         <li key={link.href}>
           <div className="relative group w-fit lg:text-base text-sm">
@@ -1510,8 +1511,8 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-white dark:bg-background px-4 pb-6 pt-8 border-t">
-      <div className="container mx-auto flex flex-col lg:flex-row justify-between w-full lg:gap-12">
+    <footer className="bg-white dark:bg-background px-4 pb-6 pt-8">
+      <div className="container mx-auto flex flex-col lg:flex-row justify-between w-full">
         {/* Logo and Description Section */}
         <div className="flex flex-col w-full lg:w-1/2 mb-8 lg:mb-0">
           <Image
@@ -1530,7 +1531,8 @@ const Footer: React.FC = () => {
             speed.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:gap-y-6 gap-y-4 w-full lg:w-1/3">
+
+        <div className="grid grid-cols-1  md:grid-cols-2 lg:gap-y-6 gap-y-4 w-full lg:w-1/4">
           {footerData.sections.map((section) => (
             <div key={section.title}>
               {/* Section Header (Mobile Accordion Trigger) */}
@@ -1558,12 +1560,11 @@ const Footer: React.FC = () => {
                 {/* Icon container - important: don't put onClick here, keep it on parent div */}
                 {isMobile && (
                   <span className="text-mainheading dark:text-white pointer-events-none">
-                    {" "}
                     {/* Prevent nested clicks */}
                     {openDropdown === section.title ? (
-                      <HiX className="size-5" />
+                      <FiChevronDown   className="size-4" />
                     ) : (
-                      <TiArrowSortedDown className="size-5" />
+                      <FiChevronUp  className="size-4" />
                     )}
                   </span>
                 )}
@@ -1609,7 +1610,7 @@ const Footer: React.FC = () => {
       </div>
 
       {/* Currency Converters Section */}
-      <hr className="lg:my-8 my-6 container mx-auto border-gray-200 dark:border-gray-700" />
+      <hr className="lg:my-4 my-2 container mx-auto" />
       <div className="container mx-auto">
         <h3 className="text-lime-500 dark:text-primary lg:text-lg text-base font-semibold pb-4">
           Currency Converters
@@ -1645,12 +1646,10 @@ const Footer: React.FC = () => {
         </p>
         <div className="flex lg:gap-4 gap-2">
           <a href="#" aria-label="Chat on WhatsApp">
-            {" "}
             {/* Replace # with actual link */}
             <IoLogoWhatsapp className="lg:size-7 size-6 text-[#25D366] hover:opacity-80 transition-opacity" />
           </a>
           <a href="#" aria-label="Contact us on Telegram">
-            {" "}
             {/* Replace # with actual link */}
             <FaTelegram className="lg:size-7 size-6 text-[#3390EC] hover:opacity-80 transition-opacity" />
           </a>

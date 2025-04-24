@@ -10,19 +10,16 @@
 
 import React from "react";
 
-// --- IMPORTANT ---
-// Adjust these import paths based on where you store your assets
 import Image from "next/image";
 import { FaChartLine, FaHeadset } from "react-icons/fa6";
-import { MdSend } from "react-icons/md";
 import { FiGlobe } from "react-icons/fi";
 import { FaFastForward } from "react-icons/fa";
 
 const FeaturesSection: React.FC = () => {
   return (
-    <div className="bg-white lg:py-10 py-5 dark:bg-background">
+    <div className="bg-white lg:py-10 py-5 dark:bg-background px-4">
       <section
-        className="flex flex-col lg:gap-10 gap-8 container mx-auto px-4"
+        className="flex flex-col lg:gap-10 gap-8 container mx-auto"
         id="features"
       >
         {/* Heading Section */}
@@ -34,23 +31,23 @@ const FeaturesSection: React.FC = () => {
         </div>
 
         {/* Features Grid */}
-        <div className="grid gap-y-6 lg:grid-cols-2 md:grid-rows-6 md:gap-x-8 md:gap-y-8">
+        <div className="grid gap-y-4 gap-x-4 md:grid-cols-2 md:grid-rows-6 lg:gap-x-8 lg:gap-y-8">
           {/* Feature Card 1: Security (Large) */}
-          <div className="row-span-4 flex flex-col border shadow-md overflow-hidden rounded-3xl bg-white dark:bg-white/5">
+          <div className="row-span-4 flex flex-col border dark:border-none shadow-sm overflow-hidden rounded-3xl bg-white dark:bg-white/5">
             <Image
               src="/assets/images/colorful-illustration-colorful-padlock-with-colorful-leaves-flowers_1122354-15513.jpg"
               width={500}
               height={500}
               alt="Picture of the author"
-              className="w-full object-cover md:h-96 h-60"
+              className="w-full object-cover lg:h-96 md:h-60 h-42"
             />
 
             <div className="flex flex-col gap-3 p-4">
-              <h3 className="lg:text-2xl md:text-xl text-base font-medium text-mainheading dark:text-white">
+              <h3 className="lg:text-2xl text-base font-medium text-mainheading dark:text-white">
                 <span className="text-primary font-bold">Secure</span> Every
                 Step of the Way
               </h3>
-              <p className="lg:text-lg sm:text-base text-sm font-medium text-mainheading leading-normal dark:text-gray-300">
+              <p className="lg:text-lg text-sm font-medium text-mainheading dark:text-gray-300">
                 We prioritize your security. Our advanced encryption and
                 rigorous verification process protect your funds and personal
                 information. Your peace of mind is our top priority.
@@ -59,16 +56,16 @@ const FeaturesSection: React.FC = () => {
           </div>
 
           {/* Feature Card 2: Speed (Small) */}
-          <div className="row-span-2 flex flex-col lg:gap-6 border shadow-md gap-3 overflow-hidden rounded-3xl bg-white dark:bg-white/5 p-6">
+          <div className="row-span-2 flex flex-col lg:gap-6 border dark:border-none shadow-sm gap-3 overflow-hidden rounded-3xl bg-white dark:bg-white/5 lg:p-6 p-4">
             <FaFastForward className="lg:size-8 size-6 text-mainheading dark:text-primary" />
             <div className="flex flex-col gap-3">
-              <h3 className="lg:text-2xl md:text-xl text-base font-medium text-mainheading dark:text-white">
+              <h3 className="lg:text-2xl text-base font-medium text-mainheading dark:text-white">
                 <span>
                   Our transfers are{" "}
                   <span className="text-primary font-bold">Speedy</span>
                 </span>
               </h3>
-              <p className="lg:text-lg sm:text-base text-sm font-medium text-mainheading leading-normal dark:text-gray-300">
+              <p className="lg:text-lg text-sm font-medium text-mainheading dark:text-gray-300">
                 Receive your money swiftly. Enjoy fast processing times and
                 real-time tracking to know when your funds arrive.
               </p>
@@ -76,24 +73,24 @@ const FeaturesSection: React.FC = () => {
           </div>
 
           {/* Feature Card 3: Support (Large) */}
-          <div className="row-span-4 flex flex-col border shadow-md overflow-hidden rounded-3xl bg-white dark:bg-white/5">
+          <div className="row-span-4 flex flex-col border dark:border-none shadow-sm overflow-hidden rounded-3xl bg-white dark:bg-white/5">
             <Image
               src="/assets/images/friendly-customer.jpg"
               width={500}
               height={500}
               alt="Picture of the author"
-              className="w-full object-cover sm:h-60 lg:h-96"
+              className="w-full object-cover lg:h-96 md:h-60 h-42"
             />
 
             <div className="flex flex-col gap-3 p-4">
-              <h3 className="lg:text-2xl md:text-xl text-base font-medium text-mainheading dark:text-white">
+              <h3 className="lg:text-2xl text-base font-medium text-mainheading dark:text-white">
                 <span>
                   Need{" "}
                   <span className="text-primary font-bold">Support &nbsp;</span>
                   ? We’re here!
                 </span>
               </h3>
-              <p className="lg:text-lg sm:text-base text-sm font-medium text-mainheading leading-normal dark:text-gray-300">
+              <p className="lg:text-lg text-sm font-medium text-mainheading dark:text-gray-300">
                 Our dedicated support team is available to answer all your
                 questions and provide guidance throughout your transfer journey.
               </p>
@@ -101,16 +98,16 @@ const FeaturesSection: React.FC = () => {
           </div>
 
           {/* Feature Card 4: Savings (Small) */}
-          <div className="row-span-2 flex flex-col lg:gap-6 border shadow-md gap-3 overflow-hidden rounded-3xl bg-white dark:bg-white/5 p-6 ">
+          <div className="row-span-2 flex flex-col lg:gap-6 border dark:border-none shadow-sm gap-3 overflow-hidden rounded-3xl bg-white dark:bg-white/5 lg:p-6 p-4">
             <FaChartLine className="lg:size-8 size-6 text-mainheading  dark:text-primary" />
             <div className="flex flex-col gap-3">
-              <h3 className="lg:text-2xl md:text-xl text-base font-medium text-mainheading dark:text-white">
+              <h3 className="lg:text-2xl text-base font-medium text-mainheading dark:text-white">
                 <span>
                   <span className="text-primary font-bold">Save</span> with high
                   exchange rates
                 </span>
               </h3>
-              <p className="lg:text-lg sm:text-base text-sm font-medium text-mainheading leading-normal dark:text-gray-300">
+              <p className="lg:text-lg text-sm font-medium text-mainheading dark:text-gray-300">
                 Get the best value for your hard-earned money, so that more
                 makes it back to your loved ones.
               </p>
@@ -118,17 +115,17 @@ const FeaturesSection: React.FC = () => {
           </div>
 
           {/* Feature Card 5: Support (Large) */}
-          <div className="row-span-4 flex flex-col border shadow-md overflow-hidden rounded-3xl bg-white dark:bg-white/5">
+          <div className="row-span-4 flex flex-col border dark:border-none shadow-sm overflow-hidden rounded-3xl bg-white dark:bg-white/5">
             <Image
               src="/assets/images/dynamicRate.png"
               width={500}
               height={500}
               alt="Picture of the author"
-              className="w-full object-cover sm:h-60 lg:h-96"
+              className="w-full object-cover lg:h-96 md:h-60 h-42"
             />
 
             <div className="flex flex-col gap-3 p-4">
-              <h3 className="lg:text-2xl md:text-xl text-base font-medium text-mainheading dark:text-white">
+              <h3 className="lg:text-2xl text-base font-medium text-mainheading dark:text-white">
                 <span>
                   Stay ahead with live &nbsp;
                   <span className="text-primary font-bold capitalize">
@@ -136,7 +133,7 @@ const FeaturesSection: React.FC = () => {
                   </span>
                 </span>
               </h3>
-              <p className="lg:text-lg sm:text-base text-sm font-medium text-mainheading leading-normal dark:text-gray-300">
+              <p className="lg:text-lg text-sm font-medium text-mainheading dark:text-gray-300">
                 Stay updated with real-time currency exchange rates. Track
                 fluctuations and compare global currencies instantly to make
                 informed financial decisions.
@@ -145,10 +142,10 @@ const FeaturesSection: React.FC = () => {
           </div>
 
           {/* Feature Card 6: Reach (Small) */}
-          <div className="row-span-2 flex flex-col border shadow-md lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-white dark:bg-white/5 p-6 ">
+          <div className="row-span-2 flex flex-col border dark:border-none shadow-sm lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-white dark:bg-white/5 lg:p-6 p-4">
             <FiGlobe className="lg:size-8 size-6 text-mainheading dark:text-primary" />
             <div className="flex flex-col gap-3">
-              <h3 className="lg:text-2xl md:text-xl text-base font-medium text-mainheading dark:text-white">
+              <h3 className="lg:text-2xl text-base font-medium text-mainheading dark:text-white">
                 <span>
                   <span className="text-primary font-bold">
                     Worldwide Reach
@@ -156,7 +153,7 @@ const FeaturesSection: React.FC = () => {
                   , Local Touch
                 </span>
               </h3>
-              <p className="lg:text-lg sm:text-base text-sm font-medium text-mainheading leading-normal dark:text-gray-300">
+              <p className="lg:text-lg text-sm font-medium text-mainheading dark:text-gray-300">
                 Our platform combines international reach with personalized
                 service, making currency exchange feel just right—no matter
                 where you are.
@@ -165,17 +162,17 @@ const FeaturesSection: React.FC = () => {
           </div>
 
           {/* Feature Card 7: Money (Large) */}
-          <div className="row-span-4 flex flex-col border shadow-md overflow-hidden rounded-3xl bg-white dark:bg-white/5">
+          <div className="row-span-4 flex flex-col border dark:border-none shadow-sm overflow-hidden rounded-3xl bg-white dark:bg-white/5">
             <Image
               src="/assets/images/withoutborder.png"
               width={500}
               height={500}
               alt="Picture of the author"
-              className="w-full object-cover sm:h-60 lg:h-96"
+              className="w-full object-cover lg:h-96 md:h-60 h-42"
             />
 
             <div className="flex flex-col gap-3 p-4">
-              <h3 className="lg:text-2xl md:text-xl text-base font-medium text-mainheading dark:text-white">
+              <h3 className="lg:text-2xl text-base font-medium text-mainheading dark:text-white">
                 <span>
                   Exchange &nbsp;
                   <span className="text-primary font-bold capitalize">
@@ -184,7 +181,7 @@ const FeaturesSection: React.FC = () => {
                   Without Borders
                 </span>
               </h3>
-              <p className="lg:text-lg sm:text-base text-sm font-medium text-mainheading leading-normal dark:text-gray-300">
+              <p className="lg:text-lg text-sm font-medium text-mainheading dark:text-gray-300">
                 Seamless global money transfers made simple. Instantly exchange
                 currency across countries with transparent rates, no hidden
                 fees, and total peace of mind.
@@ -193,16 +190,16 @@ const FeaturesSection: React.FC = () => {
           </div>
 
           {/* Feature Card 8: Reach (Small) */}
-          <div className="row-span-2 flex flex-col border shadow-md lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-white dark:bg-white/5 p-6 ">
+          <div className="row-span-2 flex flex-col border dark:border-none shadow-sm lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-white dark:bg-white/5 lg:p-6 p-4">
             <FaHeadset className="lg:size-8 size-6 text-mainheading  dark:text-primary" />
             <div className="flex flex-col gap-3">
-              <h3 className="lg:text-2xl md:text-xl text-base font-medium text-mainheading dark:text-white">
+              <h3 className="lg:text-2xl text-base font-medium text-mainheading dark:text-white">
                 <span>
                   <span className="text-primary font-bold">24/7 Customer </span>
                   Support
                 </span>
               </h3>
-              <p className="lg:text-lg sm:text-base text-sm font-medium text-mainheading leading-normal dark:text-gray-300">
+              <p className="lg:text-lg text-sm font-medium text-mainheading dark:text-gray-300">
                 We're here for you—day or night. Our dedicated support team is
                 available 24/7 to assist with any questions, concerns, or
                 issues, ensuring a smooth and stress-free currency exchange

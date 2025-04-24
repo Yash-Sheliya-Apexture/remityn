@@ -4,24 +4,22 @@ import Link from "next/link";
 
 const RightChoiceSection: React.FC = () => {
   return (
-    <section className="py-10 bg-white dark:bg-background px-4">
+    <section className="lg:py-10 py-5 bg-white dark:bg-background px-4">
       <div className="container mx-auto">
-        <div className="flex flex-col lg:flex-row items-center ">
-          <div className="lg:w-1/2 w-full order-2 lg:order-1 flex justify-center">
+        <div className="flex flex-col lg:flex-row items-center">
+          <div className="lg:w-1/2 w-full lg:order-1 order-2 flex justify-center">
             <Image
               alt="image"
               src="/assets/images/right-choice-Illus.webp"
-              width={600} // Or adjust based on your design
-              height={600} // Or adjust based on your design
-              className="lg:w-3/5 w-3/4" // Equivalent to max-un class to remove max-width
-              style={{ color: "transparent" }}
-              priority
+              width={600}
+              height={600}
+              className="lg:h-full lg:w-2/3 w-full size-76" // Equivalent to max-un class to remove max-width
             />
           </div>
 
-          <div className="lg:w-1/2 w-full order-1 lg:order-2">
-            <div className="top-section md:text-left text-center">
-              <p className="lg:text-base text-sm text-gray-700 dark:text-gray-300 font-medium mb-2">
+          <div className="lg:w-1/2 w-full lg:order-2 order-1">
+            <div className="top-section md:text-left text-center space-y-2.5">
+              <p className="lg:text-base text-sm text-gray-700 dark:text-gray-300 font-medium">
                 {/* Example sub-title styling */}
                 Learn why Wise is the right choice for you
               </p>
@@ -32,7 +30,7 @@ const RightChoiceSection: React.FC = () => {
                 <span className="text-primary"> the comfort of home.</span>
               </h1>
 
-              <p className="text-gray-700 lg:text-lg text-sm dark:text-gray-300 mt-5">
+              <p className="text-gray-700 lg:text-lg text-sm dark:text-gray-300">
                 Send money from the comfort of your home with ease and
                 confidence. Our fast and secure online transfer service allows
                 you to send funds to your loved ones anytime, anywhere—no need
@@ -40,12 +38,7 @@ const RightChoiceSection: React.FC = () => {
                 emergency needs, or personal transactions, we make the process
                 simple, transparent, and reliable.
               </p>
-
-              <Link href="dashboard" className="inline-block my-4">
-                <button className="bg-primary px-10 lg:py-3 py-2 lg:h-12.5 lg:text-base text-sm cursor-pointer hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading font-medium rounded-full">
-                  Send Money
-                </button>
-              </Link>
+          
             </div>
           </div>
         </div>

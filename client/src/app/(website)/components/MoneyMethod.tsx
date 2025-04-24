@@ -202,15 +202,9 @@
 
 import React from "react";
 import { BiTransfer } from "react-icons/bi";
-import {
-  FaUniversity,
-  FaCreditCard,
-  FaMobileAlt,
-  FaArrowRight,
-  FaCheckCircle,
-} from "react-icons/fa";
+import { FaUniversity } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
-import { MdAccountBalanceWallet, MdReceiptLong } from "react-icons/md";
+import { MdReceiptLong } from "react-icons/md";
 
 const AddMoneyMethods = () => {
   const methods = [
@@ -245,11 +239,11 @@ const AddMoneyMethods = () => {
   ];
 
   return (
-    <section className="lg:py-16 py-5 px-4 bg-background">
+    <section className="lg:py-10 py-5 px-4 bg-background">
       <div className="container mx-auto max-w-6xl">
         {/* Heading section */}
         <div className="text-center mb-10 space-y-2">
-          <p className="text-gray dark:text-gray-300 font-medium">
+          <p className="text-gray dark:text-gray-300 md:text-base text-sm font-medium">
             How it works?
           </p>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
@@ -257,28 +251,28 @@ const AddMoneyMethods = () => {
             <span className="text-primary"> steps to start</span>
           </h1>
           <p className="lg:text-xl text-sm text-gray-700 dark:text-gray-300">
-            It's easier than you think. Follow 3 simple easy steps
+            It's easier than you think. Follow 4 simple easy steps
           </p>
         </div>
 
         {/* Steps timeline */}
         <div className="relative">
           {/* Steps */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {methods.map((method, index) => (
               <div key={index}>
                 {/* Step number circle */}
                 <div className="flex flex-col items-center">
                   {/* Card */}
-                  <div className="bg-white dark:bg-white/5 rounded-2xl border lg:p-6 p-4 lg:h-[350px] w-full hover:transform hover:scale-105 transition-transform ease-in-out duration-300">
-                    <div className="flex flex-col items-center text-center space-y-3 lg:space-y-4">
-                      <div className="p-3 bg-gray lg:text-2xl text-xl dark:bg-white/5 rounded-full">
+                  <div className="bg-white dark:bg-white/5 rounded-2xl border lg:p-6 p-4 lg:h-[350px] w-full hover:transform lg:hover:scale-105 transition-transform ease-in-out duration-300">
+                    <div className="flex flex-col lg:items-center lg:text-center text-left space-y-3">
+                      <div className="p-2.5 w-fit bg-gray lg:text-2xl text-xl dark:bg-white/5 rounded-full">
                         {method.icon}
                       </div>
-                      <h3 className="lg:text-xl text-lg font-medium text-gray-900 dark:text-primary">
+                      <h3 className="lg:text-xl text-base font-medium text-subheading dark:text-primary">
                         {method.title}
                       </h3>
-                      <p className="text-gray-700 dark:text-gray-300">
+                      <p className="text-gray-700 dark:text-gray-300 lg:text-base text-sm flex-grow">
                         {method.description}
                       </p>
                     </div>
