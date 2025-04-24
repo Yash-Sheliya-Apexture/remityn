@@ -525,240 +525,574 @@
 //     resetPassword,
 // };
 
+// import User from '../models/User.js';
+// import bcrypt from 'bcryptjs';
+// import jwt from 'jsonwebtoken';
+// import config from '../config/index.js';
+// import nodemailer from 'nodemailer';
+// import mongoose from 'mongoose'; // Import mongoose
+
+// const registerUser = async (fullName, email, password) => {
+//     console.log(`[Auth Service - registerUser] Attempting registration for email: ${email}`);
+//     try {
+//         // Check if user with this email already exists
+//         const existingUser = await User.findOne({ email });
+//         if (existingUser) {
+//             console.log(`[Auth Service - registerUser] Registration failed: Email ${email} already exists.`);
+//             throw new Error('Email already exists.'); // User-friendly error message
+//         }
+
+//         // Hash the password before saving (will be done by pre-save hook)
+//         // The 'pre save' hook in User.js model will initialize kyc object here
+//         const newUser = new User({ fullName, email, password }); // Pass plaintext password, hook will hash it
+//         await newUser.save();
+//         console.log(`[Auth Service - registerUser] User ${email} registered successfully.`);
+
+//         // Exclude sensitive fields in the returned object
+//         const userPayload = {
+//             _id: newUser._id,
+//             email: newUser.email,
+//             fullName: newUser.fullName,
+//             role: newUser.role,
+//             kyc: {
+//                 status: newUser.kyc?.status || 'not_started',
+//                 rejectionReason: newUser.kyc?.rejectionReason || null,
+//             },
+//             createdAt: newUser.createdAt,
+//             updatedAt: newUser.updatedAt,
+//         };
+//         return userPayload;
+//     } catch (error) {
+//         console.error("[Auth Service - registerUser] Error during registration:", error.message);
+//         if (error.message === 'Email already exists.') {
+//             throw error; // Re-throw specific user-friendly error
+//         }
+//         // Consider logging the full error for internal debugging
+//         // console.error(error);
+//         throw new Error('Registration failed. Please check your input and try again.');
+//     }
+// };
+
+// const loginUser = async (email, password) => {
+//     // --- ADDED LOG ---
+//     console.log(`[Auth Service - loginUser] Attempting login for email: ${email}`);
+//     // --- TEMPORARY DEBUGGING - CONSIDER REMOVING/COMMENTING AFTER FIX ---
+//     // console.log(`[Auth Service - loginUser] Plaintext password received: "${password}" (Length: ${password.length})`);
+//     // --- END TEMPORARY DEBUGGING ---
+//     try {
+//         // Find user by email - Ensure password field is selected
+//         const user = await User.findOne({ email })
+//                                .select('+password +kyc +createdAt +updatedAt'); // Select required fields explicitly
+
+//         if (!user) {
+//             // --- ADDED LOG ---
+//             console.log(`[Auth Service - loginUser] User not found for email: ${email}`);
+//             throw new Error('Invalid credentials'); // Generic error message for security
+//         }
+
+//         // --- ADDED LOG ---
+//         console.log(`[Auth Service - loginUser] User found: ${user.email}`);
+
+//         // Safeguard: Check if password field exists on the retrieved user object
+//         if (!user.password) {
+//             // --- ADDED LOG ---
+//             console.error(`[Auth Service - loginUser] CRITICAL: Password field is MISSING for user ${email} after DB query! Check if it was hashed and selected.`);
+//             throw new Error('Authentication process failed unexpectedly.');
+//         }
+
+//         // --- ADDED LOG --- (Don't log full hash in production)
+//         console.log(`[Auth Service - loginUser] Hashed password retrieved from DB for ${email}. Starts with: ${user.password.substring(0, 7)}...`);
+
+//         // Compare provided password with hashed password from database
+//         // --- ADDED LOG ---
+//         console.log(`[Auth Service - loginUser] Comparing provided password with stored hash for ${email}...`);
+//         const passwordMatch = await bcrypt.compare(password, user.password); // Plaintext first, then hash
+//         // --- ADDED LOG --- (Crucial log)
+//         console.log(`[Auth Service - loginUser] bcrypt.compare result for ${email}: ${passwordMatch}`);
+
+//         if (!passwordMatch) {
+//             // --- ADDED LOG ---
+//             console.log(`[Auth Service - loginUser] Password comparison FAILED for ${email}`);
+//             throw new Error('Invalid credentials'); // Generic error message
+//         }
+
+//         // --- ADDED LOG ---
+//         console.log(`[Auth Service - loginUser] Password comparison SUCCEEDED for ${email}`);
+
+//         // --- Ensure kyc object exists before creating payload ---
+//         if (!user.kyc) {
+//             console.warn(`[Auth Service - loginUser] User ${email} is missing the kyc subdocument after login fetch. Defaulting status.`);
+//             user.kyc = { status: 'not_started', rejectionReason: null };
+//         }
+
+//         // Construct the full user payload matching Frontend User type
+//         const userPayload = {
+//             _id: user._id.toString(), // Ensure ID is string
+//             email: user.email,
+//             fullName: user.fullName,
+//             role: user.role,
+//             kyc: { // Nest the kyc object
+//                  status: user.kyc.status,
+//                  rejectionReason: user.kyc.rejectionReason,
+//             },
+//             createdAt: user.createdAt.toISOString(),
+//             updatedAt: user.updatedAt.toISOString(),
+//         };
+
+//         // Generate JWT token upon successful login
+//         const token = jwt.sign(
+//             { userId: user._id, role: user.role },
+//             config.auth.jwtSecret,
+//             { expiresIn: config.auth.jwtExpiration }
+//         );
+
+//         console.log(`[Auth Service - loginUser] Login successful, token generated for ${email}. KYC Status: ${userPayload.kyc.status}`);
+//         // Return the user payload (with KYC status) and the token
+//         return { user: userPayload, token };
+
+//     } catch (error) {
+//         // --- ADDED LOG ---
+//         console.error(`[Auth Service - loginUser] Error during login process for ${email}:`, error.message);
+//         // console.error(error); // Optional: Log full error stack in dev
+//         if (error.message === 'Invalid credentials' || error.message === 'Authentication process failed unexpectedly.') {
+//             throw error; // Re-throw specific known errors for controller to handle
+//         }
+//         // Throw a more generic error for unknown issues during login
+//         throw new Error('Login failed due to a server error.'); // Avoid exposing detailed internal errors
+//     }
+// };
+
+
+// const requestPasswordReset = async (email) => {
+//     console.log(`[Auth Service - requestPasswordReset] Request received for email: ${email}`);
+//     try {
+//         const user = await User.findOne({ email });
+//         if (!user) {
+//             console.log(`[Auth Service - requestPasswordReset] Password reset requested for non-existent or unverified email: ${email}. Responding silently.`);
+//             // Intentionally do not reveal if email exists for security.
+//             return; // Just return success silently to prevent email enumeration
+//         }
+
+//         const resetToken = Date.now().toString(36) + Math.random().toString(36).substring(2);
+//         const hashedResetToken = bcrypt.hashSync(resetToken, 10); // Hash the token for storage
+
+//         user.resetPasswordToken = hashedResetToken;
+//         user.resetPasswordExpires = Date.now() + 300000; // Token expires in 5 minutes
+//         await user.save({ validateBeforeSave: false }); // Skip validation for these fields
+//         console.log(`[Auth Service - requestPasswordReset] Reset token generated and saved for ${email}.`);
+
+//         const resetUrl = `${config.email.clientURL}/auth/reset-password/${resetToken}`; // Send UNHASHED token in URL
+
+//         const transporter = nodemailer.createTransport({
+//             host: config.email.smtpHost,
+//             port: config.email.smtpPort,
+//             secure: config.email.smtpPort === 465,
+//             auth: { user: config.email.smtpUser, pass: config.email.smtpPass },
+//         });
+
+//         const mailOptions = {
+//             from: `"${config.email.emailFromName || 'Your App Name'}" <${config.email.emailUser}>`,
+//             to: email,
+//             subject: 'Password Reset Request',
+//             html: `<p>You requested a password reset.</p>
+//                    <p>Click this link to reset your password (expires in 5 minutes):</p>
+//                    <p><a href="${resetUrl}" style="color: #007bff; text-decoration: none;">${resetUrl}</a></p>
+//                    <p>If you did not request this, please ignore this email.</p>`,
+//         };
+
+//         await transporter.sendMail(mailOptions);
+//         console.log(`[Auth Service - requestPasswordReset] Password reset email successfully sent to ${email}`);
+
+//     } catch (error) {
+//         console.error('[Auth Service - requestPasswordReset] Error processing password reset request:', error);
+//         // Do not throw error to the user to prevent leaking info, but log it.
+//         // Consider sending a generic success message even on internal failure for security.
+//         // Throwing generic error for now, controller should handle it gracefully.
+//         throw new Error('Failed to process password reset request. Please try again later.');
+//     }
+// };
+
+// const resetPassword = async (token, password) => {
+//     console.log(`[Auth Service - resetPassword] Attempting password reset with token.`);
+//     try {
+//         // Find the user based on the token *and* expiry date
+//         // It's crucial to check expiry here before comparing the token
+//         const user = await User.findOne({
+//             resetPasswordToken: { $exists: true, $ne: null }, // Ensure field exists
+//             resetPasswordExpires: { $gt: Date.now() },        // Ensure token is not expired
+//         });
+
+//         // If no user found OR if the provided token doesn't match the HASHED token in DB
+//         if (!user || !bcrypt.compareSync(token, user.resetPasswordToken)) {
+//             console.warn(`[Auth Service - resetPassword] Invalid or expired password reset attempt.`);
+//             throw new Error('Invalid or expired password reset token.');
+//         }
+
+//         console.log(`[Auth Service - resetPassword] Valid reset token found for user ${user.email}. Updating password.`);
+
+//         // Hash the new password (pre-save hook will handle this)
+//         user.password = password; // Assign the new plaintext password
+//         user.resetPasswordToken = undefined; // Clear reset token fields
+//         user.resetPasswordExpires = undefined;
+//         await user.save(); // Let pre-save hook hash the password and run default validation
+
+//         console.log(`[Auth Service - resetPassword] Password successfully reset for user: ${user.email}`);
+
+//     } catch (error) {
+//         console.error('[Auth Service - resetPassword] Password reset error:', error.message);
+//         // console.error(error); // Optional: Log full error stack
+//         if (error.message === 'Invalid or expired password reset token.') {
+//             throw error; // Re-throw specific user-facing error
+//         }
+//         if (error.name === 'ValidationError') { // Catch Mongoose validation errors (e.g., password too short)
+//             console.log("[Auth Service - resetPassword] Validation error during password save:", error.errors);
+//             // Extract a user-friendly message if possible
+//             const messages = Object.values(error.errors).map(el => el.message);
+//             throw new Error(`Password update failed: ${messages.join(', ')}`);
+//         }
+//         // Throw a generic error for other issues
+//         throw new Error('Password reset failed. Please request a new reset link.');
+//     }
+// };
+
+
+// export default {
+//     registerUser,
+//     loginUser,
+//     requestPasswordReset,
+//     resetPassword,
+// };
+
+
+// services/auth.service.js
 import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import config from '../config/index.js';
 import nodemailer from 'nodemailer';
-import mongoose from 'mongoose'; // Import mongoose
+import mongoose from 'mongoose';
+import { OAuth2Client } from 'google-auth-library'; // Import Google library
 
+// --- Existing registerUser, loginUser, requestPasswordReset, resetPassword functions (Keep them as they are) ---
+// ... (registerUser code) ...
 const registerUser = async (fullName, email, password) => {
     console.log(`[Auth Service - registerUser] Attempting registration for email: ${email}`);
     try {
-        // Check if user with this email already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             console.log(`[Auth Service - registerUser] Registration failed: Email ${email} already exists.`);
-            throw new Error('Email already exists.'); // User-friendly error message
+            // Check if it's a Google account trying to register normally
+            if (existingUser.isGoogleAccount) {
+                throw new Error('This email is registered using Google Sign-In. Please log in with Google.');
+            }
+            throw new Error('Email already exists.');
         }
 
-        // Hash the password before saving (will be done by pre-save hook)
-        // The 'pre save' hook in User.js model will initialize kyc object here
-        const newUser = new User({ fullName, email, password }); // Pass plaintext password, hook will hash it
+        const newUser = new User({ fullName, email, password });
         await newUser.save();
         console.log(`[Auth Service - registerUser] User ${email} registered successfully.`);
 
-        // Exclude sensitive fields in the returned object
-        const userPayload = {
+        const userPayload = { /* ... (construct payload as before) ... */
             _id: newUser._id,
             email: newUser.email,
             fullName: newUser.fullName,
             role: newUser.role,
-            kyc: {
-                status: newUser.kyc?.status || 'not_started',
-                rejectionReason: newUser.kyc?.rejectionReason || null,
-            },
+            kyc: { status: newUser.kyc?.status || 'not_started', rejectionReason: newUser.kyc?.rejectionReason || null, },
             createdAt: newUser.createdAt,
             updatedAt: newUser.updatedAt,
+            // Add isGoogleAccount to payload if needed by frontend logic (optional)
+            // isGoogleAccount: newUser.isGoogleAccount
         };
         return userPayload;
     } catch (error) {
         console.error("[Auth Service - registerUser] Error during registration:", error.message);
-        if (error.message === 'Email already exists.') {
-            throw error; // Re-throw specific user-friendly error
+        if (error.message === 'Email already exists.' || error.message.includes('Google Sign-In')) {
+            throw error;
         }
-        // Consider logging the full error for internal debugging
-        // console.error(error);
         throw new Error('Registration failed. Please check your input and try again.');
     }
 };
 
+// ... (loginUser code) ...
 const loginUser = async (email, password) => {
-    // --- ADDED LOG ---
     console.log(`[Auth Service - loginUser] Attempting login for email: ${email}`);
-    // --- TEMPORARY DEBUGGING - CONSIDER REMOVING/COMMENTING AFTER FIX ---
-    // console.log(`[Auth Service - loginUser] Plaintext password received: "${password}" (Length: ${password.length})`);
-    // --- END TEMPORARY DEBUGGING ---
     try {
-        // Find user by email - Ensure password field is selected
         const user = await User.findOne({ email })
-                               .select('+password +kyc +createdAt +updatedAt'); // Select required fields explicitly
+                               .select('+password +kyc +createdAt +updatedAt +isGoogleAccount +googleId'); // Select needed fields
 
         if (!user) {
-            // --- ADDED LOG ---
             console.log(`[Auth Service - loginUser] User not found for email: ${email}`);
-            throw new Error('Invalid credentials'); // Generic error message for security
+            throw new Error('Invalid credentials');
         }
 
-        // --- ADDED LOG ---
+        // --- Prevent normal login for Google accounts ---
+        if (user.isGoogleAccount || user.googleId) {
+             console.log(`[Auth Service - loginUser] Attempt to log in normally for Google account: ${email}`);
+             throw new Error('This account uses Google Sign-In. Please use the "Continue with Google" button.');
+        }
+        // -----------------------------------------------
+
         console.log(`[Auth Service - loginUser] User found: ${user.email}`);
 
-        // Safeguard: Check if password field exists on the retrieved user object
         if (!user.password) {
-            // --- ADDED LOG ---
-            console.error(`[Auth Service - loginUser] CRITICAL: Password field is MISSING for user ${email} after DB query! Check if it was hashed and selected.`);
-            throw new Error('Authentication process failed unexpectedly.');
+             console.error(`[Auth Service - loginUser] CRITICAL: Password field is MISSING for non-Google user ${email}!`);
+             throw new Error('Authentication process failed unexpectedly.');
         }
 
-        // --- ADDED LOG --- (Don't log full hash in production)
-        console.log(`[Auth Service - loginUser] Hashed password retrieved from DB for ${email}. Starts with: ${user.password.substring(0, 7)}...`);
-
-        // Compare provided password with hashed password from database
-        // --- ADDED LOG ---
         console.log(`[Auth Service - loginUser] Comparing provided password with stored hash for ${email}...`);
-        const passwordMatch = await bcrypt.compare(password, user.password); // Plaintext first, then hash
-        // --- ADDED LOG --- (Crucial log)
+        const passwordMatch = await bcrypt.compare(password, user.password);
         console.log(`[Auth Service - loginUser] bcrypt.compare result for ${email}: ${passwordMatch}`);
 
         if (!passwordMatch) {
-            // --- ADDED LOG ---
             console.log(`[Auth Service - loginUser] Password comparison FAILED for ${email}`);
-            throw new Error('Invalid credentials'); // Generic error message
+            throw new Error('Invalid credentials');
         }
 
-        // --- ADDED LOG ---
         console.log(`[Auth Service - loginUser] Password comparison SUCCEEDED for ${email}`);
 
-        // --- Ensure kyc object exists before creating payload ---
-        if (!user.kyc) {
-            console.warn(`[Auth Service - loginUser] User ${email} is missing the kyc subdocument after login fetch. Defaulting status.`);
-            user.kyc = { status: 'not_started', rejectionReason: null };
-        }
+        if (!user.kyc) { user.kyc = { status: 'not_started', rejectionReason: null }; }
 
-        // Construct the full user payload matching Frontend User type
-        const userPayload = {
-            _id: user._id.toString(), // Ensure ID is string
-            email: user.email,
-            fullName: user.fullName,
-            role: user.role,
-            kyc: { // Nest the kyc object
-                 status: user.kyc.status,
-                 rejectionReason: user.kyc.rejectionReason,
-            },
-            createdAt: user.createdAt.toISOString(),
-            updatedAt: user.updatedAt.toISOString(),
-        };
+        const userPayload = { /* ... (construct payload as before) ... */
+            _id: user._id.toString(), email: user.email, fullName: user.fullName, role: user.role,
+            kyc: { status: user.kyc.status, rejectionReason: user.kyc.rejectionReason, },
+            createdAt: user.createdAt.toISOString(), updatedAt: user.updatedAt.toISOString(),
+            // isGoogleAccount: user.isGoogleAccount // optional
+         };
 
-        // Generate JWT token upon successful login
-        const token = jwt.sign(
+        const token = jwt.sign( /* ... (generate token as before) ... */
             { userId: user._id, role: user.role },
             config.auth.jwtSecret,
             { expiresIn: config.auth.jwtExpiration }
         );
 
         console.log(`[Auth Service - loginUser] Login successful, token generated for ${email}. KYC Status: ${userPayload.kyc.status}`);
-        // Return the user payload (with KYC status) and the token
         return { user: userPayload, token };
 
     } catch (error) {
-        // --- ADDED LOG ---
         console.error(`[Auth Service - loginUser] Error during login process for ${email}:`, error.message);
-        // console.error(error); // Optional: Log full error stack in dev
-        if (error.message === 'Invalid credentials' || error.message === 'Authentication process failed unexpectedly.') {
-            throw error; // Re-throw specific known errors for controller to handle
+        if (error.message === 'Invalid credentials' || error.message.includes('Google Sign-In') || error.message.includes('Authentication process failed')) {
+            throw error; // Re-throw specific known errors
         }
-        // Throw a more generic error for unknown issues during login
-        throw new Error('Login failed due to a server error.'); // Avoid exposing detailed internal errors
+        throw new Error('Login failed due to a server error.');
     }
 };
 
-
-const requestPasswordReset = async (email) => {
+// ... (requestPasswordReset code - check if it's a Google account first?) ...
+ const requestPasswordReset = async (email) => {
     console.log(`[Auth Service - requestPasswordReset] Request received for email: ${email}`);
     try {
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email }).select('+isGoogleAccount +googleId'); // Check if Google account
         if (!user) {
-            console.log(`[Auth Service - requestPasswordReset] Password reset requested for non-existent or unverified email: ${email}. Responding silently.`);
-            // Intentionally do not reveal if email exists for security.
-            return; // Just return success silently to prevent email enumeration
+            console.log(`[Auth Service - requestPasswordReset] Non-existent email: ${email}. Responding silently.`); return;
         }
-
+        // --- Prevent password reset for Google accounts ---
+        if (user.isGoogleAccount || user.googleId) {
+             console.log(`[Auth Service - requestPasswordReset] Password reset requested for Google account: ${email}. Denying silently.`);
+             // Send the generic success message anyway for security through obscurity
+             // Optionally, you could send a specific email explaining they need to use Google recovery.
+             return; // Exit function silently
+        }
+        // --- Continue with normal password reset ---
+        // ... (rest of the reset logic: generate token, save, send email) ...
         const resetToken = Date.now().toString(36) + Math.random().toString(36).substring(2);
-        const hashedResetToken = bcrypt.hashSync(resetToken, 10); // Hash the token for storage
+        const hashedResetToken = bcrypt.hashSync(resetToken, 10);
 
         user.resetPasswordToken = hashedResetToken;
-        user.resetPasswordExpires = Date.now() + 300000; // Token expires in 5 minutes
-        await user.save({ validateBeforeSave: false }); // Skip validation for these fields
+        user.resetPasswordExpires = Date.now() + 300000; // 5 minutes
+        await user.save({ validateBeforeSave: false });
         console.log(`[Auth Service - requestPasswordReset] Reset token generated and saved for ${email}.`);
 
-        const resetUrl = `${config.email.clientURL}/auth/reset-password/${resetToken}`; // Send UNHASHED token in URL
+        const resetUrl = `${config.email.clientURL}/auth/reset-password/${resetToken}`;
 
-        const transporter = nodemailer.createTransport({
-            host: config.email.smtpHost,
-            port: config.email.smtpPort,
-            secure: config.email.smtpPort === 465,
+        const transporter = nodemailer.createTransport({ /* ... transporter config ... */
+            host: config.email.smtpHost, port: config.email.smtpPort, secure: config.email.smtpPort === 465,
             auth: { user: config.email.smtpUser, pass: config.email.smtpPass },
         });
-
-        const mailOptions = {
-            from: `"${config.email.emailFromName || 'Your App Name'}" <${config.email.emailUser}>`,
-            to: email,
-            subject: 'Password Reset Request',
-            html: `<p>You requested a password reset.</p>
-                   <p>Click this link to reset your password (expires in 5 minutes):</p>
-                   <p><a href="${resetUrl}" style="color: #007bff; text-decoration: none;">${resetUrl}</a></p>
-                   <p>If you did not request this, please ignore this email.</p>`,
+        const mailOptions = { /* ... mail options ... */
+            from: `"${config.email.emailFromName || 'Your App Name'}" <${config.email.emailUser}>`, to: email, subject: 'Password Reset Request',
+            html: `<p>You requested a password reset.</p><p>Click this link to reset your password (expires in 5 minutes):</p><p><a href="${resetUrl}" style="color: #007bff; text-decoration: none;">${resetUrl}</a></p><p>If you did not request this, please ignore this email.</p>`,
         };
-
         await transporter.sendMail(mailOptions);
         console.log(`[Auth Service - requestPasswordReset] Password reset email successfully sent to ${email}`);
-
     } catch (error) {
         console.error('[Auth Service - requestPasswordReset] Error processing password reset request:', error);
-        // Do not throw error to the user to prevent leaking info, but log it.
-        // Consider sending a generic success message even on internal failure for security.
-        // Throwing generic error for now, controller should handle it gracefully.
         throw new Error('Failed to process password reset request. Please try again later.');
     }
 };
-
-const resetPassword = async (token, password) => {
+// ... (resetPassword code - this should inherently not work for Google accounts as they won't have the token) ...
+const resetPassword = async (token, password) => { /* ... keep as is ... */
     console.log(`[Auth Service - resetPassword] Attempting password reset with token.`);
     try {
-        // Find the user based on the token *and* expiry date
-        // It's crucial to check expiry here before comparing the token
         const user = await User.findOne({
-            resetPasswordToken: { $exists: true, $ne: null }, // Ensure field exists
-            resetPasswordExpires: { $gt: Date.now() },        // Ensure token is not expired
-        });
+            resetPasswordToken: { $exists: true, $ne: null },
+            resetPasswordExpires: { $gt: Date.now() },
+        }).select('+password'); // Ensure password selected for comparison if needed, though pre-save hook handles hashing
 
-        // If no user found OR if the provided token doesn't match the HASHED token in DB
         if (!user || !bcrypt.compareSync(token, user.resetPasswordToken)) {
             console.warn(`[Auth Service - resetPassword] Invalid or expired password reset attempt.`);
             throw new Error('Invalid or expired password reset token.');
         }
 
-        console.log(`[Auth Service - resetPassword] Valid reset token found for user ${user.email}. Updating password.`);
+         // Add check: Should not be able to reset password for a Google account via token
+         if (user.isGoogleAccount || user.googleId) {
+             console.warn(`[Auth Service - resetPassword] Attempt to reset password for Google account ${user.email} via token.`);
+             throw new Error('Password reset is not available for accounts signed in with Google.');
+         }
 
-        // Hash the new password (pre-save hook will handle this)
-        user.password = password; // Assign the new plaintext password
-        user.resetPasswordToken = undefined; // Clear reset token fields
+        console.log(`[Auth Service - resetPassword] Valid reset token found for user ${user.email}. Updating password.`);
+        user.password = password;
+        user.resetPasswordToken = undefined;
         user.resetPasswordExpires = undefined;
-        await user.save(); // Let pre-save hook hash the password and run default validation
+        await user.save(); // pre-save hook hashes password
 
         console.log(`[Auth Service - resetPassword] Password successfully reset for user: ${user.email}`);
-
     } catch (error) {
         console.error('[Auth Service - resetPassword] Password reset error:', error.message);
-        // console.error(error); // Optional: Log full error stack
-        if (error.message === 'Invalid or expired password reset token.') {
-            throw error; // Re-throw specific user-facing error
+        if (error.message.includes('Invalid or expired') || error.message.includes('not available for accounts signed in with Google')) {
+            throw error;
         }
-        if (error.name === 'ValidationError') { // Catch Mongoose validation errors (e.g., password too short)
-            console.log("[Auth Service - resetPassword] Validation error during password save:", error.errors);
-            // Extract a user-friendly message if possible
+        if (error.name === 'ValidationError') {
             const messages = Object.values(error.errors).map(el => el.message);
             throw new Error(`Password update failed: ${messages.join(', ')}`);
         }
-        // Throw a generic error for other issues
         throw new Error('Password reset failed. Please request a new reset link.');
     }
 };
 
+// --- New Google OAuth Service Function ---
+const googleOAuthLogin = async (idToken) => {
+    console.log("[Auth Service - googleOAuthLogin] Verifying Google ID token.");
+    const client = new OAuth2Client(config.googleAuth.clientId);
+    try {
+        const ticket = await client.verifyIdToken({
+            idToken: idToken,
+            audience: config.googleAuth.clientId, // Specify the CLIENT_ID of the app that accesses the backend
+        });
+        const payload = ticket.getPayload();
+
+        if (!payload) {
+            throw new Error('Invalid Google ID token payload.');
+        }
+        if (!payload.email_verified) {
+             throw new Error('Google account email not verified.');
+        }
+
+        const { sub: googleId, email, name: fullName, picture: googleProfilePicture } = payload;
+
+        console.log(`[Auth Service - googleOAuthLogin] Google token verified for email: ${email}`);
+
+        // Find user by Google ID first, then by email
+        let user = await User.findOne({ googleId: googleId })
+                             .select('+kyc +createdAt +updatedAt +isGoogleAccount +googleId'); // Fetch necessary fields
+
+        if (!user) {
+            console.log(`[Auth Service - googleOAuthLogin] No user found with googleId ${googleId}. Checking by email: ${email}`);
+            user = await User.findOne({ email: email })
+                             .select('+kyc +createdAt +updatedAt +isGoogleAccount +googleId');
+
+            if (user) {
+                // User exists with this email but hasn't linked Google yet
+                console.log(`[Auth Service - googleOAuthLogin] Existing user found by email ${email}. Linking Google ID.`);
+                 // Check if the existing account is already a normal account with a password
+                 if (!user.isGoogleAccount && !user.googleId) {
+                     // Decide policy: Allow linking? Or throw error? Let's allow linking.
+                     // Update the user to link the Google account
+                     user.googleId = googleId;
+                     user.isGoogleAccount = true; // Mark as Google account now
+                     user.googleProfilePicture = googleProfilePicture;
+                     // We might want to nullify the password here, but that's a security consideration.
+                     // For now, let's just link. User can still log in via Google.
+                     // Password reset should be blocked now for this user.
+                     await user.save();
+                     console.log(`[Auth Service - googleOAuthLogin] Linked Google ID ${googleId} to existing user ${email}.`);
+                 } else if (user.googleId !== googleId) {
+                     // Edge case: Email matches, but googleId is different (unlikely unless Google reuses emails?)
+                     console.error(`[Auth Service - googleOAuthLogin] Email ${email} exists but with different Google ID! Existing: ${user.googleId}, New: ${googleId}`);
+                     throw new Error('Account conflict. Please contact support.');
+                 }
+                 // If user.googleId === googleId, it means we somehow missed the findOne({ googleId }) query, but this handles it.
+            } else {
+                // User does not exist, create a new Google-based user
+                console.log(`[Auth Service - googleOAuthLogin] No user found. Creating new Google user for ${email}`);
+                user = new User({
+                    googleId: googleId,
+                    email: email,
+                    fullName: fullName,
+                    isGoogleAccount: true,
+                    googleProfilePicture: googleProfilePicture,
+                    // Password field will be skipped due to model validation logic
+                    // KYC will be initialized by pre-save hook
+                });
+                await user.save();
+                console.log(`[Auth Service - googleOAuthLogin] New Google user ${email} created successfully.`);
+            }
+        } else {
+             console.log(`[Auth Service - googleOAuthLogin] Existing Google user found by googleId ${googleId} for email ${email}.`);
+             // Optional: Update name/picture if changed in Google profile
+             let updated = false;
+             if (user.fullName !== fullName) { user.fullName = fullName; updated = true; }
+             if (user.googleProfilePicture !== googleProfilePicture) { user.googleProfilePicture = googleProfilePicture; updated = true; }
+             if (updated) {
+                 await user.save();
+                 console.log(`[Auth Service - googleOAuthLogin] Updated profile info for ${email}.`);
+             }
+        }
+
+        // --- Prepare payload and token (same as regular login) ---
+        if (!user.kyc) { user.kyc = { status: 'not_started', rejectionReason: null }; }
+
+        const userPayload = {
+            _id: user._id.toString(), email: user.email, fullName: user.fullName, role: user.role,
+            kyc: { status: user.kyc.status, rejectionReason: user.kyc.rejectionReason, },
+            createdAt: user.createdAt.toISOString(), updatedAt: user.updatedAt.toISOString(),
+            // isGoogleAccount: user.isGoogleAccount // optional
+        };
+
+        const token = jwt.sign(
+            { userId: user._id, role: user.role },
+            config.auth.jwtSecret,
+            { expiresIn: config.auth.jwtExpiration }
+        );
+
+        console.log(`[Auth Service - googleOAuthLogin] Google login successful, token generated for ${email}. KYC Status: ${userPayload.kyc.status}`);
+        return { user: userPayload, token };
+
+    } catch (error) {
+        console.error("[Auth Service - googleOAuthLogin] Error during Google OAuth process:", error);
+        if (error.message.includes('Invalid Google ID token') || error.message.includes('email not verified') || error.message.includes('Account conflict')) {
+             throw error; // Re-throw specific errors
+        }
+        // Distinguish between verification failure and user creation/login failure
+        if (error instanceof mongoose.Error.ValidationError) {
+            throw new Error(`User data validation failed: ${error.message}`);
+        }
+         if (error instanceof mongoose.Error && error.message.includes('duplicate key error')) {
+            // This might happen if two requests try to create the same user concurrently
+            console.warn("[Auth Service - googleOAuthLogin] Potential duplicate key error during Google user creation:", error.message);
+            // Attempt to fetch the user again, as it might have been created by the other request
+            const payload = ticket?.getPayload();
+            if (payload?.sub) {
+                const existingUser = await User.findOne({ googleId: payload.sub }).select('+kyc +createdAt +updatedAt +isGoogleAccount');
+                if (existingUser) {
+                     console.log("[Auth Service - googleOAuthLogin] Found user on retry after duplicate key error.");
+                     // Proceed to generate token for the existing user (logic copied from above)
+                     if (!existingUser.kyc) { existingUser.kyc = { status: 'not_started', rejectionReason: null }; }
+                     const userPayload = { /* ... construct payload ... */ };
+                     const token = jwt.sign({ userId: existingUser._id, role: existingUser.role }, config.auth.jwtSecret, { expiresIn: config.auth.jwtExpiration });
+                     return { user: userPayload, token };
+                }
+            }
+             throw new Error('Failed to process Google Sign-In due to a conflict. Please try again.');
+        }
+        throw new Error('Google Sign-In failed. Please try again or use email/password.'); // Generic error
+    }
+};
+// -------------------------------------
 
 export default {
     registerUser,
     loginUser,
     requestPasswordReset,
     resetPassword,
+    googleOAuthLogin, // <-- Export the new function
 };
