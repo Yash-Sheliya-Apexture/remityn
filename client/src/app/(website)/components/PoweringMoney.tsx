@@ -169,21 +169,23 @@ const AboutSection: React.FC<AboutSectionProps> = ({
   const buttonLink = user ? "/dashboard" : "/auth/register"; // Link to register or dashboard
 
   return (
-    <section className="relative bg-white dark:bg-background md:py-12 py-10 overflow-hidden">
-      <div className="container mx-auto px-4 relative z-20">
+    <section className="relative bg-white dark:bg-background md:py-10 py-5 overflow-hidden px-4">
+      <div className="container mx-auto relative z-20">
+
         <div className="flex flex-col md:flex-row items-center gap-6">
           {/* Content Area */}
-          <div className="w-full md:w-1/2 space-y-6">
-            <div className="space-y-6 text-center md:text-left">
-              <span className="font-semibold uppercase tracking-wider text-xs md:text-base text-gray-700 dark:text-gray-300">
-                ABOUT US
-              </span>
+          <div className="w-full md:w-1/2">
+            <div className="lg:space-y-4 space-y-2 text-center md:text-left">
 
-              <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-mainheading dark:text-white md:mt-6 mt-4">
+              <p className="font-semibold uppercase tracking-wider text-xs md:text-base text-gray-700 dark:text-gray-300">
+                ABOUT US
+              </p>
+
+              <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-mainheading dark:text-white">
                 {title} <span className="text-primary">{subtitle}</span>
               </h2>
 
-              <p className="text-gray-700 dark:text-gray-300 md:text-lg text-base max-w-prose">
+              <p className="text-gray-700 dark:text-gray-300 md:text-lg text-base">
                 {description}
               </p>
 
@@ -191,9 +193,9 @@ const AboutSection: React.FC<AboutSectionProps> = ({
               <div className="inline-block">
                 <Link
                   href={buttonLink} // <-- Use dynamic link
-                  className="bg-primary hover:bg-primaryhover cursor-pointer font-medium py-2 text-sm lg:text-base px-8 md:h-12.5 rounded-full transition-colors duration-300 ease-in-out text-mainheading flex items-center justify-center"
+                  className="bg-primary hover:bg-primaryhover cursor-pointer font-medium py-2.5 text-sm lg:text-base px-6 lg:h-12.5 rounded-full transition-colors duration-300 ease-in-out text-mainheading flex items-center justify-center"
                 >
-                  {buttonText} {/* <-- Use dynamic text */}
+                  {buttonText}
                 </Link>
               </div>
             </div>
@@ -211,8 +213,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({
                   src={imageSrc}
                   alt={imageAlt}
                   fill
-                  className="object-cover"
-                  priority // Keep priority if it's above the fold
+                  className="object-cover"                  
                 />
               </div>
             </div>

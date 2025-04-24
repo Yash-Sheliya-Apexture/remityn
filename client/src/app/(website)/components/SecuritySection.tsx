@@ -108,8 +108,8 @@ import { FaShieldAlt, FaUniversity } from "react-icons/fa";
 
 const SecuritySection = () => {
   return (
-    <section className="Security-section md:py-12 py-10 bg-white dark:bg-background">
-      <div className="container mx-auto px-4">
+    <section className="Security-section md:py-10 py-5 bg-white dark:bg-background px-4">
+      <div className="container mx-auto">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="w-full md:w-3/5 order-2 md:order-1">
             <div className="mb-10">
@@ -127,7 +127,7 @@ const SecuritySection = () => {
             <div>
               <Link
                 href="/faqs"
-                className="bg-primary rounded-full px-6 md:py-3 py-2 h-12.5 lg:text-lg text-base hover:bg-primaryhover text-mainheading font-medium cursor-pointer transition-colors duration-300 ease-in-out"
+                className="bg-primary rounded-full px-6 md:py-3 py-2.5 lg:h-12.5 lg:text-lg text-sm hover:bg-primaryhover text-mainheading font-medium cursor-pointer transition-colors duration-300 ease-in-out"
               >
                 <button className="text-mainheading font-medium">
                   How we keep your money safe
@@ -151,7 +151,7 @@ const SecuritySection = () => {
         <div className="mt-10">
           <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 lg:gap-10 gap-8">
             <div className="space-y-4">
-              <div className="lg:p-4 p-3 bg-gray dark:text-primary text-white rounded-full inline-flex items-center ">
+              <div className="lg:p-3 p-2.5 bg-gray dark:bg-white/5 dark:text-primary text-white rounded-full inline-flex items-center ">
                 <FaLock className="lg:size-8 size-6" aria-hidden="true" />
               </div>
               <div>
@@ -163,7 +163,7 @@ const SecuritySection = () => {
             </div>
 
             <div className="space-y-4">
-              <div className="lg:p-4 p-3 bg-gray dark:text-primary text-white rounded-full inline-flex items-center ">
+              <div className="lg:p-3 p-2.5 bg-gray dark:bg-white/5 dark:text-primary text-white rounded-full inline-flex items-center ">
                 <FaShieldAlt className="lg:size-8 size-6" aria-hidden="true" />
               </div>
               <div>
@@ -175,7 +175,7 @@ const SecuritySection = () => {
             </div>
 
             <div className="space-y-4">
-              <div className="lg:p-4 p-3 bg-gray dark:text-primary text-white rounded-full inline-flex items-center">
+              <div className="lg:p-3 p-2.5 bg-gray dark:bg-white/5 dark:text-primary text-white rounded-full inline-flex items-center">
                 <FaUniversity className="lg:size-8 size-6" aria-hidden="true" />
               </div>
               <div>

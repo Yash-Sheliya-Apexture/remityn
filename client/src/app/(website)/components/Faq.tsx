@@ -1104,9 +1104,9 @@ interface FaqItemData {
 const faqData: FaqItemData[] = [
   {
     id: "1",
-    question: "What is Apexture?",
+    question: "What is Wise?",
     answer:
-      "Apexture is a digital banking platform providing powerful APIs for real-time currency exchange, helping financial institutions and websites deliver secure, modern FX services",
+      "Wise is a digital banking platform providing powerful APIs for real-time currency exchange, helping financial institutions and websites deliver secure, modern FX services",
   },
   {
     id: "2",
@@ -1116,22 +1116,22 @@ const faqData: FaqItemData[] = [
   },
   {
     id: "3",
-    question: "How fast are Apexture transfers? ",
+    question: "How fast are Wise transfers? ",
     answer:
-      "Apexture transfers are typically processed within minutes, with most transactions completed the same day, depending on the currency and destination",
+      "Wise transfers are typically processed within minutes, with most transactions completed the same day, depending on the currency and destination",
   },
   {
     id: "4",
-    question: "How much money can I transfer with Apexture at once? ",
+    question: "How much money can I transfer with Wise at once? ",
     answer:
-      "With Apexture, transfer limits vary based on account type and verification level, but high-value transfers are supported with enhanced security and compliance checks",
+      "With Wise, transfer limits vary based on account type and verification level, but high-value transfers are supported with enhanced security and compliance checks",
   },
   {
     id: "5",
     question:
-      "What security measures does Apexture take to safeguard my money? ",
+      "What security measures does Wise take to safeguard my money? ",
     answer:
-      "Apexture uses advanced encryption, two-factor authentication, and strict regulatory compliance to ensure your money and personal data are always protected",
+      "Wise uses advanced encryption, two-factor authentication, and strict regulatory compliance to ensure your money and personal data are always protected",
   },
 ];
 
@@ -1185,9 +1185,9 @@ const FaqSection: React.FC = () => {
 
   return (
     // Main container for the FAQ section
-    <div className="lg:py-10 py-5 bg-white dark:bg-background border-b dark:border-white/10">
+    <div className="lg:py-10 py-5 bg-white dark:bg-background px-4">
       <section
-        className="grid items-start lg:gap-14 gap-5 lg:grid-cols-5 container mx-auto px-4"
+        className="grid items-start lg:gap-14 gap-5 lg:grid-cols-5 container mx-auto"
         id="faq"
       >
         {/* Left Side: Title and Description */}
@@ -1218,7 +1218,7 @@ const FaqSection: React.FC = () => {
                   data-state={isOpen ? "open" : "closed"}
                   data-orientation="vertical"
                   // Removed padding here, it's moved to the button
-                  className="rounded-lg bg-gray/10 dark:bg-white/5 overflow-hidden" // Added overflow-hidden for rounded corners
+                  className="rounded-lg bg-lightgray dark:bg-white/5 overflow-hidden" // Added overflow-hidden for rounded corners
                 >
                   {/* Accordion Trigger (Question) - Now a full-width button */}
                   <h3
@@ -1234,13 +1234,13 @@ const FaqSection: React.FC = () => {
                       data-orientation="vertical"
                       id={uniqueTriggerId}
                       // Button now takes full width and padding, making the whole area clickable
-                      className="flex w-full cursor-pointer flex-1 gap-2 items-center justify-between text-start lg:text-xl md:text-lg text-sm text-mainheading dark:text-gray-100 transition-colors duration-200 font-medium dark:hover:bg-white/5 md:p-5 p-4" // Added padding here and hover effect
+                      className="flex w-full cursor-pointer flex-1 gap-2 items-center justify-between text-start lg:text-xl md:text-lg text-sm text-main font-medium dark:text-white transition-colors duration-300 lg:p-5 p-4" // Added padding here and hover effect
                       onClick={() => handleToggle(item.id)}
                       data-radix-collection-item=""
                     >
                       {item.question}
                       <SlArrowDown
-                        className={`lg:size-3 size-2.5 shrink-0 text-gray-500 dark:text-gray-300 transition-transform duration-300 ${
+                        className={`lg:size-3 size-2.5 shrink-0 text-gray-700 dark:text-gray-300 transition-transform duration-300 ${
                           isOpen ? "rotate-180" : ""
                         }`}
                         aria-hidden
@@ -1263,10 +1263,7 @@ const FaqSection: React.FC = () => {
                     aria-labelledby={uniqueTriggerId}
                     data-state={isOpen ? "open" : "closed"} // Keep state for styling/debugging
                     data-orientation="vertical"
-                    // Styles for animation: overflow-hidden and transitions
-                    // Height, visibility, and opacity controlled by useEffect
                     className="overflow-hidden text-sm md:text-base lg:text-lg leading-relaxed text-gray-700 dark:text-gray-300 transition-all duration-300 ease-in-out"
-                    // Initial style set to height 0 and invisible/opacity 0
                     style={{
                       height: "0px",
                       visibility: "hidden", // Start hidden
@@ -1275,7 +1272,6 @@ const FaqSection: React.FC = () => {
                   >
                     {/* Inner div for padding the answer content */}
                     <div className="pt-2 pb-4 md:px-6 px-4">
-                      {" "}
                       {/* Adjusted padding for content */}
                       {item.answer}
                     </div>
@@ -1288,9 +1284,8 @@ const FaqSection: React.FC = () => {
 
         {/* Bottom Left: More Questions Box */}
         <div className="lg:col-span-2 md:col-span-3 md:self-end">
-          {" "}
           {/* Removed sticky for simplicity, add back if needed */}
-          <div className="flex flex-col items-start gap-5 rounded-2xl bg-gray/10 dark:bg-white/5 p-4 md:p-6">
+          <div className="flex flex-col items-start gap-5 rounded-2xl bg-lightgray dark:bg-white/5 p-4 lg:p-6">
             <div>
               <h3 className="md:text-2xl text-lg font-semibold text-mainheading dark:text-gray-100">
                 More questions?
@@ -1308,7 +1303,6 @@ const FaqSection: React.FC = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {" "}
                   {/* Added target/rel */}
                   <button className="inline-flex items-center cursor-pointer justify-center rounded-full text-sm bg-[#25D366] lg:text-base px-4 lg:py-2 py-1.5 text-white font-medium transition-colors duration-200 ease-in-out hover:bg-[#1ebe5a] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#25D366]">
                     <IoLogoWhatsapp className="mr-2 lg:size-6 size-4" />

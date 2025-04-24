@@ -6,16 +6,16 @@ import { RiCustomerService2Fill } from "react-icons/ri";
 const ProtectionSection = () => {
   return (
     <section
-      className="Protection-Section md:py-12 py-5 bg-white dark:bg-background"
+      className="Protection-Section md:py-10 py-5 bg-white dark:bg-background px-4"
       id="protect"
     >
-      <div className="container mx-auto px-4">
-        <div className="md:pt-10 pt-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+      <div className="container mx-auto">
+        <div className="md:pt-10 pt-0 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:gap-10 gap-8">
 
           {/* Real-Time Exchange Rates */}
-          <div className="flex flex-col items-center text-center space-y-4">
-            <div className="lg:size-16 size-12 rounded-full bg-gray dark:bg-primarybox flex items-center justify-center">
-              <MdSyncAlt className="lg:size-8 size-6 text-white dark:text-primary" />
+          <div className="flex flex-col items-center text-center lg:space-y-3.5 space-y-2.5">
+            <div className="lg:size-14 size-10 rounded-full bg-gray dark:bg-primarybox flex items-center justify-center">
+              <MdSyncAlt className=" size-6 lg:size-8 text-white dark:text-primary" />
             </div>
             <h3 className="lg:text-xl text-lg font-medium text-mainheading dark:text-white">
               Real-Time Exchange Rates
@@ -27,9 +27,9 @@ const ProtectionSection = () => {
           </div>
 
           {/* Multi-Currency Support */}
-          <div className="flex flex-col items-center text-center space-y-4">
-            <div className="lg:size-16 size-12 rounded-full bg-gray dark:bg-primarybox flex items-center justify-center">
-              <FaGlobe className="lg:size-8 size-6 text-white dark:text-primary" />
+          <div className="flex flex-col items-center text-center lg:space-y-3.5 space-y-2.5">
+            <div className="lg:size-14 size-10 rounded-full bg-gray dark:bg-primarybox flex items-center justify-center">
+              <FaGlobe className=" size-6 lg:size-8 text-white dark:text-primary" />
             </div>
             <h3 className="lg:text-xl text-lg font-medium text-mainheading dark:text-white">
               Multi-Currency Support
@@ -41,9 +41,9 @@ const ProtectionSection = () => {
           </div>
 
           {/* Fast Processing */}
-          <div className="flex flex-col items-center text-center space-y-4">
-            <div className="lg:size-16 size-12 rounded-full bg-gray dark:bg-primarybox flex items-center justify-center">
-              <FaClock className="lg:size-8 size-6 text-white dark:text-primary" />
+          <div className="flex flex-col items-center text-center lg:space-y-3.5 space-y-2.5">
+            <div className="lg:size-14 size-10 rounded-full bg-gray dark:bg-primarybox flex items-center justify-center">
+              <FaClock className=" size-6 lg:size-8 text-white dark:text-primary" />
             </div>
             <h3 className="lg:text-xl text-lg font-medium text-mainheading dark:text-white">
               Fast Processing
@@ -55,9 +55,9 @@ const ProtectionSection = () => {
           </div>
 
           {/* 24/7 Customer Support */}
-          <div className="flex flex-col items-center text-center space-y-4">
-            <div className="lg:size-16 size-12 rounded-full bg-gray dark:bg-primarybox flex items-center justify-center">
-              <RiCustomerService2Fill className="lg:size-8 size-6 text-white dark:text-primary" />
+          <div className="flex flex-col items-center text-center lg:space-y-3.5 space-y-2.5">
+            <div className="lg:size-14 size-10 rounded-full bg-gray dark:bg-primarybox flex items-center justify-center">
+              <RiCustomerService2Fill className=" size-6 lg:size-8 text-white dark:text-primary" />
             </div>
             <h3 className="lg:text-xl text-lg font-medium text-mainheading dark:text-white">
               24/7 Customer Support

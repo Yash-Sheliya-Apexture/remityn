@@ -1,12 +1,18 @@
 import React from "react";
 import Heroaddmoney from "../components/Heroaddmoney";
+import MoneyMethod from "../components/MoneyMethod";
+import Security from "../components/Security";
 
 const AddMoneyPage = () => {
   return (
-    <section className="add-money py-10">
+    <main className="add-moneyPage">
       <Heroaddmoney />
-    </section>
+      <MoneyMethod />
+      <Security />
+    </main>
   );
 };
 
 export default AddMoneyPage;
+
+

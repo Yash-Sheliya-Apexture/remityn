@@ -507,37 +507,35 @@ const PrivacyPolicyPage: React.FC = () => {
   return (
     <div className="lg:py-10 py-5 bg-white dark:bg-background px-4">
       <div className="container mx-auto">
-        <div className="mb-3">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl capitalize font-black text-mainheading dark:text-white mt-6">
-            Privacy <span className="text-primary"> Policy</span>
-          </h2>
+        <h2 className="text-4xl md:text-5xl lg:text-6xl capitalize font-black text-mainheading dark:text-white mt-5">
+          Privacy <span className="text-primary"> Policy</span>
+        </h2>
 
-          <p className="max-w-5xl text-gray-700 dark:text-gray-300 lg:text-xl text-sm mt-5">
-            At Wise, protecting your personal information is a top priority. We
-            use advanced security measures and comply with global data
-            protection laws to ensure your data is safe, private, and only used
-            for the services you trust us with.
-          </p>
+        <p className="max-w-3xl text-gray-700 dark:text-gray-300 lg:text-lg text-sm mt-5">
+          At Wise, protecting your personal information is a top priority. We
+          use advanced security measures and comply with global data protection
+          laws to ensure your data is safe, private, and only used for the
+          services you trust us with.
+        </p>
 
-          <div className="border-t lg:my-8 my-4"></div>
+        <div className="border-t lg:my-8 my-4"></div>
 
-          {/* Main Content Column */}
-          <div>
-            {sections.map((section) => (
-              <section
-                key={section.id}
-                id={section.id}
-                className="lg:mb-10 scroll-mt-20"
-              >
-                {/* Added margin-bottom and scroll-margin-top */}
-                <h2 className="mt-5 lg:text-3xl md:text-2xl text-xl font-medium text-mainheading dark:text-primary mb-3">
-                  {section.title}
-                </h2>
-                {/* Changed to H2 for better semantics, added margin-bottom */}
-                <div className="space-y-4">{section.content}</div>
-              </section>
-            ))}
-          </div>
+        {/* Main Content Column */}
+        <div>
+          {sections.map((section) => (
+            <section
+              key={section.id}
+              id={section.id}
+              className="lg:mb-10 scroll-mt-20"
+            >
+              {/* Added margin-bottom and scroll-margin-top */}
+              <h2 className="mt-5 lg:text-3xl md:text-2xl text-xl font-medium text-mainheading dark:text-primary mb-3">
+                {section.title}
+              </h2>
+              {/* Changed to H2 for better semantics, added margin-bottom */}
+              <div className="space-y-4">{section.content}</div>
+            </section>
+          ))}
         </div>
       </div>
     </div>

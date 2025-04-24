@@ -58,12 +58,11 @@ import { FaStar } from "react-icons/fa6";
 // Define the component using React's FunctionComponent type (React.FC)
 const MobileDownloadSection: React.FC = () => {
   return (
-    <div className="lg:py-10 py-5 bg-white dark:bg-background">
+    <div className="lg:py-10 py-5 bg-white dark:bg-background px-4">
       <section
-        className="flex flex-col gap-8 md:gap-6 lg:flex-row lg:items-center lg:justify-between container mx-auto px-4"
+        className="flex flex-col gap-8 md:gap-6 lg:flex-row lg:items-center lg:justify-between container mx-auto"
         id="mobile-download"
       >
-        {/* Left Column: Text content and download buttons */}
         <article className="flex flex-col gap-4 md:gap-10 lg:w-1/2">
           {/* User avatars and star rating */}
           <div className="flex items-center gap-4">
@@ -150,7 +149,7 @@ const MobileDownloadSection: React.FC = () => {
               width={500}
               height={500}
               alt="Picture of the author"
-              className="z-10 flex-shrink-0 md:h-[550px] md:w-[500px] block dark:hidden "
+              className="z-10 flex-shrink-0 md:h-[550px] md:w-[450px] block dark:hidden "
               style={{ color: "transparent" }}
             />
             <Image
@@ -158,19 +157,15 @@ const MobileDownloadSection: React.FC = () => {
               width={500}
               height={500}
               alt="Picture of the author"
-              className="z-10 flex-shrink-0 md:h-[550px] md:w-[500px] hidden dark:block"
+              className="z-10 flex-shrink-0 md:h-[550px] md:w-[450px] hidden dark:block"
               style={{ color: "transparent" }}
             />
-            {/* <Image
-              src="/assets/images/curve-1.svg"
-              width={500}
-              height={500}
-              alt="Picture of the author"
-              className="absolute bottom-0 left-0 right-0 z-10 w-full"
-              style={{ color: "transparent" }}
-            /> */}
             <div className="absolute bottom-0 left-0 right-0 z-10 w-full">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="fill-neutral-500 dark:fill-neutral-800">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 1440 320"
+                className="fill-neutral-500 dark:fill-neutral-800"
+              >
                 <path
                   fillOpacity="1"
                   d="M0,256L48,261.3C96,267,192,277,288,245.3C384,213,480,139,576,144C672,149,768,235,864,256C960,277,1056,235,1152,192C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
@@ -178,7 +173,11 @@ const MobileDownloadSection: React.FC = () => {
               </svg>
             </div>
             <div className="absolute bottom-0 left-0 right-0 w-full ">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="fill-neutral-300 dark:fill-neutral-400">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 1440 320"
+                className="fill-neutral-300 dark:fill-neutral-400"
+              >
                 <path
                   fillOpacity="1"
                   d="M0,64L48,90.7C96,117,192,171,288,181.3C384,192,480,160,576,128C672,96,768,64,864,69.3C960,75,1056,117,1152,154.7C1248,192,1344,224,1392,240L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
