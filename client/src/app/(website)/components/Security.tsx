@@ -160,53 +160,42 @@ interface SolutionItem {
 const solutionItems: SolutionItem[] = [
   {
     id: 1,
-    // Make sure icon components are rendered as JSX
     icons: (
-      <BsShieldLock size={30} className="mb-4 inline-block text-primary" />
+      <BsShieldLock className="lg:size-8 size-6 inline-block text-white" />
     ),
-    title: "Payments",
+    title: "Bank-Level Data Encryption",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing elit posuere vel venenatis, eu sit massa. Volutpat massa rhoncus odio.",
+      "Every step of your transaction is secured with 256-bit SSL encryption, ensuring your personal and financial information remains confidential and protected",
   },
   {
     id: 2,
     icons: (
-      <RiSecurePaymentLine
-        size={30}
-        className="mb-4 inline-block text-primary"
-      />
+      <RiSecurePaymentLine className="lg:size-8 size-6 inline-block text-white" />
     ),
-    title: "Collections",
+    title: "Trusted & Certified Providers",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing elit posuere vel venenatis, eu sit massa. Volutpat massa rhoncus odio.",
+      "We use only PCI-DSS compliant payment gateways, ensuring that your funds are processed through secure and regulated financial channels",
   },
   {
     id: 3,
     icons: (
-      <MdOutlineMonitorHeart
-        size={30}
-        className="mb-4 inline-block text-primary"
-      />
+      <MdOutlineMonitorHeart className="lg:size-8 size-6 inline-block text-white" />
     ),
-    title: "Conversions",
+    title: "24/7 Fraud Detection",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing elit posuere vel venenatis, eu sit massa. Volutpat massa rhoncus odio.",
+      "Our systems constantly monitor transactions for suspicious activity, so any unusual behavior is detected and stopped before it can cause harm.",
   },
   {
     id: 4,
     icons: (
-      <HiOutlineLockClosed
-        size={30}
-        className="mb-4 inline-block text-primary"
-      />
+      <HiOutlineLockClosed className="lg:size-8 size-6 inline-block text-white" />
     ),
-    title: "Global Account",
+    title: "Data Privacy by Default",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing elit posuere vel venenatis, eu sit massa. Volutpat massa rhoncus odio.",
+      "We never share your personal data without consent and comply fully with international data protection standards like GDPR and secure money.",
   },
 ];
 
-// Define the component using React.FC (Functional Component)
 const OurSolutions: React.FC = () => {
   return (
     <section className="our-solutions lg:py-10 py-5">
@@ -214,31 +203,35 @@ const OurSolutions: React.FC = () => {
         <div className="container mx-auto px-4">
           <div className="text-center space-y-2">
             {/* Replicates 'sub-title' styling */}
-            <h5 className="text-gray dark:text-gray-300 font-medium">
-              High speeds. Low fees. No hassle.
+            <h5 className="text-gray dark:text-gray-300 md:text-base text-sm font-medium">
+              Secure & Protected
             </h5>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
-              All Your Payments <br />
-              <span className="text-primary"> In One Place</span>
+              Secure Payments
+              <br />
+              <span className="text-primary"> You Can Trust</span>
             </h1>
 
-            <p className="lg:text-xl text-sm text-gray-700 dark:text-gray-300">
-              Get used to low fees and great exchange rates on international
-              money transfers.
+            <p className="lg:text-lg text-sm max-w-3xl mx-auto text-gray-700 dark:text-gray-300">
+              When you add money to your account, your security is our top
+              priority. Every transaction is protected by advanced encryption,
+              monitored in real-time for fraud.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
             {solutionItems.map((item) => (
               <div key={item.id} className="solution-item">
-                <div className="text-center border dark:border-none rounded-2xl p-6 bg-lightgray dark:bg-white/5 transition-shadow duration-300 h-full flex flex-col">
+                <div className="md:text-center text-left dark:border-none rounded-2xl lg:p-6 p-4 space-y-3 bg-lightgray dark:bg-white/5 h-full flex flex-col">
                   {/* Render the icon element directly */}
-                  <div className="icon-wrapper mb-4">{item.icons}</div>
-                  <h5 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  <div className="rounded-full p-2.5 w-fit bg-gray dark:bg-white/5 flex items-center justify-center md:mx-auto">
+                    <span>{item.icons}</span>
+                  </div>
+                  <h5 className="lg:text-xl text-base font-medium text-subheading dark:text-primary">
                     {item.title}
                   </h5>
-                  <p className="text-gray-700 dark:text-gray-300 text-sm flex-grow">
+                  <p className="text-gray-700 dark:text-gray-300 lg:text-base text-sm flex-grow">
                     {item.description}
                   </p>
                 </div>

@@ -15,7 +15,7 @@ const HeroAddMoney: React.FC = () => {
   const { user } = useAuth();
 
   const benefits = [
-    { icon: <FaGlobeAmericas />, text: "170+ countries supported" },
+    { icon: <FaGlobeAmericas />, text: "50+ countries supported" },
     { icon: <FaShieldAlt />, text: "Bank-level security" },
     { icon: <FaClock />, text: "24/7 transfers money" },
   ];
@@ -36,8 +36,8 @@ const HeroAddMoney: React.FC = () => {
       <div className="max-w-8xl container mx-auto relative z-10">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
           {/* Left Content Area */}
-          <div className="lg:w-1/2 text-white lg:space-y-5 space-y-3">
-            <p className="lg:text-base md:text-sm text-xs inline-block px-4 py-1.5 dark:bg-primary rounded-full bg-gray/10 text-mainheading font-medium">
+          <div className="lg:w-1/2 text-white lg:space-y-4 space-y-2">
+            <p className="md:text-sm text-xs inline-block px-4 py-1.5 dark:bg-primary rounded-full bg-lightgray text-mainheading font-medium">
               Trusted by over 3M+ customers worldwide
             </p>
 
@@ -56,18 +56,19 @@ const HeroAddMoney: React.FC = () => {
             {/* Added onClick handler to the button */}
             <button
               onClick={handleButtonClick} // Added onClick
-              className="bg-primary rounded-full hover:bg-primaryhover cursor-pointer duration-300 ease-in-out lg:text-base text-sm text-mainheading font-medium px-6 lg:py-3 py-2 lg:h-12.5"
+              className="bg-primary rounded-full hover:bg-primaryhover cursor-pointer duration-300 mt-2 ease-in-out lg:text-base text-sm text-mainheading font-medium px-6 lg:py-3 py-2.5 lg:h-12.5"
             >
               {user ? "Add Money Now" : "Create a Account"}
             </button>
+            
 
-            <div className="flex lg:flex-row flex-col flex-wrap lg:gap-6 gap-4 lg:mt-0 mt-2">
+            <div className="flex lg:flex-row flex-col flex-wrap lg:gap-6 gap-4 lg:mt-0">
               {benefits.map((benefit, index) => (
                 <div key={index} className="flex items-center lg:text-base text-sm gap-2">
                   <span className="dark:text-primary text-gray">
                     {benefit.icon}
                   </span>
-                  <span className="text-mainheading dark:text-white font-semibold text-sm sm:text-base">
+                  <span className="text-mainheading dark:text-white font-medium text-sm sm:text-base">
                     {benefit.text}
                   </span>
                 </div>
@@ -76,12 +77,12 @@ const HeroAddMoney: React.FC = () => {
           </div>
 
           {/* Right Form Area */}
-          <div className="lg:w-5/12 mt-10 lg:mt-0 flex justify-center">
+          <div className="lg:w-5/12 w-full mt-10 lg:mt-0 flex justify-center">
             <Image
               src="/assets/images/secure.svg"
               alt="Padlock symbolizing security"
-              width={450}
-              height={450}
+              width={500}
+              height={500}
               priority
               className="lg:h-full h-64"
             />

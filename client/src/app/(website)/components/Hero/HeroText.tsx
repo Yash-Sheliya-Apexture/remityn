@@ -83,7 +83,7 @@ const HeroText = () => {
           Easy Global Money Exchange
           <span className="text-primary"> at 0% Fees </span>
         </h1>
-        <p className="lg:text-lg sm:text-base text-sm text-gray-700 leading-relaxed dark:text-gray-300">
+        <p className="lg:text-lg sm:text-base text-sm text-gray-700 dark:text-gray-300">
           Experience global money exchange with 0% fees and instant transfers.
           Our platform offers secure, transparent transactions with real-time
           exchange rates. Send money easily across borders, without worrying
@@ -91,7 +91,7 @@ const HeroText = () => {
           services for all your currency needs.
         </p>
 
-        <div className="grid sm:grid-cols-2 grid-cols-1 lg:gap-8 gap-5 max-w-lg">
+        <div className="grid sm:grid-cols-2 grid-cols-1 gap-5 max-w-lg">
           {/* Tags */}
           <div className="flex items-center gap-4 text-gray dark:text-primary">
             <FaExchangeAlt className="sm:size-6 size-5" />
@@ -122,7 +122,7 @@ const HeroText = () => {
         <div className="md:pt-4 pt-0">
           {/* --- CONDITIONAL LINK --- */}
           <Link href={user ? "/dashboard" : "/auth/register"} passHref>
-            <button className="bg-primary hover:bg-primaryhover cursor-pointer font-medium py-2 text-sm lg:text-base lg:px-8 px-4 md:h-12.5 rounded-full transition-colors duration-300 ease-in-out text-mainheading flex items-center justify-center">
+            <button className="bg-primary hover:bg-primaryhover cursor-pointer font-medium py-2.5 text-sm lg:text-base px-6 lg:h-12.5 rounded-full transition-colors duration-300 ease-in-out text-mainheading flex items-center justify-center">
               Get Started Now
             </button>
           </Link>

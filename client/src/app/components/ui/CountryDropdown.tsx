@@ -2220,7 +2220,7 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
           </div>
 
           <div
-            className="p-2 pb-4 max-h-[370px] overflow-x-hidden overflow-y-auto [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox" // Added dark scrollbar styles
+            className="p-2 pb-4 max-h-[310px] overflow-x-hidden overflow-y-auto [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox" // Added dark scrollbar styles
             role="listbox"
           >
             {/* Loading State (Internal) */}
@@ -2246,7 +2246,7 @@ const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({
                       <li
                         key={currency.code}
                         onClick={() => handleCurrencyChange(currency.code)}
-                        className={`flex items-center justify-between p-3 rounded-md dark:hover:bg-secondary hover:bg-lightgray cursor-pointer focus:outline-none focus:bg-gray-100 ${selectedCurrency === currency.code ? 'bg-lightgray dark:hover:bg-secondary' : ''}`} // Added dark mode selection style
+                        className={`flex items-center justify-between p-3 rounded-md dark:hover:bg-white/5 hover:bg-lightgray cursor-pointer focus:outline-none focus:bg-gray-100 ${selectedCurrency === currency.code ? 'dark:bg-white/5 bg-lightgray' : ''}`} // Added dark mode selection style
                         role="option"
                         aria-selected={selectedCurrency === currency.code}
                         tabIndex={0}

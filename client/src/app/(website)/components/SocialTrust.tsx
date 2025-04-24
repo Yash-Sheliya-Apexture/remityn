@@ -1851,7 +1851,7 @@ const StarRating: React.FC<StarRatingProps> = ({ rating, maxRating = 5 }) => {
       stars.push(
         <FaStar
           key={i}
-          className="inline-block text-gray-300 dark:text-white"
+          className="inline-block text-lightgray dark:text-white"
         />
       );
     }
@@ -1881,17 +1881,17 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
           <img
             src={avatarUrl}
             alt={`Avatar of ${reviewerName}`}
-            className="lg:size-16 size-14 rounded-full object-cover mb-2 md:mb-0 md:mr-4"
+            className="lg:size-16 size-14 rounded-full object-cover mb-2 md:mb-0 md:mr-2.5"
           />
           <div className="flex flex-col items-center md:items-start">
-            <div className="text-mainheading dark:text-primary font-semibold text-nowrap">
+            <div className="text-mainheading dark:text-primary font-medium text-nowrap">
               {reviewerName}
             </div>
             <StarRating rating={rating} />
           </div>
         </div>
       </div>
-      <div className="text-mainheading dark:text-gray-300 leading-relaxed font-normal mt-4 md:mt-6 text-sm lg:text-lg">
+      <div className="text-gray-700 dark:text-gray-300 leading-relaxed font-normal mt-4 md:mt-6 text-sm lg:text-lg">
         {comment}
       </div>
     </div>
@@ -2036,17 +2036,17 @@ const ReviewCards: React.FC = () => {
 
   return (
     <section
-      className="Reviews md:py-14 py-10 bg-white dark:bg-background"
+      className="Reviews md:py-14 py-10 bg-white dark:bg-background px-4"
       id="review"
     >
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto">
         <div className="w-full mb-10 lg:mb-16">
           {/* heading and paragraph */}
           {heading}
           {paragraph}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 h-[600px] md:h-[1000px] overflow-hidden relative">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 h-[600px] md:h-[1000px] overflow-hidden relative">
           {reviewGroups.slice(0, 3).map((group, index) => (
             <div
               key={group.id || `group-${index}`}

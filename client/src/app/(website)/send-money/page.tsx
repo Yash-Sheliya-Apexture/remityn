@@ -6,11 +6,11 @@ import GetStartedSection from "../components/GetStartedSection";
 
 const SendMoneyPage = () => {
   return (
-    <main>
+    <main className="Send-MoneyPages">
       <SendInternationally />
       <Paymentsborder />
       <RightChoiceSection />
-      <GetStartedSection />  
+      <GetStartedSection />
     </main>
   );
 };

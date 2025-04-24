@@ -44,16 +44,15 @@ const featuresData: FeatureItem[] = [
 const XeFeaturesSection: React.FC = () => {
   return (
     // Added dummy class names for styling context, replace with your actual ones
-    <div className="bg-white dark:bg-background pb-10">
-      <div className="mx-auto max-w-7xl px-4">
-        <div className="mx-auto max-w-2xl text-center">
-          {/* Removed empty h2, assuming the next one is the main heading */}
+    <div className="bg-white dark:bg-background px-4 lg:py-10 py-5">
+      <div className="mx-auto container max-w-5xl">
+        <div className="mx-auto max-w-2xl text-center lg:space-y-6 space-y-4">
           <h2 className="text-3xl sm:text-5xl lg:text-6xl capitalize font-black text-mainheading dark:text-white">
             Find out why &nbsp;
             <span className="text-primary">millions choose Apexture</span>
           </h2>
 
-          <p className="mt-4 text-lg leading-normal text-gray-700 dark:text-gray-300">
+          <p className="lg:text-lg text-base text-gray-700 dark:text-gray-300">
             For over 10 years, Apexture Corporation Inc. customers have been
             trusting us to manage and send international money transfers. It's
             what we do.
@@ -61,7 +60,7 @@ const XeFeaturesSection: React.FC = () => {
         </div>
 
         {/* Features Grid */}
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="lg:mt-10 mt-5 grid grid-cols-1 md:grid-cols-2 gap-6">
           {featuresData.map((feature) => (
             <div
               key={feature.title}

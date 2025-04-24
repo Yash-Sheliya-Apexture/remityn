@@ -303,13 +303,11 @@ const TermsAndConditionsPage: React.FC = () => {
             Terms <span className="text-primary"> And Conditions</span>
           </h2>
 
-          <p className="max-w-5xl text-gray-700 dark:text-gray-300 lg:text-xl text-sm mt-5">
+          <p className="max-w-3xl text-gray-700 dark:text-gray-300 lg:text-lg text-sm mt-5">
             Welcome to Wise, your trusted platform for secure and efficient
             currency exchange services. These Terms and Conditions outline the
             rules and guidelines that govern your use of our services, ensuring
             a seamless and secure experience while managing your transactions.
-            By accessing or using our website and services, you agree to comply
-            with and be bound by these terms.
           </p>
 
           <div className="border-t my-8"></div>

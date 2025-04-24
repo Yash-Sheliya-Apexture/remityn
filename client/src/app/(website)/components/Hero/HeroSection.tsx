@@ -9881,9 +9881,9 @@ const HeroSection: React.FC = () => {
 
   // --- JSX Render ---
   return (
-    <section className="Hero-Section bg-white dark:bg-background lg:py-12 py-5 px-4">
+    <section className="Hero-Section bg-white dark:bg-background lg:py-10 py-5 px-4">
       <div className="container mx-auto">
-        <div className="flex flex-col lg:flex-row items-center gap-12">
+        <div className="flex flex-col lg:flex-row items-center gap-6">
           {/* Left Column */}
           <div className="lg:w-1/2 space-y-5">
             <HeroText />
@@ -9963,7 +9963,7 @@ const HeroSection: React.FC = () => {
                     {/* Our Rate Display */}
                     {!error && ourRate !== null && (
                       <div
-                        className="font-semibold lg:p-2.5 p-1.5 lg:px-6 px-4 rounded-full bg-primary text-neutral-900 inline-flex items-center gap-1.5 cursor-default text-sm"
+                        className="font-semibold lg:p-2 p-1.5  lg:px-6 px-4 rounded-full bg-primary text-neutral-900 inline-flex items-center gap-1.5 cursor-default text-sm"
                         title={`Rate includes our adjustment of ${rateAdjustment.toFixed(
                           2
                         )}%. This is the rate applied to your transfer.`}
