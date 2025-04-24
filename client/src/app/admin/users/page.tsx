@@ -1251,20 +1251,20 @@ const AdminUsersPage: React.FC = () => {
             <h1 className="text-2xl font-bold text-mainheading dark:text-white flex items-center gap-2">
                <Users className="h-6 w-6 text-primary" /> User Management
             </h1>
-            <div className="flex items-center gap-3 justify-end">
+            <div className="flex items-center gap-3 justify-end sm:w-auto w-full">
               {/* Filter Button - Matching Payments styling */}
               <button
                 onClick={() => setShowFilterModal(true)}
-                className="flex items-center justify-center cursor-pointer gap-2 bg-primary text-secondary font-medium text-base px-6 py-2 h-12 rounded-full hover:bg-primaryhover transition-colors" // Use text-secondary for light text on dark primary bg
+                className="flex items-center justify-center cursor-pointer gap-2 bg-primary text-neutral-900 font-medium text-base px-8 py-3 h-12.5 sm:w-auto w-full rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear" // Use text-secondary for light text on dark primary bg
               >
-                <Filter size={18} />
-                Filters
+                <Filter size={20} />
+                <span>Filters</span>
               </button>
               {/* Refresh Button - Matching Payments styling */}
               <button
                 onClick={refreshData}
                 disabled={isRefreshing || loadingUsers} // Disable while EITHER refreshing OR loading
-                className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 h-12 rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Refresh user data"
               >
                 {/* Apply animate-spin class conditionally based on isRefreshing */}
@@ -1325,14 +1325,14 @@ const AdminUsersPage: React.FC = () => {
                     value={usersPerPage}
                     onChange={(e) => handlePageSizeChange(Number(e.target.value))}
                     // Consistent select styling
-                    className="block w-auto pl-3 pr-8 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none bg-white dark:bg-primarybox dark:text-white"
+                    className="block w-auto pl-3 pr-8 py-2 text-sm border rounded-md focus:outline-none bg-white dark:bg-primarybox dark:text-white cursor-pointer"
                   >
-                       {pageSizeOptions.map(size => <option key={size} value={size} className="dark:bg-dropdowncolor">{size}</option>)}
+                       {pageSizeOptions.map(size => <option key={size} value={size} className="dark:bg-dropdowncolor cursor-pointer">{size}</option>)}
                   </select>
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">entries</span>
               </div>
               {/* Consistent results text - Show based on filteredUsers length even if loading */}
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-gray-500 dark:text-gray-300">
                   Showing {loadingUsers ? 0 : (filteredUsers.length > 0 ? (currentPage - 1) * usersPerPage + 1 : 0)}
                   - {loadingUsers ? 0 : Math.min(currentPage * usersPerPage, filteredUsers.length)}
                   {" "}of {filteredUsers.length} results

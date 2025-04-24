@@ -2998,7 +2998,7 @@ const UserDetailPage: React.FC = () => {
                   <CardContent>
                     {kyc ? (
                       <>
-                        <div className="p-4">
+                        <div className="p-4 sm:p-6">
                           <h4 className="border-b pb-2 mb-2 font-medium text-neutral-900 dark:text-white">
                             Personal Details
                           </h4>
@@ -3042,7 +3042,7 @@ const UserDetailPage: React.FC = () => {
                             />
                           </div>
                         </div>
-                        <div className="p-4">
+                        <div className="p-4 sm:p-6">
                           <h4 className="border-b pb-2 mb-2 text-neutral-900 dark:text-white">
                             Identification Details
                           </h4>
@@ -3072,7 +3072,7 @@ const UserDetailPage: React.FC = () => {
                             />
                           </div>
                         </div>
-                        <div className="p-4">
+                        <div className="p-4 sm:p-6">
                           <h4 className="border-b pb-2 mb-2 text-neutral-900 dark:text-white">
                             Updating Information
                           </h4>
@@ -3108,7 +3108,7 @@ const UserDetailPage: React.FC = () => {
                     </CardTitle>
                   </CardHeader>
                   {kyc?.documents && kyc.documents.length > 0 ? (
-                    <div className="p-4">
+                    <div className="p-4 sm:p-6">
                       <div className="flex md:flex-row flex-col gap-4">
                         {kyc.documents.map((doc) => (
                           <div

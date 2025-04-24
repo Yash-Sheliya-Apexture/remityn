@@ -448,9 +448,18 @@ const UserTable: React.FC<UserTableProps> = ({
      return formatDate(dateInput, { year: "numeric", month: "short", day: "numeric" });
   };
 
-  const formatDateJoined = (dateInput?: string | Date | null) => {
-     // Use the robust formatDate helper with time
-     return formatDate(dateInput, { year: "numeric", month: "short", day: "numeric", hour: '2-digit', minute: '2-digit' });
+  const formatDateJoined = (dateString: string) => {
+    if (!dateString || isNaN(new Date(dateString).getTime())) {
+        return "Invalid Date";
+    }
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+    return new Date(dateString).toLocaleString(undefined, options);
   };
 
 
@@ -489,7 +498,7 @@ const UserTable: React.FC<UserTableProps> = ({
   }
 
   return (
-    <div className="rounded-xl border overflow-hidden dark:border-neutral-800">
+    <div className="rounded-xl border overflow-hidden">
       {/* Add the scrollable container with custom scrollbars */}
       <div className="overflow-x-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
         <table className="min-w-full overflow-hidden">
@@ -499,13 +508,13 @@ const UserTable: React.FC<UserTableProps> = ({
             sortDirection={sortDirection}
           />
           {/* Add divide-y and overflow-hidden to tbody */}
-          <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800 overflow-hidden">
+          <tbody className="divide-y overflow-hidden">
             {users.length === 0 ? (
               <tr>
                 <td
                   // Ensure colSpan matches numberOfColumns
                   colSpan={numberOfColumns}
-                  className="px-4 py-10 text-center text-gray-500 dark:text-gray-400"
+                  className="px-6 py-10 text-center text-gray-500 dark:text-gray-300"
                 >
                   No users found matching your criteria.
                 </td>
@@ -524,15 +533,15 @@ const UserTable: React.FC<UserTableProps> = ({
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }} // Staggered animation
                     // Use hover styles from PaymentTable
-                    className="hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors duration-100"
+                    // className="hover:bg-lightgray dark:hover:bg-primarybox transition-all duration-75 ease-linear"
                   >
                     {/* Full Name - Use styles closer to PaymentTable */}
                     <td className="px-4 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap capitalize">
-                      {user.fullName && user.fullName.toLowerCase() !== 'n/a' ? user.fullName : <span className="text-gray-400 dark:text-gray-500 italic">N/A</span>}
+                      {user.fullName && user.fullName.toLowerCase() !== 'n/a' ? user.fullName : <span className="text-gray-500 dark:text-gray-300 italic">N/A</span>}
                     </td>
                     {/* Email - Use styles closer to PaymentTable */}
                     <td className="px-4 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap">
-                      {user.email && user.email.toLowerCase() !== 'n/a' ? user.email : <span className="text-gray-400 dark:text-gray-500 italic">N/A</span>}
+                      {user.email && user.email.toLowerCase() !== 'n/a' ? user.email : <span className="text-gray-500 dark:text-gray-300 italic">N/A</span>}
                     </td>
                     {/* Date of Birth */}
                     <td className="px-4 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap">
@@ -562,17 +571,18 @@ const UserTable: React.FC<UserTableProps> = ({
                       {formatDateJoined(user.createdAt)}
                     </td>
                     {/* Actions - Style Link to look like PaymentTable button */}
-                    <td className="px-4 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap">
-                      <motion.div whileTap={{ scale: 0.95 }}>
+                    <td className="px-4 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap ">
+                     
                         <Link
                           href={`/admin/users/${user._id}`}
                           aria-label={`View details for ${user.fullName || user.email}`}
                           // Apply button styles directly to Link - matching PaymentTable Edit button
-                          className="bg-primary hover:bg-primaryhover dark:bg-primarybox hover:dark:bg-secondarybox transition-all duration-75 ease-linear cursor-pointer rounded-3xl px-4 py-2 font-medium text-neutral-900 dark:text-primary focus:outline-none flex justify-center items-center" // Adjusted padding/height/text size for consistency
+                          className="inline-flex items-center group px-6 py-2 rounded-3xl space-x-1 transition-colors duration-300 font-medium bg-primary hover:bg-primaryhover dark:bg-primarybox hover:dark:bg-secondarybox text-neutral-900 dark:text-primary focus:outline-none" // Adjusted padding/height/text size for consistency
                         >
-                          <Eye size={16} className="mr-1" />Details
+                          {/* <Eye size={16} className="mr-1" />Details */}
+                          <span>View Details</span>
                         </Link>
-                      </motion.div>
+
                     </td>
                   </motion.tr>
                 );

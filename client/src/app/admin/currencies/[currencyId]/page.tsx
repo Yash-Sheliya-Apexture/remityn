@@ -7362,7 +7362,7 @@ const AdminEditCurrencyPage = () => {
           pauseOnHover
           theme="colored"
         />
-        <div className="mx-auto max-w-5xl px-4">
+        <div className="mx-auto max-w-5xl">
           <motion.div
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -7375,7 +7375,7 @@ const AdminEditCurrencyPage = () => {
             >
               <FaArrowLeftLong className="size-4" /> Back to Currencies
             </Link>
-            <h1 className="md:text-xl text-lg font-semibold text-neutral-900 dark:text-white text-left sm:text-right">
+            <h1 className="text-xl font-semibold text-neutral-900 dark:text-white text-left sm:text-right">
               {" "}
               {/* Changed to h1 */}
               Edit Currency:{" "}

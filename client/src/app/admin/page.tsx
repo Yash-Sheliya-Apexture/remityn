@@ -264,7 +264,7 @@ export default function AdminHomePage() {
 
           {/* Stats cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white dark:bg-white/5 p-6 rounded-xl shadow-sm border">
+            <div className="bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border">
               <div className="flex justify-between items-start">
                 <div>
                   <p className="text-lg font-medium text-neutral-900 dark:text-white">
@@ -284,7 +284,7 @@ export default function AdminHomePage() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-white/5 p-6 rounded-xl shadow-sm border">
+            <div className="bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border">
               <div className="flex justify-between items-start">
                 <div>
                   <p className="text-lg font-medium text-neutral-900 dark:text-white">
@@ -304,7 +304,7 @@ export default function AdminHomePage() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-white/5 p-6 rounded-xl shadow-sm border">
+            <div className="bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border">
               <div className="flex justify-between items-start">
                 <div>
                   <p className="text-lg font-medium text-neutral-900 dark:text-white">
@@ -324,7 +324,7 @@ export default function AdminHomePage() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-white/5 p-6 rounded-xl shadow-sm border">
+            <div className="bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border">
               <div className="flex justify-between items-start">
                 <div>
                   <p className="text-lg font-medium text-neutral-900 dark:text-white">
@@ -352,7 +352,7 @@ export default function AdminHomePage() {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* Transfer Volume */}
-              <div className="bg-white dark:bg-white/5 p-6 rounded-xl shadow-sm border">
+              <div className="bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border">
                 <div className="flex justify-between items-center mb-4">
                   <h4 className="text-lg font-medium text-neutral-900 dark:text-white">
                     Transfer Volume
@@ -384,7 +384,7 @@ export default function AdminHomePage() {
               </div>
 
               {/* Popular Corridors */}
-              <div className="bg-white dark:bg-white/5 p-6 rounded-xl shadow-sm border">
+              <div className="bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border">
                 <div className="flex justify-between items-center mb-4">
                   <h4 className="text-lg font-medium text-neutral-900 dark:text-white">
                     Popular Corridors
@@ -459,7 +459,7 @@ export default function AdminHomePage() {
               </div>
 
               {/* Currency Performance */}
-              <div className="bg-white dark:bg-white/5 p-6 rounded-xl shadow-sm border">
+              <div className="bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border">
                 <div className="flex justify-between items-center mb-4">
                   <h4 className="text-lg font-medium text-neutral-900 dark:text-white">
                     Currency Performance
@@ -526,7 +526,7 @@ export default function AdminHomePage() {
           {/* Recent activity and quick actions */}
           <div className="flex lg:flex-row flex-col gap-6 mb-8">
             {/* Recent activity */}
-            <div className="lg:w-2/3 w-full bg-white dark:bg-white/5 p-6 rounded-xl shadow-sm border">
+            <div className="lg:w-2/3 w-full bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border">
               <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-6">
                 Recent Activity
               </h3>
@@ -562,7 +562,7 @@ export default function AdminHomePage() {
             </div>
 
             {/* Quick actions */}
-            <div className="lg:w-1/3 w-full bg-white dark:bg-white/5 p-6 rounded-xl shadow-sm border">
+            <div className="lg:w-1/3 w-full bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border">
               <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-4">
                 Quick Actions
               </h3>
@@ -594,7 +594,7 @@ export default function AdminHomePage() {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* Pending Verifications */}
-              <div className="bg-white dark:bg-white/5 p-6 rounded-xl shadow-sm border">
+              <div className="bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border">
                 <div className="flex justify-between items-center mb-4">
                   <h4 className="text-lg font-medium text-neutral-900 dark:text-white">
                     Pending Verifications
@@ -642,7 +642,7 @@ export default function AdminHomePage() {
               </div>
 
               {/* Security Alerts */}
-              <div className="bg-white dark:bg-white/5 p-6 rounded-xl shadow-sm border">
+              <div className="bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border">
                 <div className="flex justify-between items-center mb-4">
                   <h4 className="text-lg font-medium text-neutral-900 dark:text-white">
                     Security Alerts
@@ -673,7 +673,7 @@ export default function AdminHomePage() {
               </div>
 
               {/* AML Compliance */}
-              <div className="bg-white dark:bg-white/5 p-6 rounded-xl shadow-sm border">
+              <div className="bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border">
                 <div className="flex justify-between items-center mb-4">
                   <h4 className="text-lg font-medium text-neutral-900 dark:text-white">
                     AML Compliance
@@ -720,7 +720,7 @@ export default function AdminHomePage() {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Payment Methods */}
-              <div className="bg-white dark:bg-white/5 p-6 rounded-xl shadow-sm border">
+              <div className="bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border">
                 <div className="flex justify-between items-center mb-4">
                   <h4 className="text-lg font-medium text-neutral-900 dark:text-white">
                     Payment Methods
@@ -789,7 +789,7 @@ export default function AdminHomePage() {
               </div>
 
               {/* Settlement Status */}
-              <div className="bg-white dark:bg-white/5 p-6 rounded-xl shadow-sm border">
+              <div className="bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border">
                 <div className="flex justify-between items-center mb-4">
                   <h4 className="text-lg font-medium text-neutral-900 dark:text-white">
                     Settlement Status

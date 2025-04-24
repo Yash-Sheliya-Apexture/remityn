@@ -1251,10 +1251,10 @@ const PaymentEditModal: React.FC<PaymentEditModalProps> = ({
             initial="initial"
             animate="animate"
             exit="exit"
-            className="bg-white dark:bg-background sm:rounded-2xl rounded-t-2xl w-full sm:max-w-lg "
+            className="bg-white dark:bg-background sm:rounded-3xl rounded-t-3xl w-full sm:max-w-xl relative "
           >
             {/* Header */}
-            <div className="p-6 rounded-t-2xl flex items-center justify-between border-b ">
+            <div className="p-4 sm:p-6 rounded-t-2xl flex items-center justify-between border-b ">
               <h2
                 id="edit-payment-modal-title"
                 className="text-xl font-bold flex items-center text-neutral-900 dark:text-white"
@@ -1264,15 +1264,15 @@ const PaymentEditModal: React.FC<PaymentEditModalProps> = ({
               </h2>
               <button
                 onClick={() => setIsEditModalOpen(false)}
-                className="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary p-1 rounded-full"
+                className="p-3 bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
                 aria-label="Close edit payment modal"
               >
-                <X size={24} />
+                <X size={24} className="text-neutral-900 dark:text-primary"/>
               </button>
             </div>
 
             {/* Content */}
-            <div className="p-6 space-y-5">
+            <div className="p-4 sm:p-6 space-y-5">
               {/* Status Dropdown */}
               <div className="pt-2">
                 <CustomDropdown
@@ -1385,10 +1385,10 @@ const PaymentEditModal: React.FC<PaymentEditModalProps> = ({
             </div>
 
             {/* Footer */}
-            <div className="border-t  p-6 flex justify-end gap-3">
+            <div className="border-t p-4 sm:p-6 flex justify-end gap-3">
               <button
                 onClick={() => setIsEditModalOpen(false)}
-                className="w-full sm:w-auto bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-lg px-4   py-2 text-center cursor-pointer transition-all duration-75 ease-linear" // Dark mode secondary
+                className="inline-flex justify-center cursor-pointer bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear" // Dark mode secondary
               >
                 Cancel
               </button>
@@ -1396,7 +1396,7 @@ const PaymentEditModal: React.FC<PaymentEditModalProps> = ({
                 onClick={handleSaveEdit}
                 // Disable if loading, OR if no status selected, OR if original status is final
                 disabled={editLoading || !editFormData.status || isFinalStatus}
-                className="w-full sm:w-auto bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-lg px-4 py-2 text-center cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styling
+                className="inline-flex justify-center cursor-pointer bg-primary hover:bg-primaryhover text-neutral-900 font-medium rounded-full px-6 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styling
               >
                 {editLoading ? "Saving..." : "Update Status"}
               </button>

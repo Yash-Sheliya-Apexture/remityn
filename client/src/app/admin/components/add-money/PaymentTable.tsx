@@ -538,15 +538,15 @@ import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { motion } from 'framer-motion';
 import { Edit } from 'lucide-react';
-import PaymentTableHeader from './PaymentTableHeader';
+import PaymentTableHeader, { PaymentSortField } from './PaymentTableHeader';
 import { Payment } from '../../../../types/payment'; // Import shared Payment type - Adjust path if needed
 
 interface PaymentTableProps {
     filteredPayments: Payment[]; // Use shared Payment type
     loadingPayments: boolean;
     getStatusColor: (status: string) => string;
-    toggleSort: (field: string) => void;
-    sortField: string | null;
+    toggleSort: (field: PaymentSortField) => void;
+    sortField: PaymentSortField | null;
     sortDirection: 'asc' | 'desc';
     handleEditPayment: (payment: Payment) => void; // Use shared Payment type
 }
@@ -631,7 +631,7 @@ const PaymentTable: React.FC<PaymentTableProps> = ({
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors duration-100"
+                  // className="hover:bg-lightgray dark:hover:bg-primarybox transition-all duration-75 ease-linear"
                 >
                   <td className="px-4 py-3 whitespace-nowrap">
                     <span className="font-medium text-neutral-900 dark:text-white">
@@ -675,7 +675,7 @@ const PaymentTable: React.FC<PaymentTableProps> = ({
                     <motion.button
                       whileTap={{ scale: 0.95 }}
                       onClick={() => handleEditPayment(payment)}
-                      className="bg-primary hover:bg-primaryhover dark:bg-primarybox hover:dark:bg-secondarybox transition-all duration-75 ease-linear cursor-pointer rounded-3xl px-4 py-2 font-medium text-neutral-900 dark:text-primary focus:outline-none flex items-center"
+                      className="bg-primary hover:bg-primaryhover dark:bg-primarybox hover:dark:bg-secondarybox transition-all duration-75 ease-linear cursor-pointer rounded-3xl px-6 py-2 font-medium text-neutral-900 dark:text-primary focus:outline-none flex items-center"
                     >
                       <Edit size={18} className="mr-1" />
                       Edit
