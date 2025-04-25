@@ -981,7 +981,7 @@
 //                   layout
 //                 >
 //                   <IconComponent className="size-6" />
-                  
+
 //                 </motion.div>
 //                 <span
 //                   className={`text-xs font-medium ${
@@ -1002,7 +1002,6 @@
 // };
 
 // export default Sidebar;
-
 
 // "use client";
 
@@ -1161,7 +1160,7 @@
 //           {/* Scrollable Nav Area */}
 //           <div className="px-2 h-[calc(100%-112px)] overflow-y-auto [&::-webkit-scrollbar-track]:rounded-3xl [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-3xl [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
 //             <nav>
-//               {" "}
+//
 //               {/* Use space-y for consistent spacing */}
 //               {navLinksData.map((item: NavLink) => {
 //                 const IconComponent = icons[item.icon];
@@ -1284,15 +1283,6 @@
 // };
 
 // export default Sidebar;
-
-
-
-
-
-
-
-
-
 
 // "use client";
 
@@ -1624,10 +1614,6 @@
 
 // export default Sidebar;
 
-
-
-
-
 // "use client";
 
 // import React, { useEffect, useRef, useState } from "react";
@@ -1946,13 +1932,6 @@
 // };
 
 // export default Sidebar;
-
-
-
-
-
-
-
 
 // // frontend/src/app/dashboard/components/Sidebar.tsx
 // "use client";
@@ -2279,9 +2258,6 @@
 
 // export default Sidebar;
 
-
-
-
 // // frontend/src/app/dashboard/components/Sidebar.tsx
 // "use client";
 
@@ -2316,7 +2292,6 @@
 // const icons = { RiHomeLine, GrTransaction, BsSend, GoArrowUp, FiCreditCard, FiUserPlus, FiSettings };
 // const LG_BREAKPOINT = 1024;
 // const SM_BREAKPOINT = 640;
-
 
 // const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
 //     const router = useRouter();
@@ -2362,7 +2337,6 @@
 //         return () => document.removeEventListener("mousedown", handleClickOutside);
 //     }, [sidebarOpen, isMobileView, toggleSidebar]);
 
-
 //     // --- Dynamic Routes using useCallback for stable references ---
 //     const getAddMoneyRoute = useCallback((): string => {
 //         if (!token) return "/auth/login"; // Redirect if not logged in
@@ -2384,7 +2358,6 @@
 //       return "/dashboard/send/select-balance"; // <<< This is correct
 //  }, [isLoadingBalances, balancesError, token]);
 
-
 //     // --- Nav Link Definitions ---
 //     const navLinksData: NavLinkDefinition[] = [
 //         { id: "dashboard", label: "Dashboard", icon: "RiHomeLine", route: "/dashboard" },
@@ -2403,7 +2376,6 @@
 //         { label: "Send", icon: "BsSend", route: getSendMoneyRoute() }, // Can also call the function here if needed
 //         { label: "Account", icon: "FiSettings", route: "/dashboard/your-account" },
 //     ];
-
 
 //     // --- Logout Handler ---
 //     const handleLogout = () => {
@@ -2426,7 +2398,6 @@
 //     const resolveRoute = (route: string | (() => string)): string => {
 //         return typeof route === 'function' ? route() : route;
 //     };
-
 
 //     // --- Helper to check if a dynamic link should be disabled ---
 //      const isLinkDisabled = (id: string): boolean => {
@@ -2593,8 +2564,6 @@
 
 // export default Sidebar;
 
-
-
 // // frontend/src/app/dashboard/components/Sidebar.tsx
 // "use client";
 
@@ -2628,7 +2597,6 @@
 // const icons = { RiHomeLine, GrTransaction, BsSend, GoArrowUp, FiCreditCard, FiUserPlus, FiSettings };
 // const LG_BREAKPOINT = 1024;
 // const SM_BREAKPOINT = 640;
-
 
 // const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
 //     const router = useRouter();
@@ -2673,7 +2641,6 @@
 //         return () => document.removeEventListener("mousedown", handleClickOutside);
 //     }, [sidebarOpen, isMobileView, toggleSidebar]);
 
-
 //     // --- Dynamic Routes using useCallback for stable references ---
 //     const getAddMoneyRoute = useCallback((): string => {
 //         if (!token) return "/auth/login";
@@ -2693,7 +2660,6 @@
 //       return "/dashboard/send/select-balance";
 //  }, [isLoadingBalances, balancesError, token]);
 
-
 //     // --- Nav Link Definitions ---
 //     const navLinksData: NavLinkDefinition[] = [
 //         { id: "dashboard", label: "Dashboard", icon: "RiHomeLine", route: "/dashboard" },
@@ -2711,7 +2677,6 @@
 //         { label: "Send", icon: "BsSend", route: getSendMoneyRoute() },
 //         { label: "Account", icon: "FiSettings", route: "/dashboard/your-account" },
 //     ];
-
 
 //     // --- Logout Handler ---
 //     const handleLogout = () => {
@@ -2735,7 +2700,6 @@
 //         return typeof route === 'function' ? route() : route;
 //     };
 
-
 //     // --- Helper to check if a dynamic link should be disabled (used when NOT loading) ---
 //      const isLinkDisabled = (id: string): boolean => {
 //         // This function determines disabled state when *not* loading
@@ -2751,7 +2715,6 @@
 //             <Skeleton className="w-24 h-6 rounded" />
 //         </div>
 //     );
-
 
 //     return (
 //         <>
@@ -2917,11 +2880,437 @@
 
 // export default Sidebar;
 
+// // frontend/src/app/dashboard/components/Sidebar.tsx
+// "use client";
+// import React, { useEffect, useRef, useState, useCallback } from "react";
+// import { usePathname, useRouter } from "next/navigation";
+// import { motion, AnimatePresence } from "framer-motion";
+// import { FiCreditCard, FiUserPlus, FiSettings } from "react-icons/fi";
+// import { RiHomeLine } from "react-icons/ri";
+// import { GrTransaction } from "react-icons/gr";
+// import { BsSend } from "react-icons/bs";
+// import { GoArrowUp } from "react-icons/go";
+// import { VscSignOut } from "react-icons/vsc";
+// import Image from "next/image";
+// import Link from "next/link";
+// import { useAuth } from "../../contexts/AuthContext"; // Adjust path
+// import { useBalances } from "../../hooks/useBalances"; // Import the new hook (adjust path)
+// import { Skeleton } from "@/components/ui/skeleton"; // For loading state
+// import { IoClose } from "react-icons/io5";
 
+// interface SidebarProps {
+//   sidebarOpen: boolean;
+//   toggleSidebar: () => void;
+// }
+
+// interface NavLinkDefinition {
+//   label: string;
+//   icon: keyof typeof icons;
+//   route: string | (() => string);
+//   id: string;
+// }
+
+// const icons = {
+//   RiHomeLine,
+//   GrTransaction,
+//   BsSend,
+//   GoArrowUp,
+//   FiCreditCard,
+//   FiUserPlus,
+//   FiSettings,
+// };
+// const LG_BREAKPOINT = 1024;
+// const SM_BREAKPOINT = 640;
+
+// const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
+//   const router = useRouter();
+//   const pathname = usePathname();
+//   const sidebarRef = useRef<HTMLDivElement>(null);
+//   const [isMobileView, setIsMobileView] = useState<boolean | null>(null);
+//   const [isSmallScreen, setIsSmallScreen] = useState<boolean | null>(null);
+//   const { logout, token } = useAuth();
+//   const {
+//     balances,
+//     isLoading: isLoadingBalances,
+//     error: balancesError,
+//   } = useBalances();
+
+//   // --- Screen Size Detection ---
+//   useEffect(() => {
+//     const checkScreenSizes = () => {
+//       if (typeof window !== "undefined") {
+//         const currentWidth = window.innerWidth;
+//         setIsMobileView(currentWidth < LG_BREAKPOINT);
+//         setIsSmallScreen(currentWidth < SM_BREAKPOINT);
+//       }
+//     };
+//     checkScreenSizes();
+//     window.addEventListener("resize", checkScreenSizes);
+//     return () => window.removeEventListener("resize", checkScreenSizes);
+//   }, []);
+
+//   // --- Outside Click Handler ---
+//   useEffect(() => {
+//     const handleClickOutside = (event: MouseEvent) => {
+//       if (
+//         sidebarRef.current &&
+//         !sidebarRef.current.contains(event.target as Node) &&
+//         sidebarOpen &&
+//         isMobileView === true
+//       ) {
+//         toggleSidebar();
+//       }
+//     };
+//     if (sidebarOpen && isMobileView === true) {
+//       document.addEventListener("mousedown", handleClickOutside);
+//     } else {
+//       document.removeEventListener("mousedown", handleClickOutside);
+//     }
+//     return () => document.removeEventListener("mousedown", handleClickOutside);
+//   }, [sidebarOpen, isMobileView, toggleSidebar]);
+
+//   // --- Dynamic Routes using useCallback for stable references ---
+//   const getAddMoneyRoute = useCallback((): string => {
+//     if (!token) return "/auth/login";
+//     if (isLoadingBalances) return "#"; // Return '#' while loading
+//     if (balancesError) return "/dashboard?error=balances";
+
+//     return balances && balances.length > 0
+//       ? "/dashboard/add-money/select-balance"
+//       : "/dashboard/add-balance";
+//   }, [balances, isLoadingBalances, balancesError, token]);
+
+//   const getSendMoneyRoute = useCallback((): string => {
+//     if (!token) return "/auth/login";
+//     if (isLoadingBalances) return "#"; // Return '#' while loading
+//     if (balancesError) return "/dashboard?error=balances";
+
+//     return "/dashboard/send/select-balance";
+//   }, [isLoadingBalances, balancesError, token]);
+
+//   // --- Nav Link Definitions ---
+//   const navLinksData: NavLinkDefinition[] = [
+//     {
+//       id: "dashboard",
+//       label: "Dashboard",
+//       icon: "RiHomeLine",
+//       route: "/dashboard",
+//     },
+//     {
+//       id: "transactions",
+//       label: "Transactions",
+//       icon: "GrTransaction",
+//       route: "/dashboard/transactions",
+//     },
+//     {
+//       id: "send",
+//       label: "Send Money",
+//       icon: "BsSend",
+//       route: getSendMoneyRoute,
+//     },
+//     {
+//       id: "add-money",
+//       label: "Add Money",
+//       icon: "GoArrowUp",
+//       route: getAddMoneyRoute,
+//     },
+//     {
+//       id: "recipients",
+//       label: "Recipients",
+//       icon: "FiUserPlus",
+//       route: "/dashboard/recipients",
+//     },
+//     {
+//       id: "settings",
+//       label: "Settings",
+//       icon: "FiSettings",
+//       route: "/dashboard/your-account",
+//     },
+//   ];
+
+//   // Bottom nav - Assuming it doesn't have dynamic send/add links, otherwise apply similar logic
+//   const bottomNavLinksData = [
+//     { label: "Home", icon: "RiHomeLine", route: "/dashboard" },
+//     {
+//       label: "Activity",
+//       icon: "GrTransaction",
+//       route: "/dashboard/transactions",
+//     },
+//     { label: "Send", icon: "BsSend", route: getSendMoneyRoute() },
+//     { label: "Account", icon: "FiSettings", route: "/dashboard/your-account" },
+//   ];
+
+//   // --- Logout Handler ---
+//   const handleLogout = () => {
+//     logout();
+//     router.push("/auth/login");
+//     if (sidebarOpen && isMobileView) {
+//       toggleSidebar();
+//     }
+//   };
+
+//   // --- Render Logic ---
+//   const renderFullSidebar = !isMobileView || (isMobileView && sidebarOpen);
+//   const renderBottomNav = isSmallScreen && !sidebarOpen;
+
+//   if (isMobileView === null || isSmallScreen === null) {
+//     return null; // Prevent rendering during SSR or initial hydration mismatch
+//   }
+
+//   // --- Helper to resolve route ---
+//   const resolveRoute = (route: string | (() => string)): string => {
+//     return typeof route === "function" ? route() : route;
+//   };
+
+//   // --- Helper to check if a dynamic link should be disabled (used when NOT loading) ---
+//   const isLinkDisabled = (id: string): boolean => {
+//     // This function determines disabled state when *not* loading
+//     // e.g., if there's a specific error or condition preventing action
+//     const finalRoute = resolveRoute(
+//       navLinksData.find((link) => link.id === id)?.route || ""
+//     );
+//     return finalRoute === "#" && !isLoadingBalances; // Disable if route resolved to '#' *and* not loading
+//   };
+
+//   // --- Skeleton Component for Links/Buttons ---
+//   const NavItemSkeleton = () => (
+//     <div className="relative w-full flex items-center gap-3 py-3 px-4 font-medium mb-2 text-neutral-400 dark:text-gray-600">
+//       <Skeleton className="w-6 h-6 rounded flex-shrink-0" />{" "}
+//       {/* Rounded icon skeleton */}
+//       <Skeleton className="w-24 h-6 rounded" />
+//     </div>
+//   );
+
+//   return (
+//     <>
+//       {/* Backdrop */}
+//       <AnimatePresence>
+//         {sidebarOpen && isMobileView && (
+//           <motion.div
+//             initial={{ opacity: 0 }}
+//             animate={{ opacity: 0.5 }}
+//             exit={{ opacity: 0 }}
+//             transition={{ duration: 0.2 }}
+//             onClick={toggleSidebar}
+//             className="fixed inset-0 bg-black/50 dark:bg-white/30 z-30 lg:hidden"
+//             aria-hidden="true"
+//           />
+//         )}
+//       </AnimatePresence>
+
+//       {/* Full Sidebar */}
+//       <AnimatePresence>
+//         {renderFullSidebar && (
+//           <motion.div
+//             key="full-sidebar"
+//             ref={sidebarRef}
+//             className={`w-64 fixed lg:sticky bg-white dark:bg-background h-screen inset-y-0 left-0 lg:translate-x-0 lg:z-0 z-30 flex flex-col`}
+//             initial={isMobileView ? { x: "-100%" } : { x: 0 }}
+//             animate={{ x: 0 }}
+//             exit={isMobileView ? { x: "-100%" } : { x: 0 }}
+//             transition={{ duration: 0.3, ease: "easeInOut" }}
+//           >
+//             {/* Logo */}
+//             <div className="flex-shrink-0 flex items-center justify-start lg:h-28 h-20 px-4">
+//               <Link href="/dashboard" className="inline-block">
+//                 <Image
+//                   src="/assets/images/wise-logo.svg"
+//                   alt="logo"
+//                   width={120}
+//                   height={120}
+//                 />
+//               </Link>
+
+//               {/* Close Sidebar button */}
+//               <button className="absolute top-1 right-1 bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox z-10 p-2 rounded-full">
+//                 <IoClose
+//                   size={28}
+//                   className="text-neutral-900 dark:text-primary"
+//                 />
+//               </button>
+//             </div>
+
+//             {/* Nav Area */}
+//             <div className="p-2 flex-grow overflow-y-auto [&::-webkit-scrollbar-track]:rounded-3xl [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-3xl [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
+//               <nav className="flex-grow">
+//                 {isLoadingBalances ? (
+//                   // --- Render Skeletons when loading ---
+//                   <>
+//                     {navLinksData.map((item) => (
+//                       <NavItemSkeleton key={`${item.id}-skeleton`} />
+//                     ))}
+//                   </>
+//                 ) : (
+//                   // --- Render Actual Links when not loading ---
+//                   navLinksData.map((item) => {
+//                     const IconComponent = icons[item.icon];
+//                     const finalRoute = resolveRoute(item.route);
+//                     // isDisabled is now checked *only* when not loading
+//                     const isDisabled = isLinkDisabled(item.id);
+//                     const isActive =
+//                       !isDisabled &&
+//                       (pathname === finalRoute ||
+//                         (finalRoute !== "/dashboard" &&
+//                           pathname.startsWith(finalRoute)));
+
+//                     return (
+//                       <Link
+//                         key={item.id}
+//                         href={isDisabled ? "#" : finalRoute}
+//                         onClick={(e) => {
+//                           if (isDisabled) {
+//                             e.preventDefault();
+//                             return;
+//                           }
+//                           if (isMobileView && sidebarOpen) {
+//                             toggleSidebar();
+//                           }
+//                         }}
+//                         className={`relative w-full flex items-center gap-3 py-3 px-4 font-medium rounded-full transition duration-200 mb-2
+//                                                     ${
+//                                                       isActive
+//                                                         ? "lg:bg-transparent dark:lg:bg-transparent bg-primary/60 text-neutral-900 dark:bg-primarybox dark:text-primary"
+//                                                         : isDisabled
+//                                                         ? "text-neutral-400 dark:text-gray-600 cursor-not-allowed opacity-60" // Added opacity for disabled state
+//                                                         : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
+//                                                     }
+//                                                 `}
+//                         aria-disabled={isDisabled}
+//                         tabIndex={isDisabled ? -1 : 0}
+//                       >
+//                         {isActive && (
+//                           <motion.div
+//                             layoutId="active-sidebar-indicator"
+//                             className="absolute inset-0 rounded-full bg-primary/60 dark:bg-primarybox"
+//                             initial={false}
+//                             transition={{
+//                               type: "spring",
+//                               stiffness: 250,
+//                               damping: 30,
+//                             }}
+//                           />
+//                         )}
+//                         {IconComponent && (
+//                           <IconComponent className="w-6 h-6 relative z-10 flex-shrink-0" />
+//                         )}
+//                         <span className="relative z-10 truncate">
+//                           {item.label}
+//                         </span>
+//                       </Link>
+//                     );
+//                   })
+//                 )}
+//               </nav>
+//               {/* Logout Button Area */}
+//               <div>
+//                 {isLoadingBalances ? (
+//                   // --- Render Logout Skeleton when loading ---
+//                   <NavItemSkeleton />
+//                 ) : (
+//                   // --- Render Actual Logout Button when not loading ---
+//                   <button
+//                     onClick={handleLogout}
+//                     className="w-full flex items-center space-x-3 py-3 px-4 font-medium rounded-full transition duration-200 mb-2 cursor-pointer text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
+//                     // No disabled state needed based on balances loading for logout
+//                   >
+//                     <VscSignOut className="w-6 h-6 flex-shrink-0" />
+//                     <span className="font-medium">Logout</span>
+//                   </button>
+//                 )}
+//               </div>
+//             </div>
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+
+//       {/* Bottom Nav (Small Screens) */}
+//       <AnimatePresence>
+//         {renderBottomNav && (
+//           <motion.div
+//             key="bottom-nav"
+//             className="sm:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-background border-t"
+//             initial={{ y: "100%" }}
+//             animate={{ y: 0 }}
+//             exit={{ y: "100%" }}
+//             transition={{ type: "spring", stiffness: 300, damping: 30 }}
+//           >
+//             {/* Note: Skeleton for bottom nav is not implemented here, but could be added similarly if needed */}
+//             <div className="flex items-center justify-around px-3 rounded-t-xl shadow-md dark:shadow-none">
+//               {bottomNavLinksData.map((item) => {
+//                 const IconComponent = icons[item.icon as keyof typeof icons];
+//                 const finalRoute = resolveRoute(item.route);
+//                 // Simplified disabled check for bottom nav (only considers loading)
+//                 const isDisabled = isLoadingBalances && item.label === "Send"; // Only disable Send if loading, adjust if needed
+//                 const isActive =
+//                   !isDisabled &&
+//                   (pathname === finalRoute ||
+//                     (finalRoute !== "/dashboard" &&
+//                       pathname.startsWith(finalRoute)));
+
+//                 return (
+//                   <Link
+//                     key={`bottom-${item.label}`}
+//                     href={isDisabled ? "#" : finalRoute}
+//                     onClick={(e) => {
+//                       if (isDisabled) e.preventDefault();
+//                     }}
+//                     className={`flex relative flex-col items-center justify-center space-y-1 py-3 grow basis-0 ${
+//                       isDisabled ? "cursor-not-allowed opacity-50" : ""
+//                     }`}
+//                     aria-disabled={isDisabled}
+//                     tabIndex={isDisabled ? -1 : 0}
+//                   >
+//                     {isActive && (
+//                       <motion.div
+//                         className="absolute top-0 left-1/2 -translate-x-1/2 h-[3px] w-16 rounded-full bg-primary"
+//                         layoutId="bottom-nav-indicator"
+//                         initial={false}
+//                         transition={{
+//                           type: "spring",
+//                           stiffness: 400,
+//                           damping: 35,
+//                         }}
+//                       />
+//                     )}
+//                     <motion.div
+//                       className={`p-1 rounded-md ${
+//                         isActive
+//                           ? "text-primary"
+//                           : isDisabled
+//                           ? "text-neutral-400 dark:text-gray-600"
+//                           : "text-neutral-500 dark:text-gray-300"
+//                       }`}
+//                       whileTap={isDisabled ? {} : { scale: 0.9 }}
+//                       layout
+//                     >
+//                       {IconComponent && <IconComponent className="size-5" />}
+//                     </motion.div>
+//                     <span
+//                       className={`text-xs font-medium ${
+//                         isActive
+//                           ? "text-neutral-900 dark:text-primary"
+//                           : isDisabled
+//                           ? "text-neutral-400 dark:text-gray-600"
+//                           : "text-neutral-500 dark:text-gray-300"
+//                       }`}
+//                     >
+//                       {item.label}
+//                     </span>
+//                   </Link>
+//                 );
+//               })}
+//             </div>
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+//     </>
+//   );
+// };
+
+// export default Sidebar;
 
 // frontend/src/app/dashboard/components/Sidebar.tsx
 "use client";
-
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -2936,10 +3325,11 @@ import Link from "next/link";
 import { useAuth } from "../../contexts/AuthContext"; // Adjust path
 import { useBalances } from "../../hooks/useBalances"; // Import the new hook (adjust path)
 import { Skeleton } from "@/components/ui/skeleton"; // For loading state
+import { IoClose } from "react-icons/io5";
 
 interface SidebarProps {
   sidebarOpen: boolean;
-  toggleSidebar: () => void;
+  toggleSidebar: () => void; // Function to toggle the sidebar state
 }
 
 interface NavLinkDefinition {
@@ -2949,294 +3339,480 @@ interface NavLinkDefinition {
   id: string;
 }
 
-const icons = { RiHomeLine, GrTransaction, BsSend, GoArrowUp, FiCreditCard, FiUserPlus, FiSettings };
+const icons = {
+  RiHomeLine,
+  GrTransaction,
+  BsSend,
+  GoArrowUp,
+  FiCreditCard,
+  FiUserPlus,
+  FiSettings,
+};
 const LG_BREAKPOINT = 1024;
 const SM_BREAKPOINT = 640;
 
-
 const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
-    const router = useRouter();
-    const pathname = usePathname();
-    const sidebarRef = useRef<HTMLDivElement>(null);
-    const [isMobileView, setIsMobileView] = useState<boolean | null>(null);
-    const [isSmallScreen, setIsSmallScreen] = useState<boolean | null>(null);
-    const { logout, token } = useAuth();
-    const { balances, isLoading: isLoadingBalances, error: balancesError } = useBalances();
+  const router = useRouter();
+  const pathname = usePathname();
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const [isMobileView, setIsMobileView] = useState<boolean | null>(null);
+  const [isSmallScreen, setIsSmallScreen] = useState<boolean | null>(null);
+  const { logout, token } = useAuth();
+  const {
+    balances,
+    isLoading: isLoadingBalances,
+    error: balancesError,
+  } = useBalances();
 
-    // --- Screen Size Detection ---
-    useEffect(() => {
-        const checkScreenSizes = () => {
-        if (typeof window !== "undefined") {
-            const currentWidth = window.innerWidth;
-            setIsMobileView(currentWidth < LG_BREAKPOINT);
-            setIsSmallScreen(currentWidth < SM_BREAKPOINT);
-        }
-        };
-        checkScreenSizes();
-        window.addEventListener("resize", checkScreenSizes);
-        return () => window.removeEventListener("resize", checkScreenSizes);
-    }, []);
-
-    // --- Outside Click Handler ---
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-        if (
-            sidebarRef.current &&
-            !sidebarRef.current.contains(event.target as Node) &&
-            sidebarOpen &&
-            isMobileView === true
-        ) {
-            toggleSidebar();
-        }
-        };
-        if (sidebarOpen && isMobileView === true) {
-        document.addEventListener("mousedown", handleClickOutside);
-        } else {
-        document.removeEventListener("mousedown", handleClickOutside);
-        }
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [sidebarOpen, isMobileView, toggleSidebar]);
-
-
-    // --- Dynamic Routes using useCallback for stable references ---
-    const getAddMoneyRoute = useCallback((): string => {
-        if (!token) return "/auth/login";
-        if (isLoadingBalances) return "#"; // Return '#' while loading
-        if (balancesError) return "/dashboard?error=balances";
-
-        return balances && balances.length > 0
-            ? "/dashboard/add-money/select-balance"
-            : "/dashboard/add-balance";
-    }, [balances, isLoadingBalances, balancesError, token]);
-
-    const getSendMoneyRoute = useCallback((): string => {
-      if (!token) return "/auth/login";
-      if (isLoadingBalances) return "#"; // Return '#' while loading
-      if (balancesError) return "/dashboard?error=balances";
-
-      return "/dashboard/send/select-balance";
- }, [isLoadingBalances, balancesError, token]);
-
-
-    // --- Nav Link Definitions ---
-    const navLinksData: NavLinkDefinition[] = [
-        { id: "dashboard", label: "Dashboard", icon: "RiHomeLine", route: "/dashboard" },
-        { id: "transactions", label: "Transactions", icon: "GrTransaction", route: "/dashboard/transactions" },
-        { id: "send", label: "Send Money", icon: "BsSend", route: getSendMoneyRoute },
-        { id: "add-money", label: "Add Money", icon: "GoArrowUp", route: getAddMoneyRoute },
-        { id: "recipients", label: "Recipients", icon: "FiUserPlus", route: "/dashboard/recipients" },
-        { id: "settings", label: "Settings", icon: "FiSettings", route: "/dashboard/your-account" },
-    ];
-
-    // Bottom nav - Assuming it doesn't have dynamic send/add links, otherwise apply similar logic
-    const bottomNavLinksData = [
-        { label: "Home", icon: "RiHomeLine", route: "/dashboard" },
-        { label: "Activity", icon: "GrTransaction", route: "/dashboard/transactions"},
-        { label: "Send", icon: "BsSend", route: getSendMoneyRoute() },
-        { label: "Account", icon: "FiSettings", route: "/dashboard/your-account" },
-    ];
-
-
-    // --- Logout Handler ---
-    const handleLogout = () => {
-        logout();
-        router.push("/auth/login");
-        if (sidebarOpen && isMobileView) {
-            toggleSidebar();
-        }
+  // --- Screen Size Detection ---
+  useEffect(() => {
+    const checkScreenSizes = () => {
+      if (typeof window !== "undefined") {
+        const currentWidth = window.innerWidth;
+        setIsMobileView(currentWidth < LG_BREAKPOINT);
+        setIsSmallScreen(currentWidth < SM_BREAKPOINT);
+      }
     };
+    checkScreenSizes();
+    window.addEventListener("resize", checkScreenSizes);
+    return () => window.removeEventListener("resize", checkScreenSizes);
+  }, []);
 
-    // --- Render Logic ---
-    const renderFullSidebar = !isMobileView || (isMobileView && sidebarOpen);
-    const renderBottomNav = isSmallScreen && !sidebarOpen;
+  // --- Outside Click Handler ---
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target as Node) &&
+        sidebarOpen &&
+        isMobileView === true // Only close on outside click if it's mobile view
+      ) {
+        toggleSidebar();
+      }
+    };
+    // Add listener only when sidebar is open AND it's mobile view
+    if (sidebarOpen && isMobileView === true) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [sidebarOpen, isMobileView, toggleSidebar]); // Dependencies ensure listener updates correctly
 
-    if (isMobileView === null || isSmallScreen === null) {
-        return null; // Prevent rendering during SSR or initial hydration mismatch
+  // --- Dynamic Routes using useCallback for stable references ---
+  const getAddMoneyRoute = useCallback((): string => {
+    if (!token) return "/auth/login";
+    if (isLoadingBalances) return "#"; // Return '#' while loading
+    if (balancesError) return "/dashboard?error=balances"; // Indicate error, maybe show modal later
+
+    // Decide route based on balances existence
+    return balances && balances.length > 0
+      ? "/dashboard/add-money/select-balance"
+      : "/dashboard/add-balance";
+  }, [balances, isLoadingBalances, balancesError, token]); // Dependencies for useCallback
+
+  const getSendMoneyRoute = useCallback((): string => {
+    if (!token) return "/auth/login";
+    if (isLoadingBalances) return "#"; // Return '#' while loading
+    if (balancesError) return "/dashboard?error=balances";
+
+    // Always go to select balance for sending, assuming user needs a balance to send *from*
+    // If no balances exist, the target page should handle that state.
+    return "/dashboard/send/select-balance";
+  }, [isLoadingBalances, balancesError, token]); // Dependencies for useCallback
+
+  // --- Nav Link Definitions ---
+  const navLinksData: NavLinkDefinition[] = [
+    {
+      id: "dashboard",
+      label: "Dashboard",
+      icon: "RiHomeLine",
+      route: "/dashboard",
+    },
+    {
+      id: "transactions",
+      label: "Transactions",
+      icon: "GrTransaction",
+      route: "/dashboard/transactions",
+    },
+    {
+      id: "send",
+      label: "Send Money",
+      icon: "BsSend",
+      route: getSendMoneyRoute, // Use the callback directly
+    },
+    {
+      id: "add-money",
+      label: "Add Money",
+      icon: "GoArrowUp",
+      route: getAddMoneyRoute, // Use the callback directly
+    },
+    {
+      id: "recipients",
+      label: "Recipients",
+      icon: "FiUserPlus",
+      route: "/dashboard/recipients",
+    },
+    {
+      id: "settings",
+      label: "Settings",
+      icon: "FiSettings",
+      route: "/dashboard/your-account",
+    },
+  ];
+
+  // Bottom nav - Apply similar logic for dynamic routes if needed
+  const bottomNavLinksData = [
+    {
+      label: "Home",
+      icon: "RiHomeLine",
+      route: "/dashboard",
+      id: "bottom-home",
+    },
+    {
+      label: "Activity",
+      icon: "GrTransaction",
+      route: "/dashboard/transactions",
+      id: "bottom-activity",
+    },
+    // Call the dynamic route function here for consistency
+    {
+      label: "Send",
+      icon: "BsSend",
+      route: getSendMoneyRoute(),
+      id: "bottom-send",
+    },
+    {
+      label: "Account",
+      icon: "FiSettings",
+      route: "/dashboard/your-account",
+      id: "bottom-account",
+    },
+  ];
+
+  // --- Logout Handler ---
+  const handleLogout = () => {
+    logout();
+    router.push("/auth/login");
+    // Ensure sidebar closes on mobile after logout if it was open
+    if (sidebarOpen && isMobileView) {
+      toggleSidebar();
+    }
+  };
+
+  // --- Render Logic ---
+  // Sidebar should render if it's not mobile OR if it is mobile AND sidebarOpen is true
+  const renderFullSidebar =
+    !isMobileView || (isMobileView === true && sidebarOpen);
+  // Bottom nav should render only if it's small screen AND sidebar is NOT open
+  const renderBottomNav = isSmallScreen === true && !sidebarOpen;
+
+  // Prevent rendering during SSR or initial hydration mismatch until screen size is known
+  if (isMobileView === null || isSmallScreen === null) {
+    // Optionally return a placeholder/loader here if needed, but null is often fine
+    return null;
+  }
+
+  // --- Helper to resolve route (handles both string and function types) ---
+  const resolveRoute = (route: string | (() => string)): string => {
+    return typeof route === "function" ? route() : route;
+  };
+
+  // --- Helper to check if a dynamic link should be disabled (used when NOT loading) ---
+  const isLinkDisabled = (id: string): boolean => {
+    // Find the link definition by ID
+    const linkDef = navLinksData.find((link) => link.id === id);
+    if (!linkDef) return false; // Should not happen if ID is valid
+
+    const finalRoute = resolveRoute(linkDef.route);
+    // Disable if route resolved to '#' AND we are NOT currently loading balances
+    // This means the dynamic route logic determined it shouldn't navigate (e.g., error state)
+    return finalRoute === "#" && !isLoadingBalances;
+  };
+
+  // --- Helper for bottom nav disabled state ---
+  const isBottomNavLinkDisabled = (id: string): boolean => {
+    const linkDef = bottomNavLinksData.find((link) => link.id === id);
+    if (!linkDef) return false;
+
+    // Example: Specifically disable 'Send' button while balances load
+    if (id === "bottom-send" && isLoadingBalances) {
+      return true;
     }
 
-    // --- Helper to resolve route ---
-    const resolveRoute = (route: string | (() => string)): string => {
-        return typeof route === 'function' ? route() : route;
-    };
+    // Could add more conditions based on `balancesError` or other factors if needed
+    // For now, mainly focuses on the loading state for dynamic routes.
+    const finalRoute = resolveRoute(linkDef.route);
+    // Also disable if route resolves to '#' and not loading (consistent with sidebar)
+    return finalRoute === "#" && !isLoadingBalances;
+  };
 
+  // --- Skeleton Component for Links/Buttons ---
+  const NavItemSkeleton = () => (
+    <div className="relative w-full flex items-center gap-3 py-3 px-4 font-medium mb-2 text-neutral-400 dark:text-gray-600">
+      <Skeleton className="w-6 h-6 rounded-full flex-shrink-0" />{" "}
+      {/* Circle skeleton for icon */}
+      <Skeleton className="w-24 h-6 rounded" /> {/* Rect skeleton for text */}
+    </div>
+  );
 
-    // --- Helper to check if a dynamic link should be disabled (used when NOT loading) ---
-     const isLinkDisabled = (id: string): boolean => {
-        // This function determines disabled state when *not* loading
-        // e.g., if there's a specific error or condition preventing action
-        const finalRoute = resolveRoute(navLinksData.find(link => link.id === id)?.route || '');
-        return finalRoute === '#' && !isLoadingBalances; // Disable if route resolved to '#' *and* not loading
-     };
+  return (
+    <>
+      {/* Backdrop for Mobile Sidebar */}
+      <AnimatePresence>
+        {sidebarOpen && isMobileView === true && (
+          <motion.div
+            key="sidebar-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={toggleSidebar} // Close sidebar when backdrop is clicked
+            className="fixed inset-0 bg-black/50 dark:bg-black/70 z-30 lg:hidden" // Ensure z-index is below sidebar but above content
+            aria-hidden="true"
+          />
+        )}
+      </AnimatePresence>
 
-    // --- Skeleton Component for Links/Buttons ---
-    const NavItemSkeleton = () => (
-        <div className="relative w-full flex items-center gap-3 py-3 px-4 font-medium mb-2 text-neutral-400 dark:text-gray-600">
-            <Skeleton className="w-6 h-6 rounded flex-shrink-0" /> {/* Rounded icon skeleton */}
-            <Skeleton className="w-24 h-6 rounded" />
-        </div>
-    );
+      {/* Full Sidebar (Desktop or Mobile when open) */}
+      <AnimatePresence>
+        {renderFullSidebar && (
+          <motion.div
+            key="full-sidebar"
+            ref={sidebarRef}
+            className={`w-64 fixed lg:sticky bg-white dark:bg-background h-screen inset-y-0 left-0 ${
+              isMobileView ? "z-40" : "lg:z-20" // Higher z-index on mobile when open
+            } flex flex-col shadow-lg lg:shadow-none`}
+            initial={isMobileView ? { x: "-100%" } : { x: 0 }} // Slide in from left on mobile
+            animate={{ x: 0 }} // Target position
+            exit={isMobileView ? { x: "-100%" } : { x: 0 }} // Slide out to left on mobile
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          >
+            {/* Sidebar Header */}
+            <div className="flex-shrink-0 flex items-center justify-center lg:justify-start h-20 lg:h-28 px-4  relative">
+              <Link
+                href="/dashboard"
+                className="inline-block"
+                onClick={() => {
+                  if (isMobileView && sidebarOpen) toggleSidebar();
+                }}
+              >
+                <Image
+                  src="/assets/images/wise-logo.svg" // Ensure this path is correct
+                  alt="Wise Logo"
+                  width={120}
+                  height={30} // Adjust height as needed
+                  priority // Load logo faster
+                />
+              </Link>
 
-
-    return (
-        <>
-            {/* Backdrop */}
-            <AnimatePresence>
-                {sidebarOpen && isMobileView && (
-                    <motion.div
-                        initial={{ opacity: 0 }} animate={{ opacity: 0.5 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}
-                        onClick={toggleSidebar}
-                        className="fixed inset-0 bg-black/50 dark:bg-white/30 z-30 lg:hidden"
-                        aria-hidden="true"
-                    />
-                )}
-            </AnimatePresence>
-
-            {/* Full Sidebar */}
-            <AnimatePresence>
-                {renderFullSidebar && (
-                    <motion.div
-                        key="full-sidebar" ref={sidebarRef}
-                        className={`w-64 fixed lg:sticky bg-white dark:bg-background h-screen inset-y-0 left-0 lg:translate-x-0 lg:z-0 z-30 flex flex-col`}
-                        initial={isMobileView ? { x: "-100%" } : { x: 0 }}
-                        animate={{ x: 0 }} exit={isMobileView ? { x: "-100%" } : { x: 0 }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                    >
-                        {/* Logo */}
-                        <div className="flex-shrink-0 flex items-center justify-center lg:h-28 h-20">
-                            <Link href="/dashboard" className="inline-block">
-                                <Image src="/assets/images/wise-logo.svg" alt="logo" width={100} height={100} priority />
-                            </Link>
-                        </div>
-
-                        {/* Nav Area */}
-                        <div className="p-2 flex-grow overflow-y-auto [&::-webkit-scrollbar-track]:rounded-3xl [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-3xl [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
-                            <nav className="flex-grow">
-                                {isLoadingBalances ? (
-                                    // --- Render Skeletons when loading ---
-                                    <>
-                                        {navLinksData.map((item) => (
-                                            <NavItemSkeleton key={`${item.id}-skeleton`} />
-                                        ))}
-                                    </>
-                                ) : (
-                                    // --- Render Actual Links when not loading ---
-                                    navLinksData.map((item) => {
-                                        const IconComponent = icons[item.icon];
-                                        const finalRoute = resolveRoute(item.route);
-                                        // isDisabled is now checked *only* when not loading
-                                        const isDisabled = isLinkDisabled(item.id);
-                                        const isActive = !isDisabled && (pathname === finalRoute || (finalRoute !== "/dashboard" && pathname.startsWith(finalRoute)));
-
-                                        return (
-                                            <Link
-                                                key={item.id}
-                                                href={isDisabled ? '#' : finalRoute}
-                                                onClick={(e) => {
-                                                    if (isDisabled) {
-                                                         e.preventDefault();
-                                                         return;
-                                                    }
-                                                    if (isMobileView && sidebarOpen) {
-                                                        toggleSidebar();
-                                                    }
-                                                }}
-                                                className={`relative w-full flex items-center gap-3 py-3 px-4 font-medium rounded-full transition duration-200 mb-2
-                                                    ${isActive ? "lg:bg-transparent dark:lg:bg-transparent bg-primary/60 text-neutral-900 dark:bg-primarybox dark:text-primary"
-                                                             : isDisabled ? "text-neutral-400 dark:text-gray-600 cursor-not-allowed opacity-60" // Added opacity for disabled state
-                                                                          : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"}
-                                                `}
-                                                aria-disabled={isDisabled}
-                                                tabIndex={isDisabled ? -1 : 0}
-                                            >
-                                                {isActive && (
-                                                    <motion.div
-                                                        layoutId="active-sidebar-indicator"
-                                                        className="absolute inset-0 rounded-full bg-primary/60 dark:bg-primarybox"
-                                                        initial={false} transition={{ type: "spring", stiffness: 250, damping: 30 }}
-                                                    />
-                                                )}
-                                                {IconComponent && <IconComponent className="w-6 h-6 relative z-10 flex-shrink-0" />}
-                                                <span className="relative z-10 truncate">{item.label}</span>
-                                            </Link>
-                                        );
-                                    })
-                                )}
-                            </nav>
-                            {/* Logout Button Area */}
-                            <div>
-                                {isLoadingBalances ? (
-                                     // --- Render Logout Skeleton when loading ---
-                                     <NavItemSkeleton />
-                                ) : (
-                                    // --- Render Actual Logout Button when not loading ---
-                                    <button
-                                        onClick={handleLogout}
-                                        className="w-full flex items-center space-x-3 py-3 px-4 font-medium rounded-full transition duration-200 mb-2 cursor-pointer text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
-                                        // No disabled state needed based on balances loading for logout
-                                    >
-                                        <VscSignOut className="w-6 h-6 flex-shrink-0" />
-                                        <span className="font-medium">Logout</span>
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
-            {/* Bottom Nav (Small Screens) */}
-             <AnimatePresence>
-                {renderBottomNav && (
-                <motion.div
-                    key="bottom-nav"
-                    className="sm:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-background border-t"
-                    initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              {/* Close Sidebar button - Only show on mobile */}
+              {isMobileView && (
+                <button
+                  onClick={toggleSidebar} // *** ADD THIS ONCLICK HANDLER ***
+                  className="absolute top-2 right-1.5 lg:hidden bg-lightborder cursor-pointer hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox z-10 p-2 rounded-full transition-colors duration-300 ease-in-out"
+                  aria-label="Close sidebar" // For accessibility
                 >
-                    {/* Note: Skeleton for bottom nav is not implemented here, but could be added similarly if needed */}
-                    <div className="flex items-center justify-around px-3 rounded-t-xl shadow-md dark:shadow-none">
-                    {bottomNavLinksData.map((item) => {
-                        const IconComponent = icons[item.icon as keyof typeof icons];
-                        const finalRoute = resolveRoute(item.route);
-                        // Simplified disabled check for bottom nav (only considers loading)
-                        const isDisabled = isLoadingBalances && (item.label === 'Send'); // Only disable Send if loading, adjust if needed
-                        const isActive = !isDisabled && (pathname === finalRoute || (finalRoute !== "/dashboard" && pathname.startsWith(finalRoute)));
+                  <IoClose
+                    size={24} // Slightly smaller icon might fit better
+                    className="text-mainheading dark:text-primary"
+                  />
+                </button>
+              )}
+            </div>
 
-                        return (
-                        <Link
-                            key={`bottom-${item.label}`}
-                            href={isDisabled ? '#' : finalRoute}
-                            onClick={(e) => { if(isDisabled) e.preventDefault(); }}
-                            className={`flex relative flex-col items-center justify-center space-y-1 py-3 grow basis-0 ${isDisabled ? 'cursor-not-allowed opacity-50' : ''}`}
-                            aria-disabled={isDisabled}
-                            tabIndex={isDisabled ? -1 : 0}
-                        >
-                            {isActive && (
-                            <motion.div
-                                className="absolute top-0 left-1/2 -translate-x-1/2 h-[3px] w-16 rounded-full bg-primary"
-                                layoutId="bottom-nav-indicator"
-                                initial={false} transition={{ type: "spring", stiffness: 400, damping: 35 }}
-                            />
-                            )}
-                            <motion.div
-                            className={`p-1 rounded-md ${isActive ? "text-primary" : isDisabled ? "text-neutral-400 dark:text-gray-600" : "text-neutral-500 dark:text-gray-300"}`}
-                            whileTap={isDisabled ? {} : { scale: 0.9 }}
-                            layout
-                            >
-                            {IconComponent && <IconComponent className="size-5" />}
-                            </motion.div>
-                            <span className={`text-xs font-medium ${isActive ? "text-neutral-900 dark:text-primary" : isDisabled ? "text-neutral-400 dark:text-gray-600" : "text-neutral-500 dark:text-gray-300"}`}>
-                            {item.label}
-                            </span>
-                        </Link>
-                        );
-                    })}
-                    </div>
-                </motion.div>
+            {/* Nav Area */}
+            <div className="p-2 flex-grow overflow-y-auto [&::-webkit-scrollbar-track]:rounded-3xl [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-3xl [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
+              <nav className="flex-grow">
+                {isLoadingBalances ? (
+                  // --- Render Skeletons when loading ---
+                  <>
+                    {navLinksData.map((item) => (
+                      <NavItemSkeleton key={`${item.id}-skeleton`} />
+                    ))}
+                  </>
+                ) : (
+                  // --- Render Actual Links when not loading ---
+                  navLinksData.map((item) => {
+                    const IconComponent = icons[item.icon];
+                    const finalRoute = resolveRoute(item.route);
+                    // Check disabled state *after* resolving route, only when not loading
+                    const isDisabled = isLinkDisabled(item.id);
+                    const isActive =
+                      !isDisabled &&
+                      (pathname === finalRoute ||
+                        (finalRoute !== "/dashboard" && // Avoid highlighting dashboard for sub-routes
+                          pathname.startsWith(finalRoute)));
+
+                    return (
+                      <Link
+                        key={item.id}
+                        href={isDisabled ? "#" : finalRoute} // Prevent navigation if disabled
+                        onClick={(e) => {
+                          if (isDisabled) {
+                            e.preventDefault(); // Explicitly prevent default action
+                            return;
+                          }
+                          // Close sidebar on mobile after navigation
+                          if (isMobileView && sidebarOpen) {
+                            toggleSidebar();
+                          }
+                        }}
+                        className={`relative w-full flex items-center gap-3 py-3 px-4 font-medium rounded-full transition-all duration-300 mb-2 group
+                          ${
+                            isActive
+                              ? "text-neutral-900 dark:text-primary" // Active text color only
+                              : isDisabled
+                              ? "text-neutral-400 dark:text-gray-600  cursor-not-allowed opacity-60 pointer-events-none" // More explicit disabled styling
+                              : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary hover:bg-gray-100 dark:hover:bg-primarybox/50" // Hover state
+                          }
+                        `}
+                        aria-current={isActive ? "page" : undefined} // Accessibility for active link
+                        aria-disabled={isDisabled}
+                        tabIndex={isDisabled ? -1 : 0} // Accessibility for disabled link
+                      >
+                        {/* Active indicator with layout animation */}
+                        {isActive && (
+                          <motion.div
+                            layoutId="active-sidebar-indicator" // Shared ID for animation
+                            className="absolute inset-0 rounded-full bg-primary/10 dark:bg-primarybox/70" // Subtle background for active item
+                            initial={false}
+                            transition={{
+                              type: "spring",
+                              stiffness: 300,
+                              damping: 30,
+                            }}
+                          />
+                        )}
+
+                        {IconComponent && (
+                          <IconComponent
+                            className={`w-5 h-5 relative z-10 flex-shrink-0 transition-colors ${
+                              isActive ? "text-primary dark:text-primary" : ""
+                            } group-hover:text-neutral-900 dark:group-hover:text-primary`}
+                          />
+                        )}
+
+                        <span className="relative z-10 truncate text-sm">
+                          {/* Slightly smaller text */}
+                          {item.label}
+                        </span>
+                      </Link>
+                    );
+                  })
                 )}
-            </AnimatePresence>
-        </>
-    );
+              </nav>
+
+              {/* Logout Button Area */}
+              {isLoadingBalances ? (
+                // --- Render Logout Skeleton when loading balances (optional, could just show the button) ---
+                <NavItemSkeleton />
+              ) : (
+                // --- Render Actual Logout Button ---
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center space-x-3 py-3 px-4 font-medium rounded-full transition-colors duration-200 mb-2 cursor-pointer text-neutral-500 hover:text-neutral-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-primary dark:hover:bg-primarybox/50 group"
+                  // Logout button isn't typically disabled by balance loading state
+                >
+                  <VscSignOut className="w-5 h-5 flex-shrink-0 transition-colors group-hover:text-neutral-900 dark:group-hover:text-primary" />
+                  <span className="font-medium text-sm">Logout</span>
+                </button>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Bottom Nav (Small Screens Only, when sidebar is closed) */}
+      <AnimatePresence>
+        {renderBottomNav && (
+          <motion.div
+            key="bottom-nav"
+            className="sm:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-background border-t z-12 border-gray-200 dark:border-secondarybox/50 shadow-[-2px_0px_10px_rgba(0,0,0,0.1)] dark:shadow-[-2px_0px_10px_rgba(255,255,255,0.05)]"
+            initial={{ y: "100%" }} // Start below screen
+            animate={{ y: 0 }} // Animate to visible position
+            exit={{ y: "100%" }} // Animate out below screen
+            transition={{ type: "spring", stiffness: 350, damping: 35 }} // Spring animation
+          >
+            {/* No skeleton needed here unless balance loading blocks critical nav */}
+            <div className="flex items-center justify-around h-16">
+              {bottomNavLinksData.map((item) => {
+                const IconComponent = icons[item.icon as keyof typeof icons];
+                const finalRoute = resolveRoute(item.route);
+                // Use the specific bottom nav disabled check
+                const isDisabled = isBottomNavLinkDisabled(item.id);
+                const isActive =
+                  !isDisabled &&
+                  (pathname === finalRoute ||
+                    (finalRoute !== "/dashboard" &&
+                      pathname.startsWith(finalRoute)));
+
+                return (
+                  <Link
+                    key={item.id} // Use unique ID
+                    href={isDisabled ? "#" : finalRoute}
+                    onClick={(e) => {
+                      if (isDisabled) e.preventDefault();
+                      // No need to toggle sidebar here
+                    }}
+                    className={`flex relative flex-col items-center justify-center space-y-1 py-2 grow basis-0 h-full transition-opacity ${
+                      isDisabled
+                        ? "cursor-not-allowed opacity-50 pointer-events-none"
+                        : "opacity-100"
+                    }`}
+                    aria-current={isActive ? "page" : undefined}
+                    aria-disabled={isDisabled}
+                    tabIndex={isDisabled ? -1 : 0}
+                  >
+                    {/* Active indicator line */}
+                    {isActive && (
+                      <motion.div
+                        className="absolute top-0 left-1/2 -translate-x-1/2 h-[3px] w-12 rounded-full bg-primary"
+                        layoutId="bottom-nav-indicator" // Shared layout ID
+                        initial={false}
+                        transition={{
+                          type: "spring",
+                          stiffness: 400,
+                          damping: 35,
+                        }}
+                      />
+                    )}
+                    {/* Icon container */}
+                    <motion.div
+                      className={`p-1 rounded-md transition-colors ${
+                        isActive
+                          ? "text-primary"
+                          : isDisabled
+                          ? "text-neutral-400 dark:text-gray-600"
+                          : "text-neutral-500 dark:text-gray-300 group-hover:text-primary" // Added group hover effect potential
+                      }`}
+                      whileTap={isDisabled ? {} : { scale: 0.9 }} // Tap animation only if not disabled
+                      layout // Animate layout changes if needed
+                    >
+                      {IconComponent && <IconComponent className="size-5" />}
+                    </motion.div>
+                    {/* Label text */}
+                    <span
+                      className={`text-[11px] font-medium transition-colors ${
+                        // Slightly smaller text for bottom nav
+                        isActive
+                          ? "text-neutral-900 dark:text-primary"
+                          : isDisabled
+                          ? "text-neutral-400 dark:text-gray-600"
+                          : "text-neutral-500 dark:text-gray-300"
+                      }`}
+                    >
+                      {item.label}
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
 };
 
 export default Sidebar;

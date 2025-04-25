@@ -110,7 +110,7 @@ const TransactionDetailsContent: React.FC<TransactionDetailsContentProps> = ({
                         </div>
                         {/* Reference Code */}
                         {paymentDetails.referenceCode && (
-                            <div className="bg-blue-100 dark:bg-blue-600/20 border border-blue-600 dark:border-blue-600/80 p-3 rounded-md flex justify-between items-center gap-2">
+                            <div className="bg-blue-100 dark:bg-blue-600/20 dark:border-blue-600/80 p-3 rounded-md flex justify-between items-center gap-2">
                                 <div>
                                     <p className="text-xs text-blue-600 dark:text-blue-300 mb-0.5 font-semibold">IMPORTANT: Reference Code</p>
                                     <p className="font-bold text-blue-800 dark:text-blue-200 text-base break-all">{paymentDetails.referenceCode}</p>

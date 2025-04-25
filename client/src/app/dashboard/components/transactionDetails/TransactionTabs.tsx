@@ -56,7 +56,7 @@ const TransactionTabs: React.FC<TransactionTabsProps> = ({ activeTab, onTabChang
                     ref={updatesTabRef}
                     onClick={() => onTabChange("Updates")}
                     className={cn(
-                        "whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium transition-colors duration-200 ease-in-out",
+                        "whitespace-nowrap border-b-2 capitalize cursor-pointer  py-4 px-1 text-sm font-medium transition-colors duration-200 ease-in-out",
                         activeTab === "Updates"
                             ? "border-primary text-primary"
                             : "border-transparent text-gray-500 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
@@ -69,7 +69,7 @@ const TransactionTabs: React.FC<TransactionTabsProps> = ({ activeTab, onTabChang
                     ref={detailsTabRef}
                     onClick={() => onTabChange("Details")}
                     className={cn(
-                        "whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium transition-colors duration-200 ease-in-out",
+                        "whitespace-nowrap border-b-2 capitalize cursor-pointer py-4 px-1 text-sm font-medium transition-colors duration-200 ease-in-out",
                         activeTab === "Details"
                             ? "border-primary text-primary"
                             : "border-transparent text-gray-500 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
