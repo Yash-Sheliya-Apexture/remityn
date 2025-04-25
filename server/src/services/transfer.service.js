@@ -232,33 +232,37 @@ import mongoose from 'mongoose';
 
 // Helper to get Live Rate (remains the same)
 const getLiveRate = async (sendCode, receiveCode) => {
-     try {
-         const latestRatesDocument = await exchangeRateService.getLatestExchangeRates();
-         if (!latestRatesDocument?.rates?.rates) {
+    try {
+        const latestRatesDocument = await exchangeRateService.getLatestExchangeRates();
+        if (!latestRatesDocument?.rates?.rates) {
             console.warn(`Live rates data unavailable for ${sendCode}/${receiveCode}`);
             return null;
-         }
-         const actualRatesMap = latestRatesDocument.rates.rates;
-         const actualBaseCurrency = latestRatesDocument.rates.base || 'USD'; // Adjust if needed
+        }
+        const actualRatesMap = latestRatesDocument.rates.rates;
+        const actualBaseCurrency = latestRatesDocument.rates.base || 'USD'; // Adjust if needed
 
-         const rateBaseToSend = sendCode === actualBaseCurrency ? 1 : (actualRatesMap[sendCode] ? parseFloat(actualRatesMap[sendCode]) : null);
-         const rateBaseToReceive = receiveCode === actualBaseCurrency ? 1 : (actualRatesMap[receiveCode] ? parseFloat(actualRatesMap[receiveCode]) : null);
+        // Ensure rates are treated as numbers
+        const rateBaseToSend = sendCode === actualBaseCurrency ? 1 : (actualRatesMap[sendCode] ? parseFloat(actualRatesMap[sendCode]) : null);
+        const rateBaseToReceive = receiveCode === actualBaseCurrency ? 1 : (actualRatesMap[receiveCode] ? parseFloat(actualRatesMap[receiveCode]) : null);
 
-         if (rateBaseToSend !== null && !isNaN(rateBaseToSend) && rateBaseToReceive !== null && !isNaN(rateBaseToReceive) && rateBaseToSend !== 0) {
-             // Using sufficient precision for calculations
-             return parseFloat((rateBaseToReceive / rateBaseToSend).toFixed(10));
-         }
-         console.warn(`Could not calculate live rate between ${sendCode} and ${receiveCode}`);
-         return null;
-     } catch (error) {
-         console.error(`Error fetching live rate for ${sendCode}/${receiveCode}:`, error.message);
-         return null;
-     }
+        if (rateBaseToSend !== null && !isNaN(rateBaseToSend) && rateBaseToReceive !== null && !isNaN(rateBaseToReceive) && rateBaseToSend !== 0) {
+            // Calculate rate with sufficient precision first
+            const preciseRate = rateBaseToReceive / rateBaseToSend;
+            // THEN round to a standard number of decimal places (e.g., 6 for intermediate calculation, or 2 if you want it rounded early)
+            // Let's round to 2 places as requested in the prompt.
+            return parseFloat(preciseRate.toFixed(2));
+        }
+        console.warn(`Could not calculate live rate between ${sendCode} and ${receiveCode}`);
+        return null;
+    } catch (error) {
+        console.error(`Error fetching live rate for ${sendCode}/${receiveCode}:`, error.message);
+        return null;
+    }
 };
 
-// --- Calculate Send Summary (REVISED - Percentage Adjustment ADDED) ---
+// --- Calculate Send Summary (REVISED - Percentage Adjustment ADDED & Rate Rounding FIXED) ---
 const calculateSendSummary = async (userId, sourceAccountId, recipientId, amount, isSendingAmount) => {
-    console.log('Service: calculateSendSummary (Percentage ADDED Adj) - Start', { userId, sourceAccountId, recipientId, amount, isSendingAmount });
+    console.log('Service: calculateSendSummary (Percentage ADDED Adj, Rate Rounded) - Start', { userId, sourceAccountId, recipientId, amount, isSendingAmount });
 
     if (!mongoose.Types.ObjectId.isValid(sourceAccountId) || !mongoose.Types.ObjectId.isValid(recipientId)) {
         throw new Error('Invalid account or recipient ID format.');
@@ -279,46 +283,52 @@ const calculateSendSummary = async (userId, sourceAccountId, recipientId, amount
 
     const sendCurrencyCode = sourceCurrencyDoc.code;
     const receiveCurrencyCode = recipientCurrencyDoc.code;
-    console.log(`Service: calculateSendSummary (Percentage ADDED Adj) - Currencies: Send=${sendCurrencyCode}, Receive=${receiveCurrencyCode}`);
+    console.log(`Service: calculateSendSummary (Percentage ADDED Adj, Rate Rounded) - Currencies: Send=${sendCurrencyCode}, Receive=${receiveCurrencyCode}`);
 
-    // 2. Get Live Exchange Rate
+    // 2. Get Live Exchange Rate (already rounded to 2 decimal places by getLiveRate)
     const liveExchangeRate = await getLiveRate(sendCurrencyCode, receiveCurrencyCode);
-    if (liveExchangeRate === null || liveExchangeRate <= 0 || !isFinite(liveExchangeRate)) { // Added isFinite check
-        console.error(`Service: calculateSendSummary (Percentage ADDED Adj) - Failed to fetch valid live exchange rate for ${sendCurrencyCode}/${receiveCurrencyCode}. Rate: ${liveExchangeRate}`);
+    if (liveExchangeRate === null || liveExchangeRate <= 0 || !isFinite(liveExchangeRate)) {
+        console.error(`Service: calculateSendSummary (Percentage ADDED Adj, Rate Rounded) - Failed to fetch valid live exchange rate for ${sendCurrencyCode}/${receiveCurrencyCode}. Rate: ${liveExchangeRate}`);
         throw new Error(`Live exchange rate is currently unavailable for ${sendCurrencyCode} to ${receiveCurrencyCode}. Please try again later.`);
     }
-    console.log(`Service: calculateSendSummary (Percentage ADDED Adj) - Fetched Live Rate: ${liveExchangeRate}`);
+    // Log the rate *as fetched* (should be 2 decimal places now)
+    console.log(`Service: calculateSendSummary (Percentage ADDED Adj, Rate Rounded) - Fetched Live Rate: ${liveExchangeRate.toFixed(2)}`);
 
     // 3. Get Rate Adjustment Percentage from Source Currency
     const adjustmentPercent = sourceCurrencyDoc.rateAdjustmentPercentage ?? 0; // Default to 0 if null/undefined
-    console.log(`Service: calculateSendSummary (Percentage ADDED Adj) - Source Adjustment: ${adjustmentPercent}%`);
+    console.log(`Service: calculateSendSummary (Percentage ADDED Adj, Rate Rounded) - Source Adjustment: ${adjustmentPercent}%`);
 
+    // 4. Calculate Adjusted Rate AND round it immediately to 2 decimal places
+    let adjustedExchangeRate = liveExchangeRate * (1 + adjustmentPercent / 100); // Calculate with adjustment
+    adjustedExchangeRate = parseFloat(adjustedExchangeRate.toFixed(2)); // Apply rounding to 2 decimal places
+    console.log(`Service: calculateSendSummary (Percentage ADDED Adj, Rate Rounded) - Adjusted Rate (Rounded): ${adjustedExchangeRate.toFixed(2)}`);
 
-    const adjustedExchangeRate = liveExchangeRate * (1 + adjustmentPercent / 100); // <-- THE ONLY CHANGE IS HERE ('-' becomes '+')
-    console.log(`Service: calculateSendSummary (Percentage ADDED Adj) - Adjusted Rate: ${adjustedExchangeRate}`);
-
-    // Add check for invalid resulting rate (e.g., if adjustment is -100% or less)
+    // Add check for invalid resulting rate (e.g., if adjustment is -100% or less, or rounding results in 0)
     if (adjustedExchangeRate <= 0 || !isFinite(adjustedExchangeRate)) {
-         console.error(`Service: calculateSendSummary (Percentage ADDED Adj) - Invalid adjusted rate calculated: ${adjustedExchangeRate} from live rate ${liveExchangeRate} and adjustment ${adjustmentPercent}%`);
-         throw new Error("An error occurred calculating the final exchange rate after adjustment. Please check the adjustment percentage or contact support.");
+        console.error(`Service: calculateSendSummary (Percentage ADDED Adj, Rate Rounded) - Invalid adjusted rate calculated: ${adjustedExchangeRate} from live rate ${liveExchangeRate.toFixed(2)} and adjustment ${adjustmentPercent}%`);
+        throw new Error("An error occurred calculating the final exchange rate after adjustment. Please check the adjustment percentage or contact support.");
     }
 
-    // 5. Calculate Amounts based on Adjusted Rate
+    // 5. Calculate Amounts based on the *Rounded* Adjusted Rate
     let sendAmountCalc, receiveAmountCalc;
     if (isSendingAmount) {
         sendAmountCalc = parseFloat(amount);
         receiveAmountCalc = sendAmountCalc * adjustedExchangeRate;
     } else {
         receiveAmountCalc = parseFloat(amount);
-        // Avoid division by zero, already checked adjustedExchangeRate > 0
+        // Use the rounded adjusted rate for calculation
         sendAmountCalc = receiveAmountCalc / adjustedExchangeRate;
     }
 
-     // 6. Check Balance
+    // 6. Check Balance
     const currentSourceAccount = await Account.findById(sourceAccountId); // Re-fetch for current balance
-    if (!currentSourceAccount || currentSourceAccount.balance < sendAmountCalc) {
-        const available = currentSourceAccount?.balance ?? 0;
-        console.warn(`Service: calculateSendSummary (Percentage ADDED Adj) - Insufficient balance. Required: ${sendAmountCalc.toFixed(2)}, Available: ${available.toFixed(2)}`);
+    if (!currentSourceAccount) {
+         throw new Error('Source account could not be re-verified.'); // Should not happen if initial check passed, but good practice
+    }
+    // Round sendAmountCalc before comparison to avoid floating point issues near the limit
+    if (currentSourceAccount.balance < parseFloat(sendAmountCalc.toFixed(2))) {
+        const available = currentSourceAccount.balance;
+        console.warn(`Service: calculateSendSummary (Percentage ADDED Adj, Rate Rounded) - Insufficient balance. Required: ${sendAmountCalc.toFixed(2)}, Available: ${available.toFixed(2)}`);
         throw new Error('Insufficient balance.');
     }
 
@@ -327,76 +337,90 @@ const calculateSendSummary = async (userId, sourceAccountId, recipientId, amount
         userId: userId.toString(),
         sourceAccountId: sourceAccountId.toString(),
         recipientId: recipientId.toString(),
+        // Ensure final amounts are strictly 2 decimal places
         sendAmount: parseFloat(sendAmountCalc.toFixed(2)),
         receiveAmount: parseFloat(receiveAmountCalc.toFixed(2)),
         sendCurrencyCode,
         receiveCurrencyCode,
-        exchangeRate: parseFloat(adjustedExchangeRate.toFixed(6)), // The rate USED (adjusted)
-        liveExchangeRate: parseFloat(liveExchangeRate.toFixed(6)), // The original live rate
+        // Store the rounded adjusted rate used for calculations
+        exchangeRate: adjustedExchangeRate, // Already rounded to 2 places
+        liveExchangeRate: liveExchangeRate, // Original live rate (also rounded to 2 places by getLiveRate)
         rateAdjustmentApplied: adjustmentPercent, // Include the % used
         availableBalance: parseFloat(currentSourceAccount.balance.toFixed(2)),
         // Fees removed for simplicity
     };
-    console.log('Service: calculateSendSummary (Percentage ADDED Adj) - Success', summary);
+    console.log('Service: calculateSendSummary (Percentage ADDED Adj, Rate Rounded) - Success', summary);
     return summary;
 };
 
+
 // --- executeTransfer (No change needed from previous step) ---
 const executeTransfer = async (transferDetails) => {
-     console.log('Service: executeTransfer (Percentage ADDED Adj) - Start', transferDetails);
-     const { userId, sourceAccountId, recipientId, sendAmount, receiveAmount, exchangeRate, reason, reference, sendCurrencyCode, receiveCurrencyCode } = transferDetails;
-     if (!userId || !sourceAccountId || !recipientId || sendAmount === undefined || receiveAmount === undefined || exchangeRate === undefined || !sendCurrencyCode || !receiveCurrencyCode) throw new Error("Missing essential transfer information.");
-     if (isNaN(sendAmount) || sendAmount <= 0 || isNaN(receiveAmount) || receiveAmount <= 0 || isNaN(exchangeRate) || exchangeRate <=0) throw new Error("Invalid amount or exchange rate.");
+    console.log('Service: executeTransfer (Percentage ADDED Adj) - Start', transferDetails);
+    const { userId, sourceAccountId, recipientId, sendAmount, receiveAmount, exchangeRate, reason, reference, sendCurrencyCode, receiveCurrencyCode } = transferDetails;
+    if (!userId || !sourceAccountId || !recipientId || sendAmount === undefined || receiveAmount === undefined || exchangeRate === undefined || !sendCurrencyCode || !receiveCurrencyCode) throw new Error("Missing essential transfer information.");
+    if (isNaN(sendAmount) || sendAmount <= 0 || isNaN(receiveAmount) || receiveAmount <= 0 || isNaN(exchangeRate) || exchangeRate <= 0) throw new Error("Invalid amount or exchange rate.");
 
-     const session = await mongoose.startSession();
-     session.startTransaction();
-     try {
-         const sourceAccount = await Account.findOne({ _id: sourceAccountId, user: userId }).session(session).populate('currency');
-         const recipient = await Recipient.findOne({ _id: recipientId, user: userId }).session(session).populate('currency');
-         if (!sourceAccount) throw new Error('Source account not found or access denied.');
-         if (!recipient) throw new Error('Recipient not found or access denied.');
-         if (sourceAccount.currency.code !== sendCurrencyCode) throw new Error('Source currency mismatch.');
-         if (recipient.currency.code !== receiveCurrencyCode) throw new Error('Recipient currency mismatch.');
-         if (sourceAccount.balance < sendAmount) throw new Error('Insufficient balance.');
+    const session = await mongoose.startSession();
+    let populatedTransfer = null; // Define outside try to return it
 
-         const originalBalance = sourceAccount.balance;
-         sourceAccount.balance -= sendAmount;
-         await sourceAccount.save({ session });
+    try {
+        session.startTransaction();
+        const sourceAccount = await Account.findOne({ _id: sourceAccountId, user: userId }).session(session).populate('currency');
+        const recipient = await Recipient.findOne({ _id: recipientId, user: userId }).session(session).populate('currency');
+        if (!sourceAccount) throw new Error('Source account not found or access denied.');
+        if (!recipient) throw new Error('Recipient not found or access denied.');
+        if (sourceAccount.currency.code !== sendCurrencyCode) throw new Error('Source currency mismatch.');
+        if (recipient.currency.code !== receiveCurrencyCode) throw new Error('Recipient currency mismatch.');
+        if (sourceAccount.balance < sendAmount) throw new Error('Insufficient balance.');
 
-         const newTransfer = new Transfer({
-             user: userId, sourceAccount: sourceAccountId, recipient: recipientId,
-             sendAmount, receiveAmount,
-             sendCurrency: sourceAccount.currency._id, receiveCurrency: recipient.currency._id,
-             exchangeRate, fees: 0, reason: reason || null, reference: reference || null,
-             status: 'pending', createdAt: new Date(), updatedAt: new Date(),
-         });
-         await newTransfer.save({ session });
+        const originalBalance = sourceAccount.balance;
+        sourceAccount.balance -= sendAmount;
+        await sourceAccount.save({ session });
 
-         await session.commitTransaction();
-         const populatedTransfer = await Transfer.findById(newTransfer._id)
-            .populate('user', 'fullName email')
-            .populate({ path: 'sourceAccount', select: 'balance currency', populate: { path: 'currency', select: 'code flagImage' } })
-            .populate({ path: 'recipient', select: 'accountHolderName nickname currency accountNumber bankName', populate: { path: 'currency', select: 'code flagImage' } })
-            .populate('sendCurrency', 'code flagImage')
-            .populate('receiveCurrency', 'code flagImage');
-         return populatedTransfer;
-     } catch (error) {
-         await session.abortTransaction();
-         console.error('Service: executeTransfer (Percentage ADDED Adj) - Error, aborting.', error);
-         throw error;
-     } finally {
-         session.endSession();
-     }
- };
+        const newTransfer = new Transfer({
+            user: userId, sourceAccount: sourceAccountId, recipient: recipientId,
+            sendAmount, receiveAmount,
+            sendCurrency: sourceAccount.currency._id, receiveCurrency: recipient.currency._id,
+            exchangeRate, fees: 0, reason: reason || null, reference: reference || null,
+            status: 'pending', createdAt: new Date(), updatedAt: new Date(),
+        });
+        await newTransfer.save({ session });
+
+        await session.commitTransaction();
+        console.log('Service: executeTransfer - Transaction committed.');
+
+        // Populate outside the transaction
+        populatedTransfer = await Transfer.findById(newTransfer._id)
+           .populate('user', 'fullName email')
+           .populate({ path: 'sourceAccount', select: 'balance currency', populate: { path: 'currency', select: 'code flagImage' } })
+           .populate({ path: 'recipient', select: 'accountHolderName nickname currency accountNumber bankName', populate: { path: 'currency', select: 'code flagImage' } })
+           .populate('sendCurrency', 'code flagImage')
+           .populate('receiveCurrency', 'code flagImage');
+
+    } catch (error) {
+        if (session.inTransaction()) {
+            await session.abortTransaction();
+             console.error('Service: executeTransfer (Percentage ADDED Adj) - Error, transaction aborted.', error);
+        } else {
+             console.error('Service: executeTransfer (Percentage ADDED Adj) - Error occurred outside transaction.', error);
+        }
+        throw error; // Rethrow the error to be handled by the controller
+    } finally {
+        session.endSession();
+        console.log('Service: executeTransfer - Session ended.');
+    }
+    return populatedTransfer; // Return the populated transfer
+};
 
 
 // --- getTransferDetails (No change needed) ---
 const getTransferDetails = async (transferId, userId) => {
     console.log(`Service: getTransferDetails - Fetching transfer ${transferId} for user ${userId}`);
-     if (!mongoose.Types.ObjectId.isValid(transferId)) { throw new Error('Invalid transfer ID format.'); }
-     const transfer = await Transfer.findOne({ _id: transferId, user: userId })
+    if (!mongoose.Types.ObjectId.isValid(transferId)) { throw new Error('Invalid transfer ID format.'); }
+    const transfer = await Transfer.findOne({ _id: transferId, user: userId })
         .populate('user', 'fullName email')
-        .populate({ path: 'sourceAccount', select: 'currency', populate: { path: 'currency', select: 'code flagImage' } })
+        .populate({ path: 'sourceAccount', select: 'currency', populate: { path: 'currency', select: 'code flagImage' } }) // Avoid populating balance here for security/simplicity unless needed
         .populate({ path: 'recipient', select: 'accountHolderName nickname currency accountNumber bankName', populate: { path: 'currency', select: 'code flagImage' } })
         .populate('sendCurrency', 'code flagImage')
         .populate('receiveCurrency', 'code flagImage');
@@ -409,10 +433,10 @@ const getUserTransfers = async (userId) => {
     console.log(`Service: getUserTransfers - Fetching transfers for user ${userId}`);
     try {
         const transfers = await Transfer.find({ user: userId })
-            .populate('recipient', 'accountHolderName nickname')
+            .populate('recipient', 'accountHolderName nickname') // Populate only essential recipient info for list view
             .populate('sendCurrency', 'code flagImage')
             .populate('receiveCurrency', 'code flagImage')
-            .select('recipient sendCurrency receiveCurrency sendAmount receiveAmount status createdAt sourceAccount reason reference exchangeRate')
+            .select('recipient sendCurrency receiveCurrency sendAmount receiveAmount status createdAt sourceAccount reason reference exchangeRate') // Ensure sourceAccount ID is selected if needed for linking
             .sort({ createdAt: -1 });
         return transfers;
     } catch (error) {
@@ -422,67 +446,64 @@ const getUserTransfers = async (userId) => {
 };
 
 
-// --- START FIX ---
+// --- cancelTransfer (Refined for better transaction handling and clarity) ---
 const cancelTransfer = async (transferId, userId) => {
     console.log(`Service: cancelTransfer - Attempting to cancel transfer ${transferId} for user ${userId}`);
     if (!mongoose.Types.ObjectId.isValid(transferId)) {
         throw new Error('Invalid transfer ID format.');
     }
 
-    const session = await mongoose.startSession(); // Use a transaction for atomicity
-    session.startTransaction();
+    const session = await mongoose.startSession();
+    let populatedTransfer = null; // To hold the final result
 
     try {
+        session.startTransaction();
+
+        // Fetch the transfer within the transaction, ensuring it belongs to the user
         const transfer = await Transfer.findOne({ _id: transferId, user: userId }).session(session);
 
         if (!transfer) {
-            await session.abortTransaction();
-            session.endSession();
+            // No need to abort if nothing was found, but good practice if other ops happened before
+            // await session.abortTransaction();
             throw new Error('Transfer not found or access denied.');
         }
 
-        // Define statuses that CANNOT be cancelled
-        const nonCancellableStatuses = ['completed', 'failed', 'canceled']; // Already final states
+        // Define statuses that CANNOT be cancelled (final states)
+        const nonCancellableStatuses = ['completed', 'failed', 'canceled'];
         if (nonCancellableStatuses.includes(transfer.status)) {
-            await session.abortTransaction();
-            session.endSession();
+            // await session.abortTransaction(); // Abort if the state check fails *within* a transaction context
             throw new Error(`Cannot cancel transfer: Status is already '${transfer.status}'.`);
         }
 
-        // Define statuses that ALLOW cancellation
-        const cancellableStatuses = ['pending', 'processing']; // Adjust as per your workflow
-         if (!cancellableStatuses.includes(transfer.status)) {
-            // This case might indicate an unexpected state, handle as needed
-            await session.abortTransaction();
-            session.endSession();
-             console.warn(`Service: cancelTransfer - Attempting to cancel transfer ${transferId} with unexpected status: ${transfer.status}`);
-             throw new Error(`Cannot cancel transfer: Unexpected status '${transfer.status}'.`);
-         }
+        // Define statuses that ALLOW cancellation (adjust as per your workflow)
+        const cancellableStatuses = ['pending', 'processing'];
+        if (!cancellableStatuses.includes(transfer.status)) {
+            // await session.abortTransaction();
+            console.warn(`Service: cancelTransfer - Attempting to cancel transfer ${transferId} with unexpected status: ${transfer.status}`);
+            throw new Error(`Cannot cancel transfer: Unexpected status '${transfer.status}'.`);
+        }
 
 
-        // --- Refunding Logic (Important!) ---
-        // Check if funds need to be returned. This depends on when you debit the user.
-        // Assuming funds are debited when status moves to 'processing' or upon creation ('pending')
-        // If funds are debited ONLY when the transfer is 'processing', check for that.
-        // If funds are debited immediately ('pending'), refund always needed for cancellable states.
-        // Let's assume funds are debited during 'executeTransfer' (initial state 'pending')
-        const needsRefund = ['pending', 'processing'].includes(transfer.status); // Adjust this condition based on your debit logic
+        // --- Refunding Logic ---
+        // Assuming funds are debited immediately ('pending' status) in executeTransfer
+        const needsRefund = ['pending', 'processing'].includes(transfer.status);
 
         if (needsRefund && transfer.sourceAccount && transfer.sendAmount > 0) {
             const sourceAccount = await Account.findById(transfer.sourceAccount).session(session);
             if (!sourceAccount) {
-                // This is a critical inconsistency if the transfer exists but the source account doesn't
-                await session.abortTransaction();
-                session.endSession();
+                // Critical inconsistency if transfer exists but account doesn't
                 console.error(`Service: cancelTransfer - Critical error: Source account ${transfer.sourceAccount} not found for transfer ${transferId}.`);
-                throw new Error('Failed to cancel transfer: Source account data missing.');
+                // Abort transaction explicitly here as it's a critical failure within the process
+                await session.abortTransaction();
+                throw new Error('Failed to cancel transfer: Source account data inconsistency.');
             }
             // Add the sent amount back to the balance
             sourceAccount.balance += transfer.sendAmount;
             await sourceAccount.save({ session });
-            console.log(`Service: cancelTransfer - Refunded ${transfer.sendAmount} ${sourceAccount.currency?.code || ''} to account ${transfer.sourceAccount}`);
+            console.log(`Service: cancelTransfer - Refunded ${transfer.sendAmount} to account ${transfer.sourceAccount} within transaction.`);
         } else if (needsRefund) {
-             console.warn(`Service: cancelTransfer - Refund condition met for transfer ${transferId}, but source account or send amount is invalid. Skipping refund step.`);
+            // Log if refund was expected but couldn't proceed (e.g., zero amount, missing source account ID)
+            console.warn(`Service: cancelTransfer - Refund condition met for transfer ${transferId}, but source account or send amount is invalid/zero. Skipping refund step.`);
         }
         // --- End Refunding Logic ---
 
@@ -490,38 +511,46 @@ const cancelTransfer = async (transferId, userId) => {
         // Update the transfer status
         transfer.status = 'canceled';
         transfer.updatedAt = new Date();
-        // Optionally add a reason if not already present
-        transfer.failureReason = transfer.failureReason || 'Cancelled by user.';
-        const updatedTransfer = await transfer.save({ session });
+        // Set a reason for cancellation
+        transfer.failureReason = transfer.failureReason || 'Cancelled by user.'; // Keep existing reason if it failed before cancellation
+        await transfer.save({ session });
 
-        await session.commitTransaction(); // Commit all changes if successful
-        session.endSession();
+        // Commit the transaction if all steps were successful
+        await session.commitTransaction();
+        console.log(`Service: cancelTransfer - Transfer ${transferId} successfully cancelled and refunded (if applicable). Transaction committed.`);
 
-        console.log(`Service: cancelTransfer - Transfer ${transferId} successfully cancelled and refunded (if applicable).`);
-
-        // Return the updated transfer, potentially populated
-        const populatedTransfer = await Transfer.findById(updatedTransfer._id)
-             .populate('user', 'fullName email')
-             .populate({ path: 'sourceAccount', select: 'currency', populate: { path: 'currency', select: 'code flagImage' } })
-             .populate({ path: 'recipient', select: 'accountHolderName nickname currency accountNumber bankName', populate: { path: 'currency', select: 'code flagImage' } })
-             .populate('sendCurrency', 'code flagImage')
-             .populate('receiveCurrency', 'code flagImage'); // Populate fields needed by frontend/controller
-
-        return populatedTransfer; // Return the fully updated and populated transfer
+        // Populate the updated transfer details *after* the transaction is committed
+        populatedTransfer = await Transfer.findById(transfer._id) // Use transfer._id which is guaranteed to exist
+            .populate('user', 'fullName email')
+            .populate({ path: 'sourceAccount', select: 'currency', populate: { path: 'currency', select: 'code flagImage' } })
+            .populate({ path: 'recipient', select: 'accountHolderName nickname currency accountNumber bankName', populate: { path: 'currency', select: 'code flagImage' } })
+            .populate('sendCurrency', 'code flagImage')
+            .populate('receiveCurrency', 'code flagImage');
 
     } catch (error) {
-        // If anything fails, abort the transaction
-        await session.abortTransaction();
-        session.endSession();
-        console.error(`Service: cancelTransfer - Error during cancellation transaction for ${transferId}:`, error);
-        // Rethrow a clearer error message if possible
-        if (error.message.startsWith('Cannot cancel transfer') || error.message.startsWith('Transfer not found') || error.message.startsWith('Invalid transfer ID')) {
-            throw error; // Keep specific errors
+        // If any error occurs, abort the transaction *if* it's still active
+        if (session.inTransaction()) {
+            await session.abortTransaction();
+            console.error(`Service: cancelTransfer - Error during cancellation transaction for ${transferId}, transaction aborted:`, error);
+        } else {
+            // Log if the error happened before the transaction started or after it was committed/aborted
+             console.error(`Service: cancelTransfer - Error occurred for ${transferId} outside active transaction:`, error);
         }
-        throw new Error(`Failed to cancel transfer: ${error.message}`); // Generic failure message
+
+        // Rethrow the specific error or a generic one
+        if (error.message.startsWith('Cannot cancel transfer') || error.message.startsWith('Transfer not found') || error.message.startsWith('Invalid transfer ID')) {
+            throw error; // Keep specific, expected errors
+        }
+        throw new Error(`Failed to cancel transfer: ${error.message}`); // Generic failure message for unexpected errors
+    } finally {
+        // Ensure the session is always ended, regardless of success or failure
+        session.endSession();
+         console.log(`Service: cancelTransfer - Session ended for transfer ${transferId}.`);
     }
+
+    // Return the populated transfer details (will be null if an error occurred before population)
+    return populatedTransfer;
 };
-// --- END FIX --
 
 
 // --- Export Service Methods ---
