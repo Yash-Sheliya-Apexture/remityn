@@ -1343,8 +1343,8 @@ import Image from "next/image";
 import { FiSearch } from "react-icons/fi";
 import { MdCancel } from "react-icons/md";
 import { FaExclamationCircle } from "react-icons/fa";
-import { XIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { IoClose } from "react-icons/io5";
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
@@ -1671,9 +1671,9 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
               <button
                 onClick={onClose}
                 aria-label="Close currency selector"
-                className="p-3 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
+                className="p-3 bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer focus:outline-none"
               >
-                <XIcon className="w-6 h-6 text-neutral-700 dark:text-neutral-300" />
+                <IoClose  className="text-neutral-900 dark:text-primary" size={28} />
               </button>
             </div>
 
@@ -1750,7 +1750,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
               )}
             >
               <button
-                className="bg-neutral-200 dark:bg-secondarybox text-neutral-900 dark:text-primary hover:bg-neutral-300 dark:hover:bg-opacity-80 font-bold py-2.5 sm:py-2 px-6 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 dark:focus:ring-gray-500 w-full sm:w-auto transition-colors duration-150 ease-linear cursor-pointer order-2 sm:order-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-neutral-200 dark:bg-primarybox text-neutral-900 dark:text-primary dark:hover:bg-secondarybox hover:bg-neutral-300 dark:hover:bg-opacity-80 font-bold py-2.5 sm:py-2 px-6 rounded-full focus:outline-none w-full sm:w-auto transition-colors duration-150 ease-linear cursor-pointer order-2 sm:order-1 disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={onClose}
                 disabled={isAdding} // Only disable cancel if actively adding
                 type="button"
@@ -1758,7 +1758,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
                 Cancel
               </button>
               <button
-                className="bg-primary text-neutral-900 hover:bg-primaryhover font-bold py-2.5 sm:py-2 px-6 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-offset-background w-full sm:w-auto transition-colors duration-150 ease-linear cursor-pointer order-1 sm:order-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-primary text-neutral-900 hover:bg-primaryhover font-bold py-2.5 sm:py-2 px-6 rounded-full focus:outline-none focus:ring-primary dark:focus:ring-offset-background w-full sm:w-auto transition-colors duration-150 ease-linear cursor-pointer order-1 sm:order-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 type="button"
                 onClick={handleConfirm}
                 disabled={

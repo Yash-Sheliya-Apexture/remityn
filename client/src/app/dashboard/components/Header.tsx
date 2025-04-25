@@ -157,9 +157,6 @@
 
 // export default Header;
 
-
-
-
 // // components/Header.tsx
 // "use client";
 // import React, { useEffect, useState } from "react";
@@ -237,22 +234,6 @@
 
 // export default Header;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // components/Header.tsx
 "use client";
 import React, { useEffect, useState } from "react";
@@ -260,10 +241,10 @@ import { FiMenu } from "react-icons/fi";
 import { useRouter, usePathname } from "next/navigation";
 import { HiArrowLeft } from "react-icons/hi";
 import Link from "next/link";
-import { useAuth } from "../../contexts/AuthContext"
+import { useAuth } from "../../contexts/AuthContext";
 import { IoIosArrowForward } from "react-icons/io";
 import Image from "next/image";
-
+import { GiHamburgerMenu } from "react-icons/gi";
 
 interface HeaderProps {
   toggleSidebar: () => void;
@@ -271,10 +252,13 @@ interface HeaderProps {
 
 // Helper function to get initials from a full name
 const getInitials = (name: string | undefined): string => {
-  if (!name || typeof name !== 'string' || name.trim() === '') {
+  if (!name || typeof name !== "string" || name.trim() === "") {
     return "?"; // Return a default if name is missing or empty
   }
-  const nameParts = name.trim().split(' ').filter(part => part.length > 0);
+  const nameParts = name
+    .trim()
+    .split(" ")
+    .filter((part) => part.length > 0);
   if (nameParts.length === 0) {
     return "?";
   }
@@ -282,11 +266,10 @@ const getInitials = (name: string | undefined): string => {
     return nameParts[0][0].toUpperCase();
   }
   // Use first letter of the first part and first letter of the last part
-  return (
-    `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`
-  ).toUpperCase();
+  return `${nameParts[0][0]}${
+    nameParts[nameParts.length - 1][0]
+  }`.toUpperCase();
 };
-
 
 const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   const router = useRouter();
@@ -294,7 +277,6 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   const { user, loading } = useAuth(); // Get user data and loading state from context
   const [showBackArrow, setShowBackArrow] = useState(false);
   const [isMobile, setIsMobile] = useState(false); // <-- State for mobile screen width
-
 
   // --- Effect for Screen Width Detection ---
   useEffect(() => {
@@ -307,11 +289,11 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
     checkScreenWidth();
 
     // Add event listener for window resize
-    window.addEventListener('resize', checkScreenWidth);
+    window.addEventListener("resize", checkScreenWidth);
 
     // Cleanup function to remove the event listener
     return () => {
-      window.removeEventListener('resize', checkScreenWidth);
+      window.removeEventListener("resize", checkScreenWidth);
     };
   }, []); // Empty dependency array means this effect runs only on mount and unmount
 
@@ -323,33 +305,26 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
     router.back();
   };
 
-
   // Get user's full name and initials, providing fallbacks
   const userName = user?.fullName || "User";
   const userInitials = getInitials(user?.fullName);
 
   return (
-    <header className="sticky top-0 bg-background z-10">
+    <header className="sticky top-0 bg-background z-5">
       <div className="max-w-5xl mx-auto px-4">
         <div className="flex justify-between items-center lg:h-28 h-20">
-          <div className="flex justify-center items-center gap-4"> {/* Added items-center */}
+          <div className="flex justify-center items-center gap-4">
             {/* Menu button */}
+
             <button
               onClick={toggleSidebar}
-              className="text-gray focus:outline-none lg:hidden sm:block hidden" // Removed sm:block hidden - logic handled by lg:hidden
+              className="text-gray focus:outline-none cursor-pointer p-2.5 bg-lightgray dark:bg-secondary dark:text-primary rounded-full transition-colors lg:hidden sm:block hidden" // Removed sm:block hidden - logic handled by lg:hidden
             >
-              <FiMenu size={24} />
+              <GiHamburgerMenu
+                size={28}
+                className="text-mainheading dark:text-primary"
+              />
             </button>
-
-            {/* Back arrow button */}
-            {showBackArrow && (
-              <button
-                onClick={handleBack}
-                className="focus:outline-none cursor-pointer p-3 bg-lightborder dark:bg-primarybox rounded-full text-neutral-900 dark:text-white hover:bg-primary dark:hover:bg-secondarybox transition-all duration-75 ease-linear" // Adjusted padding and added hover
-              >
-                <HiArrowLeft className="size-5" />
-              </button>
-            )}
 
             {/* Logo */}
             {isMobile && ( // <-- Render only if isMobile is true
@@ -357,35 +332,49 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
                 <Image
                   src={"/assets/images/wise-logo2.svg"}
                   alt="logo"
-                  width={28}
-                  height={28}
-                  // Removed responsive classes like sm:hidden block
+                  width={30}
+                  height={30}
                 />
               </div>
             )}
 
+            {/* Back arrow button */}
+            {showBackArrow && (
+              <button
+                onClick={handleBack}
+                className="focus:outline-none cursor-pointer p-2.5 bg-lightborder dark:bg-primarybox rounded-full text-neutral-900 dark:text-white hover:bg-primary dark:hover:bg-secondarybox transition-all duration-75 ease-linear" // Adjusted padding and added hover
+              >
+                <HiArrowLeft
+                  size={26}
+                  className="text-mainheading dark:text-primary"
+                />
+              </button>
+            )}
           </div>
+
           {/* Only show profile section if user data is available (or not loading) */}
           {user && !loading && (
             <Link href="/dashboard/your-account">
-              <div className="relative flex items-center group sm:hover:bg-lightgray bg-transparent sm:dark:hover:bg-primarybox rounded-full cursor-pointer gap-2 
-               sm:p-1.5 transition-all duration-75 ease-linear"> {/* Adjusted padding/gap */}
+              <div
+                className="relative flex items-center group sm:hover:bg-lightgray bg-transparent sm:dark:hover:bg-primarybox rounded-full cursor-pointer gap-2 
+               sm:p-1.5 transition-all duration-75 ease-linear"
+              >
+                {" "}
+                {/* Adjusted padding/gap */}
                 {/* User Initials */}
-                <span className="LG:size-12.5 size-10 bg-lightborder dark:bg-primary rounded-full flex items-center justify-center font-bold text-neutral-900 dark:text-background capitalize text-sm md:text-base">
+                <span className="size-12.5 bg-lightborder dark:bg-primary rounded-full flex items-center justify-center font-bold text-neutral-900 dark:text-background capitalize text-sm md:text-base">
                   {userInitials} {/* Use dynamic initials */}
                 </span>
-
                 {/* User Name */}
                 <div className="text-neutral-900 dark:text-white capitalize hidden sm:block font-medium text-sm md:text-base">
                   {userName} {/* Use dynamic name */}
                 </div>
-
                 {/* Arrow Icon */}
-                <IoIosArrowForward className="size-4 md:size-5 text-neutral-900 dark:text-white mr-1 md:mr-2 hidden md:block transition-transform ease-in-out duration-300" /> {/* Adjusted size/margin/translate */}
+                <IoIosArrowForward className="size-4 md:size-5 text-neutral-900 dark:text-white mr-1 md:mr-2 hidden md:block transition-transform ease-in-out duration-300" />{" "}
+                {/* Adjusted size/margin/translate */}
               </div>
             </Link>
           )}
-
         </div>
       </div>
     </header>
