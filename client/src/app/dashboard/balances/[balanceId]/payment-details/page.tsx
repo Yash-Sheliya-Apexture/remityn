@@ -1939,7 +1939,7 @@ const DetailItem: React.FC<DetailItemProps> = ({
 
   return (
     <div
-      className={`bg-lightgray dark:bg-white/5 p-4 rounded-lg flex justify-between items-center gap-4 ${className}`}
+      className={`bg-gray/10 dark:bg-white/5 p-4 rounded-lg flex justify-between items-center gap-4 ${className}`}
     >
       <div className="flex-1 min-w-0">
         <p className="text-xs text-gray-700 dark:text-gray-300 mb-1">{label}</p>
@@ -1956,7 +1956,7 @@ const DetailItem: React.FC<DetailItemProps> = ({
           onClick={() => handleCopyToClipboard(displayValue)}
           aria-label={`Copy ${fieldName}`}
           className={`
-                        bg-primary hover:bg-primaryhover dark:bg-primarybox text-sm hover:dark:bg-secondarybox transition-all duration-75 ease-linear cursor-pointer rounded-lg px-4 py-2 font-medium text-neutral-900 dark:text-primary focus:outline-none flex items-center
+                        bg-white/50 dark:bg-primarybox text-sm hover:dark:bg-secondarybox transition-all duration-75 ease-linear cursor-pointer rounded-lg px-4 py-2 font-medium text-neutral-900 dark:text-primary focus:outline-none flex items-center
                     `}
           disabled={isCopied}
         >
@@ -2332,7 +2332,7 @@ const PaymentDetailsPage = () => {
       </p>
 
       {/* Details Section */}
-      <div className="mb-6 p-4 rounded-xl bg-lightgray dark:bg-background border">
+      <div className="mb-6 p-4 rounded-xl bg-lightgray dark:bg-background">
         <h2 className="lg:ext-lg font-medium mb-4 text-neutral-900 dark:text-white">
           Details you'll need to make this transfer
         </h2>
@@ -2375,7 +2375,7 @@ const PaymentDetailsPage = () => {
             }
             fieldName="Amount to send"
           />
-          <div className="bg-lightgray dark:bg-white/5 p-4 rounded-lg">
+          <div className="bg-gray/10 dark:bg-white/5 p-4 rounded-lg">
             <p className="text-xs text-gray-700 dark:text-gray-300 mb-1">
               Our bank's address
             </p>
@@ -2387,8 +2387,8 @@ const PaymentDetailsPage = () => {
       </div>
 
       {/* Need more help? Section */}
-      <div className="rounded-lg p-4 lg:mb-8 mb-6 flex items-start gap-4 bg-card dark:bg-white/5">
-        <HelpCircle className="h-6 w-6 text-neutral-900 dark:text-white mt-0.5 shrink-0" />
+      <div className="rounded-lg p-4 lg:mb-8 mb-6 flex items-start gap-4 bg-gray/10 dark:bg-white/5">
+        <HelpCircle className="size-6 text-neutral-900 dark:text-white mt-0.5 shrink-0" />
         <div>
           <h3 className="font-medium text-neutral-900 dark:text-white mb-1">
             Need more help?
@@ -2399,7 +2399,7 @@ const PaymentDetailsPage = () => {
           </p>
           <Button
             variant="link"
-            className="p-0 h-auto text-primary font-medium"
+            className="p-0 h-auto text-subheading dark:text-primary font-medium"
             onClick={() => toast.info("PDF download feature coming soon!")}
           >
             Download PDF <Download className="h-4 w-4 ml-1" />

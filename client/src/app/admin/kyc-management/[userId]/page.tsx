@@ -2752,7 +2752,7 @@ const KycUserDetailPage: React.FC = () => {
       <AnimatePresence>
         {showRejectionModal && (
           <motion.div
-            className="fixed inset-0 w-full h-full bg-black/50 dark:bg-white/30 z-50 flex sm:items-center items-end justify-center"
+            className="fixed inset-0 w-full h-full bg-black/40 dark:bg-white/30 z-50 flex sm:items-center items-end justify-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

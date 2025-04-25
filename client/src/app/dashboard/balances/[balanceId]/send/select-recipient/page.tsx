@@ -880,16 +880,16 @@ const SelectRecipientContent = () => {
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") handleAddRecipientClick();
           }}
-          className="flex items-center mb-4 hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer"
+          className="flex items-center mb-4 bg-lightgray dark:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer"
         >
           <div className="size-12 rounded-full bg-green-600/20 p-2 flex items-center justify-center shrink-0">
             <LuPlus className="w-6 h-6 text-green-600" />
           </div>
-          <div className="ml-4 flex-grow">
+          <div className="ml-4 space-y-0.5 flex-grow">
             <h5 className="font-medium text-mainheading dark:text-white">
               Add a new recipient
             </h5>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
+            <p className="text-xs text-gray-700 dark:text-gray-300">
               Add bank details for someone new.
             </p>
           </div>
