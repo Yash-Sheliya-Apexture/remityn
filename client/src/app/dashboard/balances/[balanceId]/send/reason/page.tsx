@@ -741,7 +741,7 @@ const TransferReasonPage = () => {
             <button
               id="transfer-reason-button" // Added id for label association
               type="button"
-              className={`flex justify-between items-center cursor-pointer w-full border dark:border-gray-600 dark:bg-background dark:hover:shadow-whitecolor hover:shadow-darkcolor transition-shadow duration-300 ease-in-out rounded-md p-3 text-left ${
+              className={`flex justify-between items-center cursor-pointer w-full border dark:border-gray/50 dark:bg-background dark:hover:shadow-whitecolor hover:shadow-darkcolor transition-shadow duration-300 ease-in-out rounded-md p-3 text-left ${
                 error && !selectedReason ? "border-red-500" : "border-gray-300 dark:border-gray-600" // Add error styling to border only if relevant
               }`}
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -764,7 +764,7 @@ const TransferReasonPage = () => {
             {isDropdownOpen && (
               <div
                 id="reason-listbox" // Added id for aria-controls
-                className="absolute z-10 mt-1 w-full rounded-md shadow-lg bg-white dark:bg-background border border-gray-300 dark:border-gray-600 focus:outline-none"
+                className="absolute z-10 mt-1 w-full rounded-md bg-white dark:bg-background border focus:outline-none"
                 role="listbox"
                 aria-labelledby="transfer-reason-button" // Labelled by the button
                 // aria-activedescendant is managed automatically by focus usually, or manually if implementing keyboard nav
@@ -779,8 +779,8 @@ const TransferReasonPage = () => {
                       key={reason}
                       className={`text-neutral-900 dark:text-white cursor-pointer select-none relative py-3 pl-3 pr-9 transition-colors ease-in-out duration-300 ${
                         selectedReason === reason
-                          ? "font-semibold bg-primary/20 dark:bg-primary/30" // Adjusted selected style
-                          : "font-normal hover:bg-lightgray dark:hover:bg-gray-700 hover:text-subheading dark:hover:text-white" // Adjusted hover style
+                          ? "font-semibold bg-primary/20 dark:bg-white/5" // Adjusted selected style
+                          : "font-normal hover:bg-lightgray dark:hover:bg-white/5 hover:text-subheading dark:hover:text-white" // Adjusted hover style
                       }`}
                       id={`listbox-option-${reason.replace(/\s+/g, '-')}`} // Generate unique ID
                       role="option"
@@ -796,7 +796,7 @@ const TransferReasonPage = () => {
                       </div>
                       {selectedReason === reason && (
                         <span className="absolute inset-y-0 right-0 flex items-center pr-4">
-                        <GiCheckMark className="text-main dark:text-primary size-5"/>
+                        <GiCheckMark className="text-main dark:text-white size-5"/>
                         </span>
                       )}
                     </li>
@@ -813,7 +813,7 @@ const TransferReasonPage = () => {
 
         <button
           onClick={handleSubmit}
-          className="w-full bg-primary hover:bg-primaryhover text-white cursor-pointer h-14 font-medium py-3 rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 ease-in-out"
+          className="w-full bg-primary hover:bg-primaryhover text-mainheading cursor-pointer lg:h-14 font-medium py-3 rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 ease-in-out"
           // Disable button if no reason selected OR if summary is missing OR if recipientId is missing
           disabled={!summary || !selectedReason || !recipientId}
         >

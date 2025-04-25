@@ -3067,11 +3067,11 @@ export default function LoginPage() {
           </AnimatePresence>
 
           {/* Title and Sign Up Link */}
-          <div className="py-3">
-            <h2 className="lg:text-3xl text-2xl text-center text-main dark:text-white font-semibold mb-4">
+          <div className="py-3 space-y-2">
+            <h2 className="lg:text-3xl text-2xl text-center text-main dark:text-white font-semibold">
               Welcome back.
             </h2>
-            <p className="text-center text-gray-700 dark:text-gray-300 font-light mb-4">
+            <p className="text-center text-gray-700 dark:text-gray-300 font-light">
               New to Wise?{" "}
               <Link
                 href="/auth/register"
@@ -3133,12 +3133,12 @@ export default function LoginPage() {
           </AnimatePresence>
 
           {/* Form - Using original structure and classes */}
-          <form className="mt-10 space-y-5" onSubmit={handleSubmit} noValidate>
+          <form className="space-y-5 mt-5" onSubmit={handleSubmit} noValidate>
             {/* Google Button */}
             <div>
               <button
                 type="button"
-                className="flex dark:bg-background border justify-center rounded-lg text-mainheading dark:text-white text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 text-sm lg:text-base hover:shadow-md transition-shadow"
+                className="flex dark:bg-background border justify-center rounded-lg text-mainheading dark:text-white text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 text-sm lg:text-base"
                 onClick={handleGoogleLogin} // Functional change: Use the handler
               >
                 <Image src="/assets/icon/google.svg" width={30} height={30} alt="Continue with Google" />

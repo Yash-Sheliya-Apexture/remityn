@@ -2757,12 +2757,12 @@ const handleGoogleRegister = () => {
   return (
     <div className="flex justify-center items-center lg:h-[calc(100vh-73px)] px-4 py-8 bg-white dark:bg-background">
       {/* Added padding */}
-      <div className="w-full max-w-md">
-        <h2 className="lg:text-3xl text-xl text-center text-mainheading dark:text-white font-semibold mt-5 mb-2">
+      <div className="w-full max-w-md space-y-2">
+        <h2 className="lg:text-3xl text-xl text-center text-mainheading dark:text-white font-semibold">
           Create your Wise account
         </h2>
 
-        <p className="lg:text-base text-sm text-center text-gray-700 dark:text-gray-300 mb-6">
+        <p className="lg:text-base text-sm text-center text-gray-700 dark:text-gray-300">
           Already have an account? {/* Added space */}
           <Link
             href="/auth/login"
@@ -2826,12 +2826,12 @@ const handleGoogleRegister = () => {
             )}
         </AnimatePresence>
 
-        <form onSubmit={handleSubmit} className="mt-0 space-y-4">
+        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           {/* --- Updated Google Button --- */}
           <div>
             <button
               type="button" // Keep type="button"
-              className="flex bg-white dark:bg-background border justify-center rounded-lg text-mainheading dark:text-white text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 h-14 hover:shadow-md transition-shadow" // Added hover effect
+              className="flex bg-white dark:bg-background border justify-center rounded-lg text-mainheading dark:text-white text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 h-14" // Added hover effect
               onClick={handleGoogleRegister} // Use the new handler
              >
               <Image src="/assets/icon/google.svg" width={28} height={28} alt="Google icon" />

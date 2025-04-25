@@ -1443,7 +1443,7 @@ const AddMoneyPage = () => {
                 <div className="mt-4 border border-gray-300 dark:border-lightgray/26 rounded-xl p-4">
                     <div className="py-2 flex justify-between text-sm text-gray">
                         <dt className="text-neutral-700 dark:text-gray-300 ">Currency to pay in</dt>
-                         <dd className="ml-6 text-secondary dark:text-gray-300 font-bold">
+                         <dd className="ml-6 text-gray-500 dark:text-gray-300 font-bold">
                             {/* payInCurrencyCode defaults to USD if balanceCurrency is null */}
                             {payInCurrencyCode}
                          </dd>

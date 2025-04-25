@@ -503,9 +503,9 @@ const SelectBalanceComponent: React.FC<SelectBalanceComponentProps> = ({
 
     // --- Main Content ---
     return (
-      <section className="Select-Balance-Wrapper">
+      <section className="Select-Balance-Wrapper pt-5">
         <div className="All-Balance-Card">
-          <h1 className="text-2xl sm:text-3xl font-semibold text-mainheading dark:text-white text-center mb-8">
+          <h1 className="text-xl md:text-2xl lg:text-3xl font-semibold text-mainheading dark:text-white text-center mb-8">
             {pageTitle}
           </h1>
 
@@ -594,6 +594,7 @@ const SelectBalanceComponent: React.FC<SelectBalanceComponentProps> = ({
                   <AddCardContent />
                 </div>
               )}
+              
 
               {/* Map existing balances */}
               {balances.map((account) => (

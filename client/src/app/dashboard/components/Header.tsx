@@ -321,21 +321,21 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
               className="text-gray focus:outline-none cursor-pointer p-2.5 bg-lightgray dark:bg-secondary dark:text-primary rounded-full transition-colors lg:hidden sm:block hidden" // Removed sm:block hidden - logic handled by lg:hidden
             >
               <GiHamburgerMenu
-                size={24}
+                size={26}
                 className="text-mainheading dark:text-primary"
               />
             </button>
 
             {/* Logo */}
             {isMobile && ( // <-- Render only if isMobile is true
-              <div>
+              <Link href="/dashboard">
                 <Image
                   src={"/assets/images/wise-logo2.svg"}
                   alt="logo"
                   width={30}
                   height={30}
                 />
-              </div>
+              </Link>
             )}
 
             {/* Back arrow button */}

@@ -396,7 +396,7 @@ const AmountInput: React.FC<AmountInputProps> = ({
         className={clsx(
           "flex items-center p-2 bg-white dark:bg-background relative min-h-[72px] transition-shadow", // Add base border
           {
-            "border-b border-gray-300 dark:border-gray-600": isFocused && !hasError, // Bottom border on focus (only if no error)
+            "border-b": isFocused && !hasError, // Bottom border on focus (only if no error)
             "border-red-500 dark:border-red-400 rounded-md": hasError, // Red border on error (overrides focus border)
             "border-transparent": !isFocused && !hasError, // Transparent border otherwise to maintain layout
           }
@@ -426,7 +426,7 @@ const AmountInput: React.FC<AmountInputProps> = ({
           onFocus={onFocus}
           onBlur={onBlur}
           className={clsx(
-            `flex-grow font-black border-none outline-none p-0 text-right pr-1 w-full bg-transparent transition-all duration-300 ease-in-out`,
+            `flex-grow font-black border-none outline-none p-0 text-white text-right pr-1 w-full bg-transparent transition-all duration-300 ease-in-out`,
             textSizeClass,
             textColorClass // Apply the calculated text color/weight class
           )}

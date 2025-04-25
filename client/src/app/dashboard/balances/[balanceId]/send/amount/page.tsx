@@ -3493,7 +3493,7 @@ export default function SendAmountPage() {
   // At this point, sourceAccount and recipient are guaranteed to be non-null due to the criticalError check above.
   // We can safely use non-null assertions (!) where needed by TypeScript.
   return (
-    <div className="SendAmount-Page pb-20 min-h-screen">
+    <div className="SendAmount-Page min-h-screen">
       <DashboardHeader title="Send Money" steps={steps} currentStep={2} />
       <div className="container mx-auto max-w-xl p-4 lg:px-6 lg:pt-6 border rounded-2xl pb-10 mt-4 bg-white dark:bg-background shadow-sm">
         {/* Rate Display */}
