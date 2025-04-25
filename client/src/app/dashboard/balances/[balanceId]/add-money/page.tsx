@@ -1375,17 +1375,17 @@ const AddMoneyPage = () => {
 
 
     return (
-        <div className="max-w-xl mx-auto p-4 lg:p-8">
-            <h2 className="sm:text-3xl text-2xl text-center font-semibold text-mainheading mb-6 dark:text-white">
+        <div className="max-w-lg mx-auto mt-5">
+            <h2 className="lg:text-3xl md:text-2xl text-xl text-center font-semibold text-mainheading mb-6 dark:text-white">
                 Add Money to {balanceCurrency.code} Balance
             </h2>
 
-             {error && <div className="my-4 p-3 bg-red-100 text-red-700 border border-red-300 rounded-md">{error}</div>}
+             {error && <div className="my-4 p-3 bg-red-700/20 text-red-700 border rounded-md">{error}</div>}
 
             <div>
                 <label
                     htmlFor="amount"
-                    className="block text-base font-medium text-mainheading dark:text-white"
+                    className="block lg:text-base text-sm font-medium text-mainheading dark:text-white"
                 >
                     Amount to add
                 </label>
@@ -1396,7 +1396,7 @@ const AddMoneyPage = () => {
                         min="0.01" // HTML5 validation, actual logic uses > 0
                         name="amount"
                         id="amount"
-                        className="block w-full text-xl rounded-xl ps-2 font-bold h-18 py-3 pl-5 pr-28 border border-gray-300 dark:border-lightgray/26 transition-shadow ease-in-out duration-300 hover:shadow-darkcolor dark:hover:shadow-whitecolor focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-400 dark:placeholder:text-neutral-700"
+                        className="block w-full text-xl rounded-xl ps-2 font-bold lg:h-18 h-16 py-3 pl-5 pr-28 border border-gray-300 dark:border-lightgray/26 transition-shadow ease-in-out duration-300 hover:shadow-darkcolor dark:hover:shadow-whitecolor focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-400 dark:placeholder:text-neutral-700"
                         placeholder="0.00"
                         // FIX 4, 5, 6: Explicitly convert state (number | "") to string for the input value prop
                         value={String(amountToAdd)}
@@ -1425,15 +1425,16 @@ const AddMoneyPage = () => {
                 </div>
 
                 <div className="mt-4">
-                    <label className="block text-base font-medium text-neutral-900 dark:text-white">
+                    <label className="block text-sm lg:text-base font-medium text-neutral-900 dark:text-white">
                         Paying with
                     </label>
-                    <div className="border border-gray-300 dark:border-lightgray/26 rounded-xl ps-5 py-4 flex items-center gap-4 mt-1">
+
+                    <div className="border border-gray-300 dark:border-lightgray/26 rounded-xl ps-5 lg:py-4 py-3 flex items-center gap-4 mt-1">
                         <div className="p-2 bg-green-500/20 rounded-full inline-block">
-                            <AiFillBank className="size-7 text-green-500" />
+                            <AiFillBank className="md:size-7 size-6 text-green-500" />
                         </div>
-                        <span className="text-neutral-900 dark:text-white  font-semibold capitalize md:text-lg text-base">
-                            Bank transfer
+                        <span className="text-neutral-900 dark:text-white font-semibold capitalize md:text-lg text-base">
+                            Bank transfer 
                         </span>
                     </div>
                 </div>
@@ -1465,11 +1466,11 @@ const AddMoneyPage = () => {
                             {isDetailsLoading ? <Skeleton className="h-4 w-16 inline-block" /> : `${totalFees} ${payInCurrencyCode}`}
                         </dd>
                     </div>
-                    {/* Show exchange rate */}
+
                     {/* Conditional rendering based on calculation status */}
                     {(paymentSummary?.exchangeRate && !isDetailsLoading) ? (
                         <div className="py-2 flex justify-between text-sm text-gray">
-                            <dt className="text-neutral-700 dark:text-gray-300">Guaranteed rate (24h)</dt>
+                            <dt className="text-neutral-700 dark:text-primary">Guaranteed rate (24h)</dt>
                             <dd className="ml-6 text-neutral-700 dark:text-gray-300 font-medium">
                                 {/* Ensure exchangeRate is treated as number */}
                                 1 {payInCurrencyCode} = {Number(paymentSummary.exchangeRate).toFixed(5)} {balanceCurrency.code}
@@ -1496,7 +1497,7 @@ const AddMoneyPage = () => {
                 <div className="mt-4">
                     <button
                         onClick={handleContinue}
-                        className={`w-full bg-primary text-neutral-900 hover:bg-primaryhover space-x-3 py-3 px-4 h-12.5 font-medium rounded-full transition-all duration-75 ease-linear ${
+                        className={`w-full bg-primary text-neutral-900 font-medium hover:bg-primaryhover space-x-3 py-3 px-4 h-12.5 rounded-full transition-all duration-75 ease-linear ${
                             // Disable conditions:
                             isLoading || // Main processing (after click)
                             isDetailsLoading || // Fee calculation in progress

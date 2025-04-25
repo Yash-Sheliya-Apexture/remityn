@@ -4316,7 +4316,7 @@ const TransactionDetailsPage = () => {
              <div className="rounded-2xl border shadow-sm p-4">
                  <Skeleton className="h-24 sm:h-20 w-full rounded-md" /> {/* Header */}
                  <Skeleton className="h-14 w-full mt-2 rounded-md" /> {/* Tabs */}
-                 <div className="space-y-6   mt-6"> {/* Increased spacing */}
+                 <div className="space-y-6  mt-6"> {/* Increased spacing */}
                      <Skeleton className="h-6 w-3/4" /> {/* Ref/ID placeholder */}
                      <Skeleton className="h-48 w-full" /> {/* Timeline placeholder */}
                      <Skeleton className="h-12 w-full" /> {/* Button Area placeholder */}
@@ -4348,10 +4348,10 @@ const TransactionDetailsPage = () => {
 
     // --- Main Component Return ---
     return (
-        <section className="Transaction-Detial-Page-Wrapper"> {/* Fragment wrapping page content and modal */}
+        <section className="Transaction-Detial-Page-Wrapper mt-1"> {/* Fragment wrapping page content and modal */}
             <div className="Transaction-Detial">
                 {/* Main Content Card */}
-                <div className="bg-white dark:bg-background rounded-2xl border dark:border-border shadow-sm mx-auto lg:max-w-4xl">
+                <div className="bg-white dark:bg-background rounded-2xl border dark:border-border shadow-sm mx-auto lg:max-w-5xl">
                     {/* Card Header */}
                     <TransactionHeader
                         transaction={transactionDetails}
@@ -4368,17 +4368,16 @@ const TransactionDetailsPage = () => {
                     {/* Tab Content Area */}
                     <div className="p-4 sm:p-6">
                         {/* --- Updates Tab Content --- */}
-                        {activeTab === "Updates" && (
+                        {activeTab === "Updates" &&  (
                             <div>
                                 {/* Transaction ID / Reference Code (Consistent placement) */}
                                 <div className="flex items-center mb-6 text-sm gap-2">
-                                    <span className="text-gray-500 dark:text-gray-300 w-28 flex-shrink-0">
-                                        {isPayment ? "Reference Code" : "Transfer ID"}
+                                    <span className="text-gray-500 dark:text-gray-300 flex-shrink-0">
+                                        {isPayment ? "Reference Code :" : "Transfer ID :"}
                                     </span>
                                     <span className="font-medium text-neutral-900 dark:text-white break-all">
                                         {isPayment ? (transactionDetails as PaymentDetails).referenceCode || 'N/A' : transactionDetails._id}
                                     </span>
-                                    {/* Optional: Add copy button here */}
                                 </div>
 
                                 {/* --- Conditional Rendering: Awaiting Verification View vs. Standard Timeline --- */}

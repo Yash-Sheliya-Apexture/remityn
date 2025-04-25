@@ -291,7 +291,7 @@ const TransactionActions: React.FC<TransactionActionsProps> = ({
     onFiltersApply // Prop type now matches the expected function signature
 }) => {
     return (
-        <div className="flex justify-between items-center gap-4 sm:w-auto w-full">
+        <div className="flex justify-between items-center gap-4 sm:w-auto mt-1 w-full">
             <Search
                 transactions={transactions}
                 onTransactionsChange={onTransactionsChange}
@@ -301,7 +301,6 @@ const TransactionActions: React.FC<TransactionActionsProps> = ({
                     userAccounts={userAccounts}
                     onFiltersApply={onFiltersApply} // Pass the correctly typed prop down
                 />
-                {/* <Download /> */}
             </div>
         </div>
     );
