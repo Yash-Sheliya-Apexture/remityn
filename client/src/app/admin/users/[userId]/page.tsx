@@ -2409,45 +2409,133 @@ const DetailItem = ({
   </div>
 );
 
-// --- Loading Skeleton Component (Keep as is) ---
+// --- Loading Skeleton Component (Detailed) ---
 const LoadingSkeleton = () => (
-  <div className="container mx-auto px-4 py-8 relative">
-    <div className="space-y-6 animate-pulse">
-      <div className="flex items-center gap-2 mb-4">
-        <Skeleton className="h-8 w-8 rounded-full bg-muted" />
-        <Skeleton className="h-5 w-36 bg-muted rounded" />
+  <div className="container mx-auto px-4 py-8"> {/* Added container */}
+    <div className="space-y-6 pb-10">
+      {/* Header Skeleton */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+        <div>
+          <Skeleton className="h-4 w-64 mb-3 rounded " /> {/* Breadcrumbs */}
+          <Skeleton className="h-8 w-48 rounded " /> {/* Title */}
+        </div>
+        <Skeleton className="h-9 w-32 rounded-md " /> {/* Back Button */}
       </div>
-      <div className="border border-border rounded-lg bg-card overflow-hidden">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 border-b border-border">
-          <Skeleton className="h-16 w-16 rounded-full flex-shrink-0 bg-muted" />
-          <div className="space-y-2 flex-1">
-            <Skeleton className="h-6 w-3/4 bg-muted rounded" />
-            <Skeleton className="h-4 w-1/2 bg-muted rounded" />
-            <Skeleton className="h-5 w-20 bg-muted rounded-md" />
+
+      {/* User Profile Card Skeleton */}
+      <div className="border rounded-lg bg-card overflow-hidden"> {/* Mimic Card */}
+        {/* Mimic CardHeader */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-5 border-b">
+          <div className="flex items-center gap-4 flex-1">
+            <Skeleton className="h-14 w-14 sm:h-16 sm:w-16 rounded-full flex-shrink-0 " /> {/* Avatar */}
+            <div className="space-y-1.5 flex-1">
+              <Skeleton className="h-6 w-3/4  rounded" /> {/* Name */}
+              <Skeleton className="h-4 w-1/2  rounded" /> {/* Email */}
+              <Skeleton className="h-5 w-20  rounded-md" /> {/* Role Badge */}
+            </div>
           </div>
           <div className="space-y-1 text-right flex-shrink-0">
-            <Skeleton className="h-3 w-28 bg-muted rounded" />
-            <Skeleton className="h-3 w-24 bg-muted rounded" />
-            <Skeleton className="h-3 w-32 bg-muted rounded" />
+            <Skeleton className="h-3 w-28  rounded" /> {/* Joined Date */}
+            <Skeleton className="h-3 w-24  rounded" /> {/* Updated Date */}
+            <Skeleton className="h-3 w-32  rounded" /> {/* ID */}
           </div>
         </div>
-        <div className="p-4 sm:p-6 bg-muted/30 dark:bg-card">
-          <Skeleton className="h-4 w-1/4 bg-muted rounded mb-3" />
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-            {[...Array(4)].map((_, i) => (
-              <Skeleton key={i} className="h-16 w-full bg-muted rounded-md" />
+
+        {/* Mimic CardContent for Balances */}
+        <div className="p-4 sm:p-6">
+          <Skeleton className="h-5 w-1/4  rounded mb-4" /> {/* Balances Title */}
+          <div className="flex flex-nowrap overflow-x-auto space-x-4 pb-2 sm:grid sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 sm:space-x-0 sm:pb-0 sm:overflow-x-visible">
+            {[...Array(4)].map((_, i) => ( // Simulate 4 balance boxes
+              <Skeleton key={i} className="flex-shrink-0 w-36 sm:w-auto h-24  rounded-lg border" />
             ))}
           </div>
         </div>
       </div>
-      <div className="space-y-4">
-        <div className="flex space-x-1 rounded-md bg-muted p-1 w-full h-11"> {/* Match TabsList height */}
-          <Skeleton className="h-full w-1/3 rounded-sm flex-1 bg-background" />
-          <Skeleton className="h-full w-1/3 rounded-sm flex-1 bg-background" />
-          <Skeleton className="h-full w-1/3 rounded-sm flex-1 bg-background" />
+
+      {/* Tabs Section Skeleton */}
+      <div className="w-full">
+        {/* Mimic TabsList */}
+        <div className="overflow-hidden mb-4">
+            <div className="relative flex w-full h-full overflow-x-auto whitespace-nowrap bg-lightborder dark:bg-primarybox p-1.5 rounded-full justify-normal items-center">
+                <Skeleton className="h-9 flex-1 rounded-full bg-white dark:bg-secondarybox mr-1" />
+                <Skeleton className="h-9 flex-1 rounded-full bg-white dark:bg-secondarybox mr-1" />
+                <Skeleton className="h-9 flex-1 rounded-full bg-white dark:bg-secondarybox" />
+            </div>
         </div>
-        <div className="border border-border rounded-lg bg-card p-4 sm:p-6">
-          <Skeleton className="h-40 w-full bg-muted rounded-md" />
+
+        {/* Mimic TabsContent (showing KYC content skeleton by default) */}
+        <div className="space-y-4">
+          {/* KYC Info Card Skeleton */}
+          <div className="border rounded-lg bg-card overflow-hidden"> {/* Mimic Card */}
+            {/* Mimic CardHeader */}
+            <div className="border-b px-6 py-4 bg-lightgray dark:bg-primarybox">
+              <div className="flex items-center justify-between">
+                <Skeleton className="h-6 w-40  rounded" /> {/* Title */}
+                <Skeleton className="h-7 w-24  rounded-full" /> {/* Status Badge */}
+              </div>
+            </div>
+            {/* Mimic CardContent */}
+            <div className="p-4 sm:p-6 space-y-4">
+                {/* Personal Details Section Skeleton */}
+                <div>
+                    <Skeleton className="h-4 w-32  rounded mb-3 border-b border-transparent pb-2" /> {/* Section Title */}
+                    <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
+                        {[...Array(6)].map((_, i) => ( // 6 personal details
+                            <div key={`pd-skel-${i}`} className="py-2 space-y-2">
+                                <Skeleton className="h-4 w-1/3  rounded" /> {/* Label */}
+                                <Skeleton className="h-5 w-3/4  rounded" /> {/* Value */}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                 {/* Identification Details Section Skeleton */}
+                <div>
+                    <Skeleton className="h-4 w-40  rounded mb-3 border-b border-transparent pb-2" /> {/* Section Title */}
+                    <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
+                        {[...Array(4)].map((_, i) => ( // 4 ID details
+                            <div key={`id-skel-${i}`} className="py-2 space-y-2">
+                                <Skeleton className="h-4 w-1/3  rounded" /> {/* Label */}
+                                <Skeleton className="h-5 w-3/4  rounded" /> {/* Value */}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                 {/* Update Info Section Skeleton */}
+                 <div>
+                    <Skeleton className="h-4 w-48  rounded mb-3 border-b border-transparent pb-2" /> {/* Section Title */}
+                    <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
+                        {[...Array(2)].map((_, i) => ( // 2 Update details
+                            <div key={`upd-skel-${i}`} className="py-2 space-y-2">
+                                <Skeleton className="h-4 w-1/3  rounded" /> {/* Label */}
+                                <Skeleton className="h-5 w-3/4  rounded" /> {/* Value */}
+                            </div>
+                        ))}
+                    </div>
+                 </div>
+            </div>
+          </div>
+
+          {/* Documents Card Skeleton */}
+          <div className="border rounded-lg bg-card overflow-hidden"> {/* Mimic Card */}
+            {/* Mimic CardHeader */}
+            <div className="border-b px-6 py-4 bg-lightgray dark:bg-primarybox">
+              <Skeleton className="h-6 w-44  rounded" /> {/* Title */}
+            </div>
+            {/* Mimic CardContent */}
+            <div className="p-4 sm:p-6">
+              <div className="flex md:flex-row flex-col gap-4">
+                 {/* Simulate 2 document skeletons */}
+                 <div className="border rounded-lg overflow-hidden md:w-1/2 w-full">
+                    <div className="p-3 border-b"><Skeleton className="h-4 w-1/3  rounded"/></div>
+                    <Skeleton className="aspect-video w-full " />
+                 </div>
+                 <div className="border rounded-lg overflow-hidden md:w-1/2 w-full">
+                    <div className="p-3 border-b"><Skeleton className="h-4 w-1/3  rounded"/></div>
+                    <Skeleton className="aspect-video w-full " />
+                 </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -2512,7 +2600,7 @@ const TransactionTable = ({
     <div className="rounded-xl border overflow-hidden overflow-x-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
       <table className="min-w-full overflow-hidden">
         <thead className="bg-lightgray dark:bg-primarybox ">
-          <tr className="border-b border-border">
+          <tr className="border-b">
             <th className="px-6 py-4 text-left font-medium text-neutral-900 dark:text-white tracking-wider uppercase">
               ID
             </th>
@@ -2730,7 +2818,7 @@ const UserDetailPage: React.FC = () => {
   // --- Render Logic ---
   if (loading || authLoading)
     return (
-      <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8">
+      <div className="min-h-screen bg-white dark:bg-background p-4 sm:p-6 lg:p-8">
         <LoadingSkeleton />
       </div>
     );
@@ -2871,7 +2959,7 @@ const UserDetailPage: React.FC = () => {
                       ID: {userData._id.substring(userData._id.length - 8)}
                     </span>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom">
+                  <TooltipContent side="bottom" className="text-neutral-900">
                     <p>{userData._id}</p>
                   </TooltipContent>
                 </Tooltip>
@@ -2971,7 +3059,7 @@ const UserDetailPage: React.FC = () => {
             >
               <motion.div variants={itemVariants}>
                 <Card className="border overflow-hidden mb-4 shadow-none">
-                  <CardHeader className="border-b border-border px-6 py-4 bg-lightgray dark:bg-primarybox ">
+                  <CardHeader className="border-b px-6 py-4 bg-lightgray dark:bg-primarybox ">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-lg font-semibold flex items-center gap-2 text-neutral-900 dark:text-white ">
                         <UserCheck className="h-5 w-5 text-primary" /> KYC
@@ -3113,9 +3201,9 @@ const UserDetailPage: React.FC = () => {
                         {kyc.documents.map((doc) => (
                           <div
                             key={doc.public_id}
-                            className="border border-border rounded-lg overflow-hidden bg-muted/30 dark:bg-muted/20 md:w-1/2 w-full"
+                            className="border rounded-lg overflow-hidden bg-muted/30 dark:bg-muted/20 md:w-1/2 w-full"
                           >
-                            <div className="p-3 border-b border-border text-neutral-900 dark:text-white">
+                            <div className="p-3 border-b text-neutral-900 dark:text-white">
                               <h4 className="text-sm font-medium capitalize">
                                 {doc.docType.replace("_", " ")}
                               </h4>
