@@ -688,11 +688,9 @@ const BalanceHeader: React.FC<BalanceHeaderProps> = ({
       {/* Balance Card */}
       <div className="pb-6 mb-8 border-b">
         <div className="flex sm:flex-row flex-col gap-4 justify-between">
-
           {/* Left Side - Balance Info */}
           <div className="Balance sm:text-left text-center">
             {/* ... (Currency Flag, Name, Balance Amount, Rates - unchanged) ... */}
-             {/* Currency Flag and Name */}
              <div className="flex items-center sm:justify-start justify-center gap-2 mb-4">
                {balanceDetail?.currency.flagImage ? (
                  <Image

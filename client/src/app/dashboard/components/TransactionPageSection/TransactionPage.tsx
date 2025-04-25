@@ -4686,7 +4686,6 @@ const TransactionsPage: React.FC = () => {
                 }
             });
         }
-
         setFilteredTransactions(tempFiltered);
     };
 
@@ -4792,7 +4791,7 @@ const TransactionsPage: React.FC = () => {
   }
 
     return (
-      <section className="Transaction-Wrapper pb-8 md:pb-10">
+      <section className="Transaction-Wrapper pb-0 md:pb-10">
         <div className="Transaction-Page">
           {/* Header and Actions */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky lg:top-28 top-20 z-10 bg-white dark:bg-background">
@@ -4819,7 +4818,7 @@ const TransactionsPage: React.FC = () => {
 
           {/* Error State */}
           {!isLoading && error && (
-            <div className="text-center py-10 text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-900/20 p-4 rounded-md border border-red-200 dark:border-red-800/30">
+            <div className="text-center py-5 text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-900/20 p-4 rounded-md border border-red-200 dark:border-red-800/30">
               <strong>Error:</strong> {error}
             </div>
           )}
@@ -4849,14 +4848,14 @@ const TransactionsPage: React.FC = () => {
                       return (
                         <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} className="block">
                           <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
-                            <div className="flex items-center gap-4">
+                            <div className="flex items-center lg:gap-4 gap-3">
                               <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center"> {icon} </div>
-                              <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
-                                <div className=" text-wrap">
+                              <div className="flex-grow flex flex-row justify-between sm:items-center gap-4 sm:gap-0">
+                                <div className="text-wrap">
                                   <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg"> {name} </h3>
-                                  <p className="text-sm text-gray-500 dark:text-gray-300 mt-1"> {description}{" "} <span className="italic"> ({transaction.status}) </span> </p>
+                                  <p className="text-sm text-gray-500 dark:text-gray-300"> {description}{" "} <span className="italic"> ({transaction.status}) </span> </p>
                                 </div>
-                                <div className={`font-medium text-neutral-900 dark:text-white whitespace-nowrap`}>
+                                <div className={`font-medium lg:text-base text-sm text-neutral-900 dark:text-white whitespace-nowrap`}>
                                   {amountPrefix} {amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2, })} {" "} {displayCurrencyCode}
                                 </div>
                               </div>
@@ -4905,14 +4904,14 @@ const TransactionsPage: React.FC = () => {
                             return (
                               <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} className="block">
                                 <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
-                                  <div className="flex items-center gap-4">
+                                  <div className="flex items-center lg:gap-4 gap-3">
                                     <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center"> {icon} </div>
-                                    <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
+                                    <div className="flex-grow flex flex-row justify-between sm:items-center gap-4 sm:gap-0">
                                       <div className=" text-wrap">
-                                        <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg"> {name} </h3>
-                                        <p className="text-sm text-gray-500 dark:text-gray-300 mt-1"> {description} </p>
+                                        <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white text-base sm:text-lg"> {name} </h3>
+                                        <p className="text-sm text-gray-500 dark:text-gray-300"> {description} </p>
                                       </div>
-                                      <div className={`font-medium ${amountClass} whitespace-nowrap`}>
+                                      <div className={`font-medium lg:text-base text-sm ${amountClass} whitespace-nowrap`}>
                                         {amountPrefix} {amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2, })} {" "} {displayCurrencyCode}
                                       </div>
                                     </div>

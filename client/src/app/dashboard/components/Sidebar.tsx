@@ -3581,7 +3581,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
             key="full-sidebar"
             ref={sidebarRef}
             className={`w-64 fixed lg:sticky bg-white dark:bg-background h-screen inset-y-0 left-0 ${
-              isMobileView ? "z-40" : "lg:z-20" // Higher z-index on mobile when open
+              isMobileView ? "z-40" : "lg:z-10" // Higher z-index on mobile when open
             } flex flex-col shadow-lg lg:shadow-none`}
             initial={isMobileView ? { x: "-100%" } : { x: 0 }} // Slide in from left on mobile
             animate={{ x: 0 }} // Target position

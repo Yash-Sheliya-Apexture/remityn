@@ -28,7 +28,7 @@ const TransactionHeader: React.FC<TransactionHeaderProps> = ({
     const headerAmountSign = isPayment ? "+" : "-";
 
     return (
-        <div className="sm:p-6 p-4 flex items-start gap-4 border-b dark:border-border">
+        <div className="sm:p-6 p-4 flex items-start gap-4 border-b">
             {/* Icon container */}
             <div className={cn("p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center")}>
                 {headerIcon}
@@ -45,6 +45,7 @@ const TransactionHeader: React.FC<TransactionHeaderProps> = ({
                         {statusText}
                     </p>
                 </div>
+
                 {/* Right side: Amount */}
                 <div className={cn(
                     "font-medium whitespace-nowrap",

@@ -321,7 +321,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
               className="text-gray focus:outline-none cursor-pointer p-2.5 bg-lightgray dark:bg-secondary dark:text-primary rounded-full transition-colors lg:hidden sm:block hidden" // Removed sm:block hidden - logic handled by lg:hidden
             >
               <GiHamburgerMenu
-                size={28}
+                size={24}
                 className="text-mainheading dark:text-primary"
               />
             </button>

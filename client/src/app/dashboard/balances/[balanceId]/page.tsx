@@ -7235,7 +7235,7 @@ const BalanceDetailPage = () => {
   // Updated Loading State: Show skeleton if balance data is loading OR auth is loading (before user/KYC is known)
   if (isLoading && !typedBalanceDetail && !error) {
      return (
-        <div className="py-8 animate-pulse">
+        <div className="py-6 animate-pulse">
              {/* Mimic BalanceHeader structure */}
              <div className="pb-6 mb-8 border-b">
                 <div className="flex sm:flex-row flex-col gap-4 justify-between">
@@ -7287,8 +7287,6 @@ const BalanceDetailPage = () => {
      );
    }
 
-   // If we reach here, auth has loaded and balance detail *should* be available (or handled by error state)
-   // We can safely assume typedBalanceDetail is not null for the main render if no error occurred.
    // Added a fallback just in case, but ideally the loading/error states cover this.
    if (!typedBalanceDetail) {
         console.error("Invariant violation: Reached main render but typedBalanceDetail is null/undefined despite passing loading/error checks.");
@@ -7302,7 +7300,7 @@ const BalanceDetailPage = () => {
 
   // --- Main Render Structure ---
   return (
-    <div className="py-8">
+    <div className="py-6">
       <BalanceHeader
         balanceDetail={typedBalanceDetail} // Pass the non-null, typed detail
         isLoading={isBalanceLoading} // Pass only balance loading state here, overall handled above
@@ -7314,7 +7312,7 @@ const BalanceDetailPage = () => {
       />
 
       {/* --- Transactions Section --- */}
-      <div className="mt-10">
+      <div className="mt-0">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky lg:top-28 top-20 z-10 bg-background dark:bg-background">
           {" "}
 
