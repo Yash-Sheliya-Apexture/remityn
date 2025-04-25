@@ -260,47 +260,115 @@
 // export default TransactionActions;
 
 
-// app/dashboard/components/TransactionPageSection/TransactionActions.tsx
-import React from "react";
-import Search from "./Search"; // Adjusted relative path
-import Filter from "./Filter"; // Adjusted relative path
-import { Transaction } from "@/types/transaction";
-import { Account } from "@/types/account"; // Import Account type
+// // app/dashboard/components/TransactionPageSection/TransactionActions.tsx
+// import React from "react";
+// import Search from "./Search"; // Adjusted relative path
+// import Filter from "./Filter"; // Adjusted relative path
+// import { Transaction } from "@/types/transaction";
+// import { Account } from "@/types/account"; // Import Account type
 
-// Define or import the specific filter type
-interface AppliedFilters {
-    selectedRecipients: (string | number)[];
-    selectedDirection?: string;
-    selectedStatus?: string | null;
-    selectedBalance?: string[];
-    fromDate?: string;
-    toDate?: string;
-}
+// // Define or import the specific filter type
+// interface AppliedFilters {
+//     selectedRecipients: (string | number)[];
+//     selectedDirection?: string;
+//     selectedStatus?: string | null;
+//     selectedBalance?: string[];
+//     fromDate?: string;
+//     toDate?: string;
+// }
+
+// interface TransactionActionsProps {
+//     transactions: Transaction[];
+//     userAccounts: Account[];
+//     onTransactionsChange: (transactions: Transaction[]) => void;
+//     onFiltersApply: (filters: AppliedFilters) => void; // <-- Use the specific type here
+// }
+
+// const TransactionActions: React.FC<TransactionActionsProps> = ({
+//     transactions,
+//     userAccounts,
+//     onTransactionsChange,
+//     onFiltersApply // Prop type now matches the expected function signature
+// }) => {
+//     return (
+//         <div className="flex justify-between items-center gap-4 sm:w-auto w-full">
+//             <Search
+//                 transactions={transactions}
+//                 onTransactionsChange={onTransactionsChange}
+//             />
+//             <div className="flex items-center gap-2">
+//                 <Filter
+//                     userAccounts={userAccounts}
+//                     onFiltersApply={onFiltersApply} // Pass the correctly typed prop down
+//                 />
+//             </div>
+//         </div>
+//     );
+// };
+
+// export default TransactionActions;
+
+
+// // app/dashboard/transactions/TransactionActions.tsx (or moved path)
+// import React from "react";
+// import Search from "./Search"; // Adjust path if needed
+// import FilterButton from "./FilterButton"; // *** Adjust path to FilterButton ***
+// import { Transaction } from "@/types/transaction";
+
+// interface TransactionActionsProps {
+//     transactions: Transaction[]; // Still needed for Search
+//     onTransactionsChange: (transactions: Transaction[]) => void; // For Search results
+//     onFilterButtonClick: () => void; // Handler for the filter button click
+// }
+
+// const TransactionActions: React.FC<TransactionActionsProps> = ({
+//     transactions,
+//     onTransactionsChange,
+//     onFilterButtonClick // Receive the handler
+// }) => {
+//     return (
+//         <div className="flex justify-between items-center gap-4 sm:w-auto w-full">
+//             <Search
+//                 transactions={transactions}
+//                 onTransactionsChange={onTransactionsChange}
+//             />
+//             <div className="flex items-center gap-2">
+//                 {/* Pass the click handler directly to FilterButton */}
+//                 <FilterButton onClick={onFilterButtonClick} />
+//             </div>
+//         </div>
+//     );
+// };
+
+// export default TransactionActions;
+
+// frontend/src/app/dashboard/components/TransactionPageSection/TransactionActions.tsx
+import React from "react";
+import Search from "./Search"; // Adjust path if Search is elsewhere
+import FilterButton from "./FilterButton"; // Adjust path if FilterButton is elsewhere
+import { Transaction } from "@/types/transaction"; // Adjust path if needed
 
 interface TransactionActionsProps {
-    transactions: Transaction[];
-    userAccounts: Account[];
-    onTransactionsChange: (transactions: Transaction[]) => void;
-    onFiltersApply: (filters: AppliedFilters) => void; // <-- Use the specific type here
+    transactions: Transaction[]; // Base list for searching
+    onTransactionsChange: (transactions: Transaction[]) => void; // Callback with search results
+    onFilterButtonClick: () => void; // Handler to open the filter modal
 }
 
 const TransactionActions: React.FC<TransactionActionsProps> = ({
     transactions,
-    userAccounts,
     onTransactionsChange,
-    onFiltersApply // Prop type now matches the expected function signature
+    onFilterButtonClick
 }) => {
     return (
-        <div className="flex justify-between items-center gap-4 sm:w-auto mt-1 w-full">
+        <div className="flex justify-between items-center gap-4 w-full md:w-auto md:justify-end">
+            {/* Search Component */}
             <Search
                 transactions={transactions}
                 onTransactionsChange={onTransactionsChange}
             />
+            {/* Filter Button */}
             <div className="flex items-center gap-2">
-                <Filter
-                    userAccounts={userAccounts}
-                    onFiltersApply={onFiltersApply} // Pass the correctly typed prop down
-                />
+                <FilterButton onClick={onFilterButtonClick} />
             </div>
         </div>
     );

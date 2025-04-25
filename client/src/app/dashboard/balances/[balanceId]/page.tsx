@@ -6905,94 +6905,560 @@
 
 
 
+// // frontend/src/app/dashboard/balances/[balanceId]/page.tsx
+// "use client";
+
+// import React, { useState, useCallback, useMemo, useEffect } from "react";
+// import { useParams, useRouter } from "next/navigation";
+
+// // Hooks and Services
+// import { useAuth } from "../../../contexts/AuthContext"; // Adjust path if needed
+// import { useBalanceDetailData } from "../../../hooks/useBalanceDetailData"; // Adjust path if needed
+// import { parseISO } from "date-fns"; // Keep for filter parsing
+// import exchangeRateService from '../../../services/exchangeRate'; // Import exchange rate service
+
+// // Components and Types
+// import BalanceHeader from "../../components/BalanceHeader"; // Adjust path if needed
+// import TransactionActions from "../../components/TransactionPageSection/TransactionActions"; // Adjust path if needed
+// import TransactionList from "../../components/TransactionList"; // Adjust path if needed
+// import { Transaction } from "@/types/transaction"; // Adjust path if needed
+// import { BalanceDetail } from "../../../../types/balance"; // Assuming BalanceDetail type exists here or elsewhere
+// import { Currency } from "../../../../types/currency"; // Assuming Currency type exists here or elsewhere
+// import InsufficientBalanceModal from "../../components/InsufficientBalanceModal"; // Adjust path if needed
+// import KycRequiredModal from "../../components/KycRequiredModal"; // Import the new KYC modal
+// import { Skeleton } from "@/components/ui/skeleton"; // Adjust path if needed
+// import { Button } from "@/components/ui/button"; // Adjust path if needed
+// import type { KycStatus } from '@/app/services/kyc'; // Import KYC status type
+
+// // --- Interfaces ---
+
+// // Using Record<string, string | string[]> covers typical path parameters.
+// interface BalanceDetailPageParams extends Record<string, string | string[]> {
+//   balanceId: string;
+// }
+
+// // --- MODIFIED Interface ---
+// // Structure for the exchange rate API response (Matches typical API structure)
+// interface ExchangeRateApiResponse {
+//     base?: string; // The base currency (e.g., "USD") - Optional if not always present
+//     rates?: { [currencyCode: string]: number }; // The map of currency codes to rates
+//     // Add other potential properties like 'timestamp', 'date' if the API returns them
+// }
+// // --- END MODIFICATION ---
+
+
+// // Extended interface locally if modifying the shared type isn't feasible immediately
+// interface ExtendedCurrency extends Currency {
+//     rateAdjustmentPercentage?: number;
+// }
+// // Ensure BalanceDetail uses this ExtendedCurrency or the updated base Currency type
+// interface ExtendedBalanceDetail extends BalanceDetail {
+//     currency: ExtendedCurrency;
+// }
+
+
+// // --- Utility Function --- (Keep or move to utils)
+// function parseDateString(dateString: string | undefined): Date | null {
+//     if (!dateString) return null;
+//     try {
+//         // Try parsing as ISO 8601 first
+//         const isoDate = parseISO(dateString);
+//         if (!isNaN(isoDate.getTime())) { return isoDate; }
+//     } catch (e) {
+//         // console.warn("Could not parse date string as ISO:", dateString, e);
+//     }
+//     // Fallback to DD-MM-YYYY format (adjust if your backend uses a different format)
+//     const parts = dateString.split('-');
+//     if (parts.length === 3) {
+//         const day = parseInt(parts[0], 10);
+//         const month = parseInt(parts[1], 10) - 1; // Month is 0-indexed in JS Date
+//         const year = parseInt(parts[2], 10);
+//         if (!isNaN(day) && !isNaN(month) && !isNaN(year) && month >= 0 && month <= 11 && day >= 1 && day <= 31) {
+//              const date = new Date(Date.UTC(year, month, day)); // Use UTC to avoid timezone issues if possible
+//              // Basic validation
+//              if (date.getUTCFullYear() === year && date.getUTCMonth() === month && date.getUTCDate() === day) {
+//                  return date;
+//              }
+//         }
+//     }
+//     // Fallback to trying standard Date constructor (less reliable for ambiguous formats)
+//     try {
+//         const genericDate = new Date(dateString);
+//         if (!isNaN(genericDate.getTime())) {
+//             return genericDate;
+//         }
+//     } catch (e) {
+//         // console.warn("Could not parse date string with generic Date constructor:", dateString, e);
+//     }
+
+//     console.warn("Could not parse date string into a valid Date object:", dateString);
+//     return null;
+// }
+
+// // --- Component ---
+// const BalanceDetailPage = () => {
+//   const params = useParams<BalanceDetailPageParams>();
+//   const router = useRouter();
+//   const { balanceId } = params;
+//   const { token, user, loading: authLoading } = useAuth(); // Get user, token, and auth loading state
+//   const kycStatus: KycStatus | undefined = user?.kyc.status; // Get KYC status from user object
+
+//   // --- Data Fetching using Custom Hook ---
+//   // Ensure useBalanceDetailData returns a type compatible with ExtendedBalanceDetail
+//   const {
+//       balanceDetail, // Type this as ExtendedBalanceDetail | null within the hook or cast here if necessary
+//       balanceSpecificTransactions,
+//       isLoading: isBalanceLoading, // Renamed for clarity vs authLoading
+//       isTransactionsLoading,
+//       error,
+//       // fetchData, // Uncomment if you need manual refetching capability from the hook
+//   } = useBalanceDetailData(balanceId);
+
+//   // --- State for UI Interaction ---
+//   const [displayTransactions, setDisplayTransactions] = useState<Transaction[]>([]);
+//   const [isInsufficientBalanceModalOpen, setIsInsufficientBalanceModalOpen] = useState(false);
+//   const [isKycModalOpen, setIsKycModalOpen] = useState(false); // State for KYC modal
+
+//   // --- Derived State ---
+//   const typedBalanceDetail = balanceDetail as ExtendedBalanceDetail | null; // Use type assertion if hook doesn't return extended type
+//   const hasSufficientFunds = useMemo(() => (typedBalanceDetail?.balance ?? 0) > 0, [typedBalanceDetail]);
+//   const currencyCode = useMemo(() => typedBalanceDetail?.currency?.code ?? 'N/A', [typedBalanceDetail]);
+//   const wasInitiallyEmpty = useMemo(() => !isTransactionsLoading && balanceSpecificTransactions.length === 0, [isTransactionsLoading, balanceSpecificTransactions]);
+
+//   const [marketRateAgainstINR, setMarketRateAgainstINR] = useState<number | null>(null);
+//   const [ourRateAgainstINR, setOurRateAgainstINR] = useState<number | null>(null);
+
+//   // --- Effect to Initialize/Reset Display Transactions ---
+//   useEffect(() => {
+//       setDisplayTransactions(balanceSpecificTransactions);
+//   }, [balanceSpecificTransactions]);
+
+
+//   // --- Callbacks for TransactionActions (Search/Filter) ---
+//   const handleSearchChange = useCallback((searchResults: Transaction[]) => {
+//       setDisplayTransactions(searchResults);
+//   }, []);
+
+//   const handleFiltersApply = useCallback((filters: {
+//       selectedDirection?: string;
+//       selectedStatus?: string | null;
+//       fromDate?: string;
+//       toDate?: string;
+//   }) => {
+//       console.log(`BalanceDetailPage: Applying filters:`, filters);
+//       let tempFiltered = [...balanceSpecificTransactions];
+
+//       // --- Apply Filters ---
+//         const direction = filters.selectedDirection;
+//         if (direction && direction !== 'all') {
+//             tempFiltered = tempFiltered.filter(tx =>
+//                  (direction === 'add' && tx.type === 'Add Money') ||
+//                  (direction === 'send' && tx.type === 'Send Money')
+//              );
+//         }
+
+//         const statusFilter = filters.selectedStatus?.toLowerCase();
+//         if (statusFilter) {
+//              tempFiltered = tempFiltered.filter(tx => {
+//                  const txStatus = tx.status;
+//                  if (!txStatus) return false;
+//                  if (statusFilter === 'needs attention') return tx.type === 'Add Money' && txStatus === 'pending';
+//                  if (statusFilter === 'completed') return txStatus === 'completed';
+//                  if (statusFilter === 'cancelled') return txStatus === 'canceled'; // Use 'canceled'
+//                  if (statusFilter === 'in process') return (tx.type === 'Add Money' && txStatus === 'in progress') || (tx.type === 'Send Money' && (txStatus === 'pending' || txStatus === 'processing'));
+//                  if (statusFilter === 'failed') return txStatus === 'failed';
+//                  return false;
+//               });
+//         }
+
+//         const fromDateObj = parseDateString(filters.fromDate);
+//         const toDateObj = parseDateString(filters.toDate);
+//         // Set time parts for inclusive date range filtering
+//         if (fromDateObj) fromDateObj.setUTCHours(0, 0, 0, 0);
+//         if (toDateObj) toDateObj.setUTCHours(23, 59, 59, 999);
+
+//         if (fromDateObj || toDateObj) {
+//              tempFiltered = tempFiltered.filter(tx => {
+//                  const transactionDateStr = tx.updatedAt || tx.createdAt;
+//                  if (!transactionDateStr) return false;
+//                  try {
+//                      // Assume dates from backend are UTC or ISO strings parsable by Date
+//                      const transactionDateObj = new Date(transactionDateStr);
+//                      if (isNaN(transactionDateObj.getTime())) return false;
+
+//                      let include = true;
+//                      if (fromDateObj && transactionDateObj < fromDateObj) include = false;
+//                      if (toDateObj && transactionDateObj > toDateObj) include = false;
+//                      return include;
+//                  } catch (e) {
+//                     console.warn("Error parsing transaction date for filtering:", transactionDateStr, e);
+//                     return false;
+//                  }
+//              });
+//         }
+//       // --- End Filter Logic ---
+
+//       setDisplayTransactions(tempFiltered);
+
+//   }, [balanceSpecificTransactions]);
+
+
+//   // --- KYC Modal Handlers ---
+//   const handleOpenKycModal = () => setIsKycModalOpen(true);
+//   const handleCloseKycModal = () => setIsKycModalOpen(false);
+//   const handleStartVerification = () => {
+//       // Navigate to the KYC start page (adjust path as needed)
+//       router.push('/kyc/start');
+//       handleCloseKycModal(); // Close modal after initiating navigation
+//   };
+
+//   // --- Insufficient Balance Modal Handlers ---
+//   const handleOpenInsufficientBalanceModal = () => setIsInsufficientBalanceModalOpen(true);
+//   const handleCloseInsufficientBalanceModal = () => setIsInsufficientBalanceModalOpen(false);
+//   const handleAddMoneyFromInsufficientModal = () => {
+//       // This ALSO needs the KYC check now
+//        if (authLoading || !user) {
+//            console.log("Add Money (from modal) blocked: Auth loading or user not available.");
+//            return; // Do nothing if auth isn't ready
+//        }
+//        if (kycStatus !== 'verified') {
+//           console.log("Add Money (from modal) blocked: KYC not verified. Opening KYC modal.");
+//           handleCloseInsufficientBalanceModal(); // Close this modal first
+//           handleOpenKycModal();
+//           return;
+//       }
+//       // If KYC is verified, proceed to add money page
+//       console.log("Add Money (from modal) allowed: KYC verified. Navigating.");
+//       router.push(`/dashboard/balances/${balanceId}/add-money`);
+//       handleCloseInsufficientBalanceModal(); // Close the insufficient balance modal
+//   };
+
+//    // --- Add/Send/Back Click Handlers ---
+
+//     // Handler for the "Add Money" action (called from BalanceHeader)
+//     const handleAddMoneyClick = useCallback(() => {
+//         console.log("handleAddMoneyClick triggered. KYC Status:", kycStatus);
+//         if (authLoading || !user) {
+//             console.log("Add Money blocked: Auth loading or user not available.");
+//             // Optionally show a toast or do nothing while loading
+//             return;
+//         }
+//         if (kycStatus !== 'verified') {
+//             console.log("Add Money blocked: KYC not verified. Opening KYC modal.");
+//             handleOpenKycModal();
+//         } else {
+//             console.log("Add Money allowed: KYC verified. Navigating.");
+//             router.push(`/dashboard/balances/${balanceId}/add-money`);
+//         }
+//     }, [kycStatus, authLoading, user, balanceId, router]); // Added dependencies
+
+//     // Handler for the "Send Money" action (called from BalanceHeader)
+//     const handleSendClick = useCallback(() => {
+//         console.log("handleSendClick triggered. KYC Status:", kycStatus, "Has Sufficient Funds:", hasSufficientFunds);
+//          if (authLoading || !user) {
+//             console.log("Send Money blocked: Auth loading or user not available.");
+//              // Optionally show a toast or do nothing while loading
+//              return;
+//          }
+//         if (kycStatus !== 'verified') {
+//             console.log("Send Money blocked: KYC not verified. Opening KYC modal.");
+//             handleOpenKycModal();
+//         } else if (hasSufficientFunds) {
+//             console.log("Send Money allowed: KYC verified and funds sufficient. Navigating.");
+//             router.push(`/dashboard/balances/${balanceId}/send/select-recipient`);
+//         } else {
+//             console.log("Send Money blocked: KYC verified but insufficient funds. Opening insufficient balance modal.");
+//             handleOpenInsufficientBalanceModal();
+//         }
+//     }, [kycStatus, hasSufficientFunds, authLoading, user, balanceId, router]); // Added dependencies
+
+//     const handleBackClick = () => router.back();
+
+//     // --- Fetch Market and Our Rate against INR ---
+//     useEffect(() => {
+//         const fetchRatesAgainstINR = async () => {
+//             // Use the typed version here
+//             if (!typedBalanceDetail || !currencyCode || currencyCode === 'N/A' || currencyCode === 'INR') return; // Don't fetch if base is INR or detail missing
+//             try {
+//                 // Fetch using the service - the type should now match
+//                 const ratesData: ExchangeRateApiResponse = await exchangeRateService.getExchangeRatesForCurrencies();
+
+//                 // --- Access data according to the REVISED interface ---
+//                 const liveRates = ratesData.rates; // Direct access to the rates map
+//                 const baseCurrency = ratesData.base || 'USD'; // Use base if present, fallback to USD
+
+//                 if (liveRates && liveRates[currencyCode] && liveRates['INR']) {
+//                     const rateToBase = liveRates[currencyCode]; // Rate of target currency against base
+//                     const inrToBase = liveRates['INR'];       // Rate of INR against base
+
+//                     if (rateToBase === 0) {
+//                          console.warn(`Exchange rate for ${currencyCode} against base (${baseCurrency}) is zero.`);
+//                          setMarketRateAgainstINR(null);
+//                          setOurRateAgainstINR(null);
+//                          return;
+//                     }
+
+//                     // Calculate rate: (INR/Base) / (CUR/Base) = INR/CUR
+//                     const liveRateToINR = inrToBase / rateToBase;
+//                     setMarketRateAgainstINR(liveRateToINR);
+
+//                     // Access rateAdjustmentPercentage safely from the typedBalanceDetail
+//                     const adjustmentPercent = typeof typedBalanceDetail.currency.rateAdjustmentPercentage === 'number'
+//                                                 ? typedBalanceDetail.currency.rateAdjustmentPercentage
+//                                                 : 0; // Default to 0 if not present or not a number
+
+//                     const adjustedRateMultiplier = (1 + (adjustmentPercent / 100));
+//                     const ourRateToINR = liveRateToINR * adjustedRateMultiplier;
+//                     setOurRateAgainstINR(ourRateToINR);
+
+//                 } else {
+//                     console.warn(`Could not find live exchange rates for ${currencyCode} or INR in API response. Base: ${baseCurrency}`, liveRates);
+//                     setMarketRateAgainstINR(null);
+//                     setOurRateAgainstINR(null);
+//                 }
+
+//             } catch (error) {
+//                 console.error("Error fetching exchange rates for INR comparison:", error);
+//                 setMarketRateAgainstINR(null);
+//                 setOurRateAgainstINR(null);
+//             }
+//         };
+//         fetchRatesAgainstINR();
+//     }, [typedBalanceDetail, currencyCode]); // Depend on typedBalanceDetail and currencyCode
+
+
+//   // Combined loading state for initial page render
+//   const isLoading = isBalanceLoading || authLoading; // Consider auth loading as part of initial load
+
+//   // --- Render Logic ---
+
+//   // Updated Loading State: Show skeleton if balance data is loading OR auth is loading (before user/KYC is known)
+//   if (isLoading && !typedBalanceDetail && !error) {
+//      return (
+//         <div className="py-8 animate-pulse">
+//              {/* Mimic BalanceHeader structure */}
+//              <div className="pb-6 mb-8 border-b">
+//                 <div className="flex sm:flex-row flex-col gap-4 justify-between">
+//                     {/* Left side */}
+//                     <div>
+//                         <div className="flex items-center sm:justify-start justify-center gap-2 mb-4">
+//                             <Skeleton className="w-[50px] h-[50px] rounded-full" />
+//                             <Skeleton className="h-6 w-24" />
+//                         </div>
+//                         <Skeleton className="h-12 w-48 mb-6 sm:mx-0 mx-auto" />
+
+//                         <div className="flex sm:flex-row flex-col items-center gap-4">
+//                             <Skeleton className="h-8 w-64 mb-4 rounded-4xl" />
+//                             <Skeleton className="h-8 w-64 mb-4 rounded-4xl" />
+//                         </div>
+
+//                     </div>
+//                     {/* Right side actions */}
+//                     <div className="flex flex-col justify-start items-center sm:items-end">
+//                          <div className="flex justify-center space-x-6">
+//                               <div className="flex flex-col items-center">
+//                                  <Skeleton className="w-14 h-14 rounded-full mb-1" />
+//                                  <Skeleton className="h-4 w-8" />
+//                               </div>
+//                              <div className="flex flex-col items-center">
+//                                  <Skeleton className="w-14 h-14 rounded-full mb-1" />
+//                                  <Skeleton className="h-4 w-8" />
+//                              </div>
+//                          </div>
+//                     </div>
+//                 </div>
+//              </div>
+//         </div>
+//      );
+//   }
+
+//   // Updated Error State: Show error if balance fetch failed OR if not loading AND balance detail is still null (after auth check)
+//   if ((error && !typedBalanceDetail) || (!isLoading && !typedBalanceDetail)) {
+//     // Ensure we don't show error just because auth might still be loading briefly after balance fetch finishes
+//     const message = typeof error === 'string' ? error : "Balance details not found or you may not have access.";
+//     return (
+//         <div className="container mx-auto px-4 py-8 text-center">
+//             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/40 text-red-700 dark:text-red-300 p-4 rounded-md max-w-lg mx-auto">
+//                  <p className="font-semibold">Error Loading Balance</p>
+//                  <p className="text-sm mt-1">{message}</p>
+//             </div>
+//             <Button onClick={handleBackClick} variant="outline" className="mt-6">Go Back</Button>
+//         </div>
+//      );
+//    }
+
+//    // If we reach here, auth has loaded and balance detail *should* be available (or handled by error state)
+//    // We can safely assume typedBalanceDetail is not null for the main render if no error occurred.
+//    // Added a fallback just in case, but ideally the loading/error states cover this.
+//    if (!typedBalanceDetail) {
+//         console.error("Invariant violation: Reached main render but typedBalanceDetail is null/undefined despite passing loading/error checks.");
+//         return (
+//             <div className="container mx-auto px-4 py-8 text-center">
+//                  <p>Something went wrong. Balance details are unavailable.</p>
+//                  <Button onClick={handleBackClick} variant="outline" className="mt-6">Go Back</Button>
+//             </div>
+//         );
+//    }
+
+//   // --- Main Render Structure ---
+//   return (
+//     <div className="py-8">
+//       <BalanceHeader
+//         balanceDetail={typedBalanceDetail} // Pass the non-null, typed detail
+//         isLoading={isBalanceLoading} // Pass only balance loading state here, overall handled above
+//         onSendClick={handleSendClick} // Pass updated handler
+//         onAddMoneyClick={handleAddMoneyClick} // Pass new handler for Add Money
+//         canSendMoney={hasSufficientFunds} // Pass fund status (visual cue for Send button)
+//         marketRateAgainstINR={marketRateAgainstINR}
+//         ourRateAgainstINR={ourRateAgainstINR}
+//       />
+
+//       {/* --- Transactions Section --- */}
+//       <div className="mt-10">
+//         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky lg:top-28 top-20 z-10 bg-background dark:bg-background">
+//           {" "}
+
+//           {/* Conditionally render Heading OR Skeleton */}
+//           {isTransactionsLoading ? (
+//             <Skeleton className="h-8 w-48 rounded-md" /> // Skeleton for "Transactions" heading
+//           ) : (
+//             <h3 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
+//               Transactions
+//             </h3>
+//           )}
+
+//           {/* Show actions only if NOT loading AND there are transactions */}
+//           {!isTransactionsLoading && balanceSpecificTransactions.length > 0 && (
+//             <TransactionActions
+//               transactions={balanceSpecificTransactions}
+//               onTransactionsChange={handleSearchChange}
+//               onFiltersApply={handleFiltersApply}
+//               userAccounts={[]} // TODO: Pass actual user accounts if filter needs them
+//             />
+//           )}
+//           {/* Show skeleton for actions while transactions are loading */}
+//           {/* This Skeleton apply for Search box and filter button */}
+//           {isTransactionsLoading && (
+//               <div className="flex items-center gap-4 w-full md:w-auto md:justify-end">
+//                 <Skeleton className="h-10 w-full sm:w-64 rounded-full" />
+//                 <Skeleton className="h-10 w-32 rounded-full" />{" "}
+//               </div>
+            
+//           )}
+//         </div>
+
+//         <TransactionList
+//           transactions={displayTransactions}
+//           isLoading={isTransactionsLoading}
+//           error={
+//             typeof error === "string" &&
+//             (error.includes("payment history") ||
+//               error.includes("transfer history"))
+//               ? error
+//               : null
+//           } // Check type before includes
+//           currencyCode={currencyCode}
+//           balanceId={balanceId!}
+//           // Pass handlers/state if needed within list items, otherwise remove
+//           onSendClick={handleSendClick}
+//           canSendMoney={hasSufficientFunds}
+//           wasInitiallyEmpty={wasInitiallyEmpty}
+//         />
+//       </div>
+
+//       {/* Insufficient Balance Modal */}
+//       <InsufficientBalanceModal
+//         isOpen={isInsufficientBalanceModalOpen}
+//         onClose={handleCloseInsufficientBalanceModal}
+//         onAddMoney={handleAddMoneyFromInsufficientModal} // Use updated handler with KYC check
+//         currencyCode={currencyCode}
+//       />
+
+//       {/* --- ADDED: KYC Required Modal --- */}
+//       <KycRequiredModal
+//         isOpen={isKycModalOpen}
+//         onClose={handleCloseKycModal}
+//         onStartVerification={handleStartVerification}
+//       />
+//     </div>
+//   );
+// };
+
+// export default BalanceDetailPage;
+
+
 // frontend/src/app/dashboard/balances/[balanceId]/page.tsx
 "use client";
 
 import React, { useState, useCallback, useMemo, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { parseISO } from "date-fns"; // Ensure date-fns is installed
 
 // Hooks and Services
-import { useAuth } from "../../../contexts/AuthContext"; // Adjust path if needed
-import { useBalanceDetailData } from "../../../hooks/useBalanceDetailData"; // Adjust path if needed
-import { parseISO } from "date-fns"; // Keep for filter parsing
-import exchangeRateService from '../../../services/exchangeRate'; // Import exchange rate service
+import { useAuth } from "../../../contexts/AuthContext"; // Corrected path
+import { useBalanceDetailData } from "../../../hooks/useBalanceDetailData"; // Corrected path
+import exchangeRateService from '../../../services/exchangeRate'; // Corrected path
+import accountService from "../../../services/account"; // Corrected path
 
 // Components and Types
-import BalanceHeader from "../../components/BalanceHeader"; // Adjust path if needed
-import TransactionActions from "../../components/TransactionPageSection/TransactionActions"; // Adjust path if needed
-import TransactionList from "../../components/TransactionList"; // Adjust path if needed
-import { Transaction } from "@/types/transaction"; // Adjust path if needed
-import { BalanceDetail } from "../../../../types/balance"; // Assuming BalanceDetail type exists here or elsewhere
-import { Currency } from "../../../../types/currency"; // Assuming Currency type exists here or elsewhere
-import InsufficientBalanceModal from "../../components/InsufficientBalanceModal"; // Adjust path if needed
-import KycRequiredModal from "../../components/KycRequiredModal"; // Import the new KYC modal
-import { Skeleton } from "@/components/ui/skeleton"; // Adjust path if needed
-import { Button } from "@/components/ui/button"; // Adjust path if needed
-import type { KycStatus } from '@/app/services/kyc'; // Import KYC status type
+import BalanceHeader from "../../components/BalanceHeader"; // Corrected path
+// USE THE SHARED COMPONENTS FROM TransactionPageSection
+import TransactionActions from "../../components/TransactionPageSection/TransactionActions"; // Use SHARED
+import TransactionList from "../../components/TransactionPageSection/TransactionList"; // Use SHARED
+import FilterModal, { FilterSettings } from "../../components/TransactionPageSection/FilterModal"; // Use SHARED
+import { Transaction, TransactionStatus, Currency as TransactionCurrency } from "@/types/transaction"; // Use TransactionCurrency alias if needed
+import { BalanceDetail } from "../../../../types/balance"; // Corrected path
+// Note: Importing Currency from transaction.ts might be sufficient if structure matches Account's CurrencyDetails
+// import { Currency } from "../../../../types/currency"; // Might not be needed if Transaction's Currency is used
+import { Account, CurrencyDetails as AccountCurrency } from "@/types/account"; // Use AccountCurrency alias if needed
+import InsufficientBalanceModal from "../../components/InsufficientBalanceModal"; // Corrected path
+import KycRequiredModal from "../../components/KycRequiredModal"; // Corrected path
+import { Skeleton } from "@/components/ui/skeleton"; // Corrected path
+import { Button } from "@/components/ui/button"; // Corrected path
+import type { KycStatus } from '@/app/services/kyc'; // Corrected path
 
 // --- Interfaces ---
+// Interface defining the structure of the Currency object nested within BalanceDetail
+// This should align with what useBalanceDetailData returns
+interface ExtendedCurrency extends AccountCurrency { // Assuming BalanceDetail uses Account's Currency structure
+  rateAdjustmentPercentage?: number;
+}
 
-// Using Record<string, string | string[]> covers typical path parameters.
+// Interface ensuring the BalanceDetail type uses the ExtendedCurrency
+interface ExtendedBalanceDetail extends Omit<BalanceDetail, 'currency'> { // Use Omit if BalanceDetail is defined elsewhere
+  currency: ExtendedCurrency;
+}
+
 interface BalanceDetailPageParams extends Record<string, string | string[]> {
   balanceId: string;
 }
 
-// --- MODIFIED Interface ---
-// Structure for the exchange rate API response (Matches typical API structure)
 interface ExchangeRateApiResponse {
-    base?: string; // The base currency (e.g., "USD") - Optional if not always present
-    rates?: { [currencyCode: string]: number }; // The map of currency codes to rates
-    // Add other potential properties like 'timestamp', 'date' if the API returns them
-}
-// --- END MODIFICATION ---
-
-
-// Extended interface locally if modifying the shared type isn't feasible immediately
-interface ExtendedCurrency extends Currency {
-    rateAdjustmentPercentage?: number;
-}
-// Ensure BalanceDetail uses this ExtendedCurrency or the updated base Currency type
-interface ExtendedBalanceDetail extends BalanceDetail {
-    currency: ExtendedCurrency;
+  base?: string;
+  rates?: { [currencyCode: string]: number };
 }
 
+// Use FilterSettings directly as AppliedFilters
+type AppliedFilters = FilterSettings;
 
-// --- Utility Function --- (Keep or move to utils)
+// --- Utility Function (keep existing) ---
 function parseDateString(dateString: string | undefined): Date | null {
+    // ... (keep your existing robust parseDateString function)
     if (!dateString) return null;
     try {
-        // Try parsing as ISO 8601 first
         const isoDate = parseISO(dateString);
-        if (!isNaN(isoDate.getTime())) { return isoDate; }
-    } catch (e) {
-        // console.warn("Could not parse date string as ISO:", dateString, e);
-    }
-    // Fallback to DD-MM-YYYY format (adjust if your backend uses a different format)
+        if (!isNaN(isoDate.getTime())) return isoDate;
+    } catch { /* Ignore */ }
     const parts = dateString.split('-');
     if (parts.length === 3) {
-        const day = parseInt(parts[0], 10);
-        const month = parseInt(parts[1], 10) - 1; // Month is 0-indexed in JS Date
-        const year = parseInt(parts[2], 10);
-        if (!isNaN(day) && !isNaN(month) && !isNaN(year) && month >= 0 && month <= 11 && day >= 1 && day <= 31) {
-             const date = new Date(Date.UTC(year, month, day)); // Use UTC to avoid timezone issues if possible
-             // Basic validation
-             if (date.getUTCFullYear() === year && date.getUTCMonth() === month && date.getUTCDate() === day) {
-                 return date;
-             }
+        const day = parseInt(parts[0], 10); const month = parseInt(parts[1], 10) - 1; const year = parseInt(parts[2], 10);
+        if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+             const date = new Date(Date.UTC(year, month, day));
+             if (date.getUTCFullYear() === year && date.getUTCMonth() === month && date.getUTCDate() === day) return date;
         }
     }
-    // Fallback to trying standard Date constructor (less reliable for ambiguous formats)
-    try {
-        const genericDate = new Date(dateString);
-        if (!isNaN(genericDate.getTime())) {
-            return genericDate;
-        }
-    } catch (e) {
-        // console.warn("Could not parse date string with generic Date constructor:", dateString, e);
-    }
-
-    console.warn("Could not parse date string into a valid Date object:", dateString);
-    return null;
+    try { const genericDate = new Date(dateString); if (!isNaN(genericDate.getTime())) return genericDate; } catch { /* Ignore */ }
+    console.warn("Could not parse date string:", dateString); return null;
 }
 
 // --- Component ---
@@ -7000,385 +7466,522 @@ const BalanceDetailPage = () => {
   const params = useParams<BalanceDetailPageParams>();
   const router = useRouter();
   const { balanceId } = params;
-  const { token, user, loading: authLoading } = useAuth(); // Get user, token, and auth loading state
-  const kycStatus: KycStatus | undefined = user?.kyc.status; // Get KYC status from user object
+  const { token, user, loading: authLoading } = useAuth();
+  const kycStatus: KycStatus | undefined = user?.kyc.status;
 
-  // --- Data Fetching using Custom Hook ---
-  // Ensure useBalanceDetailData returns a type compatible with ExtendedBalanceDetail
+  // --- Data Fetching ---
   const {
-      balanceDetail, // Type this as ExtendedBalanceDetail | null within the hook or cast here if necessary
-      balanceSpecificTransactions,
-      isLoading: isBalanceLoading, // Renamed for clarity vs authLoading
-      isTransactionsLoading,
-      error,
-      // fetchData, // Uncomment if you need manual refetching capability from the hook
+    balanceDetail, // Expecting type ExtendedBalanceDetail or casting needed
+    balanceSpecificTransactions, // BASE list of transactions for THIS balance -> Transaction[]
+    isLoading: isBalanceLoading,
+    isTransactionsLoading,
+    error: dataFetchError,
   } = useBalanceDetailData(balanceId);
 
-  // --- State for UI Interaction ---
-  const [displayTransactions, setDisplayTransactions] = useState<Transaction[]>([]);
+  // Ensure balanceDetail conforms to ExtendedBalanceDetail structure if necessary
+  const typedBalanceDetail = balanceDetail as ExtendedBalanceDetail | null;
+
+  const [userAccounts, setUserAccounts] = useState<Account[]>([]); // For filter modal (Recipients)
+  const [loadingAccounts, setLoadingAccounts] = useState(false);
+
+  // --- UI State ---
+  const [displayTransactions, setDisplayTransactions] = useState<Transaction[]>([]); // List shown after search/filter
   const [isInsufficientBalanceModalOpen, setIsInsufficientBalanceModalOpen] = useState(false);
-  const [isKycModalOpen, setIsKycModalOpen] = useState(false); // State for KYC modal
+  const [isKycModalOpen, setIsKycModalOpen] = useState(false);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // --- Filter State ---
+  const [appliedFilters, setAppliedFilters] = useState<AppliedFilters>({
+    selectedRecipients: [],
+    selectedDirection: 'all',
+    selectedStatus: null,
+    selectedBalance: [], // Intentionally unused here, kept for type compatibility
+    fromDate: undefined,
+    toDate: undefined,
+  });
 
   // --- Derived State ---
-  const typedBalanceDetail = balanceDetail as ExtendedBalanceDetail | null; // Use type assertion if hook doesn't return extended type
   const hasSufficientFunds = useMemo(() => (typedBalanceDetail?.balance ?? 0) > 0, [typedBalanceDetail]);
+  // ** CRITICAL: Ensure currencyCode is derived correctly from the potentially extended type **
   const currencyCode = useMemo(() => typedBalanceDetail?.currency?.code ?? 'N/A', [typedBalanceDetail]);
-  const wasInitiallyEmpty = useMemo(() => !isTransactionsLoading && balanceSpecificTransactions.length === 0, [isTransactionsLoading, balanceSpecificTransactions]);
+
+  // Base list from the hook
+  const hasAnyTransactions = useMemo(() => balanceSpecificTransactions.length > 0, [balanceSpecificTransactions]);
+
+  // Filters are active (excluding search term)
+  const filtersAreActive = useMemo(() =>
+    appliedFilters.selectedRecipients.length > 0 ||
+    appliedFilters.selectedDirection !== "all" ||
+    appliedFilters.selectedStatus !== null ||
+    !!appliedFilters.fromDate ||
+    !!appliedFilters.toDate,
+    [appliedFilters]
+  );
+
+   // Show empty state if NOT loading, and the *filtered* list is empty
+   const showEmptyState = useMemo(() =>
+       !isTransactionsLoading && !isBalanceLoading && !authLoading && displayTransactions.length === 0,
+   [isTransactionsLoading, isBalanceLoading, authLoading, displayTransactions]);
 
   const [marketRateAgainstINR, setMarketRateAgainstINR] = useState<number | null>(null);
   const [ourRateAgainstINR, setOurRateAgainstINR] = useState<number | null>(null);
 
-  // --- Effect to Initialize/Reset Display Transactions ---
-  useEffect(() => {
-      setDisplayTransactions(balanceSpecificTransactions);
-  }, [balanceSpecificTransactions]);
-
-
-  // --- Callbacks for TransactionActions (Search/Filter) ---
-  const handleSearchChange = useCallback((searchResults: Transaction[]) => {
-      setDisplayTransactions(searchResults);
-  }, []);
-
-  const handleFiltersApply = useCallback((filters: {
-      selectedDirection?: string;
-      selectedStatus?: string | null;
-      fromDate?: string;
-      toDate?: string;
-  }) => {
-      console.log(`BalanceDetailPage: Applying filters:`, filters);
-      let tempFiltered = [...balanceSpecificTransactions];
-
-      // --- Apply Filters ---
-        const direction = filters.selectedDirection;
-        if (direction && direction !== 'all') {
-            tempFiltered = tempFiltered.filter(tx =>
-                 (direction === 'add' && tx.type === 'Add Money') ||
-                 (direction === 'send' && tx.type === 'Send Money')
-             );
-        }
-
-        const statusFilter = filters.selectedStatus?.toLowerCase();
-        if (statusFilter) {
-             tempFiltered = tempFiltered.filter(tx => {
-                 const txStatus = tx.status;
-                 if (!txStatus) return false;
-                 if (statusFilter === 'needs attention') return tx.type === 'Add Money' && txStatus === 'pending';
-                 if (statusFilter === 'completed') return txStatus === 'completed';
-                 if (statusFilter === 'cancelled') return txStatus === 'canceled'; // Use 'canceled'
-                 if (statusFilter === 'in process') return (tx.type === 'Add Money' && txStatus === 'in progress') || (tx.type === 'Send Money' && (txStatus === 'pending' || txStatus === 'processing'));
-                 if (statusFilter === 'failed') return txStatus === 'failed';
-                 return false;
-              });
-        }
-
-        const fromDateObj = parseDateString(filters.fromDate);
-        const toDateObj = parseDateString(filters.toDate);
-        // Set time parts for inclusive date range filtering
-        if (fromDateObj) fromDateObj.setUTCHours(0, 0, 0, 0);
-        if (toDateObj) toDateObj.setUTCHours(23, 59, 59, 999);
-
-        if (fromDateObj || toDateObj) {
-             tempFiltered = tempFiltered.filter(tx => {
-                 const transactionDateStr = tx.updatedAt || tx.createdAt;
-                 if (!transactionDateStr) return false;
-                 try {
-                     // Assume dates from backend are UTC or ISO strings parsable by Date
-                     const transactionDateObj = new Date(transactionDateStr);
-                     if (isNaN(transactionDateObj.getTime())) return false;
-
-                     let include = true;
-                     if (fromDateObj && transactionDateObj < fromDateObj) include = false;
-                     if (toDateObj && transactionDateObj > toDateObj) include = false;
-                     return include;
-                 } catch (e) {
-                    console.warn("Error parsing transaction date for filtering:", transactionDateStr, e);
-                    return false;
-                 }
-             });
-        }
-      // --- End Filter Logic ---
-
-      setDisplayTransactions(tempFiltered);
-
-  }, [balanceSpecificTransactions]);
-
-
-  // --- KYC Modal Handlers ---
-  const handleOpenKycModal = () => setIsKycModalOpen(true);
-  const handleCloseKycModal = () => setIsKycModalOpen(false);
-  const handleStartVerification = () => {
-      // Navigate to the KYC start page (adjust path as needed)
-      router.push('/kyc/start');
-      handleCloseKycModal(); // Close modal after initiating navigation
-  };
-
-  // --- Insufficient Balance Modal Handlers ---
-  const handleOpenInsufficientBalanceModal = () => setIsInsufficientBalanceModalOpen(true);
-  const handleCloseInsufficientBalanceModal = () => setIsInsufficientBalanceModalOpen(false);
-  const handleAddMoneyFromInsufficientModal = () => {
-      // This ALSO needs the KYC check now
-       if (authLoading || !user) {
-           console.log("Add Money (from modal) blocked: Auth loading or user not available.");
-           return; // Do nothing if auth isn't ready
-       }
-       if (kycStatus !== 'verified') {
-          console.log("Add Money (from modal) blocked: KYC not verified. Opening KYC modal.");
-          handleCloseInsufficientBalanceModal(); // Close this modal first
-          handleOpenKycModal();
-          return;
-      }
-      // If KYC is verified, proceed to add money page
-      console.log("Add Money (from modal) allowed: KYC verified. Navigating.");
-      router.push(`/dashboard/balances/${balanceId}/add-money`);
-      handleCloseInsufficientBalanceModal(); // Close the insufficient balance modal
-  };
-
-   // --- Add/Send/Back Click Handlers ---
-
-    // Handler for the "Add Money" action (called from BalanceHeader)
-    const handleAddMoneyClick = useCallback(() => {
-        console.log("handleAddMoneyClick triggered. KYC Status:", kycStatus);
-        if (authLoading || !user) {
-            console.log("Add Money blocked: Auth loading or user not available.");
-            // Optionally show a toast or do nothing while loading
-            return;
-        }
-        if (kycStatus !== 'verified') {
-            console.log("Add Money blocked: KYC not verified. Opening KYC modal.");
-            handleOpenKycModal();
-        } else {
-            console.log("Add Money allowed: KYC verified. Navigating.");
-            router.push(`/dashboard/balances/${balanceId}/add-money`);
-        }
-    }, [kycStatus, authLoading, user, balanceId, router]); // Added dependencies
-
-    // Handler for the "Send Money" action (called from BalanceHeader)
-    const handleSendClick = useCallback(() => {
-        console.log("handleSendClick triggered. KYC Status:", kycStatus, "Has Sufficient Funds:", hasSufficientFunds);
-         if (authLoading || !user) {
-            console.log("Send Money blocked: Auth loading or user not available.");
-             // Optionally show a toast or do nothing while loading
-             return;
-         }
-        if (kycStatus !== 'verified') {
-            console.log("Send Money blocked: KYC not verified. Opening KYC modal.");
-            handleOpenKycModal();
-        } else if (hasSufficientFunds) {
-            console.log("Send Money allowed: KYC verified and funds sufficient. Navigating.");
-            router.push(`/dashboard/balances/${balanceId}/send/select-recipient`);
-        } else {
-            console.log("Send Money blocked: KYC verified but insufficient funds. Opening insufficient balance modal.");
-            handleOpenInsufficientBalanceModal();
-        }
-    }, [kycStatus, hasSufficientFunds, authLoading, user, balanceId, router]); // Added dependencies
-
-    const handleBackClick = () => router.back();
-
-    // --- Fetch Market and Our Rate against INR ---
+  // --- Effects (keep existing: Mobile Detection, Fetch User Accounts, Fetch Rates) ---
     useEffect(() => {
-        const fetchRatesAgainstINR = async () => {
-            // Use the typed version here
-            if (!typedBalanceDetail || !currencyCode || currencyCode === 'N/A' || currencyCode === 'INR') return; // Don't fetch if base is INR or detail missing
-            try {
-                // Fetch using the service - the type should now match
-                const ratesData: ExchangeRateApiResponse = await exchangeRateService.getExchangeRatesForCurrencies();
+        const handleResize = () => setIsMobile(window.innerWidth < 640); // Adjust breakpoint as needed
+        handleResize(); window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
-                // --- Access data according to the REVISED interface ---
-                const liveRates = ratesData.rates; // Direct access to the rates map
-                const baseCurrency = ratesData.base || 'USD'; // Use base if present, fallback to USD
+    useEffect(() => {
+        const fetchAccounts = async () => {
+            // Fetch accounts ONLY if the filter modal might need them (recipient list)
+            // Avoid fetching if the modal is closed to save resources
+            if (token && isFilterModalOpen) {
+                 setLoadingAccounts(true);
+                 try {
+                     const accounts = await accountService.getUserAccounts(token);
+                     setUserAccounts(accounts);
+                 } catch (err) {
+                      console.error("Failed fetch accounts for filters:", err);
+                      // Optionally set an error state for the filter modal
+                      setUserAccounts([]); // Reset or keep stale data? Reset is safer.
+                  } finally {
+                      setLoadingAccounts(false);
+                  }
+            } else if (!token) {
+                // Ensure accounts are cleared if token becomes unavailable while modal might be open
+                 setUserAccounts([]);
+             }
+        };
+        // Only trigger fetch when modal is open or token appears
+        if (isFilterModalOpen || (token && !userAccounts.length)) { // Added condition to fetch if accounts empty but token exists
+             fetchAccounts();
+        }
+    }, [token, isFilterModalOpen, userAccounts.length]); // Trigger also on userAccounts.length change
+
+     useEffect(() => {
+        const fetchRatesAgainstINR = async () => {
+            // Use the derived currencyCode here
+            if (!typedBalanceDetail || !currencyCode || currencyCode === 'N/A' || currencyCode === 'INR') return;
+
+            try {
+                const ratesData: ExchangeRateApiResponse = await exchangeRateService.getExchangeRatesForCurrencies();
+                const liveRates = ratesData.rates;
+                const baseCurrency = ratesData.base || 'USD'; // Assume base if not provided
 
                 if (liveRates && liveRates[currencyCode] && liveRates['INR']) {
-                    const rateToBase = liveRates[currencyCode]; // Rate of target currency against base
-                    const inrToBase = liveRates['INR'];       // Rate of INR against base
+                    const rateToBase = liveRates[currencyCode];
+                    const inrToBase = liveRates['INR'];
 
                     if (rateToBase === 0) {
-                         console.warn(`Exchange rate for ${currencyCode} against base (${baseCurrency}) is zero.`);
-                         setMarketRateAgainstINR(null);
-                         setOurRateAgainstINR(null);
-                         return;
+                        console.error(`Exchange rate for ${currencyCode} to base currency is zero.`);
+                        setMarketRateAgainstINR(null);
+                        setOurRateAgainstINR(null);
+                        return;
                     }
 
-                    // Calculate rate: (INR/Base) / (CUR/Base) = INR/CUR
                     const liveRateToINR = inrToBase / rateToBase;
                     setMarketRateAgainstINR(liveRateToINR);
 
-                    // Access rateAdjustmentPercentage safely from the typedBalanceDetail
-                    const adjustmentPercent = typeof typedBalanceDetail.currency.rateAdjustmentPercentage === 'number'
-                                                ? typedBalanceDetail.currency.rateAdjustmentPercentage
-                                                : 0; // Default to 0 if not present or not a number
-
+                    // Ensure rateAdjustmentPercentage is a number, default to 0
+                    const adjustmentPercent = typedBalanceDetail.currency?.rateAdjustmentPercentage ?? 0;
                     const adjustedRateMultiplier = (1 + (adjustmentPercent / 100));
-                    const ourRateToINR = liveRateToINR * adjustedRateMultiplier;
-                    setOurRateAgainstINR(ourRateToINR);
+                    setOurRateAgainstINR(liveRateToINR * adjustedRateMultiplier);
 
                 } else {
-                    console.warn(`Could not find live exchange rates for ${currencyCode} or INR in API response. Base: ${baseCurrency}`, liveRates);
-                    setMarketRateAgainstINR(null);
-                    setOurRateAgainstINR(null);
+                     console.error(`Required rates (${currencyCode}, INR) not found in API response.`);
+                     setMarketRateAgainstINR(null);
+                     setOurRateAgainstINR(null);
                 }
-
             } catch (error) {
-                console.error("Error fetching exchange rates for INR comparison:", error);
+                console.error("Error fetching INR exchange rates:", error);
                 setMarketRateAgainstINR(null);
                 setOurRateAgainstINR(null);
             }
         };
         fetchRatesAgainstINR();
-    }, [typedBalanceDetail, currencyCode]); // Depend on typedBalanceDetail and currencyCode
+    }, [typedBalanceDetail, currencyCode]); // Depends on detail and derived code
+
+  // --- Centralized Filter Application Logic (Operates on `balanceSpecificTransactions`) ---
+  // This function takes a base list (initially balanceSpecificTransactions, later maybe search results)
+  // and applies the currently stored `appliedFilters`.
+   const runFilters = useCallback((transactionsToFilter: Transaction[], filters: AppliedFilters): Transaction[] => {
+        let tempFiltered = [...transactionsToFilter]; // Start with the provided list
+
+        // --- Direction Filter ---
+        if (filters.selectedDirection && filters.selectedDirection !== 'all') {
+            tempFiltered = tempFiltered.filter(tx =>
+                (filters.selectedDirection === 'add' && tx.type === 'Add Money') ||
+                (filters.selectedDirection === 'send' && tx.type === 'Send Money')
+            );
+        }
+
+        // --- Status Filter ---
+        const statusFilter = filters.selectedStatus?.toLowerCase();
+        if (statusFilter) {
+            tempFiltered = tempFiltered.filter(tx => {
+                const txStatus = tx.status?.toLowerCase() as TransactionStatus | undefined;
+                if (!txStatus) return false;
+
+                // Use consistent status matching logic as in TransactionsPage
+                 if (statusFilter === 'needs attention') return tx.type === 'Add Money' && txStatus === 'pending';
+                 if (statusFilter === 'in process') return ['pending', 'processing', 'in progress'].includes(txStatus);
+                 if (statusFilter === 'completed') return txStatus === 'completed';
+                 if (statusFilter === 'cancelled' || statusFilter === 'canceled') return ['canceled', 'cancelled'].includes(txStatus); // Allow both spellings
+                 if (statusFilter === 'failed') return txStatus === 'failed';
+                 // Handle direct status names if used by filter component
+                 if (statusFilter === 'pending') return txStatus === 'pending';
+                 if (statusFilter === 'processing') return txStatus === 'processing';
+
+                return false;
+            });
+        }
+
+        // --- Recipient Filter ---
+        if (filters.selectedRecipients.length > 0) {
+            const recipientIds = new Set(filters.selectedRecipients.map(String)); // Ensure comparison is string-based
+
+            tempFiltered = tempFiltered.filter(tx => {
+                if (tx.type !== 'Send Money' || !tx.recipient) {
+                    return false; // Only apply to Send Money transactions with a recipient
+                }
+                // Handle both object and string recipients
+                const currentRecipientId = typeof tx.recipient === 'object' && tx.recipient !== null
+                    ? tx.recipient._id // If object, get the _id
+                    : typeof tx.recipient === 'string'
+                    ? tx.recipient // If string, use the string directly
+                    : null; // No valid ID to check
+
+                 return currentRecipientId !== null && recipientIds.has(String(currentRecipientId)); // Check if ID exists in the Set
+            });
+        }
+
+        // --- Date Filter ---
+        const fromDateObj = parseDateString(filters.fromDate);
+        const toDateObj = parseDateString(filters.toDate);
+        if (fromDateObj) fromDateObj.setUTCHours(0, 0, 0, 0); // Start of the day
+        if (toDateObj) toDateObj.setUTCHours(23, 59, 59, 999); // End of the day
+
+        if (fromDateObj || toDateObj) {
+            tempFiltered = tempFiltered.filter(tx => {
+                const transactionDateStr = tx.updatedAt || tx.createdAt;
+                if (!transactionDateStr) return false;
+                try {
+                    const transactionDateObj = new Date(transactionDateStr);
+                    if (isNaN(transactionDateObj.getTime())) return false; // Invalid date in data
+
+                    let include = true;
+                    if (fromDateObj && transactionDateObj < fromDateObj) include = false;
+                    if (toDateObj && transactionDateObj > toDateObj) include = false;
+                    return include;
+                } catch (e) {
+                    console.warn("Date parse error during filtering:", e, transactionDateStr);
+                    return false;
+                }
+            });
+        }
+
+        // --- Balance Filter is INTENTIONALLY SKIPPED HERE ---
+        // It's already filtered by the page context (balanceId)
+
+        // --- Sort the final list ---
+        tempFiltered.sort((a, b) => {
+            const dA = a.updatedAt || a.createdAt;
+            const dB = b.updatedAt || b.createdAt;
+            // Handle undefined dates defensively
+            if (!dA && !dB) return 0;
+            if (!dA) return 1; // Put items without dates last
+            if (!dB) return -1;
+            try {
+                return new Date(dB).getTime() - new Date(dA).getTime(); // Latest first
+            } catch { return 0; } // Avoid crash on invalid date format
+        });
+
+        return tempFiltered; // Return the processed list
+
+    }, []); // No dependencies needed as it operates on arguments
+
+    // --- Effect to Update Displayed Transactions ---
+    useEffect(() => {
+        // Run the filter logic on the BASE list whenever the BASE list or the filters change.
+        const filtered = runFilters(balanceSpecificTransactions, appliedFilters);
+        setDisplayTransactions(filtered); // Update the state for rendering
+    }, [balanceSpecificTransactions, appliedFilters, runFilters]);
 
 
-  // Combined loading state for initial page render
-  const isLoading = isBalanceLoading || authLoading; // Consider auth loading as part of initial load
+  // --- Callback from Search Component (TransactionActions -> Search) ---
+   const handleSearchChange = useCallback((searchResults: Transaction[]) => {
+        // `searchResults` is a subset of `balanceSpecificTransactions` filtered by the search term.
+        // Now, apply the *currently active filters* (status, date, recipient, etc.) to this search subset.
+        const newlyFilteredFromSearch = runFilters(searchResults, appliedFilters);
+        setDisplayTransactions(newlyFilteredFromSearch);
+    }, [runFilters, appliedFilters]); // Depends on runFilters and the current filters
+
+  // --- Filter Modal Control ---
+  const openFilterModal = () => setIsFilterModalOpen(true);
+  const closeFilterModal = () => setIsFilterModalOpen(false);
+
+  // --- Apply and Clear Filter Handlers (Called by FilterModal) ---
+  const handleApplyFiltersFromModal = useCallback((filtersFromModal: AppliedFilters) => {
+    // Update the main filter state. The useEffect above will trigger re-filtering.
+    setAppliedFilters(filtersFromModal);
+    closeFilterModal();
+  }, []); // No dependency needed, just sets state
+
+  const handleClearAllFilters = useCallback(() => {
+    const clearedFilters: AppliedFilters = {
+      selectedRecipients: [], selectedDirection: "all", selectedStatus: null,
+      selectedBalance: [], fromDate: undefined, toDate: undefined,
+    };
+    // Update the main filter state. The useEffect above will trigger re-filtering.
+    setAppliedFilters(clearedFilters);
+    if (isFilterModalOpen) closeFilterModal(); // Close modal if open
+  }, [isFilterModalOpen]);
+
+
+  // --- Modals & Navigation Handlers (keep existing: KYC, Insufficient Balance, Add/Send/Back clicks) ---
+  const handleOpenKycModal = () => setIsKycModalOpen(true);
+  const handleCloseKycModal = () => setIsKycModalOpen(false);
+  const handleStartVerification = () => { router.push('/kyc/start'); handleCloseKycModal(); };
+
+  const handleOpenInsufficientBalanceModal = () => setIsInsufficientBalanceModalOpen(true);
+  const handleCloseInsufficientBalanceModal = () => setIsInsufficientBalanceModalOpen(false);
+  const handleAddMoneyFromInsufficientModal = () => {
+     if (authLoading || !user) return; // Should not happen if button is visible, but safety first
+     if (kycStatus !== 'verified') { handleCloseInsufficientBalanceModal(); handleOpenKycModal(); return; }
+     router.push(`/dashboard/balances/${balanceId}/add-money`); handleCloseInsufficientBalanceModal();
+  };
+
+  const handleAddMoneyClick = useCallback(() => {
+      if (authLoading || !user) return;
+      if (kycStatus !== 'verified') { handleOpenKycModal(); }
+      else { router.push(`/dashboard/balances/${balanceId}/add-money`); }
+  }, [kycStatus, authLoading, user, balanceId, router]);
+
+  const handleSendClick = useCallback(() => {
+      if (authLoading || !user) return;
+      if (kycStatus !== 'verified') { handleOpenKycModal(); }
+      else if (hasSufficientFunds) { router.push(`/dashboard/balances/${balanceId}/send/select-recipient`); }
+      else { handleOpenInsufficientBalanceModal(); }
+  }, [kycStatus, hasSufficientFunds, authLoading, user, balanceId, router]);
+
+  const handleBackClick = () => router.back(); // Simple back navigation
+
+
+    // --- Combined Loading State ---
+    // Skeleton shown if auth or initial balance detail is loading
+    const showSkeleton = (authLoading || isBalanceLoading) && !typedBalanceDetail && !dataFetchError;
+    // General loading considers ongoing transaction fetch or accounts fetch (for modal)
+    const isLoading = authLoading || isBalanceLoading || isTransactionsLoading; // Don't include loadingAccounts here as it's modal-specific
+
+
+  // --- Group Transactions for Shared List Component ---
+  // This operates on `displayTransactions` (the final filtered/searched list)
+  const { inProgressTransactions, groupedProcessedTransactions } = useMemo(() => {
+        const inProgress = displayTransactions.filter(
+            tx => ['pending', 'processing', 'in progress'].includes(tx.status?.toLowerCase() ?? '')
+        );
+        const processed = displayTransactions.filter(
+             tx => ['completed', 'canceled', 'cancelled', 'failed'].includes(tx.status?.toLowerCase() ?? '')
+        );
+
+        // Sort groups by date (Dates should be valid from sorting in runFilters)
+        const grouped = processed.reduce((groups: { [date: string]: Transaction[] }, tx) => {
+             const dateStr = tx.updatedAt || tx.createdAt;
+             let dateKey = 'Unknown Date';
+             if (dateStr) {
+                 try { dateKey = new Date(dateStr).toLocaleDateString('en-US', { year: "numeric", month: "long", day: "numeric" }); }
+                 catch { dateKey = 'Invalid Date'; } // Should be rare after filtering/sorting checks
+             }
+             if (!groups[dateKey]) groups[dateKey] = [];
+             groups[dateKey].push(tx);
+             return groups;
+         }, {});
+
+        // Get sorted date keys
+         const sortedDateKeys = Object.keys(grouped).sort((a, b) => {
+              if (a === 'Unknown Date' || a === 'Invalid Date') return 1; // Push unknowns/invalids last
+              if (b === 'Unknown Date' || b === 'Invalid Date') return -1;
+              try { return new Date(b).getTime() - new Date(a).getTime(); } // Sort actual dates descending
+              catch { return 0; }
+         });
+
+        // Create sorted grouped object (optional, could also sort during map)
+        const sortedGroupedTransactions: { [date: string]: Transaction[] } = {};
+        sortedDateKeys.forEach(key => {
+            sortedGroupedTransactions[key] = grouped[key];
+         });
+
+
+        // In-progress transactions should also be sorted most recent first
+        inProgress.sort((a, b) => {
+              const dA = a.updatedAt || a.createdAt; const dB = b.updatedAt || b.createdAt;
+              if (!dA && !dB) return 0; if (!dA) return 1; if (!dB) return -1;
+              try { return new Date(dB).getTime() - new Date(dA).getTime(); } catch { return 0; }
+        });
+
+
+        return {
+            inProgressTransactions: inProgress,
+            // groupedProcessedTransactions: grouped, // Original grouping
+            groupedProcessedTransactions: sortedGroupedTransactions, // Sorted grouping
+        };
+  }, [displayTransactions]); // Depends ONLY on the final displayed list
+
 
   // --- Render Logic ---
 
-  // Updated Loading State: Show skeleton if balance data is loading OR auth is loading (before user/KYC is known)
-  if (isLoading && !typedBalanceDetail && !error) {
-     return (
-        <div className="py-6 animate-pulse">
-             {/* Mimic BalanceHeader structure */}
-             <div className="pb-6 mb-8 border-b">
-                <div className="flex sm:flex-row flex-col gap-4 justify-between">
-                    {/* Left side */}
-                    <div>
-                        <div className="flex items-center sm:justify-start justify-center gap-2 mb-4">
-                            <Skeleton className="w-[50px] h-[50px] rounded-full" />
-                            <Skeleton className="h-6 w-24" />
-                        </div>
-                        <Skeleton className="h-12 w-48 mb-6 sm:mx-0 mx-auto" />
-
-                        <div className="flex sm:flex-row flex-col items-center gap-4">
-                            <Skeleton className="h-8 w-64 mb-4 rounded-4xl" />
-                            <Skeleton className="h-8 w-64 mb-4 rounded-4xl" />
-                        </div>
-
-                    </div>
-                    {/* Right side actions */}
-                    <div className="flex flex-col justify-start items-center sm:items-end">
-                         <div className="flex justify-center space-x-6">
-                              <div className="flex flex-col items-center">
-                                 <Skeleton className="w-14 h-14 rounded-full mb-1" />
-                                 <Skeleton className="h-4 w-8" />
-                              </div>
-                             <div className="flex flex-col items-center">
-                                 <Skeleton className="w-14 h-14 rounded-full mb-1" />
-                                 <Skeleton className="h-4 w-8" />
-                             </div>
+  if (showSkeleton) {
+      // Keep your existing Skeleton structure - it seems appropriate
+        return (
+            <div className="py-8 animate-pulse">
+                {/* Mimic BalanceHeader structure */}
+                <div className="pb-6 mb-8 border-b border-gray-200 dark:border-gray-700">
+                    {/* ... Skeleton content ... */}
+                    <div className="flex sm:flex-row flex-col gap-4 justify-between">
+                         <div>
+                            <div className="flex items-center sm:justify-start justify-center gap-2 mb-4"> <Skeleton className="w-12 h-12 rounded-full" /> <Skeleton className="h-6 w-24" /> </div>
+                            <Skeleton className="h-12 w-48 mb-6 sm:mx-0 mx-auto" />
+                            <div className="flex sm:flex-row flex-col items-center gap-4"> <Skeleton className="h-8 w-64 mb-4 rounded-full" /> <Skeleton className="h-8 w-64 mb-4 rounded-full" /> </div>
+                         </div>
+                         <div className="flex flex-col justify-start items-center sm:items-end pt-4 sm:pt-0">
+                             <div className="flex justify-center space-x-6"> <Skeleton className="w-14 h-14 rounded-full mb-1" /> <Skeleton className="w-14 h-14 rounded-full mb-1" /> </div>
+                             <div className="flex justify-center space-x-12 mt-1"> <Skeleton className="h-4 w-8" /> <Skeleton className="h-4 w-8" /> </div>
                          </div>
                     </div>
                 </div>
+                 {/* Mimic Transactions Section Header */}
+                <div className="mt-10">
+                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8">
+                         <Skeleton className="h-8 w-48 rounded-md" />
+                         <div className="flex items-center gap-4 w-full md:w-auto md:justify-end"> <Skeleton className="h-10 w-full sm:w-64 rounded-full" /> <Skeleton className="h-10 w-32 rounded-full" /> </div>
+                     </div>
+                     {/* Mimic List Skeleton */}
+                     <div className="space-y-4 mt-4"> <Skeleton className="h-20 w-full rounded-lg" /> <Skeleton className="h-20 w-full rounded-lg" /> <Skeleton className="h-20 w-full rounded-lg" /> </div>
+                 </div>
              </div>
-        </div>
-     );
+        );
   }
 
-  // Updated Error State: Show error if balance fetch failed OR if not loading AND balance detail is still null (after auth check)
-  if ((error && !typedBalanceDetail) || (!isLoading && !typedBalanceDetail)) {
-    // Ensure we don't show error just because auth might still be loading briefly after balance fetch finishes
-    const message = typeof error === 'string' ? error : "Balance details not found or you may not have access.";
-    return (
-        <div className="container mx-auto px-4 py-8 text-center">
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/40 text-red-700 dark:text-red-300 p-4 rounded-md max-w-lg mx-auto">
-                 <p className="font-semibold">Error Loading Balance</p>
-                 <p className="text-sm mt-1">{message}</p>
-            </div>
-            <Button onClick={handleBackClick} variant="outline" className="mt-6">Go Back</Button>
-        </div>
-     );
-   }
+  // Error State (After skeleton, check for data fetch errors or missing detail)
+    const pageError = dataFetchError || (!isBalanceLoading && !authLoading && !typedBalanceDetail ? "Balance details could not be loaded." : null);
+    if (pageError) {
+         return (
+             <div className="container mx-auto px-4 py-8 text-center">
+                 <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/40 text-red-700 dark:text-red-300 p-4 rounded-md max-w-lg mx-auto">
+                     <p className="font-semibold">Error Loading Balance</p>
+                     <p className="text-sm mt-1">{typeof pageError === 'string' ? pageError : "An unknown error occurred while fetching balance data."}</p>
+                 </div>
+                 <Button onClick={handleBackClick} variant="outline" className="mt-6">Go Back</Button>
+             </div>
+          );
+    }
 
-   // Added a fallback just in case, but ideally the loading/error states cover this.
-   if (!typedBalanceDetail) {
-        console.error("Invariant violation: Reached main render but typedBalanceDetail is null/undefined despite passing loading/error checks.");
+  // If we passed loading and error checks, but still don't have the detail (shouldn't happen)
+  if (!typedBalanceDetail) {
+        console.error("BalanceDetailPage: Reached render stage without typedBalanceDetail, despite passing loading/error checks.");
         return (
             <div className="container mx-auto px-4 py-8 text-center">
-                 <p>Something went wrong. Balance details are unavailable.</p>
+                 <p>Something unexpected went wrong. Balance details are unavailable.</p>
                  <Button onClick={handleBackClick} variant="outline" className="mt-6">Go Back</Button>
             </div>
-        );
-   }
+         );
+    }
 
   // --- Main Render Structure ---
   return (
-    <div className="py-6">
-      <BalanceHeader
-        balanceDetail={typedBalanceDetail} // Pass the non-null, typed detail
-        isLoading={isBalanceLoading} // Pass only balance loading state here, overall handled above
-        onSendClick={handleSendClick} // Pass updated handler
-        onAddMoneyClick={handleAddMoneyClick} // Pass new handler for Add Money
-        canSendMoney={hasSufficientFunds} // Pass fund status (visual cue for Send button)
-        marketRateAgainstINR={marketRateAgainstINR}
-        ourRateAgainstINR={ourRateAgainstINR}
-      />
+      <> {/* Fragment needed for Modal co-location */}
+          <div className="py-8"> {/* Main page content wrapper */}
+              {/* --- Balance Header --- */}
+              <BalanceHeader
+                  balanceDetail={typedBalanceDetail} // Pass the correctly typed detail
+                  isLoading={isBalanceLoading} // Reflect balance detail loading state
+                  onSendClick={handleSendClick}
+                  onAddMoneyClick={handleAddMoneyClick}
+                  canSendMoney={hasSufficientFunds}
+                  marketRateAgainstINR={marketRateAgainstINR}
+                  ourRateAgainstINR={ourRateAgainstINR}
+              />
 
-      {/* --- Transactions Section --- */}
-      <div className="mt-0">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky lg:top-28 top-20 z-10 bg-background dark:bg-background">
-          {" "}
+              {/* --- Transactions Section --- */}
+              <div className="mt-10">
+                  {/* Sticky Header: Title + Actions */}
+                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky lg:top-28 top-20 z-10 bg-background dark:bg-background border-b border-gray-200 dark:border-primarybox mb-6">
+                       <h3 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white flex-shrink-0">
+                          Transactions
+                       </h3>
 
-          {/* Conditionally render Heading OR Skeleton */}
-          {isTransactionsLoading ? (
-            <Skeleton className="h-8 w-48 rounded-md" /> // Skeleton for "Transactions" heading
-          ) : (
-            <h3 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
-              Transactions
-            </h3>
-          )}
+                       {/* Transaction Actions (Search / Filter Button) */}
+                       <div className="w-full md:w-auto"> {/* Container for actions */}
+                          {/* Show skeleton only if initial transaction load is happening */}
+                           {isTransactionsLoading && !hasAnyTransactions && (
+                               <div className="flex items-center gap-4 w-full md:w-auto md:justify-end animate-pulse">
+                                   <Skeleton className="h-10 w-full sm:w-64 rounded-full" />
+                                   <Skeleton className="h-10 w-32 rounded-full" />
+                               </div>
+                            )}
+                            {/* Show actions if NOT loading OR if transactions exist (even if reloading) */}
+                           {!isTransactionsLoading || hasAnyTransactions ? (
+                                // Render only if there are transactions to search/filter OR if not loading
+                                hasAnyTransactions || !isTransactionsLoading ? (
+                                      <TransactionActions
+                                         // Provide the BASE list for searching within this balance
+                                          transactions={balanceSpecificTransactions}
+                                          onTransactionsChange={handleSearchChange} // Hook up search handler
+                                          onFilterButtonClick={openFilterModal}     // Hook up filter open handler
+                                      />
+                                 ) : (
+                                    // Case: Not loading, but no transactions exist yet. Maybe show disabled actions or nothing.
+                                     <div className="h-10"></div> // Placeholder for height consistency
+                                 )
+                           ) : null}
+                       </div>
+                   </div>
 
-          {/* Show actions only if NOT loading AND there are transactions */}
-          {!isTransactionsLoading && balanceSpecificTransactions.length > 0 && (
-            <TransactionActions
-              transactions={balanceSpecificTransactions}
-              onTransactionsChange={handleSearchChange}
-              onFiltersApply={handleFiltersApply}
-              userAccounts={[]} // TODO: Pass actual user accounts if filter needs them
-            />
-          )}
-          {/* Show skeleton for actions while transactions are loading */}
-          {/* This Skeleton apply for Search box and filter button */}
-          {isTransactionsLoading && (
-              <div className="flex items-center gap-4 w-full md:w-auto md:justify-end">
-                <Skeleton className="h-10 w-full sm:w-64 rounded-full" />
-                <Skeleton className="h-10 w-32 rounded-full" />{" "}
-              </div>
-            
-          )}
-        </div>
 
-        <TransactionList
-          transactions={displayTransactions}
-          isLoading={isTransactionsLoading}
-          error={
-            typeof error === "string" &&
-            (error.includes("payment history") ||
-              error.includes("transfer history"))
-              ? error
-              : null
-          } // Check type before includes
-          currencyCode={currencyCode}
-          balanceId={balanceId!}
-          // Pass handlers/state if needed within list items, otherwise remove
-          onSendClick={handleSendClick}
-          canSendMoney={hasSufficientFunds}
-          wasInitiallyEmpty={wasInitiallyEmpty}
-        />
-      </div>
+                    {/* The Shared Transaction List Component */}
+                   <TransactionList
+                       inProgressTransactions={inProgressTransactions}
+                       groupedProcessedTransactions={groupedProcessedTransactions}
+                       filtersAreActive={filtersAreActive}
+                       onClearFiltersClick={handleClearAllFilters}
+                       hasAnyTransactions={hasAnyTransactions} // Based on BASE list for accurate message
+                       showEmptyState={showEmptyState} // Based on DISPLAY list
+                       // ** CRITICAL PROP FOR FALLBACK **
+                       currencyCode={currencyCode} // Pass the main currency code of THIS page
+                       balanceId={balanceId} // Pass balanceId if needed by link structure inside
+                   />
+              </div> {/* End Transactions Section */}
 
-      {/* Insufficient Balance Modal */}
-      <InsufficientBalanceModal
-        isOpen={isInsufficientBalanceModalOpen}
-        onClose={handleCloseInsufficientBalanceModal}
-        onAddMoney={handleAddMoneyFromInsufficientModal} // Use updated handler with KYC check
-        currencyCode={currencyCode}
-      />
+              {/* --- Modals (Keep existing) --- */}
+              <InsufficientBalanceModal
+                   isOpen={isInsufficientBalanceModalOpen}
+                   onClose={handleCloseInsufficientBalanceModal}
+                   onAddMoney={handleAddMoneyFromInsufficientModal}
+                   currencyCode={currencyCode} // Pass current currency code
+              />
+              <KycRequiredModal
+                  isOpen={isKycModalOpen}
+                  onClose={handleCloseKycModal}
+                  onStartVerification={handleStartVerification}
+              />
 
-      {/* --- ADDED: KYC Required Modal --- */}
-      <KycRequiredModal
-        isOpen={isKycModalOpen}
-        onClose={handleCloseKycModal}
-        onStartVerification={handleStartVerification}
-      />
-    </div>
+          </div> {/* End Main Page Content Wrapper */}
+
+          {/* --- FILTER MODAL (Render outside main content flow) --- */}
+          <FilterModal
+              isOpen={isFilterModalOpen}
+              onClose={closeFilterModal}
+              onApply={handleApplyFiltersFromModal}
+              onClearAll={handleClearAllFilters}
+              initialFilters={appliedFilters} // Current filter state
+              userAccounts={userAccounts} // Accounts for Recipient filter
+              isMobile={isMobile} // For animation style
+              hideBalanceFilter={true} // *** IMPORTANT: HIDE Balance filter section ***
+          />
+      </> // End Fragment
   );
 };
 
