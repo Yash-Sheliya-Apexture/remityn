@@ -165,7 +165,6 @@ export default function DashboardLayout({ children }) {
           </div>
         </div>
       </div>
-      {/* Add the BackToTopButton here, outside the main flex content flow */}
       <BackToTopButton />
     </div>
   );

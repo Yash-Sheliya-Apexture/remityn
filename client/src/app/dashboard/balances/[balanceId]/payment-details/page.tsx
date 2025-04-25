@@ -8,7 +8,6 @@
 
 // axios.defaults.baseURL = apiConfig.baseUrl;
 
-
 // interface PaymentDetailsPageParams {
 //     balanceId: string;
 // }
@@ -35,7 +34,6 @@
 //     createdAt: string;
 //     __v: number;
 // }
-
 
 // const PaymentDetailsPage = () => {
 //     const params = useParams<PaymentDetailsPageParams>();
@@ -86,7 +84,6 @@
 
 //     const payInCurrencyCode = paymentDetails.payInCurrency.code;
 //     const amountToPay = parseFloat(paymentDetails.amountToPay).toFixed(2);
-
 
 //     return (
 //         <div className="container mx-auto px-4 py-8">
@@ -166,7 +163,6 @@
 // };
 
 // export default PaymentDetailsPage;
-
 
 // 'use client';
 // import React, { useState, useEffect } from 'react';
@@ -265,7 +261,6 @@
 //         });
 //     };
 
-
 //     return (
 //         <div className="container mx-auto px-4 py-8">
 //             <button onClick={() => router.back()} className="mb-4 flex items-center gap-2">
@@ -344,9 +339,6 @@
 // };
 
 // export default PaymentDetailsPage;
-
-
-
 
 // "use client";
 // import React, { useState, useEffect } from 'react';
@@ -681,7 +673,6 @@
 
 // export default PaymentDetailsPage;
 
-
 // "use client";
 // import React, { useState, useEffect } from 'react';
 // import { useParams, useRouter, useSearchParams } from 'next/navigation';
@@ -784,11 +775,11 @@
 //             toast.error(`Nothing to copy for ${fieldName}`);
 //             return;
 //         }
-        
+
 //         navigator.clipboard.writeText(text).then(() => {
 //             setCopiedField(fieldName);
 //             toast.success(`${fieldName} copied to clipboard`);
-            
+
 //             // Reset copied field after 2 seconds
 //             setTimeout(() => setCopiedField(null), 2000);
 //         }).catch(err => {
@@ -841,7 +832,7 @@
 //                     <Skeleton className="h-8 w-40" />
 //                     <Skeleton className="h-4 w-full max-w-sm" />
 //                 </div>
-                
+
 //                 <Card>
 //                     <CardHeader>
 //                         <Skeleton className="h-6 w-3/4" />
@@ -854,7 +845,7 @@
 //                                 <Skeleton className="h-5 w-48" />
 //                             </div>
 //                         ))}
-                        
+
 //                         <div className="pt-4 space-y-3">
 //                             <Skeleton className="h-12 w-full rounded-md" />
 //                             <Skeleton className="h-12 w-full rounded-md" />
@@ -909,12 +900,12 @@
 //                         Make a standard bank transfer using these details. Ensure the reference code is included.
 //                     </CardDescription>
 //                 </CardHeader>
-                
+
 //                 <CardContent className="space-y-6">
 //                     {/* Bank Details Section */}
 //                     <div>
 //                         <h3 className="text-sm font-medium text-muted-foreground mb-3">Payment details</h3>
-                        
+
 //                         <div className="space-y-3">
 //                             {/* Payee Name */}
 //                             <div className="bg-background border rounded-lg p-3 flex justify-between items-center">
@@ -922,9 +913,9 @@
 //                                     <p className="text-xs text-muted-foreground mb-1">Payee name</p>
 //                                     <p className="font-medium">{bankDetails.payeeName || 'Wise Europe SA'}</p>
 //                                 </div>
-//                                 <Button 
-//                                     variant="ghost" 
-//                                     size="sm" 
+//                                 <Button
+//                                     variant="ghost"
+//                                     size="sm"
 //                                     onClick={() => handleCopyToClipboard(bankDetails.payeeName || 'Wise Europe SA', 'Payee name')}
 //                                     className="text-primary h-8 px-2"
 //                                 >
@@ -935,7 +926,7 @@
 //                                     )}
 //                                 </Button>
 //                             </div>
-                            
+
 //                             {/* Reference Code */}
 //                             <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg p-3 flex justify-between items-center">
 //                                 <div>
@@ -947,9 +938,9 @@
 //                                     </div>
 //                                     <p className="font-medium font-mono">{referenceCode}</p>
 //                                 </div>
-//                                 <Button 
-//                                     variant="ghost" 
-//                                     size="sm" 
+//                                 <Button
+//                                     variant="ghost"
+//                                     size="sm"
 //                                     onClick={() => handleCopyToClipboard(referenceCode, 'Reference code')}
 //                                     className="text-primary h-8 px-2"
 //                                 >
@@ -960,16 +951,16 @@
 //                                     )}
 //                                 </Button>
 //                             </div>
-                            
+
 //                             {/* IBAN */}
 //                             <div className="bg-background border rounded-lg p-3 flex justify-between items-center">
 //                                 <div>
 //                                     <p className="text-xs text-muted-foreground mb-1">IBAN</p>
 //                                     <p className="font-medium font-mono">{bankDetails.iban || 'N/A'}</p>
 //                                 </div>
-//                                 <Button 
-//                                     variant="ghost" 
-//                                     size="sm" 
+//                                 <Button
+//                                     variant="ghost"
+//                                     size="sm"
 //                                     onClick={() => handleCopyToClipboard(bankDetails.iban, 'IBAN')}
 //                                     className="text-primary h-8 px-2"
 //                                 >
@@ -980,16 +971,16 @@
 //                                     )}
 //                                 </Button>
 //                             </div>
-                            
+
 //                             {/* BIC/SWIFT */}
 //                             <div className="bg-background border rounded-lg p-3 flex justify-between items-center">
 //                                 <div>
 //                                     <p className="text-xs text-muted-foreground mb-1">Bank code (BIC/SWIFT)</p>
 //                                     <p className="font-medium font-mono">{bankDetails.bicSwift || 'N/A'}</p>
 //                                 </div>
-//                                 <Button 
-//                                     variant="ghost" 
-//                                     size="sm" 
+//                                 <Button
+//                                     variant="ghost"
+//                                     size="sm"
 //                                     onClick={() => handleCopyToClipboard(bankDetails.bicSwift, 'BIC/SWIFT')}
 //                                     className="text-primary h-8 px-2"
 //                                 >
@@ -1000,7 +991,7 @@
 //                                     )}
 //                                 </Button>
 //                             </div>
-                            
+
 //                             {/* Amount */}
 //                             <div className="bg-background border rounded-lg p-3 flex justify-between items-center">
 //                                 <div>
@@ -1009,9 +1000,9 @@
 //                                         {amountToPay} <span className="text-muted-foreground">{payInCurrencyCode}</span>
 //                                     </p>
 //                                 </div>
-//                                 <Button 
-//                                     variant="ghost" 
-//                                     size="sm" 
+//                                 <Button
+//                                     variant="ghost"
+//                                     size="sm"
 //                                     onClick={() => handleCopyToClipboard(`${amountToPay} ${payInCurrencyCode}`, 'Amount to send')}
 //                                     className="text-primary h-8 px-2"
 //                                 >
@@ -1075,10 +1066,6 @@
 
 // export default PaymentDetailsPage;
 
-
-
-
-
 // "use client";
 // import React, { useState, useEffect } from 'react';
 // import { useParams, useRouter, useSearchParams } from 'next/navigation';
@@ -1119,7 +1106,6 @@
 // interface PaymentDetailsPageParams {
 //     balanceId: string;
 // }
-
 
 // // --- DetailItem Component (Updated as above) ---
 // interface DetailItemProps {
@@ -1186,7 +1172,6 @@
 //     );
 // };
 // // --- End DetailItem Component ---
-
 
 // const PaymentDetailsPage = () => {
 //     // --- Hooks (keep as before) ---
@@ -1293,7 +1278,6 @@
 //         router.push('/dashboard/transactions');
 //     };
 //     // --- END Action Handlers ---
-
 
 //     // --- Render Logic ---
 
@@ -1446,9 +1430,6 @@
 
 // export default PaymentDetailsPage;
 
-
-
-
 // "use client";
 // import React, { useState, useEffect } from 'react';
 // import { useParams, useRouter, useSearchParams } from 'next/navigation';
@@ -1489,7 +1470,6 @@
 // interface PaymentDetailsPageParams {
 //     balanceId: string;
 // }
-
 
 // // --- DetailItem Component ---
 // interface DetailItemProps {
@@ -1556,7 +1536,6 @@
 //     );
 // };
 // // --- End DetailItem Component ---
-
 
 // const PaymentDetailsPage = () => {
 //     // --- Hooks ---
@@ -1700,7 +1679,6 @@
 //         router.push('/dashboard/transactions');
 //     };
 //     // --- END Action Handlers ---
-
 
 //     // --- Render Logic ---
 
@@ -1874,448 +1852,589 @@
 
 // export default PaymentDetailsPage;
 
-
-
 "use client";
-import React, { useState, useEffect } from 'react';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { useAuth } from '../../../../contexts/AuthContext'; // Adjust path
-import paymentService from '../../../../services/payment'; // Adjust path
-import { Skeleton } from '@/components/ui/skeleton'; // Adjust path
-import { Button } from '@/components/ui/button'; // Adjust path
+import React, { useState, useEffect } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useAuth } from "../../../../contexts/AuthContext"; // Adjust path
+import paymentService from "../../../../services/payment"; // Adjust path
+import { Skeleton } from "@/components/ui/skeleton"; // Adjust path
+import { Button } from "@/components/ui/button"; // Adjust path
 // import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"; // Optional Card structure
-import { Copy, HelpCircle, Download, AlertTriangle, Loader2, Check } from 'lucide-react';
-import { Toaster, toast } from 'sonner';
+import {
+  Copy,
+  HelpCircle,
+  Download,
+  AlertTriangle,
+  Loader2,
+  Check,
+} from "lucide-react";
+import { Toaster, toast } from "sonner";
+import { IoMdCopy } from "react-icons/io";
+import { FaCheck, FaCopy } from "react-icons/fa6";
 
 // --- PaymentDetails Interface ---
 interface PaymentDetails {
-    _id: string;
-    user: string; // Ensure this matches API response structure
-    balanceCurrency: { _id: string; code: string; };
-    payInCurrency: { _id: string; code: string; };
-    amountToAdd: number;
-    amountToPay: number | string; // Allow string type for amountToPay
-    exchangeRate: number;
-    wiseFee: number;
-    bankTransferFee: number;
-    referenceCode: string;
-    paymentMethod: string;
-    status: string;
-    bankDetails: {
-        payeeName?: string;
-        iban?: string;
-        bicSwift?: string;
-        bankAddress?: string;
-    };
-    createdAt: string;
-    updatedAt?: string;
-    __v?: number;
+  _id: string;
+  user: string; // Ensure this matches API response structure
+  balanceCurrency: { _id: string; code: string };
+  payInCurrency: { _id: string; code: string };
+  amountToAdd: number;
+  amountToPay: number | string; // Allow string type for amountToPay
+  exchangeRate: number;
+  wiseFee: number;
+  bankTransferFee: number;
+  referenceCode: string;
+  paymentMethod: string;
+  status: string;
+  bankDetails: {
+    payeeName?: string;
+    iban?: string;
+    bicSwift?: string;
+    bankAddress?: string;
+  };
+  createdAt: string;
+  updatedAt?: string;
+  __v?: number;
 }
 
 // --- DetailItem Component (Keep as is) ---
 interface DetailItemProps {
-    label: string;
-    value: string | undefined | null;
-    fieldName: string;
-    isMono?: boolean;
-    className?: string;
+  label: string;
+  value: string | undefined | null;
+  fieldName: string;
+  isMono?: boolean;
+  className?: string;
 }
 
-const DetailItem: React.FC<DetailItemProps> = ({ label, value, fieldName, isMono = false, className = '' }) => {
-    const displayValue = value || 'N/A';
-    const [isCopied, setIsCopied] = useState(false);
+const DetailItem: React.FC<DetailItemProps> = ({
+  label,
+  value,
+  fieldName,
+  isMono = false,
+  className = "",
+}) => {
+  const displayValue = value || "N/A";
+  const [isCopied, setIsCopied] = useState(false);
 
-    const handleCopyToClipboard = (text: string) => {
-        if (!text || text === 'N/A') {
-            return;
-        }
-        if (isCopied) return;
+  const handleCopyToClipboard = (text: string) => {
+    if (!text || text === "N/A") {
+      return;
+    }
+    if (isCopied) return;
 
-        navigator.clipboard.writeText(text).then(() => {
-            setIsCopied(true);
-            setTimeout(() => {
-                setIsCopied(false);
-            }, 1500);
-        }).catch(err => {
-            console.error(`DetailItem (${fieldName}): Failed to copy text: `, err);
-            toast.error("Could not copy to clipboard.");
-            setIsCopied(false);
-        });
-    };
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        setIsCopied(true);
+        setTimeout(() => {
+          setIsCopied(false);
+        }, 1500);
+      })
+      .catch((err) => {
+        console.error(`DetailItem (${fieldName}): Failed to copy text: `, err);
+        toast.error("Could not copy to clipboard.");
+        setIsCopied(false);
+      });
+  };
 
-    return (
-        <div className={`bg-lightgray dark:bg-primarybox p-4 rounded-lg flex justify-between items-center gap-4 ${className}`}>
-            <div className="flex-1 min-w-0">
-                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{label}</p>
-                <p className={`font-semibold text-foreground break-words ${isMono ? 'font-mono' : ''}`}>
-                    {displayValue}
-                </p>
-            </div>
-            {value && value !== 'N/A' && (
-                 <button
-                    onClick={() => handleCopyToClipboard(displayValue)}
-                    aria-label={`Copy ${fieldName}`}
-                    className={`
-                        flex justify-center items-center shrink-0 h-8 px-3 py-1 text-xs sm:text-sm font-medium rounded-md transition-colors duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50
-                        bg-secondarybox/26 hover:bg-secondarybox/50 text-neutral-700 dark:bg-secondarybox dark:hover:bg-[#727272] dark:text-zinc-100 cursor-pointer
+  return (
+    <div
+      className={`bg-gray/10 dark:bg-white/5 p-4 rounded-lg flex justify-between items-center gap-4 ${className}`}
+    >
+      <div className="flex-1 min-w-0">
+        <p className="text-xs text-gray-700 dark:text-gray-300 mb-1">{label}</p>
+        <p
+          className={`font-semibold text-foreground break-words ${
+            isMono ? "font-mono" : ""
+          }`}
+        >
+          {displayValue}
+        </p>
+      </div>
+      {value && value !== "N/A" && (
+        <button
+          onClick={() => handleCopyToClipboard(displayValue)}
+          aria-label={`Copy ${fieldName}`}
+          className={`
+                        bg-white/50 dark:bg-primarybox text-sm hover:dark:bg-secondarybox transition-all duration-75 ease-linear cursor-pointer rounded-lg px-4 py-2 font-medium text-neutral-900 dark:text-primary focus:outline-none flex items-center
                     `}
-                    disabled={isCopied}
-                >
-                    {isCopied ? (
-                        <Check className="h-3.5 w-3.5 mr-1.5" />
-                    ) : (
-                        <Copy className="h-3.5 w-3.5 mr-1.5" />
-                    )}
-                    {isCopied ? 'Copied!' : 'Copy'}
-                </button>
-            )}
-        </div>
-    );
+          disabled={isCopied}
+        >
+          {isCopied ? (
+            <FaCheck  className="size-4 mr-1.5" />
+          ) : (
+            <FaCopy className="size-4 mr-1.5" />
+          )}
+          {isCopied ? "Copied!" : "Copy"}
+        </button>
+      )}
+    </div>
+  );
 };
 // --- End DetailItem Component ---
 
-
 const PaymentDetailsPage = () => {
-    // --- Hooks ---
-    const params = useParams();
-    const searchParams = useSearchParams();
-    const router = useRouter();
-    const { token } = useAuth();
+  // --- Hooks ---
+  const params = useParams();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const { token } = useAuth();
 
-    // --- State ---
-    const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+  // --- State ---
+  const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(
+    null
+  );
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-    // --- Vars ---
-    const balanceId = params.balanceId as string | undefined;
-    const paymentId = searchParams.get('paymentId');
+  // --- Vars ---
+  const balanceId = params.balanceId as string | undefined;
+  const paymentId = searchParams.get("paymentId");
 
-    // --- Data Fetching Effect ---
-    useEffect(() => {
-        const fetchPaymentDetails = async () => {
-            setIsLoading(true);
-            setError(null);
-            console.log("PaymentDetailsPage: Fetching details for paymentId:", paymentId, "balanceId:", balanceId);
+  // --- Data Fetching Effect ---
+  useEffect(() => {
+    const fetchPaymentDetails = async () => {
+      setIsLoading(true);
+      setError(null);
+      console.log(
+        "PaymentDetailsPage: Fetching details for paymentId:",
+        paymentId,
+        "balanceId:",
+        balanceId
+      );
 
-            // Validation... (keep as before)
-            if (!paymentId) {
-                setError("Payment ID is missing from URL.");
-                setIsLoading(false);
-                console.error("PaymentDetailsPage: No paymentId found.");
-                toast.error("Payment ID missing. Redirecting...");
-                router.push(balanceId ? `/dashboard/balances/${balanceId}` : '/dashboard/transactions');
-                return;
+      // Validation... (keep as before)
+      if (!paymentId) {
+        setError("Payment ID is missing from URL.");
+        setIsLoading(false);
+        console.error("PaymentDetailsPage: No paymentId found.");
+        toast.error("Payment ID missing. Redirecting...");
+        router.push(
+          balanceId
+            ? `/dashboard/balances/${balanceId}`
+            : "/dashboard/transactions"
+        );
+        return;
+      }
+      if (!balanceId) {
+        setError("Balance context is missing from URL.");
+        setIsLoading(false);
+        console.error(
+          "PaymentDetailsPage: No balanceId found in route params."
+        );
+        toast.error("Balance context missing. Redirecting...");
+        router.push("/dashboard/balances");
+        return;
+      }
+      if (!token) {
+        setError("Authentication required. Please log in.");
+        setIsLoading(false);
+        toast.error("Authentication required. Redirecting to login...");
+        router.push("/auth/login");
+        return;
+      }
+
+      try {
+        const details = await paymentService.getPaymentDetails(
+          paymentId,
+          token
+        );
+        // <-- FIX: Use 'unknown' assertion (Workaround - ideally fix service typing)
+        setPaymentDetails(details as unknown as PaymentDetails);
+        // console.log("Fetched Details:", details);
+      } catch (err: unknown) {
+        let errMsg = "Failed to load payment details";
+        let statusCode: number | undefined;
+
+        if (typeof err === "object" && err !== null && "response" in err) {
+          const response = (
+            err as {
+              response?: { data?: { message?: string }; status?: number };
             }
-             if (!balanceId) {
-                setError("Balance context is missing from URL.");
-                setIsLoading(false);
-                console.error("PaymentDetailsPage: No balanceId found in route params.");
-                toast.error("Balance context missing. Redirecting...");
-                router.push('/dashboard/balances');
-                return;
-            }
-            if (!token) {
-                 setError("Authentication required. Please log in.");
-                 setIsLoading(false);
-                 toast.error("Authentication required. Redirecting to login...");
-                 router.push('/auth/login');
-                 return;
-            }
-
-            try {
-                const details = await paymentService.getPaymentDetails(paymentId, token);
-                // <-- FIX: Use 'unknown' assertion (Workaround - ideally fix service typing)
-                setPaymentDetails(details as unknown as PaymentDetails);
-                // console.log("Fetched Details:", details);
-            } catch (err: unknown) {
-                let errMsg = 'Failed to load payment details';
-                let statusCode: number | undefined;
-
-                if (typeof err === 'object' && err !== null && 'response' in err) {
-                    const response = (err as { response?: { data?: { message?: string }, status?: number } }).response;
-                    errMsg = response?.data?.message || errMsg;
-                    statusCode = response?.status;
-                } else if (err instanceof Error) {
-                    errMsg = err.message;
-                }
-
-                setError(errMsg);
-                console.error("PaymentDetailsPage: Error fetching payment details:", err);
-
-                if (statusCode === 404) {
-                    setError(`Payment with ID ${paymentId} not found or you don't have access.`);
-                } else if (statusCode === 401 || statusCode === 403) {
-                     setError("Unauthorized to view this payment.");
-                     toast.error("Unauthorized. Redirecting...");
-                     router.push('/dashboard');
-                } else {
-                    toast.error(`Error: ${errMsg}`);
-                }
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchPaymentDetails();
-    }, [paymentId, balanceId, token, router]);
-
-    // --- Action Handlers (Keep as is) ---
-     const handleIvePaid = async () => {
-        console.log("PaymentDetailsPage: handleIvePaid triggered");
-        setError(null);
-
-        if (!paymentId || !token || !balanceId) {
-            const missing = [!paymentId && "Payment ID", !token && "Token", !balanceId && "Balance ID"].filter(Boolean).join(", ");
-            const errorMsg = `Cannot proceed: Missing ${missing}. Please refresh or go back.`;
-            setError(errorMsg);
-            console.error("PaymentDetailsPage: Missing critical data for handleIvePaid:", { paymentId, token, balanceId });
-            toast.error(errorMsg);
-            return;
+          ).response;
+          errMsg = response?.data?.message || errMsg;
+          statusCode = response?.status;
+        } else if (err instanceof Error) {
+          errMsg = err.message;
         }
 
-        setIsSubmitting(true);
-        console.log("PaymentDetailsPage: Submitting... paymentId:", paymentId, "balanceId:", balanceId);
+        setError(errMsg);
+        console.error(
+          "PaymentDetailsPage: Error fetching payment details:",
+          err
+        );
 
-        try {
-            try {
-                console.log("PaymentDetailsPage: Attempting paymentService.confirmUserTransfer");
-                await paymentService.confirmUserTransfer(paymentId, token);
-                console.log("PaymentDetailsPage: confirmUserTransfer successful");
-                toast.success("Payment marked as initiated!");
-            } catch (confirmErr: unknown) {
-                 let confirmErrMsg = 'Could not confirm payment initiation';
-                 if (typeof confirmErr === 'object' && confirmErr !== null && 'response' in confirmErr) {
-                     const response = (confirmErr as { response?: { data?: { message?: string } } }).response;
-                     confirmErrMsg = response?.data?.message || confirmErrMsg;
-                 } else if (confirmErr instanceof Error) {
-                    confirmErrMsg = confirmErr.message;
-                 }
-                 console.error("PaymentDetailsPage: Failed to update payment status via confirmUserTransfer:", confirmErrMsg, confirmErr);
-                 setError(`Note: Couldn't automatically update status: ${confirmErrMsg}. Redirecting anyway...`);
-                 toast.warning(`Couldn't confirm payment status: ${confirmErrMsg}. Proceeding...`);
-            }
-
-            const successUrl = `/dashboard/balances/${balanceId}/payment-success?paymentId=${paymentId}`;
-            console.log("PaymentDetailsPage: Navigating to success page:", successUrl);
-            router.push(successUrl);
-
-        } catch (err: unknown) {
-            let errMsg = 'An unexpected error occurred while trying to proceed.';
-             if (typeof err === 'object' && err !== null && 'response' in err) {
-                 const response = (err as { response?: { data?: { message?: string } } }).response;
-                 errMsg = response?.data?.message || errMsg;
-             } else if (err instanceof Error) {
-                errMsg = err.message;
-             }
-            setError(`Failed to proceed: ${errMsg}`);
-            console.error("PaymentDetailsPage: Error during handleIvePaid (outer catch):", err);
-            toast.error(`Failed to proceed: ${errMsg}`);
-            setIsSubmitting(false);
+        if (statusCode === 404) {
+          setError(
+            `Payment with ID ${paymentId} not found or you don't have access.`
+          );
+        } else if (statusCode === 401 || statusCode === 403) {
+          setError("Unauthorized to view this payment.");
+          toast.error("Unauthorized. Redirecting...");
+          router.push("/dashboard");
+        } else {
+          toast.error(`Error: ${errMsg}`);
         }
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    const handlePayLater = () => {
-        console.log("PaymentDetailsPage: handlePayLater triggered, navigating to /dashboard/transactions");
-        toast.info("You can find this payment later in your transactions list.");
-        router.push('/dashboard/transactions');
-    };
-    // --- END Action Handlers ---
+    fetchPaymentDetails();
+  }, [paymentId, balanceId, token, router]);
 
+  // --- Action Handlers (Keep as is) ---
+  const handleIvePaid = async () => {
+    console.log("PaymentDetailsPage: handleIvePaid triggered");
+    setError(null);
 
-    // --- Render Logic ---
-
-    // Loading State
-    if (isLoading) {
-        return (
-             <div className="container mx-auto px-4 py-8 max-w-2xl">
-                 {/* Skeleton structure remains the same */}
-                 <Skeleton className="h-8 w-3/5 mb-2 mx-auto" />
-                 <Skeleton className="h-4 w-4/5 mb-6 mx-auto" />
-                 <div className="border p-4 sm:p-6 rounded-xl mb-8">
-                    <Skeleton className="h-6 w-1/2 mb-5" />
-                    <div className="space-y-4 mb-6">
-                        <Skeleton className="h-[72px] w-full rounded-lg" />
-                        <Skeleton className="h-[72px] w-full rounded-lg" />
-                        <Skeleton className="h-[72px] w-full rounded-lg" />
-                        <Skeleton className="h-[72px] w-full rounded-lg" />
-                        <Skeleton className="h-[72px] w-full rounded-lg" />
-                        <Skeleton className="h-[90px] w-full rounded-lg" />
-                    </div>
-                 </div>
-                 <div className="border p-4 rounded-lg mb-8">
-                    <Skeleton className="h-6 w-1/4 mb-4" />
-                    <Skeleton className="h-4 w-full mb-3" />
-                    <Skeleton className="h-4 w-3/4 mb-3" />
-                    <Skeleton className="h-5 w-1/3" />
-                 </div>
-                 <div className="space-y-3">
-                    <Skeleton className="h-12 w-full rounded-full" />
-                    <Skeleton className="h-12 w-full rounded-full" />
-                 </div>
-             </div>
-         );
+    if (!paymentId || !token || !balanceId) {
+      const missing = [
+        !paymentId && "Payment ID",
+        !token && "Token",
+        !balanceId && "Balance ID",
+      ]
+        .filter(Boolean)
+        .join(", ");
+      const errorMsg = `Cannot proceed: Missing ${missing}. Please refresh or go back.`;
+      setError(errorMsg);
+      console.error(
+        "PaymentDetailsPage: Missing critical data for handleIvePaid:",
+        { paymentId, token, balanceId }
+      );
+      toast.error(errorMsg);
+      return;
     }
 
-    // Error State (when details couldn't be fetched at all)
-     if (!isLoading && error && !paymentDetails) {
-         return (
-             <div className="container mx-auto px-4 py-8 text-center max-w-lg">
-                <Toaster richColors position="top-center" />
-                 <div className="bg-destructive/10 border border-destructive/30 text-destructive p-4 rounded-lg flex flex-col items-center space-y-2 mb-6">
-                     <AlertTriangle className="w-6 h-6" />
-                     <p className="font-semibold">Error Loading Payment Details</p>
-                     <p className="text-sm">{error}</p>
-                 </div>
-                  <Button onClick={() => router.back()} variant="outline">
-                     Go Back
-                 </Button>
-                  <Button onClick={() => router.push('/dashboard/transactions')} variant="link" className="ml-4">
-                     View Transactions
-                 </Button>
-             </div>
-         );
-     }
-
-    // Not Found State or Invalid State (includes !paymentDetails check)
-    if (!isLoading && (!paymentDetails || !balanceId)) {
-        console.warn("Rendering 'Not Found' state because paymentDetails or balanceId is missing after loading.", { hasPaymentDetails: !!paymentDetails, hasBalanceId: !!balanceId });
-        return (
-            <div className="container mx-auto px-4 py-8 text-center text-muted-foreground max-w-lg">
-                <Toaster richColors position="top-center" />
-                <p className="mb-4">Payment details could not be found, are no longer valid, or the page context is incorrect.</p>
-                <Button onClick={() => router.push('/dashboard/transactions')} variant="outline">
-                     View Transactions
-                 </Button>
-            </div>
-        );
-    }
-
-    // --- FIX: Explicit non-null check before rendering details ---
-    // At this point, isLoading is false, there's no critical error,
-    // paymentDetails is not null, and balanceId is present.
-    // This check might seem redundant given the previous one, but it satisfies TS's stricter flow analysis.
-    if (!paymentDetails) {
-        // This should technically not be reachable if the logic above is correct,
-        // but it satisfies TypeScript and acts as a final safeguard.
-        console.error("PaymentDetailsPage: Reached render section unexpectedly with null paymentDetails.");
-        return (
-            <div className="container mx-auto px-4 py-8 text-center text-muted-foreground max-w-lg">
-                <p>Something went wrong loading payment details. Please try again.</p>
-                <Button onClick={() => router.push('/dashboard/transactions')} variant="outline" className="mt-4">
-                     View Transactions
-                 </Button>
-            </div>
-        );
-    }
-    // --- End explicit non-null check ---
-
-
-    // --- Render Payment Details (Main Structure) ---
-    // Now TypeScript knows paymentDetails is definitely PaymentDetails here.
-
-    const payInCurrencyCode = paymentDetails.payInCurrency?.code || 'N/A';
-
-    // Robust amount parsing logic (keep as before)
-    const amountRaw = paymentDetails.amountToPay;
-    let amountValue: number;
-    if (typeof amountRaw === 'number') {
-        amountValue = amountRaw;
-    } else if (typeof amountRaw === 'string') {
-        amountValue = parseFloat(amountRaw.replace(/,/g, ''));
-        if (isNaN(amountValue)) {
-             console.error("Failed to parse amountToPay string:", amountRaw);
-        }
-    } else {
-        amountValue = NaN;
-        console.error("Unexpected type for amountToPay:", typeof amountRaw);
-    }
-    const amountToPayFormatted = isNaN(amountValue) ? 'N/A' : amountValue.toFixed(2);
-
-
-    const bankDetails = paymentDetails.bankDetails || {};
-    const referenceCode = paymentDetails.referenceCode || 'N/A';
-    const defaultBankAddress = 'Wise Europe SA/NV\nRue du Trône 100, box 3\nBrussels 1050\nBelgium';
-    const bankAddress = bankDetails.bankAddress || defaultBankAddress;
-
-    return (
-        <div className="container mx-auto px-4 py-8 max-w-2xl">
-            <Toaster richColors position="top-center" />
-            {/* Header */}
-            <h1 className="sm:text-3xl text-2xl text-center font-semibold text-mainheading mb-6 dark:text-white">Use your bank to make a payment to Wise</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-300 mb-8 text-center">Make a {`${payInCurrencyCode}`} payment — not an international one — using the details below.</p>
-
-            {/* Details Section */}
-            <div className="mb-8 border p-4 sm:p-6 rounded-xl bg-card dark:bg-primarybox dark:border-border">
-                <h2 className="text-lg font-medium mb-4 text-neutral-900 dark:text-white">Details you'll need to make this transfer</h2>
-                <div className="space-y-4">
-                    <DetailItem label="Payee name" value={bankDetails.payeeName || 'Wise Europe SA'} fieldName="Payee name" />
-                    <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-                        <div className="flex-1 w-full sm:w-auto">
-                            <DetailItem label="Reference code" value={referenceCode} fieldName="Reference code" isMono={true} />
-                        </div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 sm:max-w-[200px] flex-shrink-0 mt-1 sm:mt-0">
-                             Include <strong className="text-foreground">{referenceCode}</strong> as the reference or reason for your transfer.
-                        </p>
-                    </div>
-                    <DetailItem label="IBAN" value={bankDetails.iban} fieldName="IBAN" isMono={true} />
-                    <DetailItem label="Bank code (BIC/SWIFT)" value={bankDetails.bicSwift} fieldName="BIC/SWIFT" isMono={true} />
-                    <DetailItem
-                        label={`Amount to send (${payInCurrencyCode})`}
-                        value={amountToPayFormatted === 'N/A' ? 'N/A' : `${amountToPayFormatted}`}
-                        fieldName="Amount to send"
-                    />
-                     <div className="bg-lightgray dark:bg-secondarybox p-4 rounded-lg">
-                         <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Our bank's address</p>
-                         <p className="text-foreground break-words whitespace-pre-line">
-                            {bankAddress}
-                         </p>
-                     </div>
-                </div>
-            </div>
-
-            {/* Need more help? Section */}
-            <div className="border border-border rounded-lg p-4 mb-8 flex items-start gap-4 bg-card dark:bg-primarybox dark:border-border">
-                <HelpCircle className="h-6 w-6 text-neutral-900 dark:text-white mt-0.5 shrink-0" />
-                <div>
-                    <h3 className="font-medium text-neutral-900 dark:text-white mb-1">Need more help?</h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-300 mb-3">
-                        You can download these instructions as a PDF. Print it out and show it to your bank teller if you need assistance.
-                    </p>
-                    <Button variant="link" className="p-0 h-auto text-green-600 hover:text-green-700 dark:text-green-500 dark:hover:text-green-600" onClick={() => toast.info("PDF download feature coming soon!")}>
-                         Download PDF <Download className="h-4 w-4 ml-1" />
-                     </Button>
-                </div>
-            </div>
-
-             {/* Non-critical Error Display */}
-            {error && !isLoading && ( // No need to check paymentDetails here as it's guaranteed non-null
-                 <div className="bg-warning/10 border border-warning/30 text-warning-foreground p-3 rounded-lg mb-6 text-sm flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5" />
-                    <span>{error}</span>
-                </div>
-             )}
-
-            {/* Action Buttons */}
-            <div className='space-y-3'>
-                <button
-                    onClick={handleIvePaid}
-                    disabled={isSubmitting || isLoading}
-                    className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-70 disabled:cursor-not-allowed"
-                >
-                    {isSubmitting ? 'Processing...' : 'I’ve made my bank transfer'}
-                </button>
-                <button
-                    onClick={handlePayLater}
-                    disabled={isSubmitting || isLoading}
-                    className="bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-70 disabled:cursor-not-allowed"
-                >
-                    I’ll transfer my money later
-                </button>
-            </div>
-        </div>
+    setIsSubmitting(true);
+    console.log(
+      "PaymentDetailsPage: Submitting... paymentId:",
+      paymentId,
+      "balanceId:",
+      balanceId
     );
+
+    try {
+      try {
+        console.log(
+          "PaymentDetailsPage: Attempting paymentService.confirmUserTransfer"
+        );
+        await paymentService.confirmUserTransfer(paymentId, token);
+        console.log("PaymentDetailsPage: confirmUserTransfer successful");
+        toast.success("Payment marked as initiated!");
+      } catch (confirmErr: unknown) {
+        let confirmErrMsg = "Could not confirm payment initiation";
+        if (
+          typeof confirmErr === "object" &&
+          confirmErr !== null &&
+          "response" in confirmErr
+        ) {
+          const response = (
+            confirmErr as { response?: { data?: { message?: string } } }
+          ).response;
+          confirmErrMsg = response?.data?.message || confirmErrMsg;
+        } else if (confirmErr instanceof Error) {
+          confirmErrMsg = confirmErr.message;
+        }
+        console.error(
+          "PaymentDetailsPage: Failed to update payment status via confirmUserTransfer:",
+          confirmErrMsg,
+          confirmErr
+        );
+        setError(
+          `Note: Couldn't automatically update status: ${confirmErrMsg}. Redirecting anyway...`
+        );
+        toast.warning(
+          `Couldn't confirm payment status: ${confirmErrMsg}. Proceeding...`
+        );
+      }
+
+      const successUrl = `/dashboard/balances/${balanceId}/payment-success?paymentId=${paymentId}`;
+      console.log(
+        "PaymentDetailsPage: Navigating to success page:",
+        successUrl
+      );
+      router.push(successUrl);
+    } catch (err: unknown) {
+      let errMsg = "An unexpected error occurred while trying to proceed.";
+      if (typeof err === "object" && err !== null && "response" in err) {
+        const response = (err as { response?: { data?: { message?: string } } })
+          .response;
+        errMsg = response?.data?.message || errMsg;
+      } else if (err instanceof Error) {
+        errMsg = err.message;
+      }
+      setError(`Failed to proceed: ${errMsg}`);
+      console.error(
+        "PaymentDetailsPage: Error during handleIvePaid (outer catch):",
+        err
+      );
+      toast.error(`Failed to proceed: ${errMsg}`);
+      setIsSubmitting(false);
+    }
+  };
+
+  const handlePayLater = () => {
+    console.log(
+      "PaymentDetailsPage: handlePayLater triggered, navigating to /dashboard/transactions"
+    );
+    toast.info("You can find this payment later in your transactions list.");
+    router.push("/dashboard/transactions");
+  };
+  // --- END Action Handlers ---
+
+  // --- Render Logic ---
+
+  // Loading State
+  if (isLoading) {
+    return (
+      <div className="container mx-auto py-8 max-w-2xl">
+        {/* Skeleton structure remains the same */}
+        <Skeleton className="h-8 w-3/5 mb-2 mx-auto" />
+        <Skeleton className="h-4 w-4/5 mb-6 mx-auto" />
+        <div className="border p-4 sm:p-6 rounded-xl mb-8">
+          <Skeleton className="h-6 w-1/2 mb-5" />
+          <div className="space-y-4 mb-6">
+            <Skeleton className="h-[72px] w-full rounded-lg" />
+            <Skeleton className="h-[72px] w-full rounded-lg" />
+            <Skeleton className="h-[72px] w-full rounded-lg" />
+            <Skeleton className="h-[72px] w-full rounded-lg" />
+            <Skeleton className="h-[72px] w-full rounded-lg" />
+            <Skeleton className="h-[90px] w-full rounded-lg" />
+          </div>
+        </div>
+        <div className="border p-4 rounded-lg mb-8">
+          <Skeleton className="h-6 w-1/4 mb-4" />
+          <Skeleton className="h-4 w-full mb-3" />
+          <Skeleton className="h-4 w-3/4 mb-3" />
+          <Skeleton className="h-5 w-1/3" />
+        </div>
+        <div className="space-y-3">
+          <Skeleton className="h-12 w-full rounded-full" />
+          <Skeleton className="h-12 w-full rounded-full" />
+        </div>
+      </div>
+    );
+  }
+
+  // Error State (when details couldn't be fetched at all)
+  if (!isLoading && error && !paymentDetails) {
+    return (
+      <div className="container mx-auto py-8 text-center max-w-lg">
+        <Toaster richColors position="top-center" />
+        <div className="bg-destructive/10 border border-destructive/30 text-destructive p-4 rounded-lg flex flex-col items-center space-y-2 mb-6">
+          <AlertTriangle className="w-6 h-6" />
+          <p className="font-semibold">Error Loading Payment Details</p>
+          <p className="text-sm">{error}</p>
+        </div>
+        <Button onClick={() => router.back()} variant="outline">
+          Go Back
+        </Button>
+        <Button
+          onClick={() => router.push("/dashboard/transactions")}
+          variant="link"
+          className="ml-4"
+        >
+          View Transactions
+        </Button>
+      </div>
+    );
+  }
+
+  // Not Found State or Invalid State (includes !paymentDetails check)
+  if (!isLoading && (!paymentDetails || !balanceId)) {
+    console.warn(
+      "Rendering 'Not Found' state because paymentDetails or balanceId is missing after loading.",
+      { hasPaymentDetails: !!paymentDetails, hasBalanceId: !!balanceId }
+    );
+    return (
+      <div className="container mx-auto py-8 text-center text-muted-foreground max-w-lg">
+        <Toaster richColors position="top-center" />
+        <p className="mb-4">
+          Payment details could not be found, are no longer valid, or the page
+          context is incorrect.
+        </p>
+        <Button
+          onClick={() => router.push("/dashboard/transactions")}
+          variant="outline"
+        >
+          View Transactions
+        </Button>
+      </div>
+    );
+  }
+
+  // --- FIX: Explicit non-null check before rendering details ---
+  // At this point, isLoading is false, there's no critical error,
+  // paymentDetails is not null, and balanceId is present.
+  // This check might seem redundant given the previous one, but it satisfies TS's stricter flow analysis.
+  if (!paymentDetails) {
+    // This should technically not be reachable if the logic above is correct,
+    // but it satisfies TypeScript and acts as a final safeguard.
+    console.error(
+      "PaymentDetailsPage: Reached render section unexpectedly with null paymentDetails."
+    );
+    return (
+      <div className="container mx-auto px-4 py-8 text-center text-muted-foreground max-w-lg">
+        <p>Something went wrong loading payment details. Please try again.</p>
+        <Button
+          onClick={() => router.push("/dashboard/transactions")}
+          variant="outline"
+          className="mt-4"
+        >
+          View Transactions
+        </Button>
+      </div>
+    );
+  }
+  // --- End explicit non-null check ---
+
+  // --- Render Payment Details (Main Structure) ---
+  // Now TypeScript knows paymentDetails is definitely PaymentDetails here.
+
+  const payInCurrencyCode = paymentDetails.payInCurrency?.code || "N/A";
+
+  // Robust amount parsing logic (keep as before)
+  const amountRaw = paymentDetails.amountToPay;
+  let amountValue: number;
+  if (typeof amountRaw === "number") {
+    amountValue = amountRaw;
+  } else if (typeof amountRaw === "string") {
+    amountValue = parseFloat(amountRaw.replace(/,/g, ""));
+    if (isNaN(amountValue)) {
+      console.error("Failed to parse amountToPay string:", amountRaw);
+    }
+  } else {
+    amountValue = NaN;
+    console.error("Unexpected type for amountToPay:", typeof amountRaw);
+  }
+  const amountToPayFormatted = isNaN(amountValue)
+    ? "N/A"
+    : amountValue.toFixed(2);
+
+  const bankDetails = paymentDetails.bankDetails || {};
+  const referenceCode = paymentDetails.referenceCode || "N/A";
+  const defaultBankAddress =
+    "Wise Europe SA/NV\nRue du Trône 100, box 3\nBrussels 1050\nBelgium";
+  const bankAddress = bankDetails.bankAddress || defaultBankAddress;
+
+  return (
+    <div className="container mx-auto py-5 max-w-2xl">
+      <Toaster richColors position="top-center" />
+      {/* Header */}
+      <h1 className="sm:text-3xl text-xl text-center font-semibold text-mainheading mb-2.5 dark:text-white">
+        Use your bank to make a payment to Wise
+      </h1>
+      <p className="text-sm text-gray-500 dark:text-gray-300 lg:mb-10 mb-5 text-center">
+        Make a {`${payInCurrencyCode}`} payment — not an international one —
+        using the details below.
+      </p>
+
+      {/* Details Section */}
+      <div className="mb-6 p-4 rounded-xl bg-lightgray dark:bg-background">
+        <h2 className="lg:ext-lg font-medium mb-4 text-neutral-900 dark:text-white">
+          Details you'll need to make this transfer
+        </h2>
+        <div className="lg:space-y-4 space-y-2.5">
+          <DetailItem
+            label="Payee name"
+            value={bankDetails.payeeName || "Wise Europe SA"}
+            fieldName="Payee name"
+          />
+          <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+            <div className="flex-1 w-full sm:w-auto">
+              <DetailItem
+                label="Reference code"
+                value={referenceCode}
+                fieldName="Reference code"
+                isMono={true}
+              />
+            </div>
+            <p className="text-xs text-gray-700 dark:text-gray-300 sm:max-w-[200px] flex-shrink-0 mt-1 sm:mt-0">
+              Include <strong className="text-primary">{referenceCode}</strong>{" "}
+              as the reference or reason for your transfer.
+            </p>
+          </div>
+          <DetailItem
+            label="IBAN"
+            value={bankDetails.iban}
+            fieldName="IBAN"
+            isMono={true}
+          />
+          <DetailItem
+            label="Bank code (BIC/SWIFT)"
+            value={bankDetails.bicSwift}
+            fieldName="BIC/SWIFT"
+            isMono={true}
+          />
+          <DetailItem
+            label={`Amount to send (${payInCurrencyCode})`}
+            value={
+              amountToPayFormatted === "N/A" ? "N/A" : `${amountToPayFormatted}`
+            }
+            fieldName="Amount to send"
+          />
+          <div className="bg-gray/10 dark:bg-white/5 p-4 rounded-lg">
+            <p className="text-xs text-gray-700 dark:text-gray-300 mb-1">
+              Our bank's address
+            </p>
+            <p className="text-foreground break-words text-sm max-w-xs">
+              {bankAddress}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Need more help? Section */}
+      <div className="rounded-lg p-4 lg:mb-8 mb-6 flex items-start gap-4 bg-gray/10 dark:bg-white/5">
+        <HelpCircle className="size-6 text-neutral-900 dark:text-white mt-0.5 shrink-0" />
+        <div>
+          <h3 className="font-medium text-neutral-900 dark:text-white mb-1">
+            Need more help?
+          </h3>
+          <p className="text-sm text-gray-500 dark:text-gray-300 mb-3">
+            You can download these instructions as a PDF. Print it out and show
+            it to your bank teller if you need assistance.
+          </p>
+          <Button
+            variant="link"
+            className="p-0 h-auto text-subheading dark:text-primary font-medium"
+            onClick={() => toast.info("PDF download feature coming soon!")}
+          >
+            Download PDF <Download className="h-4 w-4 ml-1" />
+          </Button>
+        </div>
+      </div>
+
+      {/* Non-critical Error Display */}
+      {error &&
+        !isLoading && ( // No need to check paymentDetails here as it's guaranteed non-null
+          <div className="bg-warning/10 border text-warning-foreground p-3 rounded-lg mb-6 text-sm flex items-center gap-2">
+            <AlertTriangle size={28} />
+            <span>{error}</span>
+          </div>
+        )}
+
+      {/* Action Buttons */}
+      <div className="space-y-3">
+        <button
+          onClick={handleIvePaid}
+          disabled={isSubmitting || isLoading}
+          className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-70 disabled:cursor-not-allowed"
+        >
+          {isSubmitting ? "Processing..." : "I’ve made my bank transfer"}
+        </button>
+        <button
+          onClick={handlePayLater}
+          disabled={isSubmitting || isLoading}
+          className="bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-70 disabled:cursor-not-allowed"
+        >
+          I’ll transfer my money later
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default PaymentDetailsPage;

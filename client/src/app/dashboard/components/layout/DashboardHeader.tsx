@@ -114,8 +114,6 @@
 
 // export default DashboardHeader;
 
-
-
 import React from "react";
 import { CheckIcon } from "lucide-react"; // Using lucide icons instead of react-icons
 
@@ -142,10 +140,10 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
   return (
     <div className="bg-white dark:bg-background mb-6 md:mb-8 sticky top-0 z-20">
-      <div className="container mx-auto px-4 py-4 md:py-5">
+      <div className="container mx-auto md:py-5 py-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
           {/* Title */}
-          <h1 className="text-xl md:text-2xl font-semibold text-primary mb-3 md:mb-0">
+          <h1 className="text-xl md:text-2xl font-semibold dark:text-white text-primary mb-3 md:mb-0">
             {title}
           </h1>
 
@@ -174,7 +172,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     {/* Step Circle and Text */}
                     <div className="flex items-center flex-shrink-0 py-2">
                       <div
-                        className={`w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
+                        className={`size-6 lg:size-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
                           isCompleted
                             ? "bg-primary border-primary text-mainheading"
                             : isActive
@@ -208,7 +206,6 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 };
 
 export default DashboardHeader;
-
 
 // import React, { useEffect, useState } from "react";
 // import { motion, AnimatePresence } from "framer-motion";
@@ -345,7 +342,7 @@ export default DashboardHeader;
 //                     {/* Step Circle and Text */}
 //                     <div className="flex items-center flex-shrink-0">
 //                       <motion.div
-//                         className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center 
+//                         className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center
 //                           ${
 //                             isCompleted
 //                               ? "bg-indigo-600 text-white"
@@ -429,7 +426,6 @@ export default DashboardHeader;
 
 // export default DashboardHeader;
 
-
 // import React, { useEffect, useState } from "react";
 // import { motion, AnimatePresence } from "framer-motion";
 // import { FaCheck } from "react-icons/fa";
@@ -476,10 +472,10 @@ export default DashboardHeader;
 //   // Animation variants
 //   const headerVariants = {
 //     hidden: { opacity: 0, y: -20 },
-//     visible: { 
-//       opacity: 1, 
+//     visible: {
+//       opacity: 1,
 //       y: 0,
-//       transition: { 
+//       transition: {
 //         duration: 0.4,
 //         ease: "easeOut",
 //         when: "beforeChildren",
@@ -489,18 +485,18 @@ export default DashboardHeader;
 //   };
 
 //   const stepCircleVariants = {
-//     inactive: { 
-//       scale: 0.9, 
+//     inactive: {
+//       scale: 0.9,
 //       opacity: 0.7,
 //       transition: { duration: 0.3 }
 //     },
-//     active: { 
-//       scale: 1.1, 
+//     active: {
+//       scale: 1.1,
 //       opacity: 1,
 //       boxShadow: "0 0 0 4px rgba(79, 70, 229, 0.2)",
-//       transition: { 
-//         type: "spring", 
-//         stiffness: 500, 
+//       transition: {
+//         type: "spring",
+//         stiffness: 500,
 //         damping: 15,
 //         duration: 0.5
 //       }
@@ -508,9 +504,9 @@ export default DashboardHeader;
 //     completed: {
 //       scale: 1,
 //       opacity: 1,
-//       transition: { 
-//         type: "spring", 
-//         stiffness: 500, 
+//       transition: {
+//         type: "spring",
+//         stiffness: 500,
 //         damping: 25,
 //         duration: 0.3
 //       }
@@ -519,8 +515,8 @@ export default DashboardHeader;
 
 //   const stepLabelVariants = {
 //     hidden: { opacity: 0, y: 10 },
-//     visible: { 
-//       opacity: 1, 
+//     visible: {
+//       opacity: 1,
 //       y: 0,
 //       transition: { duration: 0.3, ease: "easeOut" }
 //     },
@@ -540,10 +536,10 @@ export default DashboardHeader;
 
 //   const checkmarkVariants = {
 //     hidden: { scale: 0, opacity: 0 },
-//     visible: { 
-//       scale: 1, 
+//     visible: {
+//       scale: 1,
 //       opacity: 1,
-//       transition: { 
+//       transition: {
 //         type: "spring",
 //         stiffness: 500,
 //         damping: 15,
@@ -553,7 +549,7 @@ export default DashboardHeader;
 //   };
 
 //   const lineVariants = {
-//     incomplete: { 
+//     incomplete: {
 //       scaleX: 0,
 //       backgroundColor: "#E5E7EB",
 //       transition: { duration: 0.3 }
@@ -561,15 +557,15 @@ export default DashboardHeader;
 //     inProgress: {
 //       scaleX: 0.5,
 //       backgroundColor: "#818CF8", // Indigo-400
-//       transition: { 
+//       transition: {
 //         duration: 0.4,
-//         ease: "easeOut" 
+//         ease: "easeOut"
 //       }
 //     },
-//     complete: { 
+//     complete: {
 //       scaleX: 1,
 //       backgroundColor: "#4F46E5", // Indigo-600
-//       transition: { 
+//       transition: {
 //         duration: 0.5,
 //         ease: "easeOut"
 //       }
@@ -578,14 +574,14 @@ export default DashboardHeader;
 
 //   const progressBarVariants = {
 //     initial: { width: `${((validCurrentStep - 1) / (totalSteps - 1)) * 100}%` },
-//     animate: { 
+//     animate: {
 //       width: `${((validCurrentStep - 1) / (totalSteps - 1)) * 100}%`,
 //       transition: { duration: 0.6, ease: "easeOut" }
 //     }
 //   };
 
 //   return (
-//     <motion.div 
+//     <motion.div
 //       className="bg-white shadow-md mb-6 md:mb-8 sticky top-0 z-20 backdrop-blur-sm bg-white/95"
 //       variants={headerVariants}
 //       initial="hidden"
@@ -594,7 +590,7 @@ export default DashboardHeader;
 //       <div className="container mx-auto px-4 py-5 md:py-6">
 //         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-8">
 //           {/* Title with animation */}
-//           <motion.h1 
+//           <motion.h1
 //             className="text-xl md:text-2xl font-bold text-indigo-900 tracking-tight"
 //             initial={{ opacity: 0, x: -15 }}
 //             animate={{ opacity: 1, x: 0 }}
@@ -613,7 +609,7 @@ export default DashboardHeader;
 //                 const isUpcoming = stepNumber > validCurrentStep;
 //                 const isFirst = index === 0;
 //                 const isLast = index === steps.length - 1;
-                
+
 //                 // Determine line state for animation
 //                 let lineState = "incomplete";
 //                 if (isCompleted) lineState = "complete";
@@ -625,12 +621,12 @@ export default DashboardHeader;
 //                     <div className="flex flex-col items-center relative">
 //                       {/* Step Number/Check */}
 //                       <motion.div
-//                         className={`w-10 h-10 rounded-full flex items-center justify-center 
+//                         className={`w-10 h-10 rounded-full flex items-center justify-center
 //                           transition-colors duration-300
-//                           ${isCompleted 
-//                             ? "bg-indigo-600 text-white" 
-//                             : isActive 
-//                               ? "border-2 border-indigo-600 text-indigo-600 bg-indigo-50" 
+//                           ${isCompleted
+//                             ? "bg-indigo-600 text-white"
+//                             : isActive
+//                               ? "border-2 border-indigo-600 text-indigo-600 bg-indigo-50"
 //                               : "border-2 border-gray-300 text-gray-400 bg-gray-50"}`}
 //                         variants={stepCircleVariants}
 //                         initial="inactive"
@@ -688,7 +684,7 @@ export default DashboardHeader;
 //                                 : "bg-gray-300"
 //                             }`}
 //                             initial={{ scale: 0.8, opacity: 0.5 }}
-//                             animate={{ 
+//                             animate={{
 //                               scale: dotIndex + 1 === stepNumber ? 1 : 0.8,
 //                               opacity: dotIndex + 1 === stepNumber ? 1 : 0.5
 //                             }}
@@ -715,10 +711,10 @@ export default DashboardHeader;
 //           )}
 //         </div>
 //       </div>
-      
+
 //       {/* Progress bar - animates based on current step */}
 //       {showSteps && (
-//         <motion.div 
+//         <motion.div
 //           className="h-1 bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-500"
 //           variants={progressBarVariants}
 //           initial="initial"
@@ -731,4 +727,3 @@ export default DashboardHeader;
 // };
 
 // export default DashboardHeader;
-

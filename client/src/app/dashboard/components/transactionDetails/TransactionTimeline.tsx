@@ -45,7 +45,7 @@ const TransactionTimeline: React.FC<TransactionTimelineProps> = ({
                             )}>
                                 {step.status === "completed" && <FaCheck size={12} />}
                                 {step.status === "active" && <FaRegClock size={12}/>}
-                                {(step.status === "failed" || step.status === "cancelled") && <MdErrorOutline size={12} />}
+                                {(step.status === "failed" || step.status === "cancelled") && <MdErrorOutline size={16} />}
                                 {step.status === "pending" && <div className="h-2 w-2 bg-white rounded-full"></div>}
                             </div>
                             {index < steps.length - 1 && (
@@ -71,14 +71,15 @@ const TransactionTimeline: React.FC<TransactionTimelineProps> = ({
                             </h4>
                             {step.date && (<p className="text-xs text-gray-500 dark:text-gray-300 mt-0.5">{step.date}</p>)}
                             {step.info && (<div className={cn(
-                                "mt-2 text-sm p-3 rounded-md border",
-                                step.status === 'active' ? 'bg-blue-600/20 border-blue-600/80 text-blue-600 dark:text-blue-400' :
+                                "mt-4 text-sm p-3 rounded-md border",
+                                step.status === 'active' ? 'bg-blue-600/20 dark:border-none text-blue-600 dark:text-blue-400' :
                                 step.status === 'failed' ? 'bg-rose-600/10 border-rose-600/70 text-rose-600 dark:text-rose-300' :
                                 step.status === 'cancelled' ? 'bg-red-600/20 border-red-600/60 text-red-600 dark:text-red-400' :
                                 'bg-gray-600/20 border-gray-600/60 text-gray-600 dark:text-gray-300'
                             )}>
                                 <p>{step.info}</p>
                             </div>)}
+                            
                             {step.showCancelAction && isPayment && status === 'pending' && (
                                 <button
                                     className="mt-3 px-3 py-2 border rounded-md text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 border-red-300 dark:border-red-500 hover:bg-red-100 dark:hover:bg-red-600/20  transition-all duration-75 ease-linear cursor-pointer"

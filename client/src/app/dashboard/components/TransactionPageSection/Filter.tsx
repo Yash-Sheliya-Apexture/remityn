@@ -3700,9 +3700,6 @@
 
 // export default Filter;
 
-
-
-
 // frontend/src/components/Filter.tsx
 import React, { useState, useEffect, useRef } from "react";
 import { LuSettings2 } from "react-icons/lu";
@@ -3779,20 +3776,19 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
   useEffect(() => {
     if (isOpen) {
       // Prevent scrolling on the body
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
       // Re-enable scrolling on the body
-      document.body.style.overflow = ''; // Reset to default
+      document.body.style.overflow = ""; // Reset to default
     }
 
     // Cleanup function to ensure scrolling is re-enabled when the component unmounts
     // or before the effect runs again if isOpen changes back to false.
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, [isOpen]); // Dependency array ensures this runs only when isOpen changes
   // --- END: useEffect to disable body scroll ---
-
 
   // --- Handlers for recipients, direction, status remain the same ---
   const handleRecipientSelectionChange = (
@@ -3858,7 +3854,11 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
     const now = new Date();
     const currentQuarter = Math.floor(now.getMonth() / 3);
     const startMonthOfLastQuarter = (currentQuarter - 1) * 3;
-    const startOfLastQuarter = new Date(now.getFullYear(), startMonthOfLastQuarter, 1);
+    const startOfLastQuarter = new Date(
+      now.getFullYear(),
+      startMonthOfLastQuarter,
+      1
+    );
     if (startMonthOfLastQuarter < 0) {
       startOfLastQuarter.setFullYear(now.getFullYear() - 1);
     }
@@ -3894,19 +3894,19 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
     setSelectedDateRange(null);
   };
 
-   // --- Date Input Change Handler ---
-   const handleDateInputChange = (value: string, type: 'from' | 'to') => {
-    if (type === 'from') {
-        setFromDate(value);
+  // --- Date Input Change Handler ---
+  const handleDateInputChange = (value: string, type: "from" | "to") => {
+    if (type === "from") {
+      setFromDate(value);
     } else {
-        setToDate(value);
+      setToDate(value);
     }
     // Clear preset buttons if manually changing dates
     setSelectedDateRange(null);
     setIsLastMonthActive(false);
     setIsLastQuarterActive(false);
     setIsLastYearActive(false);
-};
+  };
 
   // --- Apply and Clear Filters handlers remain the same ---
   const handleApplyFilters = () => {
@@ -3990,27 +3990,36 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
               transition={{ type: "tween", duration: 0.3 }}
             >
               {/* Header */}
-              <div className="sm:p-6 p-4 flex items-center justify-between flex-shrink-0 border-b relative"> {/* Kept original padding/border */}
-                <h3 className="font-semibold text-mainheading dark:text-white text-lg">
+              <div className="sm:p-6 p-4 h-20 flex items-center justify-between flex-shrink-0 border-b relative">
+                {/* Kept original padding/border */}
+                <h3 className="font-semibold text-mainheading dark:text-white text-xl lg:text-2xl">
                   Filters
                 </h3>
+
                 <button
                   onClick={closePopup}
-                   className="absolute top-2 right-4 p-2 mt-1 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer" // Kept original close button style/position
+                  className="p-2.5 bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer focus:outline-none" // Kept original close button style/position
                 >
-                  <IoClose className="text-neutral-900 dark:text-white size-7" />
+                  <IoClose
+                    className="text-neutral-900 dark:text-primary"
+                    size={28}
+                  />
                 </button>
               </div>
 
               {/* Scrollable Content Area */}
-              <div className="sm:p-6 p-4 flex-grow overflow-y-auto scrollbar-hide space-y-6"> {/* Kept original padding/scrollbar-hide */}
+              <div className="sm:p-6 p-4 flex-grow overflow-y-auto scrollbar-hide space-y-6">
+                {" "}
+                {/* Kept original padding/scrollbar-hide */}
                 <div>
-                  <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-neutral-500 dark:after:bg-white/30 after:mt-1"> {/* Kept original heading style */}
+                  <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-neutral-500 dark:after:bg-white/30 after:mt-1">
+                    {" "}
+                    {/* Kept original heading style */}
                     Date
                   </h4>
                   {/* Date tab */}
                   <div className="flex items-center flex-wrap gap-2 mb-4">
-                  {/* Kept original button styles */}
+                    {/* Kept original button styles */}
                     <button
                       className={`font-medium border flex items-center gap-2 rounded-full px-4 py-2 cursor-pointer ${
                         isLastMonthActive
@@ -4073,12 +4082,12 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
                     <DateInput
                       placeholder="From date"
                       value={fromDate}
-                      onChange={(date) => handleDateInputChange(date, 'from')}
+                      onChange={(date) => handleDateInputChange(date, "from")}
                     />
                     <DateInput
                       placeholder="To date"
                       value={toDate}
-                      onChange={(date) => handleDateInputChange(date, 'to')}
+                      onChange={(date) => handleDateInputChange(date, "to")}
                     />
                   </div>
                 </div>
@@ -4107,7 +4116,9 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
                 {userAccounts &&
                   userAccounts.length > 0 && ( // Only show if accounts exist
                     <div>
-                       <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-neutral-500 dark:after:bg-white/30 after:mt-1"> {/* Kept original heading style */}
+                      <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-neutral-500 dark:after:bg-white/30 after:mt-1">
+                        {" "}
+                        {/* Kept original heading style */}
                         Balance
                       </h4>
                       <div className="space-y-2">
@@ -4138,9 +4149,11 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
               </div>
 
               {/* Footer */}
-              <div className="sm:p-6 p-4 border-t bg-white dark:bg-background flex-shrink-0"> {/* Kept original padding/border/bg */}
+              <div className="sm:p-6 p-4 border-t bg-white dark:bg-background flex-shrink-0">
+                {" "}
+                {/* Kept original padding/border/bg */}
                 <div className="flex items-center gap-3">
-                {/* Kept original button styles */}
+                  {/* Kept original button styles */}
                   <button
                     type="button"
                     className="bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear"
@@ -4166,10 +4179,6 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
 };
 
 export default Filter;
-
-
-
-
 
 // // frontend/src/components/Filter.tsx
 // import React, { useState, useEffect, useRef } from "react";
@@ -4646,8 +4655,6 @@ export default Filter;
 // };
 
 // export default Filter;
-
-
 
 // // frontend/src/components/Filter.tsx
 // import React, { useState, useEffect, useRef } from "react";

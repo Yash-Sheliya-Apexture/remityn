@@ -52,7 +52,6 @@
 //         fetchDetails();
 //     }, [paymentId, token]);
 
-
 //     const handleGotIt = () => {
 //         // Navigate to a relevant page, e.g., transactions or dashboard home
 //         router.push('/dashboard/transactions');
@@ -97,7 +96,6 @@
 //                 )}
 //                  {error && <p className="text-yellow-300 mb-8 text-sm">{error}</p>}
 
-
 //                 <button
 //                     onClick={handleGotIt}
 //                     className="bg-green-400 hover:bg-green-300 text-green-900 font-bold py-3 px-10 rounded-md transition duration-200"
@@ -110,9 +108,6 @@
 // };
 
 // export default PaymentSuccessPage;
-
-
-
 
 // "use client";
 
@@ -187,7 +182,6 @@
 //     // eslint-disable-next-line react-hooks/exhaustive-deps
 //     }, [paymentId, token, router]); // Added router to dependency array if used for redirection inside effect
 
-
 //     const handleGotIt = () => {
 //         // Navigate to a relevant page, e.g., transactions or dashboard home
 //         router.push('/dashboard/transactions');
@@ -199,9 +193,9 @@
 
 //     return (
 //         <div className="flex flex-col items-center justify-center min-h-screen  text-white p-4">
-            
+
 //                 <Image src={WiseLogo} alt="Wise Logo" width={160} height={25} />
-            
+
 //             <div className="text-center">
 //                 {/* Fixed unescaped entity */}
 //                 <h1 className="text-3xl md:text-4xl font-bold mb-4 uppercase tracking-wide">
@@ -219,7 +213,6 @@
 //                 )}
 //                  {error && <p className="text-yellow-300 mb-8 text-sm">{error}</p>}
 
-
 //                 <button
 //                     onClick={handleGotIt}
 //                     className="bg-green-400 hover:bg-green-300 text-green-900 font-bold py-3 px-10 rounded-md transition duration-200"
@@ -233,9 +226,6 @@
 
 // export default PaymentSuccessPage;
 
-
-
-
 // "use client";
 
 // import React, { useEffect, useState } from 'react';
@@ -245,7 +235,6 @@
 // import { useAuth } from '../../../../contexts/AuthContext'; // Adjust path as needed
 // import paymentService from '../../../../services/payment'; // Adjust path as needed
 // import { Skeleton } from '@/components/ui/skeleton'; // For loading state
-
 
 // interface PaymentDetails {
 //     _id: string;
@@ -315,7 +304,7 @@
 
 //     return (
 //         <div className="flex flex-col items-center justify-center min-h-screen text-white p-4">
-            
+
 //             <div className="mb-8"> {/* Added margin-bottom to space logo from text */}
 //                  <Image src={WiseLogo} alt="Wise Logo" width={160} height={25} priority /> {/* Added priority for LCP */}
 //             </div>
@@ -342,7 +331,6 @@
 //                 {/* Display error message if fetching details failed (non-blocking) */}
 //                 {error && <p className="text-yellow-300 mb-8 text-sm -mt-4">{error}</p>} {/* Added negative margin to pull it closer */}
 
-
 //                 <button
 //                     onClick={handleGotIt}
 //                     className="bg-green-400 hover:bg-green-300 text-green-900 font-bold py-3 px-10 rounded-md transition duration-200"
@@ -356,180 +344,199 @@
 
 // export default PaymentSuccessPage;
 
-
 // src/app/dashboard/balances/[balanceId]/payment-success/page.tsx
 
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
-import WiseLogo from '../../../../../../public/assets/images/plane-medium.png'; // Adjust path as needed
-import { useAuth } from '../../../../contexts/AuthContext'; // Adjust path as needed
-import paymentService, { PaymentDetailsResponse } from '../../../../services/payment'; // Adjust path as needed
-import { Skeleton } from '@/components/ui/skeleton';
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
+import WiseLogo from "../../../../../../public/assets/images/plane-medium.png"; // Adjust path as needed
+import { useAuth } from "../../../../contexts/AuthContext"; // Adjust path as needed
+import paymentService, {
+  PaymentDetailsResponse,
+} from "../../../../services/payment"; // Adjust path as needed
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Interface for component state
 interface PaymentDetails {
-    _id: string;
-    amountToAdd: number;
-    balanceCurrency: { code: string };
-    payInCurrency: { code: string };
+  _id: string;
+  amountToAdd: number;
+  balanceCurrency: { code: string };
+  payInCurrency: { code: string };
 }
 
 const PaymentSuccessPage = () => {
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const paymentId = searchParams.get('paymentId');
-    const { token } = useAuth();
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(null);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const paymentId = searchParams.get("paymentId");
+  const { token } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(
+    null
+  );
 
-    useEffect(() => {
-        const fetchDetails = async () => {
-            setIsLoading(true);
-            setError(null);
-            setPaymentDetails(null);
+  useEffect(() => {
+    const fetchDetails = async () => {
+      setIsLoading(true);
+      setError(null);
+      setPaymentDetails(null);
 
-            if (!paymentId) {
-                setError("Payment ID missing from URL.");
-                setIsLoading(false);
-                return;
-            }
-            if (!token) {
-                setError("Authentication required.");
-                setIsLoading(false);
-                return;
-            }
+      if (!paymentId) {
+        setError("Payment ID missing from URL.");
+        setIsLoading(false);
+        return;
+      }
+      if (!token) {
+        setError("Authentication required.");
+        setIsLoading(false);
+        return;
+      }
 
-            try {
-                const apiResponse: PaymentDetailsResponse = await paymentService.getPaymentDetails(paymentId, token);
+      try {
+        const apiResponse: PaymentDetailsResponse =
+          await paymentService.getPaymentDetails(paymentId, token);
 
-                // --- BETTER DEBUGGING: Log the RAW response ---
-                console.log("Raw API Response for Payment Details:", apiResponse);
+        // --- BETTER DEBUGGING: Log the RAW response ---
+        console.log("Raw API Response for Payment Details:", apiResponse);
 
-                // --- ADDED CHECK: Ensure apiResponse is not empty and has essential keys ---
-                // Check for _id as a minimum requirement from the API itself
-                if (!apiResponse || typeof apiResponse !== 'object' || !apiResponse._id) {
-                    // If the response is empty or lacks the core identifier, treat it as an error.
-                     console.error("Received empty or invalid payment details structure from API:", apiResponse);
-                     throw new Error("Failed to retrieve valid payment details from the server.");
-                }
-                // --- End Added Check ---
+        // --- ADDED CHECK: Ensure apiResponse is not empty and has essential keys ---
+        // Check for _id as a minimum requirement from the API itself
+        if (
+          !apiResponse ||
+          typeof apiResponse !== "object" ||
+          !apiResponse._id
+        ) {
+          // If the response is empty or lacks the core identifier, treat it as an error.
+          console.error(
+            "Received empty or invalid payment details structure from API:",
+            apiResponse
+          );
+          throw new Error(
+            "Failed to retrieve valid payment details from the server."
+          );
+        }
+        // --- End Added Check ---
 
-
-                // **** TRANSFORMATION LOGIC ****
-                const formattedDetails: PaymentDetails = {
-                    _id: apiResponse._id, // We know _id exists due to the check above
-                    amountToAdd: apiResponse.amountAdded ?? 0,
-                    balanceCurrency: { code: apiResponse.balanceCurrencyCode ?? 'N/A' },
-                    payInCurrency: { code: apiResponse.payInCurrencyCode ?? 'N/A' },
-                };
-
-                // --- Refined Validation (Focus on what's critical for THIS page) ---
-                // Maybe only the ID is truly critical here, the rest is for display enhancement.
-                // Decide if amount/currency being unavailable should block the success feeling.
-                // If amount/currency might legitimately be missing temporarily (e.g., processing):
-                if (formattedDetails.amountToAdd <= 0 || formattedDetails.balanceCurrency.code === 'N/A') {
-                    // Log it as a warning, but maybe don't throw a blocking error
-                    console.warn("Payment details retrieved, but amount or currency code is missing/invalid:", formattedDetails);
-                    // Optionally set a non-blocking message:
-                    // setError("Displaying basic info; full details might be updating.");
-                }
-                // --- End Refined Validation ---
-
-
-                setPaymentDetails(formattedDetails);
-
-                // Optional ETA update logic here...
-
-            } catch (err: unknown) {
-                let errorMessage = "Could not load specific payment details.";
-                if (err instanceof Error) {
-                    console.error("Error fetching or processing payment details:", err); // Log the full error
-                    errorMessage = err.message; // Use the error's message
-                } else {
-                    console.error("An unexpected error occurred:", err);
-                    errorMessage = "An unexpected error occurred while loading details."
-                }
-                setError(errorMessage);
-            } finally {
-                setIsLoading(false);
-            }
+        // **** TRANSFORMATION LOGIC ****
+        const formattedDetails: PaymentDetails = {
+          _id: apiResponse._id, // We know _id exists due to the check above
+          amountToAdd: apiResponse.amountAdded ?? 0,
+          balanceCurrency: { code: apiResponse.balanceCurrencyCode ?? "N/A" },
+          payInCurrency: { code: apiResponse.payInCurrencyCode ?? "N/A" },
         };
 
-        fetchDetails();
-    }, [paymentId, token, router]);
+        // --- Refined Validation (Focus on what's critical for THIS page) ---
+        // Maybe only the ID is truly critical here, the rest is for display enhancement.
+        // Decide if amount/currency being unavailable should block the success feeling.
+        // If amount/currency might legitimately be missing temporarily (e.g., processing):
+        if (
+          formattedDetails.amountToAdd <= 0 ||
+          formattedDetails.balanceCurrency.code === "N/A"
+        ) {
+          // Log it as a warning, but maybe don't throw a blocking error
+          console.warn(
+            "Payment details retrieved, but amount or currency code is missing/invalid:",
+            formattedDetails
+          );
+          // Optionally set a non-blocking message:
+          // setError("Displaying basic info; full details might be updating.");
+        }
+        // --- End Refined Validation ---
 
-    const handleGotIt = () => {
-        router.push('/dashboard/transactions');
+        setPaymentDetails(formattedDetails);
+
+        // Optional ETA update logic here...
+      } catch (err: unknown) {
+        let errorMessage = "Could not load specific payment details.";
+        if (err instanceof Error) {
+          console.error("Error fetching or processing payment details:", err); // Log the full error
+          errorMessage = err.message; // Use the error's message
+        } else {
+          console.error("An unexpected error occurred:", err);
+          errorMessage = "An unexpected error occurred while loading details.";
+        }
+        setError(errorMessage);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    // --- JSX (No changes needed here from the previous version) ---
-    return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground p-4">
+    fetchDetails();
+  }, [paymentId, token, router]);
 
-            <div className="mb-8">
-                 <Image
-                    src={WiseLogo}
-                    alt="Wise Logo"
-                    width={160}
-                    height={25}
-                    priority
-                 />
-            </div>
+  const handleGotIt = () => {
+    router.push("/dashboard/transactions");
+  };
 
-            <div className="text-center max-w-lg w-full">
-                <h1 className="text-3xl md:text-4xl font-bold mb-4 uppercase tracking-wide text-primary">
-                    Your Money's on the Move
-                </h1>
+  // --- JSX (No changes needed here from the previous version) ---
+  return (
+    <div className="flex flex-col items-center justify-center bg-background text-foreground p-4">
+      <div className="mb-8">
+        <Image
+          src={WiseLogo}
+          alt="Wise Logo"
+          width={160}
+          height={25}
+          priority
+        />
+      </div>
 
-                {/* Loading State */}
-                {isLoading && (
-                    <div className="space-y-3 mb-8">
-                        <Skeleton className="h-6 w-3/4 mx-auto" />
-                        <Skeleton className="h-4 w-1/2 mx-auto" />
-                    </div>
-                )}
+      <div className="text-center max-w-lg w-full space-y-3">
+        <h1 className="text-4xl md:text-5xl xl:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+          Your Money's
+          <span className="text-primary"> on the Move </span>
+        </h1>
 
-                {/* Success Content (Details Loaded - Might be partial based on refined validation) */}
-                {!isLoading && paymentDetails && !error && ( // Show even if details are partial but essential ID is there
-                    <p className="text-lg mb-8 text-muted-foreground">
-                       Your money should arrive 2 hours. We'll keep you posted.
-                        {/* Conditionally display amount/currency only if valid */}
-                        {(paymentDetails.amountToAdd > 0 && paymentDetails.balanceCurrency.code !== 'N/A')
-                            ? ` Adding ${paymentDetails.amountToAdd} ${paymentDetails.balanceCurrency.code}.`
-                            : '' // Don't display if amount/currency is missing/invalid
-                        }
-                    </p>
-                )}
+        {/* Loading State */}
+        {isLoading && (
+          <div className="space-y-3 mb-8">
+            <Skeleton className="h-6 w-3/4 mx-auto" />
+            <Skeleton className="h-4 w-1/2 mx-auto" />
+          </div>
+        )}
 
-                 {/* Generic Success (Fallback if paymentDetails couldn't be set but no blocking error) */}
-                 {!isLoading && !paymentDetails && !error && (
-                    <p className="text-lg mb-8 text-muted-foreground">
-                         Your payment is processing and should arrive 2 hours. We'll keep you posted.
-                    </p>
-                 )}
+        {!isLoading &&
+          paymentDetails &&
+          !error && ( // Show even if details are partial but essential ID is there
+            <p className="text-lg leading-tight text-muted-foreground">
+              Track your transfers in real-time and enjoy fast, secure delivery
+              to your recipients — anytime, anywhere.
+              {/* Conditionally display amount/currency only if valid */}
+              {
+                paymentDetails.amountToAdd > 0 &&
+                paymentDetails.balanceCurrency.code !== "N/A"
+                  ? ` Adding ${paymentDetails.amountToAdd} ${paymentDetails.balanceCurrency.code}.`
+                  : "" // Don't display if amount/currency is missing/invalid
+              }
+            </p>
+          )}
 
-                {/* Error Message Display */}
-                {error && !isLoading && (
-                    <p className="text-destructive mb-8 text-base -mt-4">
-                        {error}
-                    </p>
-                )}
+        {/* Generic Success (Fallback if paymentDetails couldn't be set but no blocking error) */}
+        {!isLoading && !paymentDetails && !error && (
+          <p className="text-lg mb-8 text-muted-foreground">
+            Your payment is processing and should arrive 2 hours. We'll keep you
+            posted.
+          </p>
+        )}
 
-                {/* Action Button */}
-                <button
-                    onClick={handleGotIt}
-                    className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-10 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={isLoading}
-                >
-                    Got it
-                </button>
-            </div>
-        </div>
-    );
+        {/* Error Message Display */}
+        {error && !isLoading && (
+          <p className="text-destructive mb-8 text-base -mt-4">{error}</p>
+        )}
+
+        {/* Action Button */}
+        <button
+          onClick={handleGotIt}
+          className="bg-primary hover:bg-primaryhover font-medium py-3 px-8 rounded-md transition duration-300 text-mainheading focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={isLoading}
+        >
+          Check Now's
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default PaymentSuccessPage;
