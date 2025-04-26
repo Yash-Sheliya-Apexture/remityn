@@ -15,7 +15,7 @@ const recipientSchema = new mongoose.Schema({
     accountType: { // New accountType field
         type: String,
         required: true,
-        enum: ['Savings', 'Current', 'Salary'], // Allowed values
+        enum: ['Savings', 'Current'], // Allowed values
     },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
