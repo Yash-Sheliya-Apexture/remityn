@@ -308,67 +308,44 @@
 
 // export default TransactionActions;
 
-
-// // app/dashboard/transactions/TransactionActions.tsx (or moved path)
-// import React from "react";
-// import Search from "./Search"; // Adjust path if needed
-// import FilterButton from "./FilterButton"; // *** Adjust path to FilterButton ***
-// import { Transaction } from "@/types/transaction";
-
-// interface TransactionActionsProps {
-//     transactions: Transaction[]; // Still needed for Search
-//     onTransactionsChange: (transactions: Transaction[]) => void; // For Search results
-//     onFilterButtonClick: () => void; // Handler for the filter button click
-// }
-
-// const TransactionActions: React.FC<TransactionActionsProps> = ({
-//     transactions,
-//     onTransactionsChange,
-//     onFilterButtonClick // Receive the handler
-// }) => {
-//     return (
-//         <div className="flex justify-between items-center gap-4 sm:w-auto w-full">
-//             <Search
-//                 transactions={transactions}
-//                 onTransactionsChange={onTransactionsChange}
-//             />
-//             <div className="flex items-center gap-2">
-//                 {/* Pass the click handler directly to FilterButton */}
-//                 <FilterButton onClick={onFilterButtonClick} />
-//             </div>
-//         </div>
-//     );
-// };
-
-// export default TransactionActions;
-
-// frontend/src/app/dashboard/components/TransactionPageSection/TransactionActions.tsx
+// app/dashboard/components/TransactionPageSection/TransactionActions.tsx
 import React from "react";
-import Search from "./Search"; // Adjust path if Search is elsewhere
-import FilterButton from "./FilterButton"; // Adjust path if FilterButton is elsewhere
-import { Transaction } from "@/types/transaction"; // Adjust path if needed
+import Search from "./Search"; // Adjusted relative path
+import { Transaction } from "@/types/transaction";
+import { Account } from "@/types/account"; // Import Account type
+import { LuSettings2 } from "react-icons/lu"; // Import icon for the button
+// No need to import AppliedFilters here anymore
 
 interface TransactionActionsProps {
-    transactions: Transaction[]; // Base list for searching
-    onTransactionsChange: (transactions: Transaction[]) => void; // Callback with search results
-    onFilterButtonClick: () => void; // Handler to open the filter modal
+    transactions: Transaction[];
+    userAccounts: Account[]; // Keep: might be needed for search or future actions
+    onTransactionsChange: (transactions: Transaction[]) => void; // For Search
+    // REMOVE: onFiltersApply: (filters: AppliedFilters) => void; // No longer needed here
+    onFilterButtonClick: () => void; // Callback to open the modal in parent
 }
 
 const TransactionActions: React.FC<TransactionActionsProps> = ({
     transactions,
+    userAccounts, // Keep prop
     onTransactionsChange,
-    onFilterButtonClick
+    onFilterButtonClick // Use this prop for the button's onClick
 }) => {
     return (
-        <div className="flex justify-between items-center gap-4 w-full md:w-auto md:justify-end">
-            {/* Search Component */}
+        <div className="flex justify-between items-center gap-4 sm:w-auto w-full">
             <Search
                 transactions={transactions}
                 onTransactionsChange={onTransactionsChange}
             />
-            {/* Filter Button */}
             <div className="flex items-center gap-2">
-                <FilterButton onClick={onFilterButtonClick} />
+                 {/* Filter Trigger Button */}
+                <button
+                    className="inline-flex items-center justify-center gap-3 bg-primary text-neutral-900 hover:bg-primaryhover h-12.5 md:w-36 w-12.5 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer"
+                    onClick={onFilterButtonClick} // Trigger the modal open action
+                    aria-haspopup="dialog"
+                >
+                    <LuSettings2 size={20} />
+                    <span className="md:block hidden">Filters</span>
+                </button>
             </div>
         </div>
     );

@@ -3977,7 +3977,7 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
                 isMobile
                   ? "bottom-0 left-0 right-0 h-[100vh]" // Kept original mobile style
                   : "top-0 right-0 sm:w-[600px] h-full" // Kept original desktop style
-              } bg-white dark:bg-background z-80 flex flex-col`} // Kept original styles (z-80)
+              } bg-white dark:bg-background z-80 flex flex-col sm:pb-0 pb-16`} // Kept original styles (z-80)
               initial={
                 isMobile ? { y: "100%", opacity: 0 } : { x: "100%", opacity: 0 }
               }
