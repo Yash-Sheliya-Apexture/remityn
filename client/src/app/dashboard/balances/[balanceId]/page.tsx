@@ -7671,7 +7671,7 @@ const BalanceDetailPage = () => {
   // Loading Skeleton
   if (isLoading && !typedBalanceDetail && !error) {
      return (
-        <div className="py-8 animate-pulse">
+        <div className="py-5 animate-pulse">
              {/* Mimic BalanceHeader structure */}
              <div className="pb-6 mb-8 border-b">
                 <div className="flex sm:flex-row flex-col gap-4 justify-between">
@@ -7703,26 +7703,45 @@ const BalanceDetailPage = () => {
                 </div>
              </div>
              {/* Mimic Transaction Actions & List Header */}
-             <div className="mt-10">
-                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky lg:top-28 top-20 z-10 bg-background dark:bg-background">
-                     <Skeleton className="h-8 w-48 rounded-md" />
+             <div className="mt-5">
+                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 sticky lg:top-28 top-20 z-10 bg-background dark:bg-background">
+                     <Skeleton className="h-12 w-60 rounded-md" />
                      <div className="flex items-center gap-4 w-full md:w-auto md:justify-end">
-                         <Skeleton className="h-10 w-full sm:w-64 rounded-full" /> {/* Search Skel */}
-                         <Skeleton className="h-10 w-32 rounded-full" /> {/* Filter Button Skel */}
+                         <Skeleton className="h-12 w-full sm:w-68 rounded-full" /> {/* Search Skel */}
+                         <Skeleton className="h-12 w-32 rounded-full" /> {/* Filter Button Skel */}
                      </div>
                  </div>
                  {/* Mimic Transaction List Items */}
                  <div className="space-y-2">
-                    {Array(5).fill(0).map((_, index) => (
+                    {Array(3).fill(0).map((_, index) => (
                          <div key={index} className="block p-2 sm:p-4 rounded-2xl">
                              <div className="flex items-center gap-4">
-                                 <Skeleton className="h-12 w-12 rounded-full flex-shrink-0" />
+                                 <Skeleton className="size-12 rounded-full flex-shrink-0" />
                                  <div className="flex-grow flex flex-row justify-between items-center gap-4">
                                      <div className="flex-grow">
                                          <Skeleton className="h-4 w-40 mb-2" />
                                          <Skeleton className="h-3 w-32" />
                                      </div>
-                                     <Skeleton className="h-5 w-20 rounded-full" />
+                                     <Skeleton className="h-6 w-26 rounded-full" />
+                                 </div>
+                             </div>
+                         </div>
+                     ))}
+                 </div>
+
+                 {/* Mimic Transaction List Items */}
+                 <Skeleton className="h-5 w-26 rounded-full mb-2" />
+                 <div className="space-y-2 border-t ">
+                    {Array(5).fill(0).map((_, index) => (
+                         <div key={index} className="block p-2 sm:p-4 rounded-2xl">
+                             <div className="flex items-center gap-4">
+                                 <Skeleton className="size-12 rounded-full flex-shrink-0" />
+                                 <div className="flex-grow flex flex-row justify-between items-center gap-4">
+                                     <div className="flex-grow">
+                                         <Skeleton className="h-4 w-40 mb-2" />
+                                         <Skeleton className="h-3 w-32" />
+                                     </div>
+                                     <Skeleton className="h-6 w-26 rounded-full" />
                                  </div>
                              </div>
                          </div>
@@ -7760,7 +7779,7 @@ const BalanceDetailPage = () => {
 
   // --- Main Render Structure ---
   return (
-    <div className="py-8"> {/* Main container */}
+    <div className="py-5"> {/* Main container */}
       <BalanceHeader
         balanceDetail={typedBalanceDetail}
         isLoading={isBalanceLoading}

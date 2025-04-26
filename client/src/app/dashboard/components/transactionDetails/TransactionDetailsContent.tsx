@@ -157,7 +157,7 @@ const TransactionDetailsContent: React.FC<TransactionDetailsContentProps> = ({
 
              {/* Section 3: Note Section */}
              <div>
-                 <h3 className="text-base font-semibold mb-2 text-neutral-900 dark:text-white">Note (for your reference only)</h3>
+                 <h3 className="text-base font-semibold mb-2 text-neutral-900 dark:text-white"> Note (for your reference only)</h3>
                  <textarea
                     id="transactionNote"
                     className="block w-full border rounded-md p-3 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 dark:placeholder:text-white focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"

@@ -5037,29 +5037,30 @@ function parseDateString(dateString: string | undefined): Date | null {
 // --- Transactions Page Skeleton ---
 const TransactionsPageSkeleton: React.FC = () => {
   return (
-      <section className="Transaction-Page pb-8 md:pb-10">
+      <section className="Transaction-Page pb-8 pt-5 md:pb-10">
           <div className="container mx-auto">
               {/* Skeleton for Header and Actions */}
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky lg:top-28 top-20 z-10 bg-white dark:bg-background">
-                  <Skeleton className="h-8 w-64 rounded-md" />
+                  <Skeleton className="md:h-12 h-8 md:w-64 w-40 rounded-full" />
                   <div className="flex items-center gap-4 w-full md:w-auto justify-end">
-                      <Skeleton className="h-10 w-full sm:w-64 rounded-full" /> {/* Search */}
-                      <Skeleton className="h-10 w-32 rounded-full" /> {/* Filter Button */}
+                      <Skeleton className="h-12 w-full sm:w-70 rounded-full" /> {/* Search */}
+                      <Skeleton className="h-12 w-32 rounded-full" /> {/* Filter Button */}
                   </div>
               </div>
+
               {/* Skeleton for Transaction List */}
               <div className="space-y-2">
                   {Array(8).fill(0).map((_, index) => (
                       <div key={index} className="block p-2 sm:p-4 rounded-2xl">
                           <div className="flex items-center gap-4">
-                              <Skeleton className="h-12 w-12 rounded-full flex-shrink-0" />
+                              <Skeleton className="size-14 rounded-full flex-shrink-0" />
                               <div className="flex-grow flex flex-row justify-between items-center gap-4">
                                   <div className="flex-grow">
-                                      <Skeleton className="h-4 w-40 mb-2" />
-                                      <Skeleton className="h-3 w-32" />
+                                      <Skeleton className="h-5 md:w-40 w-28 mb-2" />
+                                      <Skeleton className="h-4 md:w-58 w-40" />
                                   </div>
                                   <div className="shrink-0">
-                                      <Skeleton className="h-5 w-20 rounded-full" />
+                                      <Skeleton className="lg:h-8 h-6 lg:w-32 w-16 rounded-full" />
                                   </div>
                               </div>
                           </div>
@@ -5198,13 +5199,15 @@ const TransactionsPage: React.FC = () => {
     // --- Render ---
     return (
       <>
-        <section className="Transaction-Wrapper pb-8 md:pb-10">
+        <section className="Transaction-Wrapper pb-8 pt-5 md:pb-10">
           <div className="Transaction-Page">
             {/* Header and Actions */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky lg:top-28 top-20 z-10 bg-white dark:bg-background">
-              <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 sticky lg:top-28 top-20 z-10 bg-white dark:bg-background">
+              <h1 className="lg:text-3xl md:text-2xl text-xl font-semibold text-mainheading dark:text-white">
                 Transactions
               </h1>
+
+
               {/* Render actions only when accounts are loaded and available */}
               {userAccounts.length > 0 && (
                 <TransactionActions
@@ -5214,6 +5217,7 @@ const TransactionsPage: React.FC = () => {
                   onFilterButtonClick={handleOpenFilterModal}
                 />
               )}
+              
               {/* Message if no accounts exist */}
               {userAccounts.length === 0 && !error && (
                 <p className="text-sm text-gray-500">
@@ -5224,7 +5228,7 @@ const TransactionsPage: React.FC = () => {
 
             {/* Error Display */}
             {error && (
-              <div className="text-center py-10 text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-900/20 p-4 rounded-md border border-red-200 dark:border-red-800/30">
+              <div className="text-center py-5 text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-900/20 p-4 mb-2 rounded-md border border-red-200 dark:border-red-800/30">
                 <strong>Error:</strong> {error}
               </div>
             )}
@@ -5276,7 +5280,7 @@ const TransactionsPage: React.FC = () => {
                     {Object.entries(groupedProcessedTransactions).map(
                       ([date, transactionsForDate]) => (
                         <div key={date} className="Transaction-Lists">
-                          <h3 className="font-medium text-gray-600 dark:text-white mb-3 leading-8 border-b">
+                          <h3 className="font-medium text-gray-700 dark:text-white mb-3 leading-8 border-b">
                             {date}
                           </h3>
                           <div className="space-y-2">
@@ -5299,7 +5303,7 @@ const TransactionsPage: React.FC = () => {
                                           <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg truncate"> {name} </h3>
                                           <p className="text-sm text-gray-500 dark:text-gray-300 mt-1"> {description} </p>
                                         </div>
-                                        <div className={`font-medium ${amountClass} whitespace-nowrap shrink-0`}>
+                                        <div className={`font-medium ${amountClass} shrink-0`}>
                                           {amountPrefix} {amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2, })} {" "} {displayCurrencyCode}
                                         </div>
                                       </div>
@@ -5317,7 +5321,7 @@ const TransactionsPage: React.FC = () => {
 
                 {/* Empty State: Rendered when filteredTransactions is empty */}
                 {filteredTransactions.length === 0 && (
-                  <div className="text-center flex flex-col text-lg px-4 text-gray-500 dark:text-gray-300 py-12 dark:bg-white/5 rounded-lg mt-6">
+                  <div className="text-center flex flex-col text-lg px-4 text-gray-500 dark:text-gray-300 bg-lightgray py-5 dark:bg-white/5 rounded-lg mt-6">
                     {allTransactions.length === 0
                       ? "You haven't made any transactions yet."
                       : "No transactions match your current filter or search criteria."}
@@ -5326,7 +5330,7 @@ const TransactionsPage: React.FC = () => {
                         <div className="flex justify-center ">
                           <button
                             onClick={clearAllAppliedFilters}
-                            className="mt-4 px-6 cursor-pointer py-3 w-38 bg-primary text-mainheading dark:text-neutral-900 rounded-full hover:bg-primaryhover transition-colors duration-500 ease-in-out"
+                            className="mt-4 px-6 cursor-pointer lg:py-3 py-2.5 lg:text-base text-sm font-medium w-38 bg-primary text-mainheading dark:text-neutral-900 rounded-full hover:bg-primaryhover transition-colors duration-500 ease-in-out"
                           >
                             Clear Filters
                           </button>
