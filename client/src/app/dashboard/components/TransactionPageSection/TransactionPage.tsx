@@ -5235,7 +5235,7 @@ const TransactionsPage: React.FC = () => {
                 {/* In Progress Section */}
                 {inProgressTransactions.length > 0 && (
                   <div className="InProcess-Transaction-Lists">
-                    <h3 className="font-medium text-gray-600 dark:text-white mb-3 leading-8 border-b border-gray-200 dark:border-primarybox">
+                    <h3 className="font-medium text-gray-600 dark:text-white mb-3 leading-8 border-b">
                       In progress
                     </h3>
                     <div className="space-y-2">
@@ -5276,7 +5276,7 @@ const TransactionsPage: React.FC = () => {
                     {Object.entries(groupedProcessedTransactions).map(
                       ([date, transactionsForDate]) => (
                         <div key={date} className="Transaction-Lists">
-                          <h3 className="font-medium text-gray-600 dark:text-white mb-3 leading-8 border-b border-gray-200 dark:border-primarybox">
+                          <h3 className="font-medium text-gray-600 dark:text-white mb-3 leading-8 border-b">
                             {date}
                           </h3>
                           <div className="space-y-2">

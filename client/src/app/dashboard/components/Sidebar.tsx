@@ -2985,7 +2985,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
         {renderBottomNav && (
           <div
             key="bottom-nav"
-            className="sm:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-background border-t z-12 shadow-[-2px_0px_10px_rgba(0,0,0,0.1)] dark:shadow-[-2px_0px_10px_rgba(255,255,255,0.05)]"
+            className="sm:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-background border-t z-12 border-gray-200 dark:border-secondarybox/50 "
           >
             {/* No skeleton needed here unless balance loading blocks critical nav */}
             <div className="flex items-center justify-around h-16">

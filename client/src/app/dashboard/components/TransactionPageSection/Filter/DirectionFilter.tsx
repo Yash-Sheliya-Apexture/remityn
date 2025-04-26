@@ -367,19 +367,19 @@ const DirectionFilter: React.FC<DirectionFilterProps> = ({
 }) => {
   return (
     <div>
-      <h4 className="text-gray-500 dark:text-gray-300  font-medium relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-neutral-500 dark:after:bg-white/30 after:mt-1">
+      <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 leading-8 border-b">
         Direction
       </h4>
       <RadioGroup
         defaultValue={selectedDirection} // Make sure selectedDirection is one of "all", "add", "send"
-        className="pt-4 space-y-2"
+        className="space-y-2"
         onValueChange={(value) => { // Added explicit value type and arrow function for clarity
           console.log("Direction changed to:", value); // Debugging log
           onDirectionChange(value);
         }}
       >
         {/* All */}
-        <label className="flex items-center gap-4 cursor-pointer dark:hover:bg-primarybox hover:bg-lightgray p-4 rounded-2xl transition-colors duration-500 ease-in-out">
+        <label className="flex items-center gap-4 cursor-pointer dark:hover:bg-primarybox hover:bg-lightgray sm:p-4 p-2 rounded-2xl transition-colors duration-500 ease-in-out">
           <div className="p-3 rounded-full bg-lightborder dark:bg-secondarybox flex items-center justify-center">
             <BsList size={24} className="text-neutral-900 dark:text-white" />
           </div>
@@ -390,7 +390,7 @@ const DirectionFilter: React.FC<DirectionFilterProps> = ({
         </label>
 
         {/* Money in */}
-        <label className="flex items-center gap-4 cursor-pointer dark:hover:bg-primarybox hover:bg-lightgray p-4 rounded-2xl transition-colors duration-500 ease-in-out">
+        <label className="flex items-center gap-4 cursor-pointer dark:hover:bg-primarybox hover:bg-lightgray sm:p-4 p-2 rounded-2xl transition-colors duration-500 ease-in-out">
           <div className="p-3 rounded-full bg-lightborder dark:bg-secondarybox flex items-center justify-center">
             <LuPlus size={24} className="text-neutral-900 dark:text-white" />
           </div>
@@ -402,7 +402,7 @@ const DirectionFilter: React.FC<DirectionFilterProps> = ({
         </label>
 
         {/* Money out */}
-        <label className="flex items-center gap-4 cursor-pointer dark:hover:bg-primarybox hover:bg-lightgray p-4 rounded-2xl transition-colors duration-500 ease-in-out">
+        <label className="flex items-center gap-4 cursor-pointer dark:hover:bg-primarybox hover:bg-lightgray sm:p-4 p-2 rounded-2xl transition-colors duration-500 ease-in-out">
           <div className="p-3 rounded-full bg-lightborder dark:bg-secondarybox flex items-center justify-center">
             <GoArrowUp size={24} className="text-neutral-900 dark:text-white" />
           </div>
