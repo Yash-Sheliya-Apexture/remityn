@@ -646,7 +646,7 @@ const AccountCard: React.FC<AccountCardProps> = ({ username }) => {
         <h1 className="text-4xl text-center font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
           {username} {/* Display the username passed via props */}
         </h1>
-        <p className="text-center text-subheading dark:text-gray-300 font-medium capitalize mb-6">
+        <p className="text-center text-gray-500 dark:text-gray-300 font-medium capitalize mb-6">
           Your personal account
         </p>
 

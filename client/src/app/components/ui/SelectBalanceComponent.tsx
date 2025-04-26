@@ -472,7 +472,7 @@ const SelectBalanceComponent: React.FC<SelectBalanceComponentProps> = ({
             <Skeleton className="lg:h-32 h-28 w-full rounded-2xl border-2 border-dashed" />
           )}
 
-          {Array(allowAddBalance ? 5 : 8) // Adjust skeleton count based on add card presence
+          {Array(allowAddBalance ? 8 : 8) // Adjust skeleton count based on add card presence
             .fill(0)
             .map((_, i) => (
               <Skeleton key={`skel-${i}`} className="h-32 w-full rounded-2xl" />

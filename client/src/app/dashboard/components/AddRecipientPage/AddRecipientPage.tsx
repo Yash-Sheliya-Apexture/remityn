@@ -159,8 +159,6 @@
 //   );
 // }
 
-
-
 // 'use client';
 // import React, { useState } from 'react';
 // import { useRouter } from 'next/navigation';
@@ -774,7 +772,6 @@
 //                                 />
 //                             </div>
 
-
 //                             <div className="flex justify-between items-center mb-4 mt-8">
 //                                 <button
 //                                     type="submit"
@@ -805,7 +802,6 @@
 // };
 
 // export default AddRecipientPage;
-
 
 // 'use client';
 // import React, { useState } from 'react';
@@ -1144,7 +1140,6 @@
 //                                 )}
 //                             </div>
 
-                            
 //                             <div>
 //                                 <label
 //                                     htmlFor="bankName"
@@ -1201,9 +1196,6 @@
 //                                 )}
 //                             </div>
 
-                            
-
-
 //                             <div className="flex justify-between items-center mb-4 mt-8">
 //                                 <button
 //                                     type="submit"
@@ -1234,7 +1226,6 @@
 // };
 
 // export default AddRecipientPage;
-
 
 // 'use client';
 // import React, { useState, useEffect } from 'react';
@@ -1386,7 +1377,7 @@
 //                             ← Back
 //                         </Link>
 //                         <h2 className="text-2xl font-semibold text-main text-center mb-6">Select their currency</h2>
-                        
+
 //                         <div className="space-y-3">
 //                             {isLoadingCurrencies ? (
 //                                 <>
@@ -1587,7 +1578,6 @@
 //                                 )}
 //                             </div>
 
-
 //                             <div>
 //                                 <label
 //                                     htmlFor="bankName"
@@ -1644,7 +1634,6 @@
 //                                 )}
 //                             </div>
 
-
 //                             <div className="flex justify-between items-center mb-4 mt-8">
 //                                 <button
 //                                     type="submit"
@@ -1675,17 +1664,6 @@
 // };
 
 // export default AddRecipientPage;
-
-
-
-
-
-
-
-
-
-
-
 
 // 'use client';
 // import React, { useState, useEffect, useMemo } from 'react';
@@ -2341,18 +2319,6 @@
 
 // export default AddRecipientPage;
 
-
-
-
-
-
-
-
-
-
-
-
-
 // // pages/dashboard/recipients/add/index.tsx
 // 'use client';
 // import React, { useState, useEffect, useMemo } from 'react';
@@ -2976,8 +2942,6 @@
 // };
 
 // export default AddRecipientPage;
-
-
 
 // // pages/dashboard/recipients/add/index.tsx -> renamed to frontend/src/app/dashboard/recipients/addrecipient/page.tsx
 // 'use client';
@@ -3641,10 +3605,6 @@
 
 // export default AddRecipientPage;
 
-
-
-
-
 // // frontend/src/app/dashboard/recipients/addrecipient/page.tsx
 // 'use client';
 // import React, { useState, useEffect, useMemo } from 'react';
@@ -3688,7 +3648,6 @@
 //   response?: ApiErrorResponse;
 //   message?: string; // Fallback message if not an API error structure
 // }
-
 
 // const AddRecipientPage = () => {
 //   const router = useRouter();
@@ -4362,8 +4321,6 @@
 
 // export default AddRecipientPage;
 
-
-
 // // frontend/src/app/dashboard/recipients/addrecipient/page.tsx
 // 'use client';
 // import React, { useState, useEffect, useMemo } from 'react';
@@ -4401,7 +4358,6 @@
 // interface NewRecipient {
 //     _id: string;
 // }
-
 
 // const AddRecipientPage = () => {
 //   const router = useRouter();
@@ -4485,7 +4441,6 @@
 //       );
 //     });
 //   }, [comingSoonCurrenciesBase, searchCurrency]);
-
 
 //   const handleCurrencySelect = (currencyCode: string) => {
 //     setSelectedCurrencyCode(currencyCode);
@@ -4707,7 +4662,6 @@
 //                 </button>
 //               </div>
 //             )}
-
 
 //             {/* Currency List Section */}
 //             <div className="space-y-6">
@@ -4998,7 +4952,6 @@
 
 //                 </div>
 
-
 //                 {/* Bank Name */}
 //                  <div>
 //                   <label
@@ -5111,29 +5064,22 @@
 
 // export default AddRecipientPage;
 
-
-
-
-
-
-
-
 // frontend/src/app/dashboard/recipients/addrecipient/page.tsx
-'use client';
-import React, { useState, useEffect, useMemo } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import DashboardHeader from '../../../components/layout/DashboardHeader';
-import { useAuth } from '../../../contexts/AuthContext';
-import recipientService from '../../../services/recipient';
-import currencyService, { Currency } from '../../../services/currency';
-import { IoMdCloseCircle } from 'react-icons/io';
-import Image from 'next/image';
-import { IoArrowForward, IoClose as IoCloseIcon } from 'react-icons/io5';
-import { Skeleton } from '@/components/ui/skeleton';
-import { FiSearch } from 'react-icons/fi'; // Kept FiSearch as it was in original
-import { MdCancel } from 'react-icons/md';
+"use client";
+import React, { useState, useEffect, useMemo } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import DashboardHeader from "../../../components/layout/DashboardHeader";
+import { useAuth } from "../../../contexts/AuthContext";
+import recipientService from "../../../services/recipient";
+import currencyService, { Currency } from "../../../services/currency";
+import { IoMdCloseCircle } from "react-icons/io";
+import Image from "next/image";
+import { IoArrowForward, IoClose as IoCloseIcon } from "react-icons/io5";
+import { Skeleton } from "@/components/ui/skeleton";
+import { FiSearch } from "react-icons/fi"; // Kept FiSearch as it was in original
+import { MdCancel } from "react-icons/md";
 // Correctly import the AccountTypeDropdown component
-import AccountTypeDropdown from '../../../components/ui/AccountTypeDropdown'; // Adjusted path assuming it's in frontend/src/app/components/ui
+import AccountTypeDropdown from "../../../components/ui/AccountTypeDropdown"; // Adjusted path assuming it's in frontend/src/app/components/ui
 
 // Define an interface for the expected API error structure from recipientService
 interface ApiErrorData {
@@ -5153,7 +5099,7 @@ interface ApiError {
 
 // Define a type for the expected response from addRecipient
 interface NewRecipient {
-    _id: string;
+  _id: string;
 }
 
 const AddRecipientPage = () => {
@@ -5191,7 +5137,8 @@ const AddRecipientPage = () => {
         setCurrencies(fetchedCurrencies);
       } catch (error) {
         console.error("Error fetching currencies:", error);
-        const errorMessage = error instanceof Error ? error.message : "Failed to load currencies.";
+        const errorMessage =
+          error instanceof Error ? error.message : "Failed to load currencies.";
         setFormError(errorMessage);
       } finally {
         setIsLoadingCurrencies(false);
@@ -5203,9 +5150,7 @@ const AddRecipientPage = () => {
 
   // Memoized currency lists (Unchanged)
   const availableCurrenciesBase = useMemo((): Currency[] => {
-    return currencies.filter((currency) =>
-      ["INR"].includes(currency.code)
-    );
+    return currencies.filter((currency) => ["INR"].includes(currency.code));
   }, [currencies]);
 
   const comingSoonCurrenciesBase = useMemo((): Currency[] => {
@@ -5243,12 +5188,12 @@ const AddRecipientPage = () => {
   const isFormInvalid = useMemo(() => {
     // Return true if any REQUIRED field is empty (or just whitespace)
     return (
-        !accountHolderName.trim() ||
-        !ifscCode.trim() ||
-        !accountNumber.trim() ||
-        !accountType || // Check if the string is empty (not selected)
-        !bankName.trim() ||
-        !address.trim()
+      !accountHolderName.trim() ||
+      !ifscCode.trim() ||
+      !accountNumber.trim() ||
+      !accountType || // Check if the string is empty (not selected)
+      !bankName.trim() ||
+      !address.trim()
     );
   }, [
     accountHolderName,
@@ -5275,46 +5220,47 @@ const AddRecipientPage = () => {
 
   // Manual validation function (Kept, but simplified error setting)
   const validateForm = (): boolean => {
-      let isValid = true;
-      setAccountHolderNameError("");
-      setIfscCodeError("");
-      setAccountNumberError("");
-      setBankNameError("");
-      setAddressError("");
-      setAccountTypeError("");
+    let isValid = true;
+    setAccountHolderNameError("");
+    setIfscCodeError("");
+    setAccountNumberError("");
+    setBankNameError("");
+    setAddressError("");
+    setAccountTypeError("");
 
-      if (!accountHolderName.trim()) {
-        setAccountHolderNameError("Account holder name is required");
-        isValid = false;
-      }
-      if (!ifscCode.trim()) {
-        setIfscCodeError("IFSC code is required");
-        isValid = false;
-      }
-      // Add specific validation for IFSC format if needed (e.g., length)
-      // else if (ifscCode.trim().length !== 11) {
-      //   setIfscCodeError("IFSC code must be 11 characters");
-      //   isValid = false;
-      // }
-      if (!accountNumber.trim()) {
-        setAccountNumberError("Account number is required");
-        isValid = false;
-      }
-      // Add specific validation for account number format if needed here
-      if (!bankName.trim()) {
-        setBankNameError("Bank name is required");
-        isValid = false;
-      }
-      if (!address.trim()) {
-        setAddressError("Address is required");
-        isValid = false;
-      }
-      if (!accountType) { // Check if accountType string is empty
-        setAccountTypeError("Account type is required");
-        isValid = false;
-      }
-      return isValid;
-  }
+    if (!accountHolderName.trim()) {
+      setAccountHolderNameError("Account holder name is required");
+      isValid = false;
+    }
+    if (!ifscCode.trim()) {
+      setIfscCodeError("IFSC code is required");
+      isValid = false;
+    }
+    // Add specific validation for IFSC format if needed (e.g., length)
+    // else if (ifscCode.trim().length !== 11) {
+    //   setIfscCodeError("IFSC code must be 11 characters");
+    //   isValid = false;
+    // }
+    if (!accountNumber.trim()) {
+      setAccountNumberError("Account number is required");
+      isValid = false;
+    }
+    // Add specific validation for account number format if needed here
+    if (!bankName.trim()) {
+      setBankNameError("Bank name is required");
+      isValid = false;
+    }
+    if (!address.trim()) {
+      setAddressError("Address is required");
+      isValid = false;
+    }
+    if (!accountType) {
+      // Check if accountType string is empty
+      setAccountTypeError("Account type is required");
+      isValid = false;
+    }
+    return isValid;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -5348,10 +5294,12 @@ const AddRecipientPage = () => {
       );
 
       // --- Redirection Logic (Unchanged) ---
-      const returnToParam = searchParams.get('returnTo');
+      const returnToParam = searchParams.get("returnTo");
       if (returnToParam) {
         const decodedReturnUrl = decodeURIComponent(returnToParam);
-        const match = decodedReturnUrl.match(/\/dashboard\/balances\/([^/]+)\/send\/select-recipient/);
+        const match = decodedReturnUrl.match(
+          /\/dashboard\/balances\/([^/]+)\/send\/select-recipient/
+        );
 
         if (match?.[1] && newRecipient?._id) {
           const balanceId = match[1];
@@ -5359,52 +5307,62 @@ const AddRecipientPage = () => {
           console.log("Redirecting back to send flow:", targetUrl);
           router.push(targetUrl);
         } else {
-          console.warn("Could not parse balanceId from returnTo URL or missing recipient ID, redirecting to recipient details:", decodedReturnUrl, newRecipient?._id);
-          router.push(newRecipient?._id ? `/dashboard/recipients/${newRecipient._id}` : '/dashboard/recipients');
+          console.warn(
+            "Could not parse balanceId from returnTo URL or missing recipient ID, redirecting to recipient details:",
+            decodedReturnUrl,
+            newRecipient?._id
+          );
+          router.push(
+            newRecipient?._id
+              ? `/dashboard/recipients/${newRecipient._id}`
+              : "/dashboard/recipients"
+          );
         }
       } else if (newRecipient?._id) {
         console.log("Redirecting to recipient details page (standard flow)");
         router.push(`/dashboard/recipients/${newRecipient._id}`);
       } else {
-         console.warn("Recipient added, but no ID received or standard flow error. Redirecting to recipient list.");
-         setFormError("Recipient added, but failed to redirect. Please check the recipients list.");
-         router.push('/dashboard/recipients');
+        console.warn(
+          "Recipient added, but no ID received or standard flow error. Redirecting to recipient list."
+        );
+        setFormError(
+          "Recipient added, but failed to redirect. Please check the recipients list."
+        );
+        router.push("/dashboard/recipients");
       }
       // --- End Redirection Logic ---
-
     } catch (error: unknown) {
       console.error("Error adding recipient:", error);
       const apiError = error as ApiError;
 
       // Handle Backend Validation Errors (400 Bad Request) (Unchanged)
-      if (
-        apiError.response?.data &&
-        apiError.response.status === 400
-      ) {
+      if (apiError.response?.data && apiError.response.status === 400) {
         const backendErrors = apiError.response.data.errors;
-        if (backendErrors && typeof backendErrors === 'object') {
-            setAccountHolderNameError(backendErrors.accountHolderName || "");
-            setIfscCodeError(backendErrors.ifscCode || "");
-            setAccountNumberError(backendErrors.accountNumber || "");
-            setBankNameError(backendErrors.bankName || "");
-            setAddressError(backendErrors.address || "");
-            setAccountTypeError(backendErrors.accountType || "");
+        if (backendErrors && typeof backendErrors === "object") {
+          setAccountHolderNameError(backendErrors.accountHolderName || "");
+          setIfscCodeError(backendErrors.ifscCode || "");
+          setAccountNumberError(backendErrors.accountNumber || "");
+          setBankNameError(backendErrors.bankName || "");
+          setAddressError(backendErrors.address || "");
+          setAccountTypeError(backendErrors.accountType || "");
         }
 
         if (apiError.response.data.message) {
-            setFormError(apiError.response.data.message);
+          setFormError(apiError.response.data.message);
         } else if (!backendErrors || Object.keys(backendErrors).length === 0) {
-            setFormError("Invalid data submitted. Please check the fields.");
+          setFormError("Invalid data submitted. Please check the fields.");
         }
-
       } else {
-         // Handle other types of errors (Unchanged)
-         const errorMessage = apiError?.response?.data?.message
-                            || apiError?.message
-                            || (error instanceof Error ? error.message : "An unknown error occurred");
-         setFormError(
-           errorMessage || "Failed to add recipient. Please try again."
-         );
+        // Handle other types of errors (Unchanged)
+        const errorMessage =
+          apiError?.response?.data?.message ||
+          apiError?.message ||
+          (error instanceof Error
+            ? error.message
+            : "An unknown error occurred");
+        setFormError(
+          errorMessage || "Failed to add recipient. Please try again."
+        );
       }
     } finally {
       setIsSubmitting(false);
@@ -5447,7 +5405,7 @@ const AddRecipientPage = () => {
         {step === 1 && (
           <div
             key="currency-step"
-             // Original class structure
+            // Original class structure
             className="bg-white dark:bg-background relative"
           >
             <h2 className="lg:text-3xl md:text-2xl text-xl capitalize font-semibold text-mainheading dark:text-white text-left md:text-center mb-4">
@@ -5465,7 +5423,7 @@ const AddRecipientPage = () => {
               <input
                 type="text"
                 // Original classes
-                className="w-full rounded-full h-12.5 py-3 pl-12 pr-10 border ease-linear duration-75 focus:border-[#5f5f5f] focus:outline-none placeholder:text-neutral-600 dark:placeholder:text-white bg-white dark:bg-background"
+                className="w-full rounded-full h-12.5 py-3 pl-12 pr-10 border transition-all ease-linear duration-75 focus:outline-none focus:border-[#5f5f5f] placeholder:text-neutral-600 dark:placeholder:text-white bg-white dark:bg-background"
                 placeholder="Search currency by name or code..."
                 value={searchCurrency}
                 onChange={(e) => setSearchCurrency(e.target.value)}
@@ -5474,7 +5432,7 @@ const AddRecipientPage = () => {
                 <button
                   type="button"
                   onClick={clearSearchTerm}
-                   // Original classes
+                  // Original classes
                   className="absolute inset-y-0 right-3 flex items-center text-neutral-700 dark:text-neutral-300 hover:text-primary dark:hover:text-primary focus:outline-none cursor-pointer"
                   aria-label="Clear search"
                 >
@@ -5485,25 +5443,25 @@ const AddRecipientPage = () => {
 
             {/* General Form Error Display for Currency Step (Original UI) */}
             {formError && !isLoadingCurrencies && (
-                <div
-                  // Original classes
-                  className="bg-red-600/20 border border-red-600/60 text-red-600 dark:text-red-400 rounded-xl p-4 relative mb-3"
-                  role="alert"
-                >
-                  <span className="text-red-700 dark:text-red-300 text-sm font-medium">
-                    {formError}
-                  </span>
-                  {/* Optional: Add a close button if needed, using original styles */}
-                  {/* <button onClick={handleCloseFormError} className="absolute top-0 right-0 p-2">
+              <div
+                // Original classes
+                className="bg-red-100 dark:bg-red-600/20 border border-red-400 dark:border-red-600/50 rounded-xl p-4 relative mb-3"
+                role="alert"
+              >
+                <span className="text-red-600 dark:text-red-400 text-sm font-medium">
+                  {formError}
+                </span>
+                {/* Optional: Add a close button if needed, using original styles */}
+                {/* <button onClick={handleCloseFormError} className="absolute top-0 right-0 p-2">
                       <IoCloseIcon className="h-5 w-5" />
                    </button> */}
-                </div>
+              </div>
             )}
 
             {/* Currency List Section (Original UI) */}
             <div className="space-y-6">
               {isLoadingCurrencies ? (
-                 // Original Skeletons
+                // Original Skeletons
                 <>
                   <Skeleton className="h-16 rounded-xl w-full" />
                   <Skeleton className="h-16 rounded-xl w-full" />
@@ -5523,7 +5481,7 @@ const AddRecipientPage = () => {
                             key={currency._id || currency.code}
                             role="button"
                             tabIndex={0}
-                             // Original classes
+                            // Original classes
                             className={`block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer`}
                             onClick={() => handleCurrencySelect(currency.code)}
                             onKeyDown={(e) =>
@@ -5566,7 +5524,7 @@ const AddRecipientPage = () => {
                   {/* Coming Soon Currencies (Original UI) */}
                   {filteredComingSoonCurrencies.length > 0 && (
                     <div>
-                       {/* Original heading */}
+                      {/* Original heading */}
                       <h3 className="font-medium text-gray-500 dark:text-gray-300 mb-3 tracking-wide leading-8 border-b">
                         Coming soon
                       </h3>
@@ -5574,7 +5532,7 @@ const AddRecipientPage = () => {
                         {filteredComingSoonCurrencies.map((currency) => (
                           <div
                             key={currency._id || currency.code}
-                             // Original classes
+                            // Original classes
                             className={`p-3 sm:p-4 rounded-xl cursor-not-allowed opacity-60 border border-transparent dark:border-transparent`}
                           >
                             <div className="flex items-center justify-between">
@@ -5613,11 +5571,9 @@ const AddRecipientPage = () => {
                     filteredAvailableCurrencies.length === 0 &&
                     filteredComingSoonCurrencies.length === 0 && (
                       <div className="text-center text-gray-500 dark:text-gray-300 mt-8 py-6 border-2 border-dashed rounded-lg">
-                        {
-                          searchCurrency.trim() !== ""
-                            ? `No currencies found for "${searchCurrency}".`
-                            : "No currencies available at the moment."
-                        }
+                        {searchCurrency.trim() !== ""
+                          ? `No currencies found for "${searchCurrency}".`
+                          : "No currencies available at the moment."}
                       </div>
                     )}
                 </>
@@ -5634,28 +5590,31 @@ const AddRecipientPage = () => {
             className="bg-white dark:bg-background w-full lg:max-w-lg"
           >
             <h2 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white mb-6 text-center sm:text-left">
-              Enter their account details ({selectedCurrencyCode}) {/* Added selected code here */}
+              Enter their account details ({selectedCurrencyCode}){" "}
+              {/* Added selected code here */}
             </h2>
 
             {/* General Form Error Display (Original UI) */}
             {formError && (
               <div
                 // Original classes
-                className="bg-red-600/20 border border-red-600/60 text-red-600 dark:text-red-400 rounded-xl p-4 relative mb-3"
+                className="bg-red-100 dark:bg-red-600/20 border border-red-400 dark:border-red-600/50 rounded-xl p-4 relative mb-3"
                 role="alert"
               >
-                <span className="text-red-700 dark:text-red-300 text-sm font-medium">
+                <span className="text-red-600 dark:text-red-400 text-sm font-medium">
                   {formError}
                 </span>
                 {/* Optional: Add a close button if needed */}
-                 {/* <button onClick={handleCloseFormError} className="absolute top-0 right-0 p-2">
+                {/* <button onClick={handleCloseFormError} className="absolute top-0 right-0 p-2">
                      <IoCloseIcon className="h-5 w-5 text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200" />
                  </button> */}
               </div>
             )}
 
             {/* Recipient Form */}
-            <form className="mt-2 space-y-5" onSubmit={handleSubmit} noValidate> {/* Added noValidate */}
+            <form className="mt-2 space-y-5" onSubmit={handleSubmit} noValidate>
+              {" "}
+              {/* Added noValidate */}
               {/* Email Input (Original UI) */}
               <div>
                 <label
@@ -5667,19 +5626,17 @@ const AddRecipientPage = () => {
                 <input
                   type="email"
                   id="email"
-                   // Original classes
-                  className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 hover:shadow-darkcolor dark:hover:shadow-whitecolor`}
+                  // Original classes
+                  className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 focus:border-[#5f5f5f]`}
                   value={email}
                   placeholder="example@domain.com"
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
-
               {/* Heading (Original UI) */}
               <h3 className="font-medium text-gray-600 dark:text-white pt-2 pb-1 mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
                 Recipient's bank details
               </h3>
-
               {/* Bank Details Section (Original UI for Inputs, Kept Error Logic) */}
               <div className="space-y-5">
                 {/* Account Holder Name */}
@@ -5689,16 +5646,16 @@ const AddRecipientPage = () => {
                     className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
                   >
                     Full name of the account holder
-                    <span className="text-error ml-1">*</span>
+                    <span className="text-red-500 ml-1">*</span>
                   </label>
                   <input
                     type="text"
                     id="accountHolderName"
-                     // Original input classes, error border logic kept
-                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
+                    // Original input classes, error border logic kept
+                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
                       accountHolderNameError
-                        ? "border-error border-2 !shadow-none focus:!ring-error" // Error style
-                        : "hover:shadow-darkcolor dark:hover:shadow-whitecolor" // Normal style
+                        ? "border-red-600 border-2 !shadow-none focus:!ring-red-600" // Error style
+                        : "focus:border-[#5f5f5f]" // Normal style
                     }`}
                     value={accountHolderName}
                     placeholder="e.g., John Doe"
@@ -5718,7 +5675,7 @@ const AddRecipientPage = () => {
                   {accountHolderNameError && (
                     <p
                       id="accountHolderName-error"
-                      className="flex text-error text-xs items-center mt-1"
+                      className="flex text-red-500 text-xs items-center mt-1"
                       role="alert"
                     >
                       <IoMdCloseCircle className="size-3.5 mr-1 flex-shrink-0" />
@@ -5733,22 +5690,24 @@ const AddRecipientPage = () => {
                     htmlFor="ifscCode"
                     className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
                   >
-                    IFSC code <span className="text-error ml-1">*</span>
+                    IFSC code <span className="text-red-500 ml-1">*</span>
                   </label>
                   <input
                     type="text"
                     id="ifscCode"
-                     // Original input classes, error border logic kept
-                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
+                    // Original input classes, error border logic kept
+                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
                       ifscCodeError
-                        ? "border-error border-2 !shadow-none focus:!ring-error"
-                        : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
+                        ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+                        : "focus:border-[#5f5f5f]"
                     }`}
                     value={ifscCode}
                     placeholder="e.g., YESB0123456"
                     onChange={(e) => {
                       // Keep validation logic
-                      const val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                      const val = e.target.value
+                        .toUpperCase()
+                        .replace(/[^A-Z0-9]/g, "");
                       setIfscCode(val.slice(0, 11));
                       if (val.trim()) setIfscCodeError("");
                     }}
@@ -5764,7 +5723,7 @@ const AddRecipientPage = () => {
                   {ifscCodeError && (
                     <p
                       id="ifscCode-error"
-                      className="flex text-error text-xs items-center mt-1"
+                      className="flex text-red-500 text-xs items-center mt-1"
                       role="alert"
                     >
                       <IoMdCloseCircle className="size-3.5 mr-1 flex-shrink-0" />
@@ -5779,17 +5738,17 @@ const AddRecipientPage = () => {
                     htmlFor="accountNumber"
                     className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
                   >
-                    Account number <span className="text-error ml-1">*</span>
+                    Account number <span className="text-red-500 ml-1">*</span>
                   </label>
                   <input
                     type="text"
                     inputMode="numeric" // Keep hint
                     id="accountNumber"
                     // Original input classes, error border logic kept
-                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
+                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
                       accountNumberError
-                        ? "border-error border-2 !shadow-none focus:!ring-error"
-                        : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
+                        ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+                        : "focus:border-[#5f5f5f]"
                     }`}
                     value={accountNumber}
                     placeholder="Enter account number"
@@ -5809,7 +5768,7 @@ const AddRecipientPage = () => {
                   {accountNumberError && (
                     <p
                       id="accountNumber-error"
-                      className="flex text-error text-xs items-center mt-1"
+                      className="flex text-red-500 text-xs items-center mt-1"
                       role="alert"
                     >
                       <IoMdCloseCircle className="size-3.5 mr-1 flex-shrink-0" />
@@ -5821,7 +5780,7 @@ const AddRecipientPage = () => {
                 {/* Account Type Dropdown */}
                 <div>
                   <label className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base">
-                    Account type <span className="text-error ml-1">*</span>
+                    Account type <span className="text-red-500 ml-1">*</span>
                   </label>
                   <AccountTypeDropdown
                     value={accountType}
@@ -5831,7 +5790,7 @@ const AddRecipientPage = () => {
                     }}
                     error={accountTypeError} // Pass error string
                   />
-                   {/* Error is displayed within the Dropdown component, no separate <p> needed here */}
+                  {/* Error is displayed within the Dropdown component, no separate <p> needed here */}
                 </div>
 
                 {/* Bank Name */}
@@ -5840,16 +5799,16 @@ const AddRecipientPage = () => {
                     htmlFor="bankName"
                     className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
                   >
-                    Bank name <span className="text-error ml-1">*</span>
+                    Bank name <span className="text-red-500 ml-1">*</span>
                   </label>
                   <input
                     type="text"
                     id="bankName"
-                     // Original input classes, error border logic kept
-                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
+                    // Original input classes, error border logic kept
+                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
                       bankNameError
-                        ? "border-error border-2 !shadow-none focus:!ring-error"
-                        : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
+                        ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+                        : "focus:border-[#5f5f5f]"
                     }`}
                     value={bankName}
                     placeholder="e.g., State Bank of India"
@@ -5863,11 +5822,11 @@ const AddRecipientPage = () => {
                       bankNameError ? "bankName-error" : undefined
                     }
                   />
-                   {/* Original error message display */}
+                  {/* Original error message display */}
                   {bankNameError && (
                     <p
                       id="bankName-error"
-                      className="flex text-error text-xs items-center mt-1"
+                      className="flex text-red-500 text-xs items-center mt-1"
                       role="alert"
                     >
                       <IoMdCloseCircle className="size-3.5 mr-1 flex-shrink-0" />
@@ -5883,16 +5842,16 @@ const AddRecipientPage = () => {
                     className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
                   >
                     Recipient Address (Street, City, Postcode, Country)
-                    <span className="text-error ml-1">*</span>
+                    <span className="text-red-500 ml-1">*</span>
                   </label>
                   <input
                     type="text"
                     id="address"
                     // Original input classes, error border logic kept
-                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
+                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
                       addressError
-                        ? "border-error border-2 !shadow-none focus:!ring-error"
-                        : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
+                        ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+                        : "focus:border-[#5f5f5f]"
                     }`}
                     value={address}
                     placeholder="e.g., 123 Main St, Anytown, 12345, India"
@@ -5910,7 +5869,7 @@ const AddRecipientPage = () => {
                   {addressError && (
                     <p
                       id="address-error"
-                      className="flex text-error text-xs items-center mt-1"
+                      className="flex text-red-500 text-xs items-center mt-1"
                       role="alert"
                     >
                       <IoMdCloseCircle className="size-3.5 mr-1 flex-shrink-0" />
@@ -5919,22 +5878,21 @@ const AddRecipientPage = () => {
                   )}
                 </div>
               </div>
-
               {/* Form Action Buttons (Original UI) */}
               <div className="flex sm:flex-row flex-col-reverse justify-center items-center gap-4 pt-4">
                 <button
                   type="button"
-                   // Original classes
-                  className={`sm:order-1 order-2 bg-neutral-200 hover:bg-neutral-300 text-neutral-800 dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-200 ease-linear`}
+                  // Original classes
+                  className={`sm:order-1 order-2 bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear`}
                   onClick={handleClearForm}
                 >
                   Clear All
                 </button>
                 <button
                   type="submit"
-                   // Original classes
-                  className={`sm:order-2 order-1 bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-200 ease-linear disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center`}
-                   // --- KEPT: Logic to disable button ---
+                  // Original classes
+                  className={`sm:order-2 order-1 bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center`}
+                  // --- KEPT: Logic to disable button ---
                   disabled={isSubmitting || isFormInvalid}
                   // --- END KEPT ---
                 >
@@ -5947,14 +5905,62 @@ const AddRecipientPage = () => {
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                       >
-                        <path d="M12 2V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M12 18V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M4.93 4.93L7.76 7.76" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M16.24 16.24L19.07 19.07" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M2 12H6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M18 12H22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M4.93 19.07L7.76 16.24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M16.24 7.76L19.07 4.93" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path
+                          d="M12 2V6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M12 18V22"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M4.93 4.93L7.76 7.76"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M16.24 16.24L19.07 19.07"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M2 12H6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M18 12H22"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M4.93 19.07L7.76 16.24"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M16.24 7.76L19.07 4.93"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
                       </svg>
                       <span>Confirming...</span>
                     </>

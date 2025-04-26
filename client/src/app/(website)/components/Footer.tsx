@@ -1387,7 +1387,6 @@ interface FooterSection {
 interface FooterData {
   sections: FooterSection[];
   currencyConverters: string[];
-  copyright: string;
   disclaimer: string;
 }
 
@@ -1423,7 +1422,6 @@ const Footer: React.FC = () => {
       "CAD to INR",
       "EUR to INR",
     ],
-    copyright: `Apexture Payments Limited @${new Date().getFullYear()}`,
     disclaimer:
       "Wise is authorised by the Financial Conduct Authority under the Electronic Money Regulations 2011, Firm Reference 900507, for the issuing of electronic money. Wise works with a local bank partner to offer the service in India with the approval of the Reserve Bank of India.",
   };
@@ -1562,9 +1560,9 @@ const Footer: React.FC = () => {
                   <span className="text-mainheading dark:text-white pointer-events-none">
                     {/* Prevent nested clicks */}
                     {openDropdown === section.title ? (
-                      <FiChevronDown   className="size-4" />
+                      <FiChevronDown className="size-4" />
                     ) : (
-                      <FiChevronUp  className="size-4" />
+                      <FiChevronUp className="size-4" />
                     )}
                   </span>
                 )}
@@ -1641,8 +1639,8 @@ const Footer: React.FC = () => {
       {/* Copyright and Social Icons Section */}
       <hr className="container mx-auto lg:my-6 my-4" />
       <div className="flex flex-col md:flex-row justify-between items-center container mx-auto gap-4">
-        <p className="text-mainheading dark:text-primary lg:text-base text-sm text-center md:text-left">
-          {footerData.copyright}
+        <p className="text-mainheading dark:text-primary capitalize lg:text-base text-sm text-center md:text-left">
+          <span className="text-gray-500 dark:text-gray-300">create by,</span> Apexture Payments Limited @{new Date().getFullYear()}
         </p>
         <div className="flex lg:gap-4 gap-2">
           <a href="#" aria-label="Chat on WhatsApp">

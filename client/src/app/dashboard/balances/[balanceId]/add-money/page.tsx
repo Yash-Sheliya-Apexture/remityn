@@ -1368,8 +1368,8 @@ const AddMoneyPage = () => {
 
 
     return (
-        <div className="max-w-lg mx-auto mt-5">
-            <h2 className="lg:text-3xl md:text-2xl text-xl text-center font-semibold text-mainheading mb-6 dark:text-white">
+        <div className="max-w-lg mx-auto pt-5">
+            <h2 className="lg:text-3xl md:text-2xl text-xl lg:text-center text-left capitalize font-semibold text-mainheading pb-4 dark:text-white">
                 Add Money to {balanceCurrency.code} Balance
             </h2>
 

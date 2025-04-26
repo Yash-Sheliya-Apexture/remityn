@@ -1750,7 +1750,7 @@ export default function RecipientsPage() {
               </div>
               <input
                 type="text"
-                className="w-full rounded-full h-12.5 py-3 pl-12 pr-10 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white"
+                className="w-full rounded-full h-12.5 py-3 pl-12 pr-10 border transition-all ease-linear duration-75 focus:outline-0 focus:border-[#5f5f5f] placeholder:text-neutral-900 dark:placeholder:text-white"
                 placeholder="Search existing recipients"
                 value={searchTerm}
                 onChange={handleSearchChange}

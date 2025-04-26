@@ -254,7 +254,7 @@
 
 
 // frontend/src/app/dashboard/components/TransactionPageSection/FilterModal.tsx
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react"; // Added useMemo here for clarity
 import { motion, AnimatePresence } from "framer-motion";
 import { IoClose } from "react-icons/io5";
 import { IoIosCloseCircleOutline } from "react-icons/io";
@@ -326,17 +326,15 @@ const FilterModal: React.FC<FilterModalProps> = ({
             setTempSelectedRecipients([...initialFilters.selectedRecipients]);
             setTempSelectedDirection(initialFilters.selectedDirection);
             setTempSelectedStatus(initialFilters.selectedStatus);
-            // Only sync balance if it's not hidden
              if (!hideBalanceFilter) {
                 setTempSelectedBalance([...initialFilters.selectedBalance]);
              } else {
-                 setTempSelectedBalance([]); // Ensure it's clear if hidden
+                 setTempSelectedBalance([]);
              }
-            // Reset temporary date range buttons
             setIsLastMonthActive(false); setIsLastQuarterActive(false); setIsLastYearActive(false);
             setTempSelectedDateRange(null);
         }
-    }, [isOpen, initialFilters, hideBalanceFilter]); // Added hideBalanceFilter dependency
+    }, [isOpen, initialFilters, hideBalanceFilter]);
 
 
     // --- Outside Click ---
@@ -365,7 +363,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
     };
     const handleTempDateInputChange = (value: string, type: 'from' | 'to') => {
         if (type === 'from') setTempFromDate(value); else setTempToDate(value);
-        setTempSelectedDateRange(null); // Clear presets if manual date changes
+        setTempSelectedDateRange(null);
         setIsLastMonthActive(false); setIsLastQuarterActive(false); setIsLastYearActive(false);
     };
 
@@ -391,39 +389,40 @@ const FilterModal: React.FC<FilterModalProps> = ({
             selectedRecipients: tempSelectedRecipients,
             selectedDirection: tempSelectedDirection,
             selectedStatus: tempSelectedStatus,
-            // Only include balance if it wasn't hidden
             selectedBalance: hideBalanceFilter ? [] : tempSelectedBalance,
             fromDate: tempFromDate || undefined,
             toDate: tempToDate || undefined,
         };
-        onApply(filtersToApply); // Pass the selected filters back to the parent
-        // Parent will handle closing after applying
+        onApply(filtersToApply);
     };
 
     const handleClearClick = () => {
-        // Reset internal state
         setTempFromDate(""); setTempToDate(""); setTempSelectedRecipients([]); setTempSelectedDirection("all");
         setTempSelectedStatus(null);
-        // Clear balance only if it was shown
         if (!hideBalanceFilter) {
             setTempSelectedBalance([]);
         }
         setTempSelectedDateRange(null);
         setIsLastMonthActive(false); setIsLastQuarterActive(false); setIsLastYearActive(false);
-        // Call parent's clear function
         onClearAll();
-        // Parent might handle closing after clearing
     };
 
     // Map accounts to CurrencyBalance props, memoize if accounts change frequently
-    const currencyBalances = React.useMemo(() => {
-        if (hideBalanceFilter) return []; // Don't compute if hidden
-        return userAccounts.map((account): CurrencyBalance => ({
-            currencyCode: account.currency.code,
-            currencyName: account.currency.currencyName || `${account.currency.code} Balance`,
-            currencySymbolPath: account.currency.flagImage?.trim() || `/assets/icon/${account.currency.code.toLowerCase()}.svg`, // Default path convention
-        }));
+    // **** START MODIFICATION ****
+    const currencyBalances = useMemo(() => {
+        if (hideBalanceFilter || !userAccounts) return []; // Don't compute if hidden or no accounts
+
+        // Filter out accounts that don't have valid currency data BEFORE mapping
+        return userAccounts
+            .filter(account => account && account.currency && account.currency.code)
+            .map((account): CurrencyBalance => ({
+                // It's now safer to access properties after the filter
+                currencyCode: account.currency.code,
+                currencyName: account.currency.currencyName || `${account.currency.code} Balance`,
+                currencySymbolPath: account.currency.flagImage?.trim() || `/assets/icon/${account.currency.code.toLowerCase()}.svg`, // Default path convention
+            }));
     }, [userAccounts, hideBalanceFilter]);
+    // **** END MODIFICATION ****
 
 
     return (
@@ -493,13 +492,14 @@ const FilterModal: React.FC<FilterModalProps> = ({
                           <div> <DirectionFilter selectedDirection={tempSelectedDirection} onDirectionChange={handleTempDirectionChange} /> </div>
 
                           {/* Balance Section - CONDITIONAL RENDER */}
+                          {/* Render this section only if NOT hidden AND there are valid balances to show */}
                           {!hideBalanceFilter && currencyBalances.length > 0 && (
                                 <div>
                                    <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-neutral-500 dark:after:bg-white/30 after:mt-1"> Balance </h4>
                                    <div className="space-y-2">
                                        {currencyBalances.map((cbProps) => (
                                            <BalanceComponent
-                                              key={cbProps.currencyCode}
+                                              key={cbProps.currencyCode} // Key is now guaranteed valid
                                               currencyBalance={cbProps}
                                               onBalanceChange={handleTempBalanceChange}
                                               isSelected={tempSelectedBalance.includes(cbProps.currencyCode)}
@@ -508,11 +508,12 @@ const FilterModal: React.FC<FilterModalProps> = ({
                                    </div>
                                 </div>
                           )}
-                          {!hideBalanceFilter && currencyBalances.length === 0 && userAccounts.length > 0 && (
-                            <div>
-                                <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-neutral-500 dark:after:bg-white/30 after:mt-1"> Balance </h4>
-                                <p className="text-sm text-gray-400 dark:text-gray-500">No balances found to filter by.</p>
-                            </div>
+                          {/* Optional: Show a message if balances *should* be shown but none were valid */}
+                           {!hideBalanceFilter && currencyBalances.length === 0 && userAccounts && userAccounts.length > 0 && (
+                               <div>
+                                   <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-neutral-500 dark:after:bg-white/30 after:mt-1"> Balance </h4>
+                                   <p className="text-sm text-gray-400 dark:text-gray-500">No balances with valid currency information found to filter by.</p>
+                               </div>
                            )}
                        </div> {/* End Scrollable Content */}
 
