@@ -1541,9 +1541,8 @@ const CountryCard = () => {
                 key={account._id}
                 href={`/dashboard/balances/${account._id}`}
                 passHref
-                legacyBehavior // Recommended for wrapping custom components like styled divs
               >
-                <div // Use an anchor tag when using legacyBehavior
+                <div // Use an anchor tag when using 
                   className="p-6 bg-lightgray dark:bg-primarybox hover:dark:bg-secondarybox rounded-2xl flex flex-col justify-between w-64 shrink-0 transition-all duration-75 ease-linear cursor-pointer hover:bg-neutral-200/70"
                   style={{ scrollSnapAlign: "start" }}
                 >
