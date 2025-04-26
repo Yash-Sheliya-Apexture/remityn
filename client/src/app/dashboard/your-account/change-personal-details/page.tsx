@@ -1988,10 +1988,10 @@ export default function ChangePersonalDetails() {
 
     // --- Render Form ---
     return (
-        <section className="change-personal-details pb-10">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="bg-white dark:bg-background w-full lg:max-w-lg mx-auto rounded-lg">
+        <section className="Change-Personal-Details-Wrapper">
+            <div className="Change-Personal-Information">
                     <DashboardHeader title="Update your personal details" />
+                <div className="bg-white dark:bg-background w-full lg:max-w-xl rounded-lg">
 
                     <div className="">
                         {error && <p className="mb-4 text-center text-red-600 bg-red-100 dark:bg-red-900/30 p-3 rounded-lg text-sm">{error}</p>}
