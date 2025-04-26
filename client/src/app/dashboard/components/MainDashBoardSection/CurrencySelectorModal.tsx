@@ -1768,6 +1768,8 @@
 
 // export default CurrencySelectorModal;
 
+
+
 // frontend/components/dashboard/components/MainDashBoardSection/CurrencySelectorModal.tsx
 "use client";
 import React, {
@@ -1813,12 +1815,11 @@ interface NewAccountResponse {
 
 // Interface expected by the CountryCard's onCurrencyAdded handler
 // Map the API response to this structure if they differ
-interface AddedAccountInfo {
+export interface AddedAccountInfo { // <--- ADD 'export' HERE
   _id: string;
   balance: string;
   currency?: { code: string } | null; // Match CountryCard's Account interface
 }
-
 interface ApiErrorResponse {
   message?: string;
 }
