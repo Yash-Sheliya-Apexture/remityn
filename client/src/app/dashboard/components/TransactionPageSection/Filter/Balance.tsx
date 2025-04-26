@@ -361,7 +361,7 @@ const BalanceComponent: React.FC<BalanceProps> = ({
 
   return (
     <div
-      className="flex items-center justify-between dark:hover:bg-primarybox hover:bg-lightgray p-4 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer"
+      className="flex items-center justify-between dark:hover:bg-primarybox hover:bg-lightgray sm:p-4 p-2 rounded-2xl transition-colors duration-500 ease-in-out cursor-pointer"
       onClick={handleDivClick}
       ref={containerRef}
     >

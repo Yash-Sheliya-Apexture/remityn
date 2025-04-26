@@ -248,7 +248,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
             ref={popupRef}
             className={`fixed ${
               isMobile
-                ? "bottom-0 left-0 right-0 h-[100vh]"
+                ? "bottom-0 left-0 right-0 h-[100dvh]"
                 : "top-0 right-0 sm:w-[600px] h-full"
             } bg-white dark:bg-background z-80 flex flex-col`}
             initial={
@@ -283,8 +283,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
             <div className="sm:p-6 p-4 flex-grow overflow-y-auto scrollbar-hide space-y-6">
               {/* Date Section */}
               <div>
-                <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-neutral-500 dark:after:bg-white/30 after:mt-1">
-                  {" "}
+                <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 leading-8 border-b">
                   Date{" "}
                 </h4>
                 <div className="flex items-center flex-wrap gap-2 mb-4">
@@ -387,7 +386,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
               {/* Balance Section */}
               {userAccounts && userAccounts.length > 0 && (
                 <div>
-                  <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-neutral-500 dark:after:bg-white/30 after:mt-1">
+                  <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 leading-8 border-b">
                     {" "}
                     Balance{" "}
                   </h4>

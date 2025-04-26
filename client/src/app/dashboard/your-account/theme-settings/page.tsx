@@ -663,7 +663,7 @@ const ThemeOption: React.FC<ThemeOptionProps> = ({ label, value, currentSelectio
   return (
     <button
       onClick={() => onSelect(value)}
-      className="flex items-center justify-between gap-3 w-full text-left hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer"
+      className="flex items-center justify-between gap-3 w-full text-left hover:bg-lightgray dark:hover:bg-primarybox p-3 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer"
       // Removed aria-pressed as it's not valid for role="radio"
       role="radio"
       aria-checked={isSelected} // Correct attribute for role="radio"

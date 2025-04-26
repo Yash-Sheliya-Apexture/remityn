@@ -685,10 +685,10 @@ const Recipients: React.FC<RecipientsProps> = ({
     <>
       {recipients.length > 0 && (
         <>
-          <h4 className="text-gray-500 dark:text-gray-300 font-medium relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-neutral-500 dark:after:bg-white/30 after:mt-1">
+          <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 leading-8 border-b">
             Recipients
           </h4>
-          <div className="pt-4 space-y-2">
+          <div className="space-y-2">
             {recipients.map((recipient: any) => ( // Type 'recipient' as 'any' initially, adjust if you have a specific type
               <RecipientList
                 key={recipient._id} // Use _id from API data
