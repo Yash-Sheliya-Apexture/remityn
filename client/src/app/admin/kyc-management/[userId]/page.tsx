@@ -2863,7 +2863,7 @@ const KycUserDetailPage: React.FC = () => {
   // --- Main Render Logic ---
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-muted/30 dark:bg-background">
+      <div className="min-h-screen bg-white dark:bg-background">
         <div className="container mx-auto px-4 py-8">
            {/* ** Render Skeleton Header during load ** */}
            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4 animate-pulse">
@@ -3064,7 +3064,7 @@ const KycUserDetailPage: React.FC = () => {
                       <CardFooter className="p-2 border-t bg-muted/30">
                         <Link href={doc.url || '#'} target="_blank" rel="noopener noreferrer" className={cn("w-full", !doc.url && "pointer-events-none opacity-50")}>
                           <Button variant="link" size="sm" className="w-full text-xs justify-center items-center gap-1 text-primary" disabled={!doc.url}>
-                            View Full Document <ExternalLink className="h-3 w-3 opacity-80" />
+                            View Full Document <ExternalLink className="size-4.5" />
                           </Button>
                         </Link>
                       </CardFooter>
