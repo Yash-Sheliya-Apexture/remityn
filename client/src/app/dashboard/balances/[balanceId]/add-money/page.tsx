@@ -1096,13 +1096,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
-// FIX 1: Remove specific interface for useParams generic.
-// The default return type of useParams already satisfies the necessary constraints.
-// We will type the destructured variable `balanceId` later if needed,
-// but usually, it's inferred correctly or can be asserted.
-// interface AddMoneyPageParams {
-//     balanceId: string;
-// }
 
 
 interface PaymentSummary {
@@ -1375,8 +1368,8 @@ const AddMoneyPage = () => {
 
 
     return (
-        <div className="max-w-lg mx-auto mt-5">
-            <h2 className="lg:text-3xl md:text-2xl text-xl text-center font-semibold text-mainheading mb-6 dark:text-white">
+        <div className="max-w-lg mx-auto pt-5">
+            <h2 className="lg:text-3xl md:text-2xl text-xl lg:text-center text-left capitalize font-semibold text-mainheading pb-4 dark:text-white">
                 Add Money to {balanceCurrency.code} Balance
             </h2>
 
@@ -1467,22 +1460,6 @@ const AddMoneyPage = () => {
                         </dd>
                     </div>
 
-                    {/* Conditional rendering based on calculation status */}
-                    {(paymentSummary?.exchangeRate && !isDetailsLoading) ? (
-                        <div className="py-2 flex justify-between text-sm text-gray">
-                            <dt className="text-neutral-700 dark:text-primary">Guaranteed rate (24h)</dt>
-                            <dd className="ml-6 text-neutral-700 dark:text-gray-300 font-medium">
-                                {/* Ensure exchangeRate is treated as number */}
-                                1 {payInCurrencyCode} = {Number(paymentSummary.exchangeRate).toFixed(5)} {balanceCurrency.code}
-                            </dd>
-                        </div>
-                     ) : isDetailsLoading ? ( /* Skeleton for rate when details are loading */
-                        <div className="py-2 flex justify-between text-sm text-gray">
-                            <dt className="text-neutral-700 dark:text-gray-300">Guaranteed rate (24h)</dt>
-                            <dd className="ml-6"><Skeleton className="h-4 w-24 inline-block" /></dd>
-                        </div>
-                     ) : null /* Don't show rate section if not loading and no rate available */
-                     }
                     <div className="py-3.5 flex justify-between text-sm text-gray border-t dark:border-lightgray/26">
                         <dt className="text-neutral-900 dark:text-white font-bold capitalize">
                             Total you'll pay

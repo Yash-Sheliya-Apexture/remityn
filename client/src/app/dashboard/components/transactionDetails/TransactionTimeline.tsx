@@ -35,7 +35,7 @@ const TransactionTimeline: React.FC<TransactionTimelineProps> = ({
                 {steps.map((step, index) => (
                     <li key={step.id || index} className="flex items-start space-x-4 py-3 last:pb-0">
                         {/* Marker & Line */}
-                        <div className="relative flex flex-col items-center flex-shrink-0 pt-1">
+                        <div className="relative z-0 flex flex-col items-center flex-shrink-0 pt-1">
                             <div className={cn(
                                 "h-6 w-6 rounded-full flex items-center justify-center ring-4 z-10",
                                 step.status === "completed" && "bg-green-600 ring-green-600/40 text-white",

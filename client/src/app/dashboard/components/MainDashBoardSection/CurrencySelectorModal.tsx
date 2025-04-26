@@ -1630,7 +1630,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
           ) : (
             // Only show "no results" if there was a search query
             searchQuery && (
-              <p className="text-gray-500 dark:text-gray-300 text-center py-4">
+              <p className="text-gray-700 border border-dashed capitalize dark:text-gray-300 text-center py-4">
                 No results found for "{searchQuery}".
               </p>
             )
@@ -1706,7 +1706,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
                 <input
                   type="text"
                   placeholder="Search currency (e.g., USD, Euro)"
-                  className="w-full rounded-full h-12.5 py-3 pl-12 pr-10 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white"
+                  className="w-full rounded-full h-12.5 py-3 pl-12 pr-10 border transition-all duration-75 ease-linear focus:outline-none focus:border-[#5f5f5f] placeholder:text-neutral-900 dark:placeholder:text-white"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   aria-label="Search for a currency" // Accessibility
@@ -1750,15 +1750,16 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
               )}
             >
               <button
-                className="bg-neutral-200 dark:bg-primarybox text-neutral-900 dark:text-primary dark:hover:bg-secondarybox hover:bg-neutral-300 dark:hover:bg-opacity-80 font-bold py-2.5 sm:py-2 px-6 rounded-full focus:outline-none w-full sm:w-auto transition-colors duration-150 ease-linear cursor-pointer order-2 sm:order-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="cursor-pointer  bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center order-2 sm:order-1 disabled:opacity-50 disabled:cursor-not-allowed w-full transition-all duration-75 ease-linear"
                 onClick={onClose}
                 disabled={isAdding} // Only disable cancel if actively adding
                 type="button"
               >
                 Cancel
               </button>
+
               <button
-                className="bg-primary text-neutral-900 hover:bg-primaryhover font-bold py-2.5 sm:py-2 px-6 rounded-full focus:outline-none focus:ring-primary dark:focus:ring-offset-background w-full sm:w-auto transition-colors duration-150 ease-linear cursor-pointer order-1 sm:order-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="cursor-pointer bg-primary hover:bg-primaryhover text-neutral-900 font-medium order-1 sm:order-2 disabled:opacity-50 disabled:cursor-not-allowed rounded-full px-6 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear"
                 type="button"
                 onClick={handleConfirm}
                 disabled={

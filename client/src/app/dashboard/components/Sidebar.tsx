@@ -2923,7 +2923,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                               ? "lg:bg-transparent dark:lg:bg-transparent bg-primary/60 text-neutral-900 dark:bg-primarybox  dark:text-primary" // Active text color only
                               : isDisabled
                               ? "text-neutral-400 dark:text-gray-600  cursor-not-allowed opacity-60" // More explicit disabled styling
-                              : "text-neutral-500 hover:text-neutral-900 hover:bg-gray/10 dark:hover:bg-white/5 dark:text-gray-300 dark:hover:text-primary" // Hover state
+                              : "text-neutral-500 hover:text-neutral-900 hover:bg-[#ECECEC] dark:hover:bg-white/5 dark:text-gray-300 dark:hover:text-primary" // Hover state
                           }
                         `}
                         aria-current={isActive ? "page" : undefined} // Accessibility for active link

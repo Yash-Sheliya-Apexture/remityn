@@ -723,7 +723,7 @@ const BalanceHeader: React.FC<BalanceHeaderProps> = ({
               )}
 
              {/* Display Market Rate and Our Rate */}
-             { currencyCode && currencyCode !== 'INR' && (
+             {currencyCode && currencyCode !== 'INR' && (
                   <div className="mb-4 text-gray-500 dark:text-gray-300 flex md:flex-row flex-col sm:items-start items-center gap-4 min-h-[32px]">
                   {marketRateAgainstINR === null && ourRateAgainstINR === null ? (
                       <>

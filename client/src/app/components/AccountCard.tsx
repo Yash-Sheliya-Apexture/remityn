@@ -643,7 +643,7 @@ const AccountCard: React.FC<AccountCardProps> = ({ username }) => {
         </div>
 
         {/* User details */}
-        <h1 className="text-4xl text-mainheading dark:text-white font-black tracking-wider text-center mb-2">
+        <h1 className="text-4xl text-center font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
           {username} {/* Display the username passed via props */}
         </h1>
         <p className="text-center text-gray-500 dark:text-gray-300 font-medium capitalize mb-6">
@@ -654,7 +654,7 @@ const AccountCard: React.FC<AccountCardProps> = ({ username }) => {
         <div className="text-center mt-6">
           <button
             onClick={handleLogout}
-            className="bg-primary hover:bg-primaryhover text-neutral-900 px-4 py-1.5 rounded-full font-semibold transition-all duration-75 ease-linear cursor-pointer"
+            className="bg-primary hover:bg-primaryhover text-neutral-900 px-6 py-2 rounded-full font-semibold transition-all duration-75 ease-linear cursor-pointer"
           >
             Log Out
           </button>
