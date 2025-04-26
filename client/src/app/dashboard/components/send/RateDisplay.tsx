@@ -90,12 +90,12 @@ const RateDisplay: React.FC<RateDisplayProps> = ({ rateContext, apiError }) => {
             {showRates && rateContext && (
                 <>
                     {adjustedRateDisplay && (
-                        <div className="font-semibold p-2 px-5 rounded-md bg-primary text-mainheading inline-flex items-center gap-1.5 cursor-default" title={`Rate includes our rates  of ${rateAdjustmentDisplay}%. This is the rate applied to your transfer.`}>
+                        <div className="font-semibold p-2 px-5 rounded-full bg-primary text-mainheading inline-flex items-center gap-1.5 cursor-default" title={`Rate includes our rates  of ${rateAdjustmentDisplay}%. This is the rate applied to your transfer.`}>
                             <FaLock size={16} /> Our Rate: {adjustedRateDisplay}
                         </div>
                     )}
                     {liveRateDisplay && (
-                        <div className="font-medium text-sm p-1.5 px-4 rounded-md bg-lightgray text-gray-500 dark:text-mainheading inline-flex items-center gap-1.5 cursor-help" title="Current market rate for comparison only.">
+                        <div className="font-medium text-sm p-1.5 px-4 rounded-full bg-lightgray dark:bg-primarybox text-mainheading dark:text-white inline-flex items-center gap-1.5 cursor-help" title="Current market rate for comparison only.">
                             <FaInfoCircle size={16} /> Market Rate: {liveRateDisplay}
                         </div>
                     )}

@@ -692,15 +692,12 @@ const AddMoneySelectBalancePage = () => {
       );
       router.replace("/auth/login");
     }
-    // NOTE: The `token` dependency alone is usually sufficient if token is cleared on logout.
-    // `user` can be added if login flow might set token before user object is fully ready.
   }, [token, isAuthLoading, router]);
 
   // --- KYC Modal Actions ---
   const handleOpenKycModal = useCallback(() => setIsKycModalOpen(true), []);
   const handleCloseKycModal = useCallback(() => setIsKycModalOpen(false), []);
   const handleStartVerification = useCallback(() => {
-    // Use router to navigate to the start page of the KYC flow
     router.push("/kyc/start"); // Ensure this is the correct path
     handleCloseKycModal();
   }, [router, handleCloseKycModal]);
@@ -708,12 +705,10 @@ const AddMoneySelectBalancePage = () => {
   // --- Selection Handler for EXISTING balances (with KYC Check) ---
   const handleSelectBalanceForAddMoney = useCallback(
     (balanceId: string) => {
-      // 1. Wait for auth loading to finish
       if (isAuthLoading) {
         console.log("Select Balance (Add Money): Waiting for auth...");
-        return; // Or show some indicator
+        return;
       }
-      // 2. Check KYC Status
       if (!isKycVerified) {
         console.log(
           "Select Balance (Add Money): KYC not verified. Showing KYC modal."
@@ -721,7 +716,6 @@ const AddMoneySelectBalancePage = () => {
         handleOpenKycModal();
         return;
       }
-      // 3. Proceed if KYC is verified
       console.log(
         "Select Balance (Add Money): KYC verified. Navigating to add money page for balance:",
         balanceId
@@ -729,16 +723,14 @@ const AddMoneySelectBalancePage = () => {
       router.push(`/dashboard/balances/${balanceId}/add-money`);
     },
     [router, isKycVerified, isAuthLoading, handleOpenKycModal]
-  ); // Add isAuthLoading dependency
+  );
 
   // --- Handler for clicking "Add New Balance" card/link (with KYC Check) ---
   const handleAddBalanceClick = useCallback(() => {
-    // 1. Wait for auth loading to finish
     if (isAuthLoading) {
       console.log("Add Balance Click: Waiting for auth...");
-      return; // Or show some indicator
+      return;
     }
-    // 2. Check KYC Status
     if (!isKycVerified) {
       console.log(
         "Add Balance Click: KYC not verified. Showing KYC modal instead of currency selector."
@@ -746,12 +738,11 @@ const AddMoneySelectBalancePage = () => {
       handleOpenKycModal();
       return;
     }
-    // 3. Proceed if KYC is verified: Open Currency Selector
     console.log(
       "Add Balance Click: KYC verified. Opening currency selector modal."
     );
     setIsCurrencyModalOpen(true);
-  }, [isKycVerified, isAuthLoading, handleOpenKycModal]); // Add isAuthLoading dependency
+  }, [isKycVerified, isAuthLoading, handleOpenKycModal]);
 
   // --- Currency Selector Modal Control Functions ---
   const handleCloseCurrencyModal = useCallback(() => {
@@ -764,10 +755,47 @@ const AddMoneySelectBalancePage = () => {
       console.log("New currency account added:", newAccountInfo);
       // You can now use newAccountInfo._id, newAccountInfo.balance, etc.
       handleCloseCurrencyModal();
-      refetchBalances(); // Refresh list to show the new balance
+      refetchBalances();
     },
     [handleCloseCurrencyModal, refetchBalances]
-  ); // Removed router/kyc dependency unless navigation is added
+  );
+
+  // --- Effect to handle body scroll based on modal state using inline styles ---
+  useEffect(() => {
+    // Store the original overflow style
+    const originalOverflow = document.body.style.overflow;
+
+    // Check if *either* modal is open
+    const isAnyModalOpen = isCurrencyModalOpen || isKycModalOpen;
+
+    if (isAnyModalOpen) {
+      // Apply 'hidden' to prevent scrolling
+      document.body.style.overflow = 'hidden';
+      // console.log("Modal open, setting body overflow: hidden"); // Optional logging
+    } else {
+      // Restore the original overflow style only if it was changed by this effect
+      // (This check prevents overriding other potential overflow settings)
+      if (document.body.style.overflow === 'hidden') {
+         document.body.style.overflow = originalOverflow || ''; // Use original or reset if none
+        // console.log("Modals closed, restoring body overflow:", originalOverflow || 'default'); // Optional logging
+      }
+    }
+
+    // --- Cleanup function ---
+    // This runs when the component unmounts OR before the effect runs again.
+    // It ensures the style is reset if the component is destroyed while a modal is open.
+    return () => {
+       // Only restore if we actually set it to hidden
+       if (document.body.style.overflow === 'hidden') {
+         document.body.style.overflow = originalOverflow || ''; // Use original or reset
+         // console.log("Effect cleanup: Restoring body overflow:", originalOverflow || 'default'); // Optional logging
+       }
+    };
+    // We include originalOverflow in dependencies technically, but since it's read
+    // *before* the effect logic, it doesn't cause re-runs itself. The core dependencies
+    // that trigger the effect are the modal states.
+  }, [isCurrencyModalOpen, isKycModalOpen]); // Re-run effect when modal states change
+
 
   // Combined loading state
   const isLoading = isBalancesLoading || isAuthLoading;
@@ -775,39 +803,39 @@ const AddMoneySelectBalancePage = () => {
   // --- Render ---
   return (
     <>
+      {/* The main content area */}
       <main className="Add-Money">
         <SelectBalanceComponent
           balances={balances}
-          isLoading={isLoading} // Use combined loading state
+          isLoading={isLoading}
           error={error}
           refetchBalances={refetchBalances}
-          onSelectBalance={handleSelectBalanceForAddMoney} // Use KYC-aware handler
-          allowAddBalance={true} // Allow adding new balances
-          onAddBalanceClick={handleAddBalanceClick} // Use KYC-aware handler for add action
+          onSelectBalance={handleSelectBalanceForAddMoney}
+          allowAddBalance={true}
+          onAddBalanceClick={handleAddBalanceClick}
           pageTitle="Select a Balance to Add Money To"
           noBalancePrimaryMessage={
             isLoading
-              ? "Loading balances..." // Show loading text
+              ? "Loading balances..."
               : !user
-              ? "Login required to manage balances." // Should be handled by redirect, but good fallback
+              ? "Login required to manage balances."
               : isKycVerified
               ? "You don't have any currency balances yet."
               : "Complete KYC verification to add balances and funds."
           }
-          
-          // Conditional secondary message (will trigger respective handler)
           noBalanceSecondaryMessage={
             isLoading
-              ? "" // No secondary text while loading
+              ? ""
               : !user
               ? ""
               : isKycVerified
-              ? "Create your first balance to add money" // Triggers handleAddBalanceClick -> currency modal
-              : "Start KYC verification now" // Triggers handleAddBalanceClick -> KYC modal
+              ? "Create your first balance to add money"
+              : "Start KYC verification now"
           }
-          addBalanceLinkText="Add New Balance" // Text for the card/link
-          tokenExists={!!token} // Keep this for potential internal logic in SelectBalanceComponent
+          addBalanceLinkText="Add New Balance"
+          tokenExists={!!token}
         />
+      </main> {/* End of main content */}
 
         {/* Currency Selector Modal */}
         <CurrencySelectorModal
@@ -816,13 +844,13 @@ const AddMoneySelectBalancePage = () => {
           onCurrencyAdded={handleCurrencyAdded} // This prop expects AddedAccountInfo
         />
 
-        {/* KYC Required Modal */}
-        <KycRequiredModal
-          isOpen={isKycModalOpen}
-          onClose={handleCloseKycModal}
-          onStartVerification={handleStartVerification}
-        />
-      </main>
+      {/* KYC Required Modal */}
+      {/* Modal itself should handle its own internal scrolling if needed */}
+      <KycRequiredModal
+        isOpen={isKycModalOpen}
+        onClose={handleCloseKycModal}
+        onStartVerification={handleStartVerification}
+      />
     </>
   );
 };
