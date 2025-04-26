@@ -2031,7 +2031,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
     // 1. Initial Fetch Loading State
     if (isFetching) {
       return (
-        <div className="flex-grow flex items-center justify-center py-4 min-h-[100px]">
+        <div className="flex-grow flex items-center justify-center py-4 min-h-[100px]" >
           {" "}
           {/* Added min-height */}
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-neutral-900 dark:border-white"></div>
