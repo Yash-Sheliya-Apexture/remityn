@@ -31,7 +31,7 @@ const TransactionUpdateActions: React.FC<TransactionUpdateActionsProps> = ({
     <>
       {/* Action: Confirm Payment (Only for PENDING payments, not in 'awaiting' view) */}
       {isPendingPayment && !showAwaitingVerificationView && (
-        <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+        <div className="mt-4 pt-4 border-t">
           <h3 className="text-base font-semibold mb-2 text-neutral-900 dark:text-white">
             Have you sent the payment?
           </h3>

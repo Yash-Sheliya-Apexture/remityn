@@ -590,6 +590,7 @@
 //           allowAddBalance={true} // Allow adding new balances
 //           onAddBalanceClick={handleAddBalanceClick} // Use KYC-aware handler for add action
 //           pageTitle="Select a Balance to Add Money To"
+//           // Conditional primary message based on KYC status *after* loading finishes
 //           noBalancePrimaryMessage={
 //             isLoading
 //               ? "Loading balances..." // Show loading text
@@ -599,7 +600,6 @@
 //               ? "You don't have any currency balances yet."
 //               : "Complete KYC verification to add balances and funds."
 //           }
-          
 //           // Conditional secondary message (will trigger respective handler)
 //           noBalanceSecondaryMessage={
 //             isLoading
@@ -635,8 +635,6 @@
 // export default AddMoneySelectBalancePage;
 
 
-
-
 // frontend/src/app/dashboard/add-money/select-balance/page.tsx
 "use client";
 
@@ -645,20 +643,24 @@ import { useRouter } from "next/navigation";
 import { useBalances } from "../../../hooks/useBalances"; // Adjust path as needed
 import { useAuth } from "../../../contexts/AuthContext"; // Adjust path & ensure it provides user object
 import SelectBalanceComponent from "../../../components/ui/SelectBalanceComponent"; // Adjust path as needed
-import CurrencySelectorModal from "../../components/MainDashBoardSection/CurrencySelectorModal"; // Adjust path as needed
+// Import both the component and the type definition
+import CurrencySelectorModal, { AddedAccountInfo } from "../../components/MainDashBoardSection/CurrencySelectorModal"; // Adjust path as needed & IMPORT AddedAccountInfo
 import KycRequiredModal from "@/app/dashboard/components/KycRequiredModal"; // Adjust path as needed
 // import LoadingSpinner from '@/components/ui/LoadingSpinner'; // Optional: if needed for other async ops
 
 // --- Interfaces ---
-interface NewAccount {
-  // From CurrencySelectorModal
-  _id: string;
-  userId: string;
-  currencyCode: string;
-  balance: string;
-  createdAt: string;
-  updatedAt: string;
-}
+// REMOVED: The NewAccount interface defined here seems to match the *API response* structure,
+// but the CurrencySelectorModal explicitly passes the *mapped* AddedAccountInfo
+// to the onCurrencyAdded prop. So, this type is not needed here.
+// interface NewAccount {
+//   // From CurrencySelectorModal
+//   _id: string;
+//   userId: string;
+//   currencyCode: string;
+//   balance: string;
+//   createdAt: string;
+//   updatedAt: string;
+// }
 // NOTE: We don't need to redefine AuthUser/AuthContextType here if useAuth provides typed context.
 // AuthContext itself exports the necessary types.
 
@@ -747,9 +749,11 @@ const AddMoneySelectBalancePage = () => {
     setIsCurrencyModalOpen(false);
   }, []);
 
+  // FIX: Change the expected type from NewAccount to AddedAccountInfo
   const handleCurrencyAdded = useCallback(
-    (newAccount: NewAccount) => {
-      console.log("New currency account added:", newAccount);
+    (newAccountInfo: AddedAccountInfo) => { // Use the correct type received from the modal
+      console.log("New currency account added:", newAccountInfo);
+      // You can now use newAccountInfo._id, newAccountInfo.balance, etc.
       handleCloseCurrencyModal();
       refetchBalances();
     },
@@ -833,13 +837,12 @@ const AddMoneySelectBalancePage = () => {
         />
       </main> {/* End of main content */}
 
-      {/* Currency Selector Modal */}
-      {/* Modal itself should handle its own internal scrolling if needed */}
-      <CurrencySelectorModal
-        isOpen={isCurrencyModalOpen}
-        onClose={handleCloseCurrencyModal}
-        onCurrencyAdded={handleCurrencyAdded}
-      />
+        {/* Currency Selector Modal */}
+        <CurrencySelectorModal
+          isOpen={isCurrencyModalOpen}
+          onClose={handleCloseCurrencyModal}
+          onCurrencyAdded={handleCurrencyAdded} // This prop expects AddedAccountInfo
+        />
 
       {/* KYC Required Modal */}
       {/* Modal itself should handle its own internal scrolling if needed */}
