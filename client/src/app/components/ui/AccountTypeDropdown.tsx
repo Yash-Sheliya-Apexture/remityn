@@ -36,7 +36,7 @@ const AccountTypeDropdown: React.FC<AccountTypeDropdownProps> = ({ value, onChan
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const accountTypes = ['Savings', 'Current', 'Salary'];
+  const accountTypes = ['Savings', 'Current'];
 
   const toggleOpen = () => setIsOpen(!isOpen);
 
@@ -62,9 +62,9 @@ const AccountTypeDropdown: React.FC<AccountTypeDropdownProps> = ({ value, onChan
     <div className="relative" ref={dropdownRef}>
       <button
         type="button"
-        className={`flex items-center justify-between mt-1 px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white ${
+        className={`flex items-center justify-between mt-1 px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white focus:border-[#5f5f5f] ${
           error
-            ? "border-error border-2 !shadow-none"
+            ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
             : ""
         }`}
         
@@ -99,7 +99,7 @@ const AccountTypeDropdown: React.FC<AccountTypeDropdownProps> = ({ value, onChan
         )}
       </AnimatePresence>
       {error && (
-        <p className="flex text-error text-sm items-center mt-0.5">
+        <p className="flex text-red-500 text-sm items-center mt-0.5">
           <span className="mr-1">
             <IoMdCloseCircle className="size-4" />
           </span>

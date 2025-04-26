@@ -5465,7 +5465,7 @@ const AddRecipientPage = () => {
               <input
                 type="text"
                 // Original classes
-                className="w-full rounded-full h-12.5 py-3 pl-12 pr-10 border transition-shadow ease-in-out duration-300 border-neutral-600 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-none placeholder:text-neutral-600 dark:placeholder:text-white bg-white dark:bg-background"
+                className="w-full rounded-full h-12.5 py-3 pl-12 pr-10 border transition-all ease-linear duration-75 focus:outline-none focus:border-[#5f5f5f] placeholder:text-neutral-600 dark:placeholder:text-white bg-white dark:bg-background"
                 placeholder="Search currency by name or code..."
                 value={searchCurrency}
                 onChange={(e) => setSearchCurrency(e.target.value)}
@@ -5487,10 +5487,10 @@ const AddRecipientPage = () => {
             {formError && !isLoadingCurrencies && (
                 <div
                   // Original classes
-                  className="bg-red-600/20 border border-red-600/60 text-red-600 dark:text-red-400 rounded-xl p-4 relative mb-3"
+                  className="bg-red-100 dark:bg-red-600/20 border border-red-400 dark:border-red-600/50 rounded-xl p-4 relative mb-3"
                   role="alert"
                 >
-                  <span className="text-red-700 dark:text-red-300 text-sm font-medium">
+                  <span className="text-red-600 dark:text-red-400 text-sm font-medium">
                     {formError}
                   </span>
                   {/* Optional: Add a close button if needed, using original styles */}
@@ -5641,10 +5641,10 @@ const AddRecipientPage = () => {
             {formError && (
               <div
                 // Original classes
-                className="bg-red-600/20 border border-red-600/60 text-red-600 dark:text-red-400 rounded-xl p-4 relative mb-3"
+                className="bg-red-100 dark:bg-red-600/20 border border-red-400 dark:border-red-600/50 rounded-xl p-4 relative mb-3"
                 role="alert"
               >
-                <span className="text-red-700 dark:text-red-300 text-sm font-medium">
+                <span className="text-red-600 dark:text-red-400 text-sm font-medium">
                   {formError}
                 </span>
                 {/* Optional: Add a close button if needed */}
@@ -5668,7 +5668,7 @@ const AddRecipientPage = () => {
                   type="email"
                   id="email"
                    // Original classes
-                  className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 hover:shadow-darkcolor dark:hover:shadow-whitecolor`}
+                  className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 focus:border-[#5f5f5f]`}
                   value={email}
                   placeholder="example@domain.com"
                   onChange={(e) => setEmail(e.target.value)}
@@ -5689,16 +5689,16 @@ const AddRecipientPage = () => {
                     className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
                   >
                     Full name of the account holder
-                    <span className="text-error ml-1">*</span>
+                    <span className="text-red-500 ml-1">*</span>
                   </label>
                   <input
                     type="text"
                     id="accountHolderName"
                      // Original input classes, error border logic kept
-                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
+                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
                       accountHolderNameError
-                        ? "border-error border-2 !shadow-none focus:!ring-error" // Error style
-                        : "hover:shadow-darkcolor dark:hover:shadow-whitecolor" // Normal style
+                        ? "border-red-600 border-2 !shadow-none focus:!ring-red-600" // Error style
+                        : "focus:border-[#5f5f5f]" // Normal style
                     }`}
                     value={accountHolderName}
                     placeholder="e.g., John Doe"
@@ -5718,7 +5718,7 @@ const AddRecipientPage = () => {
                   {accountHolderNameError && (
                     <p
                       id="accountHolderName-error"
-                      className="flex text-error text-xs items-center mt-1"
+                      className="flex text-red-500 text-xs items-center mt-1"
                       role="alert"
                     >
                       <IoMdCloseCircle className="size-3.5 mr-1 flex-shrink-0" />
@@ -5733,16 +5733,16 @@ const AddRecipientPage = () => {
                     htmlFor="ifscCode"
                     className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
                   >
-                    IFSC code <span className="text-error ml-1">*</span>
+                    IFSC code <span className="text-red-500 ml-1">*</span>
                   </label>
                   <input
                     type="text"
                     id="ifscCode"
                      // Original input classes, error border logic kept
-                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
+                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
                       ifscCodeError
-                        ? "border-error border-2 !shadow-none focus:!ring-error"
-                        : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
+                        ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+                        : "focus:border-[#5f5f5f]"
                     }`}
                     value={ifscCode}
                     placeholder="e.g., YESB0123456"
@@ -5764,7 +5764,7 @@ const AddRecipientPage = () => {
                   {ifscCodeError && (
                     <p
                       id="ifscCode-error"
-                      className="flex text-error text-xs items-center mt-1"
+                      className="flex text-red-500 text-xs items-center mt-1"
                       role="alert"
                     >
                       <IoMdCloseCircle className="size-3.5 mr-1 flex-shrink-0" />
@@ -5779,17 +5779,17 @@ const AddRecipientPage = () => {
                     htmlFor="accountNumber"
                     className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
                   >
-                    Account number <span className="text-error ml-1">*</span>
+                    Account number <span className="text-red-500 ml-1">*</span>
                   </label>
                   <input
                     type="text"
                     inputMode="numeric" // Keep hint
                     id="accountNumber"
                     // Original input classes, error border logic kept
-                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
+                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
                       accountNumberError
-                        ? "border-error border-2 !shadow-none focus:!ring-error"
-                        : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
+                        ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+                        : "focus:border-[#5f5f5f]"
                     }`}
                     value={accountNumber}
                     placeholder="Enter account number"
@@ -5809,7 +5809,7 @@ const AddRecipientPage = () => {
                   {accountNumberError && (
                     <p
                       id="accountNumber-error"
-                      className="flex text-error text-xs items-center mt-1"
+                      className="flex text-red-500 text-xs items-center mt-1"
                       role="alert"
                     >
                       <IoMdCloseCircle className="size-3.5 mr-1 flex-shrink-0" />
@@ -5821,7 +5821,7 @@ const AddRecipientPage = () => {
                 {/* Account Type Dropdown */}
                 <div>
                   <label className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base">
-                    Account type <span className="text-error ml-1">*</span>
+                    Account type <span className="text-red-500 ml-1">*</span>
                   </label>
                   <AccountTypeDropdown
                     value={accountType}
@@ -5840,16 +5840,16 @@ const AddRecipientPage = () => {
                     htmlFor="bankName"
                     className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
                   >
-                    Bank name <span className="text-error ml-1">*</span>
+                    Bank name <span className="text-red-500 ml-1">*</span>
                   </label>
                   <input
                     type="text"
                     id="bankName"
                      // Original input classes, error border logic kept
-                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
+                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
                       bankNameError
-                        ? "border-error border-2 !shadow-none focus:!ring-error"
-                        : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
+                        ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+                        : "focus:border-[#5f5f5f]"
                     }`}
                     value={bankName}
                     placeholder="e.g., State Bank of India"
@@ -5867,7 +5867,7 @@ const AddRecipientPage = () => {
                   {bankNameError && (
                     <p
                       id="bankName-error"
-                      className="flex text-error text-xs items-center mt-1"
+                      className="flex text-red-500 text-xs items-center mt-1"
                       role="alert"
                     >
                       <IoMdCloseCircle className="size-3.5 mr-1 flex-shrink-0" />
@@ -5883,16 +5883,16 @@ const AddRecipientPage = () => {
                     className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
                   >
                     Recipient Address (Street, City, Postcode, Country)
-                    <span className="text-error ml-1">*</span>
+                    <span className="text-red-500 ml-1">*</span>
                   </label>
                   <input
                     type="text"
                     id="address"
                     // Original input classes, error border logic kept
-                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
+                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
                       addressError
-                        ? "border-error border-2 !shadow-none focus:!ring-error"
-                        : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
+                        ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+                        : "focus:border-[#5f5f5f]"
                     }`}
                     value={address}
                     placeholder="e.g., 123 Main St, Anytown, 12345, India"
@@ -5910,7 +5910,7 @@ const AddRecipientPage = () => {
                   {addressError && (
                     <p
                       id="address-error"
-                      className="flex text-error text-xs items-center mt-1"
+                      className="flex text-red-500 text-xs items-center mt-1"
                       role="alert"
                     >
                       <IoMdCloseCircle className="size-3.5 mr-1 flex-shrink-0" />
@@ -5925,7 +5925,7 @@ const AddRecipientPage = () => {
                 <button
                   type="button"
                    // Original classes
-                  className={`sm:order-1 order-2 bg-neutral-200 hover:bg-neutral-300 text-neutral-800 dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-200 ease-linear`}
+                  className={`sm:order-1 order-2 bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear`}
                   onClick={handleClearForm}
                 >
                   Clear All
@@ -5933,7 +5933,7 @@ const AddRecipientPage = () => {
                 <button
                   type="submit"
                    // Original classes
-                  className={`sm:order-2 order-1 bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-200 ease-linear disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center`}
+                  className={`sm:order-2 order-1 bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center`}
                    // --- KEPT: Logic to disable button ---
                   disabled={isSubmitting || isFormInvalid}
                   // --- END KEPT ---

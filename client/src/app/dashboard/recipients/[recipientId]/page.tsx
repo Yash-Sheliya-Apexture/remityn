@@ -2452,7 +2452,7 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
                       {currentRecipient.nickname}
                     </p>
                     <button
-                      className="cursor-pointer text-sm underline text-secondary font-medium dark:text-primary whitespace-nowrap"
+                      className="cursor-pointer text-sm underline font-medium text-primary hover:text-primaryhover transition-all duration-75 ease-linear whitespace-nowrap"
                       onClick={handleAddNicknameClick}
                       aria-label="Edit nickname"
                     >
@@ -2554,7 +2554,7 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
             <input
               type="text"
               id="nickname"
-              className="mt-1 block px-4 py-3 bg-white dark:bg-background hover:shadow-darkcolor dark:hover:shadow-whitecolor h-14 w-full border rounded-lg transition-shadow ease-in-out duration-300 focus:outline-none focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor"
+              className="mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all ease-linear duration-75 focus:outline-none focus:border-[#5f5f5f]"
               placeholder="E.g., Savings, John Doe USD"
               maxLength={40}
               value={nicknameInput}
