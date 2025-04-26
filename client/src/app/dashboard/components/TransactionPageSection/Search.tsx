@@ -65,14 +65,6 @@
 
 // export default Search;
 
-
-
-
-
-
-
-
-
 // frontend/src/components/Search.tsx
 "use client";
 
@@ -81,56 +73,62 @@ import { FiSearch } from "react-icons/fi";
 import { Transaction } from "@/types/transaction"; // Import Transaction interface
 
 interface SearchProps {
-    transactions: Transaction[];
-    onTransactionsChange: (filteredTransactions: Transaction[]) => void;
+  transactions: Transaction[];
+  onTransactionsChange: (filteredTransactions: Transaction[]) => void;
 }
 
-const Search: React.FC<SearchProps> = ({ transactions, onTransactionsChange }) => {
-    const [searchTerm, setSearchTerm] = useState<string>("");
+const Search: React.FC<SearchProps> = ({
+  transactions,
+  onTransactionsChange,
+}) => {
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
-    useEffect(() => {
-        if (!transactions) {
-            onTransactionsChange([]); // Handle case where transactions are not yet loaded
-            return;
-        }
+  useEffect(() => {
+    if (!transactions) {
+      onTransactionsChange([]); // Handle case where transactions are not yet loaded
+      return;
+    }
 
-        const searchedTransactions = transactions.filter((transaction) => {
-            if (searchTerm) {
-                const searchTermLower = searchTerm.toLowerCase();
-                const nameMatches = transaction.name
-                    ?.toLowerCase()
-                    .includes(searchTermLower);
-                const descriptionMatches = transaction.description
-                    ?.toLowerCase()
-                    .includes(searchTermLower);
+    const searchedTransactions = transactions.filter((transaction) => {
+      if (searchTerm) {
+        const searchTermLower = searchTerm.toLowerCase();
+        const nameMatches = transaction.name
+          ?.toLowerCase()
+          .includes(searchTermLower);
+        const descriptionMatches = transaction.description
+          ?.toLowerCase()
+          .includes(searchTermLower);
 
-                return nameMatches || descriptionMatches;
-            }
-            return true; // If no searchTerm, include all transactions
-        });
+        return nameMatches || descriptionMatches;
+      }
+      return true; // If no searchTerm, include all transactions
+    });
 
-        onTransactionsChange(searchedTransactions);
-    }, [searchTerm, transactions, onTransactionsChange]);
+    onTransactionsChange(searchedTransactions);
+  }, [searchTerm, transactions, onTransactionsChange]);
 
-    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newSearchTerm = event.target.value;
-        setSearchTerm(newSearchTerm);
-    };
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newSearchTerm = event.target.value;
+    setSearchTerm(newSearchTerm);
+  };
 
-    return (
-        <div className="relative w-full">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                          <FiSearch className="h-5 w-5 text-neutral-900 dark:text-white" aria-hidden="true" />
-                        </div>
-            <input
-                type="text"
-                placeholder="Search"
-                className="w-full rounded-full h-12.5 py-3 pl-12 pr-3 border transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white"
-                value={searchTerm}
-                onChange={handleSearchChange}
-            />
-        </div>
-    );
+  return (
+    <div className="relative w-full">
+      <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+        <FiSearch
+          className="h-5 w-5 text-neutral-900 dark:text-white"
+          aria-hidden="true"
+        />
+      </div>
+      <input
+        type="text"
+        placeholder="Search"
+        className="w-full rounded-full h-12.5 py-3 pl-12 pr-3 border focus:border-[#5f5f5f] focus:outline-0 transition-all duration-75 ease-in-out placeholder:text-neutral-900 dark:placeholder:text-white"
+        value={searchTerm}
+        onChange={handleSearchChange}
+      />
+    </div>
+  );
 };
 
 export default Search;

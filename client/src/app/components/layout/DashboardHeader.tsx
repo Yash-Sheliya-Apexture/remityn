@@ -19,14 +19,6 @@
 
 // export default DashboardHeader;
 
-
-
-
-
-
-
-
-
 // // frontend/src/components/layout/DashboardHeader.tsx
 // 'use client';
 // import React from 'react';
@@ -72,32 +64,25 @@
 
 // export default DashboardHeader;
 
-
-
-
-
-
-
-
-
 // frontend/src/components/layout/DashboardHeader.tsx
-'use client';
-import React from 'react';
+"use client";
+import React from "react";
 
 interface DashboardHeaderProps {
-    title: string;
-    onBack?: () => void; // Generic onBack function
+  title: string;
+  onBack?: () => void; // Generic onBack function
 }
 
-const DashboardHeader: React.FC<DashboardHeaderProps> = ({ title}) => {
-
-    return (
-      <header className="DashboardHeader py-4 sticky lg:top-28 top-20 z-10 mb-6 bg-white dark:bg-background">
-        <div className="Heading">
-          <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">{title}</h1>
-        </div>
-      </header>
-    );
+const DashboardHeader: React.FC<DashboardHeaderProps> = ({ title }) => {
+  return (
+    <header className="DashboardHeader py-2 sticky lg:top-28 top-20 z-10 mb-6 bg-white dark:bg-background">
+      <div className="Heading">
+        <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
+          {title}
+        </h1>
+      </div>
+    </header>
+  );
 };
 
 export default DashboardHeader;
