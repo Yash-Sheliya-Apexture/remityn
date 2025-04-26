@@ -483,7 +483,7 @@ const SelectBalanceComponent: React.FC<SelectBalanceComponentProps> = ({
   }
 
   const addCardClasses =
-    "p-6 bg-lightgray dark:bg-primarybox/70 hover:dark:bg-secondarybox rounded-2xl flex flex-col justify-center items-center cursor-pointer hover:bg-neutral-200/70 transition-all duration-75 ease-linear border-2 border-dashed border-neutral-900 dark:border-neutral-300 min-h-[112px]";
+    "sm:p-4 p-2 bg-lightgray dark:bg-primarybox/70 hover:dark:bg-secondarybox rounded-2xl flex flex-col justify-center items-center cursor-pointer hover:bg-neutral-200/70 transition-all duration-75 ease-linear border-2 border-dashed border-neutral-900 dark:border-neutral-300 min-h-[112px]";
 
   // --- Add Card Content ---
   const AddCardContent = () => (
@@ -594,7 +594,7 @@ const SelectBalanceComponent: React.FC<SelectBalanceComponentProps> = ({
               <div
                 key={account._id}
                 onClick={() => onSelectBalance(account._id)} // Parent handles KYC in this callback
-                className="sm:p-6 p-4 sm:h-32 h-28 bg-lightgray dark:bg-primarybox hover:bg-neutral-200/70 hover:dark:bg-secondarybox rounded-2xl flex justify-between items-center gap-2 transition-all duration-75 ease-linear cursor-pointer min-h-[112px]"
+                className="sm:p-4 p-2 sm:h-32 h-28 bg-lightgray dark:bg-primarybox hover:bg-neutral-200/70 hover:dark:bg-secondarybox rounded-2xl flex justify-between items-center gap-2 transition-all duration-75 ease-linear cursor-pointer min-h-[112px]"
                 role="button"
                 tabIndex={0}
                 onKeyPress={(e) =>

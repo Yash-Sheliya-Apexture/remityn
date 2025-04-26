@@ -472,63 +472,69 @@ const PaymentSuccessPage = () => {
 
   // --- JSX (No changes needed here from the previous version) ---
   return (
-    <div className="flex flex-col items-center justify-center bg-background text-gray-500 dark:text-gray-300 mt-10">
-      <div className="md:mb-8 mb-6">
-        <Image
-          src={WiseLogo}
-          alt="Wise Logo"
-          width={200}
-          height={200}
-          priority
-          className="md:size-36 size-26"
-        />
-      </div>
+    <section className="Payment-Success">
+      <div className="flex flex-col items-center justify-center bg-background text-gray-500 dark:text-gray-300 mt-10">
+        <div className="md:mb-8 mb-6">
+          <Image
+            src={WiseLogo}
+            alt="Wise Logo"
+            width={200}
+            height={200}
+            priority
+            className="md:size-36 size-26"
+          />
+        </div>
 
-      <div className="text-center max-w-lg w-full space-y-3">
-        <h1 className="text-4xl md:text-5xl xl:text-6xl font-black font-mont text-mainheading dark:text-white uppercase md:leading-16">
-          Your Money's
-          <span className="text-primary"> on the Move </span>
-        </h1>
+        <div className="text-center max-w-lg w-full space-y-3">
+          <h1 className="text-4xl md:text-5xl xl:text-6xl font-black font-mont text-mainheading dark:text-white uppercase md:leading-16">
+            Your Money's
+            <span className="text-primary"> on the Move </span>
+          </h1>
 
-        {!isLoading &&
-          paymentDetails &&
-          !error && ( // Show even if details are partial but essential ID is there
-            <p className="text-lg leading-tight text-muted-foreground">
-              Track your transfers in real-time and enjoy fast, secure delivery
-              to your recipients — anytime, anywhere.
-              {/* Conditionally display amount/currency only if valid */}
-              {
-                paymentDetails.amountToAdd > 0 &&
-                paymentDetails.balanceCurrency.code !== "N/A"
-                  ? ` Adding ${paymentDetails.amountToAdd} ${paymentDetails.balanceCurrency.code}.`
-                  : "" // Don't display if amount/currency is missing/invalid
-              }
+          {!isLoading &&
+            paymentDetails &&
+            !error && ( // Show even if details are partial but essential ID is there
+              <p className="sm:text-lg text-base leading-tight text-muted-foreground">
+                Track your transfers in real-time and enjoy fast, secure
+                delivery to your recipients — anytime, anywhere.
+                {/* Conditionally display amount/currency only if valid */}
+                {
+                  paymentDetails.amountToAdd > 0 &&
+                  paymentDetails.balanceCurrency.code !== "N/A"
+                    ? ` Adding ${paymentDetails.amountToAdd} ${paymentDetails.balanceCurrency.code}.`
+                    : "" // Don't display if amount/currency is missing/invalid
+                }
+              </p>
+            )}
+
+          {/* Generic Success (Fallback if paymentDetails couldn't be set but no blocking error) */}
+          {!isLoading && !paymentDetails && !error && (
+            <p className="text-lg mb-8 text-muted-foreground">
+              Your payment is processing and should arrive 2 hours. We'll keep
+              you posted.
             </p>
           )}
 
-        {/* Generic Success (Fallback if paymentDetails couldn't be set but no blocking error) */}
-        {!isLoading && !paymentDetails && !error && (
-          <p className="text-lg mb-8 text-muted-foreground">
-            Your payment is processing and should arrive 2 hours. We'll keep you
-            posted.
-          </p>
-        )}
+          {/* Error Message Display */}
+          {error && !isLoading && (
+            <div className="bg-red-100 dark:bg-red-600/20 border border-red-400 dark:border-red-600/50 rounded-xl p-4">
+              <p className="text-red-600 dark:text-red-400 text-sm font-medium">
+                {error}
+              </p>
+            </div>
+          )}
 
-        {/* Error Message Display */}
-        {error && !isLoading && (
-          <p className="py-4 bg-red-700/20 text-red-500 mb-8 text-base rounded-md mt-4">{error}</p>
-        )}
-
-        {/* Action Button */}
-        <button
-          onClick={handleGotIt}
-          className="bg-primary hover:bg-primaryhover mt-4 font-medium py-3 px-8 rounded-md transition duration-300 text-mainheading focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={isLoading}
-        >
-          Check Now's
-        </button>
+          {/* Action Button */}
+          <button
+            onClick={handleGotIt}
+            className="bg-primary hover:bg-primaryhover mt-4 font-medium py-3 px-8 rounded-full transition duration-300 text-mainheading focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isLoading}
+          >
+            Check Now's
+          </button>
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 

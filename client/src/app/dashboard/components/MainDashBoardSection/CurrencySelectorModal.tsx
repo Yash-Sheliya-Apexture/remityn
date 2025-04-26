@@ -1630,7 +1630,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
           ) : (
             // Only show "no results" if there was a search query
             searchQuery && (
-              <p className="text-gray-700 border border-dashed capitalize dark:text-gray-300 text-center py-4">
+              <p className="text-gray-500 border-2 border-dashed rounded-2xl capitalize dark:text-gray-300 text-center py-4">
                 No results found for "{searchQuery}".
               </p>
             )
@@ -1772,7 +1772,69 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
                 {/* Show specific text for adding state */}
                 {isAdding ? (
                      <div className="flex items-center justify-center gap-2">
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
+                         <svg
+                        className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 2V6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M12 18V22"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M4.93 4.93L7.76 7.76"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M16.24 16.24L19.07 19.07"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M2 12H6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M18 12H22"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M4.93 19.07L7.76 16.24"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M16.24 7.76L19.07 4.93"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
                         <span>Adding...</span>
                      </div>
                  ) : "Confirm"}

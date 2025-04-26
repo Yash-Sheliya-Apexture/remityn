@@ -1310,15 +1310,13 @@ const PaymentEditModal: React.FC<PaymentEditModalProps> = ({
                       {selectedPaymentForEdit._id}
                     </p>
                   </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
+                  <button
                     onClick={() => copyPaymentId(selectedPaymentForEdit._id)}
-                    className="shrink-0 h-8 text-xs cursor-pointer text-neutral-900 bg-white hover:bg-lightborder dark:text-white dark:hover:bg-neutral-700 dark:bg-neutral-900"
+                    className="shrink-0 h-8 px-2.5 text-xs font-medium transition-colors duration-150 ease-in-out focus-visible:outline-none rounded-md flex items-center justify-center text-neutral-900 bg-white hover:bg-lightborder dark:text-white dark:bg-neutral-900 dark:hover:bg-primarybox"
                   >
                     <Copy className="size-3.5 mr-1 text-neutral-900 dark:text-white" />{" "}
                     {isPaymentIdCopied ? "Copied!" : "Copy"}
-                  </Button>
+                  </button>
                 </div>
               </div>
 
@@ -1336,20 +1334,18 @@ const PaymentEditModal: React.FC<PaymentEditModalProps> = ({
                       {selectedPaymentForEdit.referenceCode || "N/A"}
                     </p>
                   </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
+                  <button
                     onClick={() =>
                       copyReferenceCode(
                         selectedPaymentForEdit.referenceCode || ""
                       )
                     }
                     disabled={!selectedPaymentForEdit.referenceCode}
-                    className="shrink-0 h-8 text-xs cursor-pointer text-neutral-900 bg-white hover:bg-lightborder dark:text-white dark:hover:bg-neutral-700 dark:bg-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="shrink-0 h-8 px-2.5 text-xs font-medium transition-colors duration-150 ease-in-out focus-visible:outline-none rounded-md flex items-center justify-center text-neutral-900 bg-white hover:bg-lightborder dark:text-white dark:bg-neutral-900 dark:hover:bg-primarybox"
                   >
                     <Copy className="size-3.5 mr-1 text-neutral-900 dark:text-white" />{" "}
                     {isReferenceCodeCopied ? "Copied!" : "Copy"}
-                  </Button>
+                  </button>
                 </div>
               </div>
 
