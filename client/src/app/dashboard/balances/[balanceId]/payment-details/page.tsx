@@ -2265,13 +2265,8 @@ const PaymentDetailsPage = () => {
     );
   }
 
-  // --- FIX: Explicit non-null check before rendering details ---
-  // At this point, isLoading is false, there's no critical error,
-  // paymentDetails is not null, and balanceId is present.
-  // This check might seem redundant given the previous one, but it satisfies TS's stricter flow analysis.
+
   if (!paymentDetails) {
-    // This should technically not be reachable if the logic above is correct,
-    // but it satisfies TypeScript and acts as a final safeguard.
     console.error(
       "PaymentDetailsPage: Reached render section unexpectedly with null paymentDetails."
     );
@@ -2288,10 +2283,6 @@ const PaymentDetailsPage = () => {
       </div>
     );
   }
-  // --- End explicit non-null check ---
-
-  // --- Render Payment Details (Main Structure) ---
-  // Now TypeScript knows paymentDetails is definitely PaymentDetails here.
 
   const payInCurrencyCode = paymentDetails.payInCurrency?.code || "N/A";
 
@@ -2323,16 +2314,16 @@ const PaymentDetailsPage = () => {
     <div className="container mx-auto py-5 max-w-2xl">
       <Toaster richColors position="top-center" />
       {/* Header */}
-      <h1 className="sm:text-3xl text-xl text-center font-semibold text-mainheading mb-2.5 dark:text-white">
+      <h1 className="lg:text-3xl md:text-2xl text-xl lg:text-center font-semibold text-mainheading mb-2.5 dark:text-white">
         Use your bank to make a payment to Wise
       </h1>
-      <p className="text-sm text-gray-500 dark:text-gray-300 lg:mb-10 mb-5 text-center">
+      <p className="text-sm text-gray-500 dark:text-gray-300 lg:mb-10 mb-5 text-left lg:text-center">
         Make a {`${payInCurrencyCode}`} payment — not an international one —
         using the details below.
       </p>
 
       {/* Details Section */}
-      <div className="mb-6 p-4 rounded-xl bg-lightgray dark:bg-background">
+      <div className="rounded-xl bg-lightgray dark:bg-background p-4">
         <h2 className="lg:ext-lg font-medium mb-4 text-neutral-900 dark:text-white">
           Details you'll need to make this transfer
         </h2>
@@ -2387,7 +2378,7 @@ const PaymentDetailsPage = () => {
       </div>
 
       {/* Need more help? Section */}
-      <div className="rounded-lg p-4 lg:mb-8 mb-6 flex items-start gap-4 bg-gray/10 dark:bg-white/5">
+      <div className="rounded-lg p-4 my-5 flex items-start gap-4 bg-[#E2E2E2] dark:bg-white/5">
         <HelpCircle className="size-6 text-neutral-900 dark:text-white mt-0.5 shrink-0" />
         <div>
           <h3 className="font-medium text-neutral-900 dark:text-white mb-1">
@@ -2402,7 +2393,7 @@ const PaymentDetailsPage = () => {
             className="p-0 h-auto text-subheading dark:text-primary font-medium"
             onClick={() => toast.info("PDF download feature coming soon!")}
           >
-            Download PDF <Download className="h-4 w-4 ml-1" />
+            Download PDF <Download className="ml-1" size={28} />
           </Button>
         </div>
       </div>
@@ -2410,7 +2401,7 @@ const PaymentDetailsPage = () => {
       {/* Non-critical Error Display */}
       {error &&
         !isLoading && ( // No need to check paymentDetails here as it's guaranteed non-null
-          <div className="bg-warning/10 border text-warning-foreground p-3 rounded-lg mb-6 text-sm flex items-center gap-2">
+          <div className="bg-red-700/20  text-red-500 p-3 rounded-lg mb-6 flex items-center gap-4">
             <AlertTriangle size={28} />
             <span>{error}</span>
           </div>

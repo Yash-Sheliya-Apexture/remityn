@@ -417,6 +417,7 @@ const AmountInput: React.FC<AmountInputProps> = ({
             {currencyCode}
           </span>
         </div>
+
         <input
           id={inputId}
           type="text"
@@ -426,7 +427,7 @@ const AmountInput: React.FC<AmountInputProps> = ({
           onFocus={onFocus}
           onBlur={onBlur}
           className={clsx(
-            `flex-grow font-black border-none outline-none p-0 text-white text-right pr-1 w-full bg-transparent transition-all duration-300 ease-in-out`,
+            `flex-grow border-none font-bold outline-none p-0 dark:text-white text-mainheading text-right pr-1 w-full bg-transparent transition-all duration-300 ease-in-out`,
             textSizeClass,
             textColorClass // Apply the calculated text color/weight class
           )}

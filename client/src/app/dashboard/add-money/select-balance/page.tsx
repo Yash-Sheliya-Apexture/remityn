@@ -27,7 +27,6 @@
 //     updatedAt: string;
 // }
 
-
 // const SelectBalancePage = () => {
 //     const router = useRouter();
 //     const { balances, isLoading, error, refetchBalances } = useBalances();
@@ -46,7 +45,6 @@
 //     const handleSelectBalance = (balanceId: string) => {
 //         router.push(`/dashboard/balances/${balanceId}/add-money`);
 //     };
-
 
 //     // --- Loading State ---
 //     if (isLoading) {
@@ -140,12 +138,12 @@
 //                     {/* "Add Another Balance" Card - Now a Link styled as a card */}
 //                     <Link
 //                         href="/dashboard/add-balance?source=select"
-//                         className="p-6 bg-lightgray dark:bg-primarybox/70 hover:dark:bg-secondarybox rounded-2xl flex flex-col justify-center items-center cursor-pointer hover:bg-neutral-200/70 transition-all duration-75 ease-linear border-2 border-dashed border-neutral-900 dark:border-neutral-300"> 
+//                         className="p-6 bg-lightgray dark:bg-primarybox/70 hover:dark:bg-secondarybox rounded-2xl flex flex-col justify-center items-center cursor-pointer hover:bg-neutral-200/70 transition-all duration-75 ease-linear border-2 border-dashed border-neutral-900 dark:border-neutral-300">
 //                          <div className="rounded-full border-2 border-neutral-900 dark:border-white p-2 flex items-center justify-center mb-2">
 //                              <GoPlus size={24} className="text-neutral-900 dark:text-white"/>
 //                          </div>
 //                          <span className="text-center text-neutral-500 dark:text-white">
-//                             Add another currency to your account 
+//                             Add another currency to your account
 //                          </span>
 //                     </Link>
 //                 </div>
@@ -162,10 +160,6 @@
 // };
 
 // export default SelectBalancePage;
-
-
-
-
 
 // // frontend/src/app/dashboard/add-money/select-balance/page.tsx
 // "use client";
@@ -216,8 +210,6 @@
 // };
 
 // export default AddMoneySelectBalancePage;
-
-
 
 // // frontend/src/app/dashboard/add-money/select-balance/page.tsx
 // "use client";
@@ -307,7 +299,6 @@
 // };
 
 // export default AddMoneySelectBalancePage;
-
 
 // // frontend/src/app/dashboard/add-money/select-balance/page.tsx
 // "use client";
@@ -455,21 +446,21 @@
 
 // export default AddMoneySelectBalancePage;
 
-
 // frontend/src/app/dashboard/add-money/select-balance/page.tsx
 "use client";
 
-import React, { useEffect, useCallback, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useBalances } from '../../../hooks/useBalances'; // Adjust path as needed
-import { useAuth } from '../../../contexts/AuthContext'; // Adjust path & ensure it provides user object
-import SelectBalanceComponent from '../../../components/ui/SelectBalanceComponent'; // Adjust path as needed
-import CurrencySelectorModal from '../../components/MainDashBoardSection/CurrencySelectorModal'; // Adjust path as needed
-import KycRequiredModal from '@/app/dashboard/components/KycRequiredModal'; // Adjust path as needed
+import React, { useEffect, useCallback, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useBalances } from "../../../hooks/useBalances"; // Adjust path as needed
+import { useAuth } from "../../../contexts/AuthContext"; // Adjust path & ensure it provides user object
+import SelectBalanceComponent from "../../../components/ui/SelectBalanceComponent"; // Adjust path as needed
+import CurrencySelectorModal from "../../components/MainDashBoardSection/CurrencySelectorModal"; // Adjust path as needed
+import KycRequiredModal from "@/app/dashboard/components/KycRequiredModal"; // Adjust path as needed
 // import LoadingSpinner from '@/components/ui/LoadingSpinner'; // Optional: if needed for other async ops
 
 // --- Interfaces ---
-interface NewAccount { // From CurrencySelectorModal
+interface NewAccount {
+  // From CurrencySelectorModal
   _id: string;
   userId: string;
   currencyCode: string;
@@ -481,145 +472,164 @@ interface NewAccount { // From CurrencySelectorModal
 // AuthContext itself exports the necessary types.
 
 const AddMoneySelectBalancePage = () => {
-    const router = useRouter();
-    const { balances, isLoading: isBalancesLoading, error, refetchBalances } = useBalances();
-    // Get user and auth loading status from context
-    const { token, user, loading: isAuthLoading } = useAuth();
+  const router = useRouter();
+  const {
+    balances,
+    isLoading: isBalancesLoading,
+    error,
+    refetchBalances,
+  } = useBalances();
+  // Get user and auth loading status from context
+  const { token, user, loading: isAuthLoading } = useAuth();
 
-    // --- State for Modals ---
-    const [isCurrencyModalOpen, setIsCurrencyModalOpen] = useState(false);
-    const [isKycModalOpen, setIsKycModalOpen] = useState(false);
+  // --- State for Modals ---
+  const [isCurrencyModalOpen, setIsCurrencyModalOpen] = useState(false);
+  const [isKycModalOpen, setIsKycModalOpen] = useState(false);
 
-    // --- Determine KYC Status ---
-    // Check only after auth is loaded and user exists
-    const isKycVerified = !isAuthLoading && user?.kyc.status === 'verified';
+  // --- Determine KYC Status ---
+  // Check only after auth is loaded and user exists
+  const isKycVerified = !isAuthLoading && user?.kyc.status === "verified";
 
-    // --- Redirect Logic ---
-    useEffect(() => {
-        // Redirect ONLY after initial auth loading is complete
-        if (!isAuthLoading && !token) {
-             console.log("Add Money: No token after auth check, redirecting to login.");
-             router.replace('/auth/login');
-        }
-        // NOTE: The `token` dependency alone is usually sufficient if token is cleared on logout.
-        // `user` can be added if login flow might set token before user object is fully ready.
-    }, [token, isAuthLoading, router]);
+  // --- Redirect Logic ---
+  useEffect(() => {
+    // Redirect ONLY after initial auth loading is complete
+    if (!isAuthLoading && !token) {
+      console.log(
+        "Add Money: No token after auth check, redirecting to login."
+      );
+      router.replace("/auth/login");
+    }
+    // NOTE: The `token` dependency alone is usually sufficient if token is cleared on logout.
+    // `user` can be added if login flow might set token before user object is fully ready.
+  }, [token, isAuthLoading, router]);
 
-     // --- KYC Modal Actions ---
-     const handleOpenKycModal = useCallback(() => setIsKycModalOpen(true), []);
-     const handleCloseKycModal = useCallback(() => setIsKycModalOpen(false), []);
-     const handleStartVerification = useCallback(() => {
-         // Use router to navigate to the start page of the KYC flow
-         router.push('/kyc/start'); // Ensure this is the correct path
-         handleCloseKycModal();
-     }, [router, handleCloseKycModal]);
+  // --- KYC Modal Actions ---
+  const handleOpenKycModal = useCallback(() => setIsKycModalOpen(true), []);
+  const handleCloseKycModal = useCallback(() => setIsKycModalOpen(false), []);
+  const handleStartVerification = useCallback(() => {
+    // Use router to navigate to the start page of the KYC flow
+    router.push("/kyc/start"); // Ensure this is the correct path
+    handleCloseKycModal();
+  }, [router, handleCloseKycModal]);
 
-    // --- Selection Handler for EXISTING balances (with KYC Check) ---
-    const handleSelectBalanceForAddMoney = useCallback((balanceId: string) => {
-        // 1. Wait for auth loading to finish
-        if (isAuthLoading) {
-            console.log("Select Balance (Add Money): Waiting for auth...");
-            return; // Or show some indicator
-        }
-        // 2. Check KYC Status
-        if (!isKycVerified) {
-            console.log("Select Balance (Add Money): KYC not verified. Showing KYC modal.");
-            handleOpenKycModal();
-            return;
-        }
-        // 3. Proceed if KYC is verified
-        console.log("Select Balance (Add Money): KYC verified. Navigating to add money page for balance:", balanceId);
-        router.push(`/dashboard/balances/${balanceId}/add-money`);
-    }, [router, isKycVerified, isAuthLoading, handleOpenKycModal]); // Add isAuthLoading dependency
+  // --- Selection Handler for EXISTING balances (with KYC Check) ---
+  const handleSelectBalanceForAddMoney = useCallback(
+    (balanceId: string) => {
+      // 1. Wait for auth loading to finish
+      if (isAuthLoading) {
+        console.log("Select Balance (Add Money): Waiting for auth...");
+        return; // Or show some indicator
+      }
+      // 2. Check KYC Status
+      if (!isKycVerified) {
+        console.log(
+          "Select Balance (Add Money): KYC not verified. Showing KYC modal."
+        );
+        handleOpenKycModal();
+        return;
+      }
+      // 3. Proceed if KYC is verified
+      console.log(
+        "Select Balance (Add Money): KYC verified. Navigating to add money page for balance:",
+        balanceId
+      );
+      router.push(`/dashboard/balances/${balanceId}/add-money`);
+    },
+    [router, isKycVerified, isAuthLoading, handleOpenKycModal]
+  ); // Add isAuthLoading dependency
 
-    // --- Handler for clicking "Add New Balance" card/link (with KYC Check) ---
-    const handleAddBalanceClick = useCallback(() => {
-        // 1. Wait for auth loading to finish
-        if (isAuthLoading) {
-            console.log("Add Balance Click: Waiting for auth...");
-            return; // Or show some indicator
-        }
-        // 2. Check KYC Status
-        if (!isKycVerified) {
-            console.log("Add Balance Click: KYC not verified. Showing KYC modal instead of currency selector.");
-            handleOpenKycModal();
-            return;
-        }
-        // 3. Proceed if KYC is verified: Open Currency Selector
-        console.log("Add Balance Click: KYC verified. Opening currency selector modal.");
-        setIsCurrencyModalOpen(true);
-    }, [isKycVerified, isAuthLoading, handleOpenKycModal]); // Add isAuthLoading dependency
-
-    // --- Currency Selector Modal Control Functions ---
-    const handleCloseCurrencyModal = useCallback(() => {
-        setIsCurrencyModalOpen(false);
-    }, []);
-
-    const handleCurrencyAdded = useCallback((newAccount: NewAccount) => {
-        console.log("New currency account added:", newAccount);
-        handleCloseCurrencyModal();
-        refetchBalances(); // Refresh list to show the new balance
-        // Optional: Navigate to the new balance detail or stay here?
-        // For add money flow, likely stay here or go to the new balance's add money page.
-        // Check if KYC is still verified (should be unless context changed)
-        // if (isKycVerified) {
-        //     router.push(`/dashboard/balances/${newAccount._id}/add-money`);
-        // } else {
-        //     // Handle edge case if KYC somehow became unverified? Maybe show modal again?
-        //     handleOpenKycModal();
-        // }
-    }, [handleCloseCurrencyModal, refetchBalances]); // Removed router/kyc dependency unless navigation is added
-
-    // Combined loading state
-    const isLoading = isBalancesLoading || isAuthLoading;
-
-    // --- Render ---
-    return (
-        <>
-            <SelectBalanceComponent
-                balances={balances}
-                isLoading={isLoading} // Use combined loading state
-                error={error}
-                refetchBalances={refetchBalances}
-                onSelectBalance={handleSelectBalanceForAddMoney} // Use KYC-aware handler
-                allowAddBalance={true} // Allow adding new balances
-                onAddBalanceClick={handleAddBalanceClick} // Use KYC-aware handler for add action
-                pageTitle="Select a Balance to Add Money To"
-                // Conditional primary message based on KYC status *after* loading finishes
-                noBalancePrimaryMessage={
-                    isLoading ? "Loading balances..." : // Show loading text
-                    !user ? "Login required to manage balances." : // Should be handled by redirect, but good fallback
-                    isKycVerified
-                        ? "You don't have any currency balances yet."
-                        : "Complete KYC verification to add balances and funds."
-                }
-                // Conditional secondary message (will trigger respective handler)
-                noBalanceSecondaryMessage={
-                    isLoading ? "" : // No secondary text while loading
-                    !user ? "" :
-                    isKycVerified
-                        ? "Create your first balance to add money" // Triggers handleAddBalanceClick -> currency modal
-                        : "Start KYC verification now" // Triggers handleAddBalanceClick -> KYC modal
-                }
-                addBalanceLinkText="Add New Balance" // Text for the card/link
-                tokenExists={!!token} // Keep this for potential internal logic in SelectBalanceComponent
-            />
-
-            {/* Currency Selector Modal */}
-            <CurrencySelectorModal
-                isOpen={isCurrencyModalOpen}
-                onClose={handleCloseCurrencyModal}
-                onCurrencyAdded={handleCurrencyAdded}
-            />
-
-            {/* KYC Required Modal */}
-            <KycRequiredModal
-                isOpen={isKycModalOpen}
-                onClose={handleCloseKycModal}
-                onStartVerification={handleStartVerification}
-            />
-        </>
+  // --- Handler for clicking "Add New Balance" card/link (with KYC Check) ---
+  const handleAddBalanceClick = useCallback(() => {
+    // 1. Wait for auth loading to finish
+    if (isAuthLoading) {
+      console.log("Add Balance Click: Waiting for auth...");
+      return; // Or show some indicator
+    }
+    // 2. Check KYC Status
+    if (!isKycVerified) {
+      console.log(
+        "Add Balance Click: KYC not verified. Showing KYC modal instead of currency selector."
+      );
+      handleOpenKycModal();
+      return;
+    }
+    // 3. Proceed if KYC is verified: Open Currency Selector
+    console.log(
+      "Add Balance Click: KYC verified. Opening currency selector modal."
     );
+    setIsCurrencyModalOpen(true);
+  }, [isKycVerified, isAuthLoading, handleOpenKycModal]); // Add isAuthLoading dependency
+
+  // --- Currency Selector Modal Control Functions ---
+  const handleCloseCurrencyModal = useCallback(() => {
+    setIsCurrencyModalOpen(false);
+  }, []);
+
+  const handleCurrencyAdded = useCallback(
+    (newAccount: NewAccount) => {
+      console.log("New currency account added:", newAccount);
+      handleCloseCurrencyModal();
+      refetchBalances(); // Refresh list to show the new balance
+    },
+    [handleCloseCurrencyModal, refetchBalances]
+  ); // Removed router/kyc dependency unless navigation is added
+
+  // Combined loading state
+  const isLoading = isBalancesLoading || isAuthLoading;
+
+  // --- Render ---
+  return (
+    <>
+      <main className="Add-Money">
+        <SelectBalanceComponent
+          balances={balances}
+          isLoading={isLoading} // Use combined loading state
+          error={error}
+          refetchBalances={refetchBalances}
+          onSelectBalance={handleSelectBalanceForAddMoney} // Use KYC-aware handler
+          allowAddBalance={true} // Allow adding new balances
+          onAddBalanceClick={handleAddBalanceClick} // Use KYC-aware handler for add action
+          pageTitle="Select a Balance to Add Money To"
+          noBalancePrimaryMessage={
+            isLoading
+              ? "Loading balances..." // Show loading text
+              : !user
+              ? "Login required to manage balances." // Should be handled by redirect, but good fallback
+              : isKycVerified
+              ? "You don't have any currency balances yet."
+              : "Complete KYC verification to add balances and funds."
+          }
+          
+          // Conditional secondary message (will trigger respective handler)
+          noBalanceSecondaryMessage={
+            isLoading
+              ? "" // No secondary text while loading
+              : !user
+              ? ""
+              : isKycVerified
+              ? "Create your first balance to add money" // Triggers handleAddBalanceClick -> currency modal
+              : "Start KYC verification now" // Triggers handleAddBalanceClick -> KYC modal
+          }
+          addBalanceLinkText="Add New Balance" // Text for the card/link
+          tokenExists={!!token} // Keep this for potential internal logic in SelectBalanceComponent
+        />
+
+        {/* Currency Selector Modal */}
+        <CurrencySelectorModal
+          isOpen={isCurrencyModalOpen}
+          onClose={handleCloseCurrencyModal}
+          onCurrencyAdded={handleCurrencyAdded}
+        />
+
+        {/* KYC Required Modal */}
+        <KycRequiredModal
+          isOpen={isKycModalOpen}
+          onClose={handleCloseKycModal}
+          onStartVerification={handleStartVerification}
+        />
+      </main>
+    </>
+  );
 };
 
 export default AddMoneySelectBalancePage;

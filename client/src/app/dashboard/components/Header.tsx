@@ -310,12 +310,11 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   const userInitials = getInitials(user?.fullName);
 
   return (
-    <header className="sticky top-0 bg-background z-5">
+    <header className="sticky top-0 bg-white dark:bg-background z-5">
       <div className="max-w-5xl mx-auto px-4">
         <div className="flex justify-between items-center lg:h-28 h-20">
           <div className="flex justify-center items-center gap-4">
             {/* Menu button */}
-
             <button
               onClick={toggleSidebar}
               className="text-gray focus:outline-none cursor-pointer p-2.5 bg-lightgray dark:bg-secondary dark:text-primary rounded-full transition-colors lg:hidden sm:block hidden" // Removed sm:block hidden - logic handled by lg:hidden

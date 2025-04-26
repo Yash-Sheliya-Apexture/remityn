@@ -1196,6 +1196,8 @@ const FaqSection: React.FC = () => {
             Quick Currency
             <span className="text-primary"> Exchange Help </span>
           </h1>
+
+          
           <p className="lg:text-lg sm:text-base text-sm text-gray-700 leading-relaxed dark:text-gray-300">
             Get quick answers to common currency exchange questions — rates,
             fees, timing, and more. Simple, clear, and reliable info at your

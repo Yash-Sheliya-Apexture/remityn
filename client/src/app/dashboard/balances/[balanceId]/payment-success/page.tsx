@@ -472,30 +472,23 @@ const PaymentSuccessPage = () => {
 
   // --- JSX (No changes needed here from the previous version) ---
   return (
-    <div className="flex flex-col items-center justify-center bg-background text-foreground p-4">
-      <div className="mb-8">
+    <div className="flex flex-col items-center justify-center bg-background text-gray-500 dark:text-gray-300 mt-10">
+      <div className="md:mb-8 mb-6">
         <Image
           src={WiseLogo}
           alt="Wise Logo"
-          width={160}
-          height={25}
+          width={200}
+          height={200}
           priority
+          className="md:size-36 size-26"
         />
       </div>
 
       <div className="text-center max-w-lg w-full space-y-3">
-        <h1 className="text-4xl md:text-5xl xl:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+        <h1 className="text-4xl md:text-5xl xl:text-6xl font-black font-mont text-mainheading dark:text-white uppercase md:leading-16">
           Your Money's
           <span className="text-primary"> on the Move </span>
         </h1>
-
-        {/* Loading State */}
-        {isLoading && (
-          <div className="space-y-3 mb-8">
-            <Skeleton className="h-6 w-3/4 mx-auto" />
-            <Skeleton className="h-4 w-1/2 mx-auto" />
-          </div>
-        )}
 
         {!isLoading &&
           paymentDetails &&
@@ -523,13 +516,13 @@ const PaymentSuccessPage = () => {
 
         {/* Error Message Display */}
         {error && !isLoading && (
-          <p className="text-destructive mb-8 text-base -mt-4">{error}</p>
+          <p className="py-4 bg-red-700/20 text-red-500 mb-8 text-base rounded-md mt-4">{error}</p>
         )}
 
         {/* Action Button */}
         <button
           onClick={handleGotIt}
-          className="bg-primary hover:bg-primaryhover font-medium py-3 px-8 rounded-md transition duration-300 text-mainheading focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-primary hover:bg-primaryhover mt-4 font-medium py-3 px-8 rounded-md transition duration-300 text-mainheading focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={isLoading}
         >
           Check Now's

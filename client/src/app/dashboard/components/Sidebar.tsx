@@ -2923,7 +2923,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                               ? "lg:bg-transparent dark:lg:bg-transparent bg-primary/60 text-neutral-900 dark:bg-primarybox  dark:text-primary" // Active text color only
                               : isDisabled
                               ? "text-neutral-400 dark:text-gray-600  cursor-not-allowed opacity-60" // More explicit disabled styling
-                              : "text-neutral-500 hover:text-neutral-900 hover:bg-gray/10 dark:hover:bg-white/5 dark:text-gray-300 dark:hover:text-primary" // Hover state
+                              : "text-neutral-500 hover:text-neutral-900 hover:bg-[#ECECEC] dark:hover:bg-white/5 dark:text-gray-300 dark:hover:text-primary" // Hover state
                           }
                         `}
                         aria-current={isActive ? "page" : undefined} // Accessibility for active link
@@ -2985,7 +2985,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
         {renderBottomNav && (
           <div
             key="bottom-nav"
-            className="sm:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-background border-t z-12 border-gray-200 dark:border-secondarybox/50 shadow-[-2px_0px_10px_rgba(0,0,0,0.1)] dark:shadow-[-2px_0px_10px_rgba(255,255,255,0.05)]"
+            className="sm:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-background border-t z-12 shadow-[-2px_0px_10px_rgba(0,0,0,0.1)] dark:shadow-[-2px_0px_10px_rgba(255,255,255,0.05)]"
           >
             {/* No skeleton needed here unless balance loading blocks critical nav */}
             <div className="flex items-center justify-around h-16">
