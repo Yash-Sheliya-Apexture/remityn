@@ -57,7 +57,7 @@
 //             {pendingAttentionTransactions.length > 0 && (
 //                 <div>
 //                     <h2 className="font-medium text-orange-600 dark:text-orange-400 mb-3 text-sm uppercase tracking-wider">Needs your attention</h2>
-//                     <div className="space-y-2 bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+//                     <div className="space-y-2 bg-white dark:bg-gray-800 p-4 rounded-lg border  dark:border-gray-700 shadow-sm">
 //                         {pendingAttentionTransactions.map((transaction) => {
 //                             const amount = transaction.amountToAdd ?? 0;
 //                             const name = `To your ${currencyCode} balance`;
@@ -97,7 +97,7 @@
 //             {inProgressTransactions.length > 0 && (
 //                 <div>
 //                     <h2 className="font-medium text-gray-600 dark:text-gray-400 mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-gray-700 after:mt-1 text-sm uppercase tracking-wider">In progress</h2>
-//                     <div className="space-y-2 bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+//                     <div className="space-y-2 bg-white dark:bg-gray-800 p-4 rounded-lg border  dark:border-gray-700 shadow-sm">
 //                         {inProgressTransactions.map((transaction) => {
 //                             // ... (logic and JSX for In Progress item - copied from original) ...
 //                              const isAddMoney = transaction.type === "Add Money";
@@ -1708,11 +1708,11 @@ const TransactionList: React.FC<TransactionListProps> = ({
 
       {/* --- Empty State for Transactions --- */}
       {!isLoading && !error && !hasAnyTransactionsToDisplay && (
-        <div className="text-center text-gray-500 dark:text-gray-300 py-10 bg-white dark:bg-white/5 rounded-lg mt-6 border border-gray-200 dark:border-primarybox">
+        <div className="text-center text-gray-700 dark:text-gray-300 capitalize py-5 bg-lightgray dark:bg-white/5 rounded-lg mt-6">
           {wasInitiallyEmpty
             ? `No transactions found for your ${currencyCode} balance yet.`
             : "No transactions match your current filter or search criteria."}
-          <p className="mt-2 text-sm">
+          <p className="mt-1 text-sm">
             You can{" "}
             <Link
               href={`/dashboard/balances/${balanceId}/add-money`}
@@ -1729,7 +1729,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
                 !canSendMoney ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
-              send money
+              Send money
             </button>
             .
           </p>

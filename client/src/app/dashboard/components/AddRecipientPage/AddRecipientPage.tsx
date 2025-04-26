@@ -5397,7 +5397,7 @@ const AddRecipientPage = () => {
   // --- JSX Section ---
   return (
     // Original container classes
-    <div className="AddRecipientPage pt-5">
+    <div className="AddRecipientPage py-5">
       <DashboardHeader title="Recipients" onBack={handleBackStep} />
       {/* Removed extra padding div */}
       <div className="Steps">
@@ -5413,7 +5413,7 @@ const AddRecipientPage = () => {
             </h2>
 
             {/* Currency Search Input (Original UI) */}
-            <div className="relative mb-6">
+            <div className="relative mb-4">
               <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                 <FiSearch
                   className="h-5 w-5 text-neutral-900 dark:text-white"
@@ -5423,7 +5423,7 @@ const AddRecipientPage = () => {
               <input
                 type="text"
                 // Original classes
-                className="w-full rounded-full h-12.5 py-3 pl-12 pr-10 border transition-all ease-linear duration-75 focus:outline-none focus:border-[#5f5f5f] placeholder:text-neutral-600 dark:placeholder:text-white bg-white dark:bg-background"
+                className="w-full rounded-full h-14 py-3 pl-12 pr-10 border transition-all ease-linear duration-75 focus:outline-none focus:border-[#5f5f5f] placeholder:text-neutral-600 dark:placeholder:text-white bg-white dark:bg-background"
                 placeholder="Search currency by name or code..."
                 value={searchCurrency}
                 onChange={(e) => setSearchCurrency(e.target.value)}
@@ -5433,10 +5433,10 @@ const AddRecipientPage = () => {
                   type="button"
                   onClick={clearSearchTerm}
                   // Original classes
-                  className="absolute inset-y-0 right-3 flex items-center text-neutral-700 dark:text-neutral-300 hover:text-primary dark:hover:text-primary focus:outline-none cursor-pointer"
+                  className="absolute inset-y-0 right-3 flex items-center text-neutral-900 dark:text-primary focus:outline-none cursor-pointer"
                   aria-label="Clear search"
                 >
-                  <MdCancel size={20} aria-hidden="true" />
+                  <MdCancel size={28} aria-hidden="true" />
                 </button>
               )}
             </div>
@@ -5556,7 +5556,7 @@ const AddRecipientPage = () => {
                                   </h4>
                                 </div>
                               </div>
-                              <span className="text-xs bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-full flex-shrink-0 ml-2">
+                              <span className="text-xs bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full flex-shrink-0 ml-2">
                                 Coming soon
                               </span>
                             </div>
@@ -5570,7 +5570,7 @@ const AddRecipientPage = () => {
                   {!isLoadingCurrencies &&
                     filteredAvailableCurrencies.length === 0 &&
                     filteredComingSoonCurrencies.length === 0 && (
-                      <div className="text-center text-gray-500 dark:text-gray-300 mt-8 py-6 border-2 border-dashed rounded-lg">
+                      <div className="text-center text-gray-700 dark:bg-white/5 bg-lightgray dark:text-gray-300 mt-8 py-5 rounded-lg">
                         {searchCurrency.trim() !== ""
                           ? `No currencies found for "${searchCurrency}".`
                           : "No currencies available at the moment."}

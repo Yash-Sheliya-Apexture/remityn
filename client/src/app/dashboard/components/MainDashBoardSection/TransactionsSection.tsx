@@ -1970,13 +1970,13 @@ const TransactionsSection: React.FC = () => {
      <section className="Transactions-Wrapper">
       <div className="Transactions">
         {/* Section Header */}
-        <div className="flex justify-between items-center mb-6 px-2 sm:px-0">
-          <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
+        <div className="flex justify-between items-center mb-4 sm:px-0">
+          <h1 className="lg:text-3xl md:text-2xl text-xl font-semibold text-mainheading dark:text-white">
             Recent Transactions
           </h1>
           <Link
             href="/dashboard/transactions"
-            className="text-primary font-medium underline cursor-pointer hover:text-primaryhover transition-all duration-75 ease-linear"
+            className="text-primary font-medium md:text-base text-sm underline cursor-pointer hover:text-primaryhover transition-all duration-75 ease-linear"
           >
             See all
           </Link>
@@ -1992,7 +1992,7 @@ const TransactionsSection: React.FC = () => {
                 .map((_, index) => (
                   <div key={index} className="block p-2 sm:p-4 rounded-2xl">
                     <div className="flex items-center gap-4">
-                      <Skeleton className="h-12 w-12 rounded-full flex-shrink-0" />
+                      <Skeleton className="size-12 rounded-full flex-shrink-0" />
                       <div className="flex-grow flex justify-between items-center gap-4">
                         <div className="flex-grow">
                            <Skeleton className="h-5 w-3/5 mb-2 rounded" /> {/* Adjusted width */}

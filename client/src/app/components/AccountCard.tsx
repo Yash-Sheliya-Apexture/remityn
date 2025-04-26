@@ -629,7 +629,7 @@ const AccountCard: React.FC<AccountCardProps> = ({ username }) => {
             {/* --- Verification Icon (Conditionally Rendered) --- */}
             {isVerified && (
               <div
-                className="absolute -bottom-1 -right-1 bg-lightgray dark:bg-[#2E2E2E] p-0.5 rounded-full border-2 border-lightgray dark:border-[#2E2E2E]" // Adjusted background/border for visibility
+                className="absolute -bottom-1 -right-1 bg-lightgray dark:bg-[#2E2E2E] p-0.5 rounded-full border-2" // Adjusted background/border for visibility
                 title="Verified Account" // Tooltip for accessibility
               >
                  <BsFillCheckCircleFill
@@ -643,10 +643,10 @@ const AccountCard: React.FC<AccountCardProps> = ({ username }) => {
         </div>
 
         {/* User details */}
-        <h1 className="text-4xl text-center font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+        <h1 className="text-4xl text-center font-black font-mont text-mainheading dark:text-white uppercase tracking-wide lg:tracking-tight">
           {username} {/* Display the username passed via props */}
         </h1>
-        <p className="text-center text-gray-500 dark:text-gray-300 font-medium capitalize mb-6">
+        <p className="text-center text-gray-700 dark:text-gray-300 font-medium capitalize mb-6">
           Your personal account
         </p>
 
