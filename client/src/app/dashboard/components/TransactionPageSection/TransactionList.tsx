@@ -300,7 +300,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
 
              {/* Empty State */}
              {showEmptyState && !hasInProgress && !hasProcessed && (
-                <div className="text-center flex flex-col items-center text-lg px-4 text-gray-500 dark:text-gray-300 py-12 dark:bg-white/5 rounded-lg mt-6 border border-dashed border-gray-300 dark:border-gray-700">
+                <div className="text-center flex flex-col items-center text-lg px-4 text-gray-700 dark:text-gray-300 py-5 rounded-lg mt-6 border border-dashed">
                     <p>{emptyStateMessage}</p>
                     {filtersAreActive && hasAnyTransactions && (
                         <button

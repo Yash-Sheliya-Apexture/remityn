@@ -4312,14 +4312,17 @@ const TransactionDetailsPage = () => {
 
     // Loading State (Initial Load)
     if (isLoading && !transactionDetails) { return (
-         <div className="max-w-4xl mx-auto animate-pulse">
-             <div className="rounded-2xl border shadow-sm p-4">
+         <div className="bg-white dark:bg-background rounded-2xl mx-auto lg:max-w-5xl">
+             <div className="rounded-2xl">
                  <Skeleton className="h-24 sm:h-20 w-full rounded-md" /> {/* Header */}
                  <Skeleton className="h-14 w-full mt-2 rounded-md" /> {/* Tabs */}
                  <div className="space-y-6  mt-6"> {/* Increased spacing */}
                      <Skeleton className="h-6 w-3/4" /> {/* Ref/ID placeholder */}
-                     <Skeleton className="h-48 w-full" /> {/* Timeline placeholder */}
-                     <Skeleton className="h-12 w-full" /> {/* Button Area placeholder */}
+                     <Skeleton className="h-20 w-full" /> {/* Timeline placeholder */}
+                     <Skeleton className="h-20 w-full" /> {/* Timeline placeholder */}
+                     <Skeleton className="h-20 w-full" /> {/* Timeline placeholder */}
+                     <Skeleton className="h-20 w-full" /> {/* Timeline placeholder */}
+                     <Skeleton className="h-12 w-fu ll" /> {/* Button Area placeholder */}
                  </div>
              </div>
          </div>
@@ -4348,10 +4351,10 @@ const TransactionDetailsPage = () => {
 
     // --- Main Component Return ---
     return (
-        <section className="Transaction-Detial-Page-Wrapper mt-1"> {/* Fragment wrapping page content and modal */}
+        <section className="Transaction-Detial-Page-Wrapper py-5"> {/* Fragment wrapping page content and modal */}
             <div className="Transaction-Detial">
                 {/* Main Content Card */}
-                <div className="bg-white dark:bg-background rounded-2xl border dark:border-border shadow-sm mx-auto lg:max-w-5xl">
+                <div className="bg-white dark:bg-background rounded-2xl border mx-auto lg:max-w-5xl">
                     {/* Card Header */}
                     <TransactionHeader
                         transaction={transactionDetails}

@@ -3495,7 +3495,7 @@ export default function SendAmountPage() {
   return (
     <div className="SendAmount-Page min-h-screen">
       <DashboardHeader title="Send Money" steps={steps} currentStep={2} />
-      <div className="container mx-auto max-w-xl p-4 lg:px-6 lg:pt-6 border rounded-2xl pb-10 mt-4 bg-white dark:bg-background shadow-sm">
+      <div className="container mx-auto max-w-xl p-4 mt-5 lg:px-6 lg:pt-6 border rounded-2xl bg-white dark:bg-background shadow-sm">
         {/* Rate Display */}
         <RateDisplay rateContext={rateContext} apiError={apiError && !logicError ? apiError : null} />
 
@@ -3518,7 +3518,7 @@ export default function SendAmountPage() {
             data-testid="send-amount-input"
           />
           {/* Available Balance */}
-          <div className="text-right -mt-2 pr-1">
+          <div className="text-right -mt-4 pr-4">
              <span className="text-sm text-gray-600 dark:text-gray-400">
                 Available: </span>
               <button
@@ -3557,7 +3557,7 @@ export default function SendAmountPage() {
            {/* Recipient Account Info (Optional) */}
            {/* Use optional chaining ?. just in case accountNumber isn't always present */}
           {recipient?.accountNumber && (
-             <p className="text-sm text-gray-600 dark:text-gray-400 text-right -mt-2 pr-1">
+             <p className="text-sm text-gray-600 dark:text-gray-400 text-right -mt-4 pr-4">
                 Account ending in {recipient.accountNumber.slice(-4)}
             </p>
           )}
@@ -3568,7 +3568,7 @@ export default function SendAmountPage() {
 
           {/* Error Display Section */}
           {displayError && (
-             <div className={`relative p-4 rounded-lg border ${isInsufficientBalanceError ? 'bg-red-50 border-red-300 text-red-800 dark:bg-red-900/20 dark:border-red-700 dark:text-red-300' : 'bg-yellow-50 border-yellow-300 text-yellow-800 dark:bg-yellow-900/20 dark:border-yellow-700 dark:text-yellow-300'}`} role="alert">
+             <div className={`relative p-4 rounded-lg dark:border ${isInsufficientBalanceError ? 'bg-red-50  text-red-800 dark:bg-red-900/20 dark:border-red-700 dark:text-red-300' : 'bg-yellow-50 border-yellow-300 text-yellow-800 dark:bg-yellow-900/20 dark:border-yellow-700 dark:text-yellow-300'}`} role="alert">
                  <div className="flex items-center">
                     <IoIosInformationCircleOutline className={`w-5 h-5 mr-2 ${isInsufficientBalanceError ? 'text-red-600 dark:text-red-400' : 'text-yellow-600 dark:text-yellow-400'}`} />
                     <span className="flex-1 text-sm">{displayError}</span>
@@ -3577,7 +3577,7 @@ export default function SendAmountPage() {
                             setLogicError(null);
                             // Clear only the logicError, API errors might persist from load
                         }}
-                        className="absolute top-1.5 right-1.5 p-1 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-400"
+                        className="absolute top-1.5 cursor-pointer right-1.5 p-2 rounded-full text-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none"
                         aria-label="Dismiss error message"
                     >
                         <IoClose size={18} />

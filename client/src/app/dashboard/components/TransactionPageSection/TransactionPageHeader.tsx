@@ -32,7 +32,7 @@ const TransactionPageHeader: React.FC<TransactionPageHeaderProps> = ({
 
     return (
         // Sticky header styling
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky lg:top-28 top-20 z-10 bg-background dark:bg-background border-b border-gray-200 dark:border-primarybox mb-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 sticky lg:top-28 top-20 z-10 bg-background dark:bg-background border-b border-gray-200 dark:border-primarybox mb-6">
             {/* Title */}
             <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white flex-shrink-0">
                 {title}

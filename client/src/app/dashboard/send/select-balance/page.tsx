@@ -384,6 +384,7 @@ import InsufficientBalanceModal from '@/app/dashboard/components/InsufficientBal
 // *** MODIFIED: Import KycRequiredModal ***
 import KycRequiredModal from '@/app/dashboard/components/KycRequiredModal';
 
+
 // Interface for the account data from useBalances hook
 interface Currency {
     _id: string;

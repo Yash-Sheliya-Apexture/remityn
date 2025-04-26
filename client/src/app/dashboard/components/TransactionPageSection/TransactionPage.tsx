@@ -4973,27 +4973,402 @@
 
 
 
-// app/dashboard/transactions/page.tsx
+// // app/dashboard/transactions/page.tsx
+// "use client";
+
+// import React, { useState, useCallback, useEffect, useMemo } from "react";
+
+// // New/Updated Sub Components
+// import TransactionPageHeader from "./TransactionPageHeader"; // Adjust path
+// import TransactionList from "./TransactionList";       // Adjust path
+// import FilterModal, { FilterSettings } from "./FilterModal"; // Adjust path
+// import { Skeleton } from "@/components/ui/skeleton";                       // Adjust path
+
+// // Hooks & Services
+// import { useAuth } from "../../../contexts/AuthContext"; // Adjust path
+// import paymentService from "../../../services/payment"; // Adjust path
+// import transferService from "../../../services/transfer"; // Adjust path
+// import accountService from "../../../services/account"; // Adjust path
+
+// // Types
+// import { Transaction, TransactionStatus } from "@/types/transaction"; // Adjust path
+// import { Account } from "@/types/account"; // Adjust path
+// import { parseISO } from "date-fns"; // Use consistent date parsing
+
+// // Define a type for potential API errors
+// interface ApiError extends Error {
+//     response?: { data?: { message?: string; }; status?: number; };
+// }
+
+// type AppliedFilters = FilterSettings; // Use the type exported by FilterModal
+
+// // --- Helper Function ---
+// function parseDateString(dateString: string | undefined): Date | null {
+//     if (!dateString) return null;
+//     try {
+//         const isoDate = parseISO(dateString); if (!isNaN(isoDate.getTime())) return isoDate;
+//     } catch { /* Ignore */ }
+//     const parts = dateString.split('-');
+//     if (parts.length === 3) {
+//         const day = parseInt(parts[0], 10); const month = parseInt(parts[1], 10) - 1; const year = parseInt(parts[2], 10);
+//         if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+//              const date = new Date(Date.UTC(year, month, day));
+//              if (date.getUTCFullYear() === year && date.getUTCMonth() === month && date.getUTCDate() === day) return date;
+//         }
+//     }
+//     try { const genericDate = new Date(dateString); if (!isNaN(genericDate.getTime())) return genericDate; } catch { /* Ignore */ }
+//     console.warn("Could not parse date string:", dateString); return null;
+// }
+
+// // --- Skeleton Loading Component ---
+// const TransactionsPageSkeleton: React.FC = () => (
+//     <section className="Transaction-Page pb-8 md:pb-10 animate-pulse">
+//         <div className="container mx-auto">
+//              {/* Header Skeleton */}
+//             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 mb-6 border-b border-gray-200 dark:border-gray-700">
+//                  <Skeleton className="h-8 w-48 rounded-md" />
+//                  <div className="flex items-center gap-4 w-full md:w-auto md:justify-end">
+//                      <Skeleton className="h-10 w-full sm:w-64 rounded-full" />
+//                      <Skeleton className="h-10 w-32 rounded-full" />
+//                  </div>
+//             </div>
+//             {/* List Skeleton */}
+//             <div className="space-y-6">
+//                 <div> <Skeleton className="h-6 w-3/4 mb-3 rounded" /> <Skeleton className="h-20 w-full rounded-lg" /> </div>
+//                 <div> <Skeleton className="h-6 w-1/2 mb-3 rounded" /> <Skeleton className="h-20 w-full rounded-lg" /> <Skeleton className="h-20 w-full rounded-lg mt-2" /> </div>
+//             </div>
+//         </div>
+//     </section>
+// );
+
+// // --- Main Transactions Page Component ---
+// const TransactionsPage: React.FC = () => {
+//     // --- State Declarations ---
+//     const [allTransactions, setAllTransactions] = useState<Transaction[]>([]); // Master list from API
+//     const [displayTransactions, setDisplayTransactions] = useState<Transaction[]>([]); // List after search/filters
+//     const [userAccounts, setUserAccounts] = useState<Account[]>([]);
+
+//     // Loading and Error states
+//     const [loadingTransactions, setLoadingTransactions] = useState(true);
+//     const [loadingAccounts, setLoadingAccounts] = useState(true);
+//     const [error, setError] = useState<string | null>(null);
+
+//     // Auth
+//     const { token } = useAuth();
+
+//     // --- Filter Modal State ---
+//     const [isFilterOpen, setIsFilterOpen] = useState(false);
+//     const [isMobile, setIsMobile] = useState(false);
+
+//     // --- Applied Filters State ---
+//     const [appliedFilters, setAppliedFilters] = useState<AppliedFilters>({
+//         selectedRecipients: [], selectedDirection: 'all', selectedStatus: null,
+//         selectedBalance: [], fromDate: undefined, toDate: undefined,
+//     });
+
+//     // --- Data Fetching ---
+//     const fetchData = useCallback(async () => {
+//         if (!token) { setError("Authentication required."); setLoadingTransactions(false); setLoadingAccounts(false); return; }
+//         setLoadingTransactions(true); setLoadingAccounts(true); setError(null);
+//         setAllTransactions([]); setDisplayTransactions([]); setUserAccounts([]); // Reset state
+//         try {
+//             // NOTE: Assuming paymentService/transferService return types defined previously
+//             const [paymentsData, transfersData, accountsData] = await Promise.all([
+//                 paymentService.getUserPayments(token),
+//                 transferService.getUserTransfers(token),
+//                 accountService.getUserAccounts(token)
+//             ]);
+
+//             // Process Payments
+//             const mappedPayments: Transaction[] = paymentsData.map(p => ({
+//                 _id: p._id, type: "Add Money", amountToAdd: p.amountToAdd, amountToPay: p.amountToPay,
+//                 // Ensure currency objects are handled correctly, potentially accessing nested 'code' if needed
+//                 balanceCurrency: p.balanceCurrency, // Assuming p.balanceCurrency is Currency type or similar
+//                 payInCurrency: p.payInCurrency, // Assuming p.payInCurrency is Currency type or similar
+//                 account: p.account, // Assuming p.account is TransactionAccount | string or similar
+//                 createdAt: p.createdAt, updatedAt: p.updatedAt, status: (p.status?.toLowerCase() ?? 'unknown') as TransactionStatus,
+//                 name: `From ${p.payInCurrency?.code || 'source'}`, // Deriving name
+//                 // Fill in missing fields for Transaction type
+//                 sendAmount: undefined, receiveAmount: undefined, sendCurrency: undefined, receiveCurrency: undefined,
+//                 recipient: undefined, sourceAccountId: undefined,
+//             }));
+//             // Process Transfers
+//             const mappedTransfers: Transaction[] = transfersData.map(t => ({
+//                 _id: t._id, type: "Send Money",
+//                 // Safely access recipient name
+//                 name: (typeof t.recipient === 'object' && t.recipient !== null) ? t.recipient.accountHolderName ?? 'Recipient' : 'Recipient',
+//                 sendAmount: t.sendAmount, receiveAmount: t.receiveAmount,
+//                 sendCurrency: t.sendCurrency, // Assuming t.sendCurrency is Currency type or similar
+//                 receiveCurrency: t.receiveCurrency, // Assuming t.receiveCurrency is Currency type or similar
+//                 createdAt: t.createdAt, updatedAt: t.updatedAt, status: (t.status?.toLowerCase() ?? 'unknown') as TransactionStatus,
+//                 recipient: t.recipient, // Keep as RecipientDetails | string
+//                 // Safely access source account ID
+//                 sourceAccountId: typeof t.sourceAccount === 'string' ? t.sourceAccount : t.sourceAccount?._id,
+//                  // Fill in missing fields for Transaction type
+//                  amountToAdd: undefined, amountToPay: undefined, balanceCurrency: undefined, payInCurrency: undefined, account: undefined,
+//             }));
+
+//             const combined = [...mappedPayments, ...mappedTransfers].sort((a, b) => {
+//                  const dA = a.updatedAt || a.createdAt; const dB = b.updatedAt || b.createdAt;
+//                  if (!dA && !dB) return 0; if (!dA) return 1; if (!dB) return -1;
+//                  try { return new Date(dB).getTime() - new Date(dA).getTime(); } catch { return 0; }
+//             });
+
+//             setAllTransactions(combined);
+//             setDisplayTransactions(combined); // Initially show all sorted
+//             setUserAccounts(accountsData);
+//         } catch (err: unknown) {
+//             console.error("Data fetch error:", err);
+//             let errorMessage = "Failed to fetch transaction data.";
+//             const apiError = err as ApiError; if (apiError.response?.data?.message) errorMessage = apiError.response.data.message; else if (err instanceof Error) errorMessage = err.message;
+//             setError(errorMessage);
+//         } finally {
+//             setLoadingTransactions(false); setLoadingAccounts(false);
+//         }
+//     }, [token]);
+
+//     useEffect(() => { fetchData(); }, [fetchData]);
+
+//      // --- Centralized Filter Application Logic ---
+//      const runFilters = useCallback((transactionsToFilter: Transaction[], filters: AppliedFilters) => {
+//         let tempFiltered = [...transactionsToFilter];
+
+//         // Apply Direction Filter
+//         if (filters.selectedDirection !== 'all') {
+//             tempFiltered = tempFiltered.filter(tx =>
+//                  (filters.selectedDirection === 'add' && tx.type === 'Add Money') ||
+//                  (filters.selectedDirection === 'send' && tx.type === 'Send Money')
+//              );
+//         }
+
+//         // Apply Status Filter
+//         const statusFilter = filters.selectedStatus?.toLowerCase();
+//         if (statusFilter) {
+//              tempFiltered = tempFiltered.filter(tx => {
+//                   const txStatus = tx.status?.toLowerCase() as TransactionStatus | undefined;
+//                   if (!txStatus) return false;
+//                   if (statusFilter === 'needs attention') return tx.type === 'Add Money' && txStatus === 'pending';
+//                   if (statusFilter === 'in process') return txStatus === 'pending' || txStatus === 'processing' || txStatus === 'in progress';
+//                   if (statusFilter === 'completed') return txStatus === 'completed';
+//                   if (statusFilter === 'cancelled') return txStatus === 'canceled';
+//                   if (statusFilter === 'failed') return txStatus === 'failed';
+//                   if (statusFilter === 'pending') return txStatus === 'pending';
+//                   if (statusFilter === 'processing') return txStatus === 'processing';
+//                   return false;
+//               });
+//         }
+
+//         // Apply Balance (Currency) Filter
+//         if (filters.selectedBalance.length > 0) {
+//             const balanceCodes = new Set(filters.selectedBalance);
+//             tempFiltered = tempFiltered.filter(tx => {
+//                 // Safe navigation for currency codes
+//                 if (tx.type === 'Add Money') return tx.balanceCurrency?.code && balanceCodes.has(tx.balanceCurrency.code);
+//                 if (tx.type === 'Send Money') return tx.sendCurrency?.code && balanceCodes.has(tx.sendCurrency.code);
+//                 return false;
+//             });
+//         }
+
+//         // Apply Recipient Filter
+//         if (filters.selectedRecipients.length > 0) {
+//             const recipientIds = new Set(filters.selectedRecipients.map(String)); // Keep this
+
+//             tempFiltered = tempFiltered.filter(tx => {
+//                 // --- START FIX ---
+//                 if (tx.type !== 'Send Money' || !tx.recipient) {
+//                     return false; // Only filter 'Send Money' transactions that have a recipient defined
+//                 }
+//                 // Check if recipient is an object (populated) or just an ID string
+//                 const currentRecipientId = typeof tx.recipient === 'object'
+//                     ? tx.recipient._id // If object, get the _id
+//                     : tx.recipient;   // If string, use the string directly
+//                 // Check if the Set contains the extracted ID
+//                 return recipientIds.has(String(currentRecipientId));
+//                 // --- END FIX ---
+//             });
+//         }
+
+//         // Apply Date Filter
+//         const fromDateObj = parseDateString(filters.fromDate);
+//         const toDateObj = parseDateString(filters.toDate);
+//         if (fromDateObj) fromDateObj.setUTCHours(0, 0, 0, 0);
+//         if (toDateObj) toDateObj.setUTCHours(23, 59, 59, 999);
+//         if (fromDateObj || toDateObj) {
+//             tempFiltered = tempFiltered.filter(tx => {
+//                  const transactionDateStr = tx.updatedAt || tx.createdAt;
+//                  if (!transactionDateStr) return false;
+//                  try {
+//                      const transactionDateObj = new Date(transactionDateStr);
+//                      if (isNaN(transactionDateObj.getTime())) return false;
+//                      let include = true;
+//                      if (fromDateObj && transactionDateObj < fromDateObj) include = false;
+//                      if (toDateObj && transactionDateObj > toDateObj) include = false;
+//                      return include;
+//                  } catch { return false; }
+//             });
+//         }
+
+//         // Sort results
+//         tempFiltered.sort((a, b) => {
+//             const dA = a.updatedAt || a.createdAt; const dB = b.updatedAt || b.createdAt;
+//             if (!dA && !dB) return 0; if (!dA) return 1; if (!dB) return -1;
+//             try { return new Date(dB).getTime() - new Date(dA).getTime(); } catch { return 0; }
+//         });
+
+//         setDisplayTransactions(tempFiltered); // Update state
+
+//     }, []); // No dependencies needed if it only uses its arguments
+
+//     // --- Effect to run filters when base data or filters change ---
+//     useEffect(() => {
+//         runFilters(allTransactions, appliedFilters);
+//     }, [allTransactions, appliedFilters, runFilters]);
+
+//     // --- Callback from Search Component ---
+//     const handleTransactionsChangeFromSearch = useCallback((searchResults: Transaction[]) => {
+//         // Search provides a subset of `allTransactions`. Apply current filters to this subset.
+//         runFilters(searchResults, appliedFilters);
+//     }, [runFilters, appliedFilters]);
+
+//     // --- Filter Modal Control ---
+//     const openFilterPopup = () => setIsFilterOpen(true);
+//     const closeFilterPopup = () => setIsFilterOpen(false);
+
+//     // --- Resize detection for modal animation ---
+//     useEffect(() => {
+//         const handleResize = () => setIsMobile(window.innerWidth < 640); handleResize();
+//         window.addEventListener("resize", handleResize); return () => window.removeEventListener("resize", handleResize);
+//     }, []);
+
+//     // --- Apply and Clear Filter Handlers (Called by FilterModal) ---
+//     const handleApplyFiltersFromModal = useCallback((filtersFromModal: AppliedFilters) => {
+//         setAppliedFilters(filtersFromModal); // Update state, useEffect will trigger runFilters
+//         closeFilterPopup();
+//     }, []);
+
+//     const handleClearAllFilters = useCallback(() => {
+//         const clearedFilters: AppliedFilters = {
+//             selectedRecipients: [], selectedDirection: "all", selectedStatus: null,
+//             selectedBalance: [], fromDate: undefined, toDate: undefined,
+//         };
+//         setAppliedFilters(clearedFilters); // Update state, useEffect will trigger runFilters
+//         if (isFilterOpen) closeFilterPopup(); // Close modal if open
+//     }, [isFilterOpen]);
+
+
+//     // --- Transaction Grouping Logic (using displayTransactions) ---
+//     const { inProgressTransactions, groupedProcessedTransactions } = useMemo(() => {
+//         // Group the currently displayed transactions
+//         const inProgress = displayTransactions.filter(tx => tx.status === "in progress" || tx.status === "pending" || tx.status === "processing");
+//         const processed = displayTransactions.filter(tx => tx.status === "completed" || tx.status === "canceled" || tx.status === "failed");
+
+//         // Sorting already happened in runFilters
+//         const grouped = processed.reduce((groups: { [date: string]: Transaction[] }, tx) => {
+//             const dateStr = tx.updatedAt || tx.createdAt;
+//             let dateKey = 'Unknown Date';
+//             if (dateStr) { try { dateKey = new Date(dateStr).toLocaleDateString('en-US', { year: "numeric", month: "long", day: "numeric" }); } catch { dateKey = 'Invalid Date'; } }
+//             if (!groups[dateKey]) groups[dateKey] = [];
+//             groups[dateKey].push(tx); return groups;
+//         }, {});
+
+//         return { inProgressTransactions: inProgress, groupedProcessedTransactions: grouped };
+//     }, [displayTransactions]); // Depends only on the displayed list
+
+
+//     // --- Render Logic ---
+//     const isLoading = loadingTransactions || loadingAccounts;
+//     const hasAnyTransactions = allTransactions.length > 0;
+//     const showEmptyState = !isLoading && !error && displayTransactions.length === 0;
+//     const filtersAreActive = useMemo(() => // Check if filters are active
+//         appliedFilters.selectedRecipients.length > 0 ||
+//         appliedFilters.selectedDirection !== "all" ||
+//         appliedFilters.selectedStatus !== null ||
+//         appliedFilters.selectedBalance.length > 0 ||
+//         !!appliedFilters.fromDate || !!appliedFilters.toDate,
+//         [appliedFilters]
+//     );
+
+
+//     if (isLoading) return <TransactionsPageSkeleton />;
+
+//     return (
+//       <> {/* Fragment to hold page and modal */}
+//         <section className="Transaction-Wrapper pb-8 md:pb-10">
+//           <div className="Transaction-Page container mx-auto">
+
+//             {/* Use TransactionPageHeader which includes TransactionActions */}
+//             <TransactionPageHeader
+//                 title="Transactions"
+//                 isLoadingAccounts={loadingAccounts}
+//                 userAccounts={userAccounts}
+//                 allTransactions={allTransactions} // Pass full list for search
+//                 onTransactionsChange={handleTransactionsChangeFromSearch} // Handler for search
+//                 onFilterButtonClick={openFilterPopup} // Handler to open filter modal
+//                 error={error}
+//             />
+
+//             {/* Error State */}
+//             {!isLoading && error && (
+//               <div className="text-center py-10 text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-900/20 p-4 rounded-md border border-red-200 dark:border-red-800/30 max-w-2xl mx-auto">
+//                 <strong>Error:</strong> {error}
+//               </div>
+//             )}
+
+//             {/* Transaction List Area (Use SHARED component) */}
+//             {!isLoading && !error && (
+//                 <TransactionList
+//                     inProgressTransactions={inProgressTransactions}
+//                     groupedProcessedTransactions={groupedProcessedTransactions}
+//                     filtersAreActive={filtersAreActive}
+//                     onClearFiltersClick={handleClearAllFilters} // Pass clear handler
+//                     hasAnyTransactions={hasAnyTransactions}
+//                     showEmptyState={showEmptyState}
+//                 />
+//             )}
+
+//           </div> {/* End Transaction-Page container */}
+//         </section> {/* End Transaction-Wrapper section */}
+
+//         {/* --- FILTER MODAL (Use SHARED component) --- */}
+//         <FilterModal
+//             isOpen={isFilterOpen}
+//             onClose={closeFilterPopup}
+//             onApply={handleApplyFiltersFromModal}
+//             onClearAll={handleClearAllFilters}
+//             initialFilters={appliedFilters}
+//             userAccounts={userAccounts} // Pass accounts (Balance filter IS used here)
+//             isMobile={isMobile}
+//             // hideBalanceFilter={false} // Default is false, no need to set explicitly
+//         />
+//       </> // End Fragment
+//     );
+// };
+
+// export default TransactionsPage;
+
+
+
+// frontend/src/app/dashboard/transactions/page.tsx
 "use client";
 
 import React, { useState, useCallback, useEffect, useMemo } from "react";
+import { parseISO } from "date-fns";
 
-// New/Updated Sub Components
-import TransactionPageHeader from "./TransactionPageHeader"; // Adjust path
-import TransactionList from "./TransactionList";       // Adjust path
-import FilterModal, { FilterSettings } from "./FilterModal"; // Adjust path
-import { Skeleton } from "@/components/ui/skeleton";                       // Adjust path
+// New/Updated Sub Components (assuming these are within 'transactions' or a shared 'components' folder)
+import TransactionPageHeader from "./TransactionPageHeader"; // Check path relative to this file
+import TransactionList from "./TransactionList";       // Check path for SHARED component
+import FilterModal, { FilterSettings } from "./FilterModal"; // Check path for SHARED component
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Hooks & Services
-import { useAuth } from "../../../contexts/AuthContext"; // Adjust path
-import paymentService from "../../../services/payment"; // Adjust path
-import transferService from "../../../services/transfer"; // Adjust path
-import accountService from "../../../services/account"; // Adjust path
+import { useAuth } from "../../../contexts/AuthContext"; // Adjust path as needed
+import paymentService from "../../../services/payment"; // Adjust path as needed
+import transferService from "../../../services/transfer"; // Adjust path as needed
+import accountService from "../../../services/account"; // Adjust path as needed
 
 // Types
-import { Transaction, TransactionStatus } from "@/types/transaction"; // Adjust path
-import { Account } from "@/types/account"; // Adjust path
-import { parseISO } from "date-fns"; // Use consistent date parsing
+import { Transaction, TransactionStatus } from "@/types/transaction";
+import { Account } from "@/types/account";
 
 // Define a type for potential API errors
 interface ApiError extends Error {
@@ -5022,9 +5397,9 @@ function parseDateString(dateString: string | undefined): Date | null {
 
 // --- Skeleton Loading Component ---
 const TransactionsPageSkeleton: React.FC = () => (
-    <section className="Transaction-Page pb-8 md:pb-10 animate-pulse">
+
+    <section className="Transaction-Page  pt-5 animate-pulse">
         <div className="container mx-auto">
-             {/* Header Skeleton */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 mb-6 border-b border-gray-200 dark:border-gray-700">
                  <Skeleton className="h-8 w-48 rounded-md" />
                  <div className="flex items-center gap-4 w-full md:w-auto md:justify-end">
@@ -5032,9 +5407,9 @@ const TransactionsPageSkeleton: React.FC = () => (
                      <Skeleton className="h-10 w-32 rounded-full" />
                  </div>
             </div>
-            {/* List Skeleton */}
             <div className="space-y-6">
                 <div> <Skeleton className="h-6 w-3/4 mb-3 rounded" /> <Skeleton className="h-20 w-full rounded-lg" /> </div>
+                <div> <Skeleton className="h-6 w-1/2 mb-3 rounded" /> <Skeleton className="h-20 w-full rounded-lg" /> <Skeleton className="h-20 w-full rounded-lg mt-2" /> </div>
                 <div> <Skeleton className="h-6 w-1/2 mb-3 rounded" /> <Skeleton className="h-20 w-full rounded-lg" /> <Skeleton className="h-20 w-full rounded-lg mt-2" /> </div>
             </div>
         </div>
@@ -5044,23 +5419,15 @@ const TransactionsPageSkeleton: React.FC = () => (
 // --- Main Transactions Page Component ---
 const TransactionsPage: React.FC = () => {
     // --- State Declarations ---
-    const [allTransactions, setAllTransactions] = useState<Transaction[]>([]); // Master list from API
-    const [displayTransactions, setDisplayTransactions] = useState<Transaction[]>([]); // List after search/filters
+    const [allTransactions, setAllTransactions] = useState<Transaction[]>([]);
+    const [displayTransactions, setDisplayTransactions] = useState<Transaction[]>([]);
     const [userAccounts, setUserAccounts] = useState<Account[]>([]);
-
-    // Loading and Error states
     const [loadingTransactions, setLoadingTransactions] = useState(true);
     const [loadingAccounts, setLoadingAccounts] = useState(true);
     const [error, setError] = useState<string | null>(null);
-
-    // Auth
     const { token } = useAuth();
-
-    // --- Filter Modal State ---
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
-
-    // --- Applied Filters State ---
     const [appliedFilters, setAppliedFilters] = useState<AppliedFilters>({
         selectedRecipients: [], selectedDirection: 'all', selectedStatus: null,
         selectedBalance: [], fromDate: undefined, toDate: undefined,
@@ -5070,41 +5437,33 @@ const TransactionsPage: React.FC = () => {
     const fetchData = useCallback(async () => {
         if (!token) { setError("Authentication required."); setLoadingTransactions(false); setLoadingAccounts(false); return; }
         setLoadingTransactions(true); setLoadingAccounts(true); setError(null);
-        setAllTransactions([]); setDisplayTransactions([]); setUserAccounts([]); // Reset state
+        setAllTransactions([]); setDisplayTransactions([]); setUserAccounts([]);
         try {
-            // NOTE: Assuming paymentService/transferService return types defined previously
             const [paymentsData, transfersData, accountsData] = await Promise.all([
                 paymentService.getUserPayments(token),
                 transferService.getUserTransfers(token),
                 accountService.getUserAccounts(token)
             ]);
 
-            // Process Payments
             const mappedPayments: Transaction[] = paymentsData.map(p => ({
                 _id: p._id, type: "Add Money", amountToAdd: p.amountToAdd, amountToPay: p.amountToPay,
-                // Ensure currency objects are handled correctly, potentially accessing nested 'code' if needed
-                balanceCurrency: p.balanceCurrency, // Assuming p.balanceCurrency is Currency type or similar
-                payInCurrency: p.payInCurrency, // Assuming p.payInCurrency is Currency type or similar
-                account: p.account, // Assuming p.account is TransactionAccount | string or similar
-                createdAt: p.createdAt, updatedAt: p.updatedAt, status: (p.status?.toLowerCase() ?? 'unknown') as TransactionStatus,
-                name: `From ${p.payInCurrency?.code || 'source'}`, // Deriving name
-                // Fill in missing fields for Transaction type
+                balanceCurrency: p.balanceCurrency, payInCurrency: p.payInCurrency,
+                account: p.account, createdAt: p.createdAt, updatedAt: p.updatedAt,
+                status: (p.status?.toLowerCase() ?? 'unknown') as TransactionStatus,
+                name: `From ${p.payInCurrency?.code || 'source'}`,
                 sendAmount: undefined, receiveAmount: undefined, sendCurrency: undefined, receiveCurrency: undefined,
                 recipient: undefined, sourceAccountId: undefined,
             }));
-            // Process Transfers
+
             const mappedTransfers: Transaction[] = transfersData.map(t => ({
                 _id: t._id, type: "Send Money",
-                // Safely access recipient name
                 name: (typeof t.recipient === 'object' && t.recipient !== null) ? t.recipient.accountHolderName ?? 'Recipient' : 'Recipient',
                 sendAmount: t.sendAmount, receiveAmount: t.receiveAmount,
-                sendCurrency: t.sendCurrency, // Assuming t.sendCurrency is Currency type or similar
-                receiveCurrency: t.receiveCurrency, // Assuming t.receiveCurrency is Currency type or similar
-                createdAt: t.createdAt, updatedAt: t.updatedAt, status: (t.status?.toLowerCase() ?? 'unknown') as TransactionStatus,
-                recipient: t.recipient, // Keep as RecipientDetails | string
-                // Safely access source account ID
+                sendCurrency: t.sendCurrency, receiveCurrency: t.receiveCurrency,
+                createdAt: t.createdAt, updatedAt: t.updatedAt,
+                status: (t.status?.toLowerCase() ?? 'unknown') as TransactionStatus,
+                recipient: t.recipient,
                 sourceAccountId: typeof t.sourceAccount === 'string' ? t.sourceAccount : t.sourceAccount?._id,
-                 // Fill in missing fields for Transaction type
                  amountToAdd: undefined, amountToPay: undefined, balanceCurrency: undefined, payInCurrency: undefined, account: undefined,
             }));
 
@@ -5115,7 +5474,7 @@ const TransactionsPage: React.FC = () => {
             });
 
             setAllTransactions(combined);
-            setDisplayTransactions(combined); // Initially show all sorted
+            // setDisplayTransactions(combined); // Let useEffect handle initial display based on filters
             setUserAccounts(accountsData);
         } catch (err: unknown) {
             console.error("Data fetch error:", err);
@@ -5130,65 +5489,52 @@ const TransactionsPage: React.FC = () => {
     useEffect(() => { fetchData(); }, [fetchData]);
 
      // --- Centralized Filter Application Logic ---
-     const runFilters = useCallback((transactionsToFilter: Transaction[], filters: AppliedFilters) => {
+     const runFilters = useCallback((transactionsToFilter: Transaction[], filters: AppliedFilters): Transaction[] => {
         let tempFiltered = [...transactionsToFilter];
 
-        // Apply Direction Filter
+        // Direction Filter
         if (filters.selectedDirection !== 'all') {
             tempFiltered = tempFiltered.filter(tx =>
                  (filters.selectedDirection === 'add' && tx.type === 'Add Money') ||
                  (filters.selectedDirection === 'send' && tx.type === 'Send Money')
              );
         }
-
-        // Apply Status Filter
+        // Status Filter
         const statusFilter = filters.selectedStatus?.toLowerCase();
         if (statusFilter) {
              tempFiltered = tempFiltered.filter(tx => {
                   const txStatus = tx.status?.toLowerCase() as TransactionStatus | undefined;
                   if (!txStatus) return false;
                   if (statusFilter === 'needs attention') return tx.type === 'Add Money' && txStatus === 'pending';
-                  if (statusFilter === 'in process') return txStatus === 'pending' || txStatus === 'processing' || txStatus === 'in progress';
+                  if (statusFilter === 'in process') return ['pending', 'processing', 'in progress'].includes(txStatus);
                   if (statusFilter === 'completed') return txStatus === 'completed';
-                  if (statusFilter === 'cancelled') return txStatus === 'canceled';
+                  if (statusFilter === 'cancelled' || statusFilter === 'canceled') return ['canceled', 'cancelled'].includes(txStatus);
                   if (statusFilter === 'failed') return txStatus === 'failed';
                   if (statusFilter === 'pending') return txStatus === 'pending';
                   if (statusFilter === 'processing') return txStatus === 'processing';
                   return false;
               });
         }
-
-        // Apply Balance (Currency) Filter
+        // Balance (Currency) Filter
         if (filters.selectedBalance.length > 0) {
             const balanceCodes = new Set(filters.selectedBalance);
             tempFiltered = tempFiltered.filter(tx => {
-                // Safe navigation for currency codes
                 if (tx.type === 'Add Money') return tx.balanceCurrency?.code && balanceCodes.has(tx.balanceCurrency.code);
                 if (tx.type === 'Send Money') return tx.sendCurrency?.code && balanceCodes.has(tx.sendCurrency.code);
                 return false;
             });
         }
-
-        // Apply Recipient Filter
+        // Recipient Filter
         if (filters.selectedRecipients.length > 0) {
-            const recipientIds = new Set(filters.selectedRecipients.map(String)); // Keep this
-
+            const recipientIds = new Set(filters.selectedRecipients.map(String));
             tempFiltered = tempFiltered.filter(tx => {
-                // --- START FIX ---
-                if (tx.type !== 'Send Money' || !tx.recipient) {
-                    return false; // Only filter 'Send Money' transactions that have a recipient defined
-                }
-                // Check if recipient is an object (populated) or just an ID string
-                const currentRecipientId = typeof tx.recipient === 'object'
-                    ? tx.recipient._id // If object, get the _id
-                    : tx.recipient;   // If string, use the string directly
-                // Check if the Set contains the extracted ID
-                return recipientIds.has(String(currentRecipientId));
-                // --- END FIX ---
+                if (tx.type !== 'Send Money' || !tx.recipient) return false;
+                const currentRecipientId = typeof tx.recipient === 'object' && tx.recipient !== null
+                    ? tx.recipient._id : typeof tx.recipient === 'string' ? tx.recipient : null;
+                 return currentRecipientId !== null && recipientIds.has(String(currentRecipientId));
             });
         }
-
-        // Apply Date Filter
+        // Date Filter
         const fromDateObj = parseDateString(filters.fromDate);
         const toDateObj = parseDateString(filters.toDate);
         if (fromDateObj) fromDateObj.setUTCHours(0, 0, 0, 0);
@@ -5207,7 +5553,6 @@ const TransactionsPage: React.FC = () => {
                  } catch { return false; }
             });
         }
-
         // Sort results
         tempFiltered.sort((a, b) => {
             const dA = a.updatedAt || a.createdAt; const dB = b.updatedAt || b.createdAt;
@@ -5215,19 +5560,22 @@ const TransactionsPage: React.FC = () => {
             try { return new Date(dB).getTime() - new Date(dA).getTime(); } catch { return 0; }
         });
 
-        setDisplayTransactions(tempFiltered); // Update state
+        return tempFiltered; // Return the filtered list
 
-    }, []); // No dependencies needed if it only uses its arguments
+    }, []); // No dependencies needed
 
     // --- Effect to run filters when base data or filters change ---
     useEffect(() => {
-        runFilters(allTransactions, appliedFilters);
+        // Apply filters to the full transaction list whenever it changes or filters change
+        const filtered = runFilters(allTransactions, appliedFilters);
+        setDisplayTransactions(filtered);
     }, [allTransactions, appliedFilters, runFilters]);
 
     // --- Callback from Search Component ---
     const handleTransactionsChangeFromSearch = useCallback((searchResults: Transaction[]) => {
-        // Search provides a subset of `allTransactions`. Apply current filters to this subset.
-        runFilters(searchResults, appliedFilters);
+        // Search provides a subset of `allTransactions`. Apply current filters to THIS subset.
+        const filteredFromSearch = runFilters(searchResults, appliedFilters);
+        setDisplayTransactions(filteredFromSearch); // Update display list
     }, [runFilters, appliedFilters]);
 
     // --- Filter Modal Control ---
@@ -5240,9 +5588,9 @@ const TransactionsPage: React.FC = () => {
         window.addEventListener("resize", handleResize); return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    // --- Apply and Clear Filter Handlers (Called by FilterModal) ---
+    // --- Apply and Clear Filter Handlers ---
     const handleApplyFiltersFromModal = useCallback((filtersFromModal: AppliedFilters) => {
-        setAppliedFilters(filtersFromModal); // Update state, useEffect will trigger runFilters
+        setAppliedFilters(filtersFromModal); // Update state, useEffect will trigger re-filtering
         closeFilterPopup();
     }, []);
 
@@ -5251,18 +5599,16 @@ const TransactionsPage: React.FC = () => {
             selectedRecipients: [], selectedDirection: "all", selectedStatus: null,
             selectedBalance: [], fromDate: undefined, toDate: undefined,
         };
-        setAppliedFilters(clearedFilters); // Update state, useEffect will trigger runFilters
-        if (isFilterOpen) closeFilterPopup(); // Close modal if open
+        setAppliedFilters(clearedFilters); // Update state, useEffect will trigger re-filtering
+        if (isFilterOpen) closeFilterPopup();
     }, [isFilterOpen]);
 
 
     // --- Transaction Grouping Logic (using displayTransactions) ---
     const { inProgressTransactions, groupedProcessedTransactions } = useMemo(() => {
-        // Group the currently displayed transactions
-        const inProgress = displayTransactions.filter(tx => tx.status === "in progress" || tx.status === "pending" || tx.status === "processing");
-        const processed = displayTransactions.filter(tx => tx.status === "completed" || tx.status === "canceled" || tx.status === "failed");
+        const inProgress = displayTransactions.filter(tx => ['pending', 'processing', 'in progress'].includes(tx.status?.toLowerCase() ?? ''));
+        const processed = displayTransactions.filter(tx => ['completed', 'canceled', 'cancelled', 'failed'].includes(tx.status?.toLowerCase() ?? ''));
 
-        // Sorting already happened in runFilters
         const grouped = processed.reduce((groups: { [date: string]: Transaction[] }, tx) => {
             const dateStr = tx.updatedAt || tx.createdAt;
             let dateKey = 'Unknown Date';
@@ -5271,15 +5617,33 @@ const TransactionsPage: React.FC = () => {
             groups[dateKey].push(tx); return groups;
         }, {});
 
-        return { inProgressTransactions: inProgress, groupedProcessedTransactions: grouped };
-    }, [displayTransactions]); // Depends only on the displayed list
+        // Sort groups by date
+        const sortedDateKeys = Object.keys(grouped).sort((a, b) => {
+             if (a === 'Unknown Date' || a === 'Invalid Date') return 1;
+             if (b === 'Unknown Date' || b === 'Invalid Date') return -1;
+             try { return new Date(b).getTime() - new Date(a).getTime(); }
+             catch { return 0; }
+        });
+        const sortedGroupedTransactions: { [date: string]: Transaction[] } = {};
+        sortedDateKeys.forEach(key => { sortedGroupedTransactions[key] = grouped[key]; });
+
+        // Sort in-progress separately (already sorted by runFilters, but good to be explicit)
+        inProgress.sort((a, b) => {
+             const dA = a.updatedAt || a.createdAt; const dB = b.updatedAt || b.createdAt;
+             if (!dA && !dB) return 0; if (!dA) return 1; if (!dB) return -1;
+             try { return new Date(dB).getTime() - new Date(dA).getTime(); } catch { return 0; }
+        });
+
+
+        return { inProgressTransactions: inProgress, groupedProcessedTransactions: sortedGroupedTransactions };
+    }, [displayTransactions]);
 
 
     // --- Render Logic ---
     const isLoading = loadingTransactions || loadingAccounts;
-    const hasAnyTransactions = allTransactions.length > 0;
-    const showEmptyState = !isLoading && !error && displayTransactions.length === 0;
-    const filtersAreActive = useMemo(() => // Check if filters are active
+    const hasAnyTransactions = allTransactions.length > 0; // Base check on unfiltered data
+    const showEmptyState = !isLoading && !error && displayTransactions.length === 0; // Check filtered data for empty state
+    const filtersAreActive = useMemo(() =>
         appliedFilters.selectedRecipients.length > 0 ||
         appliedFilters.selectedDirection !== "all" ||
         appliedFilters.selectedStatus !== null ||
@@ -5292,59 +5656,57 @@ const TransactionsPage: React.FC = () => {
     if (isLoading) return <TransactionsPageSkeleton />;
 
     return (
-      <> {/* Fragment to hold page and modal */}
-        <section className="Transaction-Wrapper pb-8 md:pb-10">
+      <>
+        <section className="Transaction-Wrapper pt-5">
           <div className="Transaction-Page container mx-auto">
-
-            {/* Use TransactionPageHeader which includes TransactionActions */}
             <TransactionPageHeader
                 title="Transactions"
                 isLoadingAccounts={loadingAccounts}
                 userAccounts={userAccounts}
                 allTransactions={allTransactions} // Pass full list for search
-                onTransactionsChange={handleTransactionsChangeFromSearch} // Handler for search
-                onFilterButtonClick={openFilterPopup} // Handler to open filter modal
+                onTransactionsChange={handleTransactionsChangeFromSearch}
+                onFilterButtonClick={openFilterPopup}
                 error={error}
             />
 
-            {/* Error State */}
             {!isLoading && error && (
               <div className="text-center py-10 text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-900/20 p-4 rounded-md border border-red-200 dark:border-red-800/30 max-w-2xl mx-auto">
                 <strong>Error:</strong> {error}
               </div>
             )}
 
-            {/* Transaction List Area (Use SHARED component) */}
             {!isLoading && !error && (
                 <TransactionList
                     inProgressTransactions={inProgressTransactions}
                     groupedProcessedTransactions={groupedProcessedTransactions}
                     filtersAreActive={filtersAreActive}
-                    onClearFiltersClick={handleClearAllFilters} // Pass clear handler
-                    hasAnyTransactions={hasAnyTransactions}
-                    showEmptyState={showEmptyState}
+                    onClearFiltersClick={handleClearAllFilters}
+                    hasAnyTransactions={hasAnyTransactions} // Use unfiltered check for "no transactions ever" message
+                    showEmptyState={showEmptyState} // Use filtered check for "no results" message
+                    // currencyCode is not strictly needed here as transactions page shows multiple currencies
                 />
             )}
 
-          </div> {/* End Transaction-Page container */}
-        </section> {/* End Transaction-Wrapper section */}
+          </div>
+        </section>
 
-        {/* --- FILTER MODAL (Use SHARED component) --- */}
         <FilterModal
             isOpen={isFilterOpen}
             onClose={closeFilterPopup}
             onApply={handleApplyFiltersFromModal}
             onClearAll={handleClearAllFilters}
             initialFilters={appliedFilters}
-            userAccounts={userAccounts} // Pass accounts (Balance filter IS used here)
+            userAccounts={userAccounts} // Pass accounts for Balance filter
             isMobile={isMobile}
-            // hideBalanceFilter={false} // Default is false, no need to set explicitly
+            hideBalanceFilter={false} // Show balance filter on this page
         />
-      </> // End Fragment
+      </>
     );
 };
 
 export default TransactionsPage;
+
+
 
 // "use client"; // Essential for using hooks
 // import React, { useState, useCallback, useEffect, useMemo } from "react";

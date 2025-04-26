@@ -179,10 +179,7 @@
 //     );
 // };
 
-// export default SelectBalanceComponent; 
-
-
-
+// export default SelectBalanceComponent;
 
 // // frontend/src/components/dashboard/shared/SelectBalanceComponent.tsx
 // "use client";
@@ -272,7 +269,6 @@
 //             </span>
 //         </>
 //     );
-
 
 //     // --- Main Content ---
 //     return (
@@ -409,255 +405,252 @@
 
 // export default SelectBalanceComponent;
 
-
 // frontend/src/components/dashboard/shared/SelectBalanceComponent.tsx
 "use client";
 
-import React from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Skeleton } from '@/components/ui/skeleton'; // Adjust path if needed
+import React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton"; // Adjust path if needed
 import { IoIosArrowForward } from "react-icons/io";
 import { GoPlus } from "react-icons/go";
 
 // Interfaces (define or import)
 interface Currency {
-    _id: string;
-    code: string;
-    name: string;
-    flagImage?: string;
+  _id: string;
+  code: string;
+  name: string;
+  flagImage?: string;
 }
 interface Account {
-    _id: string;
-    balance: string;
-    currency: Currency;
-    user: string;
-    createdAt: string;
-    updatedAt: string;
+  _id: string;
+  balance: string;
+  currency: Currency;
+  user: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface SelectBalanceComponentProps {
-    balances: Account[];
-    isLoading: boolean;
-    error: string | null;
-    refetchBalances: () => void;
-    onSelectBalance: (balanceId: string) => void;
-    allowAddBalance: boolean;
-    pageTitle: string;
-    noBalancePrimaryMessage: string;
-    noBalanceSecondaryMessage?: string;
-    addBalanceHref?: string; // Optional: Fallback Link href if onAddBalanceClick not provided
-    onAddBalanceClick?: () => void; // Callback for clicking the "Add New" card or secondary message
-    addBalanceLinkText?: string;
-    tokenExists: boolean;
+  balances: Account[];
+  isLoading: boolean;
+  error: string | null;
+  refetchBalances: () => void;
+  onSelectBalance: (balanceId: string) => void;
+  allowAddBalance: boolean;
+  pageTitle: string;
+  noBalancePrimaryMessage: string;
+  noBalanceSecondaryMessage?: string;
+  addBalanceHref?: string; // Optional: Fallback Link href if onAddBalanceClick not provided
+  onAddBalanceClick?: () => void; // Callback for clicking the "Add New" card or secondary message
+  addBalanceLinkText?: string;
+  tokenExists: boolean;
 }
 
 const SelectBalanceComponent: React.FC<SelectBalanceComponentProps> = ({
-    balances,
-    isLoading,
-    error,
-    refetchBalances,
-    onSelectBalance,
-    allowAddBalance,
-    pageTitle,
-    noBalancePrimaryMessage,
-    noBalanceSecondaryMessage,
-    addBalanceHref = "/dashboard/add-balance", // Default fallback link
-    onAddBalanceClick,
-    addBalanceLinkText = "Add another currency", // Default text
-    tokenExists,
+  balances,
+  isLoading,
+  error,
+  refetchBalances,
+  onSelectBalance,
+  allowAddBalance,
+  pageTitle,
+  noBalancePrimaryMessage,
+  noBalanceSecondaryMessage,
+  addBalanceHref = "/dashboard/add-balance", // Default fallback link
+  onAddBalanceClick,
+  addBalanceLinkText = "Add another currency", // Default text
+  tokenExists,
 }) => {
-
-    // --- Loading State ---
-    if (isLoading) {
-        return (
-            <div>
-                <Skeleton className="h-10 w-72 sm:w-96 mx-auto rounded-md mb-8" />
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {Array(allowAddBalance ? 5 : 6) // Adjust skeleton count based on add card presence
-                        .fill(0)
-                        .map((_, i) => (
-                            <Skeleton key={`skel-${i}`} className="h-28 w-full rounded-2xl" />
-                        ))}
-                    {/* Optional: Skeleton for the Add card itself */}
-                    {allowAddBalance && <Skeleton className="h-28 w-full rounded-2xl border-2 border-dashed border-neutral-300 dark:border-neutral-700" />}
-                </div>
-            </div>
-        );
-    }
-
-    // --- Common Add Card Style ---
-    const addCardClasses = "sm:p-6 p-4 sm:h-32 h-28 bg-lightgray dark:bg-primarybox/70 hover:dark:bg-secondarybox rounded-2xl flex flex-col justify-center items-center hover:bg-neutral-200/70 transition-all duration-75 ease-linear border-2 border-dashed border-neutral-900 dark:border-neutral-300 min-h-[112px]";
-
-    // --- Add Card Content Component ---
-    const AddCardContent = () => (
-        <>
-            <div className="rounded-full border-2 border-neutral-900 dark:border-white p-2 flex items-center justify-center mb-2 h-v">
-                <GoPlus size={24} className="text-neutral-900 dark:text-white" />
-            </div>
-            <span className="text-center text-neutral-500 dark:text-white">
-                {addBalanceLinkText}
-            </span>
-        </>
-    );
-
-    // --- Main Content ---
+  // --- Loading State ---
+  if (isLoading) {
     return (
-      <section className="Select-Balance-Wrapper pt-5">
-        <div className="All-Balance-Card">
-          <h1 className="text-xl md:text-2xl lg:text-3xl font-semibold text-mainheading dark:text-white text-center mb-8">
-            {pageTitle}
-          </h1>
+      <>
+        <Skeleton className="h-14 w-72 sm:w-96 mx-auto rounded-md mb-4" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {allowAddBalance && (
+            <Skeleton className="lg:h-32 h-28 w-full rounded-2xl border-2 border-dashed" />
+          )}
 
-          {/* --- Error State --- */}
-          {error && !isLoading && (
-            <div className="text-center text-red-500 bg-red-100 dark:bg-red-900/30 p-4 rounded-md mb-6">
-              <p>Error loading balances: {error}</p>
-              {!error.toLowerCase().includes("unauthorized") && (
-                <button
-                  onClick={refetchBalances}
-                  className="mt-2 px-4 py-1 bg-primary text-neutral-900 rounded hover:bg-primaryhover"
+          {Array(allowAddBalance ? 5 : 8) // Adjust skeleton count based on add card presence
+            .fill(0)
+            .map((_, i) => (
+              <Skeleton key={`skel-${i}`} className="h-32 w-full rounded-2xl" />
+            ))}
+        </div>
+      </>
+    );
+  }
+
+  const addCardClasses =
+    "p-6 bg-lightgray dark:bg-primarybox/70 hover:dark:bg-secondarybox rounded-2xl flex flex-col justify-center items-center cursor-pointer hover:bg-neutral-200/70 transition-all duration-75 ease-linear border-2 border-dashed border-neutral-900 dark:border-neutral-300 min-h-[112px]";
+
+  // --- Add Card Content ---
+  const AddCardContent = () => (
+    <>
+      <div className="rounded-full border-2 border-neutral-900 dark:border-white p-2 flex items-center justify-center mb-2">
+        <GoPlus size={28} className="text-neutral-900 dark:text-white" />
+      </div>
+      <span className="text-center text-neutral-500 dark:text-white">
+        {addBalanceLinkText}
+      </span>
+    </>
+  );
+
+  // --- Main Content ---
+  return (
+    <section className="Select-Balance-Wrapper pt-5">
+      <div className="All-Balance-Card">
+        <h1 className="text-xl md:text-2xl lg:text-3xl capitalize font-semibold text-mainheading dark:text-white text-left md:text-center mb-4">
+          {pageTitle}
+        </h1>
+
+        {/* --- Error State --- */}
+        {error && !isLoading && (
+          <div className="text-center text-red-500 bg-red-100 dark:bg-red-900/30 p-4 rounded-md mb-6">
+            <p>Error loading balances: {error}</p>
+            {!error.toLowerCase().includes("unauthorized") && (
+              <button
+                onClick={refetchBalances}
+                className="mt-2 px-4 py-1 bg-primary text-neutral-900 rounded hover:bg-primaryhover"
+              >
+                Retry
+              </button>
+            )}
+            {error.toLowerCase().includes("unauthorized") && (
+              <p className="mt-2">
+                Please{" "}
+                <Link
+                  href="/auth/login"
+                  className="text-primary hover:underline"
                 >
-                  Retry
+                  log in
+                </Link>{" "}
+                again.
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* --- No Balances State --- */}
+        {!isLoading && !error && balances.length === 0 && tokenExists && (
+          <div className="text-center text-neutral-600 dark:text-gray-400 p-6 bg-lightgray dark:bg-primarybox rounded-lg">
+            <p>{noBalancePrimaryMessage}</p>
+            {/* Use onAddBalanceClick if available for the secondary message */}
+            {allowAddBalance &&
+              noBalanceSecondaryMessage &&
+              onAddBalanceClick && (
+                <button
+                  onClick={onAddBalanceClick} // Use the main add click handler
+                  className="text-primary hover:underline block mt-3 font-medium mx-auto bg-transparent border-none p-0 cursor-pointer"
+                >
+                  {noBalanceSecondaryMessage}
                 </button>
               )}
-              {error.toLowerCase().includes("unauthorized") && (
-                <p className="mt-2">
-                  Please{" "}
-                  <Link
-                    href="/auth/login"
-                    className="text-primary hover:underline"
-                  >
-                    log in
-                  </Link>{" "}
-                  again.
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* --- No Balances State --- */}
-          {!isLoading && !error && balances.length === 0 && tokenExists && (
-            <div className="text-center text-neutral-600 dark:text-gray-400 p-6 bg-lightgray dark:bg-primarybox rounded-lg">
-              <p>{noBalancePrimaryMessage}</p>
-              {/* Use onAddBalanceClick if available for the secondary message */}
-              {allowAddBalance &&
-                noBalanceSecondaryMessage &&
-                onAddBalanceClick && (
-                  <button
-                    onClick={onAddBalanceClick} // Use the main add click handler
-                    className="text-primary hover:underline block mt-3 font-medium mx-auto bg-transparent border-none p-0 cursor-pointer"
-                  >
-                    {noBalanceSecondaryMessage}
-                  </button>
-                )}
-              {/* Fallback to Link if no click handler but href exists */}
-              {allowAddBalance &&
-                noBalanceSecondaryMessage &&
-                !onAddBalanceClick &&
-                addBalanceHref && (
-                  <Link
-                    href={addBalanceHref}
-                    className="text-primary hover:underline block mt-3 font-medium"
-                  >
-                    {noBalanceSecondaryMessage}
-                  </Link>
-                )}
-              {/* Display text only if add not allowed or no action intended */}
-              {(!allowAddBalance || (!onAddBalanceClick && !addBalanceHref)) &&
-                noBalanceSecondaryMessage && (
-                  <p className="mt-3 font-medium">
-                    {noBalanceSecondaryMessage}
-                  </p>
-                )}
-            </div>
-          )}
-
-          {/* --- Balances Grid --- */}
-          {!isLoading && !error && balances.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {/* "Add Another Balance" Card - Use onClick if provided */}
-              {allowAddBalance && (
-                <div
-                  onClick={onAddBalanceClick} // Use the handler passed from parent
-                  className={`${addCardClasses} ${
-                    onAddBalanceClick
-                      ? "cursor-pointer"
-                      : "opacity-60 cursor-not-allowed"
-                  }`} // Adjust cursor/opacity
-                  role="button"
-                  tabIndex={onAddBalanceClick ? 0 : -1} // Make non-interactive if no handler
-                  onKeyPress={(e) => e.key === "Enter" && onAddBalanceClick?.()}
-                  aria-label={addBalanceLinkText}
-                  aria-disabled={!onAddBalanceClick}
+            {/* Fallback to Link if no click handler but href exists */}
+            {allowAddBalance &&
+              noBalanceSecondaryMessage &&
+              !onAddBalanceClick &&
+              addBalanceHref && (
+                <Link
+                  href={addBalanceHref}
+                  className="text-primary hover:underline block mt-3 font-medium"
                 >
-                  <AddCardContent />
-                </div>
+                  {noBalanceSecondaryMessage}
+                </Link>
               )}
-              
+            {/* Display text only if add not allowed or no action intended */}
+            {(!allowAddBalance || (!onAddBalanceClick && !addBalanceHref)) &&
+              noBalanceSecondaryMessage && (
+                <p className="mt-3 font-medium">{noBalanceSecondaryMessage}</p>
+              )}
+          </div>
+        )}
 
-              {/* Map existing balances */}
-              {balances.map((account) => (
-                <div
-                  key={account._id}
-                  onClick={() => onSelectBalance(account._id)} // Parent handles KYC in this callback
-                  className="sm:p-6 p-4 sm:h-32 h-28 bg-lightgray dark:bg-primarybox hover:bg-neutral-200/70 hover:dark:bg-secondarybox rounded-2xl flex justify-between items-center gap-2 transition-all duration-75 ease-linear cursor-pointer min-h-[112px]"
-                  role="button"
-                  tabIndex={0}
-                  onKeyPress={(e) =>
-                    e.key === "Enter" && onSelectBalance(account._id)
-                  }
-                  aria-label={`Select ${account.currency.code} balance`}
-                >
-                  <div className="flex items-center gap-4 overflow-hidden">
-                    <Image
-                      src={
-                        account.currency.flagImage ||
-                        `/assets/icon/${account.currency.code.toLowerCase()}.svg`
-                      }
-                      alt={`${account.currency.code} flag`}
-                      width={40}
-                      height={40}
-                      className="rounded-full flex-shrink-0"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src =
-                          "/assets/icon/default.svg";
-                      }} // Fallback image
-                      unoptimized // Consider if optimization is needed based on source
-                    />
-                    <div className="flex-grow min-w-0">
-                      <p className="text-neutral-900 dark:text-white text-lg font-semibold truncate">
-                        {account.currency.code} Balance
-                      </p>
-                      <p className="text-neutral-500 dark:text-gray-300 font-semibold text-sm">
-                        {/* Consider using Intl.NumberFormat for better formatting */}
-                        {parseFloat(account.balance).toFixed(2)}{" "}
-                        {account.currency.code}
-                      </p>
-                    </div>
-                  </div>
-                  <IoIosArrowForward
-                    className="text-neutral-900 dark:text-white ml-2 flex-shrink-0"
-                    aria-hidden="true"
+        {/* --- Balances Grid --- */}
+        {!isLoading && !error && balances.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* "Add Another Balance" Card - Use onClick if provided */}
+            {allowAddBalance && (
+              <div
+                onClick={onAddBalanceClick} // Use the handler passed from parent
+                className={`${addCardClasses} ${
+                  onAddBalanceClick
+                    ? "cursor-pointer"
+                    : "opacity-60 cursor-not-allowed"
+                }`} // Adjust cursor/opacity
+                role="button"
+                tabIndex={onAddBalanceClick ? 0 : -1} // Make non-interactive if no handler
+                onKeyPress={(e) => e.key === "Enter" && onAddBalanceClick?.()}
+                aria-label={addBalanceLinkText}
+                aria-disabled={!onAddBalanceClick}
+              >
+                <AddCardContent />
+              </div>
+            )}
+
+            {/* Map existing balances */}
+            {balances.map((account) => (
+              <div
+                key={account._id}
+                onClick={() => onSelectBalance(account._id)} // Parent handles KYC in this callback
+                className="sm:p-6 p-4 sm:h-32 h-28 bg-lightgray dark:bg-primarybox hover:bg-neutral-200/70 hover:dark:bg-secondarybox rounded-2xl flex justify-between items-center gap-2 transition-all duration-75 ease-linear cursor-pointer min-h-[112px]"
+                role="button"
+                tabIndex={0}
+                onKeyPress={(e) =>
+                  e.key === "Enter" && onSelectBalance(account._id)
+                }
+                aria-label={`Select ${account.currency.code} balance`}
+              >
+                <div className="flex items-center gap-4 overflow-hidden">
+                  <Image
+                    src={
+                      account.currency.flagImage ||
+                      `/assets/icon/${account.currency.code.toLowerCase()}.svg`
+                    }
+                    alt={`${account.currency.code} flag`}
+                    width={40}
+                    height={40}
+                    className="rounded-full flex-shrink-0"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src =
+                        "/assets/icon/default.svg";
+                    }} // Fallback image
+                    unoptimized // Consider if optimization is needed based on source
                   />
+                  <div className="flex-grow min-w-0">
+                    <p className="text-neutral-900 dark:text-white text-lg font-semibold truncate">
+                      {account.currency.code} Balance
+                    </p>
+                    <p className="text-neutral-500 dark:text-gray-300 font-semibold text-sm">
+                      {/* Consider using Intl.NumberFormat for better formatting */}
+                      {parseFloat(account.balance).toFixed(2)}{" "}
+                      {account.currency.code}
+                    </p>
+                  </div>
                 </div>
-              ))}
-            </div>
-          )}
+                <IoIosArrowForward
+                  className="text-neutral-900 dark:text-white ml-2 flex-shrink-0"
+                  aria-hidden="true"
+                />
+              </div>
+            ))}
+          </div>
+        )}
 
-          {/* --- Logged Out State --- */}
-          {!tokenExists && !isLoading && (
-            <div className="text-center text-neutral-600 dark:text-gray-400 p-4 mt-6">
-              Please{" "}
-              <Link href="/auth/login" className="text-primary hover:underline">
-                log in
-              </Link>{" "}
-              to view and manage your balances.
-            </div>
-          )}
-        </div>
-      </section>
-    );
+        {/* --- Logged Out State --- */}
+        {!tokenExists && !isLoading && (
+          <div className="text-center text-neutral-600 dark:text-gray-400 p-4 mt-6">
+            Please{" "}
+            <Link href="/auth/login" className="text-primary hover:underline">
+              log in
+            </Link>{" "}
+            to view and manage your balances.
+          </div>
+        )}
+      </div>
+    </section>
+  );
 };
 
 export default SelectBalanceComponent;

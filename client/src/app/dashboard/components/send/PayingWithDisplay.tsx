@@ -16,13 +16,13 @@ const PayingWithDisplay: React.FC<PayingWithDisplayProps> = ({
         Paying with
       </label>
       <div className="bg-lightgray dark:bg-primarybox rounded-2xl p-4">
-        <div className="flex items-center gap-3 rounded-lg">
+        <div className="flex items-center gap-2 rounded-lg">
           <Image
             src={sourceAccount.currency.flagImage || "/assets/icon/generic.svg"}
             alt={`${sourceAccount.currency.code} flag`}
             width={32}
             height={32}
-            className="rounded-full size-12 mr-3"
+            className="rounded-full size-10 mr-3"
             onError={(e) => {
               e.currentTarget.src = "/assets/icon/generic.svg";
             }}
@@ -34,7 +34,7 @@ const PayingWithDisplay: React.FC<PayingWithDisplayProps> = ({
             <p className="capitalize font-medium text-mainheading dark:text-white">
               Your {sourceAccount.currency.code} balance
             </p>
-            <p className="text-green dark:text-primary font-bold">
+            <p className="text-primary font-bold">
               <span className="underline underline-offset-4">
                 {sourceAccount.balance.toLocaleString(undefined, {
                   minimumFractionDigits: 2,

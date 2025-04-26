@@ -804,7 +804,7 @@ const SelectRecipientContent = () => {
      return (
        <div className="container mx-auto py-10">
          {/* Enhanced Skeleton */}
-         <Skeleton className="h-8 w-72 mb-6 rounded-full" />
+         <Skeleton className="h-10 w-96 mb-6 rounded-full" />
          <Skeleton className="h-12.5 w-full mb-6 rounded-full" />
          <Skeleton className="h-20 w-full mb-4 rounded-2xl" />
          <Skeleton className="h-6 w-24 mb-3 rounded-md" />
@@ -839,9 +839,9 @@ const SelectRecipientContent = () => {
 
   // --- Main Content Render ---
   return (
-    <section className="SelectRecipient-Page py-10">
+    <section className="SelectRecipient-Page pt-5">
       <div className="container mx-auto">
-        <h1 className="text-2xl lg:text-3xl font-semibold text-mainheading dark:text-white mb-6">
+        <h1 className="md:text-2xl text-xl lg:text-3xl font-semibold text-mainheading capitalize dark:text-white mb-4">
           Who are you sending money to?
         </h1>
 
@@ -882,11 +882,12 @@ const SelectRecipientContent = () => {
           }}
           className="flex items-center mb-4 bg-lightgray dark:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer"
         >
-          <div className="size-12 rounded-full bg-green-600/20 p-2 flex items-center justify-center shrink-0">
-            <LuPlus className="w-6 h-6 text-green-600" />
+          <div className="size-12.5 rounded-full bg-green-600/20 flex items-center justify-center shrink-0">
+            <LuPlus className="text-green-600" size={28} />
           </div>
-          <div className="ml-4 space-y-0.5 flex-grow">
-            <h5 className="font-medium text-mainheading dark:text-white">
+          
+          <div className="ml-4 flex-grow">
+            <h5 className="font-medium md:text-lg text-base text-mainheading dark:text-white">
               Add a new recipient
             </h5>
             <p className="text-xs text-gray-700 dark:text-gray-300">
@@ -939,11 +940,11 @@ const SelectRecipientContent = () => {
         ) : (
           // Only show "No results" if there was a search term
           searchTerm && (
-            <div className="text-center text-gray-500 rounded-2xl dark:text-gray-300 text-lg bg-lightgray dark:bg-primarybox/50 py-10 mt-6">
-              <p className="font-medium">
+            <div className="text-center text-gray-500 rounded-2xl dark:text-gray-300 text-base md:text-lg bg-lightgray dark:bg-primarybox/50 py-5">
+              <p className="font-medium capitalize">
                 No recipients found matching '{searchTerm}'.
               </p>
-              <p className="text-sm mt-1">
+              <p className="text-sm mt-0.5">
                 Check the spelling or try adding them as a new recipient.
               </p>
             </div>

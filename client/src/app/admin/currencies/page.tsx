@@ -752,6 +752,7 @@ import { IoMdAdd, IoMdCloseCircle } from "react-icons/io";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion, AnimatePresence } from "framer-motion"; // Import framer-motion
+import { Skeleton } from "@/components/ui/skeleton";
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
@@ -776,6 +777,61 @@ interface ApiErrorResponse {
   message: string;
   // Add other potential fields if your API returns them
 }
+
+// --- NEW: Loading Skeleton Component ---
+const LoadingSkeleton = () => (
+  <div className="container mx-auto px-4 py-8 bg-white dark:bg-background">
+      <div className="space-y-6">
+          {/* Header Skeleton */}
+          <div className="pb-6 mb-6 border-b border-gray-200 dark:border-neutral-700">
+              <Skeleton className="h-8 w-3/5 sm:w-1/3 rounded mb-3" /> {/* Title */}
+              <Skeleton className="h-4 w-4/5 sm:w-1/2 rounded" /> {/* Description */}
+          </div>
+
+          {/* Action Bar Skeleton */}
+          <div className="flex sm:justify-between flex-row w-full items-center mb-6 gap-4">
+              <Skeleton className="h-12 w-12 sm:h-12.5 sm:w-40 rounded-full" /> {/* Add Button */}
+              <Skeleton className="h-12 sm:h-12.5 flex-1 sm:flex-none sm:w-64 rounded-full" /> {/* Search */}
+          </div>
+
+          {/* Currency Cards Grid Skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, index) => ( // Render 6 skeleton cards
+                  <div key={index} className="rounded-xl overflow-hidden border border-gray-200 dark:border-neutral-700 flex flex-col bg-white dark:bg-primarybox">
+                      {/* Card Content Area */}
+                      <div className="lg:p-5 p-4 flex-grow">
+                          {/* Top Section: Flag, Code, Name Skeleton */}
+                          <div className="flex items-center gap-4 mb-4">
+                              <Skeleton className="size-14 rounded-full flex-shrink-0" /> {/* Flag */}
+                              <div className="flex-1 space-y-1.5">
+                                  <Skeleton className="h-6 w-1/3 rounded" /> {/* Code */}
+                                  <Skeleton className="h-4 w-2/3 rounded" /> {/* Name */}
+                              </div>
+                          </div>
+
+                          {/* Rate Adjustment Section Skeleton */}
+                          <div className="p-3 space-y-2 rounded-lg border border-gray-200 dark:border-neutral-600 bg-gray-50 dark:bg-secondarybox">
+                              <Skeleton className="h-4 w-1/4 rounded mb-1" /> {/* Label */}
+                              <Skeleton className="h-6 w-1/2 rounded" /> {/* Value */}
+                              <Skeleton className="h-3 w-full rounded mt-1" /> {/* Description */}
+                          </div>
+                      </div>
+
+                      {/* Actions Footer Skeleton */}
+                      <div className="border-t border-gray-200 dark:border-neutral-700 p-4">
+                          <div className="flex flex-wrap flex-row gap-2">
+                              <Skeleton className="h-10 lg:h-12.5 flex-1 rounded-full" /> {/* Button 1 */}
+                              <Skeleton className="h-10 lg:h-12.5 flex-1 rounded-full" /> {/* Button 2 */}
+                              <Skeleton className="h-10 lg:h-12.5 flex-1 rounded-full" /> {/* Button 3 */}
+                          </div>
+                      </div>
+                  </div>
+              ))}
+          </div>
+      </div>
+  </div>
+);
+// --- END: Loading Skeleton Component ---
 
 const AdminCurrenciesPage: React.FC = () => {
   const [currencies, setCurrencies] = useState<Currency[]>([]);
@@ -1071,7 +1127,9 @@ const AdminCurrenciesPage: React.FC = () => {
   };
 
   // --- RENDER ---
-  return (
+  return isLoading ? (
+    <LoadingSkeleton />
+  ) : (
     <div className="container mx-auto px-4 py-8 relative">
       <div className="space-y-6">
         <ToastContainer
@@ -1314,7 +1372,7 @@ const AdminCurrenciesPage: React.FC = () => {
               >
                 <div className="absolute sm:top-2 sm:right-2 top-1 right-1">
                   <button
-                    className="p-3 bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
+                    className="p-3 bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer focus:outline-none"
                     onClick={() => setIsCreateModalOpen(false)}
                     aria-label="Close modal"
                   >

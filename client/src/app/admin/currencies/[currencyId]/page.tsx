@@ -6577,6 +6577,8 @@ import { FaArrowLeftLong, FaIdCard } from "react-icons/fa6";
 import { FaGlobe, FaPercentage } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import CurrencyEditHeader from "../../components/currencies/CurrencyEditHeader";
+import { Skeleton } from "@/components/ui/skeleton";
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
@@ -6621,6 +6623,86 @@ interface ApiErrorData {
   error?: string; // Add other potential error fields if known
   // Add other fields if your API returns them on error
 }
+
+// --- Loading Skeleton Component ---
+const LoadingSkeleton = () => (
+  <div className="container mx-auto px-4 py-8">
+    <motion.div className="py-6">
+      <div className="mx-auto max-w-5xl space-y-8">
+        {" "}
+        {/* Added space-y-8 */}
+        {/* Header Skeleton */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+          <div>
+            <Skeleton className="h-4 w-64 mb-3 rounded " /> {/* Breadcrumbs */}
+            <Skeleton className="h-8 w-48 rounded " /> {/* Title */}
+          </div>
+          <Skeleton className="h-9 w-32 rounded-md " /> {/* Back Button */}
+        </div>
+        {/* Form Skeleton */}
+        <div className="space-y-8">
+          {/* Tabs Navigation Skeleton */}
+          <div className="relative z-0 rounded-lg overflow-hidden flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x  mb-6">
+            <Skeleton className="h-12 flex-1 " />
+            <Skeleton className="h-12 flex-1 " />
+            <Skeleton className="h-12 flex-1 " />
+          </div>
+
+          {/* General Tab Content Skeleton (Default Visible) */}
+          <div className="space-y-6">
+            {/* General Info Section Skeleton */}
+            <div className="rounded-xl bg-white dark:bg-background border lg:p-6 p-4">
+              <Skeleton className="h-5 w-1/3 rounded mb-4 border-b border-transparent pb-2" />{" "}
+              {/* Section Title */}
+              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Code Skeleton */}
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-1/4 rounded" />
+                  <Skeleton className="h-12 w-full rounded-md" />
+                </div>
+                {/* Name Skeleton */}
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-1/3 rounded" />
+                  <Skeleton className="h-12 w-full rounded-md" />
+                </div>
+                {/* Flag Image Skeleton */}
+                <div className="md:col-span-2 space-y-2">
+                  <Skeleton className="h-4 w-1/3 rounded" />
+                  <Skeleton className="h-12 w-full rounded-md" />
+                  <Skeleton className="h-3 w-3/4 rounded" />{" "}
+                  {/* Help text */}
+                </div>
+              </div>
+            </div>
+
+            {/* Metadata Section Skeleton */}
+            <div className="rounded-xl bg-white dark:bg-background border">
+              <Skeleton className="h-5 w-1/4 rounded m-4 lg:m-6 mb-0 border-b border-transparent pb-3" />{" "}
+              {/* Section Title */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:p-6 p-4">
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-1/3 rounded" />
+                  <Skeleton className="h-12 w-full rounded-md" />
+                </div>
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-1/3 rounded" />
+                  <Skeleton className="h-12 w-full rounded-md" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons Skeleton */}
+          <div className="flex flex-col sm:flex-row justify-end gap-3 mt-8 pt-6 border-t">
+            <Skeleton className="h-12 w-full sm:w-28 rounded-full" />
+            <Skeleton className="h-12 w-full sm:w-36 rounded-full" />
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  </div>
+);
+// --- END: Loading Skeleton Component ---
 
 const AdminEditCurrencyPage = () => {
   const params = useParams();
@@ -7341,6 +7423,32 @@ const AdminEditCurrencyPage = () => {
     }
   };
 
+  // --- Main component render ---
+  // Render Skeleton if loading
+  if (isLoading) {
+    return (
+      <div className=" bg-white dark:bg-background">
+        <LoadingSkeleton />;
+      </div>
+    ) 
+  }
+
+  // Render error state or not found state (optional, could be handled by toast)
+  if (!isLoading && !currency && !formState) {
+    return (
+        <div className="container mx-auto px-4 py-8 relative">
+             {/* Still render header for context and back navigation */}
+             <CurrencyEditHeader currencyName="Error" currencyCode="XXX" />
+            <div className="mt-8 text-center text-red-600 bg-red-600/10 border border-red-400 dark:border-red-600 p-4 rounded-lg">
+                Failed to load currency details. Please check the ID or try again later.
+                 <Link href="/admin/currencies" className="mt-4 inline-block text-primary underline">
+                    Back to Currencies
+                 </Link>
+            </div>
+        </div>
+    );
+  }
+
   // Main component render
   return (
     <div className="container mx-auto px-4 py-8 relative">
@@ -7363,32 +7471,10 @@ const AdminEditCurrencyPage = () => {
           theme="colored"
         />
         <div className="mx-auto max-w-5xl">
-          <motion.div
-            initial={{ y: -20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2" // Adjusted alignment for smaller screens
-          >
-            <Link
-              href="/admin/currencies"
-              className="inline-flex items-center font-medium lg:text-base text-sm gap-2 text-neutral-900 dark:text-white hover:text-primary dark:hover:text-primary transition-colors"
-            >
-              <FaArrowLeftLong className="size-4" /> Back to Currencies
-            </Link>
-            <h1 className="text-xl font-semibold text-neutral-900 dark:text-white text-left sm:text-right">
-              {" "}
-              {/* Changed to h1 */}
-              Edit Currency:{" "}
-              <span className="text-primary font-bold break-words">
-                {" "}
-                {/* Added break-words */}
-                {currency?.currencyName ||
-                  formState?.currencyName ||
-                  "Loading..."}{" "}
-                ({currency?.code || formState?.code})
-              </span>
-            </h1>
-          </motion.div>
+        <CurrencyEditHeader
+            currencyName={currency?.currencyName || formState?.currencyName}
+            currencyCode={currency?.code || formState?.code}
+          />
 
           {isLoading && !currency && (
             <div className="flex justify-center items-center h-64">

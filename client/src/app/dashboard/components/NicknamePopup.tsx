@@ -132,12 +132,12 @@ const NicknamePopup: React.FC<NicknamePopupProps> = ({
           >
             <div className="absolute sm:top-2 sm:right-2 top-1 right-1">
               <button
-                className="p-3 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
+                className="p-3 bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer focus:outline-none"
                 onClick={onClose}
               >
                 <IoClose
                   size={28}
-                  className="text-neutral-900 dark:text-white"
+                  className="text-neutral-900 dark:text-primary"
                 />
               </button>
             </div>
@@ -145,7 +145,7 @@ const NicknamePopup: React.FC<NicknamePopupProps> = ({
               {title}
             </h3>
             {description && (
-              <p className="text-gray dark:text-gray-300 font-medium mb-6">
+              <p className="text-gray-500 dark:text-gray-300 font-medium mb-6">
                 {description}
               </p>
             )}

@@ -80,6 +80,7 @@
 //   );
 // }
 
+
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -168,18 +169,19 @@ export default function NotFound() {
         <div className="bg-white dark:bg-background rounded-2xl overflow-hidden border">
           {/* 404 Error Display */}
           <div className="relative bg-white/5 p-6 text-white text-center">
+
             <div className="flex justify-center items-center gap-4">
-              <TbCurrencyDollar className="lg:text-5xl text-3xl animate-pulse" />
-              <h1 className="lg:text-5xl text-3xl font-bold text-primary">
+              <TbCurrencyDollar className="lg:text-5xl text-mainheading text-3xl animate-pulse" />
+              <h1 className="lg:text-5xl text-3xl font-bold text-mainheading dark:text-primary">
                 404
               </h1>
-              <TbCurrencyEuro className="lg:text-5xl text-3xl animate-pulse" />
+              <TbCurrencyEuro className="lg:text-5xl text-mainheading text-3xl animate-pulse" />
             </div>
           </div>
 
           <div className="lg:p-6 p-4">
-            <div className="my-5 text-center">
-              <h2 className="lg:text-3xl md:text-2xl text-xl font-semibold capitalize text-gray-500 dark:text-gray-300 mb-3">
+            <div className="text-center">
+              <h2 className="lg:text-3xl md:text-2xl text-xl font-semibold capitalize text-gray-700 dark:text-gray-300 mb-3">
                 This currency page is not found
               </h2>
 
@@ -191,9 +193,9 @@ export default function NotFound() {
 
             {/* Currency Exchange Illustration */}
             <div className="flex justify-center">
-              <div className="relative lg:size-68 size-48">
-                <div className="absolute inset-0 flex justify-center items-center ">
-                  <div className="lg:size-40 size-32 relative rounded-full border border-dashed animate-wiggle">
+              <div className="relative lg:size-74 size-52">
+                <div className="absolute inset-0 flex justify-center items-center">
+                  <div className="lg:size-38 size-28 relative rounded-full border border-dashed animate-wiggle">
                     <div className="absolute -top-4 -left-4 w-8 h-8 bg-blue-500 dark:bg-background border rounded-full flex justify-center items-center text-white">
                       ₹
                     </div>
@@ -226,7 +228,7 @@ export default function NotFound() {
               <div className="flex text-nowrap justify-center gap-4 lg:text-base text-xs">
                 <Link
                   href="/"
-                  className="text-primary font-medium flex items-center gap-1"
+                  className="dark:text-primary text-mainheading font-bold flex items-center gap-1"
                 >
                   <span>View Exchange Rates</span>
                   <TbExternalLink />
@@ -234,7 +236,7 @@ export default function NotFound() {
 
                 <Link
                   href="/faqs"
-                  className="text-primary font-medium flex items-center gap-1"
+                  className="dark:text-primary text-mainheading font-bold flex items-center gap-1"
                 >
                   <span>Contact Support</span>
                   <TbExternalLink />
@@ -245,7 +247,7 @@ export default function NotFound() {
         </div>
 
         {/* Footer */}
-        <div className="text-center mt-4 text-gray-500 dark:text-gray-300 text-sm">
+        <div className="text-center mt-4 text-gray-700 dark:text-gray-300 font-medium text-sm">
           &copy; {new Date().getFullYear()} Currency Exchange Wise Services Ltd.
         </div>
       </div>

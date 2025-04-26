@@ -51,7 +51,8 @@ const TransactionUpdateActions: React.FC<TransactionUpdateActionsProps> = ({
               {submissionError}
             </p>
           )}
-          <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
+          
+          <div className="flex flex-col sm:flex-row sm:justify-end gap-3 mt-5">
             <button
               onClick={onOpenCancelModal}
               disabled={isSubmitting}

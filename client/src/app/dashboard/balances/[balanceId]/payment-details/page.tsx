@@ -2314,7 +2314,7 @@ const PaymentDetailsPage = () => {
     <div className="container mx-auto py-5 max-w-2xl">
       <Toaster richColors position="top-center" />
       {/* Header */}
-      <h1 className="sm:text-3xl text-xl text-center font-semibold text-mainheading mb-2.5 dark:text-white">
+      <h1 className="lg:text-3xl md:text-2xl text-xl text-center font-semibold text-mainheading mb-2.5 dark:text-white">
         Use your bank to make a payment to Wise
       </h1>
       <p className="text-sm text-gray-500 dark:text-gray-300 lg:mb-10 mb-5 text-center">
@@ -2323,7 +2323,7 @@ const PaymentDetailsPage = () => {
       </p>
 
       {/* Details Section */}
-      <div className="mb-6 rounded-xl bg-lightgray dark:bg-background">
+      <div className="rounded-xl bg-lightgray dark:bg-background p-4">
         <h2 className="lg:ext-lg font-medium mb-4 text-neutral-900 dark:text-white">
           Details you'll need to make this transfer
         </h2>
@@ -2378,7 +2378,7 @@ const PaymentDetailsPage = () => {
       </div>
 
       {/* Need more help? Section */}
-      <div className="rounded-lg p-4 mb-6 flex items-start gap-4 bg-gray/10 dark:bg-white/5">
+      <div className="rounded-lg p-4 my-5 flex items-start gap-4 bg-gray/10 dark:bg-white/5">
         <HelpCircle className="size-6 text-neutral-900 dark:text-white mt-0.5 shrink-0" />
         <div>
           <h3 className="font-medium text-neutral-900 dark:text-white mb-1">

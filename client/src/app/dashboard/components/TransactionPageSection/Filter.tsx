@@ -4009,11 +4009,9 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
 
               {/* Scrollable Content Area */}
               <div className="sm:p-6 p-4 flex-grow overflow-y-auto scrollbar-hide space-y-6">
-                {" "}
                 {/* Kept original padding/scrollbar-hide */}
                 <div>
                   <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-neutral-500 dark:after:bg-white/30 after:mt-1">
-                    {" "}
                     {/* Kept original heading style */}
                     Date
                   </h4>
@@ -4117,7 +4115,6 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
                   userAccounts.length > 0 && ( // Only show if accounts exist
                     <div>
                       <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-neutral-500 dark:after:bg-white/30 after:mt-1">
-                        {" "}
                         {/* Kept original heading style */}
                         Balance
                       </h4>
@@ -4150,7 +4147,6 @@ const Filter: React.FC<FilterProps> = ({ userAccounts, onFiltersApply }) => {
 
               {/* Footer */}
               <div className="sm:p-6 p-4 border-t bg-white dark:bg-background flex-shrink-0">
-                {" "}
                 {/* Kept original padding/border/bg */}
                 <div className="flex items-center gap-3">
                   {/* Kept original button styles */}
@@ -4478,7 +4474,7 @@ export default Filter;
 
 //               {/* Scrollable Content Area */}
 //               <div className="p-6 flex-grow overflow-y-auto scrollbar-hide space-y-6">
-//                 {" "}
+//
 //                 {/* Use space-y */}
 //                 <div>
 //                   <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">
@@ -4571,7 +4567,7 @@ export default Filter;
 //                 </div>
 //                 {/* Recipients Section */}
 //                 <div>
-//                   {" "}
+//
 //                   {/* Wrap each section for spacing */}
 //                   <Recipients
 //                     onRecipientSelectionChange={handleRecipientSelectionChange}
@@ -4954,7 +4950,7 @@ export default Filter;
 
 //               {/* Scrollable Content Area */}
 //               <div className="p-6 flex-grow overflow-y-auto scrollbar-hide space-y-6">
-//                 {" "}
+//
 //                 {/* Use space-y */}
 //                 <div>
 //                   <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-gray/20 after:mt-1">

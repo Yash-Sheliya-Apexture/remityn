@@ -29,7 +29,7 @@ const AccountSettings: React.FC = () => {
 
   return (
     // Consider adjusting grid layout for better sticky behavior if needed:
-    <div className="max-w-2xl mx-auto grid grid-cols-1 md:grid-cols-[auto,1fr] gap-10"> {/* Example layout adjustment + padding */}
+    <div className="lg:max-w-2xl lg:mx-auto grid grid-cols-1 md:grid-cols-[auto,1fr] gap-10"> {/* Example layout adjustment + padding */}
         <AccountCard username={displayName} />
       {/* Right Side: Scrollable Menu Items */}
       <div className="flex flex-col w-full">

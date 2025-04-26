@@ -116,6 +116,7 @@
 
 import React from "react";
 import { CheckIcon } from "lucide-react"; // Using lucide icons instead of react-icons
+import { FaCheck } from "react-icons/fa";
 
 interface DashboardHeaderProps {
   title: string;
@@ -139,17 +140,17 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       : 1;
 
   return (
-    <div className="bg-white dark:bg-background mb-6 md:mb-8 sticky top-0 z-20">
-      <div className="container mx-auto md:py-5 py-4">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+    <div className="bg-white dark:bg-background sticky top-0 z-20">
+      <div className="container mx-auto py-5">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           {/* Title */}
-          <h1 className="text-xl md:text-2xl font-semibold dark:text-white text-primary mb-3 md:mb-0">
+          <h1 className="text-xl md:text-2xl lg:text-3xl font-semibold dark:text-white text-mainheading">
             {title}
           </h1>
 
           {/* Step Indicator - Preserving the original responsive behavior */}
           {showSteps && (
-            <div className="flex items-center space-x-2 md:space-x-4 overflow-x-auto ">
+            <div className="flex items-center space-x-2 md:space-x-4 overflow-x-auto">
               {steps.map((stepName, index) => {
                 const stepNumber = index + 1;
                 const isCompleted = stepNumber < validCurrentStep;
@@ -172,23 +173,23 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     {/* Step Circle and Text */}
                     <div className="flex items-center flex-shrink-0 py-2">
                       <div
-                        className={`size-6 lg:size-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
+                        className={`size-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
                           isCompleted
                             ? "bg-primary border-primary text-mainheading"
                             : isActive
                             ? "border-primary/50 text-primary font-bold ring-2 ring-primary/20 dark:ring-primary/90"
-                            : "border-gray-500 dark:border-gray-300 text-gray-500 dark:text-gray-300"
+                            : "text-gray-700 dark:text-gray-300"
                         }`}
                       >
-                        {isCompleted ? <CheckIcon size={16} /> : stepNumber}
+                        {isCompleted ? <FaCheck size={16} /> : stepNumber}
                       </div>
                       <span
-                        className={`text-xs md:text-sm transition-colors duration-300 ease-in-out hidden sm:block ml-2 ${
+                        className={`text-xs md:text-base capitalize transition-colors duration-300 ease-in-out hidden sm:block ml-2 ${
                           isCompleted
                             ? "text-primary font-medium"
                             : isActive
                             ? "text-primary font-bold"
-                            : "text-gray-500 dark:text-gray-300"
+                            : "text-gray-700 dark:text-gray-300"
                         }`}
                       >
                         {stepName}

@@ -3397,24 +3397,192 @@ interface AdminTransferDetailPageParams extends Record<string, string | string[]
   transferId: string;
 }
 
-// --- Loading Skeleton Component ---
+// --- Loading Skeleton Component (Using divs and Tailwind) ---
 const LoadingSkeleton = () => (
-    <div className="container mx-auto p-6 py-8">
+  <div className="container mx-auto px-4 py-8">
+    {" "}
+    {/* Container and padding */}
     {/* Header Skeleton */}
-    <div className="flex items-center mb-8">
-      <Skeleton className="h-10 w-40" />
-      <Skeleton className="h-8 w-32 ml-auto rounded" />
-    </div>
-    {/* Overview Skeleton */}
-    <Skeleton className="h-28 w-full rounded-xl mb-8" />
-    {/* Main Grid Skeleton */}
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <div className="lg:col-span-1 space-y-6">
-        <Skeleton className="h-96 w-full rounded-xl" />
-        <Skeleton className="h-64 w-full rounded-xl" />
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4 animate-pulse">
+      <div>
+        <Skeleton className="h-4 w-64 mb-3 rounded-sm" />{" "}
+        {/* Breadcrumbs Skeleton */}
+        <Skeleton className="h-8 w-48 rounded-sm" /> {/* Title Skeleton */}
       </div>
+      <Skeleton className="h-6 w-32 rounded self-start sm:self-center" />{" "}
+      {/* Back Button Skeleton */}
+    </div>
+    {/* Overview Card Skeleton (as div) */}
+    <div className="bg-lightgray dark:bg-primarybox rounded-xl border dark:border-primarybox sm:p-6 p-4 mb-8">
+      {" "}
+      {/* Mimic Card */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        {/* Left Side Skeleton */}
+        <div className="flex items-center gap-4">
+          <Skeleton className="h-8 w-24 rounded-full" /> {/* Status Badge */}
+          <div className="space-y-1.5">
+            <Skeleton className="h-3 w-16 rounded" /> {/* Label */}
+            <Skeleton className="h-4 w-32 rounded" /> {/* Value */}
+          </div>
+        </div>
+        {/* Right Side Skeleton */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 md:gap-6 mt-4 md:mt-0">
+          <Skeleton className="h-14 w-40 rounded-lg" /> {/* Date Box */}
+          <Skeleton className="h-14 w-44 rounded-lg" /> {/* Amount Box */}
+        </div>
+      </div>
+    </div>
+    {/* Main Grid Skeleton */}
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {" "}
+      {/* Use correct gap */}
+      {/* Left Column Skeleton */}
+      <div className="lg:col-span-1 space-y-6">
+        {/* TransferStatusSection Skeleton (as div) */}
+        <div className="bg-white dark:bg-primarybox rounded-xl border dark:border-secondarybox overflow-hidden">
+          {" "}
+          {/* Mimic Card */}
+          {/* Mimic CardHeader */}
+          <div className="bg-lightgray dark:bg-primarybox px-6 py-4 border-b dark:border-neutral-700">
+            <Skeleton className="h-6 w-3/5 rounded" />
+          </div>
+          {/* Mimic CardContent */}
+          <div className="sm:p-6 p-4 space-y-6">
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-1/3 rounded" />
+              <Skeleton className="h-8 w-28 rounded-full" /> {/* Status */}
+            </div>
+            <div className="space-y-3">
+              <Skeleton className="h-4 w-1/4 rounded mb-3" />{" "}
+              {/* Timeline Title */}
+              <Skeleton className="h-10 w-full rounded" />{" "}
+              {/* Timeline Item 1 */}
+              <Skeleton className="h-10 w-full rounded" />{" "}
+              {/* Timeline Item 2 */}
+            </div>
+            {/* Mimic Footer/Action area */}
+            <div className="pt-4 border-t dark:border-neutral-700">
+              <Skeleton className="h-4 w-1/3 rounded mb-3" />{" "}
+              {/* Action title */}
+              <Skeleton className="h-10 w-full rounded-md" /> {/* Dropdown */}
+            </div>
+          </div>
+        </div>
+
+        {/* TransferInfoCard Skeleton (as div) */}
+        <div className="bg-white dark:bg-primarybox rounded-xl border dark:border-secondarybox overflow-hidden">
+          {" "}
+          {/* Mimic Card */}
+          {/* Mimic CardHeader */}
+          <div className="bg-lightgray dark:bg-primarybox px-6 py-4 border-b dark:border-neutral-700">
+            <Skeleton className="h-6 w-1/2 rounded" />
+          </div>
+          {/* Mimic CardContent */}
+          <div className="sm:p-6 p-4 space-y-4">
+            <Skeleton className="h-14 w-full rounded-lg" />
+            <Skeleton className="h-14 w-full rounded-lg" />
+            <Skeleton className="h-14 w-full rounded-lg" />
+          </div>
+        </div>
+      </div>
+      {/* Right Column Skeleton */}
       <div className="lg:col-span-2">
-        <Skeleton className="h-[700px] w-full rounded-xl" />
+        {/* Wrapper div (mimics Card) */}
+        <div className="rounded-xl bg-white dark:bg-primarybox border dark:border-secondarybox overflow-hidden">
+          {/* Mimic CardHeader */}
+          <div className="bg-lightgray dark:bg-primarybox px-6 py-4 border-b dark:border-neutral-700">
+            <Skeleton className="h-6 w-48 rounded" />{" "}
+            {/* Detailed Info Title */}
+          </div>
+          {/* Mimic CardContent */}
+          <div className="sm:p-6 p-4 space-y-8">
+            {/* SenderInfoCard Skeleton (as div) */}
+            <div>
+              <Skeleton className="h-6 w-40 rounded-full mb-4" />{" "}
+              {/* Title Badge */}
+              {/* Inner container mimicking Card structure */}
+              <div className="flex items-start sm:items-center rounded-xl border p-4 flex-col sm:flex-row">
+                <Skeleton className="size-12 sm:size-16 rounded-full flex-shrink-0 mb-3 sm:mb-0" />
+                <div className="ml-0 sm:ml-4 flex-grow w-full space-y-2">
+                  <div className="flex justify-between items-center">
+                    <Skeleton className="h-5 w-1/2 rounded" /> {/* Name */}
+                    <Skeleton className="h-5 w-16 rounded-full" /> {/* Badge */}
+                  </div>
+                  <Skeleton className="h-4 w-3/4 rounded" /> {/* Email */}
+                  <div className="mt-3 pt-3 border-t dark:border-neutral-700 flex gap-6">
+                    <Skeleton className="h-10 w-1/2 rounded" /> {/* Detail 1 */}
+                    <Skeleton className="h-10 w-1/2 rounded" /> {/* Detail 2 */}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* RecipientInfoCard Skeleton (as div) */}
+            <div>
+              <Skeleton className="h-6 w-44 rounded-full mb-4" />{" "}
+              {/* Title Badge */}
+              {/* Inner container mimicking Card structure */}
+              <div className="rounded-xl border p-4">
+                <div className="flex items-start sm:items-center mb-4 flex-col sm:flex-row">
+                  <Skeleton className="size-12 sm:size-16 rounded-full flex-shrink-0 mb-3 sm:mb-0" />
+                  <div className="ml-0 sm:ml-4 flex-grow w-full space-y-2">
+                    <div className="flex justify-between items-center">
+                      <Skeleton className="h-5 w-1/2 rounded" /> {/* Name */}
+                      <Skeleton className="h-5 w-20 rounded-full" />{" "}
+                      {/* Badge */}
+                    </div>
+                    <Skeleton className="h-4 w-full rounded" />{" "}
+                    {/* Email/Nickname */}
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 mt-2 pt-3 border-t dark:border-neutral-700">
+                  <Skeleton className="h-12 w-full rounded" />{" "}
+                  {/* Detail Item */}
+                  <Skeleton className="h-12 w-full rounded" />{" "}
+                  {/* Detail Item */}
+                  <Skeleton className="h-12 w-full rounded" />{" "}
+                  {/* Detail Item */}
+                  <Skeleton className="h-12 w-full rounded" />{" "}
+                  {/* Detail Item */}
+                </div>
+              </div>
+            </div>
+
+            {/* TransactionDetailsCard Skeleton (as div) */}
+            <div>
+              <Skeleton className="h-6 w-48 rounded-full mb-4" />{" "}
+              {/* Title Badge */}
+              {/* Inner container mimicking Card structure */}
+              <div className="rounded-xl border overflow-hidden">
+                {/* Mimic CardContent */}
+                <div className="sm:p-5 p-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                    <Skeleton className="h-20 w-full rounded-lg" />{" "}
+                    {/* Sent Amount */}
+                    <Skeleton className="h-20 w-full rounded-lg" />{" "}
+                    {/* Received Amount */}
+                  </div>
+                </div>
+                {/* Mimic Divider Area */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x border-y dark:divide-neutral-700 dark:border-neutral-700">
+                  <div className="p-4">
+                    <Skeleton className="h-10 w-full rounded" />
+                  </div>{" "}
+                  {/* Rate */}
+                  <div className="p-4">
+                    <Skeleton className="h-10 w-full rounded" />
+                  </div>{" "}
+                  {/* Fee */}
+                </div>
+                {/* Mimic CardFooter Area */}
+                <div className="p-4">
+                  <Skeleton className="h-10 w-full rounded-lg" />{" "}
+                  {/* Total Debit */}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
