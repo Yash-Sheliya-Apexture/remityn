@@ -386,6 +386,7 @@ const BalanceComponent: React.FC<BalanceProps> = ({
           checked={checked}
           onCheckedChange={handleCheckboxChange} // Use onCheckedChange and pass boolean value
           onClick={(e) => e.stopPropagation()} // Prevent div click when checkbox is clicked directly
+          className="size-5 border-neutral-400 shadow-none"
         />
       </div>
     </div>

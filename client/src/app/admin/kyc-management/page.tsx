@@ -972,14 +972,66 @@ const KycManagementPage: React.FC = () => {
         {isLoading ? (
           <Skeleton className="h-10 w-48 rounded-full" />
         ) : (
-          <div className="inline-flex items-center rounded-full bg-white dark:bg-secondarybox p-1 gap-1">
-            <button onClick={() => setSortBy("date")} className={cn("text-sm px-4 py-2 font-medium rounded-full flex items-center gap-1.5 transition-all duration-200 ease-linear focus:outline-none cursor-pointer", sortBy === "date" ? "bg-primary text-neutral-900 shadow-sm" : "text-neutral-900 dark:text-white")}>
+          // Sorting
+          <div className="relative inline-flex items-center rounded-full bg-white dark:bg-secondarybox p-1 gap-1">
+          {/* Date Button */}
+          <button
+            onClick={() => setSortBy('date')}
+            // Make button relative, remove background/shadow from here
+            className={cn(
+              'relative text-sm px-4 py-2 font-medium rounded-full flex items-center gap-1.5 transition-colors duration-200 ease-linear focus:outline-none cursor-pointer z-10' // Ensure button content is above motion.div
+              // Text color is handled below based on active state
+            )}
+          >
+            {/* Animated Background - Conditionally rendered inside the ACTIVE button */}
+            {sortBy === 'date' && (
+              <motion.div
+                layoutId="activeSortBackground" // Unique ID for the layout animation
+                className="absolute inset-0 rounded-full bg-primary shadow-sm z-0" // Positioned behind content
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }} // Customize animation
+              />
+            )}
+            {/* Button Content - Needs relative positioning and z-index to be above the background */}
+            <span
+              className={cn(
+                'relative z-10 flex items-center gap-1.5', // Position content above background
+                sortBy === 'date'
+                  ? 'text-neutral-900' // Active text color
+                  : 'text-neutral-900 dark:text-white' // Inactive text color
+              )}
+            >
               <Calendar className="h-4 w-4" /> Date
-            </button>
-            <button onClick={() => setSortBy("name")} className={cn("text-sm px-4 py-2 font-medium rounded-full flex items-center gap-1.5 transition-all duration-200 ease-linear focus:outline-none cursor-pointer", sortBy === "name" ? "bg-primary text-neutral-900 shadow-sm" : "text-neutral-900 dark:text-white")}>
+            </span>
+          </button>
+
+          {/* Name Button */}
+          <button
+            onClick={() => setSortBy('name')}
+            className={cn(
+              'relative text-sm px-4 py-2 font-medium rounded-full flex items-center gap-1.5 transition-colors duration-200 ease-linear focus:outline-none cursor-pointer z-10'
+            )}
+          >
+            {/* Animated Background - Conditionally rendered inside the ACTIVE button */}
+            {sortBy === 'name' && (
+              <motion.div
+                layoutId="activeSortBackground" // SAME layoutId as the other button
+                className="absolute inset-0 rounded-full bg-primary shadow-sm z-0"
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              />
+            )}
+             {/* Button Content */}
+            <span
+              className={cn(
+                'relative z-10 flex items-center gap-1.5',
+                sortBy === 'name'
+                  ? 'text-neutral-900' // Active text color
+                  : 'text-neutral-900 dark:text-white' // Inactive text color
+              )}
+            >
               <SortAsc className="h-4 w-4" /> Name
-            </button>
-          </div>
+            </span>
+          </button>
+        </div>
         )}
       </div>
 

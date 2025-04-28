@@ -2325,7 +2325,7 @@ const CountryCard = () => {
             onKeyPress={(e) => e.key === "Enter" && setIsModalOpen(true)}
             aria-label="Add another currency account"
           >
-            <div className="rounded-full border-2 border-neutral-900 dark:border-white p-2 flex items-center justify-center mb-2 transition-transform duration-150 ease-in-out group-hover:scale-110">
+            <div className="rounded-full border-2 border-neutral-900 dark:border-white p-2 flex items-center justify-center mb-2 transition-transform duration-150 ease-in-out">
               <GoPlus size={30} className="text-neutral-900 dark:text-white" />
             </div>
             <span className="text-center text-sm text-neutral-500 dark:text-white px-2">
