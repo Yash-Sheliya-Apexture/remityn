@@ -1,123 +1,129 @@
-// import React from "react";
-// import Link from "next/link";
-// import Image from "next/image";
-// // import globel from "../../../../public/assets/images/globel.webp";
 
-// const MissionSection: React.FC = () => {
-//   return (
-//     <section className="mission-section lg:pt-52 pt-12 pb-12 relative">
-//       <div className="container mx-auto px-4">
-//         <div className="inline-flex justify-center items-center w-full">
-//           <Image
-//             src="/assets/images/globel.webp"
-//             alt="globel"
-//             width={500}
-//             height={500}
-//             className="absolute lg:w-[500px] w-[300px] mt-10"
-//             priority
-//           />
-//         </div>
-//         <div className="p-10 bg-green dark:bg-background rounded-4xl text-lightgreen dark:text-primary">
-//           <div className="text-center max-w-5xl mx-auto space-y-6 lg:mt-50 mt-30">
-//             <h1 className="text-3xl md:text-6xl xl:text-8xl font-black font-mont uppercase tracking-tight">
-//               Meet money without borders
-//             </h1>
-//             <p className="text-white dark:text-gray-300 font-medium lg:text-xl text-lg">
-//               We’re building the best way to move and manage the world’s money.
-//               Min fees. Max ease. Full speed.
-//             </p>
-//           </div>
-//           <div className="text-center mt-8">
-//             <button className="bg-primary hover:bg-primaryhover text-mainheading text-lg font-medium rounded-full px-6 py-3 h-14 transition-colors duration-300 ease-in-out">
-//               <Link href="/" className="text-green font-medium">
-//                 Learn about our mission
-//               </Link>
-//             </button>
-//           </div>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// };
 
-// export default MissionSection;
-
-// import React from "react";
-
-// const MissionSection = () => {
-//   return <div>dfbhdfzdf</div>;
-// };
-
-// export default MissionSection;
+"use client"; // Required for Framer Motion
 
 import Image from "next/image";
 import React from "react";
-import { FaStarHalfAlt } from "react-icons/fa";
-import { FaStar } from "react-icons/fa6";
+import { FaStarHalfAlt, FaStar } from "react-icons/fa";
+import { motion } from "framer-motion"; // Import motion
 
-// Define the component using React's FunctionComponent type (React.FC)
+// --- Animation Variants ---
+
+// Variants for the main section container (mainly for triggering)
+const sectionVariants = {
+  hidden: {},
+  visible: {},
+};
+
+// Variants for the left text/content block (Slide from Left)
+const leftBlockVariants = {
+  hidden: { opacity: 0, x: -100 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.7,
+      ease: "easeOut",
+      delay: 0.1,
+    },
+  },
+};
+
+// Variants for the right container (Aside - Simple Fade In)
+const rightContainerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 0.5, // Faster fade for the container
+      delay: 0.25, // Start slightly after the left block
+    },
+  },
+};
+
+// Variants ONLY for the phone images (Slide from Bottom)
+const imageSlideUpVariants = {
+  hidden: { opacity: 0, y: 100 }, // Start invisible and 100px below
+  visible: {
+    opacity: 1,
+    y: 0, // Animate to original Y position (slide up)
+    transition: {
+      duration: 0.7,
+      ease: "easeOut",
+      // Delay this slightly more so the container fades in first
+      delay: 0.4,
+    },
+  },
+};
+
+// --- Component Definition ---
 const MobileDownloadSection: React.FC = () => {
   return (
-    <div className="lg:py-10 py-5 bg-white dark:bg-background px-4">
-      <section
+    // Add overflow-hidden to prevent scrollbars during animation
+    <div className="lg:py-10 py-5 bg-white dark:bg-background px-4 overflow-hidden">
+      {/* Wrap the main section content with motion for triggering */}
+      <motion.section
         className="flex flex-col gap-8 md:gap-6 lg:flex-row lg:items-center lg:justify-between container mx-auto"
         id="mobile-download"
+        variants={sectionVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ amount: 0.2, once: false }}
       >
-        <article className="flex flex-col gap-4 md:gap-10 lg:w-1/2">
+        {/* Left Column: Text Content - Wrap with motion */}
+        <motion.article
+          className="flex flex-col gap-4 md:gap-10 lg:w-1/2"
+          variants={leftBlockVariants} // Apply slide-from-left animation
+        >
+          {/* ... (User avatars, star rating, text content remain the same) ... */}
           {/* User avatars and star rating */}
           <div className="flex items-center gap-4">
             <div className="flex items-center -space-x-2">
               <Image
                 src="/assets/images/Tom.jpg"
-                width={500}
-                height={500}
-                alt="Picture of the author"
-                className="md:size-10 size-7 rounded-full border-2 border-white"
-                style={{ color: "transparent" }}
+                width={40}
+                height={40}
+                alt="User Avatar 1"
+                className="md:size-10 size-7 rounded-full border-2 border-white dark:border-neutral-800"
               />
               <Image
                 src="/assets/images/Lisa-Carter.jpg"
-                width={500}
-                height={500}
-                alt="Picture of the author"
-                className="md:size-10 size-7 rounded-full border-2 border-white"
-                style={{ color: "transparent" }}
+                width={40}
+                height={40}
+                alt="User Avatar 2"
+                className="md:size-10 size-7 rounded-full border-2 border-white dark:border-neutral-800"
               />
               <Image
                 src="/assets/images/Amelia.jpg"
-                width={500}
-                height={500}
-                alt="Picture of the author"
-                className="md:size-10 size-7 rounded-full border-2 border-white"
-                style={{ color: "transparent" }}
+                width={40}
+                height={40}
+                alt="User Avatar 3"
+                className="md:size-10 size-7 rounded-full border-2 border-white dark:border-neutral-800"
               />
               <Image
                 src="/assets/images/Hannah.jpg"
-                width={500}
-                height={500}
-                alt="Picture of the author"
-                className="md:size-10 size-7 rounded-full border-2 border-white"
-                style={{ color: "transparent" }}
+                width={40}
+                height={40}
+                alt="User Avatar 4"
+                className="md:size-10 size-7 rounded-full border-2 border-white dark:border-neutral-800"
               />
               <Image
                 src="/assets/images/Jake.jpg"
-                width={500}
-                height={500}
-                alt="Picture of the author"
-                className="md:size-10 size-7 rounded-full border-2 border-white"
-                style={{ color: "transparent" }}
+                width={40}
+                height={40}
+                alt="User Avatar 5"
+                className="md:size-10 size-7 rounded-full border-2 border-white dark:border-neutral-800"
               />
             </div>
 
             {/* Star rating and user count */}
             <div className="space-y-1">
               <div className="flex">
-                {/* SVG Star Icons (remain the same) */}
-                <FaStar className="lg:size-5 size-3 text-yellow-500 dark:text-white" />
-                <FaStar className="lg:size-5 size-3 text-yellow-500 dark:text-white" />
-                <FaStar className="lg:size-5 size-3 text-yellow-500 dark:text-white" />
-                <FaStar className="lg:size-5 size-3 text-yellow-500 dark:text-white" />
-                <FaStarHalfAlt className="lg:size-5 size-3 text-yellow-500 dark:text-white" />
+                <FaStar className="lg:size-5 size-3 text-yellow-500 dark:text-yellow-400" />
+                <FaStar className="lg:size-5 size-3 text-yellow-500 dark:text-yellow-400" />
+                <FaStar className="lg:size-5 size-3 text-yellow-500 dark:text-yellow-400" />
+                <FaStar className="lg:size-5 size-3 text-yellow-500 dark:text-yellow-400" />
+                <FaStarHalfAlt className="lg:size-5 size-3 text-yellow-500 dark:text-yellow-400" />
               </div>
               <p className="text-xs font-normal text-mainheading dark:text-white capitalize">
                 Join +500 happy users
@@ -139,32 +145,46 @@ const MobileDownloadSection: React.FC = () => {
               reaches where it matters most — quickly and securely
             </p>
           </div>
-        </article>
+        </motion.article>
 
-        {/* Right Column: Phone Image */}
-        <aside className="flex flex-1 items-center justify-center">
-          <div className="relative flex aspect-square w-full flex-shrink-0 justify-center overflow-hidden rounded-bl-lg rounded-br-3xl rounded-tl-3xl rounded-tr-lg bg-gray/30 dark:bg-white/5  dark:border pt-12 md:h-[572px] md:w-[500px] md:rounded-bl-[30px] md:rounded-br-[120px] md:rounded-tl-[120px] md:rounded-tr-[30px]">
-            <Image
-              src="/assets/images/send-money-light.svg"
-              width={500}
-              height={500}
-              alt="Picture of the author"
-              className="z-10 flex-shrink-0 md:h-[550px] md:w-[450px] block dark:hidden "
-              style={{ color: "transparent" }}
-            />
-            <Image
-              src="/assets/images/send-money-dark.svg"
-              width={500}
-              height={500}
-              alt="Picture of the author"
-              className="z-10 flex-shrink-0 md:h-[550px] md:w-[450px] hidden dark:block"
-              style={{ color: "transparent" }}
-            />
-            <div className="absolute bottom-0 left-0 right-0 z-10 w-full">
+        {/* Right Column: Container for Phone Image - Wrap with motion for FADE IN */}
+        <motion.aside
+          className="flex flex-1 items-center justify-center lg:pl-10"
+          variants={rightContainerVariants} // Apply simple fade-in animation
+        >
+          {/* Container for phone image and SVG waves - THIS needs overflow:hidden */}
+          <div className="relative flex aspect-square w-full max-w-md lg:max-w-none flex-shrink-0 justify-center overflow-hidden rounded-bl-lg rounded-br-3xl rounded-tl-3xl rounded-tr-lg bg-gray/30 dark:bg-white/5 dark:border pt-12 md:h-[572px] md:w-[500px] md:rounded-bl-[30px] md:rounded-br-[120px] md:rounded-tl-[120px] md:rounded-tr-[30px]">
+            {/* === Motion Wrapper for ONLY the Images === */}
+            <motion.div
+              className="relative z-10 w-[70%] h-auto md:h-[550px] md:w-[450px]" // Position wrapper
+              variants={imageSlideUpVariants} // Apply slide-up animation HERE
+            >
+              {/* Image components are INSIDE the sliding wrapper */}
+              <Image
+                src="/assets/images/send-money-light.svg"
+                layout="fill" // Use fill layout within the motion wrapper
+                objectFit="contain" // Adjust object fit as needed
+                alt="Send money app screenshot - Light mode"
+                className="block dark:hidden" // Removed absolute positioning
+                priority
+              />
+              <Image
+                src="/assets/images/send-money-dark.svg"
+                layout="fill"
+                objectFit="contain"
+                alt="Send money app screenshot - Dark mode"
+                className="hidden dark:block"
+                priority
+              />
+            </motion.div>
+            {/* === End Motion Wrapper for Images === */}
+
+            {/* SVG Waves (Outside the sliding motion.div, inside the aside) */}
+            <div className="absolute bottom-0 left-0 right-0 z-0 w-full">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 1440 320"
-                className="fill-neutral-500 dark:fill-neutral-800"
+                className="fill-gray-300 dark:fill-neutral-800"
               >
                 <path
                   fillOpacity="1"
@@ -172,11 +192,11 @@ const MobileDownloadSection: React.FC = () => {
                 ></path>
               </svg>
             </div>
-            <div className="absolute bottom-0 left-0 right-0 w-full ">
+            <div className="absolute bottom-0 left-0 right-0 z-0 w-full">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 1440 320"
-                className="fill-neutral-300 dark:fill-neutral-400"
+                className="fill-gray-200 dark:fill-neutral-700"
               >
                 <path
                   fillOpacity="1"
@@ -184,20 +204,11 @@ const MobileDownloadSection: React.FC = () => {
                 ></path>
               </svg>
             </div>
-            {/* <Image
-              src="/assets/images/curve-2.svg"
-              width={500}
-              height={500}
-              alt="Picture of the author"
-              className="absolute bottom-0 left-0 right-0 w-full "
-              style={{ color: "transparent" }}
-            /> */}
           </div>
-        </aside>
-      </section>
+        </motion.aside>
+      </motion.section>
     </div>
   );
 };
 
-// Export the component for use in other parts of your application
 export default MobileDownloadSection;

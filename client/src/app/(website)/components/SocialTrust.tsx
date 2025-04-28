@@ -1816,12 +1816,973 @@
 
 // export default ReviewCards;
 
+// "use client";
+// import React, { useState, useEffect, useRef } from "react";
+// import { FaStar, FaStarHalfAlt } from "react-icons/fa";
+// import { useRouter, usePathname } from "next/navigation";
+
+// // --- StarRating Component ---
+// interface StarRatingProps {
+//   rating: number;
+//   maxRating?: number;
+// }
+
+// const StarRating: React.FC<StarRatingProps> = ({ rating, maxRating = 5 }) => {
+//   const stars = [];
+//   const fullStars = Math.floor(rating);
+//   const hasHalfStar = rating % 1 !== 0;
+
+//   for (let i = 0; i < maxRating; i++) {
+//     if (i < fullStars) {
+//       stars.push(
+//         <FaStar
+//           key={i}
+//           className="inline-block text-[#FBBF24] dark:text-white"
+//         />
+//       );
+//     } else if (i === fullStars && hasHalfStar) {
+//       stars.push(
+//         <FaStarHalfAlt
+//           key={i}
+//           className="inline-block text-[#FBBF24] dark:text-white"
+//         />
+//       );
+//     } else {
+//       stars.push(
+//         <FaStar
+//           key={i}
+//           className="inline-block text-lightgray dark:text-white"
+//         />
+//       );
+//     }
+//   }
+
+//   return <div className="inline-block">{stars}</div>;
+// };
+
+// // --- ReviewCard Component ---
+// interface ReviewCardProps {
+//   reviewerName: string;
+//   avatarUrl: string;
+//   rating: number;
+//   comment: string;
+// }
+
+// const ReviewCard: React.FC<ReviewCardProps> = ({
+//   reviewerName,
+//   avatarUrl,
+//   rating,
+//   comment,
+// }) => {
+//   return (
+//     <div className="bg-lightgray dark:bg-white/5 rounded-2xl lg:p-6 p-4 flex flex-col items-start relative mb-4 flex-shrink-0">
+//       <div className="flex md:flex-row items-center w-full justify-center md:justify-start">
+//         <div className="flex flex-col md:flex-row items-center">
+//           <img
+//             src={avatarUrl}
+//             alt={`Avatar of ${reviewerName}`}
+//             className="lg:size-16 size-14 rounded-full object-cover mb-2 md:mb-0 md:mr-2.5"
+//           />
+//           <div className="flex flex-col items-center md:items-start">
+//             <div className="text-mainheading dark:text-primary font-medium text-nowrap">
+//               {reviewerName}
+//             </div>
+//             <StarRating rating={rating} />
+//           </div>
+//         </div>
+//       </div>
+//       <div className="text-gray-700 dark:text-gray-300 leading-relaxed font-normal mt-4 md:mt-6 text-sm lg:text-lg">
+//         {comment}
+//       </div>
+//     </div>
+//   );
+// };
+
+// // --- Interfaces for Data Structure ---
+// interface Review {
+//   reviewerName: string;
+//   avatarUrl: string;
+//   rating: number;
+//   comment: string;
+// }
+
+// interface ReviewGroup {
+//   id: string;
+//   reviews: Review[];
+// }
+
+// interface ReviewData {
+//   reviewGroups: ReviewGroup[];
+// }
+
+// // --- Main Component ---
+// const ReviewCards: React.FC = () => {
+//   const [reviewGroups, setReviewGroups] = useState<ReviewGroup[]>([]);
+//   const [loading, setLoading] = useState<boolean>(true);
+//   const [error, setError] = useState<Error | null>(null);
+//   const columnRefs = useRef<(HTMLDivElement | null)[]>([]);
+//   const pathname = usePathname();
+
+//   useEffect(() => {
+//     const fetchReviews = async () => {
+//       setLoading(true);
+//       setError(null);
+//       try {
+//         const response = await fetch("/Review.json");
+//         if (!response.ok) {
+//           throw new Error(`HTTP error! status: ${response.status}`);
+//         }
+//         const data: ReviewData = await response.json();
+//         if (!data || !Array.isArray(data.reviewGroups)) {
+//           throw new Error("Invalid data structure received from Review.json");
+//         }
+//         setReviewGroups(data.reviewGroups);
+//       } catch (err: any) {
+//         console.error("Failed to fetch reviews:", err);
+//         setError(err instanceof Error ? err : new Error("Unknown error"));
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+//     fetchReviews();
+//   }, []);
+
+//   useEffect(() => {
+//     if (loading || error || reviewGroups.length === 0) return;
+
+//     const columns = columnRefs.current;
+
+//     columns.forEach((columnEl) => {
+//       if (!columnEl) return;
+//       const contentEl =
+//         columnEl.querySelector<HTMLDivElement>(".marquee-content");
+//       if (!contentEl) return;
+
+//       const childrenCount = contentEl.children.length;
+//       const expectedChildrenCount = reviewGroups[0]?.reviews.length * 2;
+//       let needsDuplication = true;
+
+//       if (childrenCount === expectedChildrenCount) {
+//         needsDuplication = false;
+//       }
+
+//       if (contentEl.children.length > 0) {
+//         const firstChildHeight = (contentEl.children[0] as HTMLElement)
+//           .offsetHeight;
+//         const estimatedOriginalHeight = firstChildHeight * (childrenCount / 2);
+//         if (contentEl.scrollHeight > estimatedOriginalHeight * 1.8) {
+//           needsDuplication = false;
+//         }
+//       }
+
+//       if (needsDuplication) {
+//         const originalChildren = Array.from(contentEl.children);
+//         originalChildren.forEach((child) => {
+//           const clone = child.cloneNode(true);
+//           contentEl.appendChild(clone);
+//         });
+//       }
+//     });
+//   }, [loading, error, reviewGroups]);
+
+//   if (loading) {
+//     return <div className="text-center p-10">Loading reviews...</div>;
+//   }
+
+//   if (error) {
+//     return (
+//       <div className="text-center p-10 text-red-500">
+//         Error loading reviews: {error.message}
+//       </div>
+//     );
+//   }
+
+//   if (reviewGroups.length === 0) {
+//     return (
+//       <div className="text-center p-10 text-gray-700">
+//         No reviews available yet.
+//       </div>
+//     );
+//   }
+
+//   const isHomePage = pathname === "/";
+
+//   const heading = isHomePage ? (
+//     <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+//       Honest Reviews
+//       <span className="text-primary"> Real Travelers Like You </span>
+//     </h1>
+//   ) : (
+//     <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+//       Trusted Currency Exchange
+//       <span className="text-primary"> Feedback & Rating </span>
+//     </h1>
+//   );
+
+//   const paragraph = isHomePage ? (
+//     <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-700 leading-relaxed dark:text-gray-300 mt-5 text-left">
+//       Hear directly from globetrotters who’ve trusted us for their currency
+//       exchange needs. From smooth transactions to unbeatable rates, see why
+//       travelers around the world choose us every time.
+//     </p>
+//   ) : (
+//     <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-700 leading-relaxed dark:text-gray-300 mt-5 text-left">
+//       Read honest customer reviews about our currency exchange services. See why
+//       travelers, investors, and expats trust us for fast, reliable, and
+//       competitive rates. Our clients appreciate the transparency, excellent
+//       support, and real-time rates.
+//     </p>
+//   );
+
+//   return (
+//     <section
+//       className="Reviews py-10 bg-white dark:bg-background px-4"
+//       id="review"
+//     >
+//       <div className="container mx-auto">
+//         <div className="w-full mb-10">
+//           {/* heading and paragraph */}
+//           {heading}
+//           {paragraph}
+//         </div>
+
+//         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 h-[600px] md:h-[1000px] overflow-hidden relative">
+//           {reviewGroups.slice(0, 3).map((group, index) => (
+//             <div
+//               key={group.id || `group-${index}`}
+//               className={`lg:marquee-column marquee-column-${index + 1}`}
+//               ref={(el: HTMLDivElement | null) => {
+//                 columnRefs.current[index] = el;
+//               }}
+//             >
+//               <div className="marquee-content flex flex-col space-y-4 md:space-y-6">
+//                 {group.reviews.map((review, reviewIndex) => (
+//                   <ReviewCard key={reviewIndex} {...review} />
+//                 ))}
+//               </div>
+//             </div>
+//           ))}
+//           {/* Gradient Fades */}
+//           <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white via-gray-50 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none"></div>
+//           <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-white via-gray-50 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none"></div>
+//         </div>
+//       </div>
+
+//       {/* Custom CSS for marquee animation */}
+//       <style jsx global>{`
+//         .marquee-column {
+//           overflow: hidden;
+//           height: 100%;
+//           position: relative;
+//         }
+
+//         .marquee-content {
+//           animation: scroll-up 30s linear infinite;
+//         }
+
+//         .marquee-column:hover .marquee-content {
+//           animation-play-state: paused;
+//         }
+
+//         @keyframes scroll-up {
+//           0% {
+//             transform: translateY(0);
+//           }
+//           100% {
+//             transform: translateY(-50%);
+//           }
+//         }
+//       `}</style>
+//     </section>
+//   );
+// };
+
+// export default ReviewCards;
+
+// "use client";
+// import React, { useState, useEffect, useRef } from "react";
+// import { FaStar, FaStarHalfAlt } from "react-icons/fa";
+// import { useRouter, usePathname } from "next/navigation";
+// import { motion } from "framer-motion"; // Import motion
+
+// // --- StarRating Component (No changes needed) ---
+// interface StarRatingProps {
+//   rating: number;
+//   maxRating?: number;
+// }
+
+// const StarRating: React.FC<StarRatingProps> = ({ rating, maxRating = 5 }) => {
+//   const stars = [];
+//   const fullStars = Math.floor(rating);
+//   const hasHalfStar = rating % 1 !== 0;
+
+//   for (let i = 0; i < maxRating; i++) {
+//     if (i < fullStars) {
+//       stars.push(
+//         <FaStar
+//           key={i}
+//           className="inline-block text-[#FBBF24] dark:text-white"
+//         />
+//       );
+//     } else if (i === fullStars && hasHalfStar) {
+//       stars.push(
+//         <FaStarHalfAlt
+//           key={i}
+//           className="inline-block text-[#FBBF24] dark:text-white"
+//         />
+//       );
+//     } else {
+//       stars.push(
+//         <FaStar
+//           key={i}
+//           className="inline-block text-lightgray dark:text-white" // Consider dark:text-gray-600 for better contrast
+//         />
+//       );
+//     }
+//   }
+
+//   return <div className="inline-block">{stars}</div>;
+// };
+
+// // --- ReviewCard Component (No changes needed) ---
+// interface ReviewCardProps {
+//   reviewerName: string;
+//   avatarUrl: string;
+//   rating: number;
+//   comment: string;
+// }
+
+// const ReviewCard: React.FC<ReviewCardProps> = ({
+//   reviewerName,
+//   avatarUrl,
+//   rating,
+//   comment,
+// }) => {
+//   return (
+//     // Adjusted min-height for better consistency if needed, but h-full on wrapper might be better
+//     <div className="bg-lightgray dark:bg-white/5 rounded-2xl lg:p-6 p-4 flex flex-col items-start relative flex-shrink-0 h-full">
+//       <div className="flex md:flex-row items-center w-full justify-center md:justify-start">
+//         <div className="flex flex-col md:flex-row items-center">
+//           <img
+//             src={avatarUrl}
+//             alt={`Avatar of ${reviewerName}`}
+//             className="lg:size-16 size-14 rounded-full object-cover mb-2 md:mb-0 md:mr-2.5"
+//           />
+//           <div className="flex flex-col items-center md:items-start">
+//             <div className="text-mainheading dark:text-primary font-medium text-nowrap">
+//               {reviewerName}
+//             </div>
+//             <StarRating rating={rating} />
+//           </div>
+//         </div>
+//       </div>
+//       <div className="text-gray-700 dark:text-gray-300 leading-relaxed font-normal mt-4 md:mt-6 text-sm lg:text-lg">
+//         {comment}
+//       </div>
+//     </div>
+//   );
+// };
+
+// // --- Interfaces for Data Structure (No changes needed) ---
+// interface Review {
+//   reviewerName: string;
+//   avatarUrl: string;
+//   rating: number;
+//   comment: string;
+// }
+
+// interface ReviewGroup {
+//   id: string;
+//   reviews: Review[];
+// }
+
+// interface ReviewData {
+//   reviewGroups: ReviewGroup[];
+// }
+
+// // --- Animation Variants ---
+// const sectionVariants = {
+//   hidden: {}, // Parent doesn't need explicit animation, just controls trigger
+//   visible: {
+//     transition: {
+//       staggerChildren: 0.1, // Stagger direct children (text block, grid container)
+//     },
+//   },
+// };
+
+// const textBlockVariants = {
+//   hidden: { opacity: 0, y: 20 },
+//   visible: {
+//     opacity: 1,
+//     y: 0,
+//     transition: { duration: 0.5, ease: "easeOut" },
+//   },
+// };
+
+// const gridContainerVariants = {
+//   hidden: {}, // Grid container itself doesn't animate, just staggers its children
+//   visible: {
+//     transition: {
+//       staggerChildren: 0.1, // Stagger the review cards within the grid
+//       delayChildren: 0.2, // Start staggering cards slightly after text block appears
+//     },
+//   },
+// };
+
+// const cardVariants = {
+//   hidden: { opacity: 0, scale: 0.9, y: 30 }, // Start slightly smaller, down, and invisible
+//   visible: {
+//     opacity: 1,
+//     scale: 1,
+//     y: 0, // Animate to full size and original position
+//     transition: { duration: 0.4, ease: "easeOut" },
+//   },
+// };
+
+// // --- Main Component ---
+// const ReviewCards: React.FC = () => {
+//   const [reviewGroups, setReviewGroups] = useState<ReviewGroup[]>([]);
+//   const [loading, setLoading] = useState<boolean>(true);
+//   const [error, setError] = useState<Error | null>(null);
+//   const pathname = usePathname();
+//   // Removed columnRefs and marquee duplication logic
+//   const columnRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+//   useEffect(() => {
+//     const columns = columnRefs.current;
+
+//     const fetchReviews = async () => {
+//       setLoading(true);
+//       setError(null);
+//       try {
+//         const response = await fetch("/Review.json"); // Make sure this path is correct
+//         if (!response.ok) {
+//           throw new Error(`HTTP error! status: ${response.status}`);
+//         }
+//         const data: ReviewData = await response.json();
+//         if (!data || !Array.isArray(data.reviewGroups)) {
+//           throw new Error("Invalid data structure received from Review.json");
+//         }
+//         setReviewGroups(data.reviewGroups);
+//       } catch (err: any) {
+//         console.error("Failed to fetch reviews:", err);
+//         setError(err instanceof Error ? err : new Error("Unknown error"));
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+//     fetchReviews();
+//   }, []);
+
+//   // Removed the marquee duplication useEffect
+
+//   if (loading) {
+//     return <div className="text-center p-10">Loading reviews...</div>;
+//   }
+
+//   if (error) {
+//     return (
+//       <div className="text-center p-10 text-red-500">
+//         Error loading reviews: {error.message}
+//       </div>
+//     );
+//   }
+
+//   if (reviewGroups.length === 0) {
+//     return (
+//       <div className="text-center p-10 text-gray-700">
+//         No reviews available yet.
+//       </div>
+//     );
+//   }
+
+//   const isHomePage = pathname === "/";
+
+//   const heading = isHomePage ? (
+//     <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+//       Honest Reviews
+//       <span className="text-primary"> Real Travelers Like You </span>
+//     </h1>
+//   ) : (
+//     <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+//       Trusted Currency Exchange
+//       <span className="text-primary"> Feedback & Rating </span>
+//     </h1>
+//   );
+
+//   const paragraph = isHomePage ? (
+//     <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-700 leading-relaxed dark:text-gray-300 mt-5 text-left">
+//       Hear directly from globetrotters who’ve trusted us for their currency
+//       exchange needs. From smooth transactions to unbeatable rates, see why
+//       travelers around the world choose us every time.
+//     </p>
+//   ) : (
+//     <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-700 leading-relaxed dark:text-gray-300 mt-5 text-left">
+//       Read honest customer reviews about our currency exchange services. See why
+//       travelers, investors, and expats trust us for fast, reliable, and
+//       competitive rates. Our clients appreciate the transparency, excellent
+//       support, and real-time rates.
+//     </p>
+//   );
+
+//   // Flatten the reviews from the first 3 groups into a single array for easier grid mapping
+//   const allReviews = reviewGroups.slice(0, 3).flatMap((group) => group.reviews);
+
+//   return (
+//     <motion.section
+//       className="Reviews py-10 bg-white dark:bg-background px-4 overflow-hidden" // Added overflow-hidden
+//       id="review"
+//       variants={sectionVariants}
+//       initial="hidden"
+//       whileInView="visible"
+//       viewport={{ amount: 0.1, once: false }} // Trigger when 10% visible, repeat animation
+//     >
+//       <div className="container mx-auto">
+//         {/* Text Block Animation */}
+//         <motion.div
+//           className="w-full mb-10"
+//           variants={textBlockVariants}
+//           // Inherits trigger from parent section
+//         >
+//           {heading}
+//           {paragraph}
+//         </motion.div>
+
+//         <motion.div
+//           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 h-[600px] md:h-[1000px] overflow-hidden relative"
+//           variants={gridContainerVariants}
+//         >
+//           {reviewGroups.slice(0, 3).map((group, index) => (
+//             <motion.div
+//               variants={cardVariants}
+//               key={group.id || `group-${index}`}
+//               className={`lg:marquee-column marquee-column-${index + 1}`}
+//               ref={(el: HTMLDivElement | null) => {
+//                 columnRefs.current[index] = el;
+//               }}
+//             >
+//               <div className="marquee-content flex flex-col space-y-4 md:space-y-6">
+//                 {group.reviews.map((review, reviewIndex) => (
+//                   <ReviewCard key={reviewIndex} {...review} />
+//                 ))}
+//               </div>
+//             </motion.div>
+//           ))}
+
+//           <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-white via-white/80 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none z-10"></div>
+//           <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-white via-white/80 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none z-10"></div>
+//         </motion.div>
+//       </div>
+
+//       {/* <style jsx globale> block for marquee */}
+//       <style jsx global>{`
+//         .marquee-column {
+//           overflow: hidden;
+//           height: 100%;
+//           position: relative;
+//         }
+
+//         .marquee-content {
+//           animation: scroll-up 30s linear infinite;
+//         }
+
+//         .marquee-column:hover .marquee-content {
+//           animation-play-state: paused;
+//         }
+
+//         @keyframes scroll-up {
+//           0% {
+//             transform: translateY(0);
+//           }
+//           100% {
+//             transform: translateY(-50%);
+//           }
+//         }
+//       `}</style>
+//     </motion.section>
+//   );
+// };
+
+// export default ReviewCards;
+
+// // //reviewcard section
+
+// "use client";
+// import React, { useState, useEffect, useRef } from "react";
+// import { FaStar, FaStarHalfAlt } from "react-icons/fa";
+// import { useRouter, usePathname } from "next/navigation";
+// import { motion } from "framer-motion"; // Import motion
+
+// // --- StarRating Component (No changes needed) ---
+// interface StarRatingProps {
+//   rating: number;
+//   maxRating?: number;
+// }
+
+// const StarRating: React.FC<StarRatingProps> = ({ rating, maxRating = 5 }) => {
+//   const stars = [];
+//   const fullStars = Math.floor(rating);
+//   const hasHalfStar = rating % 1 !== 0;
+
+//   for (let i = 0; i < maxRating; i++) {
+//     if (i < fullStars) {
+//       stars.push(
+//         <FaStar
+//           key={i}
+//           className="inline-block text-[#FBBF24] dark:text-white"
+//         />
+//       );
+//     } else if (i === fullStars && hasHalfStar) {
+//       stars.push(
+//         <FaStarHalfAlt
+//           key={i}
+//           className="inline-block text-[#FBBF24] dark:text-white"
+//         />
+//       );
+//     } else {
+//       stars.push(
+//         <FaStar
+//           key={i}
+//           className="inline-block text-lightgray dark:text-white" // Consider dark:text-gray-600 for better contrast
+//         />
+//       );
+//     }
+//   }
+
+//   return <div className="inline-block">{stars}</div>;
+// };
+
+// // --- ReviewCard Component (No changes needed) ---
+// interface ReviewCardProps {
+//   reviewerName: string;
+//   avatarUrl: string;
+//   rating: number;
+//   comment: string;
+// }
+
+// const ReviewCard: React.FC<ReviewCardProps> = ({
+//   reviewerName,
+//   avatarUrl,
+//   rating,
+//   comment,
+// }) => {
+//   return (
+//     <div className="bg-lightgray dark:bg-white/5 rounded-2xl lg:p-6 p-4 flex flex-col items-start relative flex-shrink-0 h-full">
+//       <div className="flex md:flex-row items-center w-full justify-center md:justify-start">
+//         <div className="flex flex-col md:flex-row items-center">
+//           <img
+//             src={avatarUrl}
+//             alt={`Avatar of ${reviewerName}`}
+//             className="lg:size-16 size-14 rounded-full object-cover mb-2 md:mb-0 md:mr-2.5"
+//           />
+//           <div className="flex flex-col items-center md:items-start">
+//             <div className="text-mainheading dark:text-primary font-medium text-nowrap">
+//               {reviewerName}
+//             </div>
+//             <StarRating rating={rating} />
+//           </div>
+//         </div>
+//       </div>
+//       <div className="text-gray-700 dark:text-gray-300 leading-relaxed font-normal mt-4 md:mt-6 text-sm lg:text-lg">
+//         {comment}
+//       </div>
+//     </div>
+//   );
+// };
+
+// // --- Interfaces for Data Structure (No changes needed) ---
+// interface Review {
+//   reviewerName: string;
+//   avatarUrl: string;
+//   rating: number;
+//   comment: string;
+// }
+
+// interface ReviewGroup {
+//   id: string;
+//   reviews: Review[];
+// }
+
+// interface ReviewData {
+//   reviewGroups: ReviewGroup[];
+// }
+
+// // --- Animation Variants ---
+// const sectionVariants = {
+//   hidden: {},
+//   visible: {
+//     transition: {
+//       staggerChildren: 0.1, // Stagger text block and columns container
+//     },
+//   },
+// };
+
+// const textBlockVariants = {
+//   hidden: { opacity: 0, y: 20 },
+//   visible: {
+//     opacity: 1,
+//     y: 0,
+//     transition: { duration: 0.5, ease: "easeOut" },
+//   },
+// };
+
+// // Variants for the container holding the columns
+// const columnsContainerVariants = {
+//   hidden: {},
+//   visible: {
+//     transition: {
+//       staggerChildren: 0.15, // Stagger the appearance of each column
+//       delayChildren: 0.2, // Delay start slightly after text appears
+//     },
+//   },
+// };
+
+// // Variants for each column wrapper (to stagger cards within)
+// const columnItemVariants = {
+//   hidden: { opacity: 0 }, // Column itself can just fade in or have no visual effect
+//   visible: {
+//     opacity: 1,
+//     transition: {
+//       staggerChildren: 0.1, // Stagger the cards *inside* this column
+//     },
+//   },
+// };
+
+// // Variants for individual review card entrance animation
+// const cardEntranceVariants = {
+//   hidden: { opacity: 0, y: 30, scale: 0.95 }, // Start invisible, down, and slightly smaller
+//   visible: {
+//     opacity: 1,
+//     y: 0,
+//     scale: 1, // Animate to visible, original position, and full size
+//     transition: { duration: 0.4, ease: "easeOut" },
+//   },
+// };
+
+// // --- Main Component ---
+// const ReviewCards: React.FC = () => {
+//   const [reviewGroups, setReviewGroups] = useState<ReviewGroup[]>([]);
+//   const [loading, setLoading] = useState<boolean>(true);
+//   const [error, setError] = useState<Error | null>(null);
+//   const pathname = usePathname();
+//   const columnRefs = useRef<(HTMLDivElement | null)[]>([]); // Keep refs for marquee duplication
+
+//   useEffect(() => {
+//     const fetchReviews = async () => {
+//       setLoading(true);
+//       setError(null);
+//       try {
+//         const response = await fetch("/Review.json"); // Make sure this path is correct
+//         if (!response.ok) {
+//           throw new Error(`HTTP error! status: ${response.status}`);
+//         }
+//         const data: ReviewData = await response.json();
+//         if (!data || !Array.isArray(data.reviewGroups)) {
+//           throw new Error("Invalid data structure received from Review.json");
+//         }
+//         setReviewGroups(data.reviewGroups);
+//       } catch (err: any) {
+//         console.error("Failed to fetch reviews:", err);
+//         setError(err instanceof Error ? err : new Error("Unknown error"));
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+//     fetchReviews();
+//   }, []);
+
+//   // Marquee Duplication Logic (Keep this as it was)
+//   useEffect(() => {
+//     if (loading || error || reviewGroups.length === 0) return;
+
+//     const columns = columnRefs.current;
+
+//     // Timeout to allow initial render and Framer Motion animations potentially
+//     const timer = setTimeout(() => {
+//       columns.forEach((columnEl) => {
+//         if (!columnEl) return;
+//         const contentEl =
+//           columnEl.querySelector<HTMLDivElement>(".marquee-content");
+//         if (!contentEl) return;
+
+//         // Simple check: if content is less than 1.5x the column height, duplicate
+//         // Adjust the multiplier (1.5) as needed based on card sizes and column height
+//         if (contentEl.scrollHeight < columnEl.offsetHeight * 1.5) {
+//           // Avoid duplicating if already duplicated
+//           const originalChildrenCount = group.reviews.length; // Assuming group is accessible or use a fixed number
+//           if (contentEl.children.length <= originalChildrenCount) {
+//             const originalChildren = Array.from(contentEl.children);
+//             originalChildren.forEach((child) => {
+//               const clone = child.cloneNode(true) as HTMLElement;
+//               // Remove Framer Motion specific attributes/styles from clones if they cause issues
+//               clone.removeAttribute("style"); // Basic style removal, might need more specific cleanup
+//               contentEl.appendChild(clone);
+//             });
+//           }
+//         }
+//       });
+//     }, 500); // Delay duplication slightly
+
+//     return () => clearTimeout(timer); // Cleanup timer
+//   }, [loading, error, reviewGroups]); // Rerun if data changes
+
+//   if (loading) {
+//     return <div className="text-center p-10">Loading reviews...</div>;
+//   }
+
+//   if (error) {
+//     return (
+//       <div className="text-center p-10 text-red-500">
+//         Error loading reviews: {error.message}
+//       </div>
+//     );
+//   }
+
+//   if (reviewGroups.length === 0) {
+//     return (
+//       <div className="text-center p-10 text-gray-700">
+//         No reviews available yet.
+//       </div>
+//     );
+//   }
+
+//   const isHomePage = pathname === "/";
+
+//   const heading = isHomePage ? (
+//     <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+//       Honest Reviews
+//       <span className="text-primary"> Real Travelers Like You </span>
+//     </h1>
+//   ) : (
+//     <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+//       Trusted Currency Exchange
+//       <span className="text-primary"> Feedback & Rating </span>
+//     </h1>
+//   );
+
+//   const paragraph = isHomePage ? (
+//     <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-700 leading-relaxed dark:text-gray-300 mt-5 text-left">
+//       Hear directly from globetrotters who’ve trusted us for their currency
+//       exchange needs. From smooth transactions to unbeatable rates, see why
+//       travelers around the world choose us every time.
+//     </p>
+//   ) : (
+//     <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-700 leading-relaxed dark:text-gray-300 mt-5 text-left">
+//       Read honest customer reviews about our currency exchange services. See why
+//       travelers, investors, and expats trust us for fast, reliable, and
+//       competitive rates. Our clients appreciate the transparency, excellent
+//       support, and real-time rates.
+//     </p>
+//   );
+
+//   return (
+//     <motion.section
+//       className="Reviews py-10 bg-white dark:bg-background px-4 overflow-hidden" // Added overflow-hidden
+//       id="review"
+//       variants={sectionVariants}
+//       initial="hidden"
+//       whileInView="visible"
+//       viewport={{ amount: 0.1, once: false }} // Trigger when 10% visible, repeat animation
+//     >
+//       <div className="container mx-auto">
+//         {/* Text Block Animation */}
+//         <motion.div
+//           className="w-full mb-10"
+//           variants={textBlockVariants}
+//           // Inherits trigger
+//         >
+//           {heading}
+//           {paragraph}
+//         </motion.div>
+//         {/* --- Grid Container for Columns --- */}
+//         <motion.div
+//           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 h-[600px] md:h-[1000px] overflow-hidden relative" // Keep fixed height for marquee
+//           variants={columnsContainerVariants} // Controls staggering of columns
+//           // Inherits trigger
+//         >
+//           {/* Map through the review groups for columns */}
+//           {reviewGroups.slice(0, 3).map((group, index) => (
+//             // --- Column Wrapper for Staggering Cards Within ---
+//             <motion.div
+//               key={group.id || `group-${index}`}
+//               variants={columnItemVariants} // Controls staggering of cards inside
+//               // This motion.div wraps the column structure but doesn't interfere with marquee ref/class
+//             >
+//               {/* Actual Column Structure with Marquee Ref */}
+//               <div
+//                 className={`lg:marquee-column marquee-column-${index + 1}`}
+//                 ref={(el: HTMLDivElement | null) => {
+//                   columnRefs.current[index] = el;
+//                 }}
+//               >
+//                 {/* Marquee Content Div (NO motion here) */}
+//                 <div className="marquee-content flex flex-col space-y-4 md:space-y-6">
+//                   {/* Map through reviews WITHIN the group */}
+//                   {group.reviews.map((review, reviewIndex) => (
+//                     // --- Individual Card Wrapper for Entrance Animation ---
+//                     <motion.div
+//                       key={reviewIndex}
+//                       variants={cardEntranceVariants} // Apply entrance animation HERE
+//                     >
+//                       <ReviewCard {...review} />
+//                     </motion.div>
+//                   ))}
+//                 </div>{" "}
+//                 {/* End marquee-content */}
+//               </div>{" "}
+//               {/* End marquee-column div with ref */}
+//             </motion.div> // End column wrapper motion.div
+//           ))}
+
+//           {/* Gradient Fades */}
+//           <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-white via-white/80 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none z-10"></div>
+//           <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-white via-white/80 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none z-10"></div>
+//         </motion.div>{" "}
+//         {/* End grid container */}
+//       </div>
+
+//       {/* KEEP the marquee CSS */}
+//       <style jsx global>{`
+//         .marquee-column {
+//           overflow: hidden;
+//           height: 100%;
+//           position: relative;
+//         }
+
+//         .marquee-content {
+//           /* Ensure it can be positioned absolutely if needed, but transform is better */
+//           /* display: block; /* Or flex if needed */
+//           /* position: relative; /* Keep relative for transform */
+//           animation: scroll-up 40s linear infinite; /* Slower animation? */
+//         }
+
+//         .marquee-column:hover .marquee-content {
+//           animation-play-state: paused;
+//         }
+
+//         @keyframes scroll-up {
+//           0% {
+//             transform: translateY(0%);
+//           }
+//           100% {
+//             /* This assumes duplication. Adjust if duplication logic changes */
+//             transform: translateY(-50%);
+//           }
+//         }
+//       `}</style>
+//     </motion.section>
+//   );
+// };
+
+// export default ReviewCards;
+
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { useRouter, usePathname } from "next/navigation";
+import { easeInOut, motion } from "framer-motion"; // Import motion
 
-// --- StarRating Component ---
+// --- StarRating Component (No changes needed) ---
 interface StarRatingProps {
   rating: number;
   maxRating?: number;
@@ -1860,7 +2821,7 @@ const StarRating: React.FC<StarRatingProps> = ({ rating, maxRating = 5 }) => {
   return <div className="inline-block">{stars}</div>;
 };
 
-// --- ReviewCard Component ---
+// --- ReviewCard Component (No changes needed) ---
 interface ReviewCardProps {
   reviewerName: string;
   avatarUrl: string;
@@ -1875,7 +2836,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
   comment,
 }) => {
   return (
-    <div className="bg-lightgray dark:bg-white/5 rounded-2xl lg:p-6 p-4 flex flex-col items-start relative mb-4 flex-shrink-0">
+    <div className="bg-lightgray dark:bg-white/5 rounded-2xl lg:p-6 p-4 flex flex-col items-start relative flex-shrink-0 h-full">
       <div className="flex md:flex-row items-center w-full justify-center md:justify-start">
         <div className="flex flex-col md:flex-row items-center">
           <img
@@ -1898,7 +2859,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
   );
 };
 
-// --- Interfaces for Data Structure ---
+// --- Interfaces for Data Structure (No changes needed) ---
 interface Review {
   reviewerName: string;
   avatarUrl: string;
@@ -1915,13 +2876,73 @@ interface ReviewData {
   reviewGroups: ReviewGroup[];
 }
 
+// --- Animation Variants ---
+const sectionVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const textBlockVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut" },
+  },
+};
+
+const columnsContainerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const columnItemVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1, // Stagger the cards *inside* this column
+    },
+  },
+};
+
+// --- Unique Card Entrance Variants ---
+const cardEntranceVariants = {
+  hidden: {
+    opacity: 0,
+    rotateX: -80, // Start flipped back
+    y: 50, // Start slightly down
+    scale: 0.95, // Start slightly smaller
+    transformOrigin: "center top", // Rotate around the top edge
+  },
+  visible: {
+    opacity: 1,
+    rotateX: 0, // Flip to normal rotation
+    y: 0, // Move to original y position
+    scale: 1, // Scale to normal size
+    transition: {
+      duration: 0.6, // Slightly longer duration for the flip
+      ease : "easeInOut"
+    },
+  },
+};
+
 // --- Main Component ---
 const ReviewCards: React.FC = () => {
   const [reviewGroups, setReviewGroups] = useState<ReviewGroup[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
-  const columnRefs = useRef<(HTMLDivElement | null)[]>([]);
   const pathname = usePathname();
+  const columnRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -1947,42 +2968,48 @@ const ReviewCards: React.FC = () => {
     fetchReviews();
   }, []);
 
+  // Marquee Duplication Logic
   useEffect(() => {
     if (loading || error || reviewGroups.length === 0) return;
 
     const columns = columnRefs.current;
 
-    columns.forEach((columnEl) => {
-      if (!columnEl) return;
-      const contentEl =
-        columnEl.querySelector<HTMLDivElement>(".marquee-content");
-      if (!contentEl) return;
+    const timer = setTimeout(() => {
+      columns.forEach((columnEl, index) => {
+        // Added index here
+        if (!columnEl) return;
+        const contentEl =
+          columnEl.querySelector<HTMLDivElement>(".marquee-content");
+        if (!contentEl) return;
 
-      const childrenCount = contentEl.children.length;
-      const expectedChildrenCount = reviewGroups[0]?.reviews.length * 2;
-      let needsDuplication = true;
+        // Check if group data is available for this index
+        const group = reviewGroups[index];
+        if (!group) return; // Skip if group data doesn't exist
 
-      if (childrenCount === expectedChildrenCount) {
-        needsDuplication = false;
-      }
-
-      if (contentEl.children.length > 0) {
-        const firstChildHeight = (contentEl.children[0] as HTMLElement)
-          .offsetHeight;
-        const estimatedOriginalHeight = firstChildHeight * (childrenCount / 2);
-        if (contentEl.scrollHeight > estimatedOriginalHeight * 1.8) {
-          needsDuplication = false;
+        // Simple check: if content is less than 1.5x the column height, duplicate
+        if (contentEl.scrollHeight < columnEl.offsetHeight * 1.5) {
+          // Avoid duplicating if already duplicated
+          const originalChildrenCount = group.reviews.length;
+          if (contentEl.children.length <= originalChildrenCount) {
+            const originalChildren = Array.from(contentEl.children);
+            originalChildren.forEach((child) => {
+              const clone = child.cloneNode(true) as HTMLElement;
+              // Basic style removal to potentially avoid Framer Motion conflicts on clones
+              clone.removeAttribute("style");
+              // If Framer motion adds data attributes, remove them too if needed
+              // Object.keys(clone.dataset).forEach(key => {
+              //    if (key.startsWith('framer')) { // Example check
+              //       delete clone.dataset[key];
+              //    }
+              // });
+              contentEl.appendChild(clone);
+            });
+          }
         }
-      }
+      });
+    }, 600); // Increased delay slightly to ensure Framer Motion has run
 
-      if (needsDuplication) {
-        const originalChildren = Array.from(contentEl.children);
-        originalChildren.forEach((child) => {
-          const clone = child.cloneNode(true);
-          contentEl.appendChild(clone);
-        });
-      }
-    });
+    return () => clearTimeout(timer);
   }, [loading, error, reviewGroups]);
 
   if (loading) {
@@ -2020,7 +3047,7 @@ const ReviewCards: React.FC = () => {
   );
 
   const paragraph = isHomePage ? (
-    <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-700 leading-relaxed dark:text-gray-300 mt-5 text-left">
+    <p className="lg:text-lg sm:base text-sm max-w-full md:max-w-3xl text-gray-700 leading-relaxed dark:text-gray-300 mt-5 text-left">
       Hear directly from globetrotters who’ve trusted us for their currency
       exchange needs. From smooth transactions to unbeatable rates, see why
       travelers around the world choose us every time.
@@ -2035,40 +3062,66 @@ const ReviewCards: React.FC = () => {
   );
 
   return (
-    <section
-      className="Reviews py-10 bg-white dark:bg-background px-4"
+    <motion.section
+      className="Reviews py-10 bg-white dark:bg-background px-4 overflow-hidden"
       id="review"
+      variants={sectionVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ amount: 0.1, once: false }}
     >
       <div className="container mx-auto">
-        <div className="w-full mb-10">
-          {/* heading and paragraph */}
+        {/* Text Block Animation */}
+        <motion.div className="w-full mb-10" variants={textBlockVariants}>
           {heading}
           {paragraph}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 h-[600px] md:h-[1000px] overflow-hidden relative">
+        </motion.div>
+        {/* --- Grid Container for Columns --- */}
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 h-[600px] md:h-[1000px] overflow-hidden relative"
+          variants={columnsContainerVariants}
+        >
           {reviewGroups.slice(0, 3).map((group, index) => (
-            <div
+            // --- Column Wrapper for Staggering Cards Within ---
+            <motion.div
               key={group.id || `group-${index}`}
-              className={`lg:marquee-column marquee-column-${index + 1}`}
-              ref={(el: HTMLDivElement | null) => {
-                columnRefs.current[index] = el;
-              }}
+              variants={columnItemVariants}
             >
-              <div className="marquee-content flex flex-col space-y-4 md:space-y-6">
-                {group.reviews.map((review, reviewIndex) => (
-                  <ReviewCard key={reviewIndex} {...review} />
-                ))}
-              </div>
-            </div>
+              {/* Actual Column Structure with Marquee Ref */}
+              <div
+                className={`lg:marquee-column marquee-column-${index + 1}`}
+                ref={(el: HTMLDivElement | null) => {
+                  columnRefs.current[index] = el;
+                }}
+              >
+                {/* Marquee Content Div (NO motion here) */}
+                <div className="marquee-content flex flex-col space-y-4 md:space-y-6">
+                  {group.reviews.map((review, reviewIndex) => (
+                    // --- Individual Card Wrapper for Entrance Animation ---
+                    <motion.div
+                      key={reviewIndex}
+                      variants={cardEntranceVariants} // Apply UNIQUE entrance animation HERE
+                      // Add perspective here for the 3D rotation
+                      style={{ perspective: 1000 }}
+                    >
+                      <ReviewCard {...review} />
+                    </motion.div>
+                  ))}
+                </div>{" "}
+                {/* End marquee-content */}
+              </div>{" "}
+              {/* End marquee-column div with ref */}
+            </motion.div> // End column wrapper motion.div
           ))}
+
           {/* Gradient Fades */}
-          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white via-gray-50 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none"></div>
-          <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-white via-gray-50 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none"></div>
-        </div>
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-white via-white/80 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none z-10"></div>
+          <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-white via-white/80 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none z-10"></div>
+        </motion.div>{" "}
+        {/* End grid container */}
       </div>
 
-      {/* Custom CSS for marquee animation */}
+      {/* KEEP the marquee CSS */}
       <style jsx global>{`
         .marquee-column {
           overflow: hidden;
@@ -2077,7 +3130,7 @@ const ReviewCards: React.FC = () => {
         }
 
         .marquee-content {
-          animation: scroll-up 30s linear infinite;
+          animation: scroll-up 40s linear infinite; /* Adjusted duration */
         }
 
         .marquee-column:hover .marquee-content {
@@ -2086,14 +3139,14 @@ const ReviewCards: React.FC = () => {
 
         @keyframes scroll-up {
           0% {
-            transform: translateY(0);
+            transform: translateY(0%);
           }
           100% {
-            transform: translateY(-50%);
+            transform: translateY(-50%); /* Assumes duplication fills 100% */
           }
         }
       `}</style>
-    </section>
+    </motion.section>
   );
 };
 
