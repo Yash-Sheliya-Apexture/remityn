@@ -64,14 +64,14 @@
 // };
 // export default HeroText;
 
+
+
 // app/(website)/components/Hero/HeroText.tsx // Or your actual path
 "use client"; // Add this if not present, as we're using a hook
 
 import React from "react";
 import Link from "next/link";
-import { FaBolt, FaExchangeAlt, FaShieldAlt } from "react-icons/fa";
 import { useAuth } from "../../../contexts/AuthContext"; // <--- IMPORT useAuth
-import { FaChartLine } from "react-icons/fa";
 import {
   ArrowRight,
   Award,
@@ -88,7 +88,7 @@ const HeroText = () => {
     <>
       <div className="space-y-6">
         <div className="inline-block px-4 py-1.5 bg-lightgray dark:bg-primary rounded-full text-gray-700 dark:text-mainheading font-semibold text-sm mb-2">
-          Trusted by 1M+ customers worldwide
+          Trusted by 50K customers worldwide
         </div>
         <h1 className="text-4xl md:text-5xl xl:text-7xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
           Easy Global Money Exchange
@@ -105,32 +105,44 @@ const HeroText = () => {
         {/* Features */}
         <div className="grid grid-cols-2 gap-x-6 gap-y-6 max-w-md mx-auto lg:mx-0">
           <div className="flex items-center gap-3">
-            <div className="bg-lightgray dark:bg-primary p-2 rounded-full">
-              <Globe size={28} className="text-gray-700 dark:text-mainheading" />
+            <div className="bg-lightgray dark:bg-primarybox p-2.5 rounded-full">
+              <Globe
+                size={20}
+                className="text-gray-700 dark:text-white"
+              />
             </div>
             <span className="text-gray-800 dark:text-gray-200 font-medium text-sm sm:text-base">
               Global Coverage
             </span>
           </div>
           <div className="flex items-center gap-3">
-            <div className="bg-lightgray dark:bg-primary p-2 rounded-full">
-              <TrendingUp size={28} className="text-gray-700 dark:text-mainheading" />
+            <div className="bg-lightgray dark:bg-primarybox p-2.5 rounded-full">
+              <TrendingUp
+                size={20}
+                className="text-gray-700 dark:text-white"
+              />
             </div>
             <span className="text-gray-800 dark:text-gray-200 font-medium text-sm sm:text-base">
               Great Rates
             </span>
           </div>
           <div className="flex items-center gap-3">
-            <div className="bg-lightgray dark:bg-primary p-2 rounded-full">
-              <Shield size={28} className="text-gray-700 dark:text-mainheading" />
+            <div className="bg-lightgray dark:bg-primarybox p-2.5 rounded-full">
+              <Shield
+                size={20}
+                className="text-gray-700 dark:text-white"
+              />
             </div>
             <span className="text-gray-800 dark:text-gray-200 font-medium text-sm sm:text-base">
               Bank-Level Security
             </span>
           </div>
           <div className="flex items-center gap-3">
-            <div className="bg-lightgray dark:bg-primary p-2 rounded-full">
-              <Clock size={28} className="text-gray-700 dark:text-mainheading" />
+            <div className="bg-lightgray dark:bg-primarybox p-2.5 rounded-full">
+              <Clock
+                size={20}
+                className="text-gray-700 dark:text-white"
+              />
             </div>
             <span className="text-gray-800 dark:text-gray-200 font-medium text-sm sm:text-base">
               Fast Transfers
@@ -150,7 +162,7 @@ const HeroText = () => {
             ))}
           </div>
           <span className="text-gray-600 dark:text-gray-300 text-sm capitalize">
-            <span className="font-semibold">4.9/5</span> from 10,00+ reviews
+            <span className="font-semibold">4.9/5</span> from 1,000+ reviews
           </span>
         </div>
 
@@ -160,7 +172,10 @@ const HeroText = () => {
             className="inline-flex items-center bg-primary hover:bg-primaryhover group text-mainheading  font-semibold px-8 py-3 lg:h-12.5 rounded-full transition-colors duration-300 ease-in-out"
           >
             {user ? "Go to Dashboard" : "Get Started Free"}
-            <ArrowRight size={24} className="ml-2 group-hover:translate-x-6 transition-transform ease-in-out duration-300" />
+            <ArrowRight
+              size={24}
+              className="ml-2 group-hover:translate-x-6 transition-transform ease-in-out duration-300"
+            />
           </Link>
         </div>
       </div>
