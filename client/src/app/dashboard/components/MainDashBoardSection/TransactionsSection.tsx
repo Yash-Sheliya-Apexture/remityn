@@ -1863,7 +1863,7 @@ const TransactionsSection: React.FC = () => {
     // 2. Determine the display name using the calculated amount and currency
     const name = isAddMoney
       ? // Construct the name like in TasksPage
-        `${formattedAmount} ${displayCurrencyCode} to your ${displayCurrencyCode} balance`
+        `To your ${displayCurrencyCode} balance`
       : transaction.name || "Recipient"; // Fallback for Send Money
 
     // --- END MODIFICATION ---

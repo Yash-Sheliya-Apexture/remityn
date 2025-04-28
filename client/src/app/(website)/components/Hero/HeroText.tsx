@@ -72,6 +72,14 @@ import Link from "next/link";
 import { FaBolt, FaExchangeAlt, FaShieldAlt } from "react-icons/fa";
 import { useAuth } from "../../../contexts/AuthContext"; // <--- IMPORT useAuth
 import { FaChartLine } from "react-icons/fa";
+import {
+  ArrowRight,
+  Award,
+  Clock,
+  Globe,
+  Shield,
+  TrendingUp,
+} from "lucide-react";
 
 const HeroText = () => {
   const { user } = useAuth(); // <--- USE AUTH CONTEXT
@@ -79,11 +87,14 @@ const HeroText = () => {
   return (
     <>
       <div className="space-y-6">
+        <div className="inline-block px-4 py-1.5 bg-lightgray dark:bg-primary rounded-full text-gray-700 dark:text-mainheading font-semibold text-sm mb-2">
+          Trusted by 1M+ customers worldwide
+        </div>
         <h1 className="text-4xl md:text-5xl xl:text-7xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
           Easy Global Money Exchange
           <span className="text-primary"> at 0% Fees </span>
         </h1>
-        <p className="lg:text-lg sm:text-base text-sm text-gray-700 dark:text-gray-300">
+        <p className="lg:text-lg text-base leading-tight text-gray-700 dark:text-gray-300">
           Experience global money exchange with 0% fees and instant transfers.
           Our platform offers secure, transparent transactions with real-time
           exchange rates. Send money easily across borders, without worrying
@@ -91,40 +102,65 @@ const HeroText = () => {
           services for all your currency needs.
         </p>
 
-        <div className="grid sm:grid-cols-2 grid-cols-1 gap-5 max-w-lg">
-          {/* Tags */}
-          <div className="flex items-center gap-4 text-gray dark:text-primary">
-            <FaExchangeAlt className="sm:size-6 size-5" />
-            <span className="dark:text-white text-mainheading font-semibold text-sm sm:text-base">
-              Real-Time Conversion
+        {/* Features */}
+        <div className="grid grid-cols-2 gap-x-6 gap-y-6 max-w-md mx-auto lg:mx-0">
+          <div className="flex items-center gap-3">
+            <div className="bg-lightgray dark:bg-primary p-2 rounded-full">
+              <Globe size={28} className="text-gray-700 dark:text-mainheading" />
+            </div>
+            <span className="text-gray-800 dark:text-gray-200 font-medium text-sm sm:text-base">
+              Global Coverage
             </span>
           </div>
-          <div className="flex items-center gap-4 text-gray dark:text-primary">
-            <FaChartLine className="sm:size-6 size-5" />
-            <span className="dark:text-white text-mainheading font-semibold text-sm sm:text-base">
-              Competitive Rates
+          <div className="flex items-center gap-3">
+            <div className="bg-lightgray dark:bg-primary p-2 rounded-full">
+              <TrendingUp size={28} className="text-gray-700 dark:text-mainheading" />
+            </div>
+            <span className="text-gray-800 dark:text-gray-200 font-medium text-sm sm:text-base">
+              Great Rates
             </span>
           </div>
-          <div className="flex items-center gap-4 text-gray dark:text-primary">
-            <FaShieldAlt className="sm:size-6 size-5" />
-            <span className="dark:text-white text-mainheading font-semibold text-sm sm:text-base">
-              Secure Transactions
+          <div className="flex items-center gap-3">
+            <div className="bg-lightgray dark:bg-primary p-2 rounded-full">
+              <Shield size={28} className="text-gray-700 dark:text-mainheading" />
+            </div>
+            <span className="text-gray-800 dark:text-gray-200 font-medium text-sm sm:text-base">
+              Bank-Level Security
             </span>
           </div>
-          <div className="flex items-center gap-4 text-gray dark:text-primary">
-            <FaBolt className="sm:size-6 size-5" />
-            <span className="dark:text-white text-mainheading font-semibold text-sm sm:text-base">
-              Fast & Easy
+          <div className="flex items-center gap-3">
+            <div className="bg-lightgray dark:bg-primary p-2 rounded-full">
+              <Clock size={28} className="text-gray-700 dark:text-mainheading" />
+            </div>
+            <span className="text-gray-800 dark:text-gray-200 font-medium text-sm sm:text-base">
+              Fast Transfers
             </span>
           </div>
         </div>
 
-        <div className="md:pt-4 pt-0">
-          {/* --- CONDITIONAL LINK --- */}
-          <Link href={user ? "/dashboard" : "/auth/register"} passHref>
-            <button className="bg-primary hover:bg-primaryhover cursor-pointer font-medium py-2.5 text-sm lg:text-base px-6 lg:h-12.5 rounded-full transition-colors duration-300 ease-in-out text-mainheading flex items-center justify-center">
-              Get Started Now
-            </button>
+        {/* Trustpilot-like rating */}
+        <div className="flex items-center justify-start space-x-4 pt-2">
+          <div className="flex">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <Award
+                key={star}
+                size={20}
+                className="text-primary fill-current"
+              />
+            ))}
+          </div>
+          <span className="text-gray-600 dark:text-gray-300 text-sm capitalize">
+            <span className="font-semibold">4.9/5</span> from 10,00+ reviews
+          </span>
+        </div>
+
+        <div className="md:pt-4 pt-0 lg:block hidden">
+          <Link
+            href={user ? "/dashboard" : "/auth/register"}
+            className="inline-flex items-center bg-primary hover:bg-primaryhover group text-mainheading  font-semibold px-8 py-3 lg:h-12.5 rounded-full transition-colors duration-300 ease-in-out"
+          >
+            {user ? "Go to Dashboard" : "Get Started Free"}
+            <ArrowRight size={24} className="ml-2 group-hover:translate-x-6 transition-transform ease-in-out duration-300" />
           </Link>
         </div>
       </div>

@@ -2036,11 +2036,11 @@ const ReviewCards: React.FC = () => {
 
   return (
     <section
-      className="Reviews md:py-14 py-10 bg-white dark:bg-background px-4"
+      className="Reviews py-10 bg-white dark:bg-background px-4"
       id="review"
     >
       <div className="container mx-auto">
-        <div className="w-full mb-10 lg:mb-16">
+        <div className="w-full mb-10">
           {/* heading and paragraph */}
           {heading}
           {paragraph}
@@ -2063,8 +2063,8 @@ const ReviewCards: React.FC = () => {
             </div>
           ))}
           {/* Gradient Fades */}
-          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white via-gray-50 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none"></div>
-          <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white via-gray-50 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none"></div>
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white via-gray-50 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none"></div>
+          <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-white via-gray-50 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none"></div>
         </div>
       </div>
 

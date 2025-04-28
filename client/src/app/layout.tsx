@@ -116,6 +116,8 @@
 // }
 
 
+
+
 // app/layout.tsx
 import './globals.css' // Ensure your global styles are imported
 import { AuthProvider } from './contexts/AuthContext'; // Adjust path if necessary
@@ -203,11 +205,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 <meta name="description" content="Send and receive money internationally with low fees and real exchange rates." />
 
                 {/* Add links to favicons, webmanifest, fonts, etc. here */}
-                {/* <link rel="icon" href="/favicon.ico" sizes="any" /> */}
-                {/* <link rel="apple-touch-icon" href="/apple-touch-icon.png" /> */}
-
-                {/* IMPORTANT: Ensure there are no free-floating text nodes (even whitespace) */}
-                {/* directly within the <head> tags. Only valid head elements are allowed. */}
+                <link rel="globe.svg" href="/globe.svg" />
+                
             </head>
 
             {/* The <body> section: Contains the visible content of the page */}

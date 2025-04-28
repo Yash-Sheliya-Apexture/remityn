@@ -2567,37 +2567,544 @@
 
 // frontend/src/app/dashboard/components/Sidebar.tsx
 
+// "use client";
+// import React, { useEffect, useRef, useState, useCallback } from "react";
+// import { usePathname, useRouter } from "next/navigation";
+// import { motion, AnimatePresence } from "framer-motion";
+// import { FiCreditCard, FiUserPlus, FiSettings } from "react-icons/fi";
+// import { RiHomeLine } from "react-icons/ri";
+// import { GrTransaction } from "react-icons/gr";
+// import { BsSend } from "react-icons/bs";
+// import { GoArrowUp } from "react-icons/go";
+// import { VscSignOut } from "react-icons/vsc";
+// import Image from "next/image";
+// import Link from "next/link";
+// import { useAuth } from "../../contexts/AuthContext"; // Adjust path
+// import { useBalances } from "../../hooks/useBalances"; // Import the new hook (adjust path)
+// import { Skeleton } from "@/components/ui/skeleton"; // For loading state
+// import { IoClose } from "react-icons/io5";
 
+// interface SidebarProps {
+//   sidebarOpen: boolean;
+//   toggleSidebar: () => void; // Function to toggle the sidebar state
+// }
+
+// interface NavLinkDefinition {
+//   label: string;
+//   icon: keyof typeof icons;
+//   route: string | (() => string);
+//   id: string;
+// }
+
+// const icons = {
+//   RiHomeLine,
+//   GrTransaction,
+//   BsSend,
+//   GoArrowUp,
+//   FiCreditCard,
+//   FiUserPlus,
+//   FiSettings,
+// };
+// const LG_BREAKPOINT = 1024;
+// const SM_BREAKPOINT = 640;
+
+// const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
+//   const router = useRouter();
+//   const pathname = usePathname();
+//   const sidebarRef = useRef<HTMLDivElement>(null);
+//   const [isMobileView, setIsMobileView] = useState<boolean | null>(null);
+//   const [isSmallScreen, setIsSmallScreen] = useState<boolean | null>(null);
+//   const { logout, token } = useAuth();
+//   const {
+//     balances,
+//     isLoading: isLoadingBalances,
+//     error: balancesError,
+//   } = useBalances();
+
+//   // --- Screen Size Detection ---
+//   useEffect(() => {
+//     const checkScreenSizes = () => {
+//       if (typeof window !== "undefined") {
+//         const currentWidth = window.innerWidth;
+//         setIsMobileView(currentWidth < LG_BREAKPOINT);
+//         setIsSmallScreen(currentWidth < SM_BREAKPOINT);
+//       }
+//     };
+//     checkScreenSizes();
+//     window.addEventListener("resize", checkScreenSizes);
+//     return () => window.removeEventListener("resize", checkScreenSizes);
+//   }, []);
+
+//   // --- Outside Click Handler ---
+//   useEffect(() => {
+//     const handleClickOutside = (event: MouseEvent) => {
+//       if (
+//         sidebarRef.current &&
+//         !sidebarRef.current.contains(event.target as Node) &&
+//         sidebarOpen &&
+//         isMobileView === true // Only close on outside click if it's mobile view
+//       ) {
+//         toggleSidebar();
+//       }
+//     };
+//     // Add listener only when sidebar is open AND it's mobile view
+//     if (sidebarOpen && isMobileView === true) {
+//       document.addEventListener("mousedown", handleClickOutside);
+//     } else {
+//       document.removeEventListener("mousedown", handleClickOutside);
+//     }
+//     return () => document.removeEventListener("mousedown", handleClickOutside);
+//   }, [sidebarOpen, isMobileView, toggleSidebar]); // Dependencies ensure listener updates correctly
+
+//   // --- Dynamic Routes using useCallback for stable references ---
+//   const getAddMoneyRoute = useCallback((): string => {
+//     if (!token) return "/auth/login";
+//     if (isLoadingBalances) return "#"; // Return '#' while loading
+//     if (balancesError) return "/dashboard?error=balances"; // Indicate error, maybe show modal later
+
+//     // Decide route based on balances existence
+//     return balances && balances.length > 0
+//       ? "/dashboard/add-money/select-balance"
+//       : "/dashboard/add-balance";
+//   }, [balances, isLoadingBalances, balancesError, token]); // Dependencies for useCallback
+
+//   const getSendMoneyRoute = useCallback((): string => {
+//     if (!token) return "/auth/login";
+//     if (isLoadingBalances) return "#"; // Return '#' while loading
+//     if (balancesError) return "/dashboard?error=balances";
+
+//     // Always go to select balance for sending, assuming user needs a balance to send *from*
+//     // If no balances exist, the target page should handle that state.
+//     return "/dashboard/send/select-balance";
+//   }, [isLoadingBalances, balancesError, token]); // Dependencies for useCallback
+
+//   // --- Nav Link Definitions ---
+//   const navLinksData: NavLinkDefinition[] = [
+//     {
+//       id: "dashboard",
+//       label: "Dashboard",
+//       icon: "RiHomeLine",
+//       route: "/dashboard",
+//     },
+//     {
+//       id: "transactions",
+//       label: "Transactions",
+//       icon: "GrTransaction",
+//       route: "/dashboard/transactions",
+//     },
+//     {
+//       id: "send",
+//       label: "Send Money",
+//       icon: "BsSend",
+//       route: getSendMoneyRoute, // Use the callback directly
+//     },
+//     {
+//       id: "add-money",
+//       label: "Add Money",
+//       icon: "GoArrowUp",
+//       route: getAddMoneyRoute, // Use the callback directly
+//     },
+//     {
+//       id: "recipients",
+//       label: "Recipients",
+//       icon: "FiUserPlus",
+//       route: "/dashboard/recipients",
+//     },
+//     {
+//       id: "settings",
+//       label: "Settings",
+//       icon: "FiSettings",
+//       route: "/dashboard/your-account",
+//     },
+//   ];
+
+//   // Bottom nav - Apply similar logic for dynamic routes if needed
+//   const bottomNavLinksData = [
+//     {
+//       label: "Home",
+//       icon: "RiHomeLine",
+//       route: "/dashboard",
+//       id: "bottom-home",
+//     },
+//     {
+//       label: "Activity",
+//       icon: "GrTransaction",
+//       route: "/dashboard/transactions",
+//       id: "bottom-activity",
+//     },
+//     // Call the dynamic route function here for consistency
+//     {
+//       label: "Send",
+//       icon: "BsSend",
+//       route: getSendMoneyRoute(),
+//       id: "bottom-send",
+//     },
+//     {
+//       label: "Account",
+//       icon: "FiSettings",
+//       route: "/dashboard/your-account",
+//       id: "bottom-account",
+//     },
+//   ];
+
+//   // --- Logout Handler ---
+//   const handleLogout = () => {
+//     logout();
+//     router.push("/auth/login");
+//     // Ensure sidebar closes on mobile after logout if it was open
+//     if (sidebarOpen && isMobileView) {
+//       toggleSidebar();
+//     }
+//   };
+
+//   // --- Render Logic ---
+//   // Sidebar should render if it's not mobile OR if it is mobile AND sidebarOpen is true
+//   const renderFullSidebar =
+//     !isMobileView || (isMobileView === true && sidebarOpen);
+//   // Bottom nav should render only if it's small screen AND sidebar is NOT open
+//   const renderBottomNav = isSmallScreen === true && !sidebarOpen;
+
+//   // Prevent rendering during SSR or initial hydration mismatch until screen size is known
+//   if (isMobileView === null || isSmallScreen === null) {
+//     // Optionally return a placeholder/loader here if needed, but null is often fine
+//     return null;
+//   }
+
+//   // --- Helper to resolve route (handles both string and function types) ---
+//   const resolveRoute = (route: string | (() => string)): string => {
+//     return typeof route === "function" ? route() : route;
+//   };
+
+//   // --- Helper to check if a dynamic link should be disabled (used when NOT loading) ---
+//   const isLinkDisabled = (id: string): boolean => {
+//     // Find the link definition by ID
+//     const linkDef = navLinksData.find((link) => link.id === id);
+//     if (!linkDef) return false; // Should not happen if ID is valid
+
+//     const finalRoute = resolveRoute(linkDef.route);
+//     // Disable if route resolved to '#' AND we are NOT currently loading balances
+//     // This means the dynamic route logic determined it shouldn't navigate (e.g., error state)
+//     return finalRoute === "#" && !isLoadingBalances;
+//   };
+
+//   // --- Helper for bottom nav disabled state ---
+//   const isBottomNavLinkDisabled = (id: string): boolean => {
+//     const linkDef = bottomNavLinksData.find((link) => link.id === id);
+//     if (!linkDef) return false;
+
+//     // Example: Specifically disable 'Send' button while balances load
+//     if (id === "bottom-send" && isLoadingBalances) {
+//       return true;
+//     }
+
+//     // Could add more conditions based on `balancesError` or other factors if needed
+//     // For now, mainly focuses on the loading state for dynamic routes.
+//     const finalRoute = resolveRoute(linkDef.route);
+//     // Also disable if route resolves to '#' and not loading (consistent with sidebar)
+//     return finalRoute === "#" && !isLoadingBalances;
+//   };
+
+//   // --- Skeleton Component for Links/Buttons ---
+//   const NavItemSkeleton = () => (
+//     <div className="relative w-full flex items-center gap-3 py-3 px-4 font-medium mb-2 text-neutral-400 dark:text-gray-600">
+//       <Skeleton className="w-6 h-6 rounded-full flex-shrink-0" />{" "}
+//       {/* Circle skeleton for icon */}
+//       <Skeleton className="w-24 h-6 rounded" /> {/* Rect skeleton for text */}
+//     </div>
+//   );
+
+//   return (
+//     <>
+//       {/* Backdrop for Mobile Sidebar */}
+//       <AnimatePresence>
+//         {sidebarOpen && isMobileView === true && (
+//           <motion.div
+//             key="sidebar-backdrop"
+//             initial={{ opacity: 0 }}
+//             animate={{ opacity: 1 }}
+//             exit={{ opacity: 0 }}
+//             transition={{ duration: 0.2 }}
+//             onClick={toggleSidebar} // Close sidebar when backdrop is clicked
+//             className="fixed inset-0 bg-black/50 dark:bg-black/70 z-30 lg:hidden" // Ensure z-index is below sidebar but above content
+//             aria-hidden="true"
+//           />
+//         )}
+//       </AnimatePresence>
+
+//       {/* Full Sidebar (Desktop or Mobile when open) */}
+//       <AnimatePresence>
+//         {renderFullSidebar && (
+//           <motion.div
+//             key="full-sidebar"
+//             ref={sidebarRef}
+//             className={`w-64 fixed lg:sticky bg-white dark:bg-background h-screen inset-y-0 left-0 ${
+//               isMobileView ? "z-40" : "lg:z-10" // Higher z-index on mobile when open
+//             } flex flex-col shadow-lg lg:shadow-none`}
+//             initial={isMobileView ? { x: "-100%" } : { x: 0 }} // Slide in from left on mobile
+//             animate={{ x: 0 }} // Target position
+//             exit={isMobileView ? { x: "-100%" } : { x: 0 }} // Slide out to left on mobile
+//             transition={{ duration: 0.3, ease: "easeInOut" }}
+//           >
+//             {/* Sidebar Header */}
+//             <div className="flex-shrink-0 flex items-center justify-start px-4 lg:h-28 h-20">
+//               <Link
+//                 href="/dashboard"
+//                 className="inline-block"
+//                 onClick={() => {
+//                   if (isMobileView && sidebarOpen) toggleSidebar();
+//                 }}
+//               >
+//                 <Image
+//                   src="/assets/images/wise-logo.svg" // Ensure this path is correct
+//                   alt="Wise Logo"
+//                   width={120}
+//                   height={30} // Adjust height as needed
+//                   priority // Load logo faster
+//                 />
+//               </Link>
+
+//               {/* Close Sidebar button - Only show on mobile */}
+//               {isMobileView && (
+//                 <button
+//                   onClick={toggleSidebar} // *** ADD THIS ONCLICK HANDLER ***
+//                   className="absolute top-2 right-1.5 lg:hidden bg-lightborder cursor-pointer hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox z-10 p-2 rounded-full transition-colors duration-300 ease-in-out"
+//                   aria-label="Close sidebar" // For accessibility
+//                 >
+//                   <IoClose
+//                     size={24} // Slightly smaller icon might fit better
+//                     className="text-mainheading dark:text-primary"
+//                   />
+//                 </button>
+//               )}
+//             </div>
+
+//             {/* Nav Area */}
+//             <div className="p-2 flex-grow overflow-y-auto [&::-webkit-scrollbar-track]:rounded-3xl [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-3xl [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
+//               <nav className="flex-grow">
+//                 {isLoadingBalances ? (
+//                   // --- Render Skeletons when loading ---
+//                   <>
+//                     {navLinksData.map((item) => (
+//                       <NavItemSkeleton key={`${item.id}-skeleton`} />
+//                     ))}
+//                   </>
+//                 ) : (
+//                   // --- Render Actual Links when not loading ---
+//                   navLinksData.map((item) => {
+//                     const IconComponent = icons[item.icon];
+//                     const finalRoute = resolveRoute(item.route);
+//                     // Check disabled state *after* resolving route, only when not loading
+//                     const isDisabled = isLinkDisabled(item.id);
+//                     const isActive =
+//                       !isDisabled &&
+//                       (pathname === finalRoute ||
+//                         (finalRoute !== "/dashboard" && // Avoid highlighting dashboard for sub-routes
+//                           pathname.startsWith(finalRoute)));
+
+//                     return (
+//                       <Link
+//                         key={item.id}
+//                         href={isDisabled ? "#" : finalRoute} // Prevent navigation if disabled
+//                         onClick={(e) => {
+//                           if (isDisabled) {
+//                             e.preventDefault(); // Explicitly prevent default action
+//                             return;
+//                           }
+//                           // Close sidebar on mobile after navigation
+//                           if (isMobileView && sidebarOpen) {
+//                             toggleSidebar();
+//                           }
+//                         }}
+//                         className={`relative w-full flex items-center gap-3 py-3 px-4 font-medium rounded-full transition duration-200 mb-3
+//                           ${
+//                             isActive
+//                               ? "lg:bg-transparent dark:lg:bg-transparent bg-primary/60 text-neutral-900 dark:bg-primarybox  dark:text-primary" // Active text color only
+//                               : isDisabled
+//                               ? "text-neutral-400 dark:text-gray-600  cursor-not-allowed opacity-60" // More explicit disabled styling
+//                               : "text-neutral-500 hover:text-neutral-900 hover:bg-[#ECECEC] dark:hover:bg-white/5 dark:text-gray-300 dark:hover:text-primary" // Hover state
+//                           }
+//                         `}
+//                         aria-current={isActive ? "page" : undefined} // Accessibility for active link
+//                         aria-disabled={isDisabled}
+//                         tabIndex={isDisabled ? -1 : 0} // Accessibility for disabled link
+//                       >
+//                         {/* Active indicator with layout animation */}
+//                         {isActive && (
+//                           <motion.div
+//                             layoutId="active-sidebar-indicator" // Shared ID for animation
+//                             className="absolute inset-0 rounded-full bg-primary/60 dark:bg-primarybox" // Subtle background for active item
+//                             initial={false}
+//                             transition={{
+//                               type: "spring",
+//                               stiffness: 300,
+//                               damping: 30,
+//                             }}
+//                           />
+//                         )}
+
+//                         {IconComponent && (
+//                           <IconComponent
+//                             className="w-6 h-6 relative z-10 flex-shrink-0"
+//                           />
+//                         )}
+
+//                         <span className="relative z-10 truncate">
+//                           {item.label}
+//                         </span>
+//                       </Link>
+//                     );
+//                   })
+//                 )}
+//               </nav>
+
+//               {/* Logout Button Area */}
+//               {isLoadingBalances ? (
+//                 // --- Render Logout Skeleton when loading balances (optional, could just show the button) ---
+//                 <NavItemSkeleton />
+//               ) : (
+//                 // --- Render Actual Logout Button ---
+//                 <button
+//                   onClick={handleLogout}
+//                   className="w-full flex items-center space-x-3 py-3 px-4 font-medium hover:bg-gray/10 dark:hover:bg-white/5  rounded-full transition duration-200 mb-2 cursor-pointer text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
+//                   // Logout button isn't typically disabled by balance loading state
+//                 >
+//                   <VscSignOut className="w-6 h-6 flex-shrink-0" />
+//                   <span className="font-medium">Logout</span>
+//                 </button>
+//               )}
+//             </div>
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+
+//       {/* Bottom Nav (Small Screens Only, when sidebar is closed) */}
+//       <AnimatePresence>
+//         {renderBottomNav && (
+//           <div
+//             key="bottom-nav"
+//             className="sm:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-background border-t z-12 border-gray-200 dark:border-secondarybox/50 "
+//           >
+//             {/* No skeleton needed here unless balance loading blocks critical nav */}
+//             <div className="flex items-center justify-around h-16">
+//               {bottomNavLinksData.map((item) => {
+//                 const IconComponent = icons[item.icon as keyof typeof icons];
+//                 const finalRoute = resolveRoute(item.route);
+//                 // Use the specific bottom nav disabled check
+//                 const isDisabled = isBottomNavLinkDisabled(item.id);
+//                 const isActive =
+//                   !isDisabled &&
+//                   (pathname === finalRoute ||
+//                     (finalRoute !== "/dashboard" &&
+//                       pathname.startsWith(finalRoute)));
+
+//                 return (
+//                   <Link
+//                     key={item.id} // Use unique ID
+//                     href={isDisabled ? "#" : finalRoute}
+//                     onClick={(e) => {
+//                       if (isDisabled) e.preventDefault();
+//                       // No need to toggle sidebar here
+//                     }}
+//                     className={`flex relative flex-col items-center justify-center space-y-1 py-2 grow basis-0 h-full transition-opacity ${
+//                       isDisabled
+//                         ? "cursor-not-allowed opacity-50 pointer-events-none"
+//                         : "opacity-100"
+//                     }`}
+//                     aria-current={isActive ? "page" : undefined}
+//                     aria-disabled={isDisabled}
+//                     tabIndex={isDisabled ? -1 : 0}
+//                   >
+//                     {/* Active indicator line */}
+//                     {isActive && (
+//                       <motion.div
+//                         className="absolute top-0 left-1/2 -translate-x-1/2 h-[3px] w-12 rounded-full bg-primary"
+//                         layoutId="bottom-nav-indicator" // Shared layout ID
+//                         initial={false}
+//                         transition={{
+//                           type: "spring",
+//                           stiffness: 400,
+//                           damping: 35,
+//                         }}
+//                       />
+//                     )}
+//                     {/* Icon container */}
+//                     <motion.div
+//                       className={`p-1 rounded-md transition-colors ${
+//                         isActive
+//                           ? "text-primary"
+//                           : isDisabled
+//                           ? "text-neutral-400 dark:text-gray-600"
+//                           : "text-neutral-500 dark:text-gray-300 group-hover:text-primary" // Added group hover effect potential
+//                       }`}
+//                       whileTap={isDisabled ? {} : { scale: 0.9 }} // Tap animation only if not disabled
+//                       layout // Animate layout changes if needed
+//                     >
+//                       {IconComponent && <IconComponent className="size-5" />}
+//                     </motion.div>
+//                     {/* Label text */}
+//                     <span
+//                       className={`text-[11px] font-medium transition-colors ${
+//                         // Slightly smaller text for bottom nav
+//                         isActive
+//                           ? "text-neutral-900 dark:text-primary"
+//                           : isDisabled
+//                           ? "text-neutral-400 dark:text-gray-600"
+//                           : "text-neutral-500 dark:text-gray-300"
+//                       }`}
+//                     >
+//                       {item.label}
+//                     </span>
+//                   </Link>
+//                 );
+//               })}
+//             </div>
+//           </div>
+//         )}
+//       </AnimatePresence>
+//     </>
+//   );
+// };
+
+// export default Sidebar;
 
 "use client";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiCreditCard, FiUserPlus, FiSettings } from "react-icons/fi";
-import { RiHomeLine } from "react-icons/ri";
+import {
+  FiCreditCard,
+  FiUserPlus,
+  FiSettings,
+  FiPlus,
+  FiUsers,
+} from "react-icons/fi";
+import { RiHomeLine, RiHistoryLine } from "react-icons/ri";
 import { GrTransaction } from "react-icons/gr";
 import { BsSend } from "react-icons/bs";
 import { GoArrowUp } from "react-icons/go";
 import { VscSignOut } from "react-icons/vsc";
 import Image from "next/image";
 import Link from "next/link";
-import { useAuth } from "../../contexts/AuthContext"; // Adjust path
-import { useBalances } from "../../hooks/useBalances"; // Import the new hook (adjust path)
-import { Skeleton } from "@/components/ui/skeleton"; // For loading state
+import { useAuth } from "../../contexts/AuthContext"; // Adjust path if necessary
+import { useBalances } from "../../hooks/useBalances"; // Adjust path if necessary
+import { Skeleton } from "@/components/ui/skeleton"; // Adjust path if necessary
 import { IoClose } from "react-icons/io5";
 
+// Props Interface
 interface SidebarProps {
   sidebarOpen: boolean;
-  toggleSidebar: () => void; // Function to toggle the sidebar state
+  toggleSidebar: () => void;
 }
 
+// Navigation Link Definition Interface
 interface NavLinkDefinition {
   label: string;
   icon: keyof typeof icons;
-  route: string | (() => string);
-  id: string;
+  route: string | (() => string); // Can be a static string or a function returning a string
+  id: string; // Unique identifier for the link
 }
 
+// Icon Mapping
 const icons = {
   RiHomeLine,
   GrTransaction,
@@ -2606,22 +3113,34 @@ const icons = {
   FiCreditCard,
   FiUserPlus,
   FiSettings,
+  RiHistoryLine,
+  FiPlus,
+  FiUsers,
 };
+
+// Breakpoints
 const LG_BREAKPOINT = 1024;
 const SM_BREAKPOINT = 640;
 
+// Sidebar Component
 const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
   const router = useRouter();
   const pathname = usePathname();
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [isMobileView, setIsMobileView] = useState<boolean | null>(null);
   const [isSmallScreen, setIsSmallScreen] = useState<boolean | null>(null);
-  const { logout, token } = useAuth();
+  const { logout, token } = useAuth(); // Get token
   const {
     balances,
     isLoading: isLoadingBalances,
     error: balancesError,
-  } = useBalances();
+  } = useBalances(); // Fetch balances (hook ideally checks token internally)
+
+  // --- State for Bottom Nav Action Menu ---
+  const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
+
+  // --- Simple flag for authentication status ---
+  const isAuthenticated = !!token;
 
   // --- Screen Size Detection ---
   useEffect(() => {
@@ -2629,58 +3148,63 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
       if (typeof window !== "undefined") {
         const currentWidth = window.innerWidth;
         setIsMobileView(currentWidth < LG_BREAKPOINT);
-        setIsSmallScreen(currentWidth < SM_BREAKPOINT);
+        const currentlySmall = currentWidth < SM_BREAKPOINT;
+        setIsSmallScreen(currentlySmall);
+        // Close action menu if screen resizes past the small breakpoint OR if sidebar opens (which hides bottom nav)
+        if ((!currentlySmall || sidebarOpen) && isActionMenuOpen) {
+          setIsActionMenuOpen(false);
+        }
       }
     };
-    checkScreenSizes();
+    checkScreenSizes(); // Initial check
     window.addEventListener("resize", checkScreenSizes);
+    // Listen for sidebar state changes to close action menu if sidebar opens
+    if (sidebarOpen && isActionMenuOpen) {
+      setIsActionMenuOpen(false);
+    }
     return () => window.removeEventListener("resize", checkScreenSizes);
-  }, []);
+  }, [isActionMenuOpen, sidebarOpen]); // Re-run if menu or sidebar state changes
 
-  // --- Outside Click Handler ---
+  // --- Outside Click Handler (Mobile Sidebar) ---
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      // Close sidebar if clicking outside of it on mobile view
       if (
         sidebarRef.current &&
         !sidebarRef.current.contains(event.target as Node) &&
         sidebarOpen &&
-        isMobileView === true // Only close on outside click if it's mobile view
+        isMobileView === true
       ) {
         toggleSidebar();
       }
+      // Note: Action menu closing is handled by backdrop click or item click
     };
-    // Add listener only when sidebar is open AND it's mobile view
     if (sidebarOpen && isMobileView === true) {
       document.addEventListener("mousedown", handleClickOutside);
     } else {
       document.removeEventListener("mousedown", handleClickOutside);
     }
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [sidebarOpen, isMobileView, toggleSidebar]); // Dependencies ensure listener updates correctly
+  }, [sidebarOpen, isMobileView, toggleSidebar]);
 
-  // --- Dynamic Routes using useCallback for stable references ---
+  // --- Dynamic Route Functions (Memoized with useCallback) ---
   const getAddMoneyRoute = useCallback((): string => {
-    if (!token) return "/auth/login";
-    if (isLoadingBalances) return "#"; // Return '#' while loading
-    if (balancesError) return "/dashboard?error=balances"; // Indicate error, maybe show modal later
-
-    // Decide route based on balances existence
+    if (!isAuthenticated) return "/auth/login"; // Use isAuthenticated flag
+    if (isLoadingBalances) return "#"; // Indicate loading, link will be disabled
+    if (balancesError) return "/dashboard?error=balances"; // Or handle error appropriately
     return balances && balances.length > 0
       ? "/dashboard/add-money/select-balance"
       : "/dashboard/add-balance";
-  }, [balances, isLoadingBalances, balancesError, token]); // Dependencies for useCallback
+  }, [balances, isLoadingBalances, balancesError, isAuthenticated]); // Depend on isAuthenticated
 
   const getSendMoneyRoute = useCallback((): string => {
-    if (!token) return "/auth/login";
-    if (isLoadingBalances) return "#"; // Return '#' while loading
-    if (balancesError) return "/dashboard?error=balances";
-
-    // Always go to select balance for sending, assuming user needs a balance to send *from*
-    // If no balances exist, the target page should handle that state.
+    if (!isAuthenticated) return "/auth/login"; // Use isAuthenticated flag
+    if (isLoadingBalances) return "#"; // Indicate loading, link will be disabled
+    if (balancesError) return "/dashboard?error=balances"; // Or handle error appropriately
     return "/dashboard/send/select-balance";
-  }, [isLoadingBalances, balancesError, token]); // Dependencies for useCallback
+  }, [isLoadingBalances, balancesError, isAuthenticated]); // Depend on isAuthenticated
 
-  // --- Nav Link Definitions ---
+  // --- Sidebar Nav Link Definitions ---
   const navLinksData: NavLinkDefinition[] = [
     {
       id: "dashboard",
@@ -2698,14 +3222,14 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
       id: "send",
       label: "Send Money",
       icon: "BsSend",
-      route: getSendMoneyRoute, // Use the callback directly
-    },
+      route: getSendMoneyRoute,
+    }, // Use dynamic route function
     {
       id: "add-money",
       label: "Add Money",
       icon: "GoArrowUp",
-      route: getAddMoneyRoute, // Use the callback directly
-    },
+      route: getAddMoneyRoute,
+    }, // Use dynamic route function
     {
       id: "recipients",
       label: "Recipients",
@@ -2720,8 +3244,8 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
     },
   ];
 
-  // Bottom nav - Apply similar logic for dynamic routes if needed
-  const bottomNavLinksData = [
+  // --- Bottom Nav Data Definitions ---
+  const standardBottomNavItems = [
     {
       label: "Home",
       icon: "RiHomeLine",
@@ -2730,94 +3254,124 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
     },
     {
       label: "Activity",
-      icon: "GrTransaction",
+      icon: "RiHistoryLine",
       route: "/dashboard/transactions",
       id: "bottom-activity",
     },
-    // Call the dynamic route function here for consistency
+    // The middle FAB takes the place of an item here
     {
-      label: "Send",
-      icon: "BsSend",
-      route: getSendMoneyRoute(),
-      id: "bottom-send",
+      label: "Recipients",
+      icon: "FiUsers",
+      route: "/dashboard/recipients",
+      id: "bottom-recipients",
     },
     {
-      label: "Account",
+      label: "Settings",
       icon: "FiSettings",
       route: "/dashboard/your-account",
-      id: "bottom-account",
+      id: "bottom-settings",
+    },
+  ];
+
+  // --- Action Items for the Pop-up Menu ---
+  const actionItems = [
+    {
+      id: "bottom-action-send", // Unique ID for disabling check
+      label: "Send Money",
+      icon: "BsSend",
+      route: getSendMoneyRoute, // Use the function
+      color: "bg-primary", // Example: Use primary theme color
+    },
+    {
+      id: "bottom-action-add", // Unique ID for disabling check
+      label: "Add Money",
+      icon: "GoArrowUp",
+      route: getAddMoneyRoute, // Use the function
+      color: "bg-green-500", // Example: Use an accent color
     },
   ];
 
   // --- Logout Handler ---
   const handleLogout = () => {
-    logout();
+    logout(); // This should update the token state provided by useAuth
     router.push("/auth/login");
-    // Ensure sidebar closes on mobile after logout if it was open
+    // Close sidebar if it was open on mobile during logout
     if (sidebarOpen && isMobileView) {
       toggleSidebar();
     }
   };
 
-  // --- Render Logic ---
-  // Sidebar should render if it's not mobile OR if it is mobile AND sidebarOpen is true
+  // --- Render Logic Conditions ---
+  // Full sidebar renders on large screens OR on mobile when the sidebar is explicitly open
   const renderFullSidebar =
-    !isMobileView || (isMobileView === true && sidebarOpen);
-  // Bottom nav should render only if it's small screen AND sidebar is NOT open
+    isMobileView === false || (isMobileView === true && sidebarOpen);
+  // Bottom nav renders ONLY on small screens AND when the sidebar is closed
   const renderBottomNav = isSmallScreen === true && !sidebarOpen;
 
-  // Prevent rendering during SSR or initial hydration mismatch until screen size is known
-  if (isMobileView === null || isSmallScreen === null) {
-    // Optionally return a placeholder/loader here if needed, but null is often fine
-    return null;
-  }
-
-  // --- Helper to resolve route (handles both string and function types) ---
+  // --- Helper Function to Resolve Routes ---
   const resolveRoute = (route: string | (() => string)): string => {
     return typeof route === "function" ? route() : route;
   };
 
-  // --- Helper to check if a dynamic link should be disabled (used when NOT loading) ---
-  const isLinkDisabled = (id: string): boolean => {
-    // Find the link definition by ID
-    const linkDef = navLinksData.find((link) => link.id === id);
-    if (!linkDef) return false; // Should not happen if ID is valid
+  // --- Disabling Logic for Links/Buttons ---
+  const isLinkDisabled = (
+    id: string,
+    dataSource: "sidebar" | "bottomNav" | "actionMenu" = "sidebar" // Default to sidebar
+  ): boolean => {
+    let linkDef: { route: string | (() => string) } | undefined;
 
-    const finalRoute = resolveRoute(linkDef.route);
-    // Disable if route resolved to '#' AND we are NOT currently loading balances
-    // This means the dynamic route logic determined it shouldn't navigate (e.g., error state)
-    return finalRoute === "#" && !isLoadingBalances;
-  };
-
-  // --- Helper for bottom nav disabled state ---
-  const isBottomNavLinkDisabled = (id: string): boolean => {
-    const linkDef = bottomNavLinksData.find((link) => link.id === id);
-    if (!linkDef) return false;
-
-    // Example: Specifically disable 'Send' button while balances load
-    if (id === "bottom-send" && isLoadingBalances) {
-      return true;
+    // Find the link definition based on the source
+    if (dataSource === "sidebar") {
+      linkDef = navLinksData.find((link) => link.id === id);
+    } else if (dataSource === "bottomNav") {
+      linkDef = standardBottomNavItems.find((link) => link.id === id);
+    } else if (dataSource === "actionMenu") {
+      linkDef = actionItems.find((link) => link.id === id);
     }
 
-    // Could add more conditions based on `balancesError` or other factors if needed
-    // For now, mainly focuses on the loading state for dynamic routes.
+    if (!linkDef) return false; // Item not found, shouldn't be disabled
+
+    // Resolve the route first to check for login requirement
     const finalRoute = resolveRoute(linkDef.route);
-    // Also disable if route resolves to '#' and not loading (consistent with sidebar)
-    return finalRoute === "#" && !isLoadingBalances;
+
+    // Check if the item specifically depends on balance loading state AND user is authenticated
+    const dependsOnBalances = [
+      "send",
+      "add-money",
+      "bottom-action-send",
+      "bottom-action-add",
+    ].includes(id);
+
+    if (dependsOnBalances) {
+        // Disable if not authenticated OR if authenticated but balances are loading
+        if (!isAuthenticated || (isAuthenticated && isLoadingBalances)) {
+            return true;
+        }
+    }
+
+    // Disable if the resolved route indicates an issue (e.g., loading placeholder '#')
+    // This handles the case where get...Route functions return '#' when loading
+    return finalRoute === "#";
   };
 
-  // --- Skeleton Component for Links/Buttons ---
+  // --- Skeleton Component for Loading States ---
   const NavItemSkeleton = () => (
-    <div className="relative w-full flex items-center gap-3 py-3 px-4 font-medium mb-2 text-neutral-400 dark:text-gray-600">
-      <Skeleton className="w-6 h-6 rounded-full flex-shrink-0" />{" "}
-      {/* Circle skeleton for icon */}
-      <Skeleton className="w-24 h-6 rounded" /> {/* Rect skeleton for text */}
+    <div className="relative w-full flex items-center gap-3 py-3 px-4 font-medium mb-3 text-neutral-400 dark:text-gray-600">
+      <Skeleton className="w-6 h-6 rounded-full flex-shrink-0" />
+      <Skeleton className="w-24 h-6 rounded" />
     </div>
   );
 
+  // --- Hydration Guard ---
+  // Prevent rendering potentially incorrect UI during SSR/hydration mismatch before screen size is known
+  if (isMobileView === null || isSmallScreen === null) {
+    return null; // Or a minimal loading state if preferred
+  }
+
+  // --- Component Return JSX ---
   return (
     <>
-      {/* Backdrop for Mobile Sidebar */}
+      {/* Backdrop for Mobile Sidebar (when open) */}
       <AnimatePresence>
         {sidebarOpen && isMobileView === true && (
           <motion.div
@@ -2826,8 +3380,8 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            onClick={toggleSidebar} // Close sidebar when backdrop is clicked
-            className="fixed inset-0 bg-black/50 dark:bg-black/70 z-30 lg:hidden" // Ensure z-index is below sidebar but above content
+            onClick={toggleSidebar} // Click backdrop to close sidebar
+            className="fixed inset-0 bg-black/50 dark:bg-black/70 z-30 lg:hidden"
             aria-hidden="true"
           />
         )}
@@ -2840,76 +3394,89 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
             key="full-sidebar"
             ref={sidebarRef}
             className={`w-64 fixed lg:sticky bg-white dark:bg-background h-screen inset-y-0 left-0 ${
-              isMobileView ? "z-40" : "lg:z-10" // Higher z-index on mobile when open
+              isMobileView ? "z-40" : "lg:z-10" // Higher z-index on mobile to overlay content
             } flex flex-col shadow-lg lg:shadow-none`}
-            initial={isMobileView ? { x: "-100%" } : { x: 0 }} // Slide in from left on mobile
-            animate={{ x: 0 }} // Target position
-            exit={isMobileView ? { x: "-100%" } : { x: 0 }} // Slide out to left on mobile
+            // Animate sidebar sliding in/out on mobile
+            initial={isMobileView ? { x: "-100%" } : { x: 0 }}
+            animate={{ x: 0 }}
+            exit={isMobileView ? { x: "-100%" } : { x: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
           >
             {/* Sidebar Header */}
-            <div className="flex-shrink-0 flex items-center justify-start px-4 lg:h-28 h-20">
+            <div className="flex-shrink-0 flex items-center justify-start px-4 lg:h-28 h-20 relative">
               <Link
                 href="/dashboard"
                 className="inline-block"
+                // Close sidebar if clicking logo on mobile
                 onClick={() => {
                   if (isMobileView && sidebarOpen) toggleSidebar();
                 }}
               >
                 <Image
-                  src="/assets/images/wise-logo.svg" // Ensure this path is correct
+                  src="/assets/images/wise-logo.svg" // Ensure this path is correct in your public folder
                   alt="Wise Logo"
                   width={120}
-                  height={30} // Adjust height as needed
+                  height={30}
                   priority // Load logo faster
                 />
               </Link>
-
-              {/* Close Sidebar button - Only show on mobile */}
+              {/* Close button only on mobile */}
               {isMobileView && (
                 <button
-                  onClick={toggleSidebar} // *** ADD THIS ONCLICK HANDLER ***
-                  className="absolute top-2 right-1.5 lg:hidden bg-lightborder cursor-pointer hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox z-10 p-2 rounded-full transition-colors duration-300 ease-in-out"
-                  aria-label="Close sidebar" // For accessibility
+                  onClick={toggleSidebar}
+                  className="absolute top-1/2 right-3 -translate-y-1/2 lg:hidden bg-lightborder cursor-pointer hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox z-10 p-2 rounded-full transition-colors duration-300 ease-in-out"
+                  aria-label="Close sidebar"
                 >
                   <IoClose
-                    size={24} // Slightly smaller icon might fit better
+                    size={20}
                     className="text-mainheading dark:text-primary"
                   />
                 </button>
               )}
             </div>
 
-            {/* Nav Area */}
+            {/* Scrollable Navigation Area */}
             <div className="p-2 flex-grow overflow-y-auto [&::-webkit-scrollbar-track]:rounded-3xl [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-3xl [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
               <nav className="flex-grow">
-                {isLoadingBalances ? (
-                  // --- Render Skeletons when loading ---
+                {/* MODIFIED Condition: Show skeletons ONLY if authenticated AND loading */}
+                {isAuthenticated && isLoadingBalances ? (
                   <>
+                    {/* Render skeletons based on navLinksData length */}
                     {navLinksData.map((item) => (
                       <NavItemSkeleton key={`${item.id}-skeleton`} />
                     ))}
                   </>
                 ) : (
-                  // --- Render Actual Links when not loading ---
+                  // Render actual nav links (links will be disabled/redirect if needed based on auth status)
                   navLinksData.map((item) => {
                     const IconComponent = icons[item.icon];
                     const finalRoute = resolveRoute(item.route);
-                    // Check disabled state *after* resolving route, only when not loading
-                    const isDisabled = isLinkDisabled(item.id);
+                    // isLinkDisabled checks token status indirectly via resolveRoute for relevant links
+                    const isDisabled = isLinkDisabled(item.id, "sidebar");
+                    // Determine active state based on current pathname AND authentication
                     const isActive =
+                      isAuthenticated && // Link can only be active if authenticated
                       !isDisabled &&
                       (pathname === finalRoute ||
-                        (finalRoute !== "/dashboard" && // Avoid highlighting dashboard for sub-routes
-                          pathname.startsWith(finalRoute)));
+                        (finalRoute !== "/dashboard" &&
+                          pathname.startsWith(finalRoute))); // Match sub-routes too
+
+                    // Define sensitive links that require authentication
+                    const requiresAuth = ['transactions', 'send', 'add-money', 'recipients', 'settings'].includes(item.id);
+                    const visuallyDisabled = isDisabled || (requiresAuth && !isAuthenticated);
 
                     return (
                       <Link
                         key={item.id}
-                        href={isDisabled ? "#" : finalRoute} // Prevent navigation if disabled
+                        href={visuallyDisabled ? "#" : finalRoute} // Prevent navigation if disabled or needs auth
                         onClick={(e) => {
-                          if (isDisabled) {
-                            e.preventDefault(); // Explicitly prevent default action
+                          // Prevent default if visually disabled
+                          if (visuallyDisabled) {
+                            e.preventDefault();
+                            // Optional: Redirect to login if requires auth and not logged in
+                            if (requiresAuth && !isAuthenticated) {
+                                router.push('/auth/login');
+                            }
                             return;
                           }
                           // Close sidebar on mobile after navigation
@@ -2920,21 +3487,21 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                         className={`relative w-full flex items-center gap-3 py-3 px-4 font-medium rounded-full transition duration-200 mb-3
                           ${
                             isActive
-                              ? "lg:bg-transparent dark:lg:bg-transparent bg-primary/60 text-neutral-900 dark:bg-primarybox  dark:text-primary" // Active text color only
-                              : isDisabled
-                              ? "text-neutral-400 dark:text-gray-600  cursor-not-allowed opacity-60" // More explicit disabled styling
-                              : "text-neutral-500 hover:text-neutral-900 hover:bg-[#ECECEC] dark:hover:bg-white/5 dark:text-gray-300 dark:hover:text-primary" // Hover state
+                              ? "lg:bg-transparent dark:lg:bg-transparent bg-primary/60 text-neutral-900 dark:bg-primarybox dark:text-primary" // Active styles
+                              : visuallyDisabled
+                              ? "text-neutral-400 dark:text-gray-600 cursor-not-allowed opacity-60" // Disabled styles (loading or needs auth)
+                              : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary" // Default hover styles
                           }
                         `}
-                        aria-current={isActive ? "page" : undefined} // Accessibility for active link
-                        aria-disabled={isDisabled}
-                        tabIndex={isDisabled ? -1 : 0} // Accessibility for disabled link
+                        aria-current={isActive ? "page" : undefined}
+                        aria-disabled={visuallyDisabled}
+                        tabIndex={visuallyDisabled ? -1 : 0} // Improve accessibility
                       >
-                        {/* Active indicator with layout animation */}
+                        {/* Animated indicator for active link */}
                         {isActive && (
                           <motion.div
-                            layoutId="active-sidebar-indicator" // Shared ID for animation
-                            className="absolute inset-0 rounded-full bg-primary/60 dark:bg-primarybox" // Subtle background for active item
+                            layoutId="active-sidebar-indicator" // Shared layout ID for animation
+                            className="absolute inset-0 rounded-full bg-primary dark:bg-primarybox"
                             initial={false}
                             transition={{
                               type: "spring",
@@ -2943,13 +3510,10 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                             }}
                           />
                         )}
-
+                        {/* Render icon and label */}
                         {IconComponent && (
-                          <IconComponent
-                            className="w-6 h-6 relative z-10 flex-shrink-0"
-                          />
+                          <IconComponent className="w-6 h-6 relative z-10 flex-shrink-0" />
                         )}
-
                         <span className="relative z-10 truncate">
                           {item.label}
                         </span>
@@ -2958,101 +3522,244 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                   })
                 )}
               </nav>
-
-              {/* Logout Button Area */}
-              {isLoadingBalances ? (
-                // --- Render Logout Skeleton when loading balances (optional, could just show the button) ---
-                <NavItemSkeleton />
-              ) : (
-                // --- Render Actual Logout Button ---
-                <button
-                  onClick={handleLogout}
-                  className="w-full flex items-center space-x-3 py-3 px-4 font-medium hover:bg-gray/10 dark:hover:bg-white/5  rounded-full transition duration-200 mb-2 cursor-pointer text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
-                  // Logout button isn't typically disabled by balance loading state
-                >
-                  <VscSignOut className="w-6 h-6 flex-shrink-0" />
-                  <span className="font-medium">Logout</span>
-                </button>
-              )}
+               {/* Logout Button - Only show if authenticated */}
+               {isAuthenticated && (
+                 <button
+                   onClick={handleLogout}
+                   className="w-full flex items-center space-x-3 py-3 px-4 font-medium rounded-full transition duration-200 mb-2 cursor-pointer text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
+                  // disabled={isLoadingBalances} // Optional: disable during loading
+                 >
+                   <VscSignOut className="w-6 h-6 flex-shrink-0" />
+                   <span className="font-medium">Logout</span>
+                 </button>
+               )}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
+      {/* Backdrop for Action Menu (when open) */}
+      <AnimatePresence>
+        {isActionMenuOpen &&
+          renderBottomNav && ( // Show only when menu is open AND bottom nav is visible
+            <motion.div
+              key="action-menu-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setIsActionMenuOpen(false)} // Click backdrop to close menu
+              className="fixed inset-0 bg-black/50 dark:bg-white/30 z-40 sm:hidden" // z-index below menu/fab, only on small screens
+              aria-hidden="true"
+            />
+          )}
+      </AnimatePresence>
 
-      {/* Bottom Nav (Small Screens Only, when sidebar is closed) */}
+      {/* Bottom Navigation Bar Container */}
       <AnimatePresence>
         {renderBottomNav && (
-          <div
+          <motion.div
             key="bottom-nav"
-            className="sm:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-background border-t z-12 border-gray-200 dark:border-secondarybox/50 "
+            initial={{ y: "100%" }} // Animate sliding up from bottom
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }} // Animate sliding down
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            // z-index above backdrop, below action menu/fab pop-up
+            className="sm:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-background border-t z-45 border-gray-200 dark:border-secondarybox"
           >
-            {/* No skeleton needed here unless balance loading blocks critical nav */}
-            <div className="flex items-center justify-around h-16">
-              {bottomNavLinksData.map((item) => {
+            {/* Flex container for nav items + FAB space */}
+            <div className="flex items-center justify-around h-16 relative">
+              {standardBottomNavItems.slice(0, 2).map((item) => {
                 const IconComponent = icons[item.icon as keyof typeof icons];
                 const finalRoute = resolveRoute(item.route);
-                // Use the specific bottom nav disabled check
-                const isDisabled = isBottomNavLinkDisabled(item.id);
+                 // Note: Bottom nav items 'home', 'activity', 'recipients', 'settings' might also need auth check
+                const requiresAuth = ['bottom-activity', 'bottom-recipients', 'bottom-settings'].includes(item.id);
+                const isDisabled = isLinkDisabled(item.id, "bottomNav"); // Checks loading state for specific actions if applicable
+                const visuallyDisabled = isDisabled || (requiresAuth && !isAuthenticated);
                 const isActive =
-                  !isDisabled &&
+                  isAuthenticated && // Can only be active if authenticated
+                  !visuallyDisabled &&
                   (pathname === finalRoute ||
                     (finalRoute !== "/dashboard" &&
                       pathname.startsWith(finalRoute)));
 
                 return (
                   <Link
-                    key={item.id} // Use unique ID
-                    href={isDisabled ? "#" : finalRoute}
+                    key={item.id}
+                    href={visuallyDisabled ? "#" : finalRoute}
                     onClick={(e) => {
-                      if (isDisabled) e.preventDefault();
-                      // No need to toggle sidebar here
+                        if (visuallyDisabled) {
+                            e.preventDefault();
+                            if (requiresAuth && !isAuthenticated) {
+                                router.push('/auth/login');
+                            }
+                            return;
+                        }
                     }}
-                    className={`flex relative flex-col items-center justify-center space-y-1 py-2 grow basis-0 h-full transition-opacity ${
-                      isDisabled
+                    className={`flex relative flex-col items-center justify-center space-y-1 p-1 grow basis-0 h-full transition-colors duration-200 group ${
+                      // Use basis-0 and grow for equal spacing
+                      visuallyDisabled
                         ? "cursor-not-allowed opacity-50 pointer-events-none"
-                        : "opacity-100"
+                        : ""
+                    } ${
+                      isActive
+                        ? "text-primary dark:text-primary"
+                        : "text-neutral-500 dark:text-gray-400 hover:text-neutral-800 dark:hover:text-gray-200"
                     }`}
                     aria-current={isActive ? "page" : undefined}
-                    aria-disabled={isDisabled}
-                    tabIndex={isDisabled ? -1 : 0}
+                    aria-disabled={visuallyDisabled}
+                    tabIndex={visuallyDisabled ? -1 : 0}
                   >
-                    {/* Active indicator line */}
-                    {isActive && (
-                      <motion.div
-                        className="absolute top-0 left-1/2 -translate-x-1/2 h-[3px] w-12 rounded-full bg-primary"
-                        layoutId="bottom-nav-indicator" // Shared layout ID
-                        initial={false}
-                        transition={{
-                          type: "spring",
-                          stiffness: 400,
-                          damping: 35,
-                        }}
-                      />
-                    )}
-                    {/* Icon container */}
-                    <motion.div
-                      className={`p-1 rounded-md transition-colors ${
-                        isActive
-                          ? "text-primary"
-                          : isDisabled
-                          ? "text-neutral-400 dark:text-gray-600"
-                          : "text-neutral-500 dark:text-gray-300 group-hover:text-primary" // Added group hover effect potential
-                      }`}
-                      whileTap={isDisabled ? {} : { scale: 0.9 }} // Tap animation only if not disabled
-                      layout // Animate layout changes if needed
-                    >
-                      {IconComponent && <IconComponent className="size-5" />}
-                    </motion.div>
-                    {/* Label text */}
+                    <div className={`transition-colors`}>
+                      {IconComponent && <IconComponent className="size-6" />}
+                    </div>
                     <span
-                      className={`text-[11px] font-medium transition-colors ${
-                        // Slightly smaller text for bottom nav
+                      className={`text-[10px] font-medium transition-colors truncate ${
                         isActive
-                          ? "text-neutral-900 dark:text-primary"
-                          : isDisabled
-                          ? "text-neutral-400 dark:text-gray-600"
-                          : "text-neutral-500 dark:text-gray-300"
+                          ? "text-primary dark:text-primary"
+                          : "text-neutral-600 dark:text-gray-400 group-hover:text-neutral-800 dark:group-hover:text-gray-200"
+                      }`}
+                    >
+                      {item.label}
+                    </span>
+                  </Link>
+                );
+              })}
+              {/* Center Action Button Container & Pop-up Menu */}
+              <div className="relative flex justify-center grow basis-0 h-full">
+                <button
+                  onClick={() => setIsActionMenuOpen(!isActionMenuOpen)} // Toggle menu state
+                  aria-haspopup="true"
+                  aria-expanded={isActionMenuOpen}
+                  aria-controls="action-menu-popup" // Links button to the menu
+                  aria-label="Open actions menu"
+                  // Disable the FAB itself if the user is not logged in, as its actions require auth
+                  disabled={!isAuthenticated}
+                  className={`absolute -top-1/2 z-50 flex items-center p-1.5 bg-white dark:bg-background border rounded-full ${!isAuthenticated ? 'opacity-50 cursor-not-allowed' : ''}`} // Added border classes and disabled state
+                >
+                <div className="flex items-center justify-center w-13 h-13 rounded-full bg-primary transition-all duration-200 ease-out hover:bg-primary/90">
+
+                  <BsSend className="size-6 text-neutral-900" />
+                  {/* Changed icon and size */}
+                </div>
+                </button>
+                {/* Action Menu Pop-up - Only render if authenticated */}
+                <AnimatePresence>
+                  {isAuthenticated && isActionMenuOpen && ( // Check authentication before rendering menu
+                    <motion.div
+                      id="action-menu-popup" // ID for aria-controls
+                      // Animation: pop up from bottom, fade in, scale up
+                      initial={{ y: 10, opacity: 0, scale: 0.9 }}
+                      animate={{ y: -78, opacity: 1, scale: 1 }} // Position above the FAB
+                      exit={{ y: 10, opacity: 0, scale: 0.9, transition: { duration: 0.15 } }}
+                      transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                      className="absolute bottom-12 bg-white dark:bg-background rounded-lg shadow-xl p-2 z-48 flex flex-col gap-1 w-44" // Changed width class
+                    >
+                      {actionItems.map((action) => {
+                        const IconComponent =
+                          icons[action.icon as keyof typeof icons];
+                        const finalRoute = resolveRoute(action.route);
+                        // isLinkDisabled already checks for auth and loading status for these actions
+                        const isDisabled = isLinkDisabled(
+                          action.id,
+                          "actionMenu"
+                        );
+
+                        return (
+                          <Link
+                            key={action.id}
+                            href={isDisabled ? "#" : finalRoute}
+                            onClick={(e) => {
+                              if (isDisabled) {
+                                e.preventDefault(); // Prevent navigation if disabled
+                                return;
+                              }
+                              setIsActionMenuOpen(false); // Close menu on click/tap
+                            }}
+                            className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors duration-150
+                              ${
+                                isDisabled
+                                  ? "text-neutral-400 dark:text-gray-600 cursor-not-allowed opacity-70" // Disabled styles
+                                  : `text-neutral-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10` // Enabled styles
+                              }`}
+                            aria-disabled={isDisabled}
+                            tabIndex={isDisabled ? -1 : 0}
+                          >
+                            {/* Icon with colored background circle */}
+                            <div
+                              className={`p-1.5 rounded-full ${
+                                isDisabled
+                                  ? "bg-gray-300 dark:bg-gray-700"
+                                  : action.color
+                              }`}
+                            >
+                              {IconComponent && (
+                                <IconComponent
+                                  className={`size-4 ${
+                                    isDisabled ? "text-gray-500" : "text-white"
+                                  }`}
+                                />
+                              )}
+                            </div>
+                            <span className="text-sm font-medium">
+                              {action.label}
+                            </span>
+                          </Link>
+                        );
+                      })}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+              {standardBottomNavItems.slice(2).map((item) => {
+                 const IconComponent = icons[item.icon as keyof typeof icons];
+                const finalRoute = resolveRoute(item.route);
+                // Note: Bottom nav items 'home', 'activity', 'recipients', 'settings' might also need auth check
+                const requiresAuth = ['bottom-activity', 'bottom-recipients', 'bottom-settings'].includes(item.id);
+                const isDisabled = isLinkDisabled(item.id, "bottomNav"); // Checks loading state if applicable
+                const visuallyDisabled = isDisabled || (requiresAuth && !isAuthenticated);
+                const isActive =
+                  isAuthenticated && // Can only be active if authenticated
+                  !visuallyDisabled &&
+                  (pathname === finalRoute ||
+                    (finalRoute !== "/dashboard" &&
+                      pathname.startsWith(finalRoute)));
+
+                return (
+                  <Link
+                    key={item.id}
+                    href={visuallyDisabled ? "#" : finalRoute}
+                    onClick={(e) => {
+                       if (visuallyDisabled) {
+                           e.preventDefault();
+                           if (requiresAuth && !isAuthenticated) {
+                               router.push('/auth/login');
+                           }
+                           return;
+                       }
+                    }}
+                    className={`flex relative flex-col items-center justify-center space-y-1 p-1 grow basis-0 h-full transition-colors duration-200 group ${
+                      // Use basis-0 and grow for equal spacing
+                      visuallyDisabled
+                        ? "cursor-not-allowed opacity-50 pointer-events-none"
+                        : ""
+                    } ${
+                      isActive
+                        ? "text-primary dark:text-primary"
+                        : "text-neutral-500 dark:text-gray-400 hover:text-neutral-800 dark:hover:text-gray-200"
+                    }`}
+                    aria-current={isActive ? "page" : undefined}
+                    aria-disabled={visuallyDisabled}
+                    tabIndex={visuallyDisabled ? -1 : 0}
+                  >
+                    <div className={`transition-colors`}>
+                      {IconComponent && <IconComponent className="size-6" />}
+                    </div>
+                    <span
+                      className={`text-[10px] font-medium transition-colors truncate ${
+                        isActive
+                          ? "text-primary dark:text-primary"
+                          : "text-neutral-600 dark:text-gray-400 group-hover:text-neutral-800 dark:group-hover:text-gray-200"
                       }`}
                     >
                       {item.label}
@@ -3061,7 +3768,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                 );
               })}
             </div>
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </>
@@ -3069,4 +3776,3 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
 };
 
 export default Sidebar;
-
