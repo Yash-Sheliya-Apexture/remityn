@@ -207,7 +207,7 @@
 //                           {currency.code}
 //                         </span>
 //                         {currency.currencyName && (
-//                           <span className="text-xs md:text-sm text-gray-500 dark:text-gray-300">
+//                           <span className="text-xs md:text-sm text-gray-700 dark:text-gray-300">
 //                             {currency.currencyName}
 //                           </span>
 //                         )}
@@ -216,7 +216,7 @@
 //                   </div>
 //                 ))
 //               : !isLoading && (
-//                   <p className="text-gray-500 dark:text-gray-300 text-center py-4">
+//                   <p className="text-gray-700 dark:text-gray-300 text-center py-4">
 //                     No results found.
 //                   </p>
 //                 )}
@@ -513,7 +513,7 @@
 //                          />
 //                        ) : (
 //                            // Optional: Placeholder if no image URL is provided
-//                             <div className="w-[44px] h-[44px] rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500">
+//                             <div className="w-[44px] h-[44px] rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-700">
 //                                 {currency.code.substring(0, 2)}
 //                             </div>
 //                        )}
@@ -522,7 +522,7 @@
 //                            {currency.code}
 //                          </span>
 //                          {currency.currencyName && (
-//                            <span className="text-xs md:text-sm text-gray-500 dark:text-gray-300">
+//                            <span className="text-xs md:text-sm text-gray-700 dark:text-gray-300">
 //                              {currency.currencyName}
 //                            </span>
 //                          )}
@@ -531,13 +531,13 @@
 //                    </div>
 //                  ))
 //                : !isLoading && searchQuery && ( // Show "No results" only if not loading and a search query exists
-//                    <p className="text-gray-500 dark:text-gray-300 text-center py-4">
+//                    <p className="text-gray-700 dark:text-gray-300 text-center py-4">
 //                      No results found for &quot;{searchQuery}&quot;.
 //                    </p>
 //                  )}
 //                {/* Consider adding a message if currencies array is empty initially after load */}
 //                {!isLoading && currencies.length === 0 && !searchQuery && (
-//                  <p className="text-gray-500 dark:text-gray-300 text-center py-4">
+//                  <p className="text-gray-700 dark:text-gray-300 text-center py-4">
 //                     No available currencies to add.
 //                  </p>
 //                )}
@@ -828,7 +828,7 @@
 //                          />
 //                        ) : (
 //                            // Optional: Placeholder if no image URL is provided
-//                             <div className="w-[44px] h-[44px] rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500">
+//                             <div className="w-[44px] h-[44px] rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-700">
 //                                 {currency.code.substring(0, 2)}
 //                             </div>
 //                        )}
@@ -837,7 +837,7 @@
 //                            {currency.code}
 //                          </span>
 //                          {currency.currencyName && (
-//                            <span className="text-xs md:text-sm text-gray-500 dark:text-gray-300">
+//                            <span className="text-xs md:text-sm text-gray-700 dark:text-gray-300">
 //                              {currency.currencyName}
 //                            </span>
 //                          )}
@@ -846,13 +846,13 @@
 //                    </div>
 //                  ))
 //                : !isLoading && searchQuery && ( // Show "No results" only if not loading and a search query exists
-//                    <p className="text-gray-500 dark:text-gray-300 text-center py-4">
+//                    <p className="text-gray-700 dark:text-gray-300 text-center py-4">
 //                      No results found for "{searchQuery}".
 //                    </p>
 //                  )}
 //                {/* Consider adding a message if currencies array is empty initially after load */}
 //                {!isLoading && currencies.length === 0 && !searchQuery && (
-//                  <p className="text-gray-500 dark:text-gray-300 text-center py-4">
+//                  <p className="text-gray-700 dark:text-gray-300 text-center py-4">
 //                     No available currencies to add.
 //                  </p>
 //                )}
@@ -1235,7 +1235,7 @@
 //                               className="rounded-full object-cover flex-shrink-0" // Added flex-shrink-0
 //                             />
 //                           ) : (
-//                             <div className="w-[40px] h-[40px] rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500 flex-shrink-0">
+//                             <div className="w-[40px] h-[40px] rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-700 flex-shrink-0">
 //                               {currency.code.substring(0, 2)}
 //                             </div>
 //                           )}
@@ -1248,7 +1248,7 @@
 //                               {currency.code}
 //                             </span>
 //                             {currency.currencyName && (
-//                               <span className="text-xs md:text-sm text-gray-500 dark:text-gray-300 truncate">
+//                               <span className="text-xs md:text-sm text-gray-700 dark:text-gray-300 truncate">
 //                                 {" "}
 //                                 {/* Added truncate */}
 //                                 {currency.currencyName}
@@ -1260,12 +1260,12 @@
 //                     ))
 //                   : !isLoading &&
 //                     searchQuery && (
-//                       <p className="text-gray-500 dark:text-gray-300 text-center py-4">
+//                       <p className="text-gray-700 dark:text-gray-300 text-center py-4">
 //                         No results found for "{searchQuery}".
 //                       </p>
 //                     )}
 //                 {!isLoading && currencies.length === 0 && !searchQuery && (
-//                   <p className="text-gray-500 dark:text-gray-300 text-center py-4">
+//                   <p className="text-gray-700 dark:text-gray-300 text-center py-4">
 //                     No available currencies to add.
 //                   </p>
 //                 )}
@@ -1538,7 +1538,7 @@
 //     if (!isFetching && !error && currencies.length === 0) {
 //       return (
 //         <div className="flex-grow flex items-center justify-center text-center py-4">
-//           <p className="text-gray-500 dark:text-gray-300">
+//           <p className="text-gray-700 dark:text-gray-300">
 //             No available currencies to add at this time.
 //           </p>
 //         </div>
@@ -1590,7 +1590,7 @@
 //                       unoptimized={currency.flagImage.includes('flagcdn.com')} // Example: Disable optimization for specific external sources if needed
 //                     />
 //                   ) : (
-//                     <div className="w-[40px] h-[40px] rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500 flex-shrink-0">
+//                     <div className="w-[40px] h-[40px] rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-700 flex-shrink-0">
 //                       {currency.code.substring(0, 2)}
 //                     </div>
 //                   )}
@@ -1599,7 +1599,7 @@
 //                       {currency.code}
 //                     </span>
 //                     {currency.currencyName && (
-//                       <span className="text-xs md:text-sm text-gray-500 dark:text-gray-300 truncate">
+//                       <span className="text-xs md:text-sm text-gray-700 dark:text-gray-300 truncate">
 //                         {currency.currencyName}
 //                       </span>
 //                     )}
@@ -2048,7 +2048,6 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
           <p className="text-red-600 dark:text-red-400 font-medium">
             {error || "Could not load currencies."}
           </p>
-          {/* Optional: Add a retry button */}
         </div>
       );
     }
@@ -2057,7 +2056,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
     if (!isFetching && !error && currencies.length === 0) {
       return (
         <div className="flex-grow flex items-center justify-center text-center py-4 min-h-[100px]">
-          <p className="text-gray-500 dark:text-gray-300">
+          <p className="text-gray-700 dark:text-gray-300">
             No available currencies to add at this time.
           </p>
         </div>
@@ -2108,7 +2107,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
                     />
                   ) : (
                     // Fallback display if no flagImage provided
-                    <div className="w-[40px] h-[40px] rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-300 text-xs font-medium flex-shrink-0">
+                    <div className="w-[40px] h-[40px] rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-300 text-xs font-medium flex-shrink-0">
                       {currency.code.substring(0, 3)}
                     </div>
                   )}
@@ -2117,7 +2116,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
                       {currency.code}
                     </span>
                     {currency.currencyName && (
-                      <span className="text-xs md:text-sm text-gray-500 dark:text-gray-300 truncate">
+                      <span className="text-xs md:text-sm text-gray-700 dark:text-gray-300 truncate">
                         {currency.currencyName}
                       </span>
                     )}
@@ -2223,7 +2222,6 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
                   </button>
                 )}
               </div>
-              {/* Error Display Area (for selection/add errors) */}
               {/* This specifically handles errors related to selection or the add process, fetch errors are handled in renderContent */}
               <AnimatePresence>
                 {error &&
