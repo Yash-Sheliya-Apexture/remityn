@@ -3650,18 +3650,9 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                       id="action-menu-popup" // ID for aria-controls
                       // Animation: pop up from bottom, fade in, scale up
                       initial={{ y: 10, opacity: 0, scale: 0.9 }}
-                      animate={{ y: -65, opacity: 1, scale: 1 }} // Position above the FAB
-                      exit={{
-                        y: 10,
-                        opacity: 0,
-                        scale: 0.9,
-                        transition: { duration: 0.15 },
-                      }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 350,
-                        damping: 25,
-                      }}
+                      animate={{ y: -78, opacity: 1, scale: 1 }} // Position above the FAB
+                      exit={{ y: 10, opacity: 0, scale: 0.9, transition: { duration: 0.15 } }}
+                      transition={{ type: "spring", stiffness: 350, damping: 25 }}
                       className="absolute bottom-12 bg-white dark:bg-background rounded-lg shadow-xl p-2 z-48 flex flex-col gap-1 w-44" // Changed width class
                     >
                       {actionItems.map((action) => {
