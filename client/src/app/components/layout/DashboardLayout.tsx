@@ -113,18 +113,90 @@
 // }
 
 
+// // layout.tsx
+// "use client";
+// import React, { useState, useEffect } from "react";
+// import { useAuth } from "../../contexts/AuthContext";
+// import { useRouter } from "next/navigation";
+// import Sidebar from "../../dashboard/components/Sidebar";
+// import Header from "../../dashboard/components/Header";
+// import BackToTopButton from '../../dashboard/components/BackToTopButton'; // Adjust path as needed
+
+// export default function DashboardLayout({ children }) {
+//   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+//   const { user, loading } = useAuth();
+//   const router = useRouter();
+
+//   useEffect(() => {
+//     if (!loading && !user) {
+//       router.push("/auth/login");
+//     }
+//   }, [user, loading, router]);
+
+//   const toggleSidebar = () => {
+//     setIsSidebarOpen(!isSidebarOpen);
+//   };
+
+//   if (loading) {
+//     return <p>Loading dashboard...</p>;
+//   }
+
+//   if (!user) {
+//     return null;
+//   }
+
+//   return (
+//     <div className="dashboard-layout"> {/* You might want relative positioning here if needed */}
+//       <div className="max-w-[1440px] mx-auto">
+//         <div className="flex">
+//           <Sidebar
+//             sidebarOpen={isSidebarOpen}
+//             toggleSidebar={toggleSidebar}
+//           />
+//           <div className="lg:w-[calc(100%-256px)] w-full"> {/* Ensure flex container takes height */}
+//             <Header toggleSidebar={toggleSidebar} />
+//             {/* Main Content */}
+//             <main className="flex-1">
+//               <div className="max-w-5xl mx-auto px-4 lg:pb-0 sm:pb-10 pb-24">
+//                 {children} {/* Render page content here */}
+//               </div>
+//             </main>
+//           </div>
+//         </div>
+//       </div>
+//       <BackToTopButton />
+//     </div>
+//   );
+// }
+
+
+
 // layout.tsx
 "use client";
-import React, { useState, useEffect } from "react";
+
+import React, { useState, useEffect, ReactNode } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import Sidebar from "../../dashboard/components/Sidebar";
-import Header from "../../dashboard/components/Header";
-import BackToTopButton from '../../dashboard/components/BackToTopButton'; // Adjust path as needed
+import Header from "../../dashboard/components/Header";  
+import BackToTopButton from '../../dashboard/components/BackToTopButton';
 
-export default function DashboardLayout({ children }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { user, loading } = useAuth();
+
+interface UserType {
+  id: string;
+  email: string;
+  name?: string;
+}
+
+interface DashboardLayoutProps {
+  children: ReactNode; 
+}
+
+export default function DashboardLayout({ children }: DashboardLayoutProps) {
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+
+  const { user, loading } = useAuth() as { user: UserType | null; loading: boolean }; // Type assertion might be needed if useAuth isn't typed
+
   const router = useRouter();
 
   useEffect(() => {
@@ -133,7 +205,7 @@ export default function DashboardLayout({ children }) {
     }
   }, [user, loading, router]);
 
-  const toggleSidebar = () => {
+  const toggleSidebar = (): void => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
@@ -146,19 +218,18 @@ export default function DashboardLayout({ children }) {
   }
 
   return (
-    <div className="dashboard-layout"> {/* You might want relative positioning here if needed */}
+    <div className="dashboard-layout">
       <div className="max-w-[1440px] mx-auto">
-        <div className="flex">
+        <div className="flex min-h-screen"> 
           <Sidebar
             sidebarOpen={isSidebarOpen}
             toggleSidebar={toggleSidebar}
           />
-          <div className="lg:w-[calc(100%-256px)] w-full"> {/* Ensure flex container takes height */}
+          <div className="flex flex-col flex-grow lg:w-[calc(100%-256px)] w-full"> 
             <Header toggleSidebar={toggleSidebar} />
-            {/* Main Content */}
-            <main className="flex-1">
-              <div className="max-w-5xl mx-auto px-4 lg:pb-0 sm:pb-10 pb-18">
-                {children} {/* Render page content here */}
+            <main className="flex-grow"> 
+              <div className="max-w-5xl mx-auto px-4 pt-4 sm:px-6 lg:px-8 pb-24 sm:pb-10 lg:pb-10"> 
+              {children}
               </div>
             </main>
           </div>

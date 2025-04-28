@@ -342,6 +342,166 @@
 
 
 
+// // server.js
+// import express from 'express';
+// import cors from 'cors';
+// import config from './config/index.js';
+// import connectDB from './utils/database.js';
+// import userRoutes from './routes/user.routes.js';
+// import errorHandler from './middleware/error.middleware.js';
+// import authRoutes from './routes/auth.routes.js';
+// import authMiddleware from './middleware/auth.middleware.js';
+// import adminUserRoutes from './routes/admin/user.admin.routes.js';
+// import kycRoutes from './routes/kyc.routes.js'; // Import user KYC routes
+// import adminKycRoutes from './routes/admin/kyc.admin.routes.js'; // Import admin KYC routes
+// import accountRoutes from './routes/account.routes.js'; // Import account routes
+// import currencyRoutes from './routes/currency.routes.js'; // Import currency routes
+// import adminCurrencyRoutes from './routes/admin/currency.admin.routes.js'; // Import admin currency routes
+// import adminPaymentRoutes from './routes/admin/payment.admin.routes.js'; // Import admin payment routes
+// import paymentRoutes from './routes/payment.routes.js'; // Import payment routes
+// import exchangeRateRoutes from './routes/exchangeRate.routes.js';
+// import exchangeRateService from './services/exchangeRate.service.js';
+// import recipientRoutes from './routes/recipient.routes.js'; // Import recipient routes
+// import transferRoutes from './routes/transfer.routes.js'; // Import transfer routes
+// import adminTransferRoutes from './routes/admin/transfer.admin.routes.js'; // <-- Import Admin transfer routes
+// import cron from 'node-cron';
+// import dotenv from 'dotenv';
+// import helmet from 'helmet';
+// import compression from 'compression';
+// import morgan from 'morgan';
+// import cookieParser from 'cookie-parser';
+// import path from 'path'; // Import path module
+// import { fileURLToPath } from 'url'; // Import fileURLToPath from 'url'
+// import { dirname } from 'path';      // Import dirname from 'path'
+// import rateLimit from 'express-rate-limit'; // Import rate limiter
+// import AppError from './utils/AppError.js'; // Import AppError if used in error handler
+
+// dotenv.config(); // Load environment variables from .env file
+
+// const app = express();
+
+// // --- Security Middleware ---
+// // Helmet, Rate Limiting, etc. (Keep these early)
+// app.use(helmet.crossOriginOpenerPolicy({ policy: "same-origin-allow-popups" }));
+// app.use(helmet.hidePoweredBy());
+// app.use(helmet.xssFilter());
+// app.use(helmet.noSniff());
+// app.use(helmet.ieNoOpen());
+// app.use(helmet.frameguard({ action: 'deny' }));
+// // app.use(helmet.contentSecurityPolicy({ ... })); // Configure properly if needed
+
+// const authLimiter = rateLimit({
+//     windowMs: 15 * 60 * 1000, max: 100,
+//     message: 'Too many requests from this IP, please try again after 15 minutes',
+//     standardHeaders: true, legacyHeaders: false,
+// });
+// app.use('/api/auth/login', authLimiter);
+// // ... other rate limited routes
+
+// // --- Core Middleware ---
+// // Compression
+// app.use(compression());
+
+// // Logging (Development only)
+// if (process.env.NODE_ENV === 'development') {
+//     app.use(morgan('dev'));
+// }
+
+// // CORS
+// const allowedOrigins = [ 'http://localhost:3000', 'https://wise-lime.vercel.app' ]; // Add your frontend URLs
+// app.use(cors({
+//     origin: (origin, callback) => {
+//         if (!origin || allowedOrigins.includes(origin)) {
+//             callback(null, true);
+//         } else {
+//             callback(new Error('Not allowed by CORS'));
+//         }
+//     },
+//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//     allowedHeaders: ['Content-Type', 'Authorization'],
+//     credentials: true,
+// }));
+
+// // Cookie Parser
+// app.use(cookieParser());
+
+// // *** Body Parsers - Place them HERE ***
+// // These handle standard JSON and URL-encoded bodies for routes that DON'T use Multer.
+// // Multer handles its own body parsing for multipart/form-data.
+// app.use(express.json({ limit: '10kb' })); // Limit JSON payload
+// app.use(express.urlencoded({ extended: true })); // For parsing URL-encoded request bodies
+
+// // Cache control (Development - Adjust for Production)
+// app.use((req, res, next) => {
+//     if (process.env.NODE_ENV === 'development') {
+//         res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+//         res.setHeader('Pragma', 'no-cache');
+//         res.setHeader('Expires', '0');
+//     }
+//     next();
+// });
+
+
+// // --- Database Connection ---
+// connectDB();
+
+// // --- Static Files ---
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = dirname(__filename);
+// app.use(express.static(path.join(__dirname, 'public')));
+
+
+// // --- Health Check & Root ---
+// app.get('/health', (req, res) => res.status(200).send('OK'));
+// app.get('/', (req, res) => res.send('Welcome to the API server!'));
+
+// // --- API Routes ---
+// app.use('/api/auth', authRoutes);
+// app.use('/api/kyc', kycRoutes); // <<< Contains the route-specific Multer middleware
+// app.use('/api/accounts', authMiddleware.protect, accountRoutes);
+// app.use('/api/currencies', currencyRoutes);
+// app.use('/api/payments', authMiddleware.protect, paymentRoutes);
+// app.use('/api/exchange-rates', exchangeRateRoutes);
+// app.use('/api/recipients', authMiddleware.protect, recipientRoutes);
+// app.use('/api/transfers', authMiddleware.protect, transferRoutes);
+// app.use('/api/dashboard/users', authMiddleware.protect, userRoutes); // Example user route
+
+// // Admin Routes (ensure authMiddleware.admin is applied correctly)
+// app.use('/api/admin/users', authMiddleware.protect, authMiddleware.admin, adminUserRoutes);
+// app.use('/api/admin/kyc', authMiddleware.protect, authMiddleware.admin, adminKycRoutes);
+// app.use('/api/admin/currencies', authMiddleware.protect, authMiddleware.admin, adminCurrencyRoutes);
+// app.use('/api/admin/payments', authMiddleware.protect, authMiddleware.admin, adminPaymentRoutes);
+// app.use('/api/admin/transfers', authMiddleware.protect, authMiddleware.admin, adminTransferRoutes);
+
+// // --- Cron Jobs ---
+// // Schedule cron job for exchange rates
+// cron.schedule('0 0,12 * * *', async () => {
+//     console.log('Running exchange rate update cron job...');
+//     try {
+//         await exchangeRateService.updateExchangeRates();
+//         console.log('Exchange rate update cron job completed successfully.');
+//     } catch (error) {
+//          console.error('Exchange rate update cron job failed:', error);
+//     }
+// });
+
+// // Initial exchange rate update
+// exchangeRateService.updateExchangeRates().catch(error => {
+//     console.error('Initial exchange rate load failed on server start:', error);
+// });
+
+
+// // --- Global Error Handling Middleware ---
+// // This MUST be the LAST middleware added.
+// app.use(errorHandler); // Ensure your errorHandler handles AppError correctly
+
+// // --- Server Startup ---
+// const PORT = config.port;
+// app.listen(PORT, () => {
+//     console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+// });
+
+
 // server.js
 import express from 'express';
 import cors from 'cors';
@@ -381,7 +541,6 @@ dotenv.config(); // Load environment variables from .env file
 const app = express();
 
 // --- Security Middleware ---
-// Helmet, Rate Limiting, etc. (Keep these early)
 app.use(helmet.crossOriginOpenerPolicy({ policy: "same-origin-allow-popups" }));
 app.use(helmet.hidePoweredBy());
 app.use(helmet.xssFilter());
@@ -399,16 +558,11 @@ app.use('/api/auth/login', authLimiter);
 // ... other rate limited routes
 
 // --- Core Middleware ---
-// Compression
 app.use(compression());
-
-// Logging (Development only)
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
-
-// CORS
-const allowedOrigins = [ 'http://localhost:3000', 'https://wise-lime.vercel.app' ]; // Add your frontend URLs
+const allowedOrigins = [ 'http://localhost:3000', 'https://wise-lime.vercel.app' ];
 app.use(cors({
     origin: (origin, callback) => {
         if (!origin || allowedOrigins.includes(origin)) {
@@ -421,17 +575,10 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
 }));
-
-// Cookie Parser
 app.use(cookieParser());
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true }));
 
-// *** Body Parsers - Place them HERE ***
-// These handle standard JSON and URL-encoded bodies for routes that DON'T use Multer.
-// Multer handles its own body parsing for multipart/form-data.
-app.use(express.json({ limit: '10kb' })); // Limit JSON payload
-app.use(express.urlencoded({ extended: true })); // For parsing URL-encoded request bodies
-
-// Cache control (Development - Adjust for Production)
 app.use((req, res, next) => {
     if (process.env.NODE_ENV === 'development') {
         res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
@@ -456,19 +603,17 @@ app.get('/health', (req, res) => res.status(200).send('OK'));
 app.get('/', (req, res) => res.send('Welcome to the API server!'));
 
 // --- API Routes ---
-// Mount all your routes. The middleware inside kycRoutes will now handle
-// the file upload correctly for the specific '/api/kyc/submit' POST request.
 app.use('/api/auth', authRoutes);
-app.use('/api/kyc', kycRoutes); // <<< Contains the route-specific Multer middleware
+app.use('/api/kyc', kycRoutes);
 app.use('/api/accounts', authMiddleware.protect, accountRoutes);
 app.use('/api/currencies', currencyRoutes);
 app.use('/api/payments', authMiddleware.protect, paymentRoutes);
 app.use('/api/exchange-rates', exchangeRateRoutes);
 app.use('/api/recipients', authMiddleware.protect, recipientRoutes);
 app.use('/api/transfers', authMiddleware.protect, transferRoutes);
-app.use('/api/dashboard/users', authMiddleware.protect, userRoutes); // Example user route
+app.use('/api/dashboard/users', authMiddleware.protect, userRoutes);
 
-// Admin Routes (ensure authMiddleware.admin is applied correctly)
+// Admin Routes
 app.use('/api/admin/users', authMiddleware.protect, authMiddleware.admin, adminUserRoutes);
 app.use('/api/admin/kyc', authMiddleware.protect, authMiddleware.admin, adminKycRoutes);
 app.use('/api/admin/currencies', authMiddleware.protect, authMiddleware.admin, adminCurrencyRoutes);
@@ -476,26 +621,28 @@ app.use('/api/admin/payments', authMiddleware.protect, authMiddleware.admin, adm
 app.use('/api/admin/transfers', authMiddleware.protect, authMiddleware.admin, adminTransferRoutes);
 
 // --- Cron Jobs ---
-// Schedule cron job for exchange rates
-cron.schedule('0 0,12 * * *', async () => {
-    console.log('Running exchange rate update cron job...');
+cron.schedule('*/30 * * * *', async () => { // <--- MODIFIED LINE
+    console.log('Running exchange rate update cron job (every 5 minutes)...');
     try {
-        await exchangeRateService.updateExchangeRates();
-        console.log('Exchange rate update cron job completed successfully.');
+        const updated = await exchangeRateService.updateExchangeRates();
+        if (updated) {
+            console.log('Exchange rate update cron job completed successfully.');
+        } else {
+            console.log('Exchange rate update cron job did not update (check service logs).');
+        }
     } catch (error) {
          console.error('Exchange rate update cron job failed:', error);
     }
 });
 
-// Initial exchange rate update
+// Initial exchange rate update on server start (keep this)
 exchangeRateService.updateExchangeRates().catch(error => {
     console.error('Initial exchange rate load failed on server start:', error);
 });
 
 
 // --- Global Error Handling Middleware ---
-// This MUST be the LAST middleware added.
-app.use(errorHandler); // Ensure your errorHandler handles AppError correctly
+app.use(errorHandler);
 
 // --- Server Startup ---
 const PORT = config.port;

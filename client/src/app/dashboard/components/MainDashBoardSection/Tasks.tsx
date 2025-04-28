@@ -970,7 +970,6 @@ const TasksPage: React.FC = () => {
               {" "}
               {/* Disable initial animation for AnimatePresence itself */}
               {displayedTasks.map((task) => {
-                const amount = task.amountToAdd ?? task.amountToPay ?? 0;
                 const currency =
                   task.balanceCurrency?.code ?? task.payInCurrency?.code ?? "";
 
@@ -1007,11 +1006,7 @@ const TasksPage: React.FC = () => {
                             {/* Text Details */}
                             <div className="flex-grow">
                               <p className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg">
-                                {amount.toLocaleString(undefined, {
-                                  minimumFractionDigits: 2,
-                                  maximumFractionDigits: 2,
-                                })}{" "}
-                                {currency} to your {currency} balance
+                                To your {currency} balance
                               </p>
                               <p className="text-sm text-orange-600 dark:text-orange-400 font-semibold mt-1">
                                 {" "}
