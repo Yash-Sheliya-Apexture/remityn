@@ -2228,14 +2228,427 @@
 
 
 
+// // components/admin/shared/GenericFilters.tsx
+// 'use client';
+// import React, { useState, useRef, useEffect } from 'react';
+// import { motion, AnimatePresence } from 'framer-motion';
+// import { IoClose } from "react-icons/io5";
+// // Adjust paths based on the new file location or keep original paths if not moving
+// import CustomDropdown from './CustomDropdown'; // Example path adjustment
+// import DateInput from '../../../dashboard/components/TransactionPageSection/Filter/DateInput'; // Example path adjustment
+
+// // Define a more generic structure for the filter state object
+// export interface FiltersState {
+//     searchTerm: string;
+//     fromDate: string; // Keep using string for DateInput compatibility
+//     toDate: string;   // Keep using string for DateInput compatibility
+//     statusFilter: string; // Use string for broader compatibility
+//     currencyFilter: string;
+//     idFilter: string;       // Renamed paymentIdFilter to idFilter
+//     amountFilter: string;
+//     recipientFilter?: string; // Added optional recipient filter
+//     // Add other generic filters if needed
+// }
+
+// interface GenericFiltersProps {
+//     showFilterModal: boolean;
+//     setShowFilterModal: React.Dispatch<React.SetStateAction<boolean>>;
+//     // Initial values passed from the parent
+//     initialFilters: FiltersState;
+//     // Callbacks to update the parent state
+//     onApplyFilters: (filters: FiltersState) => void;
+//     onClearFilters: () => void;
+//     // Options for dropdowns
+//     currencyOptions: string[]; // Expects ['all', 'USD', 'EUR', ...]
+//     statusOptions: string[];   // Expects ['all', 'pending', 'completed', ...] - Use string array
+//     // Optional props to customize labels/placeholders if needed
+//     idFilterLabel?: string;
+//     idFilterPlaceholder?: string;
+//     amountFilterLabel?: string;
+//     amountFilterPlaceholder?: string;
+//     statusFilterLabel?: string;
+//     currencyFilterLabel?: string;
+//     dateFilterLabel?: string;
+//     recipientFilterLabel?: string; // Label for the new filter
+//     recipientFilterPlaceholder?: string; // Placeholder for the new filter
+//     showRecipientFilter?: boolean; // Control visibility of the recipient filter
+//     showIdFilter?: boolean; // Control visibility of ID filter
+//     showAmountFilter?: boolean; // Control visibility of amount filter
+//     showCurrencyFilter?: boolean; // Control visibility of currency filter
+//     showStatusFilter?: boolean; // Control visibility of status filter
+//     showDateFilter?: boolean; // Control visibility of date filter
+//     // Labels for the 'all' options
+//     allCurrenciesLabel?: string;
+//     allStatusesLabel?: string;
+// }
+
+// const GenericFilters: React.FC<GenericFiltersProps> = ({
+//     showFilterModal,
+//     setShowFilterModal,
+//     initialFilters,
+//     onApplyFilters,
+//     onClearFilters,
+//     currencyOptions,
+//     statusOptions,
+//     // Default labels/placeholders
+//     idFilterLabel = "ID Filter",
+//     idFilterPlaceholder = "Filter by ID",
+//     amountFilterLabel = "Amount",
+//     amountFilterPlaceholder = "Filter by Amount",
+//     statusFilterLabel = "Status",
+//     currencyFilterLabel = "Currency",
+//     dateFilterLabel = "Date Range",
+//     recipientFilterLabel = "Recipient",
+//     recipientFilterPlaceholder = "Filter by Recipient Name",
+//     // Visibility flags
+//     showRecipientFilter = false,
+//     showIdFilter = true,
+//     showAmountFilter = true,
+//     showCurrencyFilter = true,
+//     showStatusFilter = true,
+//     showDateFilter = true,
+//     // Labels for 'all' options
+//     allCurrenciesLabel = "All Currencies", // Default text for 'all' currency
+//     allStatusesLabel = "All Statuses",     // Default text for 'all' status
+// }) => {
+//     const filterModalRef = useRef<HTMLDivElement>(null);
+//     const [isMobile, setIsMobile] = useState(false);
+
+//     // --- Internal temporary filter states ---
+//     const [tempSearchTerm, setTempSearchTerm] = useState(initialFilters.searchTerm);
+//     const [tempStatusFilter, setTempStatusFilter] = useState<string>(initialFilters.statusFilter);
+//     const [tempCurrencyFilter, setTempCurrencyFilter] = useState(initialFilters.currencyFilter);
+//     const [tempIdFilter, setTempIdFilter] = useState(initialFilters.idFilter);
+//     const [tempAmountFilter, setTempAmountFilter] = useState(initialFilters.amountFilter);
+//     const [tempFromDate, setTempFromDate] = useState(initialFilters.fromDate);
+//     const [tempToDate, setTempToDate] = useState(initialFilters.toDate);
+//     const [tempRecipientFilter, setTempRecipientFilter] = useState(initialFilters.recipientFilter ?? '');
+
+//     // Click outside handler (remains the same)
+//     useEffect(() => {
+//         const handleClickOutside = (event: MouseEvent) => {
+//             if (
+//                 showFilterModal &&
+//                 filterModalRef.current &&
+//                 !filterModalRef.current.contains(event.target as Node) &&
+//                 !(event.target as Element).closest('[id^="radix-ui-popper-"]') &&
+//                 !(event.target as Element).closest('[data-radix-popper-content-wrapper]')
+//             ) {
+//                 setShowFilterModal(false);
+//             }
+//         };
+//         document.addEventListener('mousedown', handleClickOutside);
+//         return () => document.removeEventListener('mousedown', handleClickOutside);
+//     }, [showFilterModal, setShowFilterModal]);
+
+//     // Mobile check (remains the same)
+//     useEffect(() => {
+//         const handleResize = () => setIsMobile(window.innerWidth < 640);
+//         handleResize();
+//         window.addEventListener("resize", handleResize);
+//         return () => window.removeEventListener("resize", handleResize);
+//     }, []);
+
+//     // Sync temp state with initialFilters when modal opens or initialFilters change
+//     useEffect(() => {
+//         if (showFilterModal) {
+//             setTempSearchTerm(initialFilters.searchTerm);
+//             setTempStatusFilter(initialFilters.statusFilter);
+//             setTempCurrencyFilter(initialFilters.currencyFilter);
+//             setTempIdFilter(initialFilters.idFilter);
+//             setTempAmountFilter(initialFilters.amountFilter);
+//             setTempFromDate(initialFilters.fromDate);
+//             setTempToDate(initialFilters.toDate);
+//             setTempRecipientFilter(initialFilters.recipientFilter ?? '');
+//         }
+//     }, [showFilterModal, initialFilters]);
+
+//     const closePopup = () => setShowFilterModal(false);
+
+//     const handleApplyFilters = () => {
+//         const currentFilters: FiltersState = {
+//             searchTerm: tempSearchTerm,
+//             statusFilter: tempStatusFilter,
+//             currencyFilter: tempCurrencyFilter,
+//             idFilter: tempIdFilter,
+//             amountFilter: tempAmountFilter,
+//             fromDate: tempFromDate,
+//             toDate: tempToDate,
+//             recipientFilter: tempRecipientFilter,
+//         };
+//         onApplyFilters(currentFilters);
+//         setShowFilterModal(false);
+//     };
+
+//     const handleClearInternalFilters = () => {
+//         setTempSearchTerm('');
+//         setTempStatusFilter('all'); // Reset to 'all'
+//         setTempCurrencyFilter('all'); // Reset to 'all'
+//         setTempIdFilter('');
+//         setTempAmountFilter('');
+//         setTempFromDate('');
+//         setTempToDate('');
+//         setTempRecipientFilter('');
+//         onClearFilters();
+//         setShowFilterModal(false);
+//     };
+
+//     // --- Handler Updates ---
+//     // These handlers now expect 'all' as a potential value from the dropdown selection
+//     // or null if an internal clear button within CustomDropdown is used.
+//     const handleStatusChange = (value: string | null) => {
+//         setTempStatusFilter(value ?? 'all'); // If null (cleared), set to 'all'; otherwise, use the value ('all' or specific status)
+//     };
+
+//     const handleCurrencyChange = (value: string | null) => {
+//         setTempCurrencyFilter(value ?? 'all'); // If null (cleared), set to 'all'; otherwise, use the value ('all' or specific currency)
+//     }
+
+//     // Date handlers remain the same
+//     const handleFromDateChange = (date: string) => setTempFromDate(date);
+//     const handleToDateChange = (date: string) => setTempToDate(date);
+
+//     // Common label/input styles (remain the same)
+//     const labelClassName = "text-neutral-900 dark:text-gray-300 font-medium mb-3 block relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-neutral-500 dark:after:bg-white/30 after:mt-1";
+//     const inputWrapperClassName = "flex items-center justify-between";
+//     const inputClassName = "block h-12.5 w-full border rounded-md py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 dark:placeholder:text-white focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium";
+
+//     return (
+//       <AnimatePresence>
+//         {showFilterModal && (
+//           <>
+//             {/* Backdrop */}
+//             <motion.div
+//               initial={{ opacity: 0 }}
+//               animate={{ opacity: 0.5 }}
+//               exit={{ opacity: 0 }}
+//               transition={{ duration: 0.2 }}
+//               className="fixed inset-0 bg-black/50 dark:bg-white/30 z-50"
+//               onClick={closePopup}
+//               aria-hidden="true"
+//             />
+
+//             {/* Modal Content */}
+//             <motion.div
+//               ref={filterModalRef}
+//               initial={
+//                 isMobile ? { y: "100%", opacity: 0 } : { x: "100%", opacity: 0 }
+//               }
+//               animate={
+//                 isMobile ? { y: "0%", opacity: 1 } : { x: "0%", opacity: 1 }
+//               }
+//               exit={
+//                 isMobile ? { y: "100%", opacity: 0 } : { x: "100%", opacity: 0 }
+//               }
+//               transition={{ type: "tween", duration: 0.3 }}
+//               className={`fixed ${
+//                 isMobile
+//                   ? "bottom-0 left-0 right-0 h-[100vh] max-h-screen"
+//                   : "top-0 right-0 sm:w-[600px] h-full border-l border-gray-200 dark:border-neutral-700"
+//               } bg-white dark:bg-background z-[51] flex flex-col overflow-hidden`}
+//               role="dialog"
+//               aria-modal="true"
+//               aria-labelledby="filter-modal-heading"
+//             >
+//               {/* Header (remains the same) */}
+//               <div className="p-5 flex items-center justify-between flex-shrink-0 border-b border-gray-200 dark:border-neutral-700 relative">
+//                 <h3
+//                   id="filter-modal-heading"
+//                   className="font-semibold text-mainheading dark:text-white text-lg"
+//                 >
+//                   Filters
+//                 </h3>
+//                 <button
+//                   onClick={closePopup}
+//                   aria-label="Close filter panel"
+//                   className="absolute top-2 right-4 p-2 mt-1 hover:bg-lightborder dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
+//                 >
+//                   <IoClose className="text-neutral-900 dark:text-white size-7" />
+//                 </button>
+//               </div>
+
+//               {/* Scrollable Content Area */}
+//               <div
+//                 className={`flex-grow overflow-y-auto scrollbar-hide p-6 space-y-6 ${
+//                   isMobile ? "pb-[100px]" : ""
+//                 }`}
+//               >
+//                 {/* Search Term Filter (remains the same) */}
+//                 <div className="mb-4">
+//                   <label htmlFor="searchTermFilter" className={labelClassName}>
+//                     Search Term
+//                   </label>
+//                   <div className={inputWrapperClassName}>
+//                     <input
+//                       type="text"
+//                       id="searchTermFilter"
+//                       value={tempSearchTerm}
+//                       onChange={(e) => setTempSearchTerm(e.target.value)}
+//                       placeholder="Search ID, Name, Email, Ref..."
+//                       className={inputClassName}
+//                     />
+//                   </div>
+//                 </div>
+
+//                 {/* ID Filter (remains the same) */}
+//                 {showIdFilter && (
+//                   <div className="mb-4">
+//                     <label htmlFor="idFilter" className={labelClassName}>
+//                       {idFilterLabel}
+//                     </label>
+//                     <div className={inputWrapperClassName}>
+//                       <input
+//                         type="text"
+//                         id="idFilter"
+//                         value={tempIdFilter}
+//                         onChange={(e) => setTempIdFilter(e.target.value)}
+//                         placeholder={idFilterPlaceholder}
+//                         className={inputClassName}
+//                       />
+//                     </div>
+//                   </div>
+//                 )}
+
+//                 {/* Amount Filter (remains the same) */}
+//                 {showAmountFilter && (
+//                   <div className="mb-4">
+//                     <label htmlFor="amountFilter" className={labelClassName}>
+//                       {amountFilterLabel}
+//                     </label>
+//                     <div className={inputWrapperClassName}>
+//                       <input
+//                         type="number"
+//                         id="amountFilter"
+//                         value={tempAmountFilter}
+//                         onChange={(e) => setTempAmountFilter(e.target.value)}
+//                         placeholder={amountFilterPlaceholder}
+//                         className={`${inputClassName} [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
+//                       />
+//                     </div>
+//                   </div>
+//                 )}
+
+//                 {/* Recipient Filter (remains the same) */}
+//                 {showRecipientFilter && (
+//                   <div className="mb-4">
+//                     <label htmlFor="recipientFilter" className={labelClassName}>
+//                       {recipientFilterLabel}
+//                     </label>
+//                     <div className={inputWrapperClassName}>
+//                       <input
+//                         type="text"
+//                         id="recipientFilter"
+//                         value={tempRecipientFilter}
+//                         onChange={(e) => setTempRecipientFilter(e.target.value)}
+//                         placeholder={recipientFilterPlaceholder}
+//                         className={inputClassName}
+//                       />
+//                     </div>
+//                   </div>
+//                 )}
+
+//                 {/* --- Currency Filter Updates --- */}
+//                 {showCurrencyFilter && (
+//                   <div className="mb-4">
+//                     <CustomDropdown
+//                       label={
+//                         <span className={labelClassName}>
+//                           {currencyFilterLabel}
+//                         </span>
+//                       }
+//                       // Pass the actual value ('all' or specific currency)
+//                       value={tempCurrencyFilter}
+//                       onChange={handleCurrencyChange}
+//                       // Pass the FULL options array including 'all'
+//                       options={currencyOptions}
+//                       // Still provide the label for the 'all' option display
+//                       displayAllOption={allCurrenciesLabel}
+//                     />
+//                   </div>
+//                 )}
+
+//                 {/* --- Status Filter Updates --- */}
+//                 {showStatusFilter && (
+//                   <div className="mb-4">
+//                     <CustomDropdown
+//                       label={
+//                         <span className={labelClassName}>
+//                           {statusFilterLabel}
+//                         </span>
+//                       }
+//                       // Pass the actual value ('all' or specific status)
+//                       value={tempStatusFilter}
+//                       onChange={handleStatusChange}
+//                       // Pass the FULL options array including 'all'
+//                       options={statusOptions}
+//                       // Still provide the label for the 'all' option display
+//                       displayAllOption={allStatusesLabel}
+//                     />
+//                   </div>
+//                 )}
+
+//                 {/* Date Range (remains the same) */}
+//                 {showDateFilter && (
+//                   <div>
+//                     <h4 className={labelClassName}>{dateFilterLabel}</h4>
+//                     <div className="space-y-3">
+//                       <DateInput
+//                         placeholder="From Date"
+//                         value={tempFromDate}
+//                         onChange={handleFromDateChange}
+//                       />
+//                       <DateInput
+//                         placeholder="To Date"
+//                         value={tempToDate}
+//                         onChange={handleToDateChange}
+//                       />
+//                     </div>
+//                   </div>
+//                 )}
+//               </div>
+
+//               {/* Footer (remains the same) */}
+//               <div
+//                 className={`p-4 border-t border-gray-200 dark:border-neutral-700 bg-white dark:bg-background flex-shrink-0 ${
+//                   isMobile ? "fixed bottom-0 left-0 right-0" : ""
+//                 }`}
+//               >
+//                 <div className="flex items-center gap-3">
+//                   <button
+//                     type="button"
+//                     onClick={handleClearInternalFilters}
+//                     className="bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear"
+//                   >
+//                     Clear all
+//                   </button>
+//                   <button
+//                     type="button"
+//                     onClick={handleApplyFilters}
+//                     className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear"
+//                   >
+//                     Apply Filters
+//                   </button>
+//                 </div>
+//               </div>
+//             </motion.div>
+//           </>
+//         )}
+//       </AnimatePresence>
+//     );
+// };
+
+// export default GenericFilters;
+
+
+
 // components/admin/shared/GenericFilters.tsx
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IoClose } from "react-icons/io5";
 // Adjust paths based on the new file location or keep original paths if not moving
-import CustomDropdown from './CustomDropdown'; // Example path adjustment
-import DateInput from '../../../dashboard/components/TransactionPageSection/Filter/DateInput'; // Example path adjustment
+import CustomDropdown from './add-money/CustomDropdown'; // Example path adjustment
+import DateInput from '../../dashboard/components/TransactionPageSection/Filter/DateInput'; // Example path adjustment
 
 // Define a more generic structure for the filter state object
 export interface FiltersState {
@@ -2409,9 +2822,9 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
     const handleToDateChange = (date: string) => setTempToDate(date);
 
     // Common label/input styles (remain the same)
-    const labelClassName = "text-neutral-900 dark:text-gray-300 font-medium mb-3 block relative after:content-[''] after:block after:w-full after:h-px after:rounded-full after:bg-neutral-500 dark:after:bg-white/30 after:mt-1";
+    const labelClassName = "text-gray-500 dark:text-gray-300 font-medium mb-3 leading-8 border-b";
     const inputWrapperClassName = "flex items-center justify-between";
-    const inputClassName = "block h-12.5 w-full border rounded-md py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 dark:placeholder:text-white focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium";
+    const inputClassName = "`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 focus:border-[#5f5f5f]";
 
     return (
       <AnimatePresence>
@@ -2475,9 +2888,9 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
               >
                 {/* Search Term Filter (remains the same) */}
                 <div className="mb-4">
-                  <label htmlFor="searchTermFilter" className={labelClassName}>
+                  <h4 className={labelClassName}>
                     Search Term
-                  </label>
+                  </h4>
                   <div className={inputWrapperClassName}>
                     <input
                       type="text"
@@ -2493,9 +2906,9 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
                 {/* ID Filter (remains the same) */}
                 {showIdFilter && (
                   <div className="mb-4">
-                    <label htmlFor="idFilter" className={labelClassName}>
+                    <h4 className={labelClassName}>
                       {idFilterLabel}
-                    </label>
+                    </h4>
                     <div className={inputWrapperClassName}>
                       <input
                         type="text"
@@ -2512,9 +2925,9 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
                 {/* Amount Filter (remains the same) */}
                 {showAmountFilter && (
                   <div className="mb-4">
-                    <label htmlFor="amountFilter" className={labelClassName}>
+                    <h4 className={labelClassName}>
                       {amountFilterLabel}
-                    </label>
+                    </h4>
                     <div className={inputWrapperClassName}>
                       <input
                         type="number"
@@ -2531,9 +2944,9 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
                 {/* Recipient Filter (remains the same) */}
                 {showRecipientFilter && (
                   <div className="mb-4">
-                    <label htmlFor="recipientFilter" className={labelClassName}>
+                    <h4 className={labelClassName}>
                       {recipientFilterLabel}
-                    </label>
+                    </h4>
                     <div className={inputWrapperClassName}>
                       <input
                         type="text"
