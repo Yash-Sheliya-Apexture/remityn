@@ -3493,9 +3493,9 @@ export default function SendAmountPage() {
   // At this point, sourceAccount and recipient are guaranteed to be non-null due to the criticalError check above.
   // We can safely use non-null assertions (!) where needed by TypeScript.
   return (
-    <div className="SendAmount-Page min-h-screen">
+    <div className="SendAmount-Page">
       <DashboardHeader title="Send Money" steps={steps} currentStep={2} />
-      <div className="container mx-auto max-w-xl p-4 mt-5 lg:px-6 lg:pt-6 border rounded-2xl bg-white dark:bg-background shadow-sm">
+      <div className="container mx-auto max-w-xl p-4 sm:p-6 mt-5 border rounded-2xl bg-white dark:bg-background">
         {/* Rate Display */}
         <RateDisplay rateContext={rateContext} apiError={apiError && !logicError ? apiError : null} />
 
@@ -3519,7 +3519,7 @@ export default function SendAmountPage() {
           />
           {/* Available Balance */}
           <div className="text-right -mt-4 pr-4">
-             <span className="text-sm text-gray-600 dark:text-gray-400">
+             <span className="text-sm text-gray-500 dark:text-gray-300">
                 Available: </span>
               <button
                 onClick={handleAvailableBalanceClick}
@@ -3557,7 +3557,7 @@ export default function SendAmountPage() {
            {/* Recipient Account Info (Optional) */}
            {/* Use optional chaining ?. just in case accountNumber isn't always present */}
           {recipient?.accountNumber && (
-             <p className="text-sm text-gray-600 dark:text-gray-400 text-right -mt-4 pr-4">
+             <p className="text-sm text-gray-500 dark:text-gray-300 text-right -mt-4 pr-4">
                 Account ending in {recipient.accountNumber.slice(-4)}
             </p>
           )}
@@ -3590,18 +3590,75 @@ export default function SendAmountPage() {
           <button
             onClick={handleContinue}
             disabled={!canContinue || isCalculating}
-            className={`w-full font-semibold py-3 h-14 rounded-full mt-6 transition-all duration-300 ease-in-out text-lg flex items-center justify-center
-                            ${
-                              canContinue && !isCalculating
-                                ? "bg-primary text-neutral-900 hover:bg-primary-hover shadow-md hover:shadow-lg focus:outline-none cursor-pointer"
-                                : "bg-gray-200 dark:bg-secondarybox text-gray-500 dark:text-gray-400 cursor-not-allowed"
-                            }`}
+            className={`flex items-center justify-center w-full bg-primary text-neutral-900 font-medium hover:bg-primaryhover space-x-3 py-3 px-4 h-12.5 rounded-full transition-all duration-75 ease-linear cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed`}
             data-testid="continue-button"
           >
             {isCalculating ? (
               <>
-                <Loader2 size={20} className="animate-spin mr-2" />
-                Calculating...
+                 <svg
+                        className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 2V6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M12 18V22"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M4.93 4.93L7.76 7.76"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M16.24 16.24L19.07 19.07"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M2 12H6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M18 12H22"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M4.93 19.07L7.76 16.24"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M16.24 7.76L19.07 4.93"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                <span>Calculating...</span>
               </>
             ) : (
               "Continue"

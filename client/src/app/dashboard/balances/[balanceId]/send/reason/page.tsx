@@ -719,7 +719,7 @@ const TransferReasonPage = () => {
 
       <div className="container mx-auto max-w-lg p-4 lg:p-8">
         {/* Escaped apostrophe */}
-        <h1 className="text-xl lg:text-2xl font-bold capitalize text-main dark:text-white mb-4">
+        <h1 className="text-xl lg:text-2xl font-bold capitalize text-mainheading dark:text-white mb-4">
           What's the reason for your transfer?
         </h1>
         {/* Add note about India transfers if needed */}
@@ -733,7 +733,7 @@ const TransferReasonPage = () => {
         <div className="mb-6" ref={dropdownRef}>
           <label
             htmlFor="transfer-reason-button" // Match the button id if needed, or just associate with the concept
-            className="block text-sm text-gray-500 dark:text-gray-300 mb-2"
+            className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
           >
             Select an option that best describes the reason
           </label>
@@ -741,8 +741,8 @@ const TransferReasonPage = () => {
             <button
               id="transfer-reason-button" // Added id for label association
               type="button"
-              className={`flex justify-between items-center cursor-pointer w-full border dark:border-gray/50 dark:bg-background dark:hover:shadow-whitecolor hover:shadow-darkcolor transition-shadow duration-300 ease-in-out rounded-md p-3 text-left ${
-                error && !selectedReason ? "border-red-500" : "border-gray-300 dark:border-gray-600" // Add error styling to border only if relevant
+              className={`flex items-center justify-between mt-1 px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white focus:border-[#5f5f5f] ${
+                error && !selectedReason ? "border-red-600 border-2 !shadow-none focus:!ring-red-600" : "border-gray-300 dark:border-gray-600" // Add error styling to border only if relevant
               }`}
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               aria-expanded={isDropdownOpen}

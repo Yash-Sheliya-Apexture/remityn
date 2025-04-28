@@ -12869,7 +12869,7 @@ const HeroSection: React.FC = () => {
                           {/* Tooltip Content */}
                           <p className="font-medium dark:text-gray-300 text-gray-700">
                             Current mid-market rates.for comparison only
-                            purpose.
+                            purpose Now.
                           </p>
                         </TooltipContent>
                         {/* -------- END TOOLTIP CONTENT FOR MARKET RATE -------- */}
