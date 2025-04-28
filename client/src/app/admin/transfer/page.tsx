@@ -1796,7 +1796,7 @@ import TransferTable from '../components/transfers/TransferTable';
 import { TransferSortField } from '../components/transfers/TransferTableHeader';
 
 // *** IMPORT THE GENERIC FILTER COMPONENT ***
-import GenericFilters, { FiltersState } from '../components/add-money/PaymentFilters'; // Adjust path if needed
+import GenericFilters, { FiltersState } from '../components/GenericFilters'; // Adjust path if needed
 import Pagination from '../components/Pagination';
 
 axios.defaults.baseURL = apiConfig.baseUrl;
