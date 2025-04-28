@@ -621,7 +621,7 @@ app.use('/api/admin/payments', authMiddleware.protect, authMiddleware.admin, adm
 app.use('/api/admin/transfers', authMiddleware.protect, authMiddleware.admin, adminTransferRoutes);
 
 // --- Cron Jobs ---
-cron.schedule('*/30 * * * *', async () => { // <--- MODIFIED LINE
+cron.schedule('0 */8 * * *', async () => { // <--- MODIFIED LINE
     console.log('Running exchange rate update cron job (every 5 minutes)...');
     try {
         const updated = await exchangeRateService.updateExchangeRates();
