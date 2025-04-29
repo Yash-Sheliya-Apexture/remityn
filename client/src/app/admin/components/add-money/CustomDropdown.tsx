@@ -359,6 +359,128 @@
 
 // export default CustomDropdown;
 
+// // frontend/src/app/admin/components/add-money/CustomDropdown.tsx
+// 'use client';
+// import React, { useState, useEffect, useRef } from 'react';
+// import { motion, AnimatePresence } from 'framer-motion';
+// import { ChevronDown } from 'lucide-react';
+// import { GiCheckMark } from "react-icons/gi";
+
+// interface CustomDropdownProps {
+//     label: React.ReactNode;
+//     value: string | null;
+//     onChange: (value: string | null) => void;
+//     options: string[];
+//     displayAllOption?: string;
+//     disabled?: boolean; // <-- Add the optional disabled prop
+// }
+
+// const CustomDropdown: React.FC<CustomDropdownProps> = ({
+//     label,
+//     value,
+//     onChange,
+//     options,
+//     displayAllOption,
+//     disabled = false // <-- Default disabled to false
+// }) => {
+//     const [isOpen, setIsOpen] = useState(false);
+//     const dropdownRef = useRef<HTMLDivElement>(null);
+
+//     const allOptionText = displayAllOption || "All";
+
+//     useEffect(() => {
+//         const handleClickOutside = (event: MouseEvent) => {
+//             if (isOpen && dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+//                 setIsOpen(false);
+//             }
+//         };
+
+//         document.addEventListener('mousedown', handleClickOutside);
+//         return () => {
+//             document.removeEventListener('mousedown', handleClickOutside);
+//         };
+//     }, [isOpen]);
+
+//     const toggleDropdown = () => {
+//         if (!disabled) { // <-- Only toggle if not disabled
+//             setIsOpen(!isOpen);
+//         }
+//     };
+
+//     const handleSelect = (optionValue: string) => {
+//         onChange(optionValue);
+//         setIsOpen(false);
+//     };
+
+//     const displayValue = value === 'all' ? allOptionText : value;
+
+//     // --- Base classes for the button ---
+//     const baseButtonClasses = "flex items-center justify-between cursor-pointer autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-all ease-in-out duration-300 placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white";
+
+//     // --- Conditional classes based on disabled state ---
+//     const disabledClasses = disabled
+//         ? "bg-gray-100 dark:bg-gray-700 opacity-70 cursor-not-allowed shadow-none" // Disabled styles
+//         : "hover:shadow-darkcolor dark:hover:shadow-whitecolor focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor"; // Enabled styles (hover/focus)
+
+//     return (
+//         <div ref={dropdownRef} className="relative">
+//             {typeof label === 'string' ? (
+//                  <label className={`block font-medium text-neutral-900 dark:text-white mb-1 ${disabled ? 'opacity-70' : ''}`}>{label}</label> // Slightly fade label when disabled
+//             ) : (
+//                 label
+//             )}
+
+//             <button
+//                 type="button"
+//                 onClick={toggleDropdown}
+//                 aria-haspopup="listbox"
+//                 aria-expanded={isOpen}
+//                 // Combine base and conditional classes
+//                 className={`${baseButtonClasses} ${disabledClasses}`}
+//                 disabled={disabled} // <-- Add the disabled attribute
+//             >
+//                 <span>{ (value === 'all' || !value) ? allOptionText : value }</span>
+//                 <ChevronDown className={`size-5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''} ${disabled ? 'text-gray-500 dark:text-gray-300' : ''}`} />
+//             </button>
+
+//             <AnimatePresence>
+//                 {isOpen && !disabled && ( // <-- Also check disabled here for safety
+//                     <motion.ul
+//                         initial={{ opacity: 0, y: -5 }}
+//                         animate={{ opacity: 1, y: 0 }}
+//                         exit={{ opacity: 0, y: -5 }}
+//                         transition={{ duration: 0.15 }}
+//                         role="listbox"
+//                         className="absolute z-20 mt-2 w-full rounded-xl shadow-lg bg-white dark:bg-background border overflow-hidden p-2 space-y-2"
+//                     >
+//                         {options.map((option) => (
+//                             <motion.li
+//                                 key={option}
+//                                 onClick={() => handleSelect(option)}
+//                                 role="option"
+//                                 aria-selected={value === option}
+//                                 className={`px-4 py-2 cursor-pointer rounded-full transition-colors font-medium duration-300 ease-in-out flex justify-between items-center ${
+//                                     value === option
+//                                         ? 'bg-primary text-neutral-900'
+//                                         : 'hover:bg-lightgray dark:hover:bg-secondarybox text-gray-500 dark:text-gray-300'
+//                                 }`}
+//                             >
+//                                 <span>{option === 'all' ? allOptionText : option}</span>
+//                                 {value === option && <GiCheckMark className="text-neutral-900" size={16} />}
+//                             </motion.li>
+//                         ))}
+//                     </motion.ul>
+//                 )}
+//             </AnimatePresence>
+//         </div>
+//     );
+// };
+
+// export default CustomDropdown;
+
+
+
+
 // frontend/src/app/admin/components/add-money/CustomDropdown.tsx
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
@@ -415,12 +537,12 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
     const displayValue = value === 'all' ? allOptionText : value;
 
     // --- Base classes for the button ---
-    const baseButtonClasses = "flex items-center justify-between cursor-pointer autofill:bg-transparent dark:bg-transparent w-full rounded-lg h-12.5 py-3 px-4 border transition-all ease-in-out duration-300 placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white";
+    const baseButtonClasses = "flex items-center justify-between mt-1 px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 placeholder:text-neutral-600 dark:placeholder:text-white/80 text-neutral-900 dark:text-white cursor-pointer";
 
     // --- Conditional classes based on disabled state ---
     const disabledClasses = disabled
-        ? "bg-gray-100 dark:bg-gray-700 opacity-70 cursor-not-allowed shadow-none" // Disabled styles
-        : "hover:shadow-darkcolor dark:hover:shadow-whitecolor focus:outline-0 focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor"; // Enabled styles (hover/focus)
+        ? "" // Disabled styles
+        : " focus:border-[#5f5f5f]"; // Enabled styles (hover/focus)
 
     return (
         <div ref={dropdownRef} className="relative">
@@ -451,7 +573,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                         exit={{ opacity: 0, y: -5 }}
                         transition={{ duration: 0.15 }}
                         role="listbox"
-                        className="absolute z-20 mt-2 w-full rounded-xl shadow-lg bg-white dark:bg-background border overflow-hidden p-2 space-y-2"
+                        className="absolute z-20 mt-2 w-full rounded-xl shadow-sm bg-white dark:bg-background border overflow-hidden p-2 space-y-2"
                     >
                         {options.map((option) => (
                             <motion.li

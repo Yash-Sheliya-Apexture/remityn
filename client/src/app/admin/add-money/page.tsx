@@ -5256,7 +5256,7 @@ import { Check, X, Search, Filter, RefreshCw } from 'lucide-react';
 // Import components
 import PaymentTable from '../components/add-money/PaymentTable'; // Adjust path if needed
 import { PaymentSortField } from '../components/add-money/PaymentTableHeader';
-import GenericFilters, { FiltersState } from '../components/add-money/PaymentFilters'; // Adjust path if needed
+import GenericFilters, { FiltersState } from '../components/GenericFilters'; // Adjust path if needed
 import PaymentEditModal from '../components/add-money/PaymentEditModal'; // Adjust path if needed
 import Pagination from '../components/Pagination'; // Adjust path if needed
 

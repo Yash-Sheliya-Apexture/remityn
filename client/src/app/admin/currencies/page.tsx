@@ -746,8 +746,8 @@ import {
   Percent,
 } from "lucide-react";
 import { IoClose } from "react-icons/io5";
-import { CiSearch } from "react-icons/ci";
-// Removed IoMdAddCircle as it's unused
+import { FiSearch } from "react-icons/fi";
+import { MdCancel } from "react-icons/md";
 import { IoMdAdd, IoMdCloseCircle } from "react-icons/io";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -1126,6 +1126,10 @@ const AdminCurrenciesPage: React.FC = () => {
     }
   };
 
+  const clearSearchTerm = () => {
+    setSearchTerm('');
+  };
+
   // --- RENDER ---
   return isLoading ? (
     <LoadingSkeleton />
@@ -1174,14 +1178,34 @@ const AdminCurrenciesPage: React.FC = () => {
 
           {/* Search Bar */}
           <div className="relative sm:w-auto w-full">
+            {/* Search Icon */}
+            <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+              <FiSearch
+                className="size-5 text-neutral-900 dark:text-white"
+                aria-hidden="true"
+              />
+            </div>
+
+            {/* Input Field */}
             <input
               type="text"
               placeholder="Search currencies..."
-              className="rounded-full pl-10 pr-3 lg:h-12.5 h-12 border w-full transition-shadow ease-in-out duration-300 border-neutral-900 hover:shadow-darkcolor dark:hover:shadow-whitecolor dark:border-white focus:outline-none focus:ring-0 dark:focus:shadow-whitecolor focus:shadow-darkcolor placeholder:text-neutral-900 dark:placeholder:text-white"
+              className="w-full rounded-full h-12.5 py-3 pl-12 pr-10 border transition-all ease-linear duration-75 focus:outline-0 focus:border-[#5f5f5f] placeholder:text-neutral-900 dark:placeholder:text-white"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <CiSearch className="size-5 absolute top-3.5 left-3 text-neutral-900 dark:text-white" />
+
+            {/* Clear Button (Conditionally Rendered) */}
+            {searchTerm && ( 
+              <button
+                type="button" 
+                onClick={clearSearchTerm}
+                className="absolute inset-y-0 right-3 flex items-center text-neutral-900 dark:text-primary focus:outline-none cursor-pointer"
+                aria-label="Clear search" 
+              >
+                <MdCancel size={24} aria-hidden="true" />
+              </button>
+            )}
           </div>
         </div>
 

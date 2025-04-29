@@ -3287,7 +3287,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
       label: "Add Money",
       icon: "GoArrowUp",
       route: getAddMoneyRoute, // Use the function
-      color: "bg-green-500", // Example: Use an accent color
+      color: "bg-green-600", // Example: Use an accent color
     },
   ];
 
@@ -3565,7 +3565,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
             exit={{ y: "100%" }} // Animate sliding down
             transition={{ duration: 0.2, ease: "easeInOut" }}
             // z-index above backdrop, below action menu/fab pop-up
-            className="sm:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-background border-t z-45 border-gray-200 dark:border-secondarybox"
+            className="sm:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-background border-t z-45 rounded-tl-3xl rounded-tr-3xl"
           >
             {/* Flex container for nav items + FAB space */}
             <div className="flex items-center justify-around h-16 relative">
@@ -3635,9 +3635,9 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                   aria-label="Open actions menu"
                   // Disable the FAB itself if the user is not logged in, as its actions require auth
                   disabled={!isAuthenticated}
-                  className={`absolute -top-1/2 z-50 flex items-center p-1.5 bg-white dark:bg-background border rounded-full ${!isAuthenticated ? 'opacity-50 cursor-not-allowed' : ''}`} // Added border classes and disabled state
+                  className={`absolute -top-1/2 z-50 flex items-center bg-white dark:bg-background rounded-full ${!isAuthenticated ? 'opacity-50 cursor-not-allowed' : ''}`} // Added border classes and disabled state
                 >
-                <div className="flex items-center justify-center w-13 h-13 rounded-full bg-primary transition-all duration-200 ease-out hover:bg-primary/90">
+                <div className="flex items-center justify-center w-15 h-15 rounded-full bg-primary transition-all duration-200 ease-out hover:bg-primary/90">
 
                   <BsSend className="size-6 text-neutral-900" />
                   {/* Changed icon and size */}
@@ -3653,7 +3653,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                       animate={{ y: -78, opacity: 1, scale: 1 }} // Position above the FAB
                       exit={{ y: 10, opacity: 0, scale: 0.9, transition: { duration: 0.15 } }}
                       transition={{ type: "spring", stiffness: 350, damping: 25 }}
-                      className="absolute bottom-12 bg-white dark:bg-background rounded-lg shadow-xl p-2 z-48 flex flex-col gap-1 w-44" // Changed width class
+                      className="absolute bottom-12 bg-white dark:bg-background rounded-2xl p-3 z-48 flex flex-col gap-1 w-48" // Changed width class
                     >
                       {actionItems.map((action) => {
                         const IconComponent =
@@ -3687,7 +3687,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                           >
                             {/* Icon with colored background circle */}
                             <div
-                              className={`p-1.5 rounded-full ${
+                              className={`p-2 rounded-md ${
                                 isDisabled
                                   ? "bg-gray-300 dark:bg-gray-700"
                                   : action.color
@@ -3695,8 +3695,8 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                             >
                               {IconComponent && (
                                 <IconComponent
-                                  className={`size-4 ${
-                                    isDisabled ? "text-gray-500" : "text-white"
+                                  className={`size-5 ${
+                                    isDisabled ? "text-gray-500" : "text-background"
                                   }`}
                                 />
                               )}

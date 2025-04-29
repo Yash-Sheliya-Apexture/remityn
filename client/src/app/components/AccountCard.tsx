@@ -615,7 +615,7 @@ const AccountCard: React.FC<AccountCardProps> = ({ username }) => {
   return (
     <>
       {/* Main card container */}
-      <div className="bg-lightgray dark:bg-primarybox p-8 rounded-3xl overflow-hidden relative">
+      <div className="bg-lightgray dark:bg-primarybox sm:p-8 p-4 rounded-3xl overflow-hidden relative">
 
         {/* Profile initials display area */}
         <div className="flex flex-col items-center mb-4">
@@ -626,7 +626,7 @@ const AccountCard: React.FC<AccountCardProps> = ({ username }) => {
               {initials}
             </span>
 
-            {/* --- Verification Icon (Conditionally Rendered) --- */}
+            {/* --- Verification Icon (Conditionally Re ndered) --- */}
             {isVerified && (
               <div
                 className="absolute -bottom-1 -right-1 bg-lightgray dark:bg-[#2E2E2E] p-0.5 rounded-full border-2" // Adjusted background/border for visibility
@@ -643,7 +643,7 @@ const AccountCard: React.FC<AccountCardProps> = ({ username }) => {
         </div>
 
         {/* User details */}
-        <h1 className="text-4xl text-center font-black font-mont text-mainheading dark:text-white uppercase tracking-wide lg:tracking-tight">
+        <h1 className="lg:text-4xl md:text-3xl text-2xl text-center font-black font-mont text-mainheading dark:text-white uppercase tracking-wide break-word mb-2">
           {username} {/* Display the username passed via props */}
         </h1>
         <p className="text-center text-gray-700 dark:text-gray-300 font-medium capitalize mb-6">

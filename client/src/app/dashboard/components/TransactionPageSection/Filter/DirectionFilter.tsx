@@ -349,15 +349,85 @@
 
 
 
+// // components/Filter/DirectionFilter.tsx
+// import React from "react";
+// import { BsList } from "react-icons/bs";
+// import { LuPlus } from "react-icons/lu";
+// import { GoArrowUp } from "react-icons/go";
+// import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
+// interface DirectionFilterProps {
+//   selectedDirection: string;
+//   onDirectionChange: (direction: string) => void;
+// }
+
+// const DirectionFilter: React.FC<DirectionFilterProps> = ({
+//   selectedDirection,
+//   onDirectionChange,
+// }) => {
+//   return (
+//     <div>
+//       <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 leading-8 border-b">
+//         Direction
+//       </h4>
+//       <RadioGroup
+//         defaultValue={selectedDirection} // Make sure selectedDirection is one of "all", "add", "send"
+//         className="space-y-2"
+//         onValueChange={(value) => { // Added explicit value type and arrow function for clarity
+//           console.log("Direction changed to:", value); // Debugging log
+//           onDirectionChange(value);
+//         }}
+//       >
+//         {/* All */}
+//         <label className="flex items-center gap-4 cursor-pointer dark:hover:bg-primarybox hover:bg-lightgray sm:p-4 p-2 rounded-2xl transition-colors duration-500 ease-in-out">
+//           <div className="p-3 rounded-full bg-lightborder dark:bg-secondarybox flex items-center justify-center">
+//             <BsList size={24} className="text-neutral-900 dark:text-white" />
+//           </div>
+//           <span className="text-neutral-900 font-semibold dark:text-white">All</span>
+//           <div className="ml-auto relative">
+//           <RadioGroupItem value="all" id="direction-all" />
+//           </div>
+//         </label>
+
+//         {/* Money in */}
+//         <label className="flex items-center gap-4 cursor-pointer dark:hover:bg-primarybox hover:bg-lightgray sm:p-4 p-2 rounded-2xl transition-colors duration-500 ease-in-out">
+//           <div className="p-3 rounded-full bg-lightborder dark:bg-secondarybox flex items-center justify-center">
+//             <LuPlus size={24} className="text-neutral-900 dark:text-white" />
+//           </div>
+//           <span className="text-neutral-900 dark:text-white font-semibold">Add Money</span>
+//           <div className="ml-auto relative">
+//           <RadioGroupItem value="add" id="direction-add" />
+
+//           </div>
+//         </label>
+
+//         {/* Money out */}
+//         <label className="flex items-center gap-4 cursor-pointer dark:hover:bg-primarybox hover:bg-lightgray sm:p-4 p-2 rounded-2xl transition-colors duration-500 ease-in-out">
+//           <div className="p-3 rounded-full bg-lightborder dark:bg-secondarybox flex items-center justify-center">
+//             <GoArrowUp size={24} className="text-neutral-900 dark:text-white" />
+//           </div>
+//           <span className="text-neutral-900 dark:text-white font-semibold">Send Money</span>
+//           <div className="ml-auto relative">
+//           <RadioGroupItem value="send" id="direction-send" />
+//           </div>
+//         </label>
+//       </RadioGroup>
+//     </div>
+//   );
+// };
+
+// export default DirectionFilter;
+
+
 // components/Filter/DirectionFilter.tsx
 import React from "react";
 import { BsList } from "react-icons/bs";
 import { LuPlus } from "react-icons/lu";
 import { GoArrowUp } from "react-icons/go";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"; // Assuming path is correct
 
 interface DirectionFilterProps {
-  selectedDirection: string;
+  selectedDirection: string; // Expects "all", "add", or "send"
   onDirectionChange: (direction: string) => void;
 }
 
@@ -367,49 +437,45 @@ const DirectionFilter: React.FC<DirectionFilterProps> = ({
 }) => {
   return (
     <div>
-      <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 leading-8 border-b">
+      <h4 className="text-gray-500 dark:text-gray-300 font-medium mb-3 leading-8 border-b border-neutral-200 dark:border-neutral-700">
         Direction
       </h4>
       <RadioGroup
-        defaultValue={selectedDirection} // Make sure selectedDirection is one of "all", "add", "send"
+        value={selectedDirection} // Use value for controlled component
         className="space-y-2"
-        onValueChange={(value) => { // Added explicit value type and arrow function for clarity
-          console.log("Direction changed to:", value); // Debugging log
+        onValueChange={(value: string) => { // Value is the new direction string
           onDirectionChange(value);
         }}
+        aria-label="Filter by transaction direction" // Accessibility
       >
         {/* All */}
-        <label className="flex items-center gap-4 cursor-pointer dark:hover:bg-primarybox hover:bg-lightgray sm:p-4 p-2 rounded-2xl transition-colors duration-500 ease-in-out">
-          <div className="p-3 rounded-full bg-lightborder dark:bg-secondarybox flex items-center justify-center">
+        <label htmlFor="direction-all" className="flex items-center gap-4 cursor-pointer dark:hover:bg-primarybox hover:bg-lightgray sm:p-4 p-2 rounded-2xl transition-colors duration-150 ease-in-out">
+          <div className="p-3 rounded-full bg-lightborder dark:bg-secondarybox flex items-center justify-center shrink-0">
             <BsList size={24} className="text-neutral-900 dark:text-white" />
           </div>
-          <span className="text-neutral-900 font-semibold dark:text-white">All</span>
-          <div className="ml-auto relative">
-          <RadioGroupItem value="all" id="direction-all" />
-          </div>
+          <span className="text-neutral-900 font-semibold dark:text-white flex-grow">All</span>
+          {/* Radio item associated with the label */}
+          <RadioGroupItem value="all" id="direction-all" className="shrink-0"/>
         </label>
 
-        {/* Money in */}
-        <label className="flex items-center gap-4 cursor-pointer dark:hover:bg-primarybox hover:bg-lightgray sm:p-4 p-2 rounded-2xl transition-colors duration-500 ease-in-out">
-          <div className="p-3 rounded-full bg-lightborder dark:bg-secondarybox flex items-center justify-center">
+        {/* Money in (Add Money) */}
+        <label htmlFor="direction-add" className="flex items-center gap-4 cursor-pointer dark:hover:bg-primarybox hover:bg-lightgray sm:p-4 p-2 rounded-2xl transition-colors duration-150 ease-in-out">
+          <div className="p-3 rounded-full bg-lightborder dark:bg-secondarybox flex items-center justify-center shrink-0">
             <LuPlus size={24} className="text-neutral-900 dark:text-white" />
           </div>
-          <span className="text-neutral-900 dark:text-white font-semibold">Add Money</span>
-          <div className="ml-auto relative">
-          <RadioGroupItem value="add" id="direction-add" />
-
-          </div>
+          <span className="text-neutral-900 dark:text-white font-semibold flex-grow">Add Money</span>
+           {/* Radio item associated with the label */}
+          <RadioGroupItem value="add" id="direction-add" className="shrink-0"/>
         </label>
 
-        {/* Money out */}
-        <label className="flex items-center gap-4 cursor-pointer dark:hover:bg-primarybox hover:bg-lightgray sm:p-4 p-2 rounded-2xl transition-colors duration-500 ease-in-out">
-          <div className="p-3 rounded-full bg-lightborder dark:bg-secondarybox flex items-center justify-center">
+        {/* Money out (Send Money) */}
+        <label htmlFor="direction-send" className="flex items-center gap-4 cursor-pointer dark:hover:bg-primarybox hover:bg-lightgray sm:p-4 p-2 rounded-2xl transition-colors duration-150 ease-in-out">
+          <div className="p-3 rounded-full bg-lightborder dark:bg-secondarybox flex items-center justify-center shrink-0">
             <GoArrowUp size={24} className="text-neutral-900 dark:text-white" />
           </div>
-          <span className="text-neutral-900 dark:text-white font-semibold">Send Money</span>
-          <div className="ml-auto relative">
-          <RadioGroupItem value="send" id="direction-send" />
-          </div>
+          <span className="text-neutral-900 dark:text-white font-semibold flex-grow">Send Money</span>
+           {/* Radio item associated with the label */}
+          <RadioGroupItem value="send" id="direction-send" className="shrink-0"/>
         </label>
       </RadioGroup>
     </div>
