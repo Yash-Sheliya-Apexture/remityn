@@ -987,7 +987,7 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
       {/* Links */}
       <div
         className={`flex flex-col gap-4 dark:bg-background bg-white ${
-          isMobile ? "px-4 pb-4" : "p-4"
+          isMobile ? "pb-4" : "p-4"
         }`}
       >
         {links.map((link, index) => (
@@ -1021,9 +1021,9 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
 
   return (
     <div className={`relative ${isMobile ? "w-full" : ""}`} ref={dropdownRef}>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between cursor-pointer" onClick={myToggleDropdown}>
         <button
-          onClick={myToggleDropdown}
+          // onClick={myToggleDropdown}
           // Added flex, items-center, gap-1 for icon alignment
           className={`flex items-center gap-1 cursor-pointer rounded-full font-medium
            text-neutral-900 transition-colors duration-200 dark:text-white hover:text-mainheading ${
@@ -1033,14 +1033,15 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
           {buttonText}
         </button>
 
-        <div className="pr-3">
-          {isMobile &&
-            (myIsOpen ? (
+        {isMobile && ( // <-- Condition now wraps the entire div
+          <div className="pr-3">
+            {myIsOpen ? (
               <IoIosArrowUp size={24} />
             ) : (
               <IoIosArrowDown size={24} />
-            ))}
-        </div>
+            )}
+          </div>
+        )}
       </div>
 
       <AnimatePresence>
@@ -1056,7 +1057,7 @@ const FeatureDropdown: React.FC<FeatureDropdownProps> = ({
             className={
               isMobile
                 ? `overflow-hidden pl-4 pt-1` // Mobile: relative positioning, controlled by parent layout, pl for indent
-                : `absolute left-0 lg:left-auto lg:right-0 top-14 w-64 border rounded-2xl overflow-hidden z-50 ${
+                : `absolute left-0 lg:right-auto top-14 w-64 border rounded-2xl overflow-hidden z-50 ${
                     // Desktop: absolute, wider, specific positioning
                     dropdownClassName || ""
                   }`

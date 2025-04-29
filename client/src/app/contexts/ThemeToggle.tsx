@@ -331,16 +331,16 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ location, className }) => {
         {isDropdownOpen && (
           <div
             id="theme-menu" // Add id corresponding to aria-controls
-            className="absolute right-0 top-12 z-40 w-36 border rounded-md shadow-lg bg-white dark:bg-background focus:outline-none" // Added z-index
+            className="absolute right-0 top-12 z-40 w-36 p-1.5 border rounded-xl shadow-lg bg-white dark:bg-background focus:outline-none" // Added z-index
             role="menu"
             aria-orientation="vertical"
             aria-labelledby="theme-menu-button"
             tabIndex={-1}
           >
-            <div className="py-2" role="none">
+            <div className="space-y-1" role="none">
               <button
                 onClick={() => handleThemeChange("system")}
-                className={`px-4 flex items-center gap-2 py-2 text-sm text-neutral-900 cursor-pointer dark:text-white hover:bg-lightgray dark:hover:bg-white/5 w-full text-left ${
+                className={`px-4 flex items-center gap-2 py-2 text-sm text-neutral-900 cursor-pointer dark:text-white hover:bg-lightgray dark:hover:bg-white/5 rounded-3xl w-full text-left ${
                   theme === "system" ? "bg-white dark:bg-background" : ""
                 }`}
                 role="menuitem"
@@ -351,7 +351,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ location, className }) => {
               </button>
               <button
                 onClick={() => handleThemeChange("light")}
-                className={`px-4 flex items-center gap-2 py-2 text-sm text-neutral-900 cursor-pointer dark:text-white hover:bg-lightgray dark:hover:bg-white/5 w-full text-left ${
+                className={`px-4 flex items-center gap-2 py-2 text-sm text-neutral-900 cursor-pointer dark:text-white hover:bg-lightgray dark:hover:bg-white/5 rounded-3xl w-full text-left ${
                   theme === "system" ? "bg-white dark:bg-background" : ""
                 }`}
                 role="menuitem"
@@ -362,7 +362,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ location, className }) => {
               </button>
               <button
                 onClick={() => handleThemeChange("dark")}
-                className={`px-4 flex items-center gap-2 py-2 text-sm text-neutral-900 cursor-pointer dark:text-white hover:bg-lightgray dark:hover:bg-white/5 w-full text-left ${
+                className={`px-4 flex items-center gap-2 py-2 text-sm text-neutral-900 cursor-pointer dark:text-white hover:bg-lightgray dark:hover:bg-white/5 rounded-3xl w-full text-left ${
                   theme === "system" ? "bg-white dark:bg-background" : ""
                 }`}
                 role="menuitem"
