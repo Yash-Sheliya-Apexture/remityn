@@ -1303,6 +1303,235 @@
 // // frontend/src/app/components/layout/MobileMenu.tsx // Or your actual path
 // // ========================================================================
 
+// "use client";
+// import React, { useState } from "react";
+// import Link from "next/link";
+// import FeatureDropdown from "@/app/components/ui/FeatureDropdown";
+// import ThemeToggle from "../../../contexts/ThemeToggle"; // Optional: If you want theme toggle here
+// import { motion, AnimatePresence } from "framer-motion"; // Import motion and AnimatePresence
+
+// // --- Define the interface for props ---
+// interface MobileMenuProps {
+//   isOpen: boolean; // Reflects if the menu should be open (controlled from parent)
+//   onClose: () => void; // Function to call when the menu needs to close
+//   featureLinks: { href: string; text: string }[]; // Array of feature links
+//   topContent?: React.ReactNode; // Optional top content (not currently used in the provided code)
+//   isLoggedIn: boolean; // Authentication status
+//   onLogout: () => void; // Function to call for logout
+//   authLoading: boolean;
+// }
+
+
+
+// // Variants for the container of the links to orchestrate staggering
+// const listVariants = {
+//   hidden: {
+//     opacity: 0, // Can start hidden if you prefer a fade-in for the whole block
+//     transition: {
+//       when: "afterChildren", // Ensure children finish animating out before hiding container
+//     },
+//   },
+//   visible: {
+//     opacity: 1,
+//     transition: {
+//       when: "beforeChildren", // Ensure container is ready before children animate in
+//       staggerChildren: 0.08, // Stagger delay between each child (adjust as needed)
+//     },
+//   },
+// };
+
+// // Variants for each individual link item
+// const itemVariants = {
+//   hidden: {
+//     opacity: 0,
+//     x: -50, // Start 30px to the left
+//   },
+//   visible: {
+//     opacity: 1,
+//     x: 0, // Animate to original position
+//     transition: {
+//       type: "spring", // Optional: Use spring physics
+//       stiffness: 200, // Optional: Adjust spring stiffness
+//       damping: 15, // Optional: Adjust spring damping
+//       // Or use a simple ease:
+//       ease: "easeOut",
+//       duration: 0.3
+//     },
+//   },
+// };
+
+// const MobileMenu: React.FC<MobileMenuProps> = ({
+//   isOpen,
+//   onClose,
+//   featureLinks,
+//   topContent,
+//   isLoggedIn,
+//   onLogout,
+//   authLoading,
+// }) => {
+//   const [isFeaturesOpen, setIsFeaturesOpen] = useState(false);
+
+//   const toggleFeaturesDropdown = () => {
+//     setIsFeaturesOpen(!isFeaturesOpen);
+//   };
+
+//   // Handler that closes the main menu AND potentially the feature dropdown
+//   const handleLinkClick = () => {
+//     setIsFeaturesOpen(false); // Ensure feature dropdown closes
+//     onClose(); // Call the passed onClose function from Header
+//   };
+
+//   // Specific handler for logout to ensure both actions happen
+//   const handleLogoutClick = () => {
+//     onLogout(); // Call the logout function passed from Header
+//     handleLinkClick(); // Close the menu
+//   };
+
+//   return (
+//     // AnimatePresence allows exit animations if you define an 'exit' variant later
+//     // For now, it helps manage the presence of the motion component based on isOpen
+//     <AnimatePresence>
+//       {isOpen && ( // Only render the motion component when isOpen is true
+//         <motion.div
+//           // Main menu container animation (optional - you can keep your CSS transition)
+//           // If you want framer-motion to handle the main slide-in:
+//           initial={{ x: "-100%" }}
+//           animate={{ x: 0 }}
+//           exit={{ x: "-100%" }}
+//           transition={{ duration: 0.3, ease: "easeInOut" }}
+//           // --- OR --- Keep your existing CSS transition class logic:
+//           // className={`fixed top-20 left-0 w-full h-[calc(100dvh-80px)] bg-white dark:bg-background z-40 overflow-y-auto ${
+//           //  isOpen ? "translate-x-0" : "-translate-x-full" // Your existing class logic
+//           // } transition-transform duration-300 ease-in-out`} // Your existing class logic
+
+//           // --- Recommended if using framer-motion for the main slide: ---
+//           className="fixed top-20 left-0 w-full h-[calc(100dvh-80px)] bg-white dark:bg-background z-40 overflow-y-auto"
+//           // --- End Recommended ---
+
+//           aria-hidden={!isOpen}
+//           role="dialog"
+//           aria-modal="true"
+//         >
+//           <div className="flex flex-col justify-between h-full -mt-2">
+//             {/* Top Navigation Links - Wrap the link container */}
+//             <motion.div
+//               className="p-4 space-y-2 border-t"
+//               initial="hidden" // Initial variant state for the list
+//               animate="visible" // Animate to visible when the component mounts (or isOpen becomes true)
+//               variants={listVariants} // Apply the container variants
+//             >
+//               <div className="flex flex-col gap-1 w-full">
+//                 {/* Wrap each link/item in motion.div and apply item variants */}
+//                 <motion.div variants={itemVariants}>
+//                   <Link
+//                     href="/"
+//                     className="inline-block py-2 rounded-md font-medium"
+//                     onClick={handleLinkClick}
+//                   >
+//                     Home
+//                   </Link>
+//                 </motion.div>
+
+//                 <motion.div variants={itemVariants}>
+//                   <Link
+//                     href="/about-us"
+//                     className="inline-block py-2 rounded-md font-medium"
+//                     onClick={handleLinkClick}
+//                   >
+//                     About
+//                   </Link>
+//                 </motion.div>
+
+//                 {/* Mobile Feature Dropdown - Also wrap it */}
+//                 <motion.div variants={itemVariants}>
+//                   <FeatureDropdown
+//                     buttonText="Features"
+//                     links={featureLinks}
+//                     buttonClassName="inline-block w-full text-left py-2 font-medium rounded-md" // Consistent styling
+//                     isMobile={true}
+//                     isOpen={isFeaturesOpen}
+//                     toggleDropdown={toggleFeaturesDropdown}
+//                     onLinkClick={handleLinkClick} // Close main menu when a feature link is clicked
+//                   />
+//                 </motion.div>
+
+//                 <motion.div variants={itemVariants}>
+//                   <Link
+//                     href="/faqs"
+//                     className="inline-block py-2 rounded-md font-medium"
+//                     onClick={handleLinkClick}
+//                   >
+//                     Help
+//                   </Link>
+//                 </motion.div>
+//               </div>
+//             </motion.div>
+
+//             {/* Bottom Auth Buttons (Dynamic) - You could animate these too if desired */}
+//             <div className="p-4 border-t">
+//               {/* Optional: Theme Toggle inside Mobile Menu */}
+//               <div className="mb-4 flex justify-center">
+//                 <ThemeToggle location="admin" />{" "}
+//                 {/* Changed location example */}
+//               </div>
+//               <div className="flex flex-col sm:flex-row items-center gap-3">
+//                 {/* === Dynamic Auth Links (Mobile) === */}
+//                 {authLoading ? (
+//                   // Display loading indicators for mobile
+//                   <div className="flex flex-col sm:flex-row w-full gap-3">
+//                     <div className="h-11 w-full bg-gray-200 dark:bg-white/10 rounded-full animate-pulse"></div>
+//                     <div className="h-11 w-full bg-gray-200 dark:bg-white/10 rounded-full animate-pulse"></div>
+//                   </div>
+//                 ) : isLoggedIn ? (
+//                   <>
+//                     <Link
+//                       href="/dashboard" // Adjust dashboard route if needed
+//                       passHref
+//                       className="inline-block w-full px-4 py-2.5 bg-primary hover:bg-primaryhover rounded-full font-medium text-base text-center text-mainheading transition-colors"
+//                       onClick={handleLinkClick} // Close menu on click
+//                     >
+//                       Dashboard
+//                     </Link>
+//                     <button
+//                       onClick={handleLogoutClick} // Use specific handler
+//                       className="inline-block w-full px-4 py-2.5 bg-gray-100 dark:bg-secondary text-main dark:text-white rounded-full font-medium text-base text-center hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+//                     >
+//                       Log out
+//                     </button>
+//                   </>
+//                 ) : (
+//                   <>
+//                     <Link
+//                       href="/auth/login"
+//                       passHref
+//                       className="inline-block w-full px-4 py-3 h-12.5 border dark:border-none bg-white dark:bg-secondary font-medium rounded-full text-base text-center dark:text-white text-mainheading hover:bg-gray-50 transition-colors"
+//                       onClick={handleLinkClick}
+//                     >
+//                       Log in
+//                     </Link>
+//                     <Link
+//                       href="/auth/register"
+//                       passHref
+//                       className="inline-block w-full px-4 py-3 h-12.5 bg-primary hover:bg-primaryhover rounded-full font-medium text-base text-center text-mainheading transition-colors duration-300 ease-in-out"
+//                       onClick={handleLinkClick}
+//                     >
+//                       Register
+//                     </Link>
+//                   </>
+//                 )}
+//               </div>
+//             </div>
+//           </div>
+//         </motion.div>
+//       )}
+//     </AnimatePresence>
+//   );
+// };
+
+// export default MobileMenu;
+
+// frontend/src/app/components/layout/MobileMenu.tsx
+/* Keep the MobileMenu.tsx code exactly as you provided it in the prompt */
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
@@ -1320,8 +1549,6 @@ interface MobileMenuProps {
   onLogout: () => void; // Function to call for logout
   authLoading: boolean;
 }
-
-
 
 // Variants for the container of the links to orchestrate staggering
 const listVariants = {
@@ -1387,144 +1614,130 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
     handleLinkClick(); // Close the menu
   };
 
+  // No need to wrap the entire component in AnimatePresence here,
+  // as the parent component (Header) already handles the mounting/unmounting
+  // based on isMobileMenuOpen using AnimatePresence.
+
+  // We only need the motion.div if isOpen is true.
+  if (!isOpen) return null;
+
   return (
-    // AnimatePresence allows exit animations if you define an 'exit' variant later
-    // For now, it helps manage the presence of the motion component based on isOpen
-    <AnimatePresence>
-      {isOpen && ( // Only render the motion component when isOpen is true
+    // The parent's motion.div handles the main slide-in animation.
+    // This div is just the container for the content.
+    <div
+        className="flex flex-col justify-between h-full pt-4" // Added pt-4 to give space from top
+        aria-hidden={!isOpen}
+        role="dialog"
+        aria-modal="true"
+      >
+        {/* Top Navigation Links - Wrap the link container */}
         <motion.div
-          // Main menu container animation (optional - you can keep your CSS transition)
-          // If you want framer-motion to handle the main slide-in:
-          initial={{ x: "-100%" }}
-          animate={{ x: 0 }}
-          exit={{ x: "-100%" }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
-          // --- OR --- Keep your existing CSS transition class logic:
-          // className={`fixed top-20 left-0 w-full h-[calc(100dvh-80px)] bg-white dark:bg-background z-40 overflow-y-auto ${
-          //  isOpen ? "translate-x-0" : "-translate-x-full" // Your existing class logic
-          // } transition-transform duration-300 ease-in-out`} // Your existing class logic
-
-          // --- Recommended if using framer-motion for the main slide: ---
-          className="fixed top-20 left-0 w-full h-[calc(100dvh-80px)] bg-white dark:bg-background z-40 overflow-y-auto"
-          // --- End Recommended ---
-
-          aria-hidden={!isOpen}
-          role="dialog"
-          aria-modal="true"
+          className="px-4 space-y-2" // Removed border-t
+          initial="hidden" // Initial variant state for the list
+          animate="visible" // Animate to visible when the component mounts (or isOpen becomes true)
+          variants={listVariants} // Apply the container variants
         >
-          <div className="flex flex-col justify-between h-full -mt-2">
-            {/* Top Navigation Links - Wrap the link container */}
-            <motion.div
-              className="p-4 space-y-2 border-t"
-              initial="hidden" // Initial variant state for the list
-              animate="visible" // Animate to visible when the component mounts (or isOpen becomes true)
-              variants={listVariants} // Apply the container variants
-            >
-              <div className="flex flex-col gap-1 w-full">
-                {/* Wrap each link/item in motion.div and apply item variants */}
-                <motion.div variants={itemVariants}>
-                  <Link
-                    href="/"
-                    className="inline-block py-2 rounded-md font-medium"
-                    onClick={handleLinkClick}
-                  >
-                    Home
-                  </Link>
-                </motion.div>
-
-                <motion.div variants={itemVariants}>
-                  <Link
-                    href="/about-us"
-                    className="inline-block py-2 rounded-md font-medium"
-                    onClick={handleLinkClick}
-                  >
-                    About
-                  </Link>
-                </motion.div>
-
-                {/* Mobile Feature Dropdown - Also wrap it */}
-                <motion.div variants={itemVariants}>
-                  <FeatureDropdown
-                    buttonText="Features"
-                    links={featureLinks}
-                    buttonClassName="inline-block w-full text-left py-2 font-medium rounded-md" // Consistent styling
-                    isMobile={true}
-                    isOpen={isFeaturesOpen}
-                    toggleDropdown={toggleFeaturesDropdown}
-                    onLinkClick={handleLinkClick} // Close main menu when a feature link is clicked
-                  />
-                </motion.div>
-
-                <motion.div variants={itemVariants}>
-                  <Link
-                    href="/faqs"
-                    className="inline-block py-2 rounded-md font-medium"
-                    onClick={handleLinkClick}
-                  >
-                    Help
-                  </Link>
-                </motion.div>
-              </div>
+          <div className="flex flex-col gap-1 w-full">
+            {/* Wrap each link/item in motion.div and apply item variants */}
+            <motion.div variants={itemVariants}>
+              <Link
+                href="/"
+                className="inline-block py-2 rounded-md font-medium"
+                onClick={handleLinkClick}
+              >
+                Home
+              </Link>
             </motion.div>
 
-            {/* Bottom Auth Buttons (Dynamic) - You could animate these too if desired */}
-            <div className="p-4 border-t">
-              {/* Optional: Theme Toggle inside Mobile Menu */}
-              <div className="mb-4 flex justify-center">
-                <ThemeToggle location="admin" />{" "}
-                {/* Changed location example */}
-              </div>
-              <div className="flex flex-col sm:flex-row items-center gap-3">
-                {/* === Dynamic Auth Links (Mobile) === */}
-                {authLoading ? (
-                  // Display loading indicators for mobile
-                  <div className="flex flex-col sm:flex-row w-full gap-3">
-                    <div className="h-11 w-full bg-gray-200 dark:bg-white/10 rounded-full animate-pulse"></div>
-                    <div className="h-11 w-full bg-gray-200 dark:bg-white/10 rounded-full animate-pulse"></div>
-                  </div>
-                ) : isLoggedIn ? (
-                  <>
-                    <Link
-                      href="/dashboard" // Adjust dashboard route if needed
-                      passHref
-                      className="inline-block w-full px-4 py-2.5 bg-primary hover:bg-primaryhover rounded-full font-medium text-base text-center text-mainheading transition-colors"
-                      onClick={handleLinkClick} // Close menu on click
-                    >
-                      Dashboard
-                    </Link>
-                    <button
-                      onClick={handleLogoutClick} // Use specific handler
-                      className="inline-block w-full px-4 py-2.5 bg-gray-100 dark:bg-secondary text-main dark:text-white rounded-full font-medium text-base text-center hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                    >
-                      Log out
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      href="/auth/login"
-                      passHref
-                      className="inline-block w-full px-4 py-3 h-12.5 border dark:border-none bg-white dark:bg-secondary font-medium rounded-full text-base text-center dark:text-white text-mainheading hover:bg-gray-50 transition-colors"
-                      onClick={handleLinkClick}
-                    >
-                      Log in
-                    </Link>
-                    <Link
-                      href="/auth/register"
-                      passHref
-                      className="inline-block w-full px-4 py-3 h-12.5 bg-primary hover:bg-primaryhover rounded-full font-medium text-base text-center text-mainheading transition-colors duration-300 ease-in-out"
-                      onClick={handleLinkClick}
-                    >
-                      Register
-                    </Link>
-                  </>
-                )}
-              </div>
-            </div>
+            <motion.div variants={itemVariants}>
+              <Link
+                href="/about-us"
+                className="inline-block py-2 rounded-md font-medium"
+                onClick={handleLinkClick}
+              >
+                About
+              </Link>
+            </motion.div>
+
+            {/* Mobile Feature Dropdown - Also wrap it */}
+            <motion.div variants={itemVariants}>
+              <FeatureDropdown
+                buttonText="Features"
+                links={featureLinks}
+                buttonClassName="inline-block w-full text-left py-2 font-medium rounded-md" // Consistent styling
+                isMobile={true}
+                isOpen={isFeaturesOpen}
+                toggleDropdown={toggleFeaturesDropdown}
+                onLinkClick={handleLinkClick} // Close main menu when a feature link is clicked
+              />
+            </motion.div>
+
+            <motion.div variants={itemVariants}>
+              <Link
+                href="/faqs"
+                className="inline-block py-2 rounded-md font-medium"
+                onClick={handleLinkClick}
+              >
+                Help
+              </Link>
+            </motion.div>
           </div>
         </motion.div>
-      )}
-    </AnimatePresence>
+
+        {/* Bottom Auth Buttons (Dynamic) - You could animate these too if desired */}
+        <div className="p-4 border-t">
+          {/* Theme Toggle moved to Header for mobile */}
+          {/* <div className="mb-4 flex justify-center">
+            <ThemeToggle location="admin" />
+          </div> */}
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            {/* === Dynamic Auth Links (Mobile) === */}
+            {authLoading ? (
+              // Display loading indicators for mobile
+              <div className="flex flex-col sm:flex-row w-full gap-3">
+                <div className="h-11 w-full bg-gray-200 dark:bg-white/10 rounded-full animate-pulse"></div>
+                <div className="h-11 w-full bg-gray-200 dark:bg-white/10 rounded-full animate-pulse"></div>
+              </div>
+            ) : isLoggedIn ? (
+              <>
+                <Link
+                  href="/dashboard" // Adjust dashboard route if needed
+                  passHref
+                  className="inline-block w-full px-4 py-2.5 bg-primary hover:bg-primaryhover rounded-full font-medium text-base text-center text-mainheading transition-colors"
+                  onClick={handleLinkClick} // Close menu on click
+                >
+                  Dashboard
+                </Link>
+                <button
+                  onClick={handleLogoutClick} // Use specific handler
+                  className="inline-block w-full px-4 py-2.5 bg-gray-100 dark:bg-secondary text-main dark:text-white rounded-full font-medium text-base text-center hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                >
+                  Log out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/auth/login"
+                  passHref
+                  className="inline-block w-full px-4 py-3 h-12.5 border dark:border-none bg-white dark:bg-secondary font-medium rounded-full text-base text-center dark:text-white text-mainheading hover:bg-gray-50 transition-colors"
+                  onClick={handleLinkClick}
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/auth/register"
+                  passHref
+                  className="inline-block w-full px-4 py-3 h-12.5 bg-primary hover:bg-primaryhover rounded-full font-medium text-base text-center text-mainheading transition-colors duration-300 ease-in-out"
+                  onClick={handleLinkClick}
+                >
+                  Register
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
   );
 };
 

@@ -1359,6 +1359,389 @@
 // export default TransactionList;
 
 
+// // src/app/dashboard/components/TransactionList.tsx
+// import React from "react";
+// import Link from "next/link";
+// import { Transaction } from "@/types/transaction"; // Adjust path
+// import {
+//   useGroupedTransactions,
+// } from "@/app/hooks/useGroupedTransactions"; // Adjust path
+// import { LuPlus } from "react-icons/lu";
+// import { GoArrowUp } from "react-icons/go";
+// import { MdErrorOutline } from "react-icons/md";
+// import { Skeleton } from "@/components/ui/skeleton"; // Adjust path as needed
+
+// interface TransactionListProps {
+//   transactions: Transaction[];
+//   isLoading: boolean;
+//   error: string | null;
+//   currencyCode: string; // The primary currency code of the balance being viewed
+//   balanceId: string;
+//   onSendClick: () => void;
+//   canSendMoney: boolean;
+//   wasInitiallyEmpty: boolean;
+// }
+
+// const TransactionList: React.FC<TransactionListProps> = ({
+//   transactions,
+//   isLoading,
+//   error,
+//   currencyCode,
+//   balanceId,
+//   onSendClick,
+//   canSendMoney,
+//   wasInitiallyEmpty,
+// }) => {
+//   const {
+//     pendingAttentionTransactions,
+//     inProgressTransactions,
+//     groupedProcessedTransactions,
+//     hasProcessedTransactions,
+//     hasAnyTransactionsToDisplay,
+//   } = useGroupedTransactions(transactions);
+
+//   if (isLoading) {
+//     return (
+//         <div className="space-y-2">
+//           {Array(3)
+//             .fill(0)
+//             .map((_, index) => (
+//               <div key={index} className="block">
+//                 <div className="block p-2 sm:p-4 rounded-2xl">
+//                   <div className="flex items-center gap-4">
+//                     {/* Icon Skeleton */}
+//                     <div className="relative flex-shrink-0">
+//                       <div className="flex items-center justify-center">
+//                         <Skeleton className="h-12 w-12 rounded-full" />
+//                       </div>
+//                     </div>
+//                     {/* Text and Button Skeletons */}
+//                     <div className="flex-grow flex flex-row justify-between items-center gap-4">
+//                       <div className="flex-grow">
+//                         <Skeleton className="h-4 w-40 mb-2" />
+//                         <Skeleton className="h-3 w-32" />
+//                       </div>
+//                       <div className="shrink-0">
+//                         <Skeleton className="h-5 w-20 rounded-full" />
+//                       </div>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
+//             ))}
+//         </div>
+//       );
+//   }
+
+//   if (error) {
+//      return (
+//         <div className="text-center py-8 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-4 rounded-md border border-red-200 dark:border-red-700/40">
+//           <strong>Transaction Error:</strong> {error}
+//         </div>
+//       );
+//   }
+
+//   return (
+//     <div className="space-y-4">
+//       {/* --- Needs Your Attention Section --- */}
+//       {pendingAttentionTransactions.length > 0 && (
+//          <div>
+//           <h2 className="font-medium text-orange-600 dark:text-orange-400 mb-3 text-sm uppercase tracking-wider">
+//             Needs your attention
+//           </h2>
+//           <div className="space-y-2">
+//             {pendingAttentionTransactions.map((transaction) => {
+//               // **FIX APPLIED HERE**: Use amountToPay for pending Add Money
+//               const amount = transaction.amountToPay ?? 0;
+//               // Determine the currency to display - prefer the 'payIn' currency if available
+//               const displayCurrency = transaction.payInCurrency?.code ?? currencyCode;
+//               const name = `To your ${transaction.balanceCurrency?.code || currencyCode} balance`; // Show the target balance currency
+
+//               return (
+//                 <Link
+//                   href={`/dashboard/transactions/${transaction._id}`}
+//                   key={transaction._id}
+//                   className="block"
+//                 >
+//                   <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
+//                     <div className="flex items-center gap-4">
+//                       {/* Icon with Badge */}
+//                       <div className="relative flex-shrink-0">
+//                         <div className="p-3 bg-yellow-100 dark:bg-yellow-800/60 rounded-full flex items-center justify-center">
+//                           <LuPlus
+//                             size={24}
+//                             className="text-yellow-700 dark:text-yellow-300"
+//                           />
+//                         </div>
+//                         <MdErrorOutline
+//                           size={20}
+//                           className="absolute -bottom-1 -right-1 text-orange-500 bg-white dark:bg-neutral-900 dark:text-orange-400 rounded-full p-0.5 shadow"
+//                         />
+//                       </div>
+//                       {/* Details */}
+//                       <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
+//                         <div className="text-wrap">
+//                           <h3
+//                             className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg"
+//                             title={name}
+//                           >
+//                             {name}
+//                           </h3>
+//                           <p className="text-sm text-orange-600 dark:text-orange-400 font-semibold mt-1">
+//                             Waiting for you to pay
+//                           </p>
+//                         </div>
+//                         {/* Amount to pay */}
+//                         <div
+//                           className={`font-medium text-neutral-900 dark:text-white whitespace-nowrap`}
+//                         >
+//                           + {/* Still represents an eventual addition */}
+//                           {amount.toLocaleString(undefined, {
+//                             minimumFractionDigits: 2,
+//                             maximumFractionDigits: 2,
+//                           })}
+//                           {displayCurrency} {/* Show the currency to be paid */}
+//                         </div>
+//                       </div>
+//                     </div>
+//                   </div>
+//                 </Link>
+//               );
+//             })}
+//           </div>
+//         </div>
+//       )}
+
+//       {/* --- In Progress Transactions Section --- */}
+//       {inProgressTransactions.length > 0 && (
+//          <div>
+//           <h2 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
+//             In progress
+//           </h2>
+//           <div className="space-y-2">
+//             {inProgressTransactions.map((transaction) => {
+//               const isAddMoney = transaction.type === "Add Money";
+//               const icon = isAddMoney ? (
+//                 <LuPlus
+//                   size={22}
+//                   className="text-neutral-900 dark:text-white"
+//                 />
+//               ) : (
+//                 <GoArrowUp
+//                   size={22}
+//                   className="text-neutral-900 dark:text-white"
+//                 />
+//               );
+//               const description = isAddMoney
+//                 ? "Processing your deposit"
+//                 : transaction.status === "pending"
+//                 ? "Sending your money"
+//                 : "Processing transfer"; // Include 'processing' for Send Money here too
+//               // For 'Add Money' in progress, amountToAdd should now have the value
+//               // For 'Send Money' pending/processing, use sendAmount
+//               const amount = isAddMoney
+//                 ? transaction.amountToPay ?? 0 // If it's 'in progress', amountToAdd should be populated
+//                 : transaction.sendAmount ?? 0;
+//               const txCurrencyCode = isAddMoney
+//                 ? transaction.balanceCurrency?.code
+//                 : transaction.sendCurrency?.code;
+//               const amountPrefix = isAddMoney ? "+ " : "- ";
+//               const name = isAddMoney
+//                 ? `To your ${txCurrencyCode || currencyCode} balance`
+//                 : transaction.name || "Recipient";
+
+//               return (
+//                 <Link
+//                   href={`/dashboard/transactions/${transaction._id}`}
+//                   key={transaction._id}
+//                   className="block"
+//                 >
+//                   <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
+//                     <div className="flex items-center gap-4">
+//                       <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center">
+//                         {icon}
+//                       </div>
+//                       <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
+//                         <div className="text-wrap">
+//                           <h3
+//                             className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg"
+//                             title={name}
+//                           >
+//                             {name}
+//                           </h3>
+//                           <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
+//                             {description}
+//                             <span className="italic">
+//                               ({transaction.status})
+//                             </span>
+//                           </p>
+//                         </div>
+//                         <div
+//                           className={`font-medium text-neutral-900 dark:text-white whitespace-nowrap`}
+//                         >
+//                           {amountPrefix}
+//                           {amount.toLocaleString(undefined, {
+//                             minimumFractionDigits: 2,
+//                             maximumFractionDigits: 2,
+//                           })}
+//                           {txCurrencyCode || currencyCode}
+//                         </div>
+//                       </div>
+//                     </div>
+//                   </div>
+//                 </Link>
+//               );
+//             })}
+//           </div>
+//         </div>
+//       )}
+
+//       {/* --- Processed Transactions (Grouped by Date) Section --- */}
+//       {hasProcessedTransactions &&
+//         groupedProcessedTransactions &&
+//         Object.keys(groupedProcessedTransactions).length > 0 && (
+//           <div className="space-y-4">
+//             {Object.entries(groupedProcessedTransactions).map(
+//               ([date, transactionsForDate]) => (
+//                 <div key={date}>
+//                   <h3 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
+//                     {date === 'Unknown Date' || date === 'Date Error' ? 'Older Transactions' : date} {/* Handle fallback keys */}
+//                   </h3>
+//                   <div className="space-y-2">
+//                     {transactionsForDate.map((transaction) => {
+//                       const isAddMoney = transaction.type === "Add Money";
+//                       const icon = isAddMoney ? (
+//                         <LuPlus
+//                           size={22}
+//                           className="text-neutral-900 dark:text-white"
+//                         />
+//                       ) : (
+//                         <GoArrowUp
+//                           size={22}
+//                           className="text-neutral-900 dark:text-white"
+//                         />
+//                       );
+//                       let description = "";
+//                       let amountClass = "";
+//                       // For processed transactions, use amountToAdd or sendAmount respectively
+//                       const amount = isAddMoney
+//                         ? transaction.amountToPay ?? 0
+//                         : transaction.sendAmount ?? 0;
+//                       // Use the currency related to the amount being displayed
+//                       const displayCurrencyCode = isAddMoney
+//                         ? transaction.balanceCurrency?.code
+//                         : transaction.sendCurrency?.code;
+//                       const amountPrefix = isAddMoney ? "+ " : "- ";
+//                       const name = isAddMoney
+//                         ? `Added to ${
+//                             displayCurrencyCode || currencyCode
+//                           } balance`
+//                         : transaction.name || "Recipient"; // Use Recipient name if available for sends
+
+//                       switch (transaction.status) {
+//                         case "completed":
+//                           amountClass = isAddMoney
+//                             ? "text-green-600 dark:text-green-500"
+//                             : "text-neutral-900 dark:text-white"; // Completed sends are neutral, not green
+//                           description = isAddMoney
+//                             ? "Added"
+//                             : `Sent to ${transaction.recipient ? (transaction.recipient as any).accountHolderName || transaction.name || 'Recipient' : transaction.name || 'Recipient'}`; // Try to get recipient name
+//                           break;
+//                         case "canceled": // Use the correct spelling from the type
+//                           amountClass = "text-red-600 line-through";
+//                           description = "Canceled";
+//                           break;
+//                         case "failed":
+//                           amountClass = "text-red-600 line-through";
+//                           description = "Failed";
+//                           break;
+//                         default: // Should ideally not happen for 'processed' but handle just in case
+//                           amountClass = "text-neutral-900 dark:text-white";
+//                           description = transaction.status ?? "Unknown";
+//                       }
+
+//                       return (
+//                         <Link
+//                           href={`/dashboard/transactions/${transaction._id}`}
+//                           key={transaction._id}
+//                           className="block"
+//                         >
+//                           <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
+//                             <div className="flex items-center gap-4">
+//                               <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center">
+//                                 {icon}
+//                               </div>
+//                               <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
+//                                 <div className="text-wrap">
+//                                   <h3
+//                                     className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg"
+//                                     title={name}
+//                                   >
+//                                     {name}
+//                                   </h3>
+//                                   <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
+//                                     {description}
+//                                   </p>
+//                                 </div>
+//                                 <div
+//                                   className={`font-medium ${amountClass} whitespace-nowrap`}
+//                                 >
+//                                   {amountPrefix}
+//                                   {amount.toLocaleString(undefined, {
+//                                     minimumFractionDigits: 2,
+//                                     maximumFractionDigits: 2,
+//                                   })}
+//                                   {displayCurrencyCode || currencyCode} {/* Show relevant currency */}
+//                                 </div>
+//                               </div>
+//                             </div>
+//                           </div>
+//                         </Link>
+//                       );
+//                     })}
+//                   </div>
+//                 </div>
+//               )
+//             )}
+//           </div>
+//         )}
+
+//       {/* --- Empty State for Transactions --- */}
+//       {!isLoading && !error && !hasAnyTransactionsToDisplay && (
+//         <div className="text-center text-gray-700 dark:text-gray-300 capitalize py-5 bg-lightgray dark:bg-white/5 rounded-lg mt-6">
+//           {wasInitiallyEmpty
+//             ? `No transactions found for your ${currencyCode} balance yet.`
+//             : "No transactions match your current filter or search criteria."}
+//           <p className="mt-1 text-sm">
+//             You can{" "}
+//             <Link
+//               href={`/dashboard/balances/${balanceId}/add-money`}
+//               className="text-primary hover:underline font-medium"
+//             >
+//               add money
+//             </Link>{" "}
+//             or{" "}
+//             <button
+//               type="button"
+//               onClick={onSendClick}
+//               disabled={!canSendMoney}
+//               className={`text-primary hover:underline font-medium ${
+//                 !canSendMoney ? "opacity-50 cursor-not-allowed" : ""
+//               }`}
+//             >
+//               Send money
+//             </button>
+//             .
+//           </p>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default TransactionList;
+
+
 // src/app/dashboard/components/TransactionList.tsx
 import React from "react";
 import Link from "next/link";
@@ -1379,7 +1762,7 @@ interface TransactionListProps {
   balanceId: string;
   onSendClick: () => void;
   canSendMoney: boolean;
-  wasInitiallyEmpty: boolean;
+  wasInitiallyEmpty: boolean; // Required prop
 }
 
 const TransactionList: React.FC<TransactionListProps> = ({
@@ -1390,16 +1773,17 @@ const TransactionList: React.FC<TransactionListProps> = ({
   balanceId,
   onSendClick,
   canSendMoney,
-  wasInitiallyEmpty,
+  wasInitiallyEmpty, // Now received as a prop
 }) => {
   const {
     pendingAttentionTransactions,
     inProgressTransactions,
     groupedProcessedTransactions,
     hasProcessedTransactions,
-    hasAnyTransactionsToDisplay,
-  } = useGroupedTransactions(transactions);
+    hasAnyTransactionsToDisplay, // Use this to check if *any* section will render
+  } = useGroupedTransactions(transactions); // Group the currently passed (potentially filtered) list
 
+  // Loading Skeleton
   if (isLoading) {
     return (
         <div className="space-y-2">
@@ -1409,21 +1793,10 @@ const TransactionList: React.FC<TransactionListProps> = ({
               <div key={index} className="block">
                 <div className="block p-2 sm:p-4 rounded-2xl">
                   <div className="flex items-center gap-4">
-                    {/* Icon Skeleton */}
-                    <div className="relative flex-shrink-0">
-                      <div className="flex items-center justify-center">
-                        <Skeleton className="h-12 w-12 rounded-full" />
-                      </div>
-                    </div>
-                    {/* Text and Button Skeletons */}
+                    <div className="relative flex-shrink-0"> <div className="flex items-center justify-center"> <Skeleton className="h-12 w-12 rounded-full" /> </div> </div>
                     <div className="flex-grow flex flex-row justify-between items-center gap-4">
-                      <div className="flex-grow">
-                        <Skeleton className="h-4 w-40 mb-2" />
-                        <Skeleton className="h-3 w-32" />
-                      </div>
-                      <div className="shrink-0">
-                        <Skeleton className="h-5 w-20 rounded-full" />
-                      </div>
+                      <div className="flex-grow"> <Skeleton className="h-4 w-40 mb-2" /> <Skeleton className="h-3 w-32" /> </div>
+                      <div className="shrink-0"> <Skeleton className="h-5 w-20 rounded-full" /> </div>
                     </div>
                   </div>
                 </div>
@@ -1433,6 +1806,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
       );
   }
 
+  // Specific Transaction Fetch Error
   if (error) {
      return (
         <div className="text-center py-8 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-4 rounded-md border border-red-200 dark:border-red-700/40">
@@ -1441,67 +1815,27 @@ const TransactionList: React.FC<TransactionListProps> = ({
       );
   }
 
+  // --- Render Transaction Sections ---
+  // Note: The empty state is handled *after* attempting to render sections
   return (
     <div className="space-y-4">
       {/* --- Needs Your Attention Section --- */}
       {pendingAttentionTransactions.length > 0 && (
          <div>
-          <h2 className="font-medium text-orange-600 dark:text-orange-400 mb-3 text-sm uppercase tracking-wider">
-            Needs your attention
-          </h2>
+          <h2 className="font-medium text-orange-600 dark:text-orange-400 mb-3 text-sm uppercase tracking-wider"> Needs your attention </h2>
           <div className="space-y-2">
             {pendingAttentionTransactions.map((transaction) => {
-              // **FIX APPLIED HERE**: Use amountToPay for pending Add Money
-              const amount = transaction.amountToPay ?? 0;
-              // Determine the currency to display - prefer the 'payIn' currency if available
+              const amount = transaction.amountToPay ?? 0; // Use amountToPay
               const displayCurrency = transaction.payInCurrency?.code ?? currencyCode;
-              const name = `To your ${transaction.balanceCurrency?.code || currencyCode} balance`; // Show the target balance currency
-
+              const name = `To your ${transaction.balanceCurrency?.code || currencyCode} balance`;
               return (
-                <Link
-                  href={`/dashboard/transactions/${transaction._id}`}
-                  key={transaction._id}
-                  className="block"
-                >
+                <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} className="block">
                   <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
                     <div className="flex items-center gap-4">
-                      {/* Icon with Badge */}
-                      <div className="relative flex-shrink-0">
-                        <div className="p-3 bg-yellow-100 dark:bg-yellow-800/60 rounded-full flex items-center justify-center">
-                          <LuPlus
-                            size={24}
-                            className="text-yellow-700 dark:text-yellow-300"
-                          />
-                        </div>
-                        <MdErrorOutline
-                          size={20}
-                          className="absolute -bottom-1 -right-1 text-orange-500 bg-white dark:bg-neutral-900 dark:text-orange-400 rounded-full p-0.5 shadow"
-                        />
-                      </div>
-                      {/* Details */}
+                      <div className="relative flex-shrink-0"> <div className="p-3 bg-yellow-100 dark:bg-yellow-800/60 rounded-full flex items-center justify-center"> <LuPlus size={24} className="text-yellow-700 dark:text-yellow-300" /> </div> <MdErrorOutline size={20} className="absolute -bottom-1 -right-1 text-orange-500 bg-white dark:bg-neutral-900 dark:text-orange-400 rounded-full p-0.5 shadow" /> </div>
                       <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
-                        <div className="text-wrap">
-                          <h3
-                            className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg"
-                            title={name}
-                          >
-                            {name}
-                          </h3>
-                          <p className="text-sm text-orange-600 dark:text-orange-400 font-semibold mt-1">
-                            Waiting for you to pay
-                          </p>
-                        </div>
-                        {/* Amount to pay */}
-                        <div
-                          className={`font-medium text-neutral-900 dark:text-white whitespace-nowrap`}
-                        >
-                          + {/* Still represents an eventual addition */}
-                          {amount.toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })}
-                          {displayCurrency} {/* Show the currency to be paid */}
-                        </div>
+                        <div className="text-wrap"> <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg" title={name}> {name} </h3> <p className="text-sm text-orange-600 dark:text-orange-400 font-semibold mt-1"> Waiting for you to pay </p> </div>
+                        <div className={`font-medium text-neutral-900 dark:text-white whitespace-nowrap`}> + {amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2, })} {displayCurrency} </div>
                       </div>
                     </div>
                   </div>
@@ -1515,77 +1849,24 @@ const TransactionList: React.FC<TransactionListProps> = ({
       {/* --- In Progress Transactions Section --- */}
       {inProgressTransactions.length > 0 && (
          <div>
-          <h2 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
-            In progress
-          </h2>
+          <h2 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1"> In progress </h2>
           <div className="space-y-2">
             {inProgressTransactions.map((transaction) => {
               const isAddMoney = transaction.type === "Add Money";
-              const icon = isAddMoney ? (
-                <LuPlus
-                  size={22}
-                  className="text-neutral-900 dark:text-white"
-                />
-              ) : (
-                <GoArrowUp
-                  size={22}
-                  className="text-neutral-900 dark:text-white"
-                />
-              );
-              const description = isAddMoney
-                ? "Processing your deposit"
-                : transaction.status === "pending"
-                ? "Sending your money"
-                : "Processing transfer"; // Include 'processing' for Send Money here too
-              // For 'Add Money' in progress, amountToAdd should now have the value
-              // For 'Send Money' pending/processing, use sendAmount
-              const amount = isAddMoney
-                ? transaction.amountToPay ?? 0 // If it's 'in progress', amountToAdd should be populated
-                : transaction.sendAmount ?? 0;
-              const txCurrencyCode = isAddMoney
-                ? transaction.balanceCurrency?.code
-                : transaction.sendCurrency?.code;
+              const icon = isAddMoney ? <LuPlus size={22} className="text-neutral-900 dark:text-white" /> : <GoArrowUp size={22} className="text-neutral-900 dark:text-white" />;
+              const description = isAddMoney ? "Processing your deposit" : transaction.status === "pending" ? "Sending your money" : "Processing transfer";
+              const amount = isAddMoney ? transaction.amountToAdd ?? 0 : transaction.sendAmount ?? 0; // Corrected: use amountToAdd for AddMoney in progress
+              const txCurrencyCode = isAddMoney ? transaction.balanceCurrency?.code : transaction.sendCurrency?.code;
               const amountPrefix = isAddMoney ? "+ " : "- ";
-              const name = isAddMoney
-                ? `To your ${txCurrencyCode || currencyCode} balance`
-                : transaction.name || "Recipient";
-
+              const name = isAddMoney ? `To your ${txCurrencyCode || currencyCode} balance` : transaction.name || "Recipient";
               return (
-                <Link
-                  href={`/dashboard/transactions/${transaction._id}`}
-                  key={transaction._id}
-                  className="block"
-                >
+                <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} className="block">
                   <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
                     <div className="flex items-center gap-4">
-                      <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center">
-                        {icon}
-                      </div>
+                      <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center"> {icon} </div>
                       <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
-                        <div className="text-wrap">
-                          <h3
-                            className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg"
-                            title={name}
-                          >
-                            {name}
-                          </h3>
-                          <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
-                            {description}
-                            <span className="italic">
-                              ({transaction.status})
-                            </span>
-                          </p>
-                        </div>
-                        <div
-                          className={`font-medium text-neutral-900 dark:text-white whitespace-nowrap`}
-                        >
-                          {amountPrefix}
-                          {amount.toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })}
-                          {txCurrencyCode || currencyCode}
-                        </div>
+                        <div className="text-wrap"> <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg" title={name}> {name} </h3> <p className="text-sm text-gray-500 dark:text-gray-300 mt-1"> {description} <span className="italic"> ({transaction.status}) </span> </p> </div>
+                        <div className={`font-medium text-neutral-900 dark:text-white whitespace-nowrap`}> {amountPrefix} {amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2, })} {txCurrencyCode || currencyCode} </div>
                       </div>
                     </div>
                   </div>
@@ -1597,102 +1878,34 @@ const TransactionList: React.FC<TransactionListProps> = ({
       )}
 
       {/* --- Processed Transactions (Grouped by Date) Section --- */}
-      {hasProcessedTransactions &&
-        groupedProcessedTransactions &&
-        Object.keys(groupedProcessedTransactions).length > 0 && (
+      {hasProcessedTransactions && groupedProcessedTransactions && Object.keys(groupedProcessedTransactions).length > 0 && (
           <div className="space-y-4">
-            {Object.entries(groupedProcessedTransactions).map(
-              ([date, transactionsForDate]) => (
+            {Object.entries(groupedProcessedTransactions).map( ([date, transactionsForDate]) => (
                 <div key={date}>
-                  <h3 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
-                    {date === 'Unknown Date' || date === 'Date Error' ? 'Older Transactions' : date} {/* Handle fallback keys */}
-                  </h3>
+                  <h3 className="font-medium text-gray-600 dark:text-white mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1"> {date === 'Unknown Date' || date === 'Date Error' ? 'Older Transactions' : date} </h3>
                   <div className="space-y-2">
                     {transactionsForDate.map((transaction) => {
                       const isAddMoney = transaction.type === "Add Money";
-                      const icon = isAddMoney ? (
-                        <LuPlus
-                          size={22}
-                          className="text-neutral-900 dark:text-white"
-                        />
-                      ) : (
-                        <GoArrowUp
-                          size={22}
-                          className="text-neutral-900 dark:text-white"
-                        />
-                      );
-                      let description = "";
-                      let amountClass = "";
-                      // For processed transactions, use amountToAdd or sendAmount respectively
-                      const amount = isAddMoney
-                        ? transaction.amountToPay ?? 0
-                        : transaction.sendAmount ?? 0;
-                      // Use the currency related to the amount being displayed
-                      const displayCurrencyCode = isAddMoney
-                        ? transaction.balanceCurrency?.code
-                        : transaction.sendCurrency?.code;
+                      const icon = isAddMoney ? <LuPlus size={22} className="text-neutral-900 dark:text-white" /> : <GoArrowUp size={22} className="text-neutral-900 dark:text-white" />;
+                      let description = ""; let amountClass = "";
+                      const amount = isAddMoney ? transaction.amountToAdd ?? 0 : transaction.sendAmount ?? 0; // Use amountToAdd/sendAmount for processed
+                      const displayCurrencyCode = isAddMoney ? transaction.balanceCurrency?.code : transaction.sendCurrency?.code;
                       const amountPrefix = isAddMoney ? "+ " : "- ";
-                      const name = isAddMoney
-                        ? `Added to ${
-                            displayCurrencyCode || currencyCode
-                          } balance`
-                        : transaction.name || "Recipient"; // Use Recipient name if available for sends
-
+                      const name = isAddMoney ? `Added to ${displayCurrencyCode || currencyCode} balance` : transaction.name || "Recipient";
                       switch (transaction.status) {
-                        case "completed":
-                          amountClass = isAddMoney
-                            ? "text-green-600 dark:text-green-500"
-                            : "text-neutral-900 dark:text-white"; // Completed sends are neutral, not green
-                          description = isAddMoney
-                            ? "Added"
-                            : `Sent to ${transaction.recipient ? (transaction.recipient as any).accountHolderName || transaction.name || 'Recipient' : transaction.name || 'Recipient'}`; // Try to get recipient name
-                          break;
-                        case "canceled": // Use the correct spelling from the type
-                          amountClass = "text-red-600 line-through";
-                          description = "Canceled";
-                          break;
-                        case "failed":
-                          amountClass = "text-red-600 line-through";
-                          description = "Failed";
-                          break;
-                        default: // Should ideally not happen for 'processed' but handle just in case
-                          amountClass = "text-neutral-900 dark:text-white";
-                          description = transaction.status ?? "Unknown";
+                        case "completed": amountClass = isAddMoney ? "text-green-600 dark:text-green-500" : "text-neutral-900 dark:text-white"; description = isAddMoney ? "Added" : `Sent to ${transaction.recipient ? (transaction.recipient as any).accountHolderName || transaction.name || 'Recipient' : transaction.name || 'Recipient'}`; break;
+                        case "canceled": amountClass = "text-red-600 line-through"; description = "Canceled"; break;
+                        case "failed": amountClass = "text-red-600 line-through"; description = "Failed"; break;
+                        default: amountClass = "text-neutral-900 dark:text-white"; description = transaction.status ?? "Unknown";
                       }
-
                       return (
-                        <Link
-                          href={`/dashboard/transactions/${transaction._id}`}
-                          key={transaction._id}
-                          className="block"
-                        >
+                        <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} className="block">
                           <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
                             <div className="flex items-center gap-4">
-                              <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center">
-                                {icon}
-                              </div>
+                              <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center"> {icon} </div>
                               <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
-                                <div className="text-wrap">
-                                  <h3
-                                    className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg"
-                                    title={name}
-                                  >
-                                    {name}
-                                  </h3>
-                                  <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
-                                    {description}
-                                  </p>
-                                </div>
-                                <div
-                                  className={`font-medium ${amountClass} whitespace-nowrap`}
-                                >
-                                  {amountPrefix}
-                                  {amount.toLocaleString(undefined, {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2,
-                                  })}
-                                  {displayCurrencyCode || currencyCode} {/* Show relevant currency */}
-                                </div>
+                                <div className="text-wrap"> <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg" title={name}> {name} </h3> <p className="text-sm text-gray-500 dark:text-gray-300 mt-1"> {description} </p> </div>
+                                <div className={`font-medium ${amountClass} whitespace-nowrap`}> {amountPrefix} {amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2, })} {displayCurrencyCode || currencyCode} </div>
                               </div>
                             </div>
                           </div>
@@ -1706,33 +1919,40 @@ const TransactionList: React.FC<TransactionListProps> = ({
           </div>
         )}
 
-      {/* --- Empty State for Transactions --- */}
+      {/* --- Empty State Display --- */}
+      {/* Show this only if NO sections above had any transactions to display */}
       {!isLoading && !error && !hasAnyTransactionsToDisplay && (
-        <div className="text-center text-gray-700 dark:text-gray-300 capitalize py-5 bg-lightgray dark:bg-white/5 rounded-lg mt-6">
+        <div className="text-center text-gray-700 dark:text-gray-300 capitalize py-8 bg-lightgray dark:bg-white/5 rounded-lg mt-6 px-4">
+          {/* Message changes based on whether the *initial* fetch was empty */}
           {wasInitiallyEmpty
             ? `No transactions found for your ${currencyCode} balance yet.`
             : "No transactions match your current filter or search criteria."}
-          <p className="mt-1 text-sm">
-            You can{" "}
-            <Link
-              href={`/dashboard/balances/${balanceId}/add-money`}
-              className="text-primary hover:underline font-medium"
-            >
-              add money
-            </Link>{" "}
-            or{" "}
-            <button
-              type="button"
-              onClick={onSendClick}
-              disabled={!canSendMoney}
-              className={`text-primary hover:underline font-medium ${
-                !canSendMoney ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-            >
-              Send money
-            </button>
-            .
-          </p>
+
+           {/* Suggest actions, only show if relevant */}
+           {wasInitiallyEmpty && ( // Only show add/send links if truly no history
+             <p className="mt-2 text-sm normal-case">
+                You can{" "}
+                <Link
+                  href={`/dashboard/balances/${balanceId}/add-money`}
+                  className="text-primary hover:underline font-medium"
+                >
+                  add money
+                </Link>{" "}
+                {/* Keep Send button disabled state logic */}
+                or{" "}
+                <button
+                  type="button"
+                  onClick={onSendClick}
+                  disabled={!canSendMoney}
+                  className={`text-primary hover:underline font-medium ${
+                    !canSendMoney ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                >
+                  Send money
+                </button>
+                .
+             </p>
+           )}
         </div>
       )}
     </div>

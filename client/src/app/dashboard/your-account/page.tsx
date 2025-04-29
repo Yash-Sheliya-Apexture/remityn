@@ -39,13 +39,13 @@ const AccountSettings: React.FC = () => {
             Your account
           </h2>
           <div className="space-y-2 mb-6">
-            <MenuItem
+            {/* <MenuItem
               icon={
                 <FaRegBell className="size-6 text-neutral-900 dark:text-white" />
               }
               label="Inbox"
               href="your-account/inbox"
-            />
+            /> */}
             <MenuItem
               icon={
                 <RxQuestionMark className="size-6 text-neutral-900 dark:text-white" />
