@@ -3614,7 +3614,7 @@
 //                       />
 //                     </motion.div>
 //                   </div>
-                  
+
 //                   {/* Right Side (50% Width on LG screens) - Animated */}
 //                   <motion.div
 //                     className="lg:w-1/2 w-full flex flex-col items-center lg:items-end justify-center lg:justify-start lg:pt-4"
@@ -3656,8 +3656,570 @@
 
 // export default TransferSteps;
 
+// // TransferSteps.tsx
 
+// "use client";
+// import React, { useState, useEffect, useRef, useCallback } from "react";
+// import Image from "next/image";
+// import { IconType } from "react-icons";
+// import { FaCheckCircle, FaWallet, FaUserFriends } from "react-icons/fa";
+// import { FaMoneyBillTransfer } from "react-icons/fa6";
+// import { motion, AnimatePresence } from "framer-motion";
+// // Removed: import { useTheme } from "next-themes";
 
+// // --- Interface definitions ---
+// interface ContentBlock {
+//   text: string;
+//   type?: "default" | "success" | "warning" | "secondry";
+// }
+
+// interface StepData {
+//   id: number;
+//   iconDefault: IconType;
+//   iconActive: IconType;
+//   title: string;
+//   subtitle: string;
+//   contentTitle: string;
+//   contentSubtitle: React.ReactNode;
+//   // Use an object for theme-specific images
+//   contentImages: {
+//     light: string;
+//     dark: string;
+//   };
+//   contentImage2?: string; // Keep if you still need a second optional image
+//   contentBlocks?: ContentBlock[];
+// }
+
+// // --- stepsData (Ensure image paths are correct and exist) ---
+// const stepsData: StepData[] = [
+//   {
+//     id: 0,
+//     iconDefault: FaCheckCircle,
+//     iconActive: FaCheckCircle,
+//     title: "Register and verify",
+//     subtitle: "Complete verification process",
+//     contentTitle: "Register & Verify",
+//     contentSubtitle: (
+//       <>
+//         Get started in minutes with a secure and simple sign-up process. We use
+//         top-level identity verification to protect your account and ensure
+//         compliance with international money transfer regulations.
+//       </>
+//     ),
+//     contentImages: {
+//       light: "/assets/images/Register-and-verify-light.png", // Replace with your light mode image
+//       dark: "/assets/images/Register-and-verify-dark.png",   // Replace with your dark mode image
+//     },
+//     contentBlocks: [
+//       { text: "Instant Account Setup", type: "success" },
+//       { text: "Seamless KYC Verification", type: "secondry" },
+//       { text: "Enhanced Security with Passkeys", type: "warning" },
+//     ],
+//   },
+//   {
+//     id: 1,
+//     iconDefault: FaWallet,
+//     iconActive: FaWallet,
+//     title: "Create a Digital Wallet",
+//     subtitle: "Add transfer amount",
+//     contentTitle: "Create Your Digital Wallet with Passkey",
+//     contentSubtitle:
+//       "Set up your secure digital wallet in seconds. With integrated passkey protection, your funds and personal details are safeguarded from the start.",
+//     contentImages: {
+//       light: "/assets/images/Create-a-Digital-Wallet-light.png", // Replace with your light mode image
+//       dark: "/assets/images/Create-a-Digital-Wallet-dark.png",   // Replace with your dark mode image
+//     },
+//     contentBlocks: [
+//       { text: "Passkeys: The Future of Security", type: "success" },
+//       { text: "Defends Against Online Threats", type: "secondry" },
+//       { text: "Peace of Mind, Always", type: "warning" },
+//     ],
+//   },
+//   {
+//     id: 2,
+//     iconDefault: FaUserFriends,
+//     iconActive: FaUserFriends,
+//     title: "Add Recipients",
+//     subtitle: "Who do we send to?",
+//     contentTitle: "Add Recipients",
+//     contentSubtitle:
+//       "Easily link the bank accounts or digital wallets of the people you wish to send money to. Manage recipients securely and send funds with confidence.",
+//     contentImages: {
+//       light: "/assets/images/Add-Recipients-light.png", // Replace with your light mode image
+//       dark: "/assets/images/Add-Recipients-dark.png",   // Replace with your dark mode image
+//     },
+//     contentBlocks: [
+//       { text: "Multiple Recipient Support", type: "success" },
+//       { text: "Secure Data Handling", type: "secondry" },
+//       { text: "Quick Add Feature", type: "warning" },
+//     ],
+//   },
+//   {
+//     id: 3,
+//     iconDefault: FaMoneyBillTransfer,
+//     iconActive: FaMoneyBillTransfer,
+//     title: "Transfer Money",
+//     subtitle: "Complete transfer process",
+//     contentTitle: "Transfer Money Seamlessly",
+//     contentSubtitle: "Complete your money transfer in just a few taps. Enjoy real-time processing, transparent fees, and secure delivery to your recipients in India.",
+//     contentImages: {
+//       light: "/assets/images/Transfer-Money-light.png", // Replace with your light mode image
+//       dark: "/assets/images/Transfer-Money-dark.png",   // Replace with your dark mode image
+//     },
+//     contentBlocks: [
+//       { text: "Instant Transfers", type: "success" },
+//       { text: "Secure Data Handling", type: "secondry" },
+//       { text: "24/7 Secure Transactions", type: "warning" },
+//     ],
+//   },
+// ];
+
+// // --- Constants ---
+// const AUTO_ADVANCE_DELAY = 3200;
+// const BORDER_ANIMATION_DURATION = 3200;
+
+// // --- Animation Speed Adjustment ---
+// const ANIMATION_DURATION_CONTENT = 0.8;
+// const ANIMATION_DURATION_IMAGE = 0.9;
+// const ANIMATION_DURATION_BLOCK_ITEM = 0.5;
+// const EXIT_DURATION_MULTIPLIER = 0.6;
+
+// // --- Animation Variants ---
+// const leftContentVariants = {
+//   initial: { opacity: 0, x: "-50%" },
+//   animate: {
+//     opacity: 1,
+//     x: 0,
+//     transition: { duration: ANIMATION_DURATION_CONTENT, ease: "easeOut" },
+//   },
+//   exit: {
+//     opacity: 0,
+//     x: "-30%",
+//     transition: {
+//       duration: ANIMATION_DURATION_CONTENT * EXIT_DURATION_MULTIPLIER,
+//       ease: "easeIn",
+//     },
+//   },
+// };
+
+// const imageVariants = {
+//   initial: { opacity: 0, y: "50%" },
+//   animate: {
+//     opacity: 1,
+//     y: 0,
+//     transition: {
+//       duration: ANIMATION_DURATION_IMAGE,
+//       ease: "easeOut",
+//       delay: 0.1, // Delay image animation slightly after text
+//     },
+//   },
+//   exit: {
+//     opacity: 0,
+//     y: "30%", // Exit downwards
+//     transition: {
+//       duration: ANIMATION_DURATION_IMAGE * EXIT_DURATION_MULTIPLIER,
+//       ease: "easeIn",
+//     },
+//   },
+// };
+
+// const rightContentVariants = {
+//   initial: { opacity: 0, x: "50%" },
+//   animate: {
+//     opacity: 1,
+//     x: 0,
+//     transition: {
+//       duration: ANIMATION_DURATION_CONTENT,
+//       ease: "easeOut",
+//       delay: 0.1, // Delay right side slightly
+//     },
+//   },
+//   exit: {
+//     opacity: 0,
+//     x: "30%",
+//     transition: {
+//       duration: ANIMATION_DURATION_CONTENT * EXIT_DURATION_MULTIPLIER,
+//       ease: "easeIn",
+//     },
+//   },
+// };
+
+// const blockContainerVariants = {
+//   initial: {}, // No initial state needed for container itself
+//   animate: {
+//     transition: {
+//       staggerChildren: 0.15, // Stagger animation of child blocks
+//       delayChildren: ANIMATION_DURATION_CONTENT * 0.4, // Delay children animation start
+//     },
+//   },
+//   exit: {}, // Exit handled by individual items if needed
+// };
+
+// const blockItemVariants = {
+//   initial: { opacity: 0, x: 30 }, // Start off-screen right and transparent
+//   animate: {
+//     opacity: 1,
+//     x: 0, // Animate to original position and full opacity
+//     transition: { duration: ANIMATION_DURATION_BLOCK_ITEM, ease: "easeOut" },
+//   },
+//   exit: {
+//     opacity: 0,
+//     x: 30, // Exit back off-screen right
+//     transition: {
+//       duration: ANIMATION_DURATION_BLOCK_ITEM * EXIT_DURATION_MULTIPLIER,
+//       ease: "easeIn",
+//     },
+//   },
+// };
+
+// // --- Component ---
+// const TransferSteps: React.FC = () => {
+//   const [activeIndex, setActiveIndex] = useState(0);
+//   const [isAutoAdvancing, setIsAutoAdvancing] = useState(true);
+//   const [isAnimatingBorder, setIsAnimatingBorder] = useState(true); // Controls the SVG border animation
+//   const [isContentHovered, setIsContentHovered] = useState(false); // Tracks hover state over the content panel
+//   const timerRef = useRef<NodeJS.Timeout | null>(null); // Ref for the auto-advance timer
+//   const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Ref for the border animation end timeout
+
+//   // --- Removed theme-related state and effects ---
+
+//   // --- Advance to the next step ---
+//   const advanceStep = useCallback(() => {
+//     setActiveIndex((prevIndex) => {
+//       const nextIndex = (prevIndex + 1) % stepsData.length;
+//       setIsAnimatingBorder(true); // Trigger border animation for the next step
+//       if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
+//       // Set a timeout to turn off the animation class after it should have completed
+//       animationTimeoutRef.current = setTimeout(() => {
+//         setIsAnimatingBorder(false);
+//       }, BORDER_ANIMATION_DURATION);
+//       return nextIndex;
+//     });
+//   }, []); // No dependencies needed here
+
+//   // --- Effect for managing timers and initial animation ---
+//   useEffect(() => {
+//     // Start border animation for the current step when it becomes active or on initial load
+//     setIsAnimatingBorder(true);
+//     if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
+//     animationTimeoutRef.current = setTimeout(() => {
+//       setIsAnimatingBorder(false);
+//     }, BORDER_ANIMATION_DURATION);
+
+//     let advanceTimer: NodeJS.Timeout | null = null;
+//     // Manage auto-advance timer based on state
+//     if (isAutoAdvancing && !isContentHovered) {
+//       if (timerRef.current) clearTimeout(timerRef.current); // Clear any existing timer
+//       advanceTimer = setTimeout(advanceStep, AUTO_ADVANCE_DELAY);
+//       timerRef.current = advanceTimer; // Store the new timer ID
+//     } else {
+//       // If paused or hovered, clear the auto-advance timer
+//       if (timerRef.current) clearTimeout(timerRef.current);
+//       // Optionally pause border animation immediately on hover
+//       if (isContentHovered && animationTimeoutRef.current) {
+//            clearTimeout(animationTimeoutRef.current);
+//            setIsAnimatingBorder(false); // Stop animation class
+//       }
+//     }
+
+//     // Cleanup function to clear timers when component unmounts or dependencies change
+//     return () => {
+//       if (advanceTimer) clearTimeout(advanceTimer); // Clear the specific timer created in this effect run
+//       if (timerRef.current === advanceTimer) { // Prevent clearing unrelated timers
+//           timerRef.current = null;
+//       }
+//       // No need to clear animationTimeoutRef here, allow border animation to finish if already started
+//     };
+//   }, [activeIndex, isAutoAdvancing, isContentHovered, advanceStep]); // Dependencies for the effect
+
+//   // --- Handle click on a step tab ---
+//   const handleStepClick = (index: number) => {
+//     setIsAutoAdvancing(true); // Keep auto-advancing enabled after manual click
+//     setIsContentHovered(false); // Reset hover state
+//     if (timerRef.current) clearTimeout(timerRef.current); // Clear existing auto-advance timer
+//     if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current); // Clear existing border animation timer
+
+//     setActiveIndex(index); // Set the new active step
+//     setIsAnimatingBorder(true); // Start border animation for the clicked step
+//     animationTimeoutRef.current = setTimeout(() => {
+//       setIsAnimatingBorder(false);
+//     }, BORDER_ANIMATION_DURATION);
+
+//     // Restart the auto-advance timer if it's enabled
+//     if (isAutoAdvancing) {
+//         timerRef.current = setTimeout(advanceStep, AUTO_ADVANCE_DELAY);
+//     }
+//   };
+
+//   const currentStep = stepsData[activeIndex];
+
+//   // --- Helper function to get CSS classes for content blocks based on type ---
+//   const getBlockClasses = (type: ContentBlock["type"]) => {
+//     switch (type) {
+//       case "success":
+//         return "inline-flex justify-center items-center px-4 py-1 font-medium rounded-3xl capitalize text-green-600 bg-green-100 dark:bg-green-600/20 dark:text-green-400";
+//       case "warning":
+//         return "inline-flex justify-center items-center px-4 py-1 font-medium rounded-3xl capitalize text-yellow-600 bg-yellow-100 dark:bg-yellow-600/20 dark:text-yellow-400";
+//       case "secondry": // Assuming 'secondry' is intentional, otherwise 'secondary'
+//         return "inline-flex justify-center items-center px-4 py-1 font-medium rounded-3xl capitalize text-blue-600 bg-blue-100 dark:bg-blue-600/20 dark:text-blue-400";
+//       case "default":
+//       default:
+//         return "inline-flex justify-center items-center px-4 py-1 font-medium rounded-3xl capitalize text-gray-600 bg-gray-100 dark:bg-gray-600/20 dark:text-gray-400";
+//     }
+//   };
+
+//   return (
+//     <div className="lg:py-10 py-5 bg-white dark:bg-background px-4">
+//       <section
+//         className="flex flex-col justify-center container mx-auto"
+//         id="transfer-steps"
+//       >
+//         {/* --- Section Header --- */}
+//         <article className="flex flex-col gap-5 mb-8 lg:mb-10">
+//           <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight text-center lg:text-left">
+//             4 easy steps to
+//             <span className="text-primary"> Transfer to India </span>
+//           </h1>
+//         </article>
+
+//         {/* --- Main Grid Layout (Tabs + Content) --- */}
+//         <article className="grid gap-8 lg:grid-cols-3 lg:gap-8">
+//           {/* --- Left Side: Step Tabs --- */}
+//           <div className="w-full h-full">
+//             <div className="rounded-3xl bg-white dark:bg-white/5 lg:p-8 p-6 h-full border shadow-sm dark:border-none">
+//               <ul className="lg:flex md:grid md:grid-cols-2 lg:grid-cols-1 grid-cols-1 lg:flex-col space-y-6 justify-between h-full gap-6">
+//                 {stepsData.map((step, index) => {
+//                    const isActive = activeIndex === index;
+//                    // Determine if the border animation should be running for *this specific* active tab
+//                    const isCurrentlyAnimatingBorder = isActive && isAnimatingBorder;
+//                    return (
+//                     <li
+//                       key={step.id}
+//                       className={`relative shrink-0 lg:shrink ${
+//                         index === stepsData.length - 1 ? "" : "" // No specific style for last item needed here
+//                       }`}
+//                     >
+//                       <button
+//                         onClick={() => handleStepClick(index)}
+//                         className="z-10 flex flex-col lg:flex-row cursor-pointer items-center lg:items-start lg:gap-5 bg-transparent w-full text-left group focus:outline-none rounded-lg"
+//                         aria-current={isActive ? "step" : undefined}
+//                       >
+//                         {/* SVG Icon Container */}
+//                          <div className="relative flex-shrink-0">
+//                           <svg
+//                             viewBox="0 0 54 54"
+//                             fill="none"
+//                             xmlns="http://www.w3.org/2000/svg"
+//                             // Apply dynamic text color based on active state
+//                             className={`transition-colors duration-300 lg:size-18 md:size-14 size-12 ${
+//                               isActive
+//                                 ? "text-mainheading dark:text-primary" // Active colors
+//                                 : "text-[#97A2B3] dark:text-gray-500" // Inactive colors
+//                             }`}
+//                           >
+//                             {/* Base rectangle background */}
+//                             <rect
+//                               x="1"
+//                               y="1"
+//                               width="52"
+//                               height="52"
+//                               rx="12"
+//                               className={`transition-colors duration-300 stroke-[#EAECF0] dark:stroke-gray-500`} // Border color
+//                               strokeWidth="2"
+//                               fill={'transparent'} // No JS-based fill needed
+//                             />
+
+//                             {/* Icon rendering inside SVG */}
+//                             <foreignObject x="15" y="15" width="24" height="24">
+//                               <div className="flex items-center justify-center h-full w-full">
+//                                 {React.createElement(
+//                                   // Choose icon based on active state
+//                                   isActive ? step.iconActive : step.iconDefault,
+//                                   { // Apply dynamic icon color class
+//                                     className: `h-6 w-6 transition-colors duration-300 ${
+//                                       isActive
+//                                         ? "text-mainheading dark:text-primary" // Active icon color
+//                                         : "text-[#97A2B3] dark:text-gray-500" // Inactive icon color
+//                                     }`,
+//                                   }
+//                                 )}
+//                               </div>
+//                             </foreignObject>
+
+//                             {/* Animated Border Path */}
+//                             <path
+//                               // Path definition for the rounded rectangle border
+//                               d="M 27,1 H 41 A 12,12 0 0 1 53,13 V 41 A 12,12 0 0 1 41,53 H 13 A 12,12 0 0 1 1,41 V 13 A 12,12 0 0 1 13,1 H 27 Z"
+//                               // Stroke color comes from the parent SVG's text color if 'currentColor'
+//                               stroke={isActive ? "currentColor" : "none"} // Show stroke only if active
+//                               strokeWidth="2"
+//                               fill="none" // No fill for the border path
+//                               strokeDasharray="208" // Total path length (approx)
+//                               strokeDashoffset="208" // Start with the border fully 'undrawn'
+//                               // Apply animation class conditionally
+//                               className={
+//                                 isCurrentlyAnimatingBorder
+//                                   ? "animate-border-draw" // Your animation class from CSS
+//                                   : isActive
+//                                   ? "border-path-static" // Class to keep border visible when active but not animating
+//                                   : "border-path-reset" // Class to hide border when inactive
+//                               }
+//                               // Set animation duration via style
+//                               style={{
+//                                 animationDuration: `${BORDER_ANIMATION_DURATION}ms`,
+//                               }}
+//                             />
+//                           </svg>
+//                         </div>
+
+//                          {/* Text Content (Title and Subtitle) */}
+//                         <div className="flex flex-col items-center lg:items-start gap-1 mt-2.5">
+//                           <h3
+//                             // Dynamic text color and size for title
+//                             className={`text-center lg:text-left capitalize text-base font-medium leading-tight transition-colors duration-300 lg:text-xl ${
+//                               isActive
+//                                 ? "text-[#182230] dark:text-white" // Active title color
+//                                 : "text-[#97A2B3] dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300" // Inactive title color + hover
+//                             }`}
+//                           >
+//                             {step.title}
+//                           </h3>
+//                           <p
+//                             // Dynamic text color and size for subtitle
+//                             className={`text-center lg:text-left text-sm font-normal transition-colors duration-300 lg:text-lg ${
+//                               isActive
+//                                 ? "text-gray-500 dark:text-gray-300" // Active subtitle color
+//                                 : "text-[#97A2B3] dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-gray-200" // Inactive subtitle color + hover
+//                             }`}
+//                           >
+//                             {step.subtitle}
+//                           </p>
+//                         </div>
+//                       </button>
+//                     </li>
+//                    )
+//                  })}
+//               </ul>
+//             </div>
+//           </div>
+
+//           {/* --- Right Side: Content Panel --- */}
+//           <div
+//             className="relative lg:col-span-2 h-[500px] md:h-[550px] lg:h-[600px] min-h-[600px] md:min-h-[550px] lg:min-h-[600px] overflow-hidden"
+//             // Pause auto-advance on hover
+//             onMouseEnter={() => setIsContentHovered(true)}
+//             // Resume auto-advance on leave
+//             onMouseLeave={() => setIsContentHovered(false)}
+//           >
+//             <AnimatePresence mode="wait">
+//               {/* Animated container for the active step's content */}
+//               <motion.div
+//                 key={activeIndex} // Animate when activeIndex changes
+//                 className="absolute inset-0 flex flex-col border dark:border-none shadow-sm rounded-2xl bg-white dark:bg-white/5 p-6"
+//                 initial="initial"
+//                 animate="animate"
+//                 exit="exit"
+//                 // Variants for the overall panel fade can be added here if needed
+//                 // variants={panelVariants} // Example if you have panel-specific fade
+//               >
+//                 {/* Flex container for 50/50 split on large screens */}
+//                 <div className="flex flex-col lg:flex-row h-full gap-4 lg:gap-8">
+//                   {/* Left Side (Text and Image) */}
+//                   <div className="lg:w-1/2 w-full flex flex-col">
+//                     {/* Animated Text Content Area */}
+//                     <motion.div
+//                       className="space-y-2 mb-4 lg:mb-6"
+//                       variants={leftContentVariants} // Slide/fade in from left
+//                       // Inherits initial/animate/exit from parent motion.div
+//                     >
+//                       <h3 className="text-lg md:text-xl lg:text-2xl font-normal text-mainheading dark:text-white">
+//                         {currentStep.contentTitle}
+//                       </h3>
+//                       <p className="text-gray-700 dark:text-gray-300 lg:text-base text-sm">
+//                         {currentStep.contentSubtitle}
+//                       </p>
+//                     </motion.div>
+
+//                     {/* Animated Image Area */}
+//                     <motion.div
+//                       // Key ensures animation runs when step changes, not on theme change
+//                       key={activeIndex}
+//                       className="relative flex-grow flex items-center justify-center mt-5"
+//                       variants={imageVariants} // Slide/fade in from bottom
+//                       // Inherits initial/animate/exit from parent motion.div
+//                     >
+//                       {/* Light Mode Image - Displayed by default, hidden in dark mode */}
+//                       <Image
+//                         src={currentStep.contentImages.light}
+//                         alt={`${currentStep.title} illustration (light)`}
+//                         width={500}
+//                         height={550}
+//                         style={{
+//                           width: "auto", height: "auto",
+//                           maxHeight: "500px", maxWidth: "100%",
+//                         }}
+//                         priority={activeIndex === 0} // Prioritize loading for the first step
+//                         className="object-contain block dark:hidden" // CSS for light mode
+//                       />
+//                       {/* Dark Mode Image - Hidden by default, displayed in dark mode */}
+//                       <Image
+//                         src={currentStep.contentImages.dark}
+//                         alt={`${currentStep.title} illustration (dark)`}
+//                         width={500}
+//                         height={550}
+//                         style={{
+//                             width: "auto", height: "auto",
+//                             maxHeight: "500px", maxWidth: "100%",
+//                         }}
+//                         priority={activeIndex === 0} // Prioritize loading for the first step
+//                         className="object-contain hidden dark:block" // CSS for dark mode
+//                       />
+//                     </motion.div>
+//                   </div>
+
+//                   {/* Right Side (Content Blocks) */}
+//                   <motion.div
+//                     className="lg:w-1/2 w-full flex flex-col items-center lg:items-end justify-center lg:justify-start lg:pt-4"
+//                     variants={rightContentVariants} // Slide/fade in from right
+//                      // Inherits initial/animate/exit from parent motion.div
+//                   >
+//                     {/* Conditionally render blocks container if blocks exist */}
+//                     {currentStep.contentBlocks && (
+//                       <motion.div
+//                         className="flex flex-col items-start lg:items-end gap-3 w-full lg:w-auto"
+//                         variants={blockContainerVariants} // Applies stagger/delay to children
+//                         initial="initial" // Necessary for staggerChildren to work correctly
+//                         animate="animate"
+//                         exit="exit" // Ensure blocks animate out if needed
+//                       >
+//                         {/* Map over blocks to render each one */}
+//                         {currentStep.contentBlocks.map((block, blockIndex) => (
+//                           <motion.div
+//                             key={blockIndex} // Unique key for each block
+//                             // Apply dynamic styling based on block type
+//                             className={`px-4 font-medium lg:text-base text-sm lg:py-2.5 py-2 rounded-full text-nowrap ${getBlockClasses(
+//                               block.type
+//                             )}`}
+//                             variants={blockItemVariants} // Individual block slide/fade animation
+//                              // initial/animate/exit inherited from parent variants
+//                           >
+//                             {block.text}
+//                           </motion.div>
+//                         ))}
+//                       </motion.div>
+//                     )}
+//                   </motion.div>
+//                 </div>
+//               </motion.div>
+//             </AnimatePresence>
+//           </div>
+//         </article>
+//       </section>
+//     </div>
+//   );
+// };
+
+// export default TransferSteps;
 
 // TransferSteps.tsx
 
@@ -3668,9 +4230,9 @@ import { IconType } from "react-icons";
 import { FaCheckCircle, FaWallet, FaUserFriends } from "react-icons/fa";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { motion, AnimatePresence } from "framer-motion";
-// Removed: import { useTheme } from "next-themes";
+import { useInView } from "react-intersection-observer"; // Import useInView
 
-// --- Interface definitions ---
+// --- Interface definitions (remain the same) ---
 interface ContentBlock {
   text: string;
   type?: "default" | "success" | "warning" | "secondry";
@@ -3684,16 +4246,15 @@ interface StepData {
   subtitle: string;
   contentTitle: string;
   contentSubtitle: React.ReactNode;
-  // Use an object for theme-specific images
   contentImages: {
     light: string;
     dark: string;
   };
-  contentImage2?: string; // Keep if you still need a second optional image
+  contentImage2?: string;
   contentBlocks?: ContentBlock[];
 }
 
-// --- stepsData (Ensure image paths are correct and exist) ---
+// --- stepsData (remains the same) ---
 const stepsData: StepData[] = [
   {
     id: 0,
@@ -3711,7 +4272,7 @@ const stepsData: StepData[] = [
     ),
     contentImages: {
       light: "/assets/images/Register-and-verify-light.png", // Replace with your light mode image
-      dark: "/assets/images/Register-and-verify-dark.png",   // Replace with your dark mode image
+      dark: "/assets/images/Register-and-verify-dark.png", // Replace with your dark mode image
     },
     contentBlocks: [
       { text: "Instant Account Setup", type: "success" },
@@ -3730,7 +4291,7 @@ const stepsData: StepData[] = [
       "Set up your secure digital wallet in seconds. With integrated passkey protection, your funds and personal details are safeguarded from the start.",
     contentImages: {
       light: "/assets/images/Create-a-Digital-Wallet-light.png", // Replace with your light mode image
-      dark: "/assets/images/Create-a-Digital-Wallet-dark.png",   // Replace with your dark mode image
+      dark: "/assets/images/Create-a-Digital-Wallet-dark.png", // Replace with your dark mode image
     },
     contentBlocks: [
       { text: "Passkeys: The Future of Security", type: "success" },
@@ -3749,7 +4310,7 @@ const stepsData: StepData[] = [
       "Easily link the bank accounts or digital wallets of the people you wish to send money to. Manage recipients securely and send funds with confidence.",
     contentImages: {
       light: "/assets/images/Add-Recipients-light.png", // Replace with your light mode image
-      dark: "/assets/images/Add-Recipients-dark.png",   // Replace with your dark mode image
+      dark: "/assets/images/Add-Recipients-dark.png", // Replace with your dark mode image
     },
     contentBlocks: [
       { text: "Multiple Recipient Support", type: "success" },
@@ -3764,10 +4325,11 @@ const stepsData: StepData[] = [
     title: "Transfer Money",
     subtitle: "Complete transfer process",
     contentTitle: "Transfer Money Seamlessly",
-    contentSubtitle: "Complete your money transfer in just a few taps. Enjoy real-time processing, transparent fees, and secure delivery to your recipients in India.",
+    contentSubtitle:
+      "Complete your money transfer in just a few taps. Enjoy real-time processing, transparent fees, and secure delivery to your recipients in India.",
     contentImages: {
       light: "/assets/images/Transfer-Money-light.png", // Replace with your light mode image
-      dark: "/assets/images/Transfer-Money-dark.png",   // Replace with your dark mode image
+      dark: "/assets/images/Transfer-Money-dark.png", // Replace with your dark mode image
     },
     contentBlocks: [
       { text: "Instant Transfers", type: "success" },
@@ -3777,18 +4339,17 @@ const stepsData: StepData[] = [
   },
 ];
 
-// --- Constants ---
+// --- Constants (remain the same) ---
 const AUTO_ADVANCE_DELAY = 3200;
 const BORDER_ANIMATION_DURATION = 3200;
 
-// --- Animation Speed Adjustment ---
-const ANIMATION_DURATION_PANEL = 0.7;
+// --- Animation Speed Adjustment (remain the same) ---
 const ANIMATION_DURATION_CONTENT = 0.8;
 const ANIMATION_DURATION_IMAGE = 0.9;
 const ANIMATION_DURATION_BLOCK_ITEM = 0.5;
 const EXIT_DURATION_MULTIPLIER = 0.6;
 
-// --- Animation Variants ---
+// --- Animation Variants (remain the same) ---
 const leftContentVariants = {
   initial: { opacity: 0, x: "-50%" },
   animate: {
@@ -3814,12 +4375,12 @@ const imageVariants = {
     transition: {
       duration: ANIMATION_DURATION_IMAGE,
       ease: "easeOut",
-      delay: 0.1, // Delay image animation slightly after text
+      delay: 0.1,
     },
   },
   exit: {
     opacity: 0,
-    y: "30%", // Exit downwards
+    y: "30%",
     transition: {
       duration: ANIMATION_DURATION_IMAGE * EXIT_DURATION_MULTIPLIER,
       ease: "easeIn",
@@ -3835,7 +4396,7 @@ const rightContentVariants = {
     transition: {
       duration: ANIMATION_DURATION_CONTENT,
       ease: "easeOut",
-      delay: 0.1, // Delay right side slightly
+      delay: 0.1,
     },
   },
   exit: {
@@ -3849,26 +4410,26 @@ const rightContentVariants = {
 };
 
 const blockContainerVariants = {
-  initial: {}, // No initial state needed for container itself
+  initial: {},
   animate: {
     transition: {
-      staggerChildren: 0.15, // Stagger animation of child blocks
-      delayChildren: ANIMATION_DURATION_CONTENT * 0.4, // Delay children animation start
+      staggerChildren: 0.15,
+      delayChildren: ANIMATION_DURATION_CONTENT * 0.4,
     },
   },
-  exit: {}, // Exit handled by individual items if needed
+  exit: {},
 };
 
 const blockItemVariants = {
-  initial: { opacity: 0, x: 30 }, // Start off-screen right and transparent
+  initial: { opacity: 0, x: 30 },
   animate: {
     opacity: 1,
-    x: 0, // Animate to original position and full opacity
+    x: 0,
     transition: { duration: ANIMATION_DURATION_BLOCK_ITEM, ease: "easeOut" },
   },
   exit: {
     opacity: 0,
-    x: 30, // Exit back off-screen right
+    x: 30,
     transition: {
       duration: ANIMATION_DURATION_BLOCK_ITEM * EXIT_DURATION_MULTIPLIER,
       ease: "easeIn",
@@ -3880,84 +4441,109 @@ const blockItemVariants = {
 const TransferSteps: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAutoAdvancing, setIsAutoAdvancing] = useState(true);
-  const [isAnimatingBorder, setIsAnimatingBorder] = useState(true); // Controls the SVG border animation
-  const [isContentHovered, setIsContentHovered] = useState(false); // Tracks hover state over the content panel
-  const timerRef = useRef<NodeJS.Timeout | null>(null); // Ref for the auto-advance timer
-  const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Ref for the border animation end timeout
+  const [isAnimatingBorder, setIsAnimatingBorder] = useState(false); // Start false
+  const [isContentHovered, setIsContentHovered] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const hasAnimated = useRef(false); // Track if the initial animation has run
 
-  // --- Removed theme-related state and effects ---
+  // --- Intersection Observer Setup ---
+  const { ref, inView } = useInView({
+    threshold: 0.5, // Trigger when 50% of the section is visible
+    triggerOnce: true, // Only trigger this once
+  });
 
   // --- Advance to the next step ---
   const advanceStep = useCallback(() => {
+    // Only advance if the component is in view
+    if (!inView) return;
+
     setActiveIndex((prevIndex) => {
       const nextIndex = (prevIndex + 1) % stepsData.length;
-      setIsAnimatingBorder(true); // Trigger border animation for the next step
-      if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
-      // Set a timeout to turn off the animation class after it should have completed
+      setIsAnimatingBorder(true);
+      if (animationTimeoutRef.current)
+        clearTimeout(animationTimeoutRef.current);
       animationTimeoutRef.current = setTimeout(() => {
         setIsAnimatingBorder(false);
       }, BORDER_ANIMATION_DURATION);
       return nextIndex;
     });
-  }, []); // No dependencies needed here
+  }, [inView]); // Add inView dependency
 
   // --- Effect for managing timers and initial animation ---
   useEffect(() => {
-    // Start border animation for the current step when it becomes active or on initial load
-    setIsAnimatingBorder(true);
-    if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
-    animationTimeoutRef.current = setTimeout(() => {
-      setIsAnimatingBorder(false);
-    }, BORDER_ANIMATION_DURATION);
+    // Only run timers and animations if the component is in view
+    if (!inView) {
+      // If not in view (or already triggered once), clear any pending timers
+      if (timerRef.current) clearTimeout(timerRef.current);
+      if (animationTimeoutRef.current)
+        clearTimeout(animationTimeoutRef.current);
+      setIsAnimatingBorder(false); // Ensure border animation is off
+      return; // Stop the effect here
+    }
+
+    // --- Start initial border animation only when inView becomes true for the first time ---
+    if (inView && !hasAnimated.current) {
+      setIsAnimatingBorder(true); // Start initial animation
+      hasAnimated.current = true; // Mark as animated
+      animationTimeoutRef.current = setTimeout(() => {
+        setIsAnimatingBorder(false);
+      }, BORDER_ANIMATION_DURATION);
+    } else if (inView && activeIndex !== 0 && !isAnimatingBorder) {
+      // If manually navigating back to a step after initial animation, ensure border starts if needed
+      // This condition might need adjustment based on exact desired behavior on revisit
+    }
 
     let advanceTimer: NodeJS.Timeout | null = null;
-    // Manage auto-advance timer based on state
+
+    // Manage auto-advance timer based on state, only if inView
     if (isAutoAdvancing && !isContentHovered) {
-      if (timerRef.current) clearTimeout(timerRef.current); // Clear any existing timer
-      advanceTimer = setTimeout(advanceStep, AUTO_ADVANCE_DELAY);
-      timerRef.current = advanceTimer; // Store the new timer ID
-    } else {
-      // If paused or hovered, clear the auto-advance timer
       if (timerRef.current) clearTimeout(timerRef.current);
-      // Optionally pause border animation immediately on hover
+      advanceTimer = setTimeout(advanceStep, AUTO_ADVANCE_DELAY);
+      timerRef.current = advanceTimer;
+    } else {
+      if (timerRef.current) clearTimeout(timerRef.current);
       if (isContentHovered && animationTimeoutRef.current) {
-           clearTimeout(animationTimeoutRef.current);
-           setIsAnimatingBorder(false); // Stop animation class
+        clearTimeout(animationTimeoutRef.current);
+        setIsAnimatingBorder(false);
       }
     }
 
-    // Cleanup function to clear timers when component unmounts or dependencies change
+    // Cleanup function
     return () => {
-      if (advanceTimer) clearTimeout(advanceTimer); // Clear the specific timer created in this effect run
-      if (timerRef.current === advanceTimer) { // Prevent clearing unrelated timers
-          timerRef.current = null;
+      if (advanceTimer) clearTimeout(advanceTimer);
+      if (timerRef.current === advanceTimer) {
+        timerRef.current = null;
       }
-      // No need to clear animationTimeoutRef here, allow border animation to finish if already started
+      // Don't clear animationTimeoutRef on cleanup unless necessary for specific logic
+      // Generally, let the border finish its current animation cycle
     };
-  }, [activeIndex, isAutoAdvancing, isContentHovered, advanceStep]); // Dependencies for the effect
+  }, [activeIndex, isAutoAdvancing, isContentHovered, advanceStep, inView]); // Add inView dependency
 
   // --- Handle click on a step tab ---
   const handleStepClick = (index: number) => {
-    setIsAutoAdvancing(true); // Keep auto-advancing enabled after manual click
-    setIsContentHovered(false); // Reset hover state
-    if (timerRef.current) clearTimeout(timerRef.current); // Clear existing auto-advance timer
-    if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current); // Clear existing border animation timer
+    // Only allow clicks if the section is visible (prevents clicks before animation starts)
+    if (!inView) return;
 
-    setActiveIndex(index); // Set the new active step
+    setIsAutoAdvancing(true);
+    setIsContentHovered(false);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
+
+    setActiveIndex(index);
     setIsAnimatingBorder(true); // Start border animation for the clicked step
     animationTimeoutRef.current = setTimeout(() => {
       setIsAnimatingBorder(false);
     }, BORDER_ANIMATION_DURATION);
 
-    // Restart the auto-advance timer if it's enabled
     if (isAutoAdvancing) {
-        timerRef.current = setTimeout(advanceStep, AUTO_ADVANCE_DELAY);
+      timerRef.current = setTimeout(advanceStep, AUTO_ADVANCE_DELAY);
     }
   };
 
   const currentStep = stepsData[activeIndex];
 
-  // --- Helper function to get CSS classes for content blocks based on type ---
+  // Helper function to get CSS classes (remains the same)
   const getBlockClasses = (type: ContentBlock["type"]) => {
     switch (type) {
       case "success":
@@ -3973,12 +4559,13 @@ const TransferSteps: React.FC = () => {
   };
 
   return (
-    <div className="lg:py-10 py-5 bg-white dark:bg-background px-4">
+    // Attach the ref from useInView to the main container div
+    <div ref={ref} className="lg:py-10 py-5 bg-white dark:bg-background px-4">
       <section
         className="flex flex-col justify-center container mx-auto"
         id="transfer-steps"
       >
-        {/* --- Section Header --- */}
+        {/* Section Header (Consider adding motion controlled by inView if desired) */}
         <article className="flex flex-col gap-5 mb-8 lg:mb-10">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight text-center lg:text-left">
             4 easy steps to
@@ -3986,89 +4573,84 @@ const TransferSteps: React.FC = () => {
           </h1>
         </article>
 
-        {/* --- Main Grid Layout (Tabs + Content) --- */}
-        <article className="grid gap-8 lg:grid-cols-3 lg:gap-8">
-          {/* --- Left Side: Step Tabs --- */}
+        {/* Main Grid Layout (Tabs + Content) */}
+        {/* Use motion.article to control overall grid animation based on inView */}
+        <motion.article
+          className="grid gap-8 lg:grid-cols-3 lg:gap-8"
+          initial="hidden" // Start hidden before inView is true
+        >
+          {/* Left Side: Step Tabs */}
           <div className="w-full h-full">
+            {/* No motion needed here unless you want individual tab fade-in controlled separately */}
             <div className="rounded-3xl bg-white dark:bg-white/5 lg:p-8 p-6 h-full border shadow-sm dark:border-none">
               <ul className="lg:flex md:grid md:grid-cols-2 lg:grid-cols-1 grid-cols-1 lg:flex-col space-y-6 justify-between h-full gap-6">
                 {stepsData.map((step, index) => {
-                   const isActive = activeIndex === index;
-                   // Determine if the border animation should be running for *this specific* active tab
-                   const isCurrentlyAnimatingBorder = isActive && isAnimatingBorder;
-                   return (
-                    <li
-                      key={step.id}
-                      className={`relative shrink-0 lg:shrink ${
-                        index === stepsData.length - 1 ? "" : "" // No specific style for last item needed here
-                      }`}
-                    >
+                  const isActive = activeIndex === index;
+                  // Border animation is now controlled by isAnimatingBorder state, which is triggered by useEffect/onClick when inView
+                  const isCurrentlyAnimatingBorder =
+                    isActive && isAnimatingBorder;
+                  return (
+                    <li key={step.id} className={`relative shrink-0 lg:shrink`}>
                       <button
                         onClick={() => handleStepClick(index)}
-                        className="z-10 flex flex-col lg:flex-row cursor-pointer items-center lg:items-start lg:gap-5 bg-transparent w-full text-left group focus:outline-none rounded-lg"
+                        // Disable button clicks before the section is in view
+                        disabled={!inView}
+                        className={`z-10 flex flex-col lg:flex-row cursor-pointer items-center lg:items-start lg:gap-5 bg-transparent w-full text-left group focus:outline-none rounded-lg ${
+                          !inView ? "cursor-default" : ""
+                        }`}
                         aria-current={isActive ? "step" : undefined}
                       >
                         {/* SVG Icon Container */}
-                         <div className="relative flex-shrink-0">
+                        <div className="relative flex-shrink-0">
+                          {/* SVG remains the same, animation class controlled by state */}
                           <svg
                             viewBox="0 0 54 54"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
-                            // Apply dynamic text color based on active state
                             className={`transition-colors duration-300 lg:size-18 md:size-14 size-12 ${
                               isActive
-                                ? "text-mainheading dark:text-primary" // Active colors
-                                : "text-[#97A2B3] dark:text-gray-500" // Inactive colors
+                                ? "text-mainheading dark:text-primary"
+                                : "text-[#97A2B3] dark:text-gray-500"
                             }`}
                           >
-                            {/* Base rectangle background */}
                             <rect
                               x="1"
                               y="1"
                               width="52"
                               height="52"
                               rx="12"
-                              className={`transition-colors duration-300 stroke-[#EAECF0] dark:stroke-gray-500`} // Border color
+                              className={`transition-colors duration-300 stroke-[#EAECF0] dark:stroke-gray-500`}
                               strokeWidth="2"
-                              fill={'transparent'} // No JS-based fill needed
+                              fill={"transparent"}
                             />
-
-                            {/* Icon rendering inside SVG */}
                             <foreignObject x="15" y="15" width="24" height="24">
                               <div className="flex items-center justify-center h-full w-full">
                                 {React.createElement(
-                                  // Choose icon based on active state
                                   isActive ? step.iconActive : step.iconDefault,
-                                  { // Apply dynamic icon color class
+                                  {
                                     className: `h-6 w-6 transition-colors duration-300 ${
                                       isActive
-                                        ? "text-mainheading dark:text-primary" // Active icon color
-                                        : "text-[#97A2B3] dark:text-gray-500" // Inactive icon color
+                                        ? "text-mainheading dark:text-primary"
+                                        : "text-[#97A2B3] dark:text-gray-500"
                                     }`,
                                   }
                                 )}
                               </div>
                             </foreignObject>
-
-                            {/* Animated Border Path */}
                             <path
-                              // Path definition for the rounded rectangle border
                               d="M 27,1 H 41 A 12,12 0 0 1 53,13 V 41 A 12,12 0 0 1 41,53 H 13 A 12,12 0 0 1 1,41 V 13 A 12,12 0 0 1 13,1 H 27 Z"
-                              // Stroke color comes from the parent SVG's text color if 'currentColor'
-                              stroke={isActive ? "currentColor" : "none"} // Show stroke only if active
+                              stroke={isActive ? "currentColor" : "none"}
                               strokeWidth="2"
-                              fill="none" // No fill for the border path
-                              strokeDasharray="208" // Total path length (approx)
-                              strokeDashoffset="208" // Start with the border fully 'undrawn'
-                              // Apply animation class conditionally
+                              fill="none"
+                              strokeDasharray="208"
+                              strokeDashoffset="208"
                               className={
                                 isCurrentlyAnimatingBorder
-                                  ? "animate-border-draw" // Your animation class from CSS
+                                  ? "animate-border-draw"
                                   : isActive
-                                  ? "border-path-static" // Class to keep border visible when active but not animating
-                                  : "border-path-reset" // Class to hide border when inactive
+                                  ? "border-path-static"
+                                  : "border-path-reset"
                               }
-                              // Set animation duration via style
                               style={{
                                 animationDuration: `${BORDER_ANIMATION_DURATION}ms`,
                               }}
@@ -4076,24 +4658,23 @@ const TransferSteps: React.FC = () => {
                           </svg>
                         </div>
 
-                         {/* Text Content (Title and Subtitle) */}
+                        {/* Text Content (Title and Subtitle) */}
                         <div className="flex flex-col items-center lg:items-start gap-1 mt-2.5">
+                          {/* Text classes remain the same */}
                           <h3
-                            // Dynamic text color and size for title
                             className={`text-center lg:text-left capitalize text-base font-medium leading-tight transition-colors duration-300 lg:text-xl ${
                               isActive
-                                ? "text-[#182230] dark:text-white" // Active title color
-                                : "text-[#97A2B3] dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300" // Inactive title color + hover
+                                ? "text-[#182230] dark:text-white"
+                                : "text-[#97A2B3] dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300"
                             }`}
                           >
                             {step.title}
                           </h3>
                           <p
-                            // Dynamic text color and size for subtitle
                             className={`text-center lg:text-left text-sm font-normal transition-colors duration-300 lg:text-lg ${
                               isActive
-                                ? "text-gray-500 dark:text-gray-300" // Active subtitle color
-                                : "text-[#97A2B3] dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-gray-200" // Inactive subtitle color + hover
+                                ? "text-gray-500 dark:text-gray-300"
+                                : "text-[#97A2B3] dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-gray-200"
                             }`}
                           >
                             {step.subtitle}
@@ -4101,41 +4682,48 @@ const TransferSteps: React.FC = () => {
                         </div>
                       </button>
                     </li>
-                   )
-                 })}
+                  );
+                })}
               </ul>
             </div>
           </div>
 
-          {/* --- Right Side: Content Panel --- */}
+          {/* Right Side: Content Panel */}
           <div
             className="relative lg:col-span-2 h-[500px] md:h-[550px] lg:h-[600px] min-h-[600px] md:min-h-[550px] lg:min-h-[600px] overflow-hidden"
-            // Pause auto-advance on hover
-            onMouseEnter={() => setIsContentHovered(true)}
-            // Resume auto-advance on leave
-            onMouseLeave={() => setIsContentHovered(false)}
+            // onMouseEnter={() => {
+            //   if (inView) setIsContentHovered(true);
+            // }} // Only hover if in view
+            // onMouseLeave={() => {
+            //   if (inView) setIsContentHovered(false);
+            // }} // Only hover if in view
           >
+            {/* AnimatePresence controls the exit/enter of the content based on activeIndex */}
+            {/* The actual visibility/initial animation is implicitly handled by the parent motion.article */}
             <AnimatePresence mode="wait">
-              {/* Animated container for the active step's content */}
+              {/* Key change triggers AnimatePresence */}
               <motion.div
-                key={activeIndex} // Animate when activeIndex changes
+                key={activeIndex} // Unique key for the content of each step
                 className="absolute inset-0 flex flex-col border dark:border-none shadow-sm rounded-2xl bg-white dark:bg-white/5 p-6"
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                // Variants for the overall panel fade can be added here if needed
-                // variants={panelVariants} // Example if you have panel-specific fade
+                // No initial/animate needed here IF the parent motion.article handles the overall entrance
+                // But we need variants for the exit/enter animations *within* AnimatePresence
+                initial="initial" // Define initial state for AnimatePresence transitions
+                animate="animate" // Define animate state for AnimatePresence transitions
+                exit="exit" // Define exit state for AnimatePresence transitions
+                // You might want simpler panel variants just for fade in/out during step changes
+                // variants={panelFadeVariants} // Example: { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } }
               >
-                {/* Flex container for 50/50 split on large screens */}
+                {/* Flex container for 50/50 split */}
                 <div className="flex flex-col lg:flex-row h-full gap-4 lg:gap-8">
                   {/* Left Side (Text and Image) */}
                   <div className="lg:w-1/2 w-full flex flex-col">
                     {/* Animated Text Content Area */}
                     <motion.div
                       className="space-y-2 mb-4 lg:mb-6"
-                      variants={leftContentVariants} // Slide/fade in from left
-                      // Inherits initial/animate/exit from parent motion.div
+                      variants={leftContentVariants}
+                      // initial, animate, exit are controlled by the parent AnimatePresence key change
                     >
+                      {/* Content remains the same */}
                       <h3 className="text-lg md:text-xl lg:text-2xl font-normal text-mainheading dark:text-white">
                         {currentStep.contentTitle}
                       </h3>
@@ -4146,37 +4734,40 @@ const TransferSteps: React.FC = () => {
 
                     {/* Animated Image Area */}
                     <motion.div
-                      // Key ensures animation runs when step changes, not on theme change
-                      key={activeIndex}
+                      // Key ensures re-render for image change if necessary, but main animation via variants
+                      key={`${activeIndex}-image`}
                       className="relative flex-grow flex items-center justify-center mt-5"
-                      variants={imageVariants} // Slide/fade in from bottom
-                      // Inherits initial/animate/exit from parent motion.div
+                      variants={imageVariants}
+                      // initial, animate, exit are controlled by the parent AnimatePresence key change
                     >
-                      {/* Light Mode Image - Displayed by default, hidden in dark mode */}
+                      {/* Images remain the same */}
                       <Image
                         src={currentStep.contentImages.light}
                         alt={`${currentStep.title} illustration (light)`}
                         width={500}
                         height={550}
                         style={{
-                          width: "auto", height: "auto",
-                          maxHeight: "500px", maxWidth: "100%",
+                          width: "auto",
+                          height: "auto",
+                          maxHeight: "500px",
+                          maxWidth: "100%",
                         }}
-                        priority={activeIndex === 0} // Prioritize loading for the first step
-                        className="object-contain block dark:hidden" // CSS for light mode
+                        priority={activeIndex === 0}
+                        className="object-contain block dark:hidden"
                       />
-                      {/* Dark Mode Image - Hidden by default, displayed in dark mode */}
                       <Image
                         src={currentStep.contentImages.dark}
                         alt={`${currentStep.title} illustration (dark)`}
                         width={500}
                         height={550}
                         style={{
-                            width: "auto", height: "auto",
-                            maxHeight: "500px", maxWidth: "100%",
+                          width: "auto",
+                          height: "auto",
+                          maxHeight: "500px",
+                          maxWidth: "100%",
                         }}
-                        priority={activeIndex === 0} // Prioritize loading for the first step
-                        className="object-contain hidden dark:block" // CSS for dark mode
+                        priority={activeIndex === 0}
+                        className="object-contain hidden dark:block"
                       />
                     </motion.div>
                   </div>
@@ -4184,28 +4775,26 @@ const TransferSteps: React.FC = () => {
                   {/* Right Side (Content Blocks) */}
                   <motion.div
                     className="lg:w-1/2 w-full flex flex-col items-center lg:items-end justify-center lg:justify-start lg:pt-4"
-                    variants={rightContentVariants} // Slide/fade in from right
-                     // Inherits initial/animate/exit from parent motion.div
+                    variants={rightContentVariants} // Controls its own slide animation
+                    // initial, animate, exit are controlled by the parent AnimatePresence key change
                   >
-                    {/* Conditionally render blocks container if blocks exist */}
                     {currentStep.contentBlocks && (
                       <motion.div
                         className="flex flex-col items-start lg:items-end gap-3 w-full lg:w-auto"
-                        variants={blockContainerVariants} // Applies stagger/delay to children
-                        initial="initial" // Necessary for staggerChildren to work correctly
+                        variants={blockContainerVariants} // Stagger children
+                        // Ensure initial/animate are set for stagger to work with AnimatePresence
+                        initial="initial"
                         animate="animate"
-                        exit="exit" // Ensure blocks animate out if needed
+                        exit="exit" // Optional exit for the container itself
                       >
-                        {/* Map over blocks to render each one */}
                         {currentStep.contentBlocks.map((block, blockIndex) => (
                           <motion.div
-                            key={blockIndex} // Unique key for each block
-                            // Apply dynamic styling based on block type
+                            key={blockIndex}
                             className={`px-4 font-medium lg:text-base text-sm lg:py-2.5 py-2 rounded-full text-nowrap ${getBlockClasses(
                               block.type
                             )}`}
-                            variants={blockItemVariants} // Individual block slide/fade animation
-                             // initial/animate/exit inherited from parent variants
+                            variants={blockItemVariants} // Individual block animation
+                            // initial/animate/exit inherited via AnimatePresence context
                           >
                             {block.text}
                           </motion.div>
@@ -4217,7 +4806,7 @@ const TransferSteps: React.FC = () => {
               </motion.div>
             </AnimatePresence>
           </div>
-        </article>
+        </motion.article>
       </section>
     </div>
   );

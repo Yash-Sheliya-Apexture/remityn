@@ -1,14 +1,24 @@
+// "use client"; // <--- Add this line
+
 // import Image from "next/image";
 // import Link from "next/link";
 // import React from "react";
+// import { useAuth } from "@/app/contexts/AuthContext"; // <--- Import useAuth
 
 // const RemittanceSection: React.FC = () => {
+//   // Get user state from AuthContext
+//   const { user } = useAuth();
+
+//   // Determine button properties based on auth state
+//   const buttonText = user ? "Send Money" : "Create A Free Account";
+//   const buttonLink = user ? "/dashboard/send/select-balance" : "/auth/register"; // Link to register or send money flow
+
 //   return (
-//     <section className="py-10 bg-[#f2f4f7] dark:bg-background px-4">
-//       <div className="container mx-auto flex gap-10 flex-col md:flex-row items-center justify-end">
+//     <section className="lg:py-10 py-5 bg-white dark:bg-background px-4">
+//       <div className="container mx-auto flex gap-6 flex-col md:flex-row items-center justify-end">
 //         {/* Left Content Section */}
-//         <div className="md:w-1/2 w-full text-center md:text-left space-y-2.5">
-//           <p className="lg:text-base text-sm text-gray-500 dark:text-gray-300 font-medium">
+//         <div className="md:w-1/2 w-full text-center md:text-left space-y-2">
+//           <p className="lg:text-base text-sm text-gray-700 dark:text-gray-300 font-medium">
 //             Send Money Across Borders with Confidence
 //           </p>
 
@@ -19,7 +29,7 @@
 //           </h1>
 
 //           {/* Description */}
-//           <p className="text-sm md:text-lg text-gray-500 dark:text-gray-300">
+//           <p className="text-sm md:text-lg text-gray-700  dark:text-gray-300">
 //             Experience hassle-free money transfers to over 100 countries
 //             worldwide. Whether you're supporting loved ones, paying bills, or
 //             handling business payments, our platform ensures your money gets
@@ -28,62 +38,62 @@
 //             been this simple.
 //           </p>
 
-//           {/* Download Buttons */}
+//           {/* Dynamic Button */}
 //           <div className="flex justify-center md:justify-start">
-//             <Link href="/dashboard/send/select-balance" className="inline-block mt-3">
-//               <button className="bg-primary px-10 lg:py-3 py-2 lg:h-12.5 lg:text-base text-sm cursor-pointer hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading font-medium rounded-full">
-//                 Send Money
+//             <Link
+//               href={buttonLink} // <-- Use dynamic link
+//               className="inline-block mt-3"
+//             >
+//               <button className="bg-primary px-6 lg:py-3 py-2.5 lg:h-12.5 lg:text-base text-sm cursor-pointer hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading font-medium rounded-full">
+//                 {buttonText} {/* <-- Use dynamic text */}
 //               </button>
 //             </Link>
 //           </div>
 
 //           {/* User avatars and star rating */}
-//           <div className="flex items-center gap-4 mt-5">
+//           <div className="flex items-center justify-center md:justify-start gap-2 mt-6">
+//             {" "}
+//             {/* Added justify-center for mobile */}
 //             <div className="flex items-center -space-x-2">
+//               {/* Kept only a few images for brevity, add back as needed */}
 //               <Image
 //                 src="/assets/images/user1.png"
-//                 width={500}
-//                 height={500}
-//                 alt="Picture of the author"
-//                 className="md:size-10 size-7 rounded-full"
-//                 style={{ color: "transparent" }}
+//                 width={40} // Consistent smaller size
+//                 height={40}
+//                 alt="User avatar 1"
+//                 className="rounded-full md:size-10 size-8 border-2 border-white"
 //               />
 //               <Image
 //                 src="/assets/images/user2.png"
-//                 width={500}
-//                 height={500}
-//                 alt="Picture of the author"
-//                 className="md:size-10 size-7 rounded-full"
-//                 style={{ color: "transparent" }}
+//                 width={40}
+//                 height={40}
+//                 alt="User avatar 2"
+//                 className="rounded-full md:size-10 size-8 border-2 border-white"
 //               />
 //               <Image
 //                 src="/assets/images/user3.png"
-//                 width={500}
-//                 height={500}
-//                 alt="Picture of the author"
-//                 className="md:size-10 size-7 rounded-full"
-//                 style={{ color: "transparent" }}
+//                 width={40}
+//                 height={40}
+//                 alt="User avatar 3"
+//                 className="rounded-full md:size-10 size-8 border-2 border-white"
 //               />
 //               <Image
 //                 src="/assets/images/Lisa-Carter.jpg"
-//                 width={500}
-//                 height={500}
-//                 alt="Picture of the author"
-//                 className="md:size-10 size-7 rounded-full border-2 border-white"
-//                 style={{ color: "transparent" }}
+//                 width={40}
+//                 height={40}
+//                 alt="User avatar 4"
+//                 className="rounded-full md:size-10 size-8 border-2 border-white"
 //               />
 //               <Image
 //                 src="/assets/images/Emily.jpg"
-//                 width={500}
-//                 height={500}
-//                 alt="Picture of the author"
-//                 className="md:size-10 size-7 rounded-full border-2 border-white"
-//                 style={{ color: "transparent" }}
+//                 width={40}
+//                 height={40}
+//                 alt="User avatar 5"
+//                 className="rounded-full md:size-10 size-8 border-2 border-white"
 //               />
 //             </div>
-
 //             {/* Star rating and user count */}
-//             <p className="font-normal text-mainheading lg:text-base text-sm text-nowrap dark:text-white capitalize">
+//             <p className="font-normal text-mainheading lg:text-base text-xs dark:text-white capitalize">
 //               <span className="text-primary font-bold"> 500K+ </span> People
 //               already trusted us.
 //             </p>
@@ -91,13 +101,15 @@
 //         </div>
 
 //         {/* Right Image Section */}
-//         <div className="md:w-1/2 w-full flex justify-center">
+//         <div className="md:w-1/2 w-full flex justify-center mt-5 md:-mt-5">
+//           {" "}
+//           {/* Added margin-top for mobile */}
 //           <Image
-//             src="/assets/images/secure.svg"
-//             width={500}
+//             src="/assets/images/secure.svg" // Assuming this is the correct secure transfer image
+//             width={500} // Adjust width/height as needed for responsiveness
 //             height={500}
-//             alt="Picture of the author"
-//             className="lg:w-3/5 w-3/4"
+//             alt="Secure money transfer illustration"
+//             className="lg:h-full h-64" // Adjust classes for desired size
 //           />
 //         </div>
 //       </div>
@@ -107,14 +119,55 @@
 
 // export default RemittanceSection;
 
-// app/(website)/components/RemittanceSection.tsx  <-- Adjust path if needed
-
+// RemittanceSection.tsx
 "use client"; // <--- Add this line
 
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { useAuth } from "@/app/contexts/AuthContext"; // <--- Import useAuth
+import { motion } from "framer-motion"; // Import motion
+import { useAuth } from "@/app/contexts/AuthContext";
+
+// --- Animation Variants ---
+
+// Variants for the overall container (mainly for triggering children)
+const containerVariants = {
+  hidden: {}, // No initial animation for the container itself
+  visible: {
+    transition: {
+      // Optional: stagger children if needed later
+      // staggerChildren: 0.1,
+    },
+  },
+};
+
+// Variants for the left content block (slide in from left + fade)
+const leftContentVariants = {
+  hidden: { opacity: 0, x: -100 }, // Start off-screen left and invisible
+  visible: {
+    opacity: 1,
+    x: 0, // Animate to original position and full opacity
+    transition: {
+      duration: 0.8, // Slightly longer duration for smoothness
+      ease: "easeOut", // Smooth easing
+    },
+  },
+};
+
+// Variants for the right image block (slide in from right + fade + slight scale)
+const rightImageVariants = {
+  hidden: { opacity: 0, x: 100, scale: 0.95 }, // Start off-screen right, slightly smaller, invisible
+  visible: {
+    opacity: 1,
+    x: 0, // Animate to original position
+    scale: 1, // Animate to full size
+    transition: {
+      duration: 0.8,
+      ease: "easeOut",
+      delay: 0.15, // Start slightly after the left content
+    },
+  },
+};
 
 const RemittanceSection: React.FC = () => {
   // Get user state from AuthContext
@@ -122,13 +175,25 @@ const RemittanceSection: React.FC = () => {
 
   // Determine button properties based on auth state
   const buttonText = user ? "Send Money" : "Create A Free Account";
-  const buttonLink = user ? "/dashboard/send/select-balance" : "/auth/register"; // Link to register or send money flow
+  const buttonLink = user ? "/dashboard/send/select-balance" : "/auth/register";
 
   return (
-    <section className="lg:py-10 py-5 bg-white dark:bg-background px-4">
-      <div className="container mx-auto flex gap-6 flex-col md:flex-row items-center justify-end">
-        {/* Left Content Section */}
-        <div className="md:w-1/2 w-full text-center md:text-left space-y-2">
+    // Add overflow-hidden to prevent scrollbars during animation
+    <section className="lg:py-10 py-5 bg-white dark:bg-background px-4 overflow-hidden">
+      {/* Wrap the main flex container with motion for triggering */}
+      <motion.div
+        className="container mx-auto flex gap-6 flex-col md:flex-row items-center justify-end"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ amount: 0.2, once: true }} // Trigger once when 20% visible
+      >
+        {/* Left Content Section - Wrap with motion */}
+        <motion.div
+          className="md:w-1/2 w-full text-center md:text-left space-y-2"
+          variants={leftContentVariants} // Apply left slide animation
+          // Inherits trigger from parent motion.div
+        >
           <p className="lg:text-base text-sm text-gray-700 dark:text-gray-300 font-medium">
             Send Money Across Borders with Confidence
           </p>
@@ -151,25 +216,19 @@ const RemittanceSection: React.FC = () => {
 
           {/* Dynamic Button */}
           <div className="flex justify-center md:justify-start">
-            <Link
-              href={buttonLink} // <-- Use dynamic link
-              className="inline-block mt-3"
-            >
+            <Link href={buttonLink} className="inline-block mt-3">
               <button className="bg-primary px-6 lg:py-3 py-2.5 lg:h-12.5 lg:text-base text-sm cursor-pointer hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading font-medium rounded-full">
-                {buttonText} {/* <-- Use dynamic text */}
+                {buttonText}
               </button>
             </Link>
           </div>
 
           {/* User avatars and star rating */}
           <div className="flex items-center justify-center md:justify-start gap-2 mt-6">
-            {" "}
-            {/* Added justify-center for mobile */}
             <div className="flex items-center -space-x-2">
-              {/* Kept only a few images for brevity, add back as needed */}
               <Image
                 src="/assets/images/user1.png"
-                width={40} // Consistent smaller size
+                width={40}
                 height={40}
                 alt="User avatar 1"
                 className="rounded-full md:size-10 size-8 border-2 border-white"
@@ -203,27 +262,29 @@ const RemittanceSection: React.FC = () => {
                 className="rounded-full md:size-10 size-8 border-2 border-white"
               />
             </div>
-            {/* Star rating and user count */}
             <p className="font-normal text-mainheading lg:text-base text-xs dark:text-white capitalize">
               <span className="text-primary font-bold"> 500K+ </span> People
               already trusted us.
             </p>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Right Image Section */}
-        <div className="md:w-1/2 w-full flex justify-center mt-5 md:-mt-5">
-          {" "}
-          {/* Added margin-top for mobile */}
+        {/* Right Image Section - Wrap with motion */}
+        <motion.div
+          className="md:w-1/2 w-full flex justify-center mt-5 md:-mt-5"
+          variants={rightImageVariants} // Apply right slide/scale animation
+          // Inherits trigger from parent motion.div
+        >
           <Image
-            src="/assets/images/secure.svg" // Assuming this is the correct secure transfer image
-            width={500} // Adjust width/height as needed for responsiveness
+            src="/assets/images/secure.svg"
+            width={500}
             height={500}
             alt="Secure money transfer illustration"
-            className="lg:h-full h-64" // Adjust classes for desired size
+            className="lg:h-full h-64"
+            priority // Add priority if this is often above the fold
           />
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 };

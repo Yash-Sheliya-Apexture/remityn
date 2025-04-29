@@ -132,93 +132,227 @@
 
 // export default AboutSection;
 
+// // frontend/src/components/AboutSection.tsx
+// 'use client'; // <--- Add this line
 
-// frontend/src/components/AboutSection.tsx <--- Or wherever your component file is
+// import Image from "next/image";
+// import Link from "next/link";
+// import React from "react";
+// import { useAuth } from "@/app/contexts/AuthContext"; // <--- Import useAuth
 
-'use client'; // <--- Add this line
+// // Remove buttonText and buttonLink from props
+// interface AboutSectionProps {
+//   title?: string;
+//   subtitle?: string;
+//   description?: string;
+//   // buttonText?: string; // Removed
+//   // buttonLink?: string; // Removed
+//   imageSrc?: string;
+//   imageAlt?: string;
+// }
+
+// const AboutSection: React.FC<AboutSectionProps> = ({
+//   title = "YOUR TRUSTED PARTNER IN",
+//   subtitle = "GLOBAL CURRENCY EXCHANGE",
+//   description = "At Apexture, we make international currency exchange simple, secure, and reliable. With competitive rates, fast transfers, and a customer-first approach, we help individuals and businesses move money across borders with confidence",
+//   // Remove default values for buttonText and buttonLink
+//   imageSrc = "/assets/images/Tech-recruiter-524x525.jpg",
+//   imageAlt = "Person smiling while using a laptop and wearing headphones",
+// }) => {
+//   // Get user state from AuthContext
+//   const { user } = useAuth();
+
+//   // Determine button properties based on auth state
+//   const buttonText = user ? "Go to Dashboard" : "Create A Free Account";
+//   const buttonLink = user ? "/dashboard" : "/auth/register"; // Link to register or dashboard
+
+//   return (
+//     <section className="relative bg-white dark:bg-background md:py-10 py-5 overflow-hidden px-4">
+//       <div className="container mx-auto relative z-20">
+
+//         <div className="flex flex-col md:flex-row items-center gap-6">
+//           {/* Content Area */}
+//           <div className="w-full md:w-1/2">
+//             <div className="lg:space-y-4 space-y-2 text-center md:text-left">
+
+//               <p className="font-semibold uppercase tracking-wider text-xs md:text-base text-gray-700 dark:text-gray-300">
+//                 ABOUT US
+//               </p>
+
+//               <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-mainheading dark:text-white">
+//                 {title} <span className="text-primary">{subtitle}</span>
+//               </h2>
+
+//               <p className="text-gray-700 dark:text-gray-300 md:text-lg text-base">
+//                 {description}
+//               </p>
+
+//               {/* Use the dynamic button properties */}
+//               <div className="inline-block">
+//                 <Link
+//                   href={buttonLink} // <-- Use dynamic link
+//                   className="bg-primary hover:bg-primaryhover cursor-pointer font-medium py-2.5 text-sm lg:text-base px-6 lg:h-12.5 rounded-full transition-colors duration-300 ease-in-out text-mainheading flex items-center justify-center"
+//                 >
+//                   {buttonText}
+//                 </Link>
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* Image Area   */}
+//           <div className="w-full md:w-1/2 md:mt-8 mt-0">
+//             <div className="relative rounded-2xl overflow-hidden border group transition-all duration-500">
+//               {/* Image overlay for glow effect */}
+//               <div className="absolute inset-0 bg-gradient-to-tr from-black/60 via-transparent to-lime-400/30 z-10"></div>
+
+//               {/* Image with aspect ratio */}
+//               <div className="relative aspect-[3/2] overflow-hidden">
+//                 <Image
+//                   src={imageSrc}
+//                   alt={imageAlt}
+//                   fill
+//                   className="object-cover"
+//                 />
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default AboutSection;
+
+// frontend/src/components/AboutSection.tsx
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { useAuth } from "@/app/contexts/AuthContext"; // <--- Import useAuth
+import { motion } from "framer-motion"; // Import motion
+import { useAuth } from "@/app/contexts/AuthContext";
 
-// Remove buttonText and buttonLink from props
+// Interface remains the same
 interface AboutSectionProps {
   title?: string;
   subtitle?: string;
   description?: string;
-  // buttonText?: string; // Removed
-  // buttonLink?: string; // Removed
   imageSrc?: string;
   imageAlt?: string;
 }
+
+// --- Animation Variants ---
+
+// Variants for the parent container (optional, mainly for triggering)
+const containerVariants = {
+  hidden: {}, // No visual change for the container itself initially
+  visible: {
+    // Target state for children when container is in view
+    transition: {
+      // Optional: Add staggerChildren if you had more elements to animate sequentially
+      // staggerChildren: 0.2,
+    },
+  },
+};
+
+// Variants for the left content block (slide in from left)
+const leftBlockVariants = {
+  hidden: { opacity: 0, x: -80 }, // Start off-screen left, invisible
+  visible: {
+    opacity: 1,
+    x: 0, // Animate to original position, fully visible
+    transition: {
+      duration: 0.7, // Animation duration
+      ease: "easeOut", // Animation easing function
+    },
+  },
+};
+
+// Variants for the right image block (slide in from right)
+const rightBlockVariants = {
+  hidden: { opacity: 0, x: 80 }, // Start off-screen right, invisible
+  visible: {
+    opacity: 1,
+    x: 0, // Animate to original position, fully visible
+    transition: {
+      duration: 0.7,
+      ease: "easeOut",
+      delay: 0.1, // Optional: Slight delay after the left side starts
+    },
+  },
+};
 
 const AboutSection: React.FC<AboutSectionProps> = ({
   title = "YOUR TRUSTED PARTNER IN",
   subtitle = "GLOBAL CURRENCY EXCHANGE",
   description = "At Apexture, we make international currency exchange simple, secure, and reliable. With competitive rates, fast transfers, and a customer-first approach, we help individuals and businesses move money across borders with confidence",
-  // Remove default values for buttonText and buttonLink
   imageSrc = "/assets/images/Tech-recruiter-524x525.jpg",
   imageAlt = "Person smiling while using a laptop and wearing headphones",
 }) => {
-  // Get user state from AuthContext
   const { user } = useAuth();
-
-  // Determine button properties based on auth state
   const buttonText = user ? "Go to Dashboard" : "Create A Free Account";
-  const buttonLink = user ? "/dashboard" : "/auth/register"; // Link to register or dashboard
+  const buttonLink = user ? "/dashboard" : "/auth/register";
 
   return (
+    // Keep overflow-hidden on the main section wrapper
     <section className="relative bg-white dark:bg-background md:py-10 py-5 overflow-hidden px-4">
       <div className="container mx-auto relative z-20">
-
-        <div className="flex flex-col md:flex-row items-center gap-6">
-          {/* Content Area */}
-          <div className="w-full md:w-1/2">
+        {/* Wrap the flex container with motion to control triggering */}
+        <motion.div
+          className="flex flex-col md:flex-row items-center gap-6"
+          variants={containerVariants} // Apply container variants
+          initial="hidden" // Start in the 'hidden' state
+          whileInView="visible" // Animate to 'visible' when the element enters the viewport
+          viewport={{ amount: 0.2, once: true }} // Trigger when 20% visible, run only once
+        >
+          {/* Content Area - Wrap with motion and apply left variants */}
+          <motion.div
+            className="w-full md:w-1/2"
+            variants={leftBlockVariants} // Apply left slide/fade animation
+            // initial/animate/exit states are inherited from the parent motion.div
+          >
             <div className="lg:space-y-4 space-y-2 text-center md:text-left">
-
               <p className="font-semibold uppercase tracking-wider text-xs md:text-base text-gray-700 dark:text-gray-300">
                 ABOUT US
               </p>
-
               <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-mainheading dark:text-white">
                 {title} <span className="text-primary">{subtitle}</span>
               </h2>
-
               <p className="text-gray-700 dark:text-gray-300 md:text-lg text-base">
                 {description}
               </p>
-
-              {/* Use the dynamic button properties */}
               <div className="inline-block">
                 <Link
-                  href={buttonLink} // <-- Use dynamic link
+                  href={buttonLink}
                   className="bg-primary hover:bg-primaryhover cursor-pointer font-medium py-2.5 text-sm lg:text-base px-6 lg:h-12.5 rounded-full transition-colors duration-300 ease-in-out text-mainheading flex items-center justify-center"
                 >
                   {buttonText}
                 </Link>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Image Area with animation */}
-          <div className="w-full md:w-1/2 md:mt-8 mt-0">
+          {/* Image Area - Wrap with motion and apply right variants */}
+          <motion.div
+            className="w-full md:w-1/2 md:mt-8 mt-0"
+            variants={rightBlockVariants} // Apply right slide/fade animation
+            // initial/animate/exit states are inherited from the parent motion.div
+          >
             <div className="relative rounded-2xl overflow-hidden border group transition-all duration-500">
-              {/* Image overlay for glow effect */}
               <div className="absolute inset-0 bg-gradient-to-tr from-black/60 via-transparent to-lime-400/30 z-10"></div>
-
-              {/* Image with aspect ratio */}
               <div className="relative aspect-[3/2] overflow-hidden">
                 <Image
                   src={imageSrc}
                   alt={imageAlt}
                   fill
-                  className="object-cover"                  
+                  className="object-cover"
+                  priority // Consider adding priority if this image is often above the fold
                 />
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
