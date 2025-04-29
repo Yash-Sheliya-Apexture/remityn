@@ -1879,7 +1879,7 @@ const TransactionsSection: React.FC = () => {
         status === "completed"
           ? "Added"
           : status === "pending" || status === "in progress"
-          ? "Waiting for money"
+          ? "Waiting for your money"
           : status === "canceled"
           ? "Cancelled"
           : status === "failed"
@@ -1890,11 +1890,11 @@ const TransactionsSection: React.FC = () => {
     } else { // Send Money
       description =
         status === "completed"
-          ? `Sent to ${transaction.name || "Recipient"}`
+          ? `Sent by you`
           : status === "pending"
-          ? "Waiting to send"
+          ? "Sending by you"
           : status === "in progress" || status === "processing"
-          ? "Sending money"
+          ? "Sending by you"
           : status === "canceled"
           ? "Cancelled"
           : status === "failed"
@@ -1938,11 +1938,6 @@ const TransactionsSection: React.FC = () => {
                 </h3>
                 <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
                   {description}
-                  {(status === "processing" ||
-                    status === "pending" ||
-                    status === "in progress") && (
-                    <span className="italic text-xs"> ({status})</span>
-                  )}
                 </p>
               </div>
 
