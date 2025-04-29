@@ -274,8 +274,9 @@
 
 // export default HeroAddMoney;
 
-"use client"; // Make it a Client Component
 
+
+"use client"; // Make it a Client Component
 import React from "react";
 import { motion } from "framer-motion"; // Import motion
 import { useAuth } from "@/app/contexts/AuthContext";
@@ -343,12 +344,12 @@ const paragraphVariants = {
 
 // Variant for Button (Scale up + Fade in)
 const buttonVariants = {
-  hidden: { opacity: 0, scale: 0.7 },
+  hidden: { opacity: 0, scale: 0.8 },
   visible: {
     opacity: 1,
     scale: 1,
     transition: {
-      duration: 0.5,
+      duration: 0.4,
       ease: [0.6, -0.05, 0.01, 0.99], // Spring-like ease
     },
   },
@@ -399,7 +400,7 @@ const HeroAddMoney: React.FC = () => {
   const { user } = useAuth();
 
   const benefits = [
-    { icon: <FaGlobeAmericas />, text: "50+ countries supported" },
+    { icon: <FaGlobeAmericas />, text: "10+ countries supported" },
     { icon: <FaShieldAlt />, text: "Bank-level security" },
     { icon: <FaClock />, text: "24/7 transfers money" },
   ];
@@ -434,7 +435,7 @@ const HeroAddMoney: React.FC = () => {
               variants={badgeVariants}
               className="md:text-sm text-xs inline-block px-4 py-1.5 dark:bg-primary rounded-full bg-lightgray text-mainheading font-medium"
             >
-              Trusted by over 3M+ customers worldwide
+              Trusted by 50K customers worldwide
             </motion.p>
 
             <motion.h1
@@ -488,22 +489,22 @@ const HeroAddMoney: React.FC = () => {
 
           {/* Right Image Area - Wrap with motion */}
           <motion.div
-            className="lg:w-5/12 w-full mt-10 lg:mt-0 flex justify-center"
+            className="lg:w-5/12 w-full mt-10 lg:mt-0 flex lg:justify-start justify-center"
             variants={rightImageVariants} // Apply image reveal animation
           >
             <Image
               src="/assets/images/Refund-pana-light.svg"
               alt="Padlock symbolizing secure money adding"
-              width={500}
-              height={500}
+              width={600}
+              height={600}
               priority
               className="lg:h-full h-64 block dark:hidden"
             />
             <Image
               src="/assets/images/Refund-pana-dark.svg"
               alt="Padlock symbolizing secure money adding"
-              width={500}
-              height={500}
+              width={600}
+              height={600}
               priority
               className="lg:h-full h-64 hidden dark:block"
             />

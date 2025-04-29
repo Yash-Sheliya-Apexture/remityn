@@ -88,7 +88,6 @@
 // export default AddMoneyMethods;
 
 "use client"; // Add this for Framer Motion
-
 import React from "react";
 import { BiTransfer } from "react-icons/bi";
 import { FaUniversity } from "react-icons/fa";
@@ -103,7 +102,6 @@ interface Method {
   title: string;
   description: string;
 }
-
 // --- Animation Variants ---
 
 // Variants for the main section (controls triggering and overall stagger)
@@ -136,7 +134,7 @@ const gridContainerVariants = {
     transition: {
       staggerChildren: 0.15, // Stagger each card's animation
       // Optional: delayChildren if needed after heading is fully done
-      // delayChildren: 0.3,
+      delayChildren: 0.3,
     },
   },
 };
@@ -159,7 +157,7 @@ const cardVariants = {
   },
 };
 
-const AddMoneyMethods = () => {
+const AddMoneySteps = () => {
   const methods: Method[] = [
     // Explicitly type the array
     {
@@ -201,7 +199,7 @@ const AddMoneyMethods = () => {
         variants={sectionVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ amount: 0.5, once: true }} // Trigger once when 10% visible
+        viewport={{ amount: 0.2, once: true }} // Trigger once when 10% visible
       >
         {/* Heading section - Wrap with motion */}
         <motion.div
@@ -263,4 +261,4 @@ const AddMoneyMethods = () => {
   );
 };
 
-export default AddMoneyMethods;
+export default AddMoneySteps;
