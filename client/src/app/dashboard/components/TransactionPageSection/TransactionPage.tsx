@@ -5921,7 +5921,8 @@ const TransactionsPage: React.FC = () => {
                // Map UI filter names to actual status values
                if (statusFilter === 'completed') return txStatus === 'completed';
                if (statusFilter === 'cancelled') return txStatus === 'canceled'; // Note: API might use 'canceled'
-               if (statusFilter === 'in process') return txStatus === 'in progress' || txStatus === 'pending';
+               if (statusFilter === 'pending') return txStatus === 'pending'; // Note: API might use 'canceled'
+               if (statusFilter === 'in process') return txStatus === 'in progress' || txStatus === "processing";
                if (statusFilter === 'failed') return txStatus === 'failed';
                return false; // Default case if status doesn't match known filters
             });
@@ -6125,7 +6126,7 @@ const TransactionsPage: React.FC = () => {
                         // Common logic for rendering in-progress items
                         const isAddMoney = transaction.type === "Add Money";
                         const icon = isAddMoney ? <LuPlus size={22} className="text-neutral-900 dark:text-white" /> : <GoArrowUp size={22} className="text-neutral-900 dark:text-white" />;
-                        const description = isAddMoney ? "Waiting for your money" : `Sending money to ${transaction.name || 'recipient'}`;
+                        const description = isAddMoney ? "Waiting for your money" : `Sending by you`;
                         const amount = isAddMoney ? transaction.amountToAdd ?? 0 : transaction.sendAmount ?? 0;
                         const displayCurrencyCode = isAddMoney
                             ? (typeof transaction.balanceCurrency === 'object' ? transaction.balanceCurrency?.code : '')
@@ -6146,8 +6147,8 @@ const TransactionsPage: React.FC = () => {
                                         {name}
                                     </h3>
                                     <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
-                                        {description}{" "}
-                                        <span className="italic"> ({transaction.status}) </span>
+                                        {description}
+                                        
                                     </p>
                                   </div>
                                   <div className={`font-medium text-neutral-900 dark:text-white whitespace-nowrap shrink-0`}>
@@ -6191,7 +6192,7 @@ const TransactionsPage: React.FC = () => {
                                 let amountClass = "";
                                 switch(transaction.status){
                                     case "completed":
-                                        description = isAddMoney ? "Added" : `Sent to ${recipientName}`;
+                                        description = isAddMoney ? "Added" : `Sent by you`;
                                         amountClass = isAddMoney ? "text-green-600 dark:text-green-500" : "text-neutral-900 dark:text-white";
                                         break;
                                     case "canceled": // Handle 'canceled' status

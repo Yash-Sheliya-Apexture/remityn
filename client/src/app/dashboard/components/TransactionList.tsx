@@ -2077,7 +2077,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
             {inProgressTransactions.map((transaction) => {
               const isAddMoney = transaction.type === "Add Money";
               const icon = isAddMoney ? <LuPlus size={22} className="text-neutral-900 dark:text-white" /> : <GoArrowUp size={22} className="text-neutral-900 dark:text-white" />;
-              const description = isAddMoney ? "Waiting for your money" : transaction.status === "pending" ? "Sending your money" : "Processing transfer";
+              const description = isAddMoney ? "Waiting for your money" : transaction.status === "pending" ? "Sending by you" : "Sending by you";
               const amount = isAddMoney ? transaction.amountToAdd ?? 0 : transaction.sendAmount ?? 0;
               const txCurrencyCode = isAddMoney ? transaction.balanceCurrency?.code : transaction.sendCurrency?.code;
               const amountPrefix = isAddMoney ? "+ " : "- ";
@@ -2088,7 +2088,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
                     <div className="flex items-center gap-4">
                       <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center"> {icon} </div>
                       <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
-                        <div className="text-wrap"> <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg" title={name}> {name} </h3> <p className="text-sm text-gray-500 dark:text-gray-300 mt-1"> {description} <span className="italic"> ({transaction.status}) </span> </p> </div>
+                        <div className="text-wrap"> <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg" title={name}> {name} </h3> <p className="text-sm text-gray-500 dark:text-gray-300 mt-1"> {description}</p> </div>
                         <div className={`font-medium text-neutral-900 dark:text-white whitespace-nowrap`}> {amountPrefix} {amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2, })} {txCurrencyCode || currencyCode} </div>
                       </div>
                     </div>
@@ -2116,7 +2116,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
                       const amountPrefix = isAddMoney ? "+ " : "- ";
                       const name = isAddMoney ? `Added to ${displayCurrencyCode || currencyCode} balance` : transaction.name || "Recipient";
                       switch (transaction.status) {
-                        case "completed": amountClass = isAddMoney ? "text-green-600 dark:text-green-500" : "text-neutral-900 dark:text-white"; description = isAddMoney ? "Added" : `Sent to ${transaction.recipient ? (transaction.recipient as any).accountHolderName || transaction.name || 'Recipient' : transaction.name || 'Recipient'}`; break;
+                        case "completed": amountClass = isAddMoney ? "text-green-600 dark:text-green-500" : "text-neutral-900 dark:text-white"; description = isAddMoney ? "Added" : `Sent by you `; break;
                         case "canceled": amountClass = "text-red-600 line-through"; description = "Canceled"; break;
                         case "failed": amountClass = "text-red-600 line-through"; description = "Failed"; break;
                         default: amountClass = "text-neutral-900 dark:text-white"; description = transaction.status ?? "Unknown";
