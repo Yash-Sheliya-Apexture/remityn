@@ -492,12 +492,20 @@ const HeroAddMoney: React.FC = () => {
             variants={rightImageVariants} // Apply image reveal animation
           >
             <Image
-              src="/assets/images/secure.svg"
+              src="/assets/images/Refund-pana-light.svg"
               alt="Padlock symbolizing secure money adding"
               width={500}
               height={500}
               priority
-              className="lg:h-full h-64"
+              className="lg:h-full h-64 block dark:hidden"
+            />
+            <Image
+              src="/assets/images/Refund-pana-dark.svg"
+              alt="Padlock symbolizing secure money adding"
+              width={500}
+              height={500}
+              priority
+              className="lg:h-full h-64 hidden dark:block"
             />
           </motion.div>
         </div>
