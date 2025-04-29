@@ -134,7 +134,50 @@
 // export default Search;
 
 
-// frontend/src/app/dashboard/components/TransactionPageSection/Search.tsx
+// // frontend/src/app/dashboard/components/TransactionPageSection/Search.tsx
+// "use client";
+
+// import React from "react";
+// import { FiSearch } from "react-icons/fi";
+
+// interface SearchProps {
+//   searchTerm: string; // Receive current search term
+//   onSearchChange: (newSearchTerm: string) => void; // Callback to update parent state
+// }
+
+// const Search: React.FC<SearchProps> = ({
+//   searchTerm,
+//   onSearchChange,
+// }) => {
+
+//   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+//     onSearchChange(event.target.value); // Update parent state on input change
+//   };
+
+//   return (
+//     <div className="relative w-full">
+//       <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+//         <FiSearch
+//           className="h-5 w-5 text-neutral-900 dark:text-white"
+//           aria-hidden="true"
+//         />
+//       </div>
+//       <input
+//         type="text"
+//         placeholder="Search Name, Type, Status..." // Updated placeholder
+//         className="w-full rounded-full h-12.5 py-3 pl-12 pr-3 border border-neutral-300 dark:border-neutral-700 focus:border-neutral-500 dark:focus:border-neutral-500 focus:outline-0 transition-all duration-75 ease-in-out placeholder:text-neutral-600 dark:placeholder:text-neutral-400 bg-white dark:bg-primarybox text-neutral-900 dark:text-white" // Added more styling for consistency
+//         value={searchTerm} // Controlled input
+//         onChange={handleInputChange}
+//         aria-label="Search transactions" // Accessibility
+//       />
+//     </div>
+//   );
+// };
+
+// export default Search;
+
+// Note: Keep Search.tsx as it is in your original post - it's correctly defined.
+// frontend/src/app/dashboard/components/TransactionPageSection/Search.tsx - NO CHANGES NEEDED HERE
 "use client";
 
 import React from "react";
