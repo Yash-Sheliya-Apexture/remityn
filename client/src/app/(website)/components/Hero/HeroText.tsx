@@ -94,7 +94,7 @@ const HeroText = () => {
           Easy Global Money Exchange
           <span className="text-primary"> at 0% Fees </span>
         </h1>
-        <p className="lg:text-lg text-base leading-tight text-gray-700 dark:text-gray-300">
+        <p className="lg:text-lg text-base leading-tight font-medium text-gray-700 dark:text-gray-300">
           Experience global money exchange with 0% fees and instant transfers.
           Our platform offers secure, transparent transactions with real-time
           exchange rates. Send money easily across borders, without worrying
@@ -169,13 +169,9 @@ const HeroText = () => {
         <div className="md:pt-4 pt-0 lg:block hidden">
           <Link
             href={user ? "/dashboard" : "/auth/register"}
-            className="inline-flex items-center bg-primary hover:bg-primaryhover group text-mainheading  font-semibold px-8 py-3 lg:h-12.5 rounded-full transition-colors duration-300 ease-in-out"
+            className="inline-flex items-center bg-primary hover:bg-primaryhover text-mainheading font-semibold px-8 py-3 lg:h-12.5 rounded-full transition-colors duration-300 ease-in-out"
           >
             {user ? "Go to Dashboard" : "Get Started Free"}
-            <ArrowRight
-              size={24}
-              className="ml-2 group-hover:translate-x-6 transition-transform ease-in-out duration-300"
-            />
           </Link>
         </div>
       </div>
