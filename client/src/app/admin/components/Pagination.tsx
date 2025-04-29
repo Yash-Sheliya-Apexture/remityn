@@ -400,6 +400,221 @@
 
 
 
+// // components/Pagination.tsx
+// "use client"
+// import React, { useEffect } from 'react';
+// import { IoChevronBack, IoChevronForward } from "react-icons/io5";
+// import { motion, AnimatePresence } from 'framer-motion'; // Import AnimatePresence
+
+// interface PaginationProps {
+//     currentPage: number;
+//     totalPages: number;
+//     paginate: (pageNumber: number) => void;
+//     goToPreviousPage: () => void;
+//     goToNextPage: () => void;
+// }
+
+// /**
+//  * Generates an array of page numbers and ellipses to display in pagination
+//  * Uses a smarter algorithm that keeps the current page visible and shows context
+//  */
+// const getPageNumbersToShow = (currentPage: number, totalPages: number): (number | string)[] => {
+//     // If we have 7 or fewer pages, show all pages without ellipsis
+//     if (totalPages <= 7) {
+//         return Array.from({ length: totalPages }, (_, i) => i + 1);
+//     }
+
+//     const pages: (number | string)[] = [];
+//     const ellipsis = '•••';
+
+//     // Always show first page
+//     pages.push(1);
+
+//     // Logic for showing pages around current page
+//     if (currentPage <= 3) {
+//         // Near start: show 1, 2, 3, 4, 5, ..., totalPages
+//         pages.push(2, 3, 4, 5);
+//         pages.push(ellipsis);
+//         pages.push(totalPages);
+//     } else if (currentPage >= totalPages - 2) {
+//         // Near end: show 1, ..., totalPages-4, totalPages-3, totalPages-2, totalPages-1, totalPages
+//         pages.push(ellipsis);
+//         pages.push(totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+//     } else {
+//         // Middle: show 1, ..., currentPage-1, currentPage, currentPage+1, ..., totalPages
+//         pages.push(ellipsis);
+//         pages.push(currentPage - 1, currentPage, currentPage + 1);
+//         pages.push(ellipsis);
+//         pages.push(totalPages);
+//     }
+
+//     return pages;
+// };
+
+// const Pagination: React.FC<PaginationProps> = ({ 
+//     currentPage, 
+//     totalPages, 
+//     paginate, 
+//     goToPreviousPage, 
+//     goToNextPage 
+// }) => {
+//     // Don't render pagination if there's only one page
+//     if (totalPages <= 1) return null;
+
+//     // Handle keyboard navigation
+//     useEffect(() => {
+//         const handleKeyDown = (e: KeyboardEvent) => {
+//             if (e.key === 'ArrowLeft' && currentPage > 1) {
+//                 goToPreviousPage();
+//             } else if (e.key === 'ArrowRight' && currentPage < totalPages) {
+//                 goToNextPage();
+//             }
+//         };
+
+//         window.addEventListener('keydown', handleKeyDown);
+//         return () => window.removeEventListener('keydown', handleKeyDown);
+//     }, [currentPage, totalPages, goToPreviousPage, goToNextPage]);
+
+//     const pageNumbers = getPageNumbersToShow(currentPage, totalPages);
+
+//     // Animation variants for page indicator
+//     const pageIndicatorVariants = {
+//         initial: { scale: 0.8, opacity: 0 },
+//         animate: { scale: 1, opacity: 1 },
+//         exit: { scale: 0.8, opacity: 0 }
+//     };
+
+//     // Button style classes
+//     const navButtonClasses = "relative flex items-center justify-center rounded-3xl px-2 py-2 w-12 h-12 bg-lightgray dark:bg-primarybox dark:hover:bg-secondarybox text-sm font-medium text-neutral-900 dark:text-white hover:bg-lightborder focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200";
+    
+//     const pageButtonClasses = (isActive: boolean) => `
+//         relative z-10 flex items-center justify-center w-full h-full font-semibold rounded-3xl cursor-pointer focus:z-10 focus:outline-none transition-colors duration-150 ease-in-out
+//         ${isActive 
+//             ? "text-neutral-900" // Active page text is white for contrast with primary bg
+//             : "text-neutral-900 dark:text-white bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox"}
+//     `;
+
+//     return (
+//         <div className="py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+//             {/* Mobile View */}
+//             <div className="flex justify-between w-full sm:hidden">
+//                 <button
+//                     onClick={goToPreviousPage}
+//                     className="inline-flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 h-12 rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+//                     disabled={currentPage === 1}
+//                     aria-label="Previous page"
+//                 >
+//                     <IoChevronBack className="h-4 w-4 mr-1.5" />
+//                     <span>Previous</span>
+//                 </button>
+                
+//                 <span className="flex items-center text-sm">
+//                     <span className="font-medium">{currentPage}</span>
+//                     <span className="mx-1">/</span>
+//                     <span>{totalPages}</span>
+//                 </span>
+                
+//                 <button
+//                     onClick={goToNextPage}
+//                     className="inline-flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 h-12 rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+//                     disabled={currentPage === totalPages}
+//                     aria-label="Next page"
+//                 >
+//                     <span>Next</span>
+//                     <IoChevronForward className="h-4 w-4 ml-1.5" />
+//                 </button>
+//             </div>
+
+//             {/* Desktop View */}
+//             <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+//                 <div className="text-sm text-gray-500 dark:text-gray-300">
+//                     Page <span className="font-medium">{currentPage}</span> of{" "}
+//                     <span className="font-medium">{totalPages}</span>
+//                 </div>
+                
+//                 <nav className="isolate flex items-center gap-2" aria-label="Pagination">
+//                     {/* Previous Button */}
+//                     <button
+//                         onClick={goToPreviousPage}
+//                         className={navButtonClasses}
+//                         aria-label="Previous page"
+//                         disabled={currentPage === 1}
+//                     >
+//                         <IoChevronBack className="h-5 w-5" />
+//                     </button>
+
+//                     {/* Page Numbers/Ellipsis */}
+//                     <div className="flex items-center gap-1">
+//                         {pageNumbers.map((page, index) => {
+//                             if (typeof page === 'string') {
+//                                 // Render Ellipsis
+//                                 return (
+//                                     <span
+//                                         key={`ellipsis-${index}`}
+//                                         className="relative inline-flex items-center justify-center rounded-3xl px-2 py-2 w-12 h-12 text-sm font-medium text-gray-500 dark:text-gray-300 select-none"
+//                                         aria-hidden="true"
+//                                     >
+//                                         {page}
+//                                     </span>
+//                                 );
+//                             } else {
+//                                 // Render Page Number Button
+//                                 const isActive = currentPage === page;
+//                                 return (
+//                                     <div key={page} className="relative w-12 h-12">
+//                                         {/* Animated Background Indicator */}
+//                                         <AnimatePresence>
+//                                             {isActive && (
+//                                                 <motion.div
+//                                                     layoutId="active-page-indicator"
+//                                                     className="absolute inset-0 bg-primary rounded-3xl z-0"
+//                                                     initial="initial"
+//                                                     animate="animate"
+//                                                     exit="exit"
+//                                                     variants={pageIndicatorVariants}
+//                                                     transition={{ 
+//                                                         type: 'spring', 
+//                                                         stiffness: 500, 
+//                                                         damping: 30 
+//                                                     }}
+//                                                     aria-hidden="true"
+//                                                 />
+//                                             )}
+//                                         </AnimatePresence>
+                                        
+//                                         {/* Page Button */}
+//                                         <button
+//                                             onClick={() => paginate(page)}
+//                                             className={pageButtonClasses(isActive)}
+//                                             aria-current={isActive ? "page" : undefined}
+//                                             aria-label={`Page ${page}`}
+//                                         >
+//                                             {page}
+//                                         </button>
+//                                     </div>
+//                                 );
+//                             }
+//                         })}
+//                     </div>
+
+//                     {/* Next Button */}
+//                     <button
+//                         onClick={goToNextPage}
+//                         className={navButtonClasses}
+//                         aria-label="Next page"
+//                         disabled={currentPage === totalPages}
+//                     >
+//                         <IoChevronForward className="h-5 w-5" />
+//                     </button>
+//                 </nav>
+//             </div>
+//         </div>
+//     );
+// };
+
+// export default Pagination;
+
+
 // components/Pagination.tsx
 "use client"
 import React, { useEffect } from 'react';
@@ -451,18 +666,22 @@ const getPageNumbersToShow = (currentPage: number, totalPages: number): (number 
     return pages;
 };
 
-const Pagination: React.FC<PaginationProps> = ({ 
-    currentPage, 
-    totalPages, 
-    paginate, 
-    goToPreviousPage, 
-    goToNextPage 
+const Pagination: React.FC<PaginationProps> = ({
+    currentPage,
+    totalPages,
+    paginate,
+    goToPreviousPage,
+    goToNextPage
 }) => {
-    // Don't render pagination if there's only one page
-    if (totalPages <= 1) return null;
 
-    // Handle keyboard navigation
+    // --- FIX START ---
+    // Handle keyboard navigation - Hook called unconditionally at the top level
     useEffect(() => {
+        // Only add the listener if there's more than one page
+        if (totalPages <= 1) {
+            return; // Do nothing if pagination isn't relevant
+        }
+
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'ArrowLeft' && currentPage > 1) {
                 goToPreviousPage();
@@ -472,8 +691,19 @@ const Pagination: React.FC<PaginationProps> = ({
         };
 
         window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
+        // Return the cleanup function to remove the listener
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+        // Dependencies remain the same
     }, [currentPage, totalPages, goToPreviousPage, goToNextPage]);
+
+    // Don't render pagination if there's only one page - Placed *after* Hooks
+    if (totalPages <= 1) {
+        return null;
+    }
+    // --- FIX END ---
+
 
     const pageNumbers = getPageNumbersToShow(currentPage, totalPages);
 
@@ -486,11 +716,11 @@ const Pagination: React.FC<PaginationProps> = ({
 
     // Button style classes
     const navButtonClasses = "relative flex items-center justify-center rounded-3xl px-2 py-2 w-12 h-12 bg-lightgray dark:bg-primarybox dark:hover:bg-secondarybox text-sm font-medium text-neutral-900 dark:text-white hover:bg-lightborder focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200";
-    
+
     const pageButtonClasses = (isActive: boolean) => `
         relative z-10 flex items-center justify-center w-full h-full font-semibold rounded-3xl cursor-pointer focus:z-10 focus:outline-none transition-colors duration-150 ease-in-out
-        ${isActive 
-            ? "text-neutral-900" // Active page text is white for contrast with primary bg
+        ${isActive
+            ? "text-neutral-900" // Active page text contrast with primary bg
             : "text-neutral-900 dark:text-white bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox"}
     `;
 
@@ -507,13 +737,13 @@ const Pagination: React.FC<PaginationProps> = ({
                     <IoChevronBack className="h-4 w-4 mr-1.5" />
                     <span>Previous</span>
                 </button>
-                
+
                 <span className="flex items-center text-sm">
                     <span className="font-medium">{currentPage}</span>
                     <span className="mx-1">/</span>
                     <span>{totalPages}</span>
                 </span>
-                
+
                 <button
                     onClick={goToNextPage}
                     className="inline-flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 h-12 rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -531,7 +761,7 @@ const Pagination: React.FC<PaginationProps> = ({
                     Page <span className="font-medium">{currentPage}</span> of{" "}
                     <span className="font-medium">{totalPages}</span>
                 </div>
-                
+
                 <nav className="isolate flex items-center gap-2" aria-label="Pagination">
                     {/* Previous Button */}
                     <button
@@ -572,16 +802,16 @@ const Pagination: React.FC<PaginationProps> = ({
                                                     animate="animate"
                                                     exit="exit"
                                                     variants={pageIndicatorVariants}
-                                                    transition={{ 
-                                                        type: 'spring', 
-                                                        stiffness: 500, 
-                                                        damping: 30 
+                                                    transition={{
+                                                        type: 'spring',
+                                                        stiffness: 500,
+                                                        damping: 30
                                                     }}
                                                     aria-hidden="true"
                                                 />
                                             )}
                                         </AnimatePresence>
-                                        
+
                                         {/* Page Button */}
                                         <button
                                             onClick={() => paginate(page)}
