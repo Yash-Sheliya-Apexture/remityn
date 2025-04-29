@@ -135,7 +135,7 @@ const TransactionDetailsContent: React.FC<TransactionDetailsContentProps> = ({
                          <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Name</dt> <dd className="font-medium text-neutral-900 dark:text-white text-right">{transferDetails.recipient.accountHolderName}</dd> </div>
                          {transferDetails.recipient.nickname && <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Nickname</dt> <dd className="font-medium text-neutral-900 dark:text-white text-right">{transferDetails.recipient.nickname}</dd> </div>}
                          <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Receiving Currency</dt> <dd className="font-medium text-neutral-900 dark:text-white text-right">{transferDetails.recipient.currency?.code}</dd> </div>
-                         <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Account Number</dt> <dd className="font-mono text-neutral-900 dark:text-white text-right">**** **** {transferDetails.recipient.accountNumber?.slice(-4)}</dd> </div>
+                         <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Account Number</dt> <dd className="font-medium text-neutral-900 dark:text-white text-right">{transferDetails.recipient.accountNumber}</dd> </div>
                          <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Bank Name</dt> <dd className="font-medium text-neutral-900 dark:text-white text-right">{transferDetails.recipient.bankName}</dd> </div>
                          {transferDetails.reference && <div className="flex justify-between pt-2 border-t dark:border-border mt-2"> <dt className="text-gray-500 dark:text-gray-300">Reference for Recipient</dt> <dd className="font-medium text-neutral-900 dark:text-white text-right ml-4">{transferDetails.reference}</dd> </div>}
                          {transferDetails.reason && <div className="flex justify-between"> <dt className="text-gray-500 dark:text-gray-300">Reason for Transfer</dt> <dd className="font-medium text-neutral-900 dark:text-white text-right ml-4">{transferDetails.reason}</dd> </div>}
@@ -160,7 +160,7 @@ const TransactionDetailsContent: React.FC<TransactionDetailsContentProps> = ({
                  <h3 className="text-base font-semibold mb-2 text-neutral-900 dark:text-white"> Note (for your reference only)</h3>
                  <textarea
                     id="transactionNote"
-                    className="block w-full border rounded-md p-3 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 dark:placeholder:text-white focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
+                    className="lock px-4 py-3 bg-white dark:bg-background w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 focus:border-[#5f5f5f]"
                     placeholder="Add personal notes about this transaction..."
                     value={note}
                     onChange={onNoteChange}

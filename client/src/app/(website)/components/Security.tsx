@@ -413,8 +413,8 @@ const CurrencyExchangeSolutions: React.FC = () => {
             Why Choose Our Exchange
           </h5>
 
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white tracking-tight">
-            CURRENCY EXCHANGE
+          <h1 className="text-4xl md:text-5xl uppercase lg:text-6xl font-black font-mont  text-mainheading dark:text-white tracking-tight">
+            Currency Exchange
             <br />
             <span className="text-primary"> Made Simple</span>
           </h1>

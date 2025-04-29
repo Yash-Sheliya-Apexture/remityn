@@ -1640,7 +1640,7 @@ const Footer: React.FC = () => {
       <hr className="container mx-auto lg:my-6 my-4" />
       <div className="flex flex-col md:flex-row justify-between items-center container mx-auto gap-4">
         <p className="text-mainheading dark:text-primary capitalize lg:text-base text-sm text-center md:text-left">
-          <span className="text-gray-500 dark:text-gray-300">create by,</span> Apexture Payments Limited @{new Date().getFullYear()}
+          <span className="text-gray-500 dark:text-gray-300">create by,</span> Apexture Private Limited @{new Date().getFullYear()}
         </p>
         <div className="flex lg:gap-4 gap-2">
           <a href="#" aria-label="Chat on WhatsApp">

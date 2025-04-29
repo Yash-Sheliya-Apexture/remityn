@@ -1625,14 +1625,14 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
     // The parent's motion.div handles the main slide-in animation.
     // This div is just the container for the content.
     <div
-        className="flex flex-col justify-between h-full pt-4" // Added pt-4 to give space from top
+        className="flex flex-col justify-between h-full"
         aria-hidden={!isOpen}
         role="dialog"
         aria-modal="true"
       >
         {/* Top Navigation Links - Wrap the link container */}
         <motion.div
-          className="px-4 space-y-2" // Removed border-t
+          className="px-4 space-y-2 overflow-y-auto border-t" // Removed border-t
           initial="hidden" // Initial variant state for the list
           animate="visible" // Animate to visible when the component mounts (or isOpen becomes true)
           variants={listVariants} // Apply the container variants
@@ -1642,7 +1642,8 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             <motion.div variants={itemVariants}>
               <Link
                 href="/"
-                className="inline-block py-2 rounded-md font-medium"
+                // CHANGED: inline-block -> block w-full
+                className="block w-full py-2 rounded-md font-medium"
                 onClick={handleLinkClick}
               >
                 Home
@@ -1652,7 +1653,8 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             <motion.div variants={itemVariants}>
               <Link
                 href="/about-us"
-                className="inline-block py-2 rounded-md font-medium"
+                // CHANGED: inline-block -> block w-full
+                className="block w-full py-2 rounded-md font-medium"
                 onClick={handleLinkClick}
               >
                 About
@@ -1664,7 +1666,8 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
               <FeatureDropdown
                 buttonText="Features"
                 links={featureLinks}
-                buttonClassName="inline-block w-full text-left py-2 font-medium rounded-md" // Consistent styling
+                // CHANGED: inline-block -> block w-full
+                buttonClassName="block w-full text-left py-2 font-medium rounded-md" // Consistent styling
                 isMobile={true}
                 isOpen={isFeaturesOpen}
                 toggleDropdown={toggleFeaturesDropdown}
@@ -1675,7 +1678,8 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             <motion.div variants={itemVariants}>
               <Link
                 href="/faqs"
-                className="inline-block py-2 rounded-md font-medium"
+                // CHANGED: inline-block -> block w-full
+                className="block w-full py-2 rounded-md font-medium"
                 onClick={handleLinkClick}
               >
                 Help
