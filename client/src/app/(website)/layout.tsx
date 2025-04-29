@@ -148,6 +148,86 @@
 //   );
 // }
 
+// // app/(website)/layout.tsx
+// "use client"; // Needs to be a client component for useState, useEffect, and DOM interactions
+
+// import React, { ReactNode, useState, useEffect, useRef } from "react";
+// import Header from "./components/Header/Header"; // Make sure path is correct
+// import Footer from "./components/Footer"; // Make sure path is correct
+// import { WebsiteAppProvider } from "../contexts/WebsiteAppContext"; // Adjust path as needed
+// import { FaArrowUp } from "react-icons/fa6"; // Import the icon
+// import "../globals.css"; // Keep this for styles scoped here or globally
+
+// interface LayoutProps {
+//   children: ReactNode;
+// }
+
+// export default function WebsiteLayout({ children }: LayoutProps) {
+//   // State to control the visibility of the scroll-to-top button
+//   const [isScrollToTopVisible, setIsScrollToTopVisible] = useState(false);
+//   // Optional: Ref for the button if needed later
+//   const scrollToTopButtonRef = useRef<HTMLDivElement>(null);
+
+//   // Function to scroll the window to the top smoothly
+//   const scrollToTop = () => {
+//     window.scrollTo({
+//       top: 0,
+//       behavior: "smooth", // Smooth scroll animation
+//     });
+//   };
+
+//   // Effect to add and remove the scroll event listener
+//   useEffect(() => {
+//     // Function to check scroll position and update visibility state
+//     const handleScroll = () => {
+//       // Show button if scrolled down more than, say, 250 pixels
+//       if (window.scrollY > 200) {
+//         setIsScrollToTopVisible(true);
+//       } else {
+//         setIsScrollToTopVisible(false);
+//       }
+//     };
+
+//     // Add event listener when the component mounts
+//     window.addEventListener("scroll", handleScroll);
+
+//     // Clean up the event listener when the component unmounts
+//     return () => {
+//       window.removeEventListener("scroll", handleScroll);
+//     };
+//   }, []); // Empty dependency array ensures this effect runs only once on mount and cleans up on unmount
+
+//   return (
+//     <WebsiteAppProvider>
+//       {/* Header */}
+//       <Header />
+
+//       {/* Main content area */}
+//       <main>{children}</main>
+
+//       {/* Footer */}
+//       <Footer />
+
+//       {/* Scroll to Top Button - Now with Animation */}
+//       <div
+//         ref={scrollToTopButtonRef}
+//         className={`fixed md:right-5 bottom-10 right-2 z-50 cursor-pointer rounded-full bg-primary lg:p-2.5 p-2 text-mainheading shadow-md
+//                    hover:bg-primaryhover
+//                    transition-all duration-300 ease-in-out  // Animate ALL changes (opacity and transform)
+//                    ${
+//                      isScrollToTopVisible
+//                        ? "opacity-100 translate-y-0 pointer-events-auto" // Visible: Full opacity, original position, clickable
+//                        : "opacity-0 translate-y-10 pointer-events-none" // Hidden: Zero opacity, moved down (adjust '10' as needed), non-clickable
+//                    }`}
+//         title="Scroll to Top"
+//         onClick={scrollToTop} // Attach the scroll function to the click event
+//       >
+//         <FaArrowUp className="lg:size-4 size-3 text-mainheading" />{" "}
+//       </div>
+//     </WebsiteAppProvider>
+//   );
+// }
+
 // app/(website)/layout.tsx
 "use client"; // Needs to be a client component for useState, useEffect, and DOM interactions
 
@@ -157,10 +237,19 @@ import Footer from "./components/Footer"; // Make sure path is correct
 import { WebsiteAppProvider } from "../contexts/WebsiteAppContext"; // Adjust path as needed
 import { FaArrowUp } from "react-icons/fa6"; // Import the icon
 import "../globals.css"; // Keep this for styles scoped here or globally
+import TawkToScript from "../components/TawkToScript"; // Adjust path to your TawkToScript component if necessary
 
 interface LayoutProps {
   children: ReactNode;
 }
+const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
+const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
+
+// Construct the Tawk.to script source URL ONLY if both IDs are available.
+const tawkToSrc =
+  tawkToPropertyId && tawkToWidgetId
+    ? `https://embed.tawk.to/${tawkToPropertyId}/${tawkToWidgetId}`
+    : null; // Will be null if either ID is missing, preventing script rendering.
 
 export default function WebsiteLayout({ children }: LayoutProps) {
   // State to control the visibility of the scroll-to-top button
@@ -224,6 +313,9 @@ export default function WebsiteLayout({ children }: LayoutProps) {
       >
         <FaArrowUp className="lg:size-4 size-3 text-mainheading" />{" "}
       </div>
+      {/* Tawk.to Live Chat Script */}
+      {/* Conditionally render the TawkToScript Client Component only if the src URL is valid */}
+      {tawkToSrc && <TawkToScript src={tawkToSrc} />}
     </WebsiteAppProvider>
   );
 }

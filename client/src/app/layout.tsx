@@ -122,7 +122,7 @@
 import './globals.css' // Ensure your global styles are imported
 import { AuthProvider } from './contexts/AuthContext'; // Adjust path if necessary
 import { ReactNode } from 'react';
-import TawkToScript from './components/TawkToScript'; // Adjust path to your TawkToScript component if necessary
+// import TawkToScript from './components/TawkToScript'; // Adjust path to your TawkToScript component if necessary
 
 // Define the props for the RootLayout component
 interface RootLayoutProps {
@@ -164,21 +164,13 @@ const ThemeInitializerScript = `
   root.classList.add(themeToApply); // Add the correct theme class
 })();
 `;
+// const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
+// const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
 
-// --- Tawk.to Configuration ---
-// Read Tawk.to IDs from environment variables.
-// Ensure NEXT_PUBLIC_ prefix allows them to be accessed by the browser-side logic if needed,
-// although here they are only used server-side to construct the src.
-// Example .env.local:
-// NEXT_PUBLIC_TAWK_PROPERTY_ID=YOUR_PROPERTY_ID
-// NEXT_PUBLIC_TAWK_WIDGET_ID=YOUR_WIDGET_ID (often 'default')
-const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
-const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
-
-// Construct the Tawk.to script source URL ONLY if both IDs are available.
-const tawkToSrc = tawkToPropertyId && tawkToWidgetId
-    ? `https://embed.tawk.to/${tawkToPropertyId}/${tawkToWidgetId}`
-    : null; // Will be null if either ID is missing, preventing script rendering.
+// // Construct the Tawk.to script source URL ONLY if both IDs are available.
+// const tawkToSrc = tawkToPropertyId && tawkToWidgetId
+//     ? `https://embed.tawk.to/${tawkToPropertyId}/${tawkToWidgetId}`
+//     : null; // Will be null if either ID is missing, preventing script rendering.
 
 // --- Root Layout Component Definition ---
 export default function RootLayout({ children }: RootLayoutProps) {
@@ -225,9 +217,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
 
                 {/* Tawk.to Live Chat Script */}
                 {/* Conditionally render the TawkToScript Client Component only if the src URL is valid */}
-                {tawkToSrc && (
+                {/* {tawkToSrc && (
                     <TawkToScript src={tawkToSrc} />
-                )}
+                )} */}
 
             </body>
         </html>

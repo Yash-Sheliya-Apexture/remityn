@@ -1629,6 +1629,293 @@
 
 // export default FaqSection;
 
+// "use client";
+// import Link from "next/link";
+// import React, { useState, useCallback } from "react";
+// import { motion, AnimatePresence } from "framer-motion"; // Import motion and AnimatePresence
+// // Assuming icons are correctly imported
+// import { FaTelegramPlane } from "react-icons/fa";
+// import { IoLogoWhatsapp } from "react-icons/io";
+// import { SlArrowDown } from "react-icons/sl";
+
+// // Define the structure for each FAQ item
+// interface FaqItemData {
+//   id: string;
+//   question: string;
+//   answer: string;
+// }
+
+// // Sample FAQ Data
+// const faqData: FaqItemData[] = [
+//   {
+//     id: "1",
+//     question: "What is Wise?",
+//     answer:
+//       "Wise is a digital banking platform providing powerful APIs for real-time currency exchange, helping financial institutions and websites deliver secure, modern FX services",
+//   },
+//   {
+//     id: "2",
+//     question: "What documents do I need to verify my account? ",
+//     answer:
+//       "To verify your account, you’ll need to submit a valid government-issued ID, proof of address, and any additional documents required to meet compliance and security standards",
+//   },
+//   {
+//     id: "3",
+//     question: "How fast are Wise transfers? ",
+//     answer:
+//       "Wise transfers are typically processed within minutes, with most transactions completed the same day, depending on the currency and destination",
+//   },
+//   {
+//     id: "4",
+//     question: "How much money can I transfer with Wise at once? ",
+//     answer:
+//       "With Wise, transfer limits vary based on account type and verification level, but high-value transfers are supported with enhanced security and compliance checks",
+//   },
+//   {
+//     id: "5",
+//     question: "What security measures does Wise take to safeguard my money? ",
+//     answer:
+//       "Wise uses advanced encryption, two-factor authentication, and strict regulatory compliance to ensure your money and personal data are always protected",
+//   },
+// ];
+
+// // --- Animation Variants ---
+
+// const sectionVariants = {
+//   hidden: {},
+//   visible: { transition: { staggerChildren: 0.15 } },
+// };
+
+// const leftBlockVariants = {
+//   hidden: { opacity: 0, x: -50 },
+//   visible: { opacity: 1, x: 0, transition: { duration: 0.6, ease: "easeOut" } },
+// };
+
+// const accordionContainerVariants = {
+//   hidden: {}, // Container itself doesn't animate visually
+//   visible: {
+//     transition: {
+//       staggerChildren: 0.1, // Stagger the entrance of each FAQ item
+//       delayChildren: 0.2, // Delay slightly after left block
+//     },
+//   },
+// };
+
+// // --- NEW Variants for FAQ Item Entrance (Slide from Right) ---
+// const faqItemVariants = {
+//   hidden: {
+//     opacity: 0,
+//     x: 80, // Start 80px to the right (off-screen)
+//   },
+//   visible: {
+//     opacity: 1,
+//     x: 0, // Animate to final horizontal position (x=0)
+//     transition: {
+//       duration: 0.6, // Animation duration
+//       ease: [0.25, 0.46, 0.45, 0.94], // Smooth easing
+//     },
+//   },
+// };
+
+// // Variants for Answer Open/Close (Remains the same)
+// const answerVariants = {
+//   initial: { opacity: 0, height: 0, marginTop: 0 },
+//   animate: {
+//     opacity: 1,
+//     height: "auto",
+//     marginTop: "8px",
+//     transition: {
+//       height: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
+//       opacity: { duration: 0.2, delay: 0.05 },
+//       marginTop: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
+//     },
+//   },
+//   exit: {
+//     opacity: 0,
+//     height: 0,
+//     marginTop: 0,
+//     transition: {
+//       height: { duration: 0.25, ease: [0.4, 0, 0.2, 1] },
+//       opacity: { duration: 0.15 },
+//       marginTop: { duration: 0.25, ease: [0.4, 0, 0.2, 1] },
+//     },
+//   },
+// };
+
+// // --- FAQ Section Component ---
+// const FaqSection: React.FC = () => {
+//   const [openItemId, setOpenItemId] = useState<string | null>(
+//     faqData.length > 0 ? faqData[0].id : null
+//   );
+
+//   const handleToggle = useCallback((id: string) => {
+//     setOpenItemId((prevOpenId) => (prevOpenId === id ? null : id));
+//   }, []);
+
+//   return (
+//     <div className="lg:py-10 py-5 bg-white dark:bg-background px-4 overflow-hidden">
+//       <motion.section
+//         className="grid items-start lg:gap-14 gap-5 lg:grid-cols-5 container mx-auto"
+//         id="faq"
+//         variants={sectionVariants}
+//         initial="hidden"
+//         whileInView="visible"
+//         viewport={{ amount: 0.1, once: false }}
+//       >
+//         {/* Left Side: Title and Description - Animated */}
+//         <motion.div
+//           className="flex flex-col gap-5 self-start md:col-span-2"
+//           variants={leftBlockVariants}
+//         >
+//           <h1 className="text-4xl md:text-5xl xl:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+//             Quick Currency
+//             <span className="text-primary"> Exchange Help </span>
+//           </h1>
+//           <p className="lg:text-lg sm:text-base text-sm text-gray-700 leading-relaxed dark:text-gray-300">
+//             Get quick answers to common currency exchange questions — rates,
+//             fees, timing, and more. Simple, clear, and reliable info at your
+//             fingertips.
+//           </p>
+//         </motion.div>
+
+//         {/* Right Side: Accordion Container - Animated */}
+//         <motion.div
+//           className="md:col-span-3 md:row-span-2"
+//           variants={accordionContainerVariants} // Staggers the items inside
+//         >
+//           <div className="flex flex-col gap-3" data-orientation="vertical">
+//             {faqData.map((item) => {
+//               const isOpen = openItemId === item.id;
+//               const uniqueTriggerId = `faq-trigger-${item.id}`;
+//               const uniqueContentId = `faq-content-${item.id}`;
+
+//               return (
+//                 // FAQ Item Entrance Animation Wrapper
+//                 <motion.div
+//                   key={item.id}
+//                   variants={faqItemVariants} // Apply NEW slide-from-right animation
+//                   layout // Keep layout for smooth answer animation
+//                   className="rounded-lg bg-lightgray dark:bg-white/5 overflow-hidden"
+//                 >
+//                   {/* Accordion Trigger (Question Button) */}
+//                   <h3
+//                     data-orientation="vertical"
+//                     data-state={isOpen ? "open" : "closed"}
+//                     className="flex m-0"
+//                   >
+//                     <button
+//                       type="button"
+//                       aria-controls={uniqueContentId}
+//                       aria-expanded={isOpen}
+//                       data-state={isOpen ? "open" : "closed"}
+//                       data-orientation="vertical"
+//                       id={uniqueTriggerId}
+//                       className={`flex w-full cursor-pointer flex-1 gap-2 items-center justify-between text-start lg:text-xl md:text-lg text-sm text-main font-medium dark:text-white transition-colors duration-200 lg:p-5 p-4 ${
+//                         isOpen
+//                           ? ""
+//                           : "hover:bg-gray-100 dark:hover:bg-white/10"
+//                       }`}
+//                       onClick={() => handleToggle(item.id)}
+//                     >
+//                       {item.question}
+//                       <motion.span
+//                         animate={{ rotate: isOpen ? 180 : 0 }}
+//                         transition={{ duration: 0.3 }}
+//                         style={{ display: "inline-block" }}
+//                       >
+//                         <SlArrowDown
+//                           className="lg:size-3 size-2.5 shrink-0 text-gray-700 dark:text-gray-300"
+//                           aria-hidden
+//                         />
+//                       </motion.span>
+//                     </button>
+//                   </h3>
+
+//                   {/* AnimatePresence for Answer Open/Close */}
+//                   <AnimatePresence initial={false}>
+//                     {isOpen && (
+//                       <motion.div
+//                         key="content"
+//                         id={uniqueContentId}
+//                         role="region"
+//                         aria-labelledby={uniqueTriggerId}
+//                         variants={answerVariants}
+//                         initial="initial"
+//                         animate="animate"
+//                         exit="exit"
+//                         className="overflow-hidden text-sm md:text-base lg:text-lg leading-relaxed text-gray-700 dark:text-gray-300"
+//                       >
+//                         <div className="pt-0 pb-4 md:px-6 px-4">
+//                           {item.answer}
+//                         </div>
+//                       </motion.div>
+//                     )}
+//                   </AnimatePresence>
+//                 </motion.div> // End FAQ Item Wrapper
+//               );
+//             })}
+//           </div>
+//         </motion.div>
+
+//         {/* Bottom Left: More Questions Box (Can be animated similarly if desired) */}
+//         <motion.div
+//           className="lg:col-span-2 md:col-span-3 md:self-end"
+//           variants={leftBlockVariants} // Re-use left block animation
+//         >
+//           {/* ... (Content of More Questions box remains the same) ... */}
+//           <div className="flex flex-col items-start gap-5 rounded-2xl bg-lightgray dark:bg-white/5 p-4 lg:p-6">
+//             <div>
+//               <h3 className="md:text-2xl text-lg font-semibold text-mainheading dark:text-gray-100">
+//                 More questions?
+//               </h3>
+//               <p className="mt-1 lg:text-lg text-sm font-normal text-gray-700 dark:text-gray-300">
+//                 We're always ready to help you out.
+//               </p>
+//             </div>
+//             <div className="flex w-full flex-wrap items-center justify-between gap-4 md:flex-nowrap">
+//               <div className="flex gap-2">
+//                 {/* WhatsApp Button */}
+//                 <Link
+//                   href="/WhatsApp"
+//                   aria-label="Chat on WhatsApp"
+//                   target="_blank"
+//                   rel="noopener noreferrer"
+//                 >
+//                   <button className="inline-flex items-center cursor-pointer justify-center rounded-full text-sm bg-[#25D366] lg:text-base px-4 lg:py-2 py-1.5 text-white font-medium transition-colors duration-200 ease-in-out hover:bg-[#1ebe5a] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#25D366]">
+//                     <IoLogoWhatsapp className="mr-2 lg:size-6 size-4" />
+//                     <span>WhatsApp</span>
+//                   </button>
+//                 </Link>
+//                 {/* Telegram Button */}
+//                 <Link
+//                   href="/Telegram"
+//                   aria-label="Chat on Telegram"
+//                   target="_blank"
+//                   rel="noopener noreferrer"
+//                 >
+//                   <button className="inline-flex items-center justify-center cursor-pointer rounded-full bg-[#2DA5E0] px-4 lg:py-2 py-1.5 text-sm text-white font-medium transition-colors duration-200 ease-in-out hover:bg-[#249bd4] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#2DA5E0] lg:text-base">
+//                     <FaTelegramPlane className="mr-2 lg:size-6 size-4" />
+//                     <span>Telegram</span>
+//                   </button>
+//                 </Link>
+//               </div>
+//               {/* Read More FAQs Link */}
+//               <Link
+//                 href="/faqs"
+//                 className="px-4 py-1.5 rounded-full font-medium lg:text-base text-xs border border-gray text-mainheading dark:text-primary dark:hover:bg-white/10 dark:border-white/20 dark:bg-secondary transition-colors duration-300 focus:outline-none"
+//               >
+//                 Read more FAQs
+//               </Link>
+//             </div>
+//           </div>
+//         </motion.div>
+//       </motion.section>
+//     </div>
+//   );
+// };
+
+// export default FaqSection;
+
 "use client";
 import Link from "next/link";
 import React, { useState, useCallback } from "react";
@@ -1679,7 +1966,7 @@ const faqData: FaqItemData[] = [
   },
 ];
 
-// --- Animation Variants ---
+// --- Animation Variants (No changes needed) ---
 
 const sectionVariants = {
   hidden: {},
@@ -1701,7 +1988,7 @@ const accordionContainerVariants = {
   },
 };
 
-// --- NEW Variants for FAQ Item Entrance (Slide from Right) ---
+// Variants for FAQ Item Entrance (Slide from Right)
 const faqItemVariants = {
   hidden: {
     opacity: 0,
@@ -1717,7 +2004,7 @@ const faqItemVariants = {
   },
 };
 
-// Variants for Answer Open/Close (Remains the same)
+// Variants for Answer Open/Close
 const answerVariants = {
   initial: { opacity: 0, height: 0, marginTop: 0 },
   animate: {
@@ -1760,12 +2047,14 @@ const FaqSection: React.FC = () => {
         variants={sectionVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ amount: 0.1, once: false }}
+        // viewport={{ amount: 0.1, once: false }} // <-- OLD: Repeat animation
+        viewport={{ amount: 0.1, once: true }} // <-- NEW: Animate only once
       >
         {/* Left Side: Title and Description - Animated */}
         <motion.div
           className="flex flex-col gap-5 self-start md:col-span-2"
           variants={leftBlockVariants}
+          // Inherits trigger from parent section
         >
           <h1 className="text-4xl md:text-5xl xl:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
             Quick Currency
@@ -1782,6 +2071,7 @@ const FaqSection: React.FC = () => {
         <motion.div
           className="md:col-span-3 md:row-span-2"
           variants={accordionContainerVariants} // Staggers the items inside
+          // Inherits trigger from parent section
         >
           <div className="flex flex-col gap-3" data-orientation="vertical">
             {faqData.map((item) => {
@@ -1796,6 +2086,7 @@ const FaqSection: React.FC = () => {
                   variants={faqItemVariants} // Apply NEW slide-from-right animation
                   layout // Keep layout for smooth answer animation
                   className="rounded-lg bg-lightgray dark:bg-white/5 overflow-hidden"
+                  // Timing controlled by parent stagger
                 >
                   {/* Accordion Trigger (Question Button) */}
                   <h3
@@ -1811,9 +2102,7 @@ const FaqSection: React.FC = () => {
                       data-orientation="vertical"
                       id={uniqueTriggerId}
                       className={`flex w-full cursor-pointer flex-1 gap-2 items-center justify-between text-start lg:text-xl md:text-lg text-sm text-main font-medium dark:text-white transition-colors duration-200 lg:p-5 p-4 ${
-                        isOpen
-                          ? ""
-                          : "hover:bg-gray-100 dark:hover:bg-white/10"
+                        isOpen ? "" : ""
                       }`}
                       onClick={() => handleToggle(item.id)}
                     >
@@ -1857,12 +2146,11 @@ const FaqSection: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* Bottom Left: More Questions Box (Can be animated similarly if desired) */}
+        {/* Bottom Left: More Questions Box - Animated */}
         <motion.div
           className="lg:col-span-2 md:col-span-3 md:self-end"
           variants={leftBlockVariants} // Re-use left block animation
         >
-          {/* ... (Content of More Questions box remains the same) ... */}
           <div className="flex flex-col items-start gap-5 rounded-2xl bg-lightgray dark:bg-white/5 p-4 lg:p-6">
             <div>
               <h3 className="md:text-2xl text-lg font-semibold text-mainheading dark:text-gray-100">
@@ -1876,7 +2164,7 @@ const FaqSection: React.FC = () => {
               <div className="flex gap-2">
                 {/* WhatsApp Button */}
                 <Link
-                  href="/WhatsApp"
+                  href="/WhatsApp" // Replace with your actual WhatsApp link/handler
                   aria-label="Chat on WhatsApp"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -1888,7 +2176,7 @@ const FaqSection: React.FC = () => {
                 </Link>
                 {/* Telegram Button */}
                 <Link
-                  href="/Telegram"
+                  href="/Telegram" // Replace with your actual Telegram link/handler
                   aria-label="Chat on Telegram"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -1901,7 +2189,7 @@ const FaqSection: React.FC = () => {
               </div>
               {/* Read More FAQs Link */}
               <Link
-                href="/faqs"
+                href="/faqs" // Link to your full FAQs page
                 className="px-4 py-1.5 rounded-full font-medium lg:text-base text-xs border border-gray text-mainheading dark:text-primary dark:hover:bg-white/10 dark:border-white/20 dark:bg-secondary transition-colors duration-300 focus:outline-none"
               >
                 Read more FAQs
