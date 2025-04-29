@@ -620,6 +620,7 @@ const TransferTable: React.FC<TransferTableProps> = ({
   // Define the number of columns for consistency
   const numberOfColumns = 8; // Matched to actual columns
 
+  // Loading Skeleton
   if (loadingTransfers) {
     return (
       <div className="rounded-xl border overflow-hidden">

@@ -1319,7 +1319,7 @@ const AdminUsersPage: React.FC = () => {
           {/* Pagination and Page Size Controls - Matching Payments structure and styling */}
           <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
              <div className="flex items-center gap-2">
-                  <label htmlFor="usersPerPage" className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Show:</label>
+                  <label htmlFor="usersPerPage" className="text-sm font-medium text-gray-500 dark:text-gray-300 whitespace-nowrap">Show:</label>
                   <select
                     id="usersPerPage"
                     value={usersPerPage}
@@ -1329,7 +1329,7 @@ const AdminUsersPage: React.FC = () => {
                   >
                        {pageSizeOptions.map(size => <option key={size} value={size} className="dark:bg-dropdowncolor cursor-pointer">{size}</option>)}
                   </select>
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">entries</span>
+                  <span className="text-sm font-medium text-gray-500 dark:text-gray-300 whitespace-nowrap">entries</span>
               </div>
               {/* Consistent results text - Show based on filteredUsers length even if loading */}
               <p className="text-sm text-gray-500 dark:text-gray-300">

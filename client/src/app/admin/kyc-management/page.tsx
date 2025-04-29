@@ -776,10 +776,444 @@
 
 
 
+// // frontend/src/app/admin/kyc-management/page.tsx
+// 'use client';
+
+// import React, { useState, useEffect, useCallback } from 'react';
+// import Link from 'next/link';
+// import kycAdminService from '../../services/admin/kyc.admin';
+// import type { PendingKycUser } from '../../services/admin/kyc.admin';
+// import { motion } from 'framer-motion';
+
+// // Icons
+// import {
+//   FileClock,
+//   ChevronRight,
+//   Inbox,
+//   AlertCircle,
+//   RefreshCw
+// } from 'lucide-react';
+// import { Calendar, SortAsc } from "lucide-react";
+
+// import { cn } from '@/lib/utils';
+// import { FiSearch } from 'react-icons/fi';
+// import { MdCancel } from 'react-icons/md';
+// import { Skeleton } from '@/components/ui/skeleton';
+
+// // --- Helper Functions ---
+// const formatDate = (dateInput?: string | Date): string => {
+//   if (!dateInput) return 'N/A';
+//   try {
+//     const date = new Date(dateInput);
+//     if (isNaN(date.getTime())) return 'Invalid Date';
+//     return date.toLocaleDateString('en-US', {
+//       year: 'numeric',
+//       month: 'short',
+//       day: 'numeric',
+//       hour: '2-digit',
+//       minute: '2-digit'
+//     });
+//   } catch (e) {
+//     return 'Invalid Date';
+//   }
+// };
+
+// const KycManagementPage: React.FC = () => {
+//   const [pendingUsers, setPendingUsers] = useState<PendingKycUser[]>([]);
+//   const [isLoading, setIsLoading] = useState<boolean>(true);
+//   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+//   const [error, setError] = useState<string | null>(null);
+//   const [searchQuery, setSearchQuery] = useState<string>('');
+//   const [sortBy, setSortBy] = useState<'name' | 'date'>('date');
+//   const [listKey, setListKey] = useState(0);
+//   const [isMobile, setIsMobile] = useState(false); // Add isMobile state back
+
+//   // --- Data Fetching ---
+//   const fetchPendingUsers = useCallback(async (isRefreshAction = false) => {
+//     if (isRefreshAction) {
+//       setIsRefreshing(true);
+//     } else {
+//       // Only set setIsLoading on initial load
+//       if (pendingUsers.length === 0) {
+//          setIsLoading(true);
+//       }
+//     }
+//     setError(null);
+
+//     try {
+//       // Simulate loading delay for skeleton visibility (remove in production)
+//       // await new Promise(resolve => setTimeout(resolve, 1500));
+
+//       const users = await kycAdminService.getPendingKycUsersAdmin();
+//       setPendingUsers(users);
+//       if (isRefreshAction) {
+//         setListKey(prevKey => prevKey + 1);
+//       }
+//     } catch (err: any) {
+//       console.error("Failed to fetch pending KYC users:", err);
+//       setError(err.message || 'An unknown error occurred while fetching applications.');
+//     } finally {
+//       setIsLoading(false);
+//       setIsRefreshing(false);
+//     }
+//   }, [pendingUsers.length]);
+
+
+//   const clearSearchQuery = () => {
+//     setSearchQuery("");
+//   };
+
+//   // --- Initial Data Fetch ---
+//   useEffect(() => {
+//     if (isLoading && pendingUsers.length === 0) {
+//        fetchPendingUsers(false);
+//     }
+//   }, [fetchPendingUsers, isLoading, pendingUsers.length]);
+
+//   // --- Responsive Check ---
+//   useEffect(() => {
+//     const checkMobileScreen = () => {
+//       // Use window.innerWidth directly inside the effect
+//       setIsMobile(typeof window !== 'undefined' && window.innerWidth < 640);
+//     };
+//     checkMobileScreen();
+//     window.addEventListener("resize", checkMobileScreen);
+//     return () => {
+//       window.removeEventListener("resize", checkMobileScreen);
+//     };
+//   }, []); // Empty dependency array ensures this runs once on mount and cleans up
+
+//   // --- Filtering and Sorting ---
+//   const filteredUsers = pendingUsers.filter(user => {
+//     if (!searchQuery) return true;
+//     const query = searchQuery.toLowerCase();
+//     return (
+//       (user.fullName?.toLowerCase().includes(query) || false) ||
+//       (user.email?.toLowerCase().includes(query) || false)
+//     );
+//   });
+
+//   const sortedUsers = [...filteredUsers].sort((a, b) => {
+//      if (sortBy === 'name') {
+//       return (a.fullName || '').localeCompare(b.fullName || '');
+//     } else {
+//       const dateA = a.kyc?.submittedAt ? new Date(a.kyc.submittedAt).getTime() : 0;
+//       const dateB = b.kyc?.submittedAt ? new Date(b.kyc.submittedAt).getTime() : 0;
+//       return dateB - dateA;
+//     }
+//   });
+
+//   // --- Render Functions ---
+
+//   // Error Message Display
+//   const renderError = () => (
+//     <div className="border-l-4 border-destructive bg-destructive/10 p-4 rounded-md mt-6" role="alert">
+//       <div className="flex items-center">
+//         <AlertCircle className="h-5 w-5 text-destructive mr-3 flex-shrink-0" />
+//         <div>
+//           <p className="text-sm font-medium text-destructive/90 dark:text-red-300">
+//              {error && pendingUsers.length > 0 ? 'Error Refreshing Data' : 'Error Loading Applications'}
+//           </p>
+//           <p className="mt-1 text-sm text-destructive/80 dark:text-red-400">{error}</p>
+//           <button
+//             onClick={() => fetchPendingUsers(pendingUsers.length > 0)}
+//             className="mt-2 text-sm font-medium text-destructive/90 hover:underline flex items-center gap-1 disabled:opacity-50"
+//             disabled={isRefreshing || isLoading}
+//           >
+//             <RefreshCw className={cn("h-3 w-3", (isLoading || isRefreshing) && "animate-spin")} /> Retry
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+
+//   // Empty State
+//   const renderEmptyState = () => (
+//      <div className="text-center py-16 px-6 border border-dashed border-border rounded-lg bg-card mt-6">
+//       <Inbox className="mx-auto h-12 w-12 text-neutral-900 dark:text-white mb-4" />
+//       <h3 className="text-lg font-medium text-neutral-900 dark:text-white">
+//           {searchQuery ? 'No Matches Found' : 'All Clear!'}
+//       </h3>
+//       <p className="mt-1 text-sm text-gray-500 dark:text-gray-300">
+//         {searchQuery
+//           ? 'No applications match your current search and filters.'
+//           : 'There are currently no KYC applications awaiting review.'}
+//       </p>
+//       {searchQuery && (
+//         <button
+//           onClick={() => setSearchQuery('')}
+//           className="mt-4 text-sm font-medium text-primary hover:underline"
+//         >
+//           Clear Search
+//         </button>
+//       )}
+//     </div>
+//   );
+
+//   // Render the user list OR its skeleton loading state
+//   const renderUserList = () => (
+//     <div
+//       key={listKey}
+//       className={cn(
+//         "border rounded-xl overflow-hidden mt-6",
+//         isRefreshing && !isLoading && "opacity-75 transition-opacity duration-300"
+//       )}
+//     >
+//       {/* Header: Skeleton or Actual */}
+//       <div className="px-6 py-4 flex sm:flex-row flex-col items-center justify-between gap-2 border-b bg-lightgray dark:bg-primarybox">
+//         {isLoading ? (
+//           <Skeleton className="h-6 w-36" />
+//         ) : (
+//           <h4 className="text-lg font-semibold">
+//             {filteredUsers.length}{" "}
+//             {filteredUsers.length === 1 ? "Application" : "Applications"}
+//           </h4>
+//         )}
+//         {isLoading ? (
+//           <Skeleton className="h-10 w-48 rounded-full" />
+//         ) : (
+//           // Sorting
+//           <div className="relative inline-flex items-center rounded-full bg-white dark:bg-secondarybox p-1 gap-1">
+//           {/* Date Button */}
+//           <button
+//             onClick={() => setSortBy('date')}
+//             // Make button relative, remove background/shadow from here
+//             className={cn(
+//               'relative text-sm px-4 py-2 font-medium rounded-full flex items-center gap-1.5 transition-colors duration-200 ease-linear focus:outline-none cursor-pointer z-10' // Ensure button content is above motion.div
+//               // Text color is handled below based on active state
+//             )}
+//           >
+//             {/* Animated Background - Conditionally rendered inside the ACTIVE button */}
+//             {sortBy === 'date' && (
+//               <motion.div
+//                 layoutId="activeSortBackground" // Unique ID for the layout animation
+//                 className="absolute inset-0 rounded-full bg-primary shadow-sm z-0" // Positioned behind content
+//                 transition={{ type: 'spring', stiffness: 300, damping: 30 }} // Customize animation
+//               />
+//             )}
+//             {/* Button Content - Needs relative positioning and z-index to be above the background */}
+//             <span
+//               className={cn(
+//                 'relative z-10 flex items-center gap-1.5', // Position content above background
+//                 sortBy === 'date'
+//                   ? 'text-neutral-900' // Active text color
+//                   : 'text-neutral-900 dark:text-white' // Inactive text color
+//               )}
+//             >
+//               <Calendar className="h-4 w-4" /> Date
+//             </span>
+//           </button>
+
+//           {/* Name Button */}
+//           <button
+//             onClick={() => setSortBy('name')}
+//             className={cn(
+//               'relative text-sm px-4 py-2 font-medium rounded-full flex items-center gap-1.5 transition-colors duration-200 ease-linear focus:outline-none cursor-pointer z-10'
+//             )}
+//           >
+//             {/* Animated Background - Conditionally rendered inside the ACTIVE button */}
+//             {sortBy === 'name' && (
+//               <motion.div
+//                 layoutId="activeSortBackground" // SAME layoutId as the other button
+//                 className="absolute inset-0 rounded-full bg-primary shadow-sm z-0"
+//                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+//               />
+//             )}
+//              {/* Button Content */}
+//             <span
+//               className={cn(
+//                 'relative z-10 flex items-center gap-1.5',
+//                 sortBy === 'name'
+//                   ? 'text-neutral-900' // Active text color
+//                   : 'text-neutral-900 dark:text-white' // Inactive text color
+//               )}
+//             >
+//               <SortAsc className="h-4 w-4" /> Name
+//             </span>
+//           </button>
+//         </div>
+//         )}
+//       </div>
+
+//       {/* List Body: Skeleton or Actual */}
+//       {isLoading ? (
+//         <div className="divide-y divide-border">
+//           {[...Array(4)].map((_, i) => (
+//             <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4">
+//               <div className="min-w-0 w-full space-y-2">
+//                 <div className="flex flex-wrap items-center gap-3 mb-2">
+//                   <Skeleton className="h-5 w-32" />
+//                   <Skeleton className="h-5 w-16 rounded-full" />
+//                 </div>
+//                 <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+//                   <Skeleton className="h-4 w-48" />
+//                   <Skeleton className="h-4 w-40 " />
+//                 </div>
+//               </div>
+//               <Skeleton className="h-9 w-full sm:w-28 rounded-full mt-3 sm:mt-0 flex-shrink-0" />
+//             </div>
+//           ))}
+//         </div>
+//       ) : (
+//         <motion.ul role="list" className="divide-y divide-border">
+//           {sortedUsers.map((user, index) => (
+//             <motion.li
+//               key={user._id}
+//               className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 hover:bg-lightgray/50 dark:hover:bg-secondarybox/30 transition-colors duration-150"
+//               initial={{ opacity: 0, y: 20 }}
+//               animate={{ opacity: 1, y: 0 }}
+//               transition={{ delay: index * 0.05, duration: 0.3 }}
+//             >
+//               {/* Actual user data */}
+//               <div className="min-w-0 w-full">
+//                 <div className="flex flex-wrap items-center gap-3 mb-2 sm:mb-1">
+//                   <p className="font-medium text-neutral-900 dark:text-white truncate">{user.fullName || "N/A"}</p>
+//                   <span className="rounded-full whitespace-nowrap px-3 py-1 text-xs font-medium text-yellow-600 bg-yellow-100 dark:bg-yellow-600/20 dark:text-yellow-400">Pending</span>
+//                 </div>
+//                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-sm text-gray-500 dark:text-gray-300">
+//                   <p className="truncate max-w-full sm:max-w-xs" title={user.email}>{user.email}</p>
+//                   <svg viewBox="0 0 2 2" className="h-1 w-1 fill-current hidden sm:block flex-shrink-0"><circle cx={1} cy={1} r={1} /></svg>
+//                   <p className="flex-shrink-0">Submitted: <time dateTime={user.kyc?.submittedAt?.toString()}>{formatDate(user.kyc?.submittedAt)}</time></p>
+//                 </div>
+//               </div>
+//               <Link href={`/admin/kyc-management/${user._id}`} className="mt-3 sm:mt-0 inline-flex items-center justify-center sm:justify-start gap-1 text-sm font-semibold px-4 py-2 text-neutral-900 dark:text-primary bg-primary dark:bg-primarybox hover:bg-primaryhover dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear sm:flex-shrink-0">
+//                 Review<span className="sr-only">, {user.fullName}</span>
+//                 <ChevronRight className="h-4 w-4" />
+//               </Link>
+//             </motion.li>
+//           ))}
+//         </motion.ul>
+//       )}
+//     </div>
+//   );
+
+//   // --- Renders the Search/Refresh Controls ---
+//   // This function now ONLY renders the actual controls, not skeletons
+//   const renderControls = () => (
+//     <div className="flex justify-between items-center gap-4 sm:w-auto w-full">
+//       {/* Search Input */}
+//       <div className="relative flex-1">
+//         <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+//           <FiSearch className="size-5 text-neutral-900 dark:text-white" aria-hidden="true" />
+//         </div>
+//         <input
+//           type="text"
+//           className="w-full rounded-full h-12.5 py-3 pl-12 pr-10 border transition-all ease-linear duration-75 focus:outline-0 focus:border-[#5f5f5f] placeholder:text-neutral-900 dark:placeholder:text-white"
+//           placeholder="Search by name or email..."
+//           value={searchQuery}
+//           onChange={(e) => setSearchQuery(e.target.value)}
+//           disabled={isRefreshing} // Only disable during refresh, as controls aren't shown during initial load
+//         />
+//         {searchQuery && (
+//           <button
+//             onClick={clearSearchQuery}
+//             className="absolute inset-y-0 right-3 flex items-center text-neutral-900 dark:text-primary focus:outline-none cursor-pointer"
+//             disabled={isRefreshing}
+//           >
+//             <MdCancel size={24} aria-hidden="true" />
+//           </button>
+//         )}
+//       </div>
+
+//       {/* Refresh Button */}
+//       <button
+//         onClick={() => fetchPendingUsers(true)}
+//         disabled={isRefreshing} // Only disable during refresh
+//         className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white sm:px-8 sm:py-3 h-12.5 sm:w-auto w-12.5 rounded-full transition-all duration-75 ease-linear disabled:opacity-60 disabled:cursor-not-allowed"
+//         title="Refresh KYC Application List"
+//       >
+//         <RefreshCw className={cn("size-5", isRefreshing && "animate-spin")} /> {/* Spin only on refresh */}
+//         {!isMobile && <span>Refresh</span>}
+//       </button>
+//     </div>
+//   );
+
+//   // --- Renders the List/Empty State/Refresh Error ---
+//    const renderListData = () => {
+//       // If loading, show the skeleton structure via renderUserList
+//       if (isLoading) {
+//           return renderUserList();
+//       }
+//       // If not loading, but there was an error fetching initial data
+//       if (error && pendingUsers.length === 0) {
+//          return renderError(); // Show full page error
+//       }
+//       // If not loading and no errors (or refresh error), show list or empty state
+//       return (
+//          <>
+//             {/* Use sortedUsers length to decide between empty state and list */}
+//             {sortedUsers.length === 0 ? renderEmptyState() : renderUserList()}
+//             {/* Display refresh error separately if data exists */}
+//             {error && pendingUsers.length > 0 && !isRefreshing && renderError()}
+//          </>
+//       );
+//   };
+
+//   // --- Component Return ---
+//   return (
+//     <div className="min-h-screen bg-white dark:bg-background">
+//       <div className="container mx-auto px-4 py-8">
+
+//         {/* Page Header: Skeleton or Actual */}
+//         <div className="mb-8">
+//           {isLoading ? (
+//             <>
+//               <Skeleton className="h-10 w-64 mb-3" /> {/* Skeleton for h1 */}
+//               <Skeleton className="h-4 sm:w-2/3 w-full" />    {/* Skeleton for p */}
+//             </>
+//           ) : (
+//             <>
+//               <h1 className="text-2xl font-bold leading-tight text-mainheading dark:text-white sm:text-3xl">
+//                 KYC Management
+//               </h1>
+//               <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">
+//                 Review and manage user Know Your Customer (KYC) applications.
+//               </p>
+//             </>
+//           )}
+//         </div>
+
+//         {/* Section Header with Controls: Skeleton or Actual */}
+//         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 border-b border-border pb-4">
+//            {isLoading ? (
+//              <>
+//                 {/* Skeleton for Section Title */}
+//                 <Skeleton className="h-8 w-48 flex-shrink-0" />
+//                 {/* Skeleton for Controls Area */}
+//                 <div className="flex justify-between items-center gap-4 sm:w-auto w-full">
+//                    <Skeleton className="h-12 sm:w-64 w-full rounded-full" /> {/* Search Skeleton */}
+//                    <Skeleton className="sm:h-12 sm:w-28 size-12 rounded-full flex-shrink-0" /> {/* Refresh Button Skeleton */}
+//                 </div>
+//              </>
+//            ) : (
+//              <>
+//                 {/* Actual Section Title */}
+//                 <h2 className="inline-flex items-center gap-2 text-xl font-bold text-mainheading dark:text-white flex-shrink-0">
+//                     <FileClock className="h-5 w-5 text-primary" />
+//                     Pending Applications
+//                 </h2>
+//                 {/* Actual Controls (Rendered only if no initial load error) */}
+//                 {!(error && pendingUsers.length === 0) && renderControls()}
+//             </>
+//            )}
+//         </div>
+
+//         {/* Main Content Area (List Data, Empty, or Error) */}
+//         {renderListData()}
+
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default KycManagementPage;
+
+
+
 // frontend/src/app/admin/kyc-management/page.tsx
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react'; // Added useMemo
 import Link from 'next/link';
 import kycAdminService from '../../services/admin/kyc.admin';
 import type { PendingKycUser } from '../../services/admin/kyc.admin';
@@ -791,14 +1225,19 @@ import {
   ChevronRight,
   Inbox,
   AlertCircle,
-  RefreshCw
+  RefreshCw,
+  Calendar,
+  SortAsc,
+  X // Import X for closing messages
 } from 'lucide-react';
-import { Calendar, SortAsc } from "lucide-react";
 
 import { cn } from '@/lib/utils';
 import { FiSearch } from 'react-icons/fi';
 import { MdCancel } from 'react-icons/md';
 import { Skeleton } from '@/components/ui/skeleton';
+
+// Import Pagination Component
+import Pagination from '../components/Pagination'; // Adjust path as needed
 
 // --- Helper Functions ---
 const formatDate = (dateInput?: string | Date): string => {
@@ -826,24 +1265,26 @@ const KycManagementPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<'name' | 'date'>('date');
   const [listKey, setListKey] = useState(0);
-  const [isMobile, setIsMobile] = useState(false); // Add isMobile state back
+  const [isMobile, setIsMobile] = useState(false);
+
+  // --- Pagination State ---
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(10); // Changed name for clarity
+  const pageSizeOptions: number[] = [10, 25, 50];
 
   // --- Data Fetching ---
   const fetchPendingUsers = useCallback(async (isRefreshAction = false) => {
     if (isRefreshAction) {
       setIsRefreshing(true);
     } else {
-      // Only set setIsLoading on initial load
+      // Only set setIsLoading on initial load or if users array is empty
       if (pendingUsers.length === 0) {
-         setIsLoading(true);
+        setIsLoading(true);
       }
     }
-    setError(null);
+    setError(null); // Clear error before fetch
 
     try {
-      // Simulate loading delay for skeleton visibility (remove in production)
-      // await new Promise(resolve => setTimeout(resolve, 1500));
-
       const users = await kycAdminService.getPendingKycUsersAdmin();
       setPendingUsers(users);
       if (isRefreshAction) {
@@ -852,11 +1293,15 @@ const KycManagementPage: React.FC = () => {
     } catch (err: any) {
       console.error("Failed to fetch pending KYC users:", err);
       setError(err.message || 'An unknown error occurred while fetching applications.');
+      // Don't clear pendingUsers on refresh error, only on initial load error
+      if (!isRefreshAction) {
+         setPendingUsers([]);
+      }
     } finally {
       setIsLoading(false);
       setIsRefreshing(false);
     }
-  }, [pendingUsers.length]);
+  }, [pendingUsers.length]); // Dependency on pendingUsers.length to handle initial load state
 
 
   const clearSearchQuery = () => {
@@ -865,15 +1310,17 @@ const KycManagementPage: React.FC = () => {
 
   // --- Initial Data Fetch ---
   useEffect(() => {
-    if (isLoading && pendingUsers.length === 0) {
-       fetchPendingUsers(false);
-    }
+     // Fetch only if loading is true AND there are no users yet.
+     // This prevents refetching just because isLoading was true momentarily.
+     if (isLoading && pendingUsers.length === 0) {
+        fetchPendingUsers(false);
+     }
   }, [fetchPendingUsers, isLoading, pendingUsers.length]);
+
 
   // --- Responsive Check ---
   useEffect(() => {
     const checkMobileScreen = () => {
-      // Use window.innerWidth directly inside the effect
       setIsMobile(typeof window !== 'undefined' && window.innerWidth < 640);
     };
     checkMobileScreen();
@@ -881,53 +1328,112 @@ const KycManagementPage: React.FC = () => {
     return () => {
       window.removeEventListener("resize", checkMobileScreen);
     };
-  }, []); // Empty dependency array ensures this runs once on mount and cleans up
+  }, []);
 
   // --- Filtering and Sorting ---
-  const filteredUsers = pendingUsers.filter(user => {
-    if (!searchQuery) return true;
-    const query = searchQuery.toLowerCase();
-    return (
-      (user.fullName?.toLowerCase().includes(query) || false) ||
-      (user.email?.toLowerCase().includes(query) || false)
-    );
-  });
+  const filteredUsers = useMemo(() => {
+    return pendingUsers.filter(user => {
+      if (!searchQuery) return true;
+      const query = searchQuery.toLowerCase();
+      return (
+        (user.fullName?.toLowerCase().includes(query) || false) ||
+        (user.email?.toLowerCase().includes(query) || false)
+      );
+    });
+  }, [pendingUsers, searchQuery]);
 
-  const sortedUsers = [...filteredUsers].sort((a, b) => {
-     if (sortBy === 'name') {
-      return (a.fullName || '').localeCompare(b.fullName || '');
-    } else {
-      const dateA = a.kyc?.submittedAt ? new Date(a.kyc.submittedAt).getTime() : 0;
-      const dateB = b.kyc?.submittedAt ? new Date(b.kyc.submittedAt).getTime() : 0;
-      return dateB - dateA;
+  const sortedUsers = useMemo(() => {
+    return [...filteredUsers].sort((a, b) => {
+      if (sortBy === 'name') {
+        return (a.fullName || '').localeCompare(b.fullName || '');
+      } else { // Default to date sort
+        const dateA = a.kyc?.submittedAt ? new Date(a.kyc.submittedAt).getTime() : 0;
+        const dateB = b.kyc?.submittedAt ? new Date(b.kyc.submittedAt).getTime() : 0;
+        return dateB - dateA; // Descending (latest first)
+      }
+    });
+  }, [filteredUsers, sortBy]);
+
+  // --- Reset Page on Filter/Sort Change ---
+  useEffect(() => {
+    if (currentPage !== 1) {
+        setCurrentPage(1);
     }
-  });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery, sortBy, itemsPerPage]); // Also reset on itemsPerPage change
+
+  // --- Pagination Calculation ---
+  const { currentUsers, totalPages } = useMemo(() => {
+      const indexOfLastUser = currentPage * itemsPerPage;
+      const indexOfFirstUser = indexOfLastUser - itemsPerPage;
+      const paginatedData = sortedUsers.slice(indexOfFirstUser, indexOfLastUser);
+      const pages = Math.ceil(sortedUsers.length / itemsPerPage);
+      return { currentUsers: paginatedData, totalPages: pages };
+  }, [sortedUsers, currentPage, itemsPerPage]);
+
+  // --- Effect to Adjust Page if it becomes invalid ---
+  useEffect(() => {
+      if (totalPages > 0 && currentPage > totalPages) {
+          setCurrentPage(totalPages); // Go to last available page
+      } else if (totalPages === 0 && currentPage !== 1) {
+          setCurrentPage(1); // Reset to 1 if no pages
+      }
+  }, [currentPage, totalPages]);
+
+  // --- Pagination Handlers ---
+  const paginate = (pageNumber: number) => {
+       if (pageNumber >= 1 && pageNumber <= totalPages) setCurrentPage(pageNumber);
+       else if (pageNumber < 1 && totalPages > 0) setCurrentPage(1);
+       else if (pageNumber > totalPages && totalPages > 0) setCurrentPage(totalPages);
+       // Do nothing if totalPages is 0
+  };
+  const goToPreviousPage = () => paginate(currentPage - 1);
+  const goToNextPage = () => paginate(currentPage + 1);
+
+  // --- Page Size Handler ---
+  const handlePageSizeChange = (size: number) => {
+      setItemsPerPage(size);
+      // No need to reset currentPage here, the useEffect above handles it
+  };
 
   // --- Render Functions ---
 
   // Error Message Display
   const renderError = () => (
-    <div className="border-l-4 border-destructive bg-destructive/10 p-4 rounded-md mt-6" role="alert">
-      <div className="flex items-center">
-        <AlertCircle className="h-5 w-5 text-destructive mr-3 flex-shrink-0" />
-        <div>
-          <p className="text-sm font-medium text-destructive/90 dark:text-red-300">
-             {error && pendingUsers.length > 0 ? 'Error Refreshing Data' : 'Error Loading Applications'}
-          </p>
-          <p className="mt-1 text-sm text-destructive/80 dark:text-red-400">{error}</p>
-          <button
-            onClick={() => fetchPendingUsers(pendingUsers.length > 0)}
-            className="mt-2 text-sm font-medium text-destructive/90 hover:underline flex items-center gap-1 disabled:opacity-50"
-            disabled={isRefreshing || isLoading}
-          >
-            <RefreshCw className={cn("h-3 w-3", (isLoading || isRefreshing) && "animate-spin")} /> Retry
-          </button>
+    <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        className="p-3 rounded-md bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700/50 flex justify-between items-center mt-4"
+        role="alert"
+    >
+       <div className="flex items-center gap-2">
+            <AlertCircle className="text-red-600 dark:text-red-400" size={18} />
+            <div>
+               <p className="text-sm font-medium text-red-800 dark:text-red-300">
+                 {error && pendingUsers.length > 0 ? 'Error Refreshing Data' : 'Error Loading Applications'}
+               </p>
+               <p className="mt-1 text-xs text-red-700 dark:text-red-400">{error}</p>
+            </div>
         </div>
-      </div>
-    </div>
+        <div className="flex items-center gap-2">
+           {/* Retry button only makes sense if there was an error */}
+           <button
+              onClick={() => fetchPendingUsers(pendingUsers.length > 0)} // Pass true if refreshing existing data
+              className="text-xs font-medium text-red-600 dark:text-red-300 hover:underline flex items-center gap-1 disabled:opacity-50"
+              disabled={isRefreshing || isLoading}
+            >
+              <RefreshCw className={cn("h-3 w-3", (isLoading || isRefreshing) && "animate-spin")} /> Retry
+            </button>
+            <button onClick={() => setError(null)} className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200">
+               <X size={16} />
+            </button>
+        </div>
+    </motion.div>
   );
 
-  // Empty State
+
+  // Empty State (Considers search query)
   const renderEmptyState = () => (
      <div className="text-center py-16 px-6 border border-dashed border-border rounded-lg bg-card mt-6">
       <Inbox className="mx-auto h-12 w-12 text-neutral-900 dark:text-white mb-4" />
@@ -936,12 +1442,12 @@ const KycManagementPage: React.FC = () => {
       </h3>
       <p className="mt-1 text-sm text-gray-500 dark:text-gray-300">
         {searchQuery
-          ? 'No applications match your current search and filters.'
+          ? 'No applications match your current search query.'
           : 'There are currently no KYC applications awaiting review.'}
       </p>
       {searchQuery && (
         <button
-          onClick={() => setSearchQuery('')}
+          onClick={clearSearchQuery}
           className="mt-4 text-sm font-medium text-primary hover:underline"
         >
           Clear Search
@@ -953,18 +1459,19 @@ const KycManagementPage: React.FC = () => {
   // Render the user list OR its skeleton loading state
   const renderUserList = () => (
     <div
-      key={listKey}
+      key={listKey} // Used for refresh animation trigger
       className={cn(
-        "border rounded-xl overflow-hidden mt-6",
+        "border rounded-xl overflow-hidden mt-6", // Keep mt-6 here
         isRefreshing && !isLoading && "opacity-75 transition-opacity duration-300"
       )}
     >
       {/* Header: Skeleton or Actual */}
-      <div className="px-6 py-4 flex sm:flex-row flex-col items-center justify-between gap-2 border-b bg-lightgray dark:bg-primarybox">
+      <div className="px-6 py-4 flex sm:flex-row flex-col items-center justify-between gap-4 border-b bg-lightgray dark:bg-primarybox">
         {isLoading ? (
           <Skeleton className="h-6 w-36" />
         ) : (
           <h4 className="text-lg font-semibold">
+            {/* Show total filtered count, not just current page count */}
             {filteredUsers.length}{" "}
             {filteredUsers.length === 1 ? "Application" : "Applications"}
           </h4>
@@ -972,73 +1479,68 @@ const KycManagementPage: React.FC = () => {
         {isLoading ? (
           <Skeleton className="h-10 w-48 rounded-full" />
         ) : (
-          // Sorting
-          <div className="relative inline-flex items-center rounded-full bg-white dark:bg-secondarybox p-1 gap-1">
-          {/* Date Button */}
-          <button
-            onClick={() => setSortBy('date')}
-            // Make button relative, remove background/shadow from here
-            className={cn(
-              'relative text-sm px-4 py-2 font-medium rounded-full flex items-center gap-1.5 transition-colors duration-200 ease-linear focus:outline-none cursor-pointer z-10' // Ensure button content is above motion.div
-              // Text color is handled below based on active state
-            )}
-          >
-            {/* Animated Background - Conditionally rendered inside the ACTIVE button */}
-            {sortBy === 'date' && (
-              <motion.div
-                layoutId="activeSortBackground" // Unique ID for the layout animation
-                className="absolute inset-0 rounded-full bg-primary shadow-sm z-0" // Positioned behind content
-                transition={{ type: 'spring', stiffness: 300, damping: 30 }} // Customize animation
-              />
-            )}
-            {/* Button Content - Needs relative positioning and z-index to be above the background */}
-            <span
-              className={cn(
-                'relative z-10 flex items-center gap-1.5', // Position content above background
-                sortBy === 'date'
-                  ? 'text-neutral-900' // Active text color
-                  : 'text-neutral-900 dark:text-white' // Inactive text color
-              )}
-            >
-              <Calendar className="h-4 w-4" /> Date
-            </span>
-          </button>
+          // Sorting Controls (unchanged)
+           <div className="relative inline-flex items-center rounded-full bg-white dark:bg-secondarybox p-1 gap-1">
+              {/* Date Button */}
+              <button
+                onClick={() => setSortBy('date')}
+                className={cn(
+                  'relative text-sm px-4 py-2 font-medium rounded-full flex items-center gap-1.5 transition-colors duration-200 ease-linear focus:outline-none cursor-pointer z-10'
+                )}
+              >
+                {sortBy === 'date' && (
+                  <motion.div
+                    layoutId="activeSortBackground"
+                    className="absolute inset-0 rounded-full bg-primary shadow-sm z-0"
+                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                  />
+                )}
+                <span
+                  className={cn(
+                    'relative z-10 flex items-center gap-1.5',
+                    sortBy === 'date'
+                      ? 'text-neutral-900'
+                      : 'text-neutral-900 dark:text-white'
+                  )}
+                >
+                  <Calendar className="h-4 w-4" /> Date
+                </span>
+              </button>
 
-          {/* Name Button */}
-          <button
-            onClick={() => setSortBy('name')}
-            className={cn(
-              'relative text-sm px-4 py-2 font-medium rounded-full flex items-center gap-1.5 transition-colors duration-200 ease-linear focus:outline-none cursor-pointer z-10'
-            )}
-          >
-            {/* Animated Background - Conditionally rendered inside the ACTIVE button */}
-            {sortBy === 'name' && (
-              <motion.div
-                layoutId="activeSortBackground" // SAME layoutId as the other button
-                className="absolute inset-0 rounded-full bg-primary shadow-sm z-0"
-                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              />
-            )}
-             {/* Button Content */}
-            <span
-              className={cn(
-                'relative z-10 flex items-center gap-1.5',
-                sortBy === 'name'
-                  ? 'text-neutral-900' // Active text color
-                  : 'text-neutral-900 dark:text-white' // Inactive text color
-              )}
-            >
-              <SortAsc className="h-4 w-4" /> Name
-            </span>
-          </button>
-        </div>
+              {/* Name Button */}
+              <button
+                onClick={() => setSortBy('name')}
+                className={cn(
+                  'relative text-sm px-4 py-2 font-medium rounded-full flex items-center gap-1.5 transition-colors duration-200 ease-linear focus:outline-none cursor-pointer z-10'
+                )}
+              >
+                {sortBy === 'name' && (
+                  <motion.div
+                    layoutId="activeSortBackground"
+                    className="absolute inset-0 rounded-full bg-primary shadow-sm z-0"
+                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                  />
+                )}
+                <span
+                  className={cn(
+                    'relative z-10 flex items-center gap-1.5',
+                    sortBy === 'name'
+                      ? 'text-neutral-900'
+                      : 'text-neutral-900 dark:text-white'
+                  )}
+                >
+                  <SortAsc className="h-4 w-4" /> Name
+                </span>
+              </button>
+            </div>
         )}
       </div>
 
       {/* List Body: Skeleton or Actual */}
       {isLoading ? (
+        // Skeleton Loading State (Unchanged)
         <div className="divide-y divide-border">
-          {[...Array(4)].map((_, i) => (
+          {[...Array(itemsPerPage)].map((_, i) => ( // Show skeletons based on itemsPerPage
             <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4">
               <div className="min-w-0 w-full space-y-2">
                 <div className="flex flex-wrap items-center gap-3 mb-2">
@@ -1055,16 +1557,17 @@ const KycManagementPage: React.FC = () => {
           ))}
         </div>
       ) : (
+        // Actual User List (Uses currentUsers for pagination)
         <motion.ul role="list" className="divide-y divide-border">
-          {sortedUsers.map((user, index) => (
+          {currentUsers.map((user, index) => (
             <motion.li
               key={user._id}
-              className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 hover:bg-lightgray/50 dark:hover:bg-secondarybox/30 transition-colors duration-150"
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05, duration: 0.3 }}
+              transition={{ delay: index * 0.05 }}
             >
-              {/* Actual user data */}
+              {/* User data */}
               <div className="min-w-0 w-full">
                 <div className="flex flex-wrap items-center gap-3 mb-2 sm:mb-1">
                   <p className="font-medium text-neutral-900 dark:text-white truncate">{user.fullName || "N/A"}</p>
@@ -1076,6 +1579,7 @@ const KycManagementPage: React.FC = () => {
                   <p className="flex-shrink-0">Submitted: <time dateTime={user.kyc?.submittedAt?.toString()}>{formatDate(user.kyc?.submittedAt)}</time></p>
                 </div>
               </div>
+              {/* Link to review page */}
               <Link href={`/admin/kyc-management/${user._id}`} className="mt-3 sm:mt-0 inline-flex items-center justify-center sm:justify-start gap-1 text-sm font-semibold px-4 py-2 text-neutral-900 dark:text-primary bg-primary dark:bg-primarybox hover:bg-primaryhover dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear sm:flex-shrink-0">
                 Review<span className="sr-only">, {user.fullName}</span>
                 <ChevronRight className="h-4 w-4" />
@@ -1088,7 +1592,6 @@ const KycManagementPage: React.FC = () => {
   );
 
   // --- Renders the Search/Refresh Controls ---
-  // This function now ONLY renders the actual controls, not skeletons
   const renderControls = () => (
     <div className="flex justify-between items-center gap-4 sm:w-auto w-full">
       {/* Search Input */}
@@ -1102,13 +1605,13 @@ const KycManagementPage: React.FC = () => {
           placeholder="Search by name or email..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          disabled={isRefreshing} // Only disable during refresh, as controls aren't shown during initial load
+          disabled={isRefreshing || isLoading} // Disable during initial load or refresh
         />
         {searchQuery && (
           <button
             onClick={clearSearchQuery}
             className="absolute inset-y-0 right-3 flex items-center text-neutral-900 dark:text-primary focus:outline-none cursor-pointer"
-            disabled={isRefreshing}
+            disabled={isRefreshing || isLoading}
           >
             <MdCancel size={24} aria-hidden="true" />
           </button>
@@ -1117,34 +1620,49 @@ const KycManagementPage: React.FC = () => {
 
       {/* Refresh Button */}
       <button
-        onClick={() => fetchPendingUsers(true)}
-        disabled={isRefreshing} // Only disable during refresh
+        onClick={() => fetchPendingUsers(true)} // Always trigger refresh
+        disabled={isRefreshing || isLoading} // Disable during initial load or refresh
         className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white sm:px-8 sm:py-3 h-12.5 sm:w-auto w-12.5 rounded-full transition-all duration-75 ease-linear disabled:opacity-60 disabled:cursor-not-allowed"
         title="Refresh KYC Application List"
       >
-        <RefreshCw className={cn("size-5", isRefreshing && "animate-spin")} /> {/* Spin only on refresh */}
+        <RefreshCw className={cn("size-5", (isRefreshing || isLoading) && "animate-spin")} />
         {!isMobile && <span>Refresh</span>}
       </button>
     </div>
   );
 
-  // --- Renders the List/Empty State/Refresh Error ---
+  // --- Renders the List/Empty State/Error Logic ---
    const renderListData = () => {
-      // If loading, show the skeleton structure via renderUserList
-      if (isLoading) {
+      // Initial Loading: Show skeletons for controls and list
+      if (isLoading && pendingUsers.length === 0) {
+          // Skeleton for list is handled within renderUserList
           return renderUserList();
       }
-      // If not loading, but there was an error fetching initial data
-      if (error && pendingUsers.length === 0) {
-         return renderError(); // Show full page error
+
+      // Initial Load Error: Show only the error message
+      if (error && pendingUsers.length === 0 && !isLoading) {
+         return renderError();
       }
-      // If not loading and no errors (or refresh error), show list or empty state
+
+      // Data Loaded (or refreshing): Show list or empty state
       return (
          <>
-            {/* Use sortedUsers length to decide between empty state and list */}
-            {sortedUsers.length === 0 ? renderEmptyState() : renderUserList()}
-            {/* Display refresh error separately if data exists */}
-            {error && pendingUsers.length > 0 && !isRefreshing && renderError()}
+            {/* Show Empty State if NO filtered users, otherwise show list */}
+            {filteredUsers.length === 0 ? renderEmptyState() : renderUserList()}
+
+            {/* Pagination Controls - Show only if more than one page AND not loading */}
+             {totalPages > 1 && !isLoading && (
+                 <Pagination
+                     currentPage={currentPage}
+                     totalPages={totalPages}
+                     paginate={paginate}
+                     goToPreviousPage={goToPreviousPage}
+                     goToNextPage={goToNextPage}
+                 />
+             )}
+
+            {/* Refresh Error - Show below list/pagination if data exists */}
+            {error && pendingUsers.length > 0 && !isLoading && !isRefreshing && renderError()}
          </>
       );
   };
@@ -1156,7 +1674,7 @@ const KycManagementPage: React.FC = () => {
 
         {/* Page Header: Skeleton or Actual */}
         <div className="mb-8">
-          {isLoading ? (
+          {isLoading && pendingUsers.length === 0 ? (
             <>
               <Skeleton className="h-10 w-64 mb-3" /> {/* Skeleton for h1 */}
               <Skeleton className="h-4 sm:w-2/3 w-full" />    {/* Skeleton for p */}
@@ -1175,14 +1693,14 @@ const KycManagementPage: React.FC = () => {
 
         {/* Section Header with Controls: Skeleton or Actual */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 border-b border-border pb-4">
-           {isLoading ? (
+           {isLoading && pendingUsers.length === 0 ? (
              <>
                 {/* Skeleton for Section Title */}
                 <Skeleton className="h-8 w-48 flex-shrink-0" />
                 {/* Skeleton for Controls Area */}
                 <div className="flex justify-between items-center gap-4 sm:w-auto w-full">
-                   <Skeleton className="h-12 sm:w-64 w-full rounded-full" /> {/* Search Skeleton */}
-                   <Skeleton className="sm:h-12 sm:w-28 size-12 rounded-full flex-shrink-0" /> {/* Refresh Button Skeleton */}
+                   <Skeleton className="h-12.5 sm:w-64 w-full rounded-full" /> {/* Search Skeleton */}
+                   <Skeleton className="sm:h-12.5 sm:w-28 size-12.5 rounded-full flex-shrink-0" /> {/* Refresh Button Skeleton */}
                 </div>
              </>
            ) : (
@@ -1194,9 +1712,34 @@ const KycManagementPage: React.FC = () => {
                 </h2>
                 {/* Actual Controls (Rendered only if no initial load error) */}
                 {!(error && pendingUsers.length === 0) && renderControls()}
-            </>
+             </>
            )}
         </div>
+
+        {/* Pagination and Page Size Controls - Render only when not loading initial data */}
+        {!isLoading && !(error && pendingUsers.length === 0) && filteredUsers.length > 0 && (
+            <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
+                <div className="flex items-center gap-2">
+                    <label htmlFor="itemsPerPage" className="text-sm font-medium text-gray-500 dark:text-gray-300 whitespace-nowrap">Show:</label>
+                    <select
+                        id="itemsPerPage"
+                        value={itemsPerPage}
+                        onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+                        className="block w-auto pl-3 pr-8 py-2 text-sm border rounded-md focus:outline-none bg-white dark:bg-primarybox dark:text-white cursor-pointer"
+                        disabled={isLoading || isRefreshing} // Disable while loading/refreshing
+                    >
+                        {pageSizeOptions.map(size => <option key={size} value={size} className="dark:bg-dropdowncolor cursor-pointer">{size}</option>)}
+                    </select>
+                    <span className="text-sm font-medium text-gray-500 dark:text-gray-300 whitespace-nowrap">entries</span>
+                </div>
+                <p className="text-sm text-gray-500 dark:text-gray-300">
+                    Showing {filteredUsers.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0}
+                    - {Math.min(currentPage * itemsPerPage, filteredUsers.length)}
+                    {" "}of {filteredUsers.length} results
+                    {totalPages > 1 && ` (Page ${currentPage} of ${totalPages})`}
+                </p>
+            </div>
+        )}
 
         {/* Main Content Area (List Data, Empty, or Error) */}
         {renderListData()}

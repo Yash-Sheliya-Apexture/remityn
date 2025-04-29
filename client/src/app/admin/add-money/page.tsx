@@ -5740,11 +5740,11 @@ const AdminPaymentsPage: React.FC = () => {
           {/* Pagination and Page Size Controls */}
           <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
              <div className="flex items-center gap-2">
-                  <label htmlFor="paymentsPerPage" className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Show:</label>
+                  <label htmlFor="paymentsPerPage" className="text-sm font-medium text-gray-500 dark:text-gray-300 whitespace-nowrap">Show:</label>
                   <select id="paymentsPerPage" value={paymentsPerPage} onChange={(e) => handlePageSizeChange(Number(e.target.value))} className="block w-auto pl-3 pr-8 py-2 text-sm border rounded-md focus:outline-none bg-white dark:bg-primarybox dark:text-white cursor-pointer">
                        {pageSizeOptions.map(size => <option key={size} value={size} className="dark:bg-dropdowncolor cursor-pointer">{size}</option>)}
                   </select>
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">entries</span>
+                  <span className="text-sm font-medium text-gray-500 dark:text-gray-300 whitespace-nowrap">entries</span>
               </div>
               <p className="text-sm text-gray-500 dark:text-gray-300">
                   Showing {filteredPayments.length > 0 ? (currentPage - 1) * paymentsPerPage + 1 : 0}
@@ -5766,7 +5766,7 @@ const AdminPaymentsPage: React.FC = () => {
           />
 
           {/* Pagination */}
-          {totalPages > 1 && (
+          {totalPages > 1 && !loadingPayments && (
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}

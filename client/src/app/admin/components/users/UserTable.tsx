@@ -463,7 +463,7 @@ const UserTable: React.FC<UserTableProps> = ({
   };
 
 
-  // --- UPDATED Loading Block ---
+  // Loading Skeleton
   if (loading) {
     return (
       <div className="rounded-xl border overflow-hidden dark:border-neutral-800">
