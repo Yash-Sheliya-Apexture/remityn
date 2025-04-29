@@ -2148,7 +2148,7 @@ const FaqSection: React.FC = () => {
 
         {/* Bottom Left: More Questions Box - Animated */}
         <motion.div
-          className="lg:col-span-2 md:col-span-3 md:self-end"
+          className="lg:col-span-2 md:col-span-3 md:self-end sticky top-0"
           variants={leftBlockVariants} // Re-use left block animation
         >
           <div className="flex flex-col items-start gap-5 rounded-2xl bg-lightgray dark:bg-white/5 p-4 lg:p-6">

@@ -375,7 +375,7 @@ const MobileDownloadSection: React.FC = () => {
             >
               {/* Image components are INSIDE the sliding wrapper */}
               <Image
-                src="/assets/images/send-money-light.svg"
+                src="/assets/images/send-money-light.png"
                 layout="fill" // Use fill layout within the motion wrapper
                 objectFit="contain" // Adjust object fit as needed
                 alt="Send money app screenshot - Light mode"
@@ -383,7 +383,7 @@ const MobileDownloadSection: React.FC = () => {
                 priority
               />
               <Image
-                src="/assets/images/send-money-dark.svg"
+                src="/assets/images/send-money-dark.png"
                 layout="fill"
                 objectFit="contain"
                 alt="Send money app screenshot - Dark mode"
