@@ -4101,8 +4101,6 @@ const Header: React.FC = () => {
 
           {/* Mobile Actions (Hamburger/Close) */}
           <div className="flex lg:hidden items-center gap-2">
-             {/* Theme toggle moved here for mobile visibility */}
-             <ThemeToggle location="header" />
             <button
               onClick={toggleMobileMenu}
               className="p-2.5 bg-gray/10 dark:bg-secondary cursor-pointer text-mainheading dark:text-primary rounded-full transition-colors"

@@ -1687,9 +1687,9 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
         {/* Bottom Auth Buttons (Dynamic) - You could animate these too if desired */}
         <div className="p-4 border-t">
           {/* Theme Toggle moved to Header for mobile */}
-          {/* <div className="mb-4 flex justify-center">
+          <div className="mb-4 flex justify-center">
             <ThemeToggle location="admin" />
-          </div> */}
+          </div>
           <div className="flex flex-col sm:flex-row items-center gap-3">
             {/* === Dynamic Auth Links (Mobile) === */}
             {authLoading ? (
