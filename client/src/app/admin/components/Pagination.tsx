@@ -400,8 +400,8 @@
 
 
 
-
 // components/Pagination.tsx
+"use client"
 import React, { useEffect } from 'react';
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { motion, AnimatePresence } from 'framer-motion'; // Import AnimatePresence
