@@ -276,11 +276,19 @@ const RemittanceSection: React.FC = () => {
           // Inherits trigger from parent motion.div
         >
           <Image
-            src="/assets/images/secure.svg"
+            src="/assets/images/Business-vision-amico-light.svg"
             width={500}
             height={500}
             alt="Secure money transfer illustration"
-            className="lg:h-full h-64"
+            className="lg:h-full h-64 block dark:hidden"
+            priority // Add priority if this is often above the fold
+          />
+          <Image
+            src="/assets/images/Business-vision-amico-dark.svg"
+            width={500}
+            height={500}
+            alt="Secure money transfer illustration"
+            className="lg:h-full h-64 hidden dark:block"
             priority // Add priority if this is often above the fold
           />
         </motion.div>

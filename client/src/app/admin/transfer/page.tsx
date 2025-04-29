@@ -2184,102 +2184,175 @@ const AdminTransfersPage: React.FC = () => {
 
 
     return (
-        <div className="container mx-auto px-4 py-8 relative">
-            <div className="space-y-6">
-                {/* Header */}
-                <div className="flex flex-wrap justify-between items-center gap-4">
-                    <h1 className="text-2xl font-bold text-mainheading dark:text-white">Transfer Management</h1>
-                    <div className="flex items-center gap-3 justify-end sm:w-auto w-full">
-                        {/* Search moved to Filter modal, keep buttons */}
-                        <button
-                            onClick={() => setShowFilterModal(true)}
-                            className="flex items-center justify-center cursor-pointer gap-2 bg-primary text-neutral-900 font-medium text-base px-8 py-3 h-12.5 sm:w-auto w-full rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear"
-                        >
-                            <Filter size={18} />
-                            Filters
-                        </button>
-                        <button
-                            onClick={refreshData}
-                            disabled={isRefreshing || loadingTransfers}
-                            className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
-                            title="Refresh transfer data"
-                        >
-                            <RefreshCw className={`size-5 ${isRefreshing ? "animate-spin" : ""}`} />
-                            <span>Refresh</span>
-                        </button>
-                    </div>
-                </div>
-
-                {/* Success/Error Messages (Keep as is) */}
-                <AnimatePresence>
-                    {successMessage && <motion.div /* ... */>{successMessage}</motion.div>}
-                </AnimatePresence>
-                <AnimatePresence>
-                    {error && <motion.div /* ... */>{error}</motion.div>}
-                </AnimatePresence>
-
-
-                {/* Pagination and Page Size Controls (Keep as is) */}
-                 <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
-                    <div className="flex items-center gap-2">
-                         <label htmlFor="transfersPerPage" className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Show:</label>
-                         <select id="transfersPerPage" value={transfersPerPage} onChange={(e) => handlePageSizeChange(Number(e.target.value))} className="block w-auto pl-3 pr-8 py-2 text-sm border rounded-md focus:outline-none bg-white dark:bg-primarybox dark:text-white cursor-pointer">
-                              {pageSizeOptions.map(size => <option key={size} value={size} className="dark:bg-dropdowncolor">{size}</option>)}
-                         </select>
-                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">entries</span>
-                    </div>
-                    <p className="text-sm text-gray-500 dark:text-gray-300">
-                         Showing {filteredTransfers.length > 0 ? (currentPage - 1) * transfersPerPage + 1 : 0}
-                         - {Math.min(currentPage * transfersPerPage, filteredTransfers.length)}
-                         {" "}of {filteredTransfers.length} results
-                         {totalPages > 1 && ` (Page ${currentPage} of ${totalPages})`}
-                     </p>
-                 </div>
-
-                {/* Transfers Table (Keep as is) */}
-                <TransferTable
-                    filteredTransfers={currentTransfers} // Pass paginated data
-                    loadingTransfers={loadingTransfers}
-                    getStatusColor={getStatusColor}
-                    toggleSort={toggleSort}
-                    sortField={sortField}
-                    sortDirection={sortDirection}
+      <div className="container mx-auto px-4 py-8 relative">
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="flex flex-wrap justify-between items-center gap-4">
+            <h1 className="text-2xl font-bold text-mainheading dark:text-white">
+              Transfer Management
+            </h1>
+            <div className="flex items-center gap-3 justify-end sm:w-auto w-full">
+              {/* Search moved to Filter modal, keep buttons */}
+              <button
+                onClick={() => setShowFilterModal(true)}
+                className="flex items-center justify-center cursor-pointer gap-2 bg-primary text-neutral-900 font-medium text-base px-8 py-3 h-12.5 sm:w-auto w-full rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear"
+              >
+                <Filter size={18} />
+                Filters
+              </button>
+              <button
+                onClick={refreshData}
+                disabled={isRefreshing || loadingTransfers}
+                className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Refresh transfer data"
+              >
+                <RefreshCw
+                  className={`size-5 ${isRefreshing ? "animate-spin" : ""}`}
                 />
-
-                {/* Pagination Component (Keep as is) */}
-                {totalPages > 1 && (
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        paginate={paginate}
-                        goToPreviousPage={goToPreviousPage}
-                        goToNextPage={goToNextPage}
-                    />
-                )}
+                <span>Refresh</span>
+              </button>
             </div>
+          </div>
 
-            {/* *** USE GENERIC FILTERS COMPONENT *** */}
-            <GenericFilters
-                showFilterModal={showFilterModal}
-                setShowFilterModal={setShowFilterModal}
-                initialFilters={currentFilterState} // Pass the mapped state
-                onApplyFilters={handleApplyFilters} // Pass the apply handler
-                onClearFilters={handleClearAllFilters} // Pass the clear handler
-                currencyOptions={currencyOptions} // Pass transfer currencies
-                statusOptions={statusOptions} // Pass transfer statuses (as strings)
-                // Customize labels/visibility for Transfers
-                idFilterLabel="Transfer ID"
-                idFilterPlaceholder="Filter by Transfer ID"
-                recipientFilterLabel="Recipient Name"
-                recipientFilterPlaceholder="Filter by Recipient"
-                showRecipientFilter={true} // Enable the recipient filter field
-                showIdFilter={true}
-                showAmountFilter={true}
-                showCurrencyFilter={true}
-                showStatusFilter={true}
-                showDateFilter={true}
+          {/* Success/Error Messages */}
+          <AnimatePresence>
+            {successMessage && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="p-3 rounded-md bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700/50 flex justify-between items-center"
+              >
+                <div className="flex items-center gap-2">
+                  <Check
+                    className="text-green-600 dark:text-green-400"
+                    size={18}
+                  />
+                  <p className="text-sm font-medium text-green-800 dark:text-green-300">
+                    {successMessage}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setSuccessMessage(null)}
+                  className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-200"
+                >
+                  <X size={18} />
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <AnimatePresence>
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="p-3 rounded-md bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700/50 flex justify-between items-center"
+              >
+                <div className="flex items-center gap-2">
+                  <X className="text-red-600 dark:text-red-400" size={18} />
+                  <p className="text-sm font-medium text-red-800 dark:text-red-300">
+                    {error}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setError(null)}
+                  className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200"
+                >
+                  <X size={18} />
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Pagination and Page Size Controls (Keep as is) */}
+          <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
+            <div className="flex items-center gap-2">
+              <label
+                htmlFor="transfersPerPage"
+                className="text-sm font-medium text-gray-500 dark:text-gray-300 whitespace-nowrap"
+              >
+                Show:
+              </label>
+              <select
+                id="transfersPerPage"
+                value={transfersPerPage}
+                onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+                className="block w-auto pl-3 pr-8 py-2 text-sm border rounded-md focus:outline-none bg-white dark:bg-primarybox dark:text-white cursor-pointer"
+              >
+                {pageSizeOptions.map((size) => (
+                  <option
+                    key={size}
+                    value={size}
+                    className="dark:bg-dropdowncolor"
+                  >
+                    {size}
+                  </option>
+                ))}
+              </select>
+              <span className="text-sm font-medium text-gray-500 dark:text-gray-300 whitespace-nowrap">
+                entries
+              </span>
+            </div>
+            <p className="text-sm text-gray-500 dark:text-gray-300">
+              Showing{" "}
+              {filteredTransfers.length > 0
+                ? (currentPage - 1) * transfersPerPage + 1
+                : 0}
+              -{" "}
+              {Math.min(
+                currentPage * transfersPerPage,
+                filteredTransfers.length
+              )}{" "}
+              of {filteredTransfers.length} results
+              {totalPages > 1 && ` (Page ${currentPage} of ${totalPages})`}
+            </p>
+          </div>
+
+          {/* Transfers Table (Keep as is) */}
+          <TransferTable
+            filteredTransfers={currentTransfers} // Pass paginated data
+            loadingTransfers={loadingTransfers}
+            getStatusColor={getStatusColor}
+            toggleSort={toggleSort}
+            sortField={sortField}
+            sortDirection={sortDirection}
+          />
+
+          {/* Pagination Component (Keep as is) */}
+          {totalPages > 1 && !loadingTransfers && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              paginate={paginate}
+              goToPreviousPage={goToPreviousPage}
+              goToNextPage={goToNextPage}
             />
-        </div >
+          )}
+        </div>
+
+        {/* *** USE GENERIC FILTERS COMPONENT *** */}
+        <GenericFilters
+          showFilterModal={showFilterModal}
+          setShowFilterModal={setShowFilterModal}
+          initialFilters={currentFilterState} // Pass the mapped state
+          onApplyFilters={handleApplyFilters} // Pass the apply handler
+          onClearFilters={handleClearAllFilters} // Pass the clear handler
+          currencyOptions={currencyOptions} // Pass transfer currencies
+          statusOptions={statusOptions} // Pass transfer statuses (as strings)
+          // Customize labels/visibility for Transfers
+          idFilterLabel="Transfer ID"
+          idFilterPlaceholder="Filter by Transfer ID"
+          recipientFilterLabel="Recipient Name"
+          recipientFilterPlaceholder="Filter by Recipient"
+          showRecipientFilter={true} // Enable the recipient filter field
+          showIdFilter={true}
+          showAmountFilter={true}
+          showCurrencyFilter={true}
+          showStatusFilter={true}
+          showDateFilter={true}
+        />
+      </div>
     );
 };
 

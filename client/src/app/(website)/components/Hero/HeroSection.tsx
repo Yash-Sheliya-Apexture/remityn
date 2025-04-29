@@ -17361,7 +17361,7 @@ const HeroSection: React.FC = () => {
 
           {/* Right Column: Calculator Card */}
           <motion.div
-            className="lg:w-xl lg:ml-auto w-full max-w-lg"
+            className="lg:w-xl lg:ml-auto mx-auto w-full max-w-lg"
             initial="hiddenRight"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
@@ -17461,7 +17461,7 @@ const HeroSection: React.FC = () => {
                         <TooltipContent
                           side="bottom"
                           sideOffset={5}
-                          className="bg-lightgray dark:bg-secondarybox text-white p-2 px-3 w-full rounded-2xl max-w-50 xl:max-w-lg"
+                          className="bg-lightgray dark:bg-secondarybox text-white p-2 px-3 w-full rounded-2xl max-w-50   xl:max-w-lg"
                         >
                           <p className="font-medium dark:text-gray-300 text-gray-700">
                             Current mid-market rates it's for comparison only propose.

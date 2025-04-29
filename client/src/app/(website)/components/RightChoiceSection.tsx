@@ -130,10 +130,18 @@ const RightChoiceSection: React.FC = () => {
           >
             <Image
               alt="Woman smiling and using a laptop for easy money transfers" // More descriptive alt text
-              src="/assets/images/right-choice-Illus.webp"
+              src="/assets/images/Sponsor-amico-light.svg"
               width={600}
               height={600}
-              className="lg:h-full lg:w-2/3 w-full size-76"
+              className="lg:h-full lg:w-2/3 w-full size-76 block dark:hidden"
+              priority // Consider adding priority if often above the fold
+            />
+            <Image
+              alt="Woman smiling and using a laptop for easy money transfers" // More descriptive alt text
+              src="/assets/images/Sponsor-amico-dark.svg"
+              width={600}
+              height={600}
+              className="lg:h-full lg:w-2/3 w-full size-76 hidden dark:block"
               priority // Consider adding priority if often above the fold
             />
           </motion.div>

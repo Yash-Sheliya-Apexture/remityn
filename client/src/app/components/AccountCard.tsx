@@ -616,7 +616,6 @@ const AccountCard: React.FC<AccountCardProps> = ({ username }) => {
     <>
       {/* Main card container */}
       <div className="bg-lightgray dark:bg-primarybox sm:p-8 p-4 rounded-3xl overflow-hidden relative">
-
         {/* Profile initials display area */}
         <div className="flex flex-col items-center mb-4">
           {/* Initials circle container - Added 'relative' for icon positioning */}
@@ -632,23 +631,24 @@ const AccountCard: React.FC<AccountCardProps> = ({ username }) => {
                 className="absolute -bottom-1 -right-1 bg-lightgray dark:bg-[#2E2E2E] p-0.5 rounded-full border-2" // Adjusted background/border for visibility
                 title="Verified Account" // Tooltip for accessibility
               >
-                 <BsFillCheckCircleFill
-                    className="size-5 text-green-500" // Changed to green, adjust size/color as needed
-                 />
+                <BsFillCheckCircleFill
+                  className="size-5 text-green-500" // Changed to green, adjust size/color as needed
+                />
               </div>
             )}
-             {/* --- End Verification Icon --- */}
-
+            {/* --- End Verification Icon --- */}
           </div>
         </div>
 
         {/* User details */}
-        <h1 className="lg:text-4xl md:text-3xl text-2xl text-center font-black font-mont text-mainheading dark:text-white uppercase tracking-wide break-word mb-2">
-          {username} {/* Display the username passed via props */}
-        </h1>
-        <p className="text-center text-gray-700 dark:text-gray-300 font-medium capitalize mb-6">
-          Your personal account
-        </p>
+        <div>
+          <h1 className="lg:text-4xl md:text-3xl text-2xl text-center font-black font-mont text-mainheading dark:text-white uppercase wrap-break-word mb-2">
+            {username} {/* Display the username passed via props */}
+          </h1>
+          <p className="text-center text-gray-700 dark:text-gray-300 font-medium capitalize mb-6">
+            Your personal account
+          </p>
+        </div>
 
         {/* Logout button */}
         <div className="text-center mt-6">

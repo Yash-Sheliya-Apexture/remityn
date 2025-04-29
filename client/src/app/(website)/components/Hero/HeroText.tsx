@@ -151,7 +151,7 @@ const HeroText = () => {
         </div>
 
         {/* Trustpilot-like rating */}
-        <div className="flex items-center justify-start space-x-4 pt-2">
+        <div className="flex items-center lg:justify-start justify-center space-x-4 pt-2">
           <div className="flex">
             {[1, 2, 3, 4, 5].map((star) => (
               <Award
