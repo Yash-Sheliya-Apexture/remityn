@@ -4111,7 +4111,7 @@ const Header: React.FC = () => {
               {isMobileMenuOpen ? (
                 <IoMdClose size={26} className="text-neutral-900 dark:text-primary"/>
               ) : (
-                <GiHamburgerMenu size={24} className="text-neutral-900 dark:text-primary"/>
+                <GiHamburgerMenu size={26} className="text-neutral-900 dark:text-primary"/>
               )}
             </button>
           </div>

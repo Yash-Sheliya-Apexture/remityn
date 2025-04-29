@@ -4738,12 +4738,12 @@ const TransferSteps: React.FC = () => {
           {/* Right Side: Content Panel */}
           <div
             className="relative lg:col-span-2 h-[500px] md:h-[550px] lg:h-[600px] min-h-[600px] md:min-h-[550px] lg:min-h-[600px] overflow-hidden"
-            // onMouseEnter={() => {
-            //   if (hasAnimatedIn.current) setIsContentHovered(true);
-            // }}
-            // onMouseLeave={() => {
-            //   if (hasAnimatedIn.current) setIsContentHovered(false);
-            // }}
+            onMouseEnter={() => {
+              if (hasAnimatedIn.current) setIsContentHovered(true);
+            }}
+            onMouseLeave={() => {
+              if (hasAnimatedIn.current) setIsContentHovered(false);
+            }}
           >
             {/* AnimatePresence for step transitions */}
             <AnimatePresence mode="wait">
