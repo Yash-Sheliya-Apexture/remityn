@@ -17347,7 +17347,7 @@ const HeroSection: React.FC = () => {
   return (
     <section className="Hero-Section bg-white dark:bg-background lg:py-10 py-5 px-4 overflow-hidden">
       <div className="container mx-auto">
-        <div className="flex flex-col lg:flex-row items-start gap-4">
+        <div className="flex flex-col md:flex-row">
           {/* Left Column */}
           <motion.div
             className="lg:w-1/2 space-y-5"
@@ -17361,7 +17361,7 @@ const HeroSection: React.FC = () => {
 
           {/* Right Column: Calculator Card */}
           <motion.div
-            className="lg:w-xl lg:ml-auto mx-auto w-full max-w-lg"
+            className="lg:w-xl lg:ml-auto w-full max-w-lg"
             initial="hiddenRight"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
@@ -17434,9 +17434,9 @@ const HeroSection: React.FC = () => {
                         <TooltipContent
                           side="bottom"
                           sideOffset={5}
-                          className="bg-lightgray dark:bg-secondarybox text-white p-2 px-3 w-full rounded-2xl max-w-60 xl:max-w-lg"
+                          className="bg-[#e4e4e4] dark:bg-secondarybox text-white p-2 px-3 w-full rounded-2xl max-w-60 xl:max-w-lg"
                         >
-                          <p className=" font-medium dark:text-gray-300 text-gray-700">
+                          <p className=" font-medium dark:text-gray-300 text-neutral-900">
                             Rate includes Our Rate of{" "}
                             {rateAdjustment.toFixed(2)}%. This is the rate
                             applied to your transfer.
@@ -17461,9 +17461,9 @@ const HeroSection: React.FC = () => {
                         <TooltipContent
                           side="bottom"
                           sideOffset={5}
-                          className="bg-lightgray dark:bg-secondarybox text-white p-2 px-3 w-full rounded-2xl max-w-50   xl:max-w-lg"
+                          className="bg-[#e4e4e4] dark:bg-secondarybox text-white p-2 px-3 w-full rounded-2xl max-w-50   xl:max-w-lg"
                         >
-                          <p className="font-medium dark:text-gray-300 text-gray-700">
+                          <p className="font-medium dark:text-gray-300 text-neutral-900">
                             Current mid-market rates it's for comparison only propose.
                           </p>
                         </TooltipContent>{" "}
@@ -17487,12 +17487,12 @@ const HeroSection: React.FC = () => {
                         animate="visible"
                         exit="exit"
                       >
-                        <div className="bg-lightgray dark:bg-white/5 rounded-xl lg:p-3 p-2 border-l-4 border-mainheading/50 dark:border-primary">
+                        <div className="bg-lightgray dark:bg-white/5 rounded-xl lg:p-3 p-2 border-l-4 border-primary">
                           <div className="flex items-center gap-2">
-                            <div className="dark:bg-primary bg-secondarybox rounded-full p-2 text-white dark:text-mainheading flex-shrink-0">
+                            <div className="bg-primary rounded-full p-2 flex-shrink-0">
                               <FaPiggyBank
                                 size={20}
-                                className="lg:size-6 size-4"
+                                className="lg:size-6 size-4 text-mainheading"
                               />
                             </div>
                             <div>
@@ -17533,7 +17533,7 @@ const HeroSection: React.FC = () => {
                         onChange={handleSendAmountChange}
                         onFocus={handleSendAmountFocus}
                         onKeyDown={handleSendAmountKeyDown}
-                        className="block w-full lg:h-16 p-3 text-main dark:text-white text-2xl font-bold focus:outline-none bg-transparent rounded-l-xl placeholder-gray-700 dark:placeholder-gray-300"
+                        className="block w-full h-16 p-3 text-main dark:text-white md:text-2xl text-xl font-bold focus:outline-none bg-transparent rounded-l-xl placeholder-gray-700 dark:placeholder-gray-300"
                         disabled={isLoading || !selectedSendCurrency}
                         aria-label="Amount to send"
                       />
@@ -17572,7 +17572,7 @@ const HeroSection: React.FC = () => {
                             placeholder="0.00"
                             value={receiveAmount}
                             readOnly
-                            className="block w-full h-full p-3 text-mainheading dark:text-gray-300 text-2xl font-bold focus:outline-none bg-transparent rounded-l-xl placeholder-gray-700 dark:placeholder-gray-300 cursor-default"
+                            className="block w-full h-16 p-3 text-mainheading dark:text-gray-300 md:text-2xl text-xl font-bold focus:outline-none bg-transparent rounded-l-xl placeholder-gray-700 dark:placeholder-gray-300 cursor-default"
                             aria-label="Amount recipient gets"
                           />
                         </motion.div>
