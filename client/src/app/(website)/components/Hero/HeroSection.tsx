@@ -292,7 +292,7 @@
 
 //               {/* You Send */}
 //               <div className="mb-3">
-//                 <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
+//                 <label className="block font-medium text-gray-500 dark:text-gray-300 mb-1">
 //                   You send exactly
 //                 </label>
 //                 <div className="relative">
@@ -17716,8 +17716,6 @@
 
 // export default HeroSection;
 
-
-
 // app/(website)/components/Hero/HeroSection.tsx
 "use client";
 import React, {
@@ -18263,9 +18261,9 @@ const HeroSection: React.FC = () => {
 
   // --- JSX Render ---
   return (
-    <section className="Hero-Section bg-white dark:bg-background lg:py-10 py-5 px-4 overflow-hidden">
-      <div className="container mx-auto">
-        <div className="flex flex-col md:flex-row">
+    <section className="Hero-Section bg-white dark:bg-background lg:py-10 py-5 overflow-hidden">
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col items-center lg:flex-row lg:gap-10 gap-6">
           {/* Left Column */}
           <motion.div
             className="lg:w-1/2 space-y-5"
@@ -18294,8 +18292,8 @@ const HeroSection: React.FC = () => {
                 <div className="space-y-6 animate-pulse">
                   {/* Skeleton structure */}
                   <div className="flex flex-col items-end space-y-2 mb-4 min-h-[60px]">
-                    <Skeleton className="lg:h-8 h-6 w-48 rounded-full" />
-                    <Skeleton className="lg:h-8 h-6 w-48 rounded-full" />
+                    <Skeleton className="lg:h-10 h-6 w-68 rounded-full" />
+                    <Skeleton className="lg:h-8 h-6 w-64 rounded-full" />
                   </div>
                   <div className="space-y-3">
                     <Skeleton className="h-4 w-32" />
@@ -18309,7 +18307,7 @@ const HeroSection: React.FC = () => {
                     <Skeleton className="h-4 w-24" />
                     <Skeleton className="lg:h-16 h-14 w-full rounded-xl" />
                   </div>
-                  <div className="border rounded-xl p-4 space-y-3 border-gray-300 dark:border-gray-700">
+                  <div className="border rounded-xl p-4 space-y-3">
                     <div className="flex justify-between items-center">
                       <Skeleton className="h-4 w-2/5" />
                       <Skeleton className="h-4 w-1/4" />
@@ -18330,6 +18328,7 @@ const HeroSection: React.FC = () => {
                   </div>
                 </div>
               )}
+
               {/* Loaded Content */}
               {!isLoading && !authLoading && (
                 <>
@@ -18345,23 +18344,23 @@ const HeroSection: React.FC = () => {
                         </div>
                       )}
 
-
                     {/* Our Rate */}
                     {
                       !error || error.startsWith("Rate unavailable") ? ( // Show rate or loading/unavailable unless major error
                         ourRate !== null ? (
                           <Tooltip>
                             <TooltipTrigger>
-                              <div className="font-semibold lg:p-2 p-1.5 lg:px-6 px-4 rounded-full bg-primary text-neutral-900 inline-flex items-center gap-1.5 cursor-default text-sm">
-                                <FaLock size={14} /> Our Rate: {displayOurRate}
+                              <div className="font-semibold p-1.5 px-5 rounded-full bg-primary text-mainheading flex items-center gap-1.5 cursor-default">
+                                <FaLock size={16} /> Our Rate: {displayOurRate}
                               </div>
                             </TooltipTrigger>
+
                             <TooltipContent
                               side="bottom"
                               sideOffset={5}
                               className="bg-[#e4e4e4] dark:bg-secondarybox text-white p-2 px-3 rounded-2xl max-w-60 xl:max-w-lg"
                             >
-                              <p className=" font-medium dark:text-gray-300 text-neutral-900 text-xs">
+                              <p className="font-medium dark:text-white text-neutral-900 text-xs">
                                 {" "}
                                 {/* Made text smaller */}
                                 Rate includes Our Rate of{" "}
@@ -18382,25 +18381,24 @@ const HeroSection: React.FC = () => {
                       ) : null /* Hide rate display if major error */
                     }
 
-
                     {/* Market Rate */}
                     {displayMarketRate &&
                       !error && ( // Hide if major error
                         <Tooltip>
                           <TooltipTrigger>
-                            <div className="font-medium text-xs lg:p-2.5 p-1.5 px-2 rounded-full bg-gray-100 dark:bg-white/5 text-mainheading dark:text-gray-400 inline-flex items-center gap-1.5 cursor-help">
+                            <div className="font-medium text-sm p-1.5 px-4 rounded-full bg-lightgray dark:bg-primarybox text-mainheading dark:text-white inline-flex items-center gap-1.5 cursor-help">
                               {" "}
                               {/* Adjusted background */}
-                              <FaInfoCircle size={14} /> Market Rate:{" "}
+                              <FaInfoCircle size={16} /> Market Rate:{" "}
                               {displayMarketRate}
                             </div>
                           </TooltipTrigger>
                           <TooltipContent
                             side="bottom"
                             sideOffset={5}
-                            className="bg-[#e4e4e4] dark:bg-secondarybox text-white p-2 px-3 rounded-2xl max-w-50   xl:max-w-lg"
+                            className="bg-[#e4e4e4] dark:bg-secondarybox text-white p-2 px-3 rounded-2xl max-w-50 xl:max-w-lg"
                           >
-                            <p className="font-medium dark:text-gray-300 text-neutral-900 text-xs">
+                            <p className="font-medium dark:text-white text-neutral-900 text-xs">
                               {" "}
                               {/* Made text smaller */}
                               Current mid-market rate. For comparison purposes
@@ -18410,7 +18408,6 @@ const HeroSection: React.FC = () => {
                         </Tooltip>
                       )}
                   </div>
-
 
                   {/* Savings Banner */}
                   <AnimatePresence>
@@ -18424,7 +18421,7 @@ const HeroSection: React.FC = () => {
                           animate="visible"
                           exit="exit"
                         >
-                          <div className="bg-lightgray dark:bg-white/5 rounded-xl lg:p-4 p-2 border-l-4 border-primary">
+                          <div className="bg-lightgray dark:bg-primarybox rounded-xl lg:p-4 p-3 border-l-4 border-primary">
                             <div className="flex items-center gap-2">
                               <div className="bg-primary rounded-full p-2 flex-shrink-0">
                                 <FaPiggyBank
@@ -18433,19 +18430,17 @@ const HeroSection: React.FC = () => {
                                 />
                               </div>
                               <div>
-                                <p className="font-bold text-primary-dark dark:text-primary-light lg:text-base text-sm flex items-center gap-1">
+                                <p className="font-bold text-neutral-900 dark:text-primary lg:text-base text-sm flex items-center gap-1">
                                   {" "}
                                   {/* Reduced gap */}
                                   <span>
                                     Save up to ₹{savingsAmount} with Wise
                                   </span>
                                   <TrendingUp
-                                    size={16} // Slightly smaller icon
-                                    className="text-green-600 dark:text-green-400"
+                                    size={18} // Slightly smaller icon
                                   />
                                 </p>
-                                <p className="lg:text-xs text-[11px] text-gray-700 dark:text-gray-300">
-                                  {" "}
+                                <p className="text-xs text-gray-500 dark:text-gray-300">
                                   {/* Smaller text */}
                                   Better rates than traditional banks!
                                 </p>
@@ -18461,14 +18456,14 @@ const HeroSection: React.FC = () => {
                     {/* Increased margin-bottom and added relative */}
                     <label
                       htmlFor="sendAmountInput"
-                      className="block text-gray-700 lg:text-base text-sm dark:text-gray-300 mb-1"
+                      className="block text-gray-500 lg:text-base text-sm dark:text-gray-300 mb-1"
                     >
                       You send exactly
                     </label>
-                    
+
                     {/* Input Container with Dynamic Border */}
                     <div
-                      className={`w-full border rounded-xl flex items-center justify-between transition-colors duration-200 ${
+                      className={`w-full border rounded-xl flex items-center justify-between transition-colors duration-75 ${
                         sendAmountError
                           ? "border-red-700" // Error state style
                           : "" // Normal state style
@@ -18478,12 +18473,12 @@ const HeroSection: React.FC = () => {
                         id="sendAmountInput"
                         type="text" // Keep as text to handle formatting if needed, inputMode="decimal" helps mobile
                         inputMode="decimal"
-                        placeholder={isAutoCycling ? " " : "0"} // Show placeholder only when not cycling
+                        placeholder={isAutoCycling ? " " : "0.00"} // Show placeholder only when not cycling
                         value={sendAmount}
                         onChange={handleSendAmountChange}
                         onFocus={handleSendAmountFocus}
                         onKeyDown={handleSendAmountKeyDown}
-                        className="block w-full h-16 p-3 text-main dark:text-white md:text-2xl text-xl font-bold focus:outline-none bg-transparent rounded-l-xl placeholder-gray-400 dark:placeholder-gray-500" // Adjusted placeholder color
+                        className="block w-full h-16 p-3 text-mainheading dark:text-white md:text-2xl text-xl font-bold focus:outline-none bg-transparent rounded-l-xl placeholder-gray-500 dark:placeholder-gray-300" // Adjusted placeholder color
                         disabled={isLoading || !selectedSendCurrency}
                         aria-label="Amount to send"
                         aria-invalid={!!sendAmountError} // Accessibility for invalid state
@@ -18501,7 +18496,6 @@ const HeroSection: React.FC = () => {
                       </div>
                     </div>
 
-                    
                     {/* Animated Error Message Display */}
                     <AnimatePresence>
                       {sendAmountError && (
@@ -18525,7 +18519,7 @@ const HeroSection: React.FC = () => {
                   <div className="mb-6">
                     <label
                       htmlFor="receiveAmountInput"
-                      className="block text-gray-700 lg:text-base text-sm dark:text-gray-300 mb-1"
+                      className="block text-gray-500 lg:text-base text-sm dark:text-gray-300 mb-1"
                     >
                       Recipient gets (approx.)
                     </label>
@@ -18560,13 +18554,13 @@ const HeroSection: React.FC = () => {
                                 : "" // Show 0.00 if send amount exists and no error, else empty
                             }
                             readOnly
-                            className="block w-full h-full p-3 text-mainheading dark:text-gray-300 md:text-2xl text-xl font-bold focus:outline-none bg-transparent rounded-l-xl placeholder-gray-500 dark:placeholder-gray-400 cursor-default"
+                            className="block w-full h-full p-3 text-mainheading dark:text-gray-300 md:text-2xl text-xl font-bold focus:outline-none bg-transparent rounded-l-xl placeholder-gray-500 dark:placeholder-gray-300 cursor-default"
                             aria-label="Amount recipient gets"
                           />
                         </motion.div>
-
-
                       </AnimatePresence>
+
+
                       <div className="flex items-center gap-2 w-auto px-10 py-3 flex-shrink-0 z-10 ml-auto relative h-full">
                         {/* Ensure consistent height and padding */}
                         <Image
@@ -18576,7 +18570,7 @@ const HeroSection: React.FC = () => {
                           height={24}
                           className="rounded-full"
                         />
-                        <p className="text-main dark:text-gray-200 font-semibold text-sm md:text-base">
+                        <p className="text-mainheading dark:text-gray-300 font-semibold text-sm md:text-base">
                           {" "}
                           {/* Responsive text */}
                           INR
@@ -18587,10 +18581,10 @@ const HeroSection: React.FC = () => {
 
                   {/* Paying With */}
                   <div className="mb-4">
-                    <label className="block text-gray-700 lg:text-base text-sm dark:text-gray-300 mb-1">
+                    <label className="block text-gray-500 lg:text-base text-sm dark:text-gray-300 mb-1">
                       Paying with
                     </label>
-                    <div className="p-3 h-16 border rounded-xl flex items-center justify-between text-gray-700 dark:text-gray-300 ">
+                    <div className="p-3 h-16 border rounded-xl flex items-center justify-between text-gray-500 dark:text-gray-300 ">
                       {" "}
                       {/* Consistent border */}
                       <div className="flex items-center gap-2">
@@ -18607,10 +18601,10 @@ const HeroSection: React.FC = () => {
                     {" "}
                     {/* Consistent border */}
                     <div className="flex justify-between">
-                      <span className="text-gray-700 dark:text-gray-300">
+                      <span className="text-gray-500 dark:text-gray-300">
                         Bank transfer fee
                       </span>
-                      <span className="text-gray-700 dark:text-gray-300 font-medium">
+                      <span className="text-gray-500 dark:text-gray-300 font-medium">
                         {" "}
                         {/* Added font-medium */}
                         {ourRate !== null &&
@@ -18623,7 +18617,7 @@ const HeroSection: React.FC = () => {
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-700 dark:text-gray-300">
+                      <span className="text-gray-500 dark:text-gray-300">
                         Wise fee{" "}
                         {ourRate !== null &&
                           selectedSendCurrency &&
@@ -18631,7 +18625,7 @@ const HeroSection: React.FC = () => {
                           !sendAmountError && // Conditional percentage display
                           `(${wiseFeePercentage.toFixed(2)}%)`}
                       </span>
-                      <span className="text-gray-700 dark:text-gray-300 font-medium">
+                      <span className="text-gray-500 dark:text-gray-300 font-medium">
                         {" "}
                         {/* Added font-medium */}
                         {ourRate !== null &&
@@ -18642,7 +18636,7 @@ const HeroSection: React.FC = () => {
                       </span>
                     </div>
                     <hr className="my-2 " /> {/* Consistent border */}
-                    <div className="flex justify-between text-gray-700 dark:text-gray-300 font-medium">
+                    <div className="flex justify-between text-gray-500 dark:text-gray-300 font-medium">
                       <span>Total included fees</span>
                       <span>
                         {ourRate !== null &&
@@ -18657,7 +18651,7 @@ const HeroSection: React.FC = () => {
                   </div>
 
                   {/* Arrival Info */}
-                  <div className="mt-2 ml-2 lg:text-sm text-xs text-gray-700 dark:text-gray-300 font-medium">
+                  <div className="mt-2 ml-2 lg:text-sm text-xs text-gray-500 dark:text-gray-300 font-medium">
                     <p>
                       Should arrive around{" "}
                       <span className="text-lime-500 font-bold">
@@ -18672,7 +18666,7 @@ const HeroSection: React.FC = () => {
                       <Link href="/send-money" passHref>
                         <button
                           type="button"
-                          className="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent font-medium rounded-full text-black dark:text-black bg-primary hover:bg-primary-hover focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background transition-colors duration-150 ease-in-out h-12 text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="w-full inline-flex items-center justify-center px-8 lg:py-3 py-2.5 h-12.5 border border-transparent capitalize cursor-pointer font-medium rounded-full text-mainheading bg-primary hover:bg-primaryhover transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
                           disabled={
                             isLoading ||
                             authLoading ||
@@ -18703,7 +18697,7 @@ const HeroSection: React.FC = () => {
                       <Link href="/auth/register" passHref>
                         <button
                           type="button"
-                          className="w-full inline-flex items-center lg:text-base text-sm justify-center px-6 lg:py-3 py-2.5 border border-transparent cursor-pointer hover:bg-primaryhover font-medium rounded-full text-mainheading bg-primary hover:bg-primary-hover transition-colors duration-300 ease-in-out lg:h-12 disabled:opacity-50 disabled:cursor-not-allowed" // Corrected h-12.5
+                          className="w-full inline-flex items-center lg:text-base justify-center px-8 lg:py-3 py-2.5 h-12.5 border capitalize border-transparent cursor-pointer hover:bg-primaryhover font-medium rounded-full text-mainheading bg-primary transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed" // Corrected h-12.5
                           disabled={isLoading || authLoading}
                           aria-disabled={isLoading || authLoading}
                         >

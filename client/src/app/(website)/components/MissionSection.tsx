@@ -212,7 +212,6 @@
 // export default MobileDownloadSection;
 
 "use client"; // Required for Framer Motion
-
 import Image from "next/image";
 import React from "react";
 import { FaStarHalfAlt, FaStar } from "react-icons/fa";
@@ -271,10 +270,10 @@ const imageSlideUpVariants = {
 const MobileDownloadSection: React.FC = () => {
   return (
     // Add overflow-hidden to prevent scrollbars during animation
-    <div className="lg:py-10 py-5 bg-white dark:bg-background px-4 overflow-hidden">
+    <div className="lg:py-10 py-5 bg-white dark:bg-background overflow-hidden">
       {/* Wrap the main section content with motion for triggering */}
       <motion.section
-        className="flex flex-col gap-8 md:gap-6 lg:flex-row lg:items-center lg:justify-between container mx-auto"
+        className="flex flex-col gap-8 md:gap-6 lg:flex-row lg:items-center lg:justify-between container mx-auto px-4"
         id="mobile-download"
         variants={sectionVariants}
         initial="hidden"
@@ -284,7 +283,7 @@ const MobileDownloadSection: React.FC = () => {
       >
         {/* Left Column: Text Content - Wrap with motion */}
         <motion.article
-          className="flex flex-col gap-4 md:gap-10 lg:w-1/2"
+          className="flex flex-col gap-4 lg:w-1/2"
           variants={leftBlockVariants} // Apply slide-from-left animation
           // Inherits trigger from parent section
         >
@@ -292,37 +291,37 @@ const MobileDownloadSection: React.FC = () => {
           <div className="flex items-center gap-4">
             <div className="flex items-center -space-x-2">
               <Image
-                src="/assets/images/Tom.jpg"
-                width={40}
-                height={40}
+                src="/assets/images/Sofia.png"
+                width={50}
+                height={50}
                 alt="User Avatar 1"
                 className="md:size-10 size-7 rounded-full border-2 border-white dark:border-neutral-800"
               />
               <Image
                 src="/assets/images/Lisa-Carter.jpg"
-                width={40}
-                height={40}
+                width={50}
+                height={50}
                 alt="User Avatar 2"
                 className="md:size-10 size-7 rounded-full border-2 border-white dark:border-neutral-800"
               />
               <Image
-                src="/assets/images/Amelia.jpg"
-                width={40}
-                height={40}
+                src="/assets/images/Liam.jpg"
+                width={50}
+                height={50}
                 alt="User Avatar 3"
                 className="md:size-10 size-7 rounded-full border-2 border-white dark:border-neutral-800"
               />
               <Image
                 src="/assets/images/Hannah.jpg"
-                width={40}
-                height={40}
+                width={50}
+                height={50}
                 alt="User Avatar 4"
                 className="md:size-10 size-7 rounded-full border-2 border-white dark:border-neutral-800"
               />
               <Image
-                src="/assets/images/Jake.jpg"
-                width={40}
-                height={40}
+                src="/assets/images/Emily.avif"
+                width={50}
+                height={50}
                 alt="User Avatar 5"
                 className="md:size-10 size-7 rounded-full border-2 border-white dark:border-neutral-800"
               />
@@ -331,11 +330,11 @@ const MobileDownloadSection: React.FC = () => {
             {/* Star rating and user count */}
             <div className="space-y-1">
               <div className="flex">
-                <FaStar className="lg:size-5 size-3 text-yellow-500 dark:text-yellow-400" />
-                <FaStar className="lg:size-5 size-3 text-yellow-500 dark:text-yellow-400" />
-                <FaStar className="lg:size-5 size-3 text-yellow-500 dark:text-yellow-400" />
-                <FaStar className="lg:size-5 size-3 text-yellow-500 dark:text-yellow-400" />
-                <FaStarHalfAlt className="lg:size-5 size-3 text-yellow-500 dark:text-yellow-400" />
+                <FaStar className="lg:size-5 size-3 text-yellow-500 dark:text-white" />
+                <FaStar className="lg:size-5 size-3 text-yellow-500 dark:text-white" />
+                <FaStar className="lg:size-5 size-3 text-yellow-500 dark:text-white" />
+                <FaStar className="lg:size-5 size-3 text-yellow-500 dark:text-white" />
+                <FaStarHalfAlt className="lg:size-5 size-3 text-yellow-500 dark:text-white" />
               </div>
               <p className="text-xs font-normal text-mainheading dark:text-white capitalize">
                 Join +500 happy users
@@ -344,32 +343,39 @@ const MobileDownloadSection: React.FC = () => {
           </div>
 
           {/* Text Content: Heading and Paragraph */}
-          <div className="flex flex-col md:gap-5">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+          <div className="flex flex-col md:gap-5 gap-4">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase">
               Send Money to India
               <span className="text-primary"> with Wise </span>
             </h1>
 
-            <p className="lg:text-lg sm:text-base text-sm font-medium text-gray-700 leading-relaxed dark:text-gray-300 mt-5">
+            <p className="lg:text-lg text-base text-gray-500 dark:text-gray-300">
               Wise makes sending money to India simple, reliable, and
               stress-free. Whether you're supporting your family, paying for
               education, or managing personal commitments, we ensure your money
               reaches where it matters most — quickly and securely
             </p>
+
+            <div className="w-full send-monentbtn">
+              <button className="bg-primary hover:bg-primaryhover transition-all ease-linear duration-75 cursor-pointer text-neutral-900 font-medium rounded-full px-6 lg:py-3 py-2 h-12.5 inline-block w-fit">
+                Send Money
+              </button>
+            </div>
+
           </div>
         </motion.article>
 
         {/* Right Column: Container for Phone Image - Wrap with motion for FADE IN */}
         <motion.aside
-          className="flex flex-1 items-center justify-center lg:pl-10"
+          className="flex flex-1 items-center justify-center"
           variants={rightContainerVariants} // Apply simple fade-in animation
           // Inherits trigger from parent section
         >
           {/* Container for phone image and SVG waves - THIS needs overflow:hidden */}
-          <div className="relative flex aspect-square w-full max-w-md lg:max-w-none flex-shrink-0 justify-center overflow-hidden rounded-bl-lg rounded-br-3xl rounded-tl-3xl rounded-tr-lg bg-gray/30 dark:bg-white/5 dark:border pt-12 md:h-[572px] md:w-[500px] md:rounded-bl-[30px] md:rounded-br-[120px] md:rounded-tl-[120px] md:rounded-tr-[30px]">
+          <div className="relative flex aspect-square w-full max-w-md lg:max-w-none flex-shrink-0 justify-center overflow-hidden rounded-bl-3xl rounded-br-[100px] rounded-tl-[100px] rounded-tr-3xl bg-gray/30 dark:bg-white/5 dark:border lg:pt-10 pt-5 md:h-[572px] md:w-[500px] md:rounded-bl-[30px] md:rounded-br-[120px] md:rounded-tl-[120px] md:rounded-tr-[30px]">
             {/* === Motion Wrapper for ONLY the Images === */}
             <motion.div
-              className="relative z-10 w-[70%] h-auto md:h-[550px] md:w-[450px]" // Position wrapper
+              className="relative z-10 w-full h-auto md:h-[550px] md:w-[450px]" // Position wrapper
               variants={imageSlideUpVariants} // Apply slide-up animation HERE
               // Inherits trigger from parent section
             >

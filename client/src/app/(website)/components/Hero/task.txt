@@ -1,2 +1,2 @@
 1 ->  Website  hero-Section added validation for amount with animation create now.
-2 -> 
+2 ->  Website  all 

@@ -2780,7 +2780,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { FaStar, FaStarHalfAlt } from "react-icons/fa";
-import { useRouter, usePathname } from "next/navigation";
+import {  usePathname } from "next/navigation";
 import { motion } from "framer-motion"; // Import motion
 
 // --- StarRating Component (No changes needed) ---
@@ -2853,7 +2853,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
           </div>
         </div>
       </div>
-      <div className="text-gray-700 dark:text-gray-300 leading-relaxed font-normal mt-4 md:mt-6 text-sm lg:text-lg">
+      <div className="text-gray-500 dark:text-gray-300 mt-4 md:mt-6 text-sm lg:text-lg leading-normal">
         {comment}
       </div>
     </div>
@@ -3031,14 +3031,14 @@ const ReviewCards: React.FC = () => {
           );
         }
       });
-    }, 500); // Delay duplication slightly
+    }, 300); // Delay duplication slightly
 
     return () => clearTimeout(timer); // Cleanup timer
     // Rerun if data changes, loading state changes, or error state changes
   }, [loading, error, reviewGroups]);
 
   if (loading) {
-    return <div className="text-center p-10">Loading reviews...</div>;
+    return <div className="text-center p-6">Loading reviews please you can wait...</div>;
   }
 
   if (error) {
@@ -3060,25 +3060,26 @@ const ReviewCards: React.FC = () => {
   const isHomePage = pathname === "/";
 
   const heading = isHomePage ? (
-    <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+    <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase">
       Honest Reviews
       <span className="text-primary"> Real Travelers Like You </span>
     </h1>
   ) : (
-    <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+    <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase">
       Trusted Currency Exchange
       <span className="text-primary"> Feedback & Rating </span>
     </h1>
   );
 
   const paragraph = isHomePage ? (
-    <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-700 leading-relaxed dark:text-gray-300 mt-5 text-left">
-      Hear directly from globetrotters who’ve trusted us for their currency
-      exchange needs. From smooth transactions to unbeatable rates, see why
-      travelers around the world choose us every time.
+    <p className="lg:text-lg text-base text-gray-500 dark:text-gray-300 mt-5 max-w-full md:max-w-3xl">
+      Discover what real travelers have to say about their experiences with our
+      currency exchange services. From frequent flyers to first-time tourists,
+      our customers share honest feedback about fast, reliable, and secure
+      transactions.
     </p>
   ) : (
-    <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-700 leading-relaxed dark:text-gray-300 mt-5 text-left">
+    <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-700 dark:text-gray-300 mt-5 text-left">
       Read honest customer reviews about our currency exchange services. See why
       travelers, investors, and expats trust us for fast, reliable, and
       competitive rates. Our clients appreciate the transparency, excellent
@@ -3088,18 +3089,18 @@ const ReviewCards: React.FC = () => {
 
   return (
     <motion.section
-      className="Reviews py-10 bg-white dark:bg-background px-4 overflow-hidden" // Added overflow-hidden
+      className="Reviews lg:py-10 py-5 bg-white dark:bg-background overflow-hidden" // Added overflow-hidden
       id="review"
       variants={sectionVariants}
       initial="hidden"
       whileInView="visible"
       // *** FIX: Set once to true for single animation trigger ***
-      viewport={{ amount: 0.1, once: true }} // Trigger when 10% visible, animate ONLY ONCE
+      viewport={{ amount: 0.2, once: true }} // Trigger when 10% visible, animate ONLY ONCE
     >
-      <div className="container mx-auto">
-        {/* Text Block Animation */}
+      <div className="container mx-auto px-4">
+        {/* Text Block Animation */} 
         <motion.div
-          className="w-full mb-10"
+          className="w-full mb-16"
           variants={textBlockVariants}
           // Inherits trigger from parent section
         >
@@ -3126,7 +3127,7 @@ const ReviewCards: React.FC = () => {
               >
                 {/* Actual Column Structure with Marquee Ref */}
                 <div
-                  className={`lg:marquee-column marquee-column-${index + 1}`}
+                  className={`marquee-column marquee-column-${index + 1}`}
                   ref={(el: HTMLDivElement | null) => {
                     // Assign the ref to the correct index
                     if (el) columnRefs.current[index] = el;
@@ -3159,38 +3160,7 @@ const ReviewCards: React.FC = () => {
         </motion.div>{" "}
         {/* End grid container */}
       </div>
-
-      {/* KEEP the marquee CSS */}
-      <style jsx global>{`
-        .marquee-column {
-          overflow: hidden;
-          height: 100%;
-          position: relative;
-        }
-
-        .marquee-content {
-          /* Ensure it can be positioned absolutely if needed, but transform is better */
-          /* display: block; /* Or flex if needed */
-          /* position: relative; /* Keep relative for transform */
-          animation: scroll-up 40s linear infinite; /* Slower animation? Adjust duration as needed */
-        }
-
-        .marquee-column:hover .marquee-content {
-          animation-play-state: paused;
-        }
-
-        /* Ensure enough content for smooth looping */
-        @keyframes scroll-up {
-          0% {
-            transform: translateY(0%);
-          }
-          100% {
-            /* This assumes duplication fills at least twice the height. */
-            /* If duplication logic or content height changes, this might need adjustment. */
-            transform: translateY(-50%);
-          }
-        }
-      `}</style>
+    
     </motion.section>
   );
 };
