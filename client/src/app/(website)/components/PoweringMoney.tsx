@@ -428,6 +428,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({
   imageSrc = "/assets/images/Tech-recruiter-524x525.jpg",
   imageAlt = "Person smiling while using a laptop and wearing headphones",
 }) => {
+  
   const { user } = useAuth();
   const buttonText = user ? "Go to Dashboard" : "Create A Free Account";
   const buttonLink = user ? "/dashboard" : "/auth/register";
