@@ -2316,23 +2316,6 @@ const CountryCard = () => {
           ))}
 
           {/* Add Currency Card */}
-          {/* <div
-            onClick={() => setIsModalOpen(true)}
-            className="p-6 bg-lightgray dark:bg-primarybox/70 hover:dark:bg-secondarybox rounded-2xl flex flex-col justify-center items-center w-64 shrink-0 cursor-pointer hover:bg-neutral-200/70 transition-all duration-150 ease-linear border-2 border-dashed border-neutral-900 dark:border-neutral-300 h-[176px] group" // Added group for hover effect on icon
-            style={{ scrollSnapAlign: "start" }}
-            role="button"
-            tabIndex={0}
-            onKeyPress={(e) => e.key === "Enter" && setIsModalOpen(true)}
-            aria-label="Add another currency account"
-          >
-            <div className="rounded-full border-2 border-neutral-900 dark:border-white p-2 flex items-center justify-center mb-2 transition-transform duration-150 ease-in-out">
-              <GoPlus size={30} className="text-neutral-900 dark:text-white" />
-            </div>
-            <span className="text-center text-sm text-neutral-500 dark:text-white px-2">
-              Add another currency to your account.
-            </span>
-          </div> */}
-
           <div
             onClick={() => setIsModalOpen(true)}
             className="p-6 bg-lightgray dark:bg-primarybox/70 hover:dark:bg-secondarybox rounded-2xl flex flex-col justify-between items-start w-64 shrink-0 cursor-pointer hover:bg-neutral-200/70 transition-all duration-150 ease-linear border-2 border-dashed border-neutral-900 dark:border-neutral-300 h-[176px] group" // Added group for hover effect on icon

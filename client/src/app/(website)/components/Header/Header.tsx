@@ -4289,7 +4289,7 @@ const Header: React.FC = () => {
   const topContent = (
     <div className="space-y-4">
       <FaRocket className="lg:size-10 size-6 text-mainheading dark:text-primary " />
-      <p className="text-gray-700 max-w-sm leading-normal dark:text-gray-300">
+      <p className="text-gray-500 max-w-sm leading-normal dark:text-gray-300">
         Learn how millions of customers move their money globally right.
       </p>
     </div>
@@ -4297,11 +4297,11 @@ const Header: React.FC = () => {
 
   const getLinkClasses = (href: string, isFeatureDropdown = false): string => {
     const baseClasses =
-      "px-4 py-1.5 rounded-full font-medium transition-colors duration-300 ease-in-out";
+      "px-4 py-1.5 rounded-full font-medium transition-all duration-75 ease-linear";
     const inactiveClasses =
-      "text-main dark:text-white dark:hover:text-primary hover:bg-lightgray hover:dark:bg-secondary";
+      "text-mainheading dark:text-white dark:hover:text-primary hover:bg-lightgray hover:dark:bg-primarybox";
     const activeClasses =
-      "bg-lightgray dark:bg-secondary text-mainheading dark:text-primary";
+      "bg-lightgray dark:bg-primarybox text-mainheading dark:text-primary";
 
     let isActive = false;
     const isRootPath = pathname === "/";
@@ -4436,7 +4436,7 @@ const Header: React.FC = () => {
             <div className="flex lg:hidden items-center gap-2">
               <button
                 onClick={toggleMobileMenu}
-                className="p-2.5 bg-gray/10 dark:bg-secondary cursor-pointer text-mainheading dark:text-primary rounded-full transition-colors"
+                className="p-2.5 bg-lightgray dark:bg-primarybox cursor-pointer text-mainheading dark:text-primary rounded-full transition-colors"
                 aria-label={isMobileMenuOpen ? "Close Menu" : "Open Menu"}
                 aria-expanded={isMobileMenuOpen}
                 aria-controls="mobile-menu-content"

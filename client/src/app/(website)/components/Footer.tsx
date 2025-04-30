@@ -1353,13 +1353,320 @@
 
 // export default Footer;
 
+// // app/components/Footer.tsx
+// "use client";
+// import Link from "next/link";
+// import Image from "next/image";
+// import { useState, useEffect } from "react";
+// import { HiX } from "react-icons/hi";
+// import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
+// import { IconType } from "react-icons";
+// import { motion, AnimatePresence } from "framer-motion";
+// import { useAppContext } from "../../contexts/WebsiteAppContext"; // Adjust path if needed
+// import { useRouter } from "next/navigation";
+// import { IoLogoWhatsapp } from "react-icons/io";
+// import { FaTelegram } from "react-icons/fa";
+// import { ReactNode } from "react";
+// import { FiChevronDown, FiChevronUp } from "react-icons/fi";
+
+// interface FooterLink {
+//   href: string;
+//   label: string | ReactNode;
+// }
+
+// interface SocialLink extends FooterLink {
+//   icon: IconType;
+// }
+
+// interface FooterSection {
+//   title: string;
+//   links?: FooterLink[];
+//   socialLinks?: SocialLink[];
+// }
+
+// interface FooterData {
+//   sections: FooterSection[];
+//   currencyConverters: string[];
+//   disclaimer: string;
+// }
+
+// const Footer: React.FC = () => {
+//   const footerData: FooterData = {
+//     sections: [
+//       {
+//         title: "Company",
+//         links: [
+//           { href: "/", label: "Home" },
+//           { href: "/about-us", label: "About" },
+//           { href: "/features", label: "Features" },
+//           { href: "/reviews", label: "Reviews" },
+//         ],
+//       },
+//       {
+//         title: "Help",
+//         links: [
+//           { href: "/privacy-policy", label: "Privacy Policy" },
+//           {
+//             href: "/terms-and-conditions",
+//             label: <>Terms and Conditions</>,
+//           },
+//           { href: "/faqs", label: "FAQs" }, // Assuming FAQ might be a section on the page
+//         ],
+//       },
+//     ],
+
+//     currencyConverters: [
+//       "USD to INR",
+//       "AED to INR",
+//       "AUD to INR",
+//       "CAD to INR",
+//       "EUR to INR",
+//     ],
+//     disclaimer:
+//       "Wise is authorised by the Financial Conduct Authority under the Electronic Money Regulations 2011, Firm Reference 900507, for the issuing of electronic money. Wise works with a local bank partner to offer the service in India with the approval of the Reserve Bank of India.",
+//   };
+
+//   // --- STATE ---
+//   // Start with "Company" open by default for mobile experience
+//   const [openDropdown, setOpenDropdown] = useState<string | null>("Company");
+//   const [isMobile, setIsMobile] = useState(false);
+//   // --- END STATE ---
+
+//   const { setSelectedSendCurrency } = useAppContext();
+//   const router = useRouter();
+
+//   // --- TOGGLE FUNCTION ---
+//   // This function correctly handles opening and closing
+//   const toggleDropdown = (title: string) => {
+//     setOpenDropdown((currentOpen) => (currentOpen === title ? null : title));
+//   };
+//   // --- END TOGGLE FUNCTION ---
+
+//   // --- EFFECT FOR RESIZE ---
+//   useEffect(() => {
+//     // Function to check window size and update isMobile state
+//     const handleResize = () => {
+//       const mobileCheck = window.innerWidth < 768; // md breakpoint
+//       setIsMobile(mobileCheck);
+//       // Optional: If resizing TO desktop, you might want to ensure all accordions appear open
+//       // by setting openDropdown to null, but the conditional rendering already handles visibility.
+//       // We don't need to force 'Company' open here on every resize, only check the screen size.
+//     };
+
+//     // Initial check on component mount
+//     handleResize();
+
+//     // Add resize event listener
+//     window.addEventListener("resize", handleResize);
+
+//     // Cleanup listener on component unmount
+//     return () => {
+//       window.removeEventListener("resize", handleResize);
+//     };
+//   }, []); // Empty dependency array: runs only once on mount for setup and cleanup on unmount
+//   // --- END EFFECT ---
+
+//   const renderLinkList = (links: FooterLink[] | undefined) => (
+//     <ul className="space-y-3 text-mainheading font-medium dark:text-white pt-2">
+//       {links?.map((link) => (
+//         <li key={link.href}>
+//           <div className="relative group w-fit lg:text-base text-sm">
+//             <Link href={link.href} className="relative z-10">
+//               {link.label}
+//             </Link>
+//             <span className="absolute bottom-0 left-0 w-full h-[2px] bg-mainheading dark:bg-primary transform scale-x-0 origin-right transition-transform duration-500 ease-in-out group-hover:origin-left group-hover:scale-x-100"></span>
+//           </div>
+//         </li>
+//       ))}
+//     </ul>
+//   );
+
+//   const renderSocialLinks = (socialLinks: SocialLink[] | undefined) => (
+//     <ul className="flex flex-col w-fit gap-4">
+//       {socialLinks?.map((link) => (
+//         <li
+//           key={link.href}
+//           className="p-2.5 bg-black/10 dark:bg-secondary inline-block rounded-full group transition-colors ease-in-out duration-300"
+//         >
+//           <Link
+//             href={link.href}
+//             className="text-gray-500 dark:text-gray-300"
+//             aria-label={typeof link.label === "string" ? link.label : undefined}
+//           >
+//             {link.label} {/* Assuming label is the icon component */}
+//           </Link>
+//         </li>
+//       ))}
+//     </ul>
+//   );
+
+//   const handleCurrencyConverterClick = (converter: string) => {
+//     const currencyCode = converter.split(" ")[0];
+//     if (setSelectedSendCurrency) {
+//       setSelectedSendCurrency(currencyCode);
+//     }
+//     router.push("/");
+//   };
+
+//   return (
+//     <footer className="bg-white dark:bg-background px-4 pb-6 pt-8">
+//       <div className="container mx-auto flex flex-col lg:flex-row justify-between w-full">
+//         {/* Logo and Description Section */}
+//         <div className="flex flex-col w-full lg:w-1/2 mb-8 lg:mb-0">
+//           <Image
+//             src="/assets/images/wise-logo.svg" // Ensure this path is correct
+//             alt="7Wise logo"
+//             height={100} // Adjusted size
+//             width={100} // Adjusted size
+//             className="mb-4 lg:h-14 h-6"
+//           />
+//           <p className="text-mainheading dark:text-white lg:text-lg text-sm leading-relaxed">
+//             {/* Adjusted text size and leading */}
+//             We provide reliable and competitive currency exchange services with
+//             real-time rates, secure transactions, and excellent customer
+//             support. Whether you're traveling, investing, or sending money
+//             abroad, trust us to handle your currency needs with transparency and
+//             speed.
+//           </p>
+//         </div>
+
+//         <div className="grid grid-cols-1  md:grid-cols-2 lg:gap-y-6 gap-y-4 w-full lg:w-1/4">
+//           {footerData.sections.map((section) => (
+//             <div key={section.title}>
+//               {/* Section Header (Mobile Accordion Trigger) */}
+//               <div
+//                 className={`flex items-center justify-between lg:pb-4 pb-2 ${
+//                   isMobile ? "cursor-pointer" : "" // Make header clickable only on mobile
+//                 }`}
+//                 onClick={
+//                   // Assign toggle only if mobile
+//                   isMobile ? () => toggleDropdown(section.title) : undefined
+//                 }
+//                 // Add accessibility attributes for the accordion header
+//                 role={isMobile ? "button" : undefined}
+//                 aria-expanded={isMobile ? openDropdown === section.title : true}
+//                 aria-controls={
+//                   isMobile
+//                     ? `${section.title.toLowerCase()}-dropdown-menu`
+//                     : undefined
+//                 }
+//                 tabIndex={isMobile ? 0 : -1} // Make it focusable on mobile
+//               >
+//                 <h3 className="text-lime-500 dark:text-primary lg:text-lg text-base font-semibold">
+//                   {section.title}
+//                 </h3>
+//                 {/* Icon container - important: don't put onClick here, keep it on parent div */}
+//                 {isMobile && (
+//                   <span className="text-mainheading dark:text-white pointer-events-none">
+//                     {/* Prevent nested clicks */}
+//                     {openDropdown === section.title ? (
+//                       <FiChevronDown className="size-4" />
+//                     ) : (
+//                       <FiChevronUp className="size-4" />
+//                     )}
+//                   </span>
+//                 )}
+//               </div>
+
+//               {/* Section Content (Mobile Accordion Content) */}
+//               <AnimatePresence initial={false}>
+//                 {/* Show content if NOT mobile OR if mobile AND it's the open dropdown */}
+//                 {(!isMobile ||
+//                   (isMobile && openDropdown === section.title)) && (
+//                   <motion.div
+//                     id={
+//                       isMobile
+//                         ? `${section.title.toLowerCase()}-dropdown-menu`
+//                         : undefined
+//                     }
+//                     key={`${section.title}-content`}
+//                     initial={{ height: 0, opacity: 0 }}
+//                     animate={{ height: "auto", opacity: 1 }}
+//                     exit={{ height: 0, opacity: 0 }}
+//                     transition={{ duration: 0.3, ease: "easeInOut" }}
+//                     style={{ overflow: "hidden" }}
+//                     // Add role region for accessibility
+//                     role="region"
+//                     aria-labelledby={
+//                       isMobile
+//                         ? section.title.toLowerCase() + "-heading"
+//                         : undefined
+//                     } // Assuming h3 gets an id
+//                   >
+//                     {/* Render links or social links */}
+//                     {section.links && renderLinkList(section.links)}
+//                     {section.socialLinks &&
+//                       renderSocialLinks(section.socialLinks)}
+//                     {/* Add padding below content inside accordion for spacing */}
+//                     <div className="pt-2"></div>
+//                   </motion.div>
+//                 )}
+//               </AnimatePresence>
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+
+//       {/* Currency Converters Section */}
+//       <hr className="lg:my-4 my-2 container mx-auto" />
+//       <div className="container mx-auto">
+//         <h3 className="text-lime-500 dark:text-primary lg:text-lg text-base font-semibold pb-4">
+//           Currency Converters
+//         </h3>
+//         <div className="flex flex-wrap gap-x-4 gap-y-2">
+//           {footerData.currencyConverters.map((pair, index) => (
+//             <div
+//               className="text-mainheading dark:text-white flex items-center"
+//               key={pair}
+//             >
+//               <div className="relative group inline-block">
+//                 <button
+//                   className="relative z-10 cursor-pointer text-sm lg:text-base hover:text-lime-600 dark:hover:text-primary transition-colors"
+//                   onClick={() => handleCurrencyConverterClick(pair)}
+//                 >
+//                   {pair}
+//                 </button>
+//                 <span className="absolute bottom-0 left-0 w-full h-[2px] bg-mainheading dark:bg-primary transform scale-x-0 origin-right transition-transform duration-300 ease-in-out group-hover:origin-left group-hover:scale-x-100"></span>
+//               </div>
+//               {index !== footerData.currencyConverters.length - 1 && (
+//                 <span className="mx-2 text-gray-400 dark:text-gray-600">|</span>
+//               )}
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+
+//       {/* Copyright and Social Icons Section */}
+//       <hr className="container mx-auto lg:my-6 my-4" />
+//       <div className="flex flex-col md:flex-row justify-between items-center container mx-auto gap-4">
+//         <p className="text-mainheading dark:text-primary capitalize lg:text-base text-sm text-center md:text-left">
+//           <span className="text-gray-500 dark:text-gray-300">create by,</span> Apexture Private Limited @{new Date().getFullYear()}
+//         </p>
+//         <div className="flex lg:gap-4 gap-2">
+//           <a href="#" aria-label="Chat on WhatsApp">
+//             {/* Replace # with actual link */}
+//             <IoLogoWhatsapp className="lg:size-7 size-6 text-[#25D366] hover:opacity-80 transition-opacity" />
+//           </a>
+//           <a href="#" aria-label="Contact us on Telegram">
+//             {/* Replace # with actual link */}
+//             <FaTelegram className="lg:size-7 size-6 text-[#3390EC] hover:opacity-80 transition-opacity" />
+//           </a>
+//         </div>
+//       </div>
+//     </footer>
+//   );
+// };
+
+// export default Footer;
+
+
+
+
 // app/components/Footer.tsx
 "use client";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { HiX } from "react-icons/hi";
-import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import { IconType } from "react-icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppContext } from "../../contexts/WebsiteAppContext"; // Adjust path if needed
@@ -1446,7 +1753,7 @@ const Footer: React.FC = () => {
   useEffect(() => {
     // Function to check window size and update isMobile state
     const handleResize = () => {
-      const mobileCheck = window.innerWidth < 768; // md breakpoint
+      const mobileCheck = window.innerWidth < 640; // md breakpoint
       setIsMobile(mobileCheck);
       // Optional: If resizing TO desktop, you might want to ensure all accordions appear open
       // by setting openDropdown to null, but the conditional rendering already handles visibility.
@@ -1467,37 +1774,18 @@ const Footer: React.FC = () => {
   // --- END EFFECT ---
 
   const renderLinkList = (links: FooterLink[] | undefined) => (
-    <ul className="space-y-3 text-mainheading font-medium dark:text-white pt-2">
+    <ul className="space-y-3 py-2">
       {links?.map((link) => (
         <li key={link.href}>
-          <div className="relative group w-fit lg:text-base text-sm">
+          <div className="relative group w-fit  text-neutral-900 dark:text-white font-medium lg:text-base text-sm">
             <Link href={link.href} className="relative z-10">
               {link.label}
             </Link>
-            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-mainheading dark:bg-primary transform scale-x-0 origin-right transition-transform duration-500 ease-in-out group-hover:origin-left group-hover:scale-x-100"></span>
+            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-neutral-900 dark:bg-primary transform scale-x-0 origin-right transition-transform duration-500 ease-in-out group-hover:origin-left group-hover:scale-x-100"></span>
           </div>
         </li>
       ))}
-    </ul>
-  );
-
-  const renderSocialLinks = (socialLinks: SocialLink[] | undefined) => (
-    <ul className="flex flex-col w-fit gap-4">
-      {socialLinks?.map((link) => (
-        <li
-          key={link.href}
-          className="p-2.5 bg-black/10 dark:bg-secondary inline-block rounded-full group transition-colors ease-in-out duration-300"
-        >
-          <Link
-            href={link.href}
-            className="text-gray-500 dark:text-gray-300"
-            aria-label={typeof link.label === "string" ? link.label : undefined}
-          >
-            {link.label} {/* Assuming label is the icon component */}
-          </Link>
-        </li>
-      ))}
-    </ul>
+    </ul> 
   );
 
   const handleCurrencyConverterClick = (converter: string) => {
@@ -1509,148 +1797,152 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-white dark:bg-background px-4 pb-6 pt-8">
-      <div className="container mx-auto flex flex-col lg:flex-row justify-between w-full">
+    <footer className="bg-white dark:bg-background pb-6 pt-8">
+      <div className="container mx-auto px-4">
         {/* Logo and Description Section */}
-        <div className="flex flex-col w-full lg:w-1/2 mb-8 lg:mb-0">
-          <Image
-            src="/assets/images/wise-logo.svg" // Ensure this path is correct
-            alt="7Wise logo"
-            height={100} // Adjusted size
-            width={100} // Adjusted size
-            className="mb-4 lg:h-14 h-6"
-          />
-          <p className="text-mainheading dark:text-white lg:text-lg text-sm leading-relaxed">
-            {/* Adjusted text size and leading */}
-            We provide reliable and competitive currency exchange services with
-            real-time rates, secure transactions, and excellent customer
-            support. Whether you're traveling, investing, or sending money
-            abroad, trust us to handle your currency needs with transparency and
-            speed.
-          </p>
+
+        <div className=" flex flex-col lg:flex-row justify-between w-full">
+          <div className="flex flex-col w-full lg:w-1/2 mb-8 lg:mb-0">
+            <Image
+              src="/assets/images/wise-logo.svg" // Ensure this path is correct
+              alt="7Wise logo"
+              height={100} // Adjusted size
+              width={100} // Adjusted size
+              className="mb-4 lg:h-14 h-6"
+            />
+            <p className="text-neutral-900 dark:text-white lg:text-lg text-sm leading-relaxed">
+              {/* Adjusted text size and leading */}
+              We provide reliable and competitive currency exchange services
+              with real-time rates, secure transactions, and excellent customer
+              support. Whether you're traveling, investing, or sending money
+              abroad, trust us to handle your currency needs with transparency
+              and speed.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:gap-y-6 gap-y-4 w-full lg:w-1/4">
+            {footerData.sections.map((section) => (
+              <div key={section.title}>
+                {/* Section Header (Mobile Accordion Trigger) */}
+                <div
+                  className={`flex items-center justify-between lg:pb-4 pb-2 ${
+                    isMobile ? "cursor-pointer" : "" // Make header clickable only on mobile
+                  }`}
+                  onClick={
+                    // Assign toggle only if mobile
+                    isMobile ? () => toggleDropdown(section.title) : undefined
+                  }
+                  // Add accessibility attributes for the accordion header
+                  role={isMobile ? "button" : undefined}
+                  aria-expanded={
+                    isMobile ? openDropdown === section.title : true
+                  }
+                  aria-controls={
+                    isMobile
+                      ? `${section.title.toLowerCase()}-dropdown-menu`
+                      : undefined
+                  }
+                  tabIndex={isMobile ? 0 : -1} // Make it focusable on mobile
+                >
+                  <h3 className="text-primary lg:text-lg text-base font-semibold">
+                    {section.title}
+                  </h3>
+                  {/* Icon container - important: don't put onClick here, keep it on parent div */}
+                  {isMobile && (
+                    <span className="text-mainheading dark:text-white pointer-events-none">
+                      {/* Prevent nested clicks */}
+                      {openDropdown === section.title ? (
+                        <FiChevronUp className="size-4" />
+                      ) : (
+                        <FiChevronDown className="size-4" />
+                      )}
+                    </span>
+                  )}
+                </div>
+
+                {/* Section Content (Mobile Accordion Content) */}
+                <AnimatePresence initial={false}>
+                  {/* Show content if NOT mobile OR if mobile AND it's the open dropdown */}
+                  {(!isMobile ||
+                    (isMobile && openDropdown === section.title)) && (
+                    <motion.div
+                      id={
+                        isMobile
+                          ? `${section.title.toLowerCase()}-dropdown-menu`
+                          : undefined
+                      }
+                      key={`${section.title}-content`}
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      style={{ overflow: "hidden" }}
+                      // Add role region for accessibility
+                      role="region"
+                      aria-labelledby={
+                        isMobile
+                          ? section.title.toLowerCase() + "-heading"
+                          : undefined
+                      } // Assuming h3 gets an id
+                    >
+                      {/* Render links or social links */}
+                      {section.links && renderLinkList(section.links)}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="grid grid-cols-1  md:grid-cols-2 lg:gap-y-6 gap-y-4 w-full lg:w-1/4">
-          {footerData.sections.map((section) => (
-            <div key={section.title}>
-              {/* Section Header (Mobile Accordion Trigger) */}
-              <div
-                className={`flex items-center justify-between lg:pb-4 pb-2 ${
-                  isMobile ? "cursor-pointer" : "" // Make header clickable only on mobile
-                }`}
-                onClick={
-                  // Assign toggle only if mobile
-                  isMobile ? () => toggleDropdown(section.title) : undefined
-                }
-                // Add accessibility attributes for the accordion header
-                role={isMobile ? "button" : undefined}
-                aria-expanded={isMobile ? openDropdown === section.title : true}
-                aria-controls={
-                  isMobile
-                    ? `${section.title.toLowerCase()}-dropdown-menu`
-                    : undefined
-                }
-                tabIndex={isMobile ? 0 : -1} // Make it focusable on mobile
-              >
-                <h3 className="text-lime-500 dark:text-primary lg:text-lg text-base font-semibold">
-                  {section.title}
-                </h3>
-                {/* Icon container - important: don't put onClick here, keep it on parent div */}
-                {isMobile && (
-                  <span className="text-mainheading dark:text-white pointer-events-none">
-                    {/* Prevent nested clicks */}
-                    {openDropdown === section.title ? (
-                      <FiChevronDown className="size-4" />
-                    ) : (
-                      <FiChevronUp className="size-4" />
-                    )}
+        {/* Currency Converters Section */}
+        <hr className="lg:my-6 my-4" />
+        <div className="Currency-Convertors">
+          <h3 className="text-primary lg:text-lg text-base font-semibold pb-4">
+            Currency Converters
+          </h3>
+          <div className="flex flex-wrap gap-y-2">
+            {footerData.currencyConverters.map((pair, index) => (
+              <div className="flex items-center" key={pair}>
+                <div className="relative group inline-block">
+                  <button
+                    className="relative z-10 cursor-pointer text-sm lg:text-base text-neutral-900 dark:text-white"
+                    onClick={() => handleCurrencyConverterClick(pair)}
+                  >
+                    {pair}
+                  </button>
+                  <span className="absolute bottom-0 left-0 w-full h-[2px] bg-neutral-900 dark:bg-primary transform scale-x-0 origin-right transition-transform duration-500 ease-in-out group-hover:origin-left group-hover:scale-x-100"></span>
+                </div>
+                {index !== footerData.currencyConverters.length - 1 && (
+                  <span className="mx-4 text-gray-500 dark:text-gray-300">
+                    |
                   </span>
                 )}
               </div>
-
-              {/* Section Content (Mobile Accordion Content) */}
-              <AnimatePresence initial={false}>
-                {/* Show content if NOT mobile OR if mobile AND it's the open dropdown */}
-                {(!isMobile ||
-                  (isMobile && openDropdown === section.title)) && (
-                  <motion.div
-                    id={
-                      isMobile
-                        ? `${section.title.toLowerCase()}-dropdown-menu`
-                        : undefined
-                    }
-                    key={`${section.title}-content`}
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                    style={{ overflow: "hidden" }}
-                    // Add role region for accessibility
-                    role="region"
-                    aria-labelledby={
-                      isMobile
-                        ? section.title.toLowerCase() + "-heading"
-                        : undefined
-                    } // Assuming h3 gets an id
-                  >
-                    {/* Render links or social links */}
-                    {section.links && renderLinkList(section.links)}
-                    {section.socialLinks &&
-                      renderSocialLinks(section.socialLinks)}
-                    {/* Add padding below content inside accordion for spacing */}
-                    <div className="pt-2"></div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Currency Converters Section */}
-      <hr className="lg:my-4 my-2 container mx-auto" />
-      <div className="container mx-auto">
-        <h3 className="text-lime-500 dark:text-primary lg:text-lg text-base font-semibold pb-4">
-          Currency Converters
-        </h3>
-        <div className="flex flex-wrap gap-x-4 gap-y-2">
-          {footerData.currencyConverters.map((pair, index) => (
-            <div
-              className="text-mainheading dark:text-white flex items-center"
-              key={pair}
-            >
-              <div className="relative group inline-block">
-                <button
-                  className="relative z-10 cursor-pointer text-sm lg:text-base hover:text-lime-600 dark:hover:text-primary transition-colors"
-                  onClick={() => handleCurrencyConverterClick(pair)}
-                >
-                  {pair}
-                </button>
-                <span className="absolute bottom-0 left-0 w-full h-[2px] bg-mainheading dark:bg-primary transform scale-x-0 origin-right transition-transform duration-300 ease-in-out group-hover:origin-left group-hover:scale-x-100"></span>
-              </div>
-              {index !== footerData.currencyConverters.length - 1 && (
-                <span className="mx-2 text-gray-400 dark:text-gray-600">|</span>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Copyright and Social Icons Section */}
-      <hr className="container mx-auto lg:my-6 my-4" />
-      <div className="flex flex-col md:flex-row justify-between items-center container mx-auto gap-4">
-        <p className="text-mainheading dark:text-primary capitalize lg:text-base text-sm text-center md:text-left">
-          <span className="text-gray-500 dark:text-gray-300">create by,</span> Apexture Private Limited @{new Date().getFullYear()}
-        </p>
-        <div className="flex lg:gap-4 gap-2">
-          <a href="#" aria-label="Chat on WhatsApp">
-            {/* Replace # with actual link */}
-            <IoLogoWhatsapp className="lg:size-7 size-6 text-[#25D366] hover:opacity-80 transition-opacity" />
-          </a>
-          <a href="#" aria-label="Contact us on Telegram">
-            {/* Replace # with actual link */}
-            <FaTelegram className="lg:size-7 size-6 text-[#3390EC] hover:opacity-80 transition-opacity" />
-          </a>
+        {/* Copyright and Social Icons Section */}
+        <hr className="lg:my-6 my-4" />
+        <div className="flex flex-col md:flex-row justify-between items-center container mx-auto gap-4">
+          <p className="text-mainheading dark:text-primary capitalize lg:text-base text-sm text-center md:text-left">
+            <span className="text-gray-500 dark:text-gray-300">
+              Created by{" "}
+            </span>
+            <span className="font-medium">Apexeture Private Limited</span> ©{" "}
+            {new Date().getFullYear()}
+          </p>
+          <div className="flex lg:gap-4 gap-2">
+            <Link href="#" aria-label="Chat on WhatsApp">
+              {/* Replace # with actual link */}
+              <IoLogoWhatsapp className="lg:size-7 size-6 text-[#25D366] hover:opacity-80 transition-opacity" />
+            </Link>
+            <Link href="#" aria-label="Contact us on Telegram">
+              {/* Replace # with actual link */}
+              <FaTelegram className="lg:size-7 size-6 text-[#3390EC] hover:opacity-80 transition-opacity" />
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

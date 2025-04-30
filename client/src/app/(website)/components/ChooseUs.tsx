@@ -109,25 +109,25 @@ const featuresData: FeatureItem[] = [
     title: "Global reach",
     description:
       "Send and receive money across 200+ countries and territories in over 170+ currencies. Receiving your money is easy. Connect a bank account or opt for cash pick-up at one of our 500,000 locations worldwide.",
-    icons: <FaGlobe />,
+    icons: <FaGlobe className="size-6 lg:size-8"/>,
   },
   {
     title: "Transparent prices",
     description:
       "With our transparent rates, you’ll always be in the know. You’ll never have to worry about surprises or sneaky deductions with our competitive exchange rates and minimal fees.",
-    icons: <BsCashStack />,
+    icons: <BsCashStack className="size-6 lg:size-8"/>,
   },
   {
     title: "Fast Money transfers",
     description:
       "We understand the value of your hard-earned money. That’s why we prioritize safe and speedy transfers. Send money within seconds and your recipient will receive it within 1-5 days.",
-    icons: <RiMoneyDollarCircleLine />,
+    icons: <RiMoneyDollarCircleLine className="size-6 lg:size-8"/>,
   },
   {
     title: "Easy to use",
     description:
       "Our app and website are designed with your financial needs in mind. Our currency tools and resources assist you in managing your money. Need extra help? Our customer service team is here to support you.",
-    icons: <BsEmojiSmile />,
+    icons: <BsEmojiSmile className="size-6 lg:size-8"/>,
   },
 ];
 
@@ -189,10 +189,10 @@ const cardVariants = {
 const XeFeaturesSection: React.FC = () => {
   return (
     // Add overflow-hidden to prevent scrollbars during card animation
-    <div className="bg-white dark:bg-background px-4 lg:py-10 py-5 overflow-hidden">
+    <div className="bg-white dark:bg-background lg:py-10 py-5 overflow-hidden">
       {/* Wrap the main container with motion to trigger animations on view */}
       <motion.div
-        className="mx-auto container max-w-5xl"
+        className="mx-auto container px-4 max-w-5xl"
         variants={sectionVariants}
         initial="hidden"
         whileInView="visible"
@@ -200,16 +200,16 @@ const XeFeaturesSection: React.FC = () => {
       >
         {/* Heading Section - Wrap with motion */}
         <motion.div
-          className="mx-auto max-w-2xl text-center lg:space-y-6 space-y-4"
+          className="mx-auto max-w-2xl text-center space-y-4"
           variants={headingVariants} // Apply heading animation
           // Inherits trigger from parent motion.div
         >
-          <h2 className="text-3xl sm:text-5xl lg:text-6xl capitalize font-black text-mainheading dark:text-white">
-            Find out why  
+          <h2 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white  uppercase">
+            Find out why 
             <span className="text-primary">millions choose Apexture</span>
           </h2>
 
-          <p className="lg:text-lg text-base text-gray-700 dark:text-gray-300">
+          <p className="lg:text-lg text-base text-gray-500 dark:text-gray-300">
             For over 10 years, Apexture Corporation Inc. customers have been
             trusting us to manage and send international money transfers. It's
             what we do.
@@ -228,25 +228,26 @@ const XeFeaturesSection: React.FC = () => {
               key={feature.title} // Key goes on the motion component
               variants={cardVariants} // Apply card animation variants
               // Individual card timing controlled by parent's staggerChildren
-              className="bg-white dark:bg-white/5 shadow-md border rounded-lg lg:p-6 p-4 lg:space-y-4 space-y-2.5 h-full transition-shadow duration-300"
+              className="bg-white dark:bg-primarybox shadow border rounded-2xl sm:p-6 p-4 lg:space-y-4 space-y-2.5 h-full"
             >
               {/* Icon */}
-              <div className="bg-primary p-2 rounded-full inline-block">
-                <span className="text-mainheading text-2xl flex items-center justify-center lg:size-8 size-6">
+              <div className=" lg:size-14 size-12 bg-primary rounded-full flex items-center justify-center">
+                <span className="text-neutral-900 size-6 lg:size-8">
                   {feature.icons}
                 </span>
               </div>
               {/* Title */}
-              <h3 className="lg:text-xl text-lg font-medium dark:text-primary text-mainheading capitalize">
+              <h3 className="lg:text-xl text-lg font-medium dark:text-white text-neutral-900 capitalize">
                 {feature.title}
               </h3>
               {/* Description */}
-              <p className="lg:text-base text-sm text-gray-700 dark:text-gray-300">
+              <p className="lg:text-base text-sm text-gray-500 dark:text-gray-300">
                 {feature.description}
               </p>
             </motion.div>
           ))}
         </motion.div>
+        
       </motion.div>
     </div>
   );
