@@ -2040,15 +2040,14 @@ const FaqSection: React.FC = () => {
   }, []);
 
   return (
-    <div className="lg:py-10 py-5 bg-white dark:bg-background px-4 overflow-hidden">
+    <div className="lg:py-10 py-5 bg-white dark:bg-background  overflow-hidden">
       <motion.section
-        className="grid items-start lg:gap-14 gap-5 lg:grid-cols-5 container mx-auto"
+        className="grid items-start lg:gap-14 gap-5 lg:grid-cols-5 container mx-auto px-4"
         id="faq"
         variants={sectionVariants}
         initial="hidden"
         whileInView="visible"
-        // viewport={{ amount: 0.1, once: false }} // <-- OLD: Repeat animation
-        viewport={{ amount: 0.1, once: true }} // <-- NEW: Animate only once
+        viewport={{ amount: 0.2, once: true }} // <-- NEW: Animate only once
       >
         {/* Left Side: Title and Description - Animated */}
         <motion.div
@@ -2056,11 +2055,11 @@ const FaqSection: React.FC = () => {
           variants={leftBlockVariants}
           // Inherits trigger from parent section
         >
-          <h1 className="text-4xl md:text-5xl xl:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+          <h1 className="text-4xl md:text-5xl xl:text-6xl font-black font-mont text-mainheading dark:text-white uppercase">
             Quick Currency
             <span className="text-primary"> Exchange Help </span>
           </h1>
-          <p className="lg:text-lg sm:text-base text-sm text-gray-700 leading-relaxed dark:text-gray-300">
+          <p className="lg:text-lg text-base text-gray-500 dark:text-gray-300">
             Get quick answers to common currency exchange questions — rates,
             fees, timing, and more. Simple, clear, and reliable info at your
             fingertips.
@@ -2160,7 +2159,8 @@ const FaqSection: React.FC = () => {
                 We're always ready to help you out.
               </p>
             </div>
-            <div className="flex w-full flex-wrap items-center justify-between gap-4 md:flex-nowrap">
+
+            <div className="flex w-full flex-wrap items-center justify-between gap-4">
               <div className="flex gap-2">
                 {/* WhatsApp Button */}
                 <Link

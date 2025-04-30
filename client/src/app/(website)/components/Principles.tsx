@@ -294,7 +294,7 @@
 //         >
 //           {/* Feature Card 1: Security (Large) */}
 //           <motion.div
-//             className="row-span-4 flex flex-col border dark:border-neutral-700/50 shadow-sm overflow-hidden rounded-3xl bg-white dark:bg-neutral-800/30" // Adjusted dark bg/border
+//             className="row-span-4 flex flex-col border dark:border-neutral-700/50 shadow-sm overflow-hidden rounded-3xl bg-white dark:bg-white/5" // Adjusted dark bg/border
 //             variants={cardVariants} // Apply card animation
 //           >
 //             <Image
@@ -848,11 +848,10 @@ const cardVariants = {
 // --- FeaturesSection Component ---
 const FeaturesSection: React.FC = () => {
   return (
-    <div className="bg-white lg:py-10 py-5 dark:bg-background px-4 overflow-hidden">
-      {" "}
+    <div className="bg-white lg:py-10 py-5 dark:bg-background overflow-hidden">
       {/* Keep overflow hidden */}
       <motion.section
-        className="flex flex-col lg:gap-10 gap-8 container mx-auto"
+        className="flex flex-col lg:gap-10 gap-8 container mx-auto px-4"
         id="features"
         variants={sectionVariants}
         initial="hidden"
@@ -866,39 +865,39 @@ const FeaturesSection: React.FC = () => {
           variants={headingVariants}
           // Inherits trigger from parent section
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase">
             Security, Speed,
             <span className="text-primary"> Savings & Support </span>
           </h1>
         </motion.div>
+
         {/* Features Grid - Apply motion container for staggering */}
         <motion.div
-          className="grid gap-y-4 gap-x-4 md:grid-cols-2 md:grid-rows-6 lg:gap-x-8 lg:gap-y-8"
+          className="grid gap-y-6 gap-x-6 md:grid-cols-2 md:grid-rows-0 lg:gap-x-8 lg:gap-y-8"
           variants={gridContainerVariants}
           // Inherits trigger from parent section
         >
-          {/* --- Apply motion to EACH feature card --- */}
-
           {/* Feature Card 1: Security (Large) */}
           <motion.div
-            className="row-span-4 flex flex-col border dark:border-neutral-700/50 shadow-sm overflow-hidden rounded-3xl bg-white dark:bg-neutral-800/30"
+            className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-lightgray dark:bg-white/5"
             variants={cardVariants} // Apply Spring Slide-Up animation
             // Timing controlled by parent stagger
           >
             <Image
               src="/assets/images/colorful-illustration-colorful-padlock-with-colorful-leaves-flowers_1122354-15513.jpg"
               width={500}
-              height={384}
+              height={500}
               alt="Secure padlock illustration"
-              className="w-full object-cover lg:h-96 md:h-60 h-48"
+              className="w-full object-cover lg:h-96 md:h-60 h-46"
               priority
             />
-            <div className="flex flex-col gap-3 p-4 lg:p-6">
-              <h3 className="lg:text-2xl text-base font-medium text-mainheading dark:text-white">
-                <span className="text-primary font-bold">Secure</span> Every
+
+            <div className="flex flex-col gap-3 p-4">
+              <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
+                <span className="text-primary font-bold ">Secure</span> Every
                 Step of the Way
               </h3>
-              <p className="lg:text-lg text-sm font-medium text-mainheading dark:text-gray-300">
+              <p className="lg:text-lg text-sm font-medium text-gray-500 dark:text-gray-300">
                 We prioritize your security with advanced encryption and fraud
                 detection, keeping your money and data safe 24/7.
               </p>
@@ -907,18 +906,18 @@ const FeaturesSection: React.FC = () => {
 
           {/* Feature Card 2: Speed (Small) */}
           <motion.div
-            className="row-span-2 flex flex-col justify-center lg:gap-6 border dark:border-neutral-700/50 shadow-sm gap-3 overflow-hidden rounded-3xl bg-white dark:bg-neutral-800/30 lg:p-6 p-4"
+            className="row-span-2 flex flex-col justify-center lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-lightgray dark:bg-white/5 lg:p-6 p-4"
             variants={cardVariants} // Apply Spring Slide-Up animation
           >
-            <FaFastForward className="lg:size-8 size-6 text-mainheading dark:text-primary" />
+            <FaFastForward className="lg:size-10 size-8 text-neutral-900 dark:text-primary" />
             <div className="flex flex-col gap-3">
-              <h3 className="lg:text-2xl text-base font-medium text-mainheading dark:text-white">
+              <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
                 <span>
                   Our transfers are{" "}
                   <span className="text-primary font-bold">Speedy</span>
                 </span>
               </h3>
-              <p className="lg:text-lg text-sm font-medium text-mainheading dark:text-gray-300">
+              <p className="lg:text-lg text-sm font-medium text-gray-500 dark:text-gray-300">
                 Receive your money swiftly, often within minutes, thanks to our
                 optimized transfer network.
               </p>
@@ -927,24 +926,24 @@ const FeaturesSection: React.FC = () => {
 
           {/* Feature Card 3: Support (Large) */}
           <motion.div
-            className="row-span-4 flex flex-col border dark:border-neutral-700/50 shadow-sm overflow-hidden rounded-3xl bg-white dark:bg-neutral-800/30"
+            className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-lightgray dark:bg-white/5"
             variants={cardVariants} // Apply Spring Slide-Up animation
           >
             <Image
               src="/assets/images/friendly-customer.jpg"
               width={500}
-              height={384}
+              height={500}
               alt="Friendly customer support agent"
-              className="w-full object-cover lg:h-96 md:h-60 h-48"
+              className="w-full object-cover lg:h-96 md:h-60 h-46"
             />
             <div className="flex flex-col gap-3 p-4 lg:p-6">
-              <h3 className="lg:text-2xl text-base font-medium text-mainheading dark:text-white">
+              <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
                 <span>
                   Need <span className="text-primary font-bold">Support </span>?
                   We’re here!
                 </span>
               </h3>
-              <p className="lg:text-lg text-sm font-medium text-mainheading dark:text-gray-300">
+              <p className="lg:text-lg text-sm font-medium text-gray-500 dark:text-gray-300">
                 Our dedicated support team is available via chat, email, and
                 phone to assist you anytime.
               </p>
@@ -953,18 +952,18 @@ const FeaturesSection: React.FC = () => {
 
           {/* Feature Card 4: Savings (Small) */}
           <motion.div
-            className="row-span-2 flex flex-col justify-center lg:gap-6 border dark:border-neutral-700/50 shadow-sm gap-3 overflow-hidden rounded-3xl bg-white dark:bg-neutral-800/30 lg:p-6 p-4"
+            className="row-span-2 flex flex-col justify-center lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-lightgray dark:bg-white/5 lg:p-6 p-4"
             variants={cardVariants} // Apply Spring Slide-Up animation
           >
-            <FaChartLine className="lg:size-8 size-6 text-mainheading dark:text-primary" />
+            <FaChartLine className="lg:size-10 size-8 text-neutral-900 dark:text-primary" />
             <div className="flex flex-col gap-3">
-              <h3 className="lg:text-2xl text-base font-medium text-mainheading dark:text-white">
+              <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
                 <span>
                   <span className="text-primary font-bold">Save</span> with high
                   exchange rates
                 </span>
               </h3>
-              <p className="lg:text-lg text-sm font-medium text-mainheading dark:text-gray-300">
+              <p className="lg:text-lg text-sm font-medium text-gray-500 dark:text-gray-300">
                 Get the best value for your hard-earned money with our
                 competitive, transparent exchange rates.
               </p>
@@ -973,26 +972,26 @@ const FeaturesSection: React.FC = () => {
 
           {/* Feature Card 5: Rates (Large) */}
           <motion.div
-            className="row-span-4 flex flex-col border dark:border-neutral-700/50 shadow-sm overflow-hidden rounded-3xl bg-white dark:bg-neutral-800/30"
+            className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-lightgray dark:bg-white/5"
             variants={cardVariants} // Apply Spring Slide-Up animation
           >
             <Image
               src="/assets/images/dynamicRate.png"
               width={500}
-              height={384}
+              height={500}
               alt="Graph showing dynamic exchange rates"
-              className="w-full object-cover lg:h-96 md:h-60 h-48"
+              className="w-full object-cover lg:h-96 md:h-60 h-46"
             />
             <div className="flex flex-col gap-3 p-4 lg:p-6">
-              <h3 className="lg:text-2xl text-base font-medium text-mainheading dark:text-white">
+              <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
                 <span>
-                  Stay ahead with live
+                  Stay ahead with live{" "}
                   <span className="text-primary font-bold capitalize">
                     exchange rates
                   </span>
                 </span>
               </h3>
-              <p className="lg:text-lg text-sm font-medium text-mainheading dark:text-gray-300">
+              <p className="lg:text-lg text-sm font-medium text-gray-500 dark:text-gray-300">
                 Stay updated with real-time currency exchange rates for informed
                 decisions and maximum value.
               </p>
@@ -1001,12 +1000,12 @@ const FeaturesSection: React.FC = () => {
 
           {/* Feature Card 6: Reach (Small) */}
           <motion.div
-            className="row-span-2 flex flex-col justify-center lg:gap-6 border dark:border-neutral-700/50 shadow-sm gap-3 overflow-hidden rounded-3xl bg-white dark:bg-neutral-800/30 lg:p-6 p-4"
+            className="row-span-2 flex flex-col justify-center lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-lightgray dark:bg-white/5 lg:p-6 p-4"
             variants={cardVariants} // Apply Spring Slide-Up animation
           >
-            <FiGlobe className="lg:size-8 size-6 text-mainheading dark:text-primary" />
+            <FiGlobe className="lg:size-10 size-8 text-neutral-900 dark:text-primary" />
             <div className="flex flex-col gap-3">
-              <h3 className="lg:text-2xl text-base font-medium text-mainheading dark:text-white">
+              <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
                 <span>
                   <span className="text-primary font-bold">
                     Worldwide Reach
@@ -1014,7 +1013,7 @@ const FeaturesSection: React.FC = () => {
                   , Local Touch
                 </span>
               </h3>
-              <p className="lg:text-lg text-sm font-medium text-mainheading dark:text-gray-300">
+              <p className="lg:text-lg text-sm font-medium text-gray-500 dark:text-gray-300">
                 Our platform combines international reach with localized support
                 for a seamless experience.
               </p>
@@ -1023,27 +1022,27 @@ const FeaturesSection: React.FC = () => {
 
           {/* Feature Card 7: Money (Large) */}
           <motion.div
-            className="row-span-4 flex flex-col border dark:border-neutral-700/50 shadow-sm overflow-hidden rounded-3xl bg-white dark:bg-neutral-800/30"
+            className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-lightgray dark:bg-white/5"
             variants={cardVariants} // Apply Spring Slide-Up animation
           >
             <Image
               src="/assets/images/withoutborder.png"
               width={500}
-              height={384}
+              height={500}
               alt="Illustration of money exchange without borders"
-              className="w-full object-cover lg:h-96 md:h-60 h-48"
+              className="w-full object-cover lg:h-96 md:h-60 h-46"
             />
             <div className="flex flex-col gap-3 p-4 lg:p-6">
-              <h3 className="lg:text-2xl text-base font-medium text-mainheading dark:text-white">
+              <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
                 <span>
-                  Exchange
+                  Exchange{" "}
                   <span className="text-primary font-bold capitalize">
-                    Money
+                    Money{" "}
                   </span>
                   Without Borders
                 </span>
               </h3>
-              <p className="lg:text-lg text-sm font-medium text-mainheading dark:text-gray-300">
+              <p className="lg:text-lg text-sm font-medium text-gray-500 dark:text-gray-300">
                 Seamless global money transfers made simple, connecting you
                 financially across continents.
               </p>
@@ -1052,18 +1051,18 @@ const FeaturesSection: React.FC = () => {
 
           {/* Feature Card 8: 24/7 Support (Small) */}
           <motion.div
-            className="row-span-2 flex flex-col justify-center lg:gap-6 border dark:border-neutral-700/50 shadow-sm gap-3 overflow-hidden rounded-3xl bg-white dark:bg-neutral-800/30 lg:p-6 p-4"
+            className="row-span-2 flex flex-col justify-center lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-lightgray dark:bg-white/5 lg:p-6 p-4"
             variants={cardVariants} // Apply Spring Slide-Up animation
           >
-            <FaHeadset className="lg:size-8 size-6 text-mainheading dark:text-primary" />
+            <FaHeadset className="lg:size-10 size-8 text-mainheading dark:text-primary" />
             <div className="flex flex-col gap-3">
-              <h3 className="lg:text-2xl text-base font-medium text-mainheading dark:text-white">
+              <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
                 <span>
                   <span className="text-primary font-bold">24/7 Customer </span>
                   Support
                 </span>
               </h3>
-              <p className="lg:text-lg text-sm font-medium text-mainheading dark:text-gray-300">
+              <p className="lg:text-lg text-sm font-medium text-gray-500 dark:text-gray-300">
                 We're here for you—day or night—with reliable customer service
                 whenever you need assistance.
               </p>

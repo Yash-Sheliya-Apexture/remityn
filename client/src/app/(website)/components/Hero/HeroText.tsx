@@ -86,15 +86,18 @@ const HeroText = () => {
 
   return (
     <>
-      <div className="space-y-6">
-        <div className="inline-block px-4 py-1.5 bg-lightgray dark:bg-primary rounded-full text-gray-700 dark:text-mainheading font-semibold text-sm mb-2">
-          Trusted by 50K customers worldwide
+      <div className="space-y-4 text-center lg:text-left">
+        <div className="inline-block px-4 py-1.5 bg-lightgray dark:bg-primarybox rounded-full">
+          <span className="text-neutral-900 dark:text-white font-medium text-sm capitalize">Trusted by 50K customers worldwide</span>
         </div>
-        <h1 className="text-4xl md:text-5xl xl:text-7xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+
+        <h1 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white uppercase">
           Easy Global Money Exchange
           <span className="text-primary"> at 0% Fees </span>
         </h1>
-        <p className="lg:text-lg text-base leading-tight font-medium text-gray-700 dark:text-gray-300">
+
+
+        <p className="lg:text-lg text-base text-gray-500 dark:text-gray-300">
           Experience global money exchange with 0% fees and instant transfers.
           Our platform offers secure, transparent transactions with real-time
           exchange rates. Send money easily across borders, without worrying
@@ -108,10 +111,10 @@ const HeroText = () => {
             <div className="bg-lightgray dark:bg-primarybox p-2.5 rounded-full">
               <Globe
                 size={20}
-                className="text-gray-700 dark:text-white"
+                className="text-neutral-900 dark:text-primary"
               />
             </div>
-            <span className="text-gray-800 dark:text-gray-200 font-medium text-sm sm:text-base">
+            <span className="text-gray-500 dark:text-gray-300 font-medium text-sm sm:text-base">
               Global Coverage
             </span>
           </div>
@@ -119,10 +122,10 @@ const HeroText = () => {
             <div className="bg-lightgray dark:bg-primarybox p-2.5 rounded-full">
               <TrendingUp
                 size={20}
-                className="text-gray-700 dark:text-white"
+                className="text-neutral-900 dark:text-primary"
               />
             </div>
-            <span className="text-gray-800 dark:text-gray-200 font-medium text-sm sm:text-base">
+            <span className="text-gray-500 dark:text-gray-300 font-medium text-sm sm:text-base">
               Great Rates
             </span>
           </div>
@@ -130,21 +133,21 @@ const HeroText = () => {
             <div className="bg-lightgray dark:bg-primarybox p-2.5 rounded-full">
               <Shield
                 size={20}
-                className="text-gray-700 dark:text-white"
+                className="text-neutral-900 dark:text-primary"
               />
             </div>
-            <span className="text-gray-800 dark:text-gray-200 font-medium text-sm sm:text-base">
-              Bank-Level Security
+            <span className="text-gray-500 dark:text-gray-300 font-medium text-sm sm:text-base">
+              Bank's Security
             </span>
           </div>
           <div className="flex items-center gap-3">
             <div className="bg-lightgray dark:bg-primarybox p-2.5 rounded-full">
               <Clock
                 size={20}
-                className="text-gray-700 dark:text-white"
+                className="text-neutral-900 dark:text-primary"
               />
             </div>
-            <span className="text-gray-800 dark:text-gray-200 font-medium text-sm sm:text-base">
+            <span className="text-gray-500 dark:text-gray-300 font-medium text-sm sm:text-base">
               Fast Transfers
             </span>
           </div>
@@ -161,7 +164,7 @@ const HeroText = () => {
               />
             ))}
           </div>
-          <span className="text-gray-600 dark:text-gray-300 text-sm capitalize">
+          <span className="text-gray-500 dark:text-gray-300 text-sm capitalize">
             <span className="font-semibold">4.9/5</span> from 1,000+ reviews
           </span>
         </div>
@@ -169,7 +172,7 @@ const HeroText = () => {
         <div className="md:pt-4 pt-0 lg:block hidden">
           <Link
             href={user ? "/dashboard" : "/auth/register"}
-            className="inline-flex items-center bg-primary hover:bg-primaryhover text-mainheading font-semibold px-8 py-3 lg:h-12.5 rounded-full transition-colors duration-300 ease-in-out"
+            className="bg-primary hover:bg-primaryhover text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify- w-fit"
           >
             {user ? "Go to Dashboard" : "Get Started Free"}
           </Link>
