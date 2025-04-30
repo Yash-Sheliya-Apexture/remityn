@@ -179,120 +179,126 @@ const RemittanceSection: React.FC = () => {
 
   return (
     // Add overflow-hidden to prevent scrollbars during animation
-    <section className="lg:py-10 py-5 bg-white dark:bg-background px-4 overflow-hidden">
-      {/* Wrap the main flex container with motion for triggering */}
-      <motion.div
-        className="container mx-auto flex gap-6 flex-col md:flex-row items-center justify-end"
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ amount: 0.2, once: true }} // Trigger once when 20% visible
-      >
-        {/* Left Content Section - Wrap with motion */}
+    <section className="lg:py-10 py-5 bg-white dark:bg-background overflow-hidden">
+      <div className="container mx-auto px-4">
+        {/* Wrap the main flex container with motion for triggering */}
         <motion.div
-          className="md:w-1/2 w-full text-center md:text-left space-y-2"
-          variants={leftContentVariants} // Apply left slide animation
-          // Inherits trigger from parent motion.div
+          className="flex flex-col lg:flex-row items-center gap-6"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ amount: 0.2, once: true }} // Trigger once when 20% visible
         >
-          <p className="lg:text-base text-sm text-gray-700 dark:text-gray-300 font-medium">
-            Send Money Across Borders with Confidence
-          </p>
+          {/* Left Content Section - Wrap with motion */}
+          <motion.div
+            className="w-full lg:w-1/2"
+            variants={leftContentVariants} // Apply left slide animation
+            // Inherits trigger from parent motion.div
+          >
+            <div className="space-y-4 text-center md:text-left">
+              <div className="inline-block px-4 py-1.5 bg-lightgray dark:bg-primarybox rounded-full">
+                <span className="text-neutral-900 dark:text-white font-medium text-sm capitalize">
+                  Send Money Across Borders with Confidence
+                </span>
+              </div>
 
-          {/* Main Heading */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase">
-            Send Money Across
-            <span className="text-primary"> Borders with Confidence </span>
-          </h1>
+              {/* Main Heading */}
+              <h1 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white uppercase">
+                Send Money Across
+                <span className="text-primary"> Borders with Confidence </span>
+              </h1>
 
-          {/* Description */}
-          <p className="text-sm md:text-lg text-gray-700  dark:text-gray-300">
-            Experience hassle-free money transfers to over 100 countries
-            worldwide. Whether you're supporting loved ones, paying bills, or
-            handling business payments, our platform ensures your money gets
-            where it needs to go—quickly and safely. With competitive exchange
-            rates, low fees, and 24/7 customer support, sending money has never
-            been this simple.
-          </p>
+              {/* Description */}
+              <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
+                Experience hassle-free money transfers to over 100 countries
+                worldwide. Whether you're supporting loved ones, paying bills,
+                or handling business payments, our platform ensures your money
+                gets where it needs to go—quickly and safely. With competitive
+                exchange rates, low fees, and 24/7 customer support, sending
+                money has never been this simple.
+              </p>
 
-          {/* Dynamic Button */}
-          <div className="flex justify-center md:justify-start">
-            <Link href={buttonLink} className="inline-block mt-3">
-              <button className="bg-primary px-6 lg:py-3 py-2.5 lg:h-12.5 lg:text-base text-sm cursor-pointer hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading font-medium rounded-full">
-                {buttonText}
-              </button>
-            </Link>
-          </div>
+              {/* Dynamic Button */}
+              <div className="flex justify-center md:justify-start">
+                <Link href={buttonLink} className="inline-block">
+                  <button className="bg-primary hover:bg-primaryhover text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
+                    {buttonText}
+                  </button>
+                </Link>
+              </div>
 
-          {/* User avatars and star rating */}
-          <div className="flex items-center justify-center md:justify-start gap-2 mt-6">
-            <div className="flex items-center -space-x-2">
+              {/* User avatars and star rating */}
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 mt-6">
+                <div className="flex items-center -space-x-2">
+                  <Image
+                    src="/assets/images/user1.png"
+                    width={40}
+                    height={40}
+                    alt="User avatar 1"
+                    className="rounded-full size-10 border-2 border-white"
+                  />
+                  <Image
+                    src="/assets/images/user2.png"
+                    width={40}
+                    height={40}
+                    alt="User avatar 2"
+                    className="rounded-full size-10 border-2 border-white"
+                  />
+                  <Image
+                    src="/assets/images/user3.png"
+                    width={40}
+                    height={40}
+                    alt="User avatar 3"
+                    className="rounded-full size-10 border-2 border-white"
+                  />
+                  <Image
+                    src="/assets/images/Lisa-Carter.jpg"
+                    width={40}
+                    height={40}
+                    alt="User avatar 4"
+                    className="rounded-full size-10 border-2 border-white"
+                  />
+                  <Image
+                    src="/assets/images/Emily.jpg"
+                    width={40}
+                    height={40}
+                    alt="User avatar 5"
+                    className="rounded-full size-10 border-2 border-white"
+                  />
+                </div>
+                <p className="font-normal text-neutral-900 lg:text-base text-sm dark:text-white capitalize">
+                  <span className="text-primary font-bold"> 500K+ </span> People
+                  already trusted us.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Right Image Section - Wrap with motion */}
+          <motion.div
+            className="w-full lg:w-1/2"
+            variants={rightImageVariants} 
+          >
+            <div className="relative xl:aspect-[3/2] lg:aspect-square sm:aspect-[3/2] aspect-square overflow-hidden">
               <Image
-                src="/assets/images/user1.png"
-                width={40}
-                height={40}
-                alt="User avatar 1"
-                className="rounded-full md:size-10 size-8 border-2 border-white"
+                src="/assets/images/Business-vision-amico-light.svg"
+                fill
+                alt="Secure money transfer illustration"
+                className="object-contain block dark:hidden"
+                priority 
               />
+              {/* Dark Mode Image */}
               <Image
-                src="/assets/images/user2.png"
-                width={40}
-                height={40}
-                alt="User avatar 2"
-                className="rounded-full md:size-10 size-8 border-2 border-white"
-              />
-              <Image
-                src="/assets/images/user3.png"
-                width={40}
-                height={40}
-                alt="User avatar 3"
-                className="rounded-full md:size-10 size-8 border-2 border-white"
-              />
-              <Image
-                src="/assets/images/Lisa-Carter.jpg"
-                width={40}
-                height={40}
-                alt="User avatar 4"
-                className="rounded-full md:size-10 size-8 border-2 border-white"
-              />
-              <Image
-                src="/assets/images/Emily.jpg"
-                width={40}
-                height={40}
-                alt="User avatar 5"
-                className="rounded-full md:size-10 size-8 border-2 border-white"
+                src="/assets/images/Business-vision-amico-dark.svg"
+                fill
+                alt="Secure money transfer illustration"
+                className="object-contain hidden dark:block"
+                priority 
               />
             </div>
-            <p className="font-normal text-mainheading lg:text-base text-xs dark:text-white capitalize">
-              <span className="text-primary font-bold"> 500K+ </span> People
-              already trusted us.
-            </p>
-          </div>
+          </motion.div>
         </motion.div>
-
-        {/* Right Image Section - Wrap with motion */}
-        <motion.div
-          className="md:w-1/2 w-full flex justify-center mt-5 md:-mt-5"
-          variants={rightImageVariants} // Apply right slide/scale animation
-          // Inherits trigger from parent motion.div
-        >
-          <Image
-            src="/assets/images/Business-vision-amico-light.svg"
-            width={500}
-            height={500}
-            alt="Secure money transfer illustration"
-            className="lg:h-full h-64 block dark:hidden"
-            priority // Add priority if this is often above the fold
-          />
-          <Image
-            src="/assets/images/Business-vision-amico-dark.svg"
-            width={500}
-            height={500}
-            alt="Secure money transfer illustration"
-            className="lg:h-full h-64 hidden dark:block"
-            priority // Add priority if this is often above the fold
-          />
-        </motion.div>
-      </motion.div>
+      </div>
     </section>
   );
 };
