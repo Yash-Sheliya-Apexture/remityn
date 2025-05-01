@@ -628,7 +628,7 @@ const AccountCard: React.FC<AccountCardProps> = ({ username }) => {
             {/* --- Verification Icon (Conditionally Re ndered) --- */}
             {isVerified && (
               <div
-                className="absolute -bottom-1 -right-1 bg-lightgray dark:bg-[#2E2E2E] p-0.5 rounded-full border-2" // Adjusted background/border for visibility
+                className="absolute -bottom-1 -right-1 bg-lightgray dark:bg-[#2E2E2E] p-1 rounded-full" // Adjusted background/border for visibility
                 title="Verified Account" // Tooltip for accessibility
               >
                 <BsFillCheckCircleFill
