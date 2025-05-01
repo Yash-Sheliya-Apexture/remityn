@@ -937,7 +937,7 @@
 //                                     </div>
 
 //                                     <div>
-//                                         <span className="text-gray-500 dark:text-white block max-w-60 leading-relaxed">{loginError}</span>
+//                                         <span className="text-gray-500 dark:text-white block max-w-60 ">{loginError}</span>
 //                                     </div>
 //                                 </motion.div>
 //                             )}
@@ -3070,7 +3070,7 @@
 //             <p className="text-center text-gray-700 dark:text-gray-300 font-light">
 //               New to Wise?{" "}
 //               <Link
-//                 href="/auth/register"
+//                  href="/auth/register"
 //                 className="text-primary font-medium underline underline-offset-4"
 //               >
 //                 Sign up
@@ -3295,13 +3295,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { IoMdCloseCircle } from "react-icons/io";
-import { VscEye } from "react-icons/vsc";
-import { RiEyeCloseLine } from "react-icons/ri";
 // Removed: import { AiOutlineInfo } from "react-icons/ai"; // No longer needed for inactivity msg
 import { FiX } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaCheck } from "react-icons/fa6";
 import apiConfig from "../../config/apiConfig";
+import { LuEye, LuEyeClosed } from "react-icons/lu";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -3387,7 +3386,7 @@ export default function LoginPage() {
     setSessionExpiredMessage("");
     setLoginSuccess(false);
     setIsLoginSuccessVisible(false);
-    window.history.replaceState(null, "", "/auth/login"); 
+    window.history.replaceState(null, "", "/auth/login");
 
     let isValid = true;
     if (!email) {
@@ -3407,7 +3406,7 @@ export default function LoginPage() {
         password,
       });
       console.log("Login successful in component");
-      setLoginSuccess(true); 
+      setLoginSuccess(true);
       login(loggedInUser, token);
     } catch (err: any) {
       console.error("Login error in component:", err);
@@ -3474,30 +3473,29 @@ export default function LoginPage() {
     <div className="bg-white dark:bg-background">
       <div className="flex flex-col justify-center items-center lg:h-[calc(100vh-73px)] px-4">
         <div className="w-full max-w-md lg:mt-20 mt-10">
-
           {/* Session Expired Message */}
           <AnimatePresence>
             {sessionExpiredMessage && (
               <motion.div
-                className="bg-gray/10 dark:bg-white/5 rounded-2xl p-4 flex items-center gap-4 relative mb-4"
+                className="bg-lightgray dark:bg-primarybox rounded-2xl p-4 flex items-center gap-4 relative mb-4"
                 role="alert"
                 initial="initial"
                 animate="animate"
                 exit="exit"
                 variants={errorVariants}
               >
-                <div className="flex dark:bg-red-600/20 bg-red-300 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
-                  <FiX className="p-0.5 text-mainheading dark:text-red-600 lg:size-8 size-6" />
+                <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+                  <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
                 </div>
-                <div>
+
+                <div className="inline-block">
                   {/* Displaying the message as in your original */}
-                  <p className="font-medium text-mainheading dark:text-white">
-                    {" "}
+                  <p className="font-medium text-neutral-900 text-sm lg:text-base dark:text-white">
                     {/* Assuming this styling */}
                     Session Expired Please Try Again!
                   </p>
-                  <p className="text-mainheading dark:text-whit text-sm lg:text-base block max-w-60 leading-relaxed">
-                    {sessionExpiredMessage}
+                  <p className="text-gray-500 dark:text-gray-300 max-w-60">
+                    {sessionExpiredMessage} text is not fine for all times
                   </p>
                 </div>
               </motion.div>
@@ -3505,17 +3503,16 @@ export default function LoginPage() {
           </AnimatePresence>
 
           {/* Title and Sign Up Link */}
-          <div className="py-3 space-y-2">
-            <h2 className="lg:text-3xl text-2xl text-center text-main dark:text-white font-semibold">
+          <div className="space-y-2">
+            <h2 className="lg:text-3xl text-2xl text-center text-neutral-900 dark:text-white font-medium">
               Welcome back.
             </h2>
-            <p className="text-center text-gray-700 dark:text-gray-300 font-light">
+            <p className="text-center text-gray-500 dark:text-gray-300">
               New to Wise?{" "}
-              <Link
-                href="/auth/register"
-                className="text-primary font-medium underline underline-offset-4"
-              >
-                Sign up
+              <Link href="/auth/register">
+                <span className="text-primary font-medium capitalize underline underline-offset-4">
+                  Sign up
+                </span>
               </Link>
             </p>
           </div>
@@ -3526,18 +3523,19 @@ export default function LoginPage() {
               (loginError || googleError) && ( // Check both error states
                 <motion.div
                   // Using original classes, assuming this was the intended style for general errors
-                  className={`dark:bg-white/5 bg-gray/10 rounded-2xl p-4 flex items-center gap-4 relative mb-4`}
+                  className={`dark:bg-primarybox bg-lightgray rounded-2xl p-4 flex items-center gap-4 relative my-4`}
                   role="alert"
                   initial="initial"
                   animate="animate"
                   exit="exit"
                   variants={errorVariants}
                 >
-                  <div className="flex dark:bg-red-600/20 bg-red-300 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
-                    <FiX className="p-0.5 text-mainheading dark:text-red-600 lg:size-8 size-6" />
+                  <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+                    <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
                   </div>
-                  <div>
-                    <span className="text-mainheading dark:text-white text-sm lg:text-base block max-w-60 leading-relaxed">
+
+                  <div className="inline-block">
+                    <span className="text-gray-500 dark:text-gray-300 max-w-60">
                       {loginError || googleError}{" "}
                       {/* Display the relevant error */}
                     </span>
@@ -3550,21 +3548,22 @@ export default function LoginPage() {
           <AnimatePresence>
             {isLoginSuccessVisible && loginSuccess && (
               <motion.div
-                className="flex bg-gray/10 dark:bg-white/5 p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4" // Original success style
+                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative my-4" // Original success style
                 role="alert"
                 initial="initial"
                 animate="animate"
                 exit="exit"
                 variants={successVariants}
               >
-                <div className="flex dark:bg-primary/20 bg-green-300 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
-                  <FaCheck className="p-0.5 text-white dark:text-primary lg:size-8 size-6" />
+                <div className="flex bg-green-100 dark:bg-green-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+                  <FaCheck className="p-0.5 text-green-600 dark:text-green-400 lg:size-8 size-6" />
                 </div>
                 <div className="flex-grow space-y-0.5">
-                  <span className="text-mainheading dark:text-primary block font-medium">
+                  <span className="text-neutral-900 dark:text-primary block font-medium">
                     Login successful!
                   </span>
-                  <span className="text-mainheading dark:text-gray-300 block text-sm">
+
+                  <span className="text-gray-500 dark:text-gray-300 block text-sm">
                     Checking account status...
                   </span>
                 </div>
@@ -3573,18 +3572,18 @@ export default function LoginPage() {
           </AnimatePresence>
 
           {/* Form - Using original structure and classes */}
-          <form className="space-y-5 mt-5" onSubmit={handleSubmit} noValidate>
+          <form className="space-y-4 mt-5" onSubmit={handleSubmit} noValidate>
             {/* Google Button */}
             <div>
               <button
                 type="button"
-                className="flex dark:bg-background border justify-center rounded-lg text-mainheading dark:text-white text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 text-sm lg:text-base"
+                className="flex dark:bg-background border justify-center rounded-lg h-14 text-neutral-900 dark:text-white w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 text-sm lg:text-base"
                 onClick={handleGoogleLogin} // Functional change: Use the handler
               >
                 <Image
                   src="/assets/icon/google.svg"
-                  width={30}
-                  height={30}
+                  width={28}
+                  height={28}
                   alt="Continue with Google"
                 />
                 Continue with Google
@@ -3595,19 +3594,21 @@ export default function LoginPage() {
             <div>
               <label
                 htmlFor="email"
-                className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
+                className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
               >
-                Your email address <span className="text-error">*</span>
+                Your email address{" "}
+                <span className="text-red-600 dark:text-red-400">*</span>
               </label>
+
               <input
                 type="email"
                 id="email"
                 placeholder="Your Email"
                 autoComplete="email" // Keep autocomplete
-                className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
+                className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
                   emailError
-                    ? "border-red-700 border-2 !shadow-none" // Original error class
-                    : "hover:shadow-darkcolor dark:hover:shadow-whitecolor" // Original hover class
+                    ? "border-red-600 border-2 !shadow-none focus:!ring-red-600" // Original error class
+                    : "focus:border-[#5f5f5f]" // Original hover class
                 }`}
                 value={email}
                 onChange={(e) => {
@@ -3617,6 +3618,7 @@ export default function LoginPage() {
                 aria-invalid={!!emailError}
                 aria-describedby={emailError ? "email-error" : undefined}
               />
+
               {emailError && (
                 <p
                   id="email-error"
@@ -3631,23 +3633,25 @@ export default function LoginPage() {
             </div>
 
             {/* Password Input */}
-            <div>
+            <div className="relative">
               <label
                 htmlFor="password"
-                className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
+                className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
               >
-                Your password <span className="text-error">*</span>
+                Your password{" "}
+                <span className="text-red-600 dark:text-red-400">*</span>
               </label>
-              <div className="relative">
+
+              <div>
                 <input
                   type={showPassword ? "text" : "password"}
                   id="password"
                   placeholder="Your Password"
                   autoComplete="current-password" // Keep autocomplete
-                  className={`mt-1 block px-4 dark:bg-background py-3 h-14 border w-full rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
+                  className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
                     passwordError
-                      ? "border-red-700 border-2 !shadow-none" // Original error class
-                      : "hover:shadow-darkcolor dark:hover:shadow-whitecolor" // Original hover class
+                      ? "border-red-600 border-2 !shadow-none focus:!ring-red-600" // Original error class
+                      : "focus:border-[#5f5f5f]" // Original hover class
                   }`}
                   value={password}
                   onChange={(e) => {
@@ -3661,14 +3665,14 @@ export default function LoginPage() {
                 />
                 <button
                   type="button"
-                  className="text-gray-500 -translate-y-1/2 absolute cursor-pointer focus:outline-none hover:text-gray-700 right-1 top-1/2 transform dark:bg-background bg-white p-3 rounded-md" // Original button style
+                  className="absolute right-4 top-11 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background" // Original button style
                   onClick={togglePasswordVisibility}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
-                    <RiEyeCloseLine className="text-mainheading size-5 dark:text-white" /> // Original icon style
+                    <LuEye size={26} /> // Original icon style
                   ) : (
-                    <VscEye className="text-mainheading size-5 dark:text-white" /> // Original icon style
+                    <LuEyeClosed size={26} /> // Original icon style
                   )}
                 </button>
               </div>
@@ -3689,9 +3693,11 @@ export default function LoginPage() {
             <div className="text-right">
               <Link
                 href="/auth/forgot-password"
-                className="text-mainheading dark:text-primary inline-block font-medium underline text-sm lg:text-base underline-offset-4" // Original style
+                className="inline-block" // Original style
               >
-                Forgot Password ?
+                <span className="text-neutral-900 dark:text-primary font-medium underline text-sm lg:text-base underline-offset-4">
+                  Forgot Password ?
+                </span>
               </Link>
             </div>
 
@@ -3699,40 +3705,84 @@ export default function LoginPage() {
             <div className="flex justify-between items-center mb-4">
               <button
                 type="submit"
-                className={`rounded-full text-mainheading w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium lg:py-3 py-2 lg:h-12.5 transition-colors
+                className={`bg-primary hover:bg-primaryhover w-full text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center
                   ${
                     // Original classes for submit button state
                     isSubmitting
-                      ? "bg-gray-300 dark:bg-background border dark:text-white text-mainheading cursor-not-allowed"
-                      : "bg-primary hover:bg-primaryhover text-mainheading"
+                      ? "bg-gray-300 dark:bg-background border dark:text-white text-neutral-900 cursor-not-allowed"
+                      : "bg-primary hover:bg-primaryhover text-neutral-900"
                   }
                 `}
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
                   // Original loading indicator structure
-                  <div className="flex gap-4 justify-center items-center">
+                  <>
                     <svg
-                      className="size-5 text-mainheading dark:text-white font-medium animate-spin"
+                      className="h-5 w-5 text-neutral-900 animate-spin mr-2"
                       viewBox="0 0 24 24"
-                      aria-hidden="true"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
                     >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
                       <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
+                        d="M12 2V6"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M12 18V22"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M4.93 4.93L7.76 7.76"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M16.24 16.24L19.07 19.07"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M2 12H6"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M18 12H22"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M4.93 19.07L7.76 16.24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M16.24 7.76L19.07 4.93"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
-                    Logging in...
-                  </div>
+                    <span>Logging in...</span>
+                  </>
                 ) : (
                   "Log in"
                 )}

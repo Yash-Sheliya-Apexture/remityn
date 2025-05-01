@@ -901,7 +901,7 @@ const FeaturesSection: React.FC = () => {
               priority
             />
 
-            <div className="flex flex-col space-y-3 lg:">
+            <div className="flex flex-col space-y-3 p-4 lg:p-6">
               <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
                 <span className="text-primary font-bold ">Secure</span> Every
                 Step of the Way
