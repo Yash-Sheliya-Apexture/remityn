@@ -266,10 +266,10 @@ const ProtectionSection = () => {
             <div className="lg:size-14 size-12 rounded-full bg-secondarybox dark:bg-primarybox flex items-center justify-center">
               <MdSyncAlt className="size-8 text-white dark:text-primary" />
             </div>
-            <h3 className="lg:text-xl text-lg font-medium text-mainheading dark:text-white">
+            <h3 className="sm:text-xl text-lg font-medium dark:text-white text-neutral-900 capitalize">
               Real-Time Exchange Rates
             </h3>
-            <p className="text-gray-500 md:text-base text-sm dark:text-gray-300">
+            <p className="sm:text-base text-sm text-gray-500 dark:text-gray-300">
               Get the most accurate and up-to-date exchange rates sourced from
               global financial markets.
             </p>
@@ -283,10 +283,10 @@ const ProtectionSection = () => {
             <div className="lg:size-14 size-12 rounded-full bg-secondarybox dark:bg-primarybox flex items-center justify-center">
               <FaGlobe className=" lg:size-8 size-6 text-white dark:text-primary" />
             </div>
-            <h3 className="lg:text-xl text-lg font-medium text-mainheading dark:text-white">
+            <h3 className="sm:text-xl text-lg font-medium dark:text-white text-neutral-900 capitalize">
               Multi-Currency Support
             </h3>
-            <p className="text-gray-500 lg:text-base text-sm dark:text-gray-300">
+            <p className="sm:text-base text-sm text-gray-500 dark:text-gray-300">
               Exchange between dozens of global currencies including USD, EUR,
               GBP, JPY, INR, and more.
             </p>
@@ -300,10 +300,10 @@ const ProtectionSection = () => {
             <div className="lg:size-14 size-12 rounded-full bg-secondarybox dark:bg-primarybox flex items-center justify-center">
               <FaClock className=" lg:size-8 size-6 text-white dark:text-primary" />
             </div>
-            <h3 className="lg:text-xl text-lg font-medium text-mainheading dark:text-white">
+            <h3 className="sm:text-xl text-lg font-medium dark:text-white text-neutral-900 capitalize">
               Fast Processing
             </h3>
-            <p className="text-gray-500 lg:text-base text-sm dark:text-gray-300">
+            <p className="sm:text-base text-sm text-gray-500 dark:text-gray-300">
               Instant conversions with real-time confirmation — no more waiting
               hours for currency updates.
             </p>
@@ -317,10 +317,10 @@ const ProtectionSection = () => {
             <div className="lg:size-14 size-12 rounded-full bg-secondarybox dark:bg-primarybox flex items-center justify-center">
               <RiCustomerService2Fill className=" lg:size-8 size-6 text-white dark:text-primary" />
             </div>
-            <h3 className="lg:text-xl text-lg font-medium text-mainheading dark:text-white">
+            <h3 className="sm:text-xl text-lg font-medium dark:text-white text-neutral-900 capitalize">
               24/7 Customer Support
             </h3>
-            <p className="text-gray-500 md:text-base text-sm dark:text-gray-300">
+            <p className="sm:text-base text-sm text-gray-500 dark:text-gray-300">
               Round-the-clock support to help you with your currency-related
               queries and transactions.
             </p>

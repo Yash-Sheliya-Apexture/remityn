@@ -203,7 +203,7 @@ const WhyChooseUs: React.FC = () => {
           variants={headingVariants} // Apply heading animation
           // Inherits trigger from parent motion.div
         >
-          <h1 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white  uppercase">
+          <h1 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white uppercase">
             Find out why 
             <span className="text-primary">millions choose Apexture</span>
           </h1>
