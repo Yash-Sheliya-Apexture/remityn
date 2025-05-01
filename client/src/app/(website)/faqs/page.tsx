@@ -1428,7 +1428,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
     <motion.div
       layout // Helps animate size changes smoothly when answer opens/closes
       data-state={isOpen ? "open" : "closed"}
-      className="rounded-lg bg-lightgray dark:bg-white/5 mb-4 overflow-hidden"
+      className="rounded-lg bg-lightgray dark:bg-primarybox mb-4 overflow-hidden"
     >
       <h3 className="m-0 flex">
         <button
@@ -1436,7 +1436,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
           aria-controls={uniqueContentId}
           aria-expanded={isOpen}
           onClick={onToggle}
-          className="flex w-full cursor-pointer flex-1 gap-2 items-center justify-between text-start lg:text-xl md:text-lg text-sm text-mainheading dark:text-white font-medium md:p-5 p-4 transition-colors duration-300"
+          className="flex w-full cursor-pointer flex-1 gap-2 items-center justify-between text-start sm:text-xl text-lg text-mainheading dark:text-white font-medium md:p-5 p-4 transition-colors duration-300"
           id={uniqueTriggerId}
         >
           {item.question}
@@ -1446,7 +1446,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
             style={{ display: "inline-block" }}
           >
             <SlArrowDown
-              className="lg:size-3 size-2.5 shrink-0 text-gray-700 dark:text-gray-300"
+              className="size-3 shrink-0 text-neutral-900 dark:text-white"
               aria-hidden
             />
           </motion.span>
@@ -1463,9 +1463,9 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
             initial="initial"
             animate="animate"
             exit="exit"
-            className="overflow-hidden text-sm md:text-base lg:text-lg leading-relaxed text-gray-700 dark:text-gray-300"
+            className="overflow-hidden lg:text-lg text-sm text-gray-500 dark:text-gray-300"
           >
-            <div className="pt-0 pb-4 md:px-5 px-4">{item.answer}</div>
+            <p className="pt-0 pb-4 md:px-5 px-4">{item.answer}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -1486,30 +1486,29 @@ const FAQPage: React.FC = () => {
 
   return (
     // No overall page animation wrapper needed now
-    <>
-      {/* Header Section - Simple fade in on load */}
-      <motion.div
-        variants={headerVariants}
-        initial="hidden"
-        animate="visible" // Animate immediately on load
-        className="bg-white dark:bg-background lg:py-10 px-4 py-5"
-      >
-        <div className="space-y-2.5 container mx-auto">
-          <h1 className="text-4xl md:text-5xl xl:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+    <section className="FAQSection bg-white dark:bg-background  min-h-screen">
+      <div className="container mx-auto px-4">
+        {/* Header Section - Simple fade in on load */}
+        <motion.div
+          variants={headerVariants}
+          initial="hidden"
+          animate="visible" // Animate immediately on load
+          className="space-y-4"
+        >
+          <h1 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white uppercase">
             Frequently Asked
             <span className="text-primary"> Questions </span>
           </h1>
-          <p className="lg:text-lg sm:text-base text-sm text-gray-700 max-w-2xl leading-relaxed dark:text-gray-300">
+          <p className="lg:text-lg text-base text-gray-500 dark:text-gray-300">
             Got questions about currency exchange? We’ve got answers. Explore
             our most common queries to understand how our services work,
             exchange rates, transfer times, and more.
           </p>
-        </div>
-      </motion.div>
+        </motion.div>
 
-      {/* FAQ Content Section */}
-      <div className="bg-white dark:bg-background min-h-screen">
-        <main className="mx-auto mb-10 container max-w-3xl px-4">
+        {/* FAQ Content Section */}
+
+        <div className="lg:py-10 py-5">
           <div className="lg:space-y-8 space-y-5">
             {faqSections.map((section) => (
               // Container for each section title + items list
@@ -1520,7 +1519,7 @@ const FAQPage: React.FC = () => {
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ amount: 0.2, once: true }} // Trigger once when title is visible
-                  className="text-lg lg:text-2xl font-semibold text-mainheading dark:text-white lg:mb-10 mb-8"
+                  className="text-xl lg:text-2xl font-semibold text-mainheading dark:text-white lg:mb-8 mb-6"
                 >
                   {section.title}
                 </motion.h2>
@@ -1548,9 +1547,10 @@ const FAQPage: React.FC = () => {
               </div>
             ))}
           </div>
-        </main>
+        </div>
+
       </div>
-    </>
+    </section>
   );
 };
 

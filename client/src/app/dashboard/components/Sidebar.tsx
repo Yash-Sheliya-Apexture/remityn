@@ -3462,8 +3462,15 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                           pathname.startsWith(finalRoute))); // Match sub-routes too
 
                     // Define sensitive links that require authentication
-                    const requiresAuth = ['transactions', 'send', 'add-money', 'recipients', 'settings'].includes(item.id);
-                    const visuallyDisabled = isDisabled || (requiresAuth && !isAuthenticated);
+                    const requiresAuth = [
+                      "transactions",
+                      "send",
+                      "add-money",
+                      "recipients",
+                      "settings",
+                    ].includes(item.id);
+                    const visuallyDisabled =
+                      isDisabled || (requiresAuth && !isAuthenticated);
 
                     return (
                       <Link
@@ -3475,7 +3482,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                             e.preventDefault();
                             // Optional: Redirect to login if requires auth and not logged in
                             if (requiresAuth && !isAuthenticated) {
-                                router.push('/auth/login');
+                              router.push("/auth/login");
                             }
                             return;
                           }
@@ -3522,17 +3529,24 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                   })
                 )}
               </nav>
-               {/* Logout Button - Only show if authenticated */}
-               {isAuthenticated && (
-                 <button
-                   onClick={handleLogout}
-                   className="w-full flex items-center space-x-3 py-3 px-4 font-medium rounded-full transition duration-200 mb-2 cursor-pointer text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
-                  // disabled={isLoadingBalances} // Optional: disable during loading
-                 >
-                   <VscSignOut className="w-6 h-6 flex-shrink-0" />
-                   <span className="font-medium">Logout</span>
-                 </button>
-               )}
+              {/* Logout Button - Only show if authenticated */}
+              {isAuthenticated && (
+                <>
+                  {/* If authenticated AND loading balances, show skeleton */}
+                  {isLoadingBalances ? (
+                    <NavItemSkeleton key="logout-skeleton" />
+                  ) : (
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center space-x-3 py-3 px-4 font-medium rounded-full transition duration-200 mb-2 cursor-pointer text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
+                      // disabled={isLoadingBalances} // Optional: disable during loading
+                    >
+                      <VscSignOut className="w-6 h-6 flex-shrink-0" />
+                      <span className="font-medium">Logout</span>
+                    </button>
+                  )}
+                </>
+              )}
             </div>
           </motion.div>
         )}
@@ -3572,10 +3586,15 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
               {standardBottomNavItems.slice(0, 2).map((item) => {
                 const IconComponent = icons[item.icon as keyof typeof icons];
                 const finalRoute = resolveRoute(item.route);
-                 // Note: Bottom nav items 'home', 'activity', 'recipients', 'settings' might also need auth check
-                const requiresAuth = ['bottom-activity', 'bottom-recipients', 'bottom-settings'].includes(item.id);
+                // Note: Bottom nav items 'home', 'activity', 'recipients', 'settings' might also need auth check
+                const requiresAuth = [
+                  "bottom-activity",
+                  "bottom-recipients",
+                  "bottom-settings",
+                ].includes(item.id);
                 const isDisabled = isLinkDisabled(item.id, "bottomNav"); // Checks loading state for specific actions if applicable
-                const visuallyDisabled = isDisabled || (requiresAuth && !isAuthenticated);
+                const visuallyDisabled =
+                  isDisabled || (requiresAuth && !isAuthenticated);
                 const isActive =
                   isAuthenticated && // Can only be active if authenticated
                   !visuallyDisabled &&
@@ -3588,13 +3607,13 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                     key={item.id}
                     href={visuallyDisabled ? "#" : finalRoute}
                     onClick={(e) => {
-                        if (visuallyDisabled) {
-                            e.preventDefault();
-                            if (requiresAuth && !isAuthenticated) {
-                                router.push('/auth/login');
-                            }
-                            return;
+                      if (visuallyDisabled) {
+                        e.preventDefault();
+                        if (requiresAuth && !isAuthenticated) {
+                          router.push("/auth/login");
                         }
+                        return;
+                      }
                     }}
                     className={`flex relative flex-col items-center justify-center space-y-1 p-1 grow basis-0 h-full transition-colors duration-200 group ${
                       // Use basis-0 and grow for equal spacing
@@ -3635,89 +3654,107 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                   aria-label="Open actions menu"
                   // Disable the FAB itself if the user is not logged in, as its actions require auth
                   disabled={!isAuthenticated}
-                  className={`absolute -top-1/2 z-50 flex items-center bg-white dark:bg-background rounded-full ${!isAuthenticated ? 'opacity-50 cursor-not-allowed' : ''}`} // Added border classes and disabled state
+                  className={`absolute -top-1/2 z-50 flex items-center bg-white dark:bg-background rounded-full ${
+                    !isAuthenticated ? "opacity-50 cursor-not-allowed" : ""
+                  }`} // Added border classes and disabled state
                 >
-                <div className="flex items-center justify-center w-15 h-15 rounded-full bg-primary transition-all duration-200 ease-out hover:bg-primary/90">
-
-                  <BsSend className="size-6 text-neutral-900" />
-                  {/* Changed icon and size */}
-                </div>
+                  <div className="flex items-center justify-center w-15 h-15 rounded-full bg-primary transition-all duration-200 ease-out hover:bg-primary/90">
+                    <BsSend className="size-6 text-neutral-900" />
+                    {/* Changed icon and size */}
+                  </div>
                 </button>
                 {/* Action Menu Pop-up - Only render if authenticated */}
                 <AnimatePresence>
-                  {isAuthenticated && isActionMenuOpen && ( // Check authentication before rendering menu
-                    <motion.div
-                      id="action-menu-popup" // ID for aria-controls
-                      // Animation: pop up from bottom, fade in, scale up
-                      initial={{ y: 10, opacity: 0, scale: 0.9 }}
-                      animate={{ y: -78, opacity: 1, scale: 1 }} // Position above the FAB
-                      exit={{ y: 10, opacity: 0, scale: 0.9, transition: { duration: 0.15 } }}
-                      transition={{ type: "spring", stiffness: 350, damping: 25 }}
-                      className="absolute bottom-12 bg-white dark:bg-background rounded-2xl p-3 z-48 flex flex-col gap-1 w-48" // Changed width class
-                    >
-                      {actionItems.map((action) => {
-                        const IconComponent =
-                          icons[action.icon as keyof typeof icons];
-                        const finalRoute = resolveRoute(action.route);
-                        // isLinkDisabled already checks for auth and loading status for these actions
-                        const isDisabled = isLinkDisabled(
-                          action.id,
-                          "actionMenu"
-                        );
+                  {isAuthenticated &&
+                    isActionMenuOpen && ( // Check authentication before rendering menu
+                      <motion.div
+                        id="action-menu-popup" // ID for aria-controls
+                        // Animation: pop up from bottom, fade in, scale up
+                        initial={{ y: 10, opacity: 0, scale: 0.9 }}
+                        animate={{ y: -78, opacity: 1, scale: 1 }} // Position above the FAB
+                        exit={{
+                          y: 10,
+                          opacity: 0,
+                          scale: 0.9,
+                          transition: { duration: 0.15 },
+                        }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 350,
+                          damping: 25,
+                        }}
+                        className="absolute bottom-12 bg-white dark:bg-background rounded-2xl p-3 z-48 flex flex-col gap-1 w-48" // Changed width class
+                      >
+                        {actionItems.map((action) => {
+                          const IconComponent =
+                            icons[action.icon as keyof typeof icons];
+                          const finalRoute = resolveRoute(action.route);
+                          // isLinkDisabled already checks for auth and loading status for these actions
+                          const isDisabled = isLinkDisabled(
+                            action.id,
+                            "actionMenu"
+                          );
 
-                        return (
-                          <Link
-                            key={action.id}
-                            href={isDisabled ? "#" : finalRoute}
-                            onClick={(e) => {
-                              if (isDisabled) {
-                                e.preventDefault(); // Prevent navigation if disabled
-                                return;
-                              }
-                              setIsActionMenuOpen(false); // Close menu on click/tap
-                            }}
-                            className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors duration-150
+                          return (
+                            <Link
+                              key={action.id}
+                              href={isDisabled ? "#" : finalRoute}
+                              onClick={(e) => {
+                                if (isDisabled) {
+                                  e.preventDefault(); // Prevent navigation if disabled
+                                  return;
+                                }
+                                setIsActionMenuOpen(false); // Close menu on click/tap
+                              }}
+                              className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors duration-150
                               ${
                                 isDisabled
                                   ? "text-neutral-400 dark:text-gray-600 cursor-not-allowed opacity-70" // Disabled styles
                                   : `text-neutral-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10` // Enabled styles
                               }`}
-                            aria-disabled={isDisabled}
-                            tabIndex={isDisabled ? -1 : 0}
-                          >
-                            {/* Icon with colored background circle */}
-                            <div
-                              className={`p-2 rounded-md ${
-                                isDisabled
-                                  ? "bg-gray-300 dark:bg-gray-700"
-                                  : action.color
-                              }`}
+                              aria-disabled={isDisabled}
+                              tabIndex={isDisabled ? -1 : 0}
                             >
-                              {IconComponent && (
-                                <IconComponent
-                                  className={`size-5 ${
-                                    isDisabled ? "text-gray-500" : "text-background"
-                                  }`}
-                                />
-                              )}
-                            </div>
-                            <span className="text-sm font-medium">
-                              {action.label}
-                            </span>
-                          </Link>
-                        );
-                      })}
-                    </motion.div>
-                  )}
+                              {/* Icon with colored background circle */}
+                              <div
+                                className={`p-2 rounded-md ${
+                                  isDisabled
+                                    ? "bg-gray-300 dark:bg-gray-700"
+                                    : action.color
+                                }`}
+                              >
+                                {IconComponent && (
+                                  <IconComponent
+                                    className={`size-5 ${
+                                      isDisabled
+                                        ? "text-gray-500"
+                                        : "text-background"
+                                    }`}
+                                  />
+                                )}
+                              </div>
+                              <span className="text-sm font-medium">
+                                {action.label}
+                              </span>
+                            </Link>
+                          );
+                        })}
+                      </motion.div>
+                    )}
                 </AnimatePresence>
               </div>
               {standardBottomNavItems.slice(2).map((item) => {
-                 const IconComponent = icons[item.icon as keyof typeof icons];
+                const IconComponent = icons[item.icon as keyof typeof icons];
                 const finalRoute = resolveRoute(item.route);
                 // Note: Bottom nav items 'home', 'activity', 'recipients', 'settings' might also need auth check
-                const requiresAuth = ['bottom-activity', 'bottom-recipients', 'bottom-settings'].includes(item.id);
+                const requiresAuth = [
+                  "bottom-activity",
+                  "bottom-recipients",
+                  "bottom-settings",
+                ].includes(item.id);
                 const isDisabled = isLinkDisabled(item.id, "bottomNav"); // Checks loading state if applicable
-                const visuallyDisabled = isDisabled || (requiresAuth && !isAuthenticated);
+                const visuallyDisabled =
+                  isDisabled || (requiresAuth && !isAuthenticated);
                 const isActive =
                   isAuthenticated && // Can only be active if authenticated
                   !visuallyDisabled &&
@@ -3730,13 +3767,13 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                     key={item.id}
                     href={visuallyDisabled ? "#" : finalRoute}
                     onClick={(e) => {
-                       if (visuallyDisabled) {
-                           e.preventDefault();
-                           if (requiresAuth && !isAuthenticated) {
-                               router.push('/auth/login');
-                           }
-                           return;
-                       }
+                      if (visuallyDisabled) {
+                        e.preventDefault();
+                        if (requiresAuth && !isAuthenticated) {
+                          router.push("/auth/login");
+                        }
+                        return;
+                      }
                     }}
                     className={`flex relative flex-col items-center justify-center space-y-1 p-1 grow basis-0 h-full transition-colors duration-200 group ${
                       // Use basis-0 and grow for equal spacing
