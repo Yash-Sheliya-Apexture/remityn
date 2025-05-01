@@ -372,7 +372,7 @@ import { motion } from "framer-motion"; // Import motion
 import { useAuth } from "@/app/contexts/AuthContext";
 
 // Interface remains the same
-interface AboutSectionProps {
+interface TrustedCurrencyPartnerProps {
   title?: string;
   subtitle?: string;
   description?: string;
@@ -421,10 +421,10 @@ const rightBlockVariants = {
   },
 };
 
-const AboutSection: React.FC<AboutSectionProps> = ({
+const TrustedCurrencyPartner: React.FC<TrustedCurrencyPartnerProps> = ({
   title = "YOUR TRUSTED PARTNER IN",
   subtitle = "GLOBAL CURRENCY EXCHANGE",
-  description = "At Apexture, we make international currency exchange simple, secure, and reliable. With competitive rates, fast transfers, and a customer-first approach, we help individuals and businesses move money across borders with confidence",
+  description = "At Wise, we make international currency exchange simple, secure, and reliable. With competitive rates, fast transfers, and a customer-first approach, we help individuals and businesses move money across borders with confidence",
   imageSrc = "/assets/images/Tech-recruiter-524x525.jpg",
   imageAlt = "Person smiling while using a laptop and wearing headphones",
 }) => {
@@ -435,11 +435,11 @@ const AboutSection: React.FC<AboutSectionProps> = ({
 
   return (
     // Keep overflow-hidden on the main section wrapper
-    <section className="relative bg-white dark:bg-background md:py-10 py-5 overflow-hidden">
+    <section className="TrustedCurrencySection relative bg-white dark:bg-background md:py-10 py-5 overflow-hidden">
       <div className="container mx-auto px-4 relative z-20">
         {/* Wrap the flex container with motion to control triggering */}
         <motion.div
-          className="flex flex-col lg:flex-row items-center gap-6"
+          className="flex flex-col lg:flex-row items-center gap-8"
           variants={containerVariants} // Apply container variants
           initial="hidden" // Start in the 'hidden' state
           whileInView="visible" // Animate to 'visible' when the element enters the viewport
@@ -499,4 +499,4 @@ const AboutSection: React.FC<AboutSectionProps> = ({
   );
 };
 
-export default AboutSection;
+export default TrustedCurrencyPartner;

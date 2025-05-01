@@ -90,7 +90,6 @@
 "use client"; // Add this for Framer Motion client-side hooks
 
 import React, { JSX } from "react";
-import Image from "next/image"; // Keep Image import if needed elsewhere, though not used here
 import { BsCashStack, BsEmojiSmile } from "react-icons/bs";
 import { FaGlobe } from "react-icons/fa6";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
@@ -186,10 +185,10 @@ const cardVariants = {
 };
 
 // --- Component ---
-const XeFeaturesSection: React.FC = () => {
+const WhyChooseUs: React.FC = () => {
   return (
     // Add overflow-hidden to prevent scrollbars during card animation
-    <div className="bg-white dark:bg-background lg:py-10 py-5 overflow-hidden">
+    <section className="WhyChooseUsSection bg-white dark:bg-background lg:py-10 py-5 overflow-hidden">
       {/* Wrap the main container with motion to trigger animations on view */}
       <motion.div
         className="mx-auto container px-4 max-w-5xl"
@@ -204,10 +203,10 @@ const XeFeaturesSection: React.FC = () => {
           variants={headingVariants} // Apply heading animation
           // Inherits trigger from parent motion.div
         >
-          <h2 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white  uppercase">
+          <h1 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white  uppercase">
             Find out why 
             <span className="text-primary">millions choose Apexture</span>
-          </h2>
+          </h1>
 
           <p className="lg:text-lg text-base text-gray-500 dark:text-gray-300">
             For over 10 years, Apexture Corporation Inc. customers have been
@@ -228,7 +227,7 @@ const XeFeaturesSection: React.FC = () => {
               key={feature.title} // Key goes on the motion component
               variants={cardVariants} // Apply card animation variants
               // Individual card timing controlled by parent's staggerChildren
-              className="bg-white dark:bg-primarybox shadow border rounded-2xl sm:p-6 p-4 lg:space-y-4 space-y-2.5 h-full"
+              className="bg-lightgray dark:bg-primarybox rounded-2xl sm:p-6 p-4 lg:space-y-4 space-y-2.5 h-full"
             >
               {/* Icon */}
               <div className=" lg:size-14 size-12 bg-primary rounded-full flex items-center justify-center">
@@ -237,11 +236,11 @@ const XeFeaturesSection: React.FC = () => {
                 </span>
               </div>
               {/* Title */}
-              <h3 className="lg:text-xl text-lg font-medium dark:text-white text-neutral-900 capitalize">
+              <h3 className="sm:text-xl text-lg font-medium dark:text-white text-neutral-900 capitalize">
                 {feature.title}
               </h3>
               {/* Description */}
-              <p className="lg:text-base text-sm text-gray-500 dark:text-gray-300">
+              <p className="sm:text-base text-sm text-gray-500 dark:text-gray-300">
                 {feature.description}
               </p>
             </motion.div>
@@ -249,8 +248,8 @@ const XeFeaturesSection: React.FC = () => {
         </motion.div>
         
       </motion.div>
-    </div>
+    </section>
   );
 };
 
-export default XeFeaturesSection;
+export default WhyChooseUs;

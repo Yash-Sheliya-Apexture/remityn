@@ -246,12 +246,12 @@ const cardVariants = {
 const ProtectionSection = () => {
   return (
     <section
-      className="Protection-Section md:py-10 py-5 bg-white dark:bg-background overflow-y-hidden"
+      className="Protection-Section lg:py-10 py-5 bg-white dark:bg-background overflow-y-hidden"
       id="protect"
     >
       <div className="container mx-auto px-4">
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:gap-10 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6"
           variants={containerVariants}
           initial="hidden" // Start the container (and thus children initially) as hidden
           whileInView="visible" // Trigger the 'visible' variant when the container scrolls into view
@@ -259,12 +259,12 @@ const ProtectionSection = () => {
         >
 
           {/* Real-Time Exchange Rates */}
-          <motion.div
-            className="flex flex-col items-center text-center lg:space-y-3.5 space-y-2.5"
+          <motion.div 
+            className="flex flex-col items-center text-center lg:space-y-3 space-y-2.5"
             variants={cardVariants} // Use the SAME variants for all cards
           >
             <div className="lg:size-14 size-12 rounded-full bg-secondarybox dark:bg-primarybox flex items-center justify-center">
-              <MdSyncAlt className=" size-8 text-white dark:text-primary" />
+              <MdSyncAlt className="size-8 text-white dark:text-primary" />
             </div>
             <h3 className="lg:text-xl text-lg font-medium text-mainheading dark:text-white">
               Real-Time Exchange Rates
@@ -277,7 +277,7 @@ const ProtectionSection = () => {
 
           {/* Multi-Currency Support */}
           <motion.div
-            className="flex flex-col items-center text-center lg:space-y-3.5 space-y-2.5"
+            className="flex flex-col items-center text-center lg:space-y-3 space-y-2.5"
             variants={cardVariants} // Use the SAME variants for all cards
           >
             <div className="lg:size-14 size-12 rounded-full bg-secondarybox dark:bg-primarybox flex items-center justify-center">
@@ -286,7 +286,7 @@ const ProtectionSection = () => {
             <h3 className="lg:text-xl text-lg font-medium text-mainheading dark:text-white">
               Multi-Currency Support
             </h3>
-            <p className="text-gray-500 md:text-base text-sm dark:text-gray-300">
+            <p className="text-gray-500 lg:text-base text-sm dark:text-gray-300">
               Exchange between dozens of global currencies including USD, EUR,
               GBP, JPY, INR, and more.
             </p>
@@ -294,7 +294,7 @@ const ProtectionSection = () => {
 
           {/* Fast Processing */}
           <motion.div
-            className="flex flex-col items-center text-center lg:space-y-3.5 space-y-2.5"
+            className="flex flex-col items-center text-center lg:space-y-3 space-y-2.5"
             variants={cardVariants} // Use the SAME variants for all cards
           >
             <div className="lg:size-14 size-12 rounded-full bg-secondarybox dark:bg-primarybox flex items-center justify-center">
@@ -303,7 +303,7 @@ const ProtectionSection = () => {
             <h3 className="lg:text-xl text-lg font-medium text-mainheading dark:text-white">
               Fast Processing
             </h3>
-            <p className="text-gray-500 md:text-base text-sm dark:text-gray-300">
+            <p className="text-gray-500 lg:text-base text-sm dark:text-gray-300">
               Instant conversions with real-time confirmation — no more waiting
               hours for currency updates.
             </p>
@@ -311,7 +311,7 @@ const ProtectionSection = () => {
 
           {/* 24/7 Customer Support */}
           <motion.div
-            className="flex flex-col items-center text-center lg:space-y-3.5 space-y-2.5"
+            className="flex flex-col items-center text-center lg:space-y-3 space-y-2.5"
             variants={cardVariants} // Use the SAME variants for all cards
           >
             <div className="lg:size-14 size-12 rounded-full bg-secondarybox dark:bg-primarybox flex items-center justify-center">
