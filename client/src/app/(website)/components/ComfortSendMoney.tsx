@@ -63,9 +63,9 @@ const sectionVariants = {
   visible: {
     transition: {
       // Optional: Delay children slightly after container enters view
-      // delayChildren: 0.1,
+      delayChildren: 0.1,
       // Optional: Stagger children if needed, but delay works well here
-      // staggerChildren: 0.2,
+      staggerChildren: 0.2,
     },
   },
 };
@@ -109,41 +109,41 @@ const textBlockVariants = {
   },
 };
 
-const RightChoiceSection: React.FC = () => {
+const ComfortSendMoney: React.FC = () => {
   return (
     // Add overflow-hidden to contain animations
-    <section className="lg:py-10 py-5 bg-white dark:bg-background px-4 overflow-hidden">
+    <section className="ComfortSendMoneySection lg:py-10 py-5 bg-white dark:bg-background overflow-hidden">
       {/* Wrap container with motion for triggering */}
       <motion.div
-        className="container mx-auto"
+        className="container mx-auto px-4"
         variants={sectionVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ amount: 0.2, once: true }} // Trigger once when 20% visible
       >
-        <div className="flex flex-col lg:flex-row items-center md:gap-0 gap-10">
+        <div className="flex flex-col lg:flex-row items-center gap-8">
           {/* Image Area - Wrap with motion */}
           <motion.div
-            className="lg:w-1/2 w-full lg:order-1 order-2 flex justify-center"
+            className="w-full lg:w-1/2 lg:order-1 order-2"
             variants={imageVariants} // Apply image animation
             // Inherits trigger from parent
           >
-            <Image
-              alt="Woman smiling and using a laptop for easy money transfers" // More descriptive alt text
-              src="/assets/images/Sponsor-amico-light.svg"
-              width={600}
-              height={600}
-              className="lg:h-full lg:w-2/3 w-full size-76 block dark:hidden"
-              priority // Consider adding priority if often above the fold
-            />
-            <Image
-              alt="Woman smiling and using a laptop for easy money transfers" // More descriptive alt text
-              src="/assets/images/Sponsor-amico-dark.svg"
-              width={600}
-              height={600}
-              className="lg:h-full lg:w-2/3 w-full size-76 hidden dark:block"
-              priority // Consider adding priority if often above the fold
-            />
+            <div className="relative xl:aspect-[3/2] lg:aspect-square sm:aspect-[3/2] aspect-square overflow-hidden">
+              <Image
+                alt="Woman smiling and using a laptop for easy money transfers" // More descriptive alt text
+                src="/assets/images/Sponsor-amico-light.svg"
+                fill
+                className="object-contain block dark:hidden"
+                priority // Consider adding priority if often above the fold
+              />
+              <Image
+                alt="Woman smiling and using a laptop for easy money transfers" // More descriptive alt text
+                src="/assets/images/Sponsor-amico-dark.svg"
+                fill
+                className="object-contain hidden dark:block"
+                priority // Consider adding priority if often above the fold
+              />
+            </div>
           </motion.div>
 
           {/* Text Content Area - Wrap with motion */}
@@ -152,18 +152,20 @@ const RightChoiceSection: React.FC = () => {
             variants={textBlockVariants} // Apply text block animation
             // Inherits trigger from parent
           >
-            <div className="top-section md:text-left text-center space-y-2.5">
-              <p className="lg:text-base text-sm text-gray-700 dark:text-gray-300 font-medium">
-                Learn why Wise is the right choice for you
-              </p>
+            <div className="top-section space-y-4 text-center md:text-left">
+              <div className="inline-block px-4 py-1.5 bg-lightgray dark:bg-primarybox rounded-full">
+                <span className="text-neutral-900 dark:text-white font-medium text-sm capitalize">
+                  Convenient Home-Based Money Transfers
+                </span>
+              </div>
 
               {/* title */}
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase">
+              <h1 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white uppercase">
                 Send money from
                 <span className="text-primary"> the comfort of home.</span>
               </h1>
 
-              <p className="text-gray-700 lg:text-lg text-sm dark:text-gray-300">
+              <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
                 Send money from the comfort of your home with ease and
                 confidence. Our fast and secure online transfer service allows
                 you to send funds to your loved ones anytime, anywhere—no need
@@ -179,4 +181,4 @@ const RightChoiceSection: React.FC = () => {
   );
 };
 
-export default RightChoiceSection;
+export default ComfortSendMoney;

@@ -1,15 +1,15 @@
 import React from "react";
-import SendInternationally from "../components/SendInternationally";
-import Paymentsborder from "../components/Paymentsborder";
-import RightChoiceSection from "../components/RightChoiceSection";
+import CrossBorderMoneyTransfer from "../components/CrossBorderMoneyTransfer";
+import FreedomToReceive from "../components/FreedomToReceive";
+import ComfortSendMoney from "../components/ComfortSendMoney";
 import GetStartedSection from "../components/GetStartedSection";
 
 const SendMoneyPage = () => {
   return (
     <main className="Send-MoneyPages">
-      <SendInternationally />
-      <Paymentsborder />
-      <RightChoiceSection />
+      <CrossBorderMoneyTransfer />
+      <FreedomToReceive />
+      <ComfortSendMoney />
       <GetStartedSection />
     </main>
   );

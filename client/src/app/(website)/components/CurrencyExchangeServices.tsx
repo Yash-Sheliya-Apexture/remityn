@@ -55,7 +55,7 @@ import Image from "next/image";
 import React from "react";
 import { motion } from "framer-motion"; // Import motion
 
-interface EasymoneyProps {}
+interface CurrencyExchangeServicesProps {}
 
 // --- Animation Variants (Copied from AboutSection) ---
 
@@ -98,14 +98,14 @@ const rightBlockVariants = {
   },
 };
 
-const Easymoney: React.FC<EasymoneyProps> = () => {
+const CurrencyExchangeServices: React.FC<CurrencyExchangeServicesProps> = () => {
   return (
     // Keep overflow-hidden on the main section wrapper
-    <section className="bg-white dark:bg-background lg:py-10 py-5 overflow-hidden">
+    <section className="CurrencyExchangeServicesSection bg-white dark:bg-background lg:py-10 py-5 overflow-hidden">
       <div className="container mx-auto  px-4">
         {/* Wrap the flex container with motion */}
         <motion.div
-          className="flex flex-col lg:flex-row items-center gap-6"
+          className="flex flex-col lg:flex-row items-center gap-8"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -165,4 +165,4 @@ const Easymoney: React.FC<EasymoneyProps> = () => {
   );
 };
 
-export default Easymoney;
+export default CurrencyExchangeServices;

@@ -430,15 +430,13 @@ const FeatureItem: React.FC<FeatureItemProps> = ({
       {/* Added h-full for consistent height if needed */}
       <div className="flex items-center md:gap-6 gap-4">
         <span className="text-mainheading dark:text-primary flex-shrink-0">
-          {" "}
-          {/* Added flex-shrink-0 */}
           {icon}
         </span>
-        <div className="space-y-1">
-          <h5 className="lg:text-lg text-sm font-medium text-mainheading dark:text-white">
+        <div className="space-y-2">
+          <h5 className="sm:text-xl text-lg font-medium dark:text-white text-neutral-900 capitalize">
             {title}
           </h5>
-          <p className="text-gray-700 text-xs lg:text-base dark:text-gray-300">
+          <p className="sm:text-base text-sm text-gray-500 dark:text-gray-300">
             {description}
           </p>
         </div>
@@ -501,10 +499,10 @@ const cardVariants = {
   },
 };
 
-const Paymentsborder: React.FC = () => {
+const FreedomToReceive: React.FC = () => {
   return (
     // Add overflow-hidden to contain animations
-    <section className="bg-white dark:bg-background lg:py-10 py-5 overflow-hidden">
+    <section className="FreedomToReceiveSection bg-white dark:bg-background lg:py-10 py-5 overflow-hidden">
       {/* Wrap the container with motion for triggering */}
       <motion.div
         className="container mx-auto px-4"
@@ -520,7 +518,7 @@ const Paymentsborder: React.FC = () => {
         >
           <div className="inline-block px-4 py-1.5 bg-lightgray dark:bg-primarybox rounded-full">
             <span className="text-neutral-900 dark:text-white font-medium text-sm capitalize">
-              Payments without borders
+              Receive Funds Anywhere, Anytime – With Total Flexibility
             </span>
           </div>
           <h1 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white uppercase">
@@ -538,7 +536,7 @@ const Paymentsborder: React.FC = () => {
           {/* Map through features and wrap each FeatureItem instance */}
           <motion.div variants={cardVariants}>
             <FeatureItem
-              icon={<FaFingerprint className="size-6 lg:size-8" />}
+              icon={<FaFingerprint className="size-8" />}
               title="Always at Your Fingertips"
               description="Send money anytime, anywhere—right from your phone. With
                     lightning-fast transfers, real-time exchange rates, and total
@@ -547,7 +545,7 @@ const Paymentsborder: React.FC = () => {
           </motion.div>
           <motion.div variants={cardVariants}>
             <FeatureItem
-              icon={<FaExchangeAlt className="size-6 lg:size-8" />}
+              icon={<FaExchangeAlt className="size-8" />}
               title="Get the exchange rate right time"
               description="The cost of sending money abroad is constantly shifting. But
                     with the Bankio app, you’ll always know the exchange rate and
@@ -556,7 +554,7 @@ const Paymentsborder: React.FC = () => {
           </motion.div>
           <motion.div variants={cardVariants}>
             <FeatureItem
-              icon={<FaMoneyBillAlt className="size-6 lg:size-8" />}
+              icon={<FaMoneyBillAlt className="size-8" />}
               title="No additional fees. Ever"
               description="Exchange rates already make remitting money back home more
                     expensive working. Stilt will never charge you anything extra to send
@@ -565,7 +563,7 @@ const Paymentsborder: React.FC = () => {
           </motion.div>
           <motion.div variants={cardVariants}>
             <FeatureItem
-              icon={<FaRocket className="size-6 lg:size-8" />}
+              icon={<FaRocket className="size-8" />}
               title="Send with speed"
               description="When you send money abroad with the Bankio app’s remittance
                     feature, your payments arrive instantly. No waiting and no
@@ -574,7 +572,7 @@ const Paymentsborder: React.FC = () => {
           </motion.div>
           <motion.div variants={cardVariants}>
             <FeatureItem
-              icon={<FiRepeat className="size-6 lg:size-8" />}
+              icon={<FiRepeat className="size-8" />}
               title="Multiple Payout Options"
               description="Cash Pickup, Bank Deposit, Mobile Wallets Enjoy the flexibility
                to choose how you receive your money—straight into your bank account, picked
@@ -583,7 +581,7 @@ const Paymentsborder: React.FC = () => {
           </motion.div>
           <motion.div variants={cardVariants}>
             <FeatureItem
-              icon={<HiOutlineClock className="size-6 lg:size-8" />}
+              icon={<HiOutlineClock className="size-8" />}
               title="24/7 Availability"
               description="Cash Pickup, Bank Deposit, Mobile Wallets Enjoy the flexibility
                to choose how you receive your money—straight into your bank account, picked
@@ -596,7 +594,7 @@ const Paymentsborder: React.FC = () => {
   );
 };
 
-export default Paymentsborder;
+export default FreedomToReceive;
 
 
 
