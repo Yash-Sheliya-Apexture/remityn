@@ -297,60 +297,30 @@ input:-webkit-autofill:active {
 } */
 
 
-/* Make sure these styles are loaded, either globally or scoped */
-@layer utilities {
-  @keyframes drawBorder {
-    from {
-      stroke-dashoffset: 208;
-      /* Initial offset - adjust if path length changes */
-    }
-
-    to {
-      stroke-dashoffset: 0;
-      /* Draw the full border */
-    }
-  }
-
-  .animate-border-draw {
-    /* Apply the animation */
-    animation: drawBorder 3500ms linear forwards;
-    /* Duration should match timer slightly */
-  }
-
-  /* Optional: Add a reset state for when animation is not active */
-  .border-path-reset {
-    stroke-dashoffset: 208;
+/* In your global CSS file (e.g., globals.css) */
+@keyframes animate-border-draw {
+  to {
+    stroke-dashoffset: 0;
   }
 }
 
-
-/* Animation animate-spin */
-
-
-@theme {
-  --animate-wiggle: wiggle 2s linear infinite;
-
-  @keyframes wiggle {
-
-    0%,
-    {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(180deg);
-  }
-}
+.animate-border-draw {
+  stroke-dasharray: 208; /* Calculate this based on your SVG path length if different */
+  stroke-dashoffset: 208;
+  animation-name: animate-border-draw;
+  animation-timing-function: linear;
+  animation-duration: var(--border-animation-duration, 3.5s); /* Use CSS variable */
+  animation-fill-mode: forwards;
 }
 
-/* Hide spin buttons for number inputs */
-.no-spinners::-webkit-outer-spin-button,
-.no-spinners::-webkit-inner-spin-button {
-  -webkit-appearance: none; /* Safari and Chrome */
-  margin: 0; /* Important for Safari */
+.animate-border-draw.paused {
+  animation-play-state: paused;
 }
 
-.no-spinners {
-  -moz-appearance: textfield; /* Firefox */
-  appearance: textfield; /* Standard property, works in newer browsers */
+.border-path-static {
+  stroke-dashoffset: 0; /* Ensure it stays filled when not animating but active */
+}
+
+.border-path-reset {
+  stroke-dashoffset: 208; /* Ensure it's hidden when not active */
 }
