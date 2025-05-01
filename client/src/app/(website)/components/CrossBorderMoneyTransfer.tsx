@@ -136,7 +136,7 @@ const containerVariants = {
   visible: {
     transition: {
       // Optional: stagger children if needed later
-      // staggerChildren: 0.1,
+      staggerChildren: 0.1,
     },
   },
 };
@@ -169,7 +169,7 @@ const rightImageVariants = {
   },
 };
 
-const RemittanceSection: React.FC = () => {
+const CrossBorderMoneyTransfer: React.FC = () => {
   // Get user state from AuthContext
   const { user } = useAuth();
 
@@ -179,11 +179,11 @@ const RemittanceSection: React.FC = () => {
 
   return (
     // Add overflow-hidden to prevent scrollbars during animation
-    <section className="lg:py-10 py-5 bg-white dark:bg-background overflow-hidden">
+    <section className="CrossBorderMoneyTransferSection lg:py-10 py-5 bg-white dark:bg-background overflow-hidden">
       <div className="container mx-auto px-4">
         {/* Wrap the main flex container with motion for triggering */}
         <motion.div
-          className="flex flex-col lg:flex-row items-center gap-6"
+          className="flex flex-col lg:flex-row items-center gap-8"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -198,7 +198,7 @@ const RemittanceSection: React.FC = () => {
             <div className="space-y-4 text-center md:text-left">
               <div className="inline-block px-4 py-1.5 bg-lightgray dark:bg-primarybox rounded-full">
                 <span className="text-neutral-900 dark:text-white font-medium text-sm capitalize">
-                  Send Money Across Borders with Confidence
+                  Secure Global Money Transfers You Can Trust
                 </span>
               </div>
 
@@ -303,4 +303,4 @@ const RemittanceSection: React.FC = () => {
   );
 };
 
-export default RemittanceSection;
+export default CrossBorderMoneyTransfer;

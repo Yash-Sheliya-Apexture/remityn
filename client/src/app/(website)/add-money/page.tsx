@@ -1,14 +1,14 @@
 import React from "react";
-import Heroaddmoney from "../components/Heroaddmoney";
-import AddMoneySteps from "../components/MoneyMethod";
-import Security from "../components/Security";
+import AddMoneyGlobally from "../components/AddMoneyGlobally";
+import GettingStartedSteps from "../components/GettingStartedSteps";
+import EasyCurrencyExchange from "../components/EasyCurrencyExchange";
 
 const AddMoneyPage = () => {
   return (
     <main className="add-moneyPage">
-      <Heroaddmoney />
-      <AddMoneySteps />
-      <Security />  
+      <AddMoneyGlobally />
+      <GettingStartedSteps />
+      <EasyCurrencyExchange />  
     </main>
   );
 };
