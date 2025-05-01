@@ -1,14 +1,14 @@
 import React from 'react'
-import PoweringMoney from '../components/PoweringMoney'
-import EasyMoney from '../components/EasyMoney'
-import ChooseUs from '../components/ChooseUs'
+import TrustedCurrencyPartner from '../components/TrustedCurrencyPartner'
+import CurrencyExchangeServices from '../components/CurrencyExchangeServices'
+import WhyChooseUs from '../components/WhyChooseUs'
 
 const page = () => {
   return (
     <div>
-        <PoweringMoney />
-        <EasyMoney />
-        <ChooseUs />
+        <TrustedCurrencyPartner />
+        <CurrencyExchangeServices />
+        <WhyChooseUs />
     </div>
   )
 }

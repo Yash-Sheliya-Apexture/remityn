@@ -5556,7 +5556,7 @@ const AddRecipientPage = () => {
                                   </h4>
                                 </div>
                               </div>
-                              <span className="text-xs bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full flex-shrink-0 ml-2">
+                              <span className="text-xs bg-lightgray dark:bg-primarybox text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full flex-shrink-0 ml-2">
                                 Coming soon
                               </span>
                             </div>

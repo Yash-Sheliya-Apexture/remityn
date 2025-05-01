@@ -292,6 +292,180 @@
 
 // export default OurSolutions;
 
+// "use client";
+// import React from "react";
+// import { BiShieldAlt2 } from "react-icons/bi";
+// import { HiOutlineGlobeAlt } from "react-icons/hi";
+// import { MdOutlineSwapHoriz, MdOutlineSpeed } from "react-icons/md";
+// import { motion } from "framer-motion";
+
+// // Interface for solution items
+// interface SolutionItem {
+//   id: number;
+//   icon: React.ReactNode;
+//   title: string;
+//   description: string;
+// }
+
+// // Data structure for currency exchange solutions
+// const exchangeSolutions: SolutionItem[] = [
+//   {
+//     id: 1,
+//     icon: <BiShieldAlt2 className="lg:size-8 size-6 inline-block dark:text-primary text-white" />,
+//     title: "Secure Transactions",
+//     description:
+//       "Every exchange is protected with bank-grade encryption and secure payment protocols, ensuring your money transfers remain private and protected",
+//   },
+//   {
+//     id: 2,
+//     icon: (
+//       <MdOutlineSwapHoriz className="lg:size-8 size-6 inline-block dark:text-primary text-white" />
+//     ),
+//     title: "Competitive Exchange Rates",
+//     description:
+//       "We offer real-time market rates with minimal spreads, providing you better value for your money compared to traditional banks and exchange services",
+//   },
+//   {
+//     id: 3,
+//     icon: (
+//       <MdOutlineSpeed className="lg:size-8 size-6 inline-block dark:text-primary text-white" />
+//     ),
+//     title: "Fast Processing",
+//     description:
+//       "Experience lightning-fast currency conversions with most transactions completed within minutes, not days, regardless of the transaction size",
+//   },
+//   {
+//     id: 4,
+//     icon: (
+//       <HiOutlineGlobeAlt className="lg:size-8 size-6 inline-block dark:text-primary text-white" />
+//     ),
+//     title: "Global Coverage",
+//     description:
+//       "Exchange between multiple currencies across 190+ countries with full transparency on fees and competitive rates for both major and exotic currencies",
+//   },
+// ];
+
+// // Animation variants
+// const sectionVariants = {
+//   hidden: {},
+//   visible: {
+//     transition: {
+//       staggerChildren: 0.15,
+//     },
+//   },
+// };
+
+// const headingVariants = {
+//   hidden: { opacity: 0, y: -40 },
+//   visible: {
+//     opacity: 1,
+//     y: 0,
+//     transition: {
+//       duration: 0.7,
+//       ease: "easeOut",
+//     },
+//   },
+// };
+
+// const gridContainerVariants = {
+//   hidden: {},
+//   visible: {
+//     transition: {
+//       staggerChildren: 0.12,
+//       delayChildren: 0.2,
+//     },
+//   },
+// };
+
+// const cardVariants = {
+//   hidden: {
+//     opacity: 0,
+//     scale: 0.8,
+//     rotateY: 30,
+//   },
+//   visible: {
+//     opacity: 1,
+//     scale: 1,
+//     rotateY: 0,
+//     transition: {
+//       duration: 0.6,
+//       ease: [0.175, 0.885, 0.32, 1.275],
+//     },
+//   },
+// };
+
+// const CurrencyExchangeSolutions: React.FC = () => {
+//   return (
+//     <section className="exchange-solutions lg:py-10 py-5 overflow-hidden bg-white dark:bg-background">
+//       <motion.div
+//         className="container mx-auto px-4"
+//         variants={sectionVariants}
+//         initial="hidden"
+//         whileInView="visible"
+//         viewport={{ amount: 0.2, once: true }}
+//       >
+//         {/* Heading Section */}
+//         <motion.div
+//           className="text-center lg:space-y-4 space-y-2 lg:mb-12 mb-8"
+//           variants={headingVariants}
+//         >
+//           <h5 className="text-gray dark:text-gray-300 md:text-base text-sm font-medium">
+//             Why Choose Our Exchange
+//           </h5>
+
+//           <h1 className="text-4xl md:text-5xl uppercase lg:text-6xl font-black font-mont  text-mainheading dark:text-white tracking-tight">
+//             Currency Exchange
+//             <br />
+//             <span className="text-primary"> Made Simple</span>
+//           </h1>
+
+//           <p className="lg:text-lg text-base max-w-3xl mx-auto text-gray-700 dark:text-gray-300">
+//             Convert currencies with confidence using our secure, fast, and
+//             transparent exchange platform. Benefit from real-time rates and
+//             minimal fees on every transaction.
+//           </p>
+//         </motion.div>
+
+//         {/* Solutions Grid */}
+//         <motion.div
+//           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8"
+//           variants={gridContainerVariants}
+//         >
+//           {exchangeSolutions.map((item) => (
+//             <motion.div
+//               key={item.id}
+//               variants={cardVariants}
+//               whileHover={{
+//                 y: -10,
+//                 transition: { duration: 0.2 },
+//               }}
+//               className="solution-item h-full"
+//             >
+//               <div className="rounded-2xl lg:p-6 p-4 space-y-4 bg-white dark:bg-white/5 h-full flex flex-col ">
+//                 <div className="rounded-full p-3 w-fit bg-primary dark:bg-white/5 flex items-center justify-center mb-4">
+//                   {item.icon}
+//                 </div>
+//                 <h3 className="lg:text-xl text-lg font-semibold text-neutral-900 dark:text-white">
+//                   {item.title}
+//                 </h3>
+//                 <p className="text-gray-600 dark:text-gray-300 lg:text-base text-sm flex-grow">
+//                   {item.description}
+//                 </p>
+//               </div>
+//             </motion.div>
+//           ))}
+//         </motion.div>        
+//       </motion.div>
+//     </section>
+//   );
+// };
+
+// export default CurrencyExchangeSolutions;
+
+
+
+
+
 "use client";
 import React from "react";
 import { BiShieldAlt2 } from "react-icons/bi";
@@ -311,7 +485,7 @@ interface SolutionItem {
 const exchangeSolutions: SolutionItem[] = [
   {
     id: 1,
-    icon: <BiShieldAlt2 className="lg:size-8 size-6 inline-block dark:text-primary text-white" />,
+    icon: <BiShieldAlt2 className="lg:size-8 size-6 text-neutral-900" />,
     title: "Secure Transactions",
     description:
       "Every exchange is protected with bank-grade encryption and secure payment protocols, ensuring your money transfers remain private and protected",
@@ -319,7 +493,7 @@ const exchangeSolutions: SolutionItem[] = [
   {
     id: 2,
     icon: (
-      <MdOutlineSwapHoriz className="lg:size-8 size-6 inline-block dark:text-primary text-white" />
+      <MdOutlineSwapHoriz className="lg:size-8 size-6 text-neutral-900" />
     ),
     title: "Competitive Exchange Rates",
     description:
@@ -328,7 +502,7 @@ const exchangeSolutions: SolutionItem[] = [
   {
     id: 3,
     icon: (
-      <MdOutlineSpeed className="lg:size-8 size-6 inline-block dark:text-primary text-white" />
+      <MdOutlineSpeed className="lg:size-8 size-6 text-neutral-900" />
     ),
     title: "Fast Processing",
     description:
@@ -337,7 +511,7 @@ const exchangeSolutions: SolutionItem[] = [
   {
     id: 4,
     icon: (
-      <HiOutlineGlobeAlt className="lg:size-8 size-6 inline-block dark:text-primary text-white" />
+      <HiOutlineGlobeAlt className="lg:size-8 size-6 text-neutral-900" />
     ),
     title: "Global Coverage",
     description:
@@ -394,9 +568,9 @@ const cardVariants = {
   },
 };
 
-const CurrencyExchangeSolutions: React.FC = () => {
+const EasyCurrencyExchange: React.FC = () => {
   return (
-    <section className="exchange-solutions lg:py-10 py-5 overflow-hidden bg-white dark:bg-background">
+    <section className="EasyCurrencyExchangeSection lg:py-10 py-5 overflow-hidden bg-white dark:bg-background">
       <motion.div
         className="container mx-auto px-4"
         variants={sectionVariants}
@@ -406,20 +580,21 @@ const CurrencyExchangeSolutions: React.FC = () => {
       >
         {/* Heading Section */}
         <motion.div
-          className="text-center lg:space-y-4 space-y-2 lg:mb-12 mb-8"
+          className="text-center space-y-4 max-w-3xl mx-auto"
           variants={headingVariants}
         >
-          <h5 className="text-gray dark:text-gray-300 md:text-base text-sm font-medium">
-            Why Choose Our Exchange
-          </h5>
+          <div className="inline-block px-4 py-1.5 bg-lightgray dark:bg-primarybox rounded-full">
+            <span className="text-neutral-900 dark:text-white font-medium text-sm capitalize">
+              Simple, Fast & Secure Currency Exchange
+            </span>
+          </div>
 
-          <h1 className="text-4xl md:text-5xl uppercase lg:text-6xl font-black font-mont  text-mainheading dark:text-white tracking-tight">
+          <h1 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white uppercase">
             Currency Exchange
-            <br />
             <span className="text-primary"> Made Simple</span>
           </h1>
 
-          <p className="lg:text-lg text-base max-w-3xl mx-auto text-gray-700 dark:text-gray-300">
+          <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
             Convert currencies with confidence using our secure, fast, and
             transparent exchange platform. Benefit from real-time rates and
             minimal fees on every transaction.
@@ -428,7 +603,7 @@ const CurrencyExchangeSolutions: React.FC = () => {
 
         {/* Solutions Grid */}
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 lg:mt-10 mt-5"
           variants={gridContainerVariants}
         >
           {exchangeSolutions.map((item) => (
@@ -441,23 +616,23 @@ const CurrencyExchangeSolutions: React.FC = () => {
               }}
               className="solution-item h-full"
             >
-              <div className="rounded-2xl lg:p-6 p-4 space-y-4 bg-white dark:bg-white/5 h-full flex flex-col ">
-                <div className="rounded-full p-3 w-fit bg-primary dark:bg-white/5 flex items-center justify-center mb-4">
+              <div className="bg-lightgray dark:bg-primarybox rounded-2xl sm:p-6 p-4 lg:space-y-4 space-y-2.5 h-full">
+                <div className="lg:size-14 size-12 rounded-full bg-primary flex items-center justify-center">
                   {item.icon}
                 </div>
-                <h3 className="lg:text-xl text-lg font-semibold text-neutral-900 dark:text-white">
+                <h3 className="sm:text-xl text-lg font-medium dark:text-white text-neutral-900 capitalize">
                   {item.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300 lg:text-base text-sm flex-grow">
+                <p className="sm:text-base text-sm text-gray-500 dark:text-gray-300">
                   {item.description}
                 </p>
               </div>
             </motion.div>
           ))}
-        </motion.div>        
+        </motion.div>
       </motion.div>
     </section>
   );
 };
 
-export default CurrencyExchangeSolutions;
+export default EasyCurrencyExchange;

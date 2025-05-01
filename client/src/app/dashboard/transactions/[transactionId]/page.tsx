@@ -4680,10 +4680,10 @@ const TransactionDetailsPage = () => {
           },
           {
             id: "waiting",
-            label: `We're waiting for you to pay`,
+            label: `Your money's on its way to us`,
             status: "pending",
             date: undefined,
-            info: `Check the 'Details' tab for bank information.`,
+            info: `your bank might take up to 4 hours to get it to us. we'll let you know when it arrives.`,
             showCancelAction: false,
           },
           {
@@ -4802,7 +4802,7 @@ const TransactionDetailsPage = () => {
           },
           {
             id: "paid_out",
-            label: `We pay out your ${
+            label: `Your money's being processed ${
               transfer.receiveCurrency?.code || "money"
             }`,
             status: "pending",
