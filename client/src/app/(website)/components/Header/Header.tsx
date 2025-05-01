@@ -4443,7 +4443,7 @@ const Header: React.FC = () => {
               >
                 {isMobileMenuOpen ? (
                   <IoMdClose
-                    size={26}
+                    size={24}
                     className="text-neutral-900 dark:text-primary"
                   />
                 ) : (
