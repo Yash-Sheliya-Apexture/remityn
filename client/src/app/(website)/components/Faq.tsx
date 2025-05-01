@@ -2190,7 +2190,7 @@ const FaqSection: React.FC = () => {
               {/* Read More FAQs Link */}
               <Link
                 href="/faqs" // Link to your full FAQs page
-                className="px-4 py-1.5 rounded-full font-medium lg:text-base text-xs border hover:bg-white  text-mainheading dark:text-primary dark:hover:bg-white/5 dark:bg-secondary transition-all ease-linear duration-75 focus:outline-none"
+                className="px-4 py-1.5 rounded-full font-medium lg:text-base text-sm border hover:bg-white  text-mainheading dark:text-primary dark:hover:bg-white/5 dark:bg-secondary transition-all ease-linear duration-75 focus:outline-none"
               >
                 Read more FAQs
               </Link>
