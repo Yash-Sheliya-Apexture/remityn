@@ -168,7 +168,7 @@ export default function NotFound() {
 
         <div className="bg-white dark:bg-background rounded-2xl overflow-hidden border">
           {/* 404 Error Display */}
-          <div className="relative bg-white/5 p-6 text-white text-center">
+          <div className="relative dark:bg-primarybox bg-lightgray p-6 text-white text-center">
 
             <div className="flex justify-center items-center gap-4">
               <TbCurrencyDollar className="lg:text-5xl text-mainheading text-3xl animate-pulse" />

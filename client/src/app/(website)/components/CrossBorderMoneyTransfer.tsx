@@ -266,6 +266,7 @@ const CrossBorderMoneyTransfer: React.FC = () => {
                     className="rounded-full size-10 border-2 border-white"
                   />
                 </div>
+
                 <p className="font-normal text-neutral-900 lg:text-base text-sm dark:text-white capitalize">
                   <span className="text-primary font-bold"> 500K+ </span> People
                   already trusted us.
@@ -287,6 +288,7 @@ const CrossBorderMoneyTransfer: React.FC = () => {
                 className="object-contain block dark:hidden"
                 priority 
               />
+
               {/* Dark Mode Image */}
               <Image
                 src="/assets/images/Business-vision-amico-dark.svg"

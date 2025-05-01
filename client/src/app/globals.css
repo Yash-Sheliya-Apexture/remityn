@@ -342,3 +342,41 @@ input:-webkit-autofill:active {
   }
 }
 }
+
+
+/* Prevent background interaction when inactivity modal is open */
+body.inactivity-modal-open {
+  overflow: hidden; /* Optional: Prevent background scrolling */
+}
+
+/* Target the main content wrapper (adjust selector if needed, e.g., body > div:first-child) */
+body.inactivity-modal-open > #__next { /* Common Next.js wrapper */
+  pointer-events: none !important; /* Disable clicks, hover, etc. */
+  /* Optional visual feedback */
+  /* filter: blur(2px); */
+  /* transition: filter 0.2s ease-out; */
+}
+
+/* Ensure elements *outside* the main wrapper but *inside* body remain interactive */
+/* This includes the modal portal root and potentially script tags */
+body.inactivity-modal-open > #portal-root, /* If using a portal */
+body.inactivity-modal-open > script {
+  pointer-events: auto !important; /* Re-enable pointer events */
+  filter: none !important; /* Remove filter if applied */
+}
+
+/* Ensure the modal content itself within the portal is interactive */
+#portal-root > * { /* Assuming modal is direct child */
+   pointer-events: auto !important;
+}
+
+/* Or, if the modal is rendered directly without a portal, give its container a class */
+/*
+.inactivity-modal-container {
+  pointer-events: auto !important;
+}
+body.inactivity-modal-open > .inactivity-modal-container {
+   pointer-events: auto !important;
+   filter: none !important;
+}
+*/

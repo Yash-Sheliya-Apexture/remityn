@@ -2382,9 +2382,6 @@
 //   );
 // }
 
-
-
-
 // // frontend/src/app/auth/login/page.tsx
 // "use client";
 
@@ -2402,7 +2399,6 @@
 // import { motion, AnimatePresence } from "framer-motion";
 // import { FaCheck } from "react-icons/fa6";
 // import apiConfig from "../../config/apiConfig"; // Import API config for base URL
-
 
 // export default function LoginPage() {
 //   const [email, setEmail] = useState("");
@@ -2840,6 +2836,456 @@
 //   );
 // }
 
+// "use client";
+
+// import { useState, useEffect, FormEvent } from "react";
+// import authService from "../../services/auth";
+// import { useAuth } from "../../contexts/AuthContext";
+// import { useRouter, useSearchParams } from "next/navigation";
+// import Image from "next/image";
+// import Link from "next/link";
+// import { IoMdCloseCircle } from "react-icons/io";
+// import { VscEye } from "react-icons/vsc";
+// import { RiEyeCloseLine } from "react-icons/ri";
+// import { AiOutlineInfo } from "react-icons/ai";
+// import { FiX } from "react-icons/fi";
+// import { motion, AnimatePresence } from "framer-motion";
+// import { FaCheck } from "react-icons/fa6";
+// import apiConfig from "../../config/apiConfig";
+
+// export default function LoginPage() {
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [showPassword, setShowPassword] = useState(false);
+//   const [emailError, setEmailError] = useState("");
+//   const [passwordError, setPasswordError] = useState("");
+//   const [loginError, setLoginError] = useState("");
+//   const { login, user, loading, isAdmin } = useAuth();
+//   const router = useRouter();
+//   const searchParams = useSearchParams();
+//   const [isSubmitting, setIsSubmitting] = useState(false);
+//   const [inactiveLogoutMessage, setInactiveLogoutMessage] = useState("");
+//   const [sessionExpiredMessage, setSessionExpiredMessage] = useState("");
+//   const [isLoginErrorVisible, setIsLoginErrorVisible] = useState(false);
+//   const [loginSuccess, setLoginSuccess] = useState(false);
+//   const [isLoginSuccessVisible, setIsLoginSuccessVisible] = useState(false);
+//   const [googleError, setGoogleError] = useState("");
+
+//   // Effect to read query params and clean URL (Functional Change)
+//   useEffect(() => {
+//     const urlParams = new URLSearchParams(searchParams.toString());
+//     const autoLogout = urlParams.get("autoLogout");
+//     const sessionExpired = urlParams.get("sessionExpired");
+//     const googleErr = urlParams.get("googleError");
+//     const registerSuccessParam = urlParams.get("registerSuccess");
+//     let urlNeedsCleaning = false;
+
+//     // Clear previous messages
+//     setInactiveLogoutMessage("");
+//     setSessionExpiredMessage("");
+//     setGoogleError("");
+//     setLoginError("");
+//     setIsLoginErrorVisible(false); // Ensure error box is hidden initially
+
+//     if (googleErr) {
+//       setGoogleError(decodeURIComponent(googleErr));
+//       urlNeedsCleaning = true;
+//     } else if (sessionExpired === "true") {
+//       setSessionExpiredMessage("Your session has expired. Please log in again.");
+//       urlNeedsCleaning = true;
+//     } else if (autoLogout === "true") {
+//       setInactiveLogoutMessage("We logged you out because you were inactive for a while — it's to help keep your account secure.");
+//       urlNeedsCleaning = true;
+//     } else if (registerSuccessParam === "true") {
+//       console.log("Registration successful!");
+//       urlNeedsCleaning = true;
+//     }
+
+//     if (urlNeedsCleaning) {
+//       router.replace('/auth/login', undefined);
+//     }
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [searchParams]);
+
+//   // Effect to redirect logged-in users (Rely on AuthContext for actual redirect)
+//   useEffect(() => {
+//     if (!loading && user) {
+//       console.log("Login page: User is logged in. AuthContext will handle redirection.");
+//       // No router.push here - AuthContext handles it
+//     }
+//   }, [user, loading]); // Removed isAdmin and router from deps as redirect is external
+
+//   // Effects to control visibility based on state changes (for animations)
+//   useEffect(() => {
+//     setIsLoginErrorVisible(!!loginError || !!googleError); // Show if either error exists
+//    }, [loginError, googleError]);
+//   useEffect(() => { setIsLoginSuccessVisible(loginSuccess); }, [loginSuccess]);
+
+//   // Handle form submission (Functional Change)
+//   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+//     e.preventDefault();
+//     // Reset errors & messages
+//     setEmailError(""); setPasswordError(""); setLoginError(""); setGoogleError("");
+//     setIsLoginErrorVisible(false); setInactiveLogoutMessage(""); setSessionExpiredMessage("");
+//     setLoginSuccess(false); setIsLoginSuccessVisible(false);
+//     router.replace('/auth/login', undefined); // Clean URL on submit
+
+//     let isValid = true;
+//     if (!email) { setEmailError("Email is required"); isValid = false; }
+//     if (!password) { setPasswordError("Password is required"); isValid = false; }
+//     if (!isValid) return;
+
+//     setIsSubmitting(true);
+//     try {
+//       const { user: loggedInUser, token } = await authService.login({ email, password });
+//       console.log("Login successful in component");
+//       setLoginSuccess(true); // Show success message
+//       // Update AuthContext - it will handle the redirection.
+//       login(loggedInUser, token);
+//     } catch (err: any) {
+//       console.error("Login error in component:", err);
+//       // Improved Error Message Extraction
+//       let message = "Sorry, that email or password didn't work.";
+//       if (err.response?.data?.message) {
+//         message = err.response.data.message;
+//       } else if (err.message) {
+//         message = err.message;
+//       }
+//       setLoginError(message);
+//       setIsLoginErrorVisible(true);
+//       setLoginSuccess(false);
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   const togglePasswordVisibility = () => {
+//     setShowPassword(!showPassword);
+//   };
+
+//   // --- Google Login Handler (Functional Change) ---
+//   const handleGoogleLogin = () => {
+//     setLoginError("");
+//     setGoogleError("");
+//     // Redirect browser to the backend endpoint
+//     window.location.href = `${apiConfig.baseUrl}/auth/google`;
+//   };
+
+//   // Animation variants (Keeping your original definitions)
+//   const errorVariants = {
+//     initial: { opacity: 0.5, y: 10, scale: 0.95, rotate: "2deg" },
+//     animate: {
+//       opacity: 1,
+//       y: 0,
+//       scale: 1,
+//       rotate: "0deg",
+//       transition: {
+//         duration: 0.3,
+//         ease: "easeInOut",
+//         type: "spring",
+//         stiffness: 95,
+//         damping: 10,
+//       },
+//     },
+//     exit: {
+//       opacity: 0,
+//       y: 10,
+//       scale: 0.95,
+//       rotate: "-2deg",
+//       transition: { duration: 0.2, ease: "easeIn" },
+//     },
+//   };
+
+//   const successVariants = {
+//     initial: { opacity: 0, y: -20 },
+//     animate: {
+//       opacity: 1,
+//       y: 0,
+//       transition: { duration: 0.3, ease: "easeOut" },
+//     },
+//     exit: { opacity: 0, y: -20, transition: { duration: 0.2, ease: "easeIn" } },
+//   };
+
+//   // --- JSX structure and classes reverted to your original ---
+//   return (
+//     <div className="bg-white dark:bg-background">
+//       <div className="flex flex-col justify-center items-center lg:h-[calc(100vh-73px)] px-4">
+//         <div className="w-full max-w-md lg:mt-20 mt-10">
+//           {/* Inactivity Logout Message */}
+//           <AnimatePresence>
+//             {inactiveLogoutMessage && (
+//               <motion.div
+//                 className="bg-gray/10 dark:bg-white/5 rounded-2xl p-4 flex items-center gap-4 relative mb-4"
+//                 role="alert"
+//                 initial="initial"
+//                 animate="animate"
+//                 exit="exit"
+//                 variants={errorVariants}
+//               >
+//                 <div className="flex dark:bg-yellow-600/20 bg-main/60 justify-center rounded-full items-center lg:size-12 size-10">
+//                   <AiOutlineInfo className="p-0.5 dark:text-yellow-600 text-white size-8" />
+//                 </div>
+//                 <div>
+//                   <span className="text-gray-500 dark:text-gray-300 text-sm lg:text-base block max-w-60 leading-relaxed">
+//                     {inactiveLogoutMessage}
+//                   </span>
+//                 </div>
+//               </motion.div>
+//             )}
+//           </AnimatePresence>
+
+//           {/* Session Expired Message */}
+//           <AnimatePresence>
+//             {sessionExpiredMessage && (
+//               <motion.div
+//                 className="bg-gray/10 dark:bg-white/5 rounded-2xl p-4 flex items-center gap-4 relative mb-4"
+//                 role="alert"
+//                 initial="initial"
+//                 animate="animate"
+//                 exit="exit"
+//                 variants={errorVariants}
+//               >
+//                  {/* Using FiX icon as in your original potentially */}
+//                 <div className="flex dark:bg-red-600/20 bg-red-300 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+//                   <FiX className="p-0.5 text-mainheading dark:text-red-600 lg:size-8 size-6" />
+//                 </div>
+//                 <div>
+//                   {/* Displaying the message as in your original */}
+//                    <p className="font-medium text-mainheading dark:text-white"> {/* Assuming this styling */}
+//                     Session Expired Please Try Again!
+//                   </p>
+//                   <p className="text-mainheading dark:text-whit text-sm lg:text-base block max-w-60 leading-relaxed"> {/* Assuming this styling */}
+//                     {sessionExpiredMessage}
+//                   </p>
+//                 </div>
+//               </motion.div>
+//             )}
+//           </AnimatePresence>
+
+//           {/* Title and Sign Up Link */}
+//           <div className="py-3 space-y-2">
+//             <h2 className="lg:text-3xl text-2xl text-center text-main dark:text-white font-semibold">
+//               Welcome back.
+//             </h2>
+//             <p className="text-center text-gray-700 dark:text-gray-300 font-light">
+//               New to Wise?{" "}
+//               <Link
+//                 href="/auth/register"
+//                 className="text-primary font-medium underline underline-offset-4"
+//               >
+//                 Sign up
+//               </Link>
+//             </p>
+//           </div>
+
+//           {/* General Login Error / Google Error Message */}
+//           <AnimatePresence>
+//             {isLoginErrorVisible && (loginError || googleError) && ( // Check both error states
+//               <motion.div
+//                 // Using original classes, assuming this was the intended style for general errors
+//                 className={`dark:bg-white/5 bg-gray/10 rounded-2xl p-4 flex items-center gap-4 relative mb-4`}
+//                 role="alert"
+//                 initial="initial"
+//                 animate="animate"
+//                 exit="exit"
+//                 variants={errorVariants}
+//               >
+//                 <div className="flex dark:bg-red-600/20 bg-red-300 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+//                   <FiX className="p-0.5 text-mainheading dark:text-red-600 lg:size-8 size-6" />
+//                 </div>
+//                 <div>
+//                   <span className="text-mainheading dark:text-white text-sm lg:text-base block max-w-60 leading-relaxed">
+//                     {loginError || googleError} {/* Display the relevant error */}
+//                   </span>
+//                 </div>
+//               </motion.div>
+//             )}
+//           </AnimatePresence>
+
+//           {/* Success Message Display */}
+//           <AnimatePresence>
+//             {isLoginSuccessVisible && loginSuccess && (
+//               <motion.div
+//                 className="flex bg-gray/10 dark:bg-white/5 p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4" // Original success style
+//                 role="alert"
+//                 initial="initial"
+//                 animate="animate"
+//                 exit="exit"
+//                 variants={successVariants}
+//               >
+//                 <div className="flex dark:bg-primary/20 bg-green-300 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+//                   <FaCheck className="p-0.5 text-white dark:text-primary lg:size-8 size-6" />
+//                 </div>
+//                 <div className="flex-grow space-y-0.5">
+//                   <span className="text-mainheading dark:text-primary block font-medium">
+//                     Login successful!
+//                   </span>
+//                   <span className="text-mainheading dark:text-gray-300 block text-sm">
+//                     Checking account status...
+//                   </span>
+//                 </div>
+//               </motion.div>
+//             )}
+//           </AnimatePresence>
+
+//           {/* Form - Using original structure and classes */}
+//           <form className="space-y-5 mt-5" onSubmit={handleSubmit} noValidate>
+//             {/* Google Button */}
+//             <div>
+//               <button
+//                 type="button"
+//                 className="flex dark:bg-background border justify-center rounded-lg text-mainheading dark:text-white text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 text-sm lg:text-base"
+//                 onClick={handleGoogleLogin} // Functional change: Use the handler
+//               >
+//                 <Image src="/assets/icon/google.svg" width={30} height={30} alt="Continue with Google" />
+//                 Continue with Google
+//               </button>
+//             </div>
+
+//              {/* Removed the "OR" separator if it wasn't in your original */}
+
+//             {/* Email Input */}
+//             <div>
+//               <label
+//                 htmlFor="email"
+//                 className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
+//               >
+//                 Your email address <span className="text-error">*</span>
+//               </label>
+//               <input
+//                 type="email"
+//                 id="email"
+//                 placeholder="Your Email"
+//                 autoComplete="email" // Keep autocomplete
+//                 className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
+//                   emailError
+//                     ? "border-red-700 border-2 !shadow-none" // Original error class
+//                     : "hover:shadow-darkcolor dark:hover:shadow-whitecolor" // Original hover class
+//                 }`}
+//                 value={email}
+//                 onChange={(e) => { setEmail(e.target.value); if (emailError) setEmailError(""); }} // Clear error on change
+//                 aria-invalid={!!emailError}
+//                 aria-describedby={emailError ? "email-error" : undefined}
+//               />
+//               {emailError && (
+//                 <p
+//                   id="email-error"
+//                   className="flex text-red-700 text-base items-center mt-0.5" // Original error text style
+//                 >
+//                   <span className="mr-1">
+//                     <IoMdCloseCircle className="size-5" />
+//                   </span>
+//                   {emailError}
+//                 </p>
+//               )}
+//             </div>
+
+//             {/* Password Input */}
+//             <div>
+//               <label
+//                 htmlFor="password"
+//                 className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
+//               >
+//                 Your password <span className="text-error">*</span>
+//               </label>
+//               <div className="relative">
+//                 <input
+//                   type={showPassword ? "text" : "password"}
+//                   id="password"
+//                   placeholder="Your Password"
+//                   autoComplete="current-password" // Keep autocomplete
+//                   className={`mt-1 block px-4 dark:bg-background py-3 h-14 border w-full rounded-lg transition-shadow focus:outline-none ease-in-out duration-300 ${
+//                     passwordError
+//                       ? "border-red-700 border-2 !shadow-none" // Original error class
+//                       : "hover:shadow-darkcolor dark:hover:shadow-whitecolor" // Original hover class
+//                   }`}
+//                   value={password}
+//                   onChange={(e) => { setPassword(e.target.value); if (passwordError) setPasswordError(""); }} // Clear error on change
+//                   aria-invalid={!!passwordError}
+//                   aria-describedby={passwordError ? "password-error" : undefined}
+//                 />
+//                 <button
+//                   type="button"
+//                   className="text-gray-500 -translate-y-1/2 absolute cursor-pointer focus:outline-none hover:text-gray-700 right-1 top-1/2 transform dark:bg-background bg-white p-3 rounded-md" // Original button style
+//                   onClick={togglePasswordVisibility}
+//                   aria-label={showPassword ? "Hide password" : "Show password"}
+//                 >
+//                   {showPassword ? (
+//                     <RiEyeCloseLine className="text-mainheading size-5 dark:text-white" /> // Original icon style
+//                   ) : (
+//                     <VscEye className="text-mainheading size-5 dark:text-white" /> // Original icon style
+//                   )}
+//                 </button>
+//               </div>
+//               {passwordError && (
+//                 <p
+//                   id="password-error"
+//                   className="flex text-red-700 text-base items-center mt-0.5" // Original error text style
+//                 >
+//                   <span className="mr-1">
+//                     <IoMdCloseCircle className="size-5" />
+//                   </span>
+//                   {passwordError}
+//                 </p>
+//               )}
+//             </div>
+
+//             {/* Forgot Password Link */}
+//             <div className="text-right">
+//               <Link
+//                 href="/auth/forgot-password"
+//                 className="text-mainheading dark:text-primary inline-block font-medium underline text-sm lg:text-base underline-offset-4" // Original style
+//               >
+//                 Forgot Password ?
+//               </Link>
+//             </div>
+
+//             {/* Submit Button */}
+//             <div className="flex justify-between items-center mb-4">
+//               <button
+//                 type="submit"
+//                 className={`rounded-full text-mainheading w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium lg:py-3 py-2 lg:h-12.5 transition-colors
+//                   ${ // Original classes for submit button state
+//                     isSubmitting
+//                       ? "bg-gray-300 dark:bg-background border dark:text-white text-mainheading cursor-not-allowed"
+//                       : "bg-primary hover:bg-primaryhover text-mainheading"
+//                   }
+//                 `}
+//                 disabled={isSubmitting}
+//               >
+//                 {isSubmitting ? (
+//                   // Original loading indicator structure
+//                   <div className="flex gap-4 justify-center items-center">
+//                     <svg
+//                       className="size-5 text-mainheading dark:text-white font-medium animate-spin"
+//                       viewBox="0 0 24 24"
+//                       aria-hidden="true"
+//                     >
+//                       <circle
+//                         className="opacity-25"
+//                         cx="12" cy="12" r="10"
+//                         stroke="currentColor" strokeWidth="4"
+//                       ></circle>
+//                       <path
+//                         className="opacity-75"
+//                         fill="currentColor"
+//                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+//                       ></path>
+//                     </svg>
+//                     Logging in...
+//                   </div>
+//                 ) : (
+//                   "Log in"
+//                 )}
+//               </button>
+//             </div>
+//           </form>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
 "use client";
 
 import { useState, useEffect, FormEvent } from "react";
@@ -2851,7 +3297,7 @@ import Link from "next/link";
 import { IoMdCloseCircle } from "react-icons/io";
 import { VscEye } from "react-icons/vsc";
 import { RiEyeCloseLine } from "react-icons/ri";
-import { AiOutlineInfo } from "react-icons/ai";
+// Removed: import { AiOutlineInfo } from "react-icons/ai"; // No longer needed for inactivity msg
 import { FiX } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaCheck } from "react-icons/fa6";
@@ -2864,11 +3310,11 @@ export default function LoginPage() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [loginError, setLoginError] = useState("");
-  const { login, user, loading, isAdmin } = useAuth();
+  const { login, user, loading, isAdmin } = useAuth(); // isAdmin might not be needed here now if redirect relies solely on AuthContext
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [inactiveLogoutMessage, setInactiveLogoutMessage] = useState("");
+  // Removed: const [inactiveLogoutMessage, setInactiveLogoutMessage] = useState("");
   const [sessionExpiredMessage, setSessionExpiredMessage] = useState("");
   const [isLoginErrorVisible, setIsLoginErrorVisible] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(false);
@@ -2878,14 +3324,14 @@ export default function LoginPage() {
   // Effect to read query params and clean URL (Functional Change)
   useEffect(() => {
     const urlParams = new URLSearchParams(searchParams.toString());
-    const autoLogout = urlParams.get("autoLogout");
+    // Removed: const autoLogout = urlParams.get("autoLogout");
     const sessionExpired = urlParams.get("sessionExpired");
     const googleErr = urlParams.get("googleError");
     const registerSuccessParam = urlParams.get("registerSuccess");
     let urlNeedsCleaning = false;
 
     // Clear previous messages
-    setInactiveLogoutMessage("");
+    // Removed: setInactiveLogoutMessage("");
     setSessionExpiredMessage("");
     setGoogleError("");
     setLoginError("");
@@ -2895,26 +3341,30 @@ export default function LoginPage() {
       setGoogleError(decodeURIComponent(googleErr));
       urlNeedsCleaning = true;
     } else if (sessionExpired === "true") {
-      setSessionExpiredMessage("Your session has expired. Please log in again.");
+      setSessionExpiredMessage(
+        "Your session has expired. Please log in again."
+      );
       urlNeedsCleaning = true;
-    } else if (autoLogout === "true") {
-      setInactiveLogoutMessage("We logged you out because you were inactive for a while — it's to help keep your account secure.");
-      urlNeedsCleaning = true;
-    } else if (registerSuccessParam === "true") {
-      console.log("Registration successful!");
+    }
+    // Removed: else if (autoLogout === "true") { ... }
+    else if (registerSuccessParam === "true") {
+      console.log("Registration successful!"); // Or show a success message if needed
       urlNeedsCleaning = true;
     }
 
     if (urlNeedsCleaning) {
-      router.replace('/auth/login', undefined);
+      // Use replaceState to clean the URL without adding to history
+      window.history.replaceState(null, "", "/auth/login");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  }, [searchParams]); // Keep dependency on searchParams to react to URL changes
 
   // Effect to redirect logged-in users (Rely on AuthContext for actual redirect)
   useEffect(() => {
     if (!loading && user) {
-      console.log("Login page: User is logged in. AuthContext will handle redirection.");
+      console.log(
+        "Login page: User is logged in. AuthContext will handle redirection."
+      );
       // No router.push here - AuthContext handles it
     }
   }, [user, loading]); // Removed isAdmin and router from deps as redirect is external
@@ -2922,33 +3372,45 @@ export default function LoginPage() {
   // Effects to control visibility based on state changes (for animations)
   useEffect(() => {
     setIsLoginErrorVisible(!!loginError || !!googleError); // Show if either error exists
-   }, [loginError, googleError]);
-  useEffect(() => { setIsLoginSuccessVisible(loginSuccess); }, [loginSuccess]);
+  }, [loginError, googleError]);
+  useEffect(() => {
+    setIsLoginSuccessVisible(loginSuccess);
+  }, [loginSuccess]);
 
-  // Handle form submission (Functional Change)
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Reset errors & messages
-    setEmailError(""); setPasswordError(""); setLoginError(""); setGoogleError("");
-    setIsLoginErrorVisible(false); setInactiveLogoutMessage(""); setSessionExpiredMessage("");
-    setLoginSuccess(false); setIsLoginSuccessVisible(false);
-    router.replace('/auth/login', undefined); // Clean URL on submit
+    setEmailError("");
+    setPasswordError("");
+    setLoginError("");
+    setGoogleError("");
+    setIsLoginErrorVisible(false);
+    setSessionExpiredMessage("");
+    setLoginSuccess(false);
+    setIsLoginSuccessVisible(false);
+    window.history.replaceState(null, "", "/auth/login"); 
 
     let isValid = true;
-    if (!email) { setEmailError("Email is required"); isValid = false; }
-    if (!password) { setPasswordError("Password is required"); isValid = false; }
+    if (!email) {
+      setEmailError("Email is required");
+      isValid = false;
+    }
+    if (!password) {
+      setPasswordError("Password is required");
+      isValid = false;
+    }
     if (!isValid) return;
 
     setIsSubmitting(true);
     try {
-      const { user: loggedInUser, token } = await authService.login({ email, password });
+      const { user: loggedInUser, token } = await authService.login({
+        email,
+        password,
+      });
       console.log("Login successful in component");
-      setLoginSuccess(true); // Show success message
-      // Update AuthContext - it will handle the redirection.
+      setLoginSuccess(true); 
       login(loggedInUser, token);
     } catch (err: any) {
       console.error("Login error in component:", err);
-      // Improved Error Message Extraction
       let message = "Sorry, that email or password didn't work.";
       if (err.response?.data?.message) {
         message = err.response.data.message;
@@ -2967,15 +3429,12 @@ export default function LoginPage() {
     setShowPassword(!showPassword);
   };
 
-  // --- Google Login Handler (Functional Change) ---
   const handleGoogleLogin = () => {
     setLoginError("");
     setGoogleError("");
-    // Redirect browser to the backend endpoint
     window.location.href = `${apiConfig.baseUrl}/auth/google`;
   };
 
-  // Animation variants (Keeping your original definitions)
   const errorVariants = {
     initial: { opacity: 0.5, y: 10, scale: 0.95, rotate: "2deg" },
     animate: {
@@ -3015,28 +3474,6 @@ export default function LoginPage() {
     <div className="bg-white dark:bg-background">
       <div className="flex flex-col justify-center items-center lg:h-[calc(100vh-73px)] px-4">
         <div className="w-full max-w-md lg:mt-20 mt-10">
-          {/* Inactivity Logout Message */}
-          <AnimatePresence>
-            {inactiveLogoutMessage && (
-              <motion.div
-                className="bg-gray/10 dark:bg-white/5 rounded-2xl p-4 flex items-center gap-4 relative mb-4"
-                role="alert"
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                variants={errorVariants}
-              >
-                <div className="flex dark:bg-yellow-600/20 bg-main/60 justify-center rounded-full items-center lg:size-12 size-10">
-                  <AiOutlineInfo className="p-0.5 dark:text-yellow-600 text-white size-8" />
-                </div>
-                <div>
-                  <span className="text-gray-500 dark:text-gray-300 text-sm lg:text-base block max-w-60 leading-relaxed">
-                    {inactiveLogoutMessage}
-                  </span>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
 
           {/* Session Expired Message */}
           <AnimatePresence>
@@ -3049,16 +3486,17 @@ export default function LoginPage() {
                 exit="exit"
                 variants={errorVariants}
               >
-                 {/* Using FiX icon as in your original potentially */}
                 <div className="flex dark:bg-red-600/20 bg-red-300 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
                   <FiX className="p-0.5 text-mainheading dark:text-red-600 lg:size-8 size-6" />
                 </div>
                 <div>
                   {/* Displaying the message as in your original */}
-                   <p className="font-medium text-mainheading dark:text-white"> {/* Assuming this styling */}
+                  <p className="font-medium text-mainheading dark:text-white">
+                    {" "}
+                    {/* Assuming this styling */}
                     Session Expired Please Try Again!
                   </p>
-                  <p className="text-mainheading dark:text-whit text-sm lg:text-base block max-w-60 leading-relaxed"> {/* Assuming this styling */}
+                  <p className="text-mainheading dark:text-whit text-sm lg:text-base block max-w-60 leading-relaxed">
                     {sessionExpiredMessage}
                   </p>
                 </div>
@@ -3084,26 +3522,28 @@ export default function LoginPage() {
 
           {/* General Login Error / Google Error Message */}
           <AnimatePresence>
-            {isLoginErrorVisible && (loginError || googleError) && ( // Check both error states
-              <motion.div
-                // Using original classes, assuming this was the intended style for general errors
-                className={`dark:bg-white/5 bg-gray/10 rounded-2xl p-4 flex items-center gap-4 relative mb-4`}
-                role="alert"
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                variants={errorVariants}
-              >
-                <div className="flex dark:bg-red-600/20 bg-red-300 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
-                  <FiX className="p-0.5 text-mainheading dark:text-red-600 lg:size-8 size-6" />
-                </div>
-                <div>
-                  <span className="text-mainheading dark:text-white text-sm lg:text-base block max-w-60 leading-relaxed">
-                    {loginError || googleError} {/* Display the relevant error */}
-                  </span>
-                </div>
-              </motion.div>
-            )}
+            {isLoginErrorVisible &&
+              (loginError || googleError) && ( // Check both error states
+                <motion.div
+                  // Using original classes, assuming this was the intended style for general errors
+                  className={`dark:bg-white/5 bg-gray/10 rounded-2xl p-4 flex items-center gap-4 relative mb-4`}
+                  role="alert"
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  variants={errorVariants}
+                >
+                  <div className="flex dark:bg-red-600/20 bg-red-300 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+                    <FiX className="p-0.5 text-mainheading dark:text-red-600 lg:size-8 size-6" />
+                  </div>
+                  <div>
+                    <span className="text-mainheading dark:text-white text-sm lg:text-base block max-w-60 leading-relaxed">
+                      {loginError || googleError}{" "}
+                      {/* Display the relevant error */}
+                    </span>
+                  </div>
+                </motion.div>
+              )}
           </AnimatePresence>
 
           {/* Success Message Display */}
@@ -3141,12 +3581,15 @@ export default function LoginPage() {
                 className="flex dark:bg-background border justify-center rounded-lg text-mainheading dark:text-white text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 text-sm lg:text-base"
                 onClick={handleGoogleLogin} // Functional change: Use the handler
               >
-                <Image src="/assets/icon/google.svg" width={30} height={30} alt="Continue with Google" />
+                <Image
+                  src="/assets/icon/google.svg"
+                  width={30}
+                  height={30}
+                  alt="Continue with Google"
+                />
                 Continue with Google
               </button>
             </div>
-
-             {/* Removed the "OR" separator if it wasn't in your original */}
 
             {/* Email Input */}
             <div>
@@ -3167,7 +3610,10 @@ export default function LoginPage() {
                     : "hover:shadow-darkcolor dark:hover:shadow-whitecolor" // Original hover class
                 }`}
                 value={email}
-                onChange={(e) => { setEmail(e.target.value); if (emailError) setEmailError(""); }} // Clear error on change
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (emailError) setEmailError("");
+                }} // Clear error on change
                 aria-invalid={!!emailError}
                 aria-describedby={emailError ? "email-error" : undefined}
               />
@@ -3204,9 +3650,14 @@ export default function LoginPage() {
                       : "hover:shadow-darkcolor dark:hover:shadow-whitecolor" // Original hover class
                   }`}
                   value={password}
-                  onChange={(e) => { setPassword(e.target.value); if (passwordError) setPasswordError(""); }} // Clear error on change
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (passwordError) setPasswordError("");
+                  }} // Clear error on change
                   aria-invalid={!!passwordError}
-                  aria-describedby={passwordError ? "password-error" : undefined}
+                  aria-describedby={
+                    passwordError ? "password-error" : undefined
+                  }
                 />
                 <button
                   type="button"
@@ -3249,7 +3700,8 @@ export default function LoginPage() {
               <button
                 type="submit"
                 className={`rounded-full text-mainheading w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium lg:py-3 py-2 lg:h-12.5 transition-colors
-                  ${ // Original classes for submit button state
+                  ${
+                    // Original classes for submit button state
                     isSubmitting
                       ? "bg-gray-300 dark:bg-background border dark:text-white text-mainheading cursor-not-allowed"
                       : "bg-primary hover:bg-primaryhover text-mainheading"
@@ -3267,8 +3719,11 @@ export default function LoginPage() {
                     >
                       <circle
                         className="opacity-25"
-                        cx="12" cy="12" r="10"
-                        stroke="currentColor" strokeWidth="4"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
                       ></circle>
                       <path
                         className="opacity-75"

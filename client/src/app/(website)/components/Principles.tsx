@@ -851,7 +851,7 @@ const FeaturesSection: React.FC = () => {
     <div className="bg-white lg:py-10 py-5 dark:bg-background overflow-hidden">
       {/* Keep overflow hidden */}
       <motion.section
-        className="flex flex-col lg:gap-10 gap-8 container mx-auto px-4"
+        className="flex flex-col gap-8 container mx-auto px-4"
         id="features"
         variants={sectionVariants}
         initial="hidden"
@@ -861,25 +861,34 @@ const FeaturesSection: React.FC = () => {
       >
         {/* Heading Section - Apply motion */}
         <motion.div
-          className="flex flex-col gap-5"
+          className="space-y-4 text-center md:text-left"
           variants={headingVariants}
           // Inherits trigger from parent section
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase">
+          <h1 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white uppercase">
             Security, Speed,
             <span className="text-primary"> Savings & Support </span>
           </h1>
+
+          {/* Description */}
+          <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base lg:max-w-5xl max-w-full">
+            At the heart of our service is a commitment to making your money
+            transfers seamless, secure, and cost-effective. Whether you're
+            sending funds internationally or managing cross-border transactions,
+            we combine cutting-edge technology with expert support to ensure
+            speed, transparency, and peace of mind.
+          </p>
         </motion.div>
 
         {/* Features Grid - Apply motion container for staggering */}
         <motion.div
-          className="grid gap-y-6 gap-x-6 md:grid-cols-2 md:grid-rows-0 lg:gap-x-8 lg:gap-y-8"
+          className="grid gap-6 grid-cols-1 md:grid-cols-2 md:grid-rows-0"
           variants={gridContainerVariants}
           // Inherits trigger from parent section
         >
           {/* Feature Card 1: Security (Large) */}
           <motion.div
-            className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-lightgray dark:bg-white/5"
+            className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-lightgray dark:bg-primarybox"
             variants={cardVariants} // Apply Spring Slide-Up animation
             // Timing controlled by parent stagger
           >
@@ -892,7 +901,7 @@ const FeaturesSection: React.FC = () => {
               priority
             />
 
-            <div className="flex flex-col gap-3 p-4">
+            <div className="flex flex-col space-y-3 lg:">
               <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
                 <span className="text-primary font-bold ">Secure</span> Every
                 Step of the Way
@@ -906,7 +915,7 @@ const FeaturesSection: React.FC = () => {
 
           {/* Feature Card 2: Speed (Small) */}
           <motion.div
-            className="row-span-2 flex flex-col justify-center lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-lightgray dark:bg-white/5 lg:p-6 p-4"
+            className="row-span-2 flex flex-col justify-center lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-lightgray dark:bg-primarybox lg:p-6 p-4"
             variants={cardVariants} // Apply Spring Slide-Up animation
           >
             <FaFastForward className="lg:size-10 size-8 text-neutral-900 dark:text-primary" />
@@ -926,7 +935,7 @@ const FeaturesSection: React.FC = () => {
 
           {/* Feature Card 3: Support (Large) */}
           <motion.div
-            className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-lightgray dark:bg-white/5"
+            className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-lightgray dark:bg-primarybox"
             variants={cardVariants} // Apply Spring Slide-Up animation
           >
             <Image
@@ -952,7 +961,7 @@ const FeaturesSection: React.FC = () => {
 
           {/* Feature Card 4: Savings (Small) */}
           <motion.div
-            className="row-span-2 flex flex-col justify-center lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-lightgray dark:bg-white/5 lg:p-6 p-4"
+            className="row-span-2 flex flex-col justify-center lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-lightgray dark:bg-primarybox lg:p-6 p-4"
             variants={cardVariants} // Apply Spring Slide-Up animation
           >
             <FaChartLine className="lg:size-10 size-8 text-neutral-900 dark:text-primary" />
@@ -972,7 +981,7 @@ const FeaturesSection: React.FC = () => {
 
           {/* Feature Card 5: Rates (Large) */}
           <motion.div
-            className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-lightgray dark:bg-white/5"
+            className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-lightgray dark:bg-primarybox"
             variants={cardVariants} // Apply Spring Slide-Up animation
           >
             <Image
@@ -1000,7 +1009,7 @@ const FeaturesSection: React.FC = () => {
 
           {/* Feature Card 6: Reach (Small) */}
           <motion.div
-            className="row-span-2 flex flex-col justify-center lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-lightgray dark:bg-white/5 lg:p-6 p-4"
+            className="row-span-2 flex flex-col justify-center lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-lightgray dark:bg-primarybox lg:p-6 p-4"
             variants={cardVariants} // Apply Spring Slide-Up animation
           >
             <FiGlobe className="lg:size-10 size-8 text-neutral-900 dark:text-primary" />
@@ -1022,7 +1031,7 @@ const FeaturesSection: React.FC = () => {
 
           {/* Feature Card 7: Money (Large) */}
           <motion.div
-            className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-lightgray dark:bg-white/5"
+            className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-lightgray dark:bg-primarybox"
             variants={cardVariants} // Apply Spring Slide-Up animation
           >
             <Image
@@ -1051,7 +1060,7 @@ const FeaturesSection: React.FC = () => {
 
           {/* Feature Card 8: 24/7 Support (Small) */}
           <motion.div
-            className="row-span-2 flex flex-col justify-center lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-lightgray dark:bg-white/5 lg:p-6 p-4"
+            className="row-span-2 flex flex-col justify-center lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-lightgray dark:bg-primarybox lg:p-6 p-4"
             variants={cardVariants} // Apply Spring Slide-Up animation
           >
             <FaHeadset className="lg:size-10 size-8 text-mainheading dark:text-primary" />
