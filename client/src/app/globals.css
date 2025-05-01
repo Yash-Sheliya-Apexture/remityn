@@ -297,86 +297,30 @@ input:-webkit-autofill:active {
 } */
 
 
-/* Make sure these styles are loaded, either globally or scoped */
-@layer utilities {
-  @keyframes drawBorder {
-    from {
-      stroke-dashoffset: 208;
-      /* Initial offset - adjust if path length changes */
-    }
-
-    to {
-      stroke-dashoffset: 0;
-      /* Draw the full border */
-    }
-  }
-
-  .animate-border-draw {
-    /* Apply the animation */
-    animation: drawBorder 3500ms linear forwards;
-    /* Duration should match timer slightly */
-  }
-
-  /* Optional: Add a reset state for when animation is not active */
-  .border-path-reset {
-    stroke-dashoffset: 208;
+/* In your global CSS file (e.g., globals.css) */
+@keyframes animate-border-draw {
+  to {
+    stroke-dashoffset: 0;
   }
 }
 
-
-/* Animation animate-spin */
-
-
-@theme {
-  --animate-wiggle: wiggle 2s linear infinite;
-
-  @keyframes wiggle {
-
-    0%,
-    {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(180deg);
-  }
-}
+.animate-border-draw {
+  stroke-dasharray: 208; /* Calculate this based on your SVG path length if different */
+  stroke-dashoffset: 208;
+  animation-name: animate-border-draw;
+  animation-timing-function: linear;
+  animation-duration: var(--border-animation-duration, 3.5s); /* Use CSS variable */
+  animation-fill-mode: forwards;
 }
 
-
-/* Prevent background interaction when inactivity modal is open */
-body.inactivity-modal-open {
-  overflow: hidden; /* Optional: Prevent background scrolling */
+.animate-border-draw.paused {
+  animation-play-state: paused;
 }
 
-/* Target the main content wrapper (adjust selector if needed, e.g., body > div:first-child) */
-body.inactivity-modal-open > #__next { /* Common Next.js wrapper */
-  pointer-events: none !important; /* Disable clicks, hover, etc. */
-  /* Optional visual feedback */
-  /* filter: blur(2px); */
-  /* transition: filter 0.2s ease-out; */
+.border-path-static {
+  stroke-dashoffset: 0; /* Ensure it stays filled when not animating but active */
 }
 
-/* Ensure elements *outside* the main wrapper but *inside* body remain interactive */
-/* This includes the modal portal root and potentially script tags */
-body.inactivity-modal-open > #portal-root, /* If using a portal */
-body.inactivity-modal-open > script {
-  pointer-events: auto !important; /* Re-enable pointer events */
-  filter: none !important; /* Remove filter if applied */
+.border-path-reset {
+  stroke-dashoffset: 208; /* Ensure it's hidden when not active */
 }
-
-/* Ensure the modal content itself within the portal is interactive */
-#portal-root > * { /* Assuming modal is direct child */
-   pointer-events: auto !important;
-}
-
-/* Or, if the modal is rendered directly without a portal, give its container a class */
-/*
-.inactivity-modal-container {
-  pointer-events: auto !important;
-}
-body.inactivity-modal-open > .inactivity-modal-container {
-   pointer-events: auto !important;
-   filter: none !important;
-}
-*/

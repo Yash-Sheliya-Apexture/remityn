@@ -366,7 +366,7 @@
 // //                             onChange={(e) => setFullName(e.target.value)}
 // //                         />
 // //                         {fullNameError && (
-// //                             <p className="flex text-error text-base items-center mt-0.5">
+// //                             <p className="flex text-red-600 dark:text-red-400 text-base items-center mt-0.5">
 // //                                 <span className="mr-1">
 // //                                     <IoMdCloseCircle className="size-5" />
 // //                                 </span>
@@ -2285,7 +2285,6 @@
 //             Log in
 //           </Link>
 //         </p>
-        
 
 //         {/* Error Message Display */}
 //         <AnimatePresence>
@@ -2358,7 +2357,7 @@
 //           <div>
 //             <label
 //               htmlFor="fullName"
-//               className="text-gray-500 dark:text-gray-300 block mb-1 lg:text-base text-sm" // Adjusted styling
+//               className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base" // Adjusted styling
 //             >
 //               Full Name <span className="text-error">*</span>
 //             </label>
@@ -2412,7 +2411,7 @@
 //               aria-required="true"
 //               aria-invalid={!!emailError}
 //               aria-describedby={emailError ? "email-error" : undefined}
-//               className={`mt-1.5 block px-4 bg-white dark:bg-background py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
+//               className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
 //                 emailError
 //                   ? "border-red-700 border-2"
 //                   : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
@@ -2575,9 +2574,6 @@
 //   );
 // }
 
-
-
-
 // frontend/src/app/auth/register/page.tsx
 "use client";
 
@@ -2594,7 +2590,7 @@ import { motion, AnimatePresence } from "framer-motion"; // Import Framer Motion
 import { FiX } from "react-icons/fi";
 import { FaCheck } from "react-icons/fa6";
 import apiConfig from "../../config/apiConfig"; // Import API config
-
+import { LuEye, LuEyeClosed } from "react-icons/lu";
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
@@ -2614,7 +2610,7 @@ export default function RegisterPage() {
   const [registerSuccess, setRegisterSuccess] = useState(false); // State for successful registration
   const [isErrorVisible, setIsErrorVisible] = useState(false); // State to control error visibility for animation
   const [isSubmitting, setIsSubmitting] = useState(false); // Add submitting state
-  
+
   // Redirect if user is already logged in
   useEffect(() => {
     if (!loading && user) {
@@ -2683,23 +2679,33 @@ export default function RegisterPage() {
     setError("");
     setRegisterSuccess(false);
 
-    if (!validateForm()) { return; }
+    if (!validateForm()) {
+      return;
+    }
 
     setIsSubmitting(true); // Set submitting true
     try {
       await authService.register({ fullName, email, password });
       setRegisterSuccess(true);
-      setTimeout(() => { router.push("/auth/login?registerSuccess=true"); }, 300);
+      setTimeout(() => {
+        router.push("/auth/login?registerSuccess=true");
+      }, 300);
     } catch (err: unknown) {
       let errorMessage = "Registration failed. Please try again.";
       if (typeof err === "object" && err !== null) {
-        const potentialError = err as { response?: { data?: { message?: string } }; message?: string; };
-        if (potentialError.response?.data?.message) { errorMessage = potentialError.response.data.message; }
-        else if (potentialError.message) { errorMessage = potentialError.message; }
+        const potentialError = err as {
+          response?: { data?: { message?: string } };
+          message?: string;
+        };
+        if (potentialError.response?.data?.message) {
+          errorMessage = potentialError.response.data.message;
+        } else if (potentialError.message) {
+          errorMessage = potentialError.message;
+        }
       }
       setError(errorMessage);
     } finally {
-        setIsSubmitting(false); // Set submitting false
+      setIsSubmitting(false); // Set submitting false
     }
   };
 
@@ -2710,13 +2716,13 @@ export default function RegisterPage() {
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
-// --- Google Login/Register Handler ---
-const handleGoogleRegister = () => {
-  setError(""); // Clear previous errors
-  // Redirect browser to the backend endpoint that starts the Google flow
-  window.location.href = `${apiConfig.baseUrl}/auth/google`; // Same endpoint as login
-};
-// ----------------------------------
+  // --- Google Login/Register Handler ---
+  const handleGoogleRegister = () => {
+    setError(""); // Clear previous errors
+    // Redirect browser to the backend endpoint that starts the Google flow
+    window.location.href = `${apiConfig.baseUrl}/auth/google`; // Same endpoint as login
+  };
+  // ----------------------------------
 
   if (loading) {
     return <p>Loading...</p>; // Or a loading spinner
@@ -2755,41 +2761,39 @@ const handleGoogleRegister = () => {
   };
 
   return (
-    <div className="flex justify-center items-center lg:h-[calc(100vh-73px)] px-4 py-8 bg-white dark:bg-background">
+    <div className="flex justify-center items-center lg:h-[calc(100vh-73px)] px-4 bg-white dark:bg-background">
       {/* Added padding */}
-      <div className="w-full max-w-md space-y-2">
-        <h2 className="lg:text-3xl text-xl text-center text-mainheading dark:text-white font-semibold">
+      <div className="w-full max-w-md space-y-2 lg:mt-20 mt-10">
+        <h2 className="lg:text-3xl text-2xl text-center text-neutral-900 dark:text-white font-medium">
           Create your Wise account
         </h2>
 
-        <p className="lg:text-base text-sm text-center text-gray-700 dark:text-gray-300">
+        <p className="text-center text-gray-500 dark:text-gray-300">
           Already have an account? {/* Added space */}
-          <Link
-            href="/auth/login"
-            className="text-primary font-medium underline underline-offset-4"
-          >
-            Log in
+          <Link href="/auth/login">
+            <span className="text-primary font-medium capitalize underline underline-offset-4">
+              Log in
+            </span>
           </Link>
         </p>
-        
 
         {/* Error Message Display */}
         <AnimatePresence>
           {isErrorVisible && error && (
             <motion.div
-              className="bg-gray/10 dark:bg-white/5 rounded-2xl p-4 flex items-center gap-4 relative mb-4"
+              className="bg-lightgray dark:bg-primarybox rounded-2xl p-4 flex items-center gap-4 relative my-4"
               role="alert"
               initial="initial"
               animate="animate"
               exit="exit"
               variants={errorVariants}
             >
-              <div className="flex dark:bg-red-600/20 bg-red-300 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
-                <FiX className="p-0.5 text-mainheading dark:text-red-600 lg:size-8 size-6" />
+              <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+                <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
               </div>
 
-              <div>
-                <span className="text-mainheading lg:text-base text-sm dark:text-white block max-w-60 leading-relaxed">
+              <div className="inline-block">
+                <span className="text-gray-500 dark:text-gray-300 max-w-60">
                   {error}
                 </span>
               </div>
@@ -2797,12 +2801,11 @@ const handleGoogleRegister = () => {
           )}
         </AnimatePresence>
 
-        {/* Success Message Display */}
         <AnimatePresence>
           {registerSuccess &&
             !error && ( // Show success only if there's no error from a subsequent attempt
               <motion.div
-                className="flex bg-gray/10 dark:bg-secondary p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4"
+                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative my-4"
                 role="alert"
                 initial="initial"
                 animate="animate"
@@ -2813,8 +2816,9 @@ const handleGoogleRegister = () => {
                 <div className="flex dark:bg-primary/20 bg-green-300 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
                   <FaCheck className="p-0.5 text-white dark:text-primary lg:size-8 size-6" />
                 </div>
+
                 <div className="flex-grow space-y-0.5">
-                  <span className="text-mainheading dark:text-primary block font-medium">
+                  <span className="text-neutral-900 dark:text-primary block font-medium">
                     Registration successful!
                   </span>
                   {/* Improved text */}
@@ -2826,28 +2830,32 @@ const handleGoogleRegister = () => {
             )}
         </AnimatePresence>
 
-        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+        <form onSubmit={handleSubmit} className="mt-5 space-y-4">
           {/* --- Updated Google Button --- */}
           <div>
             <button
               type="button" // Keep type="button"
-              className="flex bg-white dark:bg-background border justify-center rounded-lg text-mainheading dark:text-white text-md w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 h-14" // Added hover effect
+              className="flex dark:bg-background border justify-center rounded-lg h-14 text-neutral-900 dark:text-white w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 text-sm lg:text-base" // Added hover effect
               onClick={handleGoogleRegister} // Use the new handler
-             >
-              <Image src="/assets/icon/google.svg" width={28} height={28} alt="Google icon" />
+            >
+              <Image
+                src="/assets/icon/google.svg"
+                width={28}
+                height={28}
+                alt="Google icon"
+              />
               Continue with Google
             </button>
           </div>
-          {/* --------------------------- */}
-
 
           {/* Full Name Input */}
           <div>
             <label
               htmlFor="fullName"
-              className="text-gray-500 dark:text-gray-300 block mb-1 lg:text-base text-sm" // Adjusted styling
+              className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base" // Adjusted styling
             >
-              Full Name <span className="text-error">*</span>
+              Full Name{" "}
+              <span className="text-red-600 dark:text-red-400">*</span>
             </label>
             <input
               type="text"
@@ -2857,10 +2865,10 @@ const handleGoogleRegister = () => {
               aria-required="true"
               aria-invalid={!!fullNameError}
               aria-describedby={fullNameError ? "fullName-error" : undefined}
-              className={`mt-1.5 block px-4 py-3 h-14 w-full border bg-white dark:bg-background rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
+              className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
                 fullNameError
-                  ? "border-red-700 border-2" // Simplified error state
-                  : "hover:shadow-darkcolor dark:hover:shadow-whitecolor" // Adjusted normal/focus states
+                  ? "border-red-600 border-2 !shadow-none focus:!ring-red-600" // Simplified error state
+                  : "focus:border-[#5f5f5f]" // Adjusted normal/focus states
               }`}
               value={fullName}
               onChange={(e) => {
@@ -2887,9 +2895,10 @@ const handleGoogleRegister = () => {
           <div>
             <label
               htmlFor="email"
-              className="text-gray-500 dark:text-gray-300 block mb-1 lg:text-base text-sm"
+              className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
             >
-              Email Address <span className="text-error">*</span>
+              Email Address{" "}
+              <span className="text-red-600 dark:text-red-400">*</span>
             </label>
             <input
               type="email"
@@ -2899,10 +2908,10 @@ const handleGoogleRegister = () => {
               aria-required="true"
               aria-invalid={!!emailError}
               aria-describedby={emailError ? "email-error" : undefined}
-              className={`mt-1.5 block px-4 bg-white dark:bg-background py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
+              className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
                 emailError
-                  ? "border-red-700 border-2"
-                  : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
+                  ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+                  : "focus:border-[#5f5f5f]"
               }`}
               value={email}
               onChange={(e) => {
@@ -2921,14 +2930,14 @@ const handleGoogleRegister = () => {
           </div>
 
           {/* Password Input */}
-          <div>
+          <div className="relative">
             <label
               htmlFor="password"
-              className="text-gray-500 dark:text-gray-300 block mb-1 lg:text-base text-sm"
+              className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
             >
-              Password <span className="text-error">*</span>
+              Password <span className="text-red-600 dark:text-red-400">*</span>
             </label>
-            <div className="relative">
+            <div>
               <input
                 type={showPassword ? "text" : "password"}
                 id="password"
@@ -2937,10 +2946,10 @@ const handleGoogleRegister = () => {
                 aria-required="true"
                 aria-invalid={!!passwordError}
                 aria-describedby={passwordError ? "password-error" : undefined}
-                className={`mt-1.5 block px-4 py-3 h-14 w-full border bg-white dark:bg-background rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
+                className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
                   passwordError
-                    ? "border-red-700 border-2"
-                    : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
+                    ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+                    : "focus:border-[#5f5f5f]"
                 }`}
                 value={password}
                 onChange={(e) => {
@@ -2950,15 +2959,11 @@ const handleGoogleRegister = () => {
               />
               <button
                 type="button"
-                className="text-gray-500 dark:text-white cursor-pointer -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-1 top-1/2 transform bg-white dark:bg-background p-3 rounded-md" // Adjusted focus style
+                className="absolute right-4 top-11 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background" // Adjusted focus style
                 onClick={togglePasswordVisibility}
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
-                {showPassword ? (
-                  <RiEyeCloseLine className="text-mainheading dark:text-white size-5" />
-                ) : (
-                  <VscEye className="text-mainheading dark:text-white size-5" />
-                )}
+                {showPassword ? <LuEye size={26} /> : <LuEyeClosed size={26} />}
               </button>
             </div>
             {passwordError && (
@@ -2972,14 +2977,15 @@ const handleGoogleRegister = () => {
           </div>
 
           {/* Confirm Password Input */}
-          <div>
+          <div className="relative">
             <label
               htmlFor="confirmPassword"
-              className="text-gray-500 dark:text-gray-300 block mb-1 lg:text-base text-sm"
+              className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
             >
-              Confirm Password <span className="text-error">*</span>
+              Confirm Password{" "}
+              <span className="text-red-600 dark:text-red-400">*</span>
             </label>
-            <div className="relative">
+            <div>
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 id="confirmPassword"
@@ -2990,10 +2996,10 @@ const handleGoogleRegister = () => {
                 aria-describedby={
                   confirmPasswordError ? "confirmPassword-error" : undefined
                 }
-                className={`mt-1.5 block px-4 py-3 h-14 w-full border bg-white dark:bg-background rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
+                className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
                   confirmPasswordError
-                    ? "border-red-700 border-2"
-                    : "hover:shadow-darkcolor dark:hover:shadow-whitecolor"
+                    ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+                    : "focus:border-[#5f5f5f]"
                 }`}
                 value={confirmPassword}
                 onChange={(e) => {
@@ -3003,7 +3009,7 @@ const handleGoogleRegister = () => {
               />
               <button
                 type="button"
-                className="text-gray-500 dark:text-white cursor-pointer -translate-y-1/2 absolute focus:outline-none hover:text-gray-700 right-1 top-1/2 transform bg-white dark:bg-background p-3 rounded-md"
+                className="absolute right-4 top-11 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background"
                 onClick={toggleConfirmPasswordVisibility}
                 aria-label={
                   showConfirmPassword
@@ -3012,9 +3018,9 @@ const handleGoogleRegister = () => {
                 }
               >
                 {showConfirmPassword ? (
-                  <RiEyeCloseLine className="text-mainheading dark:text-white size-5" />
+                  <LuEye size={26} />
                 ) : (
-                  <VscEye className="text-mainheading dark:text-white size-5" />
+                  <LuEyeClosed size={26} />
                 )}
               </button>
             </div>
@@ -3032,26 +3038,26 @@ const handleGoogleRegister = () => {
           <button
             type="submit"
             disabled={registerSuccess} // Disable button after successful registration to prevent double clicks
-            className={`bg-primary hover:bg-primaryhover rounded-full text-mainheading w-full cursor-pointer duration-300 ease-in-out focus:outline-none font-medium  lg:py-3 py-2 lg:h-12.5 transition-colors`} // Adjusted styles, disabled state
+            className={`bg-primary hover:bg-primaryhover w-full text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center`} // Adjusted styles, disabled state
           >
             {registerSuccess ? "Registered!" : "Register"}
           </button>
         </form>
 
         {/* Terms and Policy Links */}
-        <p className="text-center text-mainheading dark:text-gray-300 my-3 text-sm">
+        <p className="text-center text-neutral-900 dark:text-gray-300 my-3 text-sm">
           {/* Adjusted styles */}
           By registering, you accept our &nbsp;
           <Link
             href="/terms-and-conditions"
-            className="text-lime-500 dark:text-primary font-medium underline underline-offset-4" // Adjusted offset/hover
+            className="text-primary font-medium underline underline-offset-4" // Adjusted offset/hover
           >
             Terms of use &nbsp;
           </Link>
           and
           <Link
             href="/privacy-policy"
-            className="text-lime-500 dark:text-primary font-medium underline underline-offset-4"
+            className="text-primary font-medium underline underline-offset-4"
           >
             &nbsp; Privacy Policy
           </Link>

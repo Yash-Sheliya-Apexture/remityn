@@ -1307,6 +1307,8 @@ import { IoMdCloseCircle } from "react-icons/io";
 import authService from "../../services/auth"; // Correct import path using alias
 import { FaCheck } from "react-icons/fa6";
 import { motion, AnimatePresence } from "framer-motion"; // Import Framer Motion
+import { FiX } from "react-icons/fi";
+import Link from "next/link";
 
 const ResetPasswordForm = () => {
   const [email, setEmail] = useState<string>("");
@@ -1517,35 +1519,44 @@ const ResetPasswordForm = () => {
   }
 
   return (
-    <div className="flex flex-col bg-white dark:bg-background justify-center items-center lg:h-[calc(100vh-73px)] px-4 pt-10">
-      <div className="max-w-lg mb-8">
+    <div className="flex flex-col bg-white dark:bg-background justify-center items-center lg:h-[calc(100vh-73px)] px-4">
+      <div className="max-w-lg">
         <Image
           src="/assets/images/resetpassword.png"
-          width={500}
-          height={500}
+          width={600}
+          height={600}
           alt="Key Icon"
           className="lg:size-60 size-40"
         />
       </div>
 
-      <h2 className="lg:text-5xl text-3xl capitalize font-black mb-4">
+      <h2 className="text-3xl md:text-4xl font-black text-mainheading dark:text-white uppercase mb-4">
         Reset password
       </h2>
-      <p className="text-center text-gray-700 dark:text-gray-300 lg:text-lg text-base max-w-lg mb-4">
+
+      <p className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base max-w-lg">
         Just enter the email address you registered with and we&apos;ll send you
         a link to reset your password.
       </p>
 
       {error && (
         <div
-          className="bg-red-100 border border-red-400 rounded text-red-700 mb-4 px-4 py-3 relative w-full max-w-lg" // Added width constraint
+          className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative my-4" // Added width constraint
           role="alert"
         >
-          <span className="block sm:inline">{error}</span>
+          <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+            <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
+          </div>
+
+          <div className="inline-block">
+            <span className="text-gray-500 dark:text-gray-300 max-w-60">
+              {error} relative to this path no number right now
+            </span>
+          </div>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="w-full max-w-lg mt-2 lg:mt-5">
+      <form onSubmit={handleSubmit} className="w-full max-w-lg pt-5">
         <div className="mb-4">
           <label
             htmlFor="email"
@@ -1559,14 +1570,14 @@ const ResetPasswordForm = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={isLoading}
-            className={`mt-1 block px-4 py-3 h-14 w-full border rounded-lg focus:outline-none transition-shadow ease-in-out duration-300 ${
+            className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
               emailError
-                ? "border-red-700 border-2 !shadow-none"
-                : "dark:hover:shadow-whitecolor hover:shadow-darkcolor"
+                ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+                : "focus:border-[#5f5f5f]"
             }`}
           />
           {emailError && (
-            <p className="flex text-red-700 text-base items-center mt-2.5">
+            <p className="flex text-red-700 text-base items-center mt-0.5">
               <span className="mr-1">
                 <IoMdCloseCircle className="size-5" />
               </span>
@@ -1577,7 +1588,7 @@ const ResetPasswordForm = () => {
 
         <div className="flex justify-between items-center">
           <button
-            className={`bg-primary hover:bg-primaryhover cursor-pointer text-mainheading font-medium py-3 lg:h-12.5 w-full px-4 rounded-full transition-colors duration-300 ease-in-out focus:outline-none focus:shadow-outline ${
+            className={`bg-primary hover:bg-primaryhover w-full text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center ${
               isLoading ? "opacity-50 cursor-not-allowed" : ""
             }`}
             type="submit"
@@ -1588,14 +1599,13 @@ const ResetPasswordForm = () => {
         </div>
       </form>
 
-      <p className="text-base text-gray-700 dark:text-gray-300 my-6">
+      <p className="text-base text-gray-500 dark:text-gray-300 my-3">
         Need help? Read this &nbsp;
-        <a
-          href="#"
-          className="text-lime-500 font-medium underline underline-offset-4"
-        >
-          Help Centre article.
-        </a>
+        <Link href="/faqs">
+          <span className="text-primary font-medium underline underline-offset-4">
+            Help Centre article.
+          </span>
+        </Link>
       </p>
     </div>
   );
