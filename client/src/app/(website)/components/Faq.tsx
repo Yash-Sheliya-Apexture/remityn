@@ -1197,7 +1197,7 @@
 //             <span className="text-primary"> Exchange Help </span>
 //           </h1>
 
-//           <p className="lg:text-lg sm:text-base text-sm text-gray-700 leading-relaxed dark:text-gray-300">
+//           <p className="lg:text-lg sm:text-base text-sm text-gray-500 leading-relaxed dark:text-gray-300">
 //             Get quick answers to common currency exchange questions — rates,
 //             fees, timing, and more. Simple, clear, and reliable info at your
 //             fingertips.
@@ -2059,7 +2059,7 @@ const FaqSection: React.FC = () => {
             Quick Currency
             <span className="text-primary"> Exchange Help </span>
           </h1>
-          <p className="lg:text-lg text-base text-gray-500 dark:text-gray-300">
+          <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
             Get quick answers to common currency exchange questions — rates,
             fees, timing, and more. Simple, clear, and reliable info at your
             fingertips.
@@ -2084,7 +2084,7 @@ const FaqSection: React.FC = () => {
                   key={item.id}
                   variants={faqItemVariants} // Apply NEW slide-from-right animation
                   layout // Keep layout for smooth answer animation
-                  className="rounded-lg bg-lightgray dark:bg-white/5 overflow-hidden"
+                  className="rounded-lg bg-lightgray dark:bg-primarybox overflow-hidden"
                   // Timing controlled by parent stagger
                 >
                   {/* Accordion Trigger (Question Button) */}
@@ -2100,7 +2100,7 @@ const FaqSection: React.FC = () => {
                       data-state={isOpen ? "open" : "closed"}
                       data-orientation="vertical"
                       id={uniqueTriggerId}
-                      className={`flex w-full cursor-pointer flex-1 gap-2 items-center justify-between text-start lg:text-xl md:text-lg text-sm text-main font-medium dark:text-white transition-colors duration-200 lg:p-5 p-4 ${
+                      className={`flex w-full cursor-pointer flex-1  gap-2 items-center justify-between text-start lg:text-xl md:text-lg text-sm text-neutral-900 font-medium dark:text-white transition-colors ease-linear duration-75 lg:p-5 p-4 ${
                         isOpen ? "" : ""
                       }`}
                       onClick={() => handleToggle(item.id)}
@@ -2112,7 +2112,7 @@ const FaqSection: React.FC = () => {
                         style={{ display: "inline-block" }}
                       >
                         <SlArrowDown
-                          className="lg:size-3 size-2.5 shrink-0 text-gray-700 dark:text-gray-300"
+                          className="lg:size-3 size-2.5 shrink-0 text-gray-500 dark:text-gray-300"
                           aria-hidden
                         />
                       </motion.span>
@@ -2131,7 +2131,7 @@ const FaqSection: React.FC = () => {
                         initial="initial"
                         animate="animate"
                         exit="exit"
-                        className="overflow-hidden text-sm md:text-base lg:text-lg leading-relaxed text-gray-700 dark:text-gray-300"
+                        className="overflow-hidden text-sm md:text-base lg:text-lg leading-relaxed text-gray-500 dark:text-gray-300"
                       >
                         <div className="pt-0 pb-4 md:px-6 px-4">
                           {item.answer}
@@ -2147,15 +2147,15 @@ const FaqSection: React.FC = () => {
 
         {/* Bottom Left: More Questions Box - Animated */}
         <motion.div
-          className="lg:col-span-2 md:col-span-3 md:self-end sticky top-0"
+          className="lg:col-span-2 md:col-span-3 md:self-end"
           variants={leftBlockVariants} // Re-use left block animation
         >
-          <div className="flex flex-col items-start gap-5 rounded-2xl bg-lightgray dark:bg-white/5 p-4 lg:p-6">
+          <div className="flex flex-col items-start gap-5 rounded-2xl bg-lightgray dark:bg-primarybox p-4 lg:p-6">
             <div>
               <h3 className="md:text-2xl text-lg font-semibold text-mainheading dark:text-gray-100">
                 More questions?
               </h3>
-              <p className="mt-1 lg:text-lg text-sm font-normal text-gray-700 dark:text-gray-300">
+              <p className="mt-1 lg:text-lg text-sm font-normal text-gray-500 dark:text-gray-300">
                 We're always ready to help you out.
               </p>
             </div>
@@ -2169,7 +2169,7 @@ const FaqSection: React.FC = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <button className="inline-flex items-center cursor-pointer justify-center rounded-full text-sm bg-[#25D366] lg:text-base px-4 lg:py-2 py-1.5 text-white font-medium transition-colors duration-200 ease-in-out hover:bg-[#1ebe5a] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#25D366]">
+                  <button className="inline-flex items-center cursor-pointer justify-center rounded-full text-sm bg-[#25D366] lg:text-base px-4 lg:py-2 py-1.5 text-white font-medium transition-all duration-75 ease-linear hover:bg-[#1ebe5a] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#25D366]">
                     <IoLogoWhatsapp className="mr-2 lg:size-6 size-4" />
                     <span>WhatsApp</span>
                   </button>
@@ -2181,7 +2181,7 @@ const FaqSection: React.FC = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <button className="inline-flex items-center justify-center cursor-pointer rounded-full bg-[#2DA5E0] px-4 lg:py-2 py-1.5 text-sm text-white font-medium transition-colors duration-200 ease-in-out hover:bg-[#249bd4] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#2DA5E0] lg:text-base">
+                  <button className="inline-flex items-center justify-center cursor-pointer rounded-full bg-[#2DA5E0] px-4 lg:py-2 py-1.5 text-sm text-white font-medium transition-all duration-75 ease-linear hover:bg-[#249bd4] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#2DA5E0] lg:text-base">
                     <FaTelegramPlane className="mr-2 lg:size-6 size-4" />
                     <span>Telegram</span>
                   </button>
@@ -2190,7 +2190,7 @@ const FaqSection: React.FC = () => {
               {/* Read More FAQs Link */}
               <Link
                 href="/faqs" // Link to your full FAQs page
-                className="px-4 py-1.5 rounded-full font-medium lg:text-base text-xs border border-gray text-mainheading dark:text-primary dark:hover:bg-white/10 dark:border-white/20 dark:bg-secondary transition-colors duration-300 focus:outline-none"
+                className="px-4 py-1.5 rounded-full font-medium lg:text-base text-xs border hover:bg-white  text-mainheading dark:text-primary dark:hover:bg-white/5 dark:bg-secondary transition-all ease-linear duration-75 focus:outline-none"
               >
                 Read more FAQs
               </Link>

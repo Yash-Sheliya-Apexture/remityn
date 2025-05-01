@@ -178,7 +178,7 @@ const GetStartedSection: React.FC = () => {
       {/* Main section container with background and rounded corners */}
       {/* Apply motion here to control when children animate */}
       <motion.section
-        className="bg-lightgray dark:bg-white/5 rounded-2xl container mx-auto lg:py-10 py-5 relative overflow-hidden" // Keep overflow-hidden and relative
+        className="bg-lightgray dark:bg-primarybox rounded-2xl container mx-auto lg:py-10 py-5 relative overflow-hidden" // Keep overflow-hidden and relative
         variants={sectionVariants}
         initial="hidden"
         whileInView="visible"

@@ -372,7 +372,7 @@ const MobileDownloadSection: React.FC = () => {
           // Inherits trigger from parent section
         >
           {/* Container for phone image and SVG waves - THIS needs overflow:hidden */}
-          <div className="relative flex aspect-square w-full max-w-md lg:max-w-none flex-shrink-0 justify-center overflow-hidden rounded-bl-3xl rounded-br-[100px] rounded-tl-[100px] rounded-tr-3xl bg-gray/30 dark:bg-white/5 dark:border pt-5 md:h-[570px] md:w-[500px] md:rounded-bl-[30px] md:rounded-br-[120px] md:rounded-tl-[120px] md:rounded-tr-[30px]">
+          <div className="relative flex aspect-square w-full max-w-md lg:max-w-none flex-shrink-0 justify-center overflow-hidden rounded-bl-3xl rounded-br-[100px] rounded-tl-[100px] rounded-tr-3xl bg-lightgray dark:bg-primarybox dark:border pt-5 md:h-[570px] md:w-[500px] md:rounded-bl-[30px] md:rounded-br-[120px] md:rounded-tl-[120px] md:rounded-tr-[30px]">
             {/* === Motion Wrapper for ONLY the Images === */}
             <motion.div
               className="relative z-10 w-full sm:h-[550px] md:w-[450px]" // Position wrapper

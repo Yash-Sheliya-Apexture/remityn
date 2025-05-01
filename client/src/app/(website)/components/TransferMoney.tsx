@@ -2668,7 +2668,7 @@ const TransferSteps: React.FC = () => {
         {/* Main Grid Layout (Tabs + Content) */}
         <article className="grid gap-6 lg:grid-cols-3 mt-10">
           {/* Left Side: Step Tabs */}
-            <div className="rounded-3xl bg-white dark:bg-white/5 p-6 h-full border dark:border-none">
+            <div className="rounded-3xl bg-white dark:bg-primarybox p-6 h-full border dark:border-none">
               <ul className="lg:flex md:grid md:grid-cols-2 lg:grid-cols-1 grid-cols-1 lg:flex-col space-y-6 justify-between h-full gap-6">
                 {stepsData.map((step, index) => {
                   const isActive = activeIndex === index;
@@ -2785,7 +2785,7 @@ const TransferSteps: React.FC = () => {
               {currentStep && (
                 <motion.div
                   key={activeIndex} // Key change triggers transitions
-                  className="absolute inset-0 flex flex-col border dark:border-none rounded-3xl bg-white dark:bg-white/5 p-6"
+                  className="absolute inset-0 flex flex-col border dark:border-none rounded-3xl bg-white dark:bg-primarybox p-6"
                   initial="initial"
                   animate="animate"
                   exit="exit"
