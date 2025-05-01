@@ -2649,7 +2649,7 @@ const TransferSteps: React.FC = () => {
     // Attach ref HERE to the element whose visibility triggers animations
     <div
       ref={ref}
-      className="lg:py-10 py-5 bg-white dark:bg-background overflow-hidden"
+      className="lg:py-10 py-5 bg-white dark:bg-background overflow-hidden TransferMoney"
     >
       {/* Apply ENTRANCE animation controlled by useInView */}
       <motion.section
@@ -2658,7 +2658,7 @@ const TransferSteps: React.FC = () => {
         initial="hidden"
       >
         {/* Section Header */}
-        <article className="flex flex-col gap-5 mb-8 lg:mb-10">
+        <article className="flex flex-col gap-5">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase text-center lg:text-left">
             4 easy steps to
             <span className="text-primary"> Transfer to India </span>
@@ -2666,9 +2666,8 @@ const TransferSteps: React.FC = () => {
         </article>
 
         {/* Main Grid Layout (Tabs + Content) */}
-        <article className="grid gap-8 lg:grid-cols-3 lg:gap-8">
+        <article className="grid gap-6 lg:grid-cols-3 mt-10">
           {/* Left Side: Step Tabs */}
-          <div className="w-full h-full">
             <div className="rounded-3xl bg-white dark:bg-white/5 p-6 h-full border dark:border-none">
               <ul className="lg:flex md:grid md:grid-cols-2 lg:grid-cols-1 grid-cols-1 lg:flex-col space-y-6 justify-between h-full gap-6">
                 {stepsData.map((step, index) => {
@@ -2769,7 +2768,6 @@ const TransferSteps: React.FC = () => {
                   );
                 })}
               </ul>
-            </div>
           </div>
 
           {/* Right Side: Content Panel */}

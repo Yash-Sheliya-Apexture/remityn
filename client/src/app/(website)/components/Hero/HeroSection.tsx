@@ -18263,7 +18263,7 @@ const HeroSection: React.FC = () => {
   return (
     <section className="Hero-Section bg-white dark:bg-background lg:py-10 py-5 overflow-hidden">
       <div className="container mx-auto px-4">
-        <div className="flex flex-col items-center lg:flex-row lg:gap-10 gap-6">
+        <div className="flex flex-col items-center lg:flex-row gap-6">
           {/* Left Column */}
           <motion.div
             className="lg:w-1/2 space-y-5"
@@ -18280,11 +18280,11 @@ const HeroSection: React.FC = () => {
             className="lg:w-xl lg:ml-auto w-full max-w-lg"
             initial="hiddenRight"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{ once: true, amount: 0.2 }}  // ViewPort Visiable 20% Componets
             variants={variants}
             transition={{ delay: 0.15, ...variants.visible.transition }}
           >
-            <div className="bg-white dark:bg-background border rounded-2xl lg:p-6 p-4">
+            <div className="bg-white dark:bg-background border rounded-2xl text-mainheading font-medium lg:p-6 p-4">
               {" "}
               {/* Added dark border */}
               {/* Loading Skeleton */}

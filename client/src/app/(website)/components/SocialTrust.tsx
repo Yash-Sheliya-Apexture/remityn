@@ -2780,7 +2780,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { FaStar, FaStarHalfAlt } from "react-icons/fa";
-import {  usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { motion } from "framer-motion"; // Import motion
 
 // --- StarRating Component (No changes needed) ---
@@ -2800,6 +2800,7 @@ const StarRating: React.FC<StarRatingProps> = ({ rating, maxRating = 5 }) => {
         <FaStar
           key={i}
           className="inline-block text-[#FBBF24] dark:text-white"
+          size={18}
         />
       );
     } else if (i === fullStars && hasHalfStar) {
@@ -2807,13 +2808,15 @@ const StarRating: React.FC<StarRatingProps> = ({ rating, maxRating = 5 }) => {
         <FaStarHalfAlt
           key={i}
           className="inline-block text-[#FBBF24] dark:text-white"
+          size={18}
         />
       );
     } else {
       stars.push(
         <FaStar
           key={i}
-          className="inline-block text-lightgray dark:text-white" // Consider dark:text-gray-600 for better contrast
+          className="inline-block text-lightgray dark:text-white"
+          size={18}
         />
       );
     }
@@ -2837,23 +2840,24 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
   comment,
 }) => {
   return (
-    <div className="bg-lightgray dark:bg-white/5 rounded-2xl lg:p-6 p-4 flex flex-col items-start relative flex-shrink-0 h-full">
+    <div className="bg-lightgray dark:bg-primarybox rounded-2xl lg:p-6 p-4 flex flex-col items-start relative flex-shrink-0 h-full">
       <div className="flex md:flex-row items-center w-full justify-center md:justify-start">
-        <div className="flex flex-col md:flex-row items-center">
+        <div className="flex flex-col md:flex-row items-center gap-4">
           <img
             src={avatarUrl}
             alt={`Avatar of ${reviewerName}`}
-            className="lg:size-16 size-14 rounded-full object-cover mb-2 md:mb-0 md:mr-2.5"
+            className="size-16 rounded-full object-cover"
           />
           <div className="flex flex-col items-center md:items-start">
-            <div className="text-mainheading dark:text-primary font-medium text-nowrap">
+            <div className="text-mainheading lg:text-lg text-base capitalize dark:text-primary leading-5 font-medium text-nowrap">
               {reviewerName}
             </div>
             <StarRating rating={rating} />
           </div>
         </div>
       </div>
-      <div className="text-gray-500 dark:text-gray-300 mt-4 md:mt-6 text-sm lg:text-lg leading-normal">
+
+      <div className="text-gray-500 dark:text-gray-300 lg:text-lg text-base mt-5">
         {comment}
       </div>
     </div>
@@ -3038,7 +3042,11 @@ const ReviewCards: React.FC = () => {
   }, [loading, error, reviewGroups]);
 
   if (loading) {
-    return <div className="text-center p-6">Loading reviews please you can wait...</div>;
+    return (
+      <div className="text-center p-6">
+        Loading reviews please you can wait...
+      </div>
+    );
   }
 
   if (error) {
@@ -3060,27 +3068,27 @@ const ReviewCards: React.FC = () => {
   const isHomePage = pathname === "/";
 
   const heading = isHomePage ? (
-    <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase">
+    <h1 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white uppercase">
       Honest Reviews
       <span className="text-primary"> Real Travelers Like You </span>
     </h1>
   ) : (
-    <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase">
+    <h1 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white uppercase">
       Trusted Currency Exchange
       <span className="text-primary"> Feedback & Rating </span>
     </h1>
   );
 
   const paragraph = isHomePage ? (
-    <p className="lg:text-lg text-base text-gray-500 dark:text-gray-300 mt-5 max-w-full md:max-w-3xl">
+    <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base lg:max-w-5xl max-w-full">
       Discover what real travelers have to say about their experiences with our
       currency exchange services. From frequent flyers to first-time tourists,
       our customers share honest feedback about fast, reliable, and secure
       transactions.
     </p>
   ) : (
-    <p className="lg:text-lg sm:text-base text-sm max-w-full md:max-w-3xl text-gray-700 dark:text-gray-300 mt-5 text-left">
-      Read honest customer reviews about our currency exchange services. See why
+    <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base lg:max-w-5xl max-w-full">
+      Read honest customer reviews about our currency exchange services. See why 
       travelers, investors, and expats trust us for fast, reliable, and
       competitive rates. Our clients appreciate the transparency, excellent
       support, and real-time rates.
@@ -3098,9 +3106,9 @@ const ReviewCards: React.FC = () => {
       viewport={{ amount: 0.2, once: true }} // Trigger when 10% visible, animate ONLY ONCE
     >
       <div className="container mx-auto px-4">
-        {/* Text Block Animation */} 
+        {/* Text Block Animation */}
         <motion.div
-          className="w-full mb-16"
+          className="w-full mb-10 space-y-4 text-center md:text-left"
           variants={textBlockVariants}
           // Inherits trigger from parent section
         >
@@ -3109,7 +3117,7 @@ const ReviewCards: React.FC = () => {
         </motion.div>
         {/* --- Grid Container for Columns --- */}
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 h-[600px] md:h-[1000px] overflow-hidden relative" // Keep fixed height for marquee
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 h-[600px] md:h-[1000px] overflow-hidden relative" // Keep fixed height for marquee
           variants={columnsContainerVariants} // Controls staggering of columns
           // Inherits trigger from parent section
         >
@@ -3134,7 +3142,7 @@ const ReviewCards: React.FC = () => {
                   }}
                 >
                   {/* Marquee Content Div (NO motion here) */}
-                  <div className="marquee-content flex flex-col space-y-4 md:space-y-6">
+                  <div className="marquee-content flex flex-col gap-6">
                     {/* Map through reviews WITHIN the group */}
                     {group.reviews.map((review, reviewIndex) => (
                       // --- Individual Card Wrapper for Entrance Animation ---
@@ -3157,10 +3165,37 @@ const ReviewCards: React.FC = () => {
           {/* Gradient Fades */}
           <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-white via-white/80 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none z-10"></div>
           <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-white via-white/80 to-transparent dark:from-background dark:via-background/80 dark:to-transparent pointer-events-none z-10"></div>
-        </motion.div>{" "}
-        {/* End grid container */}
+        </motion.div>
       </div>
-    
+      
+      <style jsx global>{`
+        .marquee-column {
+          overflow: hidden;
+          height: 100%;
+          position: relative;
+        }
+
+        .marquee-content {
+          // display: block; /* Or flex if needed */
+          // position: relative; /* Keep relative for transform */
+          animation: scroll-up 30s linear infinite; /* Slower animation? */
+        }
+
+        .marquee-column:hover .marquee-content {
+          animation-play-state: paused;
+        }
+
+        @keyframes scroll-up {
+          0% {
+            transform: translateY(0%);
+          }
+          100% {
+            /* This assumes duplication. Adjust if duplication logic changes */
+            transform: translateY(-50%);
+          }
+        }
+      `}</style>
+
     </motion.section>
   );
 };

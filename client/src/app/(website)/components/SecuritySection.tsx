@@ -351,20 +351,26 @@ const SecuritySection = () => {
       viewport={{ amount: 0.2, once: true }} // <-- NEW: Trigger when 20% visible, animate ONLY ONCE
     >
       <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex flex-col lg:flex-row items-center gap-8">
           {/* Left Text Block */}
           <motion.div
-            className="w-full md:w-3/5 order-2 md:order-1"
+            className="w-full lg:w-1/2 order-2 md:order-1"
             variants={textVariants} // Apply text animation variants
             // Inherits initial/whileInView timing from parent section
           >
-            <div className="mb-10">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase tracking-tight">
+            <div className="space-y-4 text-center md:text-left">
+              <div className="inline-block px-4 py-1.5 bg-lightgray dark:bg-primarybox rounded-full">
+                <span className="text-neutral-900 dark:text-white font-medium text-sm capitalize">
+                  Built for safety. Trusted worldwide
+                </span>
+              </div>
+
+              <h1 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white uppercase">
                 Secure Currency Exchange
                 <span className="text-primary"> You Can Trust </span>
               </h1>
 
-              <p className="lg:text-lg text-base text-gray-500 dark:text-gray-300 mt-5">
+              <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
                 Experience fast, secure, and reliable currency exchange services
                 you can trust. With competitive exchange rates, no hidden fees,
                 and end-to-end encryption, your transactions are protected at
@@ -372,31 +378,33 @@ const SecuritySection = () => {
                 for transparent service, real-time updates, and 24/7 support.
                 Your money, your way—safe, simple, and secure.
               </p>
-            </div>
-            <div>
-              <Link
-                href="/faqs"
-                className="bg-primary rounded-full px-8 md:py-3 py-2.5 h-12.5 hover:bg-primaryhover text-mainheading font-medium cursor-pointer transition-all duration-75 ease-linear inline-block" // Added inline-block
-              >
-                {/* Button tag removed, Link acts as the button */}
-                How we keep your money safe
-              </Link>
+              <div className="flex justify-center md:justify-start">
+                <Link
+                  href="/faqs"
+                  className="inline-block" // Added inline-block
+                >
+                  <button className="bg-primary hover:bg-primaryhover text-neutral-900 cursor-pointer font-medium py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
+                    How we keep your money safe
+                  </button>
+                </Link>
+              </div>
             </div>
           </motion.div>
 
           {/* Right Image Block */}
           <motion.div
-            className="w-full md:w-2/5 h-auto order-1 md:order-2 flex md:justify-end justify-center"
+            className="w-full lg:w-1/2 order-1 md:order-2"
             variants={imageVariants} // Apply image animation variants
           >
-            <Image
-              src="/assets/images/secure.svg"
-              alt="Padlock symbolizing security"
-              width={500}
-              height={500}
-              className="md:w-[300px] w-[250px] lg:w-[400px] h-auto md:mb-0 mb-5"
-              priority // Consider if priority is needed here, depends on LCP
-            />
+            <div className="relative xl:aspect-[3/2] lg:aspect-square sm:aspect-[3/2] aspect-square overflow-hidden">
+              <Image
+                src="/assets/images/secure.svg"
+                fill
+                alt="Padlock symbolizing security"
+                className="object-contain"
+                priority
+              />
+            </div>
           </motion.div>
         </div>
 
@@ -406,14 +414,14 @@ const SecuritySection = () => {
           variants={featuresContainerVariants} // Apply container variants for staggering
           // Inherits initial/whileInView timing from parent section
         >
-          <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 lg:gap-10 gap-8">
+          <div className="grid md:grid-cols-3 grid-cols-1 gap-6">
             {/* Feature Card 1 */}
             <motion.div
-              className="space-y-4"
+              className="lg:space-y-3 space-y-2.5"
               variants={featureCardVariants} // Apply individual card variants
             >
-              <div className="size-14 bg-lightgray dark:bg-primarybox dark:text-primary text-neutral-900 rounded-full flex items-center justify-center ">
-                <FaLock className="size-8" aria-hidden="true" />
+              <div className="lg:size-14 size-12 bg-lightgray dark:bg-primarybox dark:text-primary text-neutral-900 rounded-full flex items-center justify-center ">
+                <FaLock className="lg:size-8 size-6 text-neutral-900 dark:text-primary" aria-hidden="true" />
               </div>
               <div>
                 <p className="text-gray-500 md:text-base text-sm dark:text-gray-300">
@@ -427,11 +435,11 @@ const SecuritySection = () => {
 
             {/* Feature Card 2 */}
             <motion.div
-              className="space-y-4"
+              className="lg:space-y-3 space-y-2.5"
               variants={featureCardVariants} // Apply individual card variants
             >
-              <div className="size-14 bg-lightgray dark:bg-primarybox dark:text-primary text-neutral-900 rounded-full flex items-center justify-center ">
-                <FaShieldAlt className="size-8" aria-hidden="true" />
+              <div className="lg:size-14 size-12 bg-lightgray dark:bg-primarybox dark:text-primary text-neutral-900 rounded-full flex items-center justify-center ">
+                <FaShieldAlt className="lg:size-8 size-6 text-neutral-900 dark:text-primary" aria-hidden="true" />
               </div>
               <div>
                 <p className="text-gray-500 md:text-base text-sm dark:text-gray-300">
@@ -444,11 +452,11 @@ const SecuritySection = () => {
 
             {/* Feature Card 3 */}
             <motion.div
-              className="space-y-4"
+              className="lg:space-y-3 space-y-2.5"
               variants={featureCardVariants} // Apply individual card variants
             >
-              <div className="size-14 bg-lightgray dark:bg-primarybox dark:text-primary text-neutral-900 rounded-full flex items-center justify-center">
-                <FaUniversity className="size-8" aria-hidden="true" />
+              <div className="lg:size-14 size-12 bg-lightgray dark:bg-primarybox dark:text-primary text-neutral-900 rounded-full flex items-center justify-center">
+                <FaUniversity className="lg:size-8 size-6 text-neutral-900 dark:text-primary" aria-hidden="true" />
               </div>
               <div>
                 <p className="text-gray-500 md:text-base text-sm dark:text-gray-300">

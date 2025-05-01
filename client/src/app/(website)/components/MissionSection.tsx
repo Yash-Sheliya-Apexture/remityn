@@ -216,6 +216,8 @@ import Image from "next/image";
 import React from "react";
 import { FaStarHalfAlt, FaStar } from "react-icons/fa";
 import { motion } from "framer-motion"; // Import motion
+import Link from "next/link";
+import { useAuth } from "@/app/contexts/AuthContext";
 
 // --- Animation Variants (No changes needed) ---
 
@@ -268,100 +270,98 @@ const imageSlideUpVariants = {
 
 // --- Component Definition ---
 const MobileDownloadSection: React.FC = () => {
+  // Get user state from AuthContext
+  const { user } = useAuth();
+
+  // Determine button properties based on auth state
+  const buttonText = user ? "Send Money" : "Create A Free Account";
+  const buttonLink = user ? "/dashboard/send/select-balance" : "/auth/register";
+
   return (
     // Add overflow-hidden to prevent scrollbars during animation
     <div className="lg:py-10 py-5 bg-white dark:bg-background overflow-hidden">
       {/* Wrap the main section content with motion for triggering */}
       <motion.section
-        className="flex flex-col gap-8 md:gap-6 lg:flex-row lg:items-center lg:justify-between container mx-auto px-4"
+        className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between container mx-auto px-4"
         id="mobile-download"
         variants={sectionVariants}
         initial="hidden"
         whileInView="visible"
-        // viewport={{ amount: 0.2, once: false }} // <-- OLD: Animate every time
         viewport={{ amount: 0.2, once: true }} // <-- NEW: Animate only once
       >
         {/* Left Column: Text Content - Wrap with motion */}
         <motion.article
-          className="flex flex-col gap-4 lg:w-1/2"
+          className="flex flex-col gap-4 w-full lg:w-1/2"
           variants={leftBlockVariants} // Apply slide-from-left animation
           // Inherits trigger from parent section
         >
           {/* User avatars and star rating */}
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col md:flex-row items-center justify-center md:justify-start gap-4">
             <div className="flex items-center -space-x-2">
               <Image
                 src="/assets/images/Sofia.png"
                 width={50}
                 height={50}
                 alt="User Avatar 1"
-                className="md:size-10 size-7 rounded-full border-2 border-white dark:border-neutral-800"
+                className="rounded-full size-10 border-2 border-white"
               />
               <Image
                 src="/assets/images/Lisa-Carter.jpg"
                 width={50}
                 height={50}
                 alt="User Avatar 2"
-                className="md:size-10 size-7 rounded-full border-2 border-white dark:border-neutral-800"
+                className="rounded-full size-10 border-2 border-white"
               />
               <Image
                 src="/assets/images/Liam.jpg"
                 width={50}
                 height={50}
                 alt="User Avatar 3"
-                className="md:size-10 size-7 rounded-full border-2 border-white dark:border-neutral-800"
+                className="rounded-full size-10 border-2 border-white"
               />
               <Image
                 src="/assets/images/Hannah.jpg"
                 width={50}
                 height={50}
                 alt="User Avatar 4"
-                className="md:size-10 size-7 rounded-full border-2 border-white dark:border-neutral-800"
+                className="rounded-full size-10 border-2 border-white"
               />
               <Image
                 src="/assets/images/Emily.avif"
                 width={50}
                 height={50}
                 alt="User Avatar 5"
-                className="md:size-10 size-7 rounded-full border-2 border-white dark:border-neutral-800"
+                className="rounded-full size-10 border-2 border-white"
               />
             </div>
 
-            {/* Star rating and user count */}
-            <div className="space-y-1">
-              <div className="flex">
-                <FaStar className="lg:size-5 size-3 text-yellow-500 dark:text-white" />
-                <FaStar className="lg:size-5 size-3 text-yellow-500 dark:text-white" />
-                <FaStar className="lg:size-5 size-3 text-yellow-500 dark:text-white" />
-                <FaStar className="lg:size-5 size-3 text-yellow-500 dark:text-white" />
-                <FaStarHalfAlt className="lg:size-5 size-3 text-yellow-500 dark:text-white" />
-              </div>
-              <p className="text-xs font-normal text-mainheading dark:text-white capitalize">
-                Join +500 happy users
-              </p>
-            </div>
+            <p className="font-normal text-neutral-900 dark:text-white capitalize">
+              <span className="text-primary font-bold"> 500K+ </span> happy
+              users
+            </p>
           </div>
 
           {/* Text Content: Heading and Paragraph */}
-          <div className="flex flex-col md:gap-5 gap-4">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase">
-              Send Money to India
-              <span className="text-primary"> with Wise </span>
+          <div className="flex flex-col space-y-4 text-center md:text-left">
+            <h1 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white uppercase">
+              Send Money to India Instantly –
+              <span className="text-primary"> Trusted, Fast & Secure </span>
             </h1>
 
-            <p className="lg:text-lg text-base text-gray-500 dark:text-gray-300">
-              Wise makes sending money to India simple, reliable, and
-              stress-free. Whether you're supporting your family, paying for
-              education, or managing personal commitments, we ensure your money
-              reaches where it matters most — quickly and securely
+            <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
+              Easily transfer money to India with unbeatable exchange rates and
+              zero hidden fees. Whether you're supporting loved ones, paying
+              tuition, or handling business, our platform ensures fast,
+              transparent, and secure transfers—anytime, anywhere.
             </p>
 
-            <div className="w-full send-monentbtn">
-              <button className="bg-primary hover:bg-primaryhover transition-all ease-linear duration-75 cursor-pointer text-neutral-900 font-medium rounded-full px-6 lg:py-3 py-2 h-12.5 inline-block w-fit">
-                Send Money
-              </button>
+            <div className="flex justify-center md:justify-start">
+              <Link href={buttonLink} className="inline-block">
+                <button className="bg-primary hover:bg-primaryhover text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
+                  {buttonText}
+                </button>
+              </Link>
             </div>
-
           </div>
         </motion.article>
 
@@ -372,10 +372,10 @@ const MobileDownloadSection: React.FC = () => {
           // Inherits trigger from parent section
         >
           {/* Container for phone image and SVG waves - THIS needs overflow:hidden */}
-          <div className="relative flex aspect-square w-full max-w-md lg:max-w-none flex-shrink-0 justify-center overflow-hidden rounded-bl-3xl rounded-br-[100px] rounded-tl-[100px] rounded-tr-3xl bg-gray/30 dark:bg-white/5 dark:border lg:pt-10 pt-5 md:h-[572px] md:w-[500px] md:rounded-bl-[30px] md:rounded-br-[120px] md:rounded-tl-[120px] md:rounded-tr-[30px]">
+          <div className="relative flex aspect-square w-full max-w-md lg:max-w-none flex-shrink-0 justify-center overflow-hidden rounded-bl-3xl rounded-br-[100px] rounded-tl-[100px] rounded-tr-3xl bg-gray/30 dark:bg-white/5 dark:border pt-5 md:h-[570px] md:w-[500px] md:rounded-bl-[30px] md:rounded-br-[120px] md:rounded-tl-[120px] md:rounded-tr-[30px]">
             {/* === Motion Wrapper for ONLY the Images === */}
             <motion.div
-              className="relative z-10 w-full h-auto md:h-[550px] md:w-[450px]" // Position wrapper
+              className="relative z-10 w-full sm:h-[550px] md:w-[450px]" // Position wrapper
               variants={imageSlideUpVariants} // Apply slide-up animation HERE
               // Inherits trigger from parent section
             >
@@ -385,15 +385,16 @@ const MobileDownloadSection: React.FC = () => {
                 layout="fill" // Use fill layout within the motion wrapper
                 objectFit="contain" // Adjust object fit as needed
                 alt="Send money app screenshot - Light mode"
-                className="block dark:hidden" // Removed absolute positioning
+                className="block dark:hidden object-contain" // Removed absolute positioning
                 priority
               />
+
               <Image
                 src="/assets/images/send-money-dark.png"
                 layout="fill"
                 objectFit="contain"
                 alt="Send money app screenshot - Dark mode"
-                className="hidden dark:block"
+                className="hidden dark:block object-contain"
                 priority
               />
             </motion.div>

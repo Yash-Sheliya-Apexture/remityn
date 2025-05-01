@@ -169,7 +169,8 @@ const HeroText = () => {
           </span>
         </div>
 
-        <div className="md:pt-4 pt-0 lg:block hidden">
+
+        <div className="lg:block hidden">
           <Link
             href={user ? "/dashboard" : "/auth/register"}
             className="bg-primary hover:bg-primaryhover text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify- w-fit"

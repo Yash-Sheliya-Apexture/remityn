@@ -2040,9 +2040,9 @@ const FaqSection: React.FC = () => {
   }, []);
 
   return (
-    <div className="lg:py-10 py-5 bg-white dark:bg-background  overflow-hidden">
+    <div className="lg:py-10 py-5 bg-white dark:bg-background overflow-hidden">
       <motion.section
-        className="grid items-start lg:gap-14 gap-5 lg:grid-cols-5 container mx-auto px-4"
+        className="grid items-start gap-6 lg:grid-cols-5 container mx-auto px-4"
         id="faq"
         variants={sectionVariants}
         initial="hidden"
@@ -2051,11 +2051,11 @@ const FaqSection: React.FC = () => {
       >
         {/* Left Side: Title and Description - Animated */}
         <motion.div
-          className="flex flex-col gap-5 self-start md:col-span-2"
+          className="flex flex-col space-y-4 self-start md:col-span-2"
           variants={leftBlockVariants}
           // Inherits trigger from parent section
         >
-          <h1 className="text-4xl md:text-5xl xl:text-6xl font-black font-mont text-mainheading dark:text-white uppercase">
+          <h1 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white uppercase">
             Quick Currency
             <span className="text-primary"> Exchange Help </span>
           </h1>

@@ -18,7 +18,7 @@
                 {
                     "reviewerName": "Ryan Cooper",
                     "avatarUrl": "./assets/images/Ryan.jpg",
-                    "rating": 5,
+                    "rating": 4.5,
                     "comment": "As someone who travels often, I need a service I can trust—and this is it. I’ve made international transfers from Europe and Asia, all without issues. The rates are much better than traditional banks, and the support team is responsive. Every transaction has been smooth, fast, and cost-effective. A must-have for global travelers."
                 },
                 {
@@ -30,7 +30,7 @@
                 {
                     "reviewerName": "Rachel Thompson",
                     "avatarUrl": "./assets/images/Rachel.jpg",
-                    "rating": 4.5,
+                    "rating": 4,
                     "comment": "Sending money home used to be frustrating, but not anymore. This service made it easy to support my family while working overseas. The process is streamlined, the fees are fair, and the money arrives on time. I can track everything from the app with just a few taps. Highly reliable and perfect for regular senders."
                 }
             ]
@@ -41,7 +41,7 @@
                 {
                     "reviewerName": "Krunal Kathiriya",
                     "avatarUrl": "./assets/images/krunal.jpg",
-                    "rating": 4,
+                    "rating": 5,
                     "comment": "I transferred money to the UK from Australia last week and it was seamless. The exchange rate was better than what my bank offered. It only took a few minutes to get everything set up and processed. Customer support was also helpful in answering my queries. I’ll definitely be using this again during my travels."
                 },
                 {
@@ -53,7 +53,7 @@
                 {
                     "reviewerName": "Amelia Brown",
                     "avatarUrl": "./assets/images/Amelia.jpg",
-                    "rating": 5,
+                    "rating": 4,
                     "comment": "I discovered this platform while backpacking across South Asia. It’s been a game-changer for managing travel expenses across countries. Fast transfers, competitive rates, and a very user-friendly dashboard. I trust them with my money every time I move between regions. This is ideal for frequent flyers and remote workers."
                 },
                 {
@@ -82,14 +82,14 @@
                 {
                     "reviewerName": "Emily Clarke",
                     "avatarUrl": "./assets/images/Emily.avif",
-                    "rating": 3.5,
+                    "rating": 5,
                     "comment": "This is the only platform I trust when transferring funds internationally. I’ve used it across five different countries, and it hasn’t let me down. The exchange rate is better than PayPal and banks, and the UI is incredibly easy. Every time I travel, this app comes with me. A smart tool for global citizens."
                 },
                 {
                     "reviewerName": "Jake Miller",
                     "avatarUrl": "./assets/images/Jake.jpg",
                     "location": "Austin, TX",
-                    "rating": 5,
+                    "rating": 4,
                     "comment": "This money transfer app made my life so much easier as a travel photographer. I receive payments from clients globally without delays or surprises. The exchange rates are impressive and very close to market rates. Transfers complete in under 10 minutes in most cases. Couldn’t ask for a better experience."
                 },
                 {
