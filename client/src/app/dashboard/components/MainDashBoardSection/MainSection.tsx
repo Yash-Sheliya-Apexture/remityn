@@ -574,6 +574,7 @@ import AccountVerification from "@/app/components/ui/AccountVerification"; // Co
 import { Skeleton } from "@/components/ui/skeleton"; // Ensure Skeleton is correctly imported
 import { AlertCircle } from "lucide-react";
 import type { KycStatus } from "@/app/services/kyc"; // Import the KycStatus type
+import Link from "next/link";
 
 const MainDashBoard = () => {
   // Use AuthContext as the SINGLE SOURCE OF TRUTH for user data on the dashboard
@@ -622,9 +623,17 @@ const MainDashBoard = () => {
   return (
     // Add padding consistent with loading state or remove if parent provides padding
     <div className="space-y-6 md:space-y-8 pb-0 md:pb-5">
-
-      <div>
-        <button></button>
+      <div className="flex items-center gap-2">
+        <Link href={"/dashboard/add-money/select-balance"}>
+          <button className="flex items-center justify-center bg-primary text-neutral-900 hover:bg-primaryhover py-1 px-4 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer">
+            Add Money
+          </button>
+        </Link>
+        <Link href={"/dashboard/send/select-balance"}>
+          <button className="flex items-center justify-center bg-primary text-neutral-900 hover:bg-primaryhover py-1 px-4 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer">
+            Send Money
+          </button>
+        </Link>
       </div>
 
       {/* Show banner based on the authoritative status from AuthContext */}

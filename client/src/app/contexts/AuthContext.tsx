@@ -9600,13 +9600,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const adminHomePath = "/admin"; // Or specific admin dashboard
         // Paths admin should be redirected AWAY from after login
         const criticalRedirectPaths = [
-          "/auth/login",
-          "/auth/register",
           "/auth/forgot-password",
           "/auth/reset-password",
           "/auth/google/callback-handler", // Explicitly include callback handler
-          "/kyc", // Admins usually don't do KYC
-          "/" // Redirect from root if needed
         ];
 
         if (criticalRedirectPaths.some(p => currentPath.startsWith(p))) {
