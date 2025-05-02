@@ -2761,7 +2761,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex justify-center items-center lg:h-[calc(100vh-73px)] px-4 bg-white dark:bg-background">
+    <div className="flex justify-center lg:h-[calc(100vh-82px)] px-4 bg-white dark:bg-background">
       {/* Added padding */}
       <div className="w-full max-w-md space-y-2 lg:mt-20 mt-10">
         <h2 className="lg:text-3xl text-2xl text-center text-neutral-900 dark:text-white font-medium">
@@ -3027,7 +3027,7 @@ export default function RegisterPage() {
             {confirmPasswordError && (
               <p className="flex text-red-700 text-base items-center mt-0.5">
                 <span className="mr-1">
-                  <IoMdCloseCircle className="size-5" />
+                  <IoMdCloseCircle className="size-5"/>
                 </span>
                 {confirmPasswordError}
               </p>

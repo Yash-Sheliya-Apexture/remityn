@@ -848,238 +848,241 @@ const cardVariants = {
 // --- FeaturesSection Component ---
 const FeaturesSection: React.FC = () => {
   return (
-    <div className="bg-white lg:py-10 py-5 dark:bg-background overflow-hidden">
-      {/* Keep overflow hidden */}
-      <motion.section
-        className="flex flex-col gap-8 container mx-auto px-4"
-        id="features"
-        variants={sectionVariants}
-        initial="hidden"
-        whileInView="visible"
-        // viewport={{ amount: 0.2, once: false }} // <-- OLD: Repeat animation
-        viewport={{ amount: 0.2, once: true }} // <-- NEW: Animate only once
-      >
-        {/* Heading Section - Apply motion */}
-        <motion.div
-          className="space-y-4 text-center md:text-left"
-          variants={headingVariants}
-          // Inherits trigger from parent section
-        >
-          <h1 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white uppercase">
-            Security, Speed,
-            <span className="text-primary"> Savings & Support </span>
-          </h1>
-
-          {/* Description */}
-          <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base lg:max-w-5xl max-w-full">
-            At the heart of our service is a commitment to making your money
-            transfers seamless, secure, and cost-effective. Whether you're
-            sending funds internationally or managing cross-border transactions,
-            we combine cutting-edge technology with expert support to ensure
-            speed, transparency, and peace of mind.
-          </p>
-        </motion.div>
-
-        {/* Features Grid - Apply motion container for staggering */}
-        <motion.div
-          className="grid gap-6 grid-cols-1 md:grid-cols-2 md:grid-rows-0"
-          variants={gridContainerVariants}
-          // Inherits trigger from parent section
-        >
-          {/* Feature Card 1: Security (Large) */}
+    <motion.section
+      className="Features-Section bg-white lg:py-10 py-5 dark:bg-background overflow-hidden"
+      id="features"
+      variants={sectionVariants}
+      initial="hidden"
+      whileInView="visible"
+      // viewport={{ amount: 0.2, once: false }} // <-- OLD: Repeat animation
+      viewport={{ amount: 0.2, once: true }} // <-- NEW: Animate only once
+    >
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col gap-8">
+          {/* Heading Section - Apply motion */}
           <motion.div
-            className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-lightgray dark:bg-primarybox"
-            variants={cardVariants} // Apply Spring Slide-Up animation
-            // Timing controlled by parent stagger
+            className="space-y-4 text-center md:text-left"
+            variants={headingVariants}
+            // Inherits trigger from parent section
           >
-            <Image
-              src="/assets/images/colorful-illustration-colorful-padlock-with-colorful-leaves-flowers_1122354-15513.jpg"
-              width={500}
-              height={500}
-              alt="Secure padlock illustration"
-              className="w-full object-cover lg:h-96 md:h-60 h-46"
-              priority
-            />
+            <h1 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white uppercase">
+              Security, Speed,
+              <span className="text-primary"> Savings & Support </span>
+            </h1>
 
-            <div className="flex flex-col space-y-3 p-4 lg:p-6">
-              <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
-                <span className="text-primary font-bold ">Secure</span> Every
-                Step of the Way
-              </h3>
-              <p className="lg:text-lg text-sm font-medium text-gray-500 dark:text-gray-300">
-                We prioritize your security with advanced encryption and fraud
-                detection, keeping your money and data safe 24/7.
-              </p>
-            </div>
+            {/* Description */}
+            <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base lg:max-w-5xl max-w-full">
+              At the heart of our service is a commitment to making your money
+              transfers seamless, secure, and cost-effective. Whether you're
+              sending funds internationally or managing cross-border
+              transactions, we combine cutting-edge technology with expert
+              support to ensure speed, transparency, and peace of mind.
+            </p>
           </motion.div>
 
-          {/* Feature Card 2: Speed (Small) */}
+          {/* Features Grid - Apply motion container for staggering */}
           <motion.div
-            className="row-span-2 flex flex-col justify-center lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-lightgray dark:bg-primarybox lg:p-6 p-4"
-            variants={cardVariants} // Apply Spring Slide-Up animation
+            className="grid gap-6 grid-cols-1 md:grid-cols-2 md:grid-rows-0"
+            variants={gridContainerVariants}
           >
-            <FaFastForward className="lg:size-10 size-8 text-neutral-900 dark:text-primary" />
-            <div className="flex flex-col gap-3">
-              <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
-                <span>
-                  Our transfers are{" "}
-                  <span className="text-primary font-bold">Speedy</span>
-                </span>
-              </h3>
-              <p className="lg:text-lg text-sm font-medium text-gray-500 dark:text-gray-300">
-                Receive your money swiftly, often within minutes, thanks to our
-                optimized transfer network.
-              </p>
-            </div>
-          </motion.div>
+            {/* Feature Card 1: Security (Large) */}
+            <motion.div
+              className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-lightgray dark:bg-primarybox"
+              variants={cardVariants} // Apply Spring Slide-Up animation
+              // Timing controlled by parent stagger
+            >
+              <Image
+                src="/assets/images/colorful-illustration-colorful-padlock-with-colorful-leaves-flowers_1122354-15513.jpg"
+                width={500}
+                height={500}
+                alt="Secure padlock illustration"
+                className="w-full object-cover lg:h-96 md:h-60 h-46"
+                priority
+              />
 
-          {/* Feature Card 3: Support (Large) */}
-          <motion.div
-            className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-lightgray dark:bg-primarybox"
-            variants={cardVariants} // Apply Spring Slide-Up animation
-          >
-            <Image
-              src="/assets/images/friendly-customer.jpg"
-              width={500}
-              height={500}
-              alt="Friendly customer support agent"
-              className="w-full object-cover lg:h-96 md:h-60 h-46"
-            />
-            <div className="flex flex-col gap-3 p-4 lg:p-6">
-              <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
-                <span>
-                  Need <span className="text-primary font-bold">Support </span>?
-                  We’re here!
-                </span>
-              </h3>
-              <p className="lg:text-lg text-sm font-medium text-gray-500 dark:text-gray-300">
-                Our dedicated support team is available via chat, email, and
-                phone to assist you anytime.
-              </p>
-            </div>
-          </motion.div>
+              <div className="flex flex-col space-y-3 p-4 lg:p-6">
+                <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
+                  <span className="text-primary font-bold ">Secure</span> Every
+                  Step of the Way
+                </h3>
+                <p className="lg:text-lg text-sm font-medium text-gray-500 dark:text-gray-300">
+                  We prioritize your security with advanced encryption and fraud
+                  detection, keeping your money and data safe 24/7.
+                </p>
+              </div>
+            </motion.div>
 
-          {/* Feature Card 4: Savings (Small) */}
-          <motion.div
-            className="row-span-2 flex flex-col justify-center lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-lightgray dark:bg-primarybox lg:p-6 p-4"
-            variants={cardVariants} // Apply Spring Slide-Up animation
-          >
-            <FaChartLine className="lg:size-10 size-8 text-neutral-900 dark:text-primary" />
-            <div className="flex flex-col gap-3">
-              <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
-                <span>
-                  <span className="text-primary font-bold">Save</span> with high
-                  exchange rates
-                </span>
-              </h3>
-              <p className="lg:text-lg text-sm font-medium text-gray-500 dark:text-gray-300">
-                Get the best value for your hard-earned money with our
-                competitive, transparent exchange rates.
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Feature Card 5: Rates (Large) */}
-          <motion.div
-            className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-lightgray dark:bg-primarybox"
-            variants={cardVariants} // Apply Spring Slide-Up animation
-          >
-            <Image
-              src="/assets/images/dynamicRate.png"
-              width={500}
-              height={500}
-              alt="Graph showing dynamic exchange rates"
-              className="w-full object-cover lg:h-96 md:h-60 h-46"
-            />
-            <div className="flex flex-col gap-3 p-4 lg:p-6">
-              <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
-                <span>
-                  Stay ahead with live{" "}
-                  <span className="text-primary font-bold capitalize">
-                    exchange rates
+            {/* Feature Card 2: Speed (Small) */}
+            <motion.div
+              className="row-span-2 flex flex-col justify-center lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-lightgray dark:bg-primarybox lg:p-6 p-4"
+              variants={cardVariants} // Apply Spring Slide-Up animation
+            >
+              <FaFastForward className="lg:size-10 size-8 text-neutral-900 dark:text-primary" />
+              <div className="flex flex-col gap-3">
+                <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
+                  <span>
+                    Our transfers are{" "}
+                    <span className="text-primary font-bold">Speedy</span>
                   </span>
-                </span>
-              </h3>
-              <p className="lg:text-lg text-sm font-medium text-gray-500 dark:text-gray-300">
-                Stay updated with real-time currency exchange rates for informed
-                decisions and maximum value.
-              </p>
-            </div>
-          </motion.div>
+                </h3>
+                <p className="lg:text-lg text-sm font-medium text-gray-500 dark:text-gray-300">
+                  Receive your money swiftly, often within minutes, thanks to
+                  our optimized transfer network.
+                </p>
+              </div>
+            </motion.div>
 
-          {/* Feature Card 6: Reach (Small) */}
-          <motion.div
-            className="row-span-2 flex flex-col justify-center lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-lightgray dark:bg-primarybox lg:p-6 p-4"
-            variants={cardVariants} // Apply Spring Slide-Up animation
-          >
-            <FiGlobe className="lg:size-10 size-8 text-neutral-900 dark:text-primary" />
-            <div className="flex flex-col gap-3">
-              <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
-                <span>
-                  <span className="text-primary font-bold">
-                    Worldwide Reach
-                  </span>{" "}
-                  , Local Touch
-                </span>
-              </h3>
-              <p className="lg:text-lg text-sm font-medium text-gray-500 dark:text-gray-300">
-                Our platform combines international reach with localized support
-                for a seamless experience.
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Feature Card 7: Money (Large) */}
-          <motion.div
-            className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-lightgray dark:bg-primarybox"
-            variants={cardVariants} // Apply Spring Slide-Up animation
-          >
-            <Image
-              src="/assets/images/withoutborder.png"
-              width={500}
-              height={500}
-              alt="Illustration of money exchange without borders"
-              className="w-full object-cover lg:h-96 md:h-60 h-46"
-            />
-            <div className="flex flex-col gap-3 p-4 lg:p-6">
-              <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
-                <span>
-                  Exchange{" "}
-                  <span className="text-primary font-bold capitalize">
-                    Money{" "}
+            {/* Feature Card 3: Support (Large) */}
+            <motion.div
+              className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-lightgray dark:bg-primarybox"
+              variants={cardVariants} // Apply Spring Slide-Up animation
+            >
+              <Image
+                src="/assets/images/friendly-customer.jpg"
+                width={500}
+                height={500}
+                alt="Friendly customer support agent"
+                className="w-full object-cover lg:h-96 md:h-60 h-46"
+              />
+              <div className="flex flex-col gap-3 p-4 lg:p-6">
+                <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
+                  <span>
+                    Need{" "}
+                    <span className="text-primary font-bold">Support </span>?
+                    We’re here!
                   </span>
-                  Without Borders
-                </span>
-              </h3>
-              <p className="lg:text-lg text-sm font-medium text-gray-500 dark:text-gray-300">
-                Seamless global money transfers made simple, connecting you
-                financially across continents.
-              </p>
-            </div>
-          </motion.div>
+                </h3>
+                <p className="lg:text-lg text-sm font-medium text-gray-500 dark:text-gray-300">
+                  Our dedicated support team is available via chat, email, and
+                  phone to assist you anytime.
+                </p>
+              </div>
+            </motion.div>
 
-          {/* Feature Card 8: 24/7 Support (Small) */}
-          <motion.div
-            className="row-span-2 flex flex-col justify-center lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-lightgray dark:bg-primarybox lg:p-6 p-4"
-            variants={cardVariants} // Apply Spring Slide-Up animation
-          >
-            <FaHeadset className="lg:size-10 size-8 text-mainheading dark:text-primary" />
-            <div className="flex flex-col gap-3">
-              <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
-                <span>
-                  <span className="text-primary font-bold">24/7 Customer </span>
-                  Support
-                </span>
-              </h3>
-              <p className="lg:text-lg text-sm font-medium text-gray-500 dark:text-gray-300">
-                We're here for you—day or night—with reliable customer service
-                whenever you need assistance.
-              </p>
-            </div>
+            {/* Feature Card 4: Savings (Small) */}
+            <motion.div
+              className="row-span-2 flex flex-col justify-center lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-lightgray dark:bg-primarybox lg:p-6 p-4"
+              variants={cardVariants} // Apply Spring Slide-Up animation
+            >
+              <FaChartLine className="lg:size-10 size-8 text-neutral-900 dark:text-primary" />
+              <div className="flex flex-col gap-3">
+                <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
+                  <span>
+                    <span className="text-primary font-bold">Save</span> with
+                    high exchange rates
+                  </span>
+                </h3>
+                <p className="lg:text-lg text-sm font-medium text-gray-500 dark:text-gray-300">
+                  Get the best value for your hard-earned money with our
+                  competitive, transparent exchange rates.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Feature Card 5: Rates (Large) */}
+            <motion.div
+              className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-lightgray dark:bg-primarybox"
+              variants={cardVariants} // Apply Spring Slide-Up animation
+            >
+              <Image
+                src="/assets/images/dynamicRate.png"
+                width={500}
+                height={500}
+                alt="Graph showing dynamic exchange rates"
+                className="w-full object-cover lg:h-96 md:h-60 h-46"
+              />
+              <div className="flex flex-col gap-3 p-4 lg:p-6">
+                <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
+                  <span>
+                    Stay ahead with live{" "}
+                    <span className="text-primary font-bold capitalize">
+                      exchange rates
+                    </span>
+                  </span>
+                </h3>
+                <p className="lg:text-lg text-sm font-medium text-gray-500 dark:text-gray-300">
+                  Stay updated with real-time currency exchange rates for
+                  informed decisions and maximum value.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Feature Card 6: Reach (Small) */}
+            <motion.div
+              className="row-span-2 flex flex-col justify-center lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-lightgray dark:bg-primarybox lg:p-6 p-4"
+              variants={cardVariants} // Apply Spring Slide-Up animation
+            >
+              <FiGlobe className="lg:size-10 size-8 text-neutral-900 dark:text-primary" />
+              <div className="flex flex-col gap-3">
+                <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
+                  <span>
+                    <span className="text-primary font-bold">
+                      Worldwide Reach
+                    </span>{" "}
+                    , Local Touch
+                  </span>
+                </h3>
+                <p className="lg:text-lg text-sm font-medium text-gray-500 dark:text-gray-300">
+                  Our platform combines international reach with localized
+                  support for a seamless experience.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Feature Card 7: Money (Large) */}
+            <motion.div
+              className="row-span-4 flex flex-col overflow-hidden rounded-3xl bg-lightgray dark:bg-primarybox"
+              variants={cardVariants} // Apply Spring Slide-Up animation
+            >
+              <Image
+                src="/assets/images/withoutborder.png"
+                width={500}
+                height={500}
+                alt="Illustration of money exchange without borders"
+                className="w-full object-cover lg:h-96 md:h-60 h-46"
+              />
+              <div className="flex flex-col gap-3 p-4 lg:p-6">
+                <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
+                  <span>
+                    Exchange{" "}
+                    <span className="text-primary font-bold capitalize">
+                      Money{" "}
+                    </span>
+                    Without Borders
+                  </span>
+                </h3>
+                <p className="lg:text-lg text-sm font-medium text-gray-500 dark:text-gray-300">
+                  Seamless global money transfers made simple, connecting you
+                  financially across continents.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Feature Card 8: 24/7 Support (Small) */}
+            <motion.div
+              className="row-span-2 flex flex-col justify-center lg:gap-6 gap-3 overflow-hidden rounded-3xl bg-lightgray dark:bg-primarybox lg:p-6 p-4"
+              variants={cardVariants} // Apply Spring Slide-Up animation
+            >
+              <FaHeadset className="lg:size-10 size-8 text-mainheading dark:text-primary" />
+              <div className="flex flex-col gap-3">
+                <h3 className="lg:text-2xl text-base font-medium text-neutral-900 dark:text-white">
+                  <span>
+                    <span className="text-primary font-bold">
+                      24/7 Customer{" "}
+                    </span>
+                    Support
+                  </span>
+                </h3>
+                <p className="lg:text-lg text-sm font-medium text-gray-500 dark:text-gray-300">
+                  We're here for you—day or night—with reliable customer service
+                  whenever you need assistance.
+                </p>
+              </div>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      </motion.section>
-    </div>
+        </div>
+      </div>
+    </motion.section>
   );
 };
 

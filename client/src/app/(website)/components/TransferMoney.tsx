@@ -2382,13 +2382,11 @@
 // const AUTO_ADVANCE_DELAY = 3500;
 // const BORDER_ANIMATION_DURATION = 3500;
 
-
 // // --- Animation Durations ---
 // const ANIMATION_DURATION_CONTENT = 0.6;
 // const ANIMATION_DURATION_IMAGE = 0.7;
 // const ANIMATION_DURATION_BLOCK_ITEM = 0.4;
 // const EXIT_DURATION_MULTIPLIER = 0.7;
-
 
 // // --- Animation Variants (remain the same) ---
 // const leftContentVariants = {
@@ -2882,8 +2880,6 @@
 
 // export default TransferSteps;
 
-
-
 // TransferSteps.tsx
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from "react";
@@ -3010,7 +3006,6 @@ const ANIMATION_DURATION_IMAGE = 0.7;
 const ANIMATION_DURATION_BLOCK_ITEM = 0.4;
 const EXIT_DURATION_MULTIPLIER = 0.7;
 
-
 // --- Animation Variants (remain the same) ---
 const leftContentVariants = {
   initial: { opacity: 0, x: "-50%" },
@@ -3099,7 +3094,6 @@ const blockItemVariants = {
   },
 };
 
-
 // --- Component ---
 const TransferSteps: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -3121,10 +3115,10 @@ const TransferSteps: React.FC = () => {
   const advanceStep = useCallback(() => {
     // Ensure we only advance if component is in view and has animated in at least once
     if (!inView || !hasAnimatedInRef.current) {
-        // If timer fired while not in view or before initial entrance, just stop
-        if (timerRef.current) clearTimeout(timerRef.current);
-        timerRef.current = null; // Clear ref just in case
-        return;
+      // If timer fired while not in view or before initial entrance, just stop
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = null; // Clear ref just in case
+      return;
     }
 
     setActiveIndex((prevIndex) => {
@@ -3139,27 +3133,27 @@ const TransferSteps: React.FC = () => {
     // Only run logic if the component has mounted (inView is true initially or becomes true)
     // And only if hasAnimatedInRef is false OR inView has just become true (re-entrance)
     if (inView && !hasAnimatedInRef.current) {
-        // Initial Entrance
-        console.log("TransferSteps: Initial Entrance Triggered");
-        hasAnimatedInRef.current = true;
-        // Reset to first step and start timer immediately for step 0
-        setActiveIndex(0); // State update will trigger Effect 2 to set timer
-        setIsContentHovered(false); // Ensure hover state is reset on entrance
+      // Initial Entrance
+      console.log("TransferSteps: Initial Entrance Triggered");
+      hasAnimatedInRef.current = true;
+      // Reset to first step and start timer immediately for step 0
+      setActiveIndex(0); // State update will trigger Effect 2 to set timer
+      setIsContentHovered(false); // Ensure hover state is reset on entrance
     } else if (!inView && hasAnimatedInRef.current) {
-        // Leaving Viewport
-        console.log("TransferSteps: Left Viewport - Clearing Timers");
-        // Clear timers when scrolling out
-        if (timerRef.current) clearTimeout(timerRef.current);
-        timerRef.current = null;
-        // Do NOT reset activeIndex here, keep current state if user scrolls back quickly?
-        // Or reset? Decision: Reset on re-entrance seems safer for consistent loop.
-        // hasAnimatedInRef.current = false; // Can optionally reset this to make it re-trigger initial logic
+      // Leaving Viewport
+      console.log("TransferSteps: Left Viewport - Clearing Timers");
+      // Clear timers when scrolling out
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = null;
+      // Do NOT reset activeIndex here, keep current state if user scrolls back quickly?
+      // Or reset? Decision: Reset on re-entrance seems safer for consistent loop.
+      // hasAnimatedInRef.current = false; // Can optionally reset this to make it re-trigger initial logic
     } else if (inView && hasAnimatedInRef.current) {
-         // Re-entrance (after initial entrance and having left)
-         // This logic is implicitly handled by the fact that the component is in view
-         // and the other effects manage the timer based on activeIndex and hover state.
-         // If we wanted a hard reset on *every* re-entrance, we'd add a state to track previous inView
-         // but the current logic of just managing the timer based on activeIndex seems sufficient.
+      // Re-entrance (after initial entrance and having left)
+      // This logic is implicitly handled by the fact that the component is in view
+      // and the other effects manage the timer based on activeIndex and hover state.
+      // If we wanted a hard reset on *every* re-entrance, we'd add a state to track previous inView
+      // but the current logic of just managing the timer based on activeIndex seems sufficient.
     }
 
     // Cleanup timer when this effect re-runs or component unmounts
@@ -3167,64 +3161,69 @@ const TransferSteps: React.FC = () => {
       if (timerRef.current) clearTimeout(timerRef.current);
       timerRef.current = null;
     };
-
   }, [inView, advanceStep]); // Effect depends on inView and advanceStep
 
   // --- Effect 2: Manages Timer based on Active Step and Hover State ---
   useEffect(() => {
-      // Only manage timer if component has animated in AND is currently in view
-      if (!hasAnimatedInRef.current || !inView) {
-          // Clear timer if this effect somehow runs when it shouldn't
-          if (timerRef.current) clearTimeout(timerRef.current);
-          timerRef.current = null;
-          return;
-      }
-
-      // Clear any existing timer before setting a new one
+    // Only manage timer if component has animated in AND is currently in view
+    if (!hasAnimatedInRef.current || !inView) {
+      // Clear timer if this effect somehow runs when it shouldn't
       if (timerRef.current) clearTimeout(timerRef.current);
-      timerRef.current = null; // Clear ref immediately
+      timerRef.current = null;
+      return;
+    }
 
-      if (!isContentHovered) {
-          // Not hovered: Start/Resume the timer for the current step
-          console.log(`TransferSteps: Starting timer for step ${activeIndex} with delay ${timeRemainingRef.current}`);
-          stepStartTimeRef.current = performance.now() - (AUTO_ADVANCE_DELAY - timeRemainingRef.current); // Adjust start time for accurate elapsed calculation on next pause
-          timerRef.current = setTimeout(advanceStep, timeRemainingRef.current);
-          timeRemainingRef.current = AUTO_ADVANCE_DELAY; // Reset for the *next* step
-      } else {
-          // Is hovered: Pause the timer
-          const elapsed = performance.now() - stepStartTimeRef.current;
-          timeRemainingRef.current = Math.max(0, AUTO_ADVANCE_DELAY - elapsed); // Store remaining time
-          console.log(`TransferSteps: Paused timer for step ${activeIndex}. Remaining: ${timeRemainingRef.current}`);
-          // timerRef is already cleared above if !isContentHovered
-      }
+    // Clear any existing timer before setting a new one
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = null; // Clear ref immediately
 
-      // Cleanup timer when this effect re-runs (e.g., activeIndex or isContentHovered changes) or component unmounts
-      return () => {
-        if (timerRef.current) clearTimeout(timerRef.current);
-        timerRef.current = null;
-      };
+    if (!isContentHovered) {
+      // Not hovered: Start/Resume the timer for the current step
+      console.log(
+        `TransferSteps: Starting timer for step ${activeIndex} with delay ${timeRemainingRef.current}`
+      );
+      stepStartTimeRef.current =
+        performance.now() - (AUTO_ADVANCE_DELAY - timeRemainingRef.current); // Adjust start time for accurate elapsed calculation on next pause
+      timerRef.current = setTimeout(advanceStep, timeRemainingRef.current);
+      timeRemainingRef.current = AUTO_ADVANCE_DELAY; // Reset for the *next* step
+    } else {
+      // Is hovered: Pause the timer
+      const elapsed = performance.now() - stepStartTimeRef.current;
+      timeRemainingRef.current = Math.max(0, AUTO_ADVANCE_DELAY - elapsed); // Store remaining time
+      console.log(
+        `TransferSteps: Paused timer for step ${activeIndex}. Remaining: ${timeRemainingRef.current}`
+      );
+      // timerRef is already cleared above if !isContentHovered
+    }
 
+    // Cleanup timer when this effect re-runs (e.g., activeIndex or isContentHovered changes) or component unmounts
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = null;
+    };
   }, [activeIndex, isContentHovered, inView, advanceStep]); // Effect depends on activeIndex, isContentHovered, inView, and advanceStep
 
   // --- Handle Click on Step Tab ---
-  const handleStepClick = useCallback((index: number) => {
-    if (!hasAnimatedInRef.current || !inView) return; // Only allow after entrance and if in view
+  const handleStepClick = useCallback(
+    (index: number) => {
+      if (!hasAnimatedInRef.current || !inView) return; // Only allow after entrance and if in view
 
-    console.log(`Step clicked: ${index}`);
-    // Clear current timer immediately
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = null;
+      console.log(`Step clicked: ${index}`);
+      // Clear current timer immediately
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = null;
 
-    // Set the new active index
-    setActiveIndex(index); // This will trigger Effect 2
+      // Set the new active index
+      setActiveIndex(index); // This will trigger Effect 2
 
-    // Reset hover state and timer tracking for the *new* step
-    setIsContentHovered(false);
-    timeRemainingRef.current = AUTO_ADVANCE_DELAY; // Reset remaining time for the newly active step
-    stepStartTimeRef.current = performance.now(); // Set start time for the newly active step
-    // Effect 2 will now start the timer based on the new activeIndex and !isContentHovered state
-
-  }, [inView]); // Depend on inView
+      // Reset hover state and timer tracking for the *new* step
+      setIsContentHovered(false);
+      timeRemainingRef.current = AUTO_ADVANCE_DELAY; // Reset remaining time for the newly active step
+      stepStartTimeRef.current = performance.now(); // Set start time for the newly active step
+      // Effect 2 will now start the timer based on the new activeIndex and !isContentHovered state
+    },
+    [inView]
+  ); // Depend on inView
 
   const currentStep = activeIndex >= 0 ? stepsData[activeIndex] : null;
 
@@ -3244,29 +3243,30 @@ const TransferSteps: React.FC = () => {
   };
 
   return (
-    // Attach ref HERE to the element whose visibility triggers animations
-    <div
+    <motion.section
       ref={ref}
-      className="lg:py-10 py-5 bg-white dark:bg-background overflow-hidden TransferMoney"
-      style={{ '--border-animation-duration': `${BORDER_ANIMATION_DURATION}ms` } as React.CSSProperties} // Pass duration as CSS variable
+      className="TransferMoney-Steps lg:py-10 py-5 bg-white dark:bg-background overflow-hidden"
+      id="transfer-steps"
+      initial="hidden" // Initial state handled by useInView now
+      style={
+        {
+          "--border-animation-duration": `${BORDER_ANIMATION_DURATION}ms`,
+        } as React.CSSProperties
+      }
     >
-      {/* Apply ENTRANCE animation controlled by useInView */}
-      <motion.section
-        className="flex flex-col justify-center container mx-auto px-4"
-        id="transfer-steps"
-        initial="hidden" // Initial state handled by useInView now
-      >
-        {/* Section Header */}
-        <article className="flex flex-col gap-5">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase text-center lg:text-left">
-            4 easy steps to
-            <span className="text-primary"> Transfer to India </span>
-          </h1>
-        </article>
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col justify-center">
+          {/* Section Header */}
+          <article className="flex flex-col gap-5">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-mont text-mainheading dark:text-white uppercase text-center lg:text-left">
+              4 easy steps to
+              <span className="text-primary"> Transfer to India </span>
+            </h1>
+          </article>
 
-        {/* Main Grid Layout (Tabs + Content) */}
-        <article className="grid gap-6 lg:grid-cols-3 mt-10">
-          {/* Left Side: Step Tabs */}
+          {/* Main Grid Layout (Tabs + Content) */}
+          <article className="grid gap-6 lg:grid-cols-3 mt-10">
+            {/* Left Side: Step Tabs */}
             <div className="rounded-3xl bg-white dark:bg-primarybox p-6 h-full border dark:border-none">
               <ul className="lg:flex md:grid md:grid-cols-2 lg:grid-cols-1 grid-cols-1 lg:flex-col space-y-6 justify-between h-full gap-6">
                 {stepsData.map((step, index) => {
@@ -3278,7 +3278,7 @@ const TransferSteps: React.FC = () => {
                       <button
                         onClick={() => handleStepClick(index)}
                         disabled={!hasAnimatedInRef.current || !inView} // Disable button until in view and animated in
-                        className={`z-10 flex flex-col lg:flex-row cursor-pointer items-center lg:items-start lg:gap-5 bg-transparent w-full text-left group focus:outline-none rounded-lg ${
+                        className={`z-10 flex flex-col lg:flex-row cursor-pointer items-center lg:items-start lg:gap-4 gap-2 bg-transparent w-full text-left group focus:outline-none rounded-lg ${
                           !hasAnimatedInRef.current || !inView
                             ? "cursor-default opacity-60"
                             : ""
@@ -3329,10 +3329,12 @@ const TransferSteps: React.FC = () => {
                               // Use CSS classes for animation state control
                               className={
                                 isActive
-                                  ? `animate-border-draw ${isBorderPaused ? 'paused' : ''}` // Apply animation and paused class based on state
+                                  ? `animate-border-draw ${
+                                      isBorderPaused ? "paused" : ""
+                                    }` // Apply animation and paused class based on state
                                   : "border-path-reset" // Ensure path is reset when not active
                               }
-                               // Note: animationDuration is now primarily controlled by CSS variable
+                              // Note: animationDuration is now primarily controlled by CSS variable
                             />
                           </svg>
                         </div>
@@ -3362,113 +3364,116 @@ const TransferSteps: React.FC = () => {
                   );
                 })}
               </ul>
-          </div>
+            </div>
 
-          {/* Right Side: Content Panel */}
-          <div
-            className="relative lg:col-span-2 h-[500px] md:h-[550px] lg:h-[600px] min-h-[600px] md:min-h-[550px] lg:min-h-[600px] overflow-hidden"
-            onMouseEnter={() => {
-              if (hasAnimatedInRef.current && inView) setIsContentHovered(true);
-            }}
-            onMouseLeave={() => {
-              if (hasAnimatedInRef.current && inView) setIsContentHovered(false);
-            }}
-          >
-            {/* AnimatePresence for step transitions */}
-            <AnimatePresence mode="wait">
-              {currentStep && (
-                <motion.div
-                  key={activeIndex} // Key change triggers transitions
-                  className="absolute inset-0 flex flex-col border dark:border-none rounded-3xl bg-white dark:bg-primarybox p-6"
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                >
-                  {/* Inner step content using internal variants */}
-                  <div className="flex flex-col lg:flex-row h-full">
-                    {/* Left Side */}
-                    <div className="lg:w-1/2 w-full flex flex-col">
-                      <motion.div
-                        className="space-y-2 mb-4 lg:mb-6"
-                        variants={leftContentVariants}
-                      >
-                        <h3 className="text-lg md:text-xl lg:text-2xl font-semibold text-neutral-900 dark:text-white">
-                          {currentStep.contentTitle}
-                        </h3>
-                        <p className="text-gray-500 dark:text-gray-300 lg:text-base text-sm">
-                          {currentStep.contentSubtitle}
-                        </p>
-                      </motion.div>
+            {/* Right Side: Content Panel */}
+            <div
+              className="relative lg:col-span-2 h-[500px] md:h-[550px] lg:h-[600px] min-h-[600px] md:min-h-[550px] lg:min-h-[600px] overflow-hidden"
+              onMouseEnter={() => {
+                if (hasAnimatedInRef.current && inView)
+                  setIsContentHovered(true);
+              }}
+              onMouseLeave={() => {
+                if (hasAnimatedInRef.current && inView)
+                  setIsContentHovered(false);
+              }}
+            >
+              {/* AnimatePresence for step transitions */}
+              <AnimatePresence mode="wait">
+                {currentStep && (
+                  <motion.div
+                    key={activeIndex} // Key change triggers transitions
+                    className="absolute inset-0 flex flex-col border dark:border-none rounded-3xl bg-white dark:bg-primarybox p-6"
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    {/* Inner step content using internal variants */}
+                    <div className="flex flex-col lg:flex-row h-full">
+                      {/* Left Side */}
+                      <div className="lg:w-1/2 w-full flex flex-col">
+                        <motion.div
+                          className="space-y-2 mb-4 lg:mb-6"
+                          variants={leftContentVariants}
+                        >
+                          <h3 className="text-lg md:text-xl lg:text-2xl font-semibold text-neutral-900 dark:text-white">
+                            {currentStep.contentTitle}
+                          </h3>
+                          <p className="text-gray-500 dark:text-gray-300 lg:text-base text-sm">
+                            {currentStep.contentSubtitle}
+                          </p>
+                        </motion.div>
 
+                        <motion.div
+                          key={`${activeIndex}-image`} // Ensure image transitions on step change
+                          className="relative flex-grow flex items-center justify-center mt-4"
+                          variants={imageVariants}
+                        >
+                          <Image
+                            src={currentStep.contentImages.light}
+                            alt={`${currentStep.title} illustration (light)`}
+                            width={600}
+                            height={600}
+                            style={{
+                              maxHeight: "500px",
+                              maxWidth: "100%",
+                            }}
+                            priority={activeIndex === 0} // Prioritize loading the first image
+                            className="object-contain block dark:hidden w-full"
+                          />
+                          <Image
+                            src={currentStep.contentImages.dark}
+                            alt={`${currentStep.title} illustration (dark)`}
+                            width={600}
+                            height={600}
+                            style={{
+                              maxHeight: "500px",
+                              maxWidth: "100%",
+                            }}
+                            priority={activeIndex === 0} // Prioritize loading the first image
+                            className="object-contain hidden dark:block w-full"
+                          />
+                        </motion.div>
+                      </div>
+
+                      {/* Right Side */}
                       <motion.div
-                        key={`${activeIndex}-image`} // Ensure image transitions on step change
-                        className="relative flex-grow flex items-center justify-center mt-4"
-                        variants={imageVariants}
+                        className="lg:w-1/2 w-full mdflex flex-col items-center lg:items-end justify-center lg:justify-start lg:pt-0 pt-10"
+                        variants={rightContentVariants}
                       >
-                        <Image
-                          src={currentStep.contentImages.light}
-                          alt={`${currentStep.title} illustration (light)`}
-                          width={600}
-                          height={600}
-                           style={{
-                            maxHeight: "500px",
-                            maxWidth: "100%",
-                          }}
-                          priority={activeIndex === 0} // Prioritize loading the first image
-                          className="object-contain block dark:hidden w-full"
-                        />
-                        <Image
-                          src={currentStep.contentImages.dark}
-                          alt={`${currentStep.title} illustration (dark)`}
-                          width={600}
-                          height={600}
-                           style={{
-                            maxHeight: "500px",
-                            maxWidth: "100%",
-                          }}
-                          priority={activeIndex === 0} // Prioritize loading the first image
-                          className="object-contain hidden dark:block w-full"
-                        />
+                        {currentStep.contentBlocks && (
+                          <motion.div
+                            className="flex flex-col items-start lg:items-end gap-3 w-full lg:w-auto"
+                            variants={blockContainerVariants}
+                            initial="initial" // Ensure stagger effect runs on entrance
+                            animate="animate"
+                            exit="exit"
+                          >
+                            {currentStep.contentBlocks.map(
+                              (block, blockIndex) => (
+                                <motion.div
+                                  key={blockIndex}
+                                  className={`px-4 font-medium lg:text-base text-xs lg:py-2.5 py-2 rounded-full text-nowrap ${getBlockClasses(
+                                    block.type
+                                  )}`}
+                                  variants={blockItemVariants}
+                                >
+                                  {block.text}
+                                </motion.div>
+                              )
+                            )}
+                          </motion.div>
+                        )}
                       </motion.div>
                     </div>
-
-                    {/* Right Side */}
-                    <motion.div
-                      className="lg:w-1/2 w-full mdflex flex-col items-center lg:items-end justify-center lg:justify-start lg:pt-0 pt-10"
-                      variants={rightContentVariants}
-                    >
-                      {currentStep.contentBlocks && (
-                        <motion.div
-                          className="flex flex-col items-start lg:items-end gap-3 w-full lg:w-auto"
-                          variants={blockContainerVariants}
-                          initial="initial" // Ensure stagger effect runs on entrance
-                          animate="animate"
-                          exit="exit"
-                        >
-                          {currentStep.contentBlocks.map(
-                            (block, blockIndex) => (
-                              <motion.div
-                                key={blockIndex}
-                                className={`px-4 font-medium lg:text-base text-xs lg:py-2.5 py-2 rounded-full text-nowrap ${getBlockClasses(
-                                  block.type
-                                )}`}
-                                variants={blockItemVariants}
-                              >
-                                {block.text}
-                              </motion.div>
-                            )
-                          )}
-                        </motion.div>
-                      )}
-                    </motion.div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </article>
-      </motion.section>
-    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </article>
+        </div>
+      </div>
+    </motion.section>
   );
 };
 

@@ -344,7 +344,7 @@ const SecuritySection = () => {
     // Apply whileInView to the main section to trigger animations
     <motion.section
       className="Security-section md:py-10 py-5 bg-white dark:bg-background overflow-hidden" // Hide horizontal overflow during animation
-      id="security" // Added an ID for potential linking
+      id="security"
       initial="hidden"
       whileInView="visible"
       // viewport={{ amount: 0.2, once: false }} // <-- OLD: Animate every time

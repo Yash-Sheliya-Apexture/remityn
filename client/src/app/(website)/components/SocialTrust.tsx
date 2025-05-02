@@ -3097,7 +3097,7 @@ const ReviewCards: React.FC = () => {
 
   return (
     <motion.section
-      className="Reviews lg:py-10 py-5 bg-white dark:bg-background overflow-hidden" // Added overflow-hidden
+      className="Reviews-Cards lg:py-10 py-5 bg-white dark:bg-background overflow-hidden" // Added overflow-hidden
       id="review"
       variants={sectionVariants}
       initial="hidden"
@@ -3117,7 +3117,7 @@ const ReviewCards: React.FC = () => {
         </motion.div>
         {/* --- Grid Container for Columns --- */}
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 h-[600px] md:h-[1000px] overflow-hidden relative" // Keep fixed height for marquee
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 h-[1000px] overflow-hidden relative" // Keep fixed height for marquee
           variants={columnsContainerVariants} // Controls staggering of columns
           // Inherits trigger from parent section
         >
@@ -3178,7 +3178,7 @@ const ReviewCards: React.FC = () => {
         .marquee-content {
           // display: block; /* Or flex if needed */
           // position: relative; /* Keep relative for transform */
-          animation: scroll-up 30s linear infinite; /* Slower animation? */
+          animation: scroll-up 40s linear infinite; /* Slower animation? */
         }
 
         .marquee-column:hover .marquee-content {
