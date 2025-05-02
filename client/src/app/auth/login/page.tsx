@@ -3975,13 +3975,13 @@ export default function LoginPage() {
   // --- RENDER SECTION (No changes needed here) ---
   return (
     <div className="bg-white dark:bg-background">
-      <div className="flex flex-col justify-center items-center h-[calc(100vh-82px)] px-4">
+      <div className="flex flex-col items-center h-[calc(100vh-82px)] px-4">
         <div className="w-full max-w-md lg:mt-20 mt-10">
           {/* Session Expired Message */}
           <AnimatePresence>
             {sessionExpiredMessage && (
               <motion.div
-                className="bg-lightgray dark:bg-primarybox rounded-2xl p-4 flex items-center gap-4 relative mb-4"
+                className="bg-lightgray dark:bg-primarybox rounded-2xl p-4 flex items-center gap-4 mb-4"
                 role="alert"
                 initial="initial"
                 animate="animate"
@@ -4022,7 +4022,7 @@ export default function LoginPage() {
           <AnimatePresence>
             {isGeneralErrorVisible && generalError && (
               <motion.div
-                className={`dark:bg-primarybox bg-lightgray rounded-2xl p-4 flex items-center gap-4 relative my-4`}
+                className={`dark:bg-primarybox bg-lightgray rounded-2xl p-4 flex items-center gap-4 my-4`}
                 role="alert"
                 initial="initial"
                 animate="animate"
@@ -4045,7 +4045,7 @@ export default function LoginPage() {
           <AnimatePresence>
             {isLoginSuccessVisible && loginSuccess && (
               <motion.div
-                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative my-4"
+                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center my-4"
                 role="alert"
                 initial="initial"
                 animate="animate"
@@ -4087,7 +4087,7 @@ export default function LoginPage() {
             </div>
 
             {/* Email Input */}
-            <div>
+            <div className="email">
               <label
                 htmlFor="email"
                 className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
@@ -4127,7 +4127,7 @@ export default function LoginPage() {
             </div>
 
             {/* Password Input */}
-            <div className="relative">
+            <div className="password">
               <label
                 htmlFor="password"
                 className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
@@ -4135,7 +4135,8 @@ export default function LoginPage() {
                 Your password
                 <span className="text-red-600 dark:text-red-400">*</span>
               </label>
-              <div>
+
+              <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   id="password"
@@ -4158,14 +4159,14 @@ export default function LoginPage() {
                 />
                 <button
                   type="button"
-                  className="absolute right-4 top-11 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background"
+                  className="absolute right-4 top-4 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background"
                   onClick={togglePasswordVisibility}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
-                    <LuEye size={26} />
+                    <LuEye size={22} />
                   ) : (
-                    <LuEyeClosed size={26} />
+                    <LuEyeClosed size={22} />
                   )}
                 </button>
               </div>

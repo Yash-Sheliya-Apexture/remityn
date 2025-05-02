@@ -90,7 +90,7 @@ const AuthHeader: React.FC = () => {
   }, []); // Empty dependency array ensures this runs only on mount and unmount
 
   return (
-    <div className="bg-white dark:bg-background border-b">
+    <header className="bg-white dark:bg-background border-b sticky top-0">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           <Link href="/" className="text-xl font-semibold text-primary">
@@ -122,7 +122,7 @@ const AuthHeader: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </header>
   );
 };
 

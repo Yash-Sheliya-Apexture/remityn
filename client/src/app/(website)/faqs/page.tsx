@@ -1486,7 +1486,7 @@ const FAQPage: React.FC = () => {
 
   return (
     // No overall page animation wrapper needed now
-    <section className="FAQSection bg-white dark:bg-background  min-h-screen">
+    <section className="FAQSection bg-white dark:bg-background  min-h-screen lg:py-10 py-5">
       <div className="container mx-auto px-4">
         {/* Header Section - Simple fade in on load */}
         <motion.div
@@ -1508,7 +1508,7 @@ const FAQPage: React.FC = () => {
 
         {/* FAQ Content Section */}
 
-        <div className="lg:py-10 py-5">
+        <div className="faq-content">
           <div className="lg:space-y-8 space-y-5">
             {faqSections.map((section) => (
               // Container for each section title + items list
