@@ -6,6 +6,7 @@ import MissionSection from "./components/MissionSection";
 import Principles from "./components/Principles";
 import TransferMoney from "./components/TransferMoney";
 import Faq from "./components/Faq";
+import FlagSection from "./components/FlagSection";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <ProtectionSection />
       <SecuritySection />
       <SocialTrustSection />
+      <FlagSection />
       <MissionSection />
       <Principles />
       <TransferMoney />
