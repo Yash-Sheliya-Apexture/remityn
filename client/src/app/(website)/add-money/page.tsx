@@ -5,11 +5,11 @@ import EasyCurrencyExchange from "../components/EasyCurrencyExchange";
 
 const AddMoneyPage = () => {
   return (
-    <main className="add-moneyPage">
+    <div className="add-moneyPage">
       <AddMoneyGlobally />
       <GettingStartedSteps />
       <EasyCurrencyExchange />  
-    </main>
+    </div>
   );
 };
 

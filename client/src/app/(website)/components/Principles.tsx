@@ -892,7 +892,7 @@ const FeaturesSection: React.FC = () => {
               // Timing controlled by parent stagger
             >
               <Image
-                src="/assets/images/colorful-illustration-colorful-padlock-with-colorful-leaves-flowers_1122354-15513.jpg"
+                src="/assets/images/lock.jpg"
                 width={500}
                 height={500}
                 alt="Secure padlock illustration"

@@ -13,7 +13,7 @@ export default function AuthLayout({ children }: DashboardLayoutProps) {
     <>
       <AuthHeader />
       <main>
-        <div>{children}</div>
+        {children}
       </main>
     </>
   );

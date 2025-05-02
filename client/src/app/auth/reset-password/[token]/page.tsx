@@ -410,38 +410,632 @@
 
 // export default NewPasswordPage;
 
+// "use client";
+
+// import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
+// import { useRouter, useParams } from "next/navigation";
+// import authService from "../../../services/auth";
+// import { IoMdCloseCircle, IoIosCheckmarkCircle } from "react-icons/io";
+// import { VscEye } from "react-icons/vsc";
+// import { RiEyeCloseLine } from "react-icons/ri";
+// import Link from "next/link";
+// import { motion, AnimatePresence } from "framer-motion"; // Import Framer Motion
+// import { FiX } from "react-icons/fi";
+// import { FaCheck } from "react-icons/fa6";
+// import { LuEye, LuEyeClosed } from "react-icons/lu";
+
+// // Interface definition removed as it's not used for props in this client component.
+
+// const NewPasswordPage = () => {
+//   const [password, setPassword] = useState("");
+//   const [confirmPassword, setConfirmPassword] = useState("");
+//   // Store only the primary password error message (like "required")
+//   const [passwordRequiredError, setPasswordRequiredError] = useState<
+//     string | null
+//   >(null);
+//   const [confirmPasswordError, setConfirmPasswordError] = useState<string>("");
+//   const [resetError, setResetError] = useState("");
+//   const [resetSuccess, setResetSuccess] = useState("");
+//   const [showPassword, setShowPassword] = useState(false);
+//   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+//   const [isSubmitting, setIsSubmitting] = useState(false);
+//   const router = useRouter();
+//   const params = useParams(); // Get params object
+//   // Safely access token, handle potential array or undefined
+//   const tokenFromParams = params?.token;
+//   const token =
+//     typeof tokenFromParams === "string" ? tokenFromParams : undefined;
+
+//   const [validationCriteria, setValidationCriteria] = useState({
+//     hasLetter: false,
+//     hasNumber: false,
+//     hasMinLength: false,
+//   });
+
+//   useEffect(() => {
+//     if (!token) {
+//       setResetError("Invalid reset link or token missing.");
+//     }
+//   }, [token]);
+
+//   // Function to check if all validation criteria are met
+//   const areAllCriteriaMet = (criteria: typeof validationCriteria) => {
+//     return criteria.hasLetter && criteria.hasNumber && criteria.hasMinLength;
+//   };
+
+//   const validatePassword = (pw: string) => {
+//     let hasLetter = false;
+//     let hasNumber = false;
+//     let hasMinLength = false;
+
+//     if (!pw) {
+//       return {
+//         hasLetter: false,
+//         hasNumber: false,
+//         hasMinLength: false,
+//       };
+//     }
+
+//     if (pw.length >= 9) {
+//       hasMinLength = true;
+//     }
+//     if (/[a-zA-Z]/.test(pw)) {
+//       hasLetter = true;
+//     }
+//     if (/\d/.test(pw)) {
+//       hasNumber = true;
+//     }
+
+//     return { hasLetter, hasNumber, hasMinLength };
+//   };
+
+//   const handleSubmit = async (e: FormEvent) => {
+//     e.preventDefault();
+//     setPasswordRequiredError(null);
+//     setConfirmPasswordError("");
+//     setResetError("");
+//     setResetSuccess("");
+//     setIsSubmitting(true);
+
+//     let formIsValid = true;
+//     const currentCriteriaMet = areAllCriteriaMet(validationCriteria);
+
+//     if (!password) {
+//       setPasswordRequiredError("New Password is required.");
+//       formIsValid = false;
+//     } else if (!currentCriteriaMet) {
+//       formIsValid = false;
+//     }
+
+//     if (!confirmPassword) {
+//       setConfirmPasswordError("Confirm New Password is required.");
+//       formIsValid = false;
+//     } else if (password && password !== confirmPassword) {
+//       setConfirmPasswordError("Passwords do not match.");
+//       formIsValid = false;
+//     }
+
+//     if (!formIsValid || !token) {
+//       if (!token && !resetError) {
+//         setResetError("Invalid reset link or token missing.");
+//       }
+//       setIsSubmitting(false);
+//       return;
+//     }
+
+//     try {
+//       await authService.resetPassword({ token, password });
+//       setResetSuccess("Password reset successful! Redirecting to login...");
+//       setTimeout(() => {
+//         router.push("/auth/login?resetSuccess=true"); // Changed query param for clarity
+//       }, 300);
+//     } catch (err: unknown) {
+//       let errorMessage = "Password reset failed. Please try again.";
+//       if (err instanceof Error) {
+//         if (err.message.includes("Invalid or expired")) {
+//           errorMessage =
+//             "This password reset link is invalid or has expired. Please request a new password reset link.";
+//         } else if (err.message) {
+//           errorMessage = err.message;
+//         }
+//       }
+//       setResetError(errorMessage);
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   const togglePasswordVisibility = () => {
+//     setShowPassword(!showPassword);
+//   };
+
+//   const toggleConfirmPasswordVisibility = () => {
+//     setShowConfirmPassword(!showConfirmPassword);
+//   };
+
+//   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+//     const newPassword = e.target.value;
+//     setPassword(newPassword);
+//     const currentValidation = validatePassword(newPassword);
+//     setValidationCriteria(currentValidation);
+
+//     if (newPassword === "") {
+//       setPasswordRequiredError("New Password is required.");
+//     } else {
+//       setPasswordRequiredError(null);
+//     }
+
+//     if (confirmPassword && newPassword !== confirmPassword) {
+//       setConfirmPasswordError("Passwords do not match.");
+//     } else if (confirmPassword && newPassword === confirmPassword) {
+//       setConfirmPasswordError("");
+//     }
+//   };
+
+//   const handleConfirmPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+//     const newConfirmPassword = e.target.value;
+//     setConfirmPassword(newConfirmPassword);
+
+//     if (!newConfirmPassword && !passwordRequiredError) {
+//       setConfirmPasswordError("");
+//     } else if (password && newConfirmPassword !== password) {
+//       setConfirmPasswordError("Passwords do not match.");
+//     } else {
+//       setConfirmPasswordError("");
+//     }
+//   };
+
+//   // Determines if the criteria list should be shown
+//   const shouldShowCriteriaList = () => {
+//     return (
+//       password &&
+//       !passwordRequiredError &&
+//       !areAllCriteriaMet(validationCriteria)
+//     );
+//   };
+
+//   // Determine if the password input itself is invalid (for styling/aria)
+//   const isPasswordInputInvalid =
+//     !!passwordRequiredError || shouldShowCriteriaList();
+//   // Determine if the confirm password input is invalid
+//   const isConfirmPasswordInputInvalid = !!confirmPasswordError;
+
+//   // Determine if the submit button should be disabled
+//   const isSubmitDisabled =
+//     isSubmitting ||
+//     !token ||
+//     !!passwordRequiredError ||
+//     (password && !areAllCriteriaMet(validationCriteria)) ||
+//     !confirmPassword || // Disable if confirm password empty
+//     !!confirmPasswordError;
+
+//   const errorVariants = {
+//     initial: {
+//       opacity: 0.5,
+//       y: 10, // Start slightly below to gently rise up
+//       scale: 0.95, // Start slightly smaller to subtly scale up
+//       rotate: "2deg", // A very slight initial rotation for a soft lean-in
+//     },
+//     animate: {
+//       opacity: 1,
+//       y: 0, // Move to its natural position
+//       scale: 1, // Scale to its normal size
+//       rotate: "0deg", // Rotate to straight position
+//       transition: {
+//         duration: 0.3, // Slightly longer duration for a smoother feel
+//         ease: "easeInOut", // Smooth start and end
+//         type: "spring", // Use spring for a gentle, bouncy settle
+//         stiffness: 95, // Adjust stiffness for desired bounce
+//         damping: 10, // Adjust damping to control oscillation
+//       },
+//     },
+//     exit: {
+//       opacity: 0,
+//       y: 10, // Move down slightly as it fades out
+//       scale: 0.95, // Scale down slightly as it fades out
+//       rotate: "-2deg", // Rotate slightly in the opposite direction for exit
+//       transition: {
+//         duration: 0.2, // Slightly faster exit
+//         ease: "easeIn", // Ease in for a smooth fade out
+//       },
+//     },
+//   };
+
+//   return (
+//     // --- Original Layout Structure ---
+//     <div className="flex flex-col justify-center items-center h-[calc(100vh-82px)] px-4">
+//       <div className="w-full max-w-md">
+//         {/* --- Original bg-white Wrapper --- */}
+//         <div className="bg-white  dark:bg-background">
+//           {/* --- Original py-3 Wrapper --- */}
+//           <h2 className="lg:text-3xl text-2xl capitalize text-center text-mainheading  dark:text-white font-semibold mb-4">
+//             Set your new password
+//           </h2>
+
+//           {/* Reset Error Display (Original Styling) */}
+//           <AnimatePresence>
+//             {resetError && (
+//               <motion.div
+//                 className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative" // Original padding/gap
+//                 role="alert"
+//                 initial="initial"
+//                 animate="animate"
+//                 exit="exit"
+//                 variants={errorVariants}
+//               >
+//                 <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+//                   <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
+//                 </div>
+
+//                 <div className="inline-block">
+//                   <span className="text-gray-500 dark:text-gray-300 max-w-60">
+//                     {resetError}
+//                   </span>
+//                 </div>
+//               </motion.div>
+//             )}
+//           </AnimatePresence>
+
+//           {/* Reset Success Display (Original Styling) */}
+//           <AnimatePresence>
+//             {resetSuccess && (
+//               <motion.div
+//                 className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative"
+//                 role="alert"
+//                 initial="initial"
+//                 animate="animate"
+//                 exit="exit"
+//                 variants={errorVariants}
+//               >
+//                 {/* Adjusted background/padding */}
+//                 <div className="flex bg-green-100 dark:bg-green-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+//                   <FaCheck className="p-0.5 text-green-600 dark:text-green-400 lg:size-8 size-6" />
+//                 </div>
+
+//                 <div className="flex-grow space-y-0.5">
+//                   <span className="text-neutral-900 dark:text-primary block font-medium">
+//                     Password Reset Successful!
+//                   </span>
+
+//                   {/* Improved text */}
+//                   <span className="text-gray-500 dark:text-gray-300 block text-sm">
+//                     Redirecting to login...
+//                   </span>
+//                 </div>
+//               </motion.div>
+//             )}
+//           </AnimatePresence>
+
+//           {/* Form (Conditionally rendered based on token) */}
+//           {token ? (
+//             <form onSubmit={handleSubmit} className="mt-10 space-y-4">
+//               {/* New Password Field */}
+//               <div className="relative">
+//                 <label
+//                   htmlFor="password"
+//                   className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
+//                 >
+//                   New Password{" "}
+//                   <span className="text-red-600 dark:text-red-400">*</span>
+//                 </label>
+//                 <div>
+//                   <input
+//                     type={showPassword ? "text" : "password"}
+//                     id="password"
+//                     // --- Original Input Classes + Dynamic Error Class ---
+//                     className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
+//                       isPasswordInputInvalid
+//                         ? "border-red-600 border-2 !shadow-none focus:!ring-red-600" // Keep error state visual
+//                         : "focus:border-[#5f5f5f]" // Original normal/hover
+//                     }`}
+//                     placeholder="••••••••" // --- Original Placeholder ---
+//                     value={password}
+//                     onChange={handlePasswordChange}
+//                     aria-describedby={
+//                       shouldShowCriteriaList()
+//                         ? "password-criteria"
+//                         : passwordRequiredError
+//                         ? "password-required-error"
+//                         : undefined
+//                     }
+//                     // --- Fixed aria-invalid ---
+//                     aria-invalid={isPasswordInputInvalid ? "true" : undefined}
+//                   />
+//                   <button
+//                     type="button"
+//                     // --- Original Button Classes ---
+//                     className="absolute right-4 top-11 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background"
+//                     onClick={togglePasswordVisibility}
+//                     aria-label={
+//                       showPassword ? "Hide password" : "Show password"
+//                     }
+//                   >
+//                     {/* --- Original Icon Size --- */}
+//                     {showPassword ? (
+//                       <LuEye size={26} />
+//                     ) : (
+//                       <LuEyeClosed size={26} />
+//                     )}
+//                   </button>
+//                 </div>
+
+//                 {/* Password Required Error (Original Styling) */}
+//                 {passwordRequiredError && (
+//                   <p
+//                     id="password-required-error"
+//                     className="flex text-red-700 items-center mt-1"
+//                   >
+//                     {/* Original size/margin */}
+//                     <IoMdCloseCircle className="size-4 mr-1" />
+//                     {/* Original size */}
+//                     {passwordRequiredError}
+//                   </p>
+//                 )}
+//                 {/* Password Criteria List (Original Styling) */}
+//                 {shouldShowCriteriaList() && (
+//                   <ul
+//                     id="password-criteria"
+//                     className="mt-2 space-y-1.5 list-none pl-0"
+//                   >
+//                     {/* Original size/spacing */}
+//                     <li
+//                       className={`flex items-center ${
+//                         validationCriteria.hasMinLength
+//                           ? "text-green-600"
+//                           : "text-red-600"
+//                       }`}
+//                     >
+//                       {validationCriteria.hasMinLength ? (
+//                         <IoIosCheckmarkCircle className="mr-1 size-5" /> // Original size
+//                       ) : (
+//                         <IoMdCloseCircle className="mr-1 size-5" /> // Original size
+//                       )}
+//                       Has 9 or more characters
+//                     </li>
+//                     <li
+//                       className={`flex items-center ${
+//                         validationCriteria.hasLetter
+//                           ? "text-green-600"
+//                           : "text-red-600"
+//                       }`}
+//                     >
+//                       {validationCriteria.hasLetter ? (
+//                         <IoIosCheckmarkCircle className="mr-1 size-5" /> // Original size
+//                       ) : (
+//                         <IoMdCloseCircle className="mr-1 size-5" /> // Original size
+//                       )}
+//                       Contains a letter
+//                     </li>
+//                     <li
+//                       className={`flex items-center ${
+//                         validationCriteria.hasNumber
+//                           ? "text-green-600"
+//                           : "text-red-600"
+//                       }`}
+//                     >
+//                       {validationCriteria.hasNumber ? (
+//                         <IoIosCheckmarkCircle className="mr-1 size-5" /> // Original size
+//                       ) : (
+//                         <IoMdCloseCircle className="mr-1 size-5" /> // Original size
+//                       )}
+//                       Contains a number
+//                     </li>
+//                   </ul>
+//                 )}
+//               </div>
+
+//               {/* Confirm New Password Field */}
+//               <div className="relative">
+//                 <label
+//                   htmlFor="confirm-password"
+//                   className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
+//                 >
+//                   Confirm New Password <span className="text-error">*</span>
+//                 </label>
+
+//                 <div>
+//                   <input
+//                     type={showConfirmPassword ? "text" : "password"}
+//                     id="confirm-password"
+//                     // --- Original Input Classes + Dynamic Error Class ---
+//                     className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
+//                       isConfirmPasswordInputInvalid
+//                         ? "border-red-600 border-2 !shadow-none focus:!ring-red-600" // Keep error state visual
+//                         : "focus:border-[#5f5f5f]" // Original normal/hover
+//                     }`}
+//                     placeholder="••••••••" // --- Original Placeholder ---
+//                     value={confirmPassword}
+//                     onChange={handleConfirmPasswordChange}
+//                     // --- Fixed aria-invalid ---
+//                     aria-invalid={
+//                       isConfirmPasswordInputInvalid ? "true" : undefined
+//                     }
+//                     aria-describedby={
+//                       confirmPasswordError
+//                         ? "confirm-password-error"
+//                         : undefined
+//                     }
+//                   />
+//                   <button
+//                     type="button"
+//                     // --- Original Button Classes ---
+//                     className="absolute right-4 top-11 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background" // Restored original rounded-md
+//                     onClick={toggleConfirmPasswordVisibility}
+//                     aria-label={
+//                       showConfirmPassword
+//                         ? "Hide confirm password"
+//                         : "Show confirm password"
+//                     }
+//                   >
+//                     {/* --- Original Icon Size --- */}
+//                     {showConfirmPassword ? (
+//                       <LuEye size={26} />
+//                     ) : (
+//                       <LuEyeClosed size={26} />
+//                     )}
+//                   </button>
+//                 </div>
+//                 {/* Confirm Password Error (Original Styling) */}
+//                 {confirmPasswordError && (
+//                   <p
+//                     id="confirm-password-error"
+//                     className="flex text-red-700 text-base items-center mt-0.5"
+//                   >
+//                     <span className="mr-1">
+//                       <IoMdCloseCircle className="size-5" />
+//                     </span>
+//                     {confirmPasswordError}
+//                   </p>
+//                 )}
+//               </div>
+
+//               {/* Submit Button */}
+//               <div>
+//                 <button
+//                   type="submit"
+//                   // --- Original Button Classes + Dynamic Disabled State ---
+//                   className={`bg-primary hover:bg-primaryhover w-full text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center ${
+//                     isSubmitDisabled
+//                       ? "bg-lightgray dark:bg-background dark:border dark:text-white cursor-not-allowed" // Original disabled style
+//                       : "bg-primary hover:bg-primaryhover font-medium" // Original enabled style
+//                   }`}
+//                   disabled={isSubmitDisabled} // Use combined disabled logic
+//                 >
+//                   {isSubmitting ? (
+//                     <div className="flex justify-center items-center">
+//                       <svg
+//                         className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+//                         viewBox="0 0 24 24"
+//                         fill="none"
+//                         xmlns="http://www.w3.org/2000/svg"
+//                       >
+//                         <path
+//                           d="M12 2V6"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M12 18V22"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M4.93 4.93L7.76 7.76"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M16.24 16.24L19.07 19.07"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M2 12H6"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M18 12H22"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M4.93 19.07L7.76 16.24"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M16.24 7.76L19.07 4.93"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                       </svg>
+//                       <span>Resetting...</span>
+//                     </div>
+//                   ) : (
+//                     "Reset password"
+//                   )}
+//                 </button>
+//               </div>
+//             </form>
+//           ) : (
+//             // Show message if token is missing and not already showing success
+//             !resetSuccess && (
+//               <div className="mt-5 text-center">
+//                 {/* Error message (resetError) is displayed above */}
+//                 <p className="font-medium text-gray-500 dark:text-gray-300">
+//                   Please request a new password reset link.
+//                 </p>
+//               </div>
+//             )
+//           )}
+
+//           {/* Back to Login Link (Original Structure/Styling) */}
+//           {!resetSuccess && (
+//             <div className="text-center mt-3">
+//               <p className="text-gray-500 dark:text-gray-300">
+//                 {/* Kept dark mode class if it was there */}
+//                 Go back to &nbsp;
+//                 <Link
+//                   href="/auth/login"
+//                   className="text-primary font-medium underline underline-offset-4" // Kept dark mode class
+//                 >
+//                   Login
+//                 </Link>
+//               </p>
+//             </div>
+//           )}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default NewPasswordPage;
+
 "use client";
 
 import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { useRouter, useParams } from "next/navigation";
-import authService from "../../../services/auth";
+import authService from "../../../services/auth"; // Corrected path if needed
 import { IoMdCloseCircle, IoIosCheckmarkCircle } from "react-icons/io";
-import { VscEye } from "react-icons/vsc";
-import { RiEyeCloseLine } from "react-icons/ri";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion"; // Import Framer Motion
+import { motion, AnimatePresence } from "framer-motion";
 import { FiX } from "react-icons/fi";
 import { FaCheck } from "react-icons/fa6";
 import { LuEye, LuEyeClosed } from "react-icons/lu";
 
-// Interface definition removed as it's not used for props in this client component.
-
 const NewPasswordPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  // Store only the primary password error message (like "required")
   const [passwordRequiredError, setPasswordRequiredError] = useState<
     string | null
   >(null);
   const [confirmPasswordError, setConfirmPasswordError] = useState<string>("");
+  // Single state for general reset errors (token, google, server)
   const [resetError, setResetError] = useState("");
   const [resetSuccess, setResetSuccess] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-  const params = useParams(); // Get params object
-  // Safely access token, handle potential array or undefined
+  const params = useParams();
   const tokenFromParams = params?.token;
   const token =
     typeof tokenFromParams === "string" ? tokenFromParams : undefined;
@@ -454,46 +1048,29 @@ const NewPasswordPage = () => {
 
   useEffect(() => {
     if (!token) {
-      setResetError("Invalid reset link or token missing.");
+      setResetError("Invalid reset link: Token missing from URL."); // More specific initial error
+    } else {
+      setResetError(""); // Clear error if token exists
     }
   }, [token]);
 
-  // Function to check if all validation criteria are met
   const areAllCriteriaMet = (criteria: typeof validationCriteria) => {
     return criteria.hasLetter && criteria.hasNumber && criteria.hasMinLength;
   };
 
   const validatePassword = (pw: string) => {
-    let hasLetter = false;
-    let hasNumber = false;
-    let hasMinLength = false;
-
-    if (!pw) {
-      return {
-        hasLetter: false,
-        hasNumber: false,
-        hasMinLength: false,
-      };
-    }
-
-    if (pw.length >= 9) {
-      hasMinLength = true;
-    }
-    if (/[a-zA-Z]/.test(pw)) {
-      hasLetter = true;
-    }
-    if (/\d/.test(pw)) {
-      hasNumber = true;
-    }
-
-    return { hasLetter, hasNumber, hasMinLength };
+    return {
+      hasLetter: /[a-zA-Z]/.test(pw),
+      hasNumber: /\d/.test(pw),
+      hasMinLength: pw.length >= 9, // Adjusted length check
+    };
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setPasswordRequiredError(null);
     setConfirmPasswordError("");
-    setResetError("");
+    setResetError(""); // Clear previous reset errors
     setResetSuccess("");
     setIsSubmitting(true);
 
@@ -517,8 +1094,8 @@ const NewPasswordPage = () => {
 
     if (!formIsValid || !token) {
       if (!token && !resetError) {
-        setResetError("Invalid reset link or token missing.");
-      }
+        setResetError("Invalid reset link: Token missing.");
+      } // Set error if token missing
       setIsSubmitting(false);
       return;
     }
@@ -527,31 +1104,28 @@ const NewPasswordPage = () => {
       await authService.resetPassword({ token, password });
       setResetSuccess("Password reset successful! Redirecting to login...");
       setTimeout(() => {
-        router.push("/auth/login?resetSuccess=true"); // Changed query param for clarity
-      }, 300);
-    } catch (err: unknown) {
-      let errorMessage = "Password reset failed. Please try again.";
-      if (err instanceof Error) {
-        if (err.message.includes("Invalid or expired")) {
-          errorMessage =
-            "This password reset link is invalid or has expired. Please request a new password reset link.";
-        } else if (err.message) {
-          errorMessage = err.message;
-        }
+        router.push("/auth/login?resetSuccess=true"); // Use consistent query param
+      }, 2000); // Slightly longer delay for user to read message
+    } catch (err: any) {
+      // Use any for broader error catching from API
+      console.error("Reset password error:", err);
+      let errorMessage =
+        "Password reset failed. Please try again or request a new link."; // Default
+      if (err.response?.data?.message) {
+        errorMessage = err.response.data.message; // Prioritize backend message
+      } else if (err.message) {
+        errorMessage = err.message;
       }
+      // Set the specific error message from backend/catch
       setResetError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const toggleConfirmPasswordVisibility = () => {
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+  const toggleConfirmPasswordVisibility = () =>
     setShowConfirmPassword(!showConfirmPassword);
-  };
 
   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newPassword = e.target.value;
@@ -559,15 +1133,12 @@ const NewPasswordPage = () => {
     const currentValidation = validatePassword(newPassword);
     setValidationCriteria(currentValidation);
 
-    if (newPassword === "") {
-      setPasswordRequiredError("New Password is required.");
-    } else {
-      setPasswordRequiredError(null);
-    }
+    setPasswordRequiredError(newPassword ? null : "New Password is required.");
 
     if (confirmPassword && newPassword !== confirmPassword) {
       setConfirmPasswordError("Passwords do not match.");
-    } else if (confirmPassword && newPassword === confirmPassword) {
+    } else if (confirmPassword) {
+      // Clear error if they now match or confirm is empty
       setConfirmPasswordError("");
     }
   };
@@ -575,88 +1146,79 @@ const NewPasswordPage = () => {
   const handleConfirmPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newConfirmPassword = e.target.value;
     setConfirmPassword(newConfirmPassword);
-
-    if (!newConfirmPassword && !passwordRequiredError) {
-      setConfirmPasswordError("");
-    } else if (password && newConfirmPassword !== password) {
+    if (password && newConfirmPassword !== password) {
       setConfirmPasswordError("Passwords do not match.");
     } else {
-      setConfirmPasswordError("");
+      setConfirmPasswordError(""); // Clear error if matches or empty
     }
   };
 
-  // Determines if the criteria list should be shown
-  const shouldShowCriteriaList = () => {
-    return (
-      password &&
-      !passwordRequiredError &&
-      !areAllCriteriaMet(validationCriteria)
-    );
-  };
-
-  // Determine if the password input itself is invalid (for styling/aria)
+  const shouldShowCriteriaList = () =>
+    password &&
+    !passwordRequiredError &&
+    !areAllCriteriaMet(validationCriteria);
   const isPasswordInputInvalid =
     !!passwordRequiredError || shouldShowCriteriaList();
-  // Determine if the confirm password input is invalid
   const isConfirmPasswordInputInvalid = !!confirmPasswordError;
-
-  // Determine if the submit button should be disabled
   const isSubmitDisabled =
     isSubmitting ||
     !token ||
+    !!resetError ||
     !!passwordRequiredError ||
     (password && !areAllCriteriaMet(validationCriteria)) ||
-    !confirmPassword || // Disable if confirm password empty
+    !confirmPassword ||
     !!confirmPasswordError;
 
   const errorVariants = {
-    initial: {
-      opacity: 0.5,
-      y: 10, // Start slightly below to gently rise up
-      scale: 0.95, // Start slightly smaller to subtly scale up
-      rotate: "2deg", // A very slight initial rotation for a soft lean-in
-    },
+    /* ... (keep existing variants) ... */
+    initial: { opacity: 0.5, y: 10, scale: 0.95, rotate: "2deg" },
     animate: {
       opacity: 1,
-      y: 0, // Move to its natural position
-      scale: 1, // Scale to its normal size
-      rotate: "0deg", // Rotate to straight position
+      y: 0,
+      scale: 1,
+      rotate: "0deg",
       transition: {
-        duration: 0.3, // Slightly longer duration for a smoother feel
-        ease: "easeInOut", // Smooth start and end
-        type: "spring", // Use spring for a gentle, bouncy settle
-        stiffness: 95, // Adjust stiffness for desired bounce
-        damping: 10, // Adjust damping to control oscillation
+        duration: 0.3,
+        ease: "easeInOut",
+        type: "spring",
+        stiffness: 95,
+        damping: 10,
       },
     },
     exit: {
       opacity: 0,
-      y: 10, // Move down slightly as it fades out
-      scale: 0.95, // Scale down slightly as it fades out
-      rotate: "-2deg", // Rotate slightly in the opposite direction for exit
-      transition: {
-        duration: 0.2, // Slightly faster exit
-        ease: "easeIn", // Ease in for a smooth fade out
-      },
+      y: 10,
+      scale: 0.95,
+      rotate: "-2deg",
+      transition: { duration: 0.2, ease: "easeIn" },
     },
   };
+  const successVariants = {
+    /* ... Copy from Login page or define similarly ... */
+    initial: { opacity: 0, y: -20 },
+    animate: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.3, ease: "easeOut" },
+    },
+    exit: { opacity: 0, y: -20, transition: { duration: 0.2, ease: "easeIn" } },
+  };
 
+  // --- RENDER SECTION ---
   return (
-    // --- Original Layout Structure ---
     <div className="flex flex-col justify-center items-center h-[calc(100vh-82px)] px-4">
       <div className="w-full max-w-md">
-        {/* --- Original bg-white Wrapper --- */}
-        <div className="bg-white  dark:bg-background">
-          {/* --- Original py-3 Wrapper --- */}
-          <h2 className="lg:text-3xl text-2xl capitalize text-center text-mainheading  dark:text-white font-semibold mb-4">
-            Set your new password
+        <div className="bg-white dark:bg-background">
+          <h2 className="lg:text-3xl text-2xl capitalize text-center text-mainheading dark:text-white font-semibold mb-4">
+            {" "}
+            Set your new password{" "}
           </h2>
 
-          {/* Reset Error Display (Original Styling) */}
+          {/* Reset Error Display */}
           <AnimatePresence>
             {resetError && (
               <motion.div
-                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative" // Original padding/gap
+                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center mb-4" // Added mb-4
                 role="alert"
                 initial="initial"
                 animate="animate"
@@ -664,71 +1226,76 @@ const NewPasswordPage = () => {
                 variants={errorVariants}
               >
                 <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
-                  <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
+                  {" "}
+                  <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />{" "}
                 </div>
-
                 <div className="inline-block">
+                  {/* MODIFIED: Display the resetError state directly */}
                   <span className="text-gray-500 dark:text-gray-300 max-w-60">
-                    {resetError}
+                    {" "}
+                    {resetError}{" "}
                   </span>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Reset Success Display (Original Styling) */}
+          {/* Reset Success Display */}
           <AnimatePresence>
             {resetSuccess && (
               <motion.div
-                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative"
+                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center mb-4" // Added mb-4
                 role="alert"
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                variants={errorVariants}
+                variants={successVariants}
               >
-                {/* Adjusted background/padding */}
+                {" "}
+                {/* Changed to successVariants */}
                 <div className="flex bg-green-100 dark:bg-green-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
-                  <FaCheck className="p-0.5 text-green-600 dark:text-green-400 lg:size-8 size-6" />
+                  {" "}
+                  <FaCheck className="p-0.5 text-green-600 dark:text-green-400 lg:size-8 size-6" />{" "}
                 </div>
-
                 <div className="flex-grow space-y-0.5">
                   <span className="text-neutral-900 dark:text-primary block font-medium">
-                    Password Reset Successful!
+                    {" "}
+                    Password Reset Successful!{" "}
                   </span>
-
-                  {/* Improved text */}
                   <span className="text-gray-500 dark:text-gray-300 block text-sm">
-                    Redirecting to login...
+                    {" "}
+                    Redirecting to login...{" "}
                   </span>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Form (Conditionally rendered based on token) */}
-          {token ? (
-            <form onSubmit={handleSubmit} className="mt-10 space-y-4">
-              {/* New Password Field */}
-              <div className="relative">
+          {/* Form (Conditionally render based on token existence AND success state) */}
+          {token && !resetSuccess ? (
+            <form onSubmit={handleSubmit} className="mt-5 space-y-4">
+              {" "}
+              {/* Adjusted margin-top */}
+              <div className="new-password">
                 <label
                   htmlFor="password"
                   className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
                 >
+                  {" "}
                   New Password{" "}
-                  <span className="text-red-600 dark:text-red-400">*</span>
+                  <span className="text-red-600 dark:text-red-400">*</span>{" "}
                 </label>
-                <div>
+
+                <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
                     id="password"
-                    // --- Original Input Classes + Dynamic Error Class ---
                     className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
                       isPasswordInputInvalid
-                        ? "border-red-600 border-2 !shadow-none focus:!ring-red-600" // Keep error state visual
-                        : "focus:border-[#5f5f5f]" // Original normal/hover
+                        ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+                        : "focus:border-[#5f5f5f]"
                     }`}
-                    placeholder="••••••••" // --- Original Placeholder ---
+                    placeholder="••••••••"
                     value={password}
                     onChange={handlePasswordChange}
                     aria-describedby={
@@ -738,46 +1305,40 @@ const NewPasswordPage = () => {
                         ? "password-required-error"
                         : undefined
                     }
-                    // --- Fixed aria-invalid ---
                     aria-invalid={isPasswordInputInvalid ? "true" : undefined}
                   />
                   <button
                     type="button"
-                    // --- Original Button Classes ---
-                    className="absolute right-4 top-11 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background"
+                    className="absolute right-4 top-4 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background"
                     onClick={togglePasswordVisibility}
                     aria-label={
                       showPassword ? "Hide password" : "Show password"
                     }
                   >
-                    {/* --- Original Icon Size --- */}
                     {showPassword ? (
-                      <LuEye size={26} />
+                      <LuEye size={22} />
                     ) : (
-                      <LuEyeClosed size={26} />
+                      <LuEyeClosed size={22} />
                     )}
                   </button>
                 </div>
-
-                {/* Password Required Error (Original Styling) */}
                 {passwordRequiredError && (
                   <p
                     id="password-required-error"
                     className="flex text-red-700 items-center mt-1"
                   >
-                    {/* Original size/margin */}
-                    <IoMdCloseCircle className="size-4 mr-1" />
-                    {/* Original size */}
-                    {passwordRequiredError}
+                    {" "}
+                    <IoMdCloseCircle className="size-4 mr-1" />{" "}
+                    {passwordRequiredError}{" "}
                   </p>
                 )}
-                {/* Password Criteria List (Original Styling) */}
+
                 {shouldShowCriteriaList() && (
                   <ul
                     id="password-criteria"
                     className="mt-2 space-y-1.5 list-none pl-0"
                   >
-                    {/* Original size/spacing */}
+                    {/* Adjusted length text */}
                     <li
                       className={`flex items-center ${
                         validationCriteria.hasMinLength
@@ -785,12 +1346,13 @@ const NewPasswordPage = () => {
                           : "text-red-600"
                       }`}
                     >
+                      {" "}
                       {validationCriteria.hasMinLength ? (
-                        <IoIosCheckmarkCircle className="mr-1 size-5" /> // Original size
+                        <IoIosCheckmarkCircle className="mr-1 size-5" />
                       ) : (
-                        <IoMdCloseCircle className="mr-1 size-5" /> // Original size
-                      )}
-                      Has 9 or more characters
+                        <IoMdCloseCircle className="mr-1 size-5" />
+                      )}{" "}
+                      Has 9 or more characters{" "}
                     </li>
                     <li
                       className={`flex items-center ${
@@ -799,12 +1361,13 @@ const NewPasswordPage = () => {
                           : "text-red-600"
                       }`}
                     >
+                      {" "}
                       {validationCriteria.hasLetter ? (
-                        <IoIosCheckmarkCircle className="mr-1 size-5" /> // Original size
+                        <IoIosCheckmarkCircle className="mr-1 size-5" />
                       ) : (
-                        <IoMdCloseCircle className="mr-1 size-5" /> // Original size
-                      )}
-                      Contains a letter
+                        <IoMdCloseCircle className="mr-1 size-5" />
+                      )}{" "}
+                      Contains a letter{" "}
                     </li>
                     <li
                       className={`flex items-center ${
@@ -813,40 +1376,40 @@ const NewPasswordPage = () => {
                           : "text-red-600"
                       }`}
                     >
+                      {" "}
                       {validationCriteria.hasNumber ? (
-                        <IoIosCheckmarkCircle className="mr-1 size-5" /> // Original size
+                        <IoIosCheckmarkCircle className="mr-1 size-5" />
                       ) : (
-                        <IoMdCloseCircle className="mr-1 size-5" /> // Original size
-                      )}
-                      Contains a number
+                        <IoMdCloseCircle className="mr-1 size-5" />
+                      )}{" "}
+                      Contains a number{" "}
                     </li>
                   </ul>
                 )}
               </div>
-
               {/* Confirm New Password Field */}
-              <div className="relative">
+              <div className="confirm-password">
                 <label
                   htmlFor="confirm-password"
                   className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
                 >
-                  Confirm New Password <span className="text-error">*</span>
-                </label>
+                  {" "}
+                  Confirm New Password{" "}
+                  <span className="text-red-600 dark:text-red-400">*</span>{" "}
+                </label>{" "}
 
-                <div>
+                <div className="relative">
                   <input
                     type={showConfirmPassword ? "text" : "password"}
                     id="confirm-password"
-                    // --- Original Input Classes + Dynamic Error Class ---
                     className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
                       isConfirmPasswordInputInvalid
-                        ? "border-red-600 border-2 !shadow-none focus:!ring-red-600" // Keep error state visual
-                        : "focus:border-[#5f5f5f]" // Original normal/hover
+                        ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+                        : "focus:border-[#5f5f5f]"
                     }`}
-                    placeholder="••••••••" // --- Original Placeholder ---
+                    placeholder="••••••••"
                     value={confirmPassword}
                     onChange={handleConfirmPasswordChange}
-                    // --- Fixed aria-invalid ---
                     aria-invalid={
                       isConfirmPasswordInputInvalid ? "true" : undefined
                     }
@@ -858,8 +1421,7 @@ const NewPasswordPage = () => {
                   />
                   <button
                     type="button"
-                    // --- Original Button Classes ---
-                    className="absolute right-4 top-11 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background" // Restored original rounded-md
+                    className="absolute right-4 top-4 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background"
                     onClick={toggleConfirmPasswordVisibility}
                     aria-label={
                       showConfirmPassword
@@ -867,39 +1429,39 @@ const NewPasswordPage = () => {
                         : "Show confirm password"
                     }
                   >
-                    {/* --- Original Icon Size --- */}
                     {showConfirmPassword ? (
-                      <LuEye size={26} />
+                      <LuEye size={22} />
                     ) : (
-                      <LuEyeClosed size={26} />
+                      <LuEyeClosed size={22} />
                     )}
                   </button>
                 </div>
-                {/* Confirm Password Error (Original Styling) */}
+
                 {confirmPasswordError && (
                   <p
                     id="confirm-password-error"
                     className="flex text-red-700 text-base items-center mt-0.5"
                   >
+                    {" "}
                     <span className="mr-1">
-                      <IoMdCloseCircle className="size-5" />
-                    </span>
-                    {confirmPasswordError}
+                      {" "}
+                      <IoMdCloseCircle className="size-5" />{" "}
+                    </span>{" "}
+                    {confirmPasswordError}{" "}
                   </p>
                 )}
               </div>
-
+              
               {/* Submit Button */}
               <div>
                 <button
                   type="submit"
-                  // --- Original Button Classes + Dynamic Disabled State ---
                   className={`bg-primary hover:bg-primaryhover w-full text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center ${
                     isSubmitDisabled
-                      ? "bg-lightgray dark:bg-background dark:border dark:text-white cursor-not-allowed" // Original disabled style
-                      : "bg-primary hover:bg-primaryhover font-medium" // Original enabled style
+                      ? "bg-lightgray dark:bg-background dark:border dark:text-white cursor-not-allowed"
+                      : "bg-primary hover:bg-primaryhover font-medium"
                   }`}
-                  disabled={isSubmitDisabled} // Use combined disabled logic
+                  disabled={isSubmitDisabled}
                 >
                   {isSubmitting ? (
                     <div className="flex justify-center items-center">
@@ -909,62 +1471,63 @@ const NewPasswordPage = () => {
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                       >
+                        {" "}
                         <path
                           d="M12 2V6"
                           stroke="currentColor"
                           strokeWidth="2"
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                        />
+                        />{" "}
                         <path
                           d="M12 18V22"
                           stroke="currentColor"
                           strokeWidth="2"
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                        />
+                        />{" "}
                         <path
                           d="M4.93 4.93L7.76 7.76"
                           stroke="currentColor"
                           strokeWidth="2"
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                        />
+                        />{" "}
                         <path
                           d="M16.24 16.24L19.07 19.07"
                           stroke="currentColor"
                           strokeWidth="2"
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                        />
+                        />{" "}
                         <path
                           d="M2 12H6"
                           stroke="currentColor"
                           strokeWidth="2"
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                        />
+                        />{" "}
                         <path
                           d="M18 12H22"
                           stroke="currentColor"
                           strokeWidth="2"
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                        />
+                        />{" "}
                         <path
                           d="M4.93 19.07L7.76 16.24"
                           stroke="currentColor"
                           strokeWidth="2"
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                        />
+                        />{" "}
                         <path
                           d="M16.24 7.76L19.07 4.93"
                           stroke="currentColor"
                           strokeWidth="2"
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                        />
+                        />{" "}
                       </svg>
                       <span>Resetting...</span>
                     </div>
@@ -975,29 +1538,35 @@ const NewPasswordPage = () => {
               </div>
             </form>
           ) : (
-            // Show message if token is missing and not already showing success
-            !resetSuccess && (
-              <div className="mt-5 text-center">
-                {/* Error message (resetError) is displayed above */}
-                <p className="font-medium text-gray-500 dark:text-gray-300">
-                  Please request a new password reset link.
-                </p>
-              </div>
-            )
+            // Show message if token is missing OR if reset was successful
+            <div className="mt-5 text-center">
+              {/* Error/Success message is displayed above */}
+              {!resetSuccess &&
+                !resetError && ( // Only show this if no specific error/success
+                  <p className="font-medium text-gray-500 dark:text-gray-300">
+                    {" "}
+                    Invalid or missing reset token.{" "}
+                  </p>
+                )}
+              <p className="text-gray-500 dark:text-gray-300 mt-3">
+                Please request a new password reset link if needed.
+              </p>
+            </div>
           )}
 
-          {/* Back to Login Link (Original Structure/Styling) */}
+          {/* Back to Login Link (Show unless successful) */}
           {!resetSuccess && (
             <div className="text-center mt-3">
               <p className="text-gray-500 dark:text-gray-300">
-                {/* Kept dark mode class if it was there */}
-                Go back to &nbsp;
+                {" "}
+                Go back to  {" "}
                 <Link
                   href="/auth/login"
-                  className="text-primary font-medium underline underline-offset-4" // Kept dark mode class
+                  className="text-primary font-medium underline underline-offset-4"
                 >
-                  Login
-                </Link>
+                  {" "}
+                  Login{" "}
+                </Link>{" "}
               </p>
             </div>
           )}

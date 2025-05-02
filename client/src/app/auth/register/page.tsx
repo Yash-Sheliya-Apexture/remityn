@@ -2761,7 +2761,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex justify-center items-center lg:h-[calc(100vh-82px)] px-4 bg-white dark:bg-background">
+    <div className="flex justify-center h-[calc(100vh-82px)] px-4 bg-white dark:bg-background">
       {/* Added padding */}
       <div className="w-full max-w-md space-y-2 lg:mt-20 mt-10">
         <h2 className="lg:text-3xl text-2xl text-center text-neutral-900 dark:text-white font-medium">
@@ -2781,7 +2781,7 @@ export default function RegisterPage() {
         <AnimatePresence>
           {isErrorVisible && error && (
             <motion.div
-              className="bg-lightgray dark:bg-primarybox rounded-2xl p-4 flex items-center gap-4 relative my-4"
+              className="bg-lightgray dark:bg-primarybox rounded-2xl p-4 flex items-center gap-4 my-4"
               role="alert"
               initial="initial"
               animate="animate"
@@ -2805,7 +2805,7 @@ export default function RegisterPage() {
           {registerSuccess &&
             !error && ( // Show success only if there's no error from a subsequent attempt
               <motion.div
-                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative my-4"
+                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center my-4"
                 role="alert"
                 initial="initial"
                 animate="animate"
@@ -2892,7 +2892,7 @@ export default function RegisterPage() {
           </div>
 
           {/* Email Input */}
-          <div>
+          <div className="email">
             <label
               htmlFor="email"
               className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
@@ -2930,14 +2930,14 @@ export default function RegisterPage() {
           </div>
 
           {/* Password Input */}
-          <div className="relative">
+          <div className="password">
             <label
               htmlFor="password"
               className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
             >
               Password <span className="text-red-600 dark:text-red-400">*</span>
             </label>
-            <div>
+            <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
                 id="password"
@@ -2959,11 +2959,11 @@ export default function RegisterPage() {
               />
               <button
                 type="button"
-                className="absolute right-4 top-11 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background" // Adjusted focus style
+                className="absolute right-4 top-4 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background" // Adjusted focus style
                 onClick={togglePasswordVisibility}
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
-                {showPassword ? <LuEye size={26} /> : <LuEyeClosed size={26} />}
+                {showPassword ? <LuEye size={22} /> : <LuEyeClosed size={22} />}
               </button>
             </div>
             {passwordError && (
@@ -2977,7 +2977,7 @@ export default function RegisterPage() {
           </div>
 
           {/* Confirm Password Input */}
-          <div className="relative">
+          <div className="conform-password">
             <label
               htmlFor="confirmPassword"
               className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
@@ -2985,7 +2985,7 @@ export default function RegisterPage() {
               Confirm Password{" "}
               <span className="text-red-600 dark:text-red-400">*</span>
             </label>
-            <div>
+            <div className="relative">
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 id="confirmPassword"
@@ -3009,7 +3009,7 @@ export default function RegisterPage() {
               />
               <button
                 type="button"
-                className="absolute right-4 top-11 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background"
+                className="absolute right-4 top-4 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background"
                 onClick={toggleConfirmPasswordVisibility}
                 aria-label={
                   showConfirmPassword
@@ -3018,9 +3018,9 @@ export default function RegisterPage() {
                 }
               >
                 {showConfirmPassword ? (
-                  <LuEye size={26} />
+                  <LuEye size={22} />
                 ) : (
-                  <LuEyeClosed size={26} />
+                  <LuEyeClosed size={22} />
                 )}
               </button>
             </div>
@@ -3045,7 +3045,7 @@ export default function RegisterPage() {
         </form>
 
         {/* Terms and Policy Links */}
-        <p className="text-center text-neutral-900 dark:text-gray-300 my-3 text-sm">
+        <p className="text-center text-neutral-900 dark:text-gray-300 pb-6 text-sm">
           {/* Adjusted styles */}
           By registering, you accept our &nbsp;
           <Link
