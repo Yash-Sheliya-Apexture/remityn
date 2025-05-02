@@ -205,8 +205,6 @@
 
 // export default ProtectionSection;
 
-
-
 // components/ProtectionSection.tsx
 "use client"; // Required for Framer Motion
 
@@ -325,8 +323,7 @@ const ProtectionSection = () => {
               queries and transactions.
             </p>
           </motion.div>
-        </motion.div>{" "}
-        {/* End grid motion container */}
+        </motion.div>
       </div>
     </section>
   );
