@@ -58,15 +58,13 @@
 
 // export default AuthHeader;
 
-
-
 // components/AuthHeader.tsx
 "use client";
 import Image from "next/image";
 import Link from "next/link";
 import { IoClose } from "react-icons/io5";
 import { useState, useEffect } from "react";
-import React from "react"; 
+import React from "react";
 
 const AuthHeader: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -105,15 +103,22 @@ const AuthHeader: React.FC = () => {
           ) : (
             <Image
               src="/assets/images/wise-logo.svg"
-              width={100}
-              height={100}
+              width={120}
+              height={120}
               alt="Wise Logo"
             />
           )}
         </Link>
-        <Link href="/" >
-          <IoClose className="lg:size-10 size-8 p-1.5 bg-gray/10 dark:bg-secondary text-mainheading dark:text-primary rounded-full transition-colors" />
-        </Link>
+
+        <div
+          className="size-10 bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox flex items-center justify-center rounded-full transition-all duration-75 ease-linear"
+        >
+          <Link href="/">
+            <span className="text-neutral-900 dark:text-primary">
+              <IoClose size={28} />
+            </span>
+          </Link>
+        </div>
       </div>
     </div>
   );
