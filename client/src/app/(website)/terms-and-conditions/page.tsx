@@ -18,20 +18,19 @@ interface TermSection {
   content: React.ReactNode; // Use React.ReactNode to allow JSX content
 }
 
-// Define the content for each section separately
 const sections: TermSection[] = [
   {
     id: "section1",
     title: "Participation",
     content: (
       <>
-        <p className="text-gray-700 dark:text-gray-300 lg:text-lg text-sm">
+        <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
           By accessing or using the Wise platform, users are deemed to have
           read, understood, and agreed to be bound by our terms and conditions,
           along with all applicable policies. This forms a legally binding
           agreement between the user and Wise, operated by apexture Limited.
         </p>
-        <p className="text-gray-700 dark:text-gray-300 lg:text-lg text-sm">
+        <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
           To access certain services on our platform, users are required to
           create an account by providing accurate and up-to-date personal
           information during the registration process. This may include
@@ -39,13 +38,13 @@ const sections: TermSection[] = [
           that the information you provide is truthful, complete, and current at
           all times.
         </p>
-        <p className="text-gray-700 dark:text-gray-300 lg:text-lg text-sm">
+        <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
           If any information provided is found to be false, misleading,
           incomplete, or in violation of applicable laws or our terms, Wise
           reserves the right to suspend or terminate your account and restrict
           access to our services without notice.
         </p>
-        <p className="text-gray-700 dark:text-gray-300 lg:text-lg text-sm">
+        <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
           We encourage all users to carefully review our terms and conditions
           before registering or continuing to use our platform. If you do not
           agree with any part of our policies, we advise you not to proceed with
@@ -58,7 +57,7 @@ const sections: TermSection[] = [
     id: "section2",
     title: "Data protection",
     content: (
-      <div className="text-gray-700 dark:text-gray-300 lg:text-lg text-sm">
+      <div className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
         <p>
           At Wise, protecting your personal data is a top priority. You have
           full control over your registration information and may update or
@@ -99,7 +98,7 @@ const sections: TermSection[] = [
     id: "section3",
     title: "Representations and warranties of user",
     content: (
-      <div className="text-gray-700 dark:text-gray-300 lg:text-lg text-sm">
+      <div className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
         By using the Wise platform, the user represents and warrants the
         following:
         <br />
@@ -131,14 +130,14 @@ const sections: TermSection[] = [
     title: "Prohibited usage",
     content: (
       <>
-        <p className="text-gray-700 dark:text-gray-300 lg:text-lg text-sm">
+        <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
           By accessing and using the Wise platform, you agree not to use any
           method other than the provided interface to access our services,
           unless otherwise explicitly agreed in a separate contract. You are
           prohibited from using any automated methods or bots to access or
           attempt to access the services.
         </p>
-        <p className="text-gray-700 dark:text-gray-300 lg:text-lg text-sm">
+        <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
           You agree not to engage in any activity that interferes with or
           disrupts the functionality of the services, including the servers and
           networks connected to the platform. Without explicit permission
@@ -146,7 +145,7 @@ const sections: TermSection[] = [
           duplicate, copy, sell, trade, or resell any part of the services for
           commercial purposes.
         </p>
-        <p className="text-gray-700 dark:text-gray-300 lg:text-lg text-sm">
+        <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
           As part of our commitment to security and compliance, any content or
           registration information provided by you may be shared with government
           and regulatory bodies authorized to conduct cybersecurity,
@@ -154,7 +153,7 @@ const sections: TermSection[] = [
           to verify identities, prevent fraud, detect, investigate, and
           prosecute cybersecurity incidents.
         </p>
-        <p className="text-gray-700 dark:text-gray-300 lg:text-lg text-sm">
+        <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
           You represent and warrant that you will be financially responsible for
           all usage and access to the website, including any use of your account
           by others. If any part of these terms of use is deemed illegal by
@@ -170,14 +169,14 @@ const sections: TermSection[] = [
     content: (
       <>
         {/* Changed p to div for block children */}
-        <p className="text-gray-700 dark:text-gray-300 lg:text-lg text-sm">
+        <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
           When you register on the Wise platform, you may be allowed to create
           multiple accounts, including sub-accounts. These accounts,
           collectively referred to as "your" account, must adhere to the limits
           set by the platform. You are prohibited from creating anonymous
           accounts or accounts that do not reflect your true identity.
         </p>
-        <p className="text-gray-700 dark:text-gray-300 lg:text-lg text-sm">
+        <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
           You are responsible for ensuring that no user authorized by you to
           access your account shares your login credentials with any other
           individual, unless explicitly permitted by us in writing. Depending on
@@ -185,17 +184,17 @@ const sections: TermSection[] = [
           manage various aspects of the services, including but not limited to
           your data and other available functionalities.
         </p>
-        <p className="text-gray-700 dark:text-gray-300 lg:text-lg text-sm">
+        <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
           At all times, you remain responsible for all activities that occur
           under your account. It is essential that you protect your login
           credentials and passwords. If you suspect that your account has been
           compromised or that a user has violated this agreement or any
           applicable laws, you must notify us immediately.
         </p>
-        <h1 className="lg:text-3xl md:text-2xl text-lg font-medium text-mainheading dark:text-primary my-5 leading-5">
+        <h1 className="lg:text-3xl md:text-2xl text-lg font-medium text-neutral-900 dark:text-primary my-5 leading-5">
           Authorization
         </h1>
-        <p className="text-gray-700 dark:text-gray-300 lg:text-lg text-sm">
+        <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
           {/* Wrapped */}
           By accepting these terms of use, you authorize us to facilitate the
           transfer and settlement of funds on your behalf. This authorization
@@ -211,13 +210,13 @@ const sections: TermSection[] = [
     title: "Third-party links",
     content: (
       <>
-        <p className="text-gray-700 dark:text-gray-300 lg:text-lg text-sm">
+        <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
           Our platform may occasionally include links to websites operated by
           our partner networks, advertisers, and affiliates. These links are
           provided for your convenience, and we do not have control over the
           content or privacy practices of these external websites.
         </p>
-        <p className="text-gray-700 dark:text-gray-300 lg:text-lg text-sm">
+        <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
           Please be aware that we are not responsible for the privacy policies
           or practices of third-party sites. We encourage you to review the
           privacy policies of any website you visit through these links before
@@ -231,20 +230,20 @@ const sections: TermSection[] = [
     title: "Liabilities and disclaimer",
     content: (
       <>
-        <p className="text-gray-700 dark:text-gray-300 lg:text-lg text-sm">
+        <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
           By using the services or breaching this agreement, you agree to
           defend, indemnify, and hold us and our affiliated entities harmless
           from any and all claims, liabilities, damages, and costs, including
           reasonable legal fees and expenses (collectively referred to as
           "Claims").
         </p>
-        <p className="text-gray-700 dark:text-gray-300 lg:text-lg text-sm">
+        <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
           We reserve the right, at our sole discretion and expense, to take full
           responsibility for the defense and management of any Claims. You agree
           to cooperate reasonably and assist us, as requested, in defending
           against any such Claims.
         </p>
-        <p className="text-gray-700 dark:text-gray-300 lg:text-lg text-sm">
+        <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
           "Our Affiliated Entities" includes our direct and indirect business
           partners, clients, licensees, users, vendors, investors, shareholders
           (whether past, present, or future), as well as our predecessors,
@@ -258,7 +257,7 @@ const sections: TermSection[] = [
     title: "Termination and suspension",
     content: (
       <>
-        <p className="text-gray-700 dark:text-gray-300 lg:text-lg text-sm">
+        <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
           In order to protect the integrity of our services, ensure compliance
           with our policies, and adhere to applicable laws and regulations, we
           reserve the right to suspend or terminate your account or access to
@@ -266,7 +265,7 @@ const sections: TermSection[] = [
           this agreement or no longer agree to receive electronic
           communications.
         </p>
-        <p className="text-gray-700 dark:text-gray-300 lg:text-lg text-sm">
+        <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
           This action may be taken at our sole discretion and may include the
           restriction, denial, or termination of services in whole or in part.
           Upon the termination of this agreement, or the suspension or
@@ -280,7 +279,7 @@ const sections: TermSection[] = [
     id: "section9",
     title: "Changes to this agreement",
     content: (
-      <p className="text-gray-700 dark:text-gray-300 lg:text-lg text-sm">
+      <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
         In order to remain compliant with evolving legal requirements, industry
         standards, and adjustments in how we process personal information, we
         reserve the right to update or modify this agreement at any time,
@@ -294,40 +293,38 @@ const sections: TermSection[] = [
 
 const TermsAndConditionsPage: React.FC = () => {
   return (
-    // Added font-landing class assumption from outer div
-    <div className="terms-condtion lg:py-10 py-5 bg-white dark:bg-background px-4">
-      <div className="container mx-auto">
+    <section className="terms-condtionPage lg:py-10 py-5 bg-white dark:bg-background">
+      <div className="container mx-auto px-4">
         {/* Removed extra wrapping div */}
-        <div className="mb-3">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl capitalize font-black text-mainheading dark:text-white mt-6">
+
+        <div className="space-y-4">
+          <h2 className="text-3xl md:text-4xl lg:text-6xl capitalize font-black text-mainheading dark:text-white">
             Terms <span className="text-primary"> And Conditions</span>
           </h2>
 
-          <p className="max-w-3xl text-gray-700 dark:text-gray-300 lg:text-lg text-sm mt-5">
+          <p className="max-w-5xl text-gray-500 dark:text-gray-300 lg:text-lg text-base">
             Welcome to Wise, your trusted platform for secure and efficient
             currency exchange services. These Terms and Conditions outline the
             rules and guidelines that govern your use of our services, ensuring
             a seamless and secure experience while managing your transactions.
           </p>
 
-          <div className="border-t my-8"></div>
+          <div className="border-t my-4"></div>
         </div>
 
         {/* Main Content Column */}
-        <div>
-          {sections.map((section) => (
-            <section key={section.id} id={section.id}>
-              {/* Added margin-bottom and scroll-margin-top */}
-              <h2 className="lg:text-3xl md:text-2xl text-lg font-medium text-mainheading dark:text-primary my-5 leading-5">
-                {section.title}
-              </h2>
-              {/* Changed to H2 */}
-              <div className="space-y-4">{section.content}</div>
-            </section>
-          ))}
-        </div>
+        {sections.map((section) => (
+          <div key={section.id} id={section.id}>
+            {/* Added margin-bottom and scroll-margin-top */}
+            <h2 className="mt-5 lg:text-3xl md:text-2xl text-xl font-medium text-neutral-900 dark:text-primary mb-3">
+              {section.title}
+            </h2>
+            {/* Changed to H2 */}
+            <div className="space-y-4">{section.content}</div>
+          </div>
+        ))}
       </div>
-    </div>
+    </section>
   );
 };
 

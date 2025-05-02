@@ -1407,42 +1407,54 @@ const ResetPasswordForm = () => {
     }
   };
 
-  // Framer Motion variants for animation
   const errorVariants = {
-    initial: { opacity: 0, y: -20 },
+    initial: { opacity: 0.5, y: 10, scale: 0.95, rotate: "2deg" },
     animate: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.4, ease: "easeOut" },
+      scale: 1,
+      rotate: "0deg",
+      transition: {
+        duration: 0.3,
+        ease: "easeInOut",
+        type: "spring",
+        stiffness: 95,
+        damping: 10,
+      },
     },
-    exit: { opacity: 0, y: -20, transition: { duration: 0.3, ease: "easeIn" } },
+    exit: {
+      opacity: 0,
+      y: 10,
+      scale: 0.95,
+      rotate: "-2deg",
+      transition: { duration: 0.2, ease: "easeIn" },
+    },
   };
 
   if (emailSent) {
     return (
-      <div className="flex flex-col justify-center items-center lg:h-[calc(100vh-73px)] px-4">
-        <div className="bg-white dark:bg-background w-full max-w-lg">
-          <div className="flex justify-center mb-6">
+      <div className="flex flex-col bg-white dark:bg-background justify-center items-center h-[calc(100vh-82px)] px-4">
+        <div className="max-w-lg space-y-4">
+          <div className="flex justify-center items-center sm:pt-0 pt-10">
             <Image
-              src="/assets/images/massage.png"
-              width={500}
-              height={500}
+              src="/assets/images/sendmassage.svg"
+              width={600}
+              height={600}
               alt="Email Icon"
-              priority
-              className="lg:size-60 size-40"
+              className="w-full object-contain xl:h-80 h-70"
             />
           </div>
 
-          <h2 className="lg:text-5xl text-center text-3xl capitalize font-black mb-6">
+          <h2 className="text-3xl md:text-4xl font-black text-center text-mainheading dark:text-white uppercase">
             Check your email
           </h2>
 
-          <p className="text-center text-lg text-gray-700 dark:text-gray-300 text-nowrap mb-6">
+          <p className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base">
             We sent an email to &nbsp;
-            <span className="font-semibold text-lime-500">{email}</span>
+            <span className="font-semibold text-primary">{email}</span>
           </p>
 
-          <p className="text-center text-lg  text-gray-700 dark:text-gray-300 mb-6">
+          <p className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base">
             If the email hasn&apos;t arrived yet, please check your spam folder.
             Alternatively, you can also request the email again:
           </p>
@@ -1450,65 +1462,157 @@ const ResetPasswordForm = () => {
           <AnimatePresence>
             {showCheckAgainMessage && (
               <motion.div
-                className="flex bg-gray/10 dark:bg-secondary p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4"
+                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative my-4"
                 role="alert"
                 initial="initial"
                 animate="animate"
                 exit="exit"
                 variants={errorVariants}
               >
-                <div className="flex dark:bg-primary/20 bg-white justify-center rounded-full items-center size-12 shrink-0">
-                  <FaCheck className="p-0.5 text-mainheading dark:text-primary size-8" />
+                <div className="flex bg-green-100 dark:bg-green-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+                  <FaCheck className="p-0.5 text-green-600 dark:text-green-400 lg:size-8 size-6" />
                 </div>
 
-                <p className="text-mainheading dark:text-gray-300 block font-medium">
+                <p className="text-gray-500 dark:text-gray-300 block">
                   Please check your email inbox again.
                 </p>
               </motion.div>
             )}
           </AnimatePresence>
 
-          {resendError && (
-            <div
-              className="flex bg-red-100 border border-red-400 p-4 rounded-2xl gap-4 items-center lg:gap-6 relative mb-4" // Adjusted styling slightly for consistency
-              role="alert"
-            >
-              <div className="flex bg-[#a8200d] justify-center rounded-full items-center size-12 shrink-0">
-                {/* Added shrink-0 */}
-                <IoMdCloseCircle className="p-0.5 text-white size-8" />
-              </div>
-              <div>
-                <span className="text-red-700 block">{resendError}</span>
-                {/* Adjusted text color */}
-              </div>
-            </div>
-          )}
+          <AnimatePresence>
+            {resendError && (
+              <motion.div
+                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative mt-5" // Adjusted styling slightly for consistency
+                role="alert"
+                animate="animate"
+                exit="exit" 
+                variants={errorVariants}
+              >
+                <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+                  <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
+                </div>
+
+                <div className="inline-block">
+                  <span className="text-gray-500 dark:text-gray-300 max-w-60">
+                    {resendError}
+                  </span>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {resendAttemptFailed && (
+              <motion.div
+                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative mt-5" // Adjusted styling slightly for consistency
+                role="alert"
+                animate="animate"
+                exit="exit"
+                variants={errorVariants}
+              >
+                <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+                  <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
+                </div>
+
+                <div className="inline-block">
+                  <p className="text-gray-500 dark:text-gray-300">
+                    Couldn&apos;t send email again. Please try again later you
+                    can wait.
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <button
             onClick={handleSendAgain}
             disabled={isLoading || resendAttemptFailed}
-            className={`bg-primary hover:bg-primaryhover cursor-pointer capitalize lg:h-12.5 rounded-full text-mainheading w-full block duration-300 ease-in-out focus:outline-none focus:shadow-outline font-medium mx-auto lg:py-3 py-2 transition-colors
+            className={`bg-primary hover:bg-primaryhover w-full capitalize text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center
                             ${
                               isLoading || resendAttemptFailed
                                 ? "opacity-50 cursor-not-allowed"
                                 : ""
                             }`}
+            type="submit"
           >
-            {isLoading ? "Sending..." : "Send email again"}
+            {isLoading ? (
+              <>
+                <svg
+                  className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 2V6"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M12 18V22"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M4.93 4.93L7.76 7.76"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M16.24 16.24L19.07 19.07"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M2 12H6"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M18 12H22"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M4.93 19.07L7.76 16.24"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M16.24 7.76L19.07 4.93"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <span>Sending...</span>
+              </>
+            ) : (
+              "Send email again"
+            )}
           </button>
-
-          {resendAttemptFailed && (
-            <p className="text-center text-red-500 text-sm mt-2">
-              {/* FIXED: Escaped apostrophe */}
-              Couldn&apos;t send email again. Please try again later.
-            </p>
-          )}
 
           <p className="text-base text-center text-gray-700 dark:text-gray-300 mt-5">
             Still need help? &nbsp;
             <a
               href="#"
-              className="text-lime-500 underline font-medium underline-offset-4"
+              className="text-primary underline font-medium underline-offset-4"
             >
               Read this article.
             </a>
@@ -1519,94 +1623,172 @@ const ResetPasswordForm = () => {
   }
 
   return (
-    <div className="flex flex-col bg-white dark:bg-background justify-center items-center lg:h-[calc(100vh-73px)] px-4">
-      <div className="max-w-lg">
-        <Image
-          src="/assets/images/resetpassword.png"
-          width={600}
-          height={600}
-          alt="Key Icon"
-          className="lg:size-60 size-40"
-        />
-      </div>
-
-      <h2 className="text-3xl md:text-4xl font-black text-mainheading dark:text-white uppercase mb-4">
-        Reset password
-      </h2>
-
-      <p className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base max-w-lg">
-        Just enter the email address you registered with and we&apos;ll send you
-        a link to reset your password.
-      </p>
-
-      {error && (
-        <div
-          className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative my-4" // Added width constraint
-          role="alert"
-        >
-          <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
-            <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
-          </div>
-
-          <div className="inline-block">
-            <span className="text-gray-500 dark:text-gray-300 max-w-60">
-              {error} relative to this path no number right now
-            </span>
-          </div>
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="w-full max-w-lg pt-5">
-        <div className="mb-4">
-          <label
-            htmlFor="email"
-            className=" text-gray-500 dark:text-gray-300 block capitalize"
-          >
-            Enter your email address
-          </label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={isLoading}
-            className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
-              emailError
-                ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
-                : "focus:border-[#5f5f5f]"
-            }`}
+    <div className="flex flex-col bg-white dark:bg-background justify-center items-center h-[calc(100vh-82px)] px-4">
+      <div className="max-w-lg space-y-4">
+        <div className="flex justify-center items-center sm:pt-0 pt-10">
+          <Image
+            src="/assets/images/resetpassword.svg"
+            width={600}
+            height={600}
+            alt="Key Icon"
+            className="w-full object-contain xl:h-80 h-70"
           />
-          {emailError && (
-            <p className="flex text-red-700 text-base items-center mt-0.5">
-              <span className="mr-1">
-                <IoMdCloseCircle className="size-5" />
-              </span>
-              {emailError}
-            </p>
+        </div>
+
+        <h2 className="text-3xl md:text-4xl font-black text-center text-mainheading dark:text-white uppercase">
+          Reset password
+        </h2>
+
+        <p className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base">
+          Just enter the email address you registered with and we&apos;ll send
+          you a link to reset your password.
+        </p>
+
+        <AnimatePresence>
+          {error && (
+            <motion.div
+              className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative mt-5" // Added width constraint
+              role="alert"
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              variants={errorVariants}
+            >
+              <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+                <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
+              </div>
+
+              <div className="inline-block">
+                <span className="text-gray-500 dark:text-gray-300 max-w-60">
+                  {error} Relative to this path no number right now
+                </span>
+              </div>
+            </motion.div>
           )}
-        </div>
+        </AnimatePresence>
 
-        <div className="flex justify-between items-center">
-          <button
-            className={`bg-primary hover:bg-primaryhover w-full text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center ${
-              isLoading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-            type="submit"
-            disabled={isLoading}
-          >
-            {isLoading ? "Sending..." : "Send password reset link"}
-          </button>
-        </div>
-      </form>
+        <form onSubmit={handleSubmit}>
+          <div className="my-5">
+            <label
+              htmlFor="email"
+              className=" text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
+            >
+              Enter your email address
+            </label>
 
-      <p className="text-base text-gray-500 dark:text-gray-300 my-3">
-        Need help? Read this &nbsp;
-        <Link href="/faqs">
-          <span className="text-primary font-medium underline underline-offset-4">
-            Help Centre article.
-          </span>
-        </Link>
-      </p>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={isLoading}
+              className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
+                emailError
+                  ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+                  : "focus:border-[#5f5f5f]"
+              }`}
+            />
+            {emailError && (
+              <p className="flex text-red-700 text-base items-center mt-0.5">
+                <span className="mr-1">
+                  <IoMdCloseCircle className="size-5" />
+                </span>
+                {emailError}
+              </p>
+            )}
+          </div>
+
+          <div className="flex justify-between items-center">
+            <button
+              className={`bg-primary hover:bg-primaryhover w-full capitalize text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center ${
+                isLoading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              type="submit"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <svg
+                    className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12 2V6"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M12 18V22"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M4.93 4.93L7.76 7.76"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M16.24 16.24L19.07 19.07"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M2 12H6"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M18 12H22"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M4.93 19.07L7.76 16.24"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M16.24 7.76L19.07 4.93"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <span>Sending...</span>
+                </>
+              ) : (
+                "Send password reset link"
+              )}
+            </button>
+          </div>
+        </form>
+
+        <p className="text-base text-gray-500 dark:text-gray-300 my-2 text-center">
+          Need help? Read this &nbsp;
+          <Link href="/faqs">
+            <span className="text-primary font-medium underline capitalize underline-offset-4">
+              Help Centre article.
+            </span>
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };

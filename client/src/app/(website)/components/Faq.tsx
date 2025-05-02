@@ -2040,165 +2040,167 @@ const FaqSection: React.FC = () => {
   }, []);
 
   return (
-    <div className="lg:py-10 py-5 bg-white dark:bg-background overflow-hidden">
-      <motion.section
-        className="grid items-start gap-6 lg:grid-cols-5 container mx-auto px-4"
-        id="faq"
-        variants={sectionVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ amount: 0.2, once: true }} // <-- NEW: Animate only once
-      >
-        {/* Left Side: Title and Description - Animated */}
-        <motion.div
-          className="flex flex-col space-y-4 self-start md:col-span-2"
-          variants={leftBlockVariants}
-          // Inherits trigger from parent section
-        >
-          <h1 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white uppercase">
-            Quick Currency
-            <span className="text-primary"> Exchange Help </span>
-          </h1>
-          <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
-            Get quick answers to common currency exchange questions — rates,
-            fees, timing, and more. Simple, clear, and reliable info at your
-            fingertips.
-          </p>
-        </motion.div>
+    <motion.section
+      className="Faq-Section lg:py-10 py-5 bg-white dark:bg-background overflow-hidden"
+      id="faq"
+      variants={sectionVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ amount: 0.2, once: true }}
+    >
+      <div className="container mx-auto px-4">
+        <div className="grid items-start gap-6 lg:grid-cols-5">
+          {/* Left Side: Title and Description - Animated */}
+          <motion.div
+            className="flex flex-col space-y-4 self-start md:col-span-2"
+            variants={leftBlockVariants}
+            // Inherits trigger from parent section
+          >
+            <h1 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white uppercase">
+              Quick Currency
+              <span className="text-primary"> Exchange Help </span>
+            </h1>
+            <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
+              Get quick answers to common currency exchange questions — rates,
+              fees, timing, and more. Simple, clear, and reliable info at your
+              fingertips.
+            </p>
+          </motion.div>
 
-        {/* Right Side: Accordion Container - Animated */}
-        <motion.div
-          className="md:col-span-3 md:row-span-2"
-          variants={accordionContainerVariants} // Staggers the items inside
-          // Inherits trigger from parent section
-        >
-          <div className="flex flex-col gap-3" data-orientation="vertical">
-            {faqData.map((item) => {
-              const isOpen = openItemId === item.id;
-              const uniqueTriggerId = `faq-trigger-${item.id}`;
-              const uniqueContentId = `faq-content-${item.id}`;
+          {/* Right Side: Accordion Container - Animated */}
+          <motion.div
+            className="md:col-span-3 md:row-span-2"
+            variants={accordionContainerVariants} // Staggers the items inside
+            // Inherits trigger from parent section
+          >
+            <div className="flex flex-col gap-3" data-orientation="vertical">
+              {faqData.map((item) => {
+                const isOpen = openItemId === item.id;
+                const uniqueTriggerId = `faq-trigger-${item.id}`;
+                const uniqueContentId = `faq-content-${item.id}`;
 
-              return (
-                // FAQ Item Entrance Animation Wrapper
-                <motion.div
-                  key={item.id}
-                  variants={faqItemVariants} // Apply NEW slide-from-right animation
-                  layout // Keep layout for smooth answer animation
-                  className="rounded-lg bg-lightgray dark:bg-primarybox overflow-hidden"
-                  // Timing controlled by parent stagger
-                >
-                  {/* Accordion Trigger (Question Button) */}
-                  <h3
-                    data-orientation="vertical"
-                    data-state={isOpen ? "open" : "closed"}
-                    className="flex m-0"
+                return (
+                  // FAQ Item Entrance Animation Wrapper
+                  <motion.div
+                    key={item.id}
+                    variants={faqItemVariants} // Apply NEW slide-from-right animation
+                    layout // Keep layout for smooth answer animation
+                    className="rounded-lg bg-lightgray dark:bg-primarybox overflow-hidden"
+                    // Timing controlled by parent stagger
                   >
-                    <button
-                      type="button"
-                      aria-controls={uniqueContentId}
-                      aria-expanded={isOpen}
-                      data-state={isOpen ? "open" : "closed"}
+                    {/* Accordion Trigger (Question Button) */}
+                    <h3
                       data-orientation="vertical"
-                      id={uniqueTriggerId}
-                      className={`flex w-full cursor-pointer flex-1  gap-2 items-center justify-between text-start lg:text-xl md:text-lg text-sm text-neutral-900 font-medium dark:text-white transition-colors ease-linear duration-75 lg:p-5 p-4 ${
-                        isOpen ? "" : ""
-                      }`}
-                      onClick={() => handleToggle(item.id)}
+                      data-state={isOpen ? "open" : "closed"}
+                      className="flex m-0"
                     >
-                      {item.question}
-                      <motion.span
-                        animate={{ rotate: isOpen ? 180 : 0 }}
-                        transition={{ duration: 0.3 }}
-                        style={{ display: "inline-block" }}
+                      <button
+                        type="button"
+                        aria-controls={uniqueContentId}
+                        aria-expanded={isOpen}
+                        data-state={isOpen ? "open" : "closed"}
+                        data-orientation="vertical"
+                        id={uniqueTriggerId}
+                        className={`flex w-full cursor-pointer flex-1  gap-2 items-center justify-between text-start lg:text-xl md:text-lg text-sm text-neutral-900 font-medium dark:text-white transition-colors ease-linear duration-75 lg:p-5 p-4 ${
+                          isOpen ? "" : ""
+                        }`}
+                        onClick={() => handleToggle(item.id)}
                       >
-                        <SlArrowDown
-                          className="lg:size-3 size-2.5 shrink-0 text-gray-500 dark:text-gray-300"
-                          aria-hidden
-                        />
-                      </motion.span>
-                    </button>
-                  </h3>
+                        {item.question}
+                        <motion.span
+                          animate={{ rotate: isOpen ? 180 : 0 }}
+                          transition={{ duration: 0.3 }}
+                          style={{ display: "inline-block" }}
+                        >
+                          <SlArrowDown
+                            className="lg:size-3 size-2.5 shrink-0 text-gray-500 dark:text-gray-300"
+                            aria-hidden
+                          />
+                        </motion.span>
+                      </button>
+                    </h3>
 
-                  {/* AnimatePresence for Answer Open/Close */}
-                  <AnimatePresence initial={false}>
-                    {isOpen && (
-                      <motion.div
-                        key="content"
-                        id={uniqueContentId}
-                        role="region"
-                        aria-labelledby={uniqueTriggerId}
-                        variants={answerVariants}
-                        initial="initial"
-                        animate="animate"
-                        exit="exit"
-                        className="overflow-hidden text-sm md:text-base lg:text-lg leading-relaxed text-gray-500 dark:text-gray-300"
-                      >
-                        <div className="pt-0 pb-4 md:px-6 px-4">
-                          {item.answer}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div> // End FAQ Item Wrapper
-              );
-            })}
-          </div>
-        </motion.div>
-
-        {/* Bottom Left: More Questions Box - Animated */}
-        <motion.div
-          className="lg:col-span-2 md:col-span-3 md:self-end"
-          variants={leftBlockVariants} // Re-use left block animation
-        >
-          <div className="flex flex-col items-start gap-5 rounded-2xl bg-lightgray dark:bg-primarybox p-4 lg:p-6">
-            <div>
-              <h3 className="md:text-2xl text-lg font-semibold text-mainheading dark:text-gray-100">
-                More questions?
-              </h3>
-              <p className="mt-1 lg:text-lg text-sm font-normal text-gray-500 dark:text-gray-300">
-                We're always ready to help you out.
-              </p>
+                    {/* AnimatePresence for Answer Open/Close */}
+                    <AnimatePresence initial={false}>
+                      {isOpen && (
+                        <motion.div
+                          key="content"
+                          id={uniqueContentId}
+                          role="region"
+                          aria-labelledby={uniqueTriggerId}
+                          variants={answerVariants}
+                          initial="initial"
+                          animate="animate"
+                          exit="exit"
+                          className="overflow-hidden text-sm md:text-base lg:text-lg leading-relaxed text-gray-500 dark:text-gray-300"
+                        >
+                          <div className="pt-0 pb-4 md:px-6 px-4">
+                            {item.answer}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div> // End FAQ Item Wrapper
+                );
+              })}
             </div>
+          </motion.div>
 
-            <div className="flex w-full flex-wrap items-center justify-between gap-4">
-              <div className="flex gap-2">
-                {/* WhatsApp Button */}
+          {/* Bottom Left: More Questions Box - Animated */}
+          <motion.div
+            className="lg:col-span-2 md:col-span-3 md:self-end"
+            variants={leftBlockVariants} // Re-use left block animation
+          >
+            <div className="flex flex-col items-start gap-5 rounded-2xl bg-lightgray dark:bg-primarybox p-4 lg:p-6">
+              <div>
+                <h3 className="md:text-2xl text-lg font-semibold text-mainheading dark:text-gray-100">
+                  More questions?
+                </h3>
+                <p className="mt-1 lg:text-lg text-sm font-normal text-gray-500 dark:text-gray-300">
+                  We're always ready to help you out.
+                </p>
+              </div>
+
+              <div className="flex w-full flex-wrap items-center justify-between gap-4">
+                <div className="flex gap-2">
+                  {/* WhatsApp Button */}
+                  <Link
+                    href="/WhatsApp" // Replace with your actual WhatsApp link/handler
+                    aria-label="Chat on WhatsApp"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <button className="inline-flex items-center cursor-pointer justify-center rounded-full text-sm bg-[#25D366] lg:text-base px-4 lg:py-2 py-1.5 text-white font-medium transition-all duration-75 ease-linear hover:bg-[#1ebe5a] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#25D366]">
+                      <IoLogoWhatsapp className="mr-2 lg:size-6 size-4" />
+                      <span>WhatsApp</span>
+                    </button>
+                  </Link>
+                  {/* Telegram Button */}
+                  <Link
+                    href="/Telegram" // Replace with your actual Telegram link/handler
+                    aria-label="Chat on Telegram"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <button className="inline-flex items-center justify-center cursor-pointer rounded-full bg-[#2DA5E0] px-4 lg:py-2 py-1.5 text-sm text-white font-medium transition-all duration-75 ease-linear hover:bg-[#249bd4] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#2DA5E0] lg:text-base">
+                      <FaTelegramPlane className="mr-2 lg:size-6 size-4" />
+                      <span>Telegram</span>
+                    </button>
+                  </Link>
+                </div>
+                {/* Read More FAQs Link */}
                 <Link
-                  href="/WhatsApp" // Replace with your actual WhatsApp link/handler
-                  aria-label="Chat on WhatsApp"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/faqs" // Link to your full FAQs page
+                  className="px-4 py-1.5 rounded-full font-medium lg:text-base text-sm border hover:bg-white  text-mainheading dark:text-primary dark:hover:bg-white/5 dark:bg-secondary transition-all ease-linear duration-75 focus:outline-none"
                 >
-                  <button className="inline-flex items-center cursor-pointer justify-center rounded-full text-sm bg-[#25D366] lg:text-base px-4 lg:py-2 py-1.5 text-white font-medium transition-all duration-75 ease-linear hover:bg-[#1ebe5a] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#25D366]">
-                    <IoLogoWhatsapp className="mr-2 lg:size-6 size-4" />
-                    <span>WhatsApp</span>
-                  </button>
-                </Link>
-                {/* Telegram Button */}
-                <Link
-                  href="/Telegram" // Replace with your actual Telegram link/handler
-                  aria-label="Chat on Telegram"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <button className="inline-flex items-center justify-center cursor-pointer rounded-full bg-[#2DA5E0] px-4 lg:py-2 py-1.5 text-sm text-white font-medium transition-all duration-75 ease-linear hover:bg-[#249bd4] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#2DA5E0] lg:text-base">
-                    <FaTelegramPlane className="mr-2 lg:size-6 size-4" />
-                    <span>Telegram</span>
-                  </button>
+                  Read more FAQs
                 </Link>
               </div>
-              {/* Read More FAQs Link */}
-              <Link
-                href="/faqs" // Link to your full FAQs page
-                className="px-4 py-1.5 rounded-full font-medium lg:text-base text-sm border hover:bg-white  text-mainheading dark:text-primary dark:hover:bg-white/5 dark:bg-secondary transition-all ease-linear duration-75 focus:outline-none"
-              >
-                Read more FAQs
-              </Link>
             </div>
-          </div>
-        </motion.div>
-      </motion.section>
-    </div>
+          </motion.div>
+        </div>
+      </div>
+    </motion.section>
   );
 };
 

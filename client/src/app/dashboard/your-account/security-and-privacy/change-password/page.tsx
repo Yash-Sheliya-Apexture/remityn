@@ -1330,6 +1330,7 @@ export default function ChangePassword() {
           {/* --- Messages Area --- */}
           <div className="space-y-3">
             {/* API Error Message */}
+            
             {apiError && (
               <div className="bg-red-100 dark:bg-red-600/20 border border-red-400 dark:border-red-600/50 rounded-xl p-4 flex items-center gap-4">
                 <div className="p-1 bg-red-600 rounded-full flex-shrink-0">

@@ -1797,10 +1797,8 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-white dark:bg-background pb-6 pt-8">
+    <footer className="bg-white dark:bg-background lg:py-10 py-5 overflow-hidden">
       <div className="container mx-auto px-4">
-        {/* Logo and Description Section */}
-
         <div className=" flex flex-col lg:flex-row justify-between w-full">
           <div className="flex flex-col w-full lg:w-1/2 mb-8 lg:mb-0">
             <Image
@@ -1810,7 +1808,7 @@ const Footer: React.FC = () => {
               width={100} // Adjusted size
               className="mb-4 lg:h-14 h-6"
             />
-            <p className="text-neutral-900 dark:text-white lg:text-lg text-sm leading-relaxed">
+            <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
               {/* Adjusted text size and leading */}
               We provide reliable and competitive currency exchange services
               with real-time rates, secure transactions, and excellent customer
@@ -1933,7 +1931,7 @@ const Footer: React.FC = () => {
             <span className="font-medium">Apexeture Private Limited</span> ©{" "}
             {new Date().getFullYear()}
           </p>
-          <div className="flex lg:gap-4 gap-2">
+          <div className="flex lg:gap-4 gap-2 pb-10 sm:pb-0">
             <Link href="#" aria-label="Chat on WhatsApp">
               {/* Replace # with actual link */}
               <IoLogoWhatsapp className="lg:size-7 size-6 text-[#25D366] hover:opacity-80 transition-opacity" />
