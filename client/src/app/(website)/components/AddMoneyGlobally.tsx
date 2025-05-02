@@ -679,7 +679,7 @@ const AddMoneyGlobally: React.FC = () => {
             className="w-full lg:w-1/2"
             variants={rightImageVariants} // Apply image reveal animation
           >
-            <div className="relative xl:aspect-[3/2] lg:aspect-square sm:aspect-[3/2] aspect-square overflow-hidden">
+            <div className="relative xl:aspect-[3/2] lg:aspect-square sm:aspect-[3/2] aspect-3/2 overflow-hidden">
             <Image
               src="/assets/images/Refund-pana-light.svg"
               alt="Padlock symbolizing secure money adding"
@@ -687,6 +687,7 @@ const AddMoneyGlobally: React.FC = () => {
               priority
               className="object-contain block dark:hidden"
             />
+            
             <Image
               src="/assets/images/Refund-pana-dark.svg"
               alt="Padlock symbolizing secure money adding"
