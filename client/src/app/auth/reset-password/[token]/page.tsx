@@ -1218,7 +1218,7 @@ const NewPasswordPage = () => {
           <AnimatePresence>
             {resetError && (
               <motion.div
-                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative mb-4" // Added mb-4
+                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center mb-4" // Added mb-4
                 role="alert"
                 initial="initial"
                 animate="animate"
@@ -1244,7 +1244,7 @@ const NewPasswordPage = () => {
           <AnimatePresence>
             {resetSuccess && (
               <motion.div
-                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative mb-4" // Added mb-4
+                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center mb-4" // Added mb-4
                 role="alert"
                 initial="initial"
                 animate="animate"
@@ -1276,8 +1276,7 @@ const NewPasswordPage = () => {
             <form onSubmit={handleSubmit} className="mt-5 space-y-4">
               {" "}
               {/* Adjusted margin-top */}
-              {/* New Password Field */}
-              <div className="relative">
+              <div className="new-password">
                 <label
                   htmlFor="password"
                   className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
@@ -1286,7 +1285,8 @@ const NewPasswordPage = () => {
                   New Password{" "}
                   <span className="text-red-600 dark:text-red-400">*</span>{" "}
                 </label>
-                <div>
+
+                <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
                     id="password"
@@ -1309,16 +1309,16 @@ const NewPasswordPage = () => {
                   />
                   <button
                     type="button"
-                    className="absolute right-4 top-11 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background"
+                    className="absolute right-4 top-4 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background"
                     onClick={togglePasswordVisibility}
                     aria-label={
                       showPassword ? "Hide password" : "Show password"
                     }
                   >
                     {showPassword ? (
-                      <LuEye size={26} />
+                      <LuEye size={22} />
                     ) : (
-                      <LuEyeClosed size={26} />
+                      <LuEyeClosed size={22} />
                     )}
                   </button>
                 </div>
@@ -1332,6 +1332,7 @@ const NewPasswordPage = () => {
                     {passwordRequiredError}{" "}
                   </p>
                 )}
+
                 {shouldShowCriteriaList() && (
                   <ul
                     id="password-criteria"
@@ -1387,7 +1388,7 @@ const NewPasswordPage = () => {
                 )}
               </div>
               {/* Confirm New Password Field */}
-              <div className="relative">
+              <div className="confirm-password">
                 <label
                   htmlFor="confirm-password"
                   className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
@@ -1396,8 +1397,8 @@ const NewPasswordPage = () => {
                   Confirm New Password{" "}
                   <span className="text-red-600 dark:text-red-400">*</span>{" "}
                 </label>{" "}
-                {/* Corrected class */}
-                <div>
+
+                <div className="relative">
                   <input
                     type={showConfirmPassword ? "text" : "password"}
                     id="confirm-password"
@@ -1420,7 +1421,7 @@ const NewPasswordPage = () => {
                   />
                   <button
                     type="button"
-                    className="absolute right-4 top-11 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background"
+                    className="absolute right-4 top-4 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background"
                     onClick={toggleConfirmPasswordVisibility}
                     aria-label={
                       showConfirmPassword
@@ -1429,12 +1430,13 @@ const NewPasswordPage = () => {
                     }
                   >
                     {showConfirmPassword ? (
-                      <LuEye size={26} />
+                      <LuEye size={22} />
                     ) : (
-                      <LuEyeClosed size={26} />
+                      <LuEyeClosed size={22} />
                     )}
                   </button>
                 </div>
+
                 {confirmPasswordError && (
                   <p
                     id="confirm-password-error"
@@ -1449,6 +1451,7 @@ const NewPasswordPage = () => {
                   </p>
                 )}
               </div>
+              
               {/* Submit Button */}
               <div>
                 <button

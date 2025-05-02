@@ -402,9 +402,12 @@ const SecuritySection = () => {
                 fill
                 alt="Padlock symbolizing security"
                 className="object-contain"
-                priority
               />
+
+              
             </div>
+
+
           </motion.div>
         </div>
 

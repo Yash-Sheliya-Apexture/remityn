@@ -5,7 +5,7 @@ import WhyChooseUs from '../components/WhyChooseUs'
 
 const page = () => {
   return (
-    <div>
+    <div className='AboutUs-Page'>
         <TrustedCurrencyPartner />
         <CurrencyExchangeServices />
         <WhyChooseUs />

@@ -192,7 +192,7 @@
 //                         </h2>
 
 //                         <p className="text-base text-center text-gray font-light mb-4">
-//                             New to Wise?{" "}
+//                             New to Wise?
 //                             <Link
 //                                 href="/auth/register"
 //                                 className="text-secondary font-medium underline underline-offset-4"
@@ -560,7 +560,7 @@
 //                         </h2>
 
 //                         <p className="text-center text-gray-500 dark:text-gray-300 font-light mb-4">
-//                             New to Wise?{" "}
+//                             New to Wise?
 //                             <Link
 //                                 href="/auth/register"
 //                                 className="text-primary font-medium underline underline-offset-4"
@@ -913,7 +913,7 @@
 //                         </h2>
 
 //                         <p className="text-center text-gray-500 dark:text-gray-300 font-light mb-4">
-//                             New to Wise?{" "}
+//                             New to Wise?
 //                             <Link
 //                                 href="/auth/register"
 //                                 className="text-primary font-medium underline underline-offset-4"
@@ -1332,7 +1332,7 @@
 //                         </h2>
 
 //                         <p className="text-center text-gray-500 dark:text-gray-300 font-light mb-4">
-//                             New to Wise?{" "}
+//                             New to Wise?
 //                             <Link
 //                                 href="/auth/register"
 //                                 className="text-primary font-medium underline underline-offset-4"
@@ -1715,7 +1715,7 @@
 //                         </h2>
 
 //                         <p className="text-center text-gray-500 dark:text-gray-300 font-light mb-4">
-//                             New to Wise?{" "}
+//                             New to Wise?
 //                             <Link
 //                                 href="/auth/register"
 //                                 className="text-primary font-medium underline underline-offset-4"
@@ -2156,7 +2156,7 @@
 //             </h2>
 
 //             <p className="text-center text-gray-700 dark:text-gray-300 font-light mb-4">
-//               New to Wise?{" "}
+//               New to Wise?
 //               <Link
 //                 href="/auth/register"
 //                 className="text-primary font-medium underline underline-offset-4"
@@ -2259,7 +2259,7 @@
 //                     id="email-error"
 //                     className="flex text-red-700 text-base items-center mt-0.5"
 //                   >
-//                     {" "}
+//
 //                     {/* Added id */}
 //                     <span className="mr-1">
 //                       <IoMdCloseCircle className="size-5" />
@@ -2313,7 +2313,7 @@
 //                     id="password-error"
 //                     className="flex text-red-700 text-base items-center mt-0.5"
 //                   >
-//                     {" "}
+//
 //                     {/* Added id */}
 //                     <span className="mr-1">
 //                       <IoMdCloseCircle className="size-5" />
@@ -2351,7 +2351,7 @@
 //                         viewBox="0 0 24 24"
 //                         aria-hidden="true"
 //                       >
-//                         {" "}
+//
 //                         {/* Added aria-hidden */}
 //                         <circle
 //                           className="opacity-25"
@@ -2615,7 +2615,7 @@
 //             </h2>
 
 //             <p className="text-center text-gray-700 dark:text-gray-300 font-light mb-4">
-//               New to Wise?{" "}
+//               New to Wise?
 //               <Link
 //                 href="/auth/register"
 //                 className="text-primary font-medium underline underline-offset-4"
@@ -2713,7 +2713,7 @@
 //                     id="email-error"
 //                     className="flex text-red-700 text-base items-center mt-0.5"
 //                   >
-//                     {" "}
+//
 //                     {/* Added id */}
 //                     <span className="mr-1">
 //                       <IoMdCloseCircle className="size-5" />
@@ -2767,7 +2767,7 @@
 //                     id="password-error"
 //                     className="flex text-red-700 text-base items-center mt-0.5"
 //                   >
-//                     {" "}
+//
 //                     {/* Added id */}
 //                     <span className="mr-1">
 //                       <IoMdCloseCircle className="size-5" />
@@ -2805,7 +2805,7 @@
 //                         viewBox="0 0 24 24"
 //                         aria-hidden="true"
 //                       >
-//                         {" "}
+//
 //                         {/* Added aria-hidden */}
 //                         <circle
 //                           className="opacity-25"
@@ -3068,7 +3068,7 @@
 //               Welcome back.
 //             </h2>
 //             <p className="text-center text-gray-700 dark:text-gray-300 font-light">
-//               New to Wise?{" "}
+//               New to Wise?
 //               <Link
 //                  href="/auth/register"
 //                 className="text-primary font-medium underline underline-offset-4"
@@ -3509,7 +3509,7 @@
 //               Welcome back.
 //             </h2>
 //             <p className="text-center text-gray-500 dark:text-gray-300">
-//               New to Wise?{" "}
+//               New to Wise?
 //               <Link href="/auth/register">
 //                 <span className="text-primary font-medium capitalize underline underline-offset-4">
 //                   Sign up
@@ -3537,7 +3537,7 @@
 
 //                   <div className="inline-block">
 //                     <span className="text-gray-500 dark:text-gray-300 max-w-60">
-//                       {loginError || googleError}{" "}
+//                       {loginError || googleError}
 //                       {/* Display the relevant error */}
 //                     </span>
 //                   </div>
@@ -3597,7 +3597,7 @@
 //                 htmlFor="email"
 //                 className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
 //               >
-//                 Your email address{" "}
+//                 Your email address
 //                 <span className="text-red-600 dark:text-red-400">*</span>
 //               </label>
 
@@ -3639,7 +3639,7 @@
 //                 htmlFor="password"
 //                 className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
 //               >
-//                 Your password{" "}
+//                 Your password
 //                 <span className="text-red-600 dark:text-red-400">*</span>
 //               </label>
 
@@ -3975,13 +3975,13 @@ export default function LoginPage() {
   // --- RENDER SECTION (No changes needed here) ---
   return (
     <div className="bg-white dark:bg-background">
-      <div className="flex flex-col justify-center items-center h-[calc(100vh-82px)] px-4">
+      <div className="flex flex-col items-center h-[calc(100vh-82px)] px-4">
         <div className="w-full max-w-md lg:mt-20 mt-10">
           {/* Session Expired Message */}
           <AnimatePresence>
             {sessionExpiredMessage && (
               <motion.div
-                className="bg-lightgray dark:bg-primarybox rounded-2xl p-4 flex items-center gap-4 relative mb-4"
+                className="bg-lightgray dark:bg-primarybox rounded-2xl p-4 flex items-center gap-4 mb-4"
                 role="alert"
                 initial="initial"
                 animate="animate"
@@ -3989,17 +3989,14 @@ export default function LoginPage() {
                 variants={errorVariants}
               >
                 <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
-                  {" "}
-                  <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />{" "}
+                  <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
                 </div>
                 <div className="inline-block">
                   <p className="font-medium text-neutral-900 text-sm lg:text-base dark:text-white">
-                    {" "}
-                    Session Expired{" "}
+                    Session Expired
                   </p>
                   <p className="text-gray-500 dark:text-gray-300 max-w-60">
-                    {" "}
-                    {sessionExpiredMessage}{" "}
+                    {sessionExpiredMessage}
                   </p>
                 </div>
               </motion.div>
@@ -4009,19 +4006,15 @@ export default function LoginPage() {
           {/* Title and Sign Up Link */}
           <div className="space-y-2">
             <h2 className="lg:text-3xl text-2xl text-center text-neutral-900 dark:text-white font-medium">
-              {" "}
-              Welcome back.{" "}
+              Welcome back.
             </h2>
             <p className="text-center text-gray-500 dark:text-gray-300">
-              {" "}
-              New to Wise?{" "}
+              New to Wise?
               <Link href="/auth/register">
-                {" "}
                 <span className="text-primary font-medium capitalize underline underline-offset-4">
-                  {" "}
-                  Sign up{" "}
-                </span>{" "}
-              </Link>{" "}
+                  Sign up
+                </span>
+              </Link>
             </p>
           </div>
 
@@ -4029,7 +4022,7 @@ export default function LoginPage() {
           <AnimatePresence>
             {isGeneralErrorVisible && generalError && (
               <motion.div
-                className={`dark:bg-primarybox bg-lightgray rounded-2xl p-4 flex items-center gap-4 relative my-4`}
+                className={`dark:bg-primarybox bg-lightgray rounded-2xl p-4 flex items-center gap-4 my-4`}
                 role="alert"
                 initial="initial"
                 animate="animate"
@@ -4037,13 +4030,11 @@ export default function LoginPage() {
                 variants={errorVariants}
               >
                 <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
-                  {" "}
-                  <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />{" "}
+                  <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
                 </div>
                 <div className="inline-block">
                   <span className="text-gray-500 dark:text-gray-300 max-w-60">
-                    {" "}
-                    {generalError}{" "}
+                    {generalError}
                   </span>
                 </div>
               </motion.div>
@@ -4054,7 +4045,7 @@ export default function LoginPage() {
           <AnimatePresence>
             {isLoginSuccessVisible && loginSuccess && (
               <motion.div
-                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative my-4"
+                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center my-4"
                 role="alert"
                 initial="initial"
                 animate="animate"
@@ -4062,17 +4053,14 @@ export default function LoginPage() {
                 variants={successVariants}
               >
                 <div className="flex bg-green-100 dark:bg-green-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
-                  {" "}
-                  <FaCheck className="p-0.5 text-green-600 dark:text-green-400 lg:size-8 size-6" />{" "}
+                  <FaCheck className="p-0.5 text-green-600 dark:text-green-400 lg:size-8 size-6" />
                 </div>
                 <div className="flex-grow space-y-0.5">
                   <span className="text-neutral-900 dark:text-primary block font-medium">
-                    {" "}
-                    Login successful!{" "}
+                    Login successful!
                   </span>
                   <span className="text-gray-500 dark:text-gray-300 block text-sm">
-                    {" "}
-                    Checking account status...{" "}
+                    Checking account status...
                   </span>
                 </div>
               </motion.div>
@@ -4093,20 +4081,19 @@ export default function LoginPage() {
                   width={28}
                   height={28}
                   alt="Continue with Google"
-                />{" "}
+                />
                 Continue with Google
               </button>
             </div>
 
             {/* Email Input */}
-            <div>
+            <div className="email">
               <label
                 htmlFor="email"
                 className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
               >
-                {" "}
-                Your email address{" "}
-                <span className="text-red-600 dark:text-red-400">*</span>{" "}
+                Your email address
+                <span className="text-red-600 dark:text-red-400">*</span>
               </label>
               <input
                 type="email"
@@ -4131,27 +4118,25 @@ export default function LoginPage() {
                   id="email-error"
                   className="flex text-red-700 text-base items-center mt-0.5"
                 >
-                  {" "}
                   <span className="mr-1">
-                    {" "}
-                    <IoMdCloseCircle className="size-5" />{" "}
-                  </span>{" "}
-                  {emailError}{" "}
+                    <IoMdCloseCircle className="size-5" />
+                  </span>
+                  {emailError}
                 </p>
               )}
             </div>
 
             {/* Password Input */}
-            <div className="relative">
+            <div className="password">
               <label
                 htmlFor="password"
                 className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
               >
-                {" "}
-                Your password{" "}
-                <span className="text-red-600 dark:text-red-400">*</span>{" "}
+                Your password
+                <span className="text-red-600 dark:text-red-400">*</span>
               </label>
-              <div>
+
+              <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   id="password"
@@ -4174,14 +4159,14 @@ export default function LoginPage() {
                 />
                 <button
                   type="button"
-                  className="absolute right-4 top-11 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background"
+                  className="absolute right-4 top-4 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background"
                   onClick={togglePasswordVisibility}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
-                    <LuEye size={26} />
+                    <LuEye size={22} />
                   ) : (
-                    <LuEyeClosed size={26} />
+                    <LuEyeClosed size={22} />
                   )}
                 </button>
               </div>
@@ -4190,26 +4175,21 @@ export default function LoginPage() {
                   id="password-error"
                   className="flex text-red-700 text-base items-center mt-0.5"
                 >
-                  {" "}
                   <span className="mr-1">
-                    {" "}
-                    <IoMdCloseCircle className="size-5" />{" "}
-                  </span>{" "}
-                  {passwordError}{" "}
+                    <IoMdCloseCircle className="size-5" />
+                  </span>
+                  {passwordError}
                 </p>
               )}
             </div>
 
             {/* Forgot Password Link */}
             <div className="text-right">
-              {" "}
               <Link href="/auth/forgot-password" className="inline-block">
-                {" "}
                 <span className="text-neutral-900 dark:text-primary font-medium underline text-sm lg:text-base underline-offset-4">
-                  {" "}
-                  Forgot Password ?{" "}
-                </span>{" "}
-              </Link>{" "}
+                  Forgot Password ?
+                </span>
+              </Link>
             </div>
 
             {/* Submit Button */}
@@ -4225,72 +4205,70 @@ export default function LoginPage() {
               >
                 {isSubmitting ? (
                   <>
-                    {" "}
                     <svg
                       className="h-5 w-5 text-neutral-900 animate-spin mr-2"
                       viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                     >
-                      {" "}
                       <path
                         d="M12 2V6"
                         stroke="currentColor"
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                      />{" "}
+                      />
                       <path
                         d="M12 18V22"
                         stroke="currentColor"
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                      />{" "}
+                      />
                       <path
                         d="M4.93 4.93L7.76 7.76"
                         stroke="currentColor"
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                      />{" "}
+                      />
                       <path
                         d="M16.24 16.24L19.07 19.07"
                         stroke="currentColor"
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                      />{" "}
+                      />
                       <path
                         d="M2 12H6"
                         stroke="currentColor"
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                      />{" "}
+                      />
                       <path
                         d="M18 12H22"
                         stroke="currentColor"
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                      />{" "}
+                      />
                       <path
                         d="M4.93 19.07L7.76 16.24"
                         stroke="currentColor"
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                      />{" "}
+                      />
                       <path
                         d="M16.24 7.76L19.07 4.93"
                         stroke="currentColor"
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                      />{" "}
-                    </svg>{" "}
-                    <span>Logging in...</span>{" "}
+                      />
+                    </svg>
+                    <span>Logging in...</span>
                   </>
                 ) : (
                   "Log in"

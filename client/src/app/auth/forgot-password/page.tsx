@@ -1919,16 +1919,25 @@ const ResetPasswordForm = () => {
   // "Check Your Email" Screen
   if (emailSent) {
     return (
-      <div className="flex flex-col bg-white dark:bg-background justify-center items-center h-[calc(100vh-82px)] px-4">
+      <div className="flex flex-col bg-white dark:bg-background items-center h-[calc(100vh-82px)] px-4">
         <div className="max-w-lg space-y-4">
-          <div className="flex justify-center items-center sm:pt-0 pt-10">
+          <div className="flex justify-center items-center w-full lg:mt-20 mt-10">
             <Image
               src="/assets/images/sendmassage.svg"
               width={600}
               height={600}
               alt="Email Icon"
-              className="w-full object-contain xl:h-80 h-70"
+              className="w-full object-contain xl:h-80 h-70 dark:hidden block"
             />
+            
+            <Image
+              src="/assets/images/sendmassage-dark.svg"
+              width={600}
+              height={600}
+              alt="Email Icon"
+              className="w-full object-contain xl:h-80 h-70 dark:block hidden"
+            />
+            
           </div>
           <h2 className="text-3xl md:text-4xl font-black text-center text-mainheading dark:text-white uppercase">
             {" "}
@@ -1949,7 +1958,7 @@ const ResetPasswordForm = () => {
           <AnimatePresence>
             {showCheckAgainMessage && (
               <motion.div
-                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative my-4"
+                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center my-4"
                 role="alert"
                 initial="initial"
                 animate="animate"
@@ -1972,7 +1981,7 @@ const ResetPasswordForm = () => {
           <AnimatePresence>
             {formError && ( // Display general form error here too if resend fails
               <motion.div
-                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative mt-5"
+                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center mt-5"
                 role="alert"
                 initial="initial"
                 animate="animate"
@@ -2076,7 +2085,7 @@ const ResetPasswordForm = () => {
             )}
           </button>
 
-          <p className="text-base text-center text-gray-700 dark:text-gray-300 mt-5">
+          <p className="text-base text-center text-gray-500 dark:text-gray-300 pb-6">
             {" "}
             Still need help?  {" "}
             <Link
@@ -2094,16 +2103,25 @@ const ResetPasswordForm = () => {
 
   // Initial Form Screen
   return (
-    <div className="flex flex-col bg-white dark:bg-background justify-center items-center h-[calc(100vh-82px)] px-4">
+    <div className="flex flex-col bg-white dark:bg-background items-center h-[calc(100vh-82px)] px-4">
       <div className="max-w-lg space-y-4">
-        <div className="flex justify-center items-center sm:pt-0 pt-10">
+        <div className="flex justify-center items-center w-full lg:mt-20 mt-10">
           <Image
             src="/assets/images/resetpassword.svg"
             width={600}
             height={600}
             alt="Key Icon"
-            className="w-full object-contain xl:h-80 h-70"
+            className="w-full object-contain xl:h-80 h-70 dark:hidden block"
           />
+
+          <Image
+            src="/assets/images/resetpassword-dark.svg"
+            width={600}
+            height={600}
+            alt="Key Icon"
+            className="w-full object-contain xl:h-80 h-70 hidden dark:block"
+          />
+          
         </div>
         <h2 className="text-3xl md:text-4xl font-black text-center text-mainheading dark:text-white uppercase">
           {" "}
@@ -2119,7 +2137,7 @@ const ResetPasswordForm = () => {
         <AnimatePresence>
           {formError && (
             <motion.div
-              className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative mt-5"
+              className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center mt-5"
               role="alert"
               initial="initial"
               animate="animate"
@@ -2271,7 +2289,7 @@ const ResetPasswordForm = () => {
           </div>
         </form>
 
-        <p className="text-base text-gray-500 dark:text-gray-300 my-2 text-center">
+        <p className="text-base text-gray-500 dark:text-gray-300 pb-6 text-center">
           {" "}
           Need help? Read this  {" "}
           <Link href="/faqs">

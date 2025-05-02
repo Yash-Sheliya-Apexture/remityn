@@ -6,12 +6,12 @@ import GetStartedSection from "../components/GetStartedSection";
 
 const SendMoneyPage = () => {
   return (
-    <main className="Send-MoneyPages">
+    <div className="Send-MoneyPages">
       <CrossBorderMoneyTransfer />
       <FreedomToReceive />
       <ComfortSendMoney />
       <GetStartedSection />
-    </main>
+    </div>
   );
 };
 
