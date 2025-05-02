@@ -5064,6 +5064,923 @@
 
 // export default AddRecipientPage;
 
+// // frontend/src/app/dashboard/recipients/addrecipient/page.tsx
+// "use client";
+// import React, { useState, useEffect, useMemo } from "react";
+// import { useRouter, useSearchParams } from "next/navigation";
+// import DashboardHeader from "../../../components/layout/DashboardHeader";
+// import { useAuth } from "../../../contexts/AuthContext";
+// import recipientService from "../../../services/recipient";
+// import currencyService, { Currency } from "../../../services/currency";
+// import { IoMdCloseCircle } from "react-icons/io";
+// import Image from "next/image";
+// import { IoArrowForward, IoClose as IoCloseIcon } from "react-icons/io5";
+// import { Skeleton } from "@/components/ui/skeleton";
+// import { FiSearch } from "react-icons/fi"; // Kept FiSearch as it was in original
+// import { MdCancel } from "react-icons/md";
+// // Correctly import the AccountTypeDropdown component
+// import AccountTypeDropdown from "../../../components/ui/AccountTypeDropdown"; // Adjusted path assuming it's in frontend/src/app/components/ui
+
+// // Define an interface for the expected API error structure from recipientService
+// interface ApiErrorData {
+//   errors?: Record<string, string>;
+//   message?: string;
+// }
+
+// interface ApiErrorResponse {
+//   status: number;
+//   data: ApiErrorData;
+// }
+
+// interface ApiError {
+//   response?: ApiErrorResponse;
+//   message?: string;
+// }
+
+// // Define a type for the expected response from addRecipient
+// interface NewRecipient {
+//   _id: string;
+// }
+
+// const AddRecipientPage = () => {
+//   const router = useRouter();
+//   const { token } = useAuth();
+//   const searchParams = useSearchParams();
+
+//   const [step, setStep] = useState(1);
+//   const [currencies, setCurrencies] = useState<Currency[]>([]);
+//   const [selectedCurrencyCode, setSelectedCurrencyCode] = useState("");
+//   const [email, setEmail] = useState("");
+//   const [accountHolderName, setAccountHolderName] = useState("");
+//   const [ifscCode, setIfscCode] = useState("");
+//   const [accountNumber, setAccountNumber] = useState("");
+//   const [bankName, setBankName] = useState("");
+//   const [address, setAddress] = useState("");
+//   const [accountType, setAccountType] = useState("");
+//   const [formError, setFormError] = useState("");
+//   const [isSubmitting, setIsSubmitting] = useState(false);
+//   const [accountHolderNameError, setAccountHolderNameError] = useState("");
+//   const [ifscCodeError, setIfscCodeError] = useState("");
+//   const [accountNumberError, setAccountNumberError] = useState("");
+//   const [bankNameError, setBankNameError] = useState("");
+//   const [addressError, setAddressError] = useState("");
+//   const [accountTypeError, setAccountTypeError] = useState(""); // This holds the error string
+//   const [isLoadingCurrencies, setIsLoadingCurrencies] = useState(true);
+//   const [searchCurrency, setSearchCurrency] = useState("");
+
+//   useEffect(() => {
+//     const fetchCurrencies = async () => {
+//       setIsLoadingCurrencies(true);
+//       setFormError("");
+//       try {
+//         const fetchedCurrencies = await currencyService.getAllCurrencies();
+//         setCurrencies(fetchedCurrencies);
+//       } catch (error) {
+//         console.error("Error fetching currencies:", error);
+//         const errorMessage =
+//           error instanceof Error ? error.message : "Failed to load currencies.";
+//         setFormError(errorMessage);
+//       } finally {
+//         setIsLoadingCurrencies(false);
+//       }
+//     };
+
+//     fetchCurrencies();
+//   }, []);
+
+//   // Memoized currency lists (Unchanged)
+//   const availableCurrenciesBase = useMemo((): Currency[] => {
+//     return currencies.filter((currency) => ["INR"].includes(currency.code));
+//   }, [currencies]);
+
+//   const comingSoonCurrenciesBase = useMemo((): Currency[] => {
+//     const availableCodes = ["INR"];
+//     return currencies.filter(
+//       (currency) =>
+//         !availableCodes.includes(currency.code) &&
+//         ["EUR", "USD", "GBP"].includes(currency.code)
+//     );
+//   }, [currencies]);
+
+//   const filteredAvailableCurrencies = useMemo((): Currency[] => {
+//     if (!searchCurrency) return availableCurrenciesBase;
+//     const searchTerm = searchCurrency.toLowerCase();
+//     return availableCurrenciesBase.filter((currency) => {
+//       return (
+//         currency.currencyName?.toLowerCase().includes(searchTerm) ||
+//         currency.code?.toLowerCase().includes(searchTerm)
+//       );
+//     });
+//   }, [availableCurrenciesBase, searchCurrency]);
+
+//   const filteredComingSoonCurrencies = useMemo((): Currency[] => {
+//     if (!searchCurrency) return comingSoonCurrenciesBase;
+//     const searchTerm = searchCurrency.toLowerCase();
+//     return comingSoonCurrenciesBase.filter((currency) => {
+//       return (
+//         currency.currencyName?.toLowerCase().includes(searchTerm) ||
+//         currency.code?.toLowerCase().includes(searchTerm)
+//       );
+//     });
+//   }, [comingSoonCurrenciesBase, searchCurrency]);
+
+//   // --- useMemo hook to determine if the form is invalid (Kept) ---
+//   const isFormInvalid = useMemo(() => {
+//     // Return true if any REQUIRED field is empty (or just whitespace)
+//     return (
+//       !accountHolderName.trim() ||
+//       !ifscCode.trim() ||
+//       !accountNumber.trim() ||
+//       !accountType || // Check if the string is empty (not selected)
+//       !bankName.trim() ||
+//       !address.trim()
+//     );
+//   }, [
+//     accountHolderName,
+//     ifscCode,
+//     accountNumber,
+//     accountType,
+//     bankName,
+//     address,
+//   ]);
+//   // --- END ---
+
+//   const handleCurrencySelect = (currencyCode: string) => {
+//     setSelectedCurrencyCode(currencyCode);
+//     setStep(2);
+//   };
+
+//   const handleBackStep = () => {
+//     if (step > 1) {
+//       setStep(step - 1);
+//     } else {
+//       router.back();
+//     }
+//   };
+
+//   // Manual validation function (Kept, but simplified error setting)
+//   const validateForm = (): boolean => {
+//     let isValid = true;
+//     setAccountHolderNameError("");
+//     setIfscCodeError("");
+//     setAccountNumberError("");
+//     setBankNameError("");
+//     setAddressError("");
+//     setAccountTypeError("");
+
+//     if (!accountHolderName.trim()) {
+//       setAccountHolderNameError("Account holder name is required");
+//       isValid = false;
+//     }
+//     if (!ifscCode.trim()) {
+//       setIfscCodeError("IFSC code is required");
+//       isValid = false;
+//     }
+//     // Add specific validation for IFSC format if needed (e.g., length)
+//     // else if (ifscCode.trim().length !== 11) {
+//     //   setIfscCodeError("IFSC code must be 11 characters");
+//     //   isValid = false;
+//     // }
+//     if (!accountNumber.trim()) {
+//       setAccountNumberError("Account number is required");
+//       isValid = false;
+//     }
+//     // Add specific validation for account number format if needed here
+//     if (!bankName.trim()) {
+//       setBankNameError("Bank name is required");
+//       isValid = false;
+//     }
+//     if (!address.trim()) {
+//       setAddressError("Address is required");
+//       isValid = false;
+//     }
+//     if (!accountType) {
+//       // Check if accountType string is empty
+//       setAccountTypeError("Account type is required");
+//       isValid = false;
+//     }
+//     return isValid;
+//   };
+
+//   const handleSubmit = async (e: React.FormEvent) => {
+//     e.preventDefault();
+//     setFormError(""); // Reset general form error
+
+//     // Perform validation
+//     const isValid = validateForm();
+
+//     if (!isValid) {
+//       // Optional: Maybe set a general error, or rely on individual field errors.
+//       // setFormError("Please correct the errors below.");
+//       return; // Stop submission if validation fails
+//     }
+
+//     setIsSubmitting(true);
+//     try {
+//       const recipientData = {
+//         currencyCode: selectedCurrencyCode,
+//         email: email.trim() || undefined, // Send undefined if empty
+//         accountHolderName: accountHolderName.trim(),
+//         ifscCode: ifscCode.trim().toUpperCase(),
+//         accountNumber: accountNumber.trim(),
+//         bankName: bankName.trim(),
+//         address: address.trim(),
+//         accountType,
+//       };
+
+//       const newRecipient: NewRecipient = await recipientService.addRecipient(
+//         recipientData,
+//         token
+//       );
+
+//       // --- Redirection Logic (Unchanged) ---
+//       const returnToParam = searchParams.get("returnTo");
+//       if (returnToParam) {
+//         const decodedReturnUrl = decodeURIComponent(returnToParam);
+//         const match = decodedReturnUrl.match(
+//           /\/dashboard\/balances\/([^/]+)\/send\/select-recipient/
+//         );
+
+//         if (match?.[1] && newRecipient?._id) {
+//           const balanceId = match[1];
+//           const targetUrl = `/dashboard/balances/${balanceId}/send/amount?recipientId=${newRecipient._id}`;
+//           console.log("Redirecting back to send flow:", targetUrl);
+//           router.push(targetUrl);
+//         } else {
+//           console.warn(
+//             "Could not parse balanceId from returnTo URL or missing recipient ID, redirecting to recipient details:",
+//             decodedReturnUrl,
+//             newRecipient?._id
+//           );
+//           router.push(
+//             newRecipient?._id
+//               ? `/dashboard/recipients/${newRecipient._id}`
+//               : "/dashboard/recipients"
+//           );
+//         }
+//       } else if (newRecipient?._id) {
+//         console.log("Redirecting to recipient details page (standard flow)");
+//         router.push(`/dashboard/recipients/${newRecipient._id}`);
+//       } else {
+//         console.warn(
+//           "Recipient added, but no ID received or standard flow error. Redirecting to recipient list."
+//         );
+//         setFormError(
+//           "Recipient added, but failed to redirect. Please check the recipients list."
+//         );
+//         router.push("/dashboard/recipients");
+//       }
+//       // --- End Redirection Logic ---
+//     } catch (error: unknown) {
+//       console.error("Error adding recipient:", error);
+//       const apiError = error as ApiError;
+
+//       // Handle Backend Validation Errors (400 Bad Request) (Unchanged)
+//       if (apiError.response?.data && apiError.response.status === 400) {
+//         const backendErrors = apiError.response.data.errors;
+//         if (backendErrors && typeof backendErrors === "object") {
+//           setAccountHolderNameError(backendErrors.accountHolderName || "");
+//           setIfscCodeError(backendErrors.ifscCode || "");
+//           setAccountNumberError(backendErrors.accountNumber || "");
+//           setBankNameError(backendErrors.bankName || "");
+//           setAddressError(backendErrors.address || "");
+//           setAccountTypeError(backendErrors.accountType || "");
+//         }
+
+//         if (apiError.response.data.message) {
+//           setFormError(apiError.response.data.message);
+//         } else if (!backendErrors || Object.keys(backendErrors).length === 0) {
+//           setFormError("Invalid data submitted. Please check the fields.");
+//         }
+//       } else {
+//         // Handle other types of errors (Unchanged)
+//         const errorMessage =
+//           apiError?.response?.data?.message ||
+//           apiError?.message ||
+//           (error instanceof Error
+//             ? error.message
+//             : "An unknown error occurred");
+//         setFormError(
+//           errorMessage || "Failed to add recipient. Please try again."
+//         );
+//       }
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   const handleCloseFormError = () => {
+//     setFormError("");
+//   };
+
+//   const clearSearchTerm = () => {
+//     setSearchCurrency("");
+//   };
+
+//   const handleClearForm = () => {
+//     setEmail("");
+//     setAccountHolderName("");
+//     setIfscCode("");
+//     setAccountNumber("");
+//     setBankName("");
+//     setAddress("");
+//     setAccountType("");
+//     setFormError("");
+//     setAccountHolderNameError("");
+//     setIfscCodeError("");
+//     setAccountNumberError("");
+//     setBankNameError("");
+//     setAddressError("");
+//     setAccountTypeError("");
+//   };
+
+//   // --- JSX Section ---
+//   return (
+//     // Original container classes
+//     <div className="AddRecipientPage py-5">
+//       <DashboardHeader title="Recipients" onBack={handleBackStep} />
+//       {/* Removed extra padding div */}
+//       <div className="Steps">
+//         {/* Step 1: Currency Selection (Original UI) */}
+//         {step === 1 && (
+//           <div
+//             key="currency-step"
+//             // Original class structure
+//             className="bg-white dark:bg-background relative"
+//           >
+//             <h2 className="lg:text-3xl md:text-2xl text-xl capitalize font-semibold text-mainheading dark:text-white text-left md:text-center mb-4">
+//               Select their currency
+//             </h2>
+
+//             {/* Currency Search Input (Original UI) */}
+//             <div className="relative mb-4">
+//               <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+//                 <FiSearch
+//                   className="h-5 w-5 text-neutral-900 dark:text-white"
+//                   aria-hidden="true"
+//                 />
+//               </div>
+//               <input
+//                 type="text"
+//                 // Original classes
+//                 className="w-full rounded-full h-14 py-3 pl-12 pr-10 border transition-all ease-linear duration-75 focus:outline-none focus:border-[#5f5f5f] placeholder:text-neutral-600 dark:placeholder:text-white bg-white dark:bg-background"
+//                 placeholder="Search currency by name or code..."
+//                 value={searchCurrency}
+//                 onChange={(e) => setSearchCurrency(e.target.value)}
+//               />
+//               {searchCurrency && (
+//                 <button
+//                   type="button"
+//                   onClick={clearSearchTerm}
+//                   // Original classes
+//                   className="absolute inset-y-0 right-3 flex items-center text-neutral-900 dark:text-primary focus:outline-none cursor-pointer"
+//                   aria-label="Clear search"
+//                 >
+//                   <MdCancel size={28} aria-hidden="true" />
+//                 </button>
+//               )}
+//             </div>
+
+//             {/* General Form Error Display for Currency Step (Original UI) */}
+//             {formError && !isLoadingCurrencies && (
+//               <div
+//                 // Original classes
+//                 className="bg-red-100 dark:bg-red-600/20 border border-red-400 dark:border-red-600/50 rounded-xl p-4 relative mb-3"
+//                 role="alert"
+//               >
+//                 <span className="text-red-600 dark:text-red-400 text-sm font-medium">
+//                   {formError}
+//                 </span>
+//                 {/* Optional: Add a close button if needed, using original styles */}
+//                 {/* <button onClick={handleCloseFormError} className="absolute top-0 right-0 p-2">
+//                       <IoCloseIcon className="h-5 w-5" />
+//                    </button> */}
+//               </div>
+//             )}
+
+//             {/* Currency List Section (Original UI) */}
+//             <div className="space-y-6">
+//               {isLoadingCurrencies ? (
+//                 // Original Skeletons
+//                 <>
+//                   <Skeleton className="h-16 rounded-xl w-full" />
+//                   <Skeleton className="h-16 rounded-xl w-full" />
+//                   <Skeleton className="h-16 rounded-xl w-full" />
+//                 </>
+//               ) : (
+//                 <>
+//                   {/* Available Currencies (Original UI) */}
+//                   {filteredAvailableCurrencies.length > 0 && (
+//                     <div>
+//                       <h3 className="font-medium text-gray-500 dark:text-gray-300 mb-3 tracking-wide leading-8 border-b">
+//                         All currencies
+//                       </h3>
+//                       <div className="space-y-2">
+//                         {filteredAvailableCurrencies.map((currency) => (
+//                           <div
+//                             key={currency._id || currency.code}
+//                             role="button"
+//                             tabIndex={0}
+//                             // Original classes
+//                             className={`block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer`}
+//                             onClick={() => handleCurrencySelect(currency.code)}
+//                             onKeyDown={(e) =>
+//                               e.key === "Enter" || e.key === " "
+//                                 ? handleCurrencySelect(currency.code)
+//                                 : null
+//                             }
+//                           >
+//                             <div className="flex items-center justify-between">
+//                               <div className="flex items-center gap-3 sm:gap-4">
+//                                 {currency.flagImage ? (
+//                                   <Image
+//                                     src={currency.flagImage}
+//                                     width={40}
+//                                     height={40}
+//                                     alt={`${currency.currencyName} Flag`}
+//                                     className="rounded-full object-cover flex-shrink-0"
+//                                   />
+//                                 ) : (
+//                                   <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 text-xs font-medium flex-shrink-0">
+//                                     {currency.code}
+//                                   </div>
+//                                 )}
+//                                 <div className="flex-grow">
+//                                   <h4 className="font-medium text-neutral-900 dark:text-white text-sm md:text-base truncate">
+//                                     {currency.code} - {currency.currencyName}
+//                                   </h4>
+//                                 </div>
+//                               </div>
+//                               <div className="ml-4">
+//                                 <IoArrowForward className="size-5 text-neutral-900 dark:text-white" />
+//                               </div>
+//                             </div>
+//                           </div>
+//                         ))}
+//                       </div>
+//                     </div>
+//                   )}
+
+//                   {/* Coming Soon Currencies (Original UI) */}
+//                   {filteredComingSoonCurrencies.length > 0 && (
+//                     <div>
+//                       {/* Original heading */}
+//                       <h3 className="font-medium text-gray-500 dark:text-gray-300 mb-3 tracking-wide leading-8 border-b">
+//                         Coming soon
+//                       </h3>
+//                       <div className="space-y-2">
+//                         {filteredComingSoonCurrencies.map((currency) => (
+//                           <div
+//                             key={currency._id || currency.code}
+//                             // Original classes
+//                             className={`p-3 sm:p-4 rounded-xl cursor-not-allowed opacity-60 border border-transparent dark:border-transparent`}
+//                           >
+//                             <div className="flex items-center justify-between">
+//                               <div className="flex items-center gap-3 sm:gap-4">
+//                                 {currency.flagImage ? (
+//                                   <Image
+//                                     src={currency.flagImage}
+//                                     width={40}
+//                                     height={40}
+//                                     alt={`${currency.currencyName} Flag`}
+//                                     className="rounded-full object-cover flex-shrink-0"
+//                                   />
+//                                 ) : (
+//                                   <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 text-xs font-medium flex-shrink-0">
+//                                     {currency.code}
+//                                   </div>
+//                                 )}
+//                                 <div className="flex-grow">
+//                                   <h4 className="font-medium text-neutral-900 dark:text-white text-sm md:text-base truncate">
+//                                     {currency.code} - {currency.currencyName}
+//                                   </h4>
+//                                 </div>
+//                               </div>
+//                               <span className="text-xs bg-lightgray dark:bg-primarybox text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full flex-shrink-0 ml-2">
+//                                 Coming soon
+//                               </span>
+//                             </div>
+//                           </div>
+//                         ))}
+//                       </div>
+//                     </div>
+//                   )}
+
+//                   {/* No Results Message (Original UI) */}
+//                   {!isLoadingCurrencies &&
+//                     filteredAvailableCurrencies.length === 0 &&
+//                     filteredComingSoonCurrencies.length === 0 && (
+//                       <div className="text-center text-gray-700 dark:bg-white/5 bg-lightgray dark:text-gray-300 mt-8 py-5 rounded-lg">
+//                         {searchCurrency.trim() !== ""
+//                           ? `No currencies found for "${searchCurrency}".`
+//                           : "No currencies available at the moment."}
+//                       </div>
+//                     )}
+//                 </>
+//               )}
+//             </div>
+//           </div>
+//         )}
+
+//         {/* Step 2: Account Details Form (Original UI) */}
+//         {step === 2 && (
+//           <div
+//             key="account-step"
+//             // Original classes
+//             className="bg-white dark:bg-background w-full lg:max-w-lg"
+//           >
+//             <h2 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white mb-6 text-center sm:text-left">
+//               Enter their account details ({selectedCurrencyCode}){" "}
+//               {/* Added selected code here */}
+//             </h2>
+
+//             {/* General Form Error Display (Original UI) */}
+//             {formError && (
+//               <div
+//                 // Original classes
+//                 className="bg-red-100 dark:bg-red-600/20 border border-red-400 dark:border-red-600/50 rounded-xl p-4 relative mb-3"
+//                 role="alert"
+//               >
+//                 <span className="text-red-600 dark:text-red-400 text-sm font-medium">
+//                   {formError}
+//                 </span>
+//                 {/* Optional: Add a close button if needed */}
+//                 {/* <button onClick={handleCloseFormError} className="absolute top-0 right-0 p-2">
+//                      <IoCloseIcon className="h-5 w-5 text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200" />
+//                  </button> */}
+//               </div>
+//             )}
+
+//             {/* Recipient Form */}
+//             <form className="mt-2 space-y-5" onSubmit={handleSubmit} noValidate>
+//               {" "}
+//               {/* Added noValidate */}
+//               {/* Email Input (Original UI) */}
+//               <div>
+//                 <label
+//                   htmlFor="email"
+//                   className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
+//                 >
+//                   Their email (optional)
+//                 </label>
+//                 <input
+//                   type="email"
+//                   id="email"
+//                   // Original classes
+//                   className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 focus:border-[#5f5f5f]`}
+//                   value={email}
+//                   placeholder="example@domain.com"
+//                   onChange={(e) => setEmail(e.target.value)}
+//                 />
+//               </div>
+//               {/* Heading (Original UI) */}
+//               <h3 className="font-medium text-gray-600 dark:text-white pt-2 pb-1 mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
+//                 Recipient's bank details
+//               </h3>
+//               {/* Bank Details Section (Original UI for Inputs, Kept Error Logic) */}
+//               <div className="space-y-5">
+//                 {/* Account Holder Name */}
+//                 <div>
+//                   <label
+//                     htmlFor="accountHolderName"
+//                     className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
+//                   >
+//                     Full name of the account holder
+//                     <span className="text-red-500 ml-1">*</span>
+//                   </label>
+//                   <input
+//                     type="text"
+//                     id="accountHolderName"
+//                     // Original input classes, error border logic kept
+//                     className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
+//                       accountHolderNameError
+//                         ? "border-red-600 border-2 !shadow-none focus:!ring-red-600" // Error style
+//                         : "focus:border-[#5f5f5f]" // Normal style
+//                     }`}
+//                     value={accountHolderName}
+//                     placeholder="e.g., John Doe"
+//                     onChange={(e) => {
+//                       setAccountHolderName(e.target.value);
+//                       if (e.target.value.trim()) setAccountHolderNameError("");
+//                     }}
+//                     required
+//                     aria-invalid={!!accountHolderNameError}
+//                     aria-describedby={
+//                       accountHolderNameError
+//                         ? "accountHolderName-error"
+//                         : undefined
+//                     }
+//                   />
+//                   {/* Original error message display */}
+//                   {accountHolderNameError && (
+//                     <p
+//                       id="accountHolderName-error"
+//                       className="flex text-red-500 text-xs items-center mt-1"
+//                       role="alert"
+//                     >
+//                       <IoMdCloseCircle className="size-3.5 mr-1 flex-shrink-0" />
+//                       {accountHolderNameError}
+//                     </p>
+//                   )}
+//                 </div>
+
+//                 {/* IFSC Code */}
+//                 <div>
+//                   <label
+//                     htmlFor="ifscCode"
+//                     className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
+//                   >
+//                     IFSC code <span className="text-red-500 ml-1">*</span>
+//                   </label>
+//                   <input
+//                     type="text"
+//                     id="ifscCode"
+//                     // Original input classes, error border logic kept
+//                     className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
+//                       ifscCodeError
+//                         ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+//                         : "focus:border-[#5f5f5f]"
+//                     }`}
+//                     value={ifscCode}
+//                     placeholder="e.g., YESB0123456"
+//                     onChange={(e) => {
+//                       // Keep validation logic
+//                       const val = e.target.value
+//                         .toUpperCase()
+//                         .replace(/[^A-Z0-9]/g, "");
+//                       setIfscCode(val.slice(0, 11));
+//                       if (val.trim()) setIfscCodeError("");
+//                     }}
+//                     required
+//                     aria-invalid={!!ifscCodeError}
+//                     aria-describedby={
+//                       ifscCodeError ? "ifscCode-error" : undefined
+//                     }
+//                     maxLength={11}
+//                     // Removed minLength as it's handled by validation
+//                   />
+//                   {/* Original error message display */}
+//                   {ifscCodeError && (
+//                     <p
+//                       id="ifscCode-error"
+//                       className="flex text-red-500 text-xs items-center mt-1"
+//                       role="alert"
+//                     >
+//                       <IoMdCloseCircle className="size-3.5 mr-1 flex-shrink-0" />
+//                       {ifscCodeError}
+//                     </p>
+//                   )}
+//                 </div>
+
+//                 {/* Account Number */}
+//                 <div>
+//                   <label
+//                     htmlFor="accountNumber"
+//                     className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
+//                   >
+//                     Account number <span className="text-red-500 ml-1">*</span>
+//                   </label>
+//                   <input
+//                     type="text"
+//                     inputMode="numeric" // Keep hint
+//                     id="accountNumber"
+//                     // Original input classes, error border logic kept
+//                     className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
+//                       accountNumberError
+//                         ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+//                         : "focus:border-[#5f5f5f]"
+//                     }`}
+//                     value={accountNumber}
+//                     placeholder="Enter account number"
+//                     onChange={(e) => {
+//                       // Keep validation logic
+//                       const val = e.target.value.replace(/\D/g, "");
+//                       setAccountNumber(val);
+//                       if (val.trim()) setAccountNumberError("");
+//                     }}
+//                     required
+//                     aria-invalid={!!accountNumberError}
+//                     aria-describedby={
+//                       accountNumberError ? "accountNumber-error" : undefined
+//                     }
+//                   />
+//                   {/* Original error message display */}
+//                   {accountNumberError && (
+//                     <p
+//                       id="accountNumber-error"
+//                       className="flex text-red-500 text-xs items-center mt-1"
+//                       role="alert"
+//                     >
+//                       <IoMdCloseCircle className="size-3.5 mr-1 flex-shrink-0" />
+//                       {accountNumberError}
+//                     </p>
+//                   )}
+//                 </div>
+
+//                 {/* Account Type Dropdown */}
+//                 <div>
+//                   <label className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base">
+//                     Account type <span className="text-red-500 ml-1">*</span>
+//                   </label>
+//                   <AccountTypeDropdown
+//                     value={accountType}
+//                     onChange={(value) => {
+//                       setAccountType(value);
+//                       if (value) setAccountTypeError(""); // Clear error on selection
+//                     }}
+//                     error={accountTypeError} // Pass error string
+//                   />
+//                   {/* Error is displayed within the Dropdown component, no separate <p> needed here */}
+//                 </div>
+
+//                 {/* Bank Name */}
+//                 <div>
+//                   <label
+//                     htmlFor="bankName"
+//                     className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
+//                   >
+//                     Bank name <span className="text-red-500 ml-1">*</span>
+//                   </label>
+//                   <input
+//                     type="text"
+//                     id="bankName"
+//                     // Original input classes, error border logic kept
+//                     className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
+//                       bankNameError
+//                         ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+//                         : "focus:border-[#5f5f5f]"
+//                     }`}
+//                     value={bankName}
+//                     placeholder="e.g., State Bank of India"
+//                     onChange={(e) => {
+//                       setBankName(e.target.value);
+//                       if (e.target.value.trim()) setBankNameError("");
+//                     }}
+//                     required
+//                     aria-invalid={!!bankNameError}
+//                     aria-describedby={
+//                       bankNameError ? "bankName-error" : undefined
+//                     }
+//                   />
+//                   {/* Original error message display */}
+//                   {bankNameError && (
+//                     <p
+//                       id="bankName-error"
+//                       className="flex text-red-500 text-xs items-center mt-1"
+//                       role="alert"
+//                     >
+//                       <IoMdCloseCircle className="size-3.5 mr-1 flex-shrink-0" />
+//                       {bankNameError}
+//                     </p>
+//                   )}
+//                 </div>
+
+//                 {/* Recipient Address */}
+//                 <div>
+//                   <label
+//                     htmlFor="address"
+//                     className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
+//                   >
+//                     Recipient Address (Street, City, Postcode, Country)
+//                     <span className="text-red-500 ml-1">*</span>
+//                   </label>
+//                   <input
+//                     type="text"
+//                     id="address"
+//                     // Original input classes, error border logic kept
+//                     className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
+//                       addressError
+//                         ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+//                         : "focus:border-[#5f5f5f]"
+//                     }`}
+//                     value={address}
+//                     placeholder="e.g., 123 Main St, Anytown, 12345, India"
+//                     onChange={(e) => {
+//                       setAddress(e.target.value);
+//                       if (e.target.value.trim()) setAddressError("");
+//                     }}
+//                     required
+//                     aria-invalid={!!addressError}
+//                     aria-describedby={
+//                       addressError ? "address-error" : undefined
+//                     }
+//                   />
+//                   {/* Original error message display */}
+//                   {addressError && (
+//                     <p
+//                       id="address-error"
+//                       className="flex text-red-500 text-xs items-center mt-1"
+//                       role="alert"
+//                     >
+//                       <IoMdCloseCircle className="size-3.5 mr-1 flex-shrink-0" />
+//                       {addressError}
+//                     </p>
+//                   )}
+//                 </div>
+//               </div>
+//               {/* Form Action Buttons (Original UI) */}
+//               <div className="flex sm:flex-row flex-col-reverse justify-center items-center gap-4 pt-4">
+//                 <button
+//                   type="button"
+//                   // Original classes
+//                   className={`sm:order-1 order-2 bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear`}
+//                   onClick={handleClearForm}
+//                 >
+//                   Clear All
+//                 </button>
+//                 <button
+//                   type="submit"
+//                   // Original classes
+//                   className={`sm:order-2 order-1 bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center`}
+//                   // --- KEPT: Logic to disable button ---
+//                   disabled={isSubmitting || isFormInvalid}
+//                   // --- END KEPT ---
+//                 >
+//                   {isSubmitting ? (
+//                     <>
+//                       {/* Original SVG Loader */}
+//                       <svg
+//                         className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+//                         viewBox="0 0 24 24"
+//                         fill="none"
+//                         xmlns="http://www.w3.org/2000/svg"
+//                       >
+//                         <path
+//                           d="M12 2V6"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M12 18V22"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M4.93 4.93L7.76 7.76"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M16.24 16.24L19.07 19.07"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M2 12H6"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M18 12H22"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M4.93 19.07L7.76 16.24"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M16.24 7.76L19.07 4.93"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                       </svg>
+//                       <span>Confirming...</span>
+//                     </>
+//                   ) : (
+//                     "Confirm"
+//                   )}
+//                 </button>
+//               </div>
+//             </form>
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default AddRecipientPage;
+
+
+
 // frontend/src/app/dashboard/recipients/addrecipient/page.tsx
 "use client";
 import React, { useState, useEffect, useMemo } from "react";
@@ -5076,12 +5993,11 @@ import { IoMdCloseCircle } from "react-icons/io";
 import Image from "next/image";
 import { IoArrowForward, IoClose as IoCloseIcon } from "react-icons/io5";
 import { Skeleton } from "@/components/ui/skeleton";
-import { FiSearch } from "react-icons/fi"; // Kept FiSearch as it was in original
+import { FiSearch } from "react-icons/fi";
 import { MdCancel } from "react-icons/md";
-// Correctly import the AccountTypeDropdown component
-import AccountTypeDropdown from "../../../components/ui/AccountTypeDropdown"; // Adjusted path assuming it's in frontend/src/app/components/ui
+import AccountTypeDropdown from "../../../components/ui/AccountTypeDropdown";
 
-// Define an interface for the expected API error structure from recipientService
+// Interfaces (ApiErrorData, ApiErrorResponse, ApiError, NewRecipient) remain the same...
 interface ApiErrorData {
   errors?: Record<string, string>;
   message?: string;
@@ -5097,16 +6013,17 @@ interface ApiError {
   message?: string;
 }
 
-// Define a type for the expected response from addRecipient
 interface NewRecipient {
   _id: string;
 }
+// --- End Interfaces ---
 
 const AddRecipientPage = () => {
   const router = useRouter();
   const { token } = useAuth();
   const searchParams = useSearchParams();
 
+  // State variables remain the same...
   const [step, setStep] = useState(1);
   const [currencies, setCurrencies] = useState<Currency[]>([]);
   const [selectedCurrencyCode, setSelectedCurrencyCode] = useState("");
@@ -5124,10 +6041,12 @@ const AddRecipientPage = () => {
   const [accountNumberError, setAccountNumberError] = useState("");
   const [bankNameError, setBankNameError] = useState("");
   const [addressError, setAddressError] = useState("");
-  const [accountTypeError, setAccountTypeError] = useState(""); // This holds the error string
+  const [accountTypeError, setAccountTypeError] = useState("");
   const [isLoadingCurrencies, setIsLoadingCurrencies] = useState(true);
   const [searchCurrency, setSearchCurrency] = useState("");
+  // --- End State Variables ---
 
+  // useEffect for fetching currencies remains the same...
   useEffect(() => {
     const fetchCurrencies = async () => {
       setIsLoadingCurrencies(true);
@@ -5147,8 +6066,9 @@ const AddRecipientPage = () => {
 
     fetchCurrencies();
   }, []);
+  // --- End useEffect ---
 
-  // Memoized currency lists (Unchanged)
+  // Memoized currency lists remain the same...
   const availableCurrenciesBase = useMemo((): Currency[] => {
     return currencies.filter((currency) => ["INR"].includes(currency.code));
   }, [currencies]);
@@ -5183,15 +6103,15 @@ const AddRecipientPage = () => {
       );
     });
   }, [comingSoonCurrenciesBase, searchCurrency]);
+  // --- End Memoized Lists ---
 
-  // --- useMemo hook to determine if the form is invalid (Kept) ---
+  // useMemo hook for isFormInvalid remains the same...
   const isFormInvalid = useMemo(() => {
-    // Return true if any REQUIRED field is empty (or just whitespace)
     return (
       !accountHolderName.trim() ||
       !ifscCode.trim() ||
       !accountNumber.trim() ||
-      !accountType || // Check if the string is empty (not selected)
+      !accountType ||
       !bankName.trim() ||
       !address.trim()
     );
@@ -5203,8 +6123,9 @@ const AddRecipientPage = () => {
     bankName,
     address,
   ]);
-  // --- END ---
+  // --- End useMemo ---
 
+  // handleCurrencySelect and handleBackStep remain the same...
   const handleCurrencySelect = (currencyCode: string) => {
     setSelectedCurrencyCode(currencyCode);
     setStep(2);
@@ -5217,10 +6138,12 @@ const AddRecipientPage = () => {
       router.back();
     }
   };
+  // --- End Navigation Handlers ---
 
-  // Manual validation function (Kept, but simplified error setting)
+  // --- MODIFIED: validateForm function ---
   const validateForm = (): boolean => {
     let isValid = true;
+    // Reset errors first
     setAccountHolderNameError("");
     setIfscCodeError("");
     setAccountNumberError("");
@@ -5228,60 +6151,74 @@ const AddRecipientPage = () => {
     setAddressError("");
     setAccountTypeError("");
 
+    // Name Validation
     if (!accountHolderName.trim()) {
       setAccountHolderNameError("Account holder name is required");
       isValid = false;
     }
-    if (!ifscCode.trim()) {
+
+    // IFSC Code Validation
+    const trimmedIfsc = ifscCode.trim();
+    // Regex for IFSC: 4 letters, 1 zero, 6 alphanumeric chars (total 11)
+    const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+    if (!trimmedIfsc) {
       setIfscCodeError("IFSC code is required");
       isValid = false;
+    } else if (!ifscRegex.test(trimmedIfsc)) {
+      setIfscCodeError("Invalid IFSC code format (e.g., ABCD0123456)");
+      isValid = false;
     }
-    // Add specific validation for IFSC format if needed (e.g., length)
-    // else if (ifscCode.trim().length !== 11) {
-    //   setIfscCodeError("IFSC code must be 11 characters");
-    //   isValid = false;
-    // }
+    // Note: The length check (11 chars) is implicitly handled by the regex.
+
+    // Account Number Validation
     if (!accountNumber.trim()) {
       setAccountNumberError("Account number is required");
       isValid = false;
     }
     // Add specific validation for account number format if needed here
+    // e.g., length checks, specific bank rules if applicable
+
+    // Bank Name Validation
     if (!bankName.trim()) {
       setBankNameError("Bank name is required");
       isValid = false;
     }
+
+    // Address Validation
     if (!address.trim()) {
       setAddressError("Address is required");
       isValid = false;
     }
+
+    // Account Type Validation
     if (!accountType) {
-      // Check if accountType string is empty
       setAccountTypeError("Account type is required");
       isValid = false;
     }
+
     return isValid;
   };
+  // --- END MODIFIED: validateForm function ---
 
+  // handleSubmit remains largely the same, relies on the updated validateForm
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormError(""); // Reset general form error
+    setFormError("");
 
-    // Perform validation
-    const isValid = validateForm();
+    const isValid = validateForm(); // Uses the updated validation
 
     if (!isValid) {
-      // Optional: Maybe set a general error, or rely on individual field errors.
-      // setFormError("Please correct the errors below.");
-      return; // Stop submission if validation fails
+      // Errors are already set by validateForm
+      return;
     }
 
     setIsSubmitting(true);
     try {
       const recipientData = {
         currencyCode: selectedCurrencyCode,
-        email: email.trim() || undefined, // Send undefined if empty
+        email: email.trim() || undefined,
         accountHolderName: accountHolderName.trim(),
-        ifscCode: ifscCode.trim().toUpperCase(),
+        ifscCode: ifscCode.trim().toUpperCase(), // Ensure it's uppercase for consistency
         accountNumber: accountNumber.trim(),
         bankName: bankName.trim(),
         address: address.trim(),
@@ -5293,82 +6230,78 @@ const AddRecipientPage = () => {
         token
       );
 
-      // --- Redirection Logic (Unchanged) ---
+      // Redirection logic remains the same...
       const returnToParam = searchParams.get("returnTo");
       if (returnToParam) {
-        const decodedReturnUrl = decodeURIComponent(returnToParam);
-        const match = decodedReturnUrl.match(
-          /\/dashboard\/balances\/([^/]+)\/send\/select-recipient/
-        );
+          const decodedReturnUrl = decodeURIComponent(returnToParam);
+          const match = decodedReturnUrl.match(
+              /\/dashboard\/balances\/([^/]+)\/send\/select-recipient/
+          );
 
-        if (match?.[1] && newRecipient?._id) {
-          const balanceId = match[1];
-          const targetUrl = `/dashboard/balances/${balanceId}/send/amount?recipientId=${newRecipient._id}`;
-          console.log("Redirecting back to send flow:", targetUrl);
-          router.push(targetUrl);
-        } else {
-          console.warn(
-            "Could not parse balanceId from returnTo URL or missing recipient ID, redirecting to recipient details:",
-            decodedReturnUrl,
-            newRecipient?._id
-          );
-          router.push(
-            newRecipient?._id
-              ? `/dashboard/recipients/${newRecipient._id}`
-              : "/dashboard/recipients"
-          );
-        }
+          if (match?.[1] && newRecipient?._id) {
+              const balanceId = match[1];
+              const targetUrl = `/dashboard/balances/${balanceId}/send/amount?recipientId=${newRecipient._id}`;
+              console.log("Redirecting back to send flow:", targetUrl);
+              router.push(targetUrl);
+          } else {
+              console.warn(
+                  "Could not parse balanceId from returnTo URL or missing recipient ID, redirecting to recipient details:",
+                  decodedReturnUrl,
+                  newRecipient?._id
+              );
+              router.push(
+                  newRecipient?._id
+                      ? `/dashboard/recipients/${newRecipient._id}`
+                      : "/dashboard/recipients"
+              );
+          }
       } else if (newRecipient?._id) {
-        console.log("Redirecting to recipient details page (standard flow)");
-        router.push(`/dashboard/recipients/${newRecipient._id}`);
+          console.log("Redirecting to recipient details page (standard flow)");
+          router.push(`/dashboard/recipients/${newRecipient._id}`);
       } else {
-        console.warn(
-          "Recipient added, but no ID received or standard flow error. Redirecting to recipient list."
-        );
-        setFormError(
-          "Recipient added, but failed to redirect. Please check the recipients list."
-        );
-        router.push("/dashboard/recipients");
+          console.warn(
+              "Recipient added, but no ID received or standard flow error. Redirecting to recipient list."
+          );
+          setFormError(
+              "Recipient added, but failed to redirect. Please check the recipients list."
+          );
+          router.push("/dashboard/recipients");
       }
       // --- End Redirection Logic ---
+
     } catch (error: unknown) {
       console.error("Error adding recipient:", error);
       const apiError = error as ApiError;
 
-      // Handle Backend Validation Errors (400 Bad Request) (Unchanged)
-      if (apiError.response?.data && apiError.response.status === 400) {
-        const backendErrors = apiError.response.data.errors;
-        if (backendErrors && typeof backendErrors === "object") {
-          setAccountHolderNameError(backendErrors.accountHolderName || "");
-          setIfscCodeError(backendErrors.ifscCode || "");
-          setAccountNumberError(backendErrors.accountNumber || "");
-          setBankNameError(backendErrors.bankName || "");
-          setAddressError(backendErrors.address || "");
-          setAccountTypeError(backendErrors.accountType || "");
-        }
+      // Backend error handling remains the same...
+       if (apiError.response?.data && apiError.response.status === 400) {
+           const backendErrors = apiError.response.data.errors;
+           if (backendErrors && typeof backendErrors === 'object') {
+               setAccountHolderNameError(backendErrors.accountHolderName || '');
+               setIfscCodeError(backendErrors.ifscCode || ''); // Will be overridden by frontend validation first usually
+               setAccountNumberError(backendErrors.accountNumber || '');
+               setBankNameError(backendErrors.bankName || '');
+               setAddressError(backendErrors.address || '');
+               setAccountTypeError(backendErrors.accountType || '');
+           }
 
-        if (apiError.response.data.message) {
-          setFormError(apiError.response.data.message);
-        } else if (!backendErrors || Object.keys(backendErrors).length === 0) {
-          setFormError("Invalid data submitted. Please check the fields.");
-        }
-      } else {
-        // Handle other types of errors (Unchanged)
-        const errorMessage =
-          apiError?.response?.data?.message ||
-          apiError?.message ||
-          (error instanceof Error
-            ? error.message
-            : "An unknown error occurred");
-        setFormError(
-          errorMessage || "Failed to add recipient. Please try again."
-        );
-      }
+           if (apiError.response.data.message) {
+               setFormError(apiError.response.data.message);
+           } else if (!backendErrors || Object.keys(backendErrors).length === 0) {
+               setFormError('Invalid data submitted. Please check the fields.');
+           }
+       } else {
+           // Handle other types of errors (Unchanged)
+           const errorMessage = apiError?.response?.data?.message || apiError?.message || (error instanceof Error ? error.message : "An unknown error occurred");
+           setFormError(errorMessage || "Failed to add recipient. Please try again.");
+       }
     } finally {
       setIsSubmitting(false);
     }
   };
+  // --- End handleSubmit ---
 
+  // handleCloseFormError, clearSearchTerm, handleClearForm remain the same...
   const handleCloseFormError = () => {
     setFormError("");
   };
@@ -5393,26 +6326,25 @@ const AddRecipientPage = () => {
     setAddressError("");
     setAccountTypeError("");
   };
+  // --- End Utility Handlers ---
 
-  // --- JSX Section ---
+  // --- JSX Section (No changes needed here for IFSC validation logic, but showing relevant part) ---
   return (
-    // Original container classes
     <div className="AddRecipientPage py-5">
       <DashboardHeader title="Recipients" onBack={handleBackStep} />
-      {/* Removed extra padding div */}
       <div className="Steps">
-        {/* Step 1: Currency Selection (Original UI) */}
+        {/* Step 1: Currency Selection (No changes needed) */}
         {step === 1 && (
           <div
             key="currency-step"
-            // Original class structure
             className="bg-white dark:bg-background relative"
           >
-            <h2 className="lg:text-3xl md:text-2xl text-xl capitalize font-semibold text-mainheading dark:text-white text-left md:text-center mb-4">
+             {/* ... Currency selection UI ... */}
+             <h2 className="lg:text-3xl md:text-2xl text-xl capitalize font-semibold text-mainheading dark:text-white text-left md:text-center mb-4">
               Select their currency
             </h2>
 
-            {/* Currency Search Input (Original UI) */}
+            {/* Currency Search Input */}
             <div className="relative mb-4">
               <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                 <FiSearch
@@ -5422,7 +6354,6 @@ const AddRecipientPage = () => {
               </div>
               <input
                 type="text"
-                // Original classes
                 className="w-full rounded-full h-14 py-3 pl-12 pr-10 border transition-all ease-linear duration-75 focus:outline-none focus:border-[#5f5f5f] placeholder:text-neutral-600 dark:placeholder:text-white bg-white dark:bg-background"
                 placeholder="Search currency by name or code..."
                 value={searchCurrency}
@@ -5432,7 +6363,6 @@ const AddRecipientPage = () => {
                 <button
                   type="button"
                   onClick={clearSearchTerm}
-                  // Original classes
                   className="absolute inset-y-0 right-3 flex items-center text-neutral-900 dark:text-primary focus:outline-none cursor-pointer"
                   aria-label="Clear search"
                 >
@@ -5441,27 +6371,21 @@ const AddRecipientPage = () => {
               )}
             </div>
 
-            {/* General Form Error Display for Currency Step (Original UI) */}
+            {/* General Form Error Display for Currency Step */}
             {formError && !isLoadingCurrencies && (
               <div
-                // Original classes
                 className="bg-red-100 dark:bg-red-600/20 border border-red-400 dark:border-red-600/50 rounded-xl p-4 relative mb-3"
                 role="alert"
               >
                 <span className="text-red-600 dark:text-red-400 text-sm font-medium">
                   {formError}
                 </span>
-                {/* Optional: Add a close button if needed, using original styles */}
-                {/* <button onClick={handleCloseFormError} className="absolute top-0 right-0 p-2">
-                      <IoCloseIcon className="h-5 w-5" />
-                   </button> */}
               </div>
             )}
 
-            {/* Currency List Section (Original UI) */}
+            {/* Currency List Section */}
             <div className="space-y-6">
               {isLoadingCurrencies ? (
-                // Original Skeletons
                 <>
                   <Skeleton className="h-16 rounded-xl w-full" />
                   <Skeleton className="h-16 rounded-xl w-full" />
@@ -5469,7 +6393,7 @@ const AddRecipientPage = () => {
                 </>
               ) : (
                 <>
-                  {/* Available Currencies (Original UI) */}
+                  {/* Available Currencies */}
                   {filteredAvailableCurrencies.length > 0 && (
                     <div>
                       <h3 className="font-medium text-gray-500 dark:text-gray-300 mb-3 tracking-wide leading-8 border-b">
@@ -5481,7 +6405,6 @@ const AddRecipientPage = () => {
                             key={currency._id || currency.code}
                             role="button"
                             tabIndex={0}
-                            // Original classes
                             className={`block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer`}
                             onClick={() => handleCurrencySelect(currency.code)}
                             onKeyDown={(e) =>
@@ -5521,10 +6444,9 @@ const AddRecipientPage = () => {
                     </div>
                   )}
 
-                  {/* Coming Soon Currencies (Original UI) */}
+                  {/* Coming Soon Currencies */}
                   {filteredComingSoonCurrencies.length > 0 && (
                     <div>
-                      {/* Original heading */}
                       <h3 className="font-medium text-gray-500 dark:text-gray-300 mb-3 tracking-wide leading-8 border-b">
                         Coming soon
                       </h3>
@@ -5532,10 +6454,9 @@ const AddRecipientPage = () => {
                         {filteredComingSoonCurrencies.map((currency) => (
                           <div
                             key={currency._id || currency.code}
-                            // Original classes
                             className={`p-3 sm:p-4 rounded-xl cursor-not-allowed opacity-60 border border-transparent dark:border-transparent`}
                           >
-                            <div className="flex items-center justify-between">
+                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-3 sm:gap-4">
                                 {currency.flagImage ? (
                                   <Image
@@ -5566,8 +6487,8 @@ const AddRecipientPage = () => {
                     </div>
                   )}
 
-                  {/* No Results Message (Original UI) */}
-                  {!isLoadingCurrencies &&
+                  {/* No Results Message */}
+                   {!isLoadingCurrencies &&
                     filteredAvailableCurrencies.length === 0 &&
                     filteredComingSoonCurrencies.length === 0 && (
                       <div className="text-center text-gray-700 dark:bg-white/5 bg-lightgray dark:text-gray-300 mt-8 py-5 rounded-lg">
@@ -5582,41 +6503,32 @@ const AddRecipientPage = () => {
           </div>
         )}
 
-        {/* Step 2: Account Details Form (Original UI) */}
+        {/* Step 2: Account Details Form */}
         {step === 2 && (
           <div
             key="account-step"
-            // Original classes
             className="bg-white dark:bg-background w-full lg:max-w-lg"
           >
             <h2 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white mb-6 text-center sm:text-left">
-              Enter their account details ({selectedCurrencyCode}){" "}
-              {/* Added selected code here */}
+              Enter their account details ({selectedCurrencyCode})
             </h2>
 
-            {/* General Form Error Display (Original UI) */}
+            {/* General Form Error Display */}
             {formError && (
               <div
-                // Original classes
                 className="bg-red-100 dark:bg-red-600/20 border border-red-400 dark:border-red-600/50 rounded-xl p-4 relative mb-3"
                 role="alert"
               >
                 <span className="text-red-600 dark:text-red-400 text-sm font-medium">
                   {formError}
                 </span>
-                {/* Optional: Add a close button if needed */}
-                {/* <button onClick={handleCloseFormError} className="absolute top-0 right-0 p-2">
-                     <IoCloseIcon className="h-5 w-5 text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200" />
-                 </button> */}
               </div>
             )}
 
             {/* Recipient Form */}
             <form className="mt-2 space-y-5" onSubmit={handleSubmit} noValidate>
-              {" "}
-              {/* Added noValidate */}
-              {/* Email Input (Original UI) */}
-              <div>
+              {/* Email Input */}
+               <div>
                 <label
                   htmlFor="email"
                   className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
@@ -5626,18 +6538,17 @@ const AddRecipientPage = () => {
                 <input
                   type="email"
                   id="email"
-                  // Original classes
                   className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 focus:border-[#5f5f5f]`}
                   value={email}
                   placeholder="example@domain.com"
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
-              {/* Heading (Original UI) */}
+               {/* Heading */}
               <h3 className="font-medium text-gray-600 dark:text-white pt-2 pb-1 mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
                 Recipient's bank details
               </h3>
-              {/* Bank Details Section (Original UI for Inputs, Kept Error Logic) */}
+              {/* Bank Details Section */}
               <div className="space-y-5">
                 {/* Account Holder Name */}
                 <div>
@@ -5651,17 +6562,17 @@ const AddRecipientPage = () => {
                   <input
                     type="text"
                     id="accountHolderName"
-                    // Original input classes, error border logic kept
                     className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
                       accountHolderNameError
-                        ? "border-red-600 border-2 !shadow-none focus:!ring-red-600" // Error style
-                        : "focus:border-[#5f5f5f]" // Normal style
+                        ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+                        : "focus:border-[#5f5f5f]"
                     }`}
                     value={accountHolderName}
                     placeholder="e.g., John Doe"
                     onChange={(e) => {
                       setAccountHolderName(e.target.value);
-                      if (e.target.value.trim()) setAccountHolderNameError("");
+                      // Clear error as user types
+                      if (accountHolderNameError) setAccountHolderNameError("");
                     }}
                     required
                     aria-invalid={!!accountHolderNameError}
@@ -5671,7 +6582,6 @@ const AddRecipientPage = () => {
                         : undefined
                     }
                   />
-                  {/* Original error message display */}
                   {accountHolderNameError && (
                     <p
                       id="accountHolderName-error"
@@ -5684,7 +6594,7 @@ const AddRecipientPage = () => {
                   )}
                 </div>
 
-                {/* IFSC Code */}
+                {/* IFSC Code - Input remains the same, error handling works with new logic */}
                 <div>
                   <label
                     htmlFor="ifscCode"
@@ -5695,7 +6605,6 @@ const AddRecipientPage = () => {
                   <input
                     type="text"
                     id="ifscCode"
-                    // Original input classes, error border logic kept
                     className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
                       ifscCodeError
                         ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
@@ -5703,13 +6612,17 @@ const AddRecipientPage = () => {
                     }`}
                     value={ifscCode}
                     placeholder="e.g., YESB0123456"
+                    // --- MODIFIED: onChange for IFSC ---
                     onChange={(e) => {
-                      // Keep validation logic
+                      // Convert to uppercase, remove non-alphanumeric, limit length
                       const val = e.target.value
                         .toUpperCase()
                         .replace(/[^A-Z0-9]/g, "");
                       setIfscCode(val.slice(0, 11));
-                      if (val.trim()) setIfscCodeError("");
+                      // Clear error as user types
+                      if (ifscCodeError) {
+                        setIfscCodeError("");
+                      }
                     }}
                     required
                     aria-invalid={!!ifscCodeError}
@@ -5717,9 +6630,9 @@ const AddRecipientPage = () => {
                       ifscCodeError ? "ifscCode-error" : undefined
                     }
                     maxLength={11}
-                    // Removed minLength as it's handled by validation
+                    // The pattern attribute can provide browser-level hints but validation is primarily JS
+                    // pattern="^[A-Z]{4}0[A-Z0-9]{6}$"
                   />
-                  {/* Original error message display */}
                   {ifscCodeError && (
                     <p
                       id="ifscCode-error"
@@ -5733,7 +6646,7 @@ const AddRecipientPage = () => {
                 </div>
 
                 {/* Account Number */}
-                <div>
+                 <div>
                   <label
                     htmlFor="accountNumber"
                     className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
@@ -5742,9 +6655,8 @@ const AddRecipientPage = () => {
                   </label>
                   <input
                     type="text"
-                    inputMode="numeric" // Keep hint
+                    inputMode="numeric"
                     id="accountNumber"
-                    // Original input classes, error border logic kept
                     className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
                       accountNumberError
                         ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
@@ -5752,11 +6664,12 @@ const AddRecipientPage = () => {
                     }`}
                     value={accountNumber}
                     placeholder="Enter account number"
-                    onChange={(e) => {
-                      // Keep validation logic
+                     onChange={(e) => {
+                      // Only allow digits
                       const val = e.target.value.replace(/\D/g, "");
                       setAccountNumber(val);
-                      if (val.trim()) setAccountNumberError("");
+                       // Clear error as user types
+                      if(accountNumberError) setAccountNumberError("");
                     }}
                     required
                     aria-invalid={!!accountNumberError}
@@ -5764,7 +6677,6 @@ const AddRecipientPage = () => {
                       accountNumberError ? "accountNumber-error" : undefined
                     }
                   />
-                  {/* Original error message display */}
                   {accountNumberError && (
                     <p
                       id="accountNumber-error"
@@ -5778,7 +6690,7 @@ const AddRecipientPage = () => {
                 </div>
 
                 {/* Account Type Dropdown */}
-                <div>
+                 <div>
                   <label className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base">
                     Account type <span className="text-red-500 ml-1">*</span>
                   </label>
@@ -5786,11 +6698,12 @@ const AddRecipientPage = () => {
                     value={accountType}
                     onChange={(value) => {
                       setAccountType(value);
-                      if (value) setAccountTypeError(""); // Clear error on selection
+                      // Clear error on selection
+                      if (accountTypeError) setAccountTypeError("");
                     }}
                     error={accountTypeError} // Pass error string
                   />
-                  {/* Error is displayed within the Dropdown component, no separate <p> needed here */}
+                  {/* Error displayed within component */}
                 </div>
 
                 {/* Bank Name */}
@@ -5804,7 +6717,6 @@ const AddRecipientPage = () => {
                   <input
                     type="text"
                     id="bankName"
-                    // Original input classes, error border logic kept
                     className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
                       bankNameError
                         ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
@@ -5814,7 +6726,8 @@ const AddRecipientPage = () => {
                     placeholder="e.g., State Bank of India"
                     onChange={(e) => {
                       setBankName(e.target.value);
-                      if (e.target.value.trim()) setBankNameError("");
+                      // Clear error as user types
+                      if(bankNameError) setBankNameError("");
                     }}
                     required
                     aria-invalid={!!bankNameError}
@@ -5822,7 +6735,6 @@ const AddRecipientPage = () => {
                       bankNameError ? "bankName-error" : undefined
                     }
                   />
-                  {/* Original error message display */}
                   {bankNameError && (
                     <p
                       id="bankName-error"
@@ -5847,7 +6759,6 @@ const AddRecipientPage = () => {
                   <input
                     type="text"
                     id="address"
-                    // Original input classes, error border logic kept
                     className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
                       addressError
                         ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
@@ -5857,7 +6768,8 @@ const AddRecipientPage = () => {
                     placeholder="e.g., 123 Main St, Anytown, 12345, India"
                     onChange={(e) => {
                       setAddress(e.target.value);
-                      if (e.target.value.trim()) setAddressError("");
+                      // Clear error as user types
+                      if(addressError) setAddressError("");
                     }}
                     required
                     aria-invalid={!!addressError}
@@ -5865,7 +6777,6 @@ const AddRecipientPage = () => {
                       addressError ? "address-error" : undefined
                     }
                   />
-                  {/* Original error message display */}
                   {addressError && (
                     <p
                       id="address-error"
@@ -5878,11 +6789,10 @@ const AddRecipientPage = () => {
                   )}
                 </div>
               </div>
-              {/* Form Action Buttons (Original UI) */}
+              {/* Form Action Buttons */}
               <div className="flex sm:flex-row flex-col-reverse justify-center items-center gap-4 pt-4">
                 <button
                   type="button"
-                  // Original classes
                   className={`sm:order-1 order-2 bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear`}
                   onClick={handleClearForm}
                 >
@@ -5890,77 +6800,22 @@ const AddRecipientPage = () => {
                 </button>
                 <button
                   type="submit"
-                  // Original classes
                   className={`sm:order-2 order-1 bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center`}
-                  // --- KEPT: Logic to disable button ---
-                  disabled={isSubmitting || isFormInvalid}
-                  // --- END KEPT ---
+                  disabled={isSubmitting || isFormInvalid} // isFormInvalid still useful for initial disabling
                 >
                   {isSubmitting ? (
                     <>
-                      {/* Original SVG Loader */}
-                      <svg
-                        className="h-5 w-5 text-neutral-900 animate-spin mr-2"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M12 2V6"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M12 18V22"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M4.93 4.93L7.76 7.76"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M16.24 16.24L19.07 19.07"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M2 12H6"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M18 12H22"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M4.93 19.07L7.76 16.24"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M16.24 7.76L19.07 4.93"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
+                      {/* SVG Loader */}
+                      <svg className="h-5 w-5 text-neutral-900 animate-spin mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        {/* paths... */}
+                         <path d="M12 2V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                         <path d="M12 18V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                         <path d="M4.93 4.93L7.76 7.76" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                         <path d="M16.24 16.24L19.07 19.07" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                         <path d="M2 12H6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                         <path d="M18 12H22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                         <path d="M4.93 19.07L7.76 16.24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                         <path d="M16.24 7.76L19.07 4.93" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                       <span>Confirming...</span>
                     </>
