@@ -4404,6 +4404,807 @@
 
 // export default TransactionDetailsPage;
 
+// // frontend/app/dashboard/transactions/[transactionId]/page.tsx
+// "use client";
+
+// import React, { useState, useEffect, useCallback, useMemo } from "react";
+// import { useParams, useRouter } from "next/navigation";
+// import { format, parseISO } from "date-fns";
+
+// // Custom Hooks & Services
+// import { useAuth } from "../../../contexts/AuthContext"; // Adjust path
+// import paymentService from "../../../services/payment"; // Adjust path
+// import transferService from "../../../services/transfer"; // Adjust path
+
+// // UI Components & Utils
+// import { cn } from "@/lib/utils"; // Adjust path
+// import { Button } from "@/components/ui/button"; // Adjust path
+// // --- REMOVE Skeleton import from here ---
+// // import { Skeleton } from "@/components/ui/skeleton"; // Adjust path
+// import CancelTransferModal from "../../components/CancelTransferModal"; // Adjust path
+
+// // Transaction Specific Components & Types
+// import {
+//   TransactionDetailsPageParams,
+//   PaymentDetails,
+//   TransferDetails,
+//   TransactionDetails,
+//   TimelineStatus,
+//   TimelineStep,
+// } from "../../../../types/transaction"; // Adjust path
+// import TransactionHeader from "../../components/transactionDetails/TransactionHeader"; // Adjust path
+// import TransactionTabs from "../../components/transactionDetails/TransactionTabs"; // Adjust path
+// import TransactionTimeline from "../../components/transactionDetails/TransactionTimeline"; // Adjust path
+// import TransactionDetailsContent from "../../components/transactionDetails/TransactionDetailsContent"; // Adjust path
+// import AwaitingVerificationView from "../../components/transactionDetails/AwaitingVerificationView"; // Adjust path
+// import TransactionUpdateActions from "../../components/transactionDetails/TransactionUpdateActions"; // Adjust path
+
+// // --- IMPORT the new Skeleton Component ---
+// import TransactionDetailsPageSkeleton from "../../components/TransactionPageSection/TransactionDetailsPageSkeleton"; // Adjust path
+
+// // --- Component Definition ---
+// const TransactionDetailsPage = () => {
+//   // --- Hooks ---
+//   const params = useParams<TransactionDetailsPageParams>();
+//   const router = useRouter();
+//   const { transactionId } = params;
+//   const { token } = useAuth();
+
+//   // --- State Variables ---
+//   const [transactionDetails, setTransactionDetails] =
+//     useState<TransactionDetails | null>(null);
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+//   const [submissionError, setSubmissionError] = useState<string | null>(null);
+//   const [activeTab, setActiveTab] = useState<"Updates" | "Details">("Updates");
+//   const [noteText, setNoteText] = useState("");
+//   const [isSubmitting, setIsSubmitting] = useState(false);
+//   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+//   const [showAwaitingVerificationView, setShowAwaitingVerificationView] =
+//     useState(false);
+
+//   // --- Data Fetching (fetchTransactionDetails - keep as is) ---
+//   const fetchTransactionDetails = useCallback(
+//     async (showLoading = true) => {
+//       // ... (your existing fetch logic remains unchanged) ...
+//       if (!transactionId || !token) {
+//         setError("Missing transaction ID or authentication token.");
+//         setIsLoading(false);
+//         return;
+//       }
+//       if (showLoading) setIsLoading(true);
+//       setError(null);
+//       setSubmissionError(null);
+//       console.log("Fetching details for:", transactionId);
+
+//       try {
+//         let found = false;
+//         // Try fetching Transfer first
+//         try {
+//           const transferData = (await transferService.getTransferDetails(
+//             transactionId,
+//             token
+//           )) as Omit<TransferDetails, "type">;
+//           const fullTransferData = {
+//             ...transferData,
+//             type: "transfer",
+//           } as TransferDetails;
+//           setTransactionDetails(fullTransferData);
+//           setNoteText(fullTransferData.note || "");
+//           setShowAwaitingVerificationView(false);
+//           found = true;
+//           console.log("Found as Transfer");
+//         } catch (transferErr: unknown) {
+//           let message = "Unknown error fetching transfer details";
+//           let status = 0;
+//           if (typeof transferErr === "object" && transferErr !== null) {
+//             const errObj = transferErr as {
+//               response?: { status?: number; data?: { message?: string } };
+//               message?: string;
+//             };
+//             message =
+//               errObj.response?.data?.message || errObj.message || message;
+//             status = errObj.response?.status || 0;
+//           } else if (transferErr instanceof Error) {
+//             message = transferErr.message;
+//           }
+
+//           const isNotFoundError =
+//             status === 404 ||
+//             message?.toLowerCase().includes("not found") ||
+//             message?.toLowerCase().includes("invalid id");
+
+//           if (!isNotFoundError && status !== 0 && status !== 404) {
+//             console.error(
+//               "Non-404 error fetching transfer details:",
+//               transferErr
+//             );
+//             throw transferErr;
+//           } else if (!isNotFoundError) {
+//             console.error(
+//               "Error fetching transfer details (but allowing fallback):",
+//               transferErr
+//             );
+//           } else {
+//             console.warn(
+//               `Transfer ${transactionId} not found or error:`,
+//               message
+//             );
+//           }
+//         }
+
+//         // If not found as Transfer, try fetching Payment
+//         if (!found) {
+//           try {
+//             const paymentData = (await paymentService.getPaymentDetails(
+//               transactionId,
+//               token
+//             )) as unknown as Omit<PaymentDetails, "type">;
+//             const fullPaymentData = {
+//               ...paymentData,
+//               type: "payment",
+//             } as PaymentDetails;
+//             setTransactionDetails(fullPaymentData);
+//             setNoteText(fullPaymentData.note || "");
+
+//             if (fullPaymentData.status !== "pending") {
+//               setShowAwaitingVerificationView(false);
+//             } else {
+//               // If already confirmed and still pending, maybe keep the view? (Needs state management)
+//               // For now, simple logic: don't show await view on refresh unless explicitly set by action.
+//             }
+//             found = true;
+//             console.log(
+//               "Found as Payment with status:",
+//               fullPaymentData.status
+//             );
+//           } catch (paymentErr: unknown) {
+//             let message = "Unknown error fetching payment details";
+//             let status = 0;
+//             if (typeof paymentErr === "object" && paymentErr !== null) {
+//               const errObj = paymentErr as {
+//                 response?: { status?: number; data?: { message?: string } };
+//                 message?: string;
+//               };
+//               message =
+//                 errObj.response?.data?.message || errObj.message || message;
+//               status = errObj.response?.status || 0;
+//             } else if (paymentErr instanceof Error) {
+//               message = paymentErr.message;
+//             }
+
+//             if (
+//               status === 404 ||
+//               message?.toLowerCase().includes("not found")
+//             ) {
+//               setError(`Transaction with ID ${transactionId} not found.`);
+//               setTransactionDetails(null);
+//             } else {
+//               console.error(
+//                 `Error fetching payment details (ID: ${transactionId}):`,
+//                 paymentErr
+//               );
+//               throw paymentErr;
+//             }
+//             console.error(
+//               `Payment ${transactionId} not found or error:`,
+//               message
+//             );
+//           }
+//         }
+
+//         if (!found && !error) {
+//           setError(
+//             `Transaction with ID ${transactionId} could not be found or accessed.`
+//           );
+//           setTransactionDetails(null);
+//         }
+//       } catch (err: unknown) {
+//         let message = "Failed to load transaction details";
+//         if (typeof err === "object" && err !== null) {
+//           const errObj = err as {
+//             response?: { data?: { message?: string } };
+//             message?: string;
+//           };
+//           message = errObj.response?.data?.message || errObj.message || message;
+//         } else if (err instanceof Error) {
+//           message = err.message;
+//         }
+//         setError(message);
+//         setTransactionDetails(null);
+//         console.error("Unhandled error fetching transaction details:", err);
+//       } finally {
+//         if (showLoading) setIsLoading(false);
+//       }
+//     },
+//     [transactionId, token, error]
+//   ); // Keep error dependency
+
+//   // --- Effect (keep as is) ---
+//   useEffect(() => {
+//     fetchTransactionDetails();
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [transactionId, token]);
+
+//   // --- Helper Functions & Derived Data (keep as is) ---
+//   const isPayment = useMemo(
+//     () => transactionDetails?.type === "payment",
+//     [transactionDetails]
+//   );
+//   const isTransfer = useMemo(
+//     () => transactionDetails?.type === "transfer",
+//     [transactionDetails]
+//   );
+//   const formatDisplayDate = useCallback(
+//     /* ... */ (dateString: string | undefined): string => {
+//       if (!dateString) return "Date not available";
+//       try {
+//         const parsedDate = parseISO(dateString);
+//         if (isNaN(parsedDate.getTime())) {
+//           throw new Error("Invalid date value after parsing");
+//         }
+//         return format(parsedDate, "MMM d 'at' h:mm a");
+//       } catch (e) {
+//         console.error("Date formatting error:", e, "Input:", dateString);
+//         return "Invalid Date";
+//       }
+//     },
+//     []
+//   );
+//   const timelineSteps = useMemo(
+//     /* ... */ (): TimelineStep[] => {
+//       // ... (your existing timeline logic remains unchanged) ...
+//       if (!transactionDetails) return [];
+
+//       const { createdAt, updatedAt, status, failureReason, type } =
+//         transactionDetails;
+
+//       const createdDate = formatDisplayDate(createdAt);
+//       const finalDate = formatDisplayDate(updatedAt);
+
+//       if (type === "payment") {
+//         const payment = transactionDetails as PaymentDetails;
+//         const isPending = status === "pending";
+//         const isInProgress = status === "in progress";
+//         const isComplete = status === "completed";
+//         const isCancelled = status === "canceled";
+//         const hasFailed = status === "failed";
+
+//         let steps: TimelineStep[] = [
+//           {
+//             id: "setup",
+//             label: "You set up this payment",
+//             status: "completed",
+//             date: createdDate,
+//             info: null,
+//           },
+//           {
+//             id: "waiting",
+//             label: `Your money's on its way to us`,
+//             status: "pending",
+//             date: undefined,
+//             info: `your bank might take up to 4 hours to get it to us. we'll let you know when it arrives.`,
+//             showCancelAction: false,
+//           },
+//           {
+//             id: "receive",
+//             label: `We receive your ${payment.payInCurrency?.code || "money"}`,
+//             status: "pending",
+//             date: undefined,
+//             info: null,
+//           },
+//           {
+//             id: "add_balance",
+//             label: `We add it to your ${
+//               payment.balanceCurrency?.code || ""
+//             } balance`,
+//             status: "pending",
+//             date: undefined,
+//             info: null,
+//           },
+//           {
+//             id: "done",
+//             label: "All done!",
+//             status: "pending",
+//             date: undefined,
+//             info: null,
+//           },
+//         ];
+
+//         if (isPending) {
+//           steps[1].status = "active";
+//           steps[1].showCancelAction = true;
+//         } else if (isInProgress) {
+//           steps[1].status = "completed";
+//           steps[1].date = finalDate;
+//           steps[1].info = null;
+//           steps[2].status = "active";
+//           steps[2].date = finalDate;
+//           steps[2].info = `We're processing your payment of ${
+//             payment.amountToPay?.toFixed(2) ?? "N/A"
+//           } ${payment.payInCurrency?.code ?? ""}.`;
+//         } else if (isComplete) {
+//           steps = steps.map((step, index) => ({
+//             ...step,
+//             status: "completed",
+//             date: index === 0 ? createdDate : finalDate,
+//             info: null,
+//             showCancelAction: false,
+//           }));
+//         } else if (isCancelled || hasFailed) {
+//           const finalStatus: TimelineStatus = isCancelled
+//             ? "cancelled"
+//             : "failed";
+//           const finalInfo = isCancelled
+//             ? "This payment was cancelled."
+//             : `This payment failed. ${failureReason || "Unknown reason"}`;
+//           const failedStepIndex = steps.findIndex(
+//             (step, index) => index > 0 && step.status !== "completed"
+//           );
+
+//           if (failedStepIndex > 0) {
+//             for (let i = 1; i < failedStepIndex; i++) {
+//               steps[i].status = "completed";
+//               steps[i].date = finalDate;
+//               steps[i].info = null;
+//             }
+//             steps[failedStepIndex].status = finalStatus;
+//             steps[failedStepIndex].date = finalDate;
+//             steps[failedStepIndex].info = finalInfo;
+//             for (let i = failedStepIndex + 1; i < steps.length; i++) {
+//               steps[i].status = "pending";
+//               steps[i].date = undefined;
+//               steps[i].info = null;
+//             }
+//           } else {
+//             steps[1].status = finalStatus;
+//             steps[1].date = finalDate;
+//             steps[1].info = finalInfo;
+//             for (let i = 2; i < steps.length; i++) {
+//               steps[i].status = "pending";
+//               steps[i].date = undefined;
+//               steps[i].info = null;
+//             }
+//           }
+//           steps = steps.map((step) => ({ ...step, showCancelAction: false }));
+//         }
+//         return steps;
+//       } else if (type === "transfer") {
+//         const transfer = transactionDetails as TransferDetails;
+//         const updatedDate = formatDisplayDate(updatedAt);
+//         const isPendingOrProcessing =
+//           status === "pending" || status === "processing";
+//         const isComplete = status === "completed";
+//         const isCancelled = status === "canceled";
+//         const hasFailed = status === "failed";
+//         const finalStepStatus: TimelineStatus = isCancelled
+//           ? "cancelled"
+//           : hasFailed
+//           ? "failed"
+//           : "pending";
+
+//         let steps: TimelineStep[] = [
+//           {
+//             id: "setup",
+//             label: "You set up your transfer",
+//             status: "completed",
+//             date: createdDate,
+//             info: null,
+//           },
+//           {
+//             id: "funded",
+//             label: `We've taken funds from your ${
+//               transfer.sendCurrency?.code || "account"
+//             }`,
+//             status: "pending",
+//             date: undefined,
+//             info: null,
+//           },
+//           {
+//             id: "paid_out",
+//             label: `Your money's being processed ${
+//               transfer.receiveCurrency?.code || "money"
+//             }`,
+//             status: "pending",
+//             date: undefined,
+//             info: null,
+//           },
+//           {
+//             id: "delivered",
+//             label: `Sent to recipient's bank`,
+//             status: "pending",
+//             date: undefined,
+//             info: null,
+//           },
+//         ];
+
+//         if (isPendingOrProcessing) {
+//           steps[1].status = "completed";
+//           steps[1].date = updatedDate;
+//           steps[2].status = "active";
+//           steps[2].date = updatedDate;
+//           steps[2].info = `We're processing the payment to your recipient's bank.`;
+//         } else if (isComplete) {
+//           steps = steps.map((step, index) => ({
+//             ...step,
+//             status: "completed",
+//             date: index === 0 ? createdDate : updatedDate,
+//             info: null,
+//           }));
+//         } else if (isCancelled || hasFailed) {
+//           const finalInfo = isCancelled
+//             ? "Transfer cancelled."
+//             : `Failed to pay out: ${failureReason || "Unknown reason"}`;
+//           steps[1].status = "completed";
+//           steps[1].date = updatedDate;
+//           steps[2].status = finalStepStatus;
+//           steps[2].date = updatedDate;
+//           steps[2].info = finalInfo;
+//           steps[3].status = "pending";
+//         }
+//         steps = steps.map((step) => ({ ...step, showCancelAction: false }));
+//         return steps;
+//       }
+//       return [];
+//     },
+//     [transactionDetails, formatDisplayDate]
+//   );
+//   const canCancelTransaction = useMemo(
+//     /* ... */ () => {
+//       // ... (your existing cancel logic remains unchanged) ...
+//       if (!transactionDetails) return false;
+//       if (isPayment) {
+//         const paymentStatus = (transactionDetails as PaymentDetails).status;
+//         return paymentStatus === "pending" || paymentStatus === "in progress";
+//       }
+//       if (isTransfer) {
+//         const transferStatus = (transactionDetails as TransferDetails).status;
+//         return transferStatus === "pending" || transferStatus === "processing";
+//       }
+//       return false;
+//     },
+//     [transactionDetails, isPayment, isTransfer]
+//   );
+
+//   // --- Event Handlers (keep as is) ---
+//   const handleConfirmPaymentSubmit = useCallback(
+//     /* ... */ async () => {
+//       // ... (your existing handler logic remains unchanged) ...
+//       if (
+//         !transactionId ||
+//         !token ||
+//         !isPayment ||
+//         transactionDetails?.status !== "pending"
+//       )
+//         return;
+//       setIsSubmitting(true);
+//       setSubmissionError(null);
+//       try {
+//         await paymentService.confirmUserTransfer(transactionId, token);
+//         setShowAwaitingVerificationView(true);
+//         // Optionally delay refresh: setTimeout(() => fetchTransactionDetails(false), 3000);
+//       } catch (err: unknown) {
+//         let message = `Failed to confirm payment`;
+//         let status = 0;
+//         if (typeof err === "object" && err !== null) {
+//           const errObj = err as {
+//             response?: { status?: number; data?: { message?: string } };
+//             message?: string;
+//           };
+//           message = errObj.response?.data?.message || errObj.message || message;
+//           status = errObj.response?.status || 0;
+//         } else if (err instanceof Error) {
+//           message = err.message;
+//         }
+
+//         if (message.includes("not in pending state") || status === 400) {
+//           setError("Payment status may have already updated. Refreshing...");
+//           await fetchTransactionDetails(false);
+//           setShowAwaitingVerificationView(false);
+//         } else {
+//           setSubmissionError(message);
+//         }
+//         console.error(`Error confirming payment (ID: ${transactionId}):`, err);
+//       } finally {
+//         setIsSubmitting(false);
+//       }
+//     },
+//     [
+//       transactionId,
+//       token,
+//       isPayment,
+//       transactionDetails?.status,
+//       fetchTransactionDetails,
+//     ]
+//   );
+//   const handleConfirmCancel = useCallback(
+//     /* ... */ async () => {
+//       // ... (your existing handler logic remains unchanged) ...
+//       if (!transactionId || !token || !transactionDetails) {
+//         setSubmissionError("Cannot proceed: Missing required information.");
+//         return;
+//       }
+//       if (!canCancelTransaction) {
+//         setSubmissionError(
+//           "This transaction can no longer be cancelled. Refreshing..."
+//         );
+//         await fetchTransactionDetails(false);
+//         setIsCancelModalOpen(false);
+//         return;
+//       }
+
+//       setIsSubmitting(true);
+//       setSubmissionError(null);
+//       try {
+//         let cancelPromise;
+//         if (isPayment) {
+//           cancelPromise = paymentService.cancelPayment(transactionId, token);
+//         } else if (isTransfer) {
+//           cancelPromise = transferService.cancelTransfer(transactionId, token);
+//         } else {
+//           throw new Error("Cannot cancel: Unknown transaction type.");
+//         }
+//         await cancelPromise;
+//         setIsCancelModalOpen(false);
+//         await fetchTransactionDetails(false);
+//       } catch (err: unknown) {
+//         let message = `Failed to cancel ${isPayment ? "payment" : "transfer"}`;
+//         if (typeof err === "object" && err !== null) {
+//           const errObj = err as {
+//             response?: { data?: { message?: string } };
+//             message?: string;
+//           };
+//           message = errObj.response?.data?.message || errObj.message || message;
+//         } else if (err instanceof Error) {
+//           message = err.message;
+//         }
+//         setSubmissionError(message);
+//         console.error(
+//           `Error cancelling ${transactionDetails.type} (ID: ${transactionId}):`,
+//           err
+//         );
+//         setIsCancelModalOpen(false);
+//       } finally {
+//         setIsSubmitting(false);
+//       }
+//     },
+//     [
+//       transactionId,
+//       token,
+//       transactionDetails,
+//       isPayment,
+//       isTransfer,
+//       canCancelTransaction,
+//       fetchTransactionDetails,
+//     ]
+//   );
+//   const handleNoteChange = useCallback(
+//     /* ... */ (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+//       // ... (your existing handler logic remains unchanged) ...
+//       setNoteText(e.target.value);
+//     },
+//     []
+//   );
+
+//   // --- Header Status Logic (keep as is) ---
+//   const { headerStatusText, headerStatusColorClass } = useMemo(
+//     /* ... */ () => {
+//       // ... (your existing status logic remains unchanged) ...
+//       if (!transactionDetails)
+//         return {
+//           headerStatusText: "Loading...",
+//           headerStatusColorClass: "text-gray-500 dark:text-gray-400",
+//         };
+
+//       if (
+//         isPayment &&
+//         transactionDetails.status === "pending" &&
+//         showAwaitingVerificationView
+//       ) {
+//         return {
+//           headerStatusText: "Verifying Payment",
+//           headerStatusColorClass:
+//             "text-blue-600 dark:text-blue-400 animate-pulse",
+//         };
+//       }
+
+//       switch (transactionDetails.status) {
+//         case "pending":
+//           return {
+//             headerStatusText: isPayment
+//               ? "Waiting for you to pay"
+//               : "Transfer initiated",
+//             headerStatusColorClass: "text-orange-600 dark:text-orange-400",
+//           };
+//         case "in progress":
+//           return {
+//             headerStatusText: "Processing Payment",
+//             headerStatusColorClass: "text-blue-600 dark:text-blue-400",
+//           };
+//         case "processing":
+//           return {
+//             headerStatusText: "Transfer Processing",
+//             headerStatusColorClass: "text-blue-600 dark:text-blue-400",
+//           };
+//         case "completed":
+//           return {
+//             headerStatusText: isPayment ? "Money Added" : "Transfer Completed",
+//             headerStatusColorClass: "text-green-600 dark:text-green-400",
+//           };
+//         case "canceled":
+//           return {
+//             headerStatusText: "Transaction Cancelled",
+//             headerStatusColorClass: "text-red-600 dark:text-red-400",
+//           };
+//         case "failed":
+//           return {
+//             headerStatusText: "Transaction Failed",
+//             headerStatusColorClass: "text-red-600 dark:text-red-400",
+//           };
+//         default:
+//           return {
+//             headerStatusText: `Status: ${transactionDetails.status}`,
+//             headerStatusColorClass: "text-gray-500 dark:text-gray-400",
+//           };
+//       }
+//     },
+//     [transactionDetails, isPayment, showAwaitingVerificationView]
+//   );
+
+//   // --- Render Logic ---
+
+//   // Loading State (Initial Load) - USE THE NEW SKELETON
+//   if (isLoading && !transactionDetails) {
+//     return <TransactionDetailsPageSkeleton />; // <-- Use the new skeleton component
+//   }
+
+//   // Error State (Failed to load initial data) - Keep as is
+//   if (error && !transactionDetails) {
+//     return (
+//       <div className="container mx-auto px-4 py-8 text-center">
+//         <div className="bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700/50 text-red-700 dark:text-red-300 px-4 py-3 rounded-md shadow-sm max-w-md mx-auto">
+//           <p className="font-medium">Error Loading Transaction</p>
+//           <p className="text-sm mt-1">{error}</p>
+//         </div>
+//         <Button
+//           onClick={() => router.back()}
+//           variant="outline"
+//           className="mt-6"
+//         >
+//           Go Back
+//         </Button>
+//         <Button
+//           onClick={() => fetchTransactionDetails()}
+//           variant="secondary"
+//           className="mt-6 ml-2"
+//         >
+//           Try Again
+//         </Button>
+//       </div>
+//     );
+//   }
+
+//   // Not Found State - Keep as is
+//   if (!transactionDetails) {
+//     return (
+//       <div className="container mx-auto px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+//         <p className="text-lg">Transaction details not found.</p>
+//         <p className="text-sm mt-1">
+//           The transaction ID might be incorrect, or it may no longer exist.
+//         </p>
+//         <Button
+//           onClick={() => router.push("/dashboard/transactions")}
+//           variant="outline"
+//           className="mt-6"
+//         >
+//           View All Transactions
+//         </Button>
+//       </div>
+//     );
+//   }
+
+//   // --- Main Component Return (keep the rest as is) ---
+//   return (
+//     <section className="Transaction-Detial-Page-Wrapper py-5">
+//       <div className="Transaction-Detial">
+//         {/* Main Content Card */}
+//         <div className="bg-white dark:bg-background rounded-2xl border mx-auto lg:max-w-5xl">
+//           {/* Card Header */}
+//           <TransactionHeader
+//             transaction={transactionDetails}
+//             statusText={headerStatusText}
+//             statusColorClass={headerStatusColorClass}
+//           />
+//           {/* Tabs Navigation */}
+//           <TransactionTabs activeTab={activeTab} onTabChange={setActiveTab} />
+//           {/* Tab Content Area */}
+//           <div className="p-4 sm:p-6">
+//             {/* --- Updates Tab Content --- */}
+//             {activeTab === "Updates" && (
+//               <div>
+//                 {/* Transaction ID / Reference Code */}
+//                 <div className="flex items-center mb-6 text-sm gap-2">
+//                   <span className="text-gray-500 dark:text-gray-300 flex-shrink-0">
+//                     {isPayment ? "Reference Code :" : "Transfer ID :"}
+//                   </span>
+//                   <span className="font-medium text-neutral-900 dark:text-white break-all">
+//                     {isPayment
+//                       ? (transactionDetails as PaymentDetails).referenceCode ||
+//                         "N/A"
+//                       : transactionDetails._id}
+//                   </span>
+//                 </div>
+
+//                 {/* Conditional Rendering: Awaiting Verification vs. Standard */}
+//                 {isPayment &&
+//                 transactionDetails.status === "pending" &&
+//                 showAwaitingVerificationView ? (
+//                   <AwaitingVerificationView
+//                     transaction={transactionDetails as PaymentDetails}
+//                     onRefresh={() => fetchTransactionDetails(false)}
+//                     isSubmitting={isSubmitting}
+//                   />
+//                 ) : (
+//                   <>
+//                     {/* Timeline */}
+//                     <TransactionTimeline
+//                       steps={timelineSteps}
+//                       isPayment={isPayment}
+//                       status={transactionDetails.status}
+//                       isSubmitting={isSubmitting}
+//                       onOpenCancelModal={() => setIsCancelModalOpen(true)}
+//                     />
+
+//                     {/* Actions */}
+//                     <TransactionUpdateActions
+//                       transaction={transactionDetails}
+//                       canCancel={canCancelTransaction}
+//                       isSubmitting={isSubmitting}
+//                       showAwaitingVerificationView={
+//                         showAwaitingVerificationView
+//                       }
+//                       submissionError={submissionError}
+//                       onConfirmPayment={handleConfirmPaymentSubmit}
+//                       onOpenCancelModal={() => setIsCancelModalOpen(true)}
+//                       onSwitchToDetailsTab={() => setActiveTab("Details")}
+//                     />
+//                   </>
+//                 )}
+//               </div>
+//             )}
+//             {/* End Updates Tab */}
+//             {/* --- Details Tab Content --- */}
+//             {activeTab === "Details" && (
+//               <TransactionDetailsContent
+//                 transaction={transactionDetails}
+//                 note={noteText}
+//                 onNoteChange={handleNoteChange}
+//                 formatDisplayDate={formatDisplayDate}
+//               />
+//             )}
+//           </div>
+//         </div>
+//       </div>
+      
+//       {/* --- Cancellation Modal --- */}
+//       {transactionDetails && (
+//         <CancelTransferModal
+//           isOpen={isCancelModalOpen}
+//           onClose={() => setIsCancelModalOpen(false)}
+//           transactionId={transactionId}
+//           transactionType={transactionDetails.type}
+//           onConfirmCancel={handleConfirmCancel}
+//           isSubmitting={isSubmitting}
+//         />
+//       )}
+//     </section>
+//   );
+// };
+
+// export default TransactionDetailsPage;
+
+
+
 // frontend/app/dashboard/transactions/[transactionId]/page.tsx
 "use client";
 
@@ -4419,8 +5220,6 @@ import transferService from "../../../services/transfer"; // Adjust path
 // UI Components & Utils
 import { cn } from "@/lib/utils"; // Adjust path
 import { Button } from "@/components/ui/button"; // Adjust path
-// --- REMOVE Skeleton import from here ---
-// import { Skeleton } from "@/components/ui/skeleton"; // Adjust path
 import CancelTransferModal from "../../components/CancelTransferModal"; // Adjust path
 
 // Transaction Specific Components & Types
@@ -4438,8 +5237,6 @@ import TransactionTimeline from "../../components/transactionDetails/Transaction
 import TransactionDetailsContent from "../../components/transactionDetails/TransactionDetailsContent"; // Adjust path
 import AwaitingVerificationView from "../../components/transactionDetails/AwaitingVerificationView"; // Adjust path
 import TransactionUpdateActions from "../../components/transactionDetails/TransactionUpdateActions"; // Adjust path
-
-// --- IMPORT the new Skeleton Component ---
 import TransactionDetailsPageSkeleton from "../../components/TransactionPageSection/TransactionDetailsPageSkeleton"; // Adjust path
 
 // --- Component Definition ---
@@ -4463,10 +5260,9 @@ const TransactionDetailsPage = () => {
   const [showAwaitingVerificationView, setShowAwaitingVerificationView] =
     useState(false);
 
-  // --- Data Fetching (fetchTransactionDetails - keep as is) ---
+  // --- Data Fetching ---
   const fetchTransactionDetails = useCallback(
     async (showLoading = true) => {
-      // ... (your existing fetch logic remains unchanged) ...
       if (!transactionId || !token) {
         setError("Missing transaction ID or authentication token.");
         setIsLoading(false);
@@ -4491,7 +5287,7 @@ const TransactionDetailsPage = () => {
           } as TransferDetails;
           setTransactionDetails(fullTransferData);
           setNoteText(fullTransferData.note || "");
-          setShowAwaitingVerificationView(false);
+          setShowAwaitingVerificationView(false); // Reset this view for transfers
           found = true;
           console.log("Found as Transfer");
         } catch (transferErr: unknown) {
@@ -4547,11 +5343,12 @@ const TransactionDetailsPage = () => {
             setTransactionDetails(fullPaymentData);
             setNoteText(fullPaymentData.note || "");
 
+            // Reset awaiting view unless it was explicitly triggered just before refresh
             if (fullPaymentData.status !== "pending") {
               setShowAwaitingVerificationView(false);
             } else {
-              // If already confirmed and still pending, maybe keep the view? (Needs state management)
-              // For now, simple logic: don't show await view on refresh unless explicitly set by action.
+                // Keep awaiting view if it was just set, otherwise reset it
+                // The state `showAwaitingVerificationView` handles this persistence
             }
             found = true;
             console.log(
@@ -4617,16 +5414,16 @@ const TransactionDetailsPage = () => {
         if (showLoading) setIsLoading(false);
       }
     },
-    [transactionId, token, error]
-  ); // Keep error dependency
+    [transactionId, token, error] // Keep error dependency
+  );
 
-  // --- Effect (keep as is) ---
+  // --- Effect ---
   useEffect(() => {
     fetchTransactionDetails();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [transactionId, token]);
+  }, [transactionId, token]); // Fetch only when ID or token changes initially
 
-  // --- Helper Functions & Derived Data (keep as is) ---
+  // --- Helper Functions & Derived Data ---
   const isPayment = useMemo(
     () => transactionDetails?.type === "payment",
     [transactionDetails]
@@ -4635,8 +5432,9 @@ const TransactionDetailsPage = () => {
     () => transactionDetails?.type === "transfer",
     [transactionDetails]
   );
+
   const formatDisplayDate = useCallback(
-    /* ... */ (dateString: string | undefined): string => {
+    (dateString: string | undefined): string => {
       if (!dateString) return "Date not available";
       try {
         const parsedDate = parseISO(dateString);
@@ -4651,16 +5449,15 @@ const TransactionDetailsPage = () => {
     },
     []
   );
-  const timelineSteps = useMemo(
-    /* ... */ (): TimelineStep[] => {
-      // ... (your existing timeline logic remains unchanged) ...
+
+  const timelineSteps = useMemo((): TimelineStep[] => {
       if (!transactionDetails) return [];
 
       const { createdAt, updatedAt, status, failureReason, type } =
         transactionDetails;
 
       const createdDate = formatDisplayDate(createdAt);
-      const finalDate = formatDisplayDate(updatedAt);
+      const finalDate = formatDisplayDate(updatedAt); // Usually updatedAt reflects the last status change
 
       if (type === "payment") {
         const payment = transactionDetails as PaymentDetails;
@@ -4684,7 +5481,7 @@ const TransactionDetailsPage = () => {
             status: "pending",
             date: undefined,
             info: `your bank might take up to 4 hours to get it to us. we'll let you know when it arrives.`,
-            showCancelAction: false,
+            showCancelAction: false, // Controlled below
           },
           {
             id: "receive",
@@ -4713,16 +5510,19 @@ const TransactionDetailsPage = () => {
 
         if (isPending) {
           steps[1].status = "active";
-          steps[1].showCancelAction = true;
+          // Show cancel action *only* if truly pending and not awaiting verification view
+          steps[1].showCancelAction = !showAwaitingVerificationView;
         } else if (isInProgress) {
           steps[1].status = "completed";
-          steps[1].date = finalDate;
+          steps[1].date = finalDate; // Or a specific 'funds received' date if available
           steps[1].info = null;
           steps[2].status = "active";
-          steps[2].date = finalDate;
+          steps[2].date = finalDate; // Or a specific 'processing started' date
           steps[2].info = `We're processing your payment of ${
             payment.amountToPay?.toFixed(2) ?? "N/A"
           } ${payment.payInCurrency?.code ?? ""}.`;
+          // Typically cannot cancel once 'in progress' starts on payment side
+          steps[1].showCancelAction = false; // Ensure it's off
         } else if (isComplete) {
           steps = steps.map((step, index) => ({
             ...step,
@@ -4742,46 +5542,51 @@ const TransactionDetailsPage = () => {
             (step, index) => index > 0 && step.status !== "completed"
           );
 
-          if (failedStepIndex > 0) {
-            for (let i = 1; i < failedStepIndex; i++) {
-              steps[i].status = "completed";
-              steps[i].date = finalDate;
-              steps[i].info = null;
-            }
-            steps[failedStepIndex].status = finalStatus;
-            steps[failedStepIndex].date = finalDate;
-            steps[failedStepIndex].info = finalInfo;
-            for (let i = failedStepIndex + 1; i < steps.length; i++) {
-              steps[i].status = "pending";
-              steps[i].date = undefined;
-              steps[i].info = null;
-            }
+          if (failedStepIndex >= 1) { // Make sure it's not the 'setup' step
+              // Mark previous steps as completed (if applicable)
+              for (let i = 1; i < failedStepIndex; i++) {
+                  steps[i].status = "completed";
+                  steps[i].date = finalDate; // Use final date as approximation
+                  steps[i].info = null;
+              }
+              // Mark the step where it failed/was cancelled
+              steps[failedStepIndex].status = finalStatus;
+              steps[failedStepIndex].date = finalDate;
+              steps[failedStepIndex].info = finalInfo;
+              // Reset subsequent steps
+              for (let i = failedStepIndex + 1; i < steps.length; i++) {
+                  steps[i].status = "pending"; // Or perhaps 'not_reached'? Pending works visually.
+                  steps[i].date = undefined;
+                  steps[i].info = null;
+              }
           } else {
-            steps[1].status = finalStatus;
-            steps[1].date = finalDate;
-            steps[1].info = finalInfo;
-            for (let i = 2; i < steps.length; i++) {
-              steps[i].status = "pending";
-              steps[i].date = undefined;
-              steps[i].info = null;
-            }
+              // If it failed/cancelled immediately after setup (unlikely for payments but handle)
+              steps[1].status = finalStatus;
+              steps[1].date = finalDate;
+              steps[1].info = finalInfo;
+              for (let i = 2; i < steps.length; i++) {
+                  steps[i].status = "pending";
+                  steps[i].date = undefined;
+                  steps[i].info = null;
+              }
           }
           steps = steps.map((step) => ({ ...step, showCancelAction: false }));
         }
         return steps;
       } else if (type === "transfer") {
         const transfer = transactionDetails as TransferDetails;
-        const updatedDate = formatDisplayDate(updatedAt);
-        const isPendingOrProcessing =
-          status === "pending" || status === "processing";
+        const updatedDate = formatDisplayDate(updatedAt); // Last status update time
+        const isPending = status === "pending";
+        const isProcessing = status === "processing";
         const isComplete = status === "completed";
         const isCancelled = status === "canceled";
         const hasFailed = status === "failed";
+
         const finalStepStatus: TimelineStatus = isCancelled
           ? "cancelled"
           : hasFailed
           ? "failed"
-          : "pending";
+          : "pending"; // Default for steps not reached
 
         let steps: TimelineStep[] = [
           {
@@ -4799,12 +5604,12 @@ const TransactionDetailsPage = () => {
             status: "pending",
             date: undefined,
             info: null,
+            // Don't show cancel action here for transfers by default
+            showCancelAction: false,
           },
           {
             id: "paid_out",
-            label: `Your money's being processed ${
-              transfer.receiveCurrency?.code || "money"
-            }`,
+            label: `Your money's being processed`,
             status: "pending",
             date: undefined,
             info: null,
@@ -4814,13 +5619,17 @@ const TransactionDetailsPage = () => {
             label: `Sent to recipient's bank`,
             status: "pending",
             date: undefined,
-            info: null,
+            info: null, // Estimated delivery might go here if available
           },
         ];
 
-        if (isPendingOrProcessing) {
+        if (isPending) {
+           // If pending, often means funds haven't been taken yet or just initiated
+           steps[1].status = 'active'; // Indicate this is the current focus
+           // Explicitly no date yet for 'funded'
+        } else if (isProcessing) {
           steps[1].status = "completed";
-          steps[1].date = updatedDate;
+          steps[1].date = updatedDate; // Assume funded when processing starts
           steps[2].status = "active";
           steps[2].date = updatedDate;
           steps[2].info = `We're processing the payment to your recipient's bank.`;
@@ -4835,230 +5644,243 @@ const TransactionDetailsPage = () => {
           const finalInfo = isCancelled
             ? "Transfer cancelled."
             : `Failed to pay out: ${failureReason || "Unknown reason"}`;
-          steps[1].status = "completed";
-          steps[1].date = updatedDate;
-          steps[2].status = finalStepStatus;
-          steps[2].date = updatedDate;
-          steps[2].info = finalInfo;
-          steps[3].status = "pending";
+          // Determine where it failed
+          if(isPending) { // Cancelled/failed while pending
+            steps[1].status = finalStepStatus;
+            steps[1].date = updatedDate;
+            steps[1].info = finalInfo;
+          } else { // Cancelled/failed during/after processing attempt
+            steps[1].status = "completed";
+            steps[1].date = updatedDate;
+            steps[2].status = finalStepStatus; // Failed at processing/payout stage
+            steps[2].date = updatedDate;
+            steps[2].info = finalInfo;
+            steps[3].status = "pending"; // Not reached
+          }
         }
+        // Ensure no cancel action shown in timeline for transfers regardless of state
         steps = steps.map((step) => ({ ...step, showCancelAction: false }));
         return steps;
       }
       return [];
     },
-    [transactionDetails, formatDisplayDate]
-  );
-  const canCancelTransaction = useMemo(
-    /* ... */ () => {
-      // ... (your existing cancel logic remains unchanged) ...
-      if (!transactionDetails) return false;
-      if (isPayment) {
-        const paymentStatus = (transactionDetails as PaymentDetails).status;
-        return paymentStatus === "pending" || paymentStatus === "in progress";
-      }
-      if (isTransfer) {
-        const transferStatus = (transactionDetails as TransferDetails).status;
-        return transferStatus === "pending" || transferStatus === "processing";
-      }
-      return false;
-    },
-    [transactionDetails, isPayment, isTransfer]
+    [transactionDetails, formatDisplayDate, showAwaitingVerificationView] // Added showAwaitingVerificationView dependency
   );
 
-  // --- Event Handlers (keep as is) ---
-  const handleConfirmPaymentSubmit = useCallback(
-    /* ... */ async () => {
-      // ... (your existing handler logic remains unchanged) ...
-      if (
-        !transactionId ||
-        !token ||
-        !isPayment ||
-        transactionDetails?.status !== "pending"
-      )
-        return;
-      setIsSubmitting(true);
-      setSubmissionError(null);
-      try {
-        await paymentService.confirmUserTransfer(transactionId, token);
-        setShowAwaitingVerificationView(true);
-        // Optionally delay refresh: setTimeout(() => fetchTransactionDetails(false), 3000);
-      } catch (err: unknown) {
-        let message = `Failed to confirm payment`;
-        let status = 0;
-        if (typeof err === "object" && err !== null) {
-          const errObj = err as {
-            response?: { status?: number; data?: { message?: string } };
-            message?: string;
-          };
-          message = errObj.response?.data?.message || errObj.message || message;
-          status = errObj.response?.status || 0;
-        } else if (err instanceof Error) {
-          message = err.message;
-        }
+  const canCancelTransaction = useMemo(() => {
+    if (!transactionDetails) return false;
 
-        if (message.includes("not in pending state") || status === 400) {
-          setError("Payment status may have already updated. Refreshing...");
-          await fetchTransactionDetails(false);
-          setShowAwaitingVerificationView(false);
-        } else {
-          setSubmissionError(message);
-        }
-        console.error(`Error confirming payment (ID: ${transactionId}):`, err);
-      } finally {
-        setIsSubmitting(false);
-      }
-    },
-    [
-      transactionId,
-      token,
-      isPayment,
-      transactionDetails?.status,
-      fetchTransactionDetails,
-    ]
-  );
-  const handleConfirmCancel = useCallback(
-    /* ... */ async () => {
-      // ... (your existing handler logic remains unchanged) ...
-      if (!transactionId || !token || !transactionDetails) {
-        setSubmissionError("Cannot proceed: Missing required information.");
-        return;
-      }
-      if (!canCancelTransaction) {
-        setSubmissionError(
-          "This transaction can no longer be cancelled. Refreshing..."
-        );
-        await fetchTransactionDetails(false);
-        setIsCancelModalOpen(false);
-        return;
+    if (isPayment) {
+      const paymentStatus = (transactionDetails as PaymentDetails).status;
+      // Allow cancellation only if truly pending AND not in the 'awaiting verification' UI state
+      return paymentStatus === "pending" && !showAwaitingVerificationView;
+    }
+    if (isTransfer) {
+      const transferStatus = (transactionDetails as TransferDetails).status;
+      // *** FIX: Only allow cancelling transfers if they are strictly 'pending' ***
+      // Once 'processing' starts, money is likely moving and cancellation is complex/impossible.
+      return transferStatus === "pending";
+    }
+    return false;
+  }, [transactionDetails, isPayment, isTransfer, showAwaitingVerificationView]); // Added showAwaitingVerificationView dependency
+
+
+  // --- Event Handlers ---
+  const handleConfirmPaymentSubmit = useCallback(async () => {
+    if (
+      !transactionId ||
+      !token ||
+      !isPayment ||
+      transactionDetails?.status !== "pending" ||
+      showAwaitingVerificationView // Prevent double submission
+    )
+      return;
+    setIsSubmitting(true);
+    setSubmissionError(null);
+    try {
+      await paymentService.confirmUserTransfer(transactionId, token);
+      // Set the state to show the awaiting view immediately
+      setShowAwaitingVerificationView(true);
+      // Optionally, trigger a refresh after a delay or rely on user refreshing
+      // setTimeout(() => fetchTransactionDetails(false), 5000); // Example: refresh after 5s
+    } catch (err: unknown) {
+      let message = `Failed to confirm payment`;
+      let status = 0;
+      if (typeof err === "object" && err !== null) {
+        const errObj = err as {
+          response?: { status?: number; data?: { message?: string } };
+          message?: string;
+        };
+        message = errObj.response?.data?.message || errObj.message || message;
+        status = errObj.response?.status || 0;
+      } else if (err instanceof Error) {
+        message = err.message;
       }
 
-      setIsSubmitting(true);
-      setSubmissionError(null);
-      try {
-        let cancelPromise;
-        if (isPayment) {
-          cancelPromise = paymentService.cancelPayment(transactionId, token);
-        } else if (isTransfer) {
-          cancelPromise = transferService.cancelTransfer(transactionId, token);
-        } else {
-          throw new Error("Cannot cancel: Unknown transaction type.");
-        }
-        await cancelPromise;
-        setIsCancelModalOpen(false);
-        await fetchTransactionDetails(false);
-      } catch (err: unknown) {
-        let message = `Failed to cancel ${isPayment ? "payment" : "transfer"}`;
-        if (typeof err === "object" && err !== null) {
-          const errObj = err as {
-            response?: { data?: { message?: string } };
-            message?: string;
-          };
-          message = errObj.response?.data?.message || errObj.message || message;
-        } else if (err instanceof Error) {
-          message = err.message;
-        }
+      // If error indicates state changed (e.g., already processed/cancelled)
+      if (message.includes("not in pending state") || status === 400 || status === 409) {
+        setError("Payment status may have changed. Refreshing...");
+        await fetchTransactionDetails(false); // Refresh immediately
+        setShowAwaitingVerificationView(false); // Reset awaiting view as status changed
+      } else {
         setSubmissionError(message);
-        console.error(
-          `Error cancelling ${transactionDetails.type} (ID: ${transactionId}):`,
-          err
-        );
-        setIsCancelModalOpen(false);
-      } finally {
-        setIsSubmitting(false);
       }
-    },
-    [
-      transactionId,
-      token,
-      transactionDetails,
-      isPayment,
-      isTransfer,
-      canCancelTransaction,
-      fetchTransactionDetails,
-    ]
-  );
+      console.error(`Error confirming payment (ID: ${transactionId}):`, err);
+    } finally {
+      setIsSubmitting(false); // Stop loading indicator for the confirm button
+    }
+  }, [
+    transactionId,
+    token,
+    isPayment,
+    transactionDetails?.status,
+    fetchTransactionDetails,
+    showAwaitingVerificationView,
+  ]);
+
+  const handleConfirmCancel = useCallback(async () => {
+    if (!transactionId || !token || !transactionDetails) {
+      setSubmissionError("Cannot proceed: Missing required information.");
+      return;
+    }
+    // Re-check cancellability right before executing
+    if (!canCancelTransaction) {
+      setSubmissionError(
+        "This transaction can no longer be cancelled. Refreshing..."
+      );
+      await fetchTransactionDetails(false); // Refresh data
+      setIsCancelModalOpen(false); // Close modal
+      return;
+    }
+
+    setIsSubmitting(true); // Indicate loading state (applies to modal buttons)
+    setSubmissionError(null);
+    try {
+      let cancelPromise;
+      if (isPayment) {
+        cancelPromise = paymentService.cancelPayment(transactionId, token);
+      } else if (isTransfer) {
+        cancelPromise = transferService.cancelTransfer(transactionId, token);
+      } else {
+        throw new Error("Cannot cancel: Unknown transaction type.");
+      }
+      await cancelPromise;
+      setIsCancelModalOpen(false);
+      await fetchTransactionDetails(false); // Refresh data after successful cancellation
+    } catch (err: unknown) {
+      let message = `Failed to cancel ${isPayment ? "payment" : "transfer"}`;
+      if (typeof err === "object" && err !== null) {
+        const errObj = err as {
+          response?: { data?: { message?: string } };
+          message?: string;
+        };
+        message = errObj.response?.data?.message || errObj.message || message;
+      } else if (err instanceof Error) {
+        message = err.message;
+      }
+      // Set error message to be potentially displayed in the modal or main page
+      setSubmissionError(message);
+      console.error(
+        `Error cancelling ${transactionDetails.type} (ID: ${transactionId}):`,
+        err
+      );
+      // Keep modal open on error so user sees the message, maybe add error display in modal?
+      // setIsCancelModalOpen(false); // Or close it anyway? User decision. Closing for now.
+       setIsCancelModalOpen(false);
+       // Optionally refresh even on error, as status might have changed anyway
+       await fetchTransactionDetails(false);
+
+    } finally {
+      setIsSubmitting(false); // Stop loading state
+    }
+  }, [
+    transactionId,
+    token,
+    transactionDetails,
+    isPayment,
+    isTransfer,
+    canCancelTransaction, // Use the memoized value
+    fetchTransactionDetails,
+  ]);
+
   const handleNoteChange = useCallback(
-    /* ... */ (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      // ... (your existing handler logic remains unchanged) ...
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       setNoteText(e.target.value);
+      // Debounce API call here if saving note automatically
     },
     []
   );
 
-  // --- Header Status Logic (keep as is) ---
-  const { headerStatusText, headerStatusColorClass } = useMemo(
-    /* ... */ () => {
-      // ... (your existing status logic remains unchanged) ...
-      if (!transactionDetails)
+  // --- Header Status Logic ---
+  const { headerStatusText, headerStatusColorClass } = useMemo(() => {
+    if (!transactionDetails)
+      return {
+        headerStatusText: "Loading...",
+        headerStatusColorClass: "text-gray-500 dark:text-gray-400",
+      };
+
+    // Prioritize Awaiting Verification view status if active
+    if (
+      isPayment &&
+      transactionDetails.status === "pending" &&
+      showAwaitingVerificationView
+    ) {
+      return {
+        headerStatusText: "Verifying Payment",
+        headerStatusColorClass: "text-blue-600 dark:text-blue-400 animate-pulse",
+      };
+    }
+
+    // Regular status display
+    switch (transactionDetails.status) {
+      case "pending":
         return {
-          headerStatusText: "Loading...",
+          headerStatusText: isPayment
+            ? "Waiting for you to pay"
+            : "Transfer Pending", // Changed for clarity
+          headerStatusColorClass: "text-orange-600 dark:text-orange-400",
+        };
+      case "in progress": // Specific to Payment
+        return {
+          headerStatusText: "Processing Payment",
+          headerStatusColorClass: "text-blue-600 dark:text-blue-400",
+        };
+      case "processing": // Specific to Transfer
+        return {
+          headerStatusText: "Transfer Processing",
+          headerStatusColorClass: "text-blue-600 dark:text-blue-400",
+        };
+      case "completed":
+        return {
+          headerStatusText: isPayment ? "Money Added" : "Transfer Completed",
+          headerStatusColorClass: "text-green-600 dark:text-green-400",
+        };
+      case "canceled":
+        return {
+          headerStatusText: "Transaction Cancelled",
+          headerStatusColorClass: "text-red-600 dark:text-red-400",
+        };
+      case "failed":
+        return {
+          headerStatusText: "Transaction Failed",
+          headerStatusColorClass: "text-red-600 dark:text-red-400",
+        };
+      default:
+        return {
+          headerStatusText: `Status: ${transactionDetails.status}`,
           headerStatusColorClass: "text-gray-500 dark:text-gray-400",
         };
-
-      if (
-        isPayment &&
-        transactionDetails.status === "pending" &&
-        showAwaitingVerificationView
-      ) {
-        return {
-          headerStatusText: "Verifying Payment",
-          headerStatusColorClass:
-            "text-blue-600 dark:text-blue-400 animate-pulse",
-        };
-      }
-
-      switch (transactionDetails.status) {
-        case "pending":
-          return {
-            headerStatusText: isPayment
-              ? "Waiting for you to pay"
-              : "Transfer initiated",
-            headerStatusColorClass: "text-orange-600 dark:text-orange-400",
-          };
-        case "in progress":
-          return {
-            headerStatusText: "Processing Payment",
-            headerStatusColorClass: "text-blue-600 dark:text-blue-400",
-          };
-        case "processing":
-          return {
-            headerStatusText: "Transfer Processing",
-            headerStatusColorClass: "text-blue-600 dark:text-blue-400",
-          };
-        case "completed":
-          return {
-            headerStatusText: isPayment ? "Money Added" : "Transfer Completed",
-            headerStatusColorClass: "text-green-600 dark:text-green-400",
-          };
-        case "canceled":
-          return {
-            headerStatusText: "Transaction Cancelled",
-            headerStatusColorClass: "text-red-600 dark:text-red-400",
-          };
-        case "failed":
-          return {
-            headerStatusText: "Transaction Failed",
-            headerStatusColorClass: "text-red-600 dark:text-red-400",
-          };
-        default:
-          return {
-            headerStatusText: `Status: ${transactionDetails.status}`,
-            headerStatusColorClass: "text-gray-500 dark:text-gray-400",
-          };
-      }
-    },
-    [transactionDetails, isPayment, showAwaitingVerificationView]
-  );
+    }
+  }, [transactionDetails, isPayment, showAwaitingVerificationView]);
 
   // --- Render Logic ---
 
-  // Loading State (Initial Load) - USE THE NEW SKELETON
+  // Loading State (Initial Load)
   if (isLoading && !transactionDetails) {
-    return <TransactionDetailsPageSkeleton />; // <-- Use the new skeleton component
+    return <TransactionDetailsPageSkeleton />;
   }
 
-  // Error State (Failed to load initial data) - Keep as is
+  // Error State (Failed to load initial data)
   if (error && !transactionDetails) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
@@ -5077,15 +5899,17 @@ const TransactionDetailsPage = () => {
           onClick={() => fetchTransactionDetails()}
           variant="secondary"
           className="mt-6 ml-2"
+          disabled={isLoading} // Prevent multiple clicks while retrying
         >
-          Try Again
+          {isLoading ? 'Retrying...' : 'Try Again'}
         </Button>
       </div>
     );
   }
 
-  // Not Found State - Keep as is
+  // Not Found State
   if (!transactionDetails) {
+    // This case handles when fetch completed but didn't find the transaction (error state might have been cleared)
     return (
       <div className="container mx-auto px-4 py-8 text-center text-gray-500 dark:text-gray-400">
         <p className="text-lg">Transaction details not found.</p>
@@ -5103,7 +5927,7 @@ const TransactionDetailsPage = () => {
     );
   }
 
-  // --- Main Component Return (keep the rest as is) ---
+  // --- Main Component Return ---
   return (
     <section className="Transaction-Detial-Page-Wrapper py-5">
       <div className="Transaction-Detial">
@@ -5142,7 +5966,7 @@ const TransactionDetailsPage = () => {
                   <AwaitingVerificationView
                     transaction={transactionDetails as PaymentDetails}
                     onRefresh={() => fetchTransactionDetails(false)}
-                    isSubmitting={isSubmitting}
+                    isSubmitting={isLoading} // Use main isLoading for refresh button
                   />
                 ) : (
                   <>
@@ -5151,15 +5975,16 @@ const TransactionDetailsPage = () => {
                       steps={timelineSteps}
                       isPayment={isPayment}
                       status={transactionDetails.status}
-                      isSubmitting={isSubmitting}
+                      isSubmitting={isSubmitting && isCancelModalOpen} // Show timeline spinner only during cancel action
                       onOpenCancelModal={() => setIsCancelModalOpen(true)}
+                      // Pass canCancelTransaction explicitly if timeline needs it
                     />
 
-                    {/* Actions */}
+                    {/* Actions Area */}
                     <TransactionUpdateActions
                       transaction={transactionDetails}
-                      canCancel={canCancelTransaction}
-                      isSubmitting={isSubmitting}
+                      canCancel={canCancelTransaction} // Use the refined logic here
+                      isSubmitting={isSubmitting} // General submission state
                       showAwaitingVerificationView={
                         showAwaitingVerificationView
                       }
@@ -5170,9 +5995,16 @@ const TransactionDetailsPage = () => {
                     />
                   </>
                 )}
+                 {/* Display general submission errors here if not handled by specific components */}
+                 {submissionError && !isCancelModalOpen && (
+                  <p className="mt-4 text-sm text-red-600 dark:text-red-400 text-center">
+                    Error: {submissionError}
+                  </p>
+                )}
               </div>
             )}
             {/* End Updates Tab */}
+
             {/* --- Details Tab Content --- */}
             {activeTab === "Details" && (
               <TransactionDetailsContent
@@ -5180,21 +6012,29 @@ const TransactionDetailsPage = () => {
                 note={noteText}
                 onNoteChange={handleNoteChange}
                 formatDisplayDate={formatDisplayDate}
+                // Add props for saving note if needed
               />
             )}
           </div>
         </div>
       </div>
-      
+
       {/* --- Cancellation Modal --- */}
       {transactionDetails && (
         <CancelTransferModal
           isOpen={isCancelModalOpen}
-          onClose={() => setIsCancelModalOpen(false)}
+          onClose={() => {
+              if (!isSubmitting) { // Prevent closing while submitting
+                  setIsCancelModalOpen(false);
+                  setSubmissionError(null); // Clear error when closing manually
+              }
+          }}
           transactionId={transactionId}
           transactionType={transactionDetails.type}
           onConfirmCancel={handleConfirmCancel}
-          isSubmitting={isSubmitting}
+          isSubmitting={isSubmitting} // Pass submitting state to modal
+          // Pass submissionError to display inside the modal if desired
+          // error={submissionError}
         />
       )}
     </section>

@@ -1299,29 +1299,522 @@
 
 // export default ResetPasswordForm;
 
+// "use client";
+
+// import React, { useState } from "react";
+// import Image from "next/image";
+// import { IoMdCloseCircle } from "react-icons/io";
+// import authService from "../../services/auth"; // Correct import path using alias
+// import { FaCheck } from "react-icons/fa6";
+// import { motion, AnimatePresence } from "framer-motion"; // Import Framer Motion
+// import { FiX } from "react-icons/fi";
+// import Link from "next/link";
+
+// const ResetPasswordForm = () => {
+//   const [email, setEmail] = useState<string>("");
+//   const [error, setError] = useState<string>("");
+//   const [emailError, setEmailError] = useState<string>("");
+//   const [successMessage, setSuccessMessage] = useState<string>("");
+//   const [isLoading, setIsLoading] = useState<boolean>(false);
+//   const [emailSent, setEmailSent] = useState<boolean>(false);
+//   // const [emailResent, setEmailResent] = useState<boolean>(false); // REMOVED: Not used
+//   const [showCheckAgainMessage, setShowCheckAgainMessage] =
+//     useState<boolean>(false);
+//   const [resendError, setResendError] = useState<string>("");
+//   const [resendAttemptFailed, setResendAttemptFailed] =
+//     useState<boolean>(false);
+
+//   const isValidEmail = (email: string): boolean => {
+//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//     return emailRegex.test(email);
+//   };
+
+//   const handleSubmit = async (e: React.FormEvent) => {
+//     e.preventDefault();
+
+//     let isValid = true;
+//     setError("");
+//     setSuccessMessage("");
+//     setEmailSent(false);
+
+//     if (!email) {
+//       setEmailError("Please fill email address field");
+//       isValid = false;
+//     } else if (!isValidEmail(email)) {
+//       setEmailError("Please enter a valid email address");
+//       isValid = false;
+//     } else {
+//       setEmailError("");
+//     }
+
+//     if (isValid) {
+//       setIsLoading(true);
+//       try {
+//         await authService.forgotPassword({ email });
+//         setEmailSent(true);
+//         setResendAttemptFailed(false); // Reset resend attempt status on successful send
+//       } catch (err: unknown) {
+//         // FIXED: Use unknown instead of any
+//         // Determine error message safely
+//         const message =
+//           err instanceof Error
+//             ? err.message
+//             : typeof err === "string"
+//             ? err
+//             : "An error occurred while processing your request. Please try again.";
+//         console.error("Forgot password error:", err); // Log the original error for debugging
+//         setError(message);
+//         setEmailSent(false); // Ensure emailSent is false if initial send fails
+//         setResendAttemptFailed(false); // Reset resend attempt status even if initial send fails to allow resend attempt
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     }
+//   };
+
+//   const handleSendAgain = async () => {
+//     if (resendAttemptFailed) {
+//       return;
+//     }
+
+//     // setEmailResent(true); // REMOVED: Not used
+//     setIsLoading(true);
+//     setShowCheckAgainMessage(false); // Reset before potentially showing again
+//     setResendError("");
+
+//     try {
+//       await authService.forgotPassword({ email });
+//       // Set success message directly or rely on showCheckAgainMessage
+//       // setSuccessMessage("A new password reset link has been sent to your email address."); // This state seems unused in the success flow
+//       setShowCheckAgainMessage(true);
+//       setResendAttemptFailed(false); // Reset resend attempt status on successful resend
+//     } catch (err: unknown) {
+//       // FIXED: Use unknown instead of any
+//       // Determine error message safely
+//       const message =
+//         err instanceof Error
+//           ? err.message
+//           : typeof err === "string"
+//           ? err
+//           : "Failed to send email again. Please try again later.";
+//       console.error("Resend password error:", err); // Log the original error for debugging
+//       setResendError(message);
+//       setResendAttemptFailed(true); // Set resend attempt to failed
+//       setShowCheckAgainMessage(false); // Hide success message if resend fails
+//       setSuccessMessage(""); // Clear success message if resend fails
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   const errorVariants = {
+//     initial: { opacity: 0.5, y: 10, scale: 0.95, rotate: "2deg" },
+//     animate: {
+//       opacity: 1,
+//       y: 0,
+//       scale: 1,
+//       rotate: "0deg",
+//       transition: {
+//         duration: 0.3,
+//         ease: "easeInOut",
+//         type: "spring",
+//         stiffness: 95,
+//         damping: 10,
+//       },
+//     },
+//     exit: {
+//       opacity: 0,
+//       y: 10,
+//       scale: 0.95,
+//       rotate: "-2deg",
+//       transition: { duration: 0.2, ease: "easeIn" },
+//     },
+//   };
+
+//   if (emailSent) {
+//     return (
+//       <div className="flex flex-col bg-white dark:bg-background justify-center items-center h-[calc(100vh-82px)] px-4">
+//         <div className="max-w-lg space-y-4">
+//           <div className="flex justify-center items-center sm:pt-0 pt-10">
+//             <Image
+//               src="/assets/images/sendmassage.svg"
+//               width={600}
+//               height={600}
+//               alt="Email Icon"
+//               className="w-full object-contain xl:h-80 h-70"
+//             />
+//           </div>
+
+//           <h2 className="text-3xl md:text-4xl font-black text-center text-mainheading dark:text-white uppercase">
+//             Check your email
+//           </h2>
+
+//           <p className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base">
+//             We sent an email to &nbsp;
+//             <span className="font-semibold text-primary">{email}</span>
+//           </p>
+
+//           <p className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base">
+//             If the email hasn&apos;t arrived yet, please check your spam folder.
+//             Alternatively, you can also request the email again:
+//           </p>
+
+//           <AnimatePresence>
+//             {showCheckAgainMessage && (
+//               <motion.div
+//                 className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative my-4"
+//                 role="alert"
+//                 initial="initial"
+//                 animate="animate"
+//                 exit="exit"
+//                 variants={errorVariants}
+//               >
+//                 <div className="flex bg-green-100 dark:bg-green-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+//                   <FaCheck className="p-0.5 text-green-600 dark:text-green-400 lg:size-8 size-6" />
+//                 </div>
+
+//                 <p className="text-gray-500 dark:text-gray-300 block">
+//                   Please check your email inbox again.
+//                 </p>
+//               </motion.div>
+//             )}
+//           </AnimatePresence>
+
+//           <AnimatePresence>
+//             {resendError && (
+//               <motion.div
+//                 className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative mt-5" // Adjusted styling slightly for consistency
+//                 role="alert"
+//                 animate="animate"
+//                 exit="exit"
+//                 variants={errorVariants}
+//               >
+//                 <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+//                   <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
+//                 </div>
+
+//                 <div className="inline-block">
+//                   <span className="text-gray-500 dark:text-gray-300 max-w-60">
+//                     {resendError}
+//                   </span>
+//                 </div>
+//               </motion.div>
+//             )}
+//           </AnimatePresence>
+
+//           <AnimatePresence>
+//             {resendAttemptFailed && (
+//               <motion.div
+//                 className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative mt-5" // Adjusted styling slightly for consistency
+//                 role="alert"
+//                 animate="animate"
+//                 exit="exit"
+//                 variants={errorVariants}
+//               >
+//                 <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+//                   <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
+//                 </div>
+
+//                 <div className="inline-block">
+//                   <p className="text-gray-500 dark:text-gray-300">
+//                     Couldn&apos;t send email again. Please try again later you
+//                     can wait.
+//                   </p>
+//                 </div>
+//               </motion.div>
+//             )}
+//           </AnimatePresence>
+
+//           <button
+//             onClick={handleSendAgain}
+//             disabled={isLoading || resendAttemptFailed}
+//             className={`bg-primary hover:bg-primaryhover w-full capitalize text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center
+//                             ${
+//                               isLoading || resendAttemptFailed
+//                                 ? "opacity-50 cursor-not-allowed"
+//                                 : ""
+//                             }`}
+//             type="submit"
+//           >
+//             {isLoading ? (
+//               <>
+//                 <svg
+//                   className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+//                   viewBox="0 0 24 24"
+//                   fill="none"
+//                   xmlns="http://www.w3.org/2000/svg"
+//                 >
+//                   <path
+//                     d="M12 2V6"
+//                     stroke="currentColor"
+//                     strokeWidth="2"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />
+//                   <path
+//                     d="M12 18V22"
+//                     stroke="currentColor"
+//                     strokeWidth="2"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />
+//                   <path
+//                     d="M4.93 4.93L7.76 7.76"
+//                     stroke="currentColor"
+//                     strokeWidth="2"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />
+//                   <path
+//                     d="M16.24 16.24L19.07 19.07"
+//                     stroke="currentColor"
+//                     strokeWidth="2"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />
+//                   <path
+//                     d="M2 12H6"
+//                     stroke="currentColor"
+//                     strokeWidth="2"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />
+//                   <path
+//                     d="M18 12H22"
+//                     stroke="currentColor"
+//                     strokeWidth="2"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />
+//                   <path
+//                     d="M4.93 19.07L7.76 16.24"
+//                     stroke="currentColor"
+//                     strokeWidth="2"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />
+//                   <path
+//                     d="M16.24 7.76L19.07 4.93"
+//                     stroke="currentColor"
+//                     strokeWidth="2"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />
+//                 </svg>
+//                 <span>Sending...</span>
+//               </>
+//             ) : (
+//               "Send email again"
+//             )}
+//           </button>
+
+//           <p className="text-base text-center text-gray-700 dark:text-gray-300 mt-5">
+//             Still need help? &nbsp;
+//             <a
+//               href="#"
+//               className="text-primary underline font-medium underline-offset-4"
+//             >
+//               Read this article.
+//             </a>
+//           </p>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="flex flex-col bg-white dark:bg-background justify-center items-center h-[calc(100vh-82px)] px-4">
+//       <div className="max-w-lg space-y-4">
+//         <div className="flex justify-center items-center sm:pt-0 pt-10">
+//           <Image
+//             src="/assets/images/resetpassword.svg"
+//             width={600}
+//             height={600}
+//             alt="Key Icon"
+//             className="w-full object-contain xl:h-80 h-70"
+//           />
+//         </div>
+
+//         <h2 className="text-3xl md:text-4xl font-black text-center text-mainheading dark:text-white uppercase">
+//           Reset password
+//         </h2>
+
+//         <p className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base">
+//           Just enter the email address you registered with and we&apos;ll send
+//           you a link to reset your password.
+//         </p>
+
+//         <AnimatePresence>
+//           {error && (
+//             <motion.div
+//               className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative mt-5" // Added width constraint
+//               role="alert"
+//               initial="initial"
+//               animate="animate"
+//               exit="exit"
+//               variants={errorVariants}
+//             >
+//               <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+//                 <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
+//               </div>
+
+//               <div className="inline-block">
+//                 <span className="text-gray-500 dark:text-gray-300 max-w-60">
+//                   {error} Relative to this path no number right now
+//                 </span>
+//               </div>
+//             </motion.div>
+//           )}
+//         </AnimatePresence>
+
+//         <form onSubmit={handleSubmit}>
+//           <div className="my-5">
+//             <label
+//               htmlFor="email"
+//               className=" text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
+//             >
+//               Enter your email address
+//             </label>
+
+//             <input
+//               id="email"
+//               type="email"
+//               value={email}
+//               onChange={(e) => setEmail(e.target.value)}
+//               disabled={isLoading}
+//               className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
+//                 emailError
+//                   ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+//                   : "focus:border-[#5f5f5f]"
+//               }`}
+//             />
+//             {emailError && (
+//               <p className="flex text-red-700 text-base items-center mt-0.5">
+//                 <span className="mr-1">
+//                   <IoMdCloseCircle className="size-5" />
+//                 </span>
+//                 {emailError}
+//               </p>
+//             )}
+//           </div>
+
+//           <div className="flex justify-between items-center">
+//             <button
+//               className={`bg-primary hover:bg-primaryhover w-full capitalize text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center ${
+//                 isLoading ? "opacity-50 cursor-not-allowed" : ""
+//               }`}
+//               type="submit"
+//               disabled={isLoading}
+//             >
+//               {isLoading ? (
+//                 <>
+//                   <svg
+//                     className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+//                     viewBox="0 0 24 24"
+//                     fill="none"
+//                     xmlns="http://www.w3.org/2000/svg"
+//                   >
+//                     <path
+//                       d="M12 2V6"
+//                       stroke="currentColor"
+//                       strokeWidth="2"
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                     />
+//                     <path
+//                       d="M12 18V22"
+//                       stroke="currentColor"
+//                       strokeWidth="2"
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                     />
+//                     <path
+//                       d="M4.93 4.93L7.76 7.76"
+//                       stroke="currentColor"
+//                       strokeWidth="2"
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                     />
+//                     <path
+//                       d="M16.24 16.24L19.07 19.07"
+//                       stroke="currentColor"
+//                       strokeWidth="2"
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                     />
+//                     <path
+//                       d="M2 12H6"
+//                       stroke="currentColor"
+//                       strokeWidth="2"
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                     />
+//                     <path
+//                       d="M18 12H22"
+//                       stroke="currentColor"
+//                       strokeWidth="2"
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                     />
+//                     <path
+//                       d="M4.93 19.07L7.76 16.24"
+//                       stroke="currentColor"
+//                       strokeWidth="2"
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                     />
+//                     <path
+//                       d="M16.24 7.76L19.07 4.93"
+//                       stroke="currentColor"
+//                       strokeWidth="2"
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                     />
+//                   </svg>
+//                   <span>Sending...</span>
+//                 </>
+//               ) : (
+//                 "Send password reset link"
+//               )}
+//             </button>
+//           </div>
+//         </form>
+
+//         <p className="text-base text-gray-500 dark:text-gray-300 my-2 text-center">
+//           Need help? Read this &nbsp;
+//           <Link href="/faqs">
+//             <span className="text-primary font-medium underline capitalize underline-offset-4">
+//               Help Centre article.
+//             </span>
+//           </Link>
+//         </p>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ResetPasswordForm;
+
 "use client";
 
 import React, { useState } from "react";
 import Image from "next/image";
 import { IoMdCloseCircle } from "react-icons/io";
-import authService from "../../services/auth"; // Correct import path using alias
+import authService from "../../services/auth";
 import { FaCheck } from "react-icons/fa6";
-import { motion, AnimatePresence } from "framer-motion"; // Import Framer Motion
+import { motion, AnimatePresence } from "framer-motion";
 import { FiX } from "react-icons/fi";
 import Link from "next/link";
 
 const ResetPasswordForm = () => {
   const [email, setEmail] = useState<string>("");
-  const [error, setError] = useState<string>("");
-  const [emailError, setEmailError] = useState<string>("");
-  const [successMessage, setSuccessMessage] = useState<string>("");
+  // Single error state for initial submission or resend failures
+  const [formError, setFormError] = useState<string>("");
+  const [emailFieldError, setEmailFieldError] = useState<string>(""); // For specific email format/required validation
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [emailSent, setEmailSent] = useState<boolean>(false);
-  // const [emailResent, setEmailResent] = useState<boolean>(false); // REMOVED: Not used
+  // State to show "Please check again" message after successful resend
   const [showCheckAgainMessage, setShowCheckAgainMessage] =
-    useState<boolean>(false);
-  const [resendError, setResendError] = useState<string>("");
-  const [resendAttemptFailed, setResendAttemptFailed] =
     useState<boolean>(false);
 
   const isValidEmail = (email: string): boolean => {
@@ -1329,85 +1822,75 @@ const ResetPasswordForm = () => {
     return emailRegex.test(email);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Combined function for initial send and resend
+  const handleSendRequest = async (isResend: boolean = false) => {
+    // Prevent resend if already loading
+    if (isLoading) return;
 
     let isValid = true;
-    setError("");
-    setSuccessMessage("");
-    setEmailSent(false);
+    setFormError(""); // Clear general form error
+    setShowCheckAgainMessage(false); // Hide check again message on new attempt
 
-    if (!email) {
-      setEmailError("Please fill email address field");
-      isValid = false;
-    } else if (!isValidEmail(email)) {
-      setEmailError("Please enter a valid email address");
-      isValid = false;
+    // Validate email only needed for initial send, or if email somehow cleared on resend screen (unlikely)
+    if (!isResend || !email) {
+      if (!email) {
+        setEmailFieldError("Please fill email address field");
+        isValid = false;
+      } else if (!isValidEmail(email)) {
+        setEmailFieldError("Please enter a valid email address");
+        isValid = false;
+      } else {
+        setEmailFieldError(""); // Clear specific field error if valid
+      }
     } else {
-      setEmailError("");
+      setEmailFieldError(""); // Ensure field error is clear on resend
     }
 
     if (isValid) {
       setIsLoading(true);
       try {
+        // Call the service - backend handles Google/existing token checks silently
         await authService.forgotPassword({ email });
-        setEmailSent(true);
-        setResendAttemptFailed(false); // Reset resend attempt status on successful send
+
+        if (isResend) {
+          setShowCheckAgainMessage(true); // Show "check again" on successful resend
+          console.log("Resend request successful.");
+        } else {
+          setEmailSent(true); // Move to the "Check your email" screen on initial successful send
+          console.log("Initial request successful.");
+        }
       } catch (err: unknown) {
-        // FIXED: Use unknown instead of any
-        // Determine error message safely
+        // Handle potential API errors (server down, network issues etc.)
         const message =
           err instanceof Error
             ? err.message
-            : typeof err === "string"
-            ? err
-            : "An error occurred while processing your request. Please try again.";
-        console.error("Forgot password error:", err); // Log the original error for debugging
-        setError(message);
-        setEmailSent(false); // Ensure emailSent is false if initial send fails
-        setResendAttemptFailed(false); // Reset resend attempt status even if initial send fails to allow resend attempt
+            : "An error occurred. Please try again.";
+        console.error("Forgot password request error:", err);
+        setFormError(message); // Show error message
+        if (!isResend) {
+          setEmailSent(false); // Ensure not moving to next screen if initial send fails
+        }
+        setShowCheckAgainMessage(false); // Hide check again message if error occurs
       } finally {
         setIsLoading(false);
       }
+    } else if (!isResend) {
+      // If initial validation fails, ensure emailSent remains false
+      setEmailSent(false);
     }
   };
 
-  const handleSendAgain = async () => {
-    if (resendAttemptFailed) {
-      return;
-    }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSendRequest(false); // Initial send request
+  };
 
-    // setEmailResent(true); // REMOVED: Not used
-    setIsLoading(true);
-    setShowCheckAgainMessage(false); // Reset before potentially showing again
-    setResendError("");
-
-    try {
-      await authService.forgotPassword({ email });
-      // Set success message directly or rely on showCheckAgainMessage
-      // setSuccessMessage("A new password reset link has been sent to your email address."); // This state seems unused in the success flow
-      setShowCheckAgainMessage(true);
-      setResendAttemptFailed(false); // Reset resend attempt status on successful resend
-    } catch (err: unknown) {
-      // FIXED: Use unknown instead of any
-      // Determine error message safely
-      const message =
-        err instanceof Error
-          ? err.message
-          : typeof err === "string"
-          ? err
-          : "Failed to send email again. Please try again later.";
-      console.error("Resend password error:", err); // Log the original error for debugging
-      setResendError(message);
-      setResendAttemptFailed(true); // Set resend attempt to failed
-      setShowCheckAgainMessage(false); // Hide success message if resend fails
-      setSuccessMessage(""); // Clear success message if resend fails
-    } finally {
-      setIsLoading(false);
-    }
+  const handleSendAgain = () => {
+    handleSendRequest(true); // Resend request
   };
 
   const errorVariants = {
+    /* ... (keep existing variants) ... */
     initial: { opacity: 0.5, y: 10, scale: 0.95, rotate: "2deg" },
     animate: {
       opacity: 1,
@@ -1431,6 +1914,9 @@ const ResetPasswordForm = () => {
     },
   };
 
+  // --- RENDER SECTION ---
+
+  // "Check Your Email" Screen
   if (emailSent) {
     return (
       <div className="flex flex-col bg-white dark:bg-background justify-center items-center h-[calc(100vh-82px)] px-4">
@@ -1444,21 +1930,22 @@ const ResetPasswordForm = () => {
               className="w-full object-contain xl:h-80 h-70"
             />
           </div>
-
           <h2 className="text-3xl md:text-4xl font-black text-center text-mainheading dark:text-white uppercase">
-            Check your email
+            {" "}
+            Check your email{" "}
           </h2>
-
           <p className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base">
-            We sent an email to &nbsp;
-            <span className="font-semibold text-primary">{email}</span>
+            {" "}
+            If an account exists for  
+            <span className="font-semibold text-primary">{email}</span>  and
+            needs a password reset, we've sent a link.{" "}
+          </p>
+          <p className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base">
+            {" "}
+            The link expires in 3 minutes. Check your spam folder if needed.{" "}
           </p>
 
-          <p className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base">
-            If the email hasn&apos;t arrived yet, please check your spam folder.
-            Alternatively, you can also request the email again:
-          </p>
-
+          {/* "Check Again" Success Message after Resend */}
           <AnimatePresence>
             {showCheckAgainMessage && (
               <motion.div
@@ -1470,138 +1957,119 @@ const ResetPasswordForm = () => {
                 variants={errorVariants}
               >
                 <div className="flex bg-green-100 dark:bg-green-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
-                  <FaCheck className="p-0.5 text-green-600 dark:text-green-400 lg:size-8 size-6" />
+                  {" "}
+                  <FaCheck className="p-0.5 text-green-600 dark:text-green-400 lg:size-8 size-6" />{" "}
                 </div>
-
                 <p className="text-gray-500 dark:text-gray-300 block">
-                  Please check your email inbox again.
+                  {" "}
+                  Please check your email inbox again.{" "}
                 </p>
               </motion.div>
             )}
           </AnimatePresence>
 
+          {/* Error Message if Resend Fails */}
           <AnimatePresence>
-            {resendError && (
+            {formError && ( // Display general form error here too if resend fails
               <motion.div
-                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative mt-5" // Adjusted styling slightly for consistency
+                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative mt-5"
                 role="alert"
-                animate="animate"
-                exit="exit" 
-                variants={errorVariants}
-              >
-                <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
-                  <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
-                </div>
-
-                <div className="inline-block">
-                  <span className="text-gray-500 dark:text-gray-300 max-w-60">
-                    {resendError}
-                  </span>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          <AnimatePresence>
-            {resendAttemptFailed && (
-              <motion.div
-                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative mt-5" // Adjusted styling slightly for consistency
-                role="alert"
+                initial="initial"
                 animate="animate"
                 exit="exit"
                 variants={errorVariants}
               >
                 <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
-                  <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
+                  {" "}
+                  <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />{" "}
                 </div>
-
                 <div className="inline-block">
-                  <p className="text-gray-500 dark:text-gray-300">
-                    Couldn&apos;t send email again. Please try again later you
-                    can wait.
-                  </p>
+                  {" "}
+                  <span className="text-gray-500 dark:text-gray-300 max-w-60">
+                    {" "}
+                    {formError}{" "}
+                  </span>{" "}
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
 
+          {/* Resend Button */}
           <button
             onClick={handleSendAgain}
-            disabled={isLoading || resendAttemptFailed}
-            className={`bg-primary hover:bg-primaryhover w-full capitalize text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center
-                            ${
-                              isLoading || resendAttemptFailed
-                                ? "opacity-50 cursor-not-allowed"
-                                : ""
-                            }`}
-            type="submit"
+            disabled={isLoading}
+            className={`bg-primary hover:bg-primaryhover w-full capitalize text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center ${
+              isLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
             {isLoading ? (
               <>
+                {" "}
                 <svg
                   className="h-5 w-5 text-neutral-900 animate-spin mr-2"
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
+                  {" "}
                   <path
                     d="M12 2V6"
                     stroke="currentColor"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                  />
+                  />{" "}
                   <path
                     d="M12 18V22"
                     stroke="currentColor"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                  />
+                  />{" "}
                   <path
                     d="M4.93 4.93L7.76 7.76"
                     stroke="currentColor"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                  />
+                  />{" "}
                   <path
                     d="M16.24 16.24L19.07 19.07"
                     stroke="currentColor"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                  />
+                  />{" "}
                   <path
                     d="M2 12H6"
                     stroke="currentColor"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                  />
+                  />{" "}
                   <path
                     d="M18 12H22"
                     stroke="currentColor"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                  />
+                  />{" "}
                   <path
                     d="M4.93 19.07L7.76 16.24"
                     stroke="currentColor"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                  />
+                  />{" "}
                   <path
                     d="M16.24 7.76L19.07 4.93"
                     stroke="currentColor"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                  />
-                </svg>
-                <span>Sending...</span>
+                  />{" "}
+                </svg>{" "}
+                <span>Sending...</span>{" "}
               </>
             ) : (
               "Send email again"
@@ -1609,19 +2077,22 @@ const ResetPasswordForm = () => {
           </button>
 
           <p className="text-base text-center text-gray-700 dark:text-gray-300 mt-5">
-            Still need help? &nbsp;
-            <a
-              href="#"
+            {" "}
+            Still need help?  {" "}
+            <Link
+              href="/faqs"
               className="text-primary underline font-medium underline-offset-4"
             >
-              Read this article.
-            </a>
+              {" "}
+              Read this article.{" "}
+            </Link>{" "}
           </p>
         </div>
       </div>
     );
   }
 
+  // Initial Form Screen
   return (
     <div className="flex flex-col bg-white dark:bg-background justify-center items-center h-[calc(100vh-82px)] px-4">
       <div className="max-w-lg space-y-4">
@@ -1634,20 +2105,21 @@ const ResetPasswordForm = () => {
             className="w-full object-contain xl:h-80 h-70"
           />
         </div>
-
         <h2 className="text-3xl md:text-4xl font-black text-center text-mainheading dark:text-white uppercase">
-          Reset password
+          {" "}
+          Reset password{" "}
         </h2>
-
         <p className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base">
-          Just enter the email address you registered with and we&apos;ll send
-          you a link to reset your password.
+          {" "}
+          Just enter the email address you registered with and we'll send you a
+          link to reset your password.{" "}
         </p>
 
+        {/* General Form Error Display */}
         <AnimatePresence>
-          {error && (
+          {formError && (
             <motion.div
-              className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative mt-5" // Added width constraint
+              className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center relative mt-5"
               role="alert"
               initial="initial"
               animate="animate"
@@ -1655,49 +2127,66 @@ const ResetPasswordForm = () => {
               variants={errorVariants}
             >
               <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
-                <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
+                {" "}
+                <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />{" "}
               </div>
-
               <div className="inline-block">
+                {" "}
                 <span className="text-gray-500 dark:text-gray-300 max-w-60">
-                  {error} Relative to this path no number right now
-                </span>
+                  {" "}
+                  {formError}{" "}
+                </span>{" "}
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
+        {/* Form */}
         <form onSubmit={handleSubmit}>
           <div className="my-5">
             <label
               htmlFor="email"
               className=" text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
             >
-              Enter your email address
+              {" "}
+              Enter your email address{" "}
             </label>
-
             <input
               id="email"
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (emailFieldError) setEmailFieldError(""); // Clear field error on change
+                if (formError) setFormError(""); // Clear general error on change
+              }}
               disabled={isLoading}
               className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
-                emailError
+                emailFieldError
                   ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
                   : "focus:border-[#5f5f5f]"
               }`}
+              aria-invalid={!!emailFieldError}
+              aria-describedby={
+                emailFieldError ? "email-field-error" : undefined
+              }
             />
-            {emailError && (
-              <p className="flex text-red-700 text-base items-center mt-0.5">
+            {/* Specific Email Field Error */}
+            {emailFieldError && (
+              <p
+                id="email-field-error"
+                className="flex text-red-700 text-base items-center mt-0.5"
+              >
                 <span className="mr-1">
-                  <IoMdCloseCircle className="size-5" />
-                </span>
-                {emailError}
+                  {" "}
+                  <IoMdCloseCircle className="size-5" />{" "}
+                </span>{" "}
+                {emailFieldError}
               </p>
             )}
           </div>
 
+          {/* Submit Button */}
           <div className="flex justify-between items-center">
             <button
               className={`bg-primary hover:bg-primaryhover w-full capitalize text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center ${
@@ -1708,70 +2197,72 @@ const ResetPasswordForm = () => {
             >
               {isLoading ? (
                 <>
+                  {" "}
                   <svg
                     className="h-5 w-5 text-neutral-900 animate-spin mr-2"
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                   >
+                    {" "}
                     <path
                       d="M12 2V6"
                       stroke="currentColor"
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                    />
+                    />{" "}
                     <path
                       d="M12 18V22"
                       stroke="currentColor"
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                    />
+                    />{" "}
                     <path
                       d="M4.93 4.93L7.76 7.76"
                       stroke="currentColor"
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                    />
+                    />{" "}
                     <path
                       d="M16.24 16.24L19.07 19.07"
                       stroke="currentColor"
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                    />
+                    />{" "}
                     <path
                       d="M2 12H6"
                       stroke="currentColor"
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                    />
+                    />{" "}
                     <path
                       d="M18 12H22"
                       stroke="currentColor"
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                    />
+                    />{" "}
                     <path
                       d="M4.93 19.07L7.76 16.24"
                       stroke="currentColor"
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                    />
+                    />{" "}
                     <path
                       d="M16.24 7.76L19.07 4.93"
                       stroke="currentColor"
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                    />
-                  </svg>
-                  <span>Sending...</span>
+                    />{" "}
+                  </svg>{" "}
+                  <span>Sending...</span>{" "}
                 </>
               ) : (
                 "Send password reset link"
@@ -1781,12 +2272,15 @@ const ResetPasswordForm = () => {
         </form>
 
         <p className="text-base text-gray-500 dark:text-gray-300 my-2 text-center">
-          Need help? Read this &nbsp;
+          {" "}
+          Need help? Read this  {" "}
           <Link href="/faqs">
+            {" "}
             <span className="text-primary font-medium underline capitalize underline-offset-4">
-              Help Centre article.
-            </span>
-          </Link>
+              {" "}
+              Help Centre article.{" "}
+            </span>{" "}
+          </Link>{" "}
         </p>
       </div>
     </div>
