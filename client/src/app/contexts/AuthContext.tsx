@@ -8861,7 +8861,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     if (typeof window !== "undefined" && !isBroadcastLogout && wasLoggedIn && !window.location.pathname.startsWith("/auth/login")) {
       let redirectUrl = "/auth/login";
-      if (reason === "sessionExpired") redirectUrl += "?sessionExpired=true";
+      if (reason === "sessionExpired") redirectUrl += "?sessionExpired=true"; // Adds the query param
       router.push(redirectUrl);
     }
   }, [router]); // Dependency: router
@@ -9037,12 +9037,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       (response) => response,
       (error: AxiosError<ApiError>) => { // Typed error
         const currentToken = typeof window !== 'undefined' ? localStorage.getItem("token") : null;
-        const isAuthError = error.response?.status === 401 || error.message?.includes("Invalid user data");
-        if (isAuthError && currentToken) {
+        const isAuthError = error.response?.status === 401; // Simplified check for 401
+        if (isAuthError && currentToken) { // If it's a 401 AND we *thought* we were logged in
           console.log("AuthContext: Axios interceptor caught auth error. Logging out.");
-          logoutRef.current("sessionExpired"); 
+          logoutRef.current("sessionExpired"); // Call logout with sessionExpired reason
         }
-        return Promise.reject(error); 
+        return Promise.reject(error);
       }
     );
     return () => {
