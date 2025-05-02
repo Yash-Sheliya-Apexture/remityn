@@ -3472,7 +3472,7 @@ export default function LoginPage() {
   return (
 
     <div className="bg-white dark:bg-background">
-      <div className="flex flex-col justify-center items-center lg:h-[calc(100vh-73px)] px-4">
+      <div className="flex flex-col justify-center items-center h-[calc(100vh-82px)] px-4">
         <div className="w-full max-w-md lg:mt-20 mt-10">
           {/* Session Expired Message */}
           <AnimatePresence>

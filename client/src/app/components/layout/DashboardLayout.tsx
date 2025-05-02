@@ -235,7 +235,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
         </div>
       </div>
-      <BackToTopButton />
+      <BackToTopButton position="right" mobileBehavior="hidden"/>
     </div>
   );
 }

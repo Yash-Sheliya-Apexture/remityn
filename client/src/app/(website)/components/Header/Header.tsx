@@ -4358,7 +4358,7 @@ const Header: React.FC = () => {
                   width={100}
                   height={24}
                   priority
-                  className="md:w-26 md:h-auto w-24 h-auto"
+                  className="w-28 h-auto"
                 />
               </Link>
             </div>
@@ -4432,23 +4432,22 @@ const Header: React.FC = () => {
 
 
             {/* Mobile Actions (Hamburger/Close) */}
-            {/* This part correctly uses `lg:hidden` to only show on smaller screens */}
             <div className="flex lg:hidden items-center gap-2">
               <button
                 onClick={toggleMobileMenu}
-                className="p-2.5 bg-lightgray dark:bg-primarybox cursor-pointer text-mainheading dark:text-primary rounded-full transition-colors"
+                className="size-12 flex items-center justify-center bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox cursor-pointer text-neutral-900 dark:text-primary rounded-full transition-all ease-linear duration-75"
                 aria-label={isMobileMenuOpen ? "Close Menu" : "Open Menu"}
                 aria-expanded={isMobileMenuOpen}
                 aria-controls="mobile-menu-content"
               >
                 {isMobileMenuOpen ? (
                   <IoMdClose
-                    size={24}
+                    size={26}
                     className="text-neutral-900 dark:text-primary"
                   />
                 ) : (
                   <GiHamburgerMenu
-                    size={24}
+                    size={26}
                     className="text-neutral-900 dark:text-primary"
                   />
                 )}

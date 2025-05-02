@@ -622,6 +622,11 @@ const MainDashBoard = () => {
   return (
     // Add padding consistent with loading state or remove if parent provides padding
     <div className="space-y-6 md:space-y-8 pb-0 md:pb-5">
+
+      <div>
+        <button></button>
+      </div>
+
       {/* Show banner based on the authoritative status from AuthContext */}
       {showVerificationBanner && (
         <AccountVerification

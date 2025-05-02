@@ -90,34 +90,36 @@ const AuthHeader: React.FC = () => {
   }, []); // Empty dependency array ensures this runs only on mount and unmount
 
   return (
-    <div className="p-4 bg-white dark:bg-background border-b">
-      <div className="container mx-auto flex justify-between items-center max-w-6xl">
-        <Link href="/" className="text-xl font-semibold text-primary">
-          {isMobile ? (
-            <Image
-              src="/assets/images/wise-logo2.svg" // Replace with your mobile logo
-              width={30} // Adjust as needed
-              height={30} // Adjust as needed
-              alt="Wise Logo (Mobile)"
-            />
-          ) : (
-            <Image
-              src="/assets/images/wise-logo.svg"
-              width={120}
-              height={120}
-              alt="Wise Logo"
-            />
-          )}
-        </Link>
-
-        <div
-          className="size-10 bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox flex items-center justify-center rounded-full transition-all duration-75 ease-linear"
-        >
-          <Link href="/">
-            <span className="text-neutral-900 dark:text-primary">
-              <IoClose size={28} />
-            </span>
+    <div className="bg-white dark:bg-background border-b">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-20">
+          <Link href="/" className="text-xl font-semibold text-primary">
+            {isMobile ? (
+              <Image
+                src="/assets/images/wise-logo2.svg" // Replace with your mobile logo
+                width={40} // Adjust as needed
+                height={40} // Adjust as needed
+                alt="Wise Logo (Mobile)"
+              />
+            ) : (
+              <Image
+                src="/assets/images/wise-logo.svg"
+                alt="Wise Logo"
+                width={100}
+                height={24}
+                priority
+                className="md:w-26 md:h-auto w-24 h-auto"
+              />
+            )}
           </Link>
+
+          <div className="size-12 bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox flex items-center justify-center rounded-full transition-all duration-75 ease-linear">
+            <Link href="/">
+              <span className="text-neutral-900 dark:text-primary">
+                <IoClose size={28} />
+              </span>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
