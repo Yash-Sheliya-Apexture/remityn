@@ -1,5 +1,5 @@
 import React from "react";
-import SocialTrust from "../components/SocialTrust";
+import SocialTrust from "../components/Review";
 
 const page = () => {
   return (

@@ -82,7 +82,7 @@ const TransactionTimeline: React.FC<TransactionTimelineProps> = ({
                             
                             {step.showCancelAction && isPayment && status === 'pending' && (
                                 <button
-                                    className="mt-3 px-3 py-2 border rounded-md text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 border-red-300 dark:border-red-500 hover:bg-red-100 dark:hover:bg-red-600/20  transition-all duration-75 ease-linear cursor-pointer"
+                                    className="mt-3 px-3 py-2 rounded-full text-white bg-red-600 hover:bg-red-700 transition-all duration-75 ease-linear cursor-pointer"
                                     onClick={onOpenCancelModal}
                                     disabled={isSubmitting}
                                 >
