@@ -1,74 +1,595 @@
+
+// "use client"; // Required for useState and useEffect
+
 // import Image from "next/image";
-// import React from "react";
-// import INR from "../../../../public/assets/icons/inr.svg";
-// import USD from "../../../../public/assets/icons/usd.svg";
-// import AUD from "../../../../public/assets/icons/aud.svg";
-// import AED from "../../../../public/assets/icons/aed.svg";
-// import CAD from "../../../../public/assets/icons/cad.svg";
-// import EUR from "../../../../public/assets/icons/eur.svg";
-
-
-// import { GoArrowRight } from "react-icons/go";
+// import React, { useState, useEffect } from "react";
 
 // const FlagSection = () => {
-//   return (
-//     <section className="Flag-section py-12">
-//       <div className="flex items-end overflow-hidden">
-//         <div className="bg-lightgreen py-2 px-3 rounded-r-full flex justify-end w-4xl">
+//   // State to hold the rotation angle
+//   const [rotation, setRotation] = useState(0);
 
-//         <div className="p-4 bg-green inline-flex items-center rounded-full">
-//             <GoArrowRight size={100} className="text-lightgreen"/>
-//         </div>
-//         </div>
-//         <div className="flex items-center">
-//           <Image src={INR} alt="" width={150} className="p-3" />
-//           <Image src={USD} alt="" width={150} className="p-3" />
-//           <Image src={AUD} alt="" width={150} className="p-3" />
-//           <Image src={AED} alt="" width={150} className="p-3" />
-//           <Image src={CAD} alt="" width={150} className="p-3" />
-//           <Image src={EUR} alt="" width={150} className="p-3" />
+//   useEffect(() => {
+//     let animationFrameId: number | null = null;
+
+//     const handleScroll = () => {
+//       // Cancel the previous frame request if it exists
+//       if (animationFrameId) {
+//         cancelAnimationFrame(animationFrameId);
+//       }
+
+//       // Request the next animation frame to update rotation smoothly
+//       animationFrameId = requestAnimationFrame(() => {
+//         const scrollY = window.scrollY;
+//         // Adjust the multiplier (e.g., 0.1) to control the rotation speed
+//         // Smaller number = slower rotation
+//         const rotationSpeedFactor = 0.1;
+//         setRotation(scrollY * rotationSpeedFactor);
+//       });
+//     };
+
+//     // Add the scroll event listener
+//     // Using { passive: true } for better scroll performance
+//     window.addEventListener("scroll", handleScroll, { passive: true });
+
+//     // Cleanup function: remove the listener and cancel any pending frame when the component unmounts
+//     return () => {
+//       window.removeEventListener("scroll", handleScroll);
+//       if (animationFrameId) {
+//         cancelAnimationFrame(animationFrameId);
+//       }
+//     };
+//   }, []); // Empty dependency array ensures this effect runs only once on mount and cleans up on unmount
+
+//   return (
+//     // Add overflow-hidden here to contain the rotated image visually
+//     <section className="Flag-section lg:py-10 py-5 relative overflow-hidden">
+//       <div className="container mx-auto px-4 ">
+//         {/* This negative margin might still cause layout issues depending
+//             on the overall page structure. Consider adjusting if needed. */}
+//         <div className="-ml-[500px] flex justify-start items-center"> {/* Added flex centering just in case */}
+//           <Image
+//             src='/assets/images/Flags.svg'
+//             width={1000}
+//             height={1000}
+//             alt="flags"
+//             priority // Consider adding priority if image is often visible early
+//             // Apply the rotation dynamically using inline style
+//             style={{
+//               transform: `rotate(${rotation}deg)`,
+//               transition: 'transform 0.1s linear', // Optional: smooth out slight jumps
+//               willChange: 'transform', // Hint to the browser about the animation
+//             }}
+//           />
+
+//           {/* Content */}
+//           <div>
+
+//           </div>
 //         </div>
 //       </div>
 //     </section>
 //   );
 // };
+
+// export default FlagSection;
+
+
+
+// "use client"; // Required for useState and useEffect
+
+// import Image from "next/image";
+// import React, { useState, useEffect } from "react";
+// import { FiCheckCircle } from "react-icons/fi"; // Using react-icons for checkmarks
+
+// const FlagSection = () => {
+//   // State to hold the rotation angle
+//   const [rotation, setRotation] = useState(0);
+
+//   useEffect(() => {
+//     let animationFrameId: number | null = null;
+
+//     const handleScroll = () => {
+//       if (animationFrameId) {
+//         cancelAnimationFrame(animationFrameId);
+//       }
+//       animationFrameId = requestAnimationFrame(() => {
+//         const scrollY = window.scrollY;
+//         const rotationSpeedFactor = 0.08; // Slightly slower rotation
+//         setRotation(scrollY * rotationSpeedFactor);
+//       });
+//     };
+
+//     window.addEventListener("scroll", handleScroll, { passive: true });
+
+//     return () => {
+//       window.removeEventListener("scroll", handleScroll);
+//       if (animationFrameId) {
+//         cancelAnimationFrame(animationFrameId);
+//       }
+//     };
+//   }, []);
+
+//   return (
+//     // Added background color for contrast, adjust as needed
+//     <section className="Flag-section lg:py-10 py-5 relative overflow-hidden bg-white dark:bg-background">
+//       <div className="container mx-auto px-4 relative z-10">
+//         {/* Main Flex Container: Image on left (potentially offset), Content on right */}
+//         <div className="flex flex-col lg:flex-row  gap-8">
+
+//           {/* Image Container (adjust negative margin and width carefully) */}
+//           {/* Reduced negative margin slightly */}
+//           <div className="w-full lg:w-[80%] lg:-ml-[300px] xl:-ml-[500px] flex justify-center lg:justify-start mb-8 lg:mb-0">
+//             <Image
+//               src='/assets/images/Flags.svg'
+//               width={1000} // Adjusted size slightly
+//               height={1000}
+//               alt="Rotating collage of international flags"
+//               priority
+//               style={{
+//                 transform: `rotate(${rotation}deg)`,
+//                 transition: 'transform 0.1s linear',
+//                 willChange: 'transform',
+//                 maxWidth: '100%', // Ensure image scales down if container is smaller
+//                 height: 'auto',
+//               }}
+//             />
+//           </div>
+
+//           {/* Content Container */}
+//           {/* Added padding to create space from the potentially overlapping image */}
+//           <div className="xl:w-auto w-full lg:pl-8 xl:pl-0 space-y-4 text-center md:text-left lg:ml-10 ml-0">
+
+//             {/* Small Title */}
+//             <div className="inline-block px-4 py-1.5 bg-lightgray dark:bg-primarybox rounded-full">
+//               <span className="text-neutral-900 dark:text-white font-medium text-sm capitalize">
+//                 Trusted in 50+ Countries
+//               </span>
+//             </div>
+
+//             {/* Main Heading */}
+//             <h1 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white uppercase">
+//             Send Money to Any<span className="text-primary"> Country, Instantly</span>
+             
+//             </h1>
+
+//             {/* Description */}
+//             <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
+//               Reach family, friends, and businesses across borders. Our platform makes international money transfers fast, affordable, and hassle-free, ensuring your funds arrive safely where they're needed most.
+//             </p>
+            
+
+//             {/* Some More Content (Key Benefits) */}
+//             <div className="pt-5 space-y-4 text-left max-w-md mx-auto lg:mx-0">
+//               {/* Benefit 1 */}
+//               <div className="flex items-start gap-3">
+//                 <FiCheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
+//                 <div>
+//                   <h4 className="font-semibold text-mainheading dark:text-white">Vast Network</h4>
+//                   <p className="text-sm text-gray-500 dark:text-gray-400">Transfer funds to over 160+ countries and multiple currencies.</p>
+//                 </div>
+//               </div>
+//               {/* Benefit 2 */}
+//               <div className="flex items-start gap-3">
+//                 <FiCheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
+//                 <div>
+//                   <h4 className="font-semibold text-mainheading dark:text-white">Transparent Fees</h4>
+//                   <p className="text-sm text-gray-500 dark:text-gray-400">Know exactly what you pay with clear, upfront pricing and competitive rates.</p>
+//                 </div>
+//               </div>
+//               {/* Benefit 3 */}
+//               <div className="flex items-start gap-3">
+//                 <FiCheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
+//                 <div>
+//                   <h4 className="font-semibold text-mainheading dark:text-white">Speedy Delivery</h4>
+//                   <p className="text-sm text-gray-500 dark:text-gray-400">Many transfers arrive within minutes or the same business day.</p>
+//                 </div>
+//               </div>
+//             </div>
+
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default FlagSection;
+
+
+
+// "use client"; // Required for useState and useEffect
+
+// import Image from "next/image";
+// import React, { useState, useEffect } from "react";
+// import { FiCheckCircle } from "react-icons/fi"; // Using react-icons for checkmarks
+
+// const FlagSection = () => {
+//   // State to hold the rotation angle
+//   const [rotation, setRotation] = useState(0);
+
+//   useEffect(() => {
+//     let animationFrameId: number | null = null;
+
+//     const handleScroll = () => {
+//       if (animationFrameId) {
+//         cancelAnimationFrame(animationFrameId);
+//       }
+//       animationFrameId = requestAnimationFrame(() => {
+//         const scrollY = window.scrollY;
+//         const rotationSpeedFactor = 0.08; // Slightly slower rotation
+//         setRotation(scrollY * rotationSpeedFactor);
+//       });
+//     };
+
+//     window.addEventListener("scroll", handleScroll, { passive: true });
+
+//     return () => {
+//       window.removeEventListener("scroll", handleScroll);
+//       if (animationFrameId) {
+//         cancelAnimationFrame(animationFrameId);
+//       }
+//     };
+//   }, []);
+
+//   return (
+//     // Added background color for contrast, adjust as needed
+//     <section className="Flag-section lg:py-10 py-5 relative overflow-hidden bg-white dark:bg-background">
+//       <div className="container mx-auto px-4 relative z-10">
+//         {/* Main Flex Container: Image on left (potentially offset), Content on right */}
+//         <div className="flex items-center gap-10">
+//           {/* Image Container (adjust negative margin and width carefully) */}
+//           {/* Reduced negative margin slightly */}
+//           <div className="sm:w-full w-auto lg:-ml-[300px] xl:-ml-[500px] lg:block justify-center lg:justify-start mb-8 lg:mb-0 lg:relative absolute z-0 lg:left-0 -left-1/2 sm:top-0 top-1/6 hidden ">
+//             <Image
+//               src="/assets/images/Flags.svg" // Keep the general flags image as it represents global connectivity
+//               width={1000} // Adjusted size slightly
+//               height={1000}
+//               alt="Rotating collage of international flags representing global money transfer"
+//               priority
+//               className="sm:w-auto w-full"
+//               style={{
+//                 transform: `rotate(${rotation}deg)`,
+//                 transition: "transform 0.1s linear",
+//                 willChange: "transform",
+//                 maxWidth: "100%", // Ensure image scales down if container is smaller
+//                 height: "auto",
+//               }}
+//             />
+//           </div>
+
+//           {/* Content Container */}
+//           {/* Added padding to create space from the potentially overlapping image */}
+//           <div className=" w-full relative z-10">
+//             <div className="space-y-4 text-center md:text-left">
+//               {/* Small Title */}
+//               <div className="inline-block px-4 py-1.5 bg-lightgray dark:bg-primarybox rounded-full">
+//                 <span className="text-neutral-900 dark:text-white font-medium text-sm capitalize">
+//                   Seamless Transfers to India {/* <-- Updated Title */}
+//                 </span>
+//               </div>
+
+//               {/* Main Heading */}
+//               <h1 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white uppercase">
+//                 Send Money <span className="text-primary">to INDIA</span>{" "}
+//                 {/* <-- Kept as requested */}
+//               </h1>
+
+//               {/* Description */}
+//               <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
+//                 {/* <-- Updated Description */}
+//                 Easily send funds directly to bank accounts across India.
+//                 Whether you're supporting family, paying for services, or
+//                 investing back home, our platform ensures your money arrives
+//                 quickly, safely, and affordably with competitive INR exchange
+//                 rates.
+//               </p>
+//             </div>
+
+//             {/* Some More Content (Key Benefits) */}
+//             <div className="pt-8 space-y-6 text-left lg:max-w-2xl mx-auto lg:mx-0">
+//               {/* Benefit 1 */}
+//               <div className="flex items-start gap-3">
+//                 <FiCheckCircle size={20} className="text-primary mt-1 flex-shrink-0" />
+//                 <div>
+//                   {/* <-- Updated Benefit 1 */}
+//                   <h4 className="font-semibold text-mainheading dark:text-white lg:text-2xl sm:text-xl text-lg ">
+//                     Extensive Reach Across India
+//                   </h4>
+//                   <p className="text-gray-500 dark:text-gray-300 sm:text-lg text-base">
+//                     Transfer funds directly to major banks and financial
+//                     institutions throughout India.
+//                   </p>
+//                 </div>
+//               </div>
+//               {/* Benefit 2 */}
+//               <div className="flex items-start gap-3">
+//                 <FiCheckCircle size={20} className="text-primary mt-1 flex-shrink-0" />
+//                 <div>
+//                   {/* <-- Updated Benefit 2 */}
+//                   <h4 className="font-semibold text-mainheading dark:text-white lg:text-2xl sm:text-xl text-lg ">
+//                     Competitive INR Rates
+//                   </h4>
+//                   <p className="text-gray-500 dark:text-gray-300 sm:text-lg text-base">
+//                     Get great value with transparent fees and favorable exchange
+//                     rates for Indian Rupees.
+//                   </p>
+//                 </div>
+//               </div>
+//               {/* Benefit 3 */}
+//               <div className="flex items-start gap-3">
+//                 <FiCheckCircle size={20} className="text-primary mt-1 flex-shrink-0" />
+//                 <div>
+//                   {/* <-- Updated Benefit 3 */}
+//                   <h4 className="font-semibold text-mainheading dark:text-white lg:text-2xl sm:text-xl text-lg ">
+//                     Fast Delivery Options
+//                   </h4>
+//                   <p className="text-gray-500 dark:text-gray-300 sm:text-lg text-base">
+//                     Funds can often arrive in Indian bank accounts within
+//                     minutes or hours.
+//                   </p>
+//                 </div>
+//               </div>
+//               {/* Benefit 4 */}
+//               <div className="flex items-start gap-3">
+//                 <FiCheckCircle size={20} className="text-primary mt-1 flex-shrink-0" />
+//                 <div>
+//                   {/* <-- Updated Benefit 4 (Kept relevant) */}
+//                   <h4 className="font-semibold text-mainheading dark:text-white lg:text-2xl sm:text-xl text-lg ">
+//                     Secure & Reliable
+//                   </h4>
+//                   <p className="text-gray-500 dark:text-gray-300 sm:text-lg text-base">
+//                     Your transfers to India are protected using
+//                     industry-standard security measures.
+//                   </p>
+//                 </div>
+//               </div>
+//               {/* Benefit 5 */}
+//               <div className="flex items-start gap-3">
+//                 <FiCheckCircle size={20} className="text-primary mt-1 flex-shrink-0" />
+//                 <div>
+//                   {/* <-- Updated Benefit 5 */}
+//                   <h4 className="font-semibold text-mainheading dark:text-white lg:text-2xl sm:text-xl text-lg ">
+//                     Track Your Transfer
+//                   </h4>
+//                   <p className="text-gray-500 dark:text-gray-300 sm:text-lg text-base">
+//                     Monitor the progress of your money transfer to India in
+//                     real-time.
+//                   </p>
+//                 </div>
+//               </div>
+//               {/* Benefit 6 */}
+//               <div className="flex items-start gap-3">
+//                 <FiCheckCircle size={20} className="text-primary mt-1 flex-shrink-0" />
+//                 <div>
+//                   {/* <-- Updated Benefit 6 */}
+//                   <h4 className="font-semibold text-mainheading dark:text-white lg:text-2xl sm:text-xl text-lg ">
+//                     Flexible Payout Methods
+//                   </h4>
+//                   <p className="text-gray-500 dark:text-gray-300 sm:text-lg text-base">
+//                     Choose convenient options like direct bank deposit, UPI
+//                     payments (if supported), or cash pickup at select locations
+//                     in India.
+//                   </p>
+//                 </div>
+//               </div>
+//             </div>
+//             {/* ----- END: Updated Content ----- */}
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
 // export default FlagSection;
 
 
 
 
+"use client"; // Required for useState and useEffect
+
 import Image from "next/image";
-import React from "react";
-import INR from "../../../../public/assets/icons/inr.svg";
-import USD from "../../../../public/assets/icons/usd.svg";
-import AUD from "../../../../public/assets/icons/aud.svg";
-import AED from "../../../../public/assets/icons/aed.svg";
-import CAD from "../../../../public/assets/icons/cad.svg";
-import EUR from "../../../../public/assets/icons/eur.svg";
-
-
-import { GoArrowRight } from "react-icons/go";
+import React, { useState, useEffect } from "react";
+// Import icons that represent the concepts
+import { FiZap, FiShield, FiTrendingUp, FiNavigation } from "react-icons/fi"; // Using react-icons
 
 const FlagSection = () => {
-  return (
-    <section className="Flag-section lg:py-10 py-5 bg-white dark:bg-background overflow-y-hidden">
-      <div className="flex items-end overflow-hidden">
-        <div className="bg-lightgreen py-2 px-3 rounded-r-full flex justify-end w-4xl">
+  // State to hold the rotation angle
+  const [rotation, setRotation] = useState(0);
 
-        <div className="p-4 bg-green inline-flex items-center rounded-full">
-            <GoArrowRight size={100} className="text-lightgreen"/>
-        </div>
-        </div>
-        <div className="flex items-center">
-          <Image src={INR} alt="" width={150} className="p-3" />
-          <Image src={USD} alt="" width={150} className="p-3" />
-          <Image src={AUD} alt="" width={150} className="p-3" />
-          <Image src={AED} alt="" width={150} className="p-3" />
-          <Image src={CAD} alt="" width={150} className="p-3" />
-          <Image src={EUR} alt="" width={150} className="p-3" />
+  useEffect(() => {
+    let animationFrameId: number | null = null;
+
+    const handleScroll = () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+      animationFrameId = requestAnimationFrame(() => {
+        const scrollY = window.scrollY;
+        const rotationSpeedFactor = 0.08; // Slightly slower rotation
+        setRotation(scrollY * rotationSpeedFactor);
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
+  }, []);
+
+  // Define the benefit data (matches the original image content)
+  const benefits = [
+    {
+      icon: FiZap, // Represents Speed
+      title: "Lightning-Fast Transfers",
+      description:
+        "Send money to India in minutes. Our streamlined process ensures your funds arrive quickly when they're needed most.",
+    },
+    {
+      icon: FiShield, // Represents Security
+      title: "Safe & Secure Transactions",
+      description:
+        "Your security is our priority. We use bank-level encryption and security protocols to protect every transfer.",
+    },
+    {
+      icon: FiTrendingUp, // Represents Competitive Rates
+      title: "Competitive INR Rates",
+      description:
+        "Get more rupees for your money. We offer highly competitive exchange rates and transparent, low fees.",
+    },
+    {
+      icon: FiNavigation, // Represents Direct Deposit / Convenience
+      title: "Direct to Bank Accounts",
+      description:
+        "Funds are deposited directly into your recipient's bank account anywhere in India for ultimate convenience.",
+    },
+  ];
+
+  return (
+    <section className="Flag-section lg:py-10 py-5 relative overflow-hidden">
+      <div className="container mx-auto px-4 relative z-10">
+        {/* Main Flex Container: Image on left (potentially offset), Content on right */}
+        {/* --- THIS PART REMAINS UNCHANGED --- */}
+        <div className="flex items-center gap-10">
+          {/* Image Container */}
+          <div className="sm:w-full w-auto lg:-ml-[300px] xl:-ml-[500px] lg:block justify-center lg:justify-start mb-8 lg:mb-0 lg:relative absolute z-0 lg:left-0 -left-1/2 sm:top-0 top-1/6 hidden ">
+            <Image
+              src="/assets/images/Flags.svg"
+              width={1000}
+              height={1000}
+              alt="Rotating collage of international flags representing global money transfer"
+              priority
+              className="sm:w-auto w-full"
+              style={{
+                transform: `rotate(${rotation}deg)`,
+                transition: "transform 0.1s linear",
+                willChange: "transform",
+                maxWidth: "100%",
+                height: "auto",
+              }}
+            />
+          </div>
+
+          {/* Content Container */}
+          <div className="w-full relative z-10">
+             {/* --- THIS PART (TITLE, HEADING AND DESC) --- */}
+            <div className="space-y-4 text-center md:text-left">
+              <div className="inline-block px-4 py-1.5 bg-lightgray dark:bg-primarybox rounded-full">
+                <span className="text-neutral-900 dark:text-white font-medium text-sm capitalize">
+                  Seamless Transfers to India
+                </span>
+              </div>
+              <h1 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white uppercase">
+                Send Money <span className="text-primary">to INDIA</span>
+              </h1>
+              <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
+                Easily send funds directly to bank accounts across India.
+                Whether you're supporting family, paying for services, or
+                investing back home, our platform ensures your money arrives
+                quickly, safely, and affordably with competitive INR exchange
+                rates.
+              </p>
+            </div>
+             {/* ----- END: Unchanged Content ----- */}
+
+
+            {/* ----- START: New 2x2 Grid for Benefits ----- */}
+            <div className="pt-12 md:pt-16">
+              {/* Grid Container */}
+              <div className="grid grid-cols-1 md:grid-cols-2">
+
+                {/* Benefit 1: Top Left */}
+                <div className="p-6 border-b border-r">
+                  {(() => { // Use an IIFE or assign to variable outside
+                      const IconComponent = benefits[0].icon; // Assign to PascalCase variable
+                      return (
+                        <div className="mb-4 inline-block border border-primary rounded-full p-3">
+                            <IconComponent size={24} className="text-primary" /> {/* Render the variable */}
+                        </div>
+                      );
+                  })()}
+                   {/* Title */}
+                   <h3 className="text-xl lg:text-xl font-bold mb-2 text-neutral-900 dark:text-white">
+                     {benefits[0].title}
+                   </h3>
+                   {/* Description */}
+                   <p className="text-gray-500 dark:text-gray-300 text-sm">
+                     {benefits[0].description}
+                   </p>
+                </div>
+
+                {/* Benefit 2: Top Right */}
+                <div className="p-6 border-b  md:border-l-0">
+                  {(() => {
+                      const IconComponent = benefits[1].icon; // Assign to PascalCase variable
+                      return (
+                        <div className="mb-4 inline-block border border-primary rounded-full p-3">
+                            <IconComponent size={24} className="text-primary" /> {/* Render the variable */}
+                        </div>
+                      );
+                  })()}
+                   {/* Title */}
+                   <h3 className="text-xl lg:text-xl font-bold mb-2 text-neutral-900 dark:text-white">
+                     {benefits[1].title}
+                   </h3>
+                   {/* Description */}
+                   <p className="text-gray-500 dark:text-gray-300 text-sm">
+                     {benefits[1].description}
+                   </p>
+                </div>
+
+                {/* Benefit 3: Bottom Left */}
+                <div className="p-6 border-r md:border-t-0">
+                   {(() => {
+                      const IconComponent = benefits[2].icon; // Assign to PascalCase variable
+                      return (
+                        <div className="mb-4 inline-block border border-primary rounded-full p-3">
+                            <IconComponent size={24} className="text-primary" /> {/* Render the variable */}
+                        </div>
+                      );
+                   })()}
+                   {/* Title */}
+                   <h3 className="text-xl lg:text-xl font-bold mb-2 text-neutral-900 dark:text-white">
+                     {benefits[2].title}
+                   </h3>
+                   {/* Description */}
+                   <p className="text-gray-500 dark:text-gray-300 text-sm">
+                     {benefits[2].description}
+                   </p>
+                </div>
+
+                {/* Benefit 4: Bottom Right */}
+                <div className="p-6 md:border-t-0 md:border-l-0">
+                   {(() => {
+                      const IconComponent = benefits[3].icon; // Assign to PascalCase variable
+                      return (
+                        <div className="mb-4 inline-block border border-primary rounded-full p-3">
+                            <IconComponent size={24} className="text-primary" /> {/* Render the variable */}
+                        </div>
+                      );
+                   })()}
+                   {/* Title */}
+                   <h3 className="text-xl lg:text-xl font-bold mb-2 text-neutral-900 dark:text-white">
+                     {benefits[3].title}
+                   </h3>
+                   {/* Description */}
+                   <p className="text-gray-500 dark:text-gray-300 text-sm">
+                     {benefits[3].description}
+                   </p>
+                </div>
+              </div>
+            </div>
+            {/* ----- END: New 2x2 Grid for Benefits ----- */}
+
+          </div>
         </div>
       </div>
     </section>
   );
 };
+
 export default FlagSection;
