@@ -2125,7 +2125,7 @@ export default function ChangePersonalDetails() {
                                 <div className="mt-8 pt-6 border-t dark:border-border/50">
                                     <Button
                                         type="submit"
-                                        className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                                         disabled={isSubmitting || !form.formState.isDirty} // Disable if submitting or no changes
                                     >
                                         {isSubmitting ? (
@@ -2140,6 +2140,7 @@ export default function ChangePersonalDetails() {
                             </form>
                         </Form>
                     </div>
+                    
                 </div>
             </div>
         </section>

@@ -3294,7 +3294,7 @@ const TransferSteps: React.FC = () => {
                             className={`transition-colors duration-300 xl:size-18 md:size-14 size-12 ${
                               isActive
                                 ? "text-mainheading dark:text-primary"
-                                : "text-[#97A2B3] dark:text-gray-500"
+                                : "text-gray-300 dark:text-gray-500"
                             }`}
                           >
                             <rect
@@ -3315,7 +3315,7 @@ const TransferSteps: React.FC = () => {
                                     className: `h-6 w-6 transition-colors duration-300 ${
                                       isActive
                                         ? "text-mainheading dark:text-primary"
-                                        : "text-[#97A2B3] dark:text-gray-500"
+                                        : "text-gray-500 dark:text-gray-300"
                                     }`,
                                   }
                                 )}
@@ -3343,8 +3343,8 @@ const TransferSteps: React.FC = () => {
                           <h3
                             className={`text-center lg:text-left capitalize text-base font-medium leading-tight transition-colors duration-300 xl:text-xl ${
                               isActive
-                                ? "text-[#182230] dark:text-white"
-                                : "text-[#97A2B3] dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300"
+                                ? "text-neutral-900 dark:text-white"
+                                : "text-gray-500 dark:text-gray-300 group-hover:text-gray-700 dark:group-hover:text-gray-200"
                             }`}
                           >
                             {step.title}
@@ -3353,7 +3353,7 @@ const TransferSteps: React.FC = () => {
                             className={`text-center lg:text-left text-sm font-normal transition-colors duration-300 xl:text-lg ${
                               isActive
                                 ? "text-gray-500 dark:text-gray-300"
-                                : "text-[#97A2B3] dark:text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300"
+                                : "text-gray-500 dark:text-gray-300 group-hover:text-gray-700 dark:group-hover:text-gray-200"
                             }`}
                           >
                             {step.subtitle}

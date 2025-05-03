@@ -2252,7 +2252,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
                 )}
               >
                 <button
-                  className="inline-flex justify-center cursor-pointer bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox order-2 sm:order-1 disabled:opacity-50 disabled:cursor-not-allowed dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 text-center w-full transition-all duration-75 ease-linear" // Adjusted styles, sm:w-auto
+                  className="inline-flex justify-center cursor-pointer bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox order-2 sm:order-1 disabled:opacity-50 disabled:cursor-not-allowed dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-8 py-3 text-center w-full transition-all duration-75 ease-linear" // Adjusted styles, sm:w-auto
                   onClick={onClose}
                   disabled={isAdding} // Only disable cancel if actively adding
                   type="button"
@@ -2261,7 +2261,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
                 </button>
 
                 <button
-                  className="inline-flex justify-center cursor-pointer bg-primary hover:bg-primaryhover text-neutral-900 order-1 sm:order-2 disabled:opacity-50 disabled:bg-primary/50 disabled:cursor-not-allowed font-medium rounded-full px-6 py-3 text-center w-full transition-all duration-75 ease-linear" // Adjusted styles, sm:w-auto
+                  className="inline-flex justify-center cursor-pointer bg-primary hover:bg-primaryhover text-neutral-900 order-1 sm:order-2 disabled:opacity-50 disabled:bg-primary/50 disabled:cursor-not-allowed font-medium rounded-full px-8 py-3 text-center w-full transition-all duration-75 ease-linear" // Adjusted styles, sm:w-auto
                   type="button"
                   onClick={handleConfirm}
                   disabled={

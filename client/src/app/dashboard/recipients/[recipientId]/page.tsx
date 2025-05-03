@@ -2577,7 +2577,7 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
             )}
           </div>
           <button
-            className="inline-flex justify-center cursor-pointer bg-primary hover:bg-primaryhover text-neutral-900 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed font-medium rounded-full px-6 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear"
+            className="inline-flex justify-center cursor-pointer bg-primary hover:bg-primaryhover text-neutral-900 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed font-medium rounded-full px-8 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear"
             onClick={handleSaveNickname}
             // Disable save if nickname hasn't changed or during loading
             disabled={loadingRecipient || nicknameInput === (currentRecipient.nickname || "")}

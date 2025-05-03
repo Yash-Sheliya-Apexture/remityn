@@ -2421,7 +2421,7 @@ const AddMoneyPage = () => {
                 <div className="mt-4">
                     <button
                         onClick={handleContinue}
-                        className={`flex items-center justify-center w-full bg-primary text-neutral-900 font-medium hover:bg-primaryhover space-x-3 py-3 px-4 h-12.5 rounded-full transition-all duration-75 ease-linear ${
+                        className={`flex items-center justify-center w-full bg-primary text-neutral-900 font-medium hover:bg-primaryhover space-x-3 py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear ${
                             // Button is disabled if:
                             isLoading || // Initial page load is in progress
                             isDetailsLoading || // Calculation is in progress (debounce delay or API call)

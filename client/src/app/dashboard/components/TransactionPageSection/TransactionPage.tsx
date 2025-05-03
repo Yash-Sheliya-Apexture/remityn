@@ -6088,7 +6088,7 @@ const TransactionsPage: React.FC = () => {
           <div className="container mx-auto">
             {/* Header and Actions */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 sticky lg:top-28 top-20 z-10 bg-white dark:bg-background">
-              <h1 className="lg:text-3xl md:text-2xl text-xl font-semibold text-mainheading dark:text-white"> Transactions </h1>
+              <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white"> Transactions </h1>
               {/* Conditionally render actions only if there's potential data or accounts */}
               {(allTransactions.length > 0 || userAccounts.length > 0) && !error && (
                   <TransactionActions
@@ -6137,21 +6137,21 @@ const TransactionsPage: React.FC = () => {
                         return (
                           <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} className="block">
                             <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
-                              <div className="flex items-center gap-4">
+                              <div className="flex items-center sm:gap-4 gap-2">
                                 <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center flex-shrink-0"> {/* Added flex-shrink-0 */}
                                     {icon}
                                 </div>
                                 <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
-                                  <div className="text-wrap overflow-hidden mr-2">
-                                    <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg truncate">
+                                  <div className="text-wrap">
+                                    <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg text-15px">
                                         {name}
                                     </h3>
-                                    <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
+                                    <p className="sm:text-sm text-13px text-gray-500 dark:text-gray-300 mt-1 ">
                                         {description}
                                         
                                     </p>
                                   </div>
-                                  <div className={`font-medium text-neutral-900 dark:text-white whitespace-nowrap shrink-0`}>
+                                  <div className={`font-medium text-neutral-900 dark:text-white whitespace-nowrap shrink-0 sm:text-base text-15px`}>
                                     {amountPrefix}
                                     {amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     {" "}
@@ -6211,20 +6211,20 @@ const TransactionsPage: React.FC = () => {
                                 return (
                                 <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} className="block">
                                   <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
-                                    <div className="flex items-center gap-4">
+                                    <div className="flex sm:items-center items-start sm:gap-4 gap-2">
                                       <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center flex-shrink-0"> {/* Added flex-shrink-0 */}
                                           {icon}
                                       </div>
                                       <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
-                                        <div className="text-wrap overflow-hidden mr-2">
-                                          <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg truncate">
+                                        <div className="text-wrap">
+                                          <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg text-15px">
                                               {name}
                                           </h3>
-                                          <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
+                                          <p className="sm:text-sm text-13px text-gray-500 dark:text-gray-300 mt-1">
                                               {description}
                                           </p>
                                         </div>
-                                        <div className={`font-medium ${amountClass} shrink-0 whitespace-nowrap`}>
+                                        <div className={`font-medium ${amountClass} shrink-0 whitespace-nowrap sm:text-base text-15px`}>
                                             {amountPrefix}
                                             {amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                             {" "}

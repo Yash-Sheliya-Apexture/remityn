@@ -42,7 +42,8 @@ body {
 
   --color-primaryhover: #8de900;
   --color-dropdowncolor: #2e2e2e;
-
+  --text-15px: 15px;
+  --text-13px: 13px;
 }
 
 @keyframes float {
