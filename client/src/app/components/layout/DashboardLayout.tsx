@@ -247,11 +247,10 @@
 
 import React, { useState, useEffect, ReactNode } from "react";
 import { useAuth } from "../../contexts/AuthContext";
-import { useRouter, usePathname } from "next/navigation"; // <-- Import usePathname
+import { useRouter } from "next/navigation"; // <-- Import usePathname
 import Sidebar from "../../dashboard/components/Sidebar"; // Adjust path if necessary
 import Header from "../../dashboard/components/Header"; // Adjust path if necessary
 import BackToTopButton from '../../dashboard/components/BackToTopButton'; // Adjust path if necessary
-import TawkToScript from "../../components/TawkToScript"; // <-- Import TawkToScript (Adjust path if necessary relative to this file)
 
 
 interface UserType {
@@ -271,7 +270,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { user, loading } = useAuth() as { user: UserType | null; loading: boolean };
 
   const router = useRouter();
-  const pathname = usePathname(); // <-- Get the current pathname
 
   // Redirect logic
   useEffect(() => {
@@ -279,19 +277,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       router.push("/auth/login");
     }
   }, [user, loading, router]);
-
-  // Logic to determine if Tawk.to should be shown
-  const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
-  const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
-
-  const tawkToSrc =
-    tawkToPropertyId && tawkToWidgetId
-      ? `https://embed.tawk.to/${tawkToPropertyId}/${tawkToWidgetId}`
-      : null;
-
-  // <-- Define the condition for showing Tawk.to -->
-  const shouldShowTawkTo = pathname === '/dashboard/your-account' || pathname.startsWith('/dashboard/your-account/');
-  // <----------------------------------------------->
 
 
   const toggleSidebar = (): void => {
@@ -326,11 +311,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       </div>
       <BackToTopButton position="right" mobileBehavior="hidden"/>
 
-      {/* <-- Conditionally render Tawk.to script --> */}
-      {tawkToSrc && shouldShowTawkTo && (
-          <TawkToScript src={tawkToSrc} />
-      )}
-      {/* <-------------------------------------> */}
+      
 
     </div>
   );

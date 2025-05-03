@@ -333,20 +333,20 @@ import Header from "./components/Header/Header"; // Make sure path is correct
 import Footer from "./components/Footer"; // Make sure path is correct
 import { WebsiteAppProvider } from "../contexts/WebsiteAppContext"; // Adjust path as needed
 import BackToTopButton from "../../app/dashboard/components/BackToTopButton"; // --- IMPORT THE REUSABLE COMPONENT --- (Adjust path if necessary)
-import TawkToScript from "../components/TawkToScript"; // Adjust path if needed
+// import TawkToScript from "../components/TawkToScript"; // Adjust path if needed
 import "../globals.css"; // Keep global styles
 
 interface LayoutProps {
   children: ReactNode;
 }
 
-const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
-const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
+// const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
+// const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
 
-const tawkToSrc =
-  tawkToPropertyId && tawkToWidgetId
-    ? `https://embed.tawk.to/${tawkToPropertyId}/${tawkToWidgetId}`
-    : null;
+// const tawkToSrc =
+//   tawkToPropertyId && tawkToWidgetId
+//     ? `https://embed.tawk.to/${tawkToPropertyId}/${tawkToWidgetId}`
+//     : null;
 
 export default function WebsiteLayout({ children }: LayoutProps) {
   // --- REMOVED ---
@@ -385,7 +385,7 @@ export default function WebsiteLayout({ children }: LayoutProps) {
 
 
       {/* Tawk.to Live Chat Script */}
-      {tawkToSrc && <TawkToScript src={tawkToSrc} />}
+      {/* {tawkToSrc && <TawkToScript src={tawkToSrc} />} */}
     </WebsiteAppProvider>
   );
 }

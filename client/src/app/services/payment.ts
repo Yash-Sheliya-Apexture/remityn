@@ -225,14 +225,137 @@
 
 
 
+// // frontend/src/services/payment.ts
+// import axios from 'axios';
+// import apiConfig from '../config/apiConfig'; // Adjust path if needed
+
+// axios.defaults.baseURL = apiConfig.baseUrl;
+
+// // --- Interfaces ---
+// // Add 'export' before each interface definition
+
+// export interface CalculatePaymentSummaryPayload {
+//     balanceCurrencyCode: string;
+//     payInCurrencyCode: string;
+//     amountToAdd: number;
+// }
+
+// // Response from calculating the payment summary
+// // (Also likely the payload needed to initiate the payment)
+// export interface PaymentSummaryResponse {
+//     amountToPay: number;
+//     exchangeRate: number;
+//     wiseFee: number;
+//     bankTransferFee: number;
+//     balanceCurrencyCode: string;
+//     payInCurrencyCode: string;
+//     amountToAdd: number;
+//     userId: string; // Or ObjectId type if using mongoose/mongodb types
+//     // ... other properties returned by your backend
+// }
+
+// // Payload for initiating the payment
+// export interface InitiatePaymentPayload {
+//     paymentSummary: PaymentSummaryResponse;
+// }
+
+// // Response containing details of a specific payment
+// export interface PaymentDetailsResponse {
+//     type: string;
+//     _id: string;
+//     status: string; // Should ideally be TransactionStatus type from backend if possible
+//     amountToAdd: number; // Changed from any
+//     amountToPay?: number;
+//     // *** CHANGED LINES START ***
+//     // Use the imported Currency type (adjust if structure differs slightly from API)
+//     balanceCurrency: any;
+//     payInCurrency: any;
+//     // Use the optional code fields if the API *sometimes* provides them
+//     balanceCurrencyCode?: string; // Keep if API sometimes sends this IN ADDITION TO object
+//     payInCurrencyCode?: string;   // Keep if API sometimes sends this IN ADDITION TO object
+//     // *** CHANGED LINES END ***
+//     account: any;
+//     accountId: string | undefined; // More specific than 'any'
+//     amountAdded?: number;
+//     createdAt: string; // Or Date type
+//     updatedAt: string; // Or Date type
+//     userId: string; // Or ObjectId
+//     // NOTE: 'type' field removed as it's usually determined frontend-side based on origin (payment vs transfer)
+// }
+
+
+// // Response type for confirming user transfer (adjust as needed)
+// export interface ConfirmTransferResponse {
+//     message: string;
+//     payment: PaymentDetailsResponse; // Assuming the updated payment details are returned
+// }
+
+
+// // --- Service Functions ---
+// // (Service functions remain the same)
+
+// const calculatePaymentSummary = async (data: CalculatePaymentSummaryPayload, token: string | null): Promise<PaymentSummaryResponse> => {
+//     const response = await axios.post<PaymentSummaryResponse>('/payments/add-money/calculate-summary', data, {
+//         headers: { Authorization: `Bearer ${token}` },
+//     });
+//     return response.data;
+// };
+
+// const initiatePaymentAndSave = async (payload: InitiatePaymentPayload, token: string | null): Promise<PaymentDetailsResponse> => {
+//     const response = await axios.post<PaymentDetailsResponse>('/payments/add-money/initiate', payload, {
+//         headers: { Authorization: `Bearer ${token}` },
+//     });
+//     return response.data;
+// };
+
+// const getPaymentDetails = async (paymentId: string, token: string | null): Promise<PaymentDetailsResponse> => {
+//     const response = await axios.get<PaymentDetailsResponse>(`/payments/${paymentId}`, {
+//         headers: { Authorization: `Bearer ${token}` },
+//     });
+//     return response.data;
+// };
+
+// const getUserPayments = async (token: string | null): Promise<PaymentDetailsResponse[]> => {
+//     const response = await axios.get<PaymentDetailsResponse[]>('/payments', {
+//         headers: { Authorization: `Bearer ${token}` },
+//     });
+//     return response.data;
+// };
+
+// const cancelPayment = async (paymentId: string, token: string | null): Promise<PaymentDetailsResponse> => {
+//     const response = await axios.post<PaymentDetailsResponse>(`/payments/${paymentId}/cancel`, {}, {
+//         headers: { Authorization: `Bearer ${token}` },
+//     });
+//     return response.data;
+// };
+
+// const confirmUserTransfer = async (paymentId: string, token: string | null): Promise<ConfirmTransferResponse> => {
+//     const response = await axios.post<ConfirmTransferResponse>(`/payments/${paymentId}/confirm-transfer`, {}, {
+//         headers: { Authorization: `Bearer ${token}` },
+//     });
+//     return response.data;
+// };
+
+// const paymentService = {
+//     calculatePaymentSummary,
+//     initiatePaymentAndSave,
+//     getPaymentDetails,
+//     getUserPayments,
+//     cancelPayment,
+//     confirmUserTransfer,
+// };
+
+// // Keep the default export for the service object
+// export default paymentService;
+
 // frontend/src/services/payment.ts
 import axios from 'axios';
 import apiConfig from '../config/apiConfig'; // Adjust path if needed
+import { Currency } from '../../types/transaction'; // Import Currency type
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
 // --- Interfaces ---
-// Add 'export' before each interface definition
 
 export interface CalculatePaymentSummaryPayload {
     balanceCurrencyCode: string;
@@ -240,8 +363,6 @@ export interface CalculatePaymentSummaryPayload {
     amountToAdd: number;
 }
 
-// Response from calculating the payment summary
-// (Also likely the payload needed to initiate the payment)
 export interface PaymentSummaryResponse {
     amountToPay: number;
     exchangeRate: number;
@@ -250,49 +371,62 @@ export interface PaymentSummaryResponse {
     balanceCurrencyCode: string;
     payInCurrencyCode: string;
     amountToAdd: number;
-    userId: string; // Or ObjectId type if using mongoose/mongodb types
-    // ... other properties returned by your backend
+    userId: string;
 }
 
-// Payload for initiating the payment
 export interface InitiatePaymentPayload {
     paymentSummary: PaymentSummaryResponse;
 }
 
-// Response containing details of a specific payment
+// Interface mirroring backend `Payment` model for details endpoint
 export interface PaymentDetailsResponse {
-    type: string;
     _id: string;
-    status: string; // Should ideally be TransactionStatus type from backend if possible
-    amountToAdd: number; // Changed from any
-    amountToPay?: number;
-    // *** CHANGED LINES START ***
-    // Use the imported Currency type (adjust if structure differs slightly from API)
-    balanceCurrency: any;
-    payInCurrency: any;
-    // Use the optional code fields if the API *sometimes* provides them
-    balanceCurrencyCode?: string; // Keep if API sometimes sends this IN ADDITION TO object
-    payInCurrencyCode?: string;   // Keep if API sometimes sends this IN ADDITION TO object
-    // *** CHANGED LINES END ***
-    account: any;
-    accountId: string | undefined; // More specific than 'any'
-    amountAdded?: number;
-    createdAt: string; // Or Date type
-    updatedAt: string; // Or Date type
-    userId: string; // Or ObjectId
-    // NOTE: 'type' field removed as it's usually determined frontend-side based on origin (payment vs transfer)
+    user: { _id: string; email?: string; fullName?: string };
+    account: { _id: string; currency: string };
+    balanceCurrency: Currency;
+    payInCurrency: Currency;
+    amountToAdd: number;
+    amountToPay: number;
+    exchangeRate: number;
+    wiseFee: number;
+    bankTransferFee: number;
+    referenceCode: string;
+    paymentMethod: string;
+    status: string;
+    bankDetails?: {
+        payeeName?: string;
+        iban?: string;
+        bicSwift?: string;
+        bankAddress?: string;
+    };
+    createdAt: string;
+    updatedAt: string;
+    completedAt?: string | null;
+    failureReason?: string | null;
+    // --- ADDED FIELD ---
+    // This field is added by the backend getUserPayments service function
+    // for frontend convenience, even if not strictly part of the base Payment model.
+    type?: 'payment'; // Make this optional or required based on guarantee from backend
 }
 
-
-// Response type for confirming user transfer (adjust as needed)
+// Response type for confirming user transfer
 export interface ConfirmTransferResponse {
     message: string;
-    payment: PaymentDetailsResponse; // Assuming the updated payment details are returned
+    payment: PaymentDetailsResponse;
 }
+
+// Response type for cancelling a payment
+export interface CancelPaymentResponse {
+    message: string;
+    payment: PaymentDetailsResponse;
+}
+
+// Response type for getting user payments (array)
+// Ensure this uses the updated PaymentDetailsResponse which includes 'type'
+export type UserPaymentsResponse = PaymentDetailsResponse[];
 
 
 // --- Service Functions ---
-// (Service functions remain the same)
 
 const calculatePaymentSummary = async (data: CalculatePaymentSummaryPayload, token: string | null): Promise<PaymentSummaryResponse> => {
     const response = await axios.post<PaymentSummaryResponse>('/payments/add-money/calculate-summary', data, {
@@ -302,6 +436,7 @@ const calculatePaymentSummary = async (data: CalculatePaymentSummaryPayload, tok
 };
 
 const initiatePaymentAndSave = async (payload: InitiatePaymentPayload, token: string | null): Promise<PaymentDetailsResponse> => {
+    // This endpoint likely returns the base payment details without the added 'type' field
     const response = await axios.post<PaymentDetailsResponse>('/payments/add-money/initiate', payload, {
         headers: { Authorization: `Bearer ${token}` },
     });
@@ -309,21 +444,23 @@ const initiatePaymentAndSave = async (payload: InitiatePaymentPayload, token: st
 };
 
 const getPaymentDetails = async (paymentId: string, token: string | null): Promise<PaymentDetailsResponse> => {
+    // This endpoint likely returns the base payment details without the added 'type' field
     const response = await axios.get<PaymentDetailsResponse>(`/payments/${paymentId}`, {
         headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
 };
 
-const getUserPayments = async (token: string | null): Promise<PaymentDetailsResponse[]> => {
-    const response = await axios.get<PaymentDetailsResponse[]>('/payments', {
+const getUserPayments = async (token: string | null): Promise<UserPaymentsResponse> => {
+    // This endpoint *does* return the 'type' field added by the backend service
+    const response = await axios.get<UserPaymentsResponse>('/payments', {
         headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
 };
 
-const cancelPayment = async (paymentId: string, token: string | null): Promise<PaymentDetailsResponse> => {
-    const response = await axios.post<PaymentDetailsResponse>(`/payments/${paymentId}/cancel`, {}, {
+const cancelPayment = async (paymentId: string, token: string | null): Promise<CancelPaymentResponse> => {
+    const response = await axios.post<CancelPaymentResponse>(`/payments/${paymentId}/cancel`, {}, {
         headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
@@ -345,5 +482,4 @@ const paymentService = {
     confirmUserTransfer,
 };
 
-// Keep the default export for the service object
 export default paymentService;

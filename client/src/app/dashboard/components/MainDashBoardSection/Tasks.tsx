@@ -766,6 +766,297 @@
 
 // export default TasksPage;
 
+// "use client"; // Use client-side rendering for hooks
+
+// import React, { useState, useEffect } from "react";
+// import Link from "next/link";
+// import { MdErrorOutline } from "react-icons/md"; // Warning icon
+// import { LuPlus } from "react-icons/lu"; // Add money icon
+// import { useAuth } from "../../../contexts/AuthContext"; // Adjust path as needed
+// import paymentService from "../../../services/payment"; // Adjust path as needed
+// import { Transaction } from "@/types/transaction"; // Adjust path as needed
+// import { Skeleton } from "@/components/ui/skeleton"; // Adjust path as needed
+// import { motion, AnimatePresence } from "framer-motion"; // Import framer-motion
+// import { AxiosError } from "axios"; // Import AxiosError for better error handling
+
+// const TasksPage: React.FC = () => {
+//   // --- State ---
+//   const [pendingPayments, setPendingPayments] = useState<Transaction[]>([]);
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+//   const { token } = useAuth();
+//   const initialVisibleTaskCount = 3;
+//   const [visibleTaskCount, setVisibleTaskCount] = useState(
+//     initialVisibleTaskCount
+//   );
+//   const [allTasksVisible, setAllTasksVisible] = useState(false); // Track if all tasks are visible
+
+//   // --- Data Fetching Effect ---
+//   useEffect(() => {
+//     console.log("TasksPage: useEffect triggered.");
+
+//     const fetchPendingPayments = async () => {
+//       if (!token) {
+//         console.log("TasksPage: No token found, skipping fetch.");
+//         setIsLoading(false);
+//         return;
+//       }
+
+//       setIsLoading(true);
+//       setError(null);
+//       setPendingPayments([]);
+//       setVisibleTaskCount(initialVisibleTaskCount); // Reset to initial count on refresh
+//       setAllTasksVisible(false); // Reset allTasksVisible on refresh
+//       console.log("TasksPage: Starting fetch for pending payments.");
+
+//       try {
+//         const allUserPayments = await paymentService.getUserPayments(token);
+//         console.log(
+//           `TasksPage: Received ${allUserPayments.length} raw payments from API.`
+//         );
+
+//         // Instead of using a type predicate:
+//         // Use a filter followed by a map to explicitly convert types:
+//         const pending = allUserPayments
+//           .filter((payment) => {
+//             const isPending = payment.status?.toLowerCase() === "pending";
+//             const isAddMoney = payment.type === "Add Money";
+//             return isPending && isAddMoney;
+//           })
+//           .map(
+//             (payment) =>
+//               ({
+//                 _id: payment._id,
+//                 status: payment.status,
+//                 type: payment.type as "Add Money" | "Send Money",
+//                 amountToAdd: payment.amountToAdd,
+//                 amountToPay: payment.amountToPay,
+//                 balanceCurrency: payment.balanceCurrency,
+//                 payInCurrency: payment.payInCurrency,
+//                 // Include any other required Transaction properties
+//               } as Transaction)
+//           );
+//         console.log(
+//           `TasksPage: Filtered down to ${pending.length} pending 'Add Money' tasks.`
+//         );
+//         setPendingPayments(pending);
+//       } catch (err: unknown) {
+//         // Changed 'any' to 'unknown'
+//         let errMsg = "Failed to load tasks."; // Default error message
+
+//         if (err instanceof AxiosError) {
+//           // Check if it's an Axios error
+//           // Try to get message from response data, fallback to Axios message
+//           errMsg = err.response?.data?.message || err.message || errMsg;
+//         } else if (err instanceof Error) {
+//           // Check if it's a standard Error
+//           errMsg = err.message || errMsg;
+//         }
+//         // If it's neither, keep the default message
+
+//         setError(errMsg);
+//         console.error("TasksPage: Error fetching pending payments:", err);
+//       } finally {
+//         setIsLoading(false);
+//         console.log("TasksPage: Fetch finished.");
+//       }
+//     };
+
+//     fetchPendingPayments();
+//   }, [token]);
+
+//   // --- Effect to Update allTasksVisible ---
+//   useEffect(() => {
+//     if (pendingPayments.length > 0) {
+//       setAllTasksVisible(visibleTaskCount >= pendingPayments.length);
+//     } else {
+//       setAllTasksVisible(false); // No tasks, so not all visible
+//     }
+//   }, [visibleTaskCount, pendingPayments.length]);
+
+//   // --- Early Return Condition ---
+//   if (!isLoading && !error && pendingPayments.length === 0) {
+//     console.log("TasksPage: No pending tasks found, rendering null.");
+//     return null; // Render absolutely nothing
+//   }
+
+//   const displayedTasks = pendingPayments.slice(0, visibleTaskCount);
+//   // Removed unused variable: const hasMoreTasksToLoad = visibleTaskCount < pendingPayments.length;
+//   const showToggleButton = pendingPayments.length > initialVisibleTaskCount; // Only show button if there are potentially more tasks than initial
+
+//   const handleToggleViewMoreLess = () => {
+//     if (allTasksVisible) {
+//       setVisibleTaskCount(initialVisibleTaskCount); // View Less - reset to initial
+//       // setAllTasksVisible(false); // This is handled by the useEffect now
+//     } else {
+//       // Ensure we don't go beyond the actual number of payments
+//       const newCount = Math.min(pendingPayments.length, visibleTaskCount + 3);
+//       setVisibleTaskCount(newCount); // View More - load more tasks up to the total
+//     }
+//   };
+
+//   const buttonText = allTasksVisible ? "View Less" : "View More";
+
+//   const taskItemVariants = {
+//     initial: { opacity: 0, y: 20 },
+//     animate: {
+//       opacity: 1,
+//       y: 0,
+//       transition: { duration: 0.3, ease: "easeInOut" },
+//     },
+//     exit: {
+//       opacity: 0,
+//       y: 20,
+//       transition: { duration: 0.2, ease: "easeInOut" },
+//     },
+//   };
+
+//   // --- Render Logic ---
+//   return (
+//     <section className="Tasks-Wrapper">
+//       <div className="Tasks">
+//         {/* --- Heading --- */}
+//         <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white mb-6">
+//           Tasks
+//         </h1>
+
+//         {/* --- Loading State with Skeleton --- */}
+//         {isLoading && (
+//           <div className="space-y-2">
+//             {Array(3)
+//               .fill(0)
+//               .map((_, index) => (
+//                 <div key={index} className="block">
+//                   <div className="block p-2 sm:p-4 rounded-2xl">
+//                     <div className="flex items-center gap-4">
+//                       {/* Icon Skeleton */}
+//                       <div className="relative flex-shrink-0">
+//                         <div className="flex items-center justify-center">
+//                           <Skeleton className="h-12 w-12 rounded-full" />
+//                         </div>
+//                       </div>
+//                       {/* Text and Button Skeletons */}
+//                       <div className="flex-grow flex flex-row justify-between items-center gap-4">
+//                         <div className="flex-grow">
+//                           <Skeleton className="h-4 w-40 mb-2" />
+//                           <Skeleton className="h-3 w-32" />
+//                         </div>
+//                         <div className="shrink-0">
+//                           <Skeleton className="h-5 w-20 rounded-full" />
+//                         </div>
+//                       </div>
+//                     </div>
+//                   </div>
+//                 </div>
+//               ))}
+//           </div>
+//         )}
+
+//         {/* --- Error State --- */}
+//         {!isLoading && error && (
+//           <div
+//             className="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-md text-center"
+//             role="alert"
+//           >
+//             <strong className="font-bold">Error:</strong>
+//             <span className="block sm:inline ml-1">{error}</span>
+//           </div>
+//         )}
+
+//         {/* --- Task List --- */}
+//         {!isLoading && !error && displayedTasks.length > 0 && (
+//           <motion.div layout className="space-y-2">
+//             <AnimatePresence initial={false}>
+//               {" "}
+//               {/* Disable initial animation for AnimatePresence itself */}
+//               {displayedTasks.map((task) => {
+//                 const currency =
+//                   task.balanceCurrency?.code ?? task.payInCurrency?.code ?? "";
+
+//                 return (
+//                   <motion.div
+//                     key={task._id}
+//                     variants={taskItemVariants}
+//                     initial="initial"
+//                     animate="animate"
+//                     exit="exit"
+//                     layout // Add layout prop for smooth transitions when items are added/removed
+//                   >
+//                     <Link
+//                       href={`/dashboard/transactions/${task._id}`}
+//                       className="block"
+//                     >
+//                       <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
+//                         <div className="flex items-center gap-4">
+//                           {/* Icon */}
+//                           <div className="relative flex-shrink-0">
+//                             <div className="p-3 bg-yellow-100 dark:bg-yellow-800/60 rounded-full flex items-center justify-center">
+//                               <LuPlus
+//                                 size={24}
+//                                 className="text-yellow-700 dark:text-yellow-300"
+//                               />
+//                             </div>
+//                             <MdErrorOutline
+//                               size={20}
+//                               className="absolute -bottom-1 -right-1 text-orange-500 bg-white dark:bg-gray-800 rounded-full p-0.5 shadow" // Adjusted background for dark mode visibility
+//                             />
+//                           </div>
+//                           {/* Details & Action */}
+//                           <div className="flex-grow flex flex-row justify-between items-center gap-4">
+//                             {/* Text Details */}
+//                             <div className="flex-grow">
+//                               <p className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg">
+//                                 To your {currency} balance
+//                               </p>
+//                               <p className="text-sm text-orange-600 dark:text-orange-400 font-semibold mt-1">
+//                                 {" "}
+//                                 {/* Adjusted text color for dark mode */}
+//                                 Waiting for you to pay
+//                               </p>
+//                             </div>
+//                             {/* Review Button */}
+//                             <button
+//                               tabIndex={-1}
+//                               className="shrink-0 bg-primary text-neutral-900 px-4 py-1.5 rounded-full text-xs font-semibold hover:bg-primaryhover transition-all duration-75 ease-linear focus:outline-none focus:ring-0 cursor-pointer"
+//                             >
+//                               Review
+//                             </button>
+//                           </div>
+//                         </div>
+//                       </div>
+//                     </Link>
+//                   </motion.div>
+//                 );
+//               })}
+//             </AnimatePresence>
+//           </motion.div>
+//         )}
+
+//         {/* --- View More/Less Button --- */}
+//         {!isLoading &&
+//           !error &&
+//           showToggleButton && ( // Conditionally render button if needed
+//             <div className="flex justify-center mt-4">
+//               <button
+//                 onClick={handleToggleViewMoreLess}
+//                 className="bg-lightgray dark:bg-primarybox hover:dark:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-gray-300 transition-all duration-75 ease-linear focus:outline-none focus:ring-0 cursor-pointer" // Adjusted hover for dark mode
+//               >
+//                 {buttonText}
+//               </button>
+//             </div>
+//           )}
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default TasksPage;
+
+
+
+
+// frontend/app/dashboard/components/MainDashBoardSection/Tasks.tsx
+
 "use client"; // Use client-side rendering for hooks
 
 import React, { useState, useEffect } from "react";
@@ -774,14 +1065,16 @@ import { MdErrorOutline } from "react-icons/md"; // Warning icon
 import { LuPlus } from "react-icons/lu"; // Add money icon
 import { useAuth } from "../../../contexts/AuthContext"; // Adjust path as needed
 import paymentService from "../../../services/payment"; // Adjust path as needed
-import { Transaction } from "@/types/transaction"; // Adjust path as needed
+// --- FIXED IMPORT ---
+import { PaymentDetails } from "@/types/transaction"; // Import PaymentDetails instead of Transaction
 import { Skeleton } from "@/components/ui/skeleton"; // Adjust path as needed
 import { motion, AnimatePresence } from "framer-motion"; // Import framer-motion
 import { AxiosError } from "axios"; // Import AxiosError for better error handling
 
 const TasksPage: React.FC = () => {
   // --- State ---
-  const [pendingPayments, setPendingPayments] = useState<Transaction[]>([]);
+  // --- FIXED STATE TYPE ---
+  const [pendingPayments, setPendingPayments] = useState<PaymentDetails[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { token } = useAuth();
@@ -789,7 +1082,7 @@ const TasksPage: React.FC = () => {
   const [visibleTaskCount, setVisibleTaskCount] = useState(
     initialVisibleTaskCount
   );
-  const [allTasksVisible, setAllTasksVisible] = useState(false); // Track if all tasks are visible
+  const [allTasksVisible, setAllTasksVisible] = useState(false);
 
   // --- Data Fetching Effect ---
   useEffect(() => {
@@ -805,55 +1098,60 @@ const TasksPage: React.FC = () => {
       setIsLoading(true);
       setError(null);
       setPendingPayments([]);
-      setVisibleTaskCount(initialVisibleTaskCount); // Reset to initial count on refresh
-      setAllTasksVisible(false); // Reset allTasksVisible on refresh
+      setVisibleTaskCount(initialVisibleTaskCount);
+      setAllTasksVisible(false);
       console.log("TasksPage: Starting fetch for pending payments.");
 
       try {
+        // getUserPayments returns PaymentDetailsResponse[] which now includes 'type'
         const allUserPayments = await paymentService.getUserPayments(token);
         console.log(
           `TasksPage: Received ${allUserPayments.length} raw payments from API.`
         );
 
-        // Instead of using a type predicate:
-        // Use a filter followed by a map to explicitly convert types:
+        // --- FIXED FILTER and MAP ---
         const pending = allUserPayments
           .filter((payment) => {
             const isPending = payment.status?.toLowerCase() === "pending";
-            const isAddMoney = payment.type === "Add Money";
-            return isPending && isAddMoney;
+            // Only need to check status since we know these are payments
+            return isPending;
           })
           .map(
+            // Map directly to PaymentDetails type. Fields should align.
             (payment) =>
               ({
                 _id: payment._id,
                 status: payment.status,
-                type: payment.type as "Add Money" | "Send Money",
-                amountToAdd: payment.amountToAdd,
-                amountToPay: payment.amountToPay,
+                type: 'payment', // Explicitly set the type for PaymentDetails
+                user: payment.user,
+                account: payment.account,
                 balanceCurrency: payment.balanceCurrency,
                 payInCurrency: payment.payInCurrency,
-                // Include any other required Transaction properties
-              } as Transaction)
+                amountToAdd: payment.amountToAdd,
+                amountToPay: payment.amountToPay,
+                exchangeRate: payment.exchangeRate,
+                wiseFee: payment.wiseFee,
+                bankTransferFee: payment.bankTransferFee,
+                referenceCode: payment.referenceCode,
+                paymentMethod: payment.paymentMethod,
+                bankDetails: payment.bankDetails,
+                createdAt: payment.createdAt,
+                updatedAt: payment.updatedAt,
+                completedAt: payment.completedAt,
+                failureReason: payment.failureReason,
+              } as PaymentDetails) // Assert as PaymentDetails
           );
         console.log(
-          `TasksPage: Filtered down to ${pending.length} pending 'Add Money' tasks.`
+          `TasksPage: Filtered down to ${pending.length} pending payments.`
         );
         setPendingPayments(pending);
       } catch (err: unknown) {
-        // Changed 'any' to 'unknown'
-        let errMsg = "Failed to load tasks."; // Default error message
-
+        let errMsg = "Failed to load tasks.";
         if (err instanceof AxiosError) {
-          // Check if it's an Axios error
-          // Try to get message from response data, fallback to Axios message
           errMsg = err.response?.data?.message || err.message || errMsg;
         } else if (err instanceof Error) {
-          // Check if it's a standard Error
           errMsg = err.message || errMsg;
         }
-        // If it's neither, keep the default message
-
         setError(errMsg);
         console.error("TasksPage: Error fetching pending payments:", err);
       } finally {
@@ -870,7 +1168,7 @@ const TasksPage: React.FC = () => {
     if (pendingPayments.length > 0) {
       setAllTasksVisible(visibleTaskCount >= pendingPayments.length);
     } else {
-      setAllTasksVisible(false); // No tasks, so not all visible
+      setAllTasksVisible(false);
     }
   }, [visibleTaskCount, pendingPayments.length]);
 
@@ -881,17 +1179,14 @@ const TasksPage: React.FC = () => {
   }
 
   const displayedTasks = pendingPayments.slice(0, visibleTaskCount);
-  // Removed unused variable: const hasMoreTasksToLoad = visibleTaskCount < pendingPayments.length;
-  const showToggleButton = pendingPayments.length > initialVisibleTaskCount; // Only show button if there are potentially more tasks than initial
+  const showToggleButton = pendingPayments.length > initialVisibleTaskCount;
 
   const handleToggleViewMoreLess = () => {
     if (allTasksVisible) {
-      setVisibleTaskCount(initialVisibleTaskCount); // View Less - reset to initial
-      // setAllTasksVisible(false); // This is handled by the useEffect now
+      setVisibleTaskCount(initialVisibleTaskCount);
     } else {
-      // Ensure we don't go beyond the actual number of payments
-      const newCount = Math.min(pendingPayments.length, visibleTaskCount + 3);
-      setVisibleTaskCount(newCount); // View More - load more tasks up to the total
+      // Show all remaining tasks
+      setVisibleTaskCount(pendingPayments.length);
     }
   };
 
@@ -906,12 +1201,12 @@ const TasksPage: React.FC = () => {
     },
     exit: {
       opacity: 0,
-      y: 20,
+      y: 20, // Reverted exit y
       transition: { duration: 0.2, ease: "easeInOut" },
     },
   };
 
-  // --- Render Logic ---
+  // --- Render Logic (Original Design Structure) ---
   return (
     <section className="Tasks-Wrapper">
       <div className="Tasks">
@@ -920,14 +1215,14 @@ const TasksPage: React.FC = () => {
           Tasks
         </h1>
 
-        {/* --- Loading State with Skeleton --- */}
+        {/* --- Loading State with Skeleton (Original Structure) --- */}
         {isLoading && (
           <div className="space-y-2">
-            {Array(3)
+            {Array(initialVisibleTaskCount) // Show initial count skeletons
               .fill(0)
               .map((_, index) => (
                 <div key={index} className="block">
-                  <div className="block p-2 sm:p-4 rounded-2xl">
+                  <div className="block p-2 sm:p-4 rounded-2xl"> {/* Removed background from skeleton container */}
                     <div className="flex items-center gap-4">
                       {/* Icon Skeleton */}
                       <div className="relative flex-shrink-0">
@@ -952,10 +1247,10 @@ const TasksPage: React.FC = () => {
           </div>
         )}
 
-        {/* --- Error State --- */}
+        {/* --- Error State (Original Structure) --- */}
         {!isLoading && error && (
           <div
-            className="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-md text-center"
+            className="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-md text-center" // Original classes
             role="alert"
           >
             <strong className="font-bold">Error:</strong>
@@ -963,15 +1258,13 @@ const TasksPage: React.FC = () => {
           </div>
         )}
 
-        {/* --- Task List --- */}
+        {/* --- Task List (Original Structure) --- */}
         {!isLoading && !error && displayedTasks.length > 0 && (
           <motion.div layout className="space-y-2">
             <AnimatePresence initial={false}>
-              {" "}
-              {/* Disable initial animation for AnimatePresence itself */}
               {displayedTasks.map((task) => {
-                const currency =
-                  task.balanceCurrency?.code ?? task.payInCurrency?.code ?? "";
+                 // Use balanceCurrency first, fallback to payInCurrency for code
+                const currencyCode = task.balanceCurrency?.code ?? task.payInCurrency?.code ?? "";
 
                 return (
                   <motion.div
@@ -980,44 +1273,43 @@ const TasksPage: React.FC = () => {
                     initial="initial"
                     animate="animate"
                     exit="exit"
-                    layout // Add layout prop for smooth transitions when items are added/removed
+                    layout
                   >
                     <Link
                       href={`/dashboard/transactions/${task._id}`}
                       className="block"
                     >
+                       {/* Original Task Item Structure */}
                       <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
                         <div className="flex items-center gap-4">
                           {/* Icon */}
                           <div className="relative flex-shrink-0">
                             <div className="p-3 bg-yellow-100 dark:bg-yellow-800/60 rounded-full flex items-center justify-center">
                               <LuPlus
-                                size={24}
-                                className="text-yellow-700 dark:text-yellow-300"
+                                size={24} // Original size
+                                className="text-yellow-700 dark:text-yellow-300" // Original colors
                               />
                             </div>
                             <MdErrorOutline
-                              size={20}
-                              className="absolute -bottom-1 -right-1 text-orange-500 bg-white dark:bg-gray-800 rounded-full p-0.5 shadow" // Adjusted background for dark mode visibility
+                              size={20} // Original size
+                              className="absolute -bottom-1 -right-1 text-orange-500 bg-white dark:bg-gray-800 rounded-full p-0.5 shadow" // Original classes
                             />
                           </div>
                           {/* Details & Action */}
                           <div className="flex-grow flex flex-row justify-between items-center gap-4">
                             {/* Text Details */}
                             <div className="flex-grow">
-                              <p className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg">
-                                To your {currency} balance
+                              <p className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg"> {/* Original classes */}
+                                To your {currencyCode} balance
                               </p>
-                              <p className="text-sm text-orange-600 dark:text-orange-400 font-semibold mt-1">
-                                {" "}
-                                {/* Adjusted text color for dark mode */}
+                              <p className="text-sm text-orange-600 dark:text-orange-400 font-semibold mt-1"> {/* Original classes */}
                                 Waiting for you to pay
                               </p>
                             </div>
                             {/* Review Button */}
                             <button
                               tabIndex={-1}
-                              className="shrink-0 bg-primary text-neutral-900 px-4 py-1.5 rounded-full text-xs font-semibold hover:bg-primaryhover transition-all duration-75 ease-linear focus:outline-none focus:ring-0 cursor-pointer"
+                              className="shrink-0 bg-primary text-neutral-900 px-4 py-1.5 rounded-full text-xs font-semibold hover:bg-primaryhover transition-all duration-75 ease-linear focus:outline-none focus:ring-0 cursor-pointer" // Original classes
                             >
                               Review
                             </button>
@@ -1032,14 +1324,14 @@ const TasksPage: React.FC = () => {
           </motion.div>
         )}
 
-        {/* --- View More/Less Button --- */}
+        {/* --- View More/Less Button (Original Structure) --- */}
         {!isLoading &&
           !error &&
-          showToggleButton && ( // Conditionally render button if needed
+          showToggleButton && (
             <div className="flex justify-center mt-4">
               <button
                 onClick={handleToggleViewMoreLess}
-                className="bg-lightgray dark:bg-primarybox hover:dark:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-gray-300 transition-all duration-75 ease-linear focus:outline-none focus:ring-0 cursor-pointer" // Adjusted hover for dark mode
+                className="bg-lightgray dark:bg-primarybox hover:dark:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-gray-300 transition-all duration-75 ease-linear focus:outline-none focus:ring-0 cursor-pointer" // Original classes
               >
                 {buttonText}
               </button>
@@ -1051,10 +1343,6 @@ const TasksPage: React.FC = () => {
 };
 
 export default TasksPage;
-
-
-
-
 
 
 

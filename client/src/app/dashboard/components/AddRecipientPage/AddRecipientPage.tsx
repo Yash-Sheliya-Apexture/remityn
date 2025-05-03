@@ -5991,7 +5991,7 @@ import recipientService from "../../../services/recipient";
 import currencyService, { Currency } from "../../../services/currency";
 import { IoMdCloseCircle } from "react-icons/io";
 import Image from "next/image";
-import { IoArrowForward, IoClose as IoCloseIcon } from "react-icons/io5";
+import { IoArrowForward, IoClose} from "react-icons/io5";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FiSearch } from "react-icons/fi";
 import { MdCancel } from "react-icons/md";
