@@ -2151,17 +2151,17 @@ const FaqSection: React.FC = () => {
             className="lg:col-span-2 md:col-span-3 md:self-end"
             variants={leftBlockVariants} // Re-use left block animation
           >
-            <div className="flex flex-col items-start gap-5 rounded-2xl bg-lightgray dark:bg-primarybox p-4 lg:p-6">
-              <div>
-                <h3 className="md:text-2xl text-lg font-semibold text-mainheading dark:text-gray-100">
+            <div className="flex flex-col sm:items-start items-center gap-5 rounded-2xl bg-lightgray dark:bg-primarybox p-4 lg:p-6">
+              <div className="sm:text-left text-center">
+                <h3 className="sm:text-2xl text-lg font-semibold text-mainheading dark:text-gray-100">
                   More questions?
                 </h3>
-                <p className="mt-1 lg:text-lg text-sm font-normal text-gray-500 dark:text-gray-300">
+                <p className="mt-1 sm:text-lg text-sm font-normal text-gray-500 dark:text-gray-300">
                   We're always ready to help you out.
                 </p>
               </div>
 
-              <div className="flex w-full flex-wrap items-center justify-between gap-4">
+              <div className="flex w-full flex-wrap items-center sm:justify-between justify-center gap-4">
                 <div className="flex gap-2">
                   {/* WhatsApp Button */}
                   <Link
@@ -2191,7 +2191,7 @@ const FaqSection: React.FC = () => {
                 {/* Read More FAQs Link */}
                 <Link
                   href="/faqs" // Link to your full FAQs page
-                  className="px-4 py-1.5 rounded-full font-medium lg:text-base text-sm border hover:bg-white  text-mainheading dark:text-primary dark:hover:bg-white/5 dark:bg-secondary transition-all ease-linear duration-75 focus:outline-none"
+                  className="px-4 py-1.5 rounded-full font-medium lg:text-base text-sm text-neutral-900 dark:text-primary bg-primary hover:bg-primaryhover dark:hover:bg-secondarybox dark:bg-primarybox transition-all ease-linear duration-75 focus:outline-none"
                 >
                   Read more FAQs
                 </Link>

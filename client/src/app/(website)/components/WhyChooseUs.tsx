@@ -231,7 +231,7 @@ const WhyChooseUs: React.FC = () => {
             >
               {/* Icon */}
               <div className=" lg:size-14 size-12 bg-primary rounded-full flex items-center justify-center">
-                <span className="text-neutral-900 size-6 lg:size-8">
+                <span className="text-neutral-900">
                   {feature.icons}
                 </span>
               </div>
