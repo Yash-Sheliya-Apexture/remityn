@@ -3796,6 +3796,495 @@
 //   );
 // }
 
+
+// "use client";
+
+// import { useState, useEffect, FormEvent } from "react";
+// import authService from "../../services/auth";
+// import { useAuth } from "../../contexts/AuthContext";
+// import { useRouter, useSearchParams } from "next/navigation";
+// import Image from "next/image";
+// import Link from "next/link";
+// import { IoMdCloseCircle } from "react-icons/io";
+// import { FiX } from "react-icons/fi";
+// import { motion, AnimatePresence } from "framer-motion";
+// import { FaCheck } from "react-icons/fa6";
+// import apiConfig from "../../config/apiConfig";
+// import { LuEye, LuEyeClosed } from "react-icons/lu";
+
+// export default function LoginPage() {
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [showPassword, setShowPassword] = useState(false);
+//   const [emailError, setEmailError] = useState("");
+//   const [passwordError, setPasswordError] = useState("");
+//   // Combined error state for login/google issues
+//   const [generalError, setGeneralError] = useState("");
+//   const { login, user, loading } = useAuth();
+//   const router = useRouter();
+//   const searchParams = useSearchParams();
+//   const [isSubmitting, setIsSubmitting] = useState(false);
+//   const [sessionExpiredMessage, setSessionExpiredMessage] = useState("");
+//   const [isGeneralErrorVisible, setIsGeneralErrorVisible] = useState(false); // Visibility for general error
+//   const [loginSuccess, setLoginSuccess] = useState(false);
+//   const [isLoginSuccessVisible, setIsLoginSuccessVisible] = useState(false);
+
+//   useEffect(() => {
+//     const urlParams = new URLSearchParams(searchParams.toString());
+//     const sessionExpired = urlParams.get("sessionExpired");
+//     const googleErr = urlParams.get("googleError");
+//     const registerSuccessParam = urlParams.get("registerSuccess");
+//     const resetSuccessParam = urlParams.get("resetSuccess");
+//     let urlNeedsCleaning = false;
+
+//     setSessionExpiredMessage("");
+//     setGeneralError(""); // Clear general error
+//     setIsGeneralErrorVisible(false);
+
+//     if (googleErr) {
+//       setGeneralError(decodeURIComponent(googleErr)); // Use general error state
+//       urlNeedsCleaning = true;
+//     } else if (sessionExpired === "true") {
+//       setSessionExpiredMessage(
+//         "Your session has expired. Please log in again."
+//       );
+//       urlNeedsCleaning = true;
+//     } else if (registerSuccessParam === "true") {
+//       console.log("Registration successful parameter detected.");
+//       urlNeedsCleaning = true;
+//     } else if (resetSuccessParam === "true") {
+//       console.log("Password reset successful parameter detected.");
+//       urlNeedsCleaning = true;
+//     }
+
+//     if (urlNeedsCleaning) {
+//       window.history.replaceState(null, "", "/auth/login");
+//     }
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [searchParams]);
+
+//   useEffect(() => {
+//     if (!loading && user) {
+//       console.log("Login page: User logged in. AuthContext handles redirect.");
+//       // AuthContext handles redirection based on user state
+//     }
+//   }, [user, loading, router]);
+
+//   useEffect(() => {
+//     setIsGeneralErrorVisible(!!generalError); // Update visibility based on generalError
+//   }, [generalError]);
+
+//   useEffect(() => {
+//     setIsLoginSuccessVisible(loginSuccess);
+//   }, [loginSuccess]);
+
+//   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+//     e.preventDefault();
+//     setEmailError("");
+//     setPasswordError("");
+//     setGeneralError(""); // Clear general error
+//     setIsGeneralErrorVisible(false);
+//     setSessionExpiredMessage(""); // Clear session expired msg on new attempt
+//     setLoginSuccess(false);
+//     setIsLoginSuccessVisible(false);
+
+//     let isValid = true;
+//     if (!email) {
+//       setEmailError("Email is required");
+//       isValid = false;
+//     }
+//     if (!password) {
+//       setPasswordError("Password is required");
+//       isValid = false;
+//     }
+//     if (!isValid) return;
+
+//     setIsSubmitting(true);
+//     try {
+//       const { user: loggedInUser, token } = await authService.login({
+//         email,
+//         password,
+//       });
+//       console.log("Login successful in component");
+//       setLoginSuccess(true); // Show success message
+//       login(loggedInUser, token); // Update AuthContext
+//       // AuthContext useEffect will handle redirection
+//     } catch (err: any) {
+//       // --- MODIFICATION START: Comment out or remove the console.error line ---
+//       // console.error("Login error in component:", err); // This line logs the error to the console
+//       // --- MODIFICATION END ---
+
+//       let message = "Sorry, that email or password didn't work."; // Default
+//       // This part correctly extracts the message from the backend (like the Google Sign-In error)
+//       if (err.response?.data?.message) {
+//         message = err.response.data.message; // Use backend message
+//       } else if (err.message) {
+//         // Fallback for network errors or other non-API errors
+//         message = err.message;
+//       }
+//       setGeneralError(message); // Set the specific error message for UI display
+//       setIsGeneralErrorVisible(true);
+//       setLoginSuccess(false);
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   const togglePasswordVisibility = () => setShowPassword(!showPassword);
+
+//   const handleGoogleLogin = () => {
+//     setGeneralError(""); // Clear any previous errors
+//     setIsGeneralErrorVisible(false);
+//     setSessionExpiredMessage("");
+//     window.location.href = `${apiConfig.baseUrl}/auth/google`;
+//   };
+
+//   const errorVariants = {
+//     /* ... (keep existing variants) ... */
+//     initial: { opacity: 0.5, y: 10, scale: 0.95, rotate: "2deg" },
+//     animate: {
+//       opacity: 1,
+//       y: 0,
+//       scale: 1,
+//       rotate: "0deg",
+//       transition: {
+//         duration: 0.3,
+//         ease: "easeInOut",
+//         type: "spring",
+//         stiffness: 95,
+//         damping: 10,
+//       },
+//     },
+//     exit: {
+//       opacity: 0,
+//       y: 10,
+//       scale: 0.95,
+//       rotate: "-2deg",
+//       transition: { duration: 0.2, ease: "easeIn" },
+//     },
+//   };
+//   const successVariants = {
+//     /* ... (keep existing variants) ... */ initial: { opacity: 0, y: -20 },
+//     animate: {
+//       opacity: 1,
+//       y: 0,
+//       transition: { duration: 0.3, ease: "easeOut" },
+//     },
+//     exit: { opacity: 0, y: -20, transition: { duration: 0.2, ease: "easeIn" } },
+//   };
+
+//   // --- RENDER SECTION (No changes needed here) ---
+//   return (
+//     <div className="bg-white dark:bg-background">
+//       <div className="flex flex-col items-center h-[calc(100vh-82px)] px-4">
+//         <div className="w-full max-w-md lg:mt-20 mt-10">
+//           {/* Session Expired Message */}
+//           <AnimatePresence>
+//             {sessionExpiredMessage && (
+//               <motion.div
+//                 className="bg-lightgray dark:bg-primarybox rounded-2xl p-4 flex items-center gap-4 mb-4"
+//                 role="alert"
+//                 initial="initial"
+//                 animate="animate"
+//                 exit="exit"
+//                 variants={errorVariants}
+//               >
+//                 <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+//                   <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
+//                 </div>
+//                 <div className="inline-block">
+//                   <p className="font-medium text-neutral-900 text-sm lg:text-base dark:text-white">
+//                     Session Expired
+//                   </p>
+//                   <p className="text-gray-500 dark:text-gray-300 max-w-60">
+//                     {sessionExpiredMessage}
+//                   </p>
+//                 </div>
+//               </motion.div>
+//             )}
+//           </AnimatePresence>
+
+//           {/* Title and Sign Up Link */}
+//           <div className="space-y-2">
+//             <h2 className="lg:text-3xl text-2xl text-center text-neutral-900 dark:text-white font-medium">
+//               Welcome back.
+//             </h2>
+//             <p className="text-center text-gray-500 dark:text-gray-300">
+//               New to Wise?
+//               <Link href="/auth/register">
+//                 <span className="text-primary font-medium capitalize underline underline-offset-4">
+//                   Sign up
+//                 </span>
+//               </Link>
+//             </p>
+//           </div>
+
+//           {/* General Login Error / Google Error Message */}
+//           <AnimatePresence>
+//             {isGeneralErrorVisible && generalError && (
+//               <motion.div
+//                 className={`dark:bg-primarybox bg-lightgray rounded-2xl p-4 flex items-center gap-4 my-4`}
+//                 role="alert"
+//                 initial="initial"
+//                 animate="animate"
+//                 exit="exit"
+//                 variants={errorVariants}
+//               >
+//                 <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+//                   <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
+//                 </div>
+//                 <div className="inline-block">
+//                   <span className="text-gray-500 dark:text-gray-300 max-w-60">
+//                     {generalError}
+//                   </span>
+//                 </div>
+//               </motion.div>
+//             )}
+//           </AnimatePresence>
+
+//           {/* Success Message Display */}
+//           <AnimatePresence>
+//             {isLoginSuccessVisible && loginSuccess && (
+//               <motion.div
+//                 className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center my-4"
+//                 role="alert"
+//                 initial="initial"
+//                 animate="animate"
+//                 exit="exit"
+//                 variants={successVariants}
+//               >
+//                 <div className="flex bg-green-100 dark:bg-green-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+//                   <FaCheck className="p-0.5 text-green-600 dark:text-green-400 lg:size-8 size-6" />
+//                 </div>
+//                 <div className="flex-grow space-y-0.5">
+//                   <span className="text-neutral-900 dark:text-primary block font-medium">
+//                     Login successful!
+//                   </span>
+//                   <span className="text-gray-500 dark:text-gray-300 block text-sm">
+//                     Checking account status...
+//                   </span>
+//                 </div>
+//               </motion.div>
+//             )}
+//           </AnimatePresence>
+
+//           {/* Form */}
+//           <form className="space-y-4 mt-5" onSubmit={handleSubmit} noValidate>
+//             {/* Google Button */}
+//             <div>
+//               <button
+//                 type="button"
+//                 className="flex dark:bg-background border justify-center rounded-lg h-14 text-neutral-900 dark:text-white w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 text-sm lg:text-base"
+//                 onClick={handleGoogleLogin}
+//               >
+//                 <Image
+//                   src="/assets/icon/google.svg"
+//                   width={28}
+//                   height={28}
+//                   alt="Continue with Google"
+//                 />
+//                 Continue with Google
+//               </button>
+//             </div>
+
+//             {/* Email Input */}
+//             <div className="email">
+//               <label
+//                 htmlFor="email"
+//                 className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
+//               >
+//                 Your email address
+//                 <span className="text-red-600 dark:text-red-400">*</span>
+//               </label>
+//               <input
+//                 type="email"
+//                 id="email"
+//                 placeholder="Your Email"
+//                 autoComplete="email"
+//                 className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
+//                   emailError
+//                     ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+//                     : "focus:border-[#5f5f5f]"
+//                 }`}
+//                 value={email}
+//                 onChange={(e) => {
+//                   setEmail(e.target.value);
+//                   if (emailError) setEmailError("");
+//                 }}
+//                 aria-invalid={!!emailError}
+//                 aria-describedby={emailError ? "email-error" : undefined}
+//               />
+//               {emailError && (
+//                 <p
+//                   id="email-error"
+//                   className="flex text-red-700 text-base items-center mt-0.5"
+//                 >
+//                   <span className="mr-1">
+//                     <IoMdCloseCircle className="size-5" />
+//                   </span>
+//                   {emailError}
+//                 </p>
+//               )}
+//             </div>
+
+//             {/* Password Input */}
+//             <div className="password">
+//               <label
+//                 htmlFor="password"
+//                 className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
+//               >
+//                 Your password
+//                 <span className="text-red-600 dark:text-red-400">*</span>
+//               </label>
+
+//               <div className="relative">
+//                 <input
+//                   type={showPassword ? "text" : "password"}
+//                   id="password"
+//                   placeholder="Your Password"
+//                   autoComplete="current-password"
+//                   className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
+//                     passwordError
+//                       ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+//                       : "focus:border-[#5f5f5f]"
+//                   }`}
+//                   value={password}
+//                   onChange={(e) => {
+//                     setPassword(e.target.value);
+//                     if (passwordError) setPasswordError("");
+//                   }}
+//                   aria-invalid={!!passwordError}
+//                   aria-describedby={
+//                     passwordError ? "password-error" : undefined
+//                   }
+//                 />
+//                 <button
+//                   type="button"
+//                   className="absolute right-4 top-4 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background"
+//                   onClick={togglePasswordVisibility}
+//                   aria-label={showPassword ? "Hide password" : "Show password"}
+//                 >
+//                   {showPassword ? (
+//                     <LuEye size={22} />
+//                   ) : (
+//                     <LuEyeClosed size={22} />
+//                   )}
+//                 </button>
+//               </div>
+//               {passwordError && (
+//                 <p
+//                   id="password-error"
+//                   className="flex text-red-700 text-base items-center mt-0.5"
+//                 >
+//                   <span className="mr-1">
+//                     <IoMdCloseCircle className="size-5" />
+//                   </span>
+//                   {passwordError}
+//                 </p>
+//               )}
+//             </div>
+
+//             {/* Forgot Password Link */}
+//             <div className="text-right">
+//               <Link href="/auth/forgot-password" className="inline-block">
+//                 <span className="text-neutral-900 dark:text-primary font-medium underline text-sm lg:text-base underline-offset-4">
+//                   Forgot Password ?
+//                 </span>
+//               </Link>
+//             </div>
+
+//             {/* Submit Button */}
+//             <div className="flex justify-between items-center mb-4">
+//               <button
+//                 type="submit"
+//                 className={`bg-primary hover:bg-primaryhover w-full text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center ${
+//                   isSubmitting
+//                     ? "bg-gray-300 dark:bg-background border dark:text-white text-neutral-900 cursor-not-allowed"
+//                     : "bg-primary hover:bg-primaryhover text-neutral-900"
+//                 }`}
+//                 disabled={isSubmitting}
+//               >
+//                 {isSubmitting ? (
+//                   <>
+//                     <svg
+//                       className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+//                       viewBox="0 0 24 24"
+//                       fill="none"
+//                       xmlns="http://www.w3.org/2000/svg"
+//                     >
+//                       <path
+//                         d="M12 2V6"
+//                         stroke="currentColor"
+//                         strokeWidth="2"
+//                         strokeLinecap="round"
+//                         strokeLinejoin="round"
+//                       />
+//                       <path
+//                         d="M12 18V22"
+//                         stroke="currentColor"
+//                         strokeWidth="2"
+//                         strokeLinecap="round"
+//                         strokeLinejoin="round"
+//                       />
+//                       <path
+//                         d="M4.93 4.93L7.76 7.76"
+//                         stroke="currentColor"
+//                         strokeWidth="2"
+//                         strokeLinecap="round"
+//                         strokeLinejoin="round"
+//                       />
+//                       <path
+//                         d="M16.24 16.24L19.07 19.07"
+//                         stroke="currentColor"
+//                         strokeWidth="2"
+//                         strokeLinecap="round"
+//                         strokeLinejoin="round"
+//                       />
+//                       <path
+//                         d="M2 12H6"
+//                         stroke="currentColor"
+//                         strokeWidth="2"
+//                         strokeLinecap="round"
+//                         strokeLinejoin="round"
+//                       />
+//                       <path
+//                         d="M18 12H22"
+//                         stroke="currentColor"
+//                         strokeWidth="2"
+//                         strokeLinecap="round"
+//                         strokeLinejoin="round"
+//                       />
+//                       <path
+//                         d="M4.93 19.07L7.76 16.24"
+//                         stroke="currentColor"
+//                         strokeWidth="2"
+//                         strokeLinecap="round"
+//                         strokeLinejoin="round"
+//                       />
+//                       <path
+//                         d="M16.24 7.76L19.07 4.93"
+//                         stroke="currentColor"
+//                         strokeWidth="2"
+//                         strokeLinecap="round"
+//                         strokeLinejoin="round"
+//                       />
+//                     </svg>
+//                     <span>Logging in...</span>
+//                   </>
+//                 ) : (
+//                   "Log in"
+//                 )}
+//               </button>
+//             </div>
+//           </form>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
 "use client";
 
 import { useState, useEffect, FormEvent } from "react";
@@ -3806,10 +4295,88 @@ import Image from "next/image";
 import Link from "next/link";
 import { IoMdCloseCircle } from "react-icons/io";
 import { FiX } from "react-icons/fi";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion"; // Ensure motion and AnimatePresence are imported
 import { FaCheck } from "react-icons/fa6";
 import apiConfig from "../../config/apiConfig";
 import { LuEye, LuEyeClosed } from "react-icons/lu";
+
+// --- Animation Variants ---
+
+// Variant for the main container to orchestrate children animations
+const pageContainerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1, // Stagger the animation of children by 0.1s
+      delayChildren: 0.2, // Wait 0.2s before starting children animations
+    },
+  },
+  exit: {
+      opacity: 0,
+      transition: { duration: 0.2 }
+  }
+};
+
+// Variant for individual items within the container
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.4,
+      ease: "easeOut",
+    },
+  },
+  exit: {
+    y: -10,
+    opacity: 0,
+    transition: {
+        duration: 0.2,
+        ease: "easeIn"
+    }
+  }
+};
+
+// Variants for error messages (keeping your existing style)
+const errorVariants = {
+  initial: { opacity: 0.5, y: 10, scale: 0.95, rotate: "2deg" },
+  animate: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    rotate: "0deg",
+    transition: {
+      duration: 0.3,
+      ease: "easeInOut",
+      type: "spring",
+      stiffness: 95,
+      damping: 10,
+    },
+  },
+  exit: {
+    opacity: 0,
+    y: 10,
+    scale: 0.95,
+    rotate: "-2deg",
+    transition: { duration: 0.2, ease: "easeIn" },
+  },
+};
+
+// Variants for success messages (keeping your existing style)
+const successVariants = {
+  initial: { opacity: 0, y: -20 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.3, ease: "easeOut" },
+  },
+  exit: { opacity: 0, y: -20, transition: { duration: 0.2, ease: "easeIn" } },
+};
+
+
+// --- Component ---
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -3817,17 +4384,17 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  // Combined error state for login/google issues
   const [generalError, setGeneralError] = useState("");
   const { login, user, loading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [sessionExpiredMessage, setSessionExpiredMessage] = useState("");
-  const [isGeneralErrorVisible, setIsGeneralErrorVisible] = useState(false); // Visibility for general error
+  const [isGeneralErrorVisible, setIsGeneralErrorVisible] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(false);
   const [isLoginSuccessVisible, setIsLoginSuccessVisible] = useState(false);
 
+  // --- useEffect Hooks (No changes needed here) ---
   useEffect(() => {
     const urlParams = new URLSearchParams(searchParams.toString());
     const sessionExpired = urlParams.get("sessionExpired");
@@ -3837,11 +4404,11 @@ export default function LoginPage() {
     let urlNeedsCleaning = false;
 
     setSessionExpiredMessage("");
-    setGeneralError(""); // Clear general error
+    setGeneralError("");
     setIsGeneralErrorVisible(false);
 
     if (googleErr) {
-      setGeneralError(decodeURIComponent(googleErr)); // Use general error state
+      setGeneralError(decodeURIComponent(googleErr));
       urlNeedsCleaning = true;
     } else if (sessionExpired === "true") {
       setSessionExpiredMessage(
@@ -3865,25 +4432,26 @@ export default function LoginPage() {
   useEffect(() => {
     if (!loading && user) {
       console.log("Login page: User logged in. AuthContext handles redirect.");
-      // AuthContext handles redirection based on user state
+      // AuthContext handles redirection
     }
   }, [user, loading, router]);
 
   useEffect(() => {
-    setIsGeneralErrorVisible(!!generalError); // Update visibility based on generalError
+    setIsGeneralErrorVisible(!!generalError);
   }, [generalError]);
 
   useEffect(() => {
     setIsLoginSuccessVisible(loginSuccess);
   }, [loginSuccess]);
 
+  // --- Event Handlers (No changes needed here, except removing console.error) ---
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setEmailError("");
     setPasswordError("");
-    setGeneralError(""); // Clear general error
+    setGeneralError("");
     setIsGeneralErrorVisible(false);
-    setSessionExpiredMessage(""); // Clear session expired msg on new attempt
+    setSessionExpiredMessage("");
     setLoginSuccess(false);
     setIsLoginSuccessVisible(false);
 
@@ -3905,23 +4473,17 @@ export default function LoginPage() {
         password,
       });
       console.log("Login successful in component");
-      setLoginSuccess(true); // Show success message
-      login(loggedInUser, token); // Update AuthContext
-      // AuthContext useEffect will handle redirection
+      setLoginSuccess(true);
+      login(loggedInUser, token);
     } catch (err: any) {
-      // --- MODIFICATION START: Comment out or remove the console.error line ---
-      // console.error("Login error in component:", err); // This line logs the error to the console
-      // --- MODIFICATION END ---
-
-      let message = "Sorry, that email or password didn't work."; // Default
-      // This part correctly extracts the message from the backend (like the Google Sign-In error)
+      // console.error("Login error in component:", err); // Removed as requested
+      let message = "Sorry, that email or password didn't work.";
       if (err.response?.data?.message) {
-        message = err.response.data.message; // Use backend message
+        message = err.response.data.message;
       } else if (err.message) {
-        // Fallback for network errors or other non-API errors
         message = err.message;
       }
-      setGeneralError(message); // Set the specific error message for UI display
+      setGeneralError(message);
       setIsGeneralErrorVisible(true);
       setLoginSuccess(false);
     } finally {
@@ -3932,352 +4494,294 @@ export default function LoginPage() {
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const handleGoogleLogin = () => {
-    setGeneralError(""); // Clear any previous errors
+    setGeneralError("");
     setIsGeneralErrorVisible(false);
     setSessionExpiredMessage("");
     window.location.href = `${apiConfig.baseUrl}/auth/google`;
   };
 
-  const errorVariants = {
-    /* ... (keep existing variants) ... */
-    initial: { opacity: 0.5, y: 10, scale: 0.95, rotate: "2deg" },
-    animate: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      rotate: "0deg",
-      transition: {
-        duration: 0.3,
-        ease: "easeInOut",
-        type: "spring",
-        stiffness: 95,
-        damping: 10,
-      },
-    },
-    exit: {
-      opacity: 0,
-      y: 10,
-      scale: 0.95,
-      rotate: "-2deg",
-      transition: { duration: 0.2, ease: "easeIn" },
-    },
-  };
-  const successVariants = {
-    /* ... (keep existing variants) ... */ initial: { opacity: 0, y: -20 },
-    animate: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.3, ease: "easeOut" },
-    },
-    exit: { opacity: 0, y: -20, transition: { duration: 0.2, ease: "easeIn" } },
-  };
 
-  // --- RENDER SECTION (No changes needed here) ---
+  // --- RENDER SECTION (Updated with motion wrappers) ---
   return (
     <div className="bg-white dark:bg-background">
-      <div className="flex flex-col items-center h-[calc(100vh-82px)] px-4">
-        <div className="w-full max-w-md lg:mt-20 mt-10">
-          {/* Session Expired Message */}
-          <AnimatePresence>
-            {sessionExpiredMessage && (
-              <motion.div
-                className="bg-lightgray dark:bg-primarybox rounded-2xl p-4 flex items-center gap-4 mb-4"
-                role="alert"
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                variants={errorVariants}
-              >
-                <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
-                  <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
-                </div>
-                <div className="inline-block">
-                  <p className="font-medium text-neutral-900 text-sm lg:text-base dark:text-white">
-                    Session Expired
-                  </p>
-                  <p className="text-gray-500 dark:text-gray-300 max-w-60">
-                    {sessionExpiredMessage}
-                  </p>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Title and Sign Up Link */}
-          <div className="space-y-2">
-            <h2 className="lg:text-3xl text-2xl text-center text-neutral-900 dark:text-white font-medium">
-              Welcome back.
-            </h2>
-            <p className="text-center text-gray-500 dark:text-gray-300">
-              New to Wise?
-              <Link href="/auth/register">
-                <span className="text-primary font-medium capitalize underline underline-offset-4">
-                  Sign up
-                </span>
-              </Link>
-            </p>
-          </div>
-
-          {/* General Login Error / Google Error Message */}
-          <AnimatePresence>
-            {isGeneralErrorVisible && generalError && (
-              <motion.div
-                className={`dark:bg-primarybox bg-lightgray rounded-2xl p-4 flex items-center gap-4 my-4`}
-                role="alert"
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                variants={errorVariants}
-              >
-                <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
-                  <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
-                </div>
-                <div className="inline-block">
-                  <span className="text-gray-500 dark:text-gray-300 max-w-60">
-                    {generalError}
-                  </span>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Success Message Display */}
-          <AnimatePresence>
-            {isLoginSuccessVisible && loginSuccess && (
-              <motion.div
-                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center my-4"
-                role="alert"
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                variants={successVariants}
-              >
-                <div className="flex bg-green-100 dark:bg-green-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
-                  <FaCheck className="p-0.5 text-green-600 dark:text-green-400 lg:size-8 size-6" />
-                </div>
-                <div className="flex-grow space-y-0.5">
-                  <span className="text-neutral-900 dark:text-primary block font-medium">
-                    Login successful!
-                  </span>
-                  <span className="text-gray-500 dark:text-gray-300 block text-sm">
-                    Checking account status...
-                  </span>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Form */}
-          <form className="space-y-4 mt-5" onSubmit={handleSubmit} noValidate>
-            {/* Google Button */}
-            <div>
-              <button
-                type="button"
-                className="flex dark:bg-background border justify-center rounded-lg h-14 text-neutral-900 dark:text-white w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 text-sm lg:text-base"
-                onClick={handleGoogleLogin}
-              >
-                <Image
-                  src="/assets/icon/google.svg"
-                  width={28}
-                  height={28}
-                  alt="Continue with Google"
-                />
-                Continue with Google
-              </button>
-            </div>
-
-            {/* Email Input */}
-            <div className="email">
-              <label
-                htmlFor="email"
-                className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
-              >
-                Your email address
-                <span className="text-red-600 dark:text-red-400">*</span>
-              </label>
-              <input
-                type="email"
-                id="email"
-                placeholder="Your Email"
-                autoComplete="email"
-                className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
-                  emailError
-                    ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
-                    : "focus:border-[#5f5f5f]"
-                }`}
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  if (emailError) setEmailError("");
-                }}
-                aria-invalid={!!emailError}
-                aria-describedby={emailError ? "email-error" : undefined}
-              />
-              {emailError && (
-                <p
-                  id="email-error"
-                  className="flex text-red-700 text-base items-center mt-0.5"
+      {/* AnimatePresence can wrap the main container if you want exit animations */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          className="flex flex-col items-center justify-center lg:h-[calc(100vh-82px)] px-4"
+          key="login-page" // Add a key for AnimatePresence if needed
+          variants={pageContainerVariants}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+        >
+          {/* Wrap the content container with motion.div */}
+          <motion.div
+            className="w-full max-w-md lg:mt-20 mt-10"
+          >
+            {/* Session Expired Message (Uses existing AnimatePresence/motion) */}
+            <AnimatePresence>
+              {sessionExpiredMessage && (
+                <motion.div
+                  className="bg-lightgray dark:bg-primarybox rounded-2xl p-4 flex items-center gap-4 mb-4"
+                  role="alert"
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  variants={errorVariants} // Using existing error variants
                 >
-                  <span className="mr-1">
-                    <IoMdCloseCircle className="size-5" />
-                  </span>
-                  {emailError}
-                </p>
+                  <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+                    <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
+                  </div>
+                  <div className="inline-block">
+                    <p className="font-medium text-neutral-900 text-sm lg:text-base dark:text-white">
+                      Session Expired
+                    </p>
+                    <p className="text-gray-500 dark:text-gray-300 max-w-60">
+                      {sessionExpiredMessage}
+                    </p>
+                  </div>
+                </motion.div>
               )}
-            </div>
+            </AnimatePresence>
 
-            {/* Password Input */}
-            <div className="password">
-              <label
-                htmlFor="password"
-                className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
-              >
-                Your password
-                <span className="text-red-600 dark:text-red-400">*</span>
-              </label>
+            {/* Title and Sign Up Link (Apply item variant) */}
+            <motion.div className="space-y-2" variants={itemVariants}>
+              <h2 className="lg:text-3xl text-2xl text-center text-neutral-900 dark:text-white font-medium">
+                Welcome back.
+              </h2>
+              <p className="text-center text-gray-500 dark:text-gray-300">
+                New to Wise?{" "}
+                <Link href="/auth/register">
+                  <span className="text-primary font-medium capitalize underline underline-offset-4">
+                    Sign up
+                  </span>
+                </Link>
+              </p>
+            </motion.div>
 
-              <div className="relative">
+            {/* General Login Error / Google Error Message (Uses existing AnimatePresence/motion) */}
+            <AnimatePresence>
+              {isGeneralErrorVisible && generalError && (
+                <motion.div
+                  className={`dark:bg-primarybox bg-lightgray rounded-2xl p-4 flex items-center gap-4 mt-5`}
+                  role="alert"
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  variants={errorVariants} // Using existing error variants
+                >
+                  <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+                    <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
+                  </div>
+                  <div className="inline-block">
+                    <span className="text-gray-500 dark:text-gray-300 max-w-60">
+                      {generalError}
+                    </span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Success Message Display (Uses existing AnimatePresence/motion) */}
+            <AnimatePresence>
+              {isLoginSuccessVisible && loginSuccess && (
+                <motion.div
+                  className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center mt-5"
+                  role="alert"
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  variants={successVariants} // Using existing success variants
+                >
+                  <div className="flex bg-green-100 dark:bg-green-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+                    <FaCheck className="p-0.5 text-green-600 dark:text-green-400 lg:size-8 size-6" />
+                  </div>
+                  <div className="flex-grow space-y-0.5">
+                    <span className="text-neutral-900 dark:text-primary block font-medium">
+                      Login successful!
+                    </span>
+                    <span className="text-gray-500 dark:text-gray-300 block text-sm">
+                      Checking account status...
+                    </span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Form (Wrap the whole form or individual elements) */}
+            {/* Here we wrap the form itself, but individual elements inside could also be wrapped */}
+            {/* If wrapping the form, its children won't inherit stagger unless explicitly done */}
+            {/* Let's wrap individual logical blocks *inside* the form for better stagger control */}
+            <form className="space-y-4 mt-5" onSubmit={handleSubmit} noValidate>
+
+              {/* Google Button (Apply item variant) */}
+              <motion.div variants={itemVariants}>
+                <button
+                  type="button"
+                  className="flex dark:bg-background border justify-center rounded-lg h-14 text-neutral-900 dark:text-white w-full cursor-pointer font-medium gap-4 items-center px-4 py-3 text-sm lg:text-base"
+                  onClick={handleGoogleLogin}
+                >
+                  <Image
+                    src="/assets/icon/google.svg"
+                    width={28}
+                    height={28}
+                    alt="Continue with Google"
+                  />
+                  Continue with Google
+                </button>
+              </motion.div>
+
+              {/* Email Input (Apply item variant) */}
+              <motion.div className="email" variants={itemVariants}>
+                <label
+                  htmlFor="email"
+                  className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
+                >
+                  Your email address{" "}
+                  <span className="text-red-600 dark:text-red-400">*</span>
+                </label>
                 <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  placeholder="Your Password"
-                  autoComplete="current-password"
+                  type="email"
+                  id="email"
+                  placeholder="Your Email"
+                  autoComplete="email"
                   className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
-                    passwordError
+                    emailError
                       ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
                       : "focus:border-[#5f5f5f]"
                   }`}
-                  value={password}
+                  value={email}
                   onChange={(e) => {
-                    setPassword(e.target.value);
-                    if (passwordError) setPasswordError("");
+                    setEmail(e.target.value);
+                    if (emailError) setEmailError("");
                   }}
-                  aria-invalid={!!passwordError}
-                  aria-describedby={
-                    passwordError ? "password-error" : undefined
-                  }
+                  aria-invalid={!!emailError}
+                  aria-describedby={emailError ? "email-error" : undefined}
                 />
-                <button
-                  type="button"
-                  className="absolute right-4 top-4 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background"
-                  onClick={togglePasswordVisibility}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
+                {emailError && (
+                  <p
+                    id="email-error"
+                    className="flex text-red-700 text-base items-center mt-0.5"
+                  >
+                    <span className="mr-1">
+                      <IoMdCloseCircle className="size-5" />
+                    </span>
+                    {emailError}
+                  </p>
+                )}
+              </motion.div>
+
+              {/* Password Input (Apply item variant) */}
+              <motion.div className="password" variants={itemVariants}>
+                <label
+                  htmlFor="password"
+                  className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
                 >
-                  {showPassword ? (
-                    <LuEye size={22} />
+                  Your password{" "}
+                  <span className="text-red-600 dark:text-red-400">*</span>
+                </label>
+
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    placeholder="Your Password"
+                    autoComplete="current-password"
+                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
+                      passwordError
+                        ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+                        : "focus:border-[#5f5f5f]"
+                    }`}
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (passwordError) setPasswordError("");
+                    }}
+                    aria-invalid={!!passwordError}
+                    aria-describedby={
+                      passwordError ? "password-error" : undefined
+                    }
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-4 top-4 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background"
+                    onClick={togglePasswordVisibility}
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
+                  >
+                    {showPassword ? (
+                      <LuEye size={24} />
+                    ) : (
+                      <LuEyeClosed size={24} />
+                    )}
+                  </button>
+                </div>
+                {passwordError && (
+                  <p
+                    id="password-error"
+                    className="flex text-red-700 text-base items-center mt-0.5"
+                  >
+                    <span className="mr-1">
+                      <IoMdCloseCircle className="size-5" />
+                    </span>
+                    {passwordError}
+                  </p>
+                )}
+              </motion.div>
+
+              {/* Forgot Password Link (Apply item variant) */}
+              <motion.div className="text-right" variants={itemVariants}>
+                <Link href="/auth/forgot-password" className="inline-block">
+                  <span className="text-neutral-900 dark:text-primary font-medium underline text-sm lg:text-base underline-offset-4">
+                    Forgot Password ?
+                  </span>
+                </Link>
+              </motion.div>
+
+              {/* Submit Button (Apply item variant) */}
+              <motion.div
+                className="flex justify-between items-center mb-4"
+                variants={itemVariants}
+              >
+                <button
+                  type="submit"
+                  className={`bg-primary hover:bg-primaryhover w-full text-neutral-900 font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center ${
+                    isSubmitting
+                      ? "opacity-50 cursor-not-allowed"
+                      : "bg-primary hover:bg-primaryhover text-neutral-900 cursor-pointer"
+                  }`}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <svg
+                        className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 2V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                        /> <path d="M12 18V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M4.93 4.93L7.76 7.76" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M16.24 16.24L19.07 19.07" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M2 12H6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M18 12H22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M4.93 19.07L7.76 16.24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M16.24 7.76L19.07 4.93" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                      <span>Logging in...</span>
+                    </>
                   ) : (
-                    <LuEyeClosed size={22} />
+                    "Log in"
                   )}
                 </button>
-              </div>
-              {passwordError && (
-                <p
-                  id="password-error"
-                  className="flex text-red-700 text-base items-center mt-0.5"
-                >
-                  <span className="mr-1">
-                    <IoMdCloseCircle className="size-5" />
-                  </span>
-                  {passwordError}
-                </p>
-              )}
-            </div>
-
-            {/* Forgot Password Link */}
-            <div className="text-right">
-              <Link href="/auth/forgot-password" className="inline-block">
-                <span className="text-neutral-900 dark:text-primary font-medium underline text-sm lg:text-base underline-offset-4">
-                  Forgot Password ?
-                </span>
-              </Link>
-            </div>
-
-            {/* Submit Button */}
-            <div className="flex justify-between items-center mb-4">
-              <button
-                type="submit"
-                className={`bg-primary hover:bg-primaryhover w-full text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center ${
-                  isSubmitting
-                    ? "bg-gray-300 dark:bg-background border dark:text-white text-neutral-900 cursor-not-allowed"
-                    : "bg-primary hover:bg-primaryhover text-neutral-900"
-                }`}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <>
-                    <svg
-                      className="h-5 w-5 text-neutral-900 animate-spin mr-2"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M12 2V6"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M12 18V22"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M4.93 4.93L7.76 7.76"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M16.24 16.24L19.07 19.07"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M2 12H6"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M18 12H22"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M4.93 19.07L7.76 16.24"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M16.24 7.76L19.07 4.93"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <span>Logging in...</span>
-                  </>
-                ) : (
-                  "Log in"
-                )}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
+              </motion.div>
+            </form>
+          </motion.div> {/* End of w-full max-w-md motion wrapper */}
+        </motion.div> {/* End of main flex container motion wrapper */}
+      </AnimatePresence>
     </div>
   );
 }
