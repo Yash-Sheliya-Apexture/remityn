@@ -239,8 +239,8 @@ input:-webkit-autofill:active {
 }
 
 /* Review Card Animation */
-
-/* .marquee-column {
+/* 
+ .marquee-column {
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -251,50 +251,6 @@ input:-webkit-autofill:active {
   flex-direction: column;
   animation-timing-function: linear;
 
-}
-
-
-
-.marquee-column-1 .marquee-content {
-  animation: marquee-vertical-1 10s linear infinite;
-}
-
-.marquee-column-2 .marquee-content {
-  animation: marquee-vertical-2 10s linear infinite;
-}
-
-.marquee-column-3 .marquee-content {
-  animation: marquee-vertical-3 10s linear infinite;
-}
-
-@keyframes marquee-vertical-1 {
-  from {
-    transform: translateY(0);
-  }
-
-  to {
-    transform: translateY(-100%);
-  }
-}
-
-@keyframes marquee-vertical-2 {
-  from {
-    transform: translateY(0);
-  }
-
-  to {
-    transform: translateY(-100%);
-  }
-}
-
-@keyframes marquee-vertical-3 {
-  from {
-    transform: translateY(0);
-  }
-
-  to {
-    transform: translateY(-100%);
-  }
 } */
 
 
@@ -306,11 +262,13 @@ input:-webkit-autofill:active {
 }
 
 .animate-border-draw {
-  stroke-dasharray: 208; /* Calculate this based on your SVG path length if different */
+  stroke-dasharray: 208;
+  /* Calculate this based on your SVG path length if different */
   stroke-dashoffset: 208;
   animation-name: animate-border-draw;
   animation-timing-function: linear;
-  animation-duration: var(--border-animation-duration, 3.5s); /* Use CSS variable */
+  animation-duration: var(--border-animation-duration, 3.5s);
+  /* Use CSS variable */
   animation-fill-mode: forwards;
 }
 
@@ -319,9 +277,11 @@ input:-webkit-autofill:active {
 }
 
 .border-path-static {
-  stroke-dashoffset: 0; /* Ensure it stays filled when not animating but active */
+  stroke-dashoffset: 0;
+  /* Ensure it stays filled when not animating but active */
 }
 
 .border-path-reset {
-  stroke-dashoffset: 208; /* Ensure it's hidden when not active */
+  stroke-dashoffset: 208;
+  /* Ensure it's hidden when not active */
 }

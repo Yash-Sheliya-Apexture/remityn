@@ -1795,6 +1795,519 @@
 
 // export default ResetPasswordForm;
 
+// "use client";
+
+// import React, { useState } from "react";
+// import Image from "next/image";
+// import { IoMdCloseCircle } from "react-icons/io";
+// import authService from "../../services/auth";
+// import { FaCheck } from "react-icons/fa6";
+// import { motion, AnimatePresence } from "framer-motion";
+// import { FiX } from "react-icons/fi";
+// import Link from "next/link";
+
+// const ResetPasswordForm = () => {
+//   const [email, setEmail] = useState<string>("");
+//   // Single error state for initial submission or resend failures
+//   const [formError, setFormError] = useState<string>("");
+//   const [emailFieldError, setEmailFieldError] = useState<string>(""); // For specific email format/required validation
+//   const [isLoading, setIsLoading] = useState<boolean>(false);
+//   const [emailSent, setEmailSent] = useState<boolean>(false);
+//   // State to show "Please check again" message after successful resend
+//   const [showCheckAgainMessage, setShowCheckAgainMessage] =
+//     useState<boolean>(false);
+
+//   const isValidEmail = (email: string): boolean => {
+//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//     return emailRegex.test(email);
+//   };
+
+//   // Combined function for initial send and resend
+//   const handleSendRequest = async (isResend: boolean = false) => {
+//     // Prevent resend if already loading
+//     if (isLoading) return;
+
+//     let isValid = true;
+//     setFormError(""); // Clear general form error
+//     setShowCheckAgainMessage(false); // Hide check again message on new attempt
+
+//     // Validate email only needed for initial send, or if email somehow cleared on resend screen (unlikely)
+//     if (!isResend || !email) {
+//       if (!email) {
+//         setEmailFieldError("Please fill email address field");
+//         isValid = false;
+//       } else if (!isValidEmail(email)) {
+//         setEmailFieldError("Please enter a valid email address");
+//         isValid = false;
+//       } else {
+//         setEmailFieldError(""); // Clear specific field error if valid
+//       }
+//     } else {
+//       setEmailFieldError(""); // Ensure field error is clear on resend
+//     }
+
+//     if (isValid) {
+//       setIsLoading(true);
+//       try {
+//         // Call the service - backend handles Google/existing token checks silently
+//         await authService.forgotPassword({ email });
+
+//         if (isResend) {
+//           setShowCheckAgainMessage(true); // Show "check again" on successful resend
+//           console.log("Resend request successful.");
+//         } else {
+//           setEmailSent(true); // Move to the "Check your email" screen on initial successful send
+//           console.log("Initial request successful.");
+//         }
+//       } catch (err: unknown) {
+//         // Handle potential API errors (server down, network issues etc.)
+//         const message =
+//           err instanceof Error
+//             ? err.message
+//             : "An error occurred. Please try again.";
+//         console.error("Forgot password request error:", err);
+//         setFormError(message); // Show error message
+//         if (!isResend) {
+//           setEmailSent(false); // Ensure not moving to next screen if initial send fails
+//         }
+//         setShowCheckAgainMessage(false); // Hide check again message if error occurs
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     } else if (!isResend) {
+//       // If initial validation fails, ensure emailSent remains false
+//       setEmailSent(false);
+//     }
+//   };
+
+//   const handleSubmit = (e: React.FormEvent) => {
+//     e.preventDefault();
+//     handleSendRequest(false); // Initial send request
+//   };
+
+//   const handleSendAgain = () => {
+//     handleSendRequest(true); // Resend request
+//   };
+
+//   const errorVariants = {
+//     /* ... (keep existing variants) ... */
+//     initial: { opacity: 0.5, y: 10, scale: 0.95, rotate: "2deg" },
+//     animate: {
+//       opacity: 1,
+//       y: 0,
+//       scale: 1,
+//       rotate: "0deg",
+//       transition: {
+//         duration: 0.3,
+//         ease: "easeInOut",
+//         type: "spring",
+//         stiffness: 95,
+//         damping: 10,
+//       },
+//     },
+//     exit: {
+//       opacity: 0,
+//       y: 10,
+//       scale: 0.95,
+//       rotate: "-2deg",
+//       transition: { duration: 0.2, ease: "easeIn" },
+//     },
+//   };
+
+//   // --- RENDER SECTION ---
+
+//   // "Check Your Email" Screen
+//   if (emailSent) {
+//     return (
+//       <div className="flex flex-col bg-white dark:bg-background items-center h-[calc(100vh-82px)] px-4">
+//         <div className="max-w-lg space-y-4">
+//           <div className="flex justify-center items-center w-full lg:mt-20 mt-10">
+//             <Image
+//               src="/assets/images/sendmassage.svg"
+//               width={600}
+//               height={600}
+//               alt="Email Icon"
+//               className="w-full object-contain xl:h-80 h-70 dark:hidden block"
+//             />
+
+//             <Image
+//               src="/assets/images/sendmassage-dark.svg"
+//               width={600}
+//               height={600}
+//               alt="Email Icon"
+//               className="w-full object-contain xl:h-80 h-70 dark:block hidden"
+//             />
+
+//           </div>
+//           <h2 className="text-3xl md:text-4xl font-black text-center text-mainheading dark:text-white uppercase">
+//             {" "}
+//             Check your email{" "}
+//           </h2>
+//           <p className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base">
+//             {" "}
+//             If an account exists for
+//             <span className="font-semibold text-primary">{email}</span>  and
+//             needs a password reset, we've sent a link.{" "}
+//           </p>
+//           <p className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base">
+//             {" "}
+//             The link expires in 3 minutes. Check your spam folder if needed.{" "}
+//           </p>
+
+//           {/* "Check Again" Success Message after Resend */}
+//           <AnimatePresence>
+//             {showCheckAgainMessage && (
+//               <motion.div
+//                 className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center my-4"
+//                 role="alert"
+//                 initial="initial"
+//                 animate="animate"
+//                 exit="exit"
+//                 variants={errorVariants}
+//               >
+//                 <div className="flex bg-green-100 dark:bg-green-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+//                   {" "}
+//                   <FaCheck className="p-0.5 text-green-600 dark:text-green-400 lg:size-8 size-6" />{" "}
+//                 </div>
+//                 <p className="text-gray-500 dark:text-gray-300 block">
+//                   {" "}
+//                   Please check your email inbox again.{" "}
+//                 </p>
+//               </motion.div>
+//             )}
+//           </AnimatePresence>
+
+//           {/* Error Message if Resend Fails */}
+//           <AnimatePresence>
+//             {formError && ( // Display general form error here too if resend fails
+//               <motion.div
+//                 className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center mt-5"
+//                 role="alert"
+//                 initial="initial"
+//                 animate="animate"
+//                 exit="exit"
+//                 variants={errorVariants}
+//               >
+//                 <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+//                   {" "}
+//                   <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />{" "}
+//                 </div>
+//                 <div className="inline-block">
+//                   {" "}
+//                   <span className="text-gray-500 dark:text-gray-300 max-w-60">
+//                     {" "}
+//                     {formError}{" "}
+//                   </span>{" "}
+//                 </div>
+//               </motion.div>
+//             )}
+//           </AnimatePresence>
+
+//           {/* Resend Button */}
+//           <button
+//             onClick={handleSendAgain}
+//             disabled={isLoading}
+//             className={`bg-primary hover:bg-primaryhover w-full capitalize text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center ${
+//               isLoading ? "opacity-50 cursor-not-allowed" : ""
+//             }`}
+//           >
+//             {isLoading ? (
+//               <>
+//                 {" "}
+//                 <svg
+//                   className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+//                   viewBox="0 0 24 24"
+//                   fill="none"
+//                   xmlns="http://www.w3.org/2000/svg"
+//                 >
+//                   {" "}
+//                   <path
+//                     d="M12 2V6"
+//                     stroke="currentColor"
+//                     strokeWidth="2"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />{" "}
+//                   <path
+//                     d="M12 18V22"
+//                     stroke="currentColor"
+//                     strokeWidth="2"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />{" "}
+//                   <path
+//                     d="M4.93 4.93L7.76 7.76"
+//                     stroke="currentColor"
+//                     strokeWidth="2"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />{" "}
+//                   <path
+//                     d="M16.24 16.24L19.07 19.07"
+//                     stroke="currentColor"
+//                     strokeWidth="2"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />{" "}
+//                   <path
+//                     d="M2 12H6"
+//                     stroke="currentColor"
+//                     strokeWidth="2"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />{" "}
+//                   <path
+//                     d="M18 12H22"
+//                     stroke="currentColor"
+//                     strokeWidth="2"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />{" "}
+//                   <path
+//                     d="M4.93 19.07L7.76 16.24"
+//                     stroke="currentColor"
+//                     strokeWidth="2"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />{" "}
+//                   <path
+//                     d="M16.24 7.76L19.07 4.93"
+//                     stroke="currentColor"
+//                     strokeWidth="2"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />{" "}
+//                 </svg>{" "}
+//                 <span>Sending...</span>{" "}
+//               </>
+//             ) : (
+//               "Send email again"
+//             )}
+//           </button>
+
+//           <p className="text-base text-center text-gray-500 dark:text-gray-300 pb-6">
+//             {" "}
+//             Still need help?  {" "}
+//             <Link
+//               href="/faqs"
+//               className="text-primary underline font-medium underline-offset-4"
+//             >
+//               {" "}
+//               Read this article.{" "}
+//             </Link>{" "}
+//           </p>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   // Initial Form Screen
+//   return (
+//     <div className="flex flex-col bg-white dark:bg-background items-center h-[calc(100vh-82px)] px-4">
+//       <div className="max-w-lg space-y-4">
+//         <div className="flex justify-center items-center w-full lg:mt-20 mt-10">
+//           <Image
+//             src="/assets/images/resetpassword.svg"
+//             width={600}
+//             height={600}
+//             alt="Key Icon"
+//             className="w-full object-contain xl:h-80 h-70 dark:hidden block"
+//           />
+
+//           <Image
+//             src="/assets/images/resetpassword-dark.svg"
+//             width={600}
+//             height={600}
+//             alt="Key Icon"
+//             className="w-full object-contain xl:h-80 h-70 hidden dark:block"
+//           />
+
+//         </div>
+//         <h2 className="text-3xl md:text-4xl font-black text-center text-mainheading dark:text-white uppercase">
+//           {" "}
+//           Reset password{" "}
+//         </h2>
+//         <p className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base">
+//           {" "}
+//           Just enter the email address you registered with and we'll send you a
+//           link to reset your password.{" "}
+//         </p>
+
+//         {/* General Form Error Display */}
+//         <AnimatePresence>
+//           {formError && (
+//             <motion.div
+//               className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center mt-5"
+//               role="alert"
+//               initial="initial"
+//               animate="animate"
+//               exit="exit"
+//               variants={errorVariants}
+//             >
+//               <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+//                 {" "}
+//                 <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />{" "}
+//               </div>
+//               <div className="inline-block">
+//                 {" "}
+//                 <span className="text-gray-500 dark:text-gray-300 max-w-60">
+//                   {" "}
+//                   {formError}{" "}
+//                 </span>{" "}
+//               </div>
+//             </motion.div>
+//           )}
+//         </AnimatePresence>
+
+//         {/* Form */}
+//         <form onSubmit={handleSubmit}>
+//           <div className="my-5">
+//             <label
+//               htmlFor="email"
+//               className=" text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
+//             >
+//               {" "}
+//               Enter your email address{" "}
+//               <span className="text-red-600 dark:text-red-400">*</span>
+//             </label>
+//             <input
+//               id="email"
+//               type="email"
+//               value={email}
+//               onChange={(e) => {
+//                 setEmail(e.target.value);
+//                 if (emailFieldError) setEmailFieldError(""); // Clear field error on change
+//                 if (formError) setFormError(""); // Clear general error on change
+//               }}
+//               disabled={isLoading}
+//               className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
+//                 emailFieldError
+//                   ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+//                   : "focus:border-[#5f5f5f]"
+//               }`}
+//               aria-invalid={!!emailFieldError}
+//               aria-describedby={
+//                 emailFieldError ? "email-field-error" : undefined
+//               }
+//             />
+//             {/* Specific Email Field Error */}
+//             {emailFieldError && (
+//               <p
+//                 id="email-field-error"
+//                 className="flex text-red-700 text-base items-center mt-0.5"
+//               >
+//                 <span className="mr-1">
+//                   {" "}
+//                   <IoMdCloseCircle className="size-5" />{" "}
+//                 </span>{" "}
+//                 {emailFieldError}
+//               </p>
+//             )}
+//           </div>
+
+//           {/* Submit Button */}
+//           <div className="flex justify-between items-center">
+//             <button
+//               className={`bg-primary hover:bg-primaryhover w-full capitalize text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center ${
+//                 isLoading ? "opacity-50 cursor-not-allowed" : ""
+//               }`}
+//               type="submit"
+//               disabled={isLoading}
+//             >
+//               {isLoading ? (
+//                 <>
+//                   {" "}
+//                   <svg
+//                     className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+//                     viewBox="0 0 24 24"
+//                     fill="none"
+//                     xmlns="http://www.w3.org/2000/svg"
+//                   >
+//                     {" "}
+//                     <path
+//                       d="M12 2V6"
+//                       stroke="currentColor"
+//                       strokeWidth="2"
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                     />{" "}
+//                     <path
+//                       d="M12 18V22"
+//                       stroke="currentColor"
+//                       strokeWidth="2"
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                     />{" "}
+//                     <path
+//                       d="M4.93 4.93L7.76 7.76"
+//                       stroke="currentColor"
+//                       strokeWidth="2"
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                     />{" "}
+//                     <path
+//                       d="M16.24 16.24L19.07 19.07"
+//                       stroke="currentColor"
+//                       strokeWidth="2"
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                     />{" "}
+//                     <path
+//                       d="M2 12H6"
+//                       stroke="currentColor"
+//                       strokeWidth="2"
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                     />{" "}
+//                     <path
+//                       d="M18 12H22"
+//                       stroke="currentColor"
+//                       strokeWidth="2"
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                     />{" "}
+//                     <path
+//                       d="M4.93 19.07L7.76 16.24"
+//                       stroke="currentColor"
+//                       strokeWidth="2"
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                     />{" "}
+//                     <path
+//                       d="M16.24 7.76L19.07 4.93"
+//                       stroke="currentColor"
+//                       strokeWidth="2"
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                     />{" "}
+//                   </svg>{" "}
+//                   <span>Sending...</span>{" "}
+//                 </>
+//               ) : (
+//                 "Send password reset link"
+//               )}
+//             </button>
+//           </div>
+//         </form>
+
+//         <p className="text-base text-gray-500 dark:text-gray-300 pb-6 text-center">
+//           {" "}
+//           Need help? Read this  {" "}
+//           <Link href="/faqs">
+//             {" "}
+//             <span className="text-primary font-medium underline capitalize underline-offset-4">
+//               {" "}
+//               Help Centre article.{" "}
+//             </span>{" "}
+//           </Link>{" "}
+//         </p>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ResetPasswordForm;
+
 "use client";
 
 import React, { useState } from "react";
@@ -1802,36 +2315,128 @@ import Image from "next/image";
 import { IoMdCloseCircle } from "react-icons/io";
 import authService from "../../services/auth";
 import { FaCheck } from "react-icons/fa6";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion"; // Import motion and AnimatePresence
 import { FiX } from "react-icons/fi";
 import Link from "next/link";
 
+// --- Animation Variants (Same as LoginPage/RegisterPage) ---
+
+// Variant for the main container to orchestrate children animations
+const pageContainerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08, // Adjust stagger time as needed
+      delayChildren: 0.2,
+    },
+  },
+  exit: {
+    opacity: 0,
+    y: -20, // Optional: Add a slight vertical exit motion
+    transition: { duration: 0.2 },
+  },
+};
+
+// Variant for individual items within the container
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.4,
+      ease: "easeOut",
+    },
+  },
+  exit: {
+    y: -10,
+    opacity: 0,
+    transition: {
+      duration: 0.2,
+      ease: "easeIn",
+    },
+  },
+};
+
+// Variants for error messages
+const errorVariants = {
+  initial: { opacity: 0.5, y: 10, scale: 0.95, rotate: "2deg" },
+  animate: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    rotate: "0deg",
+    transition: {
+      duration: 0.3,
+      ease: "easeInOut",
+      type: "spring",
+      stiffness: 95,
+      damping: 10,
+    },
+  },
+  exit: {
+    opacity: 0,
+    y: 10,
+    scale: 0.95,
+    rotate: "-2deg",
+    transition: { duration: 0.2, ease: "easeIn" },
+  },
+};
+
+// Variants for success ("Check Again") message
+const successVariants = {
+  initial: { opacity: 0, y: -10, scale: 0.95 }, // Slightly different entry
+  animate: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.3, ease: "easeOut" },
+  },
+  exit: {
+    opacity: 0,
+    y: -10,
+    scale: 0.95,
+    transition: { duration: 0.2, ease: "easeIn" },
+  },
+};
+
+// --- Component ---
+
 const ResetPasswordForm = () => {
   const [email, setEmail] = useState<string>("");
-  // Single error state for initial submission or resend failures
   const [formError, setFormError] = useState<string>("");
-  const [emailFieldError, setEmailFieldError] = useState<string>(""); // For specific email format/required validation
+  const [emailFieldError, setEmailFieldError] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [emailSent, setEmailSent] = useState<boolean>(false);
-  // State to show "Please check again" message after successful resend
   const [showCheckAgainMessage, setShowCheckAgainMessage] =
     useState<boolean>(false);
+  const [isFormErrorVisible, setIsFormErrorVisible] = useState<boolean>(false); // For error animation control
+  const [isCheckAgainVisible, setIsCheckAgainVisible] =
+    useState<boolean>(false); // For success animation control
+
+  // Effect to control error visibility for animation
+  React.useEffect(() => {
+    setIsFormErrorVisible(!!formError);
+  }, [formError]);
+
+  // Effect to control "check again" visibility for animation
+  React.useEffect(() => {
+    setIsCheckAgainVisible(showCheckAgainMessage);
+  }, [showCheckAgainMessage]);
 
   const isValidEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
-  // Combined function for initial send and resend
   const handleSendRequest = async (isResend: boolean = false) => {
-    // Prevent resend if already loading
     if (isLoading) return;
 
     let isValid = true;
-    setFormError(""); // Clear general form error
-    setShowCheckAgainMessage(false); // Hide check again message on new attempt
+    setFormError("");
+    setShowCheckAgainMessage(false);
 
-    // Validate email only needed for initial send, or if email somehow cleared on resend screen (unlikely)
     if (!isResend || !email) {
       if (!email) {
         setEmailFieldError("Please fill email address field");
@@ -1840,467 +2445,472 @@ const ResetPasswordForm = () => {
         setEmailFieldError("Please enter a valid email address");
         isValid = false;
       } else {
-        setEmailFieldError(""); // Clear specific field error if valid
+        setEmailFieldError("");
       }
     } else {
-      setEmailFieldError(""); // Ensure field error is clear on resend
+      setEmailFieldError("");
     }
 
     if (isValid) {
       setIsLoading(true);
       try {
-        // Call the service - backend handles Google/existing token checks silently
         await authService.forgotPassword({ email });
-
         if (isResend) {
-          setShowCheckAgainMessage(true); // Show "check again" on successful resend
+          setShowCheckAgainMessage(true);
           console.log("Resend request successful.");
         } else {
-          setEmailSent(true); // Move to the "Check your email" screen on initial successful send
+          setEmailSent(true); // Trigger screen change
           console.log("Initial request successful.");
         }
       } catch (err: unknown) {
-        // Handle potential API errors (server down, network issues etc.)
         const message =
-          err instanceof Error
+          err instanceof Error && (err as any).response?.data?.message // Try to get backend message
+            ? (err as any).response.data.message
+            : err instanceof Error
             ? err.message
             : "An error occurred. Please try again.";
         console.error("Forgot password request error:", err);
-        setFormError(message); // Show error message
+        setFormError(message);
         if (!isResend) {
-          setEmailSent(false); // Ensure not moving to next screen if initial send fails
+          setEmailSent(false);
         }
-        setShowCheckAgainMessage(false); // Hide check again message if error occurs
+        setShowCheckAgainMessage(false);
       } finally {
         setIsLoading(false);
       }
     } else if (!isResend) {
-      // If initial validation fails, ensure emailSent remains false
       setEmailSent(false);
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    handleSendRequest(false); // Initial send request
+    handleSendRequest(false);
   };
 
   const handleSendAgain = () => {
-    handleSendRequest(true); // Resend request
-  };
-
-  const errorVariants = {
-    /* ... (keep existing variants) ... */
-    initial: { opacity: 0.5, y: 10, scale: 0.95, rotate: "2deg" },
-    animate: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      rotate: "0deg",
-      transition: {
-        duration: 0.3,
-        ease: "easeInOut",
-        type: "spring",
-        stiffness: 95,
-        damping: 10,
-      },
-    },
-    exit: {
-      opacity: 0,
-      y: 10,
-      scale: 0.95,
-      rotate: "-2deg",
-      transition: { duration: 0.2, ease: "easeIn" },
-    },
+    handleSendRequest(true);
   };
 
   // --- RENDER SECTION ---
-
-  // "Check Your Email" Screen
-  if (emailSent) {
-    return (
-      <div className="flex flex-col bg-white dark:bg-background items-center h-[calc(100vh-82px)] px-4">
-        <div className="max-w-lg space-y-4">
-          <div className="flex justify-center items-center w-full lg:mt-20 mt-10">
-            <Image
-              src="/assets/images/sendmassage.svg"
-              width={600}
-              height={600}
-              alt="Email Icon"
-              className="w-full object-contain xl:h-80 h-70 dark:hidden block"
-            />
-            
-            <Image
-              src="/assets/images/sendmassage-dark.svg"
-              width={600}
-              height={600}
-              alt="Email Icon"
-              className="w-full object-contain xl:h-80 h-70 dark:block hidden"
-            />
-            
-          </div>
-          <h2 className="text-3xl md:text-4xl font-black text-center text-mainheading dark:text-white uppercase">
-            {" "}
-            Check your email{" "}
-          </h2>
-          <p className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base">
-            {" "}
-            If an account exists for  
-            <span className="font-semibold text-primary">{email}</span>  and
-            needs a password reset, we've sent a link.{" "}
-          </p>
-          <p className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base">
-            {" "}
-            The link expires in 3 minutes. Check your spam folder if needed.{" "}
-          </p>
-
-          {/* "Check Again" Success Message after Resend */}
-          <AnimatePresence>
-            {showCheckAgainMessage && (
-              <motion.div
-                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center my-4"
-                role="alert"
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                variants={errorVariants}
-              >
-                <div className="flex bg-green-100 dark:bg-green-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
-                  {" "}
-                  <FaCheck className="p-0.5 text-green-600 dark:text-green-400 lg:size-8 size-6" />{" "}
-                </div>
-                <p className="text-gray-500 dark:text-gray-300 block">
-                  {" "}
-                  Please check your email inbox again.{" "}
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Error Message if Resend Fails */}
-          <AnimatePresence>
-            {formError && ( // Display general form error here too if resend fails
-              <motion.div
-                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center mt-5"
-                role="alert"
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                variants={errorVariants}
-              >
-                <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
-                  {" "}
-                  <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />{" "}
-                </div>
-                <div className="inline-block">
-                  {" "}
-                  <span className="text-gray-500 dark:text-gray-300 max-w-60">
-                    {" "}
-                    {formError}{" "}
-                  </span>{" "}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Resend Button */}
-          <button
-            onClick={handleSendAgain}
-            disabled={isLoading}
-            className={`bg-primary hover:bg-primaryhover w-full capitalize text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center ${
-              isLoading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-          >
-            {isLoading ? (
-              <>
-                {" "}
-                <svg
-                  className="h-5 w-5 text-neutral-900 animate-spin mr-2"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  {" "}
-                  <path
-                    d="M12 2V6"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />{" "}
-                  <path
-                    d="M12 18V22"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />{" "}
-                  <path
-                    d="M4.93 4.93L7.76 7.76"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />{" "}
-                  <path
-                    d="M16.24 16.24L19.07 19.07"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />{" "}
-                  <path
-                    d="M2 12H6"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />{" "}
-                  <path
-                    d="M18 12H22"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />{" "}
-                  <path
-                    d="M4.93 19.07L7.76 16.24"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />{" "}
-                  <path
-                    d="M16.24 7.76L19.07 4.93"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />{" "}
-                </svg>{" "}
-                <span>Sending...</span>{" "}
-              </>
-            ) : (
-              "Send email again"
-            )}
-          </button>
-
-          <p className="text-base text-center text-gray-500 dark:text-gray-300 pb-6">
-            {" "}
-            Still need help?  {" "}
-            <Link
-              href="/faqs"
-              className="text-primary underline font-medium underline-offset-4"
-            >
-              {" "}
-              Read this article.{" "}
-            </Link>{" "}
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  // Initial Form Screen
   return (
-    <div className="flex flex-col bg-white dark:bg-background items-center h-[calc(100vh-82px)] px-4">
-      <div className="max-w-lg space-y-4">
-        <div className="flex justify-center items-center w-full lg:mt-20 mt-10">
-          <Image
-            src="/assets/images/resetpassword.svg"
-            width={600}
-            height={600}
-            alt="Key Icon"
-            className="w-full object-contain xl:h-80 h-70 dark:hidden block"
-          />
-
-          <Image
-            src="/assets/images/resetpassword-dark.svg"
-            width={600}
-            height={600}
-            alt="Key Icon"
-            className="w-full object-contain xl:h-80 h-70 hidden dark:block"
-          />
-          
-        </div>
-        <h2 className="text-3xl md:text-4xl font-black text-center text-mainheading dark:text-white uppercase">
-          {" "}
-          Reset password{" "}
-        </h2>
-        <p className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base">
-          {" "}
-          Just enter the email address you registered with and we'll send you a
-          link to reset your password.{" "}
-        </p>
-
-        {/* General Form Error Display */}
-        <AnimatePresence>
-          {formError && (
+    // Main container for flex layout
+    <div className="flex flex-col bg-white dark:bg-background items-center justify-center min-h-[calc(100vh-82px)] px-4 py-10 lg:py-0">
+      {/* AnimatePresence wraps the conditional rendering to animate screen changes */}
+      <AnimatePresence mode="wait">
+        {emailSent ? (
+          // --- "Check Your Email" Screen ---
+          <motion.div
+            key="check-email-screen" // Unique key for AnimatePresence
+            className="w-full max-w-lg space-y-4"
+            variants={pageContainerVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            {/* Image */}
             <motion.div
-              className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center mt-5"
-              role="alert"
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              variants={errorVariants}
+              variants={itemVariants}
+              className="flex justify-center items-center w-full"
             >
-              <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
-                {" "}
-                <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />{" "}
-              </div>
-              <div className="inline-block">
-                {" "}
-                <span className="text-gray-500 dark:text-gray-300 max-w-60">
-                  {" "}
-                  {formError}{" "}
-                </span>{" "}
-              </div>
+              <Image
+                src="/assets/images/sendmassage.svg"
+                width={600}
+                height={600}
+                alt="Email Icon"
+                className="w-full object-contain xl:h-80 h-70 dark:hidden block"
+              />
+              <Image
+                src="/assets/images/sendmassage-dark.svg"
+                width={600}
+                height={600}
+                alt="Email Icon"
+                className="w-full object-contain xl:h-80 h-70 dark:block hidden"
+              />
             </motion.div>
-          )}
-        </AnimatePresence>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit}>
-          <div className="my-5">
-            <label
-              htmlFor="email"
-              className=" text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
+            {/* Title */}
+            <motion.h2
+              variants={itemVariants}
+              className="text-3xl md:text-4xl font-black text-center text-mainheading dark:text-white uppercase"
             >
-              {" "}
-              Enter your email address{" "}
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                if (emailFieldError) setEmailFieldError(""); // Clear field error on change
-                if (formError) setFormError(""); // Clear general error on change
-              }}
-              disabled={isLoading}
-              className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
-                emailFieldError
-                  ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
-                  : "focus:border-[#5f5f5f]"
-              }`}
-              aria-invalid={!!emailFieldError}
-              aria-describedby={
-                emailFieldError ? "email-field-error" : undefined
-              }
-            />
-            {/* Specific Email Field Error */}
-            {emailFieldError && (
-              <p
-                id="email-field-error"
-                className="flex text-red-700 text-base items-center mt-0.5"
-              >
-                <span className="mr-1">
-                  {" "}
-                  <IoMdCloseCircle className="size-5" />{" "}
-                </span>{" "}
-                {emailFieldError}
-              </p>
-            )}
-          </div>
+              Check your email
+            </motion.h2>
 
-          {/* Submit Button */}
-          <div className="flex justify-between items-center">
-            <button
-              className={`bg-primary hover:bg-primaryhover w-full capitalize text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center ${
-                isLoading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-              type="submit"
-              disabled={isLoading}
+            {/* Description */}
+            <motion.p
+              variants={itemVariants}
+              className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base"
             >
-              {isLoading ? (
-                <>
-                  {" "}
-                  <svg
-                    className="h-5 w-5 text-neutral-900 animate-spin mr-2"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    {" "}
-                    <path
-                      d="M12 2V6"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />{" "}
-                    <path
-                      d="M12 18V22"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />{" "}
-                    <path
-                      d="M4.93 4.93L7.76 7.76"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />{" "}
-                    <path
-                      d="M16.24 16.24L19.07 19.07"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />{" "}
-                    <path
-                      d="M2 12H6"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />{" "}
-                    <path
-                      d="M18 12H22"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />{" "}
-                    <path
-                      d="M4.93 19.07L7.76 16.24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />{" "}
-                    <path
-                      d="M16.24 7.76L19.07 4.93"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />{" "}
-                  </svg>{" "}
-                  <span>Sending...</span>{" "}
-                </>
-              ) : (
-                "Send password reset link"
+              If an account exists for 
+              <span className="font-semibold text-primary">{email}</span> and
+              needs a password reset, we've sent a link.
+            </motion.p>
+
+            <motion.p
+              variants={itemVariants}
+              className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base"
+            >
+              The link expires in 3 minutes. Check your spam folder if needed.
+            </motion.p>
+
+            {/* "Check Again" Success Message after Resend */}
+            <AnimatePresence>
+              {isCheckAgainVisible && (
+                <motion.div
+                  className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center"
+                  role="status" // Use status for success messages
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  variants={successVariants} // Use success variants
+                >
+                  <div className="flex bg-green-100 dark:bg-green-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+                    <FaCheck className="p-0.5 text-green-600 dark:text-green-400 lg:size-8 size-6" />
+                  </div>
+                  <p className="text-gray-500 dark:text-gray-300 block">
+                    Please check your email inbox again.
+                  </p>
+                </motion.div>
               )}
-            </button>
-          </div>
-        </form>
+            </AnimatePresence>
 
-        <p className="text-base text-gray-500 dark:text-gray-300 pb-6 text-center">
-          {" "}
-          Need help? Read this  {" "}
-          <Link href="/faqs">
-            {" "}
-            <span className="text-primary font-medium underline capitalize underline-offset-4">
-              {" "}
-              Help Centre article.{" "}
-            </span>{" "}
-          </Link>{" "}
-        </p>
-      </div>
+            {/* Error Message if Resend Fails */}
+            <AnimatePresence>
+              {isFormErrorVisible &&
+                formError && ( // Show error only when it exists and is visible
+                  <motion.div
+                    className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center mt-5"
+                    role="alert"
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    variants={errorVariants} // Use error variants
+                  >
+                    <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+                      <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
+                    </div>
+                    <div className="inline-block">
+                      <span className="text-gray-500 dark:text-gray-300 max-w-60">
+                        {formError}
+                      </span>
+                    </div>
+                  </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Resend Button */}
+            <motion.div variants={itemVariants}>
+              <button
+                onClick={handleSendAgain}
+                disabled={isLoading}
+                className={`bg-primary hover:bg-primaryhover w-full capitalize text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center ${
+                  isLoading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+                {isLoading ? (
+                  <>
+                    <svg
+                      className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 2V6"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />{" "}
+                      <path
+                        d="M12 18V22"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />{" "}
+                      <path
+                        d="M4.93 4.93L7.76 7.76"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />{" "}
+                      <path
+                        d="M16.24 16.24L19.07 19.07"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />{" "}
+                      <path
+                        d="M2 12H6"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />{" "}
+                      <path
+                        d="M18 12H22"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />{" "}
+                      <path
+                        d="M4.93 19.07L7.76 16.24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />{" "}
+                      <path
+                        d="M16.24 7.76L19.07 4.93"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <span>Sending...</span>
+                  </>
+                ) : (
+                  "Send email again"
+                )}
+              </button>
+            </motion.div>
+
+            {/* Help Link */}
+            <motion.p
+              variants={itemVariants}
+              className="text-base text-center text-gray-500 dark:text-gray-300 pb-6"
+            >
+              Still need help? 
+              <Link
+                href="/faqs"
+                className="text-primary underline font-medium underline-offset-4"
+              >
+                Read this article.
+              </Link>
+            </motion.p>
+          </motion.div>
+        ) : (
+          // --- Initial Form Screen ---
+          <motion.div
+            key="initial-form-screen" // Unique key for AnimatePresence
+            className="w-full max-w-lg space-y-4"
+            variants={pageContainerVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            {/* Image */}
+            <motion.div
+              variants={itemVariants}
+              className="flex justify-center items-center w-full"
+            >
+              <Image
+                src="/assets/images/resetpassword.svg"
+                width={600}
+                height={600}
+                alt="Key Icon"
+                className="w-full object-contain xl:h-80 h-70 dark:hidden block"
+              />
+              <Image
+                src="/assets/images/resetpassword-dark.svg"
+                width={600}
+                height={600}
+                alt="Key Icon"
+                className="w-full object-contain xl:h-80 h-70 hidden dark:block"
+              />
+            </motion.div>
+
+            {/* Title */}
+            <motion.h2
+              variants={itemVariants}
+              className="text-3xl md:text-4xl font-black text-center text-mainheading dark:text-white uppercase"
+            >
+              Reset password
+            </motion.h2>
+
+            {/* Description */}
+            <motion.p
+              variants={itemVariants}
+              className="text-center text-gray-500 dark:text-gray-300 lg:text-lg text-base"
+            >
+              Just enter the email address you registered with and we'll send
+              you a link to reset your password.
+            </motion.p>
+
+            {/* General Form Error Display */}
+            <AnimatePresence>
+              {isFormErrorVisible &&
+                formError && ( // Show error only when it exists and is visible
+                  <motion.div
+                    className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center mt-4"
+                    role="alert"
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    variants={errorVariants} // Use error variants
+                  >
+                    <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
+                      <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
+                    </div>
+                    <div className="inline-block">
+                      <span className="text-gray-500 dark:text-gray-300 max-w-60">
+                        {formError}
+                      </span>
+                    </div>
+                  </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Form */}
+            <motion.form variants={itemVariants} onSubmit={handleSubmit}>
+              <div className="my-5">
+                {/* Keep margin for spacing */}
+                <label
+                  htmlFor="email"
+                  className=" text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
+                >
+                  Enter your email address{" "}
+                  <span className="text-red-600 dark:text-red-400">*</span>
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (emailFieldError) setEmailFieldError("");
+                    if (formError) setFormError("");
+                  }}
+                  disabled={isLoading}
+                  className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
+                    emailFieldError
+                      ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+                      : "focus:border-[#5f5f5f]"
+                  }`}
+                  aria-invalid={!!emailFieldError}
+                  aria-describedby={
+                    emailFieldError ? "email-field-error" : undefined
+                  }
+                />
+                {/* Specific Email Field Error */}
+                {emailFieldError && (
+                  <p
+                    id="email-field-error"
+                    className="flex text-red-700 text-base items-center mt-0.5"
+                  >
+                    <span className="mr-1">
+                      {" "}
+                      <IoMdCloseCircle className="size-5" />{" "}
+                    </span>{" "}
+                    {emailFieldError}
+                  </p>
+                )}
+              </div>
+
+              {/* Submit Button */}
+              <div className="flex justify-between items-center">
+                <button
+                  className={`bg-primary hover:bg-primaryhover w-full capitalize text-neutral-900 font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center ${
+                    isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                  }`}
+                  type="submit"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <svg
+                        className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 2V6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />{" "}
+                        <path
+                          d="M12 18V22"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />{" "}
+                        <path
+                          d="M4.93 4.93L7.76 7.76"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />{" "}
+                        <path
+                          d="M16.24 16.24L19.07 19.07"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />{" "}
+                        <path
+                          d="M2 12H6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />{" "}
+                        <path
+                          d="M18 12H22"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />{" "}
+                        <path
+                          d="M4.93 19.07L7.76 16.24"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />{" "}
+                        <path
+                          d="M16.24 7.76L19.07 4.93"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      <span>Sending...</span>
+                    </>
+                  ) : (
+                    "Send password reset link"
+                  )}
+                </button>
+              </div>
+            </motion.form>
+
+            {/* Help Link */}
+            <motion.p
+              variants={itemVariants}
+              className="text-base text-gray-500 dark:text-gray-300 pb-6 text-center"
+            >
+              Need help? Read this 
+              <Link href="/faqs">
+                <span className="text-primary font-medium underline capitalize underline-offset-4">
+                  Help Centre article.
+                </span>
+              </Link>
+            </motion.p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
