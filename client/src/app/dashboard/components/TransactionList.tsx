@@ -2054,11 +2054,11 @@ const TransactionList: React.FC<TransactionListProps> = ({
               return (
                 <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} className="block">
                   <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
-                    <div className="flex items-center gap-4">
-                      <div className="relative flex-shrink-0"> <div className="p-3 bg-yellow-100 dark:bg-yellow-800/60 rounded-full flex items-center justify-center"> <LuPlus size={24} className="text-yellow-700 dark:text-yellow-300" /> </div> <MdErrorOutline size={20} className="absolute -bottom-1 -right-1 text-orange-500 bg-white dark:bg-neutral-900 dark:text-orange-400 rounded-full p-0.5 shadow" /> </div>
+                    <div className="flex items-center sm:gap-4 gap-2">
+                      <div className="relative flex-shrink-0"> <div className="p-3 bg-yellow-100 dark:bg-yellow-800/60 rounded-full flex items-center justify-center"> <LuPlus size={22} className="text-yellow-700 dark:text-yellow-300" /> </div> <MdErrorOutline size={20} className="absolute -bottom-1 -right-1 text-orange-500 bg-white dark:bg-neutral-900 dark:text-orange-400 rounded-full p-0.5 shadow" /> </div>
                       <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
-                        <div className="text-wrap"> <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg" title={name}> {name} </h3> <p className="text-sm text-orange-600 dark:text-orange-400 font-semibold mt-1"> Waiting for you to pay </p> </div>
-                        <div className={`font-medium text-neutral-900 dark:text-white whitespace-nowrap`}> + {amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2, })} {displayCurrency} </div>
+                        <div className="text-wrap"> <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg text-15px" title={name}> {name} </h3> <p className="sm:text-sm text-13px text-orange-600 dark:text-orange-400 font-semibold mt-1"> Waiting for you to pay </p> </div>
+                        <div className={`font-medium text-neutral-900 dark:text-white whitespace-nowrap sm:text-base text-15px`}> + {amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2, })} {displayCurrency} </div>
                       </div>
                     </div>
                   </div>
@@ -2085,11 +2085,11 @@ const TransactionList: React.FC<TransactionListProps> = ({
               return (
                 <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} className="block">
                   <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center sm:gap-4 gap-2">
                       <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center"> {icon} </div>
                       <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
-                        <div className="text-wrap"> <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg" title={name}> {name} </h3> <p className="text-sm text-gray-500 dark:text-gray-300 mt-1"> {description}</p> </div>
-                        <div className={`font-medium text-neutral-900 dark:text-white whitespace-nowrap`}> {amountPrefix} {amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2, })} {txCurrencyCode || currencyCode} </div>
+                        <div className="text-wrap"> <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg text-15px" title={name}> {name} </h3> <p className="sm:text-sm text-13px text-gray-500 dark:text-gray-300 mt-1"> {description}</p> </div>
+                        <div className={`font-medium text-neutral-900 dark:text-white whitespace-nowrap sm:text-base text-15px`}> {amountPrefix} {amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2, })} {txCurrencyCode || currencyCode} </div>
                       </div>
                     </div>
                   </div>
@@ -2124,11 +2124,11 @@ const TransactionList: React.FC<TransactionListProps> = ({
                       return (
                         <Link href={`/dashboard/transactions/${transaction._id}`} key={transaction._id} className="block">
                           <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
-                            <div className="flex items-center gap-4">
+                            <div className="flex items-center sm:gap-4 gap-2">
                               <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center"> {icon} </div>
                               <div className="flex-grow flex flex-row justify-between sm:items-center gap-1 sm:gap-4">
-                                <div className="text-wrap"> <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg" title={name}> {name} </h3> <p className="text-sm text-gray-500 dark:text-gray-300 mt-1"> {description} </p> </div>
-                                <div className={`font-medium ${amountClass} whitespace-nowrap`}> {amountPrefix} {amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2, })} {displayCurrencyCode || currencyCode} </div>
+                                <div className="text-wrap"> <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg text-15px" title={name}> {name} </h3> <p className="sm:text-sm text-13px text-gray-500 dark:text-gray-300 mt-1"> {description} </p> </div>
+                                <div className={`font-medium ${amountClass} whitespace-nowrap sm:text-base text-15px`}> {amountPrefix} {amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2, })} {displayCurrencyCode || currencyCode} </div>
                               </div>
                             </div>
                           </div>

@@ -1016,10 +1016,92 @@ import { useRouter, useParams } from "next/navigation";
 import authService from "../../../services/auth"; // Corrected path if needed
 import { IoMdCloseCircle, IoIosCheckmarkCircle } from "react-icons/io";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion"; // Import motion and AnimatePresence
 import { FiX } from "react-icons/fi";
 import { FaCheck } from "react-icons/fa6";
 import { LuEye, LuEyeClosed } from "react-icons/lu";
+
+// --- Animation Variants (Same as LoginPage/RegisterPage/ResetPasswordForm) ---
+
+// Variant for the main container to orchestrate children animations
+const pageContainerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08, // Adjust stagger time as needed
+      delayChildren: 0.2,
+    },
+  },
+  exit: {
+    opacity: 0,
+    y: -20, // Optional: Add a slight vertical exit motion
+    transition: { duration: 0.2 },
+  },
+};
+
+// Variant for individual items within the container
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.4,
+      ease: "easeOut",
+    },
+  },
+  exit: {
+    y: -10,
+    opacity: 0,
+    transition: {
+      duration: 0.2,
+      ease: "easeIn",
+    },
+  },
+};
+
+// Variants for error messages
+const errorVariants = {
+  initial: { opacity: 0.5, y: 10, scale: 0.95, rotate: "2deg" },
+  animate: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    rotate: "0deg",
+    transition: {
+      duration: 0.3,
+      ease: "easeInOut",
+      type: "spring",
+      stiffness: 95,
+      damping: 10,
+    },
+  },
+  exit: {
+    opacity: 0,
+    y: 10,
+    scale: 0.95,
+    rotate: "-2deg",
+    transition: { duration: 0.2, ease: "easeIn" },
+  },
+};
+
+// Variants for success message
+const successVariants = {
+  initial: { opacity: 0, y: -20 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.3, ease: "easeOut" },
+  },
+  exit: {
+    opacity: 0,
+    y: -20,
+    transition: { duration: 0.2, ease: "easeIn" },
+  },
+};
+
+// --- Component ---
 
 const NewPasswordPage = () => {
   const [password, setPassword] = useState("");
@@ -1028,7 +1110,6 @@ const NewPasswordPage = () => {
     string | null
   >(null);
   const [confirmPasswordError, setConfirmPasswordError] = useState<string>("");
-  // Single state for general reset errors (token, google, server)
   const [resetError, setResetError] = useState("");
   const [resetSuccess, setResetSuccess] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -1046,13 +1127,26 @@ const NewPasswordPage = () => {
     hasMinLength: false,
   });
 
+  // State for animation visibility control
+  const [isResetErrorVisible, setIsResetErrorVisible] = useState(false);
+  const [isResetSuccessVisible, setIsResetSuccessVisible] = useState(false);
+
   useEffect(() => {
     if (!token) {
-      setResetError("Invalid reset link: Token missing from URL."); // More specific initial error
+      setResetError("Invalid reset link: Token missing from URL.");
     } else {
-      setResetError(""); // Clear error if token exists
+      setResetError("");
     }
   }, [token]);
+
+  // Effects to control visibility for animations
+  useEffect(() => {
+    setIsResetErrorVisible(!!resetError);
+  }, [resetError]);
+
+  useEffect(() => {
+    setIsResetSuccessVisible(!!resetSuccess);
+  }, [resetSuccess]);
 
   const areAllCriteriaMet = (criteria: typeof validationCriteria) => {
     return criteria.hasLetter && criteria.hasNumber && criteria.hasMinLength;
@@ -1062,7 +1156,7 @@ const NewPasswordPage = () => {
     return {
       hasLetter: /[a-zA-Z]/.test(pw),
       hasNumber: /\d/.test(pw),
-      hasMinLength: pw.length >= 9, // Adjusted length check
+      hasMinLength: pw.length >= 9,
     };
   };
 
@@ -1070,7 +1164,7 @@ const NewPasswordPage = () => {
     e.preventDefault();
     setPasswordRequiredError(null);
     setConfirmPasswordError("");
-    setResetError(""); // Clear previous reset errors
+    setResetError("");
     setResetSuccess("");
     setIsSubmitting(true);
 
@@ -1081,6 +1175,7 @@ const NewPasswordPage = () => {
       setPasswordRequiredError("New Password is required.");
       formIsValid = false;
     } else if (!currentCriteriaMet) {
+      // Password exists but doesn't meet criteria
       formIsValid = false;
     }
 
@@ -1095,7 +1190,7 @@ const NewPasswordPage = () => {
     if (!formIsValid || !token) {
       if (!token && !resetError) {
         setResetError("Invalid reset link: Token missing.");
-      } // Set error if token missing
+      }
       setIsSubmitting(false);
       return;
     }
@@ -1103,23 +1198,29 @@ const NewPasswordPage = () => {
     try {
       await authService.resetPassword({ token, password });
       setResetSuccess("Password reset successful! Redirecting to login...");
+      // Clear errors explicitly on success
+      setResetError("");
+      setPasswordRequiredError(null);
+      setConfirmPasswordError("");
+      // Keep submitting true until redirect
       setTimeout(() => {
-        router.push("/auth/login?resetSuccess=true"); // Use consistent query param
-      }, 2000); // Slightly longer delay for user to read message
+        router.push("/auth/login?resetSuccess=true");
+      }, 2000);
     } catch (err: any) {
-      // Use any for broader error catching from API
       console.error("Reset password error:", err);
       let errorMessage =
-        "Password reset failed. Please try again or request a new link."; // Default
+        "Password reset failed. Please try again or request a new link.";
       if (err.response?.data?.message) {
-        errorMessage = err.response.data.message; // Prioritize backend message
+        errorMessage = err.response.data.message;
       } else if (err.message) {
         errorMessage = err.message;
       }
-      // Set the specific error message from backend/catch
       setResetError(errorMessage);
+      setResetSuccess(""); // Clear success on error
+      setIsSubmitting(false); // Allow retry on error
     } finally {
-      setIsSubmitting(false);
+      // Only set submitting false if there was an error, otherwise wait for redirect
+      // This is handled inside catch now.
     }
   };
 
@@ -1135,10 +1236,10 @@ const NewPasswordPage = () => {
 
     setPasswordRequiredError(newPassword ? null : "New Password is required.");
 
+    // Re-validate confirm password if it has a value
     if (confirmPassword && newPassword !== confirmPassword) {
       setConfirmPasswordError("Passwords do not match.");
     } else if (confirmPassword) {
-      // Clear error if they now match or confirm is empty
       setConfirmPasswordError("");
     }
   };
@@ -1149,10 +1250,11 @@ const NewPasswordPage = () => {
     if (password && newConfirmPassword !== password) {
       setConfirmPasswordError("Passwords do not match.");
     } else {
-      setConfirmPasswordError(""); // Clear error if matches or empty
+      setConfirmPasswordError("");
     }
   };
 
+  // Derived states for UI logic
   const shouldShowCriteriaList = () =>
     password &&
     !passwordRequiredError &&
@@ -1162,63 +1264,41 @@ const NewPasswordPage = () => {
   const isConfirmPasswordInputInvalid = !!confirmPasswordError;
   const isSubmitDisabled =
     isSubmitting ||
+    !!resetSuccess || // Disable if successful
     !token ||
-    !!resetError ||
+    //!!resetError || // Don't disable for resetError, allow retry
     !!passwordRequiredError ||
     (password && !areAllCriteriaMet(validationCriteria)) ||
     !confirmPassword ||
     !!confirmPasswordError;
 
-  const errorVariants = {
-    /* ... (keep existing variants) ... */
-    initial: { opacity: 0.5, y: 10, scale: 0.95, rotate: "2deg" },
-    animate: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      rotate: "0deg",
-      transition: {
-        duration: 0.3,
-        ease: "easeInOut",
-        type: "spring",
-        stiffness: 95,
-        damping: 10,
-      },
-    },
-    exit: {
-      opacity: 0,
-      y: 10,
-      scale: 0.95,
-      rotate: "-2deg",
-      transition: { duration: 0.2, ease: "easeIn" },
-    },
-  };
-  const successVariants = {
-    /* ... Copy from Login page or define similarly ... */
-    initial: { opacity: 0, y: -20 },
-    animate: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.3, ease: "easeOut" },
-    },
-    exit: { opacity: 0, y: -20, transition: { duration: 0.2, ease: "easeIn" } },
-  };
-
   // --- RENDER SECTION ---
   return (
-    <div className="flex flex-col justify-center items-center h-[calc(100vh-82px)] px-4">
-      <div className="w-full max-w-md">
-        <div className="bg-white dark:bg-background">
-          <h2 className="lg:text-3xl text-2xl capitalize text-center text-mainheading dark:text-white font-semibold mb-4">
-            {" "}
-            Set your new password{" "}
-          </h2>
+    <AnimatePresence mode="wait">
+      {/* Wrap the main content area */}
+      <motion.div
+        key="new-password-content"
+        className="flex flex-col justify-center items-center min-h-[calc(100vh-82px)] px-4 py-10 lg:py-0 bg-white dark:bg-background"
+        variants={pageContainerVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit" // Use exit for potential future transitions
+      >
+        <motion.div className="w-full max-w-md">
+
+          {/* Title */}
+          <motion.h2
+            variants={itemVariants}
+            className="lg:text-3xl text-2xl capitalize text-center text-mainheading dark:text-white font-semibold mb-4"
+          >
+            Set your new password
+          </motion.h2>
 
           {/* Reset Error Display */}
           <AnimatePresence>
-            {resetError && (
+            {isResetErrorVisible && resetError && (
               <motion.div
-                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center mb-4" // Added mb-4
+                className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 mb-4" // Added mb-4
                 role="alert"
                 initial="initial"
                 animate="animate"
@@ -1226,353 +1306,339 @@ const NewPasswordPage = () => {
                 variants={errorVariants}
               >
                 <div className="flex bg-red-100 dark:bg-red-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
-                  {" "}
-                  <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />{" "}
+                  <FiX className="p-0.5 text-red-600 dark:text-red-400 lg:size-8 size-6" />
                 </div>
                 <div className="inline-block">
-                  {/* MODIFIED: Display the resetError state directly */}
                   <span className="text-gray-500 dark:text-gray-300 max-w-60">
-                    {" "}
-                    {resetError}{" "}
+                    {resetError}
                   </span>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
-
           {/* Reset Success Display */}
           <AnimatePresence>
-            {resetSuccess && (
+            {isResetSuccessVisible && resetSuccess && (
               <motion.div
                 className="flex bg-lightgray dark:bg-primarybox p-4 rounded-2xl gap-4 items-center mb-4" // Added mb-4
                 role="alert"
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                variants={successVariants}
+                variants={successVariants} // Use success variants
               >
-                {" "}
-                {/* Changed to successVariants */}
                 <div className="flex bg-green-100 dark:bg-green-600/20 justify-center rounded-full items-center lg:size-12 size-10 shrink-0">
-                  {" "}
-                  <FaCheck className="p-0.5 text-green-600 dark:text-green-400 lg:size-8 size-6" />{" "}
+                  <FaCheck className="p-0.5 text-green-600 dark:text-green-400 lg:size-8 size-6" />
                 </div>
                 <div className="flex-grow space-y-0.5">
                   <span className="text-neutral-900 dark:text-primary block font-medium">
-                    {" "}
-                    Password Reset Successful!{" "}
+                    Password Reset Successful!
                   </span>
                   <span className="text-gray-500 dark:text-gray-300 block text-sm">
-                    {" "}
-                    Redirecting to login...{" "}
+                    Redirecting to login...
                   </span>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Form (Conditionally render based on token existence AND success state) */}
-          {token && !resetSuccess ? (
-            <form onSubmit={handleSubmit} className="mt-5 space-y-4">
-              {" "}
-              {/* Adjusted margin-top */}
-              <div className="new-password">
-                <label
-                  htmlFor="password"
-                  className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
-                >
-                  {" "}
-                  New Password{" "}
-                  <span className="text-red-600 dark:text-red-400">*</span>{" "}
-                </label>
+          {/* Form Container (Conditionally rendered content *inside* motion.div) */}
+          <motion.div variants={itemVariants}>
+            {token && !resetSuccess ? (
+              <form onSubmit={handleSubmit} noValidate className="space-y-4">
+                {/* New Password Field */}
 
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    id="password"
-                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
-                      isPasswordInputInvalid
-                        ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
-                        : "focus:border-[#5f5f5f]"
-                    }`}
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={handlePasswordChange}
-                    aria-describedby={
-                      shouldShowCriteriaList()
-                        ? "password-criteria"
-                        : passwordRequiredError
-                        ? "password-required-error"
-                        : undefined
-                    }
-                    aria-invalid={isPasswordInputInvalid ? "true" : undefined}
-                  />
-                  <button
-                    type="button"
-                    className="absolute right-4 top-4 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background"
-                    onClick={togglePasswordVisibility}
-                    aria-label={
-                      showPassword ? "Hide password" : "Show password"
-                    }
+                <motion.div className="new-password" variants={itemVariants}>
+                  <label
+                    htmlFor="password"
+                    className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
                   >
-                    {showPassword ? (
-                      <LuEye size={22} />
-                    ) : (
-                      <LuEyeClosed size={22} />
-                    )}
-                  </button>
-                </div>
-                {passwordRequiredError && (
-                  <p
-                    id="password-required-error"
-                    className="flex text-red-700 items-center mt-1"
-                  >
-                    {" "}
-                    <IoMdCloseCircle className="size-4 mr-1" />{" "}
-                    {passwordRequiredError}{" "}
-                  </p>
-                )}
+                    New Password{" "}
+                    <span className="text-red-600 dark:text-red-400">*</span>
+                  </label>
 
-                {shouldShowCriteriaList() && (
-                  <ul
-                    id="password-criteria"
-                    className="mt-2 space-y-1.5 list-none pl-0"
-                  >
-                    {/* Adjusted length text */}
-                    <li
-                      className={`flex items-center ${
-                        validationCriteria.hasMinLength
-                          ? "text-green-600"
-                          : "text-red-600"
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      id="password"
+                      className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
+                        isPasswordInputInvalid
+                          ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+                          : "focus:border-[#5f5f5f]"
                       }`}
+                      placeholder="•••••••••"
+                      value={password}
+                      onChange={handlePasswordChange}
+                      aria-describedby={
+                        shouldShowCriteriaList()
+                          ? "password-criteria"
+                          : passwordRequiredError
+                          ? "password-required-error"
+                          : undefined
+                      }
+                      aria-invalid={isPasswordInputInvalid ? "true" : undefined}
+                    />
+                    <button
+                      type="button"
+                      className="absolute right-4 top-4 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background"
+                      onClick={togglePasswordVisibility}
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
                     >
-                      {" "}
-                      {validationCriteria.hasMinLength ? (
-                        <IoIosCheckmarkCircle className="mr-1 size-5" />
+                      {showPassword ? (
+                        <LuEye size={24} />
                       ) : (
-                        <IoMdCloseCircle className="mr-1 size-5" />
-                      )}{" "}
-                      Has 9 or more characters{" "}
-                    </li>
-                    <li
-                      className={`flex items-center ${
-                        validationCriteria.hasLetter
-                          ? "text-green-600"
-                          : "text-red-600"
-                      }`}
-                    >
-                      {" "}
-                      {validationCriteria.hasLetter ? (
-                        <IoIosCheckmarkCircle className="mr-1 size-5" />
-                      ) : (
-                        <IoMdCloseCircle className="mr-1 size-5" />
-                      )}{" "}
-                      Contains a letter{" "}
-                    </li>
-                    <li
-                      className={`flex items-center ${
-                        validationCriteria.hasNumber
-                          ? "text-green-600"
-                          : "text-red-600"
-                      }`}
-                    >
-                      {" "}
-                      {validationCriteria.hasNumber ? (
-                        <IoIosCheckmarkCircle className="mr-1 size-5" />
-                      ) : (
-                        <IoMdCloseCircle className="mr-1 size-5" />
-                      )}{" "}
-                      Contains a number{" "}
-                    </li>
-                  </ul>
-                )}
-              </div>
-              {/* Confirm New Password Field */}
-              <div className="confirm-password">
-                <label
-                  htmlFor="confirm-password"
-                  className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
-                >
-                  {" "}
-                  Confirm New Password{" "}
-                  <span className="text-red-600 dark:text-red-400">*</span>{" "}
-                </label>{" "}
+                        <LuEyeClosed size={24} />
+                      )}
+                    </button>
+                  </div>
 
-                <div className="relative">
-                  <input
-                    type={showConfirmPassword ? "text" : "password"}
-                    id="confirm-password"
-                    className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
-                      isConfirmPasswordInputInvalid
-                        ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
-                        : "focus:border-[#5f5f5f]"
-                    }`}
-                    placeholder="••••••••"
-                    value={confirmPassword}
-                    onChange={handleConfirmPasswordChange}
-                    aria-invalid={
-                      isConfirmPasswordInputInvalid ? "true" : undefined
-                    }
-                    aria-describedby={
-                      confirmPasswordError
-                        ? "confirm-password-error"
-                        : undefined
-                    }
-                  />
-                  <button
-                    type="button"
-                    className="absolute right-4 top-4 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background"
-                    onClick={toggleConfirmPasswordVisibility}
-                    aria-label={
-                      showConfirmPassword
-                        ? "Hide confirm password"
-                        : "Show confirm password"
-                    }
-                  >
-                    {showConfirmPassword ? (
-                      <LuEye size={22} />
-                    ) : (
-                      <LuEyeClosed size={22} />
-                    )}
-                  </button>
-                </div>
-
-                {confirmPasswordError && (
-                  <p
-                    id="confirm-password-error"
-                    className="flex text-red-700 text-base items-center mt-0.5"
-                  >
-                    {" "}
-                    <span className="mr-1">
-                      {" "}
-                      <IoMdCloseCircle className="size-5" />{" "}
-                    </span>{" "}
-                    {confirmPasswordError}{" "}
-                  </p>
-                )}
-              </div>
-              
-              {/* Submit Button */}
-              <div>
-                <button
-                  type="submit"
-                  className={`bg-primary hover:bg-primaryhover w-full text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center ${
-                    isSubmitDisabled
-                      ? "bg-lightgray dark:bg-background dark:border dark:text-white cursor-not-allowed"
-                      : "bg-primary hover:bg-primaryhover font-medium"
-                  }`}
-                  disabled={isSubmitDisabled}
-                >
-                  {isSubmitting ? (
-                    <div className="flex justify-center items-center">
-                      <svg
-                        className="h-5 w-5 text-neutral-900 animate-spin mr-2"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        {" "}
-                        <path
-                          d="M12 2V6"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />{" "}
-                        <path
-                          d="M12 18V22"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />{" "}
-                        <path
-                          d="M4.93 4.93L7.76 7.76"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />{" "}
-                        <path
-                          d="M16.24 16.24L19.07 19.07"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />{" "}
-                        <path
-                          d="M2 12H6"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />{" "}
-                        <path
-                          d="M18 12H22"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />{" "}
-                        <path
-                          d="M4.93 19.07L7.76 16.24"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />{" "}
-                        <path
-                          d="M16.24 7.76L19.07 4.93"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />{" "}
-                      </svg>
-                      <span>Resetting...</span>
-                    </div>
-                  ) : (
-                    "Reset password"
+                  {passwordRequiredError && (
+                    <p
+                      id="password-required-error"
+                      className="flex text-red-700 text-base items-center mt-0.5"
+                    >
+                      <IoMdCloseCircle className="size-5 mr-1" />{" "}
+                      {passwordRequiredError}
+                    </p>
                   )}
-                </button>
-              </div>
-            </form>
-          ) : (
-            // Show message if token is missing OR if reset was successful
-            <div className="mt-5 text-center">
-              {/* Error/Success message is displayed above */}
-              {!resetSuccess &&
-                !resetError && ( // Only show this if no specific error/success
-                  <p className="font-medium text-gray-500 dark:text-gray-300">
-                    {" "}
-                    Invalid or missing reset token.{" "}
-                  </p>
-                )}
-              <p className="text-gray-500 dark:text-gray-300 mt-3">
-                Please request a new password reset link if needed.
-              </p>
-            </div>
-          )}
 
+                  {shouldShowCriteriaList() && (
+                    <ul
+                      id="password-criteria"
+                      className="mt-2 space-y-1 list-none pl-0 text-sm"
+                    >
+                      {" "}
+                      {/* Adjusted size */}
+                      <li
+                        className={`flex items-center ${
+                          validationCriteria.hasMinLength
+                            ? "text-green-600"
+                            : "text-red-600"
+                        }`}
+                      >
+                        {validationCriteria.hasMinLength ? (
+                          <IoIosCheckmarkCircle className="mr-1 size-4" />
+                        ) : (
+                          <IoMdCloseCircle className="mr-1 size-4" />
+                        )}{" "}
+                        Has 9 or more characters
+                      </li>
+                      <li
+                        className={`flex items-center ${
+                          validationCriteria.hasLetter
+                            ? "text-green-600"
+                            : "text-red-600"
+                        }`}
+                      >
+                        {validationCriteria.hasLetter ? (
+                          <IoIosCheckmarkCircle className="mr-1 size-4" />
+                        ) : (
+                          <IoMdCloseCircle className="mr-1 size-4" />
+                        )}{" "}
+                        Contains a letter
+                      </li>
+                      <li
+                        className={`flex items-center ${
+                          validationCriteria.hasNumber
+                            ? "text-green-600"
+                            : "text-red-600"
+                        }`}
+                      >
+                        {validationCriteria.hasNumber ? (
+                          <IoIosCheckmarkCircle className="mr-1 size-4" />
+                        ) : (
+                          <IoMdCloseCircle className="mr-1 size-4" />
+                        )}{" "}
+                        Contains a number
+                      </li>
+                    </ul>
+                  )}
+                </motion.div>
+
+                {/* Confirm New Password Field */}
+                <motion.div className="confirm-password" variants={itemVariants}>
+                  <label
+                    htmlFor="confirm-password"
+                    className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
+                  >
+                    Confirm New Password{" "}
+                    <span className="text-red-600 dark:text-red-400">*</span>
+                  </label>
+
+                  <div className="relative">
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      id="confirm-password"
+                      className={`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 ${
+                        isConfirmPasswordInputInvalid
+                          ? "border-red-600 border-2 !shadow-none focus:!ring-red-600"
+                          : "focus:border-[#5f5f5f]"
+                      }`}
+                      placeholder="•••••••••"
+                      value={confirmPassword}
+                      onChange={handleConfirmPasswordChange}
+                      aria-invalid={
+                        isConfirmPasswordInputInvalid ? "true" : undefined
+                      }
+                      aria-describedby={
+                        confirmPasswordError
+                          ? "confirm-password-error"
+                          : undefined
+                      }
+                    />
+                    <button
+                      type="button"
+                      className="absolute right-4 top-4 cursor-pointer text-gray-500 dark:text-gray-300 focus:outline-none bg-white dark:bg-background"
+                      onClick={toggleConfirmPasswordVisibility}
+                      aria-label={
+                        showConfirmPassword
+                          ? "Hide confirm password"
+                          : "Show confirm password"
+                      }
+                    >
+                      {showConfirmPassword ? (
+                        <LuEye size={24} />
+                      ) : (
+                        <LuEyeClosed size={24} />
+                      )}
+                    </button>
+                  </div>
+
+                  {confirmPasswordError && (
+                    <p
+                      id="confirm-password-error"
+                      className="flex text-red-700 text-base items-center mt-0.5"
+                    >
+                      <span className="mr-1">
+                        {" "}
+                        <IoMdCloseCircle className="size-5" />{" "}
+                      </span>{" "}
+                      {confirmPasswordError}
+                    </p>
+                  )}
+                </motion.div>
+
+                {/* Submit Button */}
+                <motion.div variants={itemVariants}>
+                  <button
+                    type="submit"
+                    className={`w-full text-neutral-900 dark:bg-primary bg-lightgray hover:bg-primaryhover font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center ${
+                      isSubmitDisabled
+                        ? "opacity-50 cursor-not-allowed"
+                        : "bg-primary hover:bg-primaryhover text-neutral-900 cursor-pointer"
+                    }`}
+                    disabled={isSubmitDisabled}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <svg
+                          className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M12 2V6"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />{" "}
+                          <path
+                            d="M12 18V22"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />{" "}
+                          <path
+                            d="M4.93 4.93L7.76 7.76"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />{" "}
+                          <path
+                            d="M16.24 16.24L19.07 19.07"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />{" "}
+                          <path
+                            d="M2 12H6"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />{" "}
+                          <path
+                            d="M18 12H22"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />{" "}
+                          <path
+                            d="M4.93 19.07L7.76 16.24"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />{" "}
+                          <path
+                            d="M16.24 7.76L19.07 4.93"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                        <span>Resetting...</span>
+                      </>
+                    ) : (
+                      "Reset password"
+                    )}
+                  </button>
+                </motion.div>
+              </form>
+            ) : (
+              // Show message if token is missing OR if reset was successful (but success message handled above)
+              <motion.div variants={itemVariants} className="mt-5 text-center">
+                {!resetSuccess &&
+                  !resetError && ( // Only show this if no specific error/success
+                    <p className="font-medium text-gray-500 dark:text-gray-300">
+                      Invalid or missing reset token. Please request a new
+                      password reset link if needed.
+                    </p>
+                  )}
+                {/* If there's a resetError, it's displayed above. If success, also displayed above */}
+              </motion.div>
+            )}
+          </motion.div>
+          {/* End of Form container motion.div */}
           {/* Back to Login Link (Show unless successful) */}
           {!resetSuccess && (
-            <div className="text-center mt-3">
+            <motion.div variants={itemVariants} className="text-center mt-2">
+              {" "}
+              {/* Added more margin */}
               <p className="text-gray-500 dark:text-gray-300">
-                {" "}
-                Go back to  {" "}
+                Go back to 
                 <Link
                   href="/auth/login"
                   className="text-primary font-medium underline underline-offset-4"
                 >
-                  {" "}
-                  Login{" "}
-                </Link>{" "}
+                  Login
+                </Link>
               </p>
-            </div>
+            </motion.div>
           )}
-        </div>
-      </div>
-    </div>
+        </motion.div>
+      </motion.div>{" "}
+      {/* End of main content motion wrapper */}
+    </AnimatePresence>
   );
 };
 

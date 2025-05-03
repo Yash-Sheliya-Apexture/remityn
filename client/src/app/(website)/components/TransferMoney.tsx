@@ -3267,7 +3267,7 @@ const TransferSteps: React.FC = () => {
           {/* Main Grid Layout (Tabs + Content) */}
           <article className="grid gap-6 lg:grid-cols-3 mt-10">
             {/* Left Side: Step Tabs */}
-            <div className="rounded-3xl bg-white dark:bg-primarybox p-6 h-full border dark:border-none">
+            <div className="rounded-3xl bg-white dark:bg-primarybox sm:p-6 p-4 h-full border dark:border-none">
               <ul className="lg:flex md:grid md:grid-cols-2 lg:grid-cols-1 grid-cols-1 lg:flex-col space-y-6 justify-between h-full gap-6">
                 {stepsData.map((step, index) => {
                   const isActive = activeIndex === index;
@@ -3294,7 +3294,7 @@ const TransferSteps: React.FC = () => {
                             className={`transition-colors duration-300 xl:size-18 md:size-14 size-12 ${
                               isActive
                                 ? "text-mainheading dark:text-primary"
-                                : "text-[#97A2B3] dark:text-gray-500"
+                                : "text-gray-300 dark:text-gray-500"
                             }`}
                           >
                             <rect
@@ -3315,7 +3315,7 @@ const TransferSteps: React.FC = () => {
                                     className: `h-6 w-6 transition-colors duration-300 ${
                                       isActive
                                         ? "text-mainheading dark:text-primary"
-                                        : "text-[#97A2B3] dark:text-gray-500"
+                                        : "text-gray-500 dark:text-gray-300"
                                     }`,
                                   }
                                 )}
@@ -3343,8 +3343,8 @@ const TransferSteps: React.FC = () => {
                           <h3
                             className={`text-center lg:text-left capitalize text-base font-medium leading-tight transition-colors duration-300 xl:text-xl ${
                               isActive
-                                ? "text-[#182230] dark:text-white"
-                                : "text-[#97A2B3] dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300"
+                                ? "text-neutral-900 dark:text-white"
+                                : "text-gray-500 dark:text-gray-300 group-hover:text-gray-700 dark:group-hover:text-gray-200"
                             }`}
                           >
                             {step.title}
@@ -3353,7 +3353,7 @@ const TransferSteps: React.FC = () => {
                             className={`text-center lg:text-left text-sm font-normal transition-colors duration-300 xl:text-lg ${
                               isActive
                                 ? "text-gray-500 dark:text-gray-300"
-                                : "text-[#97A2B3] dark:text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300"
+                                : "text-gray-500 dark:text-gray-300 group-hover:text-gray-700 dark:group-hover:text-gray-200"
                             }`}
                           >
                             {step.subtitle}
@@ -3383,7 +3383,7 @@ const TransferSteps: React.FC = () => {
                 {currentStep && (
                   <motion.div
                     key={activeIndex} // Key change triggers transitions
-                    className="absolute inset-0 flex flex-col border dark:border-none rounded-3xl bg-white dark:bg-primarybox p-6"
+                    className="absolute inset-0 flex flex-col border dark:border-none rounded-3xl bg-white dark:bg-primarybox sm:p-6 p-4"
                     initial="initial"
                     animate="animate"
                     exit="exit"

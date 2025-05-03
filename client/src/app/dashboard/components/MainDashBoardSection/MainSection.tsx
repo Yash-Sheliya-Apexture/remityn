@@ -575,6 +575,8 @@ import { Skeleton } from "@/components/ui/skeleton"; // Ensure Skeleton is corre
 import { AlertCircle } from "lucide-react";
 import type { KycStatus } from "@/app/services/kyc"; // Import the KycStatus type
 import Link from "next/link";
+import { BsSend } from "react-icons/bs";
+import { GoArrowUp } from "react-icons/go";
 
 const MainDashBoard = () => {
   // Use AuthContext as the SINGLE SOURCE OF TRUTH for user data on the dashboard
@@ -625,12 +627,16 @@ const MainDashBoard = () => {
     <div className="space-y-6 md:space-y-8 pb-0 md:pb-5">
       <div className="flex items-center gap-2">
         <Link href={"/dashboard/add-money/select-balance"}>
-          <button className="flex items-center justify-center bg-primary text-neutral-900 hover:bg-primaryhover py-1 px-4 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer">
+          {/* Added icon, added `gap-1.5` for spacing */}
+          <button className="flex items-center justify-center gap-1.5 bg-primary text-neutral-900 hover:bg-primaryhover py-1.5 px-6 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer">
+            <GoArrowUp size={18} /> {/* Adjust size as needed */}
             Add Money
           </button>
         </Link>
         <Link href={"/dashboard/send/select-balance"}>
-          <button className="flex items-center justify-center bg-primary text-neutral-900 hover:bg-primaryhover py-1 px-4 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer">
+          {/* Added icon, added `gap-1.5` for spacing */}
+          <button className="flex items-center justify-center gap-1.5 bg-primary text-neutral-900 hover:bg-primaryhover py-1.5 px-6 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer">
+            <BsSend size={18} /> {/* Adjust size as needed */}
             Send Money
           </button>
         </Link>
@@ -647,6 +653,7 @@ const MainDashBoard = () => {
       <TasksPage />
       <TransactionsSection />
     </div>
+    
   );
 };
 

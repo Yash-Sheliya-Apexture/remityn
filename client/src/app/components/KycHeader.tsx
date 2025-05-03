@@ -92,9 +92,9 @@ const KycHeader: React.FC = () => {
                     <Image
                         src="/assets/images/wise-logo.svg" // Ensure this path is correct
                         alt="Logo"
-                        width={32}
-                        height={32}
-                        className="h-8 w-auto"
+                        width={100}
+                        height={24}
+                        className="h-auto w-26"
                         priority // Prioritize logo loading
                     />
                 </Link>

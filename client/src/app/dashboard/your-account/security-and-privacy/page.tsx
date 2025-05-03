@@ -119,7 +119,7 @@ export default function SecurityAndPrivacyPage() {
         <DashboardHeader title=" Security and privacy"/>
 
         <div className="mt-8">
-          <h4 className="text-2xl font-semibold text-mainheading dark:text-white mb-3">Security</h4>
+          <h4 className="sm:text-2xl text-xl font-semibold text-mainheading dark:text-white mb-3">Security</h4>
 
           <div className="space-y-2">
             {/* password */}
@@ -150,7 +150,7 @@ export default function SecurityAndPrivacyPage() {
         </div>
 
         <div className="mt-8">
-          <h4 className="text-2xl font-semibold text-mainheading dark:text-white mb-3">Privacy</h4>
+          <h4 className="sm:text-2xl text-xl font-semibold text-mainheading dark:text-white mb-3">Privacy</h4>
 
           <div className="space-y-2">
             <div className="flex items-center gap-4 hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer group">

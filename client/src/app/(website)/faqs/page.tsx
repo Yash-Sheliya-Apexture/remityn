@@ -1508,7 +1508,7 @@ const FAQPage: React.FC = () => {
 
         {/* FAQ Content Section */}
 
-        <div className="faq-content">
+        <div className="faq-content mt-6">
           <div className="lg:space-y-8 space-y-5">
             {faqSections.map((section) => (
               // Container for each section title + items list

@@ -262,7 +262,7 @@ const ProtectionSection = () => {
             variants={cardVariants} // Use the SAME variants for all cards
           >
             <div className="lg:size-14 size-12 rounded-full bg-secondarybox dark:bg-primarybox flex items-center justify-center">
-              <MdSyncAlt className="size-8 text-white dark:text-primary" />
+              <MdSyncAlt className="lg:size-8 size-6 text-white dark:text-primary" />
             </div>
             <h3 className="sm:text-xl text-lg font-medium dark:text-white text-neutral-900 capitalize">
               Real-Time Exchange Rates

@@ -1481,7 +1481,7 @@ export default function ChangePassword() {
                 <button
                   type="submit"
                   disabled={isSaveButtonDisabled} // Updated condition
-                  className={` flex items-center justify-center bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed `}
+                  className={` flex items-center justify-center bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed `}
                 >
                   {loading ? (
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
