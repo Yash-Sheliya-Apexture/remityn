@@ -385,6 +385,172 @@
 
 
 
+// // src/app/components/ThemeToggle.tsx
+// "use client";
+
+// import React, { useState, useEffect, useCallback } from "react";
+// import {
+//   IoMoonOutline,
+//   IoSunnyOutline,
+//   IoContrastOutline,
+// } from "react-icons/io5";
+// // Removed GoChevronDown as it's no longer needed for the header toggle
+// // import { GoChevronDown } from "react-icons/go";
+
+// type ThemePreference = "light" | "dark" | "system";
+
+// interface ThemeToggleProps {
+//   location: "dashboard" | "admin" | "header";
+//   className?: string;
+// }
+
+// const ThemeToggle: React.FC<ThemeToggleProps> = ({ location, className }) => {
+//   const [theme, setTheme] = useState<ThemePreference>("system");
+//   // Removed state and ref related to dropdown as they are not needed for the new header toggle
+//   // const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+//   // const dropdownRef = useRef<HTMLDivElement>(null);
+
+//   // --- Core Theme Logic (Unchanged) ---
+//   const applyTheme = useCallback((selectedTheme: ThemePreference) => {
+//     const root = window.document.documentElement;
+//     root.classList.remove("light", "dark");
+
+//     if (selectedTheme === "system") {
+//       const systemPrefersDark = window.matchMedia(
+//         "(prefers-color-scheme: dark)"
+//       ).matches;
+//       root.classList.add(systemPrefersDark ? "dark" : "light");
+//       // Store 'system' even if applying 'light' or 'dark' based on system pref
+//       localStorage.setItem("theme", "system");
+//     } else {
+//       root.classList.add(selectedTheme);
+//       localStorage.setItem("theme", selectedTheme);
+//     }
+//   }, []);
+
+//   useEffect(() => {
+//     // Check localStorage first on initial load
+//     const storedTheme =
+//       (localStorage.getItem("theme") as ThemePreference) || "system";
+//     setTheme(storedTheme); // Set state based on storage
+//     applyTheme(storedTheme); // Apply the theme based on storage
+
+//     // Listener for system theme changes
+//     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+//     const handleSystemChange = () => {
+//       // Only re-apply if the *stored preference* is 'system'
+//       const currentThemePreference =
+//         (localStorage.getItem("theme") as ThemePreference) || "system";
+//       if (currentThemePreference === "system") {
+//         applyTheme("system");
+//         // No need to setTheme here as the preference remains 'system'
+//       }
+//     };
+//     mediaQuery.addEventListener("change", handleSystemChange);
+
+//     return () => mediaQuery.removeEventListener("change", handleSystemChange);
+//   }, [applyTheme]); // applyTheme is stable
+
+//   // --- Action Handlers ---
+
+//   // General handler to set state, apply theme, and potentially update storage
+//   const handleThemeChange = (newTheme: ThemePreference) => {
+//     setTheme(newTheme);
+//     applyTheme(newTheme);
+//     // localStorage update is handled within applyTheme now for consistency
+//   };
+
+//   // Specific handler for the header toggle button click
+//   const handleHeaderThemeCycle = () => {
+//     let nextTheme: ThemePreference;
+//     // Cycle logic: system -> light -> dark -> system
+//     if (theme === "system") {
+//       nextTheme = "light";
+//     } else if (theme === "light") {
+//       nextTheme = "dark";
+//     } else { // theme === 'dark'
+//       nextTheme = "system";
+//     }
+//     handleThemeChange(nextTheme);
+//   };
+
+//   // Removed useEffect for dropdown outside click handler
+
+//   // --- UI Rendering ---
+
+//   // Admin Location (Unchanged)
+//   if (location === "admin") {
+//     return (
+//       <div className={`flex space-x-2 ${className}`}>
+//         <button
+//           onClick={() => handleThemeChange("light")}
+//           className={`p-2 rounded-full hover:bg-lightgray dark:hover:bg-primarybox cursor-pointer ${
+//             theme === "light" ? "bg-lightgray dark:bg-primarybox" : ""
+//           }`}
+//           aria-label="Light Theme"
+//         >
+//           <IoSunnyOutline className="size-5 text-neutral-900 dark:text-white" />
+//         </button>
+//         <button
+//           onClick={() => handleThemeChange("dark")}
+//           className={`p-2 rounded-full hover:bg-lightgray dark:hover:bg-primarybox cursor-pointer ${
+//             theme === "dark" ? "bg-lightgray  dark:bg-primarybox" : ""
+//           }`}
+//           aria-label="Dark Theme"
+//         >
+//           <IoMoonOutline className="size-5 text-neutral-900 dark:text-white" />
+//         </button>
+//         <button
+//           onClick={() => handleThemeChange("system")}
+//           className={`p-2 rounded-full hover:bg-lightgray dark:hover:bg-primarybox cursor-pointer ${
+//             theme === "system" ? "bg-lightgray dark:bg-primarybox" : ""
+//           }`}
+//           aria-label="System Theme"
+//         >
+//           <IoContrastOutline className="size-5 text-neutral-900 dark:text-white" />
+//         </button>
+//       </div>
+//     );
+//   }
+//   // Header Location (NEW IMPLEMENTATION)
+//   else if (location === "header") {
+//     return (
+//       // Container div might still be useful for alignment/styling if needed
+//       <div className={`${className}`}>
+//         <button
+//           // Use the cycling handler
+//           onClick={handleHeaderThemeCycle}
+//           // Simplified styling, adjust as needed
+//           className="flex items-center justify-center p-2 cursor-pointer group rounded-full hover:bg-lightgray dark:hover:bg-primarybox transition-all ease-linear duration-75"
+//           // Update aria-label for clarity
+//           aria-label={`Change theme (current: ${theme})`}
+//         >
+//           {/* Conditionally render icon based on current theme state */}
+//           {theme === "light" && (
+//             <IoSunnyOutline className="size-5 text-neutral-900 dark:text-white dark:group-hover:text-primary" />
+//           )}
+//           {theme === "dark" && (
+//             <IoMoonOutline className="size-5 text-neutral-900 dark:text-white dark:group-hover:text-primary" />
+//           )}
+//           {theme === "system" && (
+//             <IoContrastOutline className="size-5 text-neutral-900 dark:text-white dark:group-hover:text-primary" />
+//           )}
+//           {/* Removed ChevronDown icon */}
+//         </button>
+//         {/* Removed Dropdown menu entirely */}
+//       </div>
+//     );
+//   }
+//   // Dashboard Location (or others) - Renders nothing
+//   else {
+//     return null;
+//   }
+// };
+
+// export default ThemeToggle;
+
+
+
 // src/app/components/ThemeToggle.tsx
 "use client";
 
@@ -396,6 +562,12 @@ import {
 } from "react-icons/io5";
 // Removed GoChevronDown as it's no longer needed for the header toggle
 // import { GoChevronDown } from "react-icons/go";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "../../components/ui/tooltip"; // Make sure this path is correct
+import { cn } from "@/lib/utils"; // Assuming cn is needed/available
 
 type ThemePreference = "light" | "dark" | "system";
 
@@ -484,7 +656,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ location, className }) => {
       <div className={`flex space-x-2 ${className}`}>
         <button
           onClick={() => handleThemeChange("light")}
-          className={`p-2 rounded-full hover:bg-lightgray dark:hover:bg-primarybox ${
+          className={`p-2 rounded-full hover:bg-lightgray dark:hover:bg-primarybox cursor-pointer ${
             theme === "light" ? "bg-lightgray dark:bg-primarybox" : ""
           }`}
           aria-label="Light Theme"
@@ -493,7 +665,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ location, className }) => {
         </button>
         <button
           onClick={() => handleThemeChange("dark")}
-          className={`p-2 rounded-full hover:bg-lightgray dark:hover:bg-primarybox ${
+          className={`p-2 rounded-full hover:bg-lightgray dark:hover:bg-primarybox cursor-pointer ${
             theme === "dark" ? "bg-lightgray  dark:bg-primarybox" : ""
           }`}
           aria-label="Dark Theme"
@@ -502,7 +674,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ location, className }) => {
         </button>
         <button
           onClick={() => handleThemeChange("system")}
-          className={`p-2 rounded-full hover:bg-lightgray dark:hover:bg-primarybox ${
+          className={`p-2 rounded-full hover:bg-lightgray dark:hover:bg-primarybox cursor-pointer ${
             theme === "system" ? "bg-lightgray dark:bg-primarybox" : ""
           }`}
           aria-label="System Theme"
@@ -514,30 +686,45 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ location, className }) => {
   }
   // Header Location (NEW IMPLEMENTATION)
   else if (location === "header") {
+    // Determine the next theme for the tooltip text
+    let nextThemeLabel: string;
+    if (theme === "system") {
+      nextThemeLabel = "Light";
+    } else if (theme === "light") {
+      nextThemeLabel = "Dark";
+    } else { // theme === 'dark'
+      nextThemeLabel = "System";
+    }
+    const tooltipText = `${nextThemeLabel}`;
+
     return (
-      // Container div might still be useful for alignment/styling if needed
-      <div className={`${className}`}>
-        <button
-          // Use the cycling handler
-          onClick={handleHeaderThemeCycle}
-          // Simplified styling, adjust as needed
-          className="flex items-center justify-center p-2 cursor-pointer group rounded-full hover:bg-lightgray dark:hover:bg-primarybox transition-all ease-linear duration-75"
-          // Update aria-label for clarity
-          aria-label={`Change theme (current: ${theme})`}
-        >
-          {/* Conditionally render icon based on current theme state */}
-          {theme === "light" && (
-            <IoSunnyOutline className="size-5 text-neutral-900 dark:text-white dark:group-hover:text-primary" />
-          )}
-          {theme === "dark" && (
-            <IoMoonOutline className="size-5 text-neutral-900 dark:text-white dark:group-hover:text-primary" />
-          )}
-          {theme === "system" && (
-            <IoContrastOutline className="size-5 text-neutral-900 dark:text-white dark:group-hover:text-primary" />
-          )}
-          {/* Removed ChevronDown icon */}
-        </button>
-        {/* Removed Dropdown menu entirely */}
+      <div className={className}> 
+        <Tooltip> 
+          <TooltipTrigger asChild> 
+            <button
+              onClick={handleHeaderThemeCycle}
+              className="flex items-center justify-center p-2 cursor-pointer group rounded-full hover:bg-lightgray dark:hover:bg-primarybox transition-colors ease-linear duration-150" // Adjusted transition 
+              aria-label={`Change theme (current: ${theme})`}
+            >
+              {/* Icons based on current theme */}
+              {theme === "light" && (
+                <IoSunnyOutline className="size-5 text-neutral-900 dark:text-white group-hover:text-primary dark:group-hover:text-primary" />
+              )}
+              {theme === "dark" && (
+                <IoMoonOutline className="size-5 text-neutral-900 dark:text-white group-hover:text-primary dark:group-hover:text-primary" />
+              )}
+              {theme === "system" && (
+                <IoContrastOutline className="size-5 text-neutral-900 dark:text-white group-hover:text-primary dark:group-hover:text-primary" />
+              )}
+            </button>
+          </TooltipTrigger>
+          <TooltipContent sideOffset={5}
+            className="bg-[#e4e4e4] dark:bg-secondarybox text-white p-2 px-3 rounded-2xl max-w-60 xl:max-w-lg"
+
+          > {/* Add content with optional offset */}
+            <p className="font-medium dark:text-white text-neutral-900 text-xs">{tooltipText}</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
     );
   }

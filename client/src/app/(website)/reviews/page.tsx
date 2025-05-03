@@ -1,10 +1,10 @@
 import React from "react";
-import SocialTrust from "../components/SocialTrust";
+import AllReviewsPage from "../components/Review";
 
 const page = () => {
   return (
     <section className="Reviews-Main">
-      <SocialTrust />
+      <AllReviewsPage />
     </section>
   );
 };
