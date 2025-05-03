@@ -6509,7 +6509,7 @@ const AddRecipientPage = () => {
             key="account-step"
             className="bg-white dark:bg-background w-full lg:max-w-lg"
           >
-            <h2 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white mb-6 text-center sm:text-left">
+            <h2 className="lg:text-3xl md:text-2xl text-xl font-semibold text-mainheading dark:text-white mb-6 text-center sm:text-left">
               Enter their account details ({selectedCurrencyCode})
             </h2>
 
@@ -6793,14 +6793,14 @@ const AddRecipientPage = () => {
               <div className="flex sm:flex-row flex-col-reverse justify-center items-center gap-4 pt-4">
                 <button
                   type="button"
-                  className={`sm:order-1 order-2 bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear`}
+                  className={`sm:order-1 order-2 bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear`}
                   onClick={handleClearForm}
                 >
                   Clear All
                 </button>
                 <button
                   type="submit"
-                  className={`sm:order-2 order-1 bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center`}
+                  className={`sm:order-2 order-1 bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center`}
                   disabled={isSubmitting || isFormInvalid} // isFormInvalid still useful for initial disabling
                 >
                   {isSubmitting ? (

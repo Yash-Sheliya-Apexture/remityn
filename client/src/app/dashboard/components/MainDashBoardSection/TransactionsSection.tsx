@@ -1837,9 +1837,9 @@ const TransactionsSection: React.FC = () => {
   const renderTransactionRow = (transaction: Transaction) => {
     const isAddMoney = transaction.type === "Add Money";
     const icon = isAddMoney ? (
-      <LuPlus size={24} className="text-neutral-900 dark:text-white" />
+      <LuPlus size={22} className="text-neutral-900 dark:text-white" />
     ) : (
-      <GoArrowUp size={24} className="text-neutral-900 dark:text-white" />
+      <GoArrowUp size={22} className="text-neutral-900 dark:text-white" />
     );
 
     // --- START MODIFICATION ---
@@ -1922,7 +1922,7 @@ const TransactionsSection: React.FC = () => {
         className="block"
       >
         <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
-          <div className="flex sm:items-center items-start gap-4">
+          <div className="flex sm:items-center items-start sm:gap-4 gap-2">
             {/* Icon container */}
             <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center">
               {icon}
@@ -1933,10 +1933,10 @@ const TransactionsSection: React.FC = () => {
               {/* Name and Description */}
               {/* This h3 now uses the correctly formatted 'name' */}
               <div className="text-wrap">
-                <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg">
+                <h3 className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg text-15px">
                   {name}
                 </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
+                <p className="sm:text-sm text-13px text-gray-500 dark:text-gray-300 mt-1">
                   {description}
                 </p>
               </div>
@@ -1944,7 +1944,7 @@ const TransactionsSection: React.FC = () => {
               {/* Amount and Currency */}
               {/* Use the pre-formatted amount and the display currency code */}
               <div
-                className={`font-medium ${amountClass} whitespace-nowrap flex-shrink-0`}
+                className={`font-medium ${amountClass} whitespace-nowrap flex-shrink-0 sm:text-base text-15px`}
               >
                 {amountPrefix}
                 {formattedAmount} {/* Use the formatted amount */}
@@ -1966,7 +1966,7 @@ const TransactionsSection: React.FC = () => {
       <div className="Transactions">
         {/* Section Header */}
         <div className="flex justify-between items-center mb-4 sm:px-0">
-          <h1 className="lg:text-3xl md:text-2xl text-xl font-semibold text-mainheading dark:text-white">
+          <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
             Recent Transactions
           </h1>
           <Link

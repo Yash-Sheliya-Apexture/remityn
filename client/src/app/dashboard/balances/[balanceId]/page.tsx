@@ -8676,7 +8676,7 @@ const BalanceDetailPage = () => {
                      onSearchChange={setSearchTerm}
                  />
                  <button
-                      className="inline-flex items-center justify-center gap-3 bg-primary text-neutral-900 hover:bg-primaryhover h-12.5 md:w-36 w-12.5 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer shrink-0 disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styles
+                      className="inline-flex items-center justify-center gap-3 bg-primary text-neutral-900 hover:bg-primaryhover h-12.5 md:w-40 w-12.5 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer shrink-0 disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styles
                       onClick={handleOpenFilterModal}
                       aria-haspopup="dialog"
                       // Disable filter button if loading OR if it's initially empty AND no filters are active yet (no point filtering nothing)

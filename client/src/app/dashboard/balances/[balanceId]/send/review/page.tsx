@@ -2962,7 +2962,7 @@ const ReviewSendPage = () => {
           onClick={handleConfirmAndSend}
           // Disable button if submitting, or if required data isn't loaded (double check)
           disabled={isSubmitting || !summary || !recipientDetails}
-          className="flex items-center justify-center bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center justify-center bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
           data-testid="confirm-send-button"
         >
           {isSubmitting ? (
@@ -3044,7 +3044,7 @@ const ReviewSendPage = () => {
         <div className="mt-3">
           <Link
             href={getPreviousStepLink()} // Uses the dynamic link function
-            className="inline-flex items-center justify-center bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear"
+            className="inline-flex items-center justify-center bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear"
           >
             <FiArrowLeft className="mr-1" /> Go back
           </Link>

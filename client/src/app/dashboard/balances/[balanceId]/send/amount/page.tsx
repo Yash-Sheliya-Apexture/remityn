@@ -4666,7 +4666,7 @@ export default function SendAmountPage() {
           <button
             onClick={handleContinue}
             disabled={!canContinue || isCalculating} // Disable also if not canContinue or calculating
-            className={`flex items-center justify-center w-full bg-primary text-neutral-900 font-medium hover:bg-primaryhover space-x-3 py-3 px-4 h-12.5 rounded-full transition-all duration-75 ease-linear cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed`}
+            className={`flex items-center justify-center w-full bg-primary text-neutral-900 font-medium hover:bg-primaryhover space-x-3 py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed`}
             data-testid="continue-button"
           >
             {isCalculating ? (
