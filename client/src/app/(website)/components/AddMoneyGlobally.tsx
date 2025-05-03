@@ -643,12 +643,15 @@ const AddMoneyGlobally: React.FC = () => {
                 bank, using a card, or sending via UPI, our platform makes it
                 simple, fast, and reliable — no borders, no hassle.
               </p>
+              <div className="flex sm:justify-start justify-center">
+
               <button
                 onClick={handleButtonClick}
                 className="bg-primary hover:bg-primaryhover text-neutral-900 cursor-pointer font-medium text-sm lg:text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center"
               >
                 {user ? "Add Money Now" : "Create a Account"}
               </button>
+              </div>
             </div>
 
             {/* Benefits Container - Staggers individual benefits */}

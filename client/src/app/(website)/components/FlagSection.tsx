@@ -503,12 +503,12 @@ const FlagSection = () => {
               <div className="grid grid-cols-1 md:grid-cols-2">
 
                 {/* Benefit 1: Top Left */}
-                <div className="p-6 border-b border-r">
+                <div className="sm:p-6 p-4 border-b md:border-r border-r-0">
                   {(() => { // Use an IIFE or assign to variable outside
                       const IconComponent = benefits[0].icon; // Assign to PascalCase variable
                       return (
-                        <div className="mb-4 inline-block border border-primary rounded-full p-3">
-                            <IconComponent size={24} className="text-primary" /> {/* Render the variable */}
+                        <div className="lg:size-14 size-12 bg-lightgray dark:bg-primarybox dark:text-primary text-neutral-900 rounded-full flex items-center justify-center mb-4">
+                            <IconComponent size={24} className="lg:size-8 size-6 text-neutral-900 dark:text-primary" /> {/* Render the variable */}
                         </div>
                       );
                   })()}
@@ -517,18 +517,18 @@ const FlagSection = () => {
                      {benefits[0].title}
                    </h3>
                    {/* Description */}
-                   <p className="text-gray-500 dark:text-gray-300 text-sm">
+                   <p className="sm:text-base text-sm text-gray-500 dark:text-gray-300">
                      {benefits[0].description}
                    </p>
                 </div>
 
                 {/* Benefit 2: Top Right */}
-                <div className="p-6 border-b  md:border-l-0">
+                <div className="sm:p-6 p-4 border-b ">
                   {(() => {
                       const IconComponent = benefits[1].icon; // Assign to PascalCase variable
                       return (
-                        <div className="mb-4 inline-block border border-primary rounded-full p-3">
-                            <IconComponent size={24} className="text-primary" /> {/* Render the variable */}
+                        <div className="lg:size-14 size-12 bg-lightgray dark:bg-primarybox dark:text-primary text-neutral-900 rounded-full flex items-center justify-center mb-4">
+                            <IconComponent size={24} className="lg:size-8 size-6 text-neutral-900 dark:text-primary" /> {/* Render the variable */}
                         </div>
                       );
                   })()}
@@ -537,18 +537,18 @@ const FlagSection = () => {
                      {benefits[1].title}
                    </h3>
                    {/* Description */}
-                   <p className="text-gray-500 dark:text-gray-300 text-sm">
+                   <p className="sm:text-base text-sm text-gray-500 dark:text-gray-300">
                      {benefits[1].description}
                    </p>
                 </div>
 
                 {/* Benefit 3: Bottom Left */}
-                <div className="p-6 border-r md:border-t-0">
+                <div className="sm:p-6 p-4 md:border-r border-r-0 md:border-b-0 border-b">
                    {(() => {
                       const IconComponent = benefits[2].icon; // Assign to PascalCase variable
                       return (
-                        <div className="mb-4 inline-block border border-primary rounded-full p-3">
-                            <IconComponent size={24} className="text-primary" /> {/* Render the variable */}
+                        <div className="lg:size-14 size-12 bg-lightgray dark:bg-primarybox dark:text-primary text-neutral-900 rounded-full flex items-center justify-center mb-4">
+                            <IconComponent size={24} className="lg:size-8 size-6 text-neutral-900 dark:text-primary" /> {/* Render the variable */}
                         </div>
                       );
                    })()}
@@ -557,18 +557,18 @@ const FlagSection = () => {
                      {benefits[2].title}
                    </h3>
                    {/* Description */}
-                   <p className="text-gray-500 dark:text-gray-300 text-sm">
+                   <p className="sm:text-base text-sm text-gray-500 dark:text-gray-300">
                      {benefits[2].description}
                    </p>
                 </div>
 
                 {/* Benefit 4: Bottom Right */}
-                <div className="p-6 md:border-t-0 md:border-l-0">
+                <div className="sm:p-6 p-4 md:border-b-0 border-b">
                    {(() => {
                       const IconComponent = benefits[3].icon; // Assign to PascalCase variable
                       return (
-                        <div className="mb-4 inline-block border border-primary rounded-full p-3">
-                            <IconComponent size={24} className="text-primary" /> {/* Render the variable */}
+                        <div className="lg:size-14 size-12 bg-lightgray dark:bg-primarybox dark:text-primary text-neutral-900 rounded-full flex items-center justify-center mb-4">
+                            <IconComponent size={24} className="lg:size-8 size-6 text-neutral-900 dark:text-primary" /> {/* Render the variable */}
                         </div>
                       );
                    })()}
@@ -577,7 +577,7 @@ const FlagSection = () => {
                      {benefits[3].title}
                    </h3>
                    {/* Description */}
-                   <p className="text-gray-500 dark:text-gray-300 text-sm">
+                   <p className="sm:text-base text-sm text-gray-500 dark:text-gray-300">
                      {benefits[3].description}
                    </p>
                 </div>
