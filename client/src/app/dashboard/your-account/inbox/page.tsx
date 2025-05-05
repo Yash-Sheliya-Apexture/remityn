@@ -320,11 +320,6 @@ const InboxPage: React.FC = () => {
                                 </div>
                              ) : null }
 
-                             {/* Edge case: Loading finished, no error, but messages array is empty (e.g., after deleting last item on a page before navigation/refetch completes)
-                                 Avoid showing Empty State here briefly. The loading overlay or subsequent render will handle it.
-                                 The min-height on the container prevents layout collapse. */}
-
-
                             {/* Pagination - Show if multiple pages exist and no error */}
                             {totalMessages > 0 && totalPages > 1 && !error && (
                                  <InboxPagination
