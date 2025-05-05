@@ -9639,7 +9639,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const forbiddenOrRedirectPaths = [
             "/auth/forgot-password",
             "/auth/reset-password",
-            "/auth/google/callback-handler", // **Explicitly redirect away from handler**
+            "/auth/google/callback-handler",
         ];
 
         // Check if the current path requires redirection
