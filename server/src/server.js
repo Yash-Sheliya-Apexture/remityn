@@ -766,7 +766,7 @@ app.use('/api/dashboard/users', authMiddleware.protect, userRoutes);
 app.use('/api/inbox', inboxRoutes); // <-- Add User Inbox Routes (protection is inside the route file)
 
 // Admin Routes
-app.use('/api/admin/users', authMiddleware.protect, authMiddleware.admin, adminUserRoutes);
+app.use('/api/admin/users', authMiddleware.protect, authMiddleware.admin, adminUserRoutes); // (Looks correct)
 app.use('/api/admin/kyc', authMiddleware.protect, authMiddleware.admin, adminKycRoutes);
 app.use('/api/admin/currencies', authMiddleware.protect, authMiddleware.admin, adminCurrencyRoutes);
 app.use('/api/admin/payments', authMiddleware.protect, authMiddleware.admin, adminPaymentRoutes);

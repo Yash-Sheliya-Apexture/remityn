@@ -59,7 +59,10 @@
 import express from 'express';
 import userAdminController from '../../controllers/admin/user.admin.controller.js';
 import userAdminValidators from '../../validators/admin/user.admin.validators.js';
-import inboxAdminRoutes from './inbox.admin.routes.js'; // <-- Import the nested inbox routes
+// --- REMOVE this import ---
+// import inboxAdminRoutes from './inbox.admin.routes.js';
+// --- ADD this import ---
+import inboxAdminController from '../../controllers/admin/inbox.admin.controller.js'; // Import the inbox controller
 
 const router = express.Router();
 
@@ -72,9 +75,12 @@ router.get('/', userAdminController.getAllUsersAdmin);
 // GET /api/admin/users/:userId - Get specific user details for admin view
 router.get('/:userId', userAdminValidators.validateGetUserById, userAdminController.getUserDetailsAdmin);
 
-// --- Nest the inbox routes under a specific user ---
-// This will handle POST /api/admin/users/:userId/inbox
-router.use('/:userId/inbox', inboxAdminRoutes); // <-- Use the imported routes
+// --- CORRECTED Route for Sending an Inbox Message to a User ---
+// Handles POST /api/admin/users/:userId/inbox
+router.post('/:userId/inbox', inboxAdminController.sendMessageToUser); // Use the specific controller function
+
+// --- REMOVE this line ---
+// router.use('/:userId/inbox', inboxAdminRoutes); // <-- REMOVE THIS INCORRECT NESTING
 
 // PUT /api/admin/users/:userId - Update user details (Example - add later if needed)
 // router.put('/:userId', userAdminValidators.validateUpdateUser, userAdminController.updateUserAdmin);
