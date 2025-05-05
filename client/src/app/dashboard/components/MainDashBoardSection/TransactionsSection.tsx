@@ -1962,26 +1962,28 @@ const TransactionsSection: React.FC = () => {
 
   // --- Return JSX ---
   return (
-     <section className="Transactions-Wrapper">
+    <section className="Transactions-Wrapper">
       <div className="Transactions">
         {/* Section Header */}
-        <div className="flex justify-between items-center mb-4 sm:px-0">
-          <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
+        <div className="flex justify-between items-center mb-4 gap-4">
+          <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white text-wrap">
             Recent Transactions
           </h1>
-          <Link
-            href="/dashboard/transactions"
-            className="text-primary font-medium md:text-base text-sm underline cursor-pointer hover:text-primaryhover transition-all duration-75 ease-linear"
-          >
-            See all
-          </Link>
+          <div className="inline-flex bg-primary px-4 py-1.5 rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear focus:outline-none cursor-pointer">
+            <Link
+              href="/dashboard/transactions"
+              className="text-neutral-900 text-xs font-semibold text-nowrap"
+            >
+              See all
+            </Link>
+          </div>
         </div>
 
         {/* Transaction List Area */}
         <div className="space-y-2">
           {/* Loading Skeletons */}
           {loading && (
-             <div className="space-y-2">
+            <div className="space-y-2">
               {Array(3) // Show 3 skeleton loaders
                 .fill(0)
                 .map((_, index) => (
@@ -1990,11 +1992,13 @@ const TransactionsSection: React.FC = () => {
                       <Skeleton className="size-12 rounded-full flex-shrink-0" />
                       <div className="flex-grow flex justify-between items-center gap-4">
                         <div className="flex-grow">
-                           <Skeleton className="h-5 w-3/5 mb-2 rounded" /> {/* Adjusted width */}
-                           <Skeleton className="h-4 w-2/5 rounded" />      {/* Adjusted width */}
+                          <Skeleton className="h-5 w-3/5 mb-2 rounded" />{" "}
+                          {/* Adjusted width */}
+                          <Skeleton className="h-4 w-2/5 rounded" />{" "}
+                          {/* Adjusted width */}
                         </div>
                         <div className="flex-shrink-0">
-                           <Skeleton className="h-5 w-20 rounded" />
+                          <Skeleton className="h-5 w-20 rounded" />
                         </div>
                       </div>
                     </div>
@@ -2006,7 +2010,7 @@ const TransactionsSection: React.FC = () => {
           {/* Error Message */}
           {!loading && error && (
             <p className="text-center text-red-500 dark:text-red-400 py-4 px-2">
-                Error: {error}
+              Error: {error}
             </p>
           )}
 

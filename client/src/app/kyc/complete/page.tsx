@@ -531,7 +531,7 @@ export default function KycCompletePage() {
     // Adopt layout and max-width from Pending page
     <div className="mx-auto max-w-2xl py-8 px-4">
       {/* Adopt Card styling from Pending page - standard border, shadow, animation */}
-      <Card className="w-full border-border/50 shadow animate-fadeIn overflow-hidden">
+      <Card className="w-full border-border/50 shadow-none animate-fadeIn overflow-hidden">
         {/* Adopt Header structure and styling from Pending page */}
         <CardHeader className="items-center text-center p-4 md:p-8 bg-accent">
           {/* Icon Container - styled with Green theme */}
@@ -567,30 +567,40 @@ export default function KycCompletePage() {
             <p className="">Welcome aboard!</p>
             <p className="mt-1">
               You now have{" "}
-              <span className="font-semibold text-primary">
-                full access
-              </span>{" "}
-              to all account features.
+              <span className="font-semibold text-primary">full access</span> to
+              all account features.
             </p>
           </div>
 
           <Separator className="my-6" />
 
           {/* Alerts - Adopt structure/styling from Pending, adapt content */}
-          <Alert>
-            <ShieldCheck className="h-5 w-5 text-green-600 dark:text-green-500" /> {/* Success Icon */}
-            <AlertTitle className="font-medium text-neutral-900 dark:text-white">Verification Complete</AlertTitle>
-            <AlertDescription className="text-gray-500 dark:text-gray-300">
-              Your identity documents have been successfully reviewed and approved.
-            </AlertDescription>
+          <Alert className="rounded-lg p-4">
+            <ShieldCheck className="h-5 w-5 flex-shrink-0 mt-1 text-green-600 dark:text-green-500" />{" "}
+            {/* Success Icon */}
+            <div>
+              <AlertTitle className="font-medium text-neutral-900 dark:text-white tracking-normal text-base">
+                Verification Complete
+              </AlertTitle>
+              <AlertDescription className="text-gray-500 dark:text-gray-300">
+                Your identity documents have been successfully reviewed and
+                approved.
+              </AlertDescription>
+            </div>
           </Alert>
 
-          <Alert>
-            <Star className="h-5 w-5 text-yellow-500" /> {/* Feature/Access Icon */}
-            <AlertTitle className="font-medium text-neutral-900 dark:text-white">Full Access Unlocked</AlertTitle>
-            <AlertDescription className="text-gray-500 dark:text-gray-300">
-               Explore your dashboard and utilize all the features available to verified users.
-            </AlertDescription>
+          <Alert className="rounded-lg p-4">
+            <Star className="h-5 w-5 flex-shrink-0 mt-1 text-yellow-500" />{" "}
+            {/* Feature/Access Icon */}
+            <div>
+              <AlertTitle className="font-medium text-neutral-900 dark:text-white tracking-normal text-base">
+                Full Access Unlocked
+              </AlertTitle>
+              <AlertDescription className="text-gray-500 dark:text-gray-300">
+                Explore your dashboard and utilize all the features available to
+                verified users.
+              </AlertDescription>
+            </div>
           </Alert>
         </CardContent>
 
@@ -604,7 +614,7 @@ export default function KycCompletePage() {
           >
             <LayoutDashboard className="mr-2 h-4 w-4" /> Proceed to Dashboard
           </button>
-           {/* No second button needed for the complete page */}
+          {/* No second button needed for the complete page */}
         </CardFooter>
       </Card>
     </div>

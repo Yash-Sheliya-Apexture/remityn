@@ -2132,7 +2132,7 @@ export default function KycDetailsPage() {
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto shadow border animate-fadeIn sm:p-8 p-4">
+    <Card className="w-full max-w-2xl mx-auto shadow-none border animate-fadeIn sm:p-8 p-4">
       <CardHeader className="border-b pb-6 mb-6 space-y-2">
         <CardTitle className="sm:text-2xl text-xl font-semibold tracking-tight flex items-start gap-2 text-mainheading dark:text-white">
           <Briefcase className="h-6 w-6 text-primary mt-1" /> Additional
@@ -2140,15 +2140,23 @@ export default function KycDetailsPage() {
            of {formStepOrder.length})
         </CardTitle>
         <CardDescription className="text-gray-500 dark:text-gray-300">
-          Please provide your occupation, annual income range and nationality. Fields marked with <span className="text-red-500">*</span> are required.
+          Please provide your occupation, annual income range and nationality.
+          Fields marked with <span className="text-red-500">*</span> are
+          required.
         </CardDescription>
       </CardHeader>
       <CardContent>
         {formError && (
-          <Alert variant="destructive" className="mb-6">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>Error</AlertTitle>
-            <AlertDescription>{formError}</AlertDescription>
+          <Alert className="bg-red-100 border-red-300 dark:bg-red-600/20 dark:border-red-700 rounded-lg p-4 mb-6">
+            <AlertTriangle className="h-5 w-5 flex-shrink-0 mt-0.5 text-red-700 dark:text-red-400" />
+            <div>
+              <AlertTitle className="font-medium tracking-normal text-red-700 dark:text-red-400 text-base">
+                Error
+              </AlertTitle>
+              <AlertDescription className="text-red-600 dark:text-red-300">
+                {formError}
+              </AlertDescription>
+            </div>
           </Alert>
         )}
         {/* Use standard form element */}
@@ -2272,9 +2280,14 @@ export default function KycDetailsPage() {
                             value={country.value} // Use the value for selection logic
                             key={country.value}
                             onSelect={(currentValue) => {
-                               // Find the selected country's full name (value)
-                               const selectedValue = countryOptions.find(c => c.value.toLowerCase() === currentValue.toLowerCase())?.value || "";
-                               handleNationalityChange(selectedValue); // Update state
+                              // Find the selected country's full name (value)
+                              const selectedValue =
+                                countryOptions.find(
+                                  (c) =>
+                                    c.value.toLowerCase() ===
+                                    currentValue.toLowerCase()
+                                )?.value || "";
+                              handleNationalityChange(selectedValue); // Update state
                             }}
                           >
                             {country.label}
@@ -2299,7 +2312,9 @@ export default function KycDetailsPage() {
             </p>
             {/* Display error manually if needed */}
             {!nationality && formError && (
-                <p className="text-sm font-medium text-destructive">{formError}</p> // Example error display
+              <p className="text-sm font-medium text-destructive">
+                {formError}
+              </p> // Example error display
             )}
           </div>
 
@@ -2320,11 +2335,84 @@ export default function KycDetailsPage() {
               className="inline-flex items-center justify-center bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isSubmitting || !isFormValid} // Disable if submitting OR form is invalid
             >
-              Continue
               {isSubmitting ? (
-                <Loader2 className="ml-2 size-4.5 animate-spin" />
+                // ----- Loading State -----
+                <>
+                  <svg
+                    className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true" // Hide decorative icon from screen readers
+                  >
+                    <path
+                      d="M12 2V6"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M12 18V22"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M4.93 4.93L7.76 7.76"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M16.24 16.24L19.07 19.07"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M2 12H6"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M18 12H22"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M4.93 19.07L7.76 16.24"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M16.24 7.76L19.07 4.93"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <span>Continue</span>
+                </>
               ) : (
-                <ArrowRight className="ml-2 size-4.5" />
+                // ----- End Loading State -----
+                // ----- Normal State -----
+                <>
+                  <span>Continue</span>
+                  <ArrowRight className="ml-2 size-5" aria-hidden="true" />{" "}
+                  {/* Use ml-2 for margin before the icon */}
+                </>
+                // ----- End Normal State -----
               )}
             </button>
           </div>

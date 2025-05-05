@@ -1504,31 +1504,38 @@ export default function KycReviewPage() {
   const displayError = localSubmitError || contextSubmissionError; // Show local validation error first, then context API error
 
   return (
-    <Card className="w-full max-w-3xl mx-auto shadow border animate-fadeIn mb-10 p-4 md:p-8 ">
+    <Card className="w-full max-w-2xl mx-auto shadow-none border animate-fadeIn mb-10 p-4 md:p-8 ">
       <CardHeader className="border-b pb-6 mb-6 space-y-2">
-          <CardTitle className="sm:text-2xl text-xl font-semibold tracking-tight flex items-start gap-2 text-mainheading dark:text-white">
+        <CardTitle className="sm:text-2xl text-xl font-semibold tracking-tight flex items-start gap-2 text-mainheading dark:text-white">
           <CheckCircle className="h-6 w-6 text-primary mt-1" />
-            Review & Submit&nbsp;(Step {formStepOrder.indexOf("review") + 1}&nbsp;of&nbsp;{formStepOrder.length})
-          </CardTitle>
+          Review & Submit&nbsp;(Step {formStepOrder.indexOf("review") + 1}
+          &nbsp;of&nbsp;{formStepOrder.length})
+        </CardTitle>
         <CardDescription className="text-gray-500 dark:text-gray-300">
           Please carefully review all details. Click{" "}
           <Edit className="inline h-3 w-3 mx-1 text-muted-foreground" /> to make
           corrections.
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6"> 
+      <CardContent className="space-y-6">
         {/* Display combined error */}
         {displayError && (
-          <Alert variant="destructive" className="mb-4">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>Submission Problem</AlertTitle>
-            <AlertDescription>{displayError}</AlertDescription>
+          <Alert className="bg-red-100 border-red-300 dark:bg-red-600/20 dark:border-red-700 rounded-lg p-4 mb-4">
+            <AlertTriangle className="h-5 w-5 flex-shrink-0 mt-0.5 text-red-700 dark:text-red-400" />
+            <div>
+              <AlertTitle className="font-medium tracking-normal text-red-700 dark:text-red-400 text-base">
+                Submission Problem
+              </AlertTitle>
+              <AlertDescription className="text-red-600 dark:text-red-300">
+                {displayError}
+              </AlertDescription>
+            </div>
           </Alert>
         )}
         {/* Show missing fields warning only if no other error is present */}
         {missingFields.length > 0 && !displayError && (
-          <Alert className="mb-4 border-yellow-600 text-yellow-600 bg-yellow-100 dark:bg-yellow-600/20 items-center">
-            <AlertTriangle className="h-4 w-4 text-yellow-600" />
+          <Alert className="mb-4 border-yellow-600 text-yellow-600 bg-yellow-100 dark:bg-yellow-600/20 rounded-lg items-center">
+            <AlertTriangle className="h-5 w-5 text-yellow-600 flex-shrink-0" />
             <AlertTitle className="font-semibold text-base">
               Incomplete Information
             </AlertTitle>
@@ -1697,14 +1704,86 @@ export default function KycReviewPage() {
             type="button"
             onClick={handleSubmit}
             disabled={isSubmitting || missingFields.length > 0}
-           
             className=" inline-flex items-center justify-center bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none"
           >
-            Confirm and Submit KYC
             {isSubmitting ? (
-              <Loader2 className="ml-2 size-4.5 animate-spin" />
+              // ----- Loading State -----
+              <>
+                <svg
+                  className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true" // Hide decorative icon from screen readers
+                >
+                  <path
+                    d="M12 2V6"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M12 18V22"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M4.93 4.93L7.76 7.76"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M16.24 16.24L19.07 19.07"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M2 12H6"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M18 12H22"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M4.93 19.07L7.76 16.24"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M16.24 7.76L19.07 4.93"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <span>Confirm and Submit KYC</span>
+              </>
             ) : (
-              <Send className="ml-2 size-4.5" />
+              // ----- End Loading State -----
+              // ----- Normal State -----
+              <>
+                <span>Confirm and Submit KYC</span>
+                <Send className="ml-2 size-5" aria-hidden="true" />{" "}
+                {/* Use ml-2 for margin before the icon */}
+              </>
+              // ----- End Normal State -----
             )}
           </button>
         </div>

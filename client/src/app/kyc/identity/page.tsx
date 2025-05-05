@@ -1914,22 +1914,31 @@ export default function KycIdentityPage() {
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto shadow border animate-fadeIn sm:p-8 p-4">
+    <Card className="w-full max-w-2xl mx-auto shadow-none border animate-fadeIn sm:p-8 p-4">
       <CardHeader className="border-b pb-6 mb-6 space-y-2">
-          <CardTitle className="sm:text-2xl text-xl font-semibold tracking-tight flex items-start gap-2 text-mainheading dark:text-white">
-            <Fingerprint className="h-6 w-6 text-primary mt-1" />
-            Identity Document (Step {formStepOrder.indexOf("identity") + 1} of {formStepOrder.length})
-          </CardTitle>
+        <CardTitle className="sm:text-2xl text-xl font-semibold tracking-tight flex items-start gap-2 text-mainheading dark:text-white">
+          <Fingerprint className="h-6 w-6 text-primary mt-1" />
+          Identity Document (Step {formStepOrder.indexOf("identity") +
+            1} of {formStepOrder.length})
+        </CardTitle>
         <CardDescription className="text-gray-500 dark:text-gray-300">
-          Select the ID type and enter details exactly as shown on the document. Fields marked with <span className="text-red-500">*</span> are required once an ID type is selected.
+          Select the ID type and enter details exactly as shown on the document.
+          Fields marked with <span className="text-red-500">*</span> are
+          required once an ID type is selected.
         </CardDescription>
       </CardHeader>
       <CardContent>
         {formError && (
-          <Alert variant="destructive" className="mb-6">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>Error</AlertTitle>
-            <AlertDescription>{formError}</AlertDescription>
+          <Alert className="bg-red-100 border-red-300 dark:bg-red-600/20 dark:border-red-700 rounded-lg p-4 mb-6">
+            <AlertTriangle className="h-5 w-5 flex-shrink-0 mt-0.5 text-red-700 dark:text-red-400" />
+            <div>
+              <AlertTitle className="font-medium tracking-normal text-red-700 dark:text-red-400 text-base">
+                Error
+              </AlertTitle>
+              <AlertDescription className="text-red-600 dark:text-red-300">
+                {formError}
+              </AlertDescription>
+            </div>
           </Alert>
         )}
         <Form {...form}>
@@ -1962,7 +1971,9 @@ export default function KycIdentityPage() {
                           className="flex flex-col items-center justify-between rounded-lg border-2 border-muted bg-popover p-4 hover:bg-accent peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer transition-colors duration-200"
                         >
                           <BookUser className="h-6 w-6 text-gray-500 dark:text-gray-300 mb-2" />
-                          <span className="font-semibold text-neutral-900 dark:text-white">Passport</span>
+                          <span className="font-semibold text-neutral-900 dark:text-white">
+                            Passport
+                          </span>
                           <div className="h-5 mt-1">
                             {field.value === "passport" && (
                               <Check className="h-5 w-5 text-primary" />
@@ -2019,18 +2030,21 @@ export default function KycIdentityPage() {
                     <FormLabel className="text-neutral-900 dark:text-white">
                       {selectedIdType === "passport"
                         ? "Passport Number"
-                        : "Permit / ID Number"} <span className="text-red-500">*</span>
+                        : "Permit / ID Number"}{" "}
+                      <span className="text-red-500">*</span>
                     </FormLabel>
                     <FormControl>
                       <Input
-                         placeholder="Enter document number"
-                         {...field}
-                         disabled={!selectedIdType || isSubmitting}
-                         aria-required="true"
-                         value={field.value ?? ''}
+                        placeholder="Enter document number"
+                        {...field}
+                        disabled={!selectedIdType || isSubmitting}
+                        aria-required="true"
+                        value={field.value ?? ""}
                       />
                     </FormControl>
-                    <FormDescription className="text-gray-500 dark:text-gray-300">Enter the full ID number.</FormDescription>
+                    <FormDescription className="text-gray-500 dark:text-gray-300">
+                      Enter the full ID number.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -2070,38 +2084,46 @@ export default function KycIdentityPage() {
                           align="start"
                           className="sm:w-[450px] max-h-[calc(var(--radix-popover-content-available-height)_-_1rem)] w-auto p-0"
                         >
-                           <div className="flex items-center justify-between gap-2 p-3 border-b">
-                               <Select
-                                value={datePickerMonths[issueCalendarDate.getMonth()]}
-                                onValueChange={handleIssueMonthChange}
-                               >
-                                <SelectTrigger className="w-36 h-8">
-                                    <SelectValue placeholder="Month" />
-                                </SelectTrigger>
-                                <SelectContent className="max-h-60 overflow-y-auto">
-                                    {datePickerMonths.map((month) => (
-                                    <SelectItem key={month} value={month}>
-                                        {month}
-                                    </SelectItem>
-                                    ))}
-                                </SelectContent>
-                               </Select>
-                               <Select
-                                value={issueCalendarDate.getFullYear().toString()}
-                                onValueChange={handleIssueYearChange}
-                               >
-                                <SelectTrigger className="w-28 h-8">
-                                    <SelectValue placeholder="Year" />
-                                </SelectTrigger>
-                                <SelectContent className="max-h-60 overflow-y-auto">
-                                     {Array.from({ length: 71 }, (_, i) => new Date().getFullYear() - i).map((year) => (
-                                         <SelectItem key={year} value={year.toString()}>
-                                            {year}
-                                         </SelectItem>
-                                      ))}
-                                </SelectContent>
-                               </Select>
-                            </div>
+                          <div className="flex items-center justify-between gap-2 p-3 border-b">
+                            <Select
+                              value={
+                                datePickerMonths[issueCalendarDate.getMonth()]
+                              }
+                              onValueChange={handleIssueMonthChange}
+                            >
+                              <SelectTrigger className="w-36 h-8">
+                                <SelectValue placeholder="Month" />
+                              </SelectTrigger>
+                              <SelectContent className="max-h-60 overflow-y-auto">
+                                {datePickerMonths.map((month) => (
+                                  <SelectItem key={month} value={month}>
+                                    {month}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <Select
+                              value={issueCalendarDate.getFullYear().toString()}
+                              onValueChange={handleIssueYearChange}
+                            >
+                              <SelectTrigger className="w-28 h-8">
+                                <SelectValue placeholder="Year" />
+                              </SelectTrigger>
+                              <SelectContent className="max-h-60 overflow-y-auto">
+                                {Array.from(
+                                  { length: 71 },
+                                  (_, i) => new Date().getFullYear() - i
+                                ).map((year) => (
+                                  <SelectItem
+                                    key={year}
+                                    value={year.toString()}
+                                  >
+                                    {year}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
                           <Calendar
                             mode="single"
                             selected={
@@ -2137,7 +2159,7 @@ export default function KycIdentityPage() {
                   name="idExpiryDate"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel  className="text-neutral-900 dark:text-white">
+                      <FormLabel className="text-neutral-900 dark:text-white">
                         Date of Expiry <span className="text-red-500">*</span>
                       </FormLabel>
                       <Popover>
@@ -2159,42 +2181,52 @@ export default function KycIdentityPage() {
                             )}
                           </Button>
                         </PopoverTrigger>
-                         <PopoverContent
+                        <PopoverContent
                           align="end"
-                           className="sm:w-[450px] max-h-[calc(var(--radix-popover-content-available-height)_-_1rem)] w-auto p-0"
+                          className="sm:w-[450px] max-h-[calc(var(--radix-popover-content-available-height)_-_1rem)] w-auto p-0"
                         >
-                            <div className="flex items-center justify-between gap-2 p-3 border-b">
-                               <Select
-                                value={datePickerMonths[expiryCalendarDate.getMonth()]}
-                                onValueChange={handleExpiryMonthChange}
-                               >
-                                <SelectTrigger className="w-36 h-8">
-                                    <SelectValue placeholder="Month" />
-                                </SelectTrigger>
-                                <SelectContent className="max-h-60 overflow-y-auto">
-                                    {datePickerMonths.map((month) => (
-                                    <SelectItem key={month} value={month}>
-                                        {month}
-                                    </SelectItem>
-                                    ))}
-                                </SelectContent>
-                               </Select>
-                               <Select
-                                value={expiryCalendarDate.getFullYear().toString()}
-                                onValueChange={handleExpiryYearChange}
-                               >
-                                <SelectTrigger className="w-28 h-8">
-                                    <SelectValue placeholder="Year" />
-                                </SelectTrigger>
-                                <SelectContent className="max-h-60 overflow-y-auto">
-                                     {Array.from({ length: 31 }, (_, i) => new Date().getFullYear() + i).map((year) => (
-                                         <SelectItem key={year} value={year.toString()}>
-                                             {year}
-                                         </SelectItem>
-                                     ))}
-                                </SelectContent>
-                               </Select>
-                            </div>
+                          <div className="flex items-center justify-between gap-2 p-3 border-b">
+                            <Select
+                              value={
+                                datePickerMonths[expiryCalendarDate.getMonth()]
+                              }
+                              onValueChange={handleExpiryMonthChange}
+                            >
+                              <SelectTrigger className="w-36 h-8">
+                                <SelectValue placeholder="Month" />
+                              </SelectTrigger>
+                              <SelectContent className="max-h-60 overflow-y-auto">
+                                {datePickerMonths.map((month) => (
+                                  <SelectItem key={month} value={month}>
+                                    {month}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <Select
+                              value={expiryCalendarDate
+                                .getFullYear()
+                                .toString()}
+                              onValueChange={handleExpiryYearChange}
+                            >
+                              <SelectTrigger className="w-28 h-8">
+                                <SelectValue placeholder="Year" />
+                              </SelectTrigger>
+                              <SelectContent className="max-h-60 overflow-y-auto">
+                                {Array.from(
+                                  { length: 31 },
+                                  (_, i) => new Date().getFullYear() + i
+                                ).map((year) => (
+                                  <SelectItem
+                                    key={year}
+                                    value={year.toString()}
+                                  >
+                                    {year}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
                           <Calendar
                             mode="single"
                             selected={
@@ -2202,7 +2234,7 @@ export default function KycIdentityPage() {
                                 ? field.value
                                 : undefined
                             }
-                             onSelect={(date) => {
+                            onSelect={(date) => {
                               field.onChange(date || undefined);
                               field.onBlur(); // Trigger validation after selection
                               if (date) {
@@ -2242,16 +2274,90 @@ export default function KycIdentityPage() {
                 type="submit"
                 className=" inline-flex items-center justify-center bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={
-                  isSubmitting ||
-                  !selectedIdType ||
-                  !form.formState.isValid
+                  isSubmitting || !selectedIdType || !form.formState.isValid
                 }
               >
-                Continue{" "}
                 {isSubmitting ? (
-                  <Loader2 className="ml-2 size-4.5 animate-spin" />
+                  // ----- Loading State -----
+                  <>
+                    <svg
+                      className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true" // Hide decorative icon from screen readers
+                    >
+                      <path
+                        d="M12 2V6"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M12 18V22"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M4.93 4.93L7.76 7.76"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M16.24 16.24L19.07 19.07"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M2 12H6"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M18 12H22"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M4.93 19.07L7.76 16.24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M16.24 7.76L19.07 4.93"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <span>Continue</span>
+                  </>
                 ) : (
-                  <ArrowRight className="ml-2 size-4.5" />
+                  // ----- End Loading State -----
+                  // ----- Normal State -----
+                  <>
+                    <span>Continue</span>
+                    <ArrowRight
+                      className="ml-2 size-5"
+                      aria-hidden="true"
+                    />{" "}
+                    {/* Use ml-2 for margin before the icon */}
+                  </>
+                  // ----- End Normal State -----
                 )}
               </button>
             </div>

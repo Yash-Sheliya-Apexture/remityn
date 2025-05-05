@@ -9637,13 +9637,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         // Paths users should be redirected AWAY from
         const forbiddenOrRedirectPaths = [
-            "/admin", // Non-admins cannot access admin section
-            "/auth/login",
-            "/auth/register",
             "/auth/forgot-password",
             "/auth/reset-password",
             "/auth/google/callback-handler", // **Explicitly redirect away from handler**
-            "/" // Usually redirect from root after login
         ];
 
         // Check if the current path requires redirection
