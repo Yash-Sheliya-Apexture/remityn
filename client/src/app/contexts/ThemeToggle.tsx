@@ -689,11 +689,11 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ location, className }) => {
     // Determine the next theme for the tooltip text
     let nextThemeLabel: string;
     if (theme === "system") {
-      nextThemeLabel = "Light";
+      nextThemeLabel = "system";
     } else if (theme === "light") {
-      nextThemeLabel = "Dark";
+      nextThemeLabel = "light";
     } else { // theme === 'dark'
-      nextThemeLabel = "System";
+      nextThemeLabel = "Dark";
     }
     const tooltipText = `${nextThemeLabel}`;
 
