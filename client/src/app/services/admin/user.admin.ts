@@ -40,6 +40,29 @@ export interface AdminUserDetailResponse {
     // Add any other top-level user fields returned by the backend if necessary
 }
 
+// Type for sending a message
+interface SendMessageData {
+    subject: string;
+    body: string;
+}
+
+// Type for the response after sending a message
+interface SendMessageResponse {
+    message: string;
+    data: { // Assuming backend returns the created message object
+        _id: string;
+        userId: string;
+        sender: string;
+        subject: string;
+        body: string;
+        isRead: boolean;
+        sentAt: string;
+        createdAt: string;
+        updatedAt: string;
+    };
+}
+
+
 // Expected structure for the API list response (adjust if backend wraps in 'data')
 export type AdminUserListResponse = AdminUserListItem[];
 
@@ -124,35 +147,26 @@ const getErrorMessage = (error: unknown): string => {
  * @throws {Error} If the request fails or returns invalid data.
  */
 const getAllUsersAdmin = async (): Promise<AdminUserListResponse> => {
+    // ... (implementation unchanged)
     try {
         console.log('[Admin User Service] Fetching all users...');
-        // The endpoint should return an array directly or an object containing a 'data' array.
-        // We handle both possibilities below.
         const response = await apiClient.get<AdminUserListResponse | { data: AdminUserListResponse }>(`/admin/users`);
-
-        console.log('[Admin User Service] Raw response:', response); // Log raw response
+        console.log('[Admin User Service] Raw response:', response);
 
         let usersData: AdminUserListResponse;
-
-        // Check if the response data is directly the array or nested within a 'data' property
         if (Array.isArray(response.data)) {
             usersData = response.data;
         } else if (response.data && typeof response.data === 'object' && Array.isArray((response.data as any).data)) {
             usersData = (response.data as { data: AdminUserListResponse }).data;
         } else {
-            // If the format is unexpected, log a warning and return an empty array
-            console.warn('[Admin User Service] Unexpected response format for getAllUsersAdmin. Expected array or { data: [...] }.', response.data);
+            console.warn('[Admin User Service] Unexpected response format for getAllUsersAdmin.', response.data);
             return [];
         }
-
         console.log('[Admin User Service] Users fetched successfully:', usersData?.length ?? 0);
-        // Basic validation: Ensure it's an array before returning
         return Array.isArray(usersData) ? usersData : [];
-
     } catch (error: unknown) {
         console.error(`[Admin User Service] Error fetching all users:`, error);
         const message = getErrorMessage(error);
-        // Throw a new error with the processed message for the UI to catch
         throw new Error(message);
     }
 };
@@ -207,12 +221,48 @@ const getUserDetailsAdmin = async (userId: string): Promise<AdminUserDetailRespo
     }
 };
 
+
+/**
+ * Sends an inbox message from an admin to a specific user.
+ * Requires admin privileges (token handled by interceptor).
+ * @param {string} userId - The ID of the recipient user.
+ * @param {SendMessageData} messageData - Object containing subject and body.
+ * @returns {Promise<SendMessageResponse>} A promise resolving to the success response.
+ * @throws {Error} If the request fails.
+ */
+const sendMessageToUser = async (userId: string, messageData: SendMessageData): Promise<SendMessageResponse> => {
+    if (!userId || typeof userId !== 'string' || userId.trim() === '') {
+        throw new Error("Invalid User ID provided.");
+    }
+    if (!messageData || !messageData.subject?.trim() || !messageData.body?.trim()) {
+         throw new Error("Message subject and body are required.");
+    }
+
+    try {
+        console.log(`[Admin User Service] Sending message to user ${userId}...`);
+        // Use the nested route structure
+        const response = await apiClient.post<SendMessageResponse>(`/admin/users/${userId}/inbox`, messageData);
+
+        console.log(`[Admin User Service] Message sent successfully to ${userId}.`);
+        return response.data;
+
+    } catch (error: unknown) {
+        console.error(`[Admin User Service] Error sending message to user ${userId}:`, error);
+        const message = getErrorMessage(error);
+        // You might want specific handling for validation errors (400) if needed
+        // if (axios.isAxiosError(error) && error.response?.status === 400) { ... }
+        throw new Error(message);
+    }
+};
+
+
 // --- Export Service Object ---
 // Encapsulate the functions within an object for organized export and import
 const userAdminService = {
     getAllUsersAdmin,
     getUserDetailsAdmin,
-    // Add other admin-specific user functions here later (e.g., updateUserAdmin, deleteUserAdmin)
+    sendMessageToUser, // <-- Add the new function
+    // Add other admin-specific user functions here later
 };
 
 export default userAdminService;

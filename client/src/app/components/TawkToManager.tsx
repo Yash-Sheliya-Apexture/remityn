@@ -101,6 +101,174 @@
 //     );
 // }
 
+// // app/components/TawkToManager.tsx
+// "use client";
+
+// import { usePathname } from 'next/navigation';
+// import { useEffect, useRef, useCallback } from 'react';
+// import Script from 'next/script';
+
+// // --- Environment Variables ---
+// const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
+// const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
+// const tawkToSrc = tawkToPropertyId && tawkToWidgetId ? `https://embed.tawk.to/${tawkToPropertyId}/${tawkToWidgetId}` : null;
+
+// // --- TypeScript Definition ---
+// interface TawkAPI {
+//     hideWidget: () => void;
+//     showWidget: () => void;
+//     onLoad?: () => void;
+//     [key: string]: any;
+// }
+
+// declare global {
+//     interface Window {
+//         Tawk_API?: TawkAPI;
+//     }
+// }
+
+// // --- Helper Function (Visibility Logic - unchanged) ---
+// const shouldShowWidgetBasedOnPath = (currentPath: string): boolean => {
+//     const isAdminPath = currentPath.startsWith('/admin');
+//     const isAuthPath = currentPath.startsWith('/auth');
+//     const isDashboardPath = currentPath.startsWith('/dashboard');
+//     const isYourAccountPath = currentPath.startsWith('/dashboard/your-account');
+
+//     if (isAdminPath || isAuthPath) return false;
+//     if (isDashboardPath) return isYourAccountPath;
+//     return true; // Default show for public pages
+// };
+
+
+// // --- TawkToManager Component ---
+// export default function TawkToManager() {
+//     const pathname = usePathname();
+//     const tawkApiReady = useRef(false);
+//     const pathnameRef = useRef(pathname);
+
+//     useEffect(() => {
+//         pathnameRef.current = pathname;
+//     }, [pathname]);
+
+//     // --- Update Visibility Function ---
+//     // Ensures API is ready and methods exist before calling
+//     const updateTawkVisibility = useCallback((show: boolean, reason: string) => {
+//         // We primarily rely on tawkApiReady flag now, set only when methods are confirmed
+//         if (tawkApiReady.current && window.Tawk_API) {
+//             try {
+//                 if (show) {
+//                     console.log(`TawkToManager: Showing widget (${reason}) for path: ${pathnameRef.current}`);
+//                     // Check specifically for showWidget before calling
+//                     if (typeof window.Tawk_API.showWidget === 'function') {
+//                        window.Tawk_API.showWidget();
+//                     } else {
+//                        console.warn(`TawkToManager: showWidget function not found when trying to show.`);
+//                     }
+//                 } else {
+//                     console.log(`TawkToManager: Hiding widget (${reason}) for path: ${pathnameRef.current}`);
+//                      // Check specifically for hideWidget before calling
+//                     if (typeof window.Tawk_API.hideWidget === 'function') {
+//                        window.Tawk_API.hideWidget();
+//                     } else {
+//                        console.warn(`TawkToManager: hideWidget function not found when trying to hide.`);
+//                     }
+//                 }
+//             } catch (error) {
+//                 console.error("TawkToManager: Error calling Tawk_API:", error);
+//             }
+//         } else {
+//              console.log(`TawkToManager: Tawk API not ready. Cannot update visibility (${reason}) for path: ${pathnameRef.current}`);
+//         }
+//     }, []); // No dependencies needed as it uses refs and window
+
+//     // --- Setup Tawk_API.onLoad ---
+//     useEffect(() => {
+//         // Ensure Tawk_API exists on window
+//         if (!window.Tawk_API) {
+//             window.Tawk_API = {} as TawkAPI;
+//         }
+
+//         // Define the onLoad callback
+//         window.Tawk_API.onLoad = () => {
+//             console.log("TawkToManager: Tawk_API.onLoad fired.");
+
+//             // --- HIDE FIRST STRATEGY ---
+//             // Immediately try to hide the widget as soon as Tawk signals it's ready.
+//             // This prevents the flash of default visibility.
+//             try {
+//                 if (typeof window.Tawk_API?.hideWidget === 'function') {
+//                     console.log("TawkToManager: Tawk_API.onLoad - Pre-emptively hiding widget.");
+//                     window.Tawk_API.hideWidget();
+//                 } else {
+//                     console.warn("TawkToManager: Tawk_API.onLoad - hideWidget not available for pre-emptive hide.");
+//                 }
+//             } catch (e) {
+//                 console.error("TawkToManager: Error during pre-emptive hide:", e);
+//             }
+//             // --- END HIDE FIRST ---
+
+//             // Now, check if API methods are fully available
+//             if (typeof window.Tawk_API?.showWidget === 'function' &&
+//                 typeof window.Tawk_API?.hideWidget === 'function')
+//             {
+//                 console.log("TawkToManager: Tawk API methods confirmed.");
+//                 tawkApiReady.current = true; // Mark API as ready
+
+//                 // Determine visibility based on path rules
+//                 const shouldShow = shouldShowWidgetBasedOnPath(pathnameRef.current);
+
+//                 // Only show if the rules allow it (it's already hidden otherwise)
+//                 if (shouldShow) {
+//                     updateTawkVisibility(true, 'initial load - rules allow');
+//                 } else {
+//                      console.log("TawkToManager: Tawk_API.onLoad - Widget remains hidden based on path rules.");
+//                      // No need to call hide again, but ensure state is consistent
+//                      // updateTawkVisibility(false, 'initial load - rules deny'); // Optional: Call hide again for super-safety/logging
+//                 }
+//             } else {
+//                 console.error("TawkToManager: Tawk_API.onLoad fired, but showWidget/hideWidget methods are still missing or not functions!");
+//                 tawkApiReady.current = false;
+//             }
+//         };
+
+//         // Cleanup
+//         return () => {
+//             if (window.Tawk_API && window.Tawk_API.onLoad) {
+//                  window.Tawk_API.onLoad = undefined;
+//             }
+//         };
+//     }, [updateTawkVisibility]); // Dependency array
+
+
+//     // --- Effect for Path Changes (Handles Navigation AFTER initial load) ---
+//      useEffect(() => {
+//         // Only run updates if the API has been marked as ready by the onLoad callback
+//         if (tawkApiReady.current) {
+//             const shouldShow = shouldShowWidgetBasedOnPath(pathname);
+//             updateTawkVisibility(shouldShow, 'navigation');
+//         }
+//         // If API is not ready, the initial onLoad logic will handle the first visibility state correctly.
+//     }, [pathname, updateTawkVisibility]); // Re-run when path changes
+
+//     // --- Render Script ---
+//     if (!tawkToSrc) {
+//         console.warn("TawkToManager: Missing Tawk.to Property ID or Widget ID. Tawk.to disabled.");
+//         return null;
+//     }
+
+//     return (
+//         <Script
+//             id="tawkto-script-manager"
+//             strategy="lazyOnload"
+//             src={tawkToSrc}
+//             onError={(e) => {
+//                 console.error('TawkToManager: Tawk.to script failed to load:', e);
+//                 tawkApiReady.current = false; // Ensure not marked ready on error
+//             }}
+//         />
+//     );
+// }
+
 // app/components/TawkToManager.tsx
 "use client";
 
@@ -132,13 +300,16 @@ const shouldShowWidgetBasedOnPath = (currentPath: string): boolean => {
     const isAdminPath = currentPath.startsWith('/admin');
     const isAuthPath = currentPath.startsWith('/auth');
     const isDashboardPath = currentPath.startsWith('/dashboard');
-    const isYourAccountPath = currentPath.startsWith('/dashboard/your-account');
+    // Specific check for the target page if Tawk needs unique behavior there
+    const isYourAccountPath = currentPath === '/dashboard/your-account'; // Use exact match
 
     if (isAdminPath || isAuthPath) return false;
+
+    // Example: Show on '/dashboard/your-account', hide on other dashboard pages
     if (isDashboardPath) return isYourAccountPath;
+
     return true; // Default show for public pages
 };
-
 
 // --- TawkToManager Component ---
 export default function TawkToManager() {
@@ -146,19 +317,17 @@ export default function TawkToManager() {
     const tawkApiReady = useRef(false);
     const pathnameRef = useRef(pathname);
 
+    // Keep pathnameRef updated for Tawk API callbacks
     useEffect(() => {
         pathnameRef.current = pathname;
     }, [pathname]);
 
-    // --- Update Visibility Function ---
-    // Ensures API is ready and methods exist before calling
+    // --- Update Tawk Visibility Function (Unchanged from your version) ---
     const updateTawkVisibility = useCallback((show: boolean, reason: string) => {
-        // We primarily rely on tawkApiReady flag now, set only when methods are confirmed
         if (tawkApiReady.current && window.Tawk_API) {
             try {
                 if (show) {
                     console.log(`TawkToManager: Showing widget (${reason}) for path: ${pathnameRef.current}`);
-                    // Check specifically for showWidget before calling
                     if (typeof window.Tawk_API.showWidget === 'function') {
                        window.Tawk_API.showWidget();
                     } else {
@@ -166,7 +335,6 @@ export default function TawkToManager() {
                     }
                 } else {
                     console.log(`TawkToManager: Hiding widget (${reason}) for path: ${pathnameRef.current}`);
-                     // Check specifically for hideWidget before calling
                     if (typeof window.Tawk_API.hideWidget === 'function') {
                        window.Tawk_API.hideWidget();
                     } else {
@@ -179,22 +347,15 @@ export default function TawkToManager() {
         } else {
              console.log(`TawkToManager: Tawk API not ready. Cannot update visibility (${reason}) for path: ${pathnameRef.current}`);
         }
-    }, []); // No dependencies needed as it uses refs and window
+    }, []);
 
-    // --- Setup Tawk_API.onLoad ---
-    useEffect(() => {
-        // Ensure Tawk_API exists on window
+    // --- Setup Tawk_API.onLoad (Unchanged from your version) ---
+     useEffect(() => {
         if (!window.Tawk_API) {
             window.Tawk_API = {} as TawkAPI;
         }
-
-        // Define the onLoad callback
         window.Tawk_API.onLoad = () => {
             console.log("TawkToManager: Tawk_API.onLoad fired.");
-
-            // --- HIDE FIRST STRATEGY ---
-            // Immediately try to hide the widget as soon as Tawk signals it's ready.
-            // This prevents the flash of default visibility.
             try {
                 if (typeof window.Tawk_API?.hideWidget === 'function') {
                     console.log("TawkToManager: Tawk_API.onLoad - Pre-emptively hiding widget.");
@@ -205,52 +366,62 @@ export default function TawkToManager() {
             } catch (e) {
                 console.error("TawkToManager: Error during pre-emptive hide:", e);
             }
-            // --- END HIDE FIRST ---
 
-            // Now, check if API methods are fully available
-            if (typeof window.Tawk_API?.showWidget === 'function' &&
-                typeof window.Tawk_API?.hideWidget === 'function')
+            if (typeof window.Tawk_API?.showWidget === 'function' && typeof window.Tawk_API?.hideWidget === 'function')
             {
                 console.log("TawkToManager: Tawk API methods confirmed.");
-                tawkApiReady.current = true; // Mark API as ready
-
-                // Determine visibility based on path rules
+                tawkApiReady.current = true;
                 const shouldShow = shouldShowWidgetBasedOnPath(pathnameRef.current);
-
-                // Only show if the rules allow it (it's already hidden otherwise)
                 if (shouldShow) {
                     updateTawkVisibility(true, 'initial load - rules allow');
                 } else {
                      console.log("TawkToManager: Tawk_API.onLoad - Widget remains hidden based on path rules.");
-                     // No need to call hide again, but ensure state is consistent
-                     // updateTawkVisibility(false, 'initial load - rules deny'); // Optional: Call hide again for super-safety/logging
                 }
             } else {
                 console.error("TawkToManager: Tawk_API.onLoad fired, but showWidget/hideWidget methods are still missing or not functions!");
                 tawkApiReady.current = false;
             }
         };
-
-        // Cleanup
         return () => {
             if (window.Tawk_API && window.Tawk_API.onLoad) {
                  window.Tawk_API.onLoad = undefined;
             }
         };
-    }, [updateTawkVisibility]); // Dependency array
+    }, [updateTawkVisibility]); // Keep dependency
 
-
-    // --- Effect for Path Changes (Handles Navigation AFTER initial load) ---
+    // --- Effect for Tawk Visibility on Path Changes (Unchanged from your version) ---
      useEffect(() => {
-        // Only run updates if the API has been marked as ready by the onLoad callback
         if (tawkApiReady.current) {
             const shouldShow = shouldShowWidgetBasedOnPath(pathname);
             updateTawkVisibility(shouldShow, 'navigation');
         }
-        // If API is not ready, the initial onLoad logic will handle the first visibility state correctly.
-    }, [pathname, updateTawkVisibility]); // Re-run when path changes
+    }, [pathname, updateTawkVisibility]); // Keep dependencies
 
-    // --- Render Script ---
+    // --- *** NEW EFFECT: Manage Body Class based on Path *** ---
+    useEffect(() => {
+        const targetPath = '/dashboard/your-account';
+        const bodyClass = 'your-account-page-active'; // Choose your desired class name
+
+        // Check if the current path matches the target path
+        if (pathname === targetPath) {
+            document.body.classList.add(bodyClass);
+            console.log(`BodyClassManager: Added class '${bodyClass}' for path: ${pathname}`);
+
+            // Return a cleanup function to remove the class when the path changes
+            // away from the target path OR when the component unmounts.
+            return () => {
+                document.body.classList.remove(bodyClass);
+                console.log(`BodyClassManager: Removed class '${bodyClass}' (cleanup)`);
+            };
+        } else {
+             // Ensure the class is removed if the path is not the target one
+             // This handles cases where the component might mount on a different page
+             // or when navigating *away* from the target page.
+             document.body.classList.remove(bodyClass);
+        }
+    }, [pathname]); // Re-run this effect whenever the pathname changes
+
+    // --- Render Script (Unchanged from your version) ---
     if (!tawkToSrc) {
         console.warn("TawkToManager: Missing Tawk.to Property ID or Widget ID. Tawk.to disabled.");
         return null;
@@ -263,7 +434,7 @@ export default function TawkToManager() {
             src={tawkToSrc}
             onError={(e) => {
                 console.error('TawkToManager: Tawk.to script failed to load:', e);
-                tawkApiReady.current = false; // Ensure not marked ready on error
+                tawkApiReady.current = false;
             }}
         />
     );
