@@ -242,16 +242,111 @@
 
 
 
+// // app/(dashboard)/layout.tsx
+// "use client";
+
+// import React, { useState, useEffect, ReactNode } from "react";
+// import { useAuth } from "../../contexts/AuthContext";
+// import { useRouter, usePathname } from "next/navigation"; // <-- Import usePathname
+// import Sidebar from "../../dashboard/components/Sidebar"; // Adjust path if necessary
+// import Header from "../../dashboard/components/Header"; // Adjust path if necessary
+// import BackToTopButton from '../../dashboard/components/BackToTopButton'; // Adjust path if necessary
+// import TawkToScript from "../../components/TawkToScript"; // <-- Import TawkToScript (Adjust path if necessary relative to this file)
+
+
+// interface UserType {
+//   id: string;
+//   email: string;
+//   name?: string;
+// }
+
+// interface DashboardLayoutProps {
+//   children: ReactNode;
+// }
+
+// export default function DashboardLayout({ children }: DashboardLayoutProps) {
+//   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+
+//   // Type assertion might be needed if useAuth isn't typed
+//   const { user, loading } = useAuth() as { user: UserType | null; loading: boolean };
+
+//   const router = useRouter();
+//   const pathname = usePathname(); // <-- Get the current pathname
+
+//   // Redirect logic
+//   useEffect(() => {
+//     if (!loading && !user) {
+//       router.push("/auth/login");
+//     }
+//   }, [user, loading, router]);
+
+//   // Logic to determine if Tawk.to should be shown
+//   const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
+//   const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
+
+//   const tawkToSrc =
+//     tawkToPropertyId && tawkToWidgetId
+//       ? `https://embed.tawk.to/${tawkToPropertyId}/${tawkToWidgetId}`
+//       : null;
+
+//   // <-- Define the condition for showing Tawk.to -->
+//   const shouldShowTawkTo = pathname === '/dashboard/your-account' || pathname.startsWith('/dashboard/your-account/');
+//   // <----------------------------------------------->
+
+
+//   const toggleSidebar = (): void => {
+//     setIsSidebarOpen(!isSidebarOpen);
+//   };
+
+//   if (loading) {
+//     return <p>Loading dashboard...</p>;
+//   }
+
+//   if (!user) {
+//     return null; // Or render a loading/redirecting spinner if preferred
+//   }
+
+//   return (
+//     <div className="dashboard-layout">
+//       <div className="max-w-[1440px] mx-auto">
+//         <div className="flex min-h-screen">
+//           <Sidebar
+//             sidebarOpen={isSidebarOpen}
+//             toggleSidebar={toggleSidebar}
+//           />
+//           <div className="flex flex-col flex-grow lg:w-[calc(100%-256px)] w-full">
+//             <Header toggleSidebar={toggleSidebar} />
+//             <main className="flex-grow">
+//               <div className="max-w-5xl mx-auto px-4 pt-4 sm:px-6 lg:px-8 pb-24 sm:pb-10 lg:pb-10">
+//                 {children}
+//               </div>
+//             </main>
+//           </div>
+//         </div>
+//       </div>
+//       <BackToTopButton position="right" mobileBehavior="hidden"/>
+
+//       {/* <-- Conditionally render Tawk.to script --> */}
+//       {tawkToSrc && shouldShowTawkTo && (
+//           <TawkToScript src={tawkToSrc} />
+//       )}
+//       {/* <-------------------------------------> */}
+
+//     </div>
+//   );
+// }
+
+
+
 // app/(dashboard)/layout.tsx
 "use client";
 
 import React, { useState, useEffect, ReactNode } from "react";
 import { useAuth } from "../../contexts/AuthContext";
-import { useRouter, usePathname } from "next/navigation"; // <-- Import usePathname
+import { useRouter } from "next/navigation"; // <-- Import usePathname
 import Sidebar from "../../dashboard/components/Sidebar"; // Adjust path if necessary
 import Header from "../../dashboard/components/Header"; // Adjust path if necessary
 import BackToTopButton from '../../dashboard/components/BackToTopButton'; // Adjust path if necessary
-import TawkToScript from "../../components/TawkToScript"; // <-- Import TawkToScript (Adjust path if necessary relative to this file)
 
 
 interface UserType {
@@ -271,7 +366,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { user, loading } = useAuth() as { user: UserType | null; loading: boolean };
 
   const router = useRouter();
-  const pathname = usePathname(); // <-- Get the current pathname
 
   // Redirect logic
   useEffect(() => {
@@ -279,19 +373,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       router.push("/auth/login");
     }
   }, [user, loading, router]);
-
-  // Logic to determine if Tawk.to should be shown
-  const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
-  const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
-
-  const tawkToSrc =
-    tawkToPropertyId && tawkToWidgetId
-      ? `https://embed.tawk.to/${tawkToPropertyId}/${tawkToWidgetId}`
-      : null;
-
-  // <-- Define the condition for showing Tawk.to -->
-  const shouldShowTawkTo = pathname === '/dashboard/your-account' || pathname.startsWith('/dashboard/your-account/');
-  // <----------------------------------------------->
 
 
   const toggleSidebar = (): void => {
@@ -325,13 +406,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         </div>
       </div>
       <BackToTopButton position="right" mobileBehavior="hidden"/>
-
-      {/* <-- Conditionally render Tawk.to script --> */}
-      {tawkToSrc && shouldShowTawkTo && (
-          <TawkToScript src={tawkToSrc} />
-      )}
-      {/* <-------------------------------------> */}
-
     </div>
   );
 }

@@ -26,30 +26,61 @@
 
 
 
-// backend/routes/admin/user.admin.routes.js
+// // backend/routes/admin/user.admin.routes.js
+// import express from 'express';
+// import adminUserController from '../../controllers/admin/user.admin.controller.js';
+// import authMiddleware from '../../middleware/auth.middleware.js'; // Assuming middleware needed
+
+// const router = express.Router();
+
+// // --- Route for getting ALL users (You likely have this) ---
+// router.get(
+//     '/',
+//     authMiddleware.protect,
+//     authMiddleware.admin,
+//     adminUserController.getAllUsersAdmin
+// );
+
+// // --- !!! CHECK THIS ROUTE !!! ---
+// // Make sure you have a route like this to handle GET requests with an ID
+// router.get(
+//     '/:userId',         // <<< Does this route exist? Does it use :userId?
+//     authMiddleware.protect,
+//     authMiddleware.admin,
+//     adminUserController.getUserDetailsAdmin // <<< Is this controller function defined and imported?
+// );
+
+// // Add more admin user routes here (e.g., update, delete user by admin)
+
+// export default router;
+
+
+// backend/src/routes/admin/user.admin.routes.js
 import express from 'express';
-import adminUserController from '../../controllers/admin/user.admin.controller.js';
-import authMiddleware from '../../middleware/auth.middleware.js'; // Assuming middleware needed
+import userAdminController from '../../controllers/admin/user.admin.controller.js';
+import userAdminValidators from '../../validators/admin/user.admin.validators.js';
+import inboxAdminRoutes from './inbox.admin.routes.js'; // <-- Import the nested inbox routes
 
 const router = express.Router();
 
-// --- Route for getting ALL users (You likely have this) ---
-router.get(
-    '/',
-    authMiddleware.protect,
-    authMiddleware.admin,
-    adminUserController.getAllUsersAdmin
-);
+// --- Middleware for these routes is applied in server.js ---
+// (authMiddleware.protect, authMiddleware.admin)
 
-// --- !!! CHECK THIS ROUTE !!! ---
-// Make sure you have a route like this to handle GET requests with an ID
-router.get(
-    '/:userId',         // <<< Does this route exist? Does it use :userId?
-    authMiddleware.protect,
-    authMiddleware.admin,
-    adminUserController.getUserDetailsAdmin // <<< Is this controller function defined and imported?
-);
+// GET /api/admin/users - Get all users for admin list
+router.get('/', userAdminController.getAllUsersAdmin);
 
-// Add more admin user routes here (e.g., update, delete user by admin)
+// GET /api/admin/users/:userId - Get specific user details for admin view
+router.get('/:userId', userAdminValidators.validateGetUserById, userAdminController.getUserDetailsAdmin);
+
+// --- Nest the inbox routes under a specific user ---
+// This will handle POST /api/admin/users/:userId/inbox
+router.use('/:userId/inbox', inboxAdminRoutes); // <-- Use the imported routes
+
+// PUT /api/admin/users/:userId - Update user details (Example - add later if needed)
+// router.put('/:userId', userAdminValidators.validateUpdateUser, userAdminController.updateUserAdmin);
+
+// DELETE /api/admin/users/:userId - Delete a user (Example - add later if needed)
+// router.delete('/:userId', userAdminValidators.validateDeleteUser, userAdminController.deleteUserAdmin);
+
 
 export default router;

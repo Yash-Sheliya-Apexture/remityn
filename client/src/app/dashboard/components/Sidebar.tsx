@@ -3424,11 +3424,11 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
               {isMobileView && (
                 <button
                   onClick={toggleSidebar}
-                  className="absolute top-1/2 right-3 -translate-y-1/2 lg:hidden bg-lightborder cursor-pointer hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox z-10 p-2 rounded-full transition-colors duration-300 ease-in-out"
+                  className="absolute top-1/2 right-3 -translate-y-1/2 lg:hidden bg-lightborder cursor-pointer hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox z-10 p-2.5 rounded-full transition-colors duration-300 ease-in-out"
                   aria-label="Close sidebar"
                 >
                   <IoClose
-                    size={20}
+                    size={26}
                     className="text-mainheading dark:text-primary"
                   />
                 </button>
@@ -3491,7 +3491,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                             toggleSidebar();
                           }
                         }}
-                        className={`relative w-full flex items-center gap-3 py-3 px-4 font-medium rounded-full transition duration-200 mb-3
+                        className={`relative w-full flex items-center gap-3 py-3 px-6 font-medium rounded-full transition duration-200 mb-3
                           ${
                             isActive
                               ? "lg:bg-transparent dark:lg:bg-transparent bg-primary/60 text-neutral-900 dark:bg-primarybox dark:text-primary" // Active styles
@@ -3538,7 +3538,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                   ) : (
                     <button
                       onClick={handleLogout}
-                      className="w-full flex items-center space-x-3 py-3 px-4 font-medium rounded-full transition duration-200 mb-2 cursor-pointer text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
+                      className="w-full flex items-center space-x-3 py-3 px-6 font-medium rounded-full transition duration-200 mb-2 cursor-pointer text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
                       // disabled={isLoadingBalances} // Optional: disable during loading
                     >
                       <VscSignOut className="w-6 h-6 flex-shrink-0" />

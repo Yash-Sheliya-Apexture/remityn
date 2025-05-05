@@ -1768,7 +1768,7 @@ export default function RecipientsPage() {
             {!isSmallScreen && (
               <button
                 type="button"
-                className="inline-flex items-center bg-primary text-neutral-900 hover:bg-primaryhover space-x-3 py-3 px-10 h-12.5 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styles
+                className="inline-flex items-center bg-primary text-neutral-900 hover:bg-primaryhover space-x-3 py-3 px-8 h-12.5 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styles
                 onClick={handleAddRecipientClick}
                 disabled={isAuthLoading} // *** Disable button while auth is loading ***
               >
