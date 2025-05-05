@@ -1,7 +1,6 @@
 // frontend/app/dashboard/components/transactionDetails/TransactionDetailsPageSkeleton.tsx
 import React from "react";
 import { Skeleton } from "@/components/ui/skeleton"; // Adjust path as needed
-import { cn } from "@/lib/utils"; // Adjust path as needed
 
 const TransactionDetailsPageSkeleton = () => {
   return (
