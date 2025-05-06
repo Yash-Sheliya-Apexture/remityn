@@ -272,6 +272,7 @@ const InboxPage: React.FC = () => {
                     <h1 className="text-2xl md:text-3xl font-semibold text-mainheading dark:text-white flex items-center gap-2">
                         <Inbox className="size-7 text-primary" /> Your Inbox
                     </h1>
+                    
                      {/* Refresh Button - Show unless viewing details and no error */}
                     { (!selectedMessage || error) && (
                          <Button variant="outline" size="sm" onClick={handleRefresh} disabled={loading}>
@@ -347,3 +348,6 @@ const InboxPage: React.FC = () => {
 };
 
 export default InboxPage;
+
+
+
