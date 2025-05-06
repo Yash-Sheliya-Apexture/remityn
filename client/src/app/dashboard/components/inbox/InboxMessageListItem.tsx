@@ -30,34 +30,30 @@ export const InboxMessageListItem: React.FC<InboxMessageListItemProps> = React.m
             onClick={() => onSelect(message)}
             className={cn(
                 "cursor-pointer hover:shadow-md transition-shadow duration-150 border relative overflow-hidden",
-                !message.isRead ? "bg-background border-primary/30" : "bg-muted/50 border-border/50"
+                !message.isRead ? "border-primary/30" : "border-border/50"
             )}
             aria-label={`Select message from ${message.sender || 'System'} with subject ${message.subject}`}
         >
-            {/* Unread indicator */}
-            {!message.isRead && (
-                <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-primary" aria-hidden="true"></div>
-            )}
             <CardContent className={cn(
                 "p-4 flex items-start gap-4",
                 !message.isRead && "pl-6" // Adjust padding for indicator
             )}>
                 {/* Icon */}
                 <div className={cn(
-                        "flex-shrink-0 pt-1",
+                        "flex justify-center items-center w-10 h-10 rounded-3xl bg-primarybox ",
                         !message.isRead ? "text-primary" : "text-muted-foreground"
                     )} aria-hidden="true">
                     {!message.isRead ? <Mail className="size-5" /> : <MailOpen className="size-5" />}
                 </div>
 
                 {/* Message Info */}
-                <div className="flex-grow overflow-hidden mr-10"> {/* Space for delete button */}
+                <div className="flex-grow overflow-hidden mr-10 w-[calc(100%-110px)]"> {/* Space for delete button */}
                      <div className="flex justify-between items-baseline mb-1 text-xs">
                         <p className={cn(
                             "font-medium text-muted-foreground truncate",
                             !message.isRead && "text-foreground/90 dark:text-foreground/80"
-                        )} title={message.sender}>
-                            From: {message.sender || 'System'}
+                        )} title='Website name'>
+                            From: Website Name
                         </p>
                         <time dateTime={message.sentAt} className="text-muted-foreground flex-shrink-0 ml-2 whitespace-nowrap">
                             {formatDistanceToNow(new Date(message.sentAt), { addSuffix: true })}
