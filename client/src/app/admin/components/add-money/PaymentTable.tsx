@@ -606,7 +606,7 @@ const PaymentTable: React.FC<PaymentTableProps> = ({
   }
 
   return (
-    <div className="rounded-xl border overflow-hidden dark:border-neutral-800">
+    <div className="rounded-xl border overflow-hidden">
       <div className="overflow-x-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
         <table className="min-w-full overflow-hidden">
           <PaymentTableHeader
@@ -614,12 +614,12 @@ const PaymentTable: React.FC<PaymentTableProps> = ({
             sortField={sortField}
             sortDirection={sortDirection}
           />
-          <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800 overflow-hidden">
+          <tbody className="divide-y overflow-hidden">
             {filteredPayments.length === 0 ? (
               <tr>
                 <td
                   colSpan={7}
-                  className="px-4 py-10 text-center text-gray-500 dark:text-gray-400"
+                  className="px-4 py-10 text-center text-gray-500 dark:text-gray-300"
                 >
                   No payments found.
                 </td>
@@ -643,7 +643,7 @@ const PaymentTable: React.FC<PaymentTableProps> = ({
                       <span className="font-medium capitalize text-neutral-900 dark:text-white">
                         {payment.user?.fullName || "N/A"}
                       </span>
-                      <span className="text-sm text-gray-500 dark:text-gray-400">
+                      <span className="text-sm text-gray-500 dark:text-gray-300">
                         {payment.user?.email || "N/A"}
                       </span>
                     </div>

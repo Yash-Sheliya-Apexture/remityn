@@ -1233,7 +1233,7 @@ export default function KycRejectedPage() {
     // Adopt layout and max-width from other pages
     <div className="mx-auto max-w-2xl py-8 px-4">
       {/* Adopt Card styling from other pages - standard border, shadow, animation */}
-      <Card className="w-full border-border/50 shadow animate-fadeIn overflow-hidden">
+      <Card className="w-full border-border/50 shadow-none animate-fadeIn overflow-hidden">
         {/* Adopt Header structure and styling, use Accent background */}
         <CardHeader className="items-center text-center p-4 md:p-8 bg-accent">
           {/* Icon Container - styled with Destructive theme */}
@@ -1265,15 +1265,17 @@ export default function KycRejectedPage() {
         {/* Adopt Content structure */}
         <CardContent className="p-4 md:p-8 space-y-6">
           {/* Rejection Reason Alert - Crucial information */}
-          <Alert variant="destructive" className="text-left">
-            <FileWarning className="h-5 w-5" />
-            <AlertTitle className="font-semibold">
-              Reason for Rejection
-            </AlertTitle>
-            <AlertDescription>
-              {rejectionReason ||
-                "No specific reason provided. Common issues include unclear document images, expired documents, or mismatched information. Please review your submission carefully."}
-            </AlertDescription>
+          <Alert className="bg-red-100 border-red-300 dark:bg-red-600/20 dark:border-red-700 rounded-lg p-4">
+            <FileWarning className="h-5 w-5 flex-shrink-0 mt-1 text-red-700 dark:text-red-400 " />
+            <div>
+              <AlertTitle className="font-medium tracking-normal text-red-700 dark:text-red-400  text-base">
+                Reason for Rejection
+              </AlertTitle>
+              <AlertDescription className="text-red-600 dark:text-red-300">
+                {rejectionReason ||
+                  "No specific reason provided. Common issues include unclear document images, expired documents, or mismatched information. Please review your submission carefully."}
+              </AlertDescription>
+            </div>
           </Alert>
 
           {/* Optional: Add separator for visual structure */}
@@ -1327,9 +1329,9 @@ export default function KycRejectedPage() {
           {/* Support Link - Moved to footer */}
           <div className="w-full text-center pt-4">
             <p className="text-sm text-neutral-900 dark:text-white">
-              Need help?
+              Need help?{" "}
               <Link href="/support" className="underline hover:text-primary">
-                Contact support
+                Contact support{" "}
               </Link>
               <HelpCircle className="inline h-4 w-4 ml-1" />
             </p>

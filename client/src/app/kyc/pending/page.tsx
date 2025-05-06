@@ -940,7 +940,7 @@ export default function KycPendingPage() {
   // --- Main Pending Content ---
   return (
     <div className="mx-auto max-w-2xl">
-      <Card className="w-full border-border/50 shadow animate-fadeIn overflow-hidden">
+      <Card className="w-full border-border/50 shadow-none animate-fadeIn overflow-hidden">
         <CardHeader className="items-center text-center p-4 md:p-8 bg-accent">
           <div className="mb-4 w-full inline-flex justify-center">
             <div className="h-16 w-16 flex items-center justify-center rounded-full bg-primary/20 text-primaryhover border border-primary/30 ">
@@ -976,22 +976,31 @@ export default function KycPendingPage() {
 
           <Separator className="my-6" />
 
-          <Alert>
-            <MailCheck className="h-5 w-5" />
-            <AlertTitle className="font-medium text-neutral-900 dark:text-white">Email Notification</AlertTitle>
+          <Alert className="p-4 rounded-lg">
+            <MailCheck className="h-5 w-5 flex-shrink-0 mt-1 text-neutral-900 dark:text-white" />
+            <div>
+
+            <AlertTitle className="font-medium text-neutral-900 dark:text-white tracking-normal text-base">
+              Email Notification
+            </AlertTitle>
             <AlertDescription className="text-gray-500 dark:text-gray-300">
               We will notify you via email as soon as the review process is
               complete.
             </AlertDescription>
+            </div>
           </Alert>
 
-          <Alert>
-            <Info className="h-5 w-5" />
-            <AlertTitle className="font-medium text-neutral-900 dark:text-white">Account Access</AlertTitle>
-            <AlertDescription className="text-gray-500 dark:text-gray-300">
-              While your verification is pending, some account features might be
-              limited. You can still access your dashboard.
-            </AlertDescription>
+          <Alert className="p-4 rounded-lg">
+            <Info className="h-5 w-5 flex-shrink-0 mt-1 text-neutral-900 dark:text-white" />
+            <div>
+              <AlertTitle className="font-medium text-neutral-900 dark:text-white tracking-normal text-base">
+                Account Access
+              </AlertTitle>
+              <AlertDescription className="text-gray-500 dark:text-gray-300">
+                While your verification is pending, some account features might
+                be limited. You can still access your dashboard.
+              </AlertDescription>
+            </div>
           </Alert>
         </CardContent>
 

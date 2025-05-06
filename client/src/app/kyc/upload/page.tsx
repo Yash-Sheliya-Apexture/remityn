@@ -1738,7 +1738,7 @@ const FileInput: React.FC<FileInputProps> = ({
         // Display when file is selected
         <div
           className={cn(
-            "p-3 border rounded-md flex flex-col sm:flex-row items-center gap-3 relative", // Added relative for potential absolute positioning inside
+            "p-4 border rounded-lg flex flex-col sm:flex-row items-center gap-3 relative", // Added relative for potential absolute positioning inside
             "border-green-600 bg-green-50 dark:bg-green-900/20 dark:border-green-700" // Adjusted colors
           )}
         >
@@ -1775,15 +1775,15 @@ const FileInput: React.FC<FileInputProps> = ({
             type="button"
             onClick={handleRemoveFile}
             className={cn(
-              "inline-flex items-center justify-center text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300",
-              "bg-red-100 hover:bg-red-200 dark:bg-red-900/30 dark:hover:bg-red-900/50",
-              "ml-0 mt-2 sm:mt-0 sm:ml-2 py-1 px-3 rounded-md text-xs font-medium transition-colors", // Adjusted padding/size
+              "inline-flex items-center justify-center text-red-600",
+              "bg-red-100 dark:bg-red-600/20 hover:bg-red-200 dark:hover:bg-red-600/30",
+              "ml-0 mt-2 sm:mt-0 sm:ml-2 py-1.5 px-4 rounded-full text-sm font-medium transition-all duration-75 ease-linear", // Adjusted padding/size
               disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
             )}
             disabled={disabled}
             aria-label={`Remove ${label}`}
           >
-            <FileX className="h-3.5 w-3.5 mr-1" /> Remove
+            <FileX className="h-4 w-4 mr-1" /> Remove
           </button>
         </div>
       ) : (
@@ -1847,8 +1847,8 @@ const FileInput: React.FC<FileInputProps> = ({
       )}
       {/* Error Message Area */}
       {error && !file && ( // Only show error if there's an error *and* no file is currently selected
-        <p className="text-sm text-destructive flex items-center gap-1 pt-1">
-          <AlertTriangle className="h-4 w-4 flex-shrink-0" />
+        <p className="text-sm text-red-700 dark:text-red-400 flex items-center gap-1 pt-1">
+          <AlertTriangle className="h-5 w-5 flex-shrink-0" />
           {error}
         </p>
       )}
@@ -1980,7 +1980,7 @@ export default function KycUploadPage() {
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto shadow border animate-fadeIn sm:p-8 p-4">
+    <Card className="w-full max-w-2xl mx-auto shadow-none border animate-fadeIn sm:p-8 p-4">
       <CardHeader className="border-b mb-6 pb-6 space-y-2">
         <CardTitle className="sm:text-2xl text-xl font-semibold tracking-tight flex items-start gap-2 text-mainheading dark:text-white">
           <UploadCloud className="h-6 w-6 text-primary mt-1" />
@@ -1994,15 +1994,22 @@ export default function KycUploadPage() {
           <span className="text-red-500">*</span> are required.
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6"> {/* Increased spacing */}
+      <CardContent className="space-y-6">
+        {" "}
+        {/* Increased spacing */}
         {formError && (
-          <Alert variant="destructive">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>Missing Documents</AlertTitle>
-            <AlertDescription>{formError}</AlertDescription>
+          <Alert className="bg-red-100 border-red-300 dark:bg-red-600/20 dark:border-red-700 rounded-lg p-4 mb-6">
+            <AlertTriangle className="h-5 w-5 flex-shrink-0 mt-0.5 text-red-700 dark:text-red-400" />
+            <div>
+              <AlertTitle className="font-medium tracking-normal text-red-700 dark:text-red-400 text-base">
+                Missing Documents
+              </AlertTitle>
+              <AlertDescription className="text-red-600 dark:text-red-300">
+                {formError}
+              </AlertDescription>
+            </div>
           </Alert>
         )}
-
         {/* Front ID Upload */}
         <FileInput
           id="idFrontFile"
@@ -2012,7 +2019,6 @@ export default function KycUploadPage() {
           onFileChange={(file) => handleFileUpdate("idFrontFile", file)}
           disabled={isProcessing}
         />
-
         {/* Back ID Upload (Conditional) */}
         {isBackRequired && (
           <FileInput
@@ -2024,22 +2030,25 @@ export default function KycUploadPage() {
             disabled={isProcessing}
           />
         )}
-
         {/* Info for Passport */}
         {kycData.idType === "passport" && (
-          <Alert className="mt-4 border-blue-300 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20">
-            <CheckCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-            <AlertTitle className="text-blue-800 dark:text-blue-200 font-semibold">
-              Passport Upload
-            </AlertTitle>
-            <AlertDescription className="text-blue-700 dark:text-blue-300">
-              Only the main photo page (the page with your photo and personal details) is required.
-            </AlertDescription>
+          <Alert className="bg-blue-100 border-blue-300 dark:bg-blue-900/40 dark:border-blue-700 rounded-lg p-4">
+            <CheckCircle className="text-blue-600 dark:text-blue-400 h-5 w-5 flex-shrink-0 mt-0.5" />
+            <div>
+              <AlertTitle className="text-blue-800 dark:text-blue-200 font-semibold tracking-normal">
+                Passport Upload
+              </AlertTitle>
+              <AlertDescription className="text-blue-700 dark:text-blue-300">
+                Only the main photo page (the page with your photo and personal
+                details) is required.
+              </AlertDescription>
+            </div>
           </Alert>
         )}
-
         {/* Navigation Buttons */}
-        <div className="flex flex-col sm:flex-row justify-between items-center pt-6 border-t mt-8 gap-4"> {/* Increased margin-top */}
+        <div className="flex flex-col sm:flex-row justify-between items-center pt-6 border-t mt-8 gap-4">
+          {" "}
+          {/* Increased margin-top */}
           <button
             type="button"
             className="inline-flex items-center justify-center bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
@@ -2054,11 +2063,84 @@ export default function KycUploadPage() {
             onClick={handleContinue}
             disabled={isProcessing || !isFormValid} // Disable if processing OR if required files are missing
           >
-            Continue to Review
             {isProcessing ? (
-              <Loader2 className="ml-2 size-4.5 animate-spin" />
+              // ----- Loading State -----
+              <>
+                <svg
+                  className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true" // Hide decorative icon from screen readers
+                >
+                  <path
+                    d="M12 2V6"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M12 18V22"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M4.93 4.93L7.76 7.76"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M16.24 16.24L19.07 19.07"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M2 12H6"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M18 12H22"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M4.93 19.07L7.76 16.24"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M16.24 7.76L19.07 4.93"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <span>Continue to Review</span>
+              </>
             ) : (
-              <ArrowRight className="ml-2 size-4.5" />
+              // ----- End Loading State -----
+              // ----- Normal State -----
+              <>
+                <span>Continue to Review</span>
+                <ArrowRight className="ml-2 size-5" aria-hidden="true" />{" "}
+                {/* Use ml-2 for margin before the icon */}
+              </>
+              // ----- End Normal State -----
             )}
           </button>
         </div>

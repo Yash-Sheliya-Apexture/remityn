@@ -987,7 +987,7 @@ const TasksPage: React.FC = () => {
                       className="block"
                     >
                       <div className="block hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer">
-                        <div className="flex items-center gap-4">
+                        <div className="flex sm:items-center sm:gap-4 gap-2">
                           {/* Icon */}
                           <div className="relative flex-shrink-0">
                             <div className="p-3 bg-yellow-100 dark:bg-yellow-800/60 rounded-full flex items-center justify-center">
@@ -998,17 +998,17 @@ const TasksPage: React.FC = () => {
                             </div>
                             <MdErrorOutline
                               size={20}
-                              className="absolute -bottom-1 -right-1 text-orange-500 bg-white dark:bg-gray-800 rounded-full p-0.5 shadow" // Adjusted background for dark mode visibility
+                              className="absolute top-8 -right-1 text-orange-500 bg-white dark:bg-gray-800 rounded-full p-0.5 shadow" // Adjusted background for dark mode visibility
                             />
                           </div>
                           {/* Details & Action */}
                           <div className="flex-grow flex flex-row justify-between items-center gap-4">
                             {/* Text Details */}
                             <div className="flex-grow">
-                              <p className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg">
+                              <p className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-lg text-15px">
                                 To your {currency} balance
                               </p>
-                              <p className="text-sm text-orange-600 dark:text-orange-400 font-semibold mt-1">
+                              <p className="sm:text-sm text-13px text-orange-600 dark:text-orange-400 font-semibold mt-1">
                                 {" "}
                                 {/* Adjusted text color for dark mode */}
                                 Waiting for you to pay
@@ -1039,7 +1039,7 @@ const TasksPage: React.FC = () => {
             <div className="flex justify-center mt-4">
               <button
                 onClick={handleToggleViewMoreLess}
-                className="bg-lightgray dark:bg-primarybox hover:dark:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-gray-300 transition-all duration-75 ease-linear focus:outline-none focus:ring-0 cursor-pointer" // Adjusted hover for dark mode
+                className="bg-lightgray hover:bg-lightborder dark:bg-primarybox hover:dark:bg-secondarybox text-neutral-900 dark:text-white px-4 py-2 rounded-full text-sm font-semibold transition-all duration-75 ease-linear focus:outline-none focus:ring-0 cursor-pointer" // Adjusted hover for dark mode
               >
                 {buttonText}
               </button>
