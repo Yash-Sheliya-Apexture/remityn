@@ -661,6 +661,7 @@ export const InboxMessageListItem: React.FC<InboxMessageListItemProps> =
                   >
                     {isUnread ? "New" : "Read"}
                   </Badge>
+                  
                   {/* Sender */}
                   <p
                     className={cn(
