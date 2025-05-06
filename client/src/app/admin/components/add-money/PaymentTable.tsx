@@ -643,7 +643,7 @@ const PaymentTable: React.FC<PaymentTableProps> = ({
                       <span className="font-medium capitalize text-neutral-900 dark:text-white">
                         {payment.user?.fullName || "N/A"}
                       </span>
-                      <span className="text-sm text-gray-500 dark:text-gray-400">
+                      <span className="text-sm text-gray-500 dark:text-gray-300">
                         {payment.user?.email || "N/A"}
                       </span>
                     </div>
