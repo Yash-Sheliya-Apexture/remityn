@@ -5673,7 +5673,7 @@ const AdminPaymentsPage: React.FC = () => {
     return (
       <div className="container mx-auto px-4 py-8 relative">
         <div className="space-y-6">
-          {/* Header */}
+          {/* Header Parts */}
           <div className="flex flex-wrap justify-between items-center gap-4">
             <h1 className="text-2xl font-bold text-mainheading dark:text-white">
               Payment Management

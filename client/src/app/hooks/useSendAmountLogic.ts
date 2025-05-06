@@ -223,6 +223,7 @@ export interface RecipientDetails {
     accountNumber?: string;
 }
 export interface SendSummary {
+    totalFee: any;
     sendAmount: number;
     receiveAmount: number;
     sendCurrencyCode: string;

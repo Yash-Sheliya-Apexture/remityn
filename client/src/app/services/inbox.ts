@@ -28,7 +28,7 @@ export interface UnreadCountResponse {
     unreadCount: number;
 }
 
-export interface MarkReadResponse extends InboxMessage {} // Returns the updated message
+export interface MarkReadResponse extends InboxMessage { } // Returns the updated message
 
 export interface DeleteResponse {
     success: boolean;
@@ -66,12 +66,11 @@ const getApiClient = () => {
         return Promise.reject(error);
     });
 
-     // Optional: Add response interceptor for centralized error handling (like 401 logout)
-     // client.interceptors.response.use(response => response, error => { ... });
+    // Optional: Add response interceptor for centralized error handling (like 401 logout)
+    // client.interceptors.response.use(response => response, error => { ... });
 
     return client;
 };
-
 
 // --- Service Functions ---
 
@@ -113,8 +112,8 @@ const markAsRead = async (messageId: string): Promise<MarkReadResponse> => {
 };
 
 const deleteMessage = async (messageId: string): Promise<DeleteResponse> => {
-     if (!messageId) throw new Error("Message ID is required.");
-     const apiClient = getApiClient();
+    if (!messageId) throw new Error("Message ID is required.");
+    const apiClient = getApiClient();
     try {
         const response = await apiClient.delete<DeleteResponse>(`/inbox/${messageId}`);
         return response.data;

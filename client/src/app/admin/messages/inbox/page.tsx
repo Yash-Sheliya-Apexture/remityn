@@ -1853,16 +1853,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 // Auth & Services
 import { useAuth } from '@/app/contexts/AuthContext';
-import inboxAdminService, { AdminUpdatePayload } from '../../services/admin/inbox';
-import type { AdminInboxMessage } from '../../services/admin/inbox'; // Removed AdminInboxListResponse as it's not directly used here
+import inboxAdminService, { AdminUpdatePayload } from '../../../services/admin/inbox';
+import type { AdminInboxMessage } from '../../../services/admin/inbox'; // Removed AdminInboxListResponse as it's not directly used here
 
 // Custom Components
-import EditMessageModal from '../components/message/inbox/EditMessageModal';
-import DeleteConfirmationModal from '../components/message/inbox/DeleteConfirmationModal';
-import InboxTable from '../components/message/inbox/InboxTable';
-import { InboxSortField } from '../components/message/inbox/InboxTableHeader';
-import Pagination from '../components/Pagination';
-import GenericFilters, { FiltersState } from '../components/GenericFilters'; // <-- IMPORT GenericFilters & FiltersState
+import EditMessageModal from '../../components/message/inbox/EditMessageModal';
+import DeleteConfirmationModal from '../../components/message/inbox/DeleteConfirmationModal';
+import InboxTable from '../../components/message/inbox/InboxTable';
+import { InboxSortField } from '../../components/message/inbox/InboxTableHeader';
+import Pagination from '../../components/Pagination';
+import GenericFilters, { FiltersState } from '../../components/GenericFilters'; // <-- IMPORT GenericFilters & FiltersState
 
 // Icons
 import { MessageSquare, RefreshCw, Check, X as XIcon, Filter } from 'lucide-react';
