@@ -101,10 +101,6 @@
 //   );
 // }
 
-
-
-
-
 import React from "react";
 import Link from "next/link";
 import { IoIosArrowForward } from "react-icons/io";
@@ -116,10 +112,12 @@ export default function SecurityAndPrivacyPage() {
   return (
     <section className="Security-Privacy-Wrapper">
       <div className="Security & Privacy">
-        <DashboardHeader title=" Security and privacy"/>
+        <DashboardHeader title=" Security and privacy" />
 
         <div className="mt-8">
-          <h4 className="sm:text-2xl text-xl font-semibold text-mainheading dark:text-white mb-3">Security</h4>
+          <h4 className="sm:text-2xl text-xl font-semibold text-mainheading dark:text-white mb-3">
+            Security
+          </h4>
 
           <div className="space-y-2">
             {/* password */}
@@ -129,11 +127,16 @@ export default function SecurityAndPrivacyPage() {
                 <div className="flex items-center gap-4 hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer group">
                   {/* Icon Container */}
                   <div className="bg-lightborder dark:bg-secondarybox p-3 rounded-full">
-                    <FiShield size={24} className="text-neutral-900 dark:text-white" />
+                    <FiShield
+                      size={24}
+                      className="text-neutral-900 dark:text-white"
+                    />
                   </div>
 
                   <div className="flex-grow">
-                    <p className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-xl">Password</p>
+                    <p className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-xl">
+                      Password
+                    </p>
                     <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
                       ********
                     </p>
@@ -141,7 +144,10 @@ export default function SecurityAndPrivacyPage() {
 
                   {/* Right Arrow Icon */}
                   <div className="ml-4">
-                    <IoIosArrowForward size={20} className="text-neutral-900 dark:text-white group-hover:translate-x-2.5 font-medium transition-transform ease-in-out duration-300" />
+                    <IoIosArrowForward
+                      size={20}
+                      className="text-neutral-900 dark:text-white group-hover:translate-x-2.5 font-medium transition-transform ease-in-out duration-300"
+                    />
                   </div>
                 </div>
               </Link>
@@ -150,31 +156,40 @@ export default function SecurityAndPrivacyPage() {
         </div>
 
         <div className="mt-8">
-          <h4 className="sm:text-2xl text-xl font-semibold text-mainheading dark:text-white mb-3">Privacy</h4>
+          <h4 className="sm:text-2xl text-xl font-semibold text-mainheading dark:text-white mb-3">
+            Privacy
+          </h4>
 
           <div className="space-y-2">
             <div className="flex items-center gap-4 hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear cursor-pointer group">
               {/* Icon Container */}
               <div className="bg-lightborder dark:bg-secondarybox p-3 rounded-full">
-                <ImInfo size={24} className="text-neutral-900 dark:text-white" />
+                <ImInfo
+                  size={24}
+                  className="text-neutral-900 dark:text-white"
+                />
               </div>
 
               {/* Text Content */}
-              <div className="flex-grow">
-                <p className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-xl">Privacy Policy</p>
+              <Link href="/privacy-policy" className="flex-grow">
+                <p className="font-medium leading-relaxed text-neutral-900 dark:text-white sm:text-xl">
+                  Privacy Policy
+                </p>
                 <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
                   Learn how we protect and use your personal information.
                 </p>
-              </div>
+              </Link>
 
               {/* Right Arrow Icon */}
               <div className="ml-4">
-                <IoIosArrowForward size={20} className="text-neutral-900 dark:text-white group-hover:translate-x-2.5 font-medium transition-transform ease-in-out duration-300" />
+                <IoIosArrowForward
+                  size={20}
+                  className="text-neutral-900 dark:text-white group-hover:translate-x-2.5 font-medium transition-transform ease-in-out duration-300"
+                />
               </div>
             </div>
           </div>
         </div>
-
       </div>
     </section>
   );

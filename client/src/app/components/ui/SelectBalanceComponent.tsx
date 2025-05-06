@@ -405,6 +405,8 @@
 
 // export default SelectBalanceComponent;
 
+
+
 // frontend/src/components/dashboard/shared/SelectBalanceComponent.tsx
 "use client";
 
@@ -463,7 +465,7 @@ const SelectBalanceComponent: React.FC<SelectBalanceComponentProps> = ({
   tokenExists,
 }) => {
   // --- Loading State ---
-  if (isLoading) {
+  if (  isLoading) {
     return (
       <>
         <Skeleton className="h-14 w-72 sm:w-96 mx-auto rounded-md mb-4" />
@@ -547,6 +549,7 @@ const SelectBalanceComponent: React.FC<SelectBalanceComponentProps> = ({
                   {noBalanceSecondaryMessage}
                 </button>
               )}
+              
             {/* Fallback to Link if no click handler but href exists */}
             {allowAddBalance &&
               noBalanceSecondaryMessage &&

@@ -1816,9 +1816,6 @@ interface Transfer {
     // Add other properties as needed
 }
 
-// TransferSortField type (keep as is)
-// type TransferSortField = keyof Omit<Transfer, 'user' | 'recipient' | 'sendCurrency'> | 'user' | 'recipient' | 'createdAt' | 'amount' | '_id';
-
 // Helper function to parse date string (dd-MM-yyyy) to Date object
 function parseDateString(dateString: string): Date | null {
     if (!dateString) return null;
@@ -2186,7 +2183,7 @@ const AdminTransfersPage: React.FC = () => {
     return (
       <div className="container mx-auto px-4 py-8 relative">
         <div className="space-y-6">
-          {/* Header */}
+          {/* Header-Parts */}
           <div className="flex flex-wrap justify-between items-center gap-4">
             <h1 className="text-2xl font-bold text-mainheading dark:text-white">
               Transfer Management

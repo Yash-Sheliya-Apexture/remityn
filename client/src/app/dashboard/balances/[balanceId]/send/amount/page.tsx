@@ -2441,7 +2441,7 @@
 
 // const SkeletonAmountInput = () => (
 //   <div className="space-y-1 mb-2">
-//     <Skeleton className="h-10 w-1/3" />  
+//     <Skeleton className="h-10 w-1/3" />
 //     <Skeleton className="h-20 w-full" />
 //     <Skeleton className="h-10 w-1/4 ml-auto" />
 //   </div>
@@ -2688,7 +2688,7 @@
 //         <RateDisplay rateContext={rateContext} apiError={apiError} />
 
 //         {/* Main Content Area */}
-//         <div className="space-y-4"> 
+//         <div className="space-y-4">
 //           {/* You Send Section */}
 //           <AmountInput
 //             label="You send"
@@ -2707,7 +2707,7 @@
 //           />
 //           {/* Available Balance (Remains under specific input) */}
 //           <p className="text-gray-500 text-end -mt-2 capitalize dark:text-gray-300">
-//             Available balance:  
+//             Available balance:
 //             <button
 //               onClick={handleAvailableBalanceClick}
 //               className="font-bold text-green dark:text-primary underline underline-offset-4 cursor-pointer"
@@ -2801,8 +2801,6 @@
 //   );
 // }
 
-
-
 // // frontend/src/app/dashboard/balances/[balanceId]/send/amount/page.tsx
 // "use client";
 // import React, { useState, useCallback, useMemo, useEffect } from "react";
@@ -2851,7 +2849,6 @@
 //     </div>
 //   </div>
 // );
-
 
 // export default function SendAmountPage() {
 //   // --- Hooks ---
@@ -2906,7 +2903,6 @@
 //       }
 //       // If lastEdited is null (initial load/reset), this won't update fields, which is fine.
 //   }, [summary, lastEdited]); // Dependencies are correct now
-
 
 //   // --- Input Handlers ---
 //   const handleAmountChange = useCallback(
@@ -3207,8 +3203,6 @@
 //   );
 // }
 
-
-
 // // frontend/src/app/dashboard/balances/[balanceId]/send/amount/page.tsx
 // "use client";
 // import React, { useState, useCallback, useMemo, useEffect } from "react";
@@ -3259,7 +3253,6 @@
 //     </div>
 //   </div>
 // );
-
 
 // export default function SendAmountPage() {
 //   // --- Hooks ---
@@ -3314,7 +3307,6 @@
 //       }
 //       // If lastEdited is null (initial load/reset), this won't update fields, which is fine.
 //   }, [summary, lastEdited]);
-
 
 //   // --- Input Handlers ---
 //   const handleAmountChange = useCallback(
@@ -3670,8 +3662,6 @@
 //   );
 // }
 
-
-
 // // frontend/src/app/dashboard/balances/[balanceId]/send/amount/page.tsx
 // "use client";
 // import React, { useState, useCallback, useMemo, useEffect, useRef } from "react"; // Import useRef
@@ -3719,7 +3709,6 @@
 //     </div>
 //   </div>
 // );
-
 
 // export default function SendAmountPage() {
 //   // --- Hooks ---
@@ -3782,7 +3771,6 @@
 //       if (receiveBlurTimerRef.current) clearTimeout(receiveBlurTimerRef.current);
 //     };
 //   }, []);
-
 
 //   // --- Input Handlers ---
 //   const handleAmountChange = useCallback(
@@ -4142,6 +4130,8 @@
 // }
 
 
+
+
 // frontend/src/app/dashboard/balances/[balanceId]/send/amount/page.tsx
 "use client";
 import React, {
@@ -4176,55 +4166,58 @@ interface SendAmountPageParams extends Record<string, string | string[]> {
   balanceId: string;
 }
 
-// Simplified Skeleton for Amount Input area
+// --- Skeleton Component ---
 const SkeletonAmountSection = () => (
   <div className="space-y-4 mb-4">
-    {/* Mimic Rate Display area */}
-    <Skeleton className="h-16 w-full rounded-lg mb-4" />
-    {/* Mimic Savings Banner area */}
-    <Skeleton className="h-16 w-full rounded-xl mb-6" /> {/* Added Skeleton for Savings Banner */}
-    {/* Mimic First Amount Input + available balance */}
-    <div className="space-y-1 mb-2">
-      <Skeleton className="h-6 w-1/4" />
-      <Skeleton className="h-12 w-full rounded-lg" />
-      <Skeleton className="h-5 w-1/3 ml-auto" />
+    <div className="flex items-end flex-col gap-1.5">
+      <Skeleton className="h-10 w-72 rounded-full" />
+      <Skeleton className="h-9 w-65 rounded-full" />
     </div>
-    {/* Mimic Second Amount Input + account details */}
+    <div className="space-y-1 mb-2">
+      <Skeleton className="h-6 w-20" />
+      <div className="flex justify-between">
+        <Skeleton className="h-12.5 w-1/4 rounded-full mt-3" />
+        <Skeleton className="h-12.5 w-40 rounded-lg mt-3" />
+      </div>
+      <Skeleton className="h-5 w-1/3 ml-auto mb-4" />
+    </div>
     <div className="space-y-1 mb-2">
       <Skeleton className="h-6 w-1/3" />
-      <Skeleton className="h-12 w-full rounded-lg" />
-      <Skeleton className="h-5 w-1/2 ml-auto" />
+      <div className="flex justify-between">
+        <Skeleton className="h-12.5 w-1/4 rounded-full mt-3" />
+        <Skeleton className="h-12.5 w-40 rounded-lg mt-3" />
+      </div>
+      <Skeleton className="h-5 w-1/3 ml-auto mb-4" />
     </div>
   </div>
 );
 
 // --- Framer Motion Variants (Copied from HeroSection for consistency) ---
 const savingsBannerVariants = {
-    hidden: { opacity: 0, y: -10, scaleY: 0.9, height: 0 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scaleY: 1,
-      height: "auto",
-      transition: {
-        duration: 0.4,
-        ease: [0.25, 0.46, 0.45, 0.94],
-        height: { duration: 0.3, ease: [0.4, 0, 0.2, 1], delay: 0.05 },
-      },
+  hidden: { opacity: 0, y: -10, scaleY: 0.9, height: 0 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scaleY: 1,
+    height: "auto",
+    transition: {
+      duration: 0.4,
+      ease: [0.25, 0.46, 0.45, 0.94],
+      height: { duration: 0.3, ease: [0.4, 0, 0.2, 1], delay: 0.05 },
     },
-    exit: {
-      opacity: 0,
-      y: -15,
-      scaleY: 0.95,
-      height: 0,
-      transition: {
-        duration: 0.35, // Faster exit
-        ease: "easeIn",
-        height: { duration: 0.2, ease: [0.4, 0, 0.2, 1] },
-      },
+  },
+  exit: {
+    opacity: 0,
+    y: -15,
+    scaleY: 0.95,
+    height: 0,
+    transition: {
+      duration: 0.35, // Faster exit
+      ease: "easeIn",
+      height: { duration: 0.2, ease: [0.4, 0, 0.2, 1] },
     },
+  },
 };
-
 
 export default function SendAmountPage() {
   // --- Hooks ---
@@ -4269,30 +4262,30 @@ export default function SendAmountPage() {
 
   // Effect to sync hook summary changes back to the *other* input field
   useEffect(() => {
-      if (!summary) return;
-      const newSend = summary.sendAmount.toFixed(2);
-      const newReceive = summary.receiveAmount.toFixed(2);
-      if (lastEdited === "send") {
-          setReceiveAmount(newReceive);
-      } else if (lastEdited === "receive") {
-          setSendAmount(newSend);
-      }
-      // Also update if no field was edited last (initial load or external update)
-      else if (!lastEdited) {
-          setSendAmount(newSend);
-          setReceiveAmount(newReceive);
-      }
+    if (!summary) return;
+    const newSend = summary.sendAmount.toFixed(2);
+    const newReceive = summary.receiveAmount.toFixed(2);
+    if (lastEdited === "send") {
+      setReceiveAmount(newReceive);
+    } else if (lastEdited === "receive") {
+      setSendAmount(newSend);
+    }
+    // Also update if no field was edited last (initial load or external update)
+    else if (!lastEdited) {
+      setSendAmount(newSend);
+      setReceiveAmount(newReceive);
+    }
   }, [summary, lastEdited]);
 
-   // --- Timer Cleanup ---
-   useEffect(() => {
+  // --- Timer Cleanup ---
+  useEffect(() => {
     // Clear timers when the component unmounts
     return () => {
       if (sendBlurTimerRef.current) clearTimeout(sendBlurTimerRef.current);
-      if (receiveBlurTimerRef.current) clearTimeout(receiveBlurTimerRef.current);
+      if (receiveBlurTimerRef.current)
+        clearTimeout(receiveBlurTimerRef.current);
     };
   }, []);
-
 
   // --- Input Handlers ---
   const handleAmountChange = useCallback(
@@ -4312,20 +4305,20 @@ export default function SendAmountPage() {
       const amountNum = parseFloat(value);
       const isValidAmount = !isNaN(amountNum) && amountNum > 0;
 
-       if (isValidAmount && logicError && !isInsufficientBalanceError) {
-           setLogicError(null); // Clear non-balance errors when user types valid amount
-       }
+      if (isValidAmount && logicError && !isInsufficientBalanceError) {
+        setLogicError(null); // Clear non-balance errors when user types valid amount
+      }
 
       if (isValidAmount) {
         calculateSummary(amountNum, type === "send");
 
         // Start new blur timer
         timerRef.current = setTimeout(() => {
-          const inputRef = type === 'send' ? sendInputRef.current : receiveInputRef.current;
+          const inputRef =
+            type === "send" ? sendInputRef.current : receiveInputRef.current;
           inputRef?.blur(); // Trigger blur on the specific input
           timerRef.current = null; // Clear the stored timer ID after it fires
         }, 1000); // 1 second delay
-
       } else {
         cancelCalculation();
         if (type === "send") setReceiveAmount("");
@@ -4334,14 +4327,20 @@ export default function SendAmountPage() {
         calculateSummary(0, true);
 
         if (value && isNaN(amountNum)) {
-            setLogicError("Please enter a valid number.");
+          setLogicError("Please enter a valid number.");
         } else if (logicError === "Please enter a valid number.") {
-            setLogicError(null); // Clear valid number error if input becomes empty/valid
+          setLogicError(null); // Clear valid number error if input becomes empty/valid
         }
       }
     },
     // Removed initialRateSummary as dependency as the core logic relies on calculateSummary(0) now
-    [calculateSummary, cancelCalculation, setLogicError, logicError, isInsufficientBalanceError]
+    [
+      calculateSummary,
+      cancelCalculation,
+      setLogicError,
+      logicError,
+      isInsufficientBalanceError,
+    ]
   );
 
   const handleFocus = useCallback((type: "send" | "receive") => {
@@ -4357,12 +4356,12 @@ export default function SendAmountPage() {
   }, []); // Refs don't need to be dependencies
 
   const handleBlur = useCallback((type: "send" | "receive") => {
-     // Clear blur timer if input loses focus for any reason
-     const timerRef = type === "send" ? sendBlurTimerRef : receiveBlurTimerRef;
-     if (timerRef.current) {
-       clearTimeout(timerRef.current);
-       timerRef.current = null;
-     }
+    // Clear blur timer if input loses focus for any reason
+    const timerRef = type === "send" ? sendBlurTimerRef : receiveBlurTimerRef;
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
 
     if (type === "send") setIsSendFocused(false);
     else setIsReceiveFocused(false);
@@ -4371,11 +4370,11 @@ export default function SendAmountPage() {
   const handleAvailableBalanceClick = useCallback(() => {
     if (sourceAccount) {
       const availableBalance = sourceAccount.balance.toFixed(2);
-       // Clear any existing send timer before setting value and calculating
-       if (sendBlurTimerRef.current) {
-         clearTimeout(sendBlurTimerRef.current);
-         sendBlurTimerRef.current = null;
-       }
+      // Clear any existing send timer before setting value and calculating
+      if (sendBlurTimerRef.current) {
+        clearTimeout(sendBlurTimerRef.current);
+        sendBlurTimerRef.current = null;
+      }
       // Set amount and trigger calculation/new timer
       handleAmountChange(availableBalance, "send");
       // Manually focus after setting value
@@ -4387,22 +4386,23 @@ export default function SendAmountPage() {
   const handleContinue = useCallback(() => {
     if (!summary || !(summary.sendAmount > 0) || !(summary.receiveAmount > 0)) {
       // Ensure an error is set if trying to continue with invalid/missing summary
-      if (!logicError && !apiError) { // Only set if no other error is present
-          setLogicError("Please enter a valid amount and wait for calculation.");
+      if (!logicError && !apiError) {
+        // Only set if no other error is present
+        setLogicError("Please enter a valid amount and wait for calculation.");
       }
       return;
     }
     if (isCalculating) return;
     // Check logicError specifically for insufficient balance AFTER checking summary
     if (logicError === "Insufficient balance.") {
-        // Keep the error message displayed, but allow potential continuation
-        // The canContinue logic might block it anyway if desired
+      // Keep the error message displayed, but allow potential continuation
+      // The canContinue logic might block it anyway if desired
     }
     // Check other potential logic errors or API errors that might block continuation
     else if (logicError || apiError) {
-        // Update the error slightly for clarity if trying to continue despite it
-        setLogicError(`Cannot proceed due to: ${logicError || apiError}`);
-        return;
+      // Update the error slightly for clarity if trying to continue despite it
+      setLogicError(`Cannot proceed due to: ${logicError || apiError}`);
+      return;
     }
 
     // Final balance check before proceeding
@@ -4418,8 +4418,8 @@ export default function SendAmountPage() {
 
     const needsReason = recipient?.currency.code === "INR";
     const nextPath = needsReason
-    ? `/dashboard/balances/${balanceId}/send/reason?recipientId=${recipientId}`
-    : `/dashboard/balances/${balanceId}/send/review?recipientId=${recipientId}`;
+      ? `/dashboard/balances/${balanceId}/send/reason?recipientId=${recipientId}`
+      : `/dashboard/balances/${balanceId}/send/review?recipientId=${recipientId}`;
     router.push(nextPath);
   }, [
     summary,
@@ -4447,65 +4447,76 @@ export default function SendAmountPage() {
       logicError !== "Missing required information." && // Block on critical errors
       !logicError?.startsWith("Cannot proceed due to:") && // Block on continuation error
       logicError !== "Insufficient balance.", // **** ALSO BLOCK ON INSUFFICIENT BALANCE ****
-      // Decide if you want to allow clicking continue even with insufficient balance.
-      // If not, add the check above. If yes, remove it. Let's block it for now.
+    // Decide if you want to allow clicking continue even with insufficient balance.
+    // If not, add the check above. If yes, remove it. Let's block it for now.
     [summary, isCalculating, apiError, logicError] // Added logicError
   );
 
   // --- Savings Calculation (Adapted from HeroSection) ---
   const savingsAmount = useMemo(() => {
-      if (
-          !summary ||
-          !summary.liveExchangeRate ||
-          summary.sendAmount <= 0 ||
-          summary.receiveAmount <= 0 ||
-          isCalculating ||
-          isInsufficientBalanceError || // Use derived state for clarity
-          !!apiError ||
-          logicError === "Please enter a valid number."
-      ) {
-          return null;
-      }
+    if (
+      !summary ||
+      !summary.liveExchangeRate ||
+      summary.sendAmount <= 0 ||
+      summary.receiveAmount <= 0 ||
+      isCalculating ||
+      isInsufficientBalanceError || // Use derived state for clarity
+      !!apiError ||
+      logicError === "Please enter a valid number."
+    ) {
+      return null;
+    }
 
-      const marketRate = summary.liveExchangeRate;
-      const ourRate = summary.exchangeRate;
+    const marketRate = summary.liveExchangeRate;
+    const ourRate = summary.exchangeRate;
 
-      if (ourRate <= marketRate) {
-          return null;
-      }
+    if (ourRate <= marketRate) {
+      return null;
+    }
 
-      // Calculate based on received amounts: actual vs market hypothetical
-      // This comparison uses the *final* receive amount, implicitly accounting for fees deducted before conversion
-      const amountConverted = summary.receiveAmount / ourRate; // Amount in send currency before fees that was converted
-      const marketEquivalentReceive = amountConverted * marketRate; // What that amount would be worth at market rate
+    // Calculate based on received amounts: actual vs market hypothetical
+    // This comparison uses the *final* receive amount, implicitly accounting for fees deducted before conversion
+    const amountConverted = summary.receiveAmount / ourRate; // Amount in send currency before fees that was converted
+    const marketEquivalentReceive = amountConverted * marketRate; // What that amount would be worth at market rate
 
-      const rateDifferenceValue = summary.receiveAmount - marketEquivalentReceive;
+    const rateDifferenceValue = summary.receiveAmount - marketEquivalentReceive;
 
-      if (rateDifferenceValue <= 0.01) {
-          return null;
-      }
+    if (rateDifferenceValue <= 0.01) {
+      return null;
+    }
 
-      return rateDifferenceValue.toFixed(2);
-  }, [summary, isCalculating, isInsufficientBalanceError, apiError, logicError]); // Dependencies
+    return rateDifferenceValue.toFixed(2);
+  }, [
+    summary,
+    isCalculating,
+    isInsufficientBalanceError,
+    apiError,
+    logicError,
+  ]); // Dependencies
 
   // --- Render Logic ---
 
-  // Initial Loading Skeleton
+  // --- Render Logic ---
   if (isLoading) {
     return (
       <div className="min-h-screen animate-pulse">
-         <DashboardHeader title="Send Money" steps={steps} currentStep={2} />
-          <div className="container mx-auto max-w-xl p-4 lg:pt-8 border rounded-2xl pb-10 mt-4">
-            <SkeletonAmountSection /> {/* Updated Skeleton */}
-            <Skeleton className="h-16 w-full rounded-lg mb-4" /> {/* Paying With Skeleton */}
-            <Skeleton className="h-14 w-full rounded-full mt-6" /> {/* Continue Button Skeleton */}
+        <DashboardHeader title="Send Money" steps={steps} currentStep={2} />
+        <div className="mx-auto lg:max-w-xl p-4 sm:p-6 mt-5 border rounded-2xl bg-white dark:bg-background">
+          <SkeletonAmountSection />
+          <div className="space-y-2">
+            <Skeleton className="h-6 w-30" />
+            <Skeleton className="h-26 w-full rounded-2xl" />
+            <Skeleton className="h-12.5 w-full rounded-full" />
+          </div>
         </div>
       </div>
     );
   }
-
   // Critical Error State (Account/Recipient Load Failure)
-  const criticalError = (!sourceAccount || !recipient) ? (logicError || apiError || "Error loading essential page details.") : null;
+  const criticalError =
+    !sourceAccount || !recipient
+      ? logicError || apiError || "Error loading essential page details."
+      : null;
   if (criticalError) {
     return (
       <div className="min-h-screen">
@@ -4524,7 +4535,7 @@ export default function SendAmountPage() {
                 ? `/dashboard/balances/${balanceId}/send/select-recipient`
                 : "/dashboard"
             }
-             className="mt-6 inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+            className="mt-6 inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
           >
             <IoIosArrowBack size={20} className="-ml-1 mr-1" /> Go back
           </Link>
@@ -4538,52 +4549,62 @@ export default function SendAmountPage() {
     <div className="SendAmount-Page">
       <DashboardHeader title="Send Money" steps={steps} currentStep={2} />
       <div className="mx-auto lg:max-w-xl p-4 sm:p-6 mt-5 border rounded-2xl bg-white dark:bg-background">
-        <RateDisplay rateContext={rateContext} apiError={apiError && !logicError ? apiError : null} />
+        <RateDisplay
+          rateContext={rateContext}
+          apiError={apiError && !logicError ? apiError : null}
+        />
 
         {/* --- Savings Banner --- */}
         <AnimatePresence>
-          {savingsAmount && recipient && ( // Check recipient for currency code
-            <motion.div
-              key="savings-banner-send-page"
-              className="my-6 overflow-hidden" // Use margin-top/bottom to space it
-              variants={savingsBannerVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-            >
-              <div className="bg-lightgray dark:bg-primarybox rounded-xl lg:p-4 p-3 border-l-4 border-primary">
-                <div className="flex items-center gap-2">
-                  <div className="bg-primary rounded-full p-2 flex-shrink-0">
-                    <FaPiggyBank
-                      size={20}
-                      className="lg:size-6 size-4 text-mainheading"
-                    />
-                  </div>
-                  <div>
-                    <p className="font-bold text-neutral-900 dark:text-primary lg:text-base text-sm flex items-center gap-1">
-                      <span>
-                        Save up to {recipient.currency.code} {savingsAmount} with Wise {/* Use recipient currency */}
-                      </span>
-                      <TrendingUp size={18} />
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-300">
-                      Better rates than traditional banks!
-                    </p>
+          {savingsAmount &&
+            recipient && ( // Check recipient for currency code
+              <motion.div
+                key="savings-banner-send-page"
+                className="my-6 overflow-hidden" // Use margin-top/bottom to space it
+                variants={savingsBannerVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              >
+                <div className="bg-lightgray dark:bg-primarybox rounded-xl lg:p-4 p-3 border-l-4 border-primary">
+                  <div className="flex items-center gap-2">
+                    <div className="bg-primary rounded-full p-2 flex-shrink-0">
+                      <FaPiggyBank
+                        size={20}
+                        className="lg:size-6 size-4 text-mainheading"
+                      />
+                    </div>
+                    <div>
+                      <p className="font-bold text-neutral-900 dark:text-primary lg:text-base text-sm flex items-center gap-1">
+                        <span>
+                          Save up to {recipient.currency.code} {savingsAmount}{" "}
+                          with Wise {/* Use recipient currency */}
+                        </span>
+                        <TrendingUp size={18} />
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-300">
+                        Better rates than traditional banks!
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          )}
+              </motion.div>
+            )}
         </AnimatePresence>
         {/* --- End Savings Banner --- */}
 
-
-        <div className="space-y-4 mt-4"> {/* Ensure mt-4 is still here if savings banner is not shown */}
+        <div className="space-y-4 mt-4">
+          {" "}
+          {/* Ensure mt-4 is still here if savings banner is not shown */}
           {/* You Send Section */}
           <AmountInput
             ref={sendInputRef} // Pass ref here
             label="You send"
-            labelSuffix={summary?.sendAmount && !isCalculating && !displayError ? "exactly" : ""} // Hide 'exactly' if error
+            labelSuffix={
+              summary?.sendAmount && !isCalculating && !displayError
+                ? "exactly"
+                : ""
+            } // Hide 'exactly' if error
             currencyCode={sourceAccount!.currency.code}
             flagImage={sourceAccount!.currency.flagImage}
             value={sendAmount}
@@ -4596,26 +4617,33 @@ export default function SendAmountPage() {
             inputId="send-amount"
             data-testid="send-amount-input"
           />
+
           <div className="text-right -mt-4 pr-4">
-             <span className="text-sm text-gray-500 dark:text-gray-300">
-                Available: </span>
-              <button
-                onClick={handleAvailableBalanceClick}
-                className="text-sm font-medium text-primary dark:text-primary cursor-pointer hover:underline focus:outline-none focus:underline disabled:opacity-50 disabled:cursor-not-allowed"
-                aria-label={`Use available balance: ${sourceAccount!.balance.toFixed(2)} ${sourceAccount!.currency.code}`}
-                disabled={isLoading || isCalculating} // Disable while loading/calculating
-              >
-                {sourceAccount!.balance.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })} {sourceAccount!.currency.code}
-              </button>
+            <span className="text-sm text-gray-500 dark:text-gray-300">
+              Available:{" "}
+            </span>
+            <button
+              onClick={handleAvailableBalanceClick}
+              className="text-sm font-medium text-primary dark:text-primary cursor-pointer hover:underline focus:outline-none focus:underline disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label={`Use available balance: ${sourceAccount!.balance.toFixed(
+                2
+              )} ${sourceAccount!.currency.code}`}
+              disabled={isLoading || isCalculating} // Disable while loading/calculating
+            >
+              {sourceAccount!.balance.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}{" "}
+              {sourceAccount!.currency.code}
+            </button>
           </div>
 
           {/* Recipient Gets Section */}
           <AmountInput
             ref={receiveInputRef} // Pass ref here
-            label={recipient!.nickname || recipient!.accountHolderName || "Recipient"}
+            label={
+              recipient!.nickname || recipient!.accountHolderName || "Recipient"
+            }
             labelPrefix=""
             labelSuffix={
               summary?.receiveAmount && !isCalculating && !displayError
@@ -4634,34 +4662,44 @@ export default function SendAmountPage() {
             data-testid="receive-amount-input"
           />
           {recipient?.accountNumber && (
-             <p className="text-sm text-gray-500 dark:text-gray-300 text-right -mt-4 pr-4">
-                Account ending in {recipient.accountNumber.slice(-4)}
+            <p className="text-sm text-gray-500 dark:text-gray-300 text-right -mt-4 pr-4">
+              Account ending in {recipient.accountNumber.slice(-4)}
             </p>
           )}
-
           <PayingWithDisplay sourceAccount={sourceAccount!} />
-
           {/* Error Display Section */}
           {displayError && (
-             <div className={`relative p-4 rounded-lg dark:border ${isInsufficientBalanceError ? 'bg-red-50  text-red-800 dark:bg-red-900/20 dark:border-red-700 dark:text-red-300' : 'bg-yellow-50 border-yellow-300 text-yellow-800 dark:bg-yellow-900/20 dark:border-yellow-700 dark:text-yellow-300'}`} role="alert">
-                 <div className="flex items-center">
-                    <IoIosInformationCircleOutline className={`w-5 h-5 mr-2 ${isInsufficientBalanceError ? 'text-red-600 dark:text-red-400' : 'text-yellow-600 dark:text-yellow-400'}`} />
-                    <span className="flex-1 text-sm">{displayError}</span>
-                    <button
-                        onClick={() => {
-                            setLogicError(null);
-                            // Decide if you want dismissing the error to also clear API errors
-                            // if (apiError) { /* logic to clear apiError if needed */ }
-                        }}
-                        className="absolute top-1.5 cursor-pointer right-1.5 p-2 rounded-full text-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none"
-                        aria-label="Dismiss error message"
-                    >
-                        <IoClose size={18} />
-                    </button>
-                 </div>
-             </div>
+            <div
+              className={`relative p-4 rounded-lg dark:border ${
+                isInsufficientBalanceError
+                  ? "bg-red-50  text-red-800 dark:bg-red-900/20 dark:border-red-700 dark:text-red-300"
+                  : "bg-yellow-50 border-yellow-300 text-yellow-800 dark:bg-yellow-900/20 dark:border-yellow-700 dark:text-yellow-300"
+              }`}
+              role="alert"
+            >
+              <div className="flex items-center">
+                <IoIosInformationCircleOutline
+                  className={`w-5 h-5 mr-2 ${
+                    isInsufficientBalanceError
+                      ? "text-red-600 dark:text-red-400"
+                      : "text-yellow-600 dark:text-yellow-400"
+                  }`}
+                />
+                <span className="flex-1 text-sm">{displayError}</span>
+                <button
+                  onClick={() => {
+                    setLogicError(null);
+                    // Decide if you want dismissing the error to also clear API errors
+                    // if (apiError) { /* logic to clear apiError if needed */ }
+                  }}
+                  className="absolute top-1.5 cursor-pointer right-1.5 p-2 rounded-full text-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none"
+                  aria-label="Dismiss error message"
+                >
+                  <IoClose size={18} />
+                </button>
+              </div>
+            </div>
           )}
-
           {/* Continue Button */}
           <button
             onClick={handleContinue}
@@ -4671,22 +4709,70 @@ export default function SendAmountPage() {
           >
             {isCalculating ? (
               <>
-                 {/* Using the same SVG spinner */}
-                 <svg
-                    className="h-5 w-5 text-neutral-900 animate-spin mr-2"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    >
-                    <path d="M12 2V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M12 18V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M4.93 4.93L7.76 7.76" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M16.24 16.24L19.07 19.07" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M2 12H6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M18 12H22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M4.93 19.07L7.76 16.24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M16.24 7.76L19.07 4.93" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                 </svg>
+                {/* Using the same SVG spinner */}
+                <svg
+                  className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 2V6"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M12 18V22"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M4.93 4.93L7.76 7.76"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M16.24 16.24L19.07 19.07"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M2 12H6"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M18 12H22"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M4.93 19.07L7.76 16.24"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M16.24 7.76L19.07 4.93"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
                 <span>Calculating...</span>
               </>
             ) : (
@@ -4698,3 +4784,5 @@ export default function SendAmountPage() {
     </div>
   );
 }
+
+
