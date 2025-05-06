@@ -1,3 +1,4 @@
+
 // frontend/src/services/inbox.ts
 import axios from 'axios';
 import apiConfig from '../config/apiConfig';
@@ -5,6 +6,8 @@ import apiConfig from '../config/apiConfig';
 // --- Interfaces ---
 
 export interface InboxMessage {
+    type: ReactNode;
+    title: ReactNode;
     _id: string;
     userId: string;
     sender: string;
