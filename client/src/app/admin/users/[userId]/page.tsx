@@ -3340,7 +3340,6 @@ import userAdminService from "../../../services/admin/user.admin";
 import type { AdminUserDetailResponse as OriginalAdminUserDetailResponse } from "../../../services/admin/user.admin";
 import type { KycMobile, KycStatus } from "../../../services/kyc";
 import type { Payment } from "@/types/payment"; // Assuming Payment type exists
-import type { Account } from "@/types/account"; // Assuming Account type exists
 
 // Auth Context
 import { useAuth } from "../../../contexts/AuthContext";
@@ -3364,21 +3363,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  DialogTrigger,
-  DialogClose,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 
 // Icons (Lucide React)
 import {
@@ -3405,15 +3390,17 @@ import {
   Clock,
   Copy,
   Check,
-  Loader2, // For sending state
-  SendHorizonal, // For send button
-  MessageSquarePlus, // For send message button
+  Loader2, // For sending state in modal
+  SendHorizonal, // For send button in modal
+  MessageSquarePlus, // For the trigger button
 } from "lucide-react";
 
 // Utility & Toast
 import { cn } from "@/lib/utils";
 import { toast } from "sonner"; // For feedback
-import { formatDistanceToNow } from 'date-fns'; // Used in TransactionTable
+
+// --- Import the Send Message Modal ---
+import SendMessageModal from '../../components/users/SendMessageModal'; // Adjust path if needed
 
 // --- Define Local Transfer type used WITHIN UserDetailPage ---
 // (Ensure this matches the structure returned by your backend or adapt as needed)
@@ -3439,9 +3426,10 @@ interface Transfer {
 // --- Define Local State Type based on Service Response but with modified Transfer type ---
 interface UserDetailState extends Omit<OriginalAdminUserDetailResponse, 'transfers'> {
   transfers: Transfer[];
+  payments: Payment[]; // Assuming Payment type is already correct
 }
 
-// --- Helper Functions (Preserving original implementations) ---
+// --- Helper Functions ---
 const formatDate = (
   dateInput?: string | Date | null,
   includeTime = false
@@ -3536,7 +3524,7 @@ const salaryDisplayMap: Record<string, string> = {
   "100000+": "$100,000 or more",
 };
 
-// --- DetailItem Component (Preserving original implementation) ---
+// --- DetailItem Component ---
 const DetailItem = ({
   label,
   value,
@@ -3566,7 +3554,7 @@ const DetailItem = ({
   </div>
 );
 
-// --- Loading Skeleton Component (Preserving original implementation) ---
+// --- Loading Skeleton Component ---
 const LoadingSkeleton = () => (
   <div className="container mx-auto px-4 py-8">
     <div className="space-y-6 pb-10">
@@ -3578,8 +3566,7 @@ const LoadingSkeleton = () => (
         </div>
         {/* Combined Actions Skeleton */}
         <div className="flex items-center gap-2">
-             <Skeleton className="h-9 w-32 rounded-md " /> {/* Send Message Button Skeleton */}
-             <Skeleton className="h-9 w-24 rounded-md " /> {/* Back Button Skeleton */}
+             <Skeleton className="h-12 w-32 rounded-md " /> {/* Send Message Button Skeleton */}
         </div>
       </div>
       {/* User Profile Card Skeleton */}
@@ -3656,7 +3643,7 @@ const LoadingSkeleton = () => (
   </div>
 );
 
-// --- Error Display Component (Preserving original implementation) ---
+// --- Error Display Component ---
 const ErrorDisplay = ({
   error,
   onRetry,
@@ -3681,7 +3668,7 @@ const ErrorDisplay = ({
   </Alert>
 );
 
-// --- Transaction Table Component (Preserving original implementation) ---
+// --- Transaction Table Component ---
 const TransactionTable = ({
   data,
   type,
@@ -3783,14 +3770,15 @@ const UserDetailPage: React.FC = () => {
     setLoading(true); setError(null);
     try {
       const data: OriginalAdminUserDetailResponse = await userAdminService.getUserDetailsAdmin(userId);
+      // Ensure transfers and payments are always arrays, even if null/undefined from API
       const processedData: UserDetailState = {
         ...data,
-        transfers: data.transfers.map((t) => ({
+        transfers: (data.transfers || []).map((t) => ({
           _id: t._id, user: t.user, recipient: t.recipient,
           sendAmount: String(t.sendAmount ?? "0"),
           sendCurrency: t.sendCurrency, status: t.status, createdAt: t.createdAt,
         })),
-        payments: data.payments.map(p => ({ ...p }))
+        payments: (data.payments || []).map(p => ({ ...p })) // Ensure payments array exists
       };
       setUserData(processedData);
     } catch (err: any) {
@@ -3811,26 +3799,37 @@ const UserDetailPage: React.FC = () => {
   // Function to handle sending the message
   const handleSendMessage = async () => {
     if (!userData || !messageSubject.trim() || !messageBody.trim()) {
-      setSendMessageError("Subject and body cannot be empty."); return;
+      setSendMessageError("Subject and body cannot be empty.");
+      return;
     }
-    setIsSendingMessage(true); setSendMessageError(null);
+    setIsSendingMessage(true);
+    setSendMessageError(null); // Clear previous errors on new attempt
     try {
       await userAdminService.sendMessageToUser(userData._id, {
-        subject: messageSubject.trim(), body: messageBody.trim(),
+        subject: messageSubject.trim(),
+        body: messageBody.trim(),
       });
       toast.success("Message sent successfully!");
-      setMessageSubject(""); setMessageBody(""); // Reset form
-      setIsSendMessageModalOpen(false); // Close modal
+      setMessageSubject(""); // Reset form
+      setMessageBody("");
+      setIsSendMessageModalOpen(false); // Close modal on success
     } catch (err: any) {
       console.error("Send message error:", err);
       const errorMsg = err.response?.data?.message || err.message || "Failed to send message.";
-      setSendMessageError(errorMsg);
+      setSendMessageError(errorMsg); // Set error to display in modal
       toast.error("Failed to send message", { description: errorMsg });
-    } finally { setIsSendingMessage(false); }
+    } finally {
+      setIsSendingMessage(false);
+    }
+  };
+
+  // Function to clear the send error state (passed to modal)
+  const clearSendError = () => {
+    setSendMessageError(null);
   };
 
   // --- Render Logic ---
-  if (loading || authLoading) return <LoadingSkeleton />; // Simplified check
+  if (loading || authLoading) return <LoadingSkeleton />;
   if (error) return ( <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8"><ErrorDisplay error={error} onRetry={fetchUserDetails} /></div> );
   if (!userData) return ( <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8 text-center py-16 text-muted-foreground">User data not found.</div> );
 
@@ -3868,42 +3867,13 @@ const UserDetailPage: React.FC = () => {
 
             {/* --- Action Buttons Area --- */}
             <div className="flex items-center gap-2 flex-wrap">
-                 {/* Send Message Button & Dialog */}
-                 <Dialog open={isSendMessageModalOpen} onOpenChange={setIsSendMessageModalOpen}>
-                    <DialogTrigger asChild>
-                        <Button variant="outline" size="sm">
-                            <MessageSquarePlus className="size-4 mr-1.5" /> Send Message
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[480px]">
-                        <DialogHeader>
-                            <DialogTitle>Send Message to User</DialogTitle>
-                            <DialogDescription>Compose message for {userData?.fullName || 'this user'}'s inbox.</DialogDescription>
-                        </DialogHeader>
-                        <div className="grid gap-4 py-4">
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="subject" className="text-right">Subject</Label>
-                                <Input id="subject" value={messageSubject} onChange={(e) => setMessageSubject(e.target.value)} className="col-span-3" maxLength={200} disabled={isSendingMessage} />
-                            </div>
-                            <div className="grid grid-cols-4 items-start gap-4">
-                                <Label htmlFor="body" className="text-right pt-2">Body</Label>
-                                <Textarea id="body" value={messageBody} onChange={(e) => setMessageBody(e.target.value)} className="col-span-3 min-h-[120px]" maxLength={5000} disabled={isSendingMessage} />
-                            </div>
-                            {sendMessageError && <p className="text-sm text-destructive col-span-4 text-center px-4">{sendMessageError}</p>}
-                        </div>
-                        <DialogFooter>
-                            <DialogClose asChild><Button type="button" variant="outline" disabled={isSendingMessage}>Cancel</Button></DialogClose>
-                            <Button type="button" onClick={handleSendMessage} disabled={isSendingMessage || !messageSubject.trim() || !messageBody.trim()}>
-                                {isSendingMessage ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <SendHorizonal className="mr-2 h-4 w-4" />} Send Message
-                            </Button>
-                        </DialogFooter>
-                    </DialogContent>
-                 </Dialog>
-
-                 {/* Back Button */}
-                 <Button asChild variant="link" size="sm" className="text-neutral-900 dark:text-white hover:text-primary dark:hover:text-primary p-0 h-auto">
-                    <Link href="/admin/users"><ArrowLeft className="size-5 mr-1.5" /> All Users</Link>
-                 </Button>
+                 {/* Send Message Button Trigger */}
+                 <button
+                    onClick={() => setIsSendMessageModalOpen(true)}
+                    className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear"
+                 >
+                    <MessageSquarePlus className="size-4 mr-1.5" /> Send Message
+                 </button>
             </div>
         </div>
 
@@ -4045,7 +4015,8 @@ const UserDetailPage: React.FC = () => {
               <motion.div variants={itemVariants}>
                 <Card className="border-0 bg-transparent shadow-none overflow-hidden">
                   <CardHeader className="p-4 "><CardTitle className="text-lg font-semibold flex items-center gap-2 text-neutral-900 dark:text-white"><Send className="h-5 w-5 text-primary" /> Recent Transfers (Send Money)</CardTitle><CardDescription className="text-sm !mt-1 text-gray-500 dark:text-gray-300">Last 5 transfers by this user.</CardDescription></CardHeader>
-                  <CardContent className="p-0"><TransactionTable data={transfers} type="transfer" /></CardContent>
+                  {/* Pass transfers array, ensuring it's never null/undefined */}
+                  <CardContent className="p-0"><TransactionTable data={transfers ?? []} type="transfer" /></CardContent>
                 </Card>
               </motion.div>
             </motion.div>
@@ -4057,7 +4028,8 @@ const UserDetailPage: React.FC = () => {
               <motion.div variants={itemVariants}>
                 <Card className="border-0 bg-transparent shadow-none overflow-hidden">
                   <CardHeader className="p-4"><CardTitle className="text-lg font-semibold flex items-center gap-2 text-neutral-900 dark:text-white"><Landmark className="h-5 w-5 text-primary" /> Recent Payments (Add Money)</CardTitle><CardDescription className="text-sm !mt-1 text-gray-500 dark:text-gray-300">Last 5 payment attempts.</CardDescription></CardHeader>
-                  <CardContent className="p-0"><TransactionTable data={payments} type="payment" /></CardContent>
+                   {/* Pass payments array, ensuring it's never null/undefined */}
+                  <CardContent className="p-0"><TransactionTable data={payments ?? []} type="payment" /></CardContent>
                 </Card>
               </motion.div>
             </motion.div>
@@ -4065,6 +4037,22 @@ const UserDetailPage: React.FC = () => {
 
         </Tabs>
       </div>
+
+       {/* --- Render the SendMessageModal --- */}
+       {/* Placed outside the main layout flow as it uses fixed positioning */}
+      <SendMessageModal
+          isOpen={isSendMessageModalOpen}
+          setIsOpen={setIsSendMessageModalOpen}
+          userName={userData?.fullName || 'this user'} // Pass user name safely
+          subject={messageSubject}
+          setSubject={setMessageSubject}
+          body={messageBody}
+          setBody={setMessageBody}
+          isSending={isSendingMessage}
+          handleSend={handleSendMessage} // Pass the send handler function
+          sendError={sendMessageError} // Pass the error state
+          clearSendError={clearSendError} // Pass the error clearing function
+      />
     </div>
   );
 };

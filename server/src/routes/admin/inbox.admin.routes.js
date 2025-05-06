@@ -15,6 +15,13 @@ router.put('/:messageId', inboxAdminController.updateMessageById); // Base is /a
 // DELETE /api/admin/inbox/:messageId - Delete a specific message by ID
 router.delete('/:messageId', inboxAdminController.deleteMessageById); // Base is /api/admin/inbox
 
-// NO POST route here (it's now in user.admin.routes.js)
+// --- NEW ROUTE for sending to all ---
+// POST /api/admin/inbox/send-to-all
+router.post('/send-to-all', inboxAdminController.sendMessageToAllUsers); // <-- ADD THIS LINE
+
+// --- NEW Batch Routes ---
+router.get('/batches', inboxAdminController.getBatches);          // List unique broadcast batches
+router.delete('/batch/:batchId', inboxAdminController.deleteBatch); // Delete an entire batch
+router.put('/batch/:batchId', inboxAdminController.updateBatch); // <-- ADD THIS LINE
 
 export default router;
