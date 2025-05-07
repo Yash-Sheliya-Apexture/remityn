@@ -323,6 +323,180 @@
 // };
 
 
+// // backend/src/services/user.service.js
+// import User from '../models/User.js';
+// import mongoose from 'mongoose';
+// import bcrypt from 'bcryptjs';
+
+// // --- getAllUsers (No changes) ---
+// const getAllUsers = async () => {
+//     try {
+//         return await User.find().select('-password'); // Standard select is fine here if not using .lean()
+//     } catch (error) {
+//         console.error("Error in getAllUsers service:", error);
+//         throw new Error("Failed to fetch users.");
+//     }
+// };
+
+// // --- getUserById (No changes) ---
+// const getUserById = async (userId) => {
+//     try {
+//         if (!mongoose.Types.ObjectId.isValid(userId)) {
+//              throw new Error('Invalid user ID format.');
+//         }
+//         const user = await User.findById(userId).select('-password'); // Exclude password explicitly if not using lean
+//         if (!user) {
+//             return null;
+//         }
+//         return user; // Returns Mongoose document which respects toJSON/toObject transforms
+//     } catch (error) {
+//         console.error(`Error in getUserById service for ${userId}:`, error);
+//          if (error.message.includes('Invalid user ID format')) {
+//              throw error;
+//          }
+//         throw new Error("Failed to fetch user.");
+//     }
+// };
+
+// // --- getUserByIdWithKyc (MODIFIED: Removed problematic .select() when using .lean()) ---
+// const getUserByIdWithKyc = async (userId) => {
+//     console.log(`[User Service] Attempting to fetch details with KYC for user ID: ${userId}`);
+//     try {
+//         if (!mongoose.Types.ObjectId.isValid(userId)) {
+//             throw new Error('Invalid user ID format.');
+//         }
+
+//         // --- MODIFICATION START ---
+//         // Remove the conflicting .select() call.
+//         // .lean() will fetch fields *without* 'select: false' in the schema.
+//         // Sensitive fields like 'password', 'googleId', 'resetPasswordToken'
+//         // (which have select: false) will be omitted by default from the lean object.
+//         const user = await User.findById(userId)
+//             //.select('-password -resetPasswordToken -resetPasswordExpires -__v +isGoogleAccount') // REMOVED THIS LINE
+//             .lean(); // Use lean to get a plain JS object
+//         // --- MODIFICATION END ---
+
+//         if (!user) {
+//              console.warn(`[User Service] User not found for ID: ${userId}`);
+//             // Throw specific error that controller can catch
+//             throw new Error('User not found.');
+//         }
+
+//         // Ensure default KYC object if missing (important with lean())
+//         // Check if kyc field exists and is an object. lean() might return undefined if the field doesn't exist in the doc.
+//         if (!user.kyc || typeof user.kyc !== 'object') {
+//             console.warn(`[User Service] User ${userId} missing/invalid 'kyc' object in lean result. Providing default.`);
+//             // Manually add the default structure
+//              user.kyc = {
+//                 status: 'not_started',
+//                 firstName: user.fullName?.split(' ')[0] || '',
+//                 lastName: user.fullName?.split(' ').slice(1).join(' ') || '',
+//                 dateOfBirth: null, mobile: null, occupation: null, salaryRange: null,
+//                 nationality: null, idType: null, idNumber: null, idIssueDate: null,
+//                 idExpiryDate: null, documents: [], submittedAt: null, verifiedAt: null,
+//                 rejectedAt: null, rejectionReason: null, lastUpdatedAt: null,
+//              };
+//         } else if (typeof user.kyc.status !== 'string') {
+//              // Ensure status exists if kyc object exists but status is missing
+//             console.warn(`[User Service] User ${userId} kyc object missing status. Setting default.`);
+//             user.kyc.status = 'not_started';
+//         }
+
+//         // isGoogleAccount should be included by default in lean() if it doesn't have select:false
+//         console.log(`[User Service] Successfully fetched user details for ID: ${userId}, IsGoogle: ${user.isGoogleAccount}`);
+//         return user; // Return the plain JS user object (including kyc)
+
+//     } catch (error) {
+//         console.error(`[User Service] Error fetching user details for ${userId}:`, error.message);
+//          // Re-throw specific errors or a generic one
+//          if (error.message.includes('Invalid user ID format') || error.message === 'User not found.') {
+//             throw error;
+//          }
+//          // The original projection error should now be gone, but catch others
+//         throw new Error('Failed to fetch user details.'); // Generic fallback
+//     }
+// };
+
+// // --- changeUserPassword (Modified: Add Google Account Check) ---
+// const changeUserPassword = async (userId, currentPassword, newPassword) => {
+//     console.log(`[User Service - changeUserPassword] Attempting password change for user ID: ${userId}`);
+
+//     if (!userId || !currentPassword || !newPassword) {
+//         throw new Error('Missing required fields for password change.');
+//     }
+//     if (!mongoose.Types.ObjectId.isValid(userId)) {
+//         throw new Error('Invalid user ID format.');
+//     }
+//     if (newPassword.length < 8) {
+//          throw new Error('New password must be at least 8 characters long.');
+//     }
+
+//     try {
+//         // Fetch the user, including password and Google flags
+//         const user = await User.findById(userId).select('+password +isGoogleAccount +googleId');
+
+//         if (!user) {
+//             console.error(`[User Service - changeUserPassword] User not found: ${userId}`);
+//             throw new Error('User not found.');
+//         }
+
+//         // Prevent password change for Google accounts
+//         if (user.isGoogleAccount || user.googleId) {
+//             console.warn(`[User Service - changeUserPassword] Attempt to change password for Google account ${userId}. Denied.`);
+//             // Specific user-facing error
+//             throw new Error('Password changes are not available for accounts managed by Google Sign-In.');
+//         }
+
+//         // Verify the current password (only for non-Google accounts)
+//         // Ensure user.password exists before comparing
+//         if(!user.password) {
+//              console.error(`[User Service - changeUserPassword] Password field missing for non-Google user ${userId} during change attempt.`);
+//              throw new Error('Cannot verify current password. Account data inconsistent.');
+//         }
+//         const isMatch = await bcrypt.compare(currentPassword, user.password);
+//         if (!isMatch) {
+//             console.log(`[User Service - changeUserPassword] Incorrect current password for user: ${userId}`);
+//             throw new Error('Incorrect current password.');
+//         }
+
+//         if (currentPassword === newPassword) {
+//              console.log(`[User Service - changeUserPassword] New password is the same as the current one for user: ${userId}`);
+//              throw new Error('New password cannot be the same as the current one.');
+//         }
+
+//         // Assign new password (pre-save hook will hash it)
+//         user.password = newPassword;
+//         await user.save(); // Trigger pre-save hook and save changes
+
+//         console.log(`[User Service - changeUserPassword] Password successfully updated for user: ${userId}`);
+
+//     } catch (error) {
+//         console.error(`[User Service - changeUserPassword] Error during password change for ${userId}:`, error.message);
+//         // Re-throw specific errors including the new Google check
+//         if (error.message.includes('Incorrect current password') ||
+//             error.message.includes('New password cannot be the same') ||
+//             error.message.includes('User not found') ||
+//             error.message.includes('not available for accounts managed by Google Sign-In') ||
+//             error.message.includes('Account data inconsistent') ) {
+//              throw error;
+//         }
+//         if (error.name === 'ValidationError') {
+//              console.log("[User Service - changeUserPassword] Validation error during password save:", error.errors);
+//              const messages = Object.values(error.errors).map(el => el.message);
+//              throw new Error(`Password update validation failed: ${messages.join(', ')}`);
+//          }
+//         throw new Error('Failed to change password due to a server error.');
+//     }
+// };
+
+// export default {
+//     getAllUsers,
+//     getUserById,
+//     getUserByIdWithKyc, // Modified function
+//     changeUserPassword,
+// };
+
+
 // backend/src/services/user.service.js
 import User from '../models/User.js';
 import mongoose from 'mongoose';
@@ -331,7 +505,7 @@ import bcrypt from 'bcryptjs';
 // --- getAllUsers (No changes) ---
 const getAllUsers = async () => {
     try {
-        return await User.find().select('-password'); // Standard select is fine here if not using .lean()
+        return await User.find().select('-password'); 
     } catch (error) {
         console.error("Error in getAllUsers service:", error);
         throw new Error("Failed to fetch users.");
@@ -344,11 +518,11 @@ const getUserById = async (userId) => {
         if (!mongoose.Types.ObjectId.isValid(userId)) {
              throw new Error('Invalid user ID format.');
         }
-        const user = await User.findById(userId).select('-password'); // Exclude password explicitly if not using lean
+        const user = await User.findById(userId).select('-password'); 
         if (!user) {
             return null;
         }
-        return user; // Returns Mongoose document which respects toJSON/toObject transforms
+        return user; 
     } catch (error) {
         console.error(`Error in getUserById service for ${userId}:`, error);
          if (error.message.includes('Invalid user ID format')) {
@@ -358,35 +532,21 @@ const getUserById = async (userId) => {
     }
 };
 
-// --- getUserByIdWithKyc (MODIFIED: Removed problematic .select() when using .lean()) ---
+// --- getUserByIdWithKyc (No changes from previous corrected version) ---
 const getUserByIdWithKyc = async (userId) => {
     console.log(`[User Service] Attempting to fetch details with KYC for user ID: ${userId}`);
     try {
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             throw new Error('Invalid user ID format.');
         }
-
-        // --- MODIFICATION START ---
-        // Remove the conflicting .select() call.
-        // .lean() will fetch fields *without* 'select: false' in the schema.
-        // Sensitive fields like 'password', 'googleId', 'resetPasswordToken'
-        // (which have select: false) will be omitted by default from the lean object.
-        const user = await User.findById(userId)
-            //.select('-password -resetPasswordToken -resetPasswordExpires -__v +isGoogleAccount') // REMOVED THIS LINE
-            .lean(); // Use lean to get a plain JS object
-        // --- MODIFICATION END ---
+        const user = await User.findById(userId).lean(); 
 
         if (!user) {
              console.warn(`[User Service] User not found for ID: ${userId}`);
-            // Throw specific error that controller can catch
             throw new Error('User not found.');
         }
-
-        // Ensure default KYC object if missing (important with lean())
-        // Check if kyc field exists and is an object. lean() might return undefined if the field doesn't exist in the doc.
         if (!user.kyc || typeof user.kyc !== 'object') {
             console.warn(`[User Service] User ${userId} missing/invalid 'kyc' object in lean result. Providing default.`);
-            // Manually add the default structure
              user.kyc = {
                 status: 'not_started',
                 firstName: user.fullName?.split(' ')[0] || '',
@@ -397,27 +557,22 @@ const getUserByIdWithKyc = async (userId) => {
                 rejectedAt: null, rejectionReason: null, lastUpdatedAt: null,
              };
         } else if (typeof user.kyc.status !== 'string') {
-             // Ensure status exists if kyc object exists but status is missing
             console.warn(`[User Service] User ${userId} kyc object missing status. Setting default.`);
             user.kyc.status = 'not_started';
         }
-
-        // isGoogleAccount should be included by default in lean() if it doesn't have select:false
         console.log(`[User Service] Successfully fetched user details for ID: ${userId}, IsGoogle: ${user.isGoogleAccount}`);
-        return user; // Return the plain JS user object (including kyc)
+        return user; 
 
     } catch (error) {
         console.error(`[User Service] Error fetching user details for ${userId}:`, error.message);
-         // Re-throw specific errors or a generic one
          if (error.message.includes('Invalid user ID format') || error.message === 'User not found.') {
             throw error;
          }
-         // The original projection error should now be gone, but catch others
-        throw new Error('Failed to fetch user details.'); // Generic fallback
+        throw new Error('Failed to fetch user details.'); 
     }
 };
 
-// --- changeUserPassword (Modified: Add Google Account Check) ---
+// --- changeUserPassword (REMOVED Google Account Check) ---
 const changeUserPassword = async (userId, currentPassword, newPassword) => {
     console.log(`[User Service - changeUserPassword] Attempting password change for user ID: ${userId}`);
 
@@ -432,7 +587,6 @@ const changeUserPassword = async (userId, currentPassword, newPassword) => {
     }
 
     try {
-        // Fetch the user, including password and Google flags
         const user = await User.findById(userId).select('+password +isGoogleAccount +googleId');
 
         if (!user) {
@@ -440,18 +594,16 @@ const changeUserPassword = async (userId, currentPassword, newPassword) => {
             throw new Error('User not found.');
         }
 
-        // Prevent password change for Google accounts
-        if (user.isGoogleAccount || user.googleId) {
-            console.warn(`[User Service - changeUserPassword] Attempt to change password for Google account ${userId}. Denied.`);
-            // Specific user-facing error
-            throw new Error('Password changes are not available for accounts managed by Google Sign-In.');
-        }
+        // --- REMOVED: Prevent password change for Google accounts ---
+        // Users (including Google-linked ones) can change their password if they have one set
+        // and provide the correct current password.
+        // --- END REMOVAL ---
 
-        // Verify the current password (only for non-Google accounts)
-        // Ensure user.password exists before comparing
         if(!user.password) {
-             console.error(`[User Service - changeUserPassword] Password field missing for non-Google user ${userId} during change attempt.`);
-             throw new Error('Cannot verify current password. Account data inconsistent.');
+             console.error(`[User Service - changeUserPassword] Password field missing for user ${userId} during change attempt. User may need to use 'Forgot Password' to set one first.`);
+             // This implies the user (likely a Google user who hasn't set a password via forgot password)
+             // is trying to change a non-existent password.
+             throw new Error('Incorrect current password.'); // Treat as if current password was wrong
         }
         const isMatch = await bcrypt.compare(currentPassword, user.password);
         if (!isMatch) {
@@ -459,24 +611,21 @@ const changeUserPassword = async (userId, currentPassword, newPassword) => {
             throw new Error('Incorrect current password.');
         }
 
-        if (currentPassword === newPassword) {
+        if (await bcrypt.compare(newPassword, user.password)) { // Compare new with current hashed password
              console.log(`[User Service - changeUserPassword] New password is the same as the current one for user: ${userId}`);
              throw new Error('New password cannot be the same as the current one.');
         }
 
-        // Assign new password (pre-save hook will hash it)
         user.password = newPassword;
-        await user.save(); // Trigger pre-save hook and save changes
+        await user.save(); 
 
         console.log(`[User Service - changeUserPassword] Password successfully updated for user: ${userId}`);
 
     } catch (error) {
         console.error(`[User Service - changeUserPassword] Error during password change for ${userId}:`, error.message);
-        // Re-throw specific errors including the new Google check
         if (error.message.includes('Incorrect current password') ||
             error.message.includes('New password cannot be the same') ||
             error.message.includes('User not found') ||
-            error.message.includes('not available for accounts managed by Google Sign-In') ||
             error.message.includes('Account data inconsistent') ) {
              throw error;
         }
@@ -492,6 +641,6 @@ const changeUserPassword = async (userId, currentPassword, newPassword) => {
 export default {
     getAllUsers,
     getUserById,
-    getUserByIdWithKyc, // Modified function
+    getUserByIdWithKyc, 
     changeUserPassword,
 };
