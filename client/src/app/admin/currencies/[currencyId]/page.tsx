@@ -293,7 +293,7 @@
 //           </h1>
 //         </div>
 
-//         <form onSubmit={handleSubmit} className="p-8 space-y-6">
+//         <form onSubmit={handleSubmit} className="p-8 space-y-4">
 //           <div className="grid md:grid-cols-2 gap-6">
 //             {/* Currency Code (Read-only) */}
 //             <div>
@@ -6550,19 +6550,1117 @@
 
 // export default AdminEditCurrencyPage;
 
+// "use client";
+// import React, { useState, useEffect } from "react";
+// import { useParams, useRouter } from "next/navigation";
+// import axios, { AxiosError } from "axios"; // Import AxiosError
+// import { useAuth } from "../../../contexts/AuthContext";
+// import { motion } from "framer-motion";
+// import apiConfig from "../../../config/apiConfig";
+// import Link from "next/link";
+// import Image from "next/image"; // Import next/image
+// import {
+//   Loader2,
+//   Save,
+//   Globe,
+//   DollarSign,
+//   Building,
+//   Landmark,
+//   Hash,
+//   Percent,
+//   Image as ImageIcon, // Rename to avoid conflict
+//   RefreshCw,
+//   Lock,
+//   BarChart4,
+// } from "lucide-react";
+// import { FaArrowLeftLong, FaIdCard } from "react-icons/fa6";
+// import { FaGlobe, FaPercentage } from "react-icons/fa";
+// import { toast, ToastContainer } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+// import CurrencyEditHeader from "../../components/currencies/CurrencyEditHeader";
+// import { Skeleton } from "@/components/ui/skeleton";
+
+// axios.defaults.baseURL = apiConfig.baseUrl;
+
+// // Interfaces remain the same
+// interface Currency {
+//   _id: string;
+//   code: string;
+//   currencyName: string;
+//   flagImage?: string | null;
+//   payeeName?: string | null;
+//   iban?: string | null;
+//   bicSwift?: string | null;
+//   bankAddress?: string | null;
+//   wiseFeePercentage?: number | null;
+//   bankTransferFee?: number | null;
+//   rateAdjustmentPercentage?: number | null; // Can be 0 or other numbers, potentially null from DB
+//   createdAt?: string;
+//   updatedAt?: string;
+// }
+
+// interface CurrencyFormState {
+//   code: string;
+//   currencyName: string;
+//   flagImage: string;
+//   payeeName: string;
+//   iban: string;
+//   bicSwift: string;
+//   bankAddress: string;
+//   wiseFeePercentage: string; // Keep as string for input control
+//   bankTransferFee: string; // Keep as string for input control
+//   rateAdjustmentPercentage: string; // Keep as string for input control
+// }
+
+// // --- Helper to check for AxiosError ---
+// function isAxiosError(error: unknown): error is AxiosError {
+//   return axios.isAxiosError(error);
+// }
+
+// // Define a potential structure for API error responses
+// interface ApiErrorData {
+//   message?: string;
+//   error?: string; // Add other potential error fields if known
+//   // Add other fields if your API returns them on error
+// }
+
+// // --- Loading Skeleton Component ---
+// const LoadingSkeleton = () => (
+//   <div className="container mx-auto px-4 py-8">
+//     <motion.div className="py-6">
+//       <div className="mx-auto max-w-5xl space-y-8">
+//         {" "}
+//         {/* Added space-y-8 */}
+//         {/* Header Skeleton */}
+//         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+//           <div>
+//             <Skeleton className="h-4 w-64 mb-3 rounded " /> {/* Breadcrumbs */}
+//             <Skeleton className="h-8 w-48 rounded " /> {/* Title */}
+//           </div>
+//           <Skeleton className="h-9 w-32 rounded-md " /> {/* Back Button */}
+//         </div>
+//         {/* Form Skeleton */}
+//         <div className="space-y-8">
+//           {/* Tabs Navigation Skeleton */}
+//           <div className="relative z-0 rounded-lg overflow-hidden flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x  mb-6">
+//             <Skeleton className="h-12 flex-1 " />
+//             <Skeleton className="h-12 flex-1 " />
+//             <Skeleton className="h-12 flex-1 " />
+//           </div>
+
+//           {/* General Tab Content Skeleton (Default Visible) */}
+//           <div className="space-y-6">
+//             {/* General Info Section Skeleton */}
+//             <div className="rounded-xl bg-white dark:bg-background border lg:p-6 p-4">
+//               <Skeleton className="h-5 w-1/3 rounded mb-4 border-b border-transparent pb-2" />{" "}
+//               {/* Section Title */}
+//               <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+//                 {/* Code Skeleton */}
+//                 <div className="space-y-2">
+//                   <Skeleton className="h-4 w-1/4 rounded" />
+//                   <Skeleton className="h-12 w-full rounded-md" />
+//                 </div>
+//                 {/* Name Skeleton */}
+//                 <div className="space-y-2">
+//                   <Skeleton className="h-4 w-1/3 rounded" />
+//                   <Skeleton className="h-12 w-full rounded-md" />
+//                 </div>
+//                 {/* Flag Image Skeleton */}
+//                 <div className="md:col-span-2 space-y-2">
+//                   <Skeleton className="h-4 w-1/3 rounded" />
+//                   <Skeleton className="h-12 w-full rounded-md" />
+//                   <Skeleton className="h-3 w-3/4 rounded" /> {/* Help text */}
+//                 </div>
+//               </div>
+//             </div>
+
+//             {/* Metadata Section Skeleton */}
+//             <div className="rounded-xl bg-white dark:bg-background border">
+//               <Skeleton className="h-5 w-1/4 rounded m-4 lg:m-6 mb-0 border-b border-transparent pb-3" />{" "}
+//               {/* Section Title */}
+//               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:p-6 p-4">
+//                 <div className="space-y-2">
+//                   <Skeleton className="h-4 w-1/3 rounded" />
+//                   <Skeleton className="h-12 w-full rounded-md" />
+//                 </div>
+//                 <div className="space-y-2">
+//                   <Skeleton className="h-4 w-1/3 rounded" />
+//                   <Skeleton className="h-12 w-full rounded-md" />
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* Action Buttons Skeleton */}
+//           <div className="flex flex-col sm:flex-row justify-end gap-3 mt-8 pt-6 border-t">
+//             <Skeleton className="h-12 w-full sm:w-28 rounded-full" />
+//             <Skeleton className="h-12 w-full sm:w-36 rounded-full" />
+//           </div>
+//         </div>
+//       </div>
+//     </motion.div>
+//   </div>
+// );
+// // --- END: Loading Skeleton Component ---
+
+// const AdminEditCurrencyPage = () => {
+//   const params = useParams();
+//   const router = useRouter();
+//   const { currencyId } = params;
+//   const { token } = useAuth();
+
+//   const [currency, setCurrency] = useState<Currency | null>(null);
+//   const [formState, setFormState] = useState<CurrencyFormState | null>(null);
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [isSubmitting, setIsSubmitting] = useState(false);
+//   const [activeTab, setActiveTab] = useState<"general" | "bank" | "fees">(
+//     "general"
+//   );
+//   const [formChanged, setFormChanged] = useState(false);
+//   const [flagImageError, setFlagImageError] = useState(false); // State to track image loading error
+
+//   // Animation variants
+//   const containerVariants = {
+//     hidden: { opacity: 0 },
+//     visible: {
+//       opacity: 1,
+//       transition: {
+//         staggerChildren: 0.1,
+//         delayChildren: 0.2,
+//       },
+//     },
+//   };
+
+//   const itemVariants = {
+//     hidden: { y: 20, opacity: 0 },
+//     visible: {
+//       y: 0,
+//       opacity: 1,
+//       transition: { type: "spring", stiffness: 100 },
+//     },
+//   };
+
+//   // Fetch Currency Data
+//   useEffect(() => {
+//     const fetchCurrency = async () => {
+//       if (!token || !currencyId) {
+//         setIsLoading(false);
+//         toast.error("Missing token or currency ID.");
+//         if (!token) router.push("/auth/login");
+//         return;
+//       }
+//       setIsLoading(true);
+//       try {
+//         const response = await axios.get<Currency>(
+//           `/admin/currencies/${currencyId}`,
+//           {
+//             headers: { Authorization: `Bearer ${token}` },
+//           }
+//         );
+//         setCurrency(response.data);
+//         // Initialize form state from fetched data
+//         setFormState({
+//           code: response.data.code || "",
+//           currencyName: response.data.currencyName || "",
+//           flagImage: response.data.flagImage || "",
+//           payeeName: response.data.payeeName || "",
+//           iban: response.data.iban || "",
+//           bicSwift: response.data.bicSwift || "",
+//           bankAddress: response.data.bankAddress || "",
+//           wiseFeePercentage: response.data.wiseFeePercentage?.toString() ?? "",
+//           bankTransferFee: response.data.bankTransferFee?.toString() ?? "",
+//           rateAdjustmentPercentage:
+//             // Ensure rateAdjustmentPercentage is never null/undefined in form state, default to '0' string
+//             response.data.rateAdjustmentPercentage?.toString() ?? "0",
+//         });
+//         setFlagImageError(false); // Reset image error on successful fetch
+//       } catch (err: unknown) {
+//         console.error("Fetch error:", err);
+//         if (isAxiosError(err)) {
+//           // FIX 1: Handle potential error message structure safely
+//           const errorData = err.response?.data as ApiErrorData | undefined; // Cast to potential structure
+//           let message = "Failed to load currency details"; // Default message
+//           if (errorData?.message) {
+//             message = errorData.message;
+//           } else if (errorData?.error) {
+//             message = errorData.error;
+//           } else if (err.response?.statusText) {
+//             message = `Error ${err.response.status}: ${err.response.statusText}`;
+//           }
+
+//           if (err.response?.status === 404) {
+//             toast.error("Currency not found.");
+//           } else if (
+//             err.response?.status === 401 ||
+//             err.response?.status === 403
+//           ) {
+//             toast.error("Unauthorized. Redirecting to login...");
+//             setTimeout(() => router.push("/auth/login"), 2000);
+//           } else {
+//             toast.error(message); // Use the safely extracted message
+//           }
+//         } else if (err instanceof Error) {
+//           toast.error(err.message || "An unexpected error occurred.");
+//         } else {
+//           toast.error("An unexpected error occurred.");
+//         }
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     };
+
+//     fetchCurrency();
+//   }, [currencyId, token, router]);
+
+//   // Track form changes
+//   useEffect(() => {
+//     if (!currency || !formState) return;
+
+//     // Compare form state (strings) with currency data (potentially numbers/null)
+//     // Convert currency numbers to strings for comparison, handling nulls gracefully
+//     const currentWiseFee = currency.wiseFeePercentage?.toString() ?? "";
+//     const currentBankFee = currency.bankTransferFee?.toString() ?? "";
+//     const currentRateAdj = currency.rateAdjustmentPercentage?.toString() ?? "0"; // Match default form state '0'
+
+//     const isChanged =
+//       formState.currencyName !== (currency.currencyName || "") ||
+//       formState.flagImage !== (currency.flagImage || "") ||
+//       formState.payeeName !== (currency.payeeName || "") ||
+//       formState.iban !== (currency.iban || "") ||
+//       formState.bicSwift !== (currency.bicSwift || "") ||
+//       formState.bankAddress !== (currency.bankAddress || "") ||
+//       formState.wiseFeePercentage !== currentWiseFee ||
+//       formState.bankTransferFee !== currentBankFee ||
+//       formState.rateAdjustmentPercentage !== currentRateAdj;
+
+//     setFormChanged(isChanged);
+//   }, [currency, formState]);
+
+//   // Handle Input Changes
+//   const handleChange = (
+//     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+//   ) => {
+//     const { name, value } = e.target;
+//     setFormState((prev) => {
+//       if (!prev) return null;
+//       const newState = { ...prev, [name]: value };
+//       // Reset flag image error if the flagImage path changes
+//       if (name === "flagImage") {
+//         setFlagImageError(false);
+//       }
+//       return newState;
+//     });
+//   };
+
+//   // Handle Form Submission
+//   const handleSubmit = async (event: React.FormEvent) => {
+//     event.preventDefault();
+//     if (!formState || !currencyId || !token) {
+//       toast.error("Form data or required parameters missing.");
+//       return;
+//     }
+
+//     setIsSubmitting(true);
+
+//     // Prepare payload, converting numbers and handling nulls/empty strings
+//     // Perform parsing and validation *before* creating the final payload object
+//     let wiseFee: number | null = null;
+//     if (formState.wiseFeePercentage.trim() !== "") {
+//       const parsed = parseFloat(formState.wiseFeePercentage);
+//       // FIX 2 & 3 & 4: Validate parsed number before assignment
+//       if (isNaN(parsed) || parsed < 0) {
+//         toast.error("Wise Fee % must be a non-negative number.");
+//         setIsSubmitting(false);
+//         return;
+//       }
+//       wiseFee = parsed;
+//     }
+
+//     let bankFee: number | null = null;
+//     if (formState.bankTransferFee.trim() !== "") {
+//       const parsed = parseFloat(formState.bankTransferFee);
+//       // FIX 5 & 6 & 7: Validate parsed number before assignment
+//       if (isNaN(parsed) || parsed < 0) {
+//         toast.error("Bank Fee must be a non-negative number.");
+//         setIsSubmitting(false);
+//         return;
+//       }
+//       bankFee = parsed;
+//     }
+
+//     let rateAdj: number = 0; // Default to 0
+//     if (formState.rateAdjustmentPercentage.trim() !== "") {
+//       const parsed = parseFloat(formState.rateAdjustmentPercentage);
+//       // FIX 8: Validate parsed number before assignment
+//       if (isNaN(parsed)) {
+//         toast.error("Rate Adjustment must be a valid number.");
+//         setIsSubmitting(false);
+//         return;
+//       }
+//       rateAdj = parsed;
+//     } else {
+//       // If the input is cleared, explicitly set payload to 0
+//       rateAdj = 0;
+//     }
+
+//     const payload: Partial<Currency> = {
+//       // Code is generally not editable, but include if needed by API
+//       // code: formState.code.toUpperCase().trim(),
+//       currencyName: formState.currencyName.trim(),
+//       flagImage: formState.flagImage.trim() || null,
+//       payeeName: formState.payeeName.trim() || null,
+//       iban: formState.iban.trim() || null,
+//       bicSwift: formState.bicSwift.trim() || null,
+//       bankAddress: formState.bankAddress.trim() || null,
+//       wiseFeePercentage: wiseFee,
+//       bankTransferFee: bankFee,
+//       rateAdjustmentPercentage: rateAdj,
+//     };
+
+//     // --- Simplified Validation (checks moved before payload creation) ---
+//     if (!payload.currencyName) {
+//       toast.error("Currency Name is required.");
+//       setIsSubmitting(false);
+//       return;
+//     }
+//     // Validate flag image path starts with / or is http(s)://
+//     if (
+//       payload.flagImage &&
+//       !payload.flagImage.startsWith("/") &&
+//       !payload.flagImage.startsWith("http")
+//     ) {
+//       toast.error(
+//         "Flag Image Path must be a relative path starting with '/' or a full URL."
+//       );
+//       setIsSubmitting(false);
+//       return;
+//     }
+//     // --- Number validations are now handled above during parsing ---
+
+//     try {
+//       const response = await axios.put<Currency>(
+//         `/admin/currencies/${currencyId}`,
+//         payload,
+//         {
+//           headers: { Authorization: `Bearer ${token}` },
+//         }
+//       );
+//       setCurrency(response.data);
+//       // Re-initialize form state from the *response* data
+//       setFormState({
+//         code: response.data.code || "",
+//         currencyName: response.data.currencyName || "",
+//         flagImage: response.data.flagImage || "",
+//         payeeName: response.data.payeeName || "",
+//         iban: response.data.iban || "",
+//         bicSwift: response.data.bicSwift || "",
+//         bankAddress: response.data.bankAddress || "",
+//         wiseFeePercentage: response.data.wiseFeePercentage?.toString() ?? "",
+//         bankTransferFee: response.data.bankTransferFee?.toString() ?? "",
+//         rateAdjustmentPercentage:
+//           response.data.rateAdjustmentPercentage?.toString() ?? "0", // Default to '0' string
+//       });
+//       toast.success("Currency updated successfully!");
+//       setFormChanged(false); // Reset form changed status
+//       setFlagImageError(false); // Reset image error on successful save
+
+//       // Redirect to currencies page after successful update and toast display
+//       setTimeout(() => {
+//         router.push("/admin/currencies");
+//       }, 1500);
+//     } catch (err: unknown) {
+//       console.error("Update error:", err);
+//       if (isAxiosError(err)) {
+//         // FIX 9: Handle potential error message structure safely
+//         const errorData = err.response?.data as ApiErrorData | undefined; // Cast to potential structure
+//         let message = "Failed to update currency"; // Default message
+//         if (errorData?.message) {
+//           message = errorData.message;
+//         } else if (errorData?.error) {
+//           message = errorData.error;
+//         } else if (err.response?.statusText) {
+//           message = `Error ${err.response.status}: ${err.response.statusText}`;
+//         }
+//         // Handle specific update errors if needed, e.g., validation errors
+//         toast.error(message); // Use the safely extracted message
+//       } else if (err instanceof Error) {
+//         toast.error(
+//           err.message || "An unexpected error occurred during update."
+//         );
+//       } else {
+//         toast.error("An unexpected error occurred during update.");
+//       }
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   // Reset form to initial values
+//   const handleReset = () => {
+//     if (!currency) return;
+
+//     setFormState({
+//       code: currency.code || "",
+//       currencyName: currency.currencyName || "",
+//       flagImage: currency.flagImage || "",
+//       payeeName: currency.payeeName || "",
+//       iban: currency.iban || "",
+//       bicSwift: currency.bicSwift || "",
+//       bankAddress: currency.bankAddress || "",
+//       wiseFeePercentage: currency.wiseFeePercentage?.toString() ?? "",
+//       bankTransferFee: currency.bankTransferFee?.toString() ?? "",
+//       rateAdjustmentPercentage:
+//         currency.rateAdjustmentPercentage?.toString() ?? "0", // Default to '0' string
+//     });
+//     setFlagImageError(false); // Reset image error on reset
+//     setFormChanged(false); // Also reset form changed status on reset
+//     toast.info("Form reset to last saved values");
+//   };
+
+//   // Render tabs content
+//   const renderTabContent = () => {
+//     // Ensure formState is loaded before rendering form elements
+//     if (!formState) {
+//       return (
+//         <div className="flex justify-center items-center p-10">
+//           <Loader2 className="animate-spin mr-3 text-primary" size={24} />
+//           <span>Loading form...</span>
+//         </div>
+//       );
+//     }
+//     switch (activeTab) {
+//       case "general":
+//         return (
+//           <motion.div
+//             key="general"
+//             initial="hidden"
+//             animate="visible"
+//             variants={containerVariants}
+//             className="space-y-4"
+//           >
+//             <motion.div
+//               variants={itemVariants}
+//               className="rounded-xl bg-white dark:bg-background border lg:p-6 p-4 shadow-sm"
+//             >
+//               <h3 className="border-b pb-2 md:text-lg text-base font-medium text-neutral-900 dark:text-white">
+//                 General Information
+//               </h3>
+
+//               <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+//                 {/* Code (Readonly) */}
+//                 <div>
+//                   <label
+//                     htmlFor="code"
+//                     className="text-gray-500 dark:text-gray-300 capitalize text-sm flex items-center gap-3   lg:text-base"
+//                   >
+//                     <Globe size={20} className="text-primary" />
+//                     Currency Code
+//                   </label>
+
+//                   <div className="relative mt-1">
+//                     <input
+//                       type="text"
+//                       id="code"
+//                       value={formState.code} // Use formState directly
+//                       readOnly
+//                       className="mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border cursor-not-allowed rounded-lg transition-all focus:outline-none ease-linear duration-75"
+//                     />
+//                     <span className="pointer-events-none absolute right-4.5 top-1/2 -translate-y-1/2 text-neutral-500 dark:text-gray-300">
+//                       <Lock size={20} />
+//                     </span>
+//                   </div>
+//                 </div>
+
+//                 {/* Currency Name */}
+//                 <div>
+//                   <label
+//                     htmlFor="currencyName"
+//                     className="text-gray-500 dark:text-gray-300 capitalize text-sm flex items-center gap-1 lg:text-base"
+//                   >
+//                     <DollarSign size={20} className="text-primary" />
+//                     Currency Name <span className="text-red-600">*</span>
+//                   </label>
+//                   <input
+//                     type="text"
+//                     name="currencyName"
+//                     id="currencyName"
+//                     placeholder="e.g., Euro"
+//                     value={formState.currencyName} // Use formState directly
+//                     onChange={handleChange}
+//                     required
+//                     className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
+//                   />
+//                 </div>
+
+//                 {/* Flag Image Path */}
+//                 <div className="md:col-span-2">
+//                   <label
+//                     htmlFor="flagImage"
+//                     className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
+//                   >
+//                     <ImageIcon size={20} className="text-primary" />
+//                     Flag Image Path
+//                   </label>
+//                   <div className="relative">
+//                     <input
+//                       type="text"
+//                       name="flagImage"
+//                       id="flagImage"
+//                       value={formState.flagImage} // Use formState directly
+//                       onChange={handleChange}
+//                       placeholder="/assets/icon/flags/eur.png or https://..."
+//                       className="block w-full rounded-md border py-3 px-4 text-neutral-900 dark:text-white dark:hover:shadow-whitecolor transition-shadow ease-in-out duration-300 hover:shadow-darkcolor placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium pr-12 md:pr-16" // Add padding for image
+//                     />
+//                     {formState.flagImage &&
+//                       !flagImageError && ( // Use formState directly
+//                         <div className="absolute right-3 top-1/2 -translate-y-1/2 h-6 w-8 md:h-8 md:w-10 pointer-events-none">
+//                           <Image
+//                             src={formState.flagImage}
+//                             alt={`${formState.code || "Currency"} flag`}
+//                             fill
+//                             style={{ objectFit: "contain" }}
+//                             onError={() => setFlagImageError(true)}
+//                             unoptimized={formState.flagImage.startsWith("http")}
+//                           />
+//                         </div>
+//                       )}
+//                     {flagImageError &&
+//                       formState.flagImage && ( // Use formState directly
+//                         <div className="absolute right-3 top-1/2 -translate-y-1/2 text-red-600 text-xs">
+//                           Load Error
+//                         </div>
+//                       )}
+//                   </div>
+//                   <p className="mt-2 text-xs text-gray-500 dark:text-gray-300">
+//                     Relative path (e.g., /assets/icon/flags/eur.png) or full
+//                     URL. Must be accessible.
+//                   </p>
+//                   {flagImageError && (
+//                     <p className="mt-1 text-xs text-red-600">
+//                       Could not load the flag image. Check the path/URL.
+//                     </p>
+//                   )}
+//                 </div>
+//               </div>
+//             </motion.div>
+
+//             {/* Metadata Section */}
+//             <motion.div
+//               variants={itemVariants}
+//               className="rounded-xl bg-white dark:bg-background border shadow-sm"
+//             >
+//               <h3 className="border-b px-4 py-3 md:text-lg text-base font-medium text-neutral-900 dark:text-white">
+//                 Metadata
+//               </h3>
+//               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:p-6 p-4">
+//                 <div className="space-y-2">
+//                   <p className="font-medium text-gray-500 dark:text-gray-300">
+//                     Created At
+//                   </p>
+//                   <div className="rounded-md border bg-gray-100 dark:bg-white/5 py-3 px-4 text-neutral-900 dark:text-gray-300 ">
+//                     {currency?.createdAt
+//                       ? new Date(currency.createdAt).toLocaleString()
+//                       : "N/A"}
+//                   </div>
+//                 </div>
+//                 <div className="space-y-2">
+//                   <p className="font-medium text-gray-500 dark:text-gray-300">
+//                     Last Updated
+//                   </p>
+//                   <div className="rounded-md border bg-gray-100 dark:bg-white/5 py-3 px-4 text-neutral-900 dark:text-gray-300 ">
+//                     {currency?.updatedAt
+//                       ? new Date(currency.updatedAt).toLocaleString()
+//                       : "N/A"}
+//                   </div>
+//                 </div>
+//               </div>
+//             </motion.div>
+//           </motion.div>
+//         );
+
+//       case "bank":
+//         return (
+//           <motion.div
+//             key="bank"
+//             initial="hidden"
+//             animate="visible"
+//             variants={containerVariants}
+//             className="space-y-4"
+//           >
+//             <motion.div
+//               variants={itemVariants}
+//               className="rounded-xl bg-white dark:bg-background border lg:p-6 p-4 shadow-sm"
+//             >
+//               <div className="mb-4 border-b pb-2">
+//                 <h3 className="md:text-lg text-base font-medium text-neutral-900 dark:text-white">
+//                   Bank Details (Optional)
+//                 </h3>
+//                 <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
+//                   Provide these details if you need to store bank information
+//                   associated with this currency.
+//                 </p>
+//               </div>
+
+//               <div className="mt-4 grid grid-cols-1 gap-6">
+//                 {/* Payee Name */}
+//                 <div>
+//                   <label
+//                     htmlFor="payeeName"
+//                     className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
+//                   >
+//                     <Building size={20} className="text-primary" />
+//                     Payee Name
+//                   </label>
+//                   <input
+//                     type="text"
+//                     name="payeeName"
+//                     id="payeeName"
+//                     placeholder="Recipient's full name or company name"
+//                     value={formState.payeeName} // Use formState directly
+//                     onChange={handleChange}
+//                     className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
+//                   />
+//                 </div>
+
+//                 {/* IBAN and BIC/SWIFT */}
+//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//                   <div>
+//                     <label
+//                       htmlFor="iban"
+//                       className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
+//                     >
+//                       <Hash size={20} className="text-primary" />
+//                       IBAN
+//                     </label>
+//                     <input
+//                       type="text"
+//                       name="iban"
+//                       id="iban"
+//                       placeholder="International Bank Account Number"
+//                       value={formState.iban} // Use formState directly
+//                       onChange={handleChange}
+//                       className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
+//                     />
+//                   </div>
+
+//                   <div>
+//                     <label
+//                       htmlFor="bicSwift"
+//                       className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
+//                     >
+//                       <Hash size={20} className="text-primary" />
+//                       BIC/SWIFT
+//                     </label>
+//                     <input
+//                       type="text"
+//                       name="bicSwift"
+//                       id="bicSwift"
+//                       placeholder="Bank Identifier Code"
+//                       value={formState.bicSwift} // Use formState directly
+//                       onChange={handleChange}
+//                       className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
+//                     />
+//                   </div>
+//                 </div>
+
+//                 {/* Bank Address */}
+//                 <div>
+//                   <label
+//                     htmlFor="bankAddress"
+//                     className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
+//                   >
+//                     <Landmark size={20} className="text-primary" />
+//                     Bank Address
+//                   </label>
+//                   <textarea
+//                     id="bankAddress"
+//                     name="bankAddress"
+//                     rows={3}
+//                     placeholder="Full address of the recipient's bank"
+//                     value={formState.bankAddress} // Use formState directly
+//                     onChange={handleChange}
+//                     className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
+//                   ></textarea>
+//                 </div>
+//               </div>
+//             </motion.div>
+//           </motion.div>
+//         );
+
+//       case "fees":
+//         return (
+//           <motion.div
+//             key="fees"
+//             initial="hidden"
+//             animate="visible"
+//             variants={containerVariants}
+//             className="space-y-4"
+//           >
+//             <motion.div
+//               variants={itemVariants}
+//               className="rounded-xl bg-white dark:bg-background border lg:p-6 p-4 shadow-sm"
+//             >
+//               <h3 className="border-b pb-2 md:text-lg text-base font-medium text-neutral-900 dark:text-white">
+//                 Fees & Exchange Rate Settings (Optional)
+//               </h3>
+
+//               <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+//                 {/* Wise Fee Percentage */}
+//                 <div>
+//                   <label
+//                     htmlFor="wiseFeePercentage"
+//                     className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
+//                   >
+//                     <Percent size={20} className="text-primary" />
+//                     Wise Fee %
+//                   </label>
+//                   <div className="relative">
+//                     <input
+//                       type="number"
+//                       name="wiseFeePercentage"
+//                       id="wiseFeePercentage"
+//                       value={formState.wiseFeePercentage} // Use formState directly
+//                       onChange={handleChange}
+//                       step="any"
+//                       min="0"
+//                       className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+//                       placeholder="e.g., 0.5"
+//                     />
+//                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+//                       <span className="text-gray-500 dark:text-gray-300">
+//                         %
+//                       </span>
+//                     </div>
+//                   </div>
+//                   <p className="mt-2 text-xs text-gray-500 dark:text-gray-300">
+//                     Percentage fee for Wise transfers (leave blank if none).
+//                   </p>
+//                 </div>
+
+//                 {/* Bank Transfer Fee */}
+//                 <div>
+//                   <label
+//                     htmlFor="bankTransferFee"
+//                     className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
+//                   >
+//                     <DollarSign size={20} className="text-primary" />
+//                     Bank Transfer Fee
+//                   </label>
+//                   <div className="relative">
+//                     <input
+//                       type="number"
+//                       name="bankTransferFee"
+//                       id="bankTransferFee"
+//                       value={formState.bankTransferFee} // Use formState directly
+//                       onChange={handleChange}
+//                       step="any"
+//                       min="0"
+//                       className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+//                       placeholder="e.g., 5.00"
+//                     />
+//                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+//                       <span className="text-gray-500 dark:text-gray-300 text-sm font-medium">
+//                         {formState.code || "CUR"} {/* Use formState */}
+//                       </span>
+//                     </div>
+//                   </div>
+//                   <p className="mt-2 text-xs text-gray-500 dark:text-gray-300">
+//                     Fixed fee in {formState.code || "currency"} (leave blank if
+//                     none). {/* Use formState */}
+//                   </p>
+//                 </div>
+
+//                 {/* Rate Adjustment Percentage */}
+//                 <div>
+//                   <label
+//                     htmlFor="rateAdjustmentPercentage"
+//                     className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
+//                   >
+//                     <Percent size={20} className="text-primary" />
+//                     Our Adjustment %
+//                   </label>
+//                   <div className="relative">
+//                     <input
+//                       type="number"
+//                       name="rateAdjustmentPercentage"
+//                       id="rateAdjustmentPercentage"
+//                       value={formState.rateAdjustmentPercentage} // Use formState directly
+//                       onChange={handleChange}
+//                       step="any" // Allow negative/positive decimals
+//                       className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+//                       placeholder="e.g., -0.5 or 1.2"
+//                     />
+//                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+//                       <span className="text-gray-500 dark:text-gray-300">
+//                         %
+//                       </span>
+//                     </div>
+//                   </div>
+//                   <p className="mt-2 text-xs text-gray-500 dark:text-gray-300">
+//                     Adjustment vs market rate (default 0).
+//                   </p>
+//                 </div>
+//               </div>
+
+//               <div className="mt-6 rounded-md border bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 shadow-sm p-4">
+//                 <h4 className="mb-2 flex items-center gap-1.5 font-semibold text-blue-800 dark:text-blue-200">
+//                   <BarChart4 size={20} />
+//                   Exchange Rate Info
+//                 </h4>
+//                 <p className="text-sm text-blue-700 dark:text-blue-300">
+//                   The <strong>Our Adjustment %</strong> modifies the market
+//                   exchange rate used in calculations. A positive value (e.g.,
+//                   1%) increases the rate, making the foreign currency relatively
+//                   cheaper. A negative value (e.g., -0.5%) decreases the rate,
+//                   making the foreign currency relatively more expensive. Set to
+//                   0 (or leave blank) to use the market rate directly.
+//                 </p>
+//               </div>
+//             </motion.div>
+//           </motion.div>
+//         );
+//       default:
+//         return null;
+//     }
+//   };
+
+//   // --- Main component render ---
+//   // Render Skeleton if loading
+//   if (isLoading) {
+//     return (
+//       <div className=" bg-white dark:bg-background">
+//         <LoadingSkeleton />;
+//       </div>
+//     );
+//   }
+
+//   // Render error state or not found state (optional, could be handled by toast)
+//   if (!isLoading && !currency && !formState) {
+//     return (
+//       <div className="container mx-auto px-4 py-8 relative">
+//         {/* Still render header for context and back navigation */}
+//         <CurrencyEditHeader currencyName="Error" currencyCode="XXX" />
+//         <div className="mt-8 text-center text-red-600 bg-red-600/10 border border-red-400 dark:border-red-600 p-4 rounded-lg">
+//           Failed to load currency details. Please check the ID or try again
+//           later.
+//           <Link
+//             href="/admin/currencies"
+//             className="mt-4 inline-block text-primary underline"
+//           >
+//             Back to Currencies
+//           </Link>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   // Main component render
+//   return (
+//     <div className="container mx-auto px-4 py-8 relative">
+//       <motion.div
+//         initial={{ opacity: 0 }}
+//         animate={{ opacity: 1 }}
+//         exit={{ opacity: 0 }}
+//         className="py-6 bg-white dark:bg-background" // Added background color
+//       >
+//         <ToastContainer
+//           position="top-right"
+//           autoClose={3000}
+//           hideProgressBar={false}
+//           newestOnTop={false}
+//           closeOnClick
+//           rtl={false}
+//           pauseOnFocusLoss
+//           draggable
+//           pauseOnHover
+//           theme="colored"
+//         />
+//         <div className="mx-auto max-w-5xl">
+//           <CurrencyEditHeader
+//             currencyName={currency?.currencyName || formState?.currencyName}
+//             currencyCode={currency?.code || formState?.code}
+//           />
+
+//           {isLoading && !currency && (
+//             <div className="flex justify-center items-center h-64">
+//               <Loader2 className="animate-spin mr-3 text-primary" size={32} />
+//               <span className="text-lg text-gray-500 dark:text-gray-300">
+//                 Loading currency details...
+//               </span>
+//             </div>
+//           )}
+
+//           {!isLoading && !currency && !formState && (
+//             <div className="text-center text-red-600 bg-red-600/20 border border-red-400 dark:border-red-600 p-4 rounded-lg">
+//               Failed to load currency details. Please check the ID or try again
+//               later.
+//             </div>
+//           )}
+
+//           {/* Ensure formState exists before rendering form */}
+//           {!isLoading && formState && (
+//             <motion.form
+//               onSubmit={handleSubmit}
+//               className="space-y-8"
+//               variants={containerVariants}
+//               initial="hidden"
+//               animate="visible"
+//             >
+//               {/* Tabs Navigation */}
+//               <motion.nav
+//                 variants={itemVariants}
+//                 className="relative z-0 rounded-lg shadow-sm overflow-hidden flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x border mb-6"
+//               >
+//                 {(["general", "bank", "fees"] as const).map((tab) => (
+//                   <button
+//                     key={tab}
+//                     type="button"
+//                     onClick={() => setActiveTab(tab)}
+//                     className={`relative min-w-0 flex-1 group py-3 px-4 text-center font-medium cursor-pointer transition-colors duration-200 ease-in-out flex items-center justify-center gap-2 text-sm sm:text-base ${
+//                       activeTab === tab
+//                         ? "bg-primary text-neutral-900 shadow-inner inset-x-0"
+//                         : "bg-white dark:bg-background text-gray-500 dark:text-gray-300 hover:bg-lightgray dark:hover:bg-primarybox"
+//                     }`}
+//                   >
+//                     {tab === "general" && <FaGlobe size={20} />}
+//                     {tab === "bank" && <FaIdCard size={20} />}
+//                     {tab === "fees" && <FaPercentage size={20} />}
+//                     <span className="capitalize">
+//                       {tab === "fees" ? "Fees & Rates" : tab}
+//                     </span>
+//                   </button>
+//                 ))}
+//               </motion.nav>
+
+//               {/* Render Active Tab Content */}
+//               {renderTabContent()}
+
+//               {/* Action Buttons */}
+//               <motion.div
+//                 variants={itemVariants}
+//                 className="flex flex-col sm:flex-row justify-end gap-3 mt-8 pt-6 border-t"
+//               >
+//                 <button
+//                   type="button"
+//                   onClick={handleReset}
+//                   disabled={isSubmitting || !formChanged} // Disable reset if submitting or form hasn't changed
+//                   className="inline-flex items-center justify-center gap-2 cursor-pointer bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed font-medium rounded-full px-6 py-3 h-12 text-center w-full sm:w-auto transition-all duration-75 ease-linear group" // Added group for potential hover effects
+//                 >
+//                   {/* px-4 py-2 h-12 rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed */}
+//                   <RefreshCw
+//                     size={20}
+//                     className={`transition-transform duration-300 ${
+//                       formChanged && !isSubmitting
+//                         ? "group-hover:rotate-[-180deg]"
+//                         : ""
+//                     }`} // Spin on hover only if changed and not submitting
+//                   />
+//                   Reset
+//                 </button>
+
+//                 <button
+//                   type="submit"
+//                   disabled={isSubmitting || !formChanged} // Disable save if submitting or form hasn't changed
+//                   className="inline-flex items-center justify-center cursor-pointer bg-primary hover:bg-primaryhover text-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed font-medium rounded-full px-6 py-3 h-12 text-center w-full sm:w-auto transition-all duration-75 ease-linear"
+//                 >
+//                   {isSubmitting ? (
+//                     <>
+//                       <svg
+//                         className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+//                         viewBox="0 0 24 24"
+//                         fill="none"
+//                         xmlns="http://www.w3.org/2000/svg"
+//                       >
+//                         <path
+//                           d="M12 2V6"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />{" "}
+//                         <path
+//                           d="M12 18V22"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M4.93 4.93L7.76 7.76"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M16.24 16.24L19.07 19.07"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M2 12H6"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M18 12H22"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M4.93 19.07L7.76 16.24"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M16.24 7.76L19.07 4.93"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                       </svg>
+//                       <span>Saving...</span>
+//                     </>
+//                   ) : (
+//                     <>
+//                       <span>Save Changes</span>
+//                     </>
+//                   )}
+//                 </button>
+//               </motion.div>
+//             </motion.form>
+//           )}
+//         </div>
+//       </motion.div>
+//     </div>
+//   );
+// };
+
+// export default AdminEditCurrencyPage;
+
+// frontend/src/app/admin/currencies/[currencyId]/page.tsx
 "use client";
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios"; // Import AxiosError
-import { useAuth } from "../../../contexts/AuthContext";
+import { useAuth } from "../../../contexts/AuthContext"; // Corrected path
 import { motion } from "framer-motion";
-import apiConfig from "../../../config/apiConfig";
+import apiConfig from "../../../config/apiConfig"; // Corrected path
 import Link from "next/link";
 import Image from "next/image"; // Import next/image
 import {
   Loader2,
   Save,
-  Globe,
+  // Globe, // Icon for general tab, will use FaGlobe
   DollarSign,
   Building,
   Landmark,
@@ -6577,8 +7675,14 @@ import { FaArrowLeftLong, FaIdCard } from "react-icons/fa6";
 import { FaGlobe, FaPercentage } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import CurrencyEditHeader from "../../components/currencies/CurrencyEditHeader";
+import CurrencyEditHeader from "../../components/currencies/CurrencyEditHeader"; // Corrected path
 import { Skeleton } from "@/components/ui/skeleton";
+
+// Shadcn UI Components for Tabs
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils"; // Import cn utility
+import { AiOutlineCalendar } from "react-icons/ai";
+import { MdUpdate } from "react-icons/md";
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
@@ -6594,7 +7698,7 @@ interface Currency {
   bankAddress?: string | null;
   wiseFeePercentage?: number | null;
   bankTransferFee?: number | null;
-  rateAdjustmentPercentage?: number | null; // Can be 0 or other numbers, potentially null from DB
+  rateAdjustmentPercentage?: number | null;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -6607,9 +7711,9 @@ interface CurrencyFormState {
   iban: string;
   bicSwift: string;
   bankAddress: string;
-  wiseFeePercentage: string; // Keep as string for input control
-  bankTransferFee: string; // Keep as string for input control
-  rateAdjustmentPercentage: string; // Keep as string for input control
+  wiseFeePercentage: string;
+  bankTransferFee: string;
+  rateAdjustmentPercentage: string;
 }
 
 // --- Helper to check for AxiosError ---
@@ -6620,11 +7724,10 @@ function isAxiosError(error: unknown): error is AxiosError {
 // Define a potential structure for API error responses
 interface ApiErrorData {
   message?: string;
-  error?: string; // Add other potential error fields if known
-  // Add other fields if your API returns them on error
+  error?: string;
 }
 
-// --- Loading Skeleton Component ---
+// --- Loading Skeleton Component (remains the same) ---
 const LoadingSkeleton = () => (
   <div className="container mx-auto px-4 py-8">
     <motion.div className="py-6">
@@ -6641,11 +7744,13 @@ const LoadingSkeleton = () => (
         </div>
         {/* Form Skeleton */}
         <div className="space-y-8">
-          {/* Tabs Navigation Skeleton */}
-          <div className="relative z-0 rounded-lg overflow-hidden flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x  mb-6">
-            <Skeleton className="h-12 flex-1 " />
-            <Skeleton className="h-12 flex-1 " />
-            <Skeleton className="h-12 flex-1 " />
+          {/* Tabs Navigation Skeleton - Updated to match new style */}
+          <div className="overflow-hidden mb-4">
+            <div className="relative flex w-full h-full overflow-x-auto whitespace-nowrap bg-lightborder dark:bg-primarybox p-1.5 rounded-full justify-normal items-center">
+              <Skeleton className="h-9 flex-1 rounded-full bg-white dark:bg-secondarybox mr-1" />
+              <Skeleton className="h-9 flex-1 rounded-full bg-white dark:bg-secondarybox mr-1" />
+              <Skeleton className="h-9 flex-1 rounded-full bg-white dark:bg-secondarybox" />
+            </div>
           </div>
 
           {/* General Tab Content Skeleton (Default Visible) */}
@@ -6669,8 +7774,7 @@ const LoadingSkeleton = () => (
                 <div className="md:col-span-2 space-y-2">
                   <Skeleton className="h-4 w-1/3 rounded" />
                   <Skeleton className="h-12 w-full rounded-md" />
-                  <Skeleton className="h-3 w-3/4 rounded" />{" "}
-                  {/* Help text */}
+                  <Skeleton className="h-3 w-3/4 rounded" /> {/* Help text */}
                 </div>
               </div>
             </div>
@@ -6702,7 +7806,13 @@ const LoadingSkeleton = () => (
     </motion.div>
   </div>
 );
-// --- END: Loading Skeleton Component ---
+
+// --- Tab Configuration ---
+const TABS_CONFIG = [
+  { value: "general", label: "General Info", icon: FaGlobe },
+  { value: "bank", label: "Bank Details", icon: FaIdCard },
+  { value: "fees", label: "Fees & Rates", icon: FaPercentage },
+];
 
 const AdminEditCurrencyPage = () => {
   const params = useParams();
@@ -6718,7 +7828,7 @@ const AdminEditCurrencyPage = () => {
     "general"
   );
   const [formChanged, setFormChanged] = useState(false);
-  const [flagImageError, setFlagImageError] = useState(false); // State to track image loading error
+  const [flagImageError, setFlagImageError] = useState(false);
 
   // Animation variants
   const containerVariants = {
@@ -6741,7 +7851,7 @@ const AdminEditCurrencyPage = () => {
     },
   };
 
-  // Fetch Currency Data
+  // Fetch Currency Data (remains the same)
   useEffect(() => {
     const fetchCurrency = async () => {
       if (!token || !currencyId) {
@@ -6759,7 +7869,6 @@ const AdminEditCurrencyPage = () => {
           }
         );
         setCurrency(response.data);
-        // Initialize form state from fetched data
         setFormState({
           code: response.data.code || "",
           currencyName: response.data.currencyName || "",
@@ -6771,16 +7880,14 @@ const AdminEditCurrencyPage = () => {
           wiseFeePercentage: response.data.wiseFeePercentage?.toString() ?? "",
           bankTransferFee: response.data.bankTransferFee?.toString() ?? "",
           rateAdjustmentPercentage:
-            // Ensure rateAdjustmentPercentage is never null/undefined in form state, default to '0' string
             response.data.rateAdjustmentPercentage?.toString() ?? "0",
         });
-        setFlagImageError(false); // Reset image error on successful fetch
+        setFlagImageError(false);
       } catch (err: unknown) {
         console.error("Fetch error:", err);
         if (isAxiosError(err)) {
-          // FIX 1: Handle potential error message structure safely
-          const errorData = err.response?.data as ApiErrorData | undefined; // Cast to potential structure
-          let message = "Failed to load currency details"; // Default message
+          const errorData = err.response?.data as ApiErrorData | undefined;
+          let message = "Failed to load currency details";
           if (errorData?.message) {
             message = errorData.message;
           } else if (errorData?.error) {
@@ -6798,7 +7905,7 @@ const AdminEditCurrencyPage = () => {
             toast.error("Unauthorized. Redirecting to login...");
             setTimeout(() => router.push("/auth/login"), 2000);
           } else {
-            toast.error(message); // Use the safely extracted message
+            toast.error(message);
           }
         } else if (err instanceof Error) {
           toast.error(err.message || "An unexpected error occurred.");
@@ -6813,16 +7920,12 @@ const AdminEditCurrencyPage = () => {
     fetchCurrency();
   }, [currencyId, token, router]);
 
-  // Track form changes
+  // Track form changes (remains the same)
   useEffect(() => {
     if (!currency || !formState) return;
-
-    // Compare form state (strings) with currency data (potentially numbers/null)
-    // Convert currency numbers to strings for comparison, handling nulls gracefully
     const currentWiseFee = currency.wiseFeePercentage?.toString() ?? "";
     const currentBankFee = currency.bankTransferFee?.toString() ?? "";
-    const currentRateAdj = currency.rateAdjustmentPercentage?.toString() ?? "0"; // Match default form state '0'
-
+    const currentRateAdj = currency.rateAdjustmentPercentage?.toString() ?? "0";
     const isChanged =
       formState.currencyName !== (currency.currencyName || "") ||
       formState.flagImage !== (currency.flagImage || "") ||
@@ -6833,11 +7936,10 @@ const AdminEditCurrencyPage = () => {
       formState.wiseFeePercentage !== currentWiseFee ||
       formState.bankTransferFee !== currentBankFee ||
       formState.rateAdjustmentPercentage !== currentRateAdj;
-
     setFormChanged(isChanged);
   }, [currency, formState]);
 
-  // Handle Input Changes
+  // Handle Input Changes (remains the same)
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -6845,7 +7947,6 @@ const AdminEditCurrencyPage = () => {
     setFormState((prev) => {
       if (!prev) return null;
       const newState = { ...prev, [name]: value };
-      // Reset flag image error if the flagImage path changes
       if (name === "flagImage") {
         setFlagImageError(false);
       }
@@ -6853,22 +7954,17 @@ const AdminEditCurrencyPage = () => {
     });
   };
 
-  // Handle Form Submission
+  // Handle Form Submission (remains the same)
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!formState || !currencyId || !token) {
       toast.error("Form data or required parameters missing.");
       return;
     }
-
     setIsSubmitting(true);
-
-    // Prepare payload, converting numbers and handling nulls/empty strings
-    // Perform parsing and validation *before* creating the final payload object
     let wiseFee: number | null = null;
     if (formState.wiseFeePercentage.trim() !== "") {
       const parsed = parseFloat(formState.wiseFeePercentage);
-      // FIX 2 & 3 & 4: Validate parsed number before assignment
       if (isNaN(parsed) || parsed < 0) {
         toast.error("Wise Fee % must be a non-negative number.");
         setIsSubmitting(false);
@@ -6876,11 +7972,9 @@ const AdminEditCurrencyPage = () => {
       }
       wiseFee = parsed;
     }
-
     let bankFee: number | null = null;
     if (formState.bankTransferFee.trim() !== "") {
       const parsed = parseFloat(formState.bankTransferFee);
-      // FIX 5 & 6 & 7: Validate parsed number before assignment
       if (isNaN(parsed) || parsed < 0) {
         toast.error("Bank Fee must be a non-negative number.");
         setIsSubmitting(false);
@@ -6888,11 +7982,9 @@ const AdminEditCurrencyPage = () => {
       }
       bankFee = parsed;
     }
-
-    let rateAdj: number = 0; // Default to 0
+    let rateAdj: number = 0;
     if (formState.rateAdjustmentPercentage.trim() !== "") {
       const parsed = parseFloat(formState.rateAdjustmentPercentage);
-      // FIX 8: Validate parsed number before assignment
       if (isNaN(parsed)) {
         toast.error("Rate Adjustment must be a valid number.");
         setIsSubmitting(false);
@@ -6900,13 +7992,9 @@ const AdminEditCurrencyPage = () => {
       }
       rateAdj = parsed;
     } else {
-      // If the input is cleared, explicitly set payload to 0
       rateAdj = 0;
     }
-
     const payload: Partial<Currency> = {
-      // Code is generally not editable, but include if needed by API
-      // code: formState.code.toUpperCase().trim(),
       currencyName: formState.currencyName.trim(),
       flagImage: formState.flagImage.trim() || null,
       payeeName: formState.payeeName.trim() || null,
@@ -6917,14 +8005,11 @@ const AdminEditCurrencyPage = () => {
       bankTransferFee: bankFee,
       rateAdjustmentPercentage: rateAdj,
     };
-
-    // --- Simplified Validation (checks moved before payload creation) ---
     if (!payload.currencyName) {
       toast.error("Currency Name is required.");
       setIsSubmitting(false);
       return;
     }
-    // Validate flag image path starts with / or is http(s)://
     if (
       payload.flagImage &&
       !payload.flagImage.startsWith("/") &&
@@ -6936,8 +8021,6 @@ const AdminEditCurrencyPage = () => {
       setIsSubmitting(false);
       return;
     }
-    // --- Number validations are now handled above during parsing ---
-
     try {
       const response = await axios.put<Currency>(
         `/admin/currencies/${currencyId}`,
@@ -6947,7 +8030,6 @@ const AdminEditCurrencyPage = () => {
         }
       );
       setCurrency(response.data);
-      // Re-initialize form state from the *response* data
       setFormState({
         code: response.data.code || "",
         currencyName: response.data.currencyName || "",
@@ -6959,22 +8041,19 @@ const AdminEditCurrencyPage = () => {
         wiseFeePercentage: response.data.wiseFeePercentage?.toString() ?? "",
         bankTransferFee: response.data.bankTransferFee?.toString() ?? "",
         rateAdjustmentPercentage:
-          response.data.rateAdjustmentPercentage?.toString() ?? "0", // Default to '0' string
+          response.data.rateAdjustmentPercentage?.toString() ?? "0",
       });
       toast.success("Currency updated successfully!");
-      setFormChanged(false); // Reset form changed status
-      setFlagImageError(false); // Reset image error on successful save
-
-      // Redirect to currencies page after successful update and toast display
+      setFormChanged(false);
+      setFlagImageError(false);
       setTimeout(() => {
         router.push("/admin/currencies");
       }, 1500);
     } catch (err: unknown) {
       console.error("Update error:", err);
       if (isAxiosError(err)) {
-        // FIX 9: Handle potential error message structure safely
-        const errorData = err.response?.data as ApiErrorData | undefined; // Cast to potential structure
-        let message = "Failed to update currency"; // Default message
+        const errorData = err.response?.data as ApiErrorData | undefined;
+        let message = "Failed to update currency";
         if (errorData?.message) {
           message = errorData.message;
         } else if (errorData?.error) {
@@ -6982,8 +8061,7 @@ const AdminEditCurrencyPage = () => {
         } else if (err.response?.statusText) {
           message = `Error ${err.response.status}: ${err.response.statusText}`;
         }
-        // Handle specific update errors if needed, e.g., validation errors
-        toast.error(message); // Use the safely extracted message
+        toast.error(message);
       } else if (err instanceof Error) {
         toast.error(
           err.message || "An unexpected error occurred during update."
@@ -6996,10 +8074,9 @@ const AdminEditCurrencyPage = () => {
     }
   };
 
-  // Reset form to initial values
+  // Reset form (remains the same)
   const handleReset = () => {
     if (!currency) return;
-
     setFormState({
       code: currency.code || "",
       currencyName: currency.currencyName || "",
@@ -7011,452 +8088,450 @@ const AdminEditCurrencyPage = () => {
       wiseFeePercentage: currency.wiseFeePercentage?.toString() ?? "",
       bankTransferFee: currency.bankTransferFee?.toString() ?? "",
       rateAdjustmentPercentage:
-        currency.rateAdjustmentPercentage?.toString() ?? "0", // Default to '0' string
+        currency.rateAdjustmentPercentage?.toString() ?? "0",
     });
-    setFlagImageError(false); // Reset image error on reset
-    setFormChanged(false); // Also reset form changed status on reset
+    setFlagImageError(false);
+    setFormChanged(false);
     toast.info("Form reset to last saved values");
   };
 
-  // Render tabs content
-  const renderTabContent = () => {
-    // Ensure formState is loaded before rendering form elements
-    if (!formState) {
-      return (
-        <div className="flex justify-center items-center p-10">
-          <Loader2 className="animate-spin mr-3 text-primary" size={24} />
-          <span>Loading form...</span>
-        </div>
-      );
-    }
-    switch (activeTab) {
-      case "general":
-        return (
-          <motion.div
-            key="general"
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
-            className="space-y-6"
-          >
-            <motion.div
-              variants={itemVariants}
-              className="rounded-xl bg-white dark:bg-background border lg:p-6 p-4 shadow-sm"
-            >
-              <h3 className="border-b pb-2 md:text-lg text-base font-medium text-neutral-900 dark:text-white">
-                General Information
-              </h3>
-              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Code (Readonly) */}
-                <div>
-                  <label
-                    htmlFor="code"
-                    className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
-                  >
-                    <Globe size={18} className="text-primary" />
-                    Currency Code
-                  </label>
-                  <div className="relative mt-1">
-                    <input
-                      type="text"
-                      id="code"
-                      value={formState.code} // Use formState directly
-                      readOnly
-                      className="block w-full rounded-md border bg-gray-100 dark:bg-white/5 py-3 px-4 text-neutral-900 dark:text-gray-300 placeholder:text-gray-400 focus:outline-none font-medium cursor-not-allowed"
-                    />
-                    <span className="pointer-events-none absolute right-4.5 top-1/2 -translate-y-1/2 text-neutral-500 dark:text-gray-300">
-                      <Lock size={18} />
-                    </span>
-                  </div>
-                </div>
+  // --- Refactored Tab Content Rendering Functions ---
+  const renderGeneralContent = () => {
+    if (!formState) return null;
+    return (
+      <motion.div
+        key="general-content"
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+        className="space-y-4"
+      >
+        <motion.div
+          variants={itemVariants}
+          className="rounded-xl bg-white dark:bg-background border shadow-sm"
+        >
+          <h3 className="border-b px-4 py-3 md:text-lg text-base font-medium text-neutral-900 dark:text-white">
+            General Information
+          </h3>
 
-                {/* Currency Name */}
-                <div>
-                  <label
-                    htmlFor="currencyName"
-                    className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
-                  >
-                    <DollarSign size={18} className="text-primary" />
-                    Currency Name <span className="text-red-600">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="currencyName"
-                    id="currencyName"
-                    placeholder="e.g., Euro"
-                    value={formState.currencyName} // Use formState directly
-                    onChange={handleChange}
-                    required
-                    className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
-                  />
-                </div>
-
-                {/* Flag Image Path */}
-                <div className="md:col-span-2">
-                  <label
-                    htmlFor="flagImage"
-                    className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
-                  >
-                    <ImageIcon size={18} className="text-primary" />
-                    Flag Image Path
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      name="flagImage"
-                      id="flagImage"
-                      value={formState.flagImage} // Use formState directly
-                      onChange={handleChange}
-                      placeholder="/assets/icon/flags/eur.png or https://..."
-                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 dark:text-white dark:hover:shadow-whitecolor transition-shadow ease-in-out duration-300 hover:shadow-darkcolor placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium pr-12 md:pr-16" // Add padding for image
-                    />
-                    {formState.flagImage &&
-                      !flagImageError && ( // Use formState directly
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 h-6 w-8 md:h-8 md:w-10 pointer-events-none">
-                          <Image
-                            src={formState.flagImage}
-                            alt={`${formState.code || "Currency"} flag`}
-                            fill
-                            style={{ objectFit: "contain" }}
-                            onError={() => setFlagImageError(true)}
-                            unoptimized={formState.flagImage.startsWith("http")}
-                          />
-                        </div>
-                      )}
-                    {flagImageError &&
-                      formState.flagImage && ( // Use formState directly
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-red-600 text-xs">
-                          Load Error
-                        </div>
-                      )}
-                  </div>
-                  <p className="mt-2 text-xs text-gray-500 dark:text-gray-300">
-                    Relative path (e.g., /assets/icon/flags/eur.png) or full
-                    URL. Must be accessible.
-                  </p>
-                  {flagImageError && (
-                    <p className="mt-1 text-xs text-red-600">
-                      Could not load the flag image. Check the path/URL.
-                    </p>
-                  )}
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:p-6 p-4">
+            <div>
+              <label
+                htmlFor="code"
+                className="text-gray-500 dark:text-gray-300 capitalize text-sm flex items-center gap-1 lg:text-base"
+              >
+                <FaGlobe size={18} className="text-primary" />
+                Currency Code
+                <span className="text-red-600">*</span>
+              </label>
+              <div className="relative mt-1">
+                <input
+                  type="text"
+                  id="code"
+                  value={formState.code}
+                  readOnly
+                  className="mt-2 block px-4 py-3 bg-white dark:bg-background h-14 w-full border cursor-not-allowed rounded-lg transition-all focus:outline-none ease-linear duration-75"
+                />
+                <span className="pointer-events-none absolute right-4.5 top-1/2 -translate-y-1/2 text-neutral-500 dark:text-gray-300">
+                  <Lock size={18} />
+                </span>
               </div>
-            </motion.div>
+            </div>
 
-            {/* Metadata Section */}
-            <motion.div
-              variants={itemVariants}
-              className="rounded-xl bg-white dark:bg-background border shadow-sm"
-            >
-              <h3 className="border-b px-4 py-3 md:text-lg text-base font-medium text-neutral-900 dark:text-white">
-                Metadata
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:p-6 p-4">
-                <div className="space-y-2">
-                  <p className="font-medium text-gray-500 dark:text-gray-300">
-                    Created At
-                  </p>
-                  <div className="rounded-md border bg-gray-100 dark:bg-white/5 py-3 px-4 text-neutral-900 dark:text-gray-300 ">
-                    {currency?.createdAt
-                      ? new Date(currency.createdAt).toLocaleString()
-                      : "N/A"}
+            <div>
+              <label
+                htmlFor="currencyName"
+                className="text-gray-500 dark:text-gray-300 capitalize text-sm flex items-center gap-1 lg:text-base"
+              >
+                <DollarSign size={18} className="text-primary" />
+                Currency Name <span className="text-red-600">*</span>
+              </label>
+
+              <input
+                type="text"
+                name="currencyName"
+                id="currencyName"
+                placeholder="e.g., Euro"
+                value={formState.currencyName}
+                onChange={handleChange}
+                required
+                className="mt-2 block px-4 py-3 bg-white dark:bg-background h-14 focus:border-[#5f5f5f] w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75"
+              />
+            </div>
+
+            <div className="md:col-span-1">
+              <label
+                htmlFor="flagImage"
+                className="text-gray-500 dark:text-gray-300 capitalize text-sm flex items-center gap-1 lg:text-base"
+              >
+                <ImageIcon size={18} className="text-primary" />
+                Flag Image Path
+                <span className="text-red-600">*</span>
+              </label>
+
+              <div className="relative">
+                <input
+                  type="text"
+                  name="flagImage"
+                  id="flagImage"
+                  value={formState.flagImage}
+                  onChange={handleChange}
+                  placeholder="/assets/icon/flags/eur.png or https://..."
+                  className="mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75"
+                />
+                {formState.flagImage && !flagImageError && (
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 size-8 pointer-events-none">
+                    <Image
+                      src={formState.flagImage}
+                      alt={`${formState.code || "Currency"} flag`}
+                      fill
+                      style={{ objectFit: "contain" }}
+                      onError={() => setFlagImageError(true)}
+                      unoptimized={formState.flagImage.startsWith("http")}
+                    />
                   </div>
-                </div>
-                <div className="space-y-2">
-                  <p className="font-medium text-gray-500 dark:text-gray-300">
-                    Last Updated
-                  </p>
-                  <div className="rounded-md border bg-gray-100 dark:bg-white/5 py-3 px-4 text-neutral-900 dark:text-gray-300 ">
-                    {currency?.updatedAt
-                      ? new Date(currency.updatedAt).toLocaleString()
-                      : "N/A"}
+                )}
+
+                {flagImageError && formState.flagImage && (
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 text-red-600 font-medium text-xs">
+                    Load Error
                   </div>
-                </div>
+                )}
               </div>
-            </motion.div>
-          </motion.div>
-        );
 
-      case "bank":
-        return (
-          <motion.div
-            key="bank"
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
-            className="space-y-6"
-          >
-            <motion.div
-              variants={itemVariants}
-              className="rounded-xl bg-white dark:bg-background border lg:p-6 p-4 shadow-sm"
-            >
-              <div className="mb-4 border-b pb-2">
-                <h3 className="md:text-lg text-base font-medium text-neutral-900 dark:text-white">
-                  Bank Details (Optional)
-                </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
-                  Provide these details if you need to store bank information
-                  associated with this currency.
+              <p className="mt-2 text-sm text-gray-500 font-medium  dark:text-gray-300">
+                Relative path (e.g., /assets/icon/flags/eur.png) or full URL.
+                Must be accessible.
+              </p>
+
+              {flagImageError && (
+                <p className="mt-2 text-xs font-medium text-red-600">
+                  Could not load the flag image. Check the path/URL.
                 </p>
+              )}
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          variants={itemVariants}
+          className="rounded-xl bg-white dark:bg-background border shadow-sm"
+        >
+          <h3 className="border-b px-4 py-3 md:text-lg text-base font-medium text-neutral-900 dark:text-white">
+            Metadata
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:p-6 p-4">
+            <div className="space-y-2">
+              <p className="font-medium text-gray-500 flex items-center gap-1 dark:text-gray-300">
+                <AiOutlineCalendar size={18} className="text-primary" />
+                Created At
+              </p>
+
+              <div className="rounded-md bg-lightgray dark:bg-primarybox py-3 px-4 text-neutral-900 dark:text-gray-300">
+                {currency?.createdAt
+                  ? new Date(currency.createdAt).toLocaleString()
+                  : "N/A"}
               </div>
+            </div>
 
-              <div className="mt-4 grid grid-cols-1 gap-6">
-                {/* Payee Name */}
-                <div>
-                  <label
-                    htmlFor="payeeName"
-                    className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
-                  >
-                    <Building size={18} className="text-primary" />
-                    Payee Name
-                  </label>
-                  <input
-                    type="text"
-                    name="payeeName"
-                    id="payeeName"
-                    placeholder="Recipient's full name or company name"
-                    value={formState.payeeName} // Use formState directly
-                    onChange={handleChange}
-                    className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
-                  />
-                </div>
+            <div className="space-y-2">
+              <p className="font-medium text-gray-500 flex items-center gap-1 dark:text-gray-300">
+                <MdUpdate className="text-primary" size={18} />
+                Last Updated
+              </p>
 
-                {/* IBAN and BIC/SWIFT */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label
-                      htmlFor="iban"
-                      className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
-                    >
-                      <Hash size={18} className="text-primary" />
-                      IBAN
-                    </label>
-                    <input
-                      type="text"
-                      name="iban"
-                      id="iban"
-                      placeholder="International Bank Account Number"
-                      value={formState.iban} // Use formState directly
-                      onChange={handleChange}
-                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
-                    />
-                  </div>
+              <div className="rounded-md bg-lightgray dark:bg-primarybox py-3 px-4 text-neutral-900 dark:text-gray-300">
+                {currency?.updatedAt
+                  ? new Date(currency.updatedAt).toLocaleString()
+                  : "N/A"}
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </motion.div>
+    );
+  };
 
-                  <div>
-                    <label
-                      htmlFor="bicSwift"
-                      className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
-                    >
-                      <Hash size={18} className="text-primary" />
-                      BIC/SWIFT
-                    </label>
-                    <input
-                      type="text"
-                      name="bicSwift"
-                      id="bicSwift"
-                      placeholder="Bank Identifier Code"
-                      value={formState.bicSwift} // Use formState directly
-                      onChange={handleChange}
-                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
-                    />
-                  </div>
-                </div>
+  const renderBankContent = () => {
+    if (!formState) return null;
+    return (
+      <motion.div
+        key="bank-content"
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+        className="space-y-4"
+      >
+        <motion.div
+          variants={itemVariants}
+          className="rounded-xl bg-white dark:bg-background border shadow-sm"
+        >
+          <div className="border-b pb-2 px-4 py-3 ">
+            <h3 className="md:text-lg text-base font-medium text-neutral-900 dark:text-white">
+              Bank Details (Optional)
+            </h3>
 
-                {/* Bank Address */}
-                <div>
-                  <label
-                    htmlFor="bankAddress"
-                    className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
-                  >
-                    <Landmark size={18} className="text-primary" />
-                    Bank Address
-                  </label>
-                  <textarea
-                    id="bankAddress"
-                    name="bankAddress"
-                    rows={3}
-                    placeholder="Full address of the recipient's bank"
-                    value={formState.bankAddress} // Use formState directly
-                    onChange={handleChange}
-                    className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium"
-                  ></textarea>
+            <p className="text-sm text-gray-500 dark:text-gray-300">
+              Provide these details if you need to store bank information
+              associated with this currency.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:p-6 p-4 gap-6">
+            <div>
+              <label
+                htmlFor="payeeName"
+                className="text-gray-500 dark:text-gray-300 capitalize text-sm flex items-center gap-1 lg:text-base"
+              >
+                <Building size={18} className="text-primary" />
+                Payee Name
+                <span className="text-red-600">*</span>
+              </label>
+
+              <input
+                type="text"
+                name="payeeName"
+                id="payeeName"
+                placeholder="Recipient's full name or company name"
+                value={formState.payeeName}
+                onChange={handleChange}
+                className="mt-2 block px-4 py-3 bg-white dark:bg-background h-14 w-full border focus:border-[#5f5f5f] rounded-lg transition-all focus:outline-none ease-linear duration-75"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label
+                  htmlFor="iban"
+                  className="text-gray-500 dark:text-gray-300 capitalize text-sm flex items-center gap-1 lg:text-base"
+                >
+                  <Hash size={18} className="text-primary" />
+                  IBAN
+                  <span className="text-red-600">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="iban"
+                  id="iban"
+                  placeholder="International Bank Account Number"
+                  value={formState.iban}
+                  onChange={handleChange}
+                  className="mt-2 block px-4 py-3 bg-white dark:bg-background h-14 focus:border-[#5f5f5f] w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="bicSwift"
+                  className="text-gray-500 dark:text-gray-300 capitalize text-sm flex items-center gap-1 lg:text-base"
+                >
+                  <Hash size={18} className="text-primary" />
+                  BIC/SWIFT
+                  <span className="text-red-600">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="bicSwift"
+                  id="bicSwift"
+                  placeholder="Bank Identifier Code"
+                  value={formState.bicSwift}
+                  onChange={handleChange}
+                  className="mt-2 block px-4 py-3 bg-white dark:bg-background h-14 focus:border-[#5f5f5f] w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="bankAddress"
+                className="text-gray-500 dark:text-gray-300 capitalize text-sm flex items-center gap-1 lg:text-base"
+              >
+                <Landmark size={18} className="text-primary" />
+                Bank Address
+                <span className="text-red-600">*</span>
+              </label>
+
+              <textarea
+                id="bankAddress"
+                name="bankAddress"
+                rows={3}
+                placeholder="Full address of the recipient's bank"
+                value={formState.bankAddress}
+                onChange={handleChange}
+                className="mt-2 block px-4 py-3 bg-white dark:bg-background focus:border-[#5f5f5f] w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75"
+              ></textarea>
+            </div>
+          </div>
+        </motion.div>
+      </motion.div>
+    );
+  };
+
+  const renderFeesContent = () => {
+    if (!formState) return null;
+    return (
+      <motion.div
+        key="fees-content"
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+        className="space-y-4"
+      >
+        <motion.div
+          variants={itemVariants}
+          className="rounded-xl bg-white dark:bg-background border shadow-sm"
+        >
+          <h3 className="border-b px-4 py-3 md:text-lg text-base font-medium text-neutral-900 dark:text-white">
+            Fees & Exchange Rate Settings (Optional)
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:p-6 p-4">
+            <div>
+              <label
+                htmlFor="wiseFeePercentage"
+                className="text-gray-500 dark:text-gray-300 capitalize text-sm flex items-center gap-1 lg:text-base"
+              >
+                <Percent size={18} className="text-primary" />
+                Wise Fee %
+              </label>
+
+              <div className="relative">
+                <input
+                type="number"
+                  name="wiseFeePercentage"
+                  id="wiseFeePercentage"
+                  value={formState.wiseFeePercentage}
+                  onChange={handleChange}
+                  step="any"
+                  min="0"
+                  className="mt-2 block px-4 py-3 bg-white dark:bg-background h-14 w-full border focus:border-[#5f5f5f] rounded-lg transition-all focus:outline-none ease-linear duration-75"
+                  placeholder="e.g., 0.5"
+                />
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+                  <span className="text-gray-500 dark:text-gray-300">%</span>
                 </div>
               </div>
-            </motion.div>
-          </motion.div>
-        );
-
-      case "fees":
-        return (
-          <motion.div
-            key="fees"
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
-            className="space-y-6"
-          >
-            <motion.div
-              variants={itemVariants}
-              className="rounded-xl bg-white dark:bg-background border lg:p-6 p-4 shadow-sm"
-            >
-              <h3 className="border-b pb-2 md:text-lg text-base font-medium text-neutral-900 dark:text-white">
-                Fees & Exchange Rate Settings (Optional)
-              </h3>
-
-              <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Wise Fee Percentage */}
-                <div>
-                  <label
-                    htmlFor="wiseFeePercentage"
-                    className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
-                  >
-                    <Percent size={18} className="text-primary" />
-                    Wise Fee %
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      name="wiseFeePercentage"
-                      id="wiseFeePercentage"
-                      value={formState.wiseFeePercentage} // Use formState directly
-                      onChange={handleChange}
-                      step="any"
-                      min="0"
-                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                      placeholder="e.g., 0.5"
-                    />
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
-                      <span className="text-gray-500 dark:text-gray-300">
-                        %
-                      </span>
-                    </div>
-                  </div>
-                  <p className="mt-2 text-xs text-gray-500 dark:text-gray-300">
-                    Percentage fee for Wise transfers (leave blank if none).
-                  </p>
-                </div>
-
-                {/* Bank Transfer Fee */}
-                <div>
-                  <label
-                    htmlFor="bankTransferFee"
-                    className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
-                  >
-                    <DollarSign size={18} className="text-primary" />
-                    Bank Transfer Fee
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      name="bankTransferFee"
-                      id="bankTransferFee"
-                      value={formState.bankTransferFee} // Use formState directly
-                      onChange={handleChange}
-                      step="any"
-                      min="0"
-                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                      placeholder="e.g., 5.00"
-                    />
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
-                      <span className="text-gray-500 dark:text-gray-300 text-sm font-medium">
-                        {formState.code || "CUR"} {/* Use formState */}
-                      </span>
-                    </div>
-                  </div>
-                  <p className="mt-2 text-xs text-gray-500 dark:text-gray-300">
-                    Fixed fee in {formState.code || "currency"} (leave blank if
-                    none). {/* Use formState */}
-                  </p>
-                </div>
-
-                {/* Rate Adjustment Percentage */}
-                <div>
-                  <label
-                    htmlFor="rateAdjustmentPercentage"
-                    className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
-                  >
-                    <Percent size={18} className="text-primary" />
-                    Our Adjustment %
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      name="rateAdjustmentPercentage"
-                      id="rateAdjustmentPercentage"
-                      value={formState.rateAdjustmentPercentage} // Use formState directly
-                      onChange={handleChange}
-                      step="any" // Allow negative/positive decimals
-                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                      placeholder="e.g., -0.5 or 1.2"
-                    />
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
-                      <span className="text-gray-500 dark:text-gray-300">
-                        %
-                      </span>
-                    </div>
-                  </div>
-                  <p className="mt-2 text-xs text-gray-500 dark:text-gray-300">
-                    Adjustment vs market rate (default 0).
-                  </p>
+              <p className="mt-2 text-sm text-gray-500 font-medium  dark:text-gray-300">
+                Percentage fee for Wise transfers (leave blank if none).
+              </p>
+            </div>
+            <div>
+              <label
+                htmlFor="bankTransferFee"
+                className="text-gray-500 dark:text-gray-300 capitalize text-sm flex items-center gap-1 lg:text-base"
+              >
+                <DollarSign size={18} className="text-primary" />
+                Bank Transfer Fee
+              </label>
+              <div className="relative">
+                <input
+                type="number"
+                  name="bankTransferFee"
+                  id="bankTransferFee"
+                  value={formState.bankTransferFee}
+                  onChange={handleChange}
+                  step="any"
+                  min="0"
+                  className="mt-2 block px-4 py-3 bg-white dark:bg-background h-14 w-full border focus:border-[#5f5f5f] rounded-lg transition-all focus:outline-none ease-linear duration-75"
+                  placeholder="e.g., 5.00"
+                />
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+                  <span className="text-gray-500 dark:text-gray-300 text-sm font-medium">
+                    {formState.code || "CUR"}
+                  </span>
                 </div>
               </div>
-
-              <div className="mt-6 rounded-md border bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 shadow-sm p-4">
-                <h4 className="mb-2 flex items-center gap-1.5 font-semibold text-blue-800 dark:text-blue-200">
-                  <BarChart4 size={20} />
-                  Exchange Rate Info
-                </h4>
-                <p className="text-sm text-blue-700 dark:text-blue-300">
-                  The <strong>Our Adjustment %</strong> modifies the market
-                  exchange rate used in calculations. A positive value (e.g.,
-                  1%) increases the rate, making the foreign currency relatively
-                  cheaper. A negative value (e.g., -0.5%) decreases the rate,
-                  making the foreign currency relatively more expensive. Set to
-                  0 (or leave blank) to use the market rate directly.
-                </p>
+              <p className="mt-2 text-sm text-gray-500 font-medium  dark:text-gray-300">
+                Fixed fee in {formState.code || "currency"} (leave blank if
+                none).
+              </p>
+            </div>
+            <div>
+              <label
+                htmlFor="rateAdjustmentPercentage"
+                className="text-gray-500 dark:text-gray-300 capitalize text-sm flex items-center gap-1 lg:text-base"
+              >
+                <Percent size={18} className="text-primary" />
+                Our Adjustment %
+              </label>
+              <div className="relative">
+                <input
+                type="number"
+                  name="rateAdjustmentPercentage"
+                  id="rateAdjustmentPercentage"
+                  value={formState.rateAdjustmentPercentage}
+                  onChange={handleChange}
+                  step="any"
+                  className="mt-2 block px-4 py-3 bg-white dark:bg-background h-14 w-full border focus:border-[#5f5f5f] rounded-lg transition-all focus:outline-none ease-linear duration-75"
+                  placeholder="e.g., -0.5 or 1.2"
+                />
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+                  <span className="text-gray-500 dark:text-gray-300">%</span>
+                </div>
               </div>
-            </motion.div>
-          </motion.div>
-        );
-      default:
-        return null;
-    }
+              <p className="mt-2 text-sm text-gray-500 font-medium  dark:text-gray-300">
+                Adjustment vs market rate (default 0).
+              </p>
+            </div>
+          </div>
+
+          <div className="lg:p-6 p-4">
+            <div className="rounded-md bg-lightgray dark:bg-primarybox p-4">
+              
+              <h4 className="text-gray-500 dark:text-gray-300 font-medium capitalize text-sm flex gap-1 items-center lg:text-base">
+                <BarChart4 size={18}  className="text-primary" />
+                Exchange Rate Info
+              </h4>
+
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">
+                The <strong>Our Adjustment %</strong> modifies the market
+                exchange rate used in calculations. A positive value (e.g., 1%)
+                increases the rate, making the foreign currency relatively
+                cheaper. A negative value (e.g., -0.5%) decreases the rate,
+                making the foreign currency relatively more expensive. Set to 0
+                (or leave blank) to use the market rate directly.
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      </motion.div>
+    );
   };
 
   // --- Main component render ---
-  // Render Skeleton if loading
   if (isLoading) {
     return (
       <div className=" bg-white dark:bg-background">
         <LoadingSkeleton />;
       </div>
-    ) 
-  }
-
-  // Render error state or not found state (optional, could be handled by toast)
-  if (!isLoading && !currency && !formState) {
-    return (
-        <div className="container mx-auto px-4 py-8 relative">
-             {/* Still render header for context and back navigation */}
-             <CurrencyEditHeader currencyName="Error" currencyCode="XXX" />
-            <div className="mt-8 text-center text-red-600 bg-red-600/10 border border-red-400 dark:border-red-600 p-4 rounded-lg">
-                Failed to load currency details. Please check the ID or try again later.
-                 <Link href="/admin/currencies" className="mt-4 inline-block text-primary underline">
-                    Back to Currencies
-                 </Link>
-            </div>
-        </div>
     );
   }
 
-  // Main component render
+  if (!isLoading && !currency && !formState) {
+    return (
+      <div className="container mx-auto px-4 py-8 relative">
+        <CurrencyEditHeader currencyName="Error" currencyCode="XXX" />
+        <div className="mt-8 text-center text-red-600 bg-red-600/10 border border-red-400 dark:border-red-600 p-4 rounded-lg">
+          Failed to load currency details. Please check the ID or try again
+          later.
+          <Link
+            href="/admin/currencies"
+            className="mt-4 inline-block text-primary underline"
+          >
+            Back to Currencies
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-8 relative">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="py-6 bg-white dark:bg-background" // Added background color
+        className="py-6 bg-white dark:bg-background"
       >
         <ToastContainer
           position="top-right"
@@ -7471,101 +8546,113 @@ const AdminEditCurrencyPage = () => {
           theme="colored"
         />
         <div className="mx-auto max-w-5xl">
-        <CurrencyEditHeader
+          <CurrencyEditHeader
             currencyName={currency?.currencyName || formState?.currencyName}
             currencyCode={currency?.code || formState?.code}
           />
 
-          {isLoading && !currency && (
-            <div className="flex justify-center items-center h-64">
-              <Loader2 className="animate-spin mr-3 text-primary" size={32} />
-              <span className="text-lg text-gray-500 dark:text-gray-300">
-                Loading currency details...
-              </span>
-            </div>
-          )}
-
-          {!isLoading && !currency && !formState && (
-            <div className="text-center text-red-600 bg-red-600/20 border border-red-400 dark:border-red-600 p-4 rounded-lg">
-              Failed to load currency details. Please check the ID or try again
-              later.
-            </div>
-          )}
-
-          {/* Ensure formState exists before rendering form */}
           {!isLoading && formState && (
             <motion.form
               onSubmit={handleSubmit}
               className="space-y-8"
-              variants={containerVariants}
-              initial="hidden"
+              initial="hidden" // Moved initial animation props here if form itself should animate
               animate="visible"
+              variants={containerVariants} // Use containerVariants for the form to stagger children
             >
-              {/* Tabs Navigation */}
-              <motion.nav
-                variants={itemVariants}
-                className="relative z-0 rounded-lg shadow-sm overflow-hidden flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x border mb-6"
+              {/* --- New Tabs Section --- */}
+              <Tabs
+                value={activeTab}
+                onValueChange={(value) =>
+                  setActiveTab(value as "general" | "bank" | "fees")
+                }
+                className="w-full"
               >
-                {(["general", "bank", "fees"] as const).map((tab) => (
-                  <button
-                    key={tab}
-                    type="button"
-                    onClick={() => setActiveTab(tab)}
-                    className={`relative min-w-0 flex-1 group py-3 px-4 text-center font-medium cursor-pointer transition-colors duration-200 ease-in-out flex items-center justify-center gap-2 text-sm sm:text-base ${
-                      activeTab === tab
-                        ? "bg-primary text-neutral-900 shadow-inner inset-x-0"
-                        : "bg-white dark:bg-background text-gray-500 dark:text-gray-300 hover:bg-lightgray dark:hover:bg-primarybox"
-                    }`}
-                  >
-                    {tab === "general" && <FaGlobe size={20} />}
-                    {tab === "bank" && <FaIdCard size={20} />}
-                    {tab === "fees" && <FaPercentage size={20} />}
-                    <span className="capitalize">
-                      {tab === "fees" ? "Fees & Rates" : tab}
-                    </span>
-                  </button>
-                ))}
-              </motion.nav>
+                <motion.div
+                  variants={itemVariants}
+                  className="mb-4"
+                >
+                  {" "}
+                  {/* itemVariant for the TabsList container */}
+                  <TabsList className="relative z-20 flex w-full h-full overflow-x-auto whitespace-nowrap bg-lightborder dark:bg-primarybox p-1.5 rounded-full justify-normal items-center">
+                    {TABS_CONFIG.map((tabInfo) => (
+                      <TabsTrigger
+                        key={tabInfo.value}
+                        value={tabInfo.value}
+                        className={cn(
+                          "relative px-4 py-3 flex items-center justify-center gap-2 text-base shrink-0 min-w-max rounded-full text-neutral-900 dark:text-white data-[state=active]:text-neutral-900 dark:data-[state=active]:text-primary border-none data-[state=active]:bg-transparent dark:data-[state=active]:bg-transparent data-[state=active]:shadow-none cursor-pointer transition-colors duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        )}
+                      >
+                        {activeTab === tabInfo.value && (
+                          <motion.div
+                            layoutId="active-currency-tab-indicator" // Unique layoutId
+                            className="absolute inset-0 -z-10 bg-primary dark:bg-secondarybox rounded-full shadow-sm"
+                            transition={{ stiffness: 350, damping: 30 }}
+                          />
+                        )}
+                        <tabInfo.icon className="size-5" />{" "}
+                        <span className="truncate">{tabInfo.label}</span>
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+                </motion.div>
 
-              {/* Render Active Tab Content */}
-              {renderTabContent()}
+                <TabsContent value="general">
+                  {renderGeneralContent()}
+                </TabsContent>
+                <TabsContent value="bank">{renderBankContent()}</TabsContent>
+                <TabsContent value="fees">{renderFeesContent()}</TabsContent>
+              </Tabs>
 
               {/* Action Buttons */}
               <motion.div
-                variants={itemVariants}
-                className="flex flex-col sm:flex-row justify-end gap-3 mt-8 pt-6 border-t"
+                variants={itemVariants} // itemVariant for the buttons container
+                className="flex flex-col sm:flex-row justify-end gap-3"
               >
                 <button
                   type="button"
                   onClick={handleReset}
-                  disabled={isSubmitting || !formChanged} // Disable reset if submitting or form hasn't changed
-                  className="inline-flex items-center justify-center gap-2 cursor-pointer bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed font-medium rounded-full px-6 py-3 h-12 text-center w-full sm:w-auto transition-all duration-75 ease-linear group" // Added group for potential hover effects
+                  disabled={isSubmitting || !formChanged}
+                  className="inline-flex items-center justify-center gap-2 cursor-pointer bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed font-medium rounded-full px-6 py-3 h-12 text-center w-full sm:w-auto transition-all duration-75 ease-linear group"
                 >
-                  {/* px-4 py-2 h-12 rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed */}
                   <RefreshCw
-                    size={18}
+                    size={20}
                     className={`transition-transform duration-300 ${
                       formChanged && !isSubmitting
                         ? "group-hover:rotate-[-180deg]"
                         : ""
-                    }`} // Spin on hover only if changed and not submitting
+                    }`}
                   />
                   Reset
                 </button>
+
                 <button
                   type="submit"
-                  disabled={isSubmitting || !formChanged} // Disable save if submitting or form hasn't changed
-                  className="inline-flex items-center justify-center gap-2 cursor-pointer bg-primary hover:bg-primaryhover text-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed font-medium rounded-full px-6 py-3 h-12 text-center w-full sm:w-auto transition-all duration-75 ease-linear"
+                  disabled={isSubmitting || !formChanged}
+                  className="inline-flex items-center justify-center cursor-pointer bg-primary hover:bg-primaryhover text-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed font-medium rounded-full px-6 py-3 h-12 text-center w-full sm:w-auto transition-all duration-75 ease-linear"
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="animate-spin mr-2" size={18} />
-                      Saving...
+                     <svg
+                        className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 2V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                        /> <path d="M12 18V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M4.93 4.93L7.76 7.76" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M16.24 16.24L19.07 19.07" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M2 12H6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M18 12H22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M4.93 19.07L7.76 16.24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M16.24 7.76L19.07 4.93" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                      <span>Saving...</span>
                     </>
                   ) : (
                     <>
-                      <Save size={18} className="mr-2" />
-                      Save Changes
+                      <span>Save Changes</span>
                     </>
                   )}
                 </button>

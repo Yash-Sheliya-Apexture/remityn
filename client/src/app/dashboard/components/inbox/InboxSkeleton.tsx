@@ -82,14 +82,13 @@ export const InboxSkeleton: React.FC = () => {
             {/* Title: "Your Inbox" */}
             <Skeleton className="h-9 w-38 mb-1" />
             {/* Subtitle: Counts */}
-            <div className="flex items-centerm gap-1">
-              <Skeleton className="h-4 w-20" />
-              <Skeleton className="h-4 w-20" />
+            <div className="flex items-center gap-1">
+              <Skeleton className="h-4 w-14" />
+              <Skeleton className="p-1 rounded-full" />
+              <Skeleton className="h-4 w-14" />
             </div>
           </div>
         </div>
-        {/* Refresh Button */}
-        <Skeleton className="h-12 w-37 rounded-full" />
       </div>
 
       {/* 2. New Messages Section */}

@@ -3,7 +3,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IoClose as X } from "react-icons/io5";
-import { MessageSquareText, Loader2, SendHorizonal, AlertCircle } from "lucide-react";
+import {
+  MessageSquareText,
+  Loader2,
+  SendHorizonal,
+  AlertCircle,
+} from "lucide-react";
 
 // Shadcn UI Components (Import what's needed)
 import { Label } from "@/components/ui/label";
@@ -46,7 +51,6 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({
       clearSendError();
     }
   }, [isOpen, clearSendError]);
-
 
   useEffect(() => {
     const checkMobileScreen = () => {
@@ -125,49 +129,63 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({
                 className="p-3 bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
                 aria-label="Close send message modal"
               >
-                <X size={24} className="text-neutral-900 dark:text-primary"/>
+                <X size={24} className="text-neutral-900 dark:text-primary" />
               </button>
             </div>
 
             {/* Content */}
             <div className="p-4 sm:p-6 space-y-5">
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Compose message for {userName}'s inbox.
-                </p>
-                <div className="space-y-2">
-                    <Label htmlFor="subject" className="text-neutral-900 dark:text-white">Subject</Label>
-                    <Input
-                        id="subject"
-                        value={subject}
-                        onChange={(e) => setSubject(e.target.value)}
-                        maxLength={200}
-                        disabled={isSending}
-                        placeholder="Enter message subject"
-                        className="bg-lightgray dark:bg-white/5 border focus:border-primary"
-                    />
+              <p className="text-sm text-gray-500 dark:text-gray-300">
+                Compose message for {userName}'s inbox.
+              </p>
+              <div className="space-y-2">
+                <label
+                  htmlFor="subject"
+                  className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
+                >
+                  Subject{" "}
+                  <span className="text-red-600 dark:text-red-400">*</span>
+                </label>
+
+                <input
+                  id="subject"
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                  maxLength={200}
+                  disabled={isSending}
+                  placeholder="Enter message subject"
+                  className="mt-1 block px-4 py-3 focus:border-[#5f5f5f] bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label
+                  htmlFor="body"
+                  className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
+                >
+                  Body <span className="text-red-600 dark:text-red-400">*</span>
+                </label>
+
+                <textarea
+                  id="body"
+                  value={body}
+                  onChange={(e) => setBody(e.target.value)}
+                  className="mt-1 block min-h-[150px] px-4 py-3 bg-white focus:border-[#5f5f5f] dark:bg-background h-14 w-full border focus:outline-none rounded-lg transition-all ease-linear duration-75"
+                  maxLength={5000}
+                  disabled={isSending}
+                  placeholder="Enter message content..."
+                />
+              </div>
+              {/* Error Display Area */}
+              {sendError && (
+                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/30 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg text-sm flex items-start gap-2">
+                  <AlertCircle className="size-5 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-medium">Error Sending Message</p>
+                    <p>{sendError}</p>
+                  </div>
                 </div>
-                 <div className="space-y-2">
-                    <Label htmlFor="body" className="text-neutral-900 dark:text-white">Body</Label>
-                    <Textarea
-                        id="body"
-                        value={body}
-                        onChange={(e) => setBody(e.target.value)}
-                        className="min-h-[120px] bg-lightgray dark:bg-white/5 border focus:border-primary"
-                        maxLength={5000}
-                        disabled={isSending}
-                        placeholder="Enter message content..."
-                    />
-                </div>
-                 {/* Error Display Area */}
-                 {sendError && (
-                    <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/30 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg text-sm flex items-start gap-2">
-                        <AlertCircle className="size-5 flex-shrink-0 mt-0.5" />
-                        <div>
-                            <p className="font-medium">Error Sending Message</p>
-                            <p>{sendError}</p>
-                        </div>
-                    </div>
-                )}
+              )}
             </div>
 
             {/* Footer */}
@@ -185,13 +203,76 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({
                 className="inline-flex items-center justify-center cursor-pointer bg-primary hover:bg-primaryhover text-neutral-900 font-medium rounded-full px-6 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styling
               >
                 {isSending ? (
-                    <>
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Sending...
-                    </>
+                  <>
+                    <svg
+                      className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 2V6"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />{" "}
+                      <path
+                        d="M12 18V22"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M4.93 4.93L7.76 7.76"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M16.24 16.24L19.07 19.07"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M2 12H6"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M18 12H22"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M4.93 19.07L7.76 16.24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M16.24 7.76L19.07 4.93"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <span>Sending...</span>
+                  </>
                 ) : (
-                    <>
-                        <SendHorizonal className="mr-2 h-5 w-5" /> Send Message
-                    </>
+                  <>
+                    <span className="text-neutral-900">Send Message</span>
+                  </>
                 )}
               </button>
             </div>
