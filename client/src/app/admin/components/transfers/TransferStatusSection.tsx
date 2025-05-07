@@ -620,7 +620,7 @@ const TransferStatusSection: React.FC<TransferStatusSectionProps> = ({
 
         {/* Cancellation Reason */}
         {(currentStatus === "canceled" || currentStatus === "cancelled") && ( // Check both variations
-           <div className="mb-6 bg-lightgray dark:bg-secondarybox border rounded-lg p-4">
+           <div className="mb-6 bg-lightgray dark:bg-primarybox rounded-lg p-4">
              <h4 className="flex items-center text-neutral-900 dark:text-white font-medium mb-2 text-sm">
                <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0" />
                Cancellation Reason

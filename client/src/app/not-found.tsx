@@ -354,6 +354,8 @@ import React from "react";
 import { FiHelpCircle, FiSend } from "react-icons/fi";
 import { MdLockOutline } from "react-icons/md";
 import { motion } from "framer-motion"; // Import motion
+import { HiOutlineDocumentReport } from "react-icons/hi";
+import { RiShieldCheckLine } from "react-icons/ri";
 
 // Define animation variants
 const containerVariants = {
@@ -462,7 +464,7 @@ const Error404Page: React.FC = () => {
                 </a>
               </li>
               <li className="flex items-center gap-2.5">
-                <FiSend
+                <RiShieldCheckLine  
                   size={22}
                   className="text-neutral-900 dark:text-primary"
                 />
