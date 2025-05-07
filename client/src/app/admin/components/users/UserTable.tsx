@@ -536,23 +536,23 @@ const UserTable: React.FC<UserTableProps> = ({
                     // className="hover:bg-lightgray dark:hover:bg-primarybox transition-all duration-75 ease-linear"
                   >
                     {/* Full Name - Use styles closer to PaymentTable */}
-                    <td className="px-4 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap capitalize">
+                    <td className="px-6 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap capitalize">
                       {user.fullName && user.fullName.toLowerCase() !== 'n/a' ? user.fullName : <span className="text-gray-500 dark:text-gray-300 italic">N/A</span>}
                     </td>
                     {/* Email - Use styles closer to PaymentTable */}
-                    <td className="px-4 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap">
+                    <td className="px-6 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap">
                       {user.email && user.email.toLowerCase() !== 'n/a' ? user.email : <span className="text-gray-500 dark:text-gray-300 italic">N/A</span>}
                     </td>
                     {/* Date of Birth */}
-                    <td className="px-4 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap">
+                    <td className="px-6 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap">
                       {formatDateForDisplay(userDob)}
                     </td>
                     {/* Mobile */}
-                    <td className="px-4 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap">
+                    <td className="px-6 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap">
                       {formatMobile(user.kyc?.mobile)}
                     </td>
                     {/* KYC Status - Badge styling remains good */}
-                    <td className="px-4 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap">
+                    <td className="px-6 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap">
                       <div
                         className={cn(
                           "inline-flex justify-center items-center px-4 py-1 w-32 font-medium rounded-3xl capitalize", // Ensure width is sufficient
@@ -567,11 +567,11 @@ const UserTable: React.FC<UserTableProps> = ({
                       </div>
                     </td>
                     {/* Date Joined */}
-                    <td className="px-4 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap">
+                    <td className="px-6 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap">
                       {formatDateJoined(user.createdAt)}
                     </td>
                     {/* Actions - Style Link to look like PaymentTable button */}
-                    <td className="px-4 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap ">
+                    <td className="px-6 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap ">
                      
                         <Link
                           href={`/admin/users/${user._id}`}

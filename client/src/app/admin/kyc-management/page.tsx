@@ -1228,7 +1228,8 @@ import {
   RefreshCw,
   Calendar,
   SortAsc,
-  X // Import X for closing messages
+  X, // Import X for closing messages
+  ShieldUser
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -1681,7 +1682,8 @@ const KycManagementPage: React.FC = () => {
             </>
           ) : (
             <>
-              <h1 className="text-2xl font-bold leading-tight text-mainheading dark:text-white sm:text-3xl">
+              <h1 className="text-2xl font-bold leading-tight text-mainheading dark:text-white sm:text-3xl inline-flex items-center gap-2">
+                <ShieldUser size={28} className='text-primary' />
                 KYC Management
               </h1>
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">

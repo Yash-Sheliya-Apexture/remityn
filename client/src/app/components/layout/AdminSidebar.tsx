@@ -3449,7 +3449,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
             )}
 
             {/* Navigation */}
-            <nav className="flex-1 py-4 overflow-x-hidden overflow-y-auto">
+            <nav className="flex-1 py-4 overflow-x-hidden overflow-y-auto sm:[&::-webkit-scrollbar]:w-2 sm:[&::-webkit-scrollbar]:h-3  sm:[&::-webkit-scrollbar-track]:bg-gray-100 sm:[&::-webkit-scrollbar-thumb]:bg-lightborder sm:dark:[&::-webkit-scrollbar-track]:bg-primarybox sm:dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
               <div className="px-4 mb-4">
                 <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 px-2">
                   Main

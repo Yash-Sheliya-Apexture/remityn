@@ -707,8 +707,8 @@ const BroadcastHistoryTable: React.FC<BroadcastHistoryTableProps> = ({
         {/* Header Section - Always Visible */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-mainheading dark:text-white inline-flex items-center gap-2">
-              <History className="size-6 text-primary" />
+            <h2 className="text-2xl font-bold leading-tight text-mainheading dark:text-white sm:text-3xl inline-flex items-center gap-2">
+              <History size={28} className="text-primary" />
               Broadcast History
             </h2>
             <p className="text-sm text-gray-500 dark:text-gray-300">
@@ -722,7 +722,7 @@ const BroadcastHistoryTable: React.FC<BroadcastHistoryTableProps> = ({
             className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <RefreshCw className={`size-5 ${isLoading ? "animate-spin" : ""}`} />
-            {isLoading ? 'Refreshing...' : 'Refresh History'}
+            <span>Refresh</span>
           </button>
         </div>
 
@@ -764,21 +764,34 @@ const BroadcastHistoryTable: React.FC<BroadcastHistoryTableProps> = ({
                           >
                             <td className="px-6 py-4 max-w-sm whitespace-normal">
                               <div className="flex flex-col">
-                                <span className="font-semibold text-neutral-900 dark:text-white truncate" title={batch.subject} >
+                                <span
+                                  className="font-semibold text-neutral-900 dark:text-white truncate"
+                                  title={batch.subject}
+                                >
                                   {batch.subject}
                                 </span>
-                                <span className="text-xs text-gray-500 dark:text-gray-300 truncate" title={batch.bodySnippet} >
-                                  {batch.bodySnippet.length > 100 ? `${batch.bodySnippet.substring(0,97)}...` : batch.bodySnippet}
+                                <span
+                                  className="text-xs text-gray-500 dark:text-gray-300 truncate"
+                                  title={batch.bodySnippet}
+                                >
+                                  {batch.bodySnippet.length > 100
+                                    ? `${batch.bodySnippet.substring(0, 97)}...`
+                                    : batch.bodySnippet}
                                 </span>
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="flex flex-col">
-                                    <span className="font-medium text-neutral-900 dark:text-white"> {formatDate(batch.sentAt)} </span>
-                                    <span className="text-xs text-gray-500 dark:text-gray-300">
-                                        {formatDistanceToNow(new Date(batch.sentAt), {addSuffix: true,})}
-                                    </span>
-                                </div>
+                              <div className="flex flex-col">
+                                <span className="font-medium text-neutral-900 dark:text-white">
+                                  {" "}
+                                  {formatDate(batch.sentAt)}{" "}
+                                </span>
+                                <span className="text-xs text-gray-500 dark:text-gray-300">
+                                  {formatDistanceToNow(new Date(batch.sentAt), {
+                                    addSuffix: true,
+                                  })}
+                                </span>
+                              </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <span className="font-medium text-neutral-900 dark:text-white">
@@ -795,8 +808,8 @@ const BroadcastHistoryTable: React.FC<BroadcastHistoryTableProps> = ({
                                   title="Edit Batch"
                                   className="bg-primary hover:bg-primaryhover dark:bg-primarybox hover:dark:bg-secondarybox transition-all duration-75 ease-linear cursor-pointer rounded-3xl px-6 py-2 font-medium text-neutral-900 dark:text-primary focus:outline-none flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                  {isEditingThis ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Pencil size={14} className="mr-1.5" />}
-                                  {isEditingThis ? "Saving..." : "Edit"}
+                                  <Pencil size={18} className="mr-1" />
+                                  Edit
                                 </button>
                                 <button
                                   type="button"
@@ -806,8 +819,8 @@ const BroadcastHistoryTable: React.FC<BroadcastHistoryTableProps> = ({
                                   title="Delete Batch"
                                   className="bg-red-600 hover:bg-red-700 text-white transition-all duration-75 ease-linear cursor-pointer rounded-3xl px-6 py-2 font-medium focus:outline-none flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                  {isDeletingThis ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 size={14} className="mr-1.5" />}
-                                  {isDeletingThis ? "Deleting..." : "Delete"}
+                                  <Trash2 size={18} className="mr-1" />
+                                  Delete
                                 </button>
                               </div>
                             </td>

@@ -5251,7 +5251,7 @@ import { useAuth } from '../../contexts/AuthContext'; // Adjust path if needed
 import axios, { AxiosError } from 'axios';
 import apiConfig from '../../config/apiConfig'; // Adjust path if needed
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, X, Search, Filter, RefreshCw } from 'lucide-react';
+import { Check, X, Filter, RefreshCw,  HandCoinsIcon } from 'lucide-react';
 
 // Import components
 import PaymentTable from '../components/add-money/PaymentTable'; // Adjust path if needed
@@ -5675,7 +5675,8 @@ const AdminPaymentsPage: React.FC = () => {
         <div className="space-y-6">
           {/* Header Parts */}
           <div className="flex flex-wrap justify-between items-center gap-4">
-            <h1 className="text-2xl font-bold text-mainheading dark:text-white">
+            <h1 className="text-2xl font-bold leading-tight text-mainheading dark:text-white sm:text-3xl inline-flex items-center gap-2">
+                <HandCoinsIcon size={28} className='text-primary' />
               Payment Management
             </h1>
             <div className="flex items-center gap-3 justify-end sm:w-auto w-full">
