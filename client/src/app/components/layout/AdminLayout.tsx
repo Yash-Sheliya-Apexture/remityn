@@ -267,7 +267,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       />
       <div className="flex-1 flex flex-col overflow-hidden">
         <AdminHeader toggleSidebar={toggleSidebar} />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto sm:[&::-webkit-scrollbar]:w-3 sm:[&::-webkit-scrollbar]:h-3 sm:[&::-webkit-scrollbar-track]:bg-gray-100 sm:[&::-webkit-scrollbar-thumb]:bg-lightborder sm:dark:[&::-webkit-scrollbar-track]:bg-primarybox sm:dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
           {/* Increased padding for content area */}
           {children}
         </main>

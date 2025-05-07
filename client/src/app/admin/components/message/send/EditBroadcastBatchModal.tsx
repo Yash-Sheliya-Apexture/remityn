@@ -183,15 +183,18 @@ const EditBroadcastBatchModal: React.FC<EditBroadcastBatchModalProps> = ({
                   >
                     Body
                   </label>
+                  <div className="overflow-hidden  border rounded-lg">
+
                   <textarea
                     id="edit-batch-body"
                     value={editBody}
                     onChange={(e) => onBodyChange(e.target.value)}
-                    className="min-h-[150px] mt-1 block px-4 py-3 bg-white dark:bg-background w-full border rounded-lg transition-all focus:outline-none focus:border-[#5f5f5f] ease-linear duration-75"
+                    className="min-h-[150px] overflow-y-auto sm:[&::-webkit-scrollbar]:w-2 sm:[&::-webkit-scrollbar]:h-3 sm:[&::-webkit-scrollbar-track]:rounded-full sm:[&::-webkit-scrollbar-track]:bg-gray-100 sm:[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-lightborder sm:dark:[&::-webkit-scrollbar-track]:bg-primarybox sm:dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox block px-4 py-3 bg-white dark:bg-background w-full transition-all focus:outline-none focus:border-[#5f5f5f] ease-linear duration-75 resize-none"
                     disabled={isUpdating}
                     placeholder="Enter updated message body..."
                     rows={6}
                   />
+                  </div>
                 </div>
               </div>
             )}

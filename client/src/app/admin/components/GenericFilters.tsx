@@ -3055,6 +3055,7 @@
 
 
 
+// components/admin/shared/GenericFilters.tsx
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -3215,17 +3216,19 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
         setTempFromDate('');
         setTempToDate('');
         setTempRecipientFilter('');
-        onClearFilters(); // This will call the parent's clear logic
-        // setShowFilterModal(false); // Parent's onClearFilters might handle this or parent can decide if modal should close
+        onClearFilters();
+        setShowFilterModal(false);
     };
 
     // --- Handler Updates ---
+    // These handlers now expect 'all' as a potential value from the dropdown selection
+    // or null if an internal clear button within CustomDropdown is used.
     const handleStatusChange = (value: string | null) => {
-        setTempStatusFilter(value ?? 'all'); 
+        setTempStatusFilter(value ?? 'all'); // If null (cleared), set to 'all'; otherwise, use the value ('all' or specific status)
     };
 
     const handleCurrencyChange = (value: string | null) => {
-        setTempCurrencyFilter(value ?? 'all'); 
+        setTempCurrencyFilter(value ?? 'all'); // If null (cleared), set to 'all'; otherwise, use the value ('all' or specific currency)
     }
 
     // Date handlers remain the same
@@ -3235,7 +3238,7 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
     // Common label/input styles (remain the same)
     const labelClassName = "text-gray-500 dark:text-gray-300 font-medium mb-3 leading-8 border-b";
     const inputWrapperClassName = "flex items-center justify-between";
-    const inputClassName = "mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 focus:border-[#5f5f5f]"; // Removed leading backtick
+    const inputClassName = "`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 focus:border-[#5f5f5f]";
 
     return (
       <AnimatePresence>
@@ -3372,7 +3375,7 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
                 )}
 
                 {/* --- Currency Filter Updates --- */}
-                {showCurrencyFilter && currencyOptions.length > 0 && (
+                {showCurrencyFilter && (
                   <div className="mb-4">
                     <CustomDropdown
                       label={
@@ -3380,16 +3383,19 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
                           {currencyFilterLabel}
                         </span>
                       }
+                      // Pass the actual value ('all' or specific currency)
                       value={tempCurrencyFilter}
                       onChange={handleCurrencyChange}
+                      // Pass the FULL options array including 'all'
                       options={currencyOptions}
+                      // Still provide the label for the 'all' option display
                       displayAllOption={allCurrenciesLabel}
                     />
                   </div>
                 )}
 
                 {/* --- Status Filter Updates --- */}
-                {showStatusFilter && statusOptions.length > 0 && (
+                {showStatusFilter && (
                   <div className="mb-4">
                     <CustomDropdown
                       label={
@@ -3397,9 +3403,12 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
                           {statusFilterLabel}
                         </span>
                       }
+                      // Pass the actual value ('all' or specific status)
                       value={tempStatusFilter}
                       onChange={handleStatusChange}
+                      // Pass the FULL options array including 'all'
                       options={statusOptions}
+                      // Still provide the label for the 'all' option display
                       displayAllOption={allStatusesLabel}
                     />
                   </div>
