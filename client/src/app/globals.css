@@ -200,7 +200,10 @@ body {
   }
 }
 
+.your-account-page-active .widget-visible{
+  position: absolute !important;
 
+}
 
 /* Add these styles */
 input:-webkit-autofill,

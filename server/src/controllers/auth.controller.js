@@ -586,6 +586,205 @@
 // };
 
 
+// // backend/src/controllers/auth.controller.js
+// import authService from '../services/auth.service.js';
+// import { OAuth2Client } from 'google-auth-library';
+// import config from '../config/index.js';
+// import jwt from 'jsonwebtoken';
+// import { Buffer } from 'node:buffer';
+
+// // --- Register Controller (Handles new Google error) ---
+// const register = async (req, res, next) => {
+//     try {
+//         const { fullName, email, password } = req.body;
+//         const newUser = await authService.registerUser(fullName, email, password);
+//         res.status(201).json({
+//             message: 'User registered successfully',
+//             user: newUser
+//         });
+//     } catch (error) {
+//         // Handle specific errors
+//         if (error.message === 'Email already exists.') {
+//             return res.status(409).json({ message: error.message }); // 409 Conflict
+//         }
+//         // --- MODIFIED: Handle Google account trying to register normally ---
+//         if (error.message.includes('Google Sign-In')) {
+//             return res.status(400).json({ message: error.message }); // 400 Bad Request
+//         }
+//         // --- END MODIFICATION ---
+//         next(error); // Pass other errors to global handler
+//     }
+// };
+
+// // --- Login Controller (Handles new Google error) ---
+// const login = async (req, res, next) => {
+//     try {
+//         const { email, password } = req.body;
+//         const result = await authService.loginUser(email, password);
+//         res.status(200).json({
+//              message: 'Login successful',
+//              user: result.user,
+//              token: result.token
+//         });
+//     } catch (error) {
+//         // --- MODIFIED: Catch specific "Google Sign-In" ERROR ---
+//         if (error.message.includes('Google Sign-In')) {
+//             // Return 400 Bad Request for this specific user error
+//             return res.status(400).json({ message: error.message });
+//         }
+//         // --- END MODIFICATION ---
+
+//         // Handle invalid credentials specifically
+//          if (error.message === 'Invalid credentials') {
+//             return res.status(401).json({ message: 'Invalid email or password.' }); // 401 Unauthorized
+//         }
+//         // Log internal errors but send a generic message
+//         if (error.message.includes('Authentication process failed') || error.message.includes('Login failed')) {
+//              console.error("Internal login error:", error);
+//              return res.status(500).json({ message: 'An internal server error occurred during login.' });
+//         }
+//         next(error); // Pass other unexpected errors
+//     }
+// };
+
+// // --- Forgot Password Controller (No changes needed, returns generic success) ---
+// const forgotPassword = async (req, res, next) => {
+//     try {
+//         const { email } = req.body;
+//         // Service handles logic (Google check, existing token check) silently
+//         await authService.requestPasswordReset(email);
+
+//         // SECURITY: Send a consistent success message regardless of email existence or account type
+//         res.json({ message: 'If an account with that email exists and requires a password reset, a link has been sent.' });
+//     } catch (error) {
+//         // Log internal errors, but avoid revealing specific issues to the user
+//         console.error("Forgot password error (controller level):", error);
+//         // Still send the generic success message for security
+//         res.json({ message: 'If an account with that email exists and requires a password reset, a link has been sent.' });
+//         // Optionally, if you *must* indicate a server-side failure:
+//         // res.status(500).json({ message: "Failed to process password reset request due to a server error. Please try again later." });
+//         // next(error); // Only if you want the global handler for critical failures
+//     }
+// };
+
+// // --- Reset Password Controller (Handles new Google error) ---
+// const resetPassword = async (req, res, next) => {
+//     try {
+//         const { token, password } = req.body;
+//         await authService.resetPassword(token, password);
+//         res.json({ message: 'Password reset successfully' });
+//     } catch (error) {
+//          // Handle specific errors from the service
+//         if (error.message === 'Invalid or expired password reset token.') {
+//             return res.status(400).json({ message: error.message }); // 400 Bad Request
+//         }
+//         // --- MODIFIED: Handle Google account error ---
+//         if (error.message.includes('not available for accounts signed in with Google')) {
+//             return res.status(400).json({ message: error.message }); // 400 Bad Request
+//         }
+//         // --- END MODIFICATION ---
+//         if (error.message.includes('validation issues')) { // Catch password validation errors
+//             return res.status(400).json({ message: error.message }); // 400 Bad Request
+//         }
+//          if (error.message.includes('required')) { // Catch missing token/password
+//              return res.status(400).json({ message: error.message }); // 400 Bad Request
+//          }
+
+//         console.error("Reset password error:", error);
+//         res.status(500).json({ message: 'Password reset failed. Please try again or request a new link.' });
+//         // next(error);
+//     }
+// };
+
+
+// // --- Google OAuth Initiate (No changes needed) ---
+// const googleAuthInitiate = (req, res, next) => {
+//     try {
+//         if (!config.googleAuth.redirectUri) { console.error('[Auth C - Google] CRITICAL: redirectUri missing'); return res.status(500).json({ message: 'Google Sign-In config error.' }); }
+//         const client = new OAuth2Client(config.googleAuth.clientId, config.googleAuth.clientSecret, config.googleAuth.redirectUri);
+//         const authorizeUrl = client.generateAuthUrl({ access_type: 'offline', scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email', 'openid'], prompt: 'consent' });
+//         console.log('[Auth C - Google] Redirecting user to Google:', authorizeUrl);
+//         res.redirect(authorizeUrl);
+//     } catch (error) {
+//         console.error('[Auth C - Google] Error generating auth URL:', error);
+//         next(new Error('Failed to initiate Google Sign-In.'));
+//     }
+// };
+
+// // --- Google OAuth Callback (No changes needed structurally, but relies on service logic) ---
+// const googleAuthCallback = async (req, res, next) => {
+//     const code = req.query.code;
+//     const errorQuery = req.query.error;
+
+//     if (!config.googleAuth.redirectUri) { console.error('[Auth C - Google CB] CRITICAL: redirectUri missing'); return res.redirect(`${config.clientUrl}/auth/login?googleError=${encodeURIComponent('Google Sign-In configuration error.')}`); }
+//     if (errorQuery) { console.error('[Auth C - Google CB] Error from Google:', errorQuery); return res.redirect(`${config.clientUrl}/auth/login?googleError=${encodeURIComponent('Google authentication failed: ' + errorQuery)}`); }
+//     if (!code) { console.error('[Auth C - Google CB] No authorization code.'); return res.redirect(`${config.clientUrl}/auth/login?googleError=${encodeURIComponent('Google authentication failed: Missing code.')}`); }
+
+//     console.log('[Auth C - Google CB] Received code. Exchanging...');
+
+//     try {
+//         const client = new OAuth2Client(config.googleAuth.clientId, config.googleAuth.clientSecret, config.googleAuth.redirectUri);
+//         const { tokens } = await client.getToken(code);
+//         console.log('[Auth C - Google CB] Tokens received.');
+
+//         if (!tokens.id_token) { throw new Error('ID token missing from Google response.'); }
+
+//         // Service handles verification, login/registration, returns user payload AND token
+//         const { user: userPayload, token: jwtToken } = await authService.googleOAuthLogin(tokens.id_token);
+
+//         // --- Encode User Payload for URL ---
+//         if (!userPayload || !userPayload._id || !userPayload.role || !userPayload.kyc || !userPayload.hasOwnProperty('isGoogleAccount')) {
+//             console.error('[Auth C - Google CB] Error: Missing essential user data in payload from service:', userPayload);
+//             throw new Error('Internal server error retrieving complete user details.');
+//         }
+
+//         // Ensure only necessary, safe fields are included
+//         const relevantPayload = {
+//              _id: userPayload._id.toString(),
+//              fullName: userPayload.fullName,
+//              email: userPayload.email,
+//              role: userPayload.role,
+//              kyc: { status: userPayload.kyc.status },
+//              createdAt: userPayload.createdAt,
+//              updatedAt: userPayload.updatedAt,
+//              isGoogleAccount: userPayload.isGoogleAccount // Include the flag
+//         };
+//         const payloadString = JSON.stringify(relevantPayload);
+//         const encodedPayload = Buffer.from(payloadString).toString('base64url');
+//         const redirectUrl = `${config.clientUrl}/auth/google/callback-handler?token=${jwtToken}&ud=${encodedPayload}`;
+
+//         console.log(`[Auth C - Google CB] Redirecting to frontend with token and user data (ud): ${redirectUrl.split('&ud=')[0]}...`);
+//         res.redirect(redirectUrl);
+
+//     } catch (error) {
+//         console.error('[Auth C - Google CB] Error processing callback:', error);
+//         const message = error instanceof Error ? error.message : 'Google Sign-In failed during callback. Please try again.';
+//         // Map specific errors to user-friendly messages
+//         let userFriendlyMessage = message;
+//         if (message.includes('Invalid Google ID token') || message.includes('token validation failed')) {
+//             userFriendlyMessage = 'Google authentication failed. Please try signing in again.';
+//         } else if (message.includes('email not verified')) {
+//              userFriendlyMessage = 'Your Google account email must be verified to sign in.';
+//         } else if (message.includes('Account conflict')) {
+//              userFriendlyMessage = 'There was an issue linking your Google account. Please contact support.';
+//         } else if (message.includes('Google Sign-In failed') || message.includes('User data validation failed')) {
+//             userFriendlyMessage = 'An internal error occurred during Google Sign-In. Please try again later or use email/password.';
+//         }
+//         console.error('[Auth C - Google CB] Original Error:', error); // Log original error
+//         res.redirect(`${config.clientUrl}/auth/login?googleError=${encodeURIComponent(userFriendlyMessage)}`);
+//     }
+// };
+
+// export default {
+//     register,
+//     login,
+//     forgotPassword,
+//     resetPassword,
+//     googleAuthInitiate,
+//     googleAuthCallback,
+// };
+
+
 // backend/src/controllers/auth.controller.js
 import authService from '../services/auth.service.js';
 import { OAuth2Client } from 'google-auth-library';
@@ -593,7 +792,7 @@ import config from '../config/index.js';
 import jwt from 'jsonwebtoken';
 import { Buffer } from 'node:buffer';
 
-// --- Register Controller (Handles new Google error) ---
+// --- Register Controller ---
 const register = async (req, res, next) => {
     try {
         const { fullName, email, password } = req.body;
@@ -603,20 +802,18 @@ const register = async (req, res, next) => {
             user: newUser
         });
     } catch (error) {
-        // Handle specific errors
         if (error.message === 'Email already exists.') {
-            return res.status(409).json({ message: error.message }); // 409 Conflict
+            return res.status(409).json({ message: error.message }); 
         }
-        // --- MODIFIED: Handle Google account trying to register normally ---
-        if (error.message.includes('Google Sign-In')) {
-            return res.status(400).json({ message: error.message }); // 400 Bad Request
+        // Handles "This email is associated with a Google account..."
+        if (error.message.includes('Google account')) { 
+            return res.status(400).json({ message: error.message }); 
         }
-        // --- END MODIFICATION ---
-        next(error); // Pass other errors to global handler
+        next(error); 
     }
 };
 
-// --- Login Controller (Handles new Google error) ---
+// --- Login Controller (REMOVED specific Google Sign-In error check from service) ---
 const login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
@@ -627,72 +824,57 @@ const login = async (req, res, next) => {
              token: result.token
         });
     } catch (error) {
-        // --- MODIFIED: Catch specific "Google Sign-In" ERROR ---
-        if (error.message.includes('Google Sign-In')) {
-            // Return 400 Bad Request for this specific user error
-            return res.status(400).json({ message: error.message });
-        }
-        // --- END MODIFICATION ---
+        // --- REMOVED: Catch specific "Google Sign-In" ERROR from service ---
+        // The service no longer throws this specific error for login.
+        // "Invalid credentials" will cover cases where Google users try to log in with
+        // a wrong password or if they haven't set one via "Forgot Password".
+        // --- END REMOVAL ---
 
-        // Handle invalid credentials specifically
          if (error.message === 'Invalid credentials') {
-            return res.status(401).json({ message: 'Invalid email or password.' }); // 401 Unauthorized
+            return res.status(401).json({ message: 'Invalid email or password.' }); 
         }
-        // Log internal errors but send a generic message
         if (error.message.includes('Authentication process failed') || error.message.includes('Login failed')) {
              console.error("Internal login error:", error);
              return res.status(500).json({ message: 'An internal server error occurred during login.' });
         }
-        next(error); // Pass other unexpected errors
+        next(error); 
     }
 };
 
-// --- Forgot Password Controller (No changes needed, returns generic success) ---
+// --- Forgot Password Controller (No changes needed here) ---
 const forgotPassword = async (req, res, next) => {
     try {
         const { email } = req.body;
-        // Service handles logic (Google check, existing token check) silently
         await authService.requestPasswordReset(email);
-
-        // SECURITY: Send a consistent success message regardless of email existence or account type
         res.json({ message: 'If an account with that email exists and requires a password reset, a link has been sent.' });
     } catch (error) {
-        // Log internal errors, but avoid revealing specific issues to the user
         console.error("Forgot password error (controller level):", error);
-        // Still send the generic success message for security
         res.json({ message: 'If an account with that email exists and requires a password reset, a link has been sent.' });
-        // Optionally, if you *must* indicate a server-side failure:
-        // res.status(500).json({ message: "Failed to process password reset request due to a server error. Please try again later." });
-        // next(error); // Only if you want the global handler for critical failures
     }
 };
 
-// --- Reset Password Controller (Handles new Google error) ---
+// --- Reset Password Controller (REMOVED Google account error check) ---
 const resetPassword = async (req, res, next) => {
     try {
         const { token, password } = req.body;
         await authService.resetPassword(token, password);
         res.json({ message: 'Password reset successfully' });
     } catch (error) {
-         // Handle specific errors from the service
         if (error.message === 'Invalid or expired password reset token.') {
-            return res.status(400).json({ message: error.message }); // 400 Bad Request
+            return res.status(400).json({ message: error.message }); 
         }
-        // --- MODIFIED: Handle Google account error ---
-        if (error.message.includes('not available for accounts signed in with Google')) {
-            return res.status(400).json({ message: error.message }); // 400 Bad Request
+        // --- REMOVED: Handle Google account error ---
+        // The service layer will no longer throw this specific error.
+        // --- END REMOVAL ---
+        if (error.message.includes('validation issues')) { 
+            return res.status(400).json({ message: error.message }); 
         }
-        // --- END MODIFICATION ---
-        if (error.message.includes('validation issues')) { // Catch password validation errors
-            return res.status(400).json({ message: error.message }); // 400 Bad Request
-        }
-         if (error.message.includes('required')) { // Catch missing token/password
-             return res.status(400).json({ message: error.message }); // 400 Bad Request
+         if (error.message.includes('required')) { 
+             return res.status(400).json({ message: error.message }); 
          }
 
         console.error("Reset password error:", error);
         res.status(500).json({ message: 'Password reset failed. Please try again or request a new link.' });
-        // next(error);
     }
 };
 
@@ -711,7 +893,7 @@ const googleAuthInitiate = (req, res, next) => {
     }
 };
 
-// --- Google OAuth Callback (No changes needed structurally, but relies on service logic) ---
+// --- Google OAuth Callback (No changes needed structurally) ---
 const googleAuthCallback = async (req, res, next) => {
     const code = req.query.code;
     const errorQuery = req.query.error;
@@ -729,16 +911,13 @@ const googleAuthCallback = async (req, res, next) => {
 
         if (!tokens.id_token) { throw new Error('ID token missing from Google response.'); }
 
-        // Service handles verification, login/registration, returns user payload AND token
         const { user: userPayload, token: jwtToken } = await authService.googleOAuthLogin(tokens.id_token);
 
-        // --- Encode User Payload for URL ---
         if (!userPayload || !userPayload._id || !userPayload.role || !userPayload.kyc || !userPayload.hasOwnProperty('isGoogleAccount')) {
             console.error('[Auth C - Google CB] Error: Missing essential user data in payload from service:', userPayload);
             throw new Error('Internal server error retrieving complete user details.');
         }
 
-        // Ensure only necessary, safe fields are included
         const relevantPayload = {
              _id: userPayload._id.toString(),
              fullName: userPayload.fullName,
@@ -747,7 +926,7 @@ const googleAuthCallback = async (req, res, next) => {
              kyc: { status: userPayload.kyc.status },
              createdAt: userPayload.createdAt,
              updatedAt: userPayload.updatedAt,
-             isGoogleAccount: userPayload.isGoogleAccount // Include the flag
+             isGoogleAccount: userPayload.isGoogleAccount 
         };
         const payloadString = JSON.stringify(relevantPayload);
         const encodedPayload = Buffer.from(payloadString).toString('base64url');
@@ -759,7 +938,6 @@ const googleAuthCallback = async (req, res, next) => {
     } catch (error) {
         console.error('[Auth C - Google CB] Error processing callback:', error);
         const message = error instanceof Error ? error.message : 'Google Sign-In failed during callback. Please try again.';
-        // Map specific errors to user-friendly messages
         let userFriendlyMessage = message;
         if (message.includes('Invalid Google ID token') || message.includes('token validation failed')) {
             userFriendlyMessage = 'Google authentication failed. Please try signing in again.';
@@ -770,7 +948,7 @@ const googleAuthCallback = async (req, res, next) => {
         } else if (message.includes('Google Sign-In failed') || message.includes('User data validation failed')) {
             userFriendlyMessage = 'An internal error occurred during Google Sign-In. Please try again later or use email/password.';
         }
-        console.error('[Auth C - Google CB] Original Error:', error); // Log original error
+        console.error('[Auth C - Google CB] Original Error:', error); 
         res.redirect(`${config.clientUrl}/auth/login?googleError=${encodeURIComponent(userFriendlyMessage)}`);
     }
 };

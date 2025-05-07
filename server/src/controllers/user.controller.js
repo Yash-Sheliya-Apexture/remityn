@@ -167,6 +167,110 @@
 // };
 
 
+// // backend/src/controllers/user.controller.js
+// import userService from '../services/user.service.js';
+
+// // --- getMe (No changes needed) ---
+// const getMe = async (req, res, next) => {
+//     try {
+//         if (!req.user?._id) {
+//             return res.status(401).json({ message: 'Not authorized, user token invalid or missing' });
+//         }
+//         const userWithDetails = await userService.getUserByIdWithKyc(req.user._id);
+//         if (!userWithDetails) {
+//             console.warn(`User with valid token but not found in DB: ${req.user._id}`);
+//             return res.status(404).json({ message: 'User associated with token not found' });
+//         }
+//         res.status(200).json(userWithDetails);
+//     } catch (error) {
+//         console.error("Error in getMe controller:", error);
+//         next(error);
+//     }
+// };
+
+// // --- getAllUsers (No changes needed) ---
+// const getAllUsers = async (req, res, next) => {
+//     try {
+//         // Optional: Add admin check if needed
+//         // if (req.user.role !== 'admin') { return res.status(403).json({ message: 'Not authorized' }); }
+//         const users = await userService.getAllUsers();
+//         res.json(users);
+//     } catch (error) {
+//         next(error);
+//     }
+// };
+
+// // --- getUserById (No changes needed) ---
+// const getUserById = async (req, res, next) => {
+//     try {
+//         const user = await userService.getUserById(req.params.userId);
+//         if (!user) {
+//             return res.status(404).json({ message: 'User not found' });
+//         }
+//         res.json(user);
+//     } catch (error) {
+//         next(error);
+//     }
+// };
+
+
+// // --- changePassword Controller (Handles new Google error) ---
+// const changePassword = async (req, res, next) => {
+//     try {
+//         const userId = req.user?._id;
+//         if (!userId) {
+//             return res.status(401).json({ message: 'Not authorized, user ID missing from token.' });
+//         }
+//         const { currentPassword, newPassword } = req.body;
+
+//         // Basic check (validator handles more)
+//         if (!currentPassword || !newPassword) {
+//             return res.status(400).json({ message: 'Current password and new password are required.' });
+//         }
+
+//         // Call the service function (which now checks for Google accounts)
+//         await userService.changeUserPassword(userId, currentPassword, newPassword);
+
+//         res.status(200).json({ message: 'Password changed successfully.' });
+
+//     } catch (error) {
+//         console.error("Error in changePassword controller:", error.message);
+
+//         // --- MODIFIED: Handle specific Google account error ---
+//         if (error.message.includes('not available for accounts managed by Google Sign-In')) {
+//              return res.status(400).json({ message: error.message });
+//         }
+//         // --- END MODIFICATION ---
+
+//         if (error.message === 'Incorrect current password.') {
+//             return res.status(400).json({ message: error.message });
+//         }
+//         if (error.message === 'New password cannot be the same as the current one.') {
+//             return res.status(400).json({ message: error.message });
+//         }
+//         if (error.message.includes('validation failed')) {
+//              return res.status(400).json({ message: error.message });
+//         }
+//          if (error.message.includes('User not found')) {
+//              return res.status(404).json({ message: 'User not found.' });
+//          }
+//         if (error.message.includes('Invalid user ID format') || error.message.includes('Missing required fields')) {
+//              return res.status(400).json({ message: 'Invalid request data.' });
+//          }
+
+//         // Generic error handler
+//         next(new Error('Failed to change password. Please try again.'));
+//     }
+// };
+
+
+// export default {
+//     getMe,
+//     getAllUsers,
+//     getUserById,
+//     changePassword,
+// };
+
 // backend/src/controllers/user.controller.js
 import userService from '../services/user.service.js';
 
@@ -191,8 +295,6 @@ const getMe = async (req, res, next) => {
 // --- getAllUsers (No changes needed) ---
 const getAllUsers = async (req, res, next) => {
     try {
-        // Optional: Add admin check if needed
-        // if (req.user.role !== 'admin') { return res.status(403).json({ message: 'Not authorized' }); }
         const users = await userService.getAllUsers();
         res.json(users);
     } catch (error) {
@@ -214,7 +316,7 @@ const getUserById = async (req, res, next) => {
 };
 
 
-// --- changePassword Controller (Handles new Google error) ---
+// --- changePassword Controller (REMOVED Google error check) ---
 const changePassword = async (req, res, next) => {
     try {
         const userId = req.user?._id;
@@ -223,12 +325,10 @@ const changePassword = async (req, res, next) => {
         }
         const { currentPassword, newPassword } = req.body;
 
-        // Basic check (validator handles more)
         if (!currentPassword || !newPassword) {
             return res.status(400).json({ message: 'Current password and new password are required.' });
         }
 
-        // Call the service function (which now checks for Google accounts)
         await userService.changeUserPassword(userId, currentPassword, newPassword);
 
         res.status(200).json({ message: 'Password changed successfully.' });
@@ -236,11 +336,9 @@ const changePassword = async (req, res, next) => {
     } catch (error) {
         console.error("Error in changePassword controller:", error.message);
 
-        // --- MODIFIED: Handle specific Google account error ---
-        if (error.message.includes('not available for accounts managed by Google Sign-In')) {
-             return res.status(400).json({ message: error.message });
-        }
-        // --- END MODIFICATION ---
+        // --- REMOVED: Handle specific Google account error ---
+        // The service layer will no longer throw this specific error.
+        // --- END REMOVAL ---
 
         if (error.message === 'Incorrect current password.') {
             return res.status(400).json({ message: error.message });
@@ -257,8 +355,6 @@ const changePassword = async (req, res, next) => {
         if (error.message.includes('Invalid user ID format') || error.message.includes('Missing required fields')) {
              return res.status(400).json({ message: 'Invalid request data.' });
          }
-
-        // Generic error handler
         next(new Error('Failed to change password. Please try again.'));
     }
 };
