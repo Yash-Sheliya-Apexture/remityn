@@ -237,22 +237,23 @@ export const InboxMessageDetailView: React.FC<InboxMessageDetailViewProps> = ({
 
   return (
     <>
-      <div className="bg-card text-card-foreground border rounded-lg shadow-md overflow-hidden animate-in fade-in duration-300 flex flex-col h-full">
+      <div className="border rounded-2xl overflow-hidden transition-all ease-linear duration-75 flex flex-col h-full">
         {/* Top Action Bar */}
-        <div className="flex items-center justify-between p-3 border-b bg-muted/40 sticky top-0 z-10">
+        <div className="flex items-center justify-between p-3  bg-primarybox sticky top-0 z-10">
           <button
             onClick={onBack}
             aria-label="Back to inbox list"
-            className="px-6 py-2 bg-lightgray flex items-center cursor-pointer dark:bg-primarybox rounded-xl"
+            className="p-2 bg-lightgray flex items-center cursor-pointer dark:bg-primarybox rounded-full sm:rounded-md"
             disabled={isDeleting}
           >
-            <ChevronLeft className="mr-1 " size={18} /> Back
+            <ChevronLeft  size={18} />
+            <span className="hidden sm:block text-sm">Back</span>
           </button>
 
           <Button
             variant="ghost"
             size="icon"
-            className="absolute bottom-3 right-3 h-8 w-8 rounded-full flex items-center bg-lightborder dark:bg-primarybox text-neutral-900 dark:text-white hover:bg-primary dark:hover:bg-secondarybox transition-all duration-75 ease-linear justify-center cursor-pointer"
+            className="absolute bottom-3 right-3 size-8 rounded-full flex items-center bg-lightborder dark:bg-primarybox text-neutral-900 dark:text-white hover:bg-primary dark:hover:bg-secondarybox transition-all duration-75 ease-linear justify-center cursor-pointer"
             onClick={handleOpenDeleteModal}
             aria-label="Delete message"
             disabled={isDeleting} // Disable button if delete is in progress
@@ -277,7 +278,8 @@ export const InboxMessageDetailView: React.FC<InboxMessageDetailViewProps> = ({
               <span>
                 From:{" "}
                 <span className="font-medium text-foreground/90">
-                  {message.sender || "System"}
+                  {/* {message.sender || "System"} */}
+                  [Webiste Name]
                 </span>
               </span>
             </div>
