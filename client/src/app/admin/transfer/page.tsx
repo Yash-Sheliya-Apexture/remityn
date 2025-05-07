@@ -1789,7 +1789,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import axios, { AxiosError } from 'axios'; // Import AxiosError
 import apiConfig from '../../config/apiConfig';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, X, Search, Filter, RefreshCw } from 'lucide-react';
+import { Check, X, Search, Filter, RefreshCw, Send, ArrowRightLeft } from 'lucide-react';
 
 // Import components
 import TransferTable from '../components/transfers/TransferTable';
@@ -2185,7 +2185,8 @@ const AdminTransfersPage: React.FC = () => {
         <div className="space-y-6">
           {/* Header-Parts */}
           <div className="flex flex-wrap justify-between items-center gap-4">
-            <h1 className="text-2xl font-bold text-mainheading dark:text-white">
+            <h1 className="text-2xl font-bold leading-tight text-mainheading dark:text-white sm:text-3xl inline-flex items-center gap-2">
+              <ArrowRightLeft size={28} className='text-primary' />
               Transfer Management
             </h1>
             <div className="flex items-center gap-3 justify-end sm:w-auto w-full">
@@ -2212,7 +2213,7 @@ const AdminTransfersPage: React.FC = () => {
           </div>
 
           {/* Success/Error Messages */}
-          <AnimatePresence>
+          {/* <AnimatePresence>
             {successMessage && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
@@ -2260,7 +2261,7 @@ const AdminTransfersPage: React.FC = () => {
                 </button>
               </motion.div>
             )}
-          </AnimatePresence>
+          </AnimatePresence> */}
 
           {/* Pagination and Page Size Controls (Keep as is) */}
           <div className="flex flex-wrap justify-between items-center gap-4 mb-4">

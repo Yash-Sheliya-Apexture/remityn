@@ -855,7 +855,7 @@ import type { AdminUserListItem } from '../../services/admin/user.admin'; // Adj
 import type { KycStatus } from '../../services/kyc'; // Adjust path
 import { motion, AnimatePresence } from 'framer-motion';
 // Use consistent icons from Payments page where applicable
-import { X, Filter, RefreshCw, Users, AlertCircle, Check } from 'lucide-react';
+import { Filter, RefreshCw, Users } from 'lucide-react';
 
 // Import Components (using consistent naming/paths if possible)
 import UserTable from '../components/users/UserTable'; // Path verified
@@ -1248,8 +1248,9 @@ const AdminUsersPage: React.FC = () => {
         <div className="space-y-6">
           {/* Header - Matching Payments structure and styling */}
           <div className="flex flex-wrap justify-between items-center gap-4">
-            <h1 className="text-2xl font-bold text-mainheading dark:text-white flex items-center gap-2">
-               <Users className="h-6 w-6 text-primary" /> User Management
+            <h1 className="text-2xl font-bold leading-tight text-mainheading dark:text-white sm:text-3xl inline-flex items-center gap-2">
+              <Users size={28} className='text-primary'/>
+              User Management
             </h1>
             <div className="flex items-center gap-3 justify-end sm:w-auto w-full">
               {/* Filter Button - Matching Payments styling */}
@@ -1268,14 +1269,16 @@ const AdminUsersPage: React.FC = () => {
                 title="Refresh user data"
               >
                 {/* Apply animate-spin class conditionally based on isRefreshing */}
-                <RefreshCw className={`size-5 ${isRefreshing ? "animate-spin" : ""}`} />
+                <RefreshCw
+                  className={`size-5 ${isRefreshing ? "animate-spin" : ""}`}
+                />
                 <span>Refresh</span>
               </button>
             </div>
           </div>
 
           {/* Success/Error Messages - Matching Payments styling and animation */}
-          <AnimatePresence>
+          {/* <AnimatePresence>
             {successMessage && (
                 <motion.div
                     initial={{ opacity: 0, y: -10 }}
@@ -1304,7 +1307,6 @@ const AdminUsersPage: React.FC = () => {
                     role="alert"
                 >
                    <div className="flex items-center gap-2">
-                         {/* Use AlertCircle consistently */}
                         <AlertCircle className="text-red-600 dark:text-red-400" size={18} />
                         <p className="text-sm font-medium text-red-800 dark:text-red-300">{error}</p>
                     </div>
@@ -1313,31 +1315,56 @@ const AdminUsersPage: React.FC = () => {
                     </button>
                 </motion.div>
             )}
-          </AnimatePresence>
-
+          </AnimatePresence> */}
 
           {/* Pagination and Page Size Controls - Matching Payments structure and styling */}
           <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
-             <div className="flex items-center gap-2">
-                  <label htmlFor="usersPerPage" className="text-sm font-medium text-gray-500 dark:text-gray-300 whitespace-nowrap">Show:</label>
-                  <select
-                    id="usersPerPage"
-                    value={usersPerPage}
-                    onChange={(e) => handlePageSizeChange(Number(e.target.value))}
-                    // Consistent select styling
-                    className="block w-auto pl-3 pr-8 py-2 text-sm border rounded-md focus:outline-none bg-white dark:bg-primarybox dark:text-white cursor-pointer"
+            <div className="flex items-center gap-2">
+              <label
+                htmlFor="usersPerPage"
+                className="text-sm font-medium text-gray-500 dark:text-gray-300 whitespace-nowrap"
+              >
+                Show:
+              </label>
+              <select
+                id="usersPerPage"
+                value={usersPerPage}
+                onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+                // Consistent select styling
+                className="block w-auto pl-3 pr-8 py-2 text-sm border rounded-md focus:outline-none bg-white dark:bg-primarybox dark:text-white cursor-pointer"
+              >
+                {pageSizeOptions.map((size) => (
+                  <option
+                    key={size}
+                    value={size}
+                    className="dark:bg-dropdowncolor cursor-pointer"
                   >
-                       {pageSizeOptions.map(size => <option key={size} value={size} className="dark:bg-dropdowncolor cursor-pointer">{size}</option>)}
-                  </select>
-                  <span className="text-sm font-medium text-gray-500 dark:text-gray-300 whitespace-nowrap">entries</span>
-              </div>
-              {/* Consistent results text - Show based on filteredUsers length even if loading */}
-              <p className="text-sm text-gray-500 dark:text-gray-300">
-                  Showing {loadingUsers ? 0 : (filteredUsers.length > 0 ? (currentPage - 1) * usersPerPage + 1 : 0)}
-                  - {loadingUsers ? 0 : Math.min(currentPage * usersPerPage, filteredUsers.length)}
-                  {" "}of {filteredUsers.length} results
-                  {totalPages > 1 && ` (Page ${currentPage} of ${totalPages})`}
-              </p>
+                    {size}
+                  </option>
+                ))}
+              </select>
+              <span className="text-sm font-medium text-gray-500 dark:text-gray-300 whitespace-nowrap">
+                entries
+              </span>
+            </div>
+            {/* Consistent results text - Show based on filteredUsers length even if loading */}
+            <p className="text-sm text-gray-500 dark:text-gray-300">
+              Showing{" "}
+              {loadingUsers
+                ? 0
+                : filteredUsers.length > 0
+                ? (currentPage - 1) * usersPerPage + 1
+                : 0}
+              -{" "}
+              {loadingUsers
+                ? 0
+                : Math.min(
+                    currentPage * usersPerPage,
+                    filteredUsers.length
+                  )}{" "}
+              of {filteredUsers.length} results
+              {totalPages > 1 && ` (Page ${currentPage} of ${totalPages})`}
+            </p>
           </div>
 
           {/* User Table Component Call - Props match PaymentTable call structure */}
@@ -1353,40 +1380,41 @@ const AdminUsersPage: React.FC = () => {
           {/* Pagination Component Call - Consistent */}
           {/* Only show pagination if more than one page AND not loading */}
           {totalPages > 1 && !loadingUsers && (
-            <div className="mt-6"> {/* Add margin top consistent with Payments */}
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  paginate={paginate}
-                  goToPreviousPage={goToPreviousPage}
-                  goToNextPage={goToNextPage}
-                />
+            <div className="mt-6">
+              {" "}
+              {/* Add margin top consistent with Payments */}
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                paginate={paginate}
+                goToPreviousPage={goToPreviousPage}
+                goToNextPage={goToNextPage}
+              />
             </div>
           )}
-
         </div>
 
         {/* Generic Filters Component - Configured for Users */}
         <GenericFilters
-            showFilterModal={showFilterModal}
-            setShowFilterModal={setShowFilterModal}
-            initialFilters={currentFilterState}
-            onApplyFilters={handleApplyFilters}
-            onClearFilters={handleClearAllFilters}
-            searchTermPlaceholder='Search ID, Name, Email...'
-            statusOptions={kycStatusOptionsStrings} // Pass KYC statuses
-            statusFilterLabel="KYC Status"
-            allStatusesLabel="All KYC Statuses"
-            currencyOptions={['all']} // Not used for users, provide dummy 'all'
-            // Disable unused filters explicitly for clarity
-            showIdFilter={false}        // User ID search is part of main search bar
-            showAmountFilter={false}
-            showCurrencyFilter={false}
-            showRecipientFilter={false} // Assuming recipient isn't relevant here
-            // Enable used filters explicitly for clarity
-            showStatusFilter={true} // For KYC status
-            showDateFilter={true} // For Date Joined
-            dateFilterLabel="Date Joined Range" // Customize label
+          showFilterModal={showFilterModal}
+          setShowFilterModal={setShowFilterModal}
+          initialFilters={currentFilterState}
+          onApplyFilters={handleApplyFilters}
+          onClearFilters={handleClearAllFilters}
+          searchTermPlaceholder="Search ID, Name, Email..."
+          statusOptions={kycStatusOptionsStrings} // Pass KYC statuses
+          statusFilterLabel="KYC Status"
+          allStatusesLabel="All KYC Statuses"
+          currencyOptions={["all"]} // Not used for users, provide dummy 'all'
+          // Disable unused filters explicitly for clarity
+          showIdFilter={false} // User ID search is part of main search bar
+          showAmountFilter={false}
+          showCurrencyFilter={false}
+          showRecipientFilter={false} // Assuming recipient isn't relevant here
+          // Enable used filters explicitly for clarity
+          showStatusFilter={true} // For KYC status
+          showDateFilter={true} // For Date Joined
+          dateFilterLabel="Date Joined Range" // Customize label
         />
       </div>
     );

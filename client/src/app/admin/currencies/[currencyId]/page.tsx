@@ -8392,12 +8392,12 @@ const AdminEditCurrencyPage = () => {
                 className="text-gray-500 dark:text-gray-300 capitalize text-sm flex items-center gap-1 lg:text-base"
               >
                 <Percent size={18} className="text-primary" />
-                Wise Fee %
+                Wise Fees  <span className="text-red-600">*</span>
               </label>
 
               <div className="relative">
                 <input
-                type="number"
+                  type="number"
                   name="wiseFeePercentage"
                   id="wiseFeePercentage"
                   value={formState.wiseFeePercentage}
@@ -8421,11 +8421,12 @@ const AdminEditCurrencyPage = () => {
                 className="text-gray-500 dark:text-gray-300 capitalize text-sm flex items-center gap-1 lg:text-base"
               >
                 <DollarSign size={18} className="text-primary" />
-                Bank Transfer Fee
+                Bank Transfer Fees 
+                <span className="text-red-600">*</span>
               </label>
               <div className="relative">
                 <input
-                type="number"
+                  type="number"
                   name="bankTransferFee"
                   id="bankTransferFee"
                   value={formState.bankTransferFee}
@@ -8452,11 +8453,11 @@ const AdminEditCurrencyPage = () => {
                 className="text-gray-500 dark:text-gray-300 capitalize text-sm flex items-center gap-1 lg:text-base"
               >
                 <Percent size={18} className="text-primary" />
-                Our Adjustment %
+                Our Adjustment <span className="text-red-600">*</span>
               </label>
               <div className="relative">
                 <input
-                type="number"
+                  type="number"
                   name="rateAdjustmentPercentage"
                   id="rateAdjustmentPercentage"
                   value={formState.rateAdjustmentPercentage}
@@ -8477,9 +8478,8 @@ const AdminEditCurrencyPage = () => {
 
           <div className="lg:p-6 p-4">
             <div className="rounded-md bg-lightgray dark:bg-primarybox p-4">
-              
               <h4 className="text-gray-500 dark:text-gray-300 font-medium capitalize text-sm flex gap-1 items-center lg:text-base">
-                <BarChart4 size={18}  className="text-primary" />
+                <BarChart4 size={18} className="text-primary" />
                 Exchange Rate Info
               </h4>
 
@@ -8567,10 +8567,7 @@ const AdminEditCurrencyPage = () => {
                 }
                 className="w-full"
               >
-                <motion.div
-                  variants={itemVariants}
-                  className="mb-4"
-                >
+                <motion.div variants={itemVariants} className="mb-4">
                   {" "}
                   {/* itemVariant for the TabsList container */}
                   <TabsList className="relative z-20 flex w-full h-full overflow-x-auto whitespace-nowrap bg-lightborder dark:bg-primarybox p-1.5 rounded-full justify-normal items-center">
@@ -8632,21 +8629,68 @@ const AdminEditCurrencyPage = () => {
                 >
                   {isSubmitting ? (
                     <>
-                     <svg
+                      <svg
                         className="h-5 w-5 text-neutral-900 animate-spin mr-2"
                         viewBox="0 0 24 24"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          d="M12 2V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-                        /> <path d="M12 18V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        <path d="M4.93 4.93L7.76 7.76" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        <path d="M16.24 16.24L19.07 19.07" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        <path d="M2 12H6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        <path d="M18 12H22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        <path d="M4.93 19.07L7.76 16.24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        <path d="M16.24 7.76L19.07 4.93" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                          d="M12 2V6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />{" "}
+                        <path
+                          d="M12 18V22"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M4.93 4.93L7.76 7.76"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M16.24 16.24L19.07 19.07"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M2 12H6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M18 12H22"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M4.93 19.07L7.76 16.24"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M16.24 7.76L19.07 4.93"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
                       </svg>
                       <span>Saving...</span>
                     </>

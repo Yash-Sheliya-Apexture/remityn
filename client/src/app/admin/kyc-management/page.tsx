@@ -192,7 +192,6 @@
 
 // export default KycManagementPage;
 
-
 // // frontend/src/app/admin/kyc-management/page.tsx
 // 'use client';
 
@@ -376,23 +375,20 @@
 
 // export default KycManagementPage;
 
-
-
-
 // // frontend/src/app/admin/kyc-management/page.tsx
 // 'use client';
 
-// import React, { useState, useEffect, useCallback } from 'react'; 
+// import React, { useState, useEffect, useCallback } from 'react';
 // import Link from 'next/link';
 // import kycAdminService from '../../services/admin/kyc.admin';
 // import type { PendingKycUser } from '../../services/admin/kyc.admin';
 // import { motion } from 'framer-motion';
 // // Icons
-// import { 
-//   FileClock, 
-//   ChevronRight, 
-//   Inbox, 
-//   AlertCircle, 
+// import {
+//   FileClock,
+//   ChevronRight,
+//   Inbox,
+//   AlertCircle,
 //   RefreshCw
 // } from 'lucide-react';
 // import { Calendar, SortAsc } from "lucide-react"; // Example icons
@@ -409,10 +405,10 @@
 //     const date = new Date(dateInput);
 //     if (isNaN(date.getTime())) return 'Invalid Date';
 //     return date.toLocaleDateString('en-US', {
-//       year: 'numeric', 
-//       month: 'short', 
-//       day: 'numeric', 
-//       hour: '2-digit', 
+//       year: 'numeric',
+//       month: 'short',
+//       day: 'numeric',
+//       hour: '2-digit',
 //       minute: '2-digit'
 //     });
 //   } catch (e) {
@@ -422,8 +418,8 @@
 
 // const KycManagementPage: React.FC = () => {
 //   const [pendingUsers, setPendingUsers] = useState<PendingKycUser[]>([]);
-//   const [isLoading, setIsLoading] = useState<boolean>(true); 
-//   const [isRefreshing, setIsRefreshing] = useState<boolean>(false); 
+//   const [isLoading, setIsLoading] = useState<boolean>(true);
+//   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 //   const [error, setError] = useState<string | null>(null);
 //   const [searchQuery, setSearchQuery] = useState<string>('');
 //   const [sortBy, setSortBy] = useState<'name' | 'date'>('date');
@@ -461,8 +457,8 @@
 
 //   // --- Initial Data Fetch ---
 //   useEffect(() => {
-//     fetchPendingUsers(false); 
-//   }, [fetchPendingUsers]); 
+//     fetchPendingUsers(false);
+//   }, [fetchPendingUsers]);
 
 //   // --- Filtering and Sorting ---
 //   const filteredUsers = pendingUsers.filter(user => {
@@ -485,7 +481,7 @@
 //   });
 
 //   const [isMobile, setIsMobile] = useState(false);
-  
+
 //   useEffect(() => {
 //     const checkMobileScreen = () => {
 //       setIsMobile(window.innerWidth < 640); // Define mobile breakpoint (768px as an example)
@@ -540,10 +536,10 @@
 //              {pendingUsers.length > 0 ? 'Error Refreshing Data' : 'Error Loading Applications'}
 //           </p>
 //           <p className="mt-1 text-sm text-destructive/80 dark:text-red-400">{error}</p>
-//           <button 
-//             onClick={() => fetchPendingUsers(pendingUsers.length > 0)} 
+//           <button
+//             onClick={() => fetchPendingUsers(pendingUsers.length > 0)}
 //             className="mt-2 text-sm font-medium text-destructive/90 hover:underline flex items-center gap-1 disabled:opacity-50"
-//             disabled={isRefreshing || isLoading} 
+//             disabled={isRefreshing || isLoading}
 //           >
 //             <RefreshCw className={cn("h-3 w-3", (isLoading || isRefreshing) && "animate-spin")} /> Retry
 //           </button>
@@ -560,13 +556,13 @@
 //           {searchQuery ? 'No Matches Found' : 'All Clear!'}
 //       </h3>
 //       <p className="mt-1 text-sm text-gray-500 dark:text-gray-300">
-//         {searchQuery 
-//           ? 'No applications match your current search and filters.' 
+//         {searchQuery
+//           ? 'No applications match your current search and filters.'
 //           : 'There are currently no KYC applications awaiting review.'}
 //       </p>
 //       {searchQuery && (
-//         <button 
-//           onClick={() => setSearchQuery('')} 
+//         <button
+//           onClick={() => setSearchQuery('')}
 //           className="mt-4 text-sm font-medium text-primary hover:underline"
 //         >
 //           Clear Search
@@ -706,17 +702,17 @@
 //           </button>
 //         )}
 //       </div>
-      
+
 //       {/* Refresh Button */}
 //       <button
-//         onClick={() => fetchPendingUsers(true)} 
-//         disabled={isRefreshing || isLoading} 
+//         onClick={() => fetchPendingUsers(true)}
+//         disabled={isRefreshing || isLoading}
 //         className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white sm:px-8 sm:py-3 h-12.5 sm:w-auto w-12.5 rounded-full transition-all duration-75 ease-linear"
 //         title="Refresh KYC Application List"
 //       >
 //         <RefreshCw className={`size-5`} />
 //         {!isMobile && <span>Refresh</span>}
-        
+
 //       </button>
 //     </div>
 //   );
@@ -772,9 +768,6 @@
 // };
 
 // export default KycManagementPage;
-
-
-
 
 // // frontend/src/app/admin/kyc-management/page.tsx
 // 'use client';
@@ -857,7 +850,6 @@
 //       setIsRefreshing(false);
 //     }
 //   }, [pendingUsers.length]);
-
 
 //   const clearSearchQuery = () => {
 //     setSearchQuery("");
@@ -1208,16 +1200,14 @@
 
 // export default KycManagementPage;
 
-
-
 // frontend/src/app/admin/kyc-management/page.tsx
-'use client';
+"use client";
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react'; // Added useMemo
-import Link from 'next/link';
-import kycAdminService from '../../services/admin/kyc.admin';
-import type { PendingKycUser } from '../../services/admin/kyc.admin';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect, useCallback, useMemo } from "react"; // Added useMemo
+import Link from "next/link";
+import kycAdminService from "../../services/admin/kyc.admin";
+import type { PendingKycUser } from "../../services/admin/kyc.admin";
+import { motion } from "framer-motion";
 
 // Icons
 import {
@@ -1228,32 +1218,33 @@ import {
   RefreshCw,
   Calendar,
   SortAsc,
-  X // Import X for closing messages
-} from 'lucide-react';
+  X, // Import X for closing messages
+  ShieldUser,
+} from "lucide-react";
 
-import { cn } from '@/lib/utils';
-import { FiSearch } from 'react-icons/fi';
-import { MdCancel } from 'react-icons/md';
-import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from "@/lib/utils";
+import { FiSearch } from "react-icons/fi";
+import { MdCancel } from "react-icons/md";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Import Pagination Component
-import Pagination from '../components/Pagination'; // Adjust path as needed
+import Pagination from "../components/Pagination"; // Adjust path as needed
 
 // --- Helper Functions ---
 const formatDate = (dateInput?: string | Date): string => {
-  if (!dateInput) return 'N/A';
+  if (!dateInput) return "N/A";
   try {
     const date = new Date(dateInput);
-    if (isNaN(date.getTime())) return 'Invalid Date';
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    if (isNaN(date.getTime())) return "Invalid Date";
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   } catch (e) {
-    return 'Invalid Date';
+    return "Invalid Date";
   }
 };
 
@@ -1262,8 +1253,8 @@ const KycManagementPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [sortBy, setSortBy] = useState<'name' | 'date'>('date');
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [sortBy, setSortBy] = useState<"name" | "date">("date");
   const [listKey, setListKey] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -1273,36 +1264,41 @@ const KycManagementPage: React.FC = () => {
   const pageSizeOptions: number[] = [10, 25, 50];
 
   // --- Data Fetching ---
-  const fetchPendingUsers = useCallback(async (isRefreshAction = false) => {
-    if (isRefreshAction) {
-      setIsRefreshing(true);
-    } else {
-      // Only set setIsLoading on initial load or if users array is empty
-      if (pendingUsers.length === 0) {
-        setIsLoading(true);
-      }
-    }
-    setError(null); // Clear error before fetch
-
-    try {
-      const users = await kycAdminService.getPendingKycUsersAdmin();
-      setPendingUsers(users);
+  const fetchPendingUsers = useCallback(
+    async (isRefreshAction = false) => {
       if (isRefreshAction) {
-        setListKey(prevKey => prevKey + 1);
+        setIsRefreshing(true);
+      } else {
+        // Only set setIsLoading on initial load or if users array is empty
+        if (pendingUsers.length === 0) {
+          setIsLoading(true);
+        }
       }
-    } catch (err: any) {
-      console.error("Failed to fetch pending KYC users:", err);
-      setError(err.message || 'An unknown error occurred while fetching applications.');
-      // Don't clear pendingUsers on refresh error, only on initial load error
-      if (!isRefreshAction) {
-         setPendingUsers([]);
-      }
-    } finally {
-      setIsLoading(false);
-      setIsRefreshing(false);
-    }
-  }, [pendingUsers.length]); // Dependency on pendingUsers.length to handle initial load state
+      setError(null); // Clear error before fetch
 
+      try {
+        const users = await kycAdminService.getPendingKycUsersAdmin();
+        setPendingUsers(users);
+        if (isRefreshAction) {
+          setListKey((prevKey) => prevKey + 1);
+        }
+      } catch (err: any) {
+        console.error("Failed to fetch pending KYC users:", err);
+        setError(
+          err.message ||
+            "An unknown error occurred while fetching applications."
+        );
+        // Don't clear pendingUsers on refresh error, only on initial load error
+        if (!isRefreshAction) {
+          setPendingUsers([]);
+        }
+      } finally {
+        setIsLoading(false);
+        setIsRefreshing(false);
+      }
+    },
+    [pendingUsers.length]
+  ); // Dependency on pendingUsers.length to handle initial load state
 
   const clearSearchQuery = () => {
     setSearchQuery("");
@@ -1310,18 +1306,17 @@ const KycManagementPage: React.FC = () => {
 
   // --- Initial Data Fetch ---
   useEffect(() => {
-     // Fetch only if loading is true AND there are no users yet.
-     // This prevents refetching just because isLoading was true momentarily.
-     if (isLoading && pendingUsers.length === 0) {
-        fetchPendingUsers(false);
-     }
+    // Fetch only if loading is true AND there are no users yet.
+    // This prevents refetching just because isLoading was true momentarily.
+    if (isLoading && pendingUsers.length === 0) {
+      fetchPendingUsers(false);
+    }
   }, [fetchPendingUsers, isLoading, pendingUsers.length]);
-
 
   // --- Responsive Check ---
   useEffect(() => {
     const checkMobileScreen = () => {
-      setIsMobile(typeof window !== 'undefined' && window.innerWidth < 640);
+      setIsMobile(typeof window !== "undefined" && window.innerWidth < 640);
     };
     checkMobileScreen();
     window.addEventListener("resize", checkMobileScreen);
@@ -1332,23 +1327,30 @@ const KycManagementPage: React.FC = () => {
 
   // --- Filtering and Sorting ---
   const filteredUsers = useMemo(() => {
-    return pendingUsers.filter(user => {
+    return pendingUsers.filter((user) => {
       if (!searchQuery) return true;
       const query = searchQuery.toLowerCase();
       return (
-        (user.fullName?.toLowerCase().includes(query) || false) ||
-        (user.email?.toLowerCase().includes(query) || false)
+        user.fullName?.toLowerCase().includes(query) ||
+        false ||
+        user.email?.toLowerCase().includes(query) ||
+        false
       );
     });
   }, [pendingUsers, searchQuery]);
 
   const sortedUsers = useMemo(() => {
     return [...filteredUsers].sort((a, b) => {
-      if (sortBy === 'name') {
-        return (a.fullName || '').localeCompare(b.fullName || '');
-      } else { // Default to date sort
-        const dateA = a.kyc?.submittedAt ? new Date(a.kyc.submittedAt).getTime() : 0;
-        const dateB = b.kyc?.submittedAt ? new Date(b.kyc.submittedAt).getTime() : 0;
+      if (sortBy === "name") {
+        return (a.fullName || "").localeCompare(b.fullName || "");
+      } else {
+        // Default to date sort
+        const dateA = a.kyc?.submittedAt
+          ? new Date(a.kyc.submittedAt).getTime()
+          : 0;
+        const dateB = b.kyc?.submittedAt
+          ? new Date(b.kyc.submittedAt).getTime()
+          : 0;
         return dateB - dateA; // Descending (latest first)
       }
     });
@@ -1357,43 +1359,44 @@ const KycManagementPage: React.FC = () => {
   // --- Reset Page on Filter/Sort Change ---
   useEffect(() => {
     if (currentPage !== 1) {
-        setCurrentPage(1);
+      setCurrentPage(1);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, sortBy, itemsPerPage]); // Also reset on itemsPerPage change
 
   // --- Pagination Calculation ---
   const { currentUsers, totalPages } = useMemo(() => {
-      const indexOfLastUser = currentPage * itemsPerPage;
-      const indexOfFirstUser = indexOfLastUser - itemsPerPage;
-      const paginatedData = sortedUsers.slice(indexOfFirstUser, indexOfLastUser);
-      const pages = Math.ceil(sortedUsers.length / itemsPerPage);
-      return { currentUsers: paginatedData, totalPages: pages };
+    const indexOfLastUser = currentPage * itemsPerPage;
+    const indexOfFirstUser = indexOfLastUser - itemsPerPage;
+    const paginatedData = sortedUsers.slice(indexOfFirstUser, indexOfLastUser);
+    const pages = Math.ceil(sortedUsers.length / itemsPerPage);
+    return { currentUsers: paginatedData, totalPages: pages };
   }, [sortedUsers, currentPage, itemsPerPage]);
 
   // --- Effect to Adjust Page if it becomes invalid ---
   useEffect(() => {
-      if (totalPages > 0 && currentPage > totalPages) {
-          setCurrentPage(totalPages); // Go to last available page
-      } else if (totalPages === 0 && currentPage !== 1) {
-          setCurrentPage(1); // Reset to 1 if no pages
-      }
+    if (totalPages > 0 && currentPage > totalPages) {
+      setCurrentPage(totalPages); // Go to last available page
+    } else if (totalPages === 0 && currentPage !== 1) {
+      setCurrentPage(1); // Reset to 1 if no pages
+    }
   }, [currentPage, totalPages]);
 
   // --- Pagination Handlers ---
   const paginate = (pageNumber: number) => {
-       if (pageNumber >= 1 && pageNumber <= totalPages) setCurrentPage(pageNumber);
-       else if (pageNumber < 1 && totalPages > 0) setCurrentPage(1);
-       else if (pageNumber > totalPages && totalPages > 0) setCurrentPage(totalPages);
-       // Do nothing if totalPages is 0
+    if (pageNumber >= 1 && pageNumber <= totalPages) setCurrentPage(pageNumber);
+    else if (pageNumber < 1 && totalPages > 0) setCurrentPage(1);
+    else if (pageNumber > totalPages && totalPages > 0)
+      setCurrentPage(totalPages);
+    // Do nothing if totalPages is 0
   };
   const goToPreviousPage = () => paginate(currentPage - 1);
   const goToNextPage = () => paginate(currentPage + 1);
 
   // --- Page Size Handler ---
   const handlePageSizeChange = (size: number) => {
-      setItemsPerPage(size);
-      // No need to reset currentPage here, the useEffect above handles it
+    setItemsPerPage(size);
+    // No need to reset currentPage here, the useEffect above handles it
   };
 
   // --- Render Functions ---
@@ -1401,49 +1404,62 @@ const KycManagementPage: React.FC = () => {
   // Error Message Display
   const renderError = () => (
     <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -10 }}
-        className="p-3 rounded-md bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700/50 flex justify-between items-center mt-4"
-        role="alert"
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      className="p-3 rounded-md bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700/50 flex justify-between items-center mt-4"
+      role="alert"
     >
-       <div className="flex items-center gap-2">
-            <AlertCircle className="text-red-600 dark:text-red-400" size={18} />
-            <div>
-               <p className="text-sm font-medium text-red-800 dark:text-red-300">
-                 {error && pendingUsers.length > 0 ? 'Error Refreshing Data' : 'Error Loading Applications'}
-               </p>
-               <p className="mt-1 text-xs text-red-700 dark:text-red-400">{error}</p>
-            </div>
+      <div className="flex items-center gap-2">
+        <AlertCircle className="text-red-600 dark:text-red-400" size={18} />
+        <div>
+          <p className="text-sm font-medium text-red-800 dark:text-red-300">
+            {error && pendingUsers.length > 0
+              ? "Error Refreshing Data"
+              : "Error Loading Applications"}
+          </p>
+          <p className="mt-1 text-xs text-red-700 dark:text-red-400">{error}</p>
         </div>
-        <div className="flex items-center gap-2">
-           {/* Retry button only makes sense if there was an error */}
-           <button
-              onClick={() => fetchPendingUsers(pendingUsers.length > 0)} // Pass true if refreshing existing data
-              className="text-xs font-medium text-red-600 dark:text-red-300 hover:underline flex items-center gap-1 disabled:opacity-50"
-              disabled={isRefreshing || isLoading}
-            >
-              <RefreshCw className={cn("h-3 w-3", (isLoading || isRefreshing) && "animate-spin")} /> Retry
-            </button>
-            <button onClick={() => setError(null)} className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200">
-               <X size={16} />
-            </button>
-        </div>
+      </div>
+      <div className="flex items-center gap-2">
+        {/* Retry button only makes sense if there was an error */}
+        <button
+          onClick={() => fetchPendingUsers(pendingUsers.length > 0)} // Pass true if refreshing existing data
+          className="text-xs font-medium text-red-600 dark:text-red-300 hover:underline flex items-center gap-1 disabled:opacity-50"
+          disabled={isRefreshing || isLoading}
+        >
+          <RefreshCw
+            className={cn(
+              "h-3 w-3",
+              (isLoading || isRefreshing) && "animate-spin"
+            )}
+          />{" "}
+          Retry
+        </button>
+        <button
+          onClick={() => setError(null)}
+          className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200"
+        >
+          <X size={16} />
+        </button>
+      </div>
     </motion.div>
   );
 
-
   // Empty State (Considers search query)
   const renderEmptyState = () => (
-     <div className="text-center py-16 px-6 border border-dashed border-border rounded-lg bg-card mt-6">
-      <Inbox className="mx-auto h-12 w-12 text-neutral-900 dark:text-white mb-4" />
-      <h3 className="text-lg font-medium text-neutral-900 dark:text-white">
-          {searchQuery ? 'No Matches Found' : 'All Clear!'}
+    <div className="text-center py-16 px-6 border border-dashed rounded-lg bg-card space-y-4">
+      <div className="lg:size-16 size-14 mx-auto flex items-center justify-center bg-primary dark:bg-transparent dark:bg-gradient-to-t dark:from-primary rounded-full">
+        <Inbox className="lg:size-8 size-6 text-neutral-900 dark:text-primary" />
+      </div>
+
+      <h3 className="lg:text-3xl text-2xl font-medium capitalize text-neutral-900 dark:text-white mt-1">
+        {searchQuery ? "No Matches Found" : "All Clear KYC !"}
       </h3>
-      <p className="mt-1 text-sm text-gray-500 dark:text-gray-300">
+      <p className="text-gray-500 dark:text-gray-300 max-w-lg mx-auto">
         {searchQuery
-          ? 'No applications match your current search query.'
-          : 'There are currently no KYC applications awaiting review.'}
+          ? "No applications match your current search query."
+          : "There are currently no KYC applications awaiting review."}
       </p>
       {searchQuery && (
         <button
@@ -1462,7 +1478,9 @@ const KycManagementPage: React.FC = () => {
       key={listKey} // Used for refresh animation trigger
       className={cn(
         "border rounded-xl overflow-hidden mt-6", // Keep mt-6 here
-        isRefreshing && !isLoading && "opacity-75 transition-opacity duration-300"
+        isRefreshing &&
+          !isLoading &&
+          "opacity-75 transition-opacity duration-300"
       )}
     >
       {/* Header: Skeleton or Actual */}
@@ -1480,59 +1498,59 @@ const KycManagementPage: React.FC = () => {
           <Skeleton className="h-10 w-48 rounded-full" />
         ) : (
           // Sorting Controls (unchanged)
-           <div className="relative inline-flex items-center rounded-full bg-white dark:bg-secondarybox p-1 gap-1">
-              {/* Date Button */}
-              <button
-                onClick={() => setSortBy('date')}
+          <div className="relative inline-flex items-center rounded-full bg-white dark:bg-secondarybox p-1 gap-1">
+            {/* Date Button */}
+            <button
+              onClick={() => setSortBy("date")}
+              className={cn(
+                "relative text-sm px-4 py-2 font-medium rounded-full flex items-center gap-1.5 transition-colors duration-200 ease-linear focus:outline-none cursor-pointer z-10"
+              )}
+            >
+              {sortBy === "date" && (
+                <motion.div
+                  layoutId="activeSortBackground"
+                  className="absolute inset-0 rounded-full bg-primary shadow-sm z-0"
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                />
+              )}
+              <span
                 className={cn(
-                  'relative text-sm px-4 py-2 font-medium rounded-full flex items-center gap-1.5 transition-colors duration-200 ease-linear focus:outline-none cursor-pointer z-10'
+                  "relative z-10 flex items-center gap-1.5",
+                  sortBy === "date"
+                    ? "text-neutral-900"
+                    : "text-neutral-900 dark:text-white"
                 )}
               >
-                {sortBy === 'date' && (
-                  <motion.div
-                    layoutId="activeSortBackground"
-                    className="absolute inset-0 rounded-full bg-primary shadow-sm z-0"
-                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                  />
-                )}
-                <span
-                  className={cn(
-                    'relative z-10 flex items-center gap-1.5',
-                    sortBy === 'date'
-                      ? 'text-neutral-900'
-                      : 'text-neutral-900 dark:text-white'
-                  )}
-                >
-                  <Calendar className="h-4 w-4" /> Date
-                </span>
-              </button>
+                <Calendar className="h-4 w-4" /> Date
+              </span>
+            </button>
 
-              {/* Name Button */}
-              <button
-                onClick={() => setSortBy('name')}
+            {/* Name Button */}
+            <button
+              onClick={() => setSortBy("name")}
+              className={cn(
+                "relative text-sm px-4 py-2 font-medium rounded-full flex items-center gap-1.5 transition-colors duration-200 ease-linear focus:outline-none cursor-pointer z-10"
+              )}
+            >
+              {sortBy === "name" && (
+                <motion.div
+                  layoutId="activeSortBackground"
+                  className="absolute inset-0 rounded-full bg-primary shadow-sm z-0"
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                />
+              )}
+              <span
                 className={cn(
-                  'relative text-sm px-4 py-2 font-medium rounded-full flex items-center gap-1.5 transition-colors duration-200 ease-linear focus:outline-none cursor-pointer z-10'
+                  "relative z-10 flex items-center gap-1.5",
+                  sortBy === "name"
+                    ? "text-neutral-900"
+                    : "text-neutral-900 dark:text-white"
                 )}
               >
-                {sortBy === 'name' && (
-                  <motion.div
-                    layoutId="activeSortBackground"
-                    className="absolute inset-0 rounded-full bg-primary shadow-sm z-0"
-                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                  />
-                )}
-                <span
-                  className={cn(
-                    'relative z-10 flex items-center gap-1.5',
-                    sortBy === 'name'
-                      ? 'text-neutral-900'
-                      : 'text-neutral-900 dark:text-white'
-                  )}
-                >
-                  <SortAsc className="h-4 w-4" /> Name
-                </span>
-              </button>
-            </div>
+                <SortAsc className="h-4 w-4" /> Name
+              </span>
+            </button>
+          </div>
         )}
       </div>
 
@@ -1540,21 +1558,29 @@ const KycManagementPage: React.FC = () => {
       {isLoading ? (
         // Skeleton Loading State (Unchanged)
         <div className="divide-y divide-border">
-          {[...Array(itemsPerPage)].map((_, i) => ( // Show skeletons based on itemsPerPage
-            <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4">
-              <div className="min-w-0 w-full space-y-2">
-                <div className="flex flex-wrap items-center gap-3 mb-2">
-                  <Skeleton className="h-5 w-32" />
-                  <Skeleton className="h-5 w-16 rounded-full" />
+          {[...Array(itemsPerPage)].map(
+            (
+              _,
+              i // Show skeletons based on itemsPerPage
+            ) => (
+              <div
+                key={i}
+                className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4"
+              >
+                <div className="min-w-0 w-full space-y-2">
+                  <div className="flex flex-wrap items-center gap-3 mb-2">
+                    <Skeleton className="h-5 w-32" />
+                    <Skeleton className="h-5 w-16 rounded-full" />
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                    <Skeleton className="h-4 w-48" />
+                    <Skeleton className="h-4 w-40 " />
+                  </div>
                 </div>
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                  <Skeleton className="h-4 w-48" />
-                  <Skeleton className="h-4 w-40 " />
-                </div>
+                <Skeleton className="h-9 w-full sm:w-28 rounded-full mt-3 sm:mt-0 flex-shrink-0" />
               </div>
-              <Skeleton className="h-9 w-full sm:w-28 rounded-full mt-3 sm:mt-0 flex-shrink-0" />
-            </div>
-          ))}
+            )
+          )}
         </div>
       ) : (
         // Actual User List (Uses currentUsers for pagination)
@@ -1570,17 +1596,39 @@ const KycManagementPage: React.FC = () => {
               {/* User data */}
               <div className="min-w-0 w-full">
                 <div className="flex flex-wrap items-center gap-3 mb-2 sm:mb-1">
-                  <p className="font-medium text-neutral-900 dark:text-white truncate">{user.fullName || "N/A"}</p>
-                  <span className="rounded-full whitespace-nowrap px-3 py-1 text-xs font-medium text-yellow-600 bg-yellow-100 dark:bg-yellow-600/20 dark:text-yellow-400">Pending</span>
+                  <p className="font-medium text-neutral-900 dark:text-white truncate">
+                    {user.fullName || "N/A"}
+                  </p>
+                  <span className="rounded-full whitespace-nowrap px-3 py-1 text-xs font-medium text-yellow-600 bg-yellow-100 dark:bg-yellow-600/20 dark:text-yellow-400">
+                    Pending
+                  </span>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-sm text-gray-500 dark:text-gray-300">
-                  <p className="truncate max-w-full sm:max-w-xs" title={user.email}>{user.email}</p>
-                  <svg viewBox="0 0 2 2" className="h-1 w-1 fill-current hidden sm:block flex-shrink-0"><circle cx={1} cy={1} r={1} /></svg>
-                  <p className="flex-shrink-0">Submitted: <time dateTime={user.kyc?.submittedAt?.toString()}>{formatDate(user.kyc?.submittedAt)}</time></p>
+                  <p
+                    className="truncate max-w-full sm:max-w-xs"
+                    title={user.email}
+                  >
+                    {user.email}
+                  </p>
+                  <svg
+                    viewBox="0 0 2 2"
+                    className="h-1 w-1 fill-current hidden sm:block flex-shrink-0"
+                  >
+                    <circle cx={1} cy={1} r={1} />
+                  </svg>
+                  <p className="flex-shrink-0">
+                    Submitted:{" "}
+                    <time dateTime={user.kyc?.submittedAt?.toString()}>
+                      {formatDate(user.kyc?.submittedAt)}
+                    </time>
+                  </p>
                 </div>
               </div>
               {/* Link to review page */}
-              <Link href={`/admin/kyc-management/${user._id}`} className="mt-3 sm:mt-0 inline-flex items-center justify-center sm:justify-start gap-1 text-sm font-semibold px-4 py-2 text-neutral-900 dark:text-primary bg-primary dark:bg-primarybox hover:bg-primaryhover dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear sm:flex-shrink-0">
+              <Link
+                href={`/admin/kyc-management/${user._id}`}
+                className="mt-3 sm:mt-0 inline-flex items-center justify-center sm:justify-start gap-1 text-sm font-semibold px-4 py-2 text-neutral-900 dark:text-primary bg-primary dark:bg-primarybox hover:bg-primaryhover dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear sm:flex-shrink-0"
+              >
                 Review<span className="sr-only">, {user.fullName}</span>
                 <ChevronRight className="h-4 w-4" />
               </Link>
@@ -1597,7 +1645,10 @@ const KycManagementPage: React.FC = () => {
       {/* Search Input */}
       <div className="relative flex-1">
         <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-          <FiSearch className="size-5 text-neutral-900 dark:text-white" aria-hidden="true" />
+          <FiSearch
+            className="size-5 text-neutral-900 dark:text-white"
+            aria-hidden="true"
+          />
         </div>
         <input
           type="text"
@@ -1625,63 +1676,73 @@ const KycManagementPage: React.FC = () => {
         className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white sm:px-8 sm:py-3 h-12.5 sm:w-auto w-12.5 rounded-full transition-all duration-75 ease-linear disabled:opacity-60 disabled:cursor-not-allowed"
         title="Refresh KYC Application List"
       >
-        <RefreshCw className={cn("size-5", (isRefreshing || isLoading) && "animate-spin")} />
+        <RefreshCw
+          className={cn(
+            "size-5",
+            (isRefreshing || isLoading) && "animate-spin"
+          )}
+        />
         {!isMobile && <span>Refresh</span>}
       </button>
     </div>
   );
 
   // --- Renders the List/Empty State/Error Logic ---
-   const renderListData = () => {
-      // Initial Loading: Show skeletons for controls and list
-      if (isLoading && pendingUsers.length === 0) {
-          // Skeleton for list is handled within renderUserList
-          return renderUserList();
-      }
+  const renderListData = () => {
+    // Initial Loading: Show skeletons for controls and list
+    if (isLoading && pendingUsers.length === 0) {
+      // Skeleton for list is handled within renderUserList
+      return renderUserList();
+    }
 
-      // Initial Load Error: Show only the error message
-      if (error && pendingUsers.length === 0 && !isLoading) {
-         return renderError();
-      }
+    // Initial Load Error: Show only the error message
+    if (error && pendingUsers.length === 0 && !isLoading) {
+      return renderError();
+    }
 
-      // Data Loaded (or refreshing): Show list or empty state
-      return (
-         <>
-            {/* Show Empty State if NO filtered users, otherwise show list */}
-            {filteredUsers.length === 0 ? renderEmptyState() : renderUserList()}
+    // Data Loaded (or refreshing): Show list or empty state
+    return (
+      <>
+        {/* Show Empty State if NO filtered users, otherwise show list */}
+        {filteredUsers.length === 0 ? renderEmptyState() : renderUserList()}
 
-            {/* Pagination Controls - Show only if more than one page AND not loading */}
-             {totalPages > 1 && !isLoading && (
-                 <Pagination
-                     currentPage={currentPage}
-                     totalPages={totalPages}
-                     paginate={paginate}
-                     goToPreviousPage={goToPreviousPage}
-                     goToNextPage={goToNextPage}
-                 />
-             )}
+        {/* Pagination Controls - Show only if more than one page AND not loading */}
+        {totalPages > 1 && !isLoading && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            paginate={paginate}
+            goToPreviousPage={goToPreviousPage}
+            goToNextPage={goToNextPage}
+          />
+        )}
 
-            {/* Refresh Error - Show below list/pagination if data exists */}
-            {error && pendingUsers.length > 0 && !isLoading && !isRefreshing && renderError()}
-         </>
-      );
+        {/* Refresh Error - Show below list/pagination if data exists */}
+        {error &&
+          pendingUsers.length > 0 &&
+          !isLoading &&
+          !isRefreshing &&
+          renderError()}
+      </>
+    );
   };
 
   // --- Component Return ---
   return (
     <div className="min-h-screen bg-white dark:bg-background">
       <div className="container mx-auto px-4 py-8">
-
         {/* Page Header: Skeleton or Actual */}
         <div className="mb-8">
           {isLoading && pendingUsers.length === 0 ? (
             <>
               <Skeleton className="h-10 w-64 mb-3" /> {/* Skeleton for h1 */}
-              <Skeleton className="h-4 sm:w-2/3 w-full" />    {/* Skeleton for p */}
+              <Skeleton className="h-4 sm:w-2/3 w-full" />{" "}
+              {/* Skeleton for p */}
             </>
           ) : (
             <>
-              <h1 className="text-2xl font-bold leading-tight text-mainheading dark:text-white sm:text-3xl">
+              <h1 className="text-2xl font-bold leading-tight text-mainheading dark:text-white sm:text-3xl inline-flex items-center gap-2">
+                <ShieldUser size={28} className="text-primary" />
                 KYC Management
               </h1>
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">
@@ -1693,57 +1754,78 @@ const KycManagementPage: React.FC = () => {
 
         {/* Section Header with Controls: Skeleton or Actual */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 border-b border-border pb-4">
-           {isLoading && pendingUsers.length === 0 ? (
-             <>
-                {/* Skeleton for Section Title */}
-                <Skeleton className="h-8 w-48 flex-shrink-0" />
-                {/* Skeleton for Controls Area */}
-                <div className="flex justify-between items-center gap-4 sm:w-auto w-full">
-                   <Skeleton className="h-12.5 sm:w-64 w-full rounded-full" /> {/* Search Skeleton */}
-                   <Skeleton className="sm:h-12.5 sm:w-28 size-12.5 rounded-full flex-shrink-0" /> {/* Refresh Button Skeleton */}
-                </div>
-             </>
-           ) : (
-             <>
-                {/* Actual Section Title */}
-                <h2 className="inline-flex items-center gap-2 text-xl font-bold text-mainheading dark:text-white flex-shrink-0">
-                    <FileClock className="h-5 w-5 text-primary" />
-                    Pending Applications
-                </h2>
-                {/* Actual Controls (Rendered only if no initial load error) */}
-                {!(error && pendingUsers.length === 0) && renderControls()}
-             </>
-           )}
+          {isLoading && pendingUsers.length === 0 ? (
+            <>
+              {/* Skeleton for Section Title */}
+              <Skeleton className="h-8 w-48 flex-shrink-0" />
+              {/* Skeleton for Controls Area */}
+              <div className="flex justify-between items-center gap-4 sm:w-auto w-full">
+                <Skeleton className="h-12.5 sm:w-64 w-full rounded-full" />{" "}
+                {/* Search Skeleton */}
+                <Skeleton className="sm:h-12.5 sm:w-28 size-12.5 rounded-full flex-shrink-0" />{" "}
+                {/* Refresh Button Skeleton */}
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Actual Section Title */}
+              <h2 className="inline-flex items-center gap-2 text-xl font-bold text-mainheading dark:text-white flex-shrink-0">
+                <FileClock className="h-5 w-5 text-primary" />
+                Pending Applications
+              </h2>
+              {/* Actual Controls (Rendered only if no initial load error) */}
+              {!(error && pendingUsers.length === 0) && renderControls()}
+            </>
+          )}
         </div>
 
         {/* Pagination and Page Size Controls - Render only when not loading initial data */}
-        {!isLoading && !(error && pendingUsers.length === 0) && filteredUsers.length > 0 && (
+        {!isLoading &&
+          !(error && pendingUsers.length === 0) &&
+          filteredUsers.length > 0 && (
             <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
-                <div className="flex items-center gap-2">
-                    <label htmlFor="itemsPerPage" className="text-sm font-medium text-gray-500 dark:text-gray-300 whitespace-nowrap">Show:</label>
-                    <select
-                        id="itemsPerPage"
-                        value={itemsPerPage}
-                        onChange={(e) => handlePageSizeChange(Number(e.target.value))}
-                        className="block w-auto pl-3 pr-8 py-2 text-sm border rounded-md focus:outline-none bg-white dark:bg-primarybox dark:text-white cursor-pointer"
-                        disabled={isLoading || isRefreshing} // Disable while loading/refreshing
+              <div className="flex items-center gap-2">
+                <label
+                  htmlFor="itemsPerPage"
+                  className="text-sm font-medium text-gray-500 dark:text-gray-300 whitespace-nowrap"
+                >
+                  Show:
+                </label>
+                <select
+                  id="itemsPerPage"
+                  value={itemsPerPage}
+                  onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+                  className="block w-auto pl-3 pr-8 py-2 text-sm border rounded-md focus:outline-none bg-white dark:bg-primarybox dark:text-white cursor-pointer"
+                  disabled={isLoading || isRefreshing} // Disable while loading/refreshing
+                >
+                  {pageSizeOptions.map((size) => (
+                    <option
+                      key={size}
+                      value={size}
+                      className="dark:bg-dropdowncolor cursor-pointer"
                     >
-                        {pageSizeOptions.map(size => <option key={size} value={size} className="dark:bg-dropdowncolor cursor-pointer">{size}</option>)}
-                    </select>
-                    <span className="text-sm font-medium text-gray-500 dark:text-gray-300 whitespace-nowrap">entries</span>
-                </div>
-                <p className="text-sm text-gray-500 dark:text-gray-300">
-                    Showing {filteredUsers.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0}
-                    - {Math.min(currentPage * itemsPerPage, filteredUsers.length)}
-                    {" "}of {filteredUsers.length} results
-                    {totalPages > 1 && ` (Page ${currentPage} of ${totalPages})`}
-                </p>
+                      {size}
+                    </option>
+                  ))}
+                </select>
+                <span className="text-sm font-medium text-gray-500 dark:text-gray-300 whitespace-nowrap">
+                  entries
+                </span>
+              </div>
+              <p className="text-sm text-gray-500 dark:text-gray-300">
+                Showing{" "}
+                {filteredUsers.length > 0
+                  ? (currentPage - 1) * itemsPerPage + 1
+                  : 0}
+                - {Math.min(currentPage * itemsPerPage, filteredUsers.length)}{" "}
+                of {filteredUsers.length} results
+                {totalPages > 1 && ` (Page ${currentPage} of ${totalPages})`}
+              </p>
             </div>
-        )}
+          )}
 
         {/* Main Content Area (List Data, Empty, or Error) */}
         {renderListData()}
-
       </div>
     </div>
   );
