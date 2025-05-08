@@ -299,7 +299,7 @@ const TransferOverviewCard: React.FC<TransferOverviewCardProps> = ({
 
 
   return (
-    <div className="bg-lightgray dark:bg-primarybox rounded-xl border dark:border-primarybox sm:p-6 p-4 mb-8 shadow-sm"> {/* Added shadow/border */}
+    <div className="bg-lightgray dark:bg-primarybox rounded-xl sm:p-6 p-4 mb-8"> {/* Added shadow/border */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Left Side: Status and ID */}
         <div className="flex sm:items-center gap-4 sm:flex-row flex-col">
@@ -317,7 +317,7 @@ const TransferOverviewCard: React.FC<TransferOverviewCardProps> = ({
 
         {/* Right Side: Dates and Amount */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 md:gap-6 mt-4 md:mt-0"> {/* Adjusted gap */}
-          <div className="bg-lightborder dark:bg-secondarybox rounded-lg px-4 py-2 flex items-center border dark:border-neutral-700/70"> {/* Added border */}
+          <div className="bg-lightborder dark:bg-primarybox rounded-lg px-4 py-2 flex items-center border dark:border-neutral-700/70"> {/* Added border */}
             <Calendar className="size-4 text-gray-500 dark:text-gray-300 mr-2.5 flex-shrink-0" /> {/* Adjusted margin */}
             <div>
               <p className="text-xs text-gray-500 dark:text-gray-300">Created</p>
@@ -327,7 +327,7 @@ const TransferOverviewCard: React.FC<TransferOverviewCardProps> = ({
             </div>
           </div>
 
-          <div className="bg-lightborder dark:bg-secondarybox rounded-lg px-4 py-2 flex items-center border dark:border-neutral-700/70"> {/* Added border */}
+          <div className="bg-lightborder dark:bg-primarybox rounded-lg px-4 py-2 flex items-center border dark:border-neutral-700/70"> {/* Added border */}
             <DollarSign className="size-4 text-gray-500 dark:text-gray-300 mr-2.5 flex-shrink-0" /> {/* Adjusted margin */}
             <div>
               <p className="text-xs text-gray-500 dark:text-gray-300">Amount Sent</p>

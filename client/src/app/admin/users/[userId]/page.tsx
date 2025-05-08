@@ -3323,8 +3323,6 @@
 
 // export default UserDetailPage;
 
-
-
 // frontend/src/app/admin/users/[userId]/page.tsx
 "use client";
 
@@ -3389,7 +3387,9 @@ import {
   Clock,
   Copy,
   Check,
-  MessageSquarePlus, // For the trigger button
+  MessageSquarePlus,
+  IdCard,
+  CloudUpload, // For the trigger button
 } from "lucide-react";
 
 // Utility & Toast
@@ -3461,7 +3461,7 @@ const getKycStatusConfig = (status?: KycStatus | null) => {
   > = {
     verified: {
       color:
-        "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 border-green-200 dark:border-green-700/50",
+        "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 border-green-200 dark:border-green-700/50 rounded-full",
       icon: ShieldCheck,
       label: "Verified",
     },
@@ -3553,7 +3553,7 @@ const DetailItem = ({
 }) => (
   <div className={cn("py-2 space-y-2", className)}>
     <dt className="text-sm font-medium text-neutral-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
-      {Icon && <Icon className="h-4 w-4 flex-shrink-0 text-primary" />}
+      {Icon && <Icon className="flex-shrink-0 text-primary" />}
       {label}
     </dt>
     <dd
@@ -3603,27 +3603,28 @@ const LoadingSkeleton = () => (
         <div className="p-4 sm:p-6">
           <Skeleton className="h-5 w-1/4  rounded mb-4" />
           <div className="flex flex-nowrap overflow-x-auto space-x-4 pb-2 sm:grid sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 sm:space-x-0 sm:pb-0 sm:overflow-x-visible">
-            {[...Array(4)].map((_, i) => (
+            {[...Array(5)].map((_, i) => (
               <Skeleton
                 key={i}
-                className="flex-shrink-0 w-36 sm:w-auto h-24  rounded-lg border"
+                className="flex-shrink-0 w-36 sm:w-auto h-24 rounded-lg"
               />
             ))}
           </div>
         </div>
       </div>
+
       {/* Tabs Section Skeleton */}
       <div className="w-full">
         <div className="overflow-hidden mb-4">
           <div className="relative flex w-full h-full overflow-x-auto whitespace-nowrap bg-lightborder dark:bg-primarybox p-1.5 rounded-full justify-normal items-center">
-            <Skeleton className="h-9 flex-1 rounded-full bg-white dark:bg-secondarybox mr-1" />
-            <Skeleton className="h-9 flex-1 rounded-full bg-white dark:bg-secondarybox mr-1" />
-            <Skeleton className="h-9 flex-1 rounded-full bg-white dark:bg-secondarybox" />
+            <Skeleton className="h-9 flex-1 rounded-full mr-1" />
+            <Skeleton className="h-9 flex-1 rounded-full mr-1" />
+            <Skeleton className="h-9 flex-1 rounded-full" />
           </div>
         </div>
         <div className="space-y-4">
           <div className="border rounded-lg bg-card overflow-hidden">
-            <div className="border-b px-6 py-4 bg-lightgray dark:bg-primarybox">
+            <div className="px-6 py-4 bg-lightgray dark:bg-primarybox">
               <div className="flex items-center justify-between">
                 <Skeleton className="h-6 w-40  rounded" />{" "}
                 <Skeleton className="h-7 w-24  rounded-full" />
@@ -3665,23 +3666,24 @@ const LoadingSkeleton = () => (
               </div>
             </div>
           </div>
+
           <div className="border rounded-lg bg-card overflow-hidden">
-            <div className="border-b px-6 py-4 bg-lightgray dark:bg-primarybox">
-              <Skeleton className="h-6 w-44  rounded" />
+            <div className="px-6 py-4 bg-lightgray dark:bg-primarybox">
+              <Skeleton className="h-6 w-44 rounded" />
             </div>
             <div className="p-4 sm:p-6">
               <div className="flex md:flex-row flex-col gap-4">
                 <div className="border rounded-lg overflow-hidden md:w-1/2 w-full">
-                  <div className="p-3 border-b">
+                  <div className="p-3">
                     <Skeleton className="h-4 w-1/3  rounded" />
                   </div>
-                  <Skeleton className="aspect-video w-full " />
+                  <Skeleton className="aspect-video w-full rounded-none" />
                 </div>
                 <div className="border rounded-lg overflow-hidden md:w-1/2 w-full">
-                  <div className="p-3 border-b">
+                  <div className="p-3">
                     <Skeleton className="h-4 w-1/3  rounded" />
                   </div>
-                  <Skeleton className="aspect-video w-full " />
+                  <Skeleton className="aspect-video w-full rounded-none" />
                 </div>
               </div>
             </div>
@@ -3815,36 +3817,32 @@ const TransactionTable = ({
               return (
                 <tr key={item._id}>
                   <td className="px-4 py-3 whitespace-nowrap font-medium text-neutral-900 dark:text-white">
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-2">
                       <span className="underline decoration-dashed decoration-border cursor-default">
                         {item._id.substring(item._id.length - 6)}
                       </span>
-                      <TooltipProvider delayDuration={100}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className={cn(
-                                "h-5 w-5 p-0 text-muted-foreground hover:text-foreground transition-colors",
-                                isCopied &&
-                                  "text-green-500 hover:text-green-600"
-                              )}
-                              onClick={() => handleCopy(item._id)}
-                              aria-label={isCopied ? "Copied!" : "Copy ID"}
-                            >
-                              {isCopied ? (
-                                <Check className="h-3.5 w-3.5" />
-                              ) : (
-                                <Copy className="h-3.5 w-3.5" />
-                              )}
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent side="top">
-                            <p>{isCopied ? "Copied!" : "Copy ID"}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            className={cn(
+                              "h-5 w-5 p-0 text-muted-foreground hover:text-foreground transition-colors",
+                              isCopied && "text-green-500 hover:text-green-600"
+                            )}
+                            onClick={() => handleCopy(item._id)}
+                            aria-label={isCopied ? "Copied!" : "Copy ID"}
+                          >
+                            {isCopied ? (
+                              <Check size={18} />
+                            ) : (
+                              <Copy size={18} />
+                            )}
+                          </button>
+                        </TooltipTrigger>
+
+                        <TooltipContent side="bottom" sideOffset={5} className="bg-[#e4e4e4] dark:bg-secondarybox text-white p-2 px-3 rounded-2xl max-w-50 xl:max-w-lg">
+                          <p>{isCopied ? "Copied!" : "Copy ID"}</p>
+                        </TooltipContent>
+                      </Tooltip>
                     </div>
                   </td>
                   {type === "transfer" && (
@@ -4000,6 +3998,7 @@ const UserDetailPage: React.FC = () => {
 
   // --- Render Logic ---
   if (loading || authLoading) return <LoadingSkeleton />;
+
   if (error)
     return (
       <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8">
@@ -4019,7 +4018,7 @@ const UserDetailPage: React.FC = () => {
 
   // Tabs definition (for dynamic rendering and motion)
   const tabs = [
-    { value: "kyc", label: "KYC & Documents", icon: UserCheck },
+    { value: "kyc", label: "KYC & Documents", icon: FileText },
     { value: "transfers", label: "Transfers (Send)", icon: Send },
     { value: "payments", label: "Payments (Add)", icon: Landmark },
   ];
@@ -4103,10 +4102,11 @@ const UserDetailPage: React.FC = () => {
                 <CardDescription className="text-sm text-gray-500 dark:text-gray-300">
                   {userData.email}
                 </CardDescription>
+
                 <Badge
                   variant={userData.role === "admin" ? "default" : "secondary"}
                   className={cn(
-                    "mt-1.5 text-xs capitalize px-3 py-2",
+                    "mt-1.5 text-xs capitalize px-3 py-2 rounded-full",
                     userData.role === "admin"
                       ? "bg-primary text-neutral-900"
                       : "bg-lightgray dark:bg-primarybox text-neutral-900 dark:text-white"
@@ -4223,11 +4223,10 @@ const UserDetailPage: React.FC = () => {
             >
               <motion.div variants={itemVariants}>
                 <Card className="border overflow-hidden mb-4 shadow-none">
-                  <CardHeader className="border-b px-6 py-4 bg-lightgray dark:bg-primarybox ">
+                  <CardHeader className="px-6 py-4 bg-lightgray dark:bg-primarybox ">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-lg font-semibold flex items-center gap-2 text-neutral-900 dark:text-white ">
-                        <UserCheck className="h-5 w-5 text-primary" /> KYC
-                        Information
+                        <FileText className="text-primary" /> KYC Information
                       </CardTitle>
                       <Badge
                         variant="outline"
@@ -4258,10 +4257,12 @@ const UserDetailPage: React.FC = () => {
                             <DetailItem
                               label="First Name"
                               value={kyc.firstName}
+                              icon={User}
                             />
                             <DetailItem
                               label="Last Name"
                               value={kyc.lastName}
+                              icon={User}
                             />
                             <DetailItem
                               label="Date of Birth"
@@ -4311,6 +4312,7 @@ const UserDetailPage: React.FC = () => {
                             <DetailItem
                               label="ID Number"
                               value={kyc.idNumber}
+                              icon={IdCard}
                             />
                             <DetailItem
                               label="ID Issue Date"
@@ -4352,9 +4354,9 @@ const UserDetailPage: React.FC = () => {
               </motion.div>
               <motion.div variants={itemVariants}>
                 <Card className="border overflow-hidden mb-4 shadow-none">
-                  <CardHeader className="border-b px-6 py-4 bg-lightgray dark:bg-primarybox ">
+                  <CardHeader className="px-6 py-4 bg-lightgray dark:bg-primarybox ">
                     <CardTitle className="text-lg font-semibold flex items-center gap-2 text-neutral-900 dark:text-white ">
-                      <FileText className="h-5 w-5 text-primary" /> Submitted
+                      <CloudUpload className="text-primary" /> Submitted
                       Documents
                     </CardTitle>
                   </CardHeader>
@@ -4443,7 +4445,7 @@ const UserDetailPage: React.FC = () => {
                       <Send className="h-5 w-5 text-primary" /> Recent Transfers
                       (Send Money)
                     </CardTitle>
-                    <CardDescription className="text-sm !mt-1 text-gray-500 dark:text-gray-300">
+                    <CardDescription className="text-sm mt-1 text-gray-500 dark:text-gray-300">
                       Last 5 transfers by this user.
                     </CardDescription>
                   </CardHeader>

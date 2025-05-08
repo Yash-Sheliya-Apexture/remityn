@@ -467,7 +467,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
             {isMobile && (
               <Link href="/dashboard">
                 <Image
-                  src={"/assets/images/wise-logo.svg"}
+                  src="/assets/images/wise-logo2.svg"
                   alt="logo"
                   width={30}
                   height={30}
