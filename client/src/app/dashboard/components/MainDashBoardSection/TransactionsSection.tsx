@@ -1679,6 +1679,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { LuPlus } from "react-icons/lu";
 import { GoArrowUp } from "react-icons/go";
+import { MdOutlineAccessTime } from "react-icons/md";
+
 
 import { useAuth } from "../../../contexts/AuthContext";
 // Import the response types from the service files
@@ -1969,10 +1971,10 @@ const TransactionsSection: React.FC = () => {
           <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white text-wrap">
             Recent Transactions
           </h1>
-          <div className="inline-flex bg-primary px-4 py-1.5 rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear focus:outline-none cursor-pointer">
+          <div className="flex items-center justify-center cursor-pointer underline bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox px-4 py-1.5 rounded-full transition-all duration-75 ease-linear">
             <Link
               href="/dashboard/transactions"
-              className="text-neutral-900 text-xs font-semibold text-nowrap"
+              className=" text-neutral-900 dark:text-white text-xs font-semibold text-nowrap"
             >
               See all
             </Link>
@@ -2016,9 +2018,16 @@ const TransactionsSection: React.FC = () => {
 
           {/* No Transactions Message */}
           {!loading && !error && latestTransactions.length === 0 && (
-            <p className="text-center text-gray-500 dark:text-gray-400 py-4 px-2">
-              No recent transactions found.
-            </p>
+            <>
+            <div className="flex items-center sm:gap-4 gap-2">
+              <div className="p-3 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center flex-shrink-0">
+                <MdOutlineAccessTime size={22} className="text-neutral-900 dark:text-white" />
+              </div>
+                <p className="text-center text-gray-500 dark:text-gray-300">
+                  No recent transactions found.
+                </p>
+            </div>
+            </>
           )}
 
           {/* Render Actual Transactions */}

@@ -675,6 +675,8 @@ import recipientRoutes from './routes/recipient.routes.js'; // Import recipient 
 import transferRoutes from './routes/transfer.routes.js'; // Import transfer routes
 import adminTransferRoutes from './routes/admin/transfer.admin.routes.js'; // <-- Import Admin transfer routes
 import adminInboxRoutes from './routes/admin/inbox.admin.routes.js'; // <-- Import Admin transfer routes
+import adminStatsRoutes from './routes/admin/stats.admin.routes.js'; // <-- ADD THIS IMPORT
+import adminActivityRoutes from './routes/admin/activity.admin.routes.js'; // <-- ADD THIS IMPORT
 import cron from 'node-cron';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
@@ -772,6 +774,8 @@ app.use('/api/admin/currencies', authMiddleware.protect, authMiddleware.admin, a
 app.use('/api/admin/payments', authMiddleware.protect, authMiddleware.admin, adminPaymentRoutes);
 app.use('/api/admin/transfers', authMiddleware.protect, authMiddleware.admin, adminTransferRoutes);
 app.use('/api/admin/inbox', authMiddleware.protect, authMiddleware.admin, adminInboxRoutes);
+app.use('/api/admin/stats', authMiddleware.protect, authMiddleware.admin, adminStatsRoutes); // <-- ADD THIS LINE
+app.use('/api/admin/activity', authMiddleware.protect, authMiddleware.admin, adminActivityRoutes); // <-- ADD THIS LINE
 
 // --- Cron Jobs ---
 cron.schedule('0 */8 * * *', async () => { // <--- MODIFIED LINE

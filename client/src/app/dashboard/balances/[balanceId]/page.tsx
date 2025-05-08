@@ -8301,7 +8301,452 @@
 
 
 
-// frontend/src/app/dashboard/balances/[balanceId]/page.tsx
+// // frontend/src/app/dashboard/balances/[balanceId]/page.tsx
+// "use client";
+
+// import React, { useState, useCallback, useMemo, useEffect } from "react";
+// import { useParams, useRouter } from "next/navigation";
+
+// // Hooks and Services
+// import { useAuth } from "../../../contexts/AuthContext";
+// import { useBalanceDetailData } from "../../../hooks/useBalanceDetailData";
+// import { parseISO } from "date-fns";
+// import exchangeRateService from '../../../services/exchangeRate';
+
+// // Components and Types
+// import BalanceHeader from "../../components/BalanceHeader";
+// import Search from "../../components/TransactionPageSection/Search"; // Import Search
+// import TransactionList from "../../components/TransactionList";
+// import InsufficientBalanceModal from "../../components/InsufficientBalanceModal";
+// import KycRequiredModal from "../../components/KycRequiredModal";
+// import FilterModal, { AppliedFilters } from "../../components/TransactionPageSection/FilterModal";
+// import { Transaction } from "@/types/transaction";
+// import { BalanceDetail } from "../../../../types/balance";
+// import { Currency } from "../../../../types/currency";
+// import { Account } from "@/types/account";
+// import { Skeleton } from "@/components/ui/skeleton";
+// import { Button } from "@/components/ui/button";
+// import type { KycStatus } from '@/app/services/kyc';
+// import { LuSettings2 } from "react-icons/lu"; // Icon for filter button
+
+// // --- Interfaces ---
+// interface BalanceDetailPageParams extends Record<string, string | string[]> {
+//   balanceId: string;
+// }
+// interface ExchangeRateApiResponse {
+//     base?: string;
+//     rates?: { [currencyCode: string]: number };
+// }
+// interface ExtendedCurrency extends Currency {
+//     rateAdjustmentPercentage?: number;
+// }
+// interface ExtendedBalanceDetail extends BalanceDetail {
+//     currency: ExtendedCurrency;
+// }
+
+// // --- Utility Function --- (Keep the robust parseDateString)
+// function parseDateString(dateString: string | undefined): Date | null {
+//     if (!dateString) return null;
+//     try { const isoDate = parseISO(dateString); if (!isNaN(isoDate.getTime())) { return isoDate; } } catch (e) {}
+//     const parts = dateString.split('-');
+//     if (parts.length === 3) {
+//         const day = parseInt(parts[0], 10); const month = parseInt(parts[1], 10) - 1; const year = parseInt(parts[2], 10);
+//         if (!isNaN(day) && !isNaN(month) && !isNaN(year) && month >= 0 && month <= 11 && day >= 1 && day <= 31) {
+//              const date = new Date(Date.UTC(year, month, day));
+//              if (date.getUTCFullYear() === year && date.getUTCMonth() === month && date.getUTCDate() === day) { return date; }
+//         }
+//     }
+//     try { const genericDate = new Date(dateString); if (!isNaN(genericDate.getTime())) { return genericDate; } } catch (e) {}
+//     console.warn("Could not parse date string into a valid Date object:", dateString);
+//     return null;
+// }
+
+
+// // --- Component ---
+// const BalanceDetailPage = () => {
+//   const params = useParams<BalanceDetailPageParams>();
+//   const router = useRouter();
+//   const { balanceId } = params;
+//   const { token, user, loading: authLoading } = useAuth();
+//   const kycStatus: KycStatus | undefined = user?.kyc.status;
+
+//   // --- Data Fetching ---
+//   const {
+//       balanceDetail, balanceSpecificTransactions, isLoading: isBalanceLoading,
+//       isTransactionsLoading, error,
+//   } = useBalanceDetailData(balanceId);
+
+//   // --- State ---
+//   const [displayTransactions, setDisplayTransactions] = useState<Transaction[]>([]);
+//   const [searchTerm, setSearchTerm] = useState<string>("");
+//   const [activeFilters, setActiveFilters] = useState<AppliedFilters>({
+//         selectedRecipients: [], selectedDirection: 'all', selectedStatus: null,
+//         selectedBalance: [], fromDate: "", toDate: "",
+//     });
+//   const [isInsufficientBalanceModalOpen, setIsInsufficientBalanceModalOpen] = useState(false);
+//   const [isKycModalOpen, setIsKycModalOpen] = useState(false);
+//   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+//   const [marketRateAgainstINR, setMarketRateAgainstINR] = useState<number | null>(null);
+//   const [ourRateAgainstINR, setOurRateAgainstINR] = useState<number | null>(null);
+//   // State to track if the initial transaction fetch resulted in an empty list
+//   const [initiallyEmpty, setInitiallyEmpty] = useState<boolean>(false); // Keep this
+
+//   // --- Derived State ---
+//   const typedBalanceDetail = balanceDetail as ExtendedBalanceDetail | null;
+//   const hasSufficientFunds = useMemo(() => (typedBalanceDetail?.balance ?? 0) > 0, [typedBalanceDetail]);
+//   const currencyCode = useMemo(() => typedBalanceDetail?.currency?.code ?? 'N/A', [typedBalanceDetail]);
+
+//   // --- Effects ---
+
+//   // Effect to track if initial load was empty
+//   useEffect(() => {
+//       // Check only when loading finishes and data is available
+//       // AND only set initiallyEmpty once
+//       if (!isTransactionsLoading && balanceSpecificTransactions && displayTransactions.length === balanceSpecificTransactions.length) {
+//          setInitiallyEmpty(balanceSpecificTransactions.length === 0);
+//       }
+//       // Reset initiallyEmpty if balanceId changes (though unlikely in this component structure)
+//   }, [isTransactionsLoading, balanceSpecificTransactions, displayTransactions.length]);
+
+
+//   // Effect to filter/search transactions
+//    useEffect(() => {
+//         // If still loading the base transactions, keep display empty or as is
+//         if (isTransactionsLoading) {
+//             // Optionally setDisplayTransactions([]) here if you want flicker during loading filters
+//             // but better to wait until base data is loaded.
+//              return;
+//         }
+
+//         let results = [...balanceSpecificTransactions]; // Start with the full list
+
+//         // 1. Apply Search Term
+//         if (searchTerm.trim()) {
+//             const searchTermLower = searchTerm.toLowerCase().trim();
+//             results = results.filter(tx => {
+//                 const nameMatches = tx.name?.toLowerCase().includes(searchTermLower);
+//                 const descriptionMatches = typeof tx.description === 'string' && tx.description.toLowerCase().includes(searchTermLower);
+//                 const typeMatches = tx.type?.toLowerCase().includes(searchTermLower);
+//                 const statusMatches = tx.status?.toLowerCase().includes(searchTermLower);
+//                 const recipientNameMatch = (typeof tx.recipient === 'object' && tx.recipient?.accountHolderName?.toLowerCase().includes(searchTermLower));
+//                 let currencyMatch = false;
+//                 if (tx.type === 'Add Money') {
+//                      currencyMatch = (typeof tx.balanceCurrency === 'object' && tx.balanceCurrency?.code?.toLowerCase().includes(searchTermLower)) ||
+//                                      (typeof tx.payInCurrency === 'object' && tx.payInCurrency?.code?.toLowerCase().includes(searchTermLower));
+//                 } else if (tx.type === 'Send Money') {
+//                      currencyMatch = (typeof tx.sendCurrency === 'object' && tx.sendCurrency?.code?.toLowerCase().includes(searchTermLower)) ||
+//                                      (typeof tx.receiveCurrency === 'object' && tx.receiveCurrency?.code?.toLowerCase().includes(searchTermLower));
+//                 }
+
+//                 return nameMatches || descriptionMatches || typeMatches || statusMatches || recipientNameMatch || currencyMatch;
+//             });
+//         }
+
+//         // 2. Apply Filters
+//         const filters = activeFilters;
+//         const direction = filters.selectedDirection;
+//         if (direction !== 'all') {
+//             results = results.filter(tx => (direction === 'add' && tx.type === 'Add Money') || (direction === 'send' && tx.type === 'Send Money'));
+//         }
+//         const statusFilter = filters.selectedStatus?.toLowerCase();
+//         if (statusFilter) {
+//            results = results.filter(tx => {
+//                const txStatus = tx.status; if (!txStatus) return false;
+//                if (statusFilter === 'completed') return txStatus === 'completed';
+//                if (statusFilter === 'cancelled') return txStatus === 'canceled'; // Ensure correct spelling
+//                if (statusFilter === 'in process') return txStatus === 'in progress' || txStatus === 'pending';
+//                if (statusFilter === 'failed') return txStatus === 'failed';
+//                return false;
+//             });
+//         }
+//         const recipientFilters = filters.selectedRecipients;
+//         if (recipientFilters && recipientFilters.length > 0) {
+//            const recipientFilterIds = recipientFilters.map(String);
+//            results = results.filter(tx => {
+//               if (tx.type !== "Send Money") return true; // Keep non-send money transactions if filtering by recipient
+//               const recipientId = (typeof tx.recipient === 'object' && tx.recipient?._id) ? String(tx.recipient._id) : (typeof tx.recipient === 'string' ? tx.recipient : null);
+//               return recipientId ? recipientFilterIds.includes(recipientId) : false;
+//           });
+//         }
+//         const fromDateObj = parseDateString(filters.fromDate || undefined);
+//         const toDateObj = parseDateString(filters.toDate || undefined);
+//         if (fromDateObj) fromDateObj.setUTCHours(0, 0, 0, 0);
+//         if (toDateObj) toDateObj.setUTCHours(23, 59, 59, 999);
+//         if (fromDateObj || toDateObj) {
+//            results = results.filter(tx => {
+//                const transactionDateStr = tx.updatedAt || tx.createdAt; if (!transactionDateStr) return false;
+//                try {
+//                    const transactionDateObj = new Date(transactionDateStr); if (isNaN(transactionDateObj.getTime())) return false;
+//                    let include = true;
+//                    if (fromDateObj && transactionDateObj < fromDateObj) include = false;
+//                    if (toDateObj && transactionDateObj > toDateObj) include = false;
+//                    return include;
+//                } catch (e) { console.warn("Error parsing transaction date:", transactionDateStr, e); return false; }
+//            });
+//         }
+
+//         setDisplayTransactions(results);
+
+//     }, [balanceSpecificTransactions, searchTerm, activeFilters, isTransactionsLoading]); // Dependency on isTransactionsLoading ensures re-filter when loading finishes
+
+
+//   // Effect to fetch exchange rates
+//   useEffect(() => {
+//       const fetchRatesAgainstINR = async () => {
+//            if (!typedBalanceDetail || !currencyCode || currencyCode === 'N/A' || currencyCode === 'INR') return;
+//            try {
+//                const ratesData: ExchangeRateApiResponse = await exchangeRateService.getExchangeRatesForCurrencies();
+//                const liveRates = ratesData.rates; const baseCurrency = ratesData.base || 'USD';
+//                if (liveRates && liveRates[currencyCode] && liveRates['INR']) {
+//                    const rateToBase = liveRates[currencyCode]; const inrToBase = liveRates['INR'];
+//                    if (rateToBase === 0) { console.warn(`Rate for ${currencyCode} vs ${baseCurrency} is zero.`); setMarketRateAgainstINR(null); setOurRateAgainstINR(null); return; }
+//                    const liveRateToINR = inrToBase / rateToBase; setMarketRateAgainstINR(liveRateToINR);
+//                    const adjustmentPercent = typeof typedBalanceDetail.currency.rateAdjustmentPercentage === 'number' ? typedBalanceDetail.currency.rateAdjustmentPercentage : 0;
+//                    const adjustedRateMultiplier = (1 + (adjustmentPercent / 100));
+//                    const ourRateToINR = liveRateToINR * adjustedRateMultiplier; setOurRateAgainstINR(ourRateToINR);
+//                } else { console.warn(`Could not find rates for ${currencyCode} or INR. Base: ${baseCurrency}`, liveRates); setMarketRateAgainstINR(null); setOurRateAgainstINR(null); }
+//            } catch (error) { console.error("Error fetching rates:", error); setMarketRateAgainstINR(null); setOurRateAgainstINR(null); }
+//       };
+//       fetchRatesAgainstINR();
+//   }, [typedBalanceDetail, currencyCode]);
+
+
+//   // --- Filter application callback ---
+//   const handleFiltersApply = useCallback((filters: AppliedFilters) => {
+//       setActiveFilters(filters);
+//       setIsFilterModalOpen(false);
+//   }, []);
+
+
+//   // --- Memoized check if filters or search are active ---
+//   const filtersOrSearchAreActive = useMemo(() => {
+//       const isFilterActive = (
+//             activeFilters.selectedRecipients.length > 0 ||
+//             activeFilters.selectedDirection !== 'all' ||
+//             activeFilters.selectedStatus !== null ||
+//             activeFilters.fromDate !== "" ||
+//             activeFilters.toDate !== ""
+//       );
+//       const isSearchActive = searchTerm.trim() !== "";
+//       return isFilterActive || isSearchActive;
+//   }, [activeFilters, searchTerm]);
+
+//   // --- Other Handlers (KYC, Insufficient Balance, Add/Send/Back) ---
+//   const handleOpenKycModal = () => setIsKycModalOpen(true);
+//   const handleCloseKycModal = () => setIsKycModalOpen(false);
+//   const handleStartVerification = () => { router.push('/kyc/start'); handleCloseKycModal(); };
+//   const handleOpenInsufficientBalanceModal = () => setIsInsufficientBalanceModalOpen(true);
+//   const handleCloseInsufficientBalanceModal = () => setIsInsufficientBalanceModalOpen(false);
+//   const handleAddMoneyFromInsufficientModal = () => {
+//       if (authLoading || !user) return;
+//       if (kycStatus !== 'verified') { handleCloseInsufficientBalanceModal(); handleOpenKycModal(); return; }
+//       router.push(`/dashboard/balances/${balanceId}/add-money`);
+//       handleCloseInsufficientBalanceModal();
+//   };
+//   const handleAddMoneyClick = useCallback(() => {
+//       if (authLoading || !user) return;
+//       if (kycStatus !== 'verified') { handleOpenKycModal(); }
+//       else { router.push(`/dashboard/balances/${balanceId}/add-money`); }
+//   }, [kycStatus, authLoading, user, balanceId, router]);
+//   const handleSendClick = useCallback(() => {
+//       if (authLoading || !user) return;
+//       if (kycStatus !== 'verified') { handleOpenKycModal(); }
+//       else if (hasSufficientFunds) { router.push(`/dashboard/balances/${balanceId}/send/select-recipient`); }
+//       else { handleOpenInsufficientBalanceModal(); }
+//   }, [kycStatus, hasSufficientFunds, authLoading, user, balanceId, router]);
+//   const handleBackClick = () => router.back();
+
+//   // --- Filter Modal Handlers ---
+//   const handleOpenFilterModal = () => setIsFilterModalOpen(true);
+//   const handleCloseFilterModal = () => setIsFilterModalOpen(false);
+
+//   // --- Clear Filters and Search Handler ---
+//   const clearAllFiltersAndSearch = () => {
+//       setActiveFilters({ selectedRecipients: [], selectedDirection: 'all', selectedStatus: null, selectedBalance: [], fromDate: "", toDate: "" });
+//       setSearchTerm("");
+//       // No need to manually setDisplayTransactions here, the useEffect will recalculate it
+//   };
+
+//   // --- Render Logic ---
+//   const isPageLoading = isBalanceLoading || authLoading;
+
+//   // Loading Skeleton
+//   if (isPageLoading && !typedBalanceDetail && !error) {
+//         // --- Skeleton remains the same ---
+//         return (
+//             <div className="py-5 animate-pulse">
+//                  <div className="pb-6 mb-8 border-b">
+//                     <div className="flex sm:flex-row flex-col gap-4 justify-between">
+//                         <div>
+//                             <div className="flex items-center sm:justify-start justify-center gap-2 mb-4"> <Skeleton className="w-[50px] h-[50px] rounded-full" /> <Skeleton className="h-6 w-24" /> </div>
+//                             <Skeleton className="h-12 w-48 mb-6 sm:mx-0 mx-auto" />
+//                             <div className="flex sm:flex-row flex-col items-center gap-4"> <Skeleton className="h-8 w-64 mb-4 rounded-4xl" /> <Skeleton className="h-8 w-64 mb-4 rounded-4xl" /> </div>
+//                         </div>
+//                         <div className="flex flex-col justify-start items-center sm:items-end">
+//                              <div className="flex justify-center space-x-6">
+//                                   <div className="flex flex-col items-center"> <Skeleton className="w-14 h-14 rounded-full mb-1" /> <Skeleton className="h-4 w-8" /> </div>
+//                                   <div className="flex flex-col items-center"> <Skeleton className="w-14 h-14 rounded-full mb-1" /> <Skeleton className="h-4 w-8" /> </div>
+//                              </div>
+//                         </div>
+//                     </div>
+//                  </div>
+//                  <div className="mt-10">
+//                      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky lg:top-28 top-20 z-10 bg-background dark:bg-background">
+//                          <Skeleton className="h-8 w-48 rounded-md" />
+//                          <div className="flex items-center gap-4 w-full md:w-auto md:justify-end">
+//                              <Skeleton className="h-12.5 w-full sm:w-68 rounded-full" />
+//                              <Skeleton className="h-12.5 w-36 rounded-full" />
+//                          </div>
+//                      </div>
+//                      <div className="space-y-2">
+//                         {Array(5).fill(0).map((_, index) => (
+//                              <div key={index} className="block p-2 sm:p-4 rounded-2xl">
+//                                  <div className="flex items-center gap-4">
+//                                      <Skeleton className="size-12 rounded-full flex-shrink-0" />
+//                                      <div className="flex-grow flex flex-row justify-between items-center gap-4">
+//                                          <div className="flex-grow"> <Skeleton className="h-4 w-40 mb-2" /> <Skeleton className="h-3 w-32" /> </div>
+//                                          <Skeleton className="h-6 w-26 rounded-full" />
+//                                      </div>
+//                                  </div>
+//                              </div>
+//                          ))}
+//                      </div>
+//                  </div>
+//             </div>
+//          );
+//   }
+
+//   // Error State
+//   if ((error && !typedBalanceDetail && !isBalanceLoading) || (!isPageLoading && !typedBalanceDetail)) {
+//      // --- Error remains the same ---
+//      const message = typeof error === 'string' ? error : "Balance details not found or you may not have access.";
+//         return (
+//             <div className="container mx-auto px-4 py-8 text-center">
+//                 <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/40 text-red-700 dark:text-red-300 p-4 rounded-md max-w-lg mx-auto">
+//                      <p className="font-semibold">Error Loading Balance</p>
+//                      <p className="text-sm mt-1">{message}</p>
+//                 </div>
+//                 <Button onClick={handleBackClick} variant="outline" className="mt-6">Go Back</Button>
+//             </div>
+//          );
+//    }
+
+//    // Fallback - Should ideally not be reached if logic is correct
+//    if (!typedBalanceDetail) {
+//         // --- Fallback remains the same ---
+//         console.error("Invariant violation: Reached main render but typedBalanceDetail is null/undefined despite passing loading/error checks.");
+//             return (
+//                 <div className="container mx-auto px-4 py-8 text-center">
+//                      <p>Something went wrong. Balance details are unavailable.</p>
+//                      <Button onClick={handleBackClick} variant="outline" className="mt-6">Go Back</Button>
+//                 </div>
+//             );
+//    }
+
+//   // Determine if the specific "no match" empty state should be shown
+//   const showNoMatchEmptyState = !isTransactionsLoading &&
+//                                 displayTransactions.length === 0 &&
+//                                 !initiallyEmpty && // Only show if there *were* transactions initially
+//                                 filtersOrSearchAreActive; // Only show if filters/search caused the empty list
+
+//   // --- Main Render Structure ---
+//   return (
+//     <div className="py-5">
+//       <BalanceHeader
+//         balanceDetail={typedBalanceDetail}
+//         isLoading={isBalanceLoading}
+//         onSendClick={handleSendClick}
+//         onAddMoneyClick={handleAddMoneyClick}
+//         canSendMoney={hasSufficientFunds}
+//         marketRateAgainstINR={marketRateAgainstINR}
+//         ourRateAgainstINR={ourRateAgainstINR}
+//       />
+
+//       {/* --- Transactions Section --- */}
+//       <div className="mt-10">
+//         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky lg:top-28 top-20 z-10 bg-background dark:bg-background">
+//            <h3 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
+//              Transactions
+//            </h3>
+//            {/* Conditionally render Search/Filter only if there's a chance of having transactions */}
+//            {(!initiallyEmpty || isTransactionsLoading) && (
+//               <div className="flex justify-between items-center gap-4 sm:w-auto w-full">
+//                  <Search
+//                      searchTerm={searchTerm}
+//                      onSearchChange={setSearchTerm}
+//                  />
+//                  <button
+//                       className="inline-flex items-center justify-center gap-3 bg-primary text-neutral-900 hover:bg-primaryhover h-12.5 md:w-40 w-12.5 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer shrink-0 disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styles
+//                       onClick={handleOpenFilterModal}
+//                       aria-haspopup="dialog"
+//                       // Disable filter button if loading OR if it's initially empty AND no filters are active yet (no point filtering nothing)
+//                       disabled={isTransactionsLoading || (initiallyEmpty && !filtersOrSearchAreActive)}
+//                   >
+//                       <LuSettings2 size={20} />
+//                       <span className="md:block hidden">Filters</span>
+//                   </button>
+//               </div>
+//            )}
+//         </div>
+
+//         {/* Pass displayTransactions and initiallyEmpty state to TransactionList */}
+//         <TransactionList
+//           transactions={displayTransactions} // Pass the potentially filtered list
+//           isLoading={isTransactionsLoading} // Pass loading state
+//           error={
+//             typeof error === "string" && (error.includes("payment history") || error.includes("transfer history"))
+//               ? error // Pass only transaction-specific errors
+//               : null
+//           }
+//           currencyCode={currencyCode}
+//           balanceId={balanceId!}
+//           onSendClick={handleSendClick}
+//           canSendMoney={hasSufficientFunds}
+//           wasInitiallyEmpty={initiallyEmpty} // <-- Pass the initial empty state
+//         />
+
+//         {/* ---- Empty State Logic for Filter/Search Miss ---- */}
+//         {/* Show this *only* when filtering/searching yields no results, but there were initial transactions */}
+//         {showNoMatchEmptyState && (
+//             <div className="text-center flex flex-col items-center text-lg px-4 text-gray-500 dark:text-gray-300 bg-lightgray py-8 dark:bg-white/5 rounded-lg mt-6">
+//                <span>No transactions match your current filter or search criteria.</span>
+//                {/* Button to clear filters/search */}
+//                <Button
+//                  onClick={clearAllFiltersAndSearch}
+//                  // variant="primary" // <-- Removed variant="primary" as requested
+//                  className="mt-4 px-6 cursor-pointer lg:py-3 py-2.5 lg:text-base text-sm font-medium w-auto bg-primary text-neutral-900 rounded-full hover:bg-primaryhover transition-colors duration-500 ease-in-out"
+//                >
+//                  Clear Filters
+//                </Button>
+//             </div>
+//         )}
+//          {/* ---- End Specific Empty State Logic ---- */}
+//       </div>
+
+//       {/* --- Modals --- */}
+//       <InsufficientBalanceModal isOpen={isInsufficientBalanceModalOpen} onClose={handleCloseInsufficientBalanceModal} onAddMoney={handleAddMoneyFromInsufficientModal} currencyCode={currencyCode} />
+//       <KycRequiredModal isOpen={isKycModalOpen} onClose={handleCloseKycModal} onStartVerification={handleStartVerification}/>
+
+//       {/* --- FILTER MODAL --- */}
+//       <FilterModal
+//         isOpen={isFilterModalOpen}
+//         onClose={handleCloseFilterModal}
+//         // Consider fetching actual user accounts/recipients if needed for the filter modal
+//         userAccounts={[]}
+//         onFiltersApply={handleFiltersApply}
+//         initialFilters={activeFilters}
+//       />
+
+//     </div>
+//   );
+// };
+
+// export default BalanceDetailPage;
+
+
+
+
+
 "use client";
 
 import React, { useState, useCallback, useMemo, useEffect } from "react";
@@ -8388,8 +8833,7 @@ const BalanceDetailPage = () => {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [marketRateAgainstINR, setMarketRateAgainstINR] = useState<number | null>(null);
   const [ourRateAgainstINR, setOurRateAgainstINR] = useState<number | null>(null);
-  // State to track if the initial transaction fetch resulted in an empty list
-  const [initiallyEmpty, setInitiallyEmpty] = useState<boolean>(false); // Keep this
+  const [initiallyEmpty, setInitiallyEmpty] = useState<boolean>(false);
 
   // --- Derived State ---
   const typedBalanceDetail = balanceDetail as ExtendedBalanceDetail | null;
@@ -8397,30 +8841,17 @@ const BalanceDetailPage = () => {
   const currencyCode = useMemo(() => typedBalanceDetail?.currency?.code ?? 'N/A', [typedBalanceDetail]);
 
   // --- Effects ---
-
-  // Effect to track if initial load was empty
   useEffect(() => {
-      // Check only when loading finishes and data is available
-      // AND only set initiallyEmpty once
       if (!isTransactionsLoading && balanceSpecificTransactions && displayTransactions.length === balanceSpecificTransactions.length) {
          setInitiallyEmpty(balanceSpecificTransactions.length === 0);
       }
-      // Reset initiallyEmpty if balanceId changes (though unlikely in this component structure)
   }, [isTransactionsLoading, balanceSpecificTransactions, displayTransactions.length]);
 
-
-  // Effect to filter/search transactions
    useEffect(() => {
-        // If still loading the base transactions, keep display empty or as is
         if (isTransactionsLoading) {
-            // Optionally setDisplayTransactions([]) here if you want flicker during loading filters
-            // but better to wait until base data is loaded.
              return;
         }
-
-        let results = [...balanceSpecificTransactions]; // Start with the full list
-
-        // 1. Apply Search Term
+        let results = [...balanceSpecificTransactions];
         if (searchTerm.trim()) {
             const searchTermLower = searchTerm.toLowerCase().trim();
             results = results.filter(tx => {
@@ -8437,12 +8868,9 @@ const BalanceDetailPage = () => {
                      currencyMatch = (typeof tx.sendCurrency === 'object' && tx.sendCurrency?.code?.toLowerCase().includes(searchTermLower)) ||
                                      (typeof tx.receiveCurrency === 'object' && tx.receiveCurrency?.code?.toLowerCase().includes(searchTermLower));
                 }
-
                 return nameMatches || descriptionMatches || typeMatches || statusMatches || recipientNameMatch || currencyMatch;
             });
         }
-
-        // 2. Apply Filters
         const filters = activeFilters;
         const direction = filters.selectedDirection;
         if (direction !== 'all') {
@@ -8453,8 +8881,8 @@ const BalanceDetailPage = () => {
            results = results.filter(tx => {
                const txStatus = tx.status; if (!txStatus) return false;
                if (statusFilter === 'completed') return txStatus === 'completed';
-               if (statusFilter === 'cancelled') return txStatus === 'canceled'; // Ensure correct spelling
-               if (statusFilter === 'in process') return txStatus === 'in progress' || txStatus === 'pending';
+               if (statusFilter === 'cancelled') return txStatus === 'canceled';
+               if (statusFilter === 'in progress') return txStatus === 'in progress' || txStatus === 'pending';
                if (statusFilter === 'failed') return txStatus === 'failed';
                return false;
             });
@@ -8463,7 +8891,7 @@ const BalanceDetailPage = () => {
         if (recipientFilters && recipientFilters.length > 0) {
            const recipientFilterIds = recipientFilters.map(String);
            results = results.filter(tx => {
-              if (tx.type !== "Send Money") return true; // Keep non-send money transactions if filtering by recipient
+              if (tx.type !== "Send Money") return true;
               const recipientId = (typeof tx.recipient === 'object' && tx.recipient?._id) ? String(tx.recipient._id) : (typeof tx.recipient === 'string' ? tx.recipient : null);
               return recipientId ? recipientFilterIds.includes(recipientId) : false;
           });
@@ -8484,13 +8912,9 @@ const BalanceDetailPage = () => {
                } catch (e) { console.warn("Error parsing transaction date:", transactionDateStr, e); return false; }
            });
         }
-
         setDisplayTransactions(results);
+    }, [balanceSpecificTransactions, searchTerm, activeFilters, isTransactionsLoading]);
 
-    }, [balanceSpecificTransactions, searchTerm, activeFilters, isTransactionsLoading]); // Dependency on isTransactionsLoading ensures re-filter when loading finishes
-
-
-  // Effect to fetch exchange rates
   useEffect(() => {
       const fetchRatesAgainstINR = async () => {
            if (!typedBalanceDetail || !currencyCode || currencyCode === 'N/A' || currencyCode === 'INR') return;
@@ -8510,15 +8934,11 @@ const BalanceDetailPage = () => {
       fetchRatesAgainstINR();
   }, [typedBalanceDetail, currencyCode]);
 
-
-  // --- Filter application callback ---
   const handleFiltersApply = useCallback((filters: AppliedFilters) => {
       setActiveFilters(filters);
       setIsFilterModalOpen(false);
   }, []);
 
-
-  // --- Memoized check if filters or search are active ---
   const filtersOrSearchAreActive = useMemo(() => {
       const isFilterActive = (
             activeFilters.selectedRecipients.length > 0 ||
@@ -8531,48 +8951,60 @@ const BalanceDetailPage = () => {
       return isFilterActive || isSearchActive;
   }, [activeFilters, searchTerm]);
 
-  // --- Other Handlers (KYC, Insufficient Balance, Add/Send/Back) ---
-  const handleOpenKycModal = () => setIsKycModalOpen(true);
-  const handleCloseKycModal = () => setIsKycModalOpen(false);
-  const handleStartVerification = () => { router.push('/kyc/start'); handleCloseKycModal(); };
-  const handleOpenInsufficientBalanceModal = () => setIsInsufficientBalanceModalOpen(true);
-  const handleCloseInsufficientBalanceModal = () => setIsInsufficientBalanceModalOpen(false);
-  const handleAddMoneyFromInsufficientModal = () => {
+  const handleOpenKycModal = useCallback(() => setIsKycModalOpen(true), []);
+  const handleCloseKycModal = useCallback(() => setIsKycModalOpen(false), []);
+  const handleStartVerification = useCallback(() => { router.push('/kyc/start'); handleCloseKycModal(); }, [router, handleCloseKycModal]);
+  
+  const handleOpenInsufficientBalanceModal = useCallback(() => setIsInsufficientBalanceModalOpen(true), []);
+  const handleCloseInsufficientBalanceModal = useCallback(() => setIsInsufficientBalanceModalOpen(false), []);
+
+  const handleAddMoneyFromInsufficientModal = useCallback(() => {
       if (authLoading || !user) return;
       if (kycStatus !== 'verified') { handleCloseInsufficientBalanceModal(); handleOpenKycModal(); return; }
       router.push(`/dashboard/balances/${balanceId}/add-money`);
       handleCloseInsufficientBalanceModal();
-  };
+  }, [authLoading, user, kycStatus, balanceId, router, handleCloseInsufficientBalanceModal, handleOpenKycModal]);
+
   const handleAddMoneyClick = useCallback(() => {
       if (authLoading || !user) return;
       if (kycStatus !== 'verified') { handleOpenKycModal(); }
       else { router.push(`/dashboard/balances/${balanceId}/add-money`); }
-  }, [kycStatus, authLoading, user, balanceId, router]);
+  }, [kycStatus, authLoading, user, balanceId, router, handleOpenKycModal]);
+
   const handleSendClick = useCallback(() => {
       if (authLoading || !user) return;
-      if (kycStatus !== 'verified') { handleOpenKycModal(); }
-      else if (hasSufficientFunds) { router.push(`/dashboard/balances/${balanceId}/send/select-recipient`); }
-      else { handleOpenInsufficientBalanceModal(); }
-  }, [kycStatus, hasSufficientFunds, authLoading, user, balanceId, router]);
-  const handleBackClick = () => router.back();
+      if (kycStatus !== 'verified') {
+          handleOpenKycModal();
+          return; // Important: return after opening modal
+      }
+      // KYC is verified at this point
+      if (hasSufficientFunds) {
+          router.push(`/dashboard/balances/${balanceId}/send/select-recipient`);
+      } else {
+          handleOpenInsufficientBalanceModal();
+      }
+  }, [
+      kycStatus, 
+      hasSufficientFunds, 
+      authLoading, 
+      user, 
+      balanceId, 
+      router, 
+      handleOpenKycModal, 
+      handleOpenInsufficientBalanceModal
+  ]);
 
-  // --- Filter Modal Handlers ---
+  const handleBackClick = () => router.back();
   const handleOpenFilterModal = () => setIsFilterModalOpen(true);
   const handleCloseFilterModal = () => setIsFilterModalOpen(false);
-
-  // --- Clear Filters and Search Handler ---
   const clearAllFiltersAndSearch = () => {
       setActiveFilters({ selectedRecipients: [], selectedDirection: 'all', selectedStatus: null, selectedBalance: [], fromDate: "", toDate: "" });
       setSearchTerm("");
-      // No need to manually setDisplayTransactions here, the useEffect will recalculate it
   };
 
-  // --- Render Logic ---
   const isPageLoading = isBalanceLoading || authLoading;
 
-  // Loading Skeleton
   if (isPageLoading && !typedBalanceDetail && !error) {
-        // --- Skeleton remains the same ---
         return (
             <div className="py-5 animate-pulse">
                  <div className="pb-6 mb-8 border-b">
@@ -8616,9 +9048,7 @@ const BalanceDetailPage = () => {
          );
   }
 
-  // Error State
   if ((error && !typedBalanceDetail && !isBalanceLoading) || (!isPageLoading && !typedBalanceDetail)) {
-     // --- Error remains the same ---
      const message = typeof error === 'string' ? error : "Balance details not found or you may not have access.";
         return (
             <div className="container mx-auto px-4 py-8 text-center">
@@ -8631,9 +9061,7 @@ const BalanceDetailPage = () => {
          );
    }
 
-   // Fallback - Should ideally not be reached if logic is correct
    if (!typedBalanceDetail) {
-        // --- Fallback remains the same ---
         console.error("Invariant violation: Reached main render but typedBalanceDetail is null/undefined despite passing loading/error checks.");
             return (
                 <div className="container mx-auto px-4 py-8 text-center">
@@ -8643,13 +9071,11 @@ const BalanceDetailPage = () => {
             );
    }
 
-  // Determine if the specific "no match" empty state should be shown
   const showNoMatchEmptyState = !isTransactionsLoading &&
                                 displayTransactions.length === 0 &&
-                                !initiallyEmpty && // Only show if there *were* transactions initially
-                                filtersOrSearchAreActive; // Only show if filters/search caused the empty list
+                                !initiallyEmpty && 
+                                filtersOrSearchAreActive; 
 
-  // --- Main Render Structure ---
   return (
     <div className="py-5">
       <BalanceHeader
@@ -8662,13 +9088,11 @@ const BalanceDetailPage = () => {
         ourRateAgainstINR={ourRateAgainstINR}
       />
 
-      {/* --- Transactions Section --- */}
       <div className="mt-10">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky lg:top-28 top-20 z-10 bg-background dark:bg-background">
            <h3 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
              Transactions
            </h3>
-           {/* Conditionally render Search/Filter only if there's a chance of having transactions */}
            {(!initiallyEmpty || isTransactionsLoading) && (
               <div className="flex justify-between items-center gap-4 sm:w-auto w-full">
                  <Search
@@ -8676,10 +9100,9 @@ const BalanceDetailPage = () => {
                      onSearchChange={setSearchTerm}
                  />
                  <button
-                      className="inline-flex items-center justify-center gap-3 bg-primary text-neutral-900 hover:bg-primaryhover h-12.5 md:w-40 w-12.5 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer shrink-0 disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styles
+                      className="inline-flex items-center justify-center gap-3 bg-primary text-neutral-900 hover:bg-primaryhover h-12.5 md:w-40 w-12.5 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={handleOpenFilterModal}
                       aria-haspopup="dialog"
-                      // Disable filter button if loading OR if it's initially empty AND no filters are active yet (no point filtering nothing)
                       disabled={isTransactionsLoading || (initiallyEmpty && !filtersOrSearchAreActive)}
                   >
                       <LuSettings2 size={20} />
@@ -8689,54 +9112,45 @@ const BalanceDetailPage = () => {
            )}
         </div>
 
-        {/* Pass displayTransactions and initiallyEmpty state to TransactionList */}
         <TransactionList
-          transactions={displayTransactions} // Pass the potentially filtered list
-          isLoading={isTransactionsLoading} // Pass loading state
+          transactions={displayTransactions} 
+          isLoading={isTransactionsLoading} 
           error={
             typeof error === "string" && (error.includes("payment history") || error.includes("transfer history"))
-              ? error // Pass only transaction-specific errors
+              ? error 
               : null
           }
           currencyCode={currencyCode}
           balanceId={balanceId!}
           onSendClick={handleSendClick}
+          onAddMoneyClick={handleAddMoneyClick} 
           canSendMoney={hasSufficientFunds}
-          wasInitiallyEmpty={initiallyEmpty} // <-- Pass the initial empty state
+          wasInitiallyEmpty={initiallyEmpty} 
         />
 
-        {/* ---- Empty State Logic for Filter/Search Miss ---- */}
-        {/* Show this *only* when filtering/searching yields no results, but there were initial transactions */}
         {showNoMatchEmptyState && (
             <div className="text-center flex flex-col items-center text-lg px-4 text-gray-500 dark:text-gray-300 bg-lightgray py-8 dark:bg-white/5 rounded-lg mt-6">
                <span>No transactions match your current filter or search criteria.</span>
-               {/* Button to clear filters/search */}
                <Button
                  onClick={clearAllFiltersAndSearch}
-                 // variant="primary" // <-- Removed variant="primary" as requested
                  className="mt-4 px-6 cursor-pointer lg:py-3 py-2.5 lg:text-base text-sm font-medium w-auto bg-primary text-neutral-900 rounded-full hover:bg-primaryhover transition-colors duration-500 ease-in-out"
                >
                  Clear Filters
                </Button>
             </div>
         )}
-         {/* ---- End Specific Empty State Logic ---- */}
       </div>
 
-      {/* --- Modals --- */}
       <InsufficientBalanceModal isOpen={isInsufficientBalanceModalOpen} onClose={handleCloseInsufficientBalanceModal} onAddMoney={handleAddMoneyFromInsufficientModal} currencyCode={currencyCode} />
       <KycRequiredModal isOpen={isKycModalOpen} onClose={handleCloseKycModal} onStartVerification={handleStartVerification}/>
 
-      {/* --- FILTER MODAL --- */}
       <FilterModal
         isOpen={isFilterModalOpen}
         onClose={handleCloseFilterModal}
-        // Consider fetching actual user accounts/recipients if needed for the filter modal
         userAccounts={[]}
         onFiltersApply={handleFiltersApply}
         initialFilters={activeFilters}
       />
-
     </div>
   );
 };

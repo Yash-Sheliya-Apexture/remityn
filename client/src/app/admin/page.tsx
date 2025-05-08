@@ -30,10 +30,6 @@
 //   );
 // }
 
-
-
-
-
 // import {
 //   Activity,
 //   Users,
@@ -81,11 +77,9 @@
 //                 <div className="bg-blue-100 dark:bg-blue-600/20 p-3 rounded-lg">
 //                   <Users className="h-6 w-6 text-blue-600 dark:text-blue-400" />
 //                 </div>
-                
+
 //               </div>
 //             </div>
-
-           
 
 //             <div className="bg-white dark:bg-white/5 p-6 rounded-xl shadow-sm border">
 //               <div className="flex justify-between items-start">
@@ -163,7 +157,7 @@
 //                   >
 //                     <div className="h-10 w-10 rounded-full bg-primary flex-shrink-0 flex items-center justify-center">
 //                       <span className="text-neutral-900 font-medium">{item}</span>
-//                     </div> 
+//                     </div>
 //                     <div className="ml-4">
 //                       <p className="font-medium text-neutral-900 dark:text-white">
 //                         New user registered:{" "}
@@ -217,9 +211,6 @@
 //     </section>
 //   );
 // }
-
-
-
 
 // import {
 //   Activity,
@@ -861,20 +852,21 @@
 //   );
 // }
 
+// frontend/src/app/admin/page.tsx
+"use client"; // <-- ADDED: This page now needs hooks for data fetching
 
-import React from 'react';
-// Removed unnecessary lucide-react imports from here
-// Keep Link if needed elsewhere, otherwise remove
-// import Link from "next/link";
-
+import React from "react"; // <-- ADDED hooks
 // Import the new components
-import StatsCards from './components/DashboardSection/StatsCards'; // Adjust path as needed
-import TransferInsights from './components/DashboardSection/TransferInsights'; // Adjust path as needed
-import RecentActivity from './components/DashboardSection/RecentActivity'; // Adjust path as needed
-import QuickActions from './components/DashboardSection/QuickActions'; // Adjust path as needed
-import RiskAndCompliance from './components/DashboardSection/RiskAndCompliance'; // Adjust path as needed
-import PaymentAndSettlement from './components/DashboardSection/PaymentAndSettlement'; // Adjust path as needed
-
+import StatsCards from "./components/DashboardSection/StatsCards"; // Adjust path as needed
+import TransferInsights from "./components/DashboardSection/TransferInsights"; // Adjust path as needed
+import RecentActivity from "./components/DashboardSection/RecentActivity"; // Adjust path as needed
+import RiskAndCompliance from "./components/DashboardSection/RiskAndCompliance"; // Adjust path as needed
+import PaymentAndSettlement from "./components/DashboardSection/PaymentAndSettlement"; // Adjust path as needed
+import KycVerificationCard from "./components/DashboardSection/KycVerificationCard"; // <-- Keep this import
+// --- ADD Chart Imports ---
+import PaymentsVolumeChart from "./components/DashboardSection/PaymentsVolumeChart";
+import TransfersVolumeChart from "./components/DashboardSection/TransfersVolumeChart";
+// --- END Chart Imports ---
 
 export default function AdminHomePage() {
   return (
@@ -895,24 +887,27 @@ export default function AdminHomePage() {
           {/* Stats cards Component */}
           <StatsCards />
 
+          {/* --- ADD Charts Section --- */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <PaymentsVolumeChart />
+            <TransfersVolumeChart />
+          </div>
+          {/* --- END Charts Section --- */}
+
+          {/* Recent activity and KYC Verifications side-by-side */}
+          <div className="flex lg:flex-row flex-col gap-6 mb-8">
+            <RecentActivity />
+          </div>
+
           {/* Transfer Insights Component */}
           <TransferInsights />
 
-          {/* Recent activity and quick actions */}
-          {/* Keep the flex container here to manage layout */}
-          <div className="flex lg:flex-row flex-col gap-6 mb-8">
-             {/* Recent activity Component */}
-            <RecentActivity />
-             {/* Quick actions Component */}
-            <QuickActions />
-          </div>
 
           {/* Risk Monitoring & Compliance Component */}
-          <RiskAndCompliance />
+          {/* <RiskAndCompliance /> */}
 
           {/* Payment Methods & Settlement Component */}
-          <PaymentAndSettlement />
-
+          {/* <PaymentAndSettlement /> */}
         </div>
       </div>
     </section>

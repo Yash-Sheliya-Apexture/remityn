@@ -4577,7 +4577,7 @@ const InboxPage: React.FC = () => {
                                 className="dark:text-white text-neutral-900"
                                 size={28}
                               />
-                            </div>
+                            </div >
                             <h2 className="text-xl font-medium dark:text-white text-mainheading">
                               Previous Messages
                               <span className="ml-2 text-xs font-semibold dark:bg-primary bg-lightborder dark:text-neutral-900 text-primary px-1.5 py-0.5 rounded-full inline-flex items-center justify-center min-w-[20px]">
