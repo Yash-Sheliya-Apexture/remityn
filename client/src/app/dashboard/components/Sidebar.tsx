@@ -3089,6 +3089,8 @@ import { useAuth } from "../../contexts/AuthContext"; // Adjust path if necessar
 import { useBalances } from "../../hooks/useBalances"; // Adjust path if necessary
 import { Skeleton } from "@/components/ui/skeleton"; // Adjust path if necessary
 import { IoClose } from "react-icons/io5";
+import { TbMoneybag } from "react-icons/tb";
+
 
 // Props Interface
 interface SidebarProps {
@@ -3116,6 +3118,7 @@ const icons = {
   RiHistoryLine,
   FiPlus,
   FiUsers,
+  TbMoneybag
 };
 
 // Breakpoints
@@ -3229,7 +3232,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
     {
       id: "add-money",
       label: "Add Money",
-      icon: "GoArrowUp",
+      icon: "TbMoneybag",
       route: getAddMoneyRoute,
     }, // Use dynamic route function
     {
