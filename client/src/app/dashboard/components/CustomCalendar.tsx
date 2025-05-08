@@ -194,13 +194,13 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({ onDateSelect, selectedD
     };
 
     return (
-        <div className="bg-white dark:bg-background sm:w-96 w-full  rounded-2xl shadow border mt-2 p-4 absolute sm:left-20 left-0 z-10">
+        <div className="bg-white dark:bg-background sm:w-96 w-full rounded-2xl shadow border mt-2 p-4 absolute sm:left-20 left-0 z-10">
             <div className="flex justify-between items-center mb-4">
                 <button onClick={prevMonth} className="p-2 hover:bg-primary text-main dark:hover:text-main dark:text-white transition-colors duration-300 ease-in-out cursor-pointer rounded-md">
                     <svg className="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
                 </button>
                 <span className="font-semibold">{format(new Date(year, month), 'MMMM yyyy')}</span>
-                <button onClick={nextMonth} className="p-2  hover:bg-primary text-main dark:hover:text-main dark:text-white transition-colors duration-300 ease-in-out cursor-pointer rounded-md">
+                <button onClick={nextMonth} className="p-2 hover:bg-primary text-main dark:hover:text-main dark:text-white transition-colors duration-300 ease-in-out cursor-pointer rounded-md">
                     <svg className="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
                 </button>
             </div>

@@ -2,7 +2,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { IoClose as X } from "react-icons/io5";
+import { IoClose, IoClose as X } from "react-icons/io5";
 import {
   MessageSquareText,
   Loader2,
@@ -10,10 +10,6 @@ import {
   AlertCircle,
 } from "lucide-react";
 
-// Shadcn UI Components (Import what's needed)
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 
 interface SendMessageModalProps {
   isOpen: boolean;
@@ -119,22 +115,27 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({
             <div className="p-4 sm:p-6 rounded-t-2xl flex items-center justify-between border-b">
               <h2
                 id="send-message-modal-title"
-                className="text-xl font-bold flex items-center text-neutral-900 dark:text-white"
+                className="lg:text-2xl text-xl font-semibold text-mainheading dark:text-white"
               >
-                <MessageSquareText className="mr-2 size-6 text-primary" />
                 Send Message to User
               </h2>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="p-3 bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
-                aria-label="Close send message modal"
-              >
-                <X size={24} className="text-neutral-900 dark:text-primary" />
-              </button>
+
+              <div className="absolute sm:top-2 sm:right-2 top-1 right-1">
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="p-3 bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
+                  aria-label="Close send message modal"
+                >
+                  <IoClose
+                    size={28}
+                    className="text-neutral-900 dark:text-primary"
+                  />
+                </button>
+              </div>
             </div>
 
             {/* Content */}
-            <div className="p-4 sm:p-6 space-y-5">
+            <div className="p-4 sm:p-6 space-y-4">
               <p className="text-sm text-gray-500 dark:text-gray-300">
                 Compose message for {userName}'s inbox.
               </p>
@@ -189,7 +190,7 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({
             </div>
 
             {/* Footer */}
-            <div className="border-t p-4 sm:p-6 flex justify-end gap-3">
+            <div className="flex sm:flex-row flex-col items-center justify-end sm:p-6 p-4 gap-4 border-t">
               <button
                 onClick={() => setIsOpen(false)}
                 disabled={isSending}

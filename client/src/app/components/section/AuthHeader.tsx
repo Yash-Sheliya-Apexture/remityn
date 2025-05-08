@@ -165,7 +165,7 @@ const AuthHeader: React.FC = () => {
           </Link>
 
           {/* Close button remains the same */}
-          <div className="size-12 bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox flex items-center justify-center rounded-full transition-all duration-75 ease-linear">
+          <div className="size-12 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox flex items-center justify-center rounded-full transition-all duration-75 ease-linear">
             <Link href="/">
               <span className="text-neutral-900 dark:text-primary">
                 <IoClose size={28} />
