@@ -3175,16 +3175,16 @@ import {
   FaChartPie,
   FaCoins,
   FaUsers,
-  FaMoneyBillWave,
-  FaTimes,
   FaEnvelope, // Added for Messages
   FaInbox, // Added for Inbox
   FaPaperPlane, // Added for Send Message
   FaChevronDown, // Added for dropdown indicator
 } from "react-icons/fa";
+import { RxActivityLog } from "react-icons/rx";
+import { TbMoneybag } from "react-icons/tb";
+import { BsSend } from "react-icons/bs";
 import { MdManageAccounts } from "react-icons/md";
 import { GrLogout } from "react-icons/gr";
-import { IoMdAddCircleOutline } from "react-icons/io";
 import ThemeToggle from "../../contexts/ThemeToggle";
 import { FiX } from "react-icons/fi";
 
@@ -3310,6 +3310,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
   // --- Active State Logic ---
   const isDashboardRoute = pathname === "/admin";
+  const isActivityRoute = pathname === "/admin/activity";
   const isCurrenciesRoute = pathname === "/admin/currencies";
   const isUsersRoute = pathname === "/admin/users";
   const isAddMoneyRoute = pathname === "/admin/add-money";
@@ -3459,10 +3460,11 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
               <ul className="space-y-1 px-4">
                 {/* Existing Items */}
                 <li> <SidebarNavItem href="/admin" icon={FaChartPie} label="Dashboard" isActive={isDashboardRoute} onClick={handleMobileNavClick} /> </li>
+                <li> <SidebarNavItem href="/admin/activity" icon={RxActivityLog} label="Activity" isActive={isActivityRoute} onClick={handleMobileNavClick} /> </li>
                 <li> <SidebarNavItem href="/admin/currencies" icon={FaCoins} label="Currencies" isActive={isCurrenciesRoute} onClick={handleMobileNavClick} /> </li>
                 <li> <SidebarNavItem href="/admin/users" icon={FaUsers} label="Users" isActive={isUsersRoute} onClick={handleMobileNavClick} /> </li>
-                <li> <SidebarNavItem href="/admin/add-money" icon={IoMdAddCircleOutline} label="Add-Money" isActive={isAddMoneyRoute} onClick={handleMobileNavClick} /> </li>
-                <li> <SidebarNavItem href="/admin/transfer" icon={FaMoneyBillWave} label="Send-Money" isActive={isTransferRoute} onClick={handleMobileNavClick} /> </li>
+                <li> <SidebarNavItem href="/admin/add-money" icon={TbMoneybag} label="Add-Money" isActive={isAddMoneyRoute} onClick={handleMobileNavClick} /> </li>
+                <li> <SidebarNavItem href="/admin/transfer" icon={BsSend} label="Send-Money" isActive={isTransferRoute} onClick={handleMobileNavClick} /> </li>
                 <li> <SidebarNavItem href="/admin/kyc-management" icon={MdManageAccounts} label="KYC Management" isActive={isKycManagementRoute} onClick={handleMobileNavClick} /> </li>
 
                 {/* --- New Messages Menu Item --- */}
