@@ -106,8 +106,6 @@
 // };
 // export default MainDashBoard;
 
-
-
 // "use client";
 
 // import React from "react";
@@ -258,8 +256,6 @@
 
 // export default MainDashBoard;
 
-
-
 // // frontend/src/app/dashboard/components/MainDashBoardSection/MainSection.tsx
 // "use client";
 
@@ -333,7 +329,6 @@
 // };
 
 // export default MainDashBoard;
-
 
 // // frontend/src/app/dashboard/components/MainDashBoardSection/MainSection.tsx
 // "use client";
@@ -492,7 +487,6 @@
 
 // export default MainDashBoard;
 
-
 // "use client";
 
 // import React from "react";
@@ -544,7 +538,6 @@
 //   console.log(kycStatus);
 //   const showVerificationBanner = kycStatus !== 'verified';
 
-
 //   return (
 //     // Add padding consistent with loading state or remove if parent provides padding
 //     <div className="space-y-6 md:space-y-8 p-4 md:p-0">
@@ -575,7 +568,7 @@ import { Skeleton } from "@/components/ui/skeleton"; // Ensure Skeleton is corre
 import { AlertCircle } from "lucide-react";
 import type { KycStatus } from "@/app/services/kyc"; // Import the KycStatus type
 import Link from "next/link";
-import { BsSend } from "react-icons/bs";
+import { LuPlus } from "react-icons/lu";;
 import { GoArrowUp } from "react-icons/go";
 
 const MainDashBoard = () => {
@@ -588,11 +581,15 @@ const MainDashBoard = () => {
     // console.log("Dashboard: Auth is loading, showing skeleton.");
     return (
       <div className="space-y-6 md:space-y-8 animate-pulse p-4 md:p-0">
-         {/* Mimic layout with skeletons */}
-         <Skeleton className="h-24 w-full rounded-lg bg-muted dark:bg-muted/60" /> {/* Placeholder for Banner/Verification */}
-         <Skeleton className="h-32 w-full rounded-lg bg-muted dark:bg-muted/60" /> {/* Placeholder for CountryCard */}
-         <Skeleton className="h-48 w-full rounded-lg bg-muted dark:bg-muted/60" /> {/* Placeholder for Tasks */}
-         <Skeleton className="h-64 w-full rounded-lg bg-muted dark:bg-muted/60" /> {/* Placeholder for Transactions */}
+        {/* Mimic layout with skeletons */}
+        <Skeleton className="h-24 w-full rounded-lg bg-muted dark:bg-muted/60" />{" "}
+        {/* Placeholder for Banner/Verification */}
+        <Skeleton className="h-32 w-full rounded-lg bg-muted dark:bg-muted/60" />{" "}
+        {/* Placeholder for CountryCard */}
+        <Skeleton className="h-48 w-full rounded-lg bg-muted dark:bg-muted/60" />{" "}
+        {/* Placeholder for Tasks */}
+        <Skeleton className="h-64 w-full rounded-lg bg-muted dark:bg-muted/60" />{" "}
+        {/* Placeholder for Transactions */}
       </div>
     );
   }
@@ -600,17 +597,20 @@ const MainDashBoard = () => {
   // --- Error State ---
   // This happens if AuthContext finishes loading but user is null (e.g., token invalid, API error during fetch)
   if (!user) {
-    console.error("Dashboard: Auth loaded but user data is null. Cannot render dashboard sections.");
+    console.error(
+      "Dashboard: Auth loaded but user data is null. Cannot render dashboard sections."
+    );
     return (
-        <div className="flex flex-col items-center justify-center min-h-[300px] text-center p-6 bg-destructive/10 dark:bg-destructive/20 rounded-lg border border-destructive/30 dark:border-destructive/50">
-            <AlertCircle className="h-12 w-12 text-destructive mb-4" />
-            <p className="text-destructive dark:text-red-300 font-semibold text-lg">
-                Error: Could not load user session data.
-            </p>
-            <p className="text-sm text-destructive/80 dark:text-red-300/80 mt-2">
-                Please try refreshing the page or logging out and logging back in. Contact support if the problem persists.
-            </p>
-        </div>
+      <div className="flex flex-col items-center justify-center min-h-[300px] text-center p-6 bg-destructive/10 dark:bg-destructive/20 rounded-lg border border-destructive/30 dark:border-destructive/50">
+        <AlertCircle className="h-12 w-12 text-destructive mb-4" />
+        <p className="text-destructive dark:text-red-300 font-semibold text-lg">
+          Error: Could not load user session data.
+        </p>
+        <p className="text-sm text-destructive/80 dark:text-red-300/80 mt-2">
+          Please try refreshing the page or logging out and logging back in.
+          Contact support if the problem persists.
+        </p>
+      </div>
     );
   }
 
@@ -620,28 +620,11 @@ const MainDashBoard = () => {
   const rejectionReason: string | null | undefined = user.kyc.rejectionReason; // Get reason from user.kyc.rejectionReason
   // console.log("Dashboard: Rendering with KYC Status from AuthContext:", kycStatus);
 
-  const showVerificationBanner = kycStatus !== 'verified';
+  const showVerificationBanner = kycStatus !== "verified";
 
   return (
     // Add padding consistent with loading state or remove if parent provides padding
     <div className="space-y-6 md:space-y-8 pb-0 md:pb-5">
-      <div className="flex items-center gap-2">
-        <Link href={"/dashboard/add-money/select-balance"}>
-          {/* Added icon, added `gap-1.5` for spacing */}
-          <button className="flex items-center justify-center gap-1.5 bg-primary text-neutral-900 hover:bg-primaryhover py-1.5 px-6 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer">
-            <GoArrowUp size={18} /> {/* Adjust size as needed */}
-            Add Money
-          </button>
-        </Link>
-        <Link href={"/dashboard/send/select-balance"}>
-          {/* Added icon, added `gap-1.5` for spacing */}
-          <button className="flex items-center justify-center gap-1.5 bg-primary text-neutral-900 hover:bg-primaryhover py-1.5 px-6 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer">
-            <BsSend size={18} /> {/* Adjust size as needed */}
-            Send Money
-          </button>
-        </Link>
-      </div>
-
       {/* Show banner based on the authoritative status from AuthContext */}
       {showVerificationBanner && (
         <AccountVerification
@@ -649,11 +632,30 @@ const MainDashBoard = () => {
           reason={rejectionReason} // Pass the reason
         />
       )}
+
+      <div className="flex items-center gap-2">
+       
+        <Link href={"/dashboard/send/select-balance"}>
+          {/* Added icon, added `gap-1.5` for spacing */}
+          <button className="flex items-center justify-center gap-1.5 bg-primary text-neutral-900 hover:bg-primaryhover py-1 px-4 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer">
+            <GoArrowUp size={18} /> {/* Adjust size as needed */}
+            Send
+          </button>
+        </Link>
+
+        <Link href={"/dashboard/add-money/select-balance"}>
+          {/* Added icon, added `gap-1.5` for spacing */}
+          <button className="flex items-center justify-center gap-1.5 bg-[#ceff81] text-neutral-900 hover:bg-primaryhover py-1 px-4 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer">
+            <LuPlus size={18} /> {/* Adjust size as needed */}
+            Add
+          </button>
+        </Link>
+      </div>
+      
       <CountryCard />
       <TasksPage />
       <TransactionsSection />
     </div>
-    
   );
 };
 

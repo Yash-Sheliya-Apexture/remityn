@@ -633,12 +633,12 @@ const PaymentTable: React.FC<PaymentTableProps> = ({
                   transition={{ delay: index * 0.05 }}
                   // className="hover:bg-lightgray dark:hover:bg-primarybox transition-all duration-75 ease-linear"
                 >
-                  <td className="px-4 py-3 whitespace-nowrap">
+                  <td className="px-6 py-3 whitespace-nowrap">
                     <span className="font-medium text-neutral-900 dark:text-white">
                       {payment._id}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-6 py-3">
                     <div className="flex flex-col">
                       <span className="font-medium capitalize text-neutral-900 dark:text-white">
                         {payment.user?.fullName || "N/A"}
@@ -648,18 +648,18 @@ const PaymentTable: React.FC<PaymentTableProps> = ({
                       </span>
                     </div>
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap font-medium text-neutral-900 dark:text-white">
+                  <td className="px-6 py-3 whitespace-nowrap font-medium text-neutral-900 dark:text-white">
                     {payment.amountToAdd} {/* Display string amount */}
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap text-neutral-900 dark:text-white">
+                  <td className="px-6 py-3 whitespace-nowrap text-neutral-900 dark:text-white">
                     {payment.payInCurrency?.code || "N/A"}
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap">
+                  <td className="px-6 py-3 whitespace-nowrap">
                     <span className="text-neutral-900 dark:text-white">
                       {payment.referenceCode || "N/A"}
                     </span>
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap">
+                  <td className="px-6 py-3 whitespace-nowrap">
                     <span
                       className={`inline-flex justify-center items-center px-4 py-1 w-28 font-medium rounded-3xl capitalize ${getStatusColor(
                         payment.status
@@ -671,7 +671,7 @@ const PaymentTable: React.FC<PaymentTableProps> = ({
                   <td className="px-6 py-3 whitespace-nowrap font-medium">
                     {formatDate(payment.createdAt)}
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap font-medium">
+                  <td className="px-6 py-3 whitespace-nowrap font-medium">
                     <motion.button
                       whileTap={{ scale: 0.95 }}
                       onClick={() => handleEditPayment(payment)}

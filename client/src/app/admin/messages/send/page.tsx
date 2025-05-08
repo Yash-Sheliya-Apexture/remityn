@@ -1459,11 +1459,11 @@ const AdminSendAllMessagePage: React.FC = () => {
 
   // --- Main Page Render ---
   return (
-    <div className="container mx-auto px-4 lg:px-8 py-8">
+    <div className="container mx-auto px-4 py-8">
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-mainheading dark:text-white inline-flex items-center gap-2">
-          <MessageSquareText className="size-6 text-primary" />
+        <h1 className="text-2xl font-bold leading-tight text-mainheading dark:text-white sm:text-3xl inline-flex items-center gap-2">
+          <MessageSquareText size={28} className="text-primary" />
           Send Broadcast Message
         </h1>
         <p className="text-gray-500 dark:text-gray-300">

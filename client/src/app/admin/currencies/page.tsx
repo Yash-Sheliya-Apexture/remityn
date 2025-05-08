@@ -781,54 +781,69 @@ interface ApiErrorResponse {
 // --- NEW: Loading Skeleton Component ---
 const LoadingSkeleton = () => (
   <div className="container mx-auto px-4 py-8 bg-white dark:bg-background">
-      <div className="space-y-6">
-          {/* Header Skeleton */}
-          <div className="pb-6 mb-6 border-b">
-              <Skeleton className="h-8 w-3/5 sm:w-1/3 rounded mb-3" /> {/* Title */}
-              <Skeleton className="h-4 w-4/5 sm:w-1/2 rounded" /> {/* Description */}
-          </div>
-
-          {/* Action Bar Skeleton */}
-          <div className="flex sm:justify-between flex-row w-full items-center mb-6 gap-4">
-              <Skeleton className="h-12 w-12 sm:h-12.5 sm:w-40 rounded-full" /> {/* Add Button */}
-              <Skeleton className="h-12 sm:h-12.5 flex-1 sm:flex-none sm:w-64 rounded-full" /> {/* Search */}
-          </div>
-
-          {/* Currency Cards Grid Skeleton */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {Array.from({ length: 6 }).map((_, index) => ( // Render 6 skeleton cards
-                  <div key={index} className="rounded-xl overflow-hidden border flex flex-col">
-                      {/* Card Content Area */}
-                      <div className="lg:p-5 p-4 flex-grow">
-                          {/* Top Section: Flag, Code, Name Skeleton */}
-                          <div className="flex items-center gap-4 mb-4">
-                              <Skeleton className="size-14 rounded-full flex-shrink-0" /> {/* Flag */}
-                              <div className="flex-1 space-y-1.5">
-                                  <Skeleton className="h-6 w-1/3 rounded" /> {/* Code */}
-                                  <Skeleton className="h-4 w-2/3 rounded" /> {/* Name */}
-                              </div>
-                          </div>
-
-                          {/* Rate Adjustment Section Skeleton */}
-                          <div className="p-3 space-y-2 rounded-lg border">
-                              <Skeleton className="h-4 w-1/4 rounded mb-1" /> {/* Label */}
-                              <Skeleton className="h-6 w-1/2 rounded" /> {/* Value */}
-                              <Skeleton className="h-3 w-full rounded mt-1" /> {/* Description */}
-                          </div>
-                      </div>
-
-                      {/* Actions Footer Skeleton */}
-                      <div className="border-t p-4">
-                          <div className="flex flex-wrap flex-row gap-2">
-                              <Skeleton className="h-10 lg:h-12.5 flex-1 rounded-full" /> {/* Button 1 */}
-                              <Skeleton className="h-10 lg:h-12.5 flex-1 rounded-full" /> {/* Button 2 */}
-                              <Skeleton className="h-10 lg:h-12.5 flex-1 rounded-full" /> {/* Button 3 */}
-                          </div>
-                      </div>
-                  </div>
-              ))}
-          </div>
+    <div className="space-y-6">
+      {/* Header Skeleton */}
+      <div className="pb-6 mb-6 border-b">
+        <Skeleton className="h-8 w-3/5 sm:w-1/3 rounded mb-3" /> {/* Title */}
+        <Skeleton className="h-4 w-4/5 sm:w-1/2 rounded" /> {/* Description */}
       </div>
+
+      {/* Action Bar Skeleton */}
+      <div className="flex sm:justify-between flex-row w-full items-center mb-6 gap-4">
+        <Skeleton className="h-12 w-12 sm:h-12.5 sm:w-40 rounded-full" />{" "}
+        {/* Add Button */}
+        <Skeleton className="h-12 sm:h-12.5 flex-1 sm:flex-none sm:w-64 rounded-full" />{" "}
+        {/* Search */}
+      </div>
+
+      {/* Currency Cards Grid Skeleton */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        {Array.from({ length: 6 }).map(
+          (
+            _,
+            index // Render 6 skeleton cards
+          ) => (
+            <div
+              key={index}
+              className="rounded-xl overflow-hidden border flex flex-col"
+            >
+              {/* Card Content Area */}
+              <div className="lg:p-5 p-4 flex-grow">
+                {/* Top Section: Flag, Code, Name Skeleton */}
+                <div className="flex items-center gap-4 mb-4">
+                  <Skeleton className="size-14 rounded-full flex-shrink-0" />{" "}
+                  {/* Flag */}
+                  <div className="flex-1 space-y-1.5">
+                    <Skeleton className="h-6 w-1/3 rounded" /> {/* Code */}
+                    <Skeleton className="h-4 w-2/3 rounded" /> {/* Name */}
+                  </div>
+                </div>
+
+                {/* Rate Adjustment Section Skeleton */}
+                <div className="p-3 space-y-2 rounded-lg border">
+                  <Skeleton className="h-4 w-1/4 rounded mb-1" /> {/* Label */}
+                  <Skeleton className="h-6 w-1/2 rounded" /> {/* Value */}
+                  <Skeleton className="h-3 w-full rounded mt-1" />{" "}
+                  {/* Description */}
+                </div>
+              </div>
+
+              {/* Actions Footer Skeleton */}
+              <div className="border-t p-4">
+                <div className="flex flex-wrap flex-row gap-2">
+                  <Skeleton className="h-10 lg:h-12.5 flex-1 rounded-full" />{" "}
+                  {/* Button 1 */}
+                  <Skeleton className="h-10 lg:h-12.5 flex-1 rounded-full" />{" "}
+                  {/* Button 2 */}
+                  <Skeleton className="h-10 lg:h-12.5 flex-1 rounded-full" />{" "}
+                  {/* Button 3 */}
+                </div>
+              </div>
+            </div>
+          )
+        )}
+      </div>
+    </div>
   </div>
 );
 // --- END: Loading Skeleton Component ---
@@ -1127,7 +1142,7 @@ const AdminCurrenciesPage: React.FC = () => {
   };
 
   const clearSearchTerm = () => {
-    setSearchTerm('');
+    setSearchTerm("");
   };
 
   // --- RENDER ---
@@ -1168,7 +1183,7 @@ const AdminCurrenciesPage: React.FC = () => {
               className="bg-primary text-neutral-900 flex items-center justify-center gap-1  hover:bg-primaryhover text-nowrap font-medium rounded-full text-center sm:px-8 sm:py-3 h-12.5 sm:w-auto w-12.5 cursor-pointer transition-all duration-75 ease-linear"
             >
               <IoMdAdd
-                className="size-8"
+                size={28}
                 title={isMobile ? "Add Currency" : undefined} // Tooltip for mobile
               />
               {!isMobile && <span>Add Currency</span>}
@@ -1196,12 +1211,12 @@ const AdminCurrenciesPage: React.FC = () => {
             />
 
             {/* Clear Button (Conditionally Rendered) */}
-            {searchTerm && ( 
+            {searchTerm && (
               <button
-                type="button" 
+                type="button"
                 onClick={clearSearchTerm}
                 className="absolute inset-y-0 right-3 flex items-center text-neutral-900 dark:text-primary focus:outline-none cursor-pointer"
-                aria-label="Clear search" 
+                aria-label="Clear search"
               >
                 <MdCancel size={24} aria-hidden="true" />
               </button>
@@ -1410,21 +1425,23 @@ const AdminCurrenciesPage: React.FC = () => {
 
                 {/* Modal Header */}
                 <div className="flex justify-between items-center my-6">
-                  <h2 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
+                  <h2 className="lg:text-2xl text-xl font-semibold text-mainheading dark:text-white">
                     Add New Currency
                   </h2>
                 </div>
 
                 {/* Modal Form */}
-                <div className="space-y-5">
+                <div className="space-y-4">
                   {/* Code */}
                   <div>
                     <label
                       htmlFor="create-code"
-                      className="block font-medium text-gray-500 dark:text-gray-300 mb-2"
+                      className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
                     >
-                      Currency Code <span className="text-red-600">*</span>
+                      Currency Code{" "}
+                      <span className="text-red-600 dark:text-red-400">*</span>
                     </label>
+
                     <input
                       type="text"
                       id="create-code"
@@ -1433,19 +1450,21 @@ const AdminCurrenciesPage: React.FC = () => {
                       onChange={handleCreateInputChange}
                       maxLength={3}
                       placeholder="e.g., USD"
-                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium" // Added dark mode styles
+                      className="mt-1 block px-4 py-3 bg-white dark:bg-background focus:border-[#5f5f5f] h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75" // Added dark mode styles
                     />
-                    <p className="mt-2 text-xs text-gray-500 dark:text-gray-300">
+                    <p className="mt-2 text-sm text-gray-500 font-medium  dark:text-gray-300">
                       3-letter uppercase code.
                     </p>
                   </div>
+
                   {/* Name */}
                   <div>
                     <label
                       htmlFor="create-currencyName"
-                      className="block font-medium text-gray-500 dark:text-gray-300 mb-2"
+                      className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
                     >
-                      Currency Name <span className="text-red-600">*</span>
+                      Currency Name{" "}
+                      <span className="text-red-600 dark:text-red-400">*</span>
                     </label>
                     <input
                       type="text"
@@ -1454,17 +1473,19 @@ const AdminCurrenciesPage: React.FC = () => {
                       value={newCurrencyData.currencyName}
                       onChange={handleCreateInputChange}
                       placeholder="e.g., US Dollar"
-                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium" // Added dark mode styles
+                      className="mt-1 block px-4 py-3 bg-white focus:border-[#5f5f5f] font-medium dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75" // Added dark mode styles
                     />
                   </div>
                   {/* Flag Image Path */}
                   <div>
                     <label
                       htmlFor="create-flagImage"
-                      className="block font-medium text-gray-500 dark:text-gray-300 mb-2"
+                      className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
                     >
-                      Flag Image Path
+                      Flag Image Path{" "}
+                      <span className="text-red-600 dark:text-red-400">*</span>
                     </label>
+
                     <input
                       type="text"
                       id="create-flagImage"
@@ -1472,21 +1493,24 @@ const AdminCurrenciesPage: React.FC = () => {
                       value={newCurrencyData.flagImage}
                       onChange={handleCreateInputChange}
                       placeholder="/assets/icon/flags/usd.png"
-                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium" // Added dark mode styles
+                      className="mt-1 block px-4 py-3 focus:border-[#5f5f5f] bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75" // Added dark mode styles
                     />
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-300">
+                    <p className="mt-2 text-sm text-gray-500 font-medium  dark:text-gray-300">
                       Relative path to the image.
                     </p>
                   </div>
+
                   {/* Rate Adjustment Percentage - UPDATED */}
                   <div>
                     <label
                       htmlFor="create-rateAdjustmentPercentage"
-                      className="flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300 mb-2
-"
+                      className="text-gray-500 dark:text-gray-300 capitalize text-sm lg:text-base flex items-center gap-2"
                     >
-                      <Percent size={14} className="dark:text-gray-300" /> Rate
-                      Adjustment
+                      <Percent
+                        size={18}
+                        className="dark:text-white text-neutral-900"
+                      />{" "}
+                      Rate Adjustment
                     </label>
                     <input
                       type="number" // Ensure type is number for step validation
@@ -1496,16 +1520,23 @@ const AdminCurrenciesPage: React.FC = () => {
                       onChange={handleCreateInputChange}
                       step="any"
                       placeholder="e.g., 0.5 (for +0.5%) or -0.1 (for -0.1%)"
-                      className="block w-full rounded-md border py-3 px-4 text-neutral-900 hover:shadow-darkcolor hover:dark:shadow-whitecolor transition-shadow ease-in-out duration-300 dark:text-white placeholder:text-gray-500 focus:shadow-darkcolor dark:focus:shadow-whitecolor focus:outline-none font-medium" // Added dark mode styles
+                      className="mt-1 block px-4 py-3 focus:border-[#5f5f5f] bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75" // Added dark mode styles
                     />
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-300">
+                    <p className="mt-2 text-sm text-gray-500 font-medium  dark:text-gray-300">
                       Enter percentage adjustment. Default is 0%.
                     </p>
                   </div>
                 </div>
 
                 {/* Modal Actions */}
-                <div className="flex flex-col gap-2.5 mt-8">
+                <div className="flex justify-end items-center mt-5 gap-3">
+                  <button
+                    onClick={() => setIsCreateModalOpen(false)}
+                    className="inline-flex justify-center cursor-pointer bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear"
+                  >
+                    Cancel
+                  </button>
+
                   <button
                     onClick={handleCreateCurrency}
                     disabled={
@@ -1513,19 +1544,78 @@ const AdminCurrenciesPage: React.FC = () => {
                       !newCurrencyData.code ||
                       !newCurrencyData.currencyName
                     }
-                    className="inline-flex justify-center cursor-pointer bg-primary hover:bg-primaryhover text-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed font-medium rounded-full px-6 py-3 h-12.5 text-center w-full sm:w-auto transition-all duration-75 ease-linear" // Added disabled styles
+                    className="inline-flex justify-center cursor-pointer bg-primary hover:bg-primaryhover text-neutral-900 font-medium rounded-full px-6 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styles
                   >
                     {isSubmitting ? (
-                      <Loader2 className="animate-spin mr-2" size={20} /> // Added loader
+                      <>
+                        <svg
+                          className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M12 2V6"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />{" "}
+                          <path
+                            d="M12 18V22"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M4.93 4.93L7.76 7.76"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M16.24 16.24L19.07 19.07"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M2 12H6"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M18 12H22"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M4.93 19.07L7.76 16.24"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M16.24 7.76L19.07 4.93"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </>
                     ) : null}
                     {isSubmitting ? "Adding..." : "Add Currency"}
                   </button>
-                  <button
-                    onClick={() => setIsCreateModalOpen(false)}
-                    className="inline-flex justify-center cursor-pointer bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear"
-                  >
-                    Cancel
-                  </button>
+
                 </div>
               </motion.div>
             </motion.div>

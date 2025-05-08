@@ -371,19 +371,235 @@
 // export default SendMoneySelectBalancePage;
 
 
-// frontend/src/app/dashboard/send/select-balance/page.tsx
+// // frontend/src/app/dashboard/send/select-balance/page.tsx
+// "use client";
+
+// import React, { useEffect, useCallback, useState, Suspense } from 'react';
+// import { useRouter, useSearchParams } from 'next/navigation';
+// import { useBalances } from '../../../hooks/useBalances';
+// // *** MODIFIED: Import user and loading from useAuth ***
+// import { useAuth } from '../../../contexts/AuthContext';
+// import SelectBalanceComponent from '../../../components/ui/SelectBalanceComponent';
+// import InsufficientBalanceModal from '@/app/dashboard/components/InsufficientBalanceModal';
+// // *** MODIFIED: Import KycRequiredModal ***
+// import KycRequiredModal from '@/app/dashboard/components/KycRequiredModal';
+
+
+// // Interface for the account data from useBalances hook
+// interface Currency {
+//     _id: string;
+//     code: string;
+//     name: string;
+//     flagImage?: string;
+// }
+// interface Account {
+//     _id: string;
+//     balance: string; // Balance is a string from the hook
+//     currency: Currency;
+//     user: string;
+//     createdAt: string;
+//     updatedAt: string;
+// }
+
+// // Wrap the main component logic in a new component to use Suspense
+// const SendMoneySelectBalanceContent = () => {
+//     const router = useRouter();
+//     const searchParams = useSearchParams();
+//     const { balances, isLoading: isBalancesLoading, error, refetchBalances } = useBalances();
+//     // *** MODIFIED: Get user, token, and auth loading status ***
+//     const { token, user, loading: isAuthLoading } = useAuth();
+
+//     // --- Get recipientId from URL ---
+//     const recipientId = searchParams.get('recipientId');
+
+//     // --- State for Modals ---
+//     const [isInsufficientBalanceModalOpen, setIsInsufficientBalanceModalOpen] = useState(false);
+//     const [modalData, setModalData] = useState<{ currencyCode: string; balanceId: string } | null>(null);
+//     // *** MODIFIED: Add state for KYC Modal ***
+//     const [isKycModalOpen, setIsKycModalOpen] = useState(false);
+
+//     // *** MODIFIED: Determine KYC Status (only after auth check) ***
+//     // We need to wait for isAuthLoading to be false before reliably checking user kyc status
+//     const isKycVerified = !isAuthLoading && user?.kyc?.status === 'verified';
+//     // Combine loading states
+//     const isLoading = isBalancesLoading || isAuthLoading;
+
+//     // --- Redirect Logic (No change needed here) ---
+//     useEffect(() => {
+//         // Redirect only after initial auth check is complete
+//         if (!isAuthLoading && !token) {
+//             console.log("Send Money Select Balance: No token after auth check, redirecting to login.");
+//             router.replace('/auth/login');
+//         }
+//     }, [token, isAuthLoading, router]);
+
+//     // --- KYC Modal Actions ---
+//     const handleOpenKycModal = useCallback(() => setIsKycModalOpen(true), []);
+//     const handleCloseKycModal = useCallback(() => setIsKycModalOpen(false), []);
+//     const handleStartVerification = useCallback(() => {
+//         router.push('/kyc/start'); // Navigate to KYC flow start page
+//         handleCloseKycModal();
+//     }, [router, handleCloseKycModal]);
+
+//     // --- Selection Handler (MODIFIED to include KYC check) ---
+//     const handleSelectBalanceForSendMoney = useCallback((balanceId: string) => {
+//         // 1. Wait for auth loading to finish (essential before checking user status)
+//         if (isAuthLoading) {
+//             console.log("Select Balance (Send Money): Waiting for auth check...");
+//             // Optionally show a brief loading state or disable selection while loading auth
+//             return;
+//         }
+
+//         // 2. Check KYC Status FIRST
+//         if (!isKycVerified) {
+//             console.log("Select Balance (Send Money): KYC not verified. Showing KYC modal.");
+//             handleOpenKycModal(); // Open KYC modal instead of proceeding
+//             return;
+//         }
+
+//         // 3. Find the selected balance (Only proceed if KYC is verified)
+//         console.log("Select Balance (Send Money): KYC verified. Proceeding to balance check.");
+//         const selectedBalance = balances.find(b => b._id === balanceId);
+
+//         if (!selectedBalance) {
+//             console.error("Selected balance not found in the list.");
+//             alert("Error: Could not find the selected balance details. Please try again.");
+//             return;
+//         }
+
+//         // 4. Check Balance Amount
+//         const balanceAmount = parseFloat(selectedBalance.balance);
+//         if (isNaN(balanceAmount) || balanceAmount <= 0) {
+//             // Balance is insufficient - Open the insufficient balance modal
+//             console.log(`Select Balance (Send Money): Insufficient funds in balance ${balanceId}. Opening insufficient funds modal.`);
+//             setModalData({
+//                 currencyCode: selectedBalance.currency.code,
+//                 balanceId: selectedBalance._id,
+//             });
+//             setIsInsufficientBalanceModalOpen(true); // Correct modal state variable
+//         } else {
+//             // Balance is sufficient & KYC Verified - Route based on recipientId presence
+//             if (recipientId) {
+//                 console.log(`Select Balance (Send Money): Balance ${balanceId} sufficient. Recipient ${recipientId} known, navigating to amount page.`);
+//                 router.push(`/dashboard/balances/${balanceId}/send/amount?recipientId=${recipientId}`);
+//             } else {
+//                 console.log(`Select Balance (Send Money): Balance ${balanceId} sufficient. Recipient unknown, navigating to select recipient page.`);
+//                 router.push(`/dashboard/balances/${balanceId}/send/select-recipient`);
+//             }
+//         }
+//     }, [
+//         balances,
+//         router,
+//         recipientId,
+//         isAuthLoading, // Add auth loading status to dependencies
+//         isKycVerified, // Add kyc status to dependencies
+//         handleOpenKycModal // Add kyc modal handler to dependencies
+//     ]);
+
+//     // --- Insufficient Balance Modal Actions ---
+//     const handleCloseInsufficientBalanceModal = useCallback(() => {
+//         setIsInsufficientBalanceModalOpen(false);
+//         setModalData(null);
+//     }, []);
+
+//     const handleAddMoneyFromModal = useCallback(() => {
+//         if (modalData?.balanceId) {
+//             // Before redirecting to add money, DOUBLE CHECK KYC status again (safety measure)
+//             if (isKycVerified) {
+//                 router.push(`/dashboard/balances/${modalData.balanceId}/add-money`);
+//             } else {
+//                 // If KYC somehow became unverified between selection and clicking add money
+//                 console.warn("KYC became unverified before adding money from modal. Re-showing KYC modal.");
+//                 handleOpenKycModal();
+//             }
+//         }
+//         handleCloseInsufficientBalanceModal();
+//     }, [modalData, router, handleCloseInsufficientBalanceModal, isKycVerified, handleOpenKycModal]); // Add kyc dependencies
+
+
+//     // --- Render ---
+//     return (
+//         <>
+//             <SelectBalanceComponent
+//                 balances={balances}
+//                 // *** MODIFIED: Use combined loading state ***
+//                 isLoading={isLoading}
+//                 error={error}
+//                 refetchBalances={refetchBalances}
+//                 onSelectBalance={handleSelectBalanceForSendMoney} // Use the KYC-aware handler
+//                 allowAddBalance={false}
+//                 pageTitle="Select a Balance to Send Money"
+//                 // *** MODIFIED: More informative messages considering KYC ***
+//                 noBalancePrimaryMessage={
+//                     isLoading ? "Loading balances..." : // Show loading text
+//                     !user ? "Login required to view balances." : // Should be handled by redirect, but good fallback
+//                     isKycVerified
+//                         ? "You don't have any currency balances yet." // User is verified but has no balances
+//                         : "Please complete KYC verification before you can send money." // User is not verified
+//                 }
+//                 noBalanceSecondaryMessage={
+//                     isLoading ? "" :
+//                     !user ? "" :
+//                     isKycVerified
+//                         ? "You need an active balance with funds. You can add funds via the main dashboard or balance details." // Clarify how to add funds if verified but no balance/funds
+//                         : "Start KYC verification to enable sending funds." // Prompt unverified user
+//                 }
+//                  // If `allowAddBalance` is false, we might not need these, or they could link elsewhere
+//                 // addBalanceHref="/dashboard/balances"
+//                 // addBalanceLinkText="View Balances"
+//                 tokenExists={!!token}
+//             />
+
+//             {/* Insufficient Balance Modal */}
+//             <InsufficientBalanceModal
+//                 isOpen={isInsufficientBalanceModalOpen}
+//                 onClose={handleCloseInsufficientBalanceModal}
+//                 onAddMoney={handleAddMoneyFromModal}
+//                 currencyCode={modalData?.currencyCode || ''}
+//             />
+
+//             {/* *** MODIFIED: Add KYC Required Modal *** */}
+//             <KycRequiredModal
+//                 isOpen={isKycModalOpen}
+//                 onClose={handleCloseKycModal}
+//                 onStartVerification={handleStartVerification}
+//             />
+//         </>
+//     );
+// }
+
+// // The Page component that uses Suspense (No changes needed here)
+// const SendMoneySelectBalancePage = () => {
+//     return (
+//         <Suspense fallback={<LoadingSpinner />}>
+//              <SendMoneySelectBalanceContent />
+//         </Suspense>
+//     );
+// };
+
+// // Simple loading spinner placeholder (No changes needed here)
+// const LoadingSpinner = () => (
+//     <div className="flex justify-center items-center min-h-[calc(100vh-200px)]">
+//         <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary"></div>
+//     </div>
+// );
+
+
+// export default SendMoneySelectBalancePage;
+
+
+
+
+
 "use client";
 
 import React, { useEffect, useCallback, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useBalances } from '../../../hooks/useBalances';
-// *** MODIFIED: Import user and loading from useAuth ***
 import { useAuth } from '../../../contexts/AuthContext';
 import SelectBalanceComponent from '../../../components/ui/SelectBalanceComponent';
 import InsufficientBalanceModal from '@/app/dashboard/components/InsufficientBalanceModal';
-// *** MODIFIED: Import KycRequiredModal ***
 import KycRequiredModal from '@/app/dashboard/components/KycRequiredModal';
-
 
 // Interface for the account data from useBalances hook
 interface Currency {
@@ -406,84 +622,74 @@ const SendMoneySelectBalanceContent = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const { balances, isLoading: isBalancesLoading, error, refetchBalances } = useBalances();
-    // *** MODIFIED: Get user, token, and auth loading status ***
     const { token, user, loading: isAuthLoading } = useAuth();
 
-    // --- Get recipientId from URL ---
     const recipientId = searchParams.get('recipientId');
 
-    // --- State for Modals ---
     const [isInsufficientBalanceModalOpen, setIsInsufficientBalanceModalOpen] = useState(false);
     const [modalData, setModalData] = useState<{ currencyCode: string; balanceId: string } | null>(null);
-    // *** MODIFIED: Add state for KYC Modal ***
     const [isKycModalOpen, setIsKycModalOpen] = useState(false);
 
-    // *** MODIFIED: Determine KYC Status (only after auth check) ***
-    // We need to wait for isAuthLoading to be false before reliably checking user kyc status
     const isKycVerified = !isAuthLoading && user?.kyc?.status === 'verified';
-    // Combine loading states
     const isLoading = isBalancesLoading || isAuthLoading;
 
-    // --- Redirect Logic (No change needed here) ---
     useEffect(() => {
-        // Redirect only after initial auth check is complete
         if (!isAuthLoading && !token) {
-            console.log("Send Money Select Balance: No token after auth check, redirecting to login.");
             router.replace('/auth/login');
         }
     }, [token, isAuthLoading, router]);
 
-    // --- KYC Modal Actions ---
+     useEffect(() => {
+        const originalOverflow = document.body.style.overflow;
+        const isAnyModalOpen = isInsufficientBalanceModalOpen || isKycModalOpen;
+
+        if (isAnyModalOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            if (document.body.style.overflow === 'hidden') {
+                document.body.style.overflow = originalOverflow || '';
+            }
+        }
+        return () => {
+            if (document.body.style.overflow === 'hidden') {
+                document.body.style.overflow = originalOverflow || '';
+            }
+        };
+    }, [isInsufficientBalanceModalOpen, isKycModalOpen]);
+
+
     const handleOpenKycModal = useCallback(() => setIsKycModalOpen(true), []);
     const handleCloseKycModal = useCallback(() => setIsKycModalOpen(false), []);
     const handleStartVerification = useCallback(() => {
-        router.push('/kyc/start'); // Navigate to KYC flow start page
+        router.push('/kyc/start');
         handleCloseKycModal();
     }, [router, handleCloseKycModal]);
 
-    // --- Selection Handler (MODIFIED to include KYC check) ---
     const handleSelectBalanceForSendMoney = useCallback((balanceId: string) => {
-        // 1. Wait for auth loading to finish (essential before checking user status)
         if (isAuthLoading) {
-            console.log("Select Balance (Send Money): Waiting for auth check...");
-            // Optionally show a brief loading state or disable selection while loading auth
             return;
         }
-
-        // 2. Check KYC Status FIRST
         if (!isKycVerified) {
-            console.log("Select Balance (Send Money): KYC not verified. Showing KYC modal.");
-            handleOpenKycModal(); // Open KYC modal instead of proceeding
+            handleOpenKycModal();
             return;
         }
-
-        // 3. Find the selected balance (Only proceed if KYC is verified)
-        console.log("Select Balance (Send Money): KYC verified. Proceeding to balance check.");
         const selectedBalance = balances.find(b => b._id === balanceId);
-
         if (!selectedBalance) {
             console.error("Selected balance not found in the list.");
             alert("Error: Could not find the selected balance details. Please try again.");
             return;
         }
-
-        // 4. Check Balance Amount
         const balanceAmount = parseFloat(selectedBalance.balance);
         if (isNaN(balanceAmount) || balanceAmount <= 0) {
-            // Balance is insufficient - Open the insufficient balance modal
-            console.log(`Select Balance (Send Money): Insufficient funds in balance ${balanceId}. Opening insufficient funds modal.`);
             setModalData({
                 currencyCode: selectedBalance.currency.code,
                 balanceId: selectedBalance._id,
             });
-            setIsInsufficientBalanceModalOpen(true); // Correct modal state variable
+            setIsInsufficientBalanceModalOpen(true);
         } else {
-            // Balance is sufficient & KYC Verified - Route based on recipientId presence
             if (recipientId) {
-                console.log(`Select Balance (Send Money): Balance ${balanceId} sufficient. Recipient ${recipientId} known, navigating to amount page.`);
                 router.push(`/dashboard/balances/${balanceId}/send/amount?recipientId=${recipientId}`);
             } else {
-                console.log(`Select Balance (Send Money): Balance ${balanceId} sufficient. Recipient unknown, navigating to select recipient page.`);
                 router.push(`/dashboard/balances/${balanceId}/send/select-recipient`);
             }
         }
@@ -491,12 +697,11 @@ const SendMoneySelectBalanceContent = () => {
         balances,
         router,
         recipientId,
-        isAuthLoading, // Add auth loading status to dependencies
-        isKycVerified, // Add kyc status to dependencies
-        handleOpenKycModal // Add kyc modal handler to dependencies
+        isAuthLoading,
+        isKycVerified,
+        handleOpenKycModal
     ]);
 
-    // --- Insufficient Balance Modal Actions ---
     const handleCloseInsufficientBalanceModal = useCallback(() => {
         setIsInsufficientBalanceModalOpen(false);
         setModalData(null);
@@ -504,53 +709,56 @@ const SendMoneySelectBalanceContent = () => {
 
     const handleAddMoneyFromModal = useCallback(() => {
         if (modalData?.balanceId) {
-            // Before redirecting to add money, DOUBLE CHECK KYC status again (safety measure)
-            if (isKycVerified) {
-                router.push(`/dashboard/balances/${modalData.balanceId}/add-money`);
+            // KYC check before redirecting to add money from insufficient balance modal
+            if (!isKycVerified) {
+                 handleOpenKycModal(); // Show KYC modal if not verified
             } else {
-                // If KYC somehow became unverified between selection and clicking add money
-                console.warn("KYC became unverified before adding money from modal. Re-showing KYC modal.");
-                handleOpenKycModal();
+                router.push(`/dashboard/balances/${modalData.balanceId}/add-money`);
             }
         }
         handleCloseInsufficientBalanceModal();
-    }, [modalData, router, handleCloseInsufficientBalanceModal, isKycVerified, handleOpenKycModal]); // Add kyc dependencies
+    }, [modalData, router, handleCloseInsufficientBalanceModal, isKycVerified, handleOpenKycModal]);
+
+    // Handler for "Start KYC Verification" button in the no-balance (KYC not verified) state
+    const handleStartKycFromNoBalanceMessage = useCallback(() => {
+        handleOpenKycModal();
+    }, [handleOpenKycModal]);
 
 
-    // --- Render ---
     return (
         <>
             <SelectBalanceComponent
                 balances={balances}
-                // *** MODIFIED: Use combined loading state ***
                 isLoading={isLoading}
                 error={error}
                 refetchBalances={refetchBalances}
-                onSelectBalance={handleSelectBalanceForSendMoney} // Use the KYC-aware handler
-                allowAddBalance={false}
-                pageTitle="Select a Balance to Send From"
-                // *** MODIFIED: More informative messages considering KYC ***
+                onSelectBalance={handleSelectBalanceForSendMoney}
+                allowAddBalance={false} // Set to false for "Send Money" flow
+                pageTitle="Select a Balance to Send Money"
                 noBalancePrimaryMessage={
-                    isLoading ? "Loading balances..." : // Show loading text
-                    !user ? "Login required to view balances." : // Should be handled by redirect, but good fallback
-                    isKycVerified
-                        ? "You don't have any currency balances yet." // User is verified but has no balances
-                        : "Complete KYC verification to send money." // User is not verified
+                    isLoading ? "Loading balances..." :
+                    !user ? "Login required to view balances." :
+                    !isKycVerified
+                        ? "Complete KYC verification to send money."
+                        : "You don't have any currency balances yet."
                 }
                 noBalanceSecondaryMessage={
                     isLoading ? "" :
                     !user ? "" :
-                    isKycVerified
-                        ? "You need an active balance with funds. You can add funds via the main dashboard or balance details." // Clarify how to add funds if verified but no balance/funds
-                        : "Start KYC verification to enable sending funds." // Prompt unverified user
+                    !isKycVerified
+                        ? "Start KYC verification now" // This will become a button
+                        : "You need an active balance with funds to send money. You can add funds from the main dashboard or balance details." // This will be plain text
                 }
-                 // If `allowAddBalance` is false, we might not need these, or they could link elsewhere
-                // addBalanceHref="/dashboard/balances"
-                // addBalanceLinkText="View Balances"
+                // **KEY CHANGE**: Pass the KYC handler to `onAddBalanceClick`
+                // ONLY if KYC is not verified.
+                // SelectBalanceComponent will use this to make the secondary message a button.
+                onAddBalanceClick={!isKycVerified ? handleStartKycFromNoBalanceMessage : undefined}
                 tokenExists={!!token}
+                // addBalanceLinkText is not used when allowAddBalance is false for the main "Add Card"
+                // but SelectBalanceComponent will still use noBalanceSecondaryMessage text for the button
+                // if onAddBalanceClick is provided.
             />
 
-            {/* Insufficient Balance Modal */}
             <InsufficientBalanceModal
                 isOpen={isInsufficientBalanceModalOpen}
                 onClose={handleCloseInsufficientBalanceModal}
@@ -558,7 +766,6 @@ const SendMoneySelectBalanceContent = () => {
                 currencyCode={modalData?.currencyCode || ''}
             />
 
-            {/* *** MODIFIED: Add KYC Required Modal *** */}
             <KycRequiredModal
                 isOpen={isKycModalOpen}
                 onClose={handleCloseKycModal}
@@ -568,7 +775,6 @@ const SendMoneySelectBalanceContent = () => {
     );
 }
 
-// The Page component that uses Suspense (No changes needed here)
 const SendMoneySelectBalancePage = () => {
     return (
         <Suspense fallback={<LoadingSpinner />}>
@@ -577,12 +783,10 @@ const SendMoneySelectBalancePage = () => {
     );
 };
 
-// Simple loading spinner placeholder (No changes needed here)
 const LoadingSpinner = () => (
     <div className="flex justify-center items-center min-h-[calc(100vh-200px)]">
         <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary"></div>
     </div>
 );
-
 
 export default SendMoneySelectBalancePage;

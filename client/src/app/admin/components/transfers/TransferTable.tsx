@@ -677,12 +677,12 @@ const TransferTable: React.FC<TransferTableProps> = ({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
                 >
-                  <td className="px-4 py-3 whitespace-nowrap">
+                  <td className="px-6 py-3 whitespace-nowrap">
                     <span className="font-medium text-neutral-900 dark:text-white">
                       {transfer._id ? `${transfer._id.substring(0, 10)}...` : "N/A"}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-6 py-3">
                     <div className="flex flex-col">
                       <span className="font-medium capitalize text-neutral-900 dark:text-white">
                         {transfer.user?.fullName || "N/A"}
@@ -692,20 +692,20 @@ const TransferTable: React.FC<TransferTableProps> = ({
                       </span>
                     </div>
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap">
+                  <td className="px-6 py-3 whitespace-nowrap">
                     <span className="font-medium capitalize text-neutral-900 dark:text-white">
                       {transfer.recipient?.accountHolderName || "N/A"}
                     </span>
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap font-medium text-neutral-900 dark:text-white">
+                  <td className="px-6 py-3 whitespace-nowrap font-medium text-neutral-900 dark:text-white">
                     {/* Display the string amount directly */}
                     {transfer.sendAmount != null ? transfer.sendAmount : "N/A"}
                     {/* Add currency symbol or formatting if needed */}
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap text-neutral-900 dark:text-white">
+                  <td className="px-6 py-3 whitespace-nowrap text-neutral-900 dark:text-white">
                     {transfer.sendCurrency?.code || "N/A"}
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap">
+                  <td className="px-6 py-3 whitespace-nowrap">
                     <span
                       className={`inline-flex justify-center items-center px-4 py-1 w-28 font-medium rounded-3xl capitalize ${getStatusColor(
                         transfer.status || 'unknown'
@@ -714,10 +714,10 @@ const TransferTable: React.FC<TransferTableProps> = ({
                       {transfer.status || 'Unknown'}
                     </span>
                   </td>
-                  <td className="px-4 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap">
+                  <td className="px-6 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap">
                     {formatDate(transfer.createdAt)}
                   </td>
-                  <td className="px-4 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap ">
+                  <td className="px-6 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap ">
                     <Link
                       href={`/admin/transfer/${transfer._id}`}
                       className="inline-flex items-center group px-6 py-2 rounded-3xl space-x-1 transition-colors duration-300 font-medium bg-primary hover:bg-primaryhover dark:bg-primarybox hover:dark:bg-secondarybox text-neutral-900 dark:text-primary focus:outline-none"

@@ -813,7 +813,7 @@ const AddMoneySelectBalancePage = () => {
           onSelectBalance={handleSelectBalanceForAddMoney}
           allowAddBalance={true}
           onAddBalanceClick={handleAddBalanceClick}
-          pageTitle="Select a Balance to Add Money To"
+          pageTitle="Select a Balance to Add Money"
           noBalancePrimaryMessage={
             isLoading
               ? "Loading balances..."

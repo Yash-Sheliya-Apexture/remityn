@@ -1803,7 +1803,7 @@ export default function RecipientsPage() {
           ) : (
             // Display "Add New" Prompt
             <div className="Add-New-Recipients">
-              <h3 className="font-medium text-sm text-gray-500 dark:text-gray-300 mb-3 uppercase tracking-wide leading-8 border-b border">
+              <h3 className="font-medium text-sm text-gray-500 dark:text-gray-300 mb-3 uppercase tracking-wide leading-8 border-b">
                 {searchTerm
                   ? "No matching recipients found"
                   : "No recipients yet"}

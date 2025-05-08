@@ -354,6 +354,8 @@ import React from "react";
 import { FiHelpCircle, FiSend } from "react-icons/fi";
 import { MdLockOutline } from "react-icons/md";
 import { motion } from "framer-motion"; // Import motion
+import { HiOutlineDocumentReport } from "react-icons/hi";
+import { RiShieldCheckLine } from "react-icons/ri";
 
 // Define animation variants
 const containerVariants = {
@@ -375,7 +377,7 @@ const itemVariants = {
     transition: {
       type: "spring", // Optional: adds a little bounce
       stiffness: 100,
-      duration: 0.5 // Can use duration instead of spring
+      duration: 0.5, // Can use duration instead of spring
     },
   },
 };
@@ -391,7 +393,7 @@ const imageVariants = {
       stiffness: 50,
       damping: 20,
       delay: 0.5, // Delay image slightly after text starts
-      duration: 0.7 // Alternative timing
+      duration: 0.7, // Alternative timing
     },
   },
 };
@@ -462,12 +464,12 @@ const Error404Page: React.FC = () => {
                 </a>
               </li>
               <li className="flex items-center gap-2.5">
-                <FiSend
+                <RiShieldCheckLine  
                   size={22}
                   className="text-neutral-900 dark:text-primary"
                 />
-                <a href="/support" className="hover:underline">
-                  Send support request
+                <a href="/terms-and-conditions" className="hover:underline">
+                  terms-and-conditions
                 </a>
               </li>
             </motion.ul>

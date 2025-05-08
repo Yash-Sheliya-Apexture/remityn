@@ -20389,6 +20389,7 @@ const HeroSection: React.FC = () => {
                               <FaLock size={16} /> Our Rate: {displayOurRate}
                             </div>
                           </TooltipTrigger>
+
                           <TooltipContent
                             side="bottom"
                             sideOffset={5}
@@ -20403,6 +20404,7 @@ const HeroSection: React.FC = () => {
                             </p>
                           </TooltipContent>
                         </Tooltip>
+                        
                       ) : selectedSendCurrency ? (
                         <div className="text-sm text-gray-500 dark:text-gray-400 animate-pulse">
                           {" "}

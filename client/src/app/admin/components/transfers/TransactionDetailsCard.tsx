@@ -457,12 +457,12 @@ const TransactionDetailsCard: React.FC<TransactionDetailsCardProps> = ({
         Transaction Details
       </h4>
 
-      <div className="rounded-xl border overflow-hidden bg-white dark:bg-primarybox"> {/* Added background/shadow */}
+      <div className="rounded-xl overflow-hidden bg-white dark:bg-primarybox"> {/* Added background/shadow */}
         {/* Exchange Information */}
         <div className="sm:p-5 p-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             {/* Sent Amount */}
-            <div className="bg-lightgray dark:bg-secondarybox rounded-lg p-4 border dark:border-neutral-700"> {/* Added border */}
+            <div className="bg-lightgray dark:bg-secondarybox rounded-lg p-4"> {/* Added border */}
               <p className="text-gray-500 dark:text-gray-300 text-sm font-medium mb-1">
                 Sent Amount
               </p>
@@ -480,7 +480,7 @@ const TransactionDetailsCard: React.FC<TransactionDetailsCardProps> = ({
             </div>
 
             {/* Received Amount */}
-            <div className="bg-lightgray dark:bg-secondarybox rounded-lg p-4 border dark:border-neutral-700"> {/* Added border */}
+            <div className="bg-lightgray dark:bg-secondarybox rounded-lg p-4"> {/* Added border */}
               <p className="text-gray-500 dark:text-gray-300 text-sm font-medium mb-1">
                 Recipient Gets (approx)
               </p>

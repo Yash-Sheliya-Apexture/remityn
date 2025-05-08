@@ -3192,9 +3192,11 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
     if (!isAuthenticated) return "/auth/login"; // Use isAuthenticated flag
     if (isLoadingBalances) return "#"; // Indicate loading, link will be disabled
     if (balancesError) return "/dashboard?error=balances"; // Or handle error appropriately
-    return balances && balances.length > 0
-      ? "/dashboard/add-money/select-balance"
-      : "/dashboard/add-balance";
+    // return balances && balances.length > 0
+    //   ? "/dashboard/add-money/select-balance"
+    //   : "/dashboard/add-balance";
+    return "/dashboard/add-money/select-balance";
+
   }, [balances, isLoadingBalances, balancesError, isAuthenticated]); // Depend on isAuthenticated
 
   const getSendMoneyRoute = useCallback((): string => {

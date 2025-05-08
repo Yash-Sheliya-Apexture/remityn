@@ -3413,7 +3413,7 @@ const LoadingSkeleton = () => (
       {/* Back Button Skeleton */}
     </div>
     {/* Overview Card Skeleton (as div) */}
-    <div className="bg-lightgray dark:bg-primarybox rounded-xl border dark:border-primarybox sm:p-6 p-4 mb-8">
+    <div className="bg-lightgray dark:bg-primarybox rounded-xl  sm:p-6 p-4 mb-8">
       {" "}
       {/* Mimic Card */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -3432,6 +3432,7 @@ const LoadingSkeleton = () => (
         </div>
       </div>
     </div>
+
     {/* Main Grid Skeleton */}
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {" "}
@@ -3439,11 +3440,11 @@ const LoadingSkeleton = () => (
       {/* Left Column Skeleton */}
       <div className="lg:col-span-1 space-y-6">
         {/* TransferStatusSection Skeleton (as div) */}
-        <div className="bg-white dark:bg-primarybox rounded-xl border dark:border-secondarybox overflow-hidden">
+        <div className="bg-white dark:bg-primarybox rounded-xl overflow-hidden">
           {" "}
           {/* Mimic Card */}
           {/* Mimic CardHeader */}
-          <div className="bg-lightgray dark:bg-primarybox px-6 py-4 border-b dark:border-neutral-700">
+          <div className="bg-lightgray dark:bg-primarybox px-6 py-4">
             <Skeleton className="h-6 w-3/5 rounded" />
           </div>
           {/* Mimic CardContent */}
@@ -3461,7 +3462,7 @@ const LoadingSkeleton = () => (
               {/* Timeline Item 2 */}
             </div>
             {/* Mimic Footer/Action area */}
-            <div className="pt-4 border-t dark:border-neutral-700">
+            <div className="pt-4">
               <Skeleton className="h-4 w-1/3 rounded mb-3" />{" "}
               {/* Action title */}
               <Skeleton className="h-10 w-full rounded-md" /> {/* Dropdown */}
@@ -3470,11 +3471,11 @@ const LoadingSkeleton = () => (
         </div>
 
         {/* TransferInfoCard Skeleton (as div) */}
-        <div className="bg-white dark:bg-primarybox rounded-xl border dark:border-secondarybox overflow-hidden">
+        <div className="bg-white dark:bg-primarybox rounded-xl overflow-hidden">
           {" "}
           {/* Mimic Card */}
           {/* Mimic CardHeader */}
-          <div className="bg-lightgray dark:bg-primarybox px-6 py-4 border-b dark:border-neutral-700">
+          <div className="bg-lightgray dark:bg-primarybox px-6 py-4">
             <Skeleton className="h-6 w-1/2 rounded" />
           </div>
           {/* Mimic CardContent */}
@@ -3488,9 +3489,9 @@ const LoadingSkeleton = () => (
       {/* Right Column Skeleton */}
       <div className="lg:col-span-2">
         {/* Wrapper div (mimics Card) */}
-        <div className="rounded-xl bg-white dark:bg-primarybox border dark:border-secondarybox overflow-hidden">
+        <div className="rounded-xl bg-white dark:bg-primarybox overflow-hidden">
           {/* Mimic CardHeader */}
-          <div className="bg-lightgray dark:bg-primarybox px-6 py-4 border-b dark:border-neutral-700">
+          <div className="bg-lightgray dark:bg-primarybox px-6 py-4">
             <Skeleton className="h-6 w-48 rounded" />{" "}
             {/* Detailed Info Title */}
           </div>
@@ -3509,7 +3510,7 @@ const LoadingSkeleton = () => (
                     <Skeleton className="h-5 w-16 rounded-full" /> {/* Badge */}
                   </div>
                   <Skeleton className="h-4 w-3/4 rounded" /> {/* Email */}
-                  <div className="mt-3 pt-3 border-t dark:border-neutral-700 flex gap-6">
+                  <div className="mt-3 pt-3 flex gap-6">
                     <Skeleton className="h-10 w-1/2 rounded" /> {/* Detail 1 */}
                     <Skeleton className="h-10 w-1/2 rounded" /> {/* Detail 2 */}
                   </div>
@@ -3535,7 +3536,7 @@ const LoadingSkeleton = () => (
                     {/* Email/Nickname */}
                   </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 mt-2 pt-3 border-t dark:border-neutral-700">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 mt-2 pt-3">
                   <Skeleton className="h-12 w-full rounded" />{" "}
                   {/* Detail Item */}
                   <Skeleton className="h-12 w-full rounded" />{" "}
@@ -3562,9 +3563,9 @@ const LoadingSkeleton = () => (
                     <Skeleton className="h-20 w-full rounded-lg" />{" "}
                     {/* Received Amount */}
                   </div>
-                </div>
+                </div>  
                 {/* Mimic Divider Area */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x border-y dark:divide-neutral-700 dark:border-neutral-700">
+                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x border-y">
                   <div className="p-4">
                     <Skeleton className="h-10 w-full rounded" />
                   </div>{" "}
@@ -3852,7 +3853,7 @@ const AdminTransferDetailPage = () => {
 
           {/* Right Column */}
           <div className="lg:col-span-2">
-             <div className="rounded-xl bg-white dark:bg-primarybox border dark:border-secondarybox overflow-hidden">
+             <div className="rounded-xl bg-white dark:bg-primarybox overflow-hidden">
               <div className="bg-lightgray dark:bg-secondarybox px-6 py-4 border-b dark:border-b-neutral-700">
                 <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">
                   Detailed Information

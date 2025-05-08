@@ -575,8 +575,6 @@
 import React, { useState } from "react"; // Added useState
 import type { InboxMessage } from "../../../services/inbox"; // Adjust path if necessary
 import { Card, CardContent } from "@/components/ui/card";
-// Button component is not used in this version, can be removed if not needed elsewhere
-// import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Trash2, RefreshCw, Bell, CheckCircle2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
@@ -614,19 +612,17 @@ export const InboxMessageListItem: React.FC<InboxMessageListItemProps> =
 
     return (
       <>
-        <Card
+        <div
           onClick={() => onSelect(message)}
           className={cn(
-            "cursor-pointer transition-all ease-linear duration-75 relative overflow-hidden group",
-            isUnread
-              ? ""
-              : "dark:hover:shadow-md/30"
+            "cursor-pointer transition-all ease-linear duration-75 relative rounded-2xl overflow-hidden group",
+            isUnread ? "" : "border"
           )}
           aria-label={`${isUnread ? "Unread m" : "M"}essage from ${
             message.sender || "System"
           } with subject ${message.subject}`}
         >
-          <CardContent
+          <div
             className={cn(
               "lg:p-4 p-3 flex items-start gap-3",
               isUnread ? "bg-lightgray dark:bg-primary/10" : ""
@@ -637,7 +633,7 @@ export const InboxMessageListItem: React.FC<InboxMessageListItemProps> =
               className={cn(
                 "flex-shrink-0 flex justify-center items-center size-10 sm:size-12 rounded-full border dark:border-none",
                 isUnread
-                  ? "bg-lightgray dark:bg-primary text-neutral-900"
+                  ? "bg-primary dark:bg-primary text-neutral-900"
                   : "bg-lightgray dark:bg-primarybox text-neutral-900 dark:text-white"
               )}
               aria-hidden="true"
@@ -650,22 +646,12 @@ export const InboxMessageListItem: React.FC<InboxMessageListItemProps> =
               {" "}
               {/* Adjusted mr-10 to ensure space for pip if needed */}
               {/* Top Row: Badge, Sender & Time */}
-              <div className="flex flex-col sm:flex-row justify-between sm:items-center sm:gap-2 mb-1.5">
+              <div className="flex flex-col sm:flex-row justify-between sm:items-center sm:gap-2">
                 <div className="flex gap-2 items-center">
-                  {" "}
-                  {/* Added items-center */}
-                  {/* Status Badge */}
-                  <Badge
-                    variant={isUnread ? "default" : "outline"}
-                    className="text-xs font-medium py-0 h-5 bg-primary text-neutral-900"
-                  >
-                    {isUnread ? "New" : "Read"}
-                  </Badge>
-                  
                   {/* Sender */}
                   <p
                     className={cn(
-                      "font-medium text-sm sm:text-base truncate", // Added truncate
+                      "font-medium text-sm truncate", // Added truncate
                       isUnread
                         ? "text-foreground dark:text-foreground"
                         : "text-muted-foreground dark:text-muted-foreground"
@@ -675,10 +661,11 @@ export const InboxMessageListItem: React.FC<InboxMessageListItemProps> =
                     {/* Using a placeholder for website name as per original */}
                     [Website Name]
                   </p>
+
                 </div>
 
                 {/* Time */}
-                <div>
+                <div> 
                   <time
                     dateTime={message.sentAt}
                     className="text-gray-500 dark:text-gray-300 text-xs ml-auto flex-shrink-0 whitespace-nowrap"
@@ -689,7 +676,6 @@ export const InboxMessageListItem: React.FC<InboxMessageListItemProps> =
                   </time>
                 </div>
               </div>
-              
               {/* Subject */}
               <h3
                 className="text-base sm:text-lg mb-1.5 capitalize text-neutral-900 dark:text-white truncate" // Added truncate
@@ -710,7 +696,7 @@ export const InboxMessageListItem: React.FC<InboxMessageListItemProps> =
 
             {/* Unread indicator pip */}
             {isUnread && (
-              <div className="absolute top-4 right-4 w-2.5 h-2.5 rounded-full dark:bg-primary bg-neutral-900 animate-pulse" />
+              <div className="absolute top-4 right-4 w-2.5 h-2.5 rounded-full bg-primary animate-pulse" />
             )}
 
             {/* Delete Button */}
@@ -726,8 +712,8 @@ export const InboxMessageListItem: React.FC<InboxMessageListItemProps> =
                 <Trash2 className="size-4" />
               )}
             </button>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         <DeleteMessageModal
           isOpen={isDeleteModalOpen}
