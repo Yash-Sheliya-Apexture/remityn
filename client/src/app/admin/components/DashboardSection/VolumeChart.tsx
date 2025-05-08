@@ -292,7 +292,7 @@ export function VolumeChart({
   };
 
   return (
-    <Card className={`flex flex-col h-full bg-[oklch(1_0_0/10.2%)] ${className}`}>
+    <Card className={`flex flex-col h-full dark:bg-primarybox shadow-none ${className}`}>
       <CardHeader className="flex-shrink-0 p-3">
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div className="flex items-center gap-2">
@@ -312,7 +312,7 @@ export function VolumeChart({
                 size="icon" 
                 onClick={handleRefresh} 
                 disabled={loading} 
-                className="h-8 w-8"
+                className="h-12 w-12 rounded-full hover:bg-lightborder dark:hover:bg-primarybox"
               >
                 <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
                 <span className="sr-only">Refresh</span>
@@ -320,9 +320,9 @@ export function VolumeChart({
             )}
             
             <Tabs value={timeRange} onValueChange={(value) => setTimeRange(value as ChartRange)}>
-              <TabsList className="grid w-full grid-cols-2 h-8">
-                <TabsTrigger value="month" className="h-7 text-xs px-2">30 Days</TabsTrigger>
-                <TabsTrigger value="year" className="h-7 text-xs px-2">12 Months</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 h-12 p-2 bg-lightgray dark:bg-primarybox rounded-full">
+                <TabsTrigger value="month" className="h-7 text-xs px-2 cursor-pointer">30 Days</TabsTrigger>
+                <TabsTrigger value="year" className="h-7 text-xs px-2 cursor-pointer">12 Months</TabsTrigger>
               </TabsList>
             </Tabs>
           </div>

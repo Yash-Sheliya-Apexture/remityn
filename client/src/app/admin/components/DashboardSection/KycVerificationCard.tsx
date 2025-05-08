@@ -29,7 +29,7 @@ export default function KycVerificationCard({
     // Skeleton Loader
     if (loading) {
         return (
-            <div className="w-full bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border animate-pulse">
+            <div className="w-full bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl border animate-pulse">
                 <div className="flex justify-between items-center mb-4">
                     <Skeleton className="h-6 w-3/5 rounded" />
                     <Skeleton className="h-5 w-5 rounded-full" />
@@ -68,7 +68,7 @@ export default function KycVerificationCard({
 
     // Actual Card Content
     return (
-        <div className="w-full bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border h-full flex flex-col justify-between">
+        <div className="w-full bg-white dark:bg-primarybox sm:p-6 p-4 rounded-xl border h-full flex flex-col justify-between">
             <div> {/* Content Wrapper */}
                 <div className="flex justify-between items-center mb-4">
                     <h4 className="text-lg font-medium text-neutral-900 dark:text-white">
@@ -125,7 +125,7 @@ export default function KycVerificationCard({
 
             {/* Footer Link */}
             <div>
-                <Link href="/admin/kyc" className="mt-6 inline-block text-primary text-sm font-medium hover:text-primaryhover transition-all duration-75 ease-linear cursor-pointer">
+                <Link href="/admin/kyc-management" className="mt-6 inline-block text-primary text-sm font-medium hover:text-primaryhover transition-all duration-75 ease-linear cursor-pointer">
                     Manage KYC Verifications →
                 </Link>
             </div>

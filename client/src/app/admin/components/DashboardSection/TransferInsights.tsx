@@ -936,7 +936,7 @@ export default function TransferInsights() {
       {/* Grid layout for the two cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Popular Corridors Card */}
-        <div className="bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border">
+        <div className="dark:bg-primarybox sm:p-6 p-4 rounded-xl border">
           <div className="flex justify-between items-center mb-4">
             <h4 className="text-lg font-medium text-neutral-900 dark:text-white">
               Popular Corridors (Last 90d)

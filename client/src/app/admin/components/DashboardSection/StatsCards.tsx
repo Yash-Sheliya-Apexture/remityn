@@ -97,6 +97,8 @@
 //   );
 // }
 
+
+
 // frontend/src/components/DashboardSection/StatsCards.tsx
 "use client";
 
@@ -112,6 +114,9 @@ import {
   CheckCircle, // For completed transfers icon if needed
 } from "lucide-react";
 import statsAdminService, { AdminDashboardStats } from '../../../services/admin/stats.admin'; // Adjust path
+import { TbMoneybag } from "react-icons/tb";
+import { BsSend } from "react-icons/bs";
+
 
 export default function StatsCards() {
   const [stats, setStats] = useState<AdminDashboardStats | null>(null);
@@ -141,12 +146,12 @@ export default function StatsCards() {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 animate-pulse">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border h-[130px] flex flex-col justify-between">
+          <div key={i} className="bg-white dark:bg-primarybox sm:p-6 p-4 rounded-xl shadow-sm border h-[130px] flex flex-col justify-between">
             <div>
-              <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
-              <div className="h-7 bg-gray-300 dark:bg-gray-600 rounded w-1/2 mb-3"></div>
+              <div className="h-5 bg-gray-200 dark:bg-primarybox rounded w-3/4 mb-2"></div>
+              <div className="h-7 bg-gray-300 dark:bg-primarybox rounded w-1/2 mb-3"></div>
             </div>
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+            <div className="h-4 bg-gray-200 dark:bg-primarybox rounded w-2/3"></div>
           </div>
         ))}
       </div>
@@ -172,13 +177,13 @@ export default function StatsCards() {
   // --- "Add Money" Trend ---
   const addMoneyChange = stats?.addMoneyChangePercentage ?? 0;
   const addMoneyTrendColor = addMoneyChange > 0 ? "text-green-600" : addMoneyChange < 0 ? "text-red-600" : "text-gray-500";
-  const AddMoneyTrendIconComponent = addMoneyChange > 0 ? TrendingUp : addMoneyChange < 0 ? TrendingDown : Activity;
+  const AddMoneyTrendIconComponent = addMoneyChange > 0 ? TrendingUp : addMoneyChange < 0 ? TrendingDown : TbMoneybag;
   const addMoneyTrendPrefix = addMoneyChange > 0 ? "+" : "";
 
   // --- "Send Money" (Initiation) Trend ---
   const sendMoneyChange = stats?.sendMoneyChangePercentage ?? 0;
   const sendMoneyTrendColor = sendMoneyChange > 0 ? "text-green-600" : sendMoneyChange < 0 ? "text-red-600" : "text-gray-500";
-  const SendMoneyTrendIconComponent = sendMoneyChange > 0 ? TrendingUp : sendMoneyChange < 0 ? TrendingDown : Settings; // Using Settings if 0% change for variety
+  const SendMoneyTrendIconComponent = sendMoneyChange > 0 ? TrendingUp : sendMoneyChange < 0 ? TrendingDown : BsSend; // Using Settings if 0% change for variety
   const sendMoneyTrendPrefix = sendMoneyChange > 0 ? "+" : "";
 
   // --- "Completed Transfers" Trend ---
@@ -191,13 +196,13 @@ export default function StatsCards() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       {/* Total Users Card */}
-      <div className="bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border">
+      <div className="dark:bg-primarybox sm:p-6 p-4 rounded-xl border">
         <div className="flex justify-between items-start">
           <div>
             <p className="text-lg font-medium text-neutral-900 dark:text-white">
               Total Users
             </p>
-            <h3 className="text-3xl font-bold text-gray-500 dark:text-gray-300 mt-1">
+            <h3 className="text-3xl font-bold text-neutral-900 dark:text-white mt-1">
               {stats?.totalUsers ?? 'N/A'}
             </h3>
             <p className={`text-sm ${userTrendColor} flex items-center mt-2`}>
@@ -215,13 +220,13 @@ export default function StatsCards() {
       </div>
 
       {/* Today's Add Money Card */}
-      <div className="bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border">
+      <div className="dark:bg-primarybox sm:p-6 p-4 rounded-xl border">
         <div className="flex justify-between items-start">
           <div>
             <p className="text-lg font-medium text-neutral-900 dark:text-white">
               Today's Add Money
             </p>
-            <h3 className="text-3xl font-bold text-gray-500 dark:text-gray-300 mt-1">
+            <h3 className="text-3xl font-bold text-neutral-900 dark:text-white mt-1">
               {stats?.todaysAddMoneyCount ?? 'N/A'}
             </h3>
             <p className={`text-sm ${addMoneyTrendColor} flex items-center mt-2`}>
@@ -233,19 +238,19 @@ export default function StatsCards() {
             </p>
           </div>
           <div className="bg-yellow-100 dark:bg-yellow-600/20 p-3 rounded-lg">
-            <Activity className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
+            <TbMoneybag className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
           </div>
         </div>
       </div>
 
       {/* Today's Send Money Card - Now Dynamic */}
-      <div className="bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border">
+      <div className="dark:bg-primarybox sm:p-6 p-4 rounded-xl border">
         <div className="flex justify-between items-start">
           <div>
             <p className="text-lg font-medium text-neutral-900 dark:text-white">
               Today's Send Money
             </p>
-            <h3 className="text-3xl font-bold text-gray-500 dark:text-gray-300 mt-1">
+            <h3 className="text-3xl font-bold text-neutral-900 dark:text-white mt-1">
               {stats?.todaysSendMoneyCount ?? 'N/A'} 
             </h3>
             <p className={`text-sm ${sendMoneyTrendColor} flex items-center mt-2`}>
@@ -257,19 +262,19 @@ export default function StatsCards() {
             </p>
           </div>
           <div className="bg-green-100 dark:bg-green-600/20 p-3 rounded-lg">
-            <Settings className="h-6 w-6 text-green-600 dark:text-green-400" />
+            <BsSend className="h-6 w-6 text-green-600 dark:text-green-400" />
           </div>
         </div>
       </div>
 
       {/* Completed Transfers Card - Now Dynamic */}
-      <div className="bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border">
+      <div className="dark:bg-primarybox sm:p-6 p-4 rounded-xl border">
         <div className="flex justify-between items-start">
           <div>
             <p className="text-lg font-medium text-neutral-900 dark:text-white">
               Completed Transfers
             </p>
-            <h3 className="text-3xl font-bold text-gray-500 dark:text-gray-300 mt-1">
+            <h3 className="text-3xl font-bold text-neutral-900 dark:text-white mt-1">
               {stats?.completedTransfersThisMonth ?? 'N/A'}
             </h3>
             <p className={`text-sm ${completedTrendColor} flex items-center mt-2`}>
