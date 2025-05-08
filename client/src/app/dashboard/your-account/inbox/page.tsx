@@ -3936,7 +3936,7 @@ const InboxPage: React.FC = () => {
                   {!loading &&
                     !hasMessagesInTotal &&
                     !isInitialLoad.current && (
-                      <div className="bg-lightgray dark:bg-primarybox rounded-2xl p-6 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
+                      <div className="bg-lightgray dark:bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
                         <div className="lg:size-16 size-14 flex items-center justify-center bg-primary dark:bg-transparent dark:bg-gradient-to-t dark:from-primary rounded-full mb-2">
                           <Inbox className="lg:size-8 size-6 mx-auto text-neutral-900 dark:text-primary" />
                         </div>
