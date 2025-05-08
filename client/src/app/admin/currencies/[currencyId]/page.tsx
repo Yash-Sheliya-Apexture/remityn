@@ -7647,6 +7647,8 @@
 
 // export default AdminEditCurrencyPage;
 
+
+
 // frontend/src/app/admin/currencies/[currencyId]/page.tsx
 "use client";
 import React, { useState, useEffect } from "react";
@@ -7746,10 +7748,10 @@ const LoadingSkeleton = () => (
         <div className="space-y-8">
           {/* Tabs Navigation Skeleton - Updated to match new style */}
           <div className="overflow-hidden mb-4">
-            <div className="relative flex w-full h-full overflow-x-auto whitespace-nowrap bg-lightborder dark:bg-primarybox p-1.5 rounded-full justify-normal items-center">
-              <Skeleton className="h-9 flex-1 rounded-full bg-white dark:bg-secondarybox mr-1" />
-              <Skeleton className="h-9 flex-1 rounded-full bg-white dark:bg-secondarybox mr-1" />
-              <Skeleton className="h-9 flex-1 rounded-full bg-white dark:bg-secondarybox" />
+            <div className="relative flex w-full h-full overflow-x-auto gap-3 whitespace-nowrap bg-lightborder dark:bg-primarybox p-1.5 rounded-full justify-normal items-center">
+              <Skeleton className="h-9 flex-1 rounded-full" />
+              <Skeleton className="h-9 flex-1 rounded-full" />
+              <Skeleton className="h-9 flex-1 rounded-full" />
             </div>
           </div>
 
@@ -8199,7 +8201,7 @@ const AdminEditCurrencyPage = () => {
                 )}
               </div>
 
-              <p className="mt-2 text-sm text-gray-500 font-medium  dark:text-gray-300">
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">
                 Relative path (e.g., /assets/icon/flags/eur.png) or full URL.
                 Must be accessible.
               </p>
@@ -8411,7 +8413,7 @@ const AdminEditCurrencyPage = () => {
                   <span className="text-gray-500 dark:text-gray-300">%</span>
                 </div>
               </div>
-              <p className="mt-2 text-sm text-gray-500 font-medium  dark:text-gray-300">
+              <p className="mt-2 text-sm text-gray-500  dark:text-gray-300">
                 Percentage fee for Wise transfers (leave blank if none).
               </p>
             </div>
@@ -8442,8 +8444,8 @@ const AdminEditCurrencyPage = () => {
                   </span>
                 </div>
               </div>
-              <p className="mt-2 text-sm text-gray-500 font-medium  dark:text-gray-300">
-                Fixed fee in {formState.code || "currency"} (leave blank if
+              <p className="mt-2 text-sm text-gray-500  dark:text-gray-300">
+                Fixed Fees  in {formState.code || "currency"} (leave blank if
                 none).
               </p>
             </div>
@@ -8470,21 +8472,21 @@ const AdminEditCurrencyPage = () => {
                   <span className="text-gray-500 dark:text-gray-300">%</span>
                 </div>
               </div>
-              <p className="mt-2 text-sm text-gray-500 font-medium  dark:text-gray-300">
+              <p className="mt-2 text-sm text-gray-500  dark:text-gray-300">
                 Adjustment vs market rate (default 0).
               </p>
             </div>
           </div>
 
           <div className="lg:p-6 p-4">
-            <div className="rounded-md bg-lightgray dark:bg-primarybox p-4">
+            <div className="rounded-md bg-[#f5f5f5] dark:bg-primarybox p-4">
               <h4 className="text-gray-500 dark:text-gray-300 font-medium capitalize text-sm flex gap-1 items-center lg:text-base">
-                <BarChart4 size={18} className="text-primary" />
+                <BarChart4 size={18} className="text-lime-500" />
                 Exchange Rate Info
               </h4>
 
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">
-                The <strong>Our Adjustment %</strong> modifies the market
+                The Our Adjustment % modifies the market
                 exchange rate used in calculations. A positive value (e.g., 1%)
                 increases the rate, making the foreign currency relatively
                 cheaper. A negative value (e.g., -0.5%) decreases the rate,
@@ -8559,6 +8561,7 @@ const AdminEditCurrencyPage = () => {
               animate="visible"
               variants={containerVariants} // Use containerVariants for the form to stagger children
             >
+              
               {/* --- New Tabs Section --- */}
               <Tabs
                 value={activeTab}
@@ -8567,10 +8570,10 @@ const AdminEditCurrencyPage = () => {
                 }
                 className="w-full"
               >
-                <motion.div variants={itemVariants} className="mb-4">
+                <motion.div variants={itemVariants} className="mb-4 rounded-full overflow-hidden">
                   {" "}
                   {/* itemVariant for the TabsList container */}
-                  <TabsList className="relative z-20 flex w-full h-full overflow-x-auto whitespace-nowrap bg-lightborder dark:bg-primarybox p-1.5 rounded-full justify-normal items-center">
+                  <TabsList className="relative z-20 flex w-full h-full whitespace-nowrap overflow-x-auto  dark:bg-primarybox p-1.5 rounded-full justify-normal items-center">
                     {TABS_CONFIG.map((tabInfo) => (
                       <TabsTrigger
                         key={tabInfo.value}

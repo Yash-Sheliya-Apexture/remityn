@@ -3389,7 +3389,9 @@ import {
   Check,
   MessageSquarePlus,
   IdCard,
-  CloudUpload, // For the trigger button
+  CloudUpload,
+  CheckCircle,
+  XCircle, // For the trigger button
 } from "lucide-react";
 
 // Utility & Toast
@@ -3461,38 +3463,38 @@ const getKycStatusConfig = (status?: KycStatus | null) => {
   > = {
     verified: {
       color:
-        "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 border-green-200 dark:border-green-700/50 rounded-full",
-      icon: ShieldCheck,
+        "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
+      icon: CheckCircle,
       label: "Verified",
     },
     rejected: {
       color:
-        "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 border-red-200 dark:border-red-700/50",
-      icon: UserX,
+        "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
+      icon: XCircle,
       label: "Rejected",
     },
     pending: {
       color:
-        "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 border-yellow-200 dark:border-yellow-700/50",
+        "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300", 
       icon: Clock,
       label: "Pending",
     },
     skipped: {
       color:
-        "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border-blue-200 dark:border-blue-700/50",
+        "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
       icon: ArrowLeft,
       label: "Skipped", // Assuming ArrowLeft is appropriate
     },
     not_started: {
       color:
-        "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600/50",
+        "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300",
       icon: HelpCircle,
       label: "Not Started",
     },
     unknown: {
       color:
-        "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600/50",
-      icon: HelpCircle,
+        "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300",
+      icon: AlertCircle,
       label: "Unknown",
     },
   };
@@ -3552,8 +3554,8 @@ const DetailItem = ({
   className?: string;
 }) => (
   <div className={cn("py-2 space-y-2", className)}>
-    <dt className="text-sm font-medium text-neutral-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
-      {Icon && <Icon className="flex-shrink-0 text-primary" />}
+    <dt className="text-sm font-medium text-neutral-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+      {Icon && <Icon className="flex-shrink-0 text-primary size-4" />}
       {label}
     </dt>
     <dd
@@ -3575,11 +3577,11 @@ const LoadingSkeleton = () => (
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
         <div>
           <Skeleton className="h-4 w-64 mb-3 rounded " /> {/* Breadcrumbs */}
-          <Skeleton className="h-8 w-48 rounded " /> {/* Title */}
+          <Skeleton className="h-10 w-48 rounded " /> {/* Title */}
         </div>
         {/* Combined Actions Skeleton */}
         <div className="flex items-center gap-2">
-          <Skeleton className="h-12 w-32 rounded-md " />{" "}
+          <Skeleton className="h-12 w-50 rounded-full" />{" "}
           {/* Send Message Button Skeleton */}
         </div>
       </div>
@@ -3616,9 +3618,9 @@ const LoadingSkeleton = () => (
       {/* Tabs Section Skeleton */}
       <div className="w-full">
         <div className="overflow-hidden mb-4">
-          <div className="relative flex w-full h-full overflow-x-auto whitespace-nowrap bg-lightborder dark:bg-primarybox p-1.5 rounded-full justify-normal items-center">
-            <Skeleton className="h-9 flex-1 rounded-full mr-1" />
-            <Skeleton className="h-9 flex-1 rounded-full mr-1" />
+          <div className="relative flex w-full h-full overflow-x-auto whitespace-nowrap gap-3 bg-lightborder dark:bg-primarybox p-1.5 rounded-full justify-normal items-center">
+            <Skeleton className="h-9 flex-1 rounded-full" />
+            <Skeleton className="h-9 flex-1 rounded-full" />
             <Skeleton className="h-9 flex-1 rounded-full" />
           </div>
         </div>
@@ -3839,7 +3841,11 @@ const TransactionTable = ({
                           </button>
                         </TooltipTrigger>
 
-                        <TooltipContent side="bottom" sideOffset={5} className="bg-[#e4e4e4] dark:bg-secondarybox text-white p-2 px-3 rounded-2xl max-w-50 xl:max-w-lg">
+                        <TooltipContent
+                          side="bottom"
+                          sideOffset={5}
+                          className="bg-[#e4e4e4] dark:bg-secondarybox text-white p-2 px-3 rounded-2xl max-w-50 xl:max-w-lg"
+                        >
                           <p>{isCopied ? "Copied!" : "Copy ID"}</p>
                         </TooltipContent>
                       </Tooltip>
@@ -4095,10 +4101,12 @@ const UserDetailPage: React.FC = () => {
                   {getInitials(userData.fullName)}
                 </AvatarFallback>
               </Avatar>
+
               <div className="space-y-0.5">
                 <CardTitle className="text-lg sm:text-xl text-neutral-900 dark:text-white">
                   {userData.fullName}
                 </CardTitle>
+
                 <CardDescription className="text-sm text-gray-500 dark:text-gray-300">
                   {userData.email}
                 </CardDescription>
@@ -4138,7 +4146,7 @@ const UserDetailPage: React.FC = () => {
                 <TooltipContent
                   side="bottom"
                   sideOffset={5}
-                  className="bg-[#e4e4e4] dark:bg-secondarybox text-white p-2 px-3 rounded-2xl max-w-60 xl:max-w-lg"
+                  className="bg-[#e4e4e4] dark:bg-secondarybox text-white p-2 px-3 sm:mr-5 mr-0 rounded-2xl max-w-60 xl:max-w-lg"
                 >
                   <p className="font-medium dark:text-white text-neutral-900 text-xs">
                     {userData._id}
@@ -4188,8 +4196,8 @@ const UserDetailPage: React.FC = () => {
           onValueChange={setActiveTab}
           className="w-full"
         >
-          <div className="overflow-hidden mb-4 ">
-            <TabsList className="relative z-20 flex w-full h-full overflow-x-auto whitespace-nowrap bg-lightborder dark:bg-primarybox p-1.5 rounded-full justify-normal items-center">
+          <div className="overflow-hidden mb-4 rounded-full">
+            <TabsList className="relative z-20 flex w-full h-full overflow-x-auto whitespace-nowrap dark:bg-primarybox p-1.5 rounded-full justify-normal items-center">
               {tabs.map((tab) => (
                 <TabsTrigger
                   key={tab.value}
@@ -4226,19 +4234,22 @@ const UserDetailPage: React.FC = () => {
                   <CardHeader className="px-6 py-4 bg-lightgray dark:bg-primarybox ">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-lg font-semibold flex items-center gap-2 text-neutral-900 dark:text-white ">
-                        <FileText className="text-primary" /> KYC Information
+                        <FileText className="text-primary size-5" /> KYC Information
                       </CardTitle>
+
                       <Badge
-                        variant="outline"
                         className={cn(
-                          "text-sm capitalize px-4 py-2 font-medium border",
+                          "px-4 py-2 text-sm flex items-center rounded-full gap-1.5",
                           kycStatusConfig.color
                         )}
                       >
-                        <kycStatusConfig.icon className="h-4 w-4 mr-1 flex-shrink-0" />{" "}
+                        <kycStatusConfig.icon className="h-4 w-4" />{" "}
                         {kycStatusConfig.label}
                       </Badge>
+
                     </div>
+
+
                     {kyc?.status === "rejected" && kyc.rejectionReason && (
                       <p className="text-xs text-destructive pt-2 mt-2 border-t border-destructive/20">
                         <span className="font-medium">Rejection Reason:</span>{" "}
@@ -4253,7 +4264,7 @@ const UserDetailPage: React.FC = () => {
                           <h4 className="border-b pb-2 mb-2 font-medium text-neutral-900 dark:text-white">
                             Personal Details
                           </h4>
-                          <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
+                          <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 sm:gap-6 gap-4">
                             <DetailItem
                               label="First Name"
                               value={kyc.firstName}
@@ -4360,6 +4371,7 @@ const UserDetailPage: React.FC = () => {
                       Documents
                     </CardTitle>
                   </CardHeader>
+
                   {kyc?.documents && kyc.documents.length > 0 ? (
                     <div className="p-4 sm:p-6">
                       <div className="flex md:flex-row flex-col gap-4">
@@ -4404,7 +4416,7 @@ const UserDetailPage: React.FC = () => {
                                   >
                                     <Eye className="h-6 w-6 mb-1" />{" "}
                                     <span className="text-xs font-medium">
-                                      View Full
+                                      View Fullflex flex-col items-center
                                     </span>
                                   </a>
                                 </>

@@ -1224,7 +1224,7 @@ import {
 
 import { cn } from "@/lib/utils";
 import { FiSearch } from "react-icons/fi";
-import { MdCancel } from "react-icons/md";
+import { MdCancel, MdOutlineAccessTime } from "react-icons/md";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Import Pagination Component
@@ -1257,7 +1257,6 @@ const KycManagementPage: React.FC = () => {
   const [sortBy, setSortBy] = useState<"name" | "date">("date");
   const [listKey, setListKey] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-
   // --- Pagination State ---
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(10); // Changed name for clarity
@@ -1448,27 +1447,20 @@ const KycManagementPage: React.FC = () => {
 
   // Empty State (Considers search query)
   const renderEmptyState = () => (
-    <div className="text-center py-16 px-6 border border-dashed rounded-lg bg-card space-y-4">
-      <div className="lg:size-16 size-14 mx-auto flex items-center justify-center bg-primary dark:bg-transparent dark:bg-gradient-to-t dark:from-primary rounded-full">
-        <Inbox className="lg:size-8 size-6 text-neutral-900 dark:text-primary" />
+    <div className="bg-lightgray dark:bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
+      <div className="lg:size-16 size-14 flex items-center justify-center bg-primary dark:bg-transparent dark:bg-gradient-to-t dark:from-primary rounded-full mb-2">
+        <Inbox className="lg:size-8 size-6 mx-auto text-neutral-900 dark:text-primary" />
       </div>
-
-      <h3 className="lg:text-3xl text-2xl font-medium capitalize text-neutral-900 dark:text-white mt-1">
+      <h2 className="lg:text-3xl text-2xl font-medium text-neutral-900 dark:text-white mt-1">
         {searchQuery ? "No Matches Found" : "All Clear KYC !"}
-      </h3>
+      </h2>
+
       <p className="text-gray-500 dark:text-gray-300 max-w-lg mx-auto">
         {searchQuery
           ? "No applications match your current search query."
-          : "There are currently no KYC applications awaiting review."}
+          : "There are currently no KYC applications awaiting review so you can try agaain."}
       </p>
-      {searchQuery && (
-        <button
-          onClick={clearSearchQuery}
-          className="mt-4 text-sm font-medium text-primary hover:underline"
-        >
-          Clear Search
-        </button>
-      )}
+      
     </div>
   );
 
@@ -1484,7 +1476,7 @@ const KycManagementPage: React.FC = () => {
       )}
     >
       {/* Header: Skeleton or Actual */}
-      <div className="px-6 py-4 flex sm:flex-row flex-col items-center justify-between gap-4 border-b bg-lightgray dark:bg-primarybox">
+      <div className="px-6 py-4 flex sm:flex-row flex-col items-center justify-between gap-4 bg-lightgray dark:bg-primarybox">
         {isLoading ? (
           <Skeleton className="h-6 w-36" />
         ) : (
@@ -1494,11 +1486,12 @@ const KycManagementPage: React.FC = () => {
             {filteredUsers.length === 1 ? "Application" : "Applications"}
           </h4>
         )}
+
         {isLoading ? (
-          <Skeleton className="h-10 w-48 rounded-full" />
+          <Skeleton className="h-10 w-44 rounded-full" />
         ) : (
           // Sorting Controls (unchanged)
-          <div className="relative inline-flex items-center rounded-full bg-white dark:bg-secondarybox p-1 gap-1">
+          <div className="relative inline-flex items-center rounded-full bg-lightgray dark:bg-primarybox p-1 gap-1">
             {/* Date Button */}
             <button
               onClick={() => setSortBy("date")}
@@ -1522,7 +1515,7 @@ const KycManagementPage: React.FC = () => {
                 )}
               >
                 <Calendar className="h-4 w-4" /> Date
-              </span>
+              </span> 
             </button>
 
             {/* Name Button */}
@@ -1577,7 +1570,7 @@ const KycManagementPage: React.FC = () => {
                     <Skeleton className="h-4 w-40 " />
                   </div>
                 </div>
-                <Skeleton className="h-9 w-full sm:w-28 rounded-full mt-3 sm:mt-0 flex-shrink-0" />
+                <Skeleton className="h-9 w-full sm:w-24 rounded-full mt-3 sm:mt-0 flex-shrink-0" />
               </div>
             )
           )}
