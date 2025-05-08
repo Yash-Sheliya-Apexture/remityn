@@ -791,7 +791,7 @@ const Pagination: React.FC<PaginationProps> = ({
                                 // Render Page Number Button
                                 const isActive = currentPage === page;
                                 return (
-                                    <div key={page} className="relative w-12 h-12">
+                                    <div key={page} className="relative w-12 h-12 overflow-hidden">
                                         {/* Animated Background Indicator */}
                                         <AnimatePresence>
                                             {isActive && (

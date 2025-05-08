@@ -22,24 +22,6 @@ const getPaymentByIdAdmin = async (req, res, next) => {
     }
 };
 
-// const updatePaymentStatusAdmin = async (req, res, next) => {
-//     try {
-//         const { paymentId } = req.params;
-//         const { status } = req.body; // Expecting 'status' in the request body
-
-//         if (!status || !['pending', 'completed', 'canceled', 'in progress'].includes(status)) {
-//             return res.status(400).json({ message: 'Invalid payment status' });
-//         }
-
-//         const updatedPayment = await paymentAdminService.updatePaymentStatusAdmin(paymentId, status);
-//         if (!updatedPayment) {
-//             return res.status(404).json({ message: 'Payment not found' });
-//         }
-//         res.json(updatedPayment);
-//     } catch (error) {
-//         next(error);
-//     }
-// };
 
 const updatePaymentStatusAdmin = async (req, res, next) => {
     try {
