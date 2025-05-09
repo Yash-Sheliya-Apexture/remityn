@@ -561,7 +561,7 @@
 
 
 // frontend/src/app/(admin)/admin/messages/send/BroadcastHistoryTable.tsx
-import React from 'react';
+import React, { useEffect, useState} from 'react';
 import { format, formatDistanceToNow } from 'date-fns';
 import {
   Loader2,
@@ -698,6 +698,18 @@ const BroadcastHistoryTable: React.FC<BroadcastHistoryTableProps> = ({
     </div>
   );
 
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkScreenSize = () => {
+        setIsMobile(window.innerWidth < 640); // Tailwind's 'md' breakpoint is 768px
+    };
+
+    checkScreenSize(); // Initial check
+    window.addEventListener('resize', checkScreenSize);
+
+    return () => window.removeEventListener('resize', checkScreenSize);
+}, []);
+
   const totalPages = batchesData?.totalPages ?? 0;
   const isActionDisabled = isLoading || deletingBatchId !== null || isUpdatingBatch;
 
@@ -705,7 +717,7 @@ const BroadcastHistoryTable: React.FC<BroadcastHistoryTableProps> = ({
     <>
       <div className="pt-8">
         {/* Header Section - Always Visible */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+        <div className="flex items-start sm:items-center justify-between mb-6 gap-4">
           <div>
             <h2 className="text-2xl font-bold leading-tight text-mainheading dark:text-white sm:text-3xl inline-flex items-center gap-2">
               <History size={28} className="text-primary" />
@@ -718,11 +730,11 @@ const BroadcastHistoryTable: React.FC<BroadcastHistoryTableProps> = ({
           <button
             type="button"
             onClick={onRefresh}
-            disabled={isLoading} 
-            className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isLoading}
+            className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white sm:px-8 sm:py-3 aspect-square sm:aspect-auto h-12.5 sm:w-auto w-12.5 rounded-full transition-all duration-75 ease-linear disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            <RefreshCw className={`size-5 ${isLoading ? "animate-spin" : ""}`} />
-            <span>Refresh</span>
+            <RefreshCw className={cn("size-5", isLoading && "animate-spin")} />
+            {!isMobile && <span>Refresh</span>}
           </button>
         </div>
 
@@ -738,22 +750,29 @@ const BroadcastHistoryTable: React.FC<BroadcastHistoryTableProps> = ({
                 <table className="min-w-full overflow-hidden">
                   <TableHeaderComponent />
                   <tbody className="divide-y divide-gray-200 dark:divide-neutral-700 overflow-hidden">
-                    {(!batchesData || batchesData.batches.length === 0) ? (
+                    {!batchesData || batchesData.batches.length === 0 ? (
                       <tr>
                         <td
                           colSpan={numberOfColumns}
                           className="px-6 py-10 text-center text-gray-500 dark:text-gray-300"
                         >
-                           <ListChecks className="mx-auto h-10 w-10 mb-2 text-gray-400 dark:text-gray-500" />
-                           <p className="text-base font-medium">No Past Broadcasts</p>
-                           <p className="text-xs">Messages sent to all users will appear here.</p>
+                          <ListChecks className="mx-auto h-10 w-10 mb-2 text-gray-400 dark:text-gray-500" />
+                          <p className="text-base font-medium">
+                            No Past Broadcasts
+                          </p>
+                          <p className="text-xs">
+                            Messages sent to all users will appear here.
+                          </p>
                         </td>
                       </tr>
                     ) : (
                       batchesData?.batches.map((batch, index) => {
-                        const isDeletingThis = deletingBatchId === batch.batchId;
-                        const isEditingThis = editingBatchId === batch.batchId && isUpdatingBatch;
-                        const rowActionDisabled = isActionDisabled || isDeletingThis || isEditingThis;
+                        const isDeletingThis =
+                          deletingBatchId === batch.batchId;
+                        const isEditingThis =
+                          editingBatchId === batch.batchId && isUpdatingBatch;
+                        const rowActionDisabled =
+                          isActionDisabled || isDeletingThis || isEditingThis;
 
                         return (
                           <motion.tr

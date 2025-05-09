@@ -1038,7 +1038,6 @@ export default function AllRecentActivityPage() {
     const [fromDate, setFromDate] = useState<string>('');
     const [toDate, setToDate] = useState<string>('');
     const [typeFilter, setTypeFilter] = useState<string>('all'); // For activity type
-    const [itemIdFilter, setItemIdFilter] = useState<string>('');
 
     // Sorting states
     const [sortField, setSortField] = useState<ActivitySortField | null>('timestamp');
@@ -1109,11 +1108,7 @@ export default function AllRecentActivityPage() {
                 activity.user?.name?.toLowerCase().includes(lowerSearchTerm)
             );
         }
-        if (itemIdFilter) {
-             results = results.filter(activity =>
-                 activity.itemId?.toLowerCase().includes(itemIdFilter.toLowerCase())
-             );
-        }
+        
         if (typeFilter !== 'all') {
             results = results.filter(activity => activity.type.toLowerCase() === typeFilter.toLowerCase());
         }
@@ -1138,7 +1133,7 @@ export default function AllRecentActivityPage() {
              });
          }
         setFilteredActivities(results);
-    }, [allActivities, searchTerm, typeFilter, itemIdFilter, fromDate, toDate]);
+    }, [allActivities, searchTerm, typeFilter, fromDate, toDate]);
 
     // Client-Side Sorting Logic (operates on `filteredActivities`)
     const sortedActivities = useMemo(() => {
@@ -1178,7 +1173,7 @@ export default function AllRecentActivityPage() {
             setCurrentPage(1);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchTerm, typeFilter, itemIdFilter, fromDate, toDate, sortField, sortDirection, activitiesPerPage]);
+    }, [searchTerm, typeFilter, fromDate, toDate, sortField, sortDirection, activitiesPerPage]);
 
 
     // Client-Side Pagination Calculation
@@ -1214,7 +1209,6 @@ export default function AllRecentActivityPage() {
         setFromDate(filters.fromDate);
         setToDate(filters.toDate);
         setTypeFilter(filters.statusFilter); // GenericFilters uses 'statusFilter'
-        setItemIdFilter(filters.idFilter);
         setShowFilterModal(false);
     }, []);
 
@@ -1223,7 +1217,6 @@ export default function AllRecentActivityPage() {
         setFromDate('');
         setToDate('');
         setTypeFilter('all');
-        setItemIdFilter('');
         setShowFilterModal(false);
     }, []);
 
@@ -1267,10 +1260,10 @@ export default function AllRecentActivityPage() {
         fromDate,
         toDate,
         statusFilter: typeFilter, // Map typeFilter to statusFilter for GenericFilters
-        idFilter: itemIdFilter,
+        idFilter: '',
         currencyFilter: 'all', // Not used by activities, but part of FiltersState
         amountFilter: '',      // Not used by activities
-    }), [searchTerm, fromDate, toDate, typeFilter, itemIdFilter]);
+    }), [searchTerm, fromDate, toDate, typeFilter]);
 
     // Calculate "Showing X-Y of Z results" based on `sortedActivities`
     const startIndex = sortedActivities.length > 0 ? (currentPage - 1) * activitiesPerPage + 1 : 0;
@@ -1278,8 +1271,8 @@ export default function AllRecentActivityPage() {
 
 
     return (
-        <section className="Admin-AllActivity py-3">
-            <div className="container mx-auto px-4">
+        <section className="Admin-AllActivity">
+            <div className="container mx-auto px-4 py-8 ">
                 <div className="space-y-6">
                     {/* Header and Refresh/Filter Buttons */}
                     <div className="flex flex-wrap justify-between items-center gap-4">
@@ -1371,15 +1364,23 @@ export default function AllRecentActivityPage() {
                     onClearFilters={handleClearAllFilters}
                     currencyOptions={currencyOptions}
                     statusOptions={activityTypeOptions} // Use activity types for the status dropdown
+                    
+                    // Search Term customization
+                    searchTermPlaceholder="Search activities by Message, Item ID, or User Name..." // <-- Your custom placeholder
+
+                    // Visibility of other filters
                     showRecipientFilter={false} // No recipient filter for activities
                     showAmountFilter={false}    // No amount filter for activities
                     showCurrencyFilter={false}  // No currency filter for activities
-                    showIdFilter={true}         // Show Item ID filter
-                    idFilterLabel="Item ID"
-                    idFilterPlaceholder="Filter by User/Payment/Transfer ID"
+                    showIdFilter={false}         // Set to false to hide the ID filter (as per previous request)
+                    
+                    // Status filter customization (already present)
                     showStatusFilter={true}     // Show Activity Type filter (mapped to 'status')
                     statusFilterLabel="Activity Type"
                     allStatusesLabel="All Types" // Label for the 'all' option in type filter
+                    
+                    // You can also control the visibility of the search term filter itself if needed
+                    // showSearchTermFilter={true} // This is true by default
                 />
             </div>
         </section>

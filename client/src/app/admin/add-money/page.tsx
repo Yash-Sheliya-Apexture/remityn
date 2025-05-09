@@ -5798,6 +5798,7 @@ const AdminPaymentsPage: React.FC = () => {
             initialFilters={currentFilterState}
             onApplyFilters={handleApplyFilters}
             onClearFilters={handleClearAllFilters}
+            searchTermPlaceholder="Search User Name or Email..."
             currencyOptions={currencyOptions}
             statusOptions={statusOptions}
             idFilterLabel="Payment ID"
