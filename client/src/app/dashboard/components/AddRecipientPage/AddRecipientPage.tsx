@@ -6509,7 +6509,7 @@ const AddRecipientPage = () => {
             key="account-step"
             className="bg-white dark:bg-background w-full lg:max-w-lg"
           >
-            <h2 className="lg:text-3xl md:text-2xl text-xl font-semibold text-mainheading dark:text-white mb-6 text-center sm:text-left">
+            <h2 className="lg:text-3xl md:text-2xl text-xl font-semibold text-mainheading dark:text-white mb-6 text-left">
               Enter their account details ({selectedCurrencyCode})
             </h2>
 

@@ -456,7 +456,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
           <div className="flex justify-center items-center gap-4">
             <button
               onClick={toggleSidebar}
-              className="text-gray focus:outline-none cursor-pointer p-2.5 bg-lightgray dark:bg-secondary dark:text-primary rounded-full transition-colors lg:hidden"
+              className="text-gray focus:outline-none cursor-pointer p-2.5 bg-lightgray dark:bg-secondary dark:text-primary rounded-full transition-colors lg:hidden sm:block hidden"
             >
               <GiHamburgerMenu
                 size={26}

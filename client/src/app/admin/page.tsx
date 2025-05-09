@@ -860,9 +860,6 @@ import React from "react"; // <-- ADDED hooks
 import StatsCards from "./components/DashboardSection/StatsCards"; // Adjust path as needed
 import TransferInsights from "./components/DashboardSection/TransferInsights"; // Adjust path as needed
 import RecentActivity from "./components/DashboardSection/RecentActivity"; // Adjust path as needed
-import RiskAndCompliance from "./components/DashboardSection/RiskAndCompliance"; // Adjust path as needed
-import PaymentAndSettlement from "./components/DashboardSection/PaymentAndSettlement"; // Adjust path as needed
-import KycVerificationCard from "./components/DashboardSection/KycVerificationCard"; // <-- Keep this import
 // --- ADD Chart Imports ---
 import PaymentsVolumeChart from "./components/DashboardSection/PaymentsVolumeChart";
 import TransfersVolumeChart from "./components/DashboardSection/TransfersVolumeChart";
@@ -870,10 +867,10 @@ import TransfersVolumeChart from "./components/DashboardSection/TransfersVolumeC
 
 export default function AdminHomePage() {
   return (
-    <section className="Admin-Dashboard py-3">
+    <section className="Admin-Dashboard py-5">
       <div className="container mx-auto px-4">
         {/* Main dashboard content */}
-        <div className="">
+        <div className="overflow-y-auto">
           <div className="mb-8">
             <h2 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
               Admin Dashboard Home

@@ -78,7 +78,7 @@ const ComposeBroadcastForm: React.FC<ComposeBroadcastFormProps> = ({
             >
               Body
             </label>
-            <div className='overflow-hidden border rounded-lg'>
+            <div className='overflow-y-auto rounded-lg'>
 
             <textarea
               id="body"
@@ -88,7 +88,7 @@ const ComposeBroadcastForm: React.FC<ComposeBroadcastFormProps> = ({
               rows={8}
               required
               disabled={isSending}
-              className="overflow-y-auto resize-none sm:[&::-webkit-scrollbar]:w-2 sm:[&::-webkit-scrollbar]:h-3 sm:[&::-webkit-scrollbar-track]:rounded-full sm:[&::-webkit-scrollbar-track]:bg-gray-100 sm:[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-lightborder sm:dark:[&::-webkit-scrollbar-track]:bg-primarybox sm:dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox block px-4 py-3 bg-white dark:bg-background h-14 w-full transition-all focus:outline-none focus:border-[#5f5f5f] ease-linear duration-75 min-h-[200px]"
+              className="resize-none sm:[&::-webkit-scrollbar]:w-2 sm:[&::-webkit-scrollbar]:h-3 sm:[&::-webkit-scrollbar-track]:rounded-full sm:[&::-webkit-scrollbar-track]:bg-gray-100 sm:[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-lightborder sm:dark:[&::-webkit-scrollbar-track]:bg-primarybox sm:dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox block px-4 py-3 bg-white dark:bg-background h-14 w-full transition-all border rounded-lg focus:outline-none focus:border-[#5f5f5f] ease-linear duration-75 min-h-[200px]"
             />
             </div>
           </div>

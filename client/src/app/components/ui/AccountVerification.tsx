@@ -124,7 +124,6 @@
 //   );
 // }
 
-
 // import Link from "next/link";
 // import React from "react";
 // import { AlertCircle, AlertTriangle, ArrowRight } from "lucide-react";
@@ -189,7 +188,6 @@
 //     </div>
 //   );
 // }
-
 
 // // src/app/components/ui/AccountVerification.tsx
 // import Link from "next/link";
@@ -469,7 +467,6 @@
 //   );
 // }
 
-
 // // src/app/components/ui/AccountVerification.tsx
 // // No changes needed here. It correctly displays based on the props received.
 // import Link from "next/link";
@@ -730,128 +727,208 @@
 // frontend/src/app/components/ui/AccountVerification.tsx
 import Link from "next/link";
 import React from "react";
-import { AlertCircle, AlertTriangle, ArrowRight, Clock, Info, RefreshCw } from "lucide-react"; // Added Clock, Info, RefreshCw
+import {
+  AlertCircle,
+  AlertTriangle,
+  ArrowRight,
+  Clock,
+  Info,
+  RefreshCw,
+} from "lucide-react"; // Added Clock, Info, RefreshCw
 import { cn } from "@/lib/utils";
 import type { KycStatus } from "@/app/services/kyc"; // Import the type
 
 // --- Props Interface ---
 interface AccountVerificationProps {
-    status: KycStatus | null | undefined; // Receive the actual status
-    reason?: string | null; // Rejection reason (only relevant if rejected)
+  status: KycStatus | null | undefined; // Receive the actual status
+  reason?: string | null; // Rejection reason (only relevant if rejected)
 }
 
 // --- Account Verification Banner Component ---
-export default function AccountVerification({ status, reason }: AccountVerificationProps) {
+export default function AccountVerification({
+  status,
+  reason,
+}: AccountVerificationProps) {
+  let title = "Account Verification";
+  let message = "Complete account verification to unlock all features.";
+  let linkText = "Start Verification";
+  let linkPath = "/kyc/start"; // Default start path
+  let IconComponent: React.ElementType = AlertCircle;
+  let variant: "warning" | "destructive" | "info" | "pending" = "warning"; // Default to warning
 
-    let title = "Account Verification";
-    let message = "Complete account verification to unlock all features.";
-    let linkText = "Start Verification";
-    let linkPath = "/kyc/start"; // Default start path
-    let IconComponent: React.ElementType = AlertCircle;
-    let variant: 'warning' | 'destructive' | 'info' | 'pending' = 'warning'; // Default to warning
+  // --- Determine content based on status ---
+  switch (status) {
+    case "not_started":
+      title = "Verify Your Account";
+      message =
+        "Complete account verification to unlock all features, including sending higher amounts and receiving money in different currencies.";
+      linkText = "Start Verification";
+      linkPath = "/kyc/start";
+      IconComponent = AlertCircle;
+      variant = "warning";
+      break;
 
-    // --- Determine content based on status ---
-    switch (status) {
-        case 'not_started':
-            title = "Verify Your Account";
-            message = "Complete account verification to unlock all features, including sending higher amounts and receiving money in different currencies.";
-            linkText = "Start Verification";
-            linkPath = "/kyc/start";
-            IconComponent = AlertCircle;
-            variant = 'warning';
-            break;
+    case "skipped":
+      title = "Complete Verification";
+      message =
+        "You skipped verification earlier. Complete it now to access all account features and enhance security.";
+      linkText = "Start Verification";
+      linkPath = "/kyc/start"; // Go to start page to initiate
+      IconComponent = Info;
+      variant = "info";
+      break;
 
-        case 'skipped':
-            title = "Complete Verification";
-            message = "You skipped verification earlier. Complete it now to access all account features and enhance security.";
-            linkText = "Start Verification";
-            linkPath = "/kyc/start"; // Go to start page to initiate
-            IconComponent = Info;
-            variant = 'info';
-            break;
+    case "pending":
+      title = "Verification Pending";
+      message =
+        "Your documents are under review. This usually takes 1-2 business days. We'll notify you upon completion.";
+      linkText = "Check Status"; // Link to pending page (optional, could also be disabled)
+      linkPath = "/kyc/pending"; // Link to pending status page
+      IconComponent = Clock;
+      variant = "pending";
+      break;
 
-        case 'pending':
-            title = "Verification Pending";
-            message = "Your documents are under review. This usually takes 1-2 business days. We'll notify you upon completion.";
-            linkText = "Check Status"; // Link to pending page (optional, could also be disabled)
-            linkPath = "/kyc/pending"; // Link to pending status page
-            IconComponent = Clock;
-            variant = 'pending';
-            break;
+    case "rejected":
+      title = "Verification Action Required";
+      const defaultRejectionMessage =
+        "Please review common issues (e.g., document clarity, validity) and try again.";
+      // Construct message including the reason if available
+      message = `Your verification attempt requires attention.${
+        reason ? ` Reason: ${reason}` : ` ${defaultRejectionMessage}`
+      }`;
+      linkText = "Retry Verification";
+      linkPath = "/kyc/start"; // CRITICAL: Link to start page for retry flow
+      IconComponent = AlertTriangle;
+      variant = "destructive";
+      break;
 
-        case 'rejected':
-            title = "Verification Action Required";
-            const defaultRejectionMessage = 'Please review common issues (e.g., document clarity, validity) and try again.';
-            // Construct message including the reason if available
-            message = `Your verification attempt requires attention.${reason ? ` Reason: ${reason}` : ` ${defaultRejectionMessage}`}`;
-            linkText = "Retry Verification";
-            linkPath = "/kyc/start"; // CRITICAL: Link to start page for retry flow
-            IconComponent = AlertTriangle;
-            variant = 'destructive';
-            break;
+    case "verified":
+      // This component should not be rendered if status is verified
+      // This is handled by the parent component (MainDashboard) checking kycStatus !== 'verified'
+      // console.warn("AccountVerification rendered with status 'verified'. Should be hidden by parent.");
+      return null; // Render nothing
 
-        case 'verified':
-             // This component should not be rendered if status is verified
-             // This is handled by the parent component (MainDashboard) checking kycStatus !== 'verified'
-             // console.warn("AccountVerification rendered with status 'verified'. Should be hidden by parent.");
-             return null; // Render nothing
+    default:
+      // Handle null, undefined, or unexpected status values gracefully
+      console.warn(
+        `AccountVerification rendered with unexpected or missing status: '${status}'`
+      );
+      title = "Verification Status Unavailable";
+      message =
+        "We couldn't determine your current verification status at the moment. Please try refreshing later.";
+      linkText = "Go to Dashboard"; // Provide a neutral action
+      linkPath = "/dashboard";
+      IconComponent = AlertCircle;
+      variant = "warning"; // Use warning for unknown/error state
+      // Decide whether to show this generic banner or hide completely
+      // return null; // Option to hide completely if status is truly unknown/invalid
+      break;
+  }
 
-        default:
-             // Handle null, undefined, or unexpected status values gracefully
-             console.warn(`AccountVerification rendered with unexpected or missing status: '${status}'`);
-             title = "Verification Status Unavailable";
-             message = "We couldn't determine your current verification status at the moment. Please try refreshing later.";
-             linkText = "Go to Dashboard"; // Provide a neutral action
-             linkPath = "/dashboard";
-             IconComponent = AlertCircle;
-             variant = 'warning'; // Use warning for unknown/error state
-             // Decide whether to show this generic banner or hide completely
-             // return null; // Option to hide completely if status is truly unknown/invalid
-             break;
-    }
+  // --- Determine styles based on variant ---
+  const styles = {
+    warning: {
+      iconColor: "text-yellow-600 dark:text-yellow-500",
+      iconbg: "bg-yellow-600/20",
+      bgColor: "bg-yellow-50 dark:bg-yellow-900/25  border-yellow-500",
+      titleColor: "text-yellow-800 dark:text-yellow-200",
+      messageColor: "text-yellow-700 dark:text-yellow-300/90",
+      linkColor:
+        "text-yellow-700 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300",
+    },
+    destructive: {
+        iconColor: "text-red-600 dark:text-red-500",
+        iconbg: "bg-red-600/20",
+        bgColor:
+          "bg-red-50 dark:bg-red-900/25 border-red-500",
+        titleColor: "text-red-800 dark:text-red-200",
+        messageColor: "text-red/700 dark:text-red-300/90",
+        linkColor:
+          "text-red-700 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300",
+    },
+    info: {
+        iconColor: "text-blue-600 dark:text-blue-500",
+        iconbg : "bg-blue-600/20",
+        bgColor:
+          "bg-blue-50 dark:bg-blue-900/25 border-blue border-blue-500",
+        titleColor: "text-blue-800 dark:text-blue-200",
+        messageColor: "text-blue-700 dark:text-blue-300/90",
+        linkColor:
+          "text-blue-700 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300",
+    },
+    pending: {
+      iconColor: "text-cyan-600 dark:text-cyan-500",
+      iconbg: "bg-cyan-600/20",
+      bgColor: "bg-cyan-50 dark:bg-cyan-900/25 border-cyan-500",
+      titleColor: "text-cyan-800 dark:text-cyan-200",
+      messageColor: "text-cyan-700 dark:text-cyan-300/90",
+      linkColor:
+        "text-cyan-700 hover:text-cyan-800 dark:text-cyan-400 dark:hover:text-cyan-300",
+    },
+  };
+  const currentStyles = styles[variant];
 
-    // --- Determine styles based on variant ---
-    const styles = {
-        warning: { iconColor: "text-yellow-600 dark:text-yellow-400", bgColor: "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 dark:border-yellow-700/40", titleColor: "text-yellow-800 dark:text-yellow-200", messageColor: "text-yellow-700 dark:text-yellow-300/90", linkColor: "text-yellow-700 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300" },
-        destructive: { iconColor: "text-destructive", bgColor: "bg-destructive/10 dark:bg-destructive/20 border-destructive/30", titleColor: "text-destructive dark:text-red-300", messageColor: "text-destructive/90 dark:text-red-300/80", linkColor: "text-destructive hover:text-destructive/80" },
-        info: { iconColor: "text-blue-600 dark:text-blue-400", bgColor: "bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-700/40", titleColor: "text-blue-800 dark:text-blue-200", messageColor: "text-blue-700 dark:text-blue-300/90", linkColor: "text-blue-700 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300" },
-        pending: { iconColor: "text-cyan-600 dark:text-cyan-400", bgColor: "bg-cyan-50 dark:bg-cyan-900/20 border-cyan-300 dark:border-cyan-700/40", titleColor: "text-cyan-800 dark:text-cyan-200", messageColor: "text-cyan-700 dark:text-cyan-300/90", linkColor: "text-cyan-700 hover:text-cyan-800 dark:text-cyan-400 dark:hover:text-cyan-300" }
-    };
-    const currentStyles = styles[variant];
-
-    // Don't render if status is null/undefined and not handled as 'unknown' warning
-    // if (!status && variant !== 'warning') return null; // Already handled by switch default potentially returning null or rendering warning
 
   return (
-    <div className={cn("Verify-Banner rounded-lg border p-4 shadow-sm", currentStyles.bgColor)} role="alert">
-        <div className="flex items-start gap-3 sm:gap-4">
-            {/* Icon */}
-            <div className={cn("flex-shrink-0 mt-0.5", currentStyles.iconColor)}>
-                <IconComponent aria-hidden="true" className="h-5 w-5 sm:h-6 sm:w-6" />
-                <span className="sr-only">{variant.charAt(0).toUpperCase() + variant.slice(1)}</span>
-            </div>
+    <div
+      className={cn(
+        "Verify-Banner rounded-xl sm:p-6 p-4 border",
+        currentStyles.bgColor
+      )}
+      role="alert"
+    >
+      <div className="flex items-start gap-3">
+        {/* Icon */}
 
-            {/* Text and Link */}
-            <div className="flex-grow">
-                 <h3 className={cn("text-sm sm:text-base font-semibold", currentStyles.titleColor)}>
-                    {title}
-                </h3>
-                <p className={cn("text-xs sm:text-sm mt-1", currentStyles.messageColor)}>
-                    {message}
-                </p>
-                {/* Link */}
-                 <Link
-                     href={linkPath}
-                     className={cn(
-                        "inline-flex items-center gap-1 text-sm font-semibold mt-2 group transition-colors duration-150",
-                        currentStyles.linkColor
-                    )}
-                 >
-                    {linkText}
-                     <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-200 ease-in-out group-hover:translate-x-1" />
-                 </Link>
-            </div>
+        <div
+          className={cn(
+            `flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center`,
+            currentStyles.iconColor,
+            currentStyles.iconbg
+          )}
+        >
+          <IconComponent aria-hidden="true" className="size-5 sm:size-6" />
+          <span className="sr-only">
+            {variant.charAt(0).toUpperCase() + variant.slice(1)}
+          </span>
         </div>
+
+        {/* Text and Link */}
+        <div className="flex-grow space-y-1">
+          <h3
+            className={cn(
+              "text-base sm:text-lg font-semibold",
+              currentStyles.titleColor
+            )}
+          >
+            {title}
+          </h3>
+
+          <p
+            className={cn(
+              "text-sm sm:text-base mb-2",
+              currentStyles.messageColor
+            )}
+          >
+            {message}
+          </p>
+
+          {/* Link */}
+          <Link
+            href={linkPath}
+            className={cn(
+              "inline-flex items-center sm:text-base text-sm group transition-all ease-linear duration-200",
+              currentStyles.linkColor
+            )}
+          >
+            {linkText}
+            <ArrowRight
+              aria-hidden="true"
+              className="transition-transform size-4 duration-200 ease-linear group-hover:translate-x-2"
+            />
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

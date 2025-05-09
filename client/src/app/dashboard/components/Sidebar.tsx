@@ -3190,6 +3190,24 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [sidebarOpen, isMobileView, toggleSidebar]);
 
+    // --- CORRECTED: Effect to control body scroll ---
+    useEffect(() => {
+      // Lock body scroll ONLY when the sidebar is open AND it's in mobile overlay mode (isMobileView === true)
+      if (sidebarOpen && isMobileView === true) {
+        document.body.style.overflow = "hidden";
+      } else {
+        // Restore body scroll in all other cases (sidebar closed, or not in mobile overlay mode)
+        document.body.style.overflow = "";
+      }
+  
+      // Cleanup function to restore scroll on component unmount,
+      // especially if it unmounts while scroll is locked.
+      return () => {
+        document.body.style.overflow = "";
+      };
+    }, [sidebarOpen, isMobileView]); // Depend on sidebarOpen and isMobileView
+    // --- END CORRECTED Effect ---
+
   // --- Dynamic Route Functions (Memoized with useCallback) ---
   const getAddMoneyRoute = useCallback((): string => {
     if (!isAuthenticated) return "/auth/login"; // Use isAuthenticated flag
