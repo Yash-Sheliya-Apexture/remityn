@@ -2172,12 +2172,12 @@ const CountryCard = () => {
               >
                 <div className="p-6 bg-lightgray dark:bg-primarybox rounded-2xl flex flex-col justify-between h-[176px]">
                   <div className="flex items-center gap-4">
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                    <Skeleton className="h-5 w-24 rounded-md" />
+                    <Skeleton className="h-12 w-12 rounded-full bg-lightborder dark:bg-accent" />
+                    <Skeleton className="h-5 w-24 rounded-md bg-lightborder dark:bg-accent" />
                   </div>
                   <div className="pt-16">
                     {/* Adjusted spacing */}
-                    <Skeleton className="h-6 w-32 rounded-md" />
+                    <Skeleton className="h-6 w-32 rounded-md bg-lightborder dark:bg-accent" />
                   </div>
                 </div>
               </div>

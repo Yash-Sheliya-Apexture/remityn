@@ -97,12 +97,10 @@
 //   );
 // }
 
-
-
 // frontend/src/components/DashboardSection/StatsCards.tsx
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Activity,
   Users,
@@ -113,10 +111,12 @@ import {
   AlertCircle,
   CheckCircle, // For completed transfers icon if needed
 } from "lucide-react";
-import statsAdminService, { AdminDashboardStats } from '../../../services/admin/stats.admin'; // Adjust path
+import statsAdminService, {
+  AdminDashboardStats,
+} from "../../../services/admin/stats.admin"; // Adjust path
 import { TbMoneybag } from "react-icons/tb";
 import { BsSend } from "react-icons/bs";
-
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function StatsCards() {
   const [stats, setStats] = useState<AdminDashboardStats | null>(null);
@@ -131,7 +131,7 @@ export default function StatsCards() {
         const data = await statsAdminService.getAdminDashboardOverviewStats();
         setStats(data);
       } catch (err: any) {
-        setError(err.message || 'Failed to load dashboard statistics.');
+        setError(err.message || "Failed to load dashboard statistics.");
         console.error("Error fetching stats cards data:", err);
       } finally {
         setLoading(false);
@@ -146,12 +146,18 @@ export default function StatsCards() {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 animate-pulse">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="bg-white dark:bg-primarybox sm:p-6 p-4 rounded-xl shadow-sm border h-[130px] flex flex-col justify-between">
+          <div
+            key={i}
+            className="bg-lightgray dark:bg-primarybox sm:p-6 p-4 rounded-xl border flex justify-between"
+          >
             <div>
-              <div className="h-5 bg-gray-200 dark:bg-primarybox rounded w-3/4 mb-2"></div>
-              <div className="h-7 bg-gray-300 dark:bg-primarybox rounded w-1/2 mb-3"></div>
+              <Skeleton className="h-7 rounded w-46 mb-2"></Skeleton>
+              <Skeleton className="h-9 rounded w-20 mb-3"></Skeleton>
+              <Skeleton className="h-5 rounded w-2/3"></Skeleton>
             </div>
-            <div className="h-4 bg-gray-200 dark:bg-primarybox rounded w-2/3"></div>
+            <div>
+              <Skeleton className="rounded-lg size-12"></Skeleton>
+            </div>
           </div>
         ))}
       </div>
@@ -160,37 +166,80 @@ export default function StatsCards() {
 
   if (error) {
     // Error display remains the same
-     return (
-      <div className="mb-8 bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded-xl relative flex items-center" role="alert">
+    return (
+      <div
+        className="mb-8 bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded-xl relative flex items-center"
+        role="alert"
+      >
         <AlertCircle className="h-5 w-5 mr-2" />
         <span className="block sm:inline">{error}</span>
       </div>
     );
   }
-  
+
   // --- User Growth Trend ---
   const userGrowthTrend = stats?.growthPercentageThisWeek ?? 0;
-  const userTrendColor = userGrowthTrend > 0 ? "text-green-600" : userGrowthTrend < 0 ? "text-red-600" : "text-gray-500";
-  const UserTrendIconComponent = userGrowthTrend > 0 ? TrendingUp : userGrowthTrend < 0 ? TrendingDown : null;
+  const userTrendColor =
+    userGrowthTrend > 0
+      ? "text-green-600"
+      : userGrowthTrend < 0
+      ? "text-red-600"
+      : "text-gray-500";
+  const UserTrendIconComponent =
+    userGrowthTrend > 0
+      ? TrendingUp
+      : userGrowthTrend < 0
+      ? TrendingDown
+      : null;
   const userTrendPrefix = userGrowthTrend > 0 ? "+" : "";
 
   // --- "Add Money" Trend ---
   const addMoneyChange = stats?.addMoneyChangePercentage ?? 0;
-  const addMoneyTrendColor = addMoneyChange > 0 ? "text-green-600" : addMoneyChange < 0 ? "text-red-600" : "text-gray-500";
-  const AddMoneyTrendIconComponent = addMoneyChange > 0 ? TrendingUp : addMoneyChange < 0 ? TrendingDown : TbMoneybag;
+  const addMoneyTrendColor =
+    addMoneyChange > 0
+      ? "text-green-600"
+      : addMoneyChange < 0
+      ? "text-red-600"
+      : "text-gray-500";
+  const AddMoneyTrendIconComponent =
+    addMoneyChange > 0
+      ? TrendingUp
+      : addMoneyChange < 0
+      ? TrendingDown
+      : TbMoneybag;
   const addMoneyTrendPrefix = addMoneyChange > 0 ? "+" : "";
 
   // --- "Send Money" (Initiation) Trend ---
   const sendMoneyChange = stats?.sendMoneyChangePercentage ?? 0;
-  const sendMoneyTrendColor = sendMoneyChange > 0 ? "text-green-600" : sendMoneyChange < 0 ? "text-red-600" : "text-gray-500";
-  const SendMoneyTrendIconComponent = sendMoneyChange > 0 ? TrendingUp : sendMoneyChange < 0 ? TrendingDown : BsSend; // Using Settings if 0% change for variety
+  const sendMoneyTrendColor =
+    sendMoneyChange > 0
+      ? "text-green-600"
+      : sendMoneyChange < 0
+      ? "text-red-600"
+      : "text-gray-500";
+  const SendMoneyTrendIconComponent =
+    sendMoneyChange > 0
+      ? TrendingUp
+      : sendMoneyChange < 0
+      ? TrendingDown
+      : BsSend; // Using Settings if 0% change for variety
   const sendMoneyTrendPrefix = sendMoneyChange > 0 ? "+" : "";
 
   // --- "Completed Transfers" Trend ---
   const completedChangeCount = stats?.completedTransfersChangeCount ?? 0;
-  const completedTrendColor = completedChangeCount > 0 ? "text-green-600" : completedChangeCount < 0 ? "text-red-600" : "text-gray-500";
+  const completedTrendColor =
+    completedChangeCount > 0
+      ? "text-green-600"
+      : completedChangeCount < 0
+      ? "text-red-600"
+      : "text-gray-500";
   // For count change, an up or down arrow is good. If 0, maybe no icon or a neutral one.
-  const CompletedTrendIconComponent = completedChangeCount > 0 ? TrendingUp : completedChangeCount < 0 ? TrendingDown : CheckCircle;
+  const CompletedTrendIconComponent =
+    completedChangeCount > 0
+      ? TrendingUp
+      : completedChangeCount < 0
+      ? TrendingDown
+      : CheckCircle;
   const completedTrendPrefix = completedChangeCount > 0 ? "+" : ""; // Negative sign inherent
 
   return (
@@ -203,13 +252,15 @@ export default function StatsCards() {
               Total Users
             </p>
             <h3 className="text-3xl font-bold text-neutral-900 dark:text-white mt-1">
-              {stats?.totalUsers ?? 'N/A'}
+              {stats?.totalUsers ?? "N/A"}
             </h3>
             <p className={`text-sm ${userTrendColor} flex items-center mt-2`}>
-              {UserTrendIconComponent && <UserTrendIconComponent className="h-4 w-4 mr-1" />}
+              {UserTrendIconComponent && (
+                <UserTrendIconComponent className="h-4 w-4 mr-1" />
+              )}
               <span>
                 {userTrendPrefix}
-                {userGrowthTrend.toFixed(1)}% this week 
+                {userGrowthTrend.toFixed(1)}% this week
               </span>
             </p>
           </div>
@@ -227,10 +278,14 @@ export default function StatsCards() {
               Today's Add Money
             </p>
             <h3 className="text-3xl font-bold text-neutral-900 dark:text-white mt-1">
-              {stats?.todaysAddMoneyCount ?? 'N/A'}
+              {stats?.todaysAddMoneyCount ?? "N/A"}
             </h3>
-            <p className={`text-sm ${addMoneyTrendColor} flex items-center mt-2`}>
-              {AddMoneyTrendIconComponent && <AddMoneyTrendIconComponent className="h-4 w-4 mr-1" />}
+            <p
+              className={`text-sm ${addMoneyTrendColor} flex items-center mt-2`}
+            >
+              {AddMoneyTrendIconComponent && (
+                <AddMoneyTrendIconComponent className="h-4 w-4 mr-1" />
+              )}
               <span>
                 {addMoneyTrendPrefix}
                 {addMoneyChange.toFixed(1)}% from yesterday
@@ -251,10 +306,14 @@ export default function StatsCards() {
               Today's Send Money
             </p>
             <h3 className="text-3xl font-bold text-neutral-900 dark:text-white mt-1">
-              {stats?.todaysSendMoneyCount ?? 'N/A'} 
+              {stats?.todaysSendMoneyCount ?? "N/A"}
             </h3>
-            <p className={`text-sm ${sendMoneyTrendColor} flex items-center mt-2`}>
-              {SendMoneyTrendIconComponent && <SendMoneyTrendIconComponent className="h-4 w-4 mr-1" />}
+            <p
+              className={`text-sm ${sendMoneyTrendColor} flex items-center mt-2`}
+            >
+              {SendMoneyTrendIconComponent && (
+                <SendMoneyTrendIconComponent className="h-4 w-4 mr-1" />
+              )}
               <span>
                 {sendMoneyTrendPrefix}
                 {sendMoneyChange.toFixed(1)}% from yesterday
@@ -275,10 +334,14 @@ export default function StatsCards() {
               Completed Transfers
             </p>
             <h3 className="text-3xl font-bold text-neutral-900 dark:text-white mt-1">
-              {stats?.completedTransfersThisMonth ?? 'N/A'}
+              {stats?.completedTransfersThisMonth ?? "N/A"}
             </h3>
-            <p className={`text-sm ${completedTrendColor} flex items-center mt-2`}>
-              {CompletedTrendIconComponent && <CompletedTrendIconComponent className="h-4 w-4 mr-1" />}
+            <p
+              className={`text-sm ${completedTrendColor} flex items-center mt-2`}
+            >
+              {CompletedTrendIconComponent && (
+                <CompletedTrendIconComponent className="h-4 w-4 mr-1" />
+              )}
               <span>
                 {completedTrendPrefix}
                 {completedChangeCount} this month

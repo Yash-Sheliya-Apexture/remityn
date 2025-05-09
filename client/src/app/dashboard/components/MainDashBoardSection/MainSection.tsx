@@ -568,8 +568,8 @@ import { Skeleton } from "@/components/ui/skeleton"; // Ensure Skeleton is corre
 import { AlertCircle } from "lucide-react";
 import type { KycStatus } from "@/app/services/kyc"; // Import the KycStatus type
 import Link from "next/link";
-import { LuPlus } from "react-icons/lu";;
-import { GoArrowUp } from "react-icons/go";
+import { TbMoneybag } from "react-icons/tb";
+import { BsSend } from "react-icons/bs";
 
 const MainDashBoard = () => {
   // Use AuthContext as the SINGLE SOURCE OF TRUTH for user data on the dashboard
@@ -638,7 +638,7 @@ const MainDashBoard = () => {
         <Link href={"/dashboard/send/select-balance"}>
           {/* Added icon, added `gap-1.5` for spacing */}
           <button className="flex items-center justify-center gap-1.5 bg-primary text-neutral-900 hover:bg-primaryhover py-1 px-4 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer">
-            <GoArrowUp size={18} /> {/* Adjust size as needed */}
+            <BsSend size={18} /> {/* Adjust size as needed */}
             Send
           </button>
         </Link>
@@ -646,7 +646,7 @@ const MainDashBoard = () => {
         <Link href={"/dashboard/add-money/select-balance"}>
           {/* Added icon, added `gap-1.5` for spacing */}
           <button className="flex items-center justify-center gap-1.5 bg-[#ceff81] text-neutral-900 hover:bg-primaryhover py-1 px-4 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer">
-            <LuPlus size={18} /> {/* Adjust size as needed */}
+            <TbMoneybag size={18} /> {/* Adjust size as needed */}
             Add
           </button>
         </Link>

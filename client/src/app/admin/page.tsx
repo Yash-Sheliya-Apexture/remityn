@@ -867,7 +867,7 @@ import TransfersVolumeChart from "./components/DashboardSection/TransfersVolumeC
 
 export default function AdminHomePage() {
   return (
-    <section className="Admin-Dashboard py-3">
+    <section className="Admin-Dashboard py-5">
       <div className="container mx-auto px-4">
         {/* Main dashboard content */}
         <div className="">
