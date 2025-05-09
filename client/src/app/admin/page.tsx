@@ -870,7 +870,7 @@ export default function AdminHomePage() {
     <section className="Admin-Dashboard py-5">
       <div className="container mx-auto px-4">
         {/* Main dashboard content */}
-        <div className="">
+        <div className="overflow-y-auto">
           <div className="mb-8">
             <h2 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
               Admin Dashboard Home
