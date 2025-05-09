@@ -3860,8 +3860,8 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 <li>
                   <button
                     onClick={toggleMessagesMenu}
-                    className={`flex items-center justify-between w-full gap-3 py-2 pl-2 rounded-full transition-all duration-200 group ${
-                      isMessagesRouteActive
+                    className={`flex items-center justify-between w-full gap-3 py-2 pl-2 rounded-full transition-all duration-200 group cursor-pointer ${
+                      isMessagesRouteActive // Highlight parent if child is active
                         ? "text-neutral-900 dark:text-primary"
                         : "text-neutral-500 hover:text-neutral-900 dark:text-gray-300 dark:hover:text-primary"
                     }`}

@@ -757,14 +757,255 @@
 //   );
 // }
 
+// // frontend/src/components/DashboardSection/TransferInsights.tsx
+// "use client";
+
+// import React, { useState, useEffect } from "react";
+// // Import stats service and types
+// import statsAdminService, {
+//   AdminDashboardStats,
+//   PopularCorridorStat,
+// } from "../../../services/admin/stats.admin"; // Adjust path if needed
+// // Import the KYC Card component
+// import KycVerificationCard from "./KycVerificationCard"; // Adjust path if needed
+// import { Skeleton } from "@/components/ui/skeleton"; // Import Skeleton
+// import { FaRegClock } from "react-icons/fa";
+
+// export default function TransferInsights() {
+//   // State for Popular Corridors
+//   const [popularCorridors, setPopularCorridors] = useState<
+//     PopularCorridorStat[]
+//   >([]);
+//   // State for KYC counts
+//   const [kycCounts, setKycCounts] = useState<{
+//     notStarted?: number;
+//     pending?: number;
+//     verified?: number;
+//     rejected?: number;
+//     skipped?: number;
+//   }>({});
+//   const [loading, setLoading] = useState<boolean>(true);
+//   const [error, setError] = useState<string | null>(null);
+
+//   useEffect(() => {
+//     const fetchInsightStats = async () => {
+//       try {
+//         setLoading(true);
+//         setError(null);
+//         // Fetch the overview stats which contains both corridors and KYC counts
+//         const data: AdminDashboardStats =
+//           await statsAdminService.getAdminDashboardOverviewStats();
+//         setPopularCorridors(data.popularCorridors || []);
+//         // Set KYC counts state including the new ones
+//         setKycCounts({
+//           notStarted: data.kycNotStartedCount,
+//           pending: data.kycPendingCount,
+//           verified: data.kycVerifiedCount,
+//           rejected: data.kycRejectedCount,
+//           skipped: data.kycSkippedCount,
+//         });
+//       } catch (err: any) {
+//         setError(err.message || "Failed to load insights data.");
+//         console.error("Error fetching insights data:", err);
+//         setPopularCorridors([]);
+//         setKycCounts({}); // Clear KYC counts on error
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchInsightStats();
+//   }, []); // Fetch once on mount
+
+//   // Helper to get a consistent color for corridor icons based on currency code
+//   const getIconColorStyle = (uniqueString: string) => {
+//     let hash = 0;
+//     for (let i = 0; i < uniqueString.length; i++) {
+//       hash = uniqueString.charCodeAt(i) + ((hash << 5) - hash);
+//     }
+//     // Expanded color palette for potentially more unique colors
+//     const colors = [
+//       {
+//         bg: "bg-blue-100 dark:bg-blue-800/30",
+//         text: "text-blue-600 dark:text-blue-400",
+//       },
+//       {
+//         bg: "bg-green-100 dark:bg-green-800/30",
+//         text: "text-green-600 dark:text-green-400",
+//       },
+//       {
+//         bg: "bg-purple-100 dark:bg-purple-800/30",
+//         text: "text-purple-600 dark:text-purple-400",
+//       },
+//       {
+//         bg: "bg-yellow-100 dark:bg-yellow-800/30",
+//         text: "text-yellow-600 dark:text-yellow-400",
+//       },
+//       {
+//         bg: "bg-red-100 dark:bg-red-800/30",
+//         text: "text-red-600 dark:text-red-400",
+//       },
+//       {
+//         bg: "bg-indigo-100 dark:bg-indigo-800/30",
+//         text: "text-indigo-600 dark:text-indigo-400",
+//       },
+//       {
+//         bg: "bg-pink-100 dark:bg-pink-800/30",
+//         text: "text-pink-600 dark:text-pink-400",
+//       },
+//       {
+//         bg: "bg-teal-100 dark:bg-teal-800/30",
+//         text: "text-teal-600 dark:text-teal-400",
+//       },
+//       {
+//         bg: "bg-orange-100 dark:bg-orange-800/30",
+//         text: "text-orange-600 dark:text-orange-400",
+//       },
+//       {
+//         bg: "bg-cyan-100 dark:bg-cyan-800/30",
+//         text: "text-cyan-600 dark:text-cyan-400",
+//       },
+//     ];
+//     return colors[Math.abs(hash) % colors.length];
+//   };
+
+//   if (loading) {
+//     // Skeleton state representing both cards
+//     return (
+//       <div className="mb-8">
+//         <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-4 animate-pulse">
+//           Transfer Insights & KYC
+//         </h3>
+
+//         {/* Grid for 2 items */}
+//         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//           {/* Skeleton for Popular Corridors */}
+//           <div className="bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border h-[280px] animate-pulse">
+//             <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-4"></div>
+//             {[1, 2, 3, 4].map((i) => (
+//               <div
+//                 key={i}
+//                 className="flex items-center h-10 bg-gray-100 dark:bg-gray-700/50 rounded mb-2 px-2"
+//               >
+//                 <Skeleton className="w-8 h-8 rounded-full mr-2 shrink-0" />
+//                 <Skeleton className="h-4 flex-grow rounded" />
+//               </div>
+//             ))}
+//           </div>
+//           {/* Skeleton for KYC Card (5 items) */}
+//           <div className="bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border h-[280px] animate-pulse">
+//             <div className="flex justify-between items-center mb-4">
+//               <Skeleton className="h-6 w-3/5 rounded" />
+//               <Skeleton className="h-5 w-5 rounded-full" />
+//             </div>
+//             <div className="space-y-3 mb-4">
+//               <Skeleton className="h-4 w-full rounded" />
+//               <Skeleton className="h-4 w-3/4 rounded" />
+//               <Skeleton className="h-4 w-2/3 rounded" />
+//               <Skeleton className="h-4 w-3/5 rounded" />
+//               <Skeleton className="h-4 w-1/2 rounded" />
+//             </div>
+//             <Skeleton className="h-5 w-1/3 rounded mt-6" />
+//           </div>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   if (error) {
+//     // Error Display state
+//     return (
+//       <div
+//         className="mb-8 bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded-xl relative"
+//         role="alert"
+//       >
+//         <strong className="font-bold">Error loading Insights:</strong>
+//         <span className="block sm:inline"> {error}</span>
+//       </div>
+//     );
+//   }
+
+//   // Success State - Render the cards
+//   return (
+//     <div className="mb-8">
+//       <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-4">
+//         Transfer Insights & KYC Status
+//       </h3>
+//       {/* Grid layout for the two cards */}
+//       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//         {/* Popular Corridors Card */}
+//         <div className="dark:bg-primarybox sm:p-6 p-4 rounded-xl border">
+//           <div className="flex justify-between items-center mb-4">
+//             <h4 className="text-lg font-medium text-neutral-900 dark:text-white">
+//                  Corridors (Last 90d)
+//             </h4>
+//             <FaRegClock  className="text-primary size-5" />
+//           </div>
+//           <div className="space-y-3">
+//             {popularCorridors.length > 0 ? (
+//               popularCorridors.map((corridor, index) => {
+//                 const corridorColors = getIconColorStyle(
+//                   corridor.sendCurrencyCode + index
+//                 );
+//                 return (
+//                   <div
+//                     key={`${corridor.sendCurrencyCode}-${corridor.receiveCurrencyCode}-${index}`}
+//                     className="flex justify-between items-center"
+//                   >
+//                     <div className="flex items-center overflow-hidden mr-2">
+//                       <div
+//                         className={`h-8 w-8 ${corridorColors.bg} rounded-full flex items-center justify-center mr-2 shrink-0`}
+//                       >
+//                         <span
+//                           className={`text-xs font-medium ${corridorColors.text}`}
+//                         >
+//                           {corridor.sendCurrencyCode}
+//                         </span>
+//                       </div>
+//                       <div className="truncate">
+//                         <p className="text-sm font-medium text-neutral-900 dark:text-white truncate">
+//                           {corridor.sendCurrencyCode} →{" "}
+//                           {corridor.receiveCurrencyCode}
+//                         </p>
+//                         <p className="text-xs text-gray-500 dark:text-gray-300">
+//                           {corridor.count} transfers
+//                         </p>
+//                       </div>
+//                     </div>
+//                     <p className="text-sm font-semibold text-neutral-900 dark:text-white shrink-0 ml-2">
+//                       {corridor.percentage.toFixed(1)}%
+//                     </p>
+//                   </div>
+//                 );
+//               })
+//             ) : (
+//               <p className="text-sm text-gray-500 dark:text-gray-300">
+//                 No popular corridor data available.
+//               </p>
+//             )}
+//           </div>
+//         </div>
+
+//         {/* KYC Verification Card */}
+//         {/* This component now receives props and handles its display */}
+//         <KycVerificationCard
+//           loading={loading} // Pass loading state from this parent
+//           error={error} // Pass error state from this parent
+//           notStartedCount={kycCounts.notStarted}
+//           pendingCount={kycCounts.pending}
+//           verifiedCount={kycCounts.verified}
+//           rejectedCount={kycCounts.rejected}
+//           skippedCount={kycCounts.skipped}
+//         />
+//       </div>
+//     </div>
+//   );
+// }
+
 // frontend/src/components/DashboardSection/TransferInsights.tsx
 "use client";
 
 import React, { useState, useEffect } from "react";
-import {
-  MapPin, // Keep for Corridors
-  Shield, // Import Shield for KYC Card Title (if needed aesthetically, though it's also in KycVerificationCard)
-} from "lucide-react";
 // Import stats service and types
 import statsAdminService, {
   AdminDashboardStats,
@@ -773,6 +1014,7 @@ import statsAdminService, {
 // Import the KYC Card component
 import KycVerificationCard from "./KycVerificationCard"; // Adjust path if needed
 import { Skeleton } from "@/components/ui/skeleton"; // Import Skeleton
+import { FaPercentage, FaRegClock } from "react-icons/fa";
 
 export default function TransferInsights() {
   // State for Popular Corridors
@@ -877,25 +1119,52 @@ export default function TransferInsights() {
     return (
       <div className="mb-8">
         <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-4 animate-pulse">
-          Transfer Insights & KYC
+          Transfer Insights & KYC Status{" "}
+          {/* Updated text to match success state */}
         </h3>
+
         {/* Grid for 2 items */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Skeleton for Popular Corridors */}
-          <div className="bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border h-[280px] animate-pulse">
-            <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-4"></div>
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="flex items-center h-10 bg-gray-100 dark:bg-gray-700/50 rounded mb-2 px-2"
-              >
-                <Skeleton className="w-8 h-8 rounded-full mr-2 shrink-0" />
-                <Skeleton className="h-4 flex-grow rounded" />
-              </div>
-            ))}
+          <div className="bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border h-[322px] animate-pulse">
+            {/* Header: Title and Icon */}
+            <div className="flex justify-between items-center mb-4">
+              <Skeleton className="h-6 w-1/3 rounded" />{" "}
+              {/* Title: "Corridors (Last 90d)" */}
+              <Skeleton className="h-5 w-5 rounded-full" /> {/* Icon: Clock */}
+            </div>
+            {/* List of Corridor Skeletons */}
+            <div className="space-y-3">
+              {" "}
+              {/* Matches structure of success state's list container */}
+              {[1, 2, 3, 4].map(
+                (
+                  i // Assuming 4 items as in the image
+                ) => (
+                  <div key={i} className="flex justify-between items-center">
+                    {/* Left part: Icon + Texts */}
+                    <div className="flex items-center mr-2">
+                      <Skeleton className="sm:size-12 size-10 rounded-full mr-2 shrink-0" />{" "}
+                      {/* Currency Icon */}
+                      <div className="space-y-1">
+                        {" "}
+                        {/* Texts container */}
+                        <Skeleton className="h-4 w-24 rounded" />{" "}
+                        {/* Placeholder for "EUR -> INR" */}
+                        <Skeleton className="h-3 w-16 rounded" />{" "}
+                        {/* Placeholder for "11 transfers" */}
+                      </div>
+                    </div>
+                    {/* Right part: Percentage */}
+                    <Skeleton className="h-4 w-12 rounded" />{" "}
+                    {/* Placeholder for "55.0%" */}
+                  </div>
+                )
+              )}
+            </div>
           </div>
-          {/* Skeleton for KYC Card (5 items) */}
-          <div className="bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border h-[280px] animate-pulse">
+          {/* Skeleton for KYC Card (5 items) - This remains as is */}
+          <div className="bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl shadow-sm border h-[280px]">
             <div className="flex justify-between items-center mb-4">
               <Skeleton className="h-6 w-3/5 rounded" />
               <Skeleton className="h-5 w-5 rounded-full" />
@@ -939,9 +1208,9 @@ export default function TransferInsights() {
         <div className="dark:bg-primarybox sm:p-6 p-4 rounded-xl border">
           <div className="flex justify-between items-center mb-4">
             <h4 className="text-lg font-medium text-neutral-900 dark:text-white">
-              Popular Corridors (Last 90d)
+              Corridors (Last 90d)
             </h4>
-            <MapPin className="h-5 w-5 text-blue-500" />
+            <FaPercentage  className="text-primary size-5" />
           </div>
           <div className="space-y-3">
             {popularCorridors.length > 0 ? (
@@ -956,7 +1225,7 @@ export default function TransferInsights() {
                   >
                     <div className="flex items-center overflow-hidden mr-2">
                       <div
-                        className={`h-8 w-8 ${corridorColors.bg} rounded-full flex items-center justify-center mr-2 shrink-0`}
+                        className={`sm:size-12 size-10 ${corridorColors.bg} rounded-full flex items-center justify-center mr-2 shrink-0`}
                       >
                         <span
                           className={`text-xs font-medium ${corridorColors.text}`}

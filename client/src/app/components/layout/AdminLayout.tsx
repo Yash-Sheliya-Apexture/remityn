@@ -259,7 +259,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-dvh">
       {/* Left Sidebar */}
       <AdminSidebar
         isSidebarOpen={isSidebarOpen}
