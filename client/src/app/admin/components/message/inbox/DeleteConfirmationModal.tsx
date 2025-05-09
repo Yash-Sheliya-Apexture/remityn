@@ -213,7 +213,6 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
             {/* Header */}
             <div className="sm:p-6 p-4 border-b">
               <h3 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white my-6 flex items-center">
-                <AlertTriangle size={28} className="mr-3 text-red-500" />
                 Confirm Deletion
               </h3>
               <p className="text-gray-500 dark:text-gray-300 font-medium">
@@ -262,7 +261,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
                 type="button"
                 onClick={onClose}
                 disabled={isLoading}
-                className="bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-8 py-3 h-[48px] leading-5 text-center w-full sm:w-auto cursor-pointer transition-all duration-75 ease-linear"
+                className="bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox  dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-8 py-3 h-[48px] leading-5 text-center w-full cursor-pointer transition-all duration-75 ease-linear"
               >
                 Cancel
               </button>
@@ -270,7 +269,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
                 type="button"
                 onClick={onConfirm}
                 disabled={isLoading}
-                className="flex items-center justify-center bg-red-600 text-white hover:bg-red-700 font-medium rounded-full px-8 py-3 h-[48px] leading-5 text-center w-full sm:w-auto cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center justify-center bg-red-600 text-white hover:bg-red-700 font-medium rounded-full px-8 py-3 h-[48px] leading-5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading && <SvgLoader />}
                 {isLoading ? "Deleting..." : "Delete Message"}

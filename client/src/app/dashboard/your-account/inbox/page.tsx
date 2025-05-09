@@ -3890,7 +3890,6 @@
 //                 <div className="flex items-center gap-1">
 //                   <Skeleton className="h-4 w-12" />
 //                   <Skeleton className="p-1 rounded-full" />
-
 //                   <Skeleton className="h-4 w-12" />
 //                 </div>
 //               )}
@@ -4105,6 +4104,7 @@ import Pagination from "../../components/Pagination";
 import { GoDotFill } from "react-icons/go";
 import { FaRegCommentDots } from "react-icons/fa";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MdOutlineAccessTime } from "react-icons/md";
 
 const MESSAGES_PER_PAGE = 10;
 
@@ -4408,10 +4408,10 @@ const InboxPage: React.FC = () => {
   }
 
   return (
-    <section className="Your-Inbox py-5 md:py-10">
-      <div className="max-w-5xl mx-auto">
-        <div className="flex items-center justify-between mb-8 gap-4 px-4 sm:px-0">
-          <div className="flex items-center gap-3 ">
+    <section className="Your-Inbox ">
+      <div className="container mx-auto">
+        <div className="flex flex-row justify-between items-start md:items-center gap-4 pb-8 sticky lg:top-28 top-20 z-10 bg-white dark:bg-background">
+          <div className="flex items-center gap-3">
             <div className="bg-primary p-2 rounded-md">
               <Inbox className="text-neutral-900" size={28} />
             </div>
@@ -4474,12 +4474,12 @@ const InboxPage: React.FC = () => {
         </div>
 
         {error && !(loading && isInitialLoad.current) && (
-          <div className="mb-6 px-4 sm:px-0">
+          <div className="mb-6">
             <InboxErrorState error={error} onRetry={handleRefresh} />
           </div>
         )}
 
-        <div className="relative px-4 sm:px-0">
+        <div className="relative">
           {selectedMessage ? (
             <InboxMessageDetailView
               message={selectedMessage}
@@ -4494,11 +4494,16 @@ const InboxPage: React.FC = () => {
                   {!loading &&
                     !hasMessagesInTotal &&
                     !isInitialLoad.current && (
-                      <div className="bg-lightgray dark:bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
+                      <motion.div // <-- MODIFIED: Added motion.div for animation
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: 0.1 }} // Sensible transition
+                        className="bg-lightgray dark:bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center"
+                      >
                         <div className="lg:size-16 size-14 flex items-center justify-center bg-primary dark:bg-transparent dark:bg-gradient-to-t dark:from-primary rounded-full mb-2">
                           <Inbox className="lg:size-8 size-6 mx-auto text-neutral-900 dark:text-primary" />
                         </div>
-                        <h2 className="lg:text-3xl text-2xl font-medium capitalize text-neutral-900 dark:text-white mt-1">
+                        <h2 className="lg:text-3xl text-2xl font-medium text-neutral-900 dark:text-white mt-1">
                           All Messages Clear!
                         </h2>
                         <p className="text-gray-500 dark:text-gray-300 max-w-lg mx-auto">
@@ -4506,8 +4511,9 @@ const InboxPage: React.FC = () => {
                           important updates will show up here as soon as they
                           arrive.
                         </p>
-                      </div>
+                      </motion.div>
                     )}
+
                   {hasMessagesInTotal && (
                     <div className="space-y-4">
                       {unreadMessages.length > 0 && (
@@ -4526,6 +4532,7 @@ const InboxPage: React.FC = () => {
                               </span>
                             </h2>
                           </div>
+
                           <div className="space-y-3">
                             {unreadMessages.map((message, index) => (
                               <motion.div
@@ -4561,7 +4568,7 @@ const InboxPage: React.FC = () => {
                                 className="dark:text-white text-neutral-900"
                                 size={28}
                               />
-                            </div>
+                            </div >
                             <h2 className="text-xl font-medium dark:text-white text-mainheading">
                               Previous Messages
                               <span className="ml-2 text-xs font-semibold dark:bg-primary bg-lightborder dark:text-neutral-900 text-primary px-1.5 py-0.5 rounded-full inline-flex items-center justify-center min-w-[20px]">

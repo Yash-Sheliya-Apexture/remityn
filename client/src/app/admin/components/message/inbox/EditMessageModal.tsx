@@ -315,7 +315,7 @@ const EditMessageModal: React.FC<EditMessageModalProps> = ({
                 type="button"
                 onClick={onClose}
                 disabled={isLoading}
-                className="bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-8 py-3 h-[48px] leading-5 text-center w-full sm:w-auto cursor-pointer transition-all duration-75 ease-linear"
+                className="bg-neutral-900 hover:bg-neutral-700 text-primary w-full dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-8 py-3 h-[48px] leading-5 text-center cursor-pointer transition-all duration-75 ease-linear"
               >
                 Cancel
               </button>
@@ -327,7 +327,7 @@ const EditMessageModal: React.FC<EditMessageModalProps> = ({
                   !editSubject.trim() ||
                   !editBody.trim()
                 }
-                className="flex items-center justify-center bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-8 py-3 h-[48px] leading-5 text-center w-full sm:w-auto cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center justify-center bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-8 py-3 h-[48px] leading-5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading && <SvgLoader />}
                 {isLoading ? "Saving..." : "Save Changes"}

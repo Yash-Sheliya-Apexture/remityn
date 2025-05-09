@@ -747,7 +747,12 @@ import {
 } from "lucide-react";
 import { IoClose } from "react-icons/io5";
 import { FiSearch } from "react-icons/fi";
-import { MdCancel } from "react-icons/md";
+import {
+  MdCancel,
+  MdCurrencyBitcoin,
+  MdCurrencyRupee,
+  MdOutlineAccessTime,
+} from "react-icons/md";
 import { IoMdAdd, IoMdCloseCircle } from "react-icons/io";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -1230,18 +1235,16 @@ const AdminCurrenciesPage: React.FC = () => {
             <Loader2 size={60} className="text-neutral-900 animate-spin" />
           </div>
         ) : filteredCurrencies.length === 0 ? (
-          <div className="p-8 text-center rounded-lg shadow-sm border">
-            <div className="flex justify-center items-center">
-              {/* <IoWarningOutline className="text-error size-20  mx-auto mb-6" /> */}
-              <Image
-                src="/assets/images/money-bag-removebg-preview.png"
-                width={250}
-                height={250}
-                alt="No currencies found illustration" // Improved alt text
-              />
+          <div className="bg-lightgray dark:bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
+            <div className="lg:size-16 size-14 flex items-center justify-center bg-primary dark:bg-transparent dark:bg-gradient-to-t dark:from-primary rounded-full mb-2">
+              <MdCurrencyRupee className="lg:size-8 size-6 mx-auto text-neutral-900 dark:text-primary" />
             </div>
-            <p className="text-neutral-900 font-medium text-xl dark:text-white capitalize">
-              No currencies found. You can add one using the button above.
+            <h2 className="lg:text-3xl text-2xl font-medium text-neutral-900 dark:text-white mt-1">
+              No currencies found
+            </h2>
+            <p className="text-gray-500 dark:text-gray-300 max-w-lg mx-auto">
+              Currently, there are no currencies available with related
+              descriptions at this time. 
             </p>
           </div>
         ) : (
@@ -1409,6 +1412,7 @@ const AdminCurrenciesPage: React.FC = () => {
                 animate="animate"
                 exit="exit"
               >
+                {/* Header */}
                 <div className="absolute sm:top-2 sm:right-2 top-1 right-1">
                   <button
                     className="p-3 bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer focus:outline-none"
@@ -1615,7 +1619,6 @@ const AdminCurrenciesPage: React.FC = () => {
                     ) : null}
                     {isSubmitting ? "Adding..." : "Add Currency"}
                   </button>
-
                 </div>
               </motion.div>
             </motion.div>

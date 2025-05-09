@@ -3403,15 +3403,13 @@ const LoadingSkeleton = () => (
     {" "}
     {/* Container and padding */}
     {/* Header Skeleton */}
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4 animate-pulse">
-      <div>
-        <Skeleton className="h-4 w-64 mb-3 rounded-sm" />{" "}
-        {/* Breadcrumbs Skeleton */}
-        <Skeleton className="h-8 w-48 rounded-sm" /> {/* Title Skeleton */}
-      </div>
-      <Skeleton className="h-6 w-32 rounded self-start sm:self-center" />{" "}
-      {/* Back Button Skeleton */}
-    </div>
+   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+             <div>
+               <Skeleton className="h-4 w-64 mb-3 rounded " /> {/* Breadcrumbs */}
+               <Skeleton className="h-8 w-48 rounded " /> {/* Title */}
+             </div>
+             <Skeleton className="h-9 w-32 rounded-md " /> {/* Back Button */}
+           </div>
     {/* Overview Card Skeleton (as div) */}
     <div className="bg-lightgray dark:bg-primarybox rounded-xl  sm:p-6 p-4 mb-8">
       {" "}
