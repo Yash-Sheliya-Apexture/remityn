@@ -3543,7 +3543,6 @@
 // import { GoDotFill } from "react-icons/go";
 // import { FaRegCommentDots } from "react-icons/fa"; // FaComments was unused, removed
 // import { Skeleton } from "@/components/ui/skeleton";
-// import { MdOutlineAccessTime } from "react-icons/md";
 
 // const MESSAGES_PER_PAGE = 10;
 
@@ -3849,10 +3848,10 @@
 //   }
 
 //   return (
-//     <section className="Your-Inbox ">
-//       <div className="container mx-auto">
-//         <div className="flex flex-row justify-between items-start md:items-center gap-4 pb-8 sticky lg:top-28 top-20 z-10 bg-white dark:bg-background">
-//           <div className="flex items-center gap-3">
+//     <section className="Your-Inbox py-5 md:py-10">
+//       <div className="max-w-5xl mx-auto">
+//         <div className="flex items-center justify-between mb-8 gap-4 px-4 sm:px-0">
+//           <div className="flex items-center gap-3 ">
 //             <div className="bg-primary p-2 rounded-md">
 //               <Inbox className="text-neutral-900" size={28} />
 //             </div>
@@ -3886,7 +3885,6 @@
 //                   )}
 //                 </div>
 //               )}
-
 //               {/* This loader is for the header count area during refresh/pagination */}
 //               {loading && !isInitialLoad.current && (
 //                 <div className="flex items-center gap-1">
@@ -3917,12 +3915,12 @@
 //         </div>
 
 //         {error && !(loading && isInitialLoad.current) && (
-//           <div className="mb-6">
+//           <div className="mb-6 px-4 sm:px-0">
 //             <InboxErrorState error={error} onRetry={handleRefresh} />
 //           </div>
 //         )}
 
-//         <div className="relative">
+//         <div className="relative px-4 sm:px-0">
 //           {selectedMessage ? (
 //             <InboxMessageDetailView
 //               message={selectedMessage}
@@ -3934,8 +3932,6 @@
 //             !error && (
 //               <>
 //                 <motion.div key={listAnimationKey}>
-
-//                   {/* Massage Clear */}
 //                   {!loading &&
 //                     !hasMessagesInTotal &&
 //                     !isInitialLoad.current && (
@@ -3943,7 +3939,7 @@
 //                         <div className="lg:size-16 size-14 flex items-center justify-center bg-primary dark:bg-transparent dark:bg-gradient-to-t dark:from-primary rounded-full mb-2">
 //                           <Inbox className="lg:size-8 size-6 mx-auto text-neutral-900 dark:text-primary" />
 //                         </div>
-//                         <h2 className="lg:text-3xl text-2xl font-medium text-neutral-900 dark:text-white mt-1">
+//                         <h2 className="lg:text-3xl text-2xl font-medium capitalize text-neutral-900 dark:text-white mt-1">
 //                           All Messages Clear!
 //                         </h2>
 //                         <p className="text-gray-500 dark:text-gray-300 max-w-lg mx-auto">
@@ -3953,7 +3949,6 @@
 //                         </p>
 //                       </div>
 //                     )}
-
 //                   {hasMessagesInTotal && (
 //                     <div className="space-y-4">
 //                       {unreadMessages.length > 0 && (
@@ -3972,7 +3967,6 @@
 //                               </span>
 //                             </h2>
 //                           </div>
-
 //                           <div className="space-y-3">
 //                             {unreadMessages.map((message, index) => (
 //                               <motion.div
@@ -4079,6 +4073,8 @@
 
 // export default InboxPage;
 
+
+
 "use client";
 import React, {
   useState,
@@ -4087,34 +4083,34 @@ import React, {
   useMemo,
   useRef,
 } from "react";
-import { useAuth } from "@/app/contexts/AuthContext";
-import inboxService from "../../../services/inbox"; // Adjust path if necessary
-import type { InboxMessage, InboxListResponse } from "../../../services/inbox"; // Adjust path if necessary
+import { useAuth } from "@/app/contexts/AuthContext"; // Ensure this path is correct, or use relative path if needed
+import inboxService from "../../../services/inbox";
+import type { InboxMessage, InboxListResponse } from "../../../services/inbox";
 import { Separator } from "@/components/ui/separator";
 import {
   Inbox,
   RefreshCw,
   Bell,
   AlertCircle,
-  Loader2, // Kept for potential future use, not actively used for button
+  Loader2,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
-// Import the sub-components (adjust paths as needed)
 import { InboxSkeleton } from "../../components/inbox/InboxSkeleton";
 import { InboxErrorState } from "../../components/inbox/InboxErrorState";
 import { InboxMessageListItem } from "../../components/inbox/InboxMessageListItem";
 import { InboxMessageDetailView } from "../../components/inbox/InboxMessageDetailView";
-import Pagination from "../../components/Pagination"; // Ensure this path is correct
+import Pagination from "../../components/Pagination";
 import { GoDotFill } from "react-icons/go";
-import { FaRegCommentDots } from "react-icons/fa"; // FaComments was unused, removed
+import { FaRegCommentDots } from "react-icons/fa";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MdOutlineAccessTime } from "react-icons/md";
 
 const MESSAGES_PER_PAGE = 10;
 
 const InboxPage: React.FC = () => {
-  const { user, loading: authLoading } = useAuth();
+  // Destructure fetchUnreadInboxCount from useAuth
+  const { user, loading: authLoading, fetchUnreadInboxCount } = useAuth();
   const [inboxData, setInboxData] = useState<InboxListResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [actionLoading, setActionLoading] = useState<Record<string, boolean>>(
@@ -4126,29 +4122,21 @@ const InboxPage: React.FC = () => {
     null
   );
   const isInitialLoad = useRef(true);
-  const [listAnimationKey, setListAnimationKey] = useState(0); // For refresh animation
+  const [listAnimationKey, setListAnimationKey] = useState(0);
 
   const fetchInbox = useCallback(
     async (page: number, isRefresh: boolean = false) => {
-      setLoading(true); // This will trigger the spinner if the refresh button called this
+      setLoading(true);
       setError(null);
 
       try {
-        console.log(
-          `Fetching inbox page ${page}... (isInitialLoad.current: ${isInitialLoad.current}, isRefresh: ${isRefresh})`
-        );
         const data = await inboxService.getMyMessages(page, MESSAGES_PER_PAGE);
-        console.log("Inbox data received:", data);
         setInboxData(data);
         if (data.currentPage !== page) {
           setTimeout(() => setCurrentPage(data.currentPage), 0);
         }
         if (isRefresh) {
           setListAnimationKey((prev) => prev + 1);
-          console.log(
-            "Refresh successful, updated listAnimationKey to:",
-            listAnimationKey + 1
-          );
         }
       } catch (err: any) {
         console.error("Failed to fetch inbox:", err);
@@ -4164,33 +4152,20 @@ const InboxPage: React.FC = () => {
         if (isInitialLoad.current) {
           isInitialLoad.current = false;
         }
-        console.log(
-          "Fetch inbox finished, loading set to false, isInitialLoad.current is now:",
-          isInitialLoad.current
-        );
       }
     },
-    [] // listAnimationKey is not a dependency here as we use functional update
+    []
   );
 
   useEffect(() => {
-    console.log("InboxPage Effect triggered:", {
-      authLoading,
-      user,
-      currentPage,
-    });
-
     if (authLoading) {
-      console.log("Auth is loading, waiting...");
       if (!loading && isInitialLoad.current) setLoading(true);
       return;
     }
 
     if (user) {
-      console.log("User found, fetching inbox for page:", currentPage);
       fetchInbox(currentPage, false);
     } else {
-      console.log("No user found, setting error and stopping loading.");
       setError("Please log in to view your inbox.");
       setLoading(false);
       setInboxData(null);
@@ -4199,7 +4174,7 @@ const InboxPage: React.FC = () => {
         isInitialLoad.current = false;
       }
     }
-  }, [authLoading, user, currentPage, fetchInbox]); // fetchInbox added as dependency
+  }, [authLoading, user, currentPage, fetchInbox]);
 
   const handleActionStart = (messageId: string) => {
     setActionLoading((prev) => ({ ...prev, [messageId]: true }));
@@ -4239,6 +4214,12 @@ const InboxPage: React.FC = () => {
 
       try {
         await inboxService.markAsRead(message._id);
+        // ---- MODIFICATION: Refresh global unread count ----
+        if (fetchUnreadInboxCount) {
+            await fetchUnreadInboxCount();
+            console.log("InboxPage: Unread count refreshed after marking message as read.");
+        }
+        // ---- END MODIFICATION ----
       } catch (err) {
         console.error("Failed to mark as read:", err);
         setError("Failed to update message status. Please try refreshing.");
@@ -4248,7 +4229,7 @@ const InboxPage: React.FC = () => {
         handleActionEnd(message._id);
       }
     },
-    [inboxData, selectedMessage, actionLoading]
+    [inboxData, selectedMessage, actionLoading, fetchUnreadInboxCount] // Added fetchUnreadInboxCount
   );
 
   const handleDelete = useCallback(
@@ -4261,6 +4242,16 @@ const InboxPage: React.FC = () => {
         ? structuredClone(selectedMessage)
         : null;
       const isDeletingSelected = selectedMessage?._id === messageId;
+
+      // ---- MODIFICATION: Determine if the message was unread BEFORE optimistic update ----
+      let wasMessageUnread = false;
+      if (originalData) { // originalData might be null if inbox hasn't loaded
+          const messageToDelete = originalData.messages.find(msg => msg._id === messageId);
+          if (messageToDelete && !messageToDelete.isRead) {
+              wasMessageUnread = true;
+          }
+      }
+      // ---- END MODIFICATION ----
 
       let pageToNavigateTo = currentPage;
       let shouldRefetchCurrentPage = false;
@@ -4315,16 +4306,23 @@ const InboxPage: React.FC = () => {
       try {
         await inboxService.deleteMessage(messageId);
 
+        // ---- MODIFICATION: Refresh global unread count if an unread message was deleted ----
+        if (wasMessageUnread && fetchUnreadInboxCount) {
+            await fetchUnreadInboxCount();
+            console.log("InboxPage: Unread count refreshed after deleting an unread message.");
+        }
+        // ---- END MODIFICATION ----
+
         if (pageToNavigateTo !== currentPage) {
           setTimeout(() => setCurrentPage(pageToNavigateTo), 0);
         } else if (shouldRefetchCurrentPage) {
           setTimeout(() => fetchInbox(currentPage, false), 0);
         } else if (
           inboxData &&
-          inboxData.totalMessages - 1 === 0 &&
+          (inboxData.totalMessages - 1 === 0) && // Check previous totalMessages correctly
           currentPage === 1
         ) {
-          // UI will update to empty state
+          // UI will update to empty state due to inboxData.totalMessages becoming 0
         }
       } catch (err: any) {
         console.error("Failed to delete message:", err);
@@ -4339,13 +4337,15 @@ const InboxPage: React.FC = () => {
         handleActionEnd(messageId);
       }
     },
-    [inboxData, selectedMessage, currentPage, actionLoading, fetchInbox]
+    [inboxData, selectedMessage, currentPage, actionLoading, fetchInbox, fetchUnreadInboxCount] // Added fetchUnreadInboxCount
   );
 
   const handleSelectMessage = useCallback(
     (message: InboxMessage) => {
       setSelectedMessage(message);
       if (!message.isRead) {
+        // Add a small delay to allow detail view to render before marking as read,
+        // or call handleMarkRead directly if immediate marking is preferred.
         setTimeout(() => handleMarkRead(message), 50);
       }
     },
@@ -4367,11 +4367,8 @@ const InboxPage: React.FC = () => {
 
   const handleRefresh = useCallback(() => {
     if (loading) return;
-    console.log(
-      "Refresh triggered. isInitialLoad.current should be false. Calling fetchInbox with isRefresh=true"
-    );
     setSelectedMessage(null);
-    fetchInbox(currentPage, true); // This will set loading = true
+    fetchInbox(currentPage, true);
   }, [loading, currentPage, fetchInbox]);
 
   const { unreadMessages, readMessages } = useMemo(() => {
@@ -4391,14 +4388,10 @@ const InboxPage: React.FC = () => {
   const hasMessagesInTotal = totalMessages > 0;
 
   if (authLoading || (loading && isInitialLoad.current && !error)) {
-    console.log(
-      "Rendering InboxSkeleton due to authLoading or initial data load."
-    );
     return <InboxSkeleton />;
   }
 
   if (!authLoading && !user) {
-    console.log("Rendering Access Denied / Not Logged In");
     return (
       <section className="Your-Inbox py-5 md:py-10">
         <div className="max-w-4xl mx-auto px-4 text-center">
@@ -4452,8 +4445,6 @@ const InboxPage: React.FC = () => {
                   )}
                 </div>
               )}
-
-              {/* This loader is for the header count area during refresh/pagination */}
               {loading && !isInitialLoad.current && (
                 <div className="flex items-center gap-1">
                   <Skeleton className="h-4 w-12" />
@@ -4473,7 +4464,7 @@ const InboxPage: React.FC = () => {
               >
                 <RefreshCw
                   className={`size-5 ${
-                    loading && !isInitialLoad.current ? "animate-spin" : ""
+                    loading && !isInitialLoad.current ? "animate-spin" : "" // Adjusted to only spin on non-initial loads
                   }`}
                 />
                 <span className="hidden sm:inline">Refresh</span>
@@ -4647,4 +4638,3 @@ const InboxPage: React.FC = () => {
 };
 
 export default InboxPage;
-  
