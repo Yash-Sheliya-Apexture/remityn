@@ -6313,7 +6313,7 @@ const TransactionDetailsPage = () => {
                 { id: "setup", label: "You set up your transfer", status: "completed", date: createdDate },
                 { id: "funded", label: `We've taken funds from your ${transfer.sendCurrency?.code || "account"}`, status: "pending", date: undefined },
                 { id: "processing", label: `Your money's being processed`, status: "pending", date: undefined },
-                { id: "delivered", label: `Your money's been sent out to ${transfer.recipient?.accountHolderName || 'recipient'}'s bank`, status: "pending", date: undefined, info: `It should react their bank soon. But banks can be slow - it could take them 2 hours to process yor transfer` }, // Add estimate if available
+                { id: "delivered", label: `Your money's been sent out to ${transfer.recipient?.accountHolderName || 'recipient'}'s bank`, status: "pending", date: undefined, info: `The recipient’s bank should receive the funds shortly. However, please note that some banks may take up to 2 hours to process the transaction.` }, // Add estimate if available
                 { id: "received", label: `${transfer.recipient?.accountHolderName || 'Recipient'} received your ${transfer.receiveCurrency?.code || 'money'}`, status: "pending", date: undefined },
             ];
 
