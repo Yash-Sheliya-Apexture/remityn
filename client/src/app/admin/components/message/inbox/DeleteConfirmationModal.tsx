@@ -215,6 +215,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
               <h3 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white my-6 flex items-center">
                 Confirm Deletion
               </h3>
+              
               <p className="text-gray-500 dark:text-gray-300 font-medium">
                 Are you sure you want to permanently delete this message? This action cannot be undone.
               </p>
