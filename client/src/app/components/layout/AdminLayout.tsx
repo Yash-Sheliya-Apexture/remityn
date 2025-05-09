@@ -323,15 +323,16 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   return (
-    <div className="flex h-dvh">
+    <div className="admin-layout">
+    <div className="flex min-h-screen">
       {/* Left Sidebar */}
       <AdminSidebar
         isSidebarOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
       />
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex flex-col flex-grow lg:w-[calc(100%-256px)] w-full">
         <AdminHeader toggleSidebar={toggleSidebar} />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto sm:[&::-webkit-scrollbar]:w-3 sm:[&::-webkit-scrollbar]:h-3 sm:[&::-webkit-scrollbar-track]:bg-gray-100 sm:[&::-webkit-scrollbar-thumb]:bg-lightborder sm:dark:[&::-webkit-scrollbar-track]:bg-primarybox sm:dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
+        <main className="flex-grow overflow-x-hidden overflow-y-auto sm:[&::-webkit-scrollbar]:w-3 sm:[&::-webkit-scrollbar]:h-3 sm:[&::-webkit-scrollbar-track]:bg-gray-100 sm:[&::-webkit-scrollbar-thumb]:bg-lightborder sm:dark:[&::-webkit-scrollbar-track]:bg-primarybox sm:dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
           {/* Increased padding for content area */}
           {children}
         </main>
@@ -342,6 +343,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           className="fixed inset-0 bg-black/50 dark:bg-white/30 z-40 lg:hidden" // Adjusted backdrop blur
         ></div>
       )}
+    </div>
     </div>
   );
 }
