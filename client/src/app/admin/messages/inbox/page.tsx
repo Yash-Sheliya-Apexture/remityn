@@ -2945,6 +2945,8 @@ const AdminInboxPage: React.FC = () => {
         onClearFilters={handleClearInboxFilters}
         currencyOptions={currencyOptionsForFilter}
         statusOptions={statusOptionsForFilter}
+
+        searchTermPlaceholder="Search User ID or Name..."
         
         recipientFilterLabel="Sender" 
         recipientFilterPlaceholder="Filter by Sender Name"

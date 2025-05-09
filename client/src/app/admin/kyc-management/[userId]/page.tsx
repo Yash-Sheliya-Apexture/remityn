@@ -2886,7 +2886,7 @@ const KycUserDetailPage: React.FC = () => {
                   />
                 </button>
               </div>
-              
+
               <h3
                 id="rejection-modal-title"
                 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white text-left my-6"
@@ -2898,7 +2898,7 @@ const KycUserDetailPage: React.FC = () => {
                 Provide a clear reason for rejection. This will be visible to
                 the user.
               </p>
-              
+
               <div className="space-y-2 text-left mb-6">
                 <Label
                   htmlFor="rejectionReasonInput"
@@ -2907,20 +2907,22 @@ const KycUserDetailPage: React.FC = () => {
                   Reason <span className="text-destructive">*</span>
                 </Label>
 
-                <textarea
-                  id="rejectionReasonInput"
-                  rows={4}
-                  value={rejectionReason}
-                  onChange={(e) => {
-                    setRejectionReason(e.target.value);
-                    if (actionError && e.target.value.trim())
-                      setActionError(null);
-                  }}
-                  placeholder="E.g., ID document blurry, Information mismatch, Expired document..."
-                  className="mt-1 block min-h-[150px] px-4 py-3 bg-white focus:border-[#5f5f5f] dark:bg-background h-14 w-full border focus:outline-none rounded-lg transition-all ease-linear duration-75"
-                  aria-describedby="rejection-error"
-                  disabled={!!isProcessingAction}
-                />
+                <div className="mt-1 overflow-y-auto rounded-lg">
+                  <textarea
+                    id="rejectionReasonInput"
+                    rows={4}
+                    value={rejectionReason}
+                    onChange={(e) => {
+                      setRejectionReason(e.target.value);
+                      if (actionError && e.target.value.trim())
+                        setActionError(null);
+                    }}
+                    placeholder="E.g., ID document blurry, Information mismatch, Expired document..."
+                    className="min-h-[150px] resize-none sm:[&::-webkit-scrollbar]:w-2 sm:[&::-webkit-scrollbar]:h-3 sm:[&::-webkit-scrollbar-track]:rounded-full sm:[&::-webkit-scrollbar-track]:bg-gray-100 sm:[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-lightborder sm:dark:[&::-webkit-scrollbar-track]:bg-primarybox sm:dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox block px-4 py-3 bg-white dark:bg-background h-14 w-full transition-all border rounded-lg focus:outline-none focus:border-[#5f5f5f] ease-linear duration-75"
+                    aria-describedby="rejection-error"
+                    disabled={!!isProcessingAction}
+                  />
+                </div>
                 {actionError && (
                   <p
                     id="rejection-error"

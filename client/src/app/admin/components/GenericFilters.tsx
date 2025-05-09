@@ -3038,6 +3038,8 @@ interface GenericFiltersProps {
   currencyOptions: string[]; // Expects ['all', 'USD', 'EUR', ...]
   statusOptions: string[]; // Expects ['all', 'pending', 'completed', ...] - Use string array
   // Optional props to customize labels/placeholders if needed
+  searchTermLabel?: string; // Added search term label prop
+  searchTermPlaceholder?: string; // Added search term placeholder prop
   idFilterLabel?: string;
   idFilterPlaceholder?: string;
   amountFilterLabel?: string;
@@ -3053,6 +3055,8 @@ interface GenericFiltersProps {
   showCurrencyFilter?: boolean; // Control visibility of currency filter
   showStatusFilter?: boolean; // Control visibility of status filter
   showDateFilter?: boolean; // Control visibility of date filter
+  showSearchTermFilter?: boolean; // Control visibility of search term filter
+
   // Labels for the 'all' options
   allCurrenciesLabel?: string;
   allStatusesLabel?: string;
@@ -3067,6 +3071,8 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
   currencyOptions,
   statusOptions,
   // Default labels/placeholders
+  searchTermLabel = "Search Term", // Default search term label
+  searchTermPlaceholder = "Search ID, Name, Email...", // Default search term placeholder
   idFilterLabel = "ID Filter",
   idFilterPlaceholder = "Filter by ID",
   amountFilterLabel = "Amount",
@@ -3083,6 +3089,7 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
   showCurrencyFilter = true,
   showStatusFilter = true,
   showDateFilter = true,
+  showSearchTermFilter = true, // Default to show search term filter
   // Labels for 'all' options
   allCurrenciesLabel = "All Currencies", // Default text for 'all' currency
   allStatusesLabel = "All Statuses", // Default text for 'all' status
@@ -3263,19 +3270,21 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
               }`}
             >
               {/* Search Term Filter (remains the same) */}
-              <div className="mb-4">
-                <h4 className={labelClassName}>Search Term</h4>
-                <div className={inputWrapperClassName}>
-                  <input
-                    type="text"
-                    id="searchTermFilter"
-                    value={tempSearchTerm}
-                    onChange={(e) => setTempSearchTerm(e.target.value)}
-                    placeholder="Search ID, Name, Email, Ref..."
-                    className={inputClassName}
-                  />
+              {showSearchTermFilter && (
+                <div className="mb-4">
+                  <h4 className={labelClassName}>{searchTermLabel}</h4>
+                  <div className={inputWrapperClassName}>
+                    <input
+                      type="text"
+                      id="searchTermFilter"
+                      value={tempSearchTerm}
+                      onChange={(e) => setTempSearchTerm(e.target.value)}
+                      placeholder={searchTermPlaceholder}
+                      className={inputClassName}
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* ID Filter (remains the same) */}
               {showIdFilter && (

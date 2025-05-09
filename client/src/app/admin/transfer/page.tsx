@@ -2339,6 +2339,7 @@ const AdminTransfersPage: React.FC = () => {
           currencyOptions={currencyOptions} // Pass transfer currencies
           statusOptions={statusOptions} // Pass transfer statuses (as strings)
           // Customize labels/visibility for Transfers
+          searchTermPlaceholder="Search User Name, Email or Recipient..."
           idFilterLabel="Transfer ID"
           idFilterPlaceholder="Filter by Transfer ID"
           recipientFilterLabel="Recipient Name"

@@ -1311,7 +1311,7 @@ const AdminCurrenciesPage: React.FC = () => {
                         onChange={handleEditingInputChange}
                         placeholder="e.g., 0.5 or +0.1"
                         step="any"
-                        className="text-base font-semibold text-gray-800 dark:text-white border-b border-primary focus:outline-none bg-transparent w-full py-0.5"
+                        className="text-base font-semibold text-gray-800 dark:text-white border-b border-primary focus:outline-none bg-transparent w-full py-0.5 no-spinner"
                       />
                     ) : (
                       <p

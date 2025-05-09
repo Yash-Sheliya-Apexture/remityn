@@ -8179,7 +8179,7 @@ const AdminEditCurrencyPage = () => {
                   value={formState.flagImage}
                   onChange={handleChange}
                   placeholder="/assets/icon/flags/eur.png or https://..."
-                  className="mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75"
+                  className="mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none focus:border-[#5f5f5f] ease-linear duration-75"
                 />
                 {formState.flagImage && !flagImageError && (
                   <div className="absolute right-3 top-1/2 -translate-y-1/2 size-8 pointer-events-none">
@@ -8353,6 +8353,8 @@ const AdminEditCurrencyPage = () => {
                 <span className="text-red-600">*</span>
               </label>
 
+              <div className="mt-2 overflow-y-auto rounded-lg">
+
               <textarea
                 id="bankAddress"
                 name="bankAddress"
@@ -8360,8 +8362,9 @@ const AdminEditCurrencyPage = () => {
                 placeholder="Full address of the recipient's bank"
                 value={formState.bankAddress}
                 onChange={handleChange}
-                className="mt-2 block px-4 py-3 bg-white dark:bg-background focus:border-[#5f5f5f] w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75"
+                className="min-h-[100px] resize-none sm:[&::-webkit-scrollbar]:w-2 sm:[&::-webkit-scrollbar]:h-3 sm:[&::-webkit-scrollbar-track]:rounded-full sm:[&::-webkit-scrollbar-track]:bg-gray-100 sm:[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-lightborder sm:dark:[&::-webkit-scrollbar-track]:bg-primarybox sm:dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox block px-4 py-3 bg-white dark:bg-background h-14 w-full transition-all border rounded-lg focus:outline-none focus:border-[#5f5f5f] ease-linear duration-75"
               ></textarea>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -8406,7 +8409,7 @@ const AdminEditCurrencyPage = () => {
                   onChange={handleChange}
                   step="any"
                   min="0"
-                  className="mt-2 block px-4 py-3 bg-white dark:bg-background h-14 w-full border focus:border-[#5f5f5f] rounded-lg transition-all focus:outline-none ease-linear duration-75"
+                  className="mt-2 block px-4 py-3 bg-white dark:bg-background h-14 w-full border focus:border-[#5f5f5f] rounded-lg transition-all focus:outline-none ease-linear duration-75 no-spinner"
                   placeholder="e.g., 0.5"
                 />
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
@@ -8435,7 +8438,7 @@ const AdminEditCurrencyPage = () => {
                   onChange={handleChange}
                   step="any"
                   min="0"
-                  className="mt-2 block px-4 py-3 bg-white dark:bg-background h-14 w-full border focus:border-[#5f5f5f] rounded-lg transition-all focus:outline-none ease-linear duration-75"
+                  className="mt-2 block px-4 py-3 bg-white dark:bg-background h-14 w-full border focus:border-[#5f5f5f] rounded-lg transition-all focus:outline-none ease-linear duration-75 no-spinner"
                   placeholder="e.g., 5.00"
                 />
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
@@ -8465,7 +8468,7 @@ const AdminEditCurrencyPage = () => {
                   value={formState.rateAdjustmentPercentage}
                   onChange={handleChange}
                   step="any"
-                  className="mt-2 block px-4 py-3 bg-white dark:bg-background h-14 w-full border focus:border-[#5f5f5f] rounded-lg transition-all focus:outline-none ease-linear duration-75"
+                  className="mt-2 block px-4 py-3 bg-white dark:bg-background h-14 w-full border focus:border-[#5f5f5f] rounded-lg transition-all focus:outline-none ease-linear duration-75 no-spinner"
                   placeholder="e.g., -0.5 or 1.2"
                 />
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
