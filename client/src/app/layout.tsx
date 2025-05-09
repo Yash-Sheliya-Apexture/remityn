@@ -313,7 +313,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
 
             {/* The <body> section: Contains the visible content of the page */}
             <body
-                className="bg-white dark:bg-background text-neutral-900 dark:text-white transition-all duration-75 ease-linear overflow-hidden"
+                className="bg-white dark:bg-background text-neutral-900 dark:text-white transition-all duration-75 ease-linear"
                 suppressHydrationWarning={true} // <-- ADD THIS PROP
             >
                 {/* Authentication Context Provider: Wraps the application to provide auth state */}

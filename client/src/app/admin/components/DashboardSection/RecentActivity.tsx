@@ -662,7 +662,7 @@ export default function RecentActivity() {
 
   return (
     <div className="w-full bg-white dark:bg-primarybox sm:p-6 p-4 rounded-xl border relative overflow-hidden">
-      <div className="flex items-center justify-between mb-5 relative z-10">
+      <div className="flex items-center justify-between mb-5 relative">
         <div className="flex items-center gap-2">
           <ActivityIcon className="h-5 w-5 text-primary" />
           <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">
@@ -692,7 +692,7 @@ export default function RecentActivity() {
         </div>
       </div>
 
-      <div className="space-y-3 relative z-10">
+      <div className="space-y-3 relative">
         {showSkeletons ? ( // Show skeletons for the list if loading OR refreshing
           [...Array(activitiesToDisplayCount)].map((_, i) => (
             <div

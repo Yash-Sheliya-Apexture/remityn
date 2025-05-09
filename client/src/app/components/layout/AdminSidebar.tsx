@@ -3792,7 +3792,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
           <motion.aside
             key="sidebar"
             ref={sidebarRef}
-            className={`w-64 fixed bg-white dark:bg-neutral-900 h-full inset-y-0 left-0 lg:relative lg:translate-x-0 lg:z-auto z-50 border-r dark:border-neutral-700 flex flex-col`}
+            className={`w-64 fixed lg:sticky h-screen bg-white dark:bg-neutral-900 inset-y-0 left-0 lg:translate-x-0 lg:z-auto z-50 border-r dark:border-neutral-700 flex flex-col`}
             variants={sidebarVariants}
             initial={isMobileView ? "closed" : "open"}
             animate={isMobileView ? (isSidebarOpen ? "open" : "closed") : "open"}
