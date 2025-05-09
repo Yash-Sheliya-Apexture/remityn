@@ -115,7 +115,7 @@ import statsAdminService, {
   AdminDashboardStats,
 } from "../../../services/admin/stats.admin"; // Adjust path
 import { TbMoneybag } from "react-icons/tb";
-import { BsSend } from "react-icons/bs";
+import { BsCheck2Circle, BsSend } from "react-icons/bs";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function StatsCards() {
@@ -144,7 +144,7 @@ export default function StatsCards() {
   if (loading) {
     // Skeleton loader remains the same
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 animate-pulse">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
         {[...Array(4)].map((_, i) => (
           <div
             key={i}
@@ -243,7 +243,7 @@ export default function StatsCards() {
   const completedTrendPrefix = completedChangeCount > 0 ? "+" : ""; // Negative sign inherent
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
       {/* Total Users Card */}
       <div className="dark:bg-primarybox sm:p-6 p-4 rounded-xl border">
         <div className="flex justify-between items-start">
@@ -265,7 +265,7 @@ export default function StatsCards() {
             </p>
           </div>
           <div className="bg-blue-100 dark:bg-blue-600/20 p-3 rounded-lg">
-            <Users className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+            <Users className="size-6 text-blue-600 dark:text-blue-400" />
           </div>
         </div>
       </div>
@@ -293,7 +293,7 @@ export default function StatsCards() {
             </p>
           </div>
           <div className="bg-yellow-100 dark:bg-yellow-600/20 p-3 rounded-lg">
-            <TbMoneybag className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
+            <TbMoneybag className="size-6 text-yellow-600 dark:text-yellow-400" />
           </div>
         </div>
       </div>
@@ -316,12 +316,12 @@ export default function StatsCards() {
               )}
               <span>
                 {sendMoneyTrendPrefix}
-                {sendMoneyChange.toFixed(1)}% from yesterday
+                {sendMoneyChange.toFixed(1)}% from yesterday 
               </span>
             </p>
           </div>
           <div className="bg-green-100 dark:bg-green-600/20 p-3 rounded-lg">
-            <BsSend className="h-6 w-6 text-green-600 dark:text-green-400" />
+            <BsSend className="size-6 text-green-600 dark:text-green-400" />
           </div>
         </div>
       </div>
@@ -349,7 +349,7 @@ export default function StatsCards() {
             </p>
           </div>
           <div className="bg-purple-100 dark:bg-purple-600/20 p-3 rounded-lg">
-            <Globe className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+            <BsCheck2Circle  className="size-6 text-purple-600 dark:text-purple-400" />
           </div>
         </div>
       </div>

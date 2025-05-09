@@ -943,7 +943,7 @@ export function VolumeChart({
 
   return (
     <Card
-      className={`flex flex-col h-full dark:bg-primarybox shadow-none ${className}`}
+      className={`flex flex-col h-full dark:bg-primarybox shadow-none border ${className}`}
     >
       <CardHeader className="flex-shrink-0 p-3">
         <div className="flex flex-wrap items-start justify-between gap-2">
