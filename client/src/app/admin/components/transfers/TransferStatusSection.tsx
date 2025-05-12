@@ -552,7 +552,7 @@ const TransferStatusSection: React.FC<TransferStatusSectionProps> = ({
 
   return (
     <div className="bg-white dark:bg-primarybox rounded-xl border overflow-hidden">
-      <div className="bg-lightgray dark:bg-secondarybox px-6 py-4">
+      <div className="bg-lightgray dark:bg-primarybox px-6 py-4">
         <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">Transfer Status</h3>
       </div>
 

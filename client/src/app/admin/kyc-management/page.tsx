@@ -1477,7 +1477,7 @@ const KycManagementPage: React.FC = () => {
     >
       {/* Header: Skeleton or Actual */}
       <div className="px-6 py-4 flex sm:flex-row flex-col items-center justify-between gap-4 bg-lightgray dark:bg-primarybox">
-        {!isLoading ? (
+        {isLoading ? (
           <Skeleton className="h-6 w-36" />
         ) : (
           <h4 className="text-lg font-semibold">
@@ -1723,22 +1723,21 @@ const KycManagementPage: React.FC = () => {
   // --- Component Return ---
   return (
     <div className="min-h-screen bg-white dark:bg-background">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-5">
         {/* Page Header: Skeleton or Actual */}
         <div className="mb-8">
           {isLoading && pendingUsers.length === 0 ? (
             <>
               <Skeleton className="h-10 w-64 mb-3" /> {/* Skeleton for h1 */}
               <Skeleton className="h-4 sm:w-2/3 w-full" />{" "}
-              {/* Skeleton for p */}
             </>
           ) : (
             <>
-              <h1 className="text-2xl font-bold leading-tight text-mainheading dark:text-white sm:text-3xl inline-flex items-center gap-2">
-                <ShieldUser size={28} className="text-primary" />
+              <h1 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
                 KYC Management
               </h1>
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">
+
+              <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg">
                 Review and manage user Know Your Customer (KYC) applications.
               </p>
             </>

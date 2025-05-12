@@ -454,9 +454,6 @@
 //   );
 // }
 
-
-
-
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -486,13 +483,7 @@ type ActivityConfig = {
   bgColor: string;
 };
 
-/**
- * Premium Recent Activity Component
- *
- * Displays the most recent system activity.
- * Design and skeleton for items match ActivityList.tsx.
- * Framer Motion animations have been removed.
- */
+
 export default function RecentActivity() {
   const [activities, setActivities] = useState<ActivityItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true); // For initial load
@@ -665,12 +656,17 @@ export default function RecentActivity() {
   return (
     <div className="lg:w-3/4 w-full bg-white dark:bg-primarybox sm:order-1 order-2 sm:p-6 p-4 rounded-xl border relative overflow-hidden">
       <div className="flex items-center justify-between mb-5 relative">
-        <div className="flex items-center gap-2">
-          <ActivityIcon className="h-5 w-5 text-primary" />
+        <div className="flex gap-3 items-center">
+          <div className="flex justify-center items-center size-12 bg-lightgray dark:bg-primarybox rounded-full">
+            <ActivityIcon className="size-5 text-primary" />
+          </div>
+
           <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">
             Recent Activity
           </h3>
+
         </div>
+
         <div className="flex items-center gap-2">
           {!isMobile && (
             <Link
@@ -680,11 +676,12 @@ export default function RecentActivity() {
               <span>All Activity</span>
             </Link>
           )}
+
           <button
             type="button"
             onClick={handleRefresh}
             disabled={refreshing || loading} // Disable if already refreshing or initial loading
-            className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white h-12.5 w-12.5 rounded-full transition-all duration-75 ease-linear disabled:opacity-60 disabled:cursor-not-allowed"
+            className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white size-10 rounded-full transition-all duration-75 ease-linear disabled:opacity-60 disabled:cursor-not-allowed"
             aria-label="Refresh recent activity"
           >
             <RefreshCw
@@ -774,13 +771,13 @@ export default function RecentActivity() {
         )}
       </div>
       {isMobile && (
-            <Link
-              href="/admin/activity"
-              className="mt-3 flex items-center justify-center cursor-pointer gap-2 bg-primary text-neutral-900 font-medium text-base px-8 py-3 h-12.5 sm:w-auto w-full rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear"
-            >
-              <span>All Activity</span>
-            </Link>
-          )}
+        <Link
+          href="/admin/activity"
+          className="mt-3 flex items-center justify-center cursor-pointer gap-2 bg-primary text-neutral-900 font-medium text-base px-8 py-3 h-12.5 sm:w-auto w-full rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear"
+        >
+          <span>All Activity</span>
+        </Link>
+      )}
     </div>
   );
 }

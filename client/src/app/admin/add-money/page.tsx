@@ -10,7 +10,6 @@
 // import { Search, Filter, ChevronDown, Check, X, Calendar as CalendarIcon, ArrowDownUp, Edit, Copy } from 'lucide-react';
 // import { GiCheckMark } from "react-icons/gi";
 
-
 // axios.defaults.baseURL = apiConfig.baseUrl;
 
 // // Custom Dropdown Component
@@ -70,7 +69,6 @@
 //     );
 // };
 
-
 // // Copy to clipboard hook
 // const useCopyToClipboard = () => {
 //      const [isCopied, setIsCopied] = useState(false);
@@ -94,7 +92,6 @@
 
 //     return { copy, isCopied };
 // };
-
 
 // const AdminPaymentsPage = () => {
 //     const { token } = useAuth();
@@ -134,7 +131,6 @@
 //     // Copy to clipboard hook
 //     const { copy: copyPaymentId, isCopied: isPaymentIdCopied } = useCopyToClipboard();
 //     const { copy: copyReferenceCode, isCopied: isReferenceCodeCopied } = useCopyToClipboard();
-
 
 //     useEffect(() => {
 //         const fetchPayments = async () => {
@@ -188,7 +184,6 @@
 //         if (currencyFilter !== 'all') {
 //             results = results.filter(payment => payment.payInCurrency?.code === currencyFilter);
 //         }
-
 
 //         // Apply status filter
 //         if (statusFilter !== 'all') {
@@ -268,7 +263,6 @@
 //         };
 //     }, [showFilterModal, isEditModalOpen]);
 
-
 //     const toggleSort = (field) => {
 //         if (sortField === field) {
 //             setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -313,11 +307,9 @@
 //         setIsEditModalOpen(true);
 //     };
 
-
 //     const handleStatusDropdownChange = (status) => {
 //         setEditFormData({ ...editFormData, status: status });
 //     };
-
 
 //     const handleSaveEdit = async () => {
 //         if (!selectedPaymentForEdit) return;
@@ -354,7 +346,6 @@
 //             setEditLoading(false);
 //         }
 //     };
-
 
 //     if (loadingPayments) {
 //         return (
@@ -394,7 +385,6 @@
 //              </div>
 //          );
 //      }
-
 
 //      return (
 //          <div className="container mx-auto px-4 py-8 max-w-7xl relative">
@@ -478,7 +468,6 @@
 //                          </motion.div>
 //                      )}
 //                  </AnimatePresence>
-
 
 //                  {/* Payments Table */}
 //                  <div
@@ -686,7 +675,6 @@
 //                  )}
 //              </AnimatePresence>
 
-
 //              {/* Filter Sidebar */}
 //              <AnimatePresence>
 //                  {showFilterModal && (
@@ -753,7 +741,6 @@
 //                                  onChange={setStatusFilter}
 //                                  options={statusOptions}
 //                              />
-
 
 //                              {/* Date Range Filter */}
 //                              <div>
@@ -903,8 +890,6 @@
 
 //  export default AdminPaymentsPage;
 
-
-
 // 'use client';
 // import React, { useState, useEffect, useRef } from 'react';
 // import { useAuth } from '../../hooks/useAuth';
@@ -918,9 +903,7 @@
 // import PaymentFilters from '../components/add-money/PaymentFilters';
 // import PaymentEditModal from '../components/add-money/PaymentEditModal';
 
-
 // axios.defaults.baseURL = apiConfig.baseUrl;
-
 
 // const AdminPaymentsPage = () => {
 //     const { token } = useAuth();
@@ -951,7 +934,6 @@
 //     // Sorting
 //     const [sortField, setSortField] = useState(null);
 //     const [sortDirection, setSortDirection] = useState('asc');
-
 
 //     useEffect(() => {
 //         const fetchPayments = async () => {
@@ -1005,7 +987,6 @@
 //         if (currencyFilter !== 'all') {
 //             results = results.filter(payment => payment.payInCurrency?.code === currencyFilter);
 //         }
-
 
 //         // Apply status filter
 //         if (statusFilter !== 'all') {
@@ -1066,7 +1047,6 @@
 //         setFilteredPayments(results);
 //     }, [payments, searchTerm, statusFilter, dateRange, sortField, sortDirection, paymentIdFilter, amountFilter, currencyFilter]);
 
-
 //     const toggleSort = (field) => {
 //         if (sortField === field) {
 //             setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -1111,7 +1091,6 @@
 //         setIsEditModalOpen(true);
 //     };
 
-
 //     const handleSaveEdit = async () => {
 //         if (!selectedPaymentForEdit) return;
 //         setEditLoading(true);
@@ -1147,7 +1126,6 @@
 //             setEditLoading(false);
 //         }
 //     };
-
 
 //     return (
 //         <div className="container mx-auto px-4 py-8 relative">
@@ -1230,7 +1208,6 @@
 //                     )}
 //                 </AnimatePresence>
 
-
 //                 {/* Payments Table */}
 //                 <PaymentTable
 //                     filteredPayments={filteredPayments}
@@ -1254,7 +1231,6 @@
 //                 handleSaveEdit={handleSaveEdit}
 //                 statusOptions={statusOptions}
 //             />
-
 
 //             {/* Filter Sidebar */}
 //             <PaymentFilters
@@ -1281,7 +1257,6 @@
 // };
 
 // export default AdminPaymentsPage;
-
 
 // // frontend/src/app/admin/payments/page.tsx
 // 'use client';
@@ -1314,7 +1289,6 @@
 //     createdAt: string;
 //     // Add other properties as needed based on your Payment object structure
 // }
-
 
 // const AdminPaymentsPage: React.FC = () => {
 //     const { token } = useAuth();
@@ -1413,7 +1387,6 @@
 //             results = results.filter(payment => payment.payInCurrency?.code === currencyFilter);
 //         }
 
-
 //         // Apply status filter
 //         if (statusFilter !== 'all') {
 //             results = results.filter(payment => payment.status === statusFilter);
@@ -1474,7 +1447,6 @@
 //         setCurrentPage(1); // Reset page to 1 when filters change
 //     }, [payments, searchTerm, statusFilter, dateRange, sortField, sortDirection, paymentIdFilter, amountFilter, currencyFilter]);
 
-
 //     const toggleSort = (field: string) => {
 //         if (sortField === field) {
 //             setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -1518,7 +1490,6 @@
 //         });
 //         setIsEditModalOpen(true);
 //     };
-
 
 //     const handleSaveEdit = async () => {
 //         if (!selectedPaymentForEdit) return;
@@ -1569,7 +1540,6 @@
 //     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 //     const goToPreviousPage = () => setCurrentPage(currentPage > 1 ? currentPage - 1 : currentPage);
 //     const goToNextPage = () => setCurrentPage(currentPage < totalPages ? currentPage + 1 : currentPage);
-
 
 //     return (
 //         <div className="container mx-auto px-4 py-8 relative">
@@ -1715,7 +1685,6 @@
 //                 statusOptions={statusOptions}
 //             />
 
-
 //             {/* Filter Sidebar */}
 //             <PaymentFilters
 //                 showFilterModal={showFilterModal}
@@ -1741,9 +1710,6 @@
 // };
 
 // export default AdminPaymentsPage;
-
-
-
 
 // // frontend/src/app/admin/payments/page.tsx
 // 'use client';
@@ -1915,12 +1881,10 @@
 //              }
 //         }
 
-
 //         // Apply Currency filter
 //         if (currencyFilter !== 'all') {
 //             results = results.filter(payment => payment.payInCurrency?.code === currencyFilter);
 //         }
-
 
 //         // Apply status filter
 //         if (statusFilter !== 'all') {
@@ -2002,7 +1966,6 @@
 //                         valueB = b[sortField as keyof Payment];
 //                 }
 
-
 //                  // Comparison logic
 //                 const comparison = () => {
 //                     if (valueA === valueB) return 0;
@@ -2020,7 +1983,6 @@
 //                     return String(valueA).localeCompare(String(valueB));
 //                 };
 
-
 //                 return sortDirection === 'asc' ? comparison() : comparison() * -1;
 //             });
 //         }
@@ -2030,7 +1992,6 @@
 //             setCurrentPage(1); // Reset page to 1 when filters change
 //         }
 //     }, [payments, searchTerm, statusFilter, dateRange, sortField, sortDirection, paymentIdFilter, amountFilter, currencyFilter]);
-
 
 //     const toggleSort = (field: string) => {
 //         if (sortField === field) {
@@ -2086,7 +2047,6 @@
 //         });
 //         setIsEditModalOpen(true);
 //     };
-
 
 //     const handleSaveEdit = async () => {
 //         if (!selectedPaymentForEdit) return;
@@ -2151,7 +2111,6 @@
 //     };
 //     const goToPreviousPage = () => setCurrentPage(prev => Math.max(1, prev - 1)); // Ensure not going below 1
 //     const goToNextPage = () => setCurrentPage(prev => Math.min(totalPages, prev + 1)); // Ensure not exceeding totalPages
-
 
 //     return (
 //         <div className="container mx-auto px-4 py-8 relative">
@@ -2271,7 +2230,6 @@
 //                     </p>
 //                 </div>
 
-
 //                 {/* Payments Table */}
 //                 <PaymentTable
 //                     filteredPayments={currentPayments} // Pass paginated data
@@ -2313,7 +2271,6 @@
 //                 statusOptions={statusOptions.filter(s => s !== 'all')} // Exclude 'all' from edit options
 //             />
 
-
 //             {/* Filter Sidebar */}
 //             <PaymentFilters
 //                 showFilterModal={showFilterModal}
@@ -2338,21 +2295,6 @@
 // };
 
 // export default AdminPaymentsPage;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // // frontend/src/app/admin/payments/page.tsx
 // 'use client';
@@ -2508,12 +2450,10 @@
 //              } catch { /* Ignore invalid amount input */ }
 //         }
 
-
 //         // Apply Currency filter
 //         if (currencyFilter !== 'all') {
 //             results = results.filter(payment => payment.payInCurrency?.code === currencyFilter);
 //         }
-
 
 //         // Apply status filter
 //         if (statusFilter !== 'all') {
@@ -2606,7 +2546,6 @@
 //              });
 //          }
 
-
 //         setFilteredPayments(results);
 //         // Reset page only if filters might have changed the total item count or order
 //         // A simple check is if the filtered results length differs from the base or if sorting/filtering is active
@@ -2617,7 +2556,6 @@
 //     // Ensure filteredPayments itself is not in the dependency array to avoid infinite loops
 //     // eslint-disable-next-line react-hooks/exhaustive-deps
 //     }, [payments, searchTerm, statusFilter, dateRange, sortField, sortDirection, paymentIdFilter, amountFilter, currencyFilter, currentPage]); // Added currentPage
-
 
 //     const toggleSort = (field: string) => {
 //         // If already sorting by this field, reverse direction
@@ -2630,7 +2568,6 @@
 //         }
 //         setCurrentPage(1); // Reset to page 1 when sorting changes
 //     };
-
 
 //     const clearFilters = () => {
 //         setSearchTerm('');
@@ -2673,7 +2610,6 @@
 //         });
 //         setIsEditModalOpen(true);
 //     };
-
 
 //     const handleSaveEdit = async () => {
 //         if (!selectedPaymentForEdit) return;
@@ -2730,7 +2666,6 @@
 //     };
 //     const goToPreviousPage = () => setCurrentPage(prev => Math.max(1, prev - 1));
 //     const goToNextPage = () => setCurrentPage(prev => Math.min(totalPages, prev + 1));
-
 
 //     // --- JSX REMAINS THE SAME FROM HERE DOWN ---
 //     // No changes needed in the return/JSX structure based on the errors.
@@ -2923,9 +2858,6 @@
 
 // export default AdminPaymentsPage;
 
-
-
-
 // // frontend/src/app/admin/payments/page.tsx
 // 'use client';
 // import React, { useState, useEffect, useCallback, useMemo } from 'react'; // Added useMemo
@@ -3085,12 +3017,10 @@
 //              } catch { /* Ignore invalid amount input */ }
 //         }
 
-
 //         // Apply Currency filter
 //         if (currencyFilter !== 'all') {
 //             results = results.filter(payment => payment.payInCurrency?.code === currencyFilter);
 //         }
-
 
 //         // Apply status filter (uses PaymentStatus type)
 //         if (statusFilter !== 'all') {
@@ -3187,7 +3117,6 @@
 //              });
 //          }
 
-
 //         setFilteredPayments(results);
 //         // Reset page only if necessary and not already on page 1
 //         const filtersApplied = searchTerm || statusFilter !== 'all' || dateRange.from || dateRange.to || paymentIdFilter || amountFilter || currencyFilter !== 'all';
@@ -3200,7 +3129,6 @@
 //     // eslint-disable-next-line react-hooks/exhaustive-deps
 //     }, [payments, searchTerm, statusFilter, dateRange, sortField, sortDirection, paymentIdFilter, amountFilter, currencyFilter, currentPage]); // Added currentPage
 
-
 //     const toggleSort = (field: string) => {
 //         if (sortField === field) {
 //             setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
@@ -3210,7 +3138,6 @@
 //         }
 //         // No need to reset page here, the useEffect handles it
 //     };
-
 
 //     const clearFilters = () => {
 //         setSearchTerm('');
@@ -3249,7 +3176,6 @@
 //         });
 //         setIsEditModalOpen(true);
 //     };
-
 
 //     const handleSaveEdit = async () => {
 //         if (!selectedPaymentForEdit) return;
@@ -3307,7 +3233,6 @@
 //     };
 //     const goToPreviousPage = () => setCurrentPage(prev => Math.max(1, prev - 1));
 //     const goToNextPage = () => setCurrentPage(prev => Math.min(totalPages, prev + 1));
-
 
 //     // --- JSX ---
 //     return (
@@ -3496,13 +3421,6 @@
 // };
 
 // export default AdminPaymentsPage;
-
-
-
-
-
-
-
 
 // // frontend/src/app/admin/payments/page.tsx
 // 'use client';
@@ -3801,7 +3719,6 @@
 //     // eslint-disable-next-line react-hooks/exhaustive-deps
 //     }, [searchTerm, statusFilter, fromDate, toDate, paymentIdFilter, amountFilter, currencyFilter, sortField, sortDirection]);
 
-
 //     const handlePageSizeChange = (size: number) => {
 //         setPaymentsPerPage(size);
 //         setCurrentPage(1); // Reset to page 1 when page size changes
@@ -3816,7 +3733,6 @@
 //         }
 //          // Page reset is handled by the dedicated useEffect above
 //     };
-
 
 //     const clearFilters = () => {
 //         setSearchTerm('');
@@ -3919,7 +3835,6 @@
 //     };
 //     const goToPreviousPage = () => setCurrentPage(prev => Math.max(1, prev - 1));
 //     const goToNextPage = () => setCurrentPage(prev => Math.min(totalPages, prev + 1));
-
 
 //     // --- JSX ---
 //     return (
@@ -4089,7 +4004,7 @@
 //               goToNextPage={goToNextPage}
 //             />
 //           )}
-          
+
 //         </div>
 
 //         {/* Edit Payment Modal */}
@@ -4135,9 +4050,6 @@
 // };
 
 // export default AdminPaymentsPage;
-
-
-
 
 // // frontend/src/app/admin/payments/page.tsx
 // 'use client';
@@ -4191,7 +4103,6 @@
 //     console.warn("Could not parse date string:", dateString);
 //     return null;
 // }
-
 
 // const AdminPaymentsPage: React.FC = () => {
 //     // --- Core States (remain mostly the same) ---
@@ -4439,7 +4350,6 @@
 //         // Page reset is handled by the useEffect above
 //     }, []); // No dependencies needed
 
-
 //     // --- Other Handlers (Page Size, Sort, Edit - remain the same) ---
 //     const handlePageSizeChange = (size: number) => {
 //         setPaymentsPerPage(size);
@@ -4559,7 +4469,6 @@
 //         // recipientFilter: undefined, // Explicitly undefined or omit
 //     }), [searchTerm, fromDate, toDate, statusFilter, currencyFilter, paymentIdFilter, amountFilter]);
 
-
 //     // --- JSX ---
 //     return (
 //       <div className="container mx-auto px-4 py-8 relative">
@@ -4609,7 +4518,6 @@
 //               </motion.div>
 //             )}
 //           </AnimatePresence>
-
 
 //           {/* Pagination and Page Size Controls (Keep as is) */}
 //           <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
@@ -4686,8 +4594,6 @@
 
 // export default AdminPaymentsPage;
 
-
-
 // // frontend/src/app/admin/payments/page.tsx
 // 'use client';
 // import React, { useState, useEffect, useCallback, useMemo } from 'react';
@@ -4739,7 +4645,6 @@
 //     console.warn("Could not parse date string:", dateString);
 //     return null;
 // }
-
 
 // const AdminPaymentsPage: React.FC = () => {
 //     // --- Core States ---
@@ -4991,7 +4896,6 @@
 //         // setSortDirection('desc');
 //     }, []);
 
-
 //     // --- Other Handlers ---
 //     const handlePageSizeChange = (size: number) => {
 //         setPaymentsPerPage(size);
@@ -5100,7 +5004,6 @@
 //         amountFilter,
 //     }), [searchTerm, fromDate, toDate, statusFilter, currencyFilter, paymentIdFilter, amountFilter]);
 
-
 //     // --- JSX ---
 //     return (
 //       <div className="container mx-auto px-4 py-8 relative">
@@ -5167,7 +5070,6 @@
 //                 </motion.div>
 //             )}
 //           </AnimatePresence>
-
 
 //           {/* Pagination and Page Size Controls */}
 //           <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
@@ -5241,572 +5143,720 @@
 
 // export default AdminPaymentsPage;
 
-
-
-
 // frontend/src/app/admin/payments/page.tsx
-'use client';
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { useAuth } from '../../contexts/AuthContext'; // Adjust path if needed
-import axios, { AxiosError } from 'axios';
-import apiConfig from '../../config/apiConfig'; // Adjust path if needed
-import { motion, AnimatePresence } from 'framer-motion';
-import { Check, X, Filter, RefreshCw,  HandCoinsIcon } from 'lucide-react';
+"use client";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { useAuth } from "../../contexts/AuthContext"; // Adjust path if needed
+import axios, { AxiosError } from "axios";
+import apiConfig from "../../config/apiConfig"; // Adjust path if needed
+import { motion, AnimatePresence } from "framer-motion";
+import { Check, X, Filter, RefreshCw, HandCoinsIcon } from "lucide-react";
 
 // Import components
-import PaymentTable from '../components/add-money/PaymentTable'; // Adjust path if needed
-import { PaymentSortField } from '../components/add-money/PaymentTableHeader';
-import GenericFilters, { FiltersState } from '../components/GenericFilters'; // Adjust path if needed
-import PaymentEditModal from '../components/add-money/PaymentEditModal'; // Adjust path if needed
-import Pagination from '../components/Pagination'; // Adjust path if needed
+import PaymentTable from "../components/add-money/PaymentTable"; // Adjust path if needed
+import { PaymentSortField } from "../components/add-money/PaymentTableHeader";
+import GenericFilters, { FiltersState } from "../components/GenericFilters"; // Adjust path if needed
+import PaymentEditModal from "../components/add-money/PaymentEditModal"; // Adjust path if needed
+import Pagination from "../components/Pagination"; // Adjust path if needed
 
 // Import Shared Types
-import { Payment } from '../../../types/payment'; // Adjust path as needed
+import { Payment } from "../../../types/payment"; // Adjust path as needed
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
 interface ApiErrorResponse {
-    message: string;
+  message: string;
 }
 
 // Helper function to parse date string (dd-MM-yyyy) to Date object
 function parseDateString(dateString: string): Date | null {
-    if (!dateString) return null;
-    const parts = dateString.split('-');
-    if (parts.length === 3) {
-        if (!/^\d+$/.test(parts[0]) || !/^\d+$/.test(parts[1]) || !/^\d+$/.test(parts[2])) {
-            console.warn("Invalid date parts:", parts);
-            return null;
-        }
-        const day = parseInt(parts[0], 10);
-        const month = parseInt(parts[1], 10) - 1;
-        const year = parseInt(parts[2], 10);
-        if (day < 1 || day > 31 || month < 0 || month > 11 || year < 1900 || year > 3000) {
-            console.warn("Date components out of range:", { day, month, year });
-            return null;
-        }
-        const date = new Date(Date.UTC(year, month, day));
-        if (date.getUTCFullYear() === year && date.getUTCMonth() === month && date.getUTCDate() === day) {
-            return date;
-        } else {
-            console.warn("Date validation failed after construction:", dateString);
-            return null;
-        }
+  if (!dateString) return null;
+  const parts = dateString.split("-");
+  if (parts.length === 3) {
+    if (
+      !/^\d+$/.test(parts[0]) ||
+      !/^\d+$/.test(parts[1]) ||
+      !/^\d+$/.test(parts[2])
+    ) {
+      console.warn("Invalid date parts:", parts);
+      return null;
     }
-    console.warn("Could not parse date string:", dateString);
-    return null;
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const year = parseInt(parts[2], 10);
+    if (
+      day < 1 ||
+      day > 31 ||
+      month < 0 ||
+      month > 11 ||
+      year < 1900 ||
+      year > 3000
+    ) {
+      console.warn("Date components out of range:", { day, month, year });
+      return null;
+    }
+    const date = new Date(Date.UTC(year, month, day));
+    if (
+      date.getUTCFullYear() === year &&
+      date.getUTCMonth() === month &&
+      date.getUTCDate() === day
+    ) {
+      return date;
+    } else {
+      console.warn("Date validation failed after construction:", dateString);
+      return null;
+    }
+  }
+  console.warn("Could not parse date string:", dateString);
+  return null;
 }
 
-
 const AdminPaymentsPage: React.FC = () => {
-    // --- Core States ---
-    const [payments, setPayments] = useState<Payment[]>([]);
-    const [filteredPayments, setFilteredPayments] = useState<Payment[]>([]);
-    const [loadingPayments, setLoadingPayments] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-    const [successMessage, setSuccessMessage] = useState<string | null>(null);
-    const { token } = useAuth();
-    const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+  // --- Core States ---
+  const [payments, setPayments] = useState<Payment[]>([]);
+  const [filteredPayments, setFilteredPayments] = useState<Payment[]>([]);
+  const [loadingPayments, setLoadingPayments] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const { token } = useAuth();
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
-    // --- Filter States ---
-    const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
-    const [searchTerm, setSearchTerm] = useState<string>('');
-    const [fromDate, setFromDate] = useState<string>('');
-    const [toDate, setToDate] = useState<string>('');
-    const [statusFilter, setStatusFilter] = useState<string>('all');
-    const [paymentIdFilter, setPaymentIdFilter] = useState<string>('');
-    const [amountFilter, setAmountFilter] = useState<string>('');
-    const [currencyFilter, setCurrencyFilter] = useState<string>('all');
+  // --- Filter States ---
+  const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [fromDate, setFromDate] = useState<string>("");
+  const [toDate, setToDate] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [paymentIdFilter, setPaymentIdFilter] = useState<string>("");
+  const [amountFilter, setAmountFilter] = useState<string>("");
+  const [currencyFilter, setCurrencyFilter] = useState<string>("all");
 
-    // --- Edit Modal State ---
-    const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
-    const [selectedPaymentForEdit, setSelectedPaymentForEdit] = useState<Payment | null>(null);
-    const [editFormData, setEditFormData] = useState<{ status: string }>({ status: '' });
-    const [editLoading, setEditLoading] = useState<boolean>(false);
+  // --- Edit Modal State ---
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const [selectedPaymentForEdit, setSelectedPaymentForEdit] =
+    useState<Payment | null>(null);
+  const [editFormData, setEditFormData] = useState<{ status: string }>({
+    status: "",
+  });
+  const [editLoading, setEditLoading] = useState<boolean>(false);
 
-    // --- Sorting State (Initialize for default date sort) ---
-    // -------------------- VVVV CHANGE HERE VVVV --------------------
-    const [sortField, setSortField] = useState<PaymentSortField | null>('createdAt'); // Default sort by date
-    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc'); // Default latest first
-    // -------------------- ^^^^ CHANGE HERE ^^^^ --------------------
+  // --- Sorting State (Initialize for default date sort) ---
+  // -------------------- VVVV CHANGE HERE VVVV --------------------
+  const [sortField, setSortField] = useState<PaymentSortField | null>(
+    "createdAt"
+  ); // Default sort by date
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc"); // Default latest first
+  // -------------------- ^^^^ CHANGE HERE ^^^^ --------------------
 
-    // --- Pagination State ---
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const [paymentsPerPage, setPaymentsPerPage] = useState<number>(10);
-    const pageSizeOptions: number[] = [10, 25, 50];
+  // --- Pagination State ---
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [paymentsPerPage, setPaymentsPerPage] = useState<number>(10);
+  const pageSizeOptions: number[] = [10, 25, 50];
 
-    // --- Fetching Data ---
-    const fetchPayments = useCallback(async () => {
-        setLoadingPayments(true);
-        setIsRefreshing(true);
-        setError(null);
+  // --- Fetching Data ---
+  const fetchPayments = useCallback(async () => {
+    setLoadingPayments(true);
+    setIsRefreshing(true);
+    setError(null);
+    try {
+      const response = await axios.get<{ data: Payment[] } | Payment[]>(
+        "/admin/payments",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      let paymentData: Payment[] = [];
+      if (response.data && Array.isArray((response.data as any).data)) {
+        paymentData = (response.data as any).data;
+      } else if (Array.isArray(response.data)) {
+        paymentData = response.data;
+      } else {
+        console.warn("API response format unexpected:", response.data);
+        paymentData = [];
+      }
+
+      // Validate and sanitize data
+      const validatedData = paymentData
+        .filter((p) => p && typeof p === "object")
+        .map((p) => ({
+          ...p,
+          _id: String(p._id ?? ""),
+          amountToAdd: String(p.amountToAdd ?? ""),
+          status:
+            p.status && statusOptions.includes(p.status) ? p.status : "unknown",
+          createdAt: p.createdAt || new Date(0).toISOString(), // Ensure createdAt exists
+          user:
+            p.user && typeof p.user === "object"
+              ? {
+                  ...p.user,
+                  fullName: String(p.user.fullName ?? "N/A"),
+                  email: String(p.user.email ?? "N/A"),
+                }
+              : { fullName: "N/A", email: "N/A" },
+          payInCurrency:
+            p.payInCurrency && typeof p.payInCurrency === "object"
+              ? {
+                  ...p.payInCurrency,
+                  code: String(p.payInCurrency.code ?? "N/A"),
+                }
+              : { code: "N/A" },
+          referenceCode: String(p.referenceCode ?? ""),
+        }));
+
+      setPayments(validatedData);
+    } catch (err: unknown) {
+      let errorMessage = "Failed to load payments";
+      if (axios.isAxiosError(err)) {
+        const axiosError = err as AxiosError<ApiErrorResponse>;
+        errorMessage =
+          axiosError.response?.data?.message ||
+          axiosError.message ||
+          errorMessage;
+      } else if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+      setError(errorMessage);
+      setPayments([]); // Clear data on error
+      console.error("Error fetching payments:", err);
+    } finally {
+      setLoadingPayments(false);
+      setIsRefreshing(false);
+    }
+  }, [token]); // removed statusOptions as it's memoized below
+
+  // Static list of possible payment statuses (as strings for GenericFilters)
+  const statusOptions: string[] = useMemo(() => {
+    return [
+      "all",
+      "pending",
+      "in progress",
+      "completed",
+      "canceled",
+      "failed",
+      "unknown",
+    ];
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      fetchPayments();
+    } else {
+      setError("Authentication required.");
+      setLoadingPayments(false);
+      setPayments([]);
+    }
+  }, [token, fetchPayments]);
+
+  // --- Filtering and Sorting Logic ---
+  useEffect(() => {
+    let results: Payment[] = [...payments];
+
+    // Apply search filter
+    if (searchTerm) {
+      const lowerSearchTerm = searchTerm.toLowerCase();
+      results = results.filter(
+        (payment) =>
+          payment._id.toLowerCase().includes(lowerSearchTerm) ||
+          payment.user?.fullName?.toLowerCase().includes(lowerSearchTerm) ||
+          payment.user?.email?.toLowerCase().includes(lowerSearchTerm) ||
+          payment.referenceCode?.toLowerCase().includes(lowerSearchTerm)
+      );
+    }
+
+    // Apply Payment ID filter
+    if (paymentIdFilter) {
+      results = results.filter((payment) =>
+        payment._id.toLowerCase().includes(paymentIdFilter.toLowerCase())
+      );
+    }
+
+    // Apply Amount filter
+    if (amountFilter) {
+      const amount = parseFloat(amountFilter);
+      if (!isNaN(amount)) {
+        results = results.filter((payment) => {
+          const paymentAmount = parseFloat(payment.amountToAdd);
+          return !isNaN(paymentAmount) && paymentAmount === amount;
+        });
+      }
+    }
+
+    // Apply Currency filter
+    if (currencyFilter !== "all") {
+      results = results.filter(
+        (payment) => payment.payInCurrency?.code === currencyFilter
+      );
+    }
+
+    // Apply status filter
+    if (statusFilter !== "all") {
+      results = results.filter(
+        (payment) => payment.status.toLowerCase() === statusFilter.toLowerCase()
+      );
+    }
+
+    // Apply date filters
+    const fromDateObj = parseDateString(fromDate);
+    const toDateObj = parseDateString(toDate);
+
+    if (fromDateObj) {
+      fromDateObj.setUTCHours(0, 0, 0, 0);
+      results = results.filter((payment) => {
         try {
-            const response = await axios.get<{ data: Payment[] } | Payment[]>('/admin/payments', {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-
-            let paymentData: Payment[] = [];
-             if (response.data && Array.isArray((response.data as any).data)) {
-                 paymentData = (response.data as any).data;
-             } else if (Array.isArray(response.data)) {
-                 paymentData = response.data;
-             } else {
-                  console.warn("API response format unexpected:", response.data);
-                  paymentData = [];
-             }
-
-             // Validate and sanitize data
-              const validatedData = paymentData
-                 .filter(p => p && typeof p === 'object')
-                 .map(p => ({
-                     ...p,
-                     _id: String(p._id ?? ''),
-                     amountToAdd: String(p.amountToAdd ?? ''),
-                     status: (p.status && statusOptions.includes(p.status)) ? p.status : 'unknown',
-                     createdAt: p.createdAt || new Date(0).toISOString(), // Ensure createdAt exists
-                     user: p.user && typeof p.user === 'object' ? {
-                         ...p.user,
-                         fullName: String(p.user.fullName ?? 'N/A'),
-                         email: String(p.user.email ?? 'N/A'),
-                     } : { fullName: 'N/A', email: 'N/A' },
-                     payInCurrency: p.payInCurrency && typeof p.payInCurrency === 'object' ? {
-                          ...p.payInCurrency,
-                          code: String(p.payInCurrency.code ?? 'N/A'),
-                     } : { code: 'N/A' },
-                     referenceCode: String(p.referenceCode ?? '')
-             }));
-
-            setPayments(validatedData);
-
-        } catch (err: unknown) {
-             let errorMessage = 'Failed to load payments';
-             if (axios.isAxiosError(err)) {
-                 const axiosError = err as AxiosError<ApiErrorResponse>;
-                 errorMessage = axiosError.response?.data?.message || axiosError.message || errorMessage;
-             } else if (err instanceof Error) {
-                 errorMessage = err.message;
-             }
-             setError(errorMessage);
-             setPayments([]); // Clear data on error
-             console.error("Error fetching payments:", err);
-        } finally {
-            setLoadingPayments(false);
-            setIsRefreshing(false);
+          const paymentDate = new Date(payment.createdAt);
+          return !isNaN(paymentDate.getTime()) && paymentDate >= fromDateObj;
+        } catch {
+          return false;
         }
-    }, [token]); // removed statusOptions as it's memoized below
+      });
+    }
 
-    // Static list of possible payment statuses (as strings for GenericFilters)
-    const statusOptions: string[] = useMemo(() => {
-       return ['all', 'pending', 'in progress', 'completed', 'canceled', 'failed', 'unknown'];
-    }, []);
-
-    useEffect(() => {
-        if (token) {
-             fetchPayments();
-        } else {
-             setError("Authentication required.");
-             setLoadingPayments(false);
-             setPayments([]);
+    if (toDateObj) {
+      toDateObj.setUTCHours(23, 59, 59, 999);
+      results = results.filter((payment) => {
+        try {
+          const paymentDate = new Date(payment.createdAt);
+          return !isNaN(paymentDate.getTime()) && paymentDate <= toDateObj;
+        } catch {
+          return false;
         }
-    }, [token, fetchPayments]);
+      });
+    }
 
-    // --- Filtering and Sorting Logic ---
-    useEffect(() => {
-        let results: Payment[] = [...payments];
+    // Apply sorting (This will now apply the default sort initially)
+    if (sortField) {
+      results.sort((a, b) => {
+        let valueA: any;
+        let valueB: any;
 
-        // Apply search filter
-        if (searchTerm) {
-            const lowerSearchTerm = searchTerm.toLowerCase();
-            results = results.filter(payment =>
-                payment._id.toLowerCase().includes(lowerSearchTerm) ||
-                payment.user?.fullName?.toLowerCase().includes(lowerSearchTerm) ||
-                payment.user?.email?.toLowerCase().includes(lowerSearchTerm) ||
-                payment.referenceCode?.toLowerCase().includes(lowerSearchTerm)
-            );
+        const getSafeValue = (obj: any, path: string) =>
+          path.split(".").reduce((acc, part) => acc && acc[part], obj);
+
+        switch (sortField) {
+          case "user":
+            // Sort by user's full name (as intended by the type)
+            valueA = a.user?.fullName?.toLowerCase() || "";
+            valueB = b.user?.fullName?.toLowerCase() || "";
+            break;
+          // REMOVED: case 'email': was not part of PaymentSortField
+          case "amount":
+            valueA = parseFloat(a.amountToAdd) || 0; // Or use 'amount' field if that's correct
+            valueB = parseFloat(b.amountToAdd) || 0; // Or use 'amount' field if that's correct
+            break;
+          // REMOVED: case 'currency': was not part of PaymentSortField
+          case "createdAt": // This case handles date sorting
+            valueA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+            valueB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+            if (isNaN(valueA)) valueA = 0;
+            if (isNaN(valueB)) valueB = 0;
+            break;
+          case "_id":
+            valueA = (a._id ?? "").toLowerCase();
+            valueB = (b._id ?? "").toLowerCase();
+            break;
+          case "status":
+            valueA = (a.status ?? "").toLowerCase();
+            valueB = (b.status ?? "").toLowerCase();
+            break;
+          default:
+            valueA = getSafeValue(a, sortField);
+            valueB = getSafeValue(b, sortField);
+            if (typeof valueA === "string") valueA = valueA.toLowerCase();
+            if (typeof valueB === "string") valueB = valueB.toLowerCase();
+            break;
         }
 
-        // Apply Payment ID filter
-        if (paymentIdFilter) {
-             results = results.filter(payment =>
-                 payment._id.toLowerCase().includes(paymentIdFilter.toLowerCase())
-             );
-        }
+        let comparison = 0;
+        if (valueA < valueB) comparison = -1;
+        else if (valueA > valueB) comparison = 1;
 
-        // Apply Amount filter
-        if (amountFilter) {
-            const amount = parseFloat(amountFilter);
-            if (!isNaN(amount)) {
-                 results = results.filter(payment => {
-                     const paymentAmount = parseFloat(payment.amountToAdd);
-                     return !isNaN(paymentAmount) && paymentAmount === amount;
-                 });
-            }
-        }
+        return sortDirection === "asc" ? comparison : comparison * -1;
+      });
+    }
 
-        // Apply Currency filter
-        if (currencyFilter !== 'all') {
-            results = results.filter(payment => payment.payInCurrency?.code === currencyFilter);
-        }
+    setFilteredPayments(results);
+  }, [
+    payments,
+    searchTerm,
+    statusFilter,
+    fromDate,
+    toDate,
+    paymentIdFilter,
+    amountFilter,
+    currencyFilter,
+    sortField,
+    sortDirection,
+  ]);
 
-        // Apply status filter
-        if (statusFilter !== 'all') {
-            results = results.filter(payment => payment.status.toLowerCase() === statusFilter.toLowerCase());
-        }
-
-        // Apply date filters
-        const fromDateObj = parseDateString(fromDate);
-        const toDateObj = parseDateString(toDate);
-
-        if (fromDateObj) {
-             fromDateObj.setUTCHours(0, 0, 0, 0);
-             results = results.filter(payment => {
-                 try {
-                     const paymentDate = new Date(payment.createdAt);
-                     return !isNaN(paymentDate.getTime()) && paymentDate >= fromDateObj;
-                 } catch { return false; }
-             });
-         }
-
-         if (toDateObj) {
-             toDateObj.setUTCHours(23, 59, 59, 999);
-             results = results.filter(payment => {
-                 try {
-                     const paymentDate = new Date(payment.createdAt);
-                     return !isNaN(paymentDate.getTime()) && paymentDate <= toDateObj;
-                 } catch { return false; }
-             });
-         }
-
-         // Apply sorting (This will now apply the default sort initially)
-         if (sortField) {
-             results.sort((a, b) => {
-                 let valueA: any;
-                 let valueB: any;
-
-                 const getSafeValue = (obj: any, path: string) => path.split('.').reduce((acc, part) => acc && acc[part], obj);
-
-                 switch (sortField) {
-                    case 'user':
-                        // Sort by user's full name (as intended by the type)
-                        valueA = a.user?.fullName?.toLowerCase() || '';
-                        valueB = b.user?.fullName?.toLowerCase() || '';
-                        break;
-                    // REMOVED: case 'email': was not part of PaymentSortField
-                    case 'amount':
-                        valueA = parseFloat(a.amountToAdd) || 0; // Or use 'amount' field if that's correct
-                        valueB = parseFloat(b.amountToAdd) || 0; // Or use 'amount' field if that's correct
-                        break;
-                    // REMOVED: case 'currency': was not part of PaymentSortField
-                    case 'createdAt': // This case handles date sorting
-                        valueA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-                        valueB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-                        if (isNaN(valueA)) valueA = 0;
-                        if (isNaN(valueB)) valueB = 0;
-                        break;
-                    case '_id':
-                        valueA = (a._id ?? '').toLowerCase();
-                        valueB = (b._id ?? '').toLowerCase();
-                        break;
-                    case 'status':
-                        valueA = (a.status ?? '').toLowerCase();
-                        valueB = (b.status ?? '').toLowerCase();
-                        break;
-                     default: valueA = getSafeValue(a, sortField); valueB = getSafeValue(b, sortField); if (typeof valueA === 'string') valueA = valueA.toLowerCase(); if (typeof valueB === 'string') valueB = valueB.toLowerCase(); break;
-                 }
-
-                 let comparison = 0;
-                 if (valueA < valueB) comparison = -1;
-                 else if (valueA > valueB) comparison = 1;
-
-                 return sortDirection === 'asc' ? comparison : comparison * -1;
-             });
-         }
-
-        setFilteredPayments(results);
-
-    }, [payments, searchTerm, statusFilter, fromDate, toDate, paymentIdFilter, amountFilter, currencyFilter, sortField, sortDirection]);
-
-    // --- Reset Page on Filter/Sort Change ---
-    useEffect(() => {
-        if (currentPage !== 1) {
-             setCurrentPage(1);
-        }
+  // --- Reset Page on Filter/Sort Change ---
+  useEffect(() => {
+    if (currentPage !== 1) {
+      setCurrentPage(1);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchTerm, statusFilter, fromDate, toDate, paymentIdFilter, amountFilter, currencyFilter, sortField, sortDirection]);
+  }, [
+    searchTerm,
+    statusFilter,
+    fromDate,
+    toDate,
+    paymentIdFilter,
+    amountFilter,
+    currencyFilter,
+    sortField,
+    sortDirection,
+  ]);
 
-    // --- Callback for GenericFilters to apply selected filters ---
-    const handleApplyFilters = useCallback((filters: FiltersState) => {
-        setSearchTerm(filters.searchTerm);
-        setFromDate(filters.fromDate);
-        setToDate(filters.toDate);
-        setStatusFilter(filters.statusFilter);
-        setPaymentIdFilter(filters.idFilter);
-        setAmountFilter(filters.amountFilter);
-        setCurrencyFilter(filters.currencyFilter);
-    }, []);
+  // --- Callback for GenericFilters to apply selected filters ---
+  const handleApplyFilters = useCallback((filters: FiltersState) => {
+    setSearchTerm(filters.searchTerm);
+    setFromDate(filters.fromDate);
+    setToDate(filters.toDate);
+    setStatusFilter(filters.statusFilter);
+    setPaymentIdFilter(filters.idFilter);
+    setAmountFilter(filters.amountFilter);
+    setCurrencyFilter(filters.currencyFilter);
+  }, []);
 
-    // --- Callback for GenericFilters to clear all filters ---
-    const handleClearAllFilters = useCallback(() => {
-        setSearchTerm('');
-        setFromDate('');
-        setToDate('');
-        setStatusFilter('all');
-        setPaymentIdFilter('');
-        setAmountFilter('');
-        setCurrencyFilter('all');
-        // Optionally reset sort back to default if desired
-        // setSortField('createdAt');
-        // setSortDirection('desc');
-    }, []);
+  // --- Callback for GenericFilters to clear all filters ---
+  const handleClearAllFilters = useCallback(() => {
+    setSearchTerm("");
+    setFromDate("");
+    setToDate("");
+    setStatusFilter("all");
+    setPaymentIdFilter("");
+    setAmountFilter("");
+    setCurrencyFilter("all");
+    // Optionally reset sort back to default if desired
+    // setSortField('createdAt');
+    // setSortDirection('desc');
+  }, []);
 
+  // --- Other Handlers ---
+  const handlePageSizeChange = (size: number) => {
+    setPaymentsPerPage(size);
+    setCurrentPage(1);
+  };
 
-    // --- Other Handlers ---
-    const handlePageSizeChange = (size: number) => {
-        setPaymentsPerPage(size);
-        setCurrentPage(1);
-    };
+  const toggleSort = (field: PaymentSortField) => {
+    const newDirection =
+      sortField === field && sortDirection === "asc" ? "desc" : "asc";
+    setSortField(field);
+    setSortDirection(newDirection);
+  };
 
-    const toggleSort = (field: PaymentSortField) => {
-        const newDirection = (sortField === field && sortDirection === 'asc') ? 'desc' : 'asc';
-        setSortField(field);
-        setSortDirection(newDirection);
-    };
+  const getStatusColor = (status: string): string => {
+    switch (status?.toLowerCase()) {
+      case "completed":
+        return "text-green-600 bg-green-100 dark:bg-green-600/20 dark:text-green-400";
+      case "pending":
+        return "text-yellow-600 bg-yellow-100 dark:bg-yellow-600/20 dark:text-yellow-400";
+      case "in progress":
+        return "text-blue-600 bg-blue-100 dark:bg-blue-600/20 dark:text-blue-400";
+      case "canceled":
+      case "cancelled":
+        return "text-red-600 bg-red-100 dark:bg-red-600/20 dark:text-red-400";
+      case "failed":
+        return "text-rose-600 bg-rose-100 dark:bg-rose-600/20 dark:text-rose-400";
+      default:
+        return "text-gray-600 bg-gray-100 dark:bg-gray-600/20 dark:text-gray-400";
+    }
+  };
 
-    const getStatusColor = (status: string): string => {
-         switch (status?.toLowerCase()) {
-             case 'completed': return 'text-green-600 bg-green-100 dark:bg-green-600/20 dark:text-green-400';
-             case 'pending': return 'text-yellow-600 bg-yellow-100 dark:bg-yellow-600/20 dark:text-yellow-400';
-             case 'in progress': return 'text-blue-600 bg-blue-100 dark:bg-blue-600/20 dark:text-blue-400';
-             case 'canceled': case 'cancelled': return 'text-red-600 bg-red-100 dark:bg-red-600/20 dark:text-red-400';
-             case 'failed': return 'text-rose-600 bg-rose-100 dark:bg-rose-600/20 dark:text-rose-400';
-             default: return 'text-gray-600 bg-gray-100 dark:bg-gray-600/20 dark:text-gray-400';
-         }
-    };
+  // Memoize options
+  const currencyOptions = useMemo(() => {
+    const codes = new Set(
+      payments
+        .map((p) => p.payInCurrency?.code)
+        .filter((code): code is string => Boolean(code) && code !== "N/A")
+    );
+    return ["all", ...Array.from(codes).sort()];
+  }, [payments]);
 
-    // Memoize options
-    const currencyOptions = useMemo(() => {
-        const codes = new Set(payments.map(p => p.payInCurrency?.code).filter((code): code is string => Boolean(code) && code !== 'N/A'));
-        return ['all', ...Array.from(codes).sort()];
-    }, [payments]);
+  // Edit Modal Handlers
+  const handleEditPayment = (payment: Payment) => {
+    setSelectedPaymentForEdit(payment);
+    setEditFormData({ status: payment.status ?? "unknown" });
+    setIsEditModalOpen(true);
+  };
 
-    // Edit Modal Handlers
-    const handleEditPayment = (payment: Payment) => {
-        setSelectedPaymentForEdit(payment);
-        setEditFormData({ status: payment.status ?? 'unknown' });
-        setIsEditModalOpen(true);
-    };
-
-    const handleSaveEdit = async () => {
-        if (!selectedPaymentForEdit?._id) return;
-        setEditLoading(true);
-        setError(null);
-        setSuccessMessage(null);
-        try {
-            const payload = { status: editFormData.status };
-            await axios.put(`/admin/payments/${selectedPaymentForEdit._id}`, payload, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-             setPayments(prevPayments =>
-                 prevPayments.map(p =>
-                     p._id === selectedPaymentForEdit._id ? { ...p, status: editFormData.status } : p
-                 )
-             );
-            setSuccessMessage('Payment status updated successfully!');
-            setIsEditModalOpen(false);
-            setSelectedPaymentForEdit(null);
-        } catch (err: unknown) {
-             let errorMessage = 'Failed to update payment status';
-             if (axios.isAxiosError(err)) {
-                 errorMessage = (err.response?.data as ApiErrorResponse)?.message || err.message;
-             } else if (err instanceof Error) {
-                 errorMessage = err.message;
-             }
-             setError(errorMessage);
-             console.error("Error updating payment status:", err);
-        } finally {
-            setEditLoading(false);
+  const handleSaveEdit = async () => {
+    if (!selectedPaymentForEdit?._id) return;
+    setEditLoading(true);
+    setError(null);
+    setSuccessMessage(null);
+    try {
+      const payload = { status: editFormData.status };
+      await axios.put(
+        `/admin/payments/${selectedPaymentForEdit._id}`,
+        payload,
+        {
+          headers: { Authorization: `Bearer ${token}` },
         }
-    };
+      );
+      setPayments((prevPayments) =>
+        prevPayments.map((p) =>
+          p._id === selectedPaymentForEdit._id
+            ? { ...p, status: editFormData.status }
+            : p
+        )
+      );
+      setSuccessMessage("Payment status updated successfully!");
+      setIsEditModalOpen(false);
+      setSelectedPaymentForEdit(null);
+    } catch (err: unknown) {
+      let errorMessage = "Failed to update payment status";
+      if (axios.isAxiosError(err)) {
+        errorMessage =
+          (err.response?.data as ApiErrorResponse)?.message || err.message;
+      } else if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+      setError(errorMessage);
+      console.error("Error updating payment status:", err);
+    } finally {
+      setEditLoading(false);
+    }
+  };
 
-    const refreshData = useCallback(() => {
-        fetchPayments();
-    }, [fetchPayments]);
+  const refreshData = useCallback(() => {
+    fetchPayments();
+  }, [fetchPayments]);
 
-    // --- Pagination Calculation ---
-    const { currentPayments, totalPages } = useMemo(() => {
-        const indexOfLastPayment = currentPage * paymentsPerPage;
-        const indexOfFirstPayment = indexOfLastPayment - paymentsPerPage;
-        const paginatedData = filteredPayments.slice(indexOfFirstPayment, indexOfLastPayment);
-        const pages = Math.ceil(filteredPayments.length / paymentsPerPage);
-        return { currentPayments: paginatedData, totalPages: pages };
-    }, [filteredPayments, currentPage, paymentsPerPage]);
+  // --- Pagination Calculation ---
+  const { currentPayments, totalPages } = useMemo(() => {
+    const indexOfLastPayment = currentPage * paymentsPerPage;
+    const indexOfFirstPayment = indexOfLastPayment - paymentsPerPage;
+    const paginatedData = filteredPayments.slice(
+      indexOfFirstPayment,
+      indexOfLastPayment
+    );
+    const pages = Math.ceil(filteredPayments.length / paymentsPerPage);
+    return { currentPayments: paginatedData, totalPages: pages };
+  }, [filteredPayments, currentPage, paymentsPerPage]);
 
-    // --- Effect to Adjust Page ---
-     useEffect(() => {
-         if (totalPages > 0 && currentPage > totalPages) {
-             setCurrentPage(totalPages);
-         }
-     }, [currentPage, totalPages]);
+  // --- Effect to Adjust Page ---
+  useEffect(() => {
+    if (totalPages > 0 && currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
-    // Pagination handlers
-    const paginate = (pageNumber: number) => {
-         if (pageNumber >= 1 && pageNumber <= totalPages) setCurrentPage(pageNumber);
-         else if (pageNumber < 1 && totalPages > 0) setCurrentPage(1);
-         else if (pageNumber > totalPages && totalPages > 0) setCurrentPage(totalPages);
-    };
-    const goToPreviousPage = () => paginate(currentPage - 1);
-    const goToNextPage = () => paginate(currentPage + 1);
+  // Pagination handlers
+  const paginate = (pageNumber: number) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) setCurrentPage(pageNumber);
+    else if (pageNumber < 1 && totalPages > 0) setCurrentPage(1);
+    else if (pageNumber > totalPages && totalPages > 0)
+      setCurrentPage(totalPages);
+  };
+  const goToPreviousPage = () => paginate(currentPage - 1);
+  const goToNextPage = () => paginate(currentPage + 1);
 
-    // --- Bundle current filters into an object for GenericFilters prop ---
-    const currentFilterState: FiltersState = useMemo(() => ({
-        searchTerm,
-        fromDate,
-        toDate,
-        statusFilter,
-        currencyFilter,
-        idFilter: paymentIdFilter,
-        amountFilter,
-    }), [searchTerm, fromDate, toDate, statusFilter, currencyFilter, paymentIdFilter, amountFilter]);
+  // --- Bundle current filters into an object for GenericFilters prop ---
+  const currentFilterState: FiltersState = useMemo(
+    () => ({
+      searchTerm,
+      fromDate,
+      toDate,
+      statusFilter,
+      currencyFilter,
+      idFilter: paymentIdFilter,
+      amountFilter,
+    }),
+    [
+      searchTerm,
+      fromDate,
+      toDate,
+      statusFilter,
+      currencyFilter,
+      paymentIdFilter,
+      amountFilter,
+    ]
+  );
 
-
-    // --- JSX ---
-    return (
-      <div className="container mx-auto px-4 py-8 relative">
-        <div className="space-y-6">
-          {/* Header Parts */}
-          <div className="flex flex-wrap justify-between items-center gap-4">
-            <h1 className="text-2xl font-bold leading-tight text-mainheading dark:text-white sm:text-3xl inline-flex items-center gap-2">
-                <HandCoinsIcon size={28} className='text-primary' />
+  // --- JSX ---
+  return (
+    <div className="container mx-auto px-4 py-5 relative">
+      <div className="space-y-6">
+        {/* Header Parts */}
+        <div className="flex sm:flex-row flex-col justify-between items-center ">
+          <div className="flex flex-col mb-5">
+            <h1 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
               Payment Management
             </h1>
-            <div className="flex items-center gap-3 justify-end sm:w-auto w-full">
-              <button
-                onClick={() => setShowFilterModal(true)}
-                className="flex items-center justify-center cursor-pointer gap-2 bg-primary text-neutral-900 font-medium text-base px-8 py-3 h-12.5 sm:w-auto w-full rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear"
-              >
-                <Filter size={18} />
-                Filters
-              </button>
-              <button
-                onClick={refreshData}
-                disabled={isRefreshing || loadingPayments}
-                className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
-                title="Refresh payment data"
-              >
-                <RefreshCw className={`size-5 ${isRefreshing ? "animate-spin" : ""}`} />
-                <span>Refresh</span>
-              </button>
-            </div>
+
+            <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg">
+              Track and manage all incoming payments, statuses, and user
+              transactions in real time with full control and visibility.
+            </p>
           </div>
 
-          {/* Success/Error Messages */}
-          <AnimatePresence>
-            {successMessage && (
-                <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="p-3 rounded-md bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700/50 flex justify-between items-center"
-                >
-                    <div className="flex items-center gap-2">
-                        <Check className="text-green-600 dark:text-green-400" size={18} />
-                        <p className="text-sm font-medium text-green-800 dark:text-green-300">{successMessage}</p>
-                    </div>
-                    <button onClick={() => setSuccessMessage(null)} className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-200">
-                        <X size={18} />
-                    </button>
-                </motion.div>
-            )}
-          </AnimatePresence>
-          <AnimatePresence>
-            {error && (
-                 <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="p-3 rounded-md bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700/50 flex justify-between items-center"
-                >
-                   <div className="flex items-center gap-2">
-                        <X className="text-red-600 dark:text-red-400" size={18} />
-                        <p className="text-sm font-medium text-red-800 dark:text-red-300">{error}</p>
-                    </div>
-                    <button onClick={() => setError(null)} className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200">
-                        <X size={18} />
-                    </button>
-                </motion.div>
-            )}
-          </AnimatePresence>
-
-
-          {/* Pagination and Page Size Controls */}
-          <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
-             <div className="flex items-center gap-2">
-                  <label htmlFor="paymentsPerPage" className="text-sm font-medium text-gray-500 dark:text-gray-300 whitespace-nowrap">Show:</label>
-                  <select id="paymentsPerPage" value={paymentsPerPage} onChange={(e) => handlePageSizeChange(Number(e.target.value))} className="block w-auto pl-3 pr-8 py-2 text-sm border rounded-md focus:outline-none bg-white dark:bg-primarybox dark:text-white cursor-pointer">
-                       {pageSizeOptions.map(size => <option key={size} value={size} className="dark:bg-dropdowncolor cursor-pointer">{size}</option>)}
-                  </select>
-                  <span className="text-sm font-medium text-gray-500 dark:text-gray-300 whitespace-nowrap">entries</span>
-              </div>
-              <p className="text-sm text-gray-500 dark:text-gray-300">
-                  Showing {filteredPayments.length > 0 ? (currentPage - 1) * paymentsPerPage + 1 : 0}
-                  - {Math.min(currentPage * paymentsPerPage, filteredPayments.length)}
-                  {" "}of {filteredPayments.length} results
-                  {totalPages > 1 && ` (Page ${currentPage} of ${totalPages})`}
-              </p>
+          <div className="flex items-center gap-3 justify-end sm:w-auto w-full">
+            <button
+              onClick={() => setShowFilterModal(true)}
+              className="flex items-center justify-center cursor-pointer gap-2 bg-primary text-neutral-900 font-medium text-base px-8 py-3 h-12.5 sm:w-auto w-full rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear"
+            >
+              <Filter size={18} />
+              Filters
+            </button>
+            <button
+              onClick={refreshData}
+              disabled={isRefreshing || loadingPayments}
+              className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
+              title="Refresh payment data"
+            >
+              <RefreshCw
+                className={`size-5 ${isRefreshing ? "animate-spin" : ""}`}
+              />
+              <span>Refresh</span>
+            </button>
           </div>
-
-          {/* Payments Table */}
-          <PaymentTable
-            filteredPayments={currentPayments}
-            loadingPayments={loadingPayments}
-            getStatusColor={getStatusColor}
-            toggleSort={toggleSort} // Pass the updated toggleSort
-            sortField={sortField} // Pass the state (now correctly typed)
-            sortDirection={sortDirection} // Pass the current sort direction
-            handleEditPayment={handleEditPayment}
-          />
-
-          {/* Pagination */}
-          {totalPages > 1 && !loadingPayments && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              paginate={paginate}
-              goToPreviousPage={goToPreviousPage}
-              goToNextPage={goToNextPage}
-            />
-          )}
-
         </div>
 
-        {/* Edit Payment Modal */}
-        <PaymentEditModal
-          isEditModalOpen={isEditModalOpen}
-          setIsEditModalOpen={setIsEditModalOpen}
-          selectedPaymentForEdit={selectedPaymentForEdit}
-          editFormData={editFormData}
-          setEditFormData={setEditFormData}
-          editLoading={editLoading}
-          handleSaveEdit={handleSaveEdit}
-          statusOptions={statusOptions.filter(s => s !== 'all' && s !== 'unknown')}
+        {/* Success/Error Messages */}
+        <AnimatePresence>
+          {successMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="p-3 rounded-md bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700/50 flex justify-between items-center"
+            >
+              <div className="flex items-center gap-2">
+                <Check
+                  className="text-green-600 dark:text-green-400"
+                  size={18}
+                />
+                <p className="text-sm font-medium text-green-800 dark:text-green-300">
+                  {successMessage}
+                </p>
+              </div>
+              <button
+                onClick={() => setSuccessMessage(null)}
+                className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-200"
+              >
+                <X size={18} />
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <AnimatePresence>
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="p-3 rounded-md bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700/50 flex justify-between items-center"
+            >
+              <div className="flex items-center gap-2">
+                <X className="text-red-600 dark:text-red-400" size={18} />
+                <p className="text-sm font-medium text-red-800 dark:text-red-300">
+                  {error}
+                </p>
+              </div>
+              <button
+                onClick={() => setError(null)}
+                className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200"
+              >
+                <X size={18} />
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Pagination and Page Size Controls */}
+        <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
+          <div className="flex items-center gap-2">
+            <label
+              htmlFor="paymentsPerPage"
+              className="text-sm font-medium text-gray-500 dark:text-gray-300 whitespace-nowrap"
+            >
+              Show:
+            </label>
+            <select
+              id="paymentsPerPage"
+              value={paymentsPerPage}
+              onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+              className="block w-auto pl-3 pr-8 py-2 text-sm border rounded-md focus:outline-none bg-white dark:bg-primarybox dark:text-white cursor-pointer"
+            >
+              {pageSizeOptions.map((size) => (
+                <option
+                  key={size}
+                  value={size}
+                  className="dark:bg-dropdowncolor cursor-pointer"
+                >
+                  {size}
+                </option>
+              ))}
+            </select>
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-300 whitespace-nowrap">
+              entries
+            </span>
+          </div>
+          <p className="text-sm text-gray-500 dark:text-gray-300">
+            Showing{" "}
+            {filteredPayments.length > 0
+              ? (currentPage - 1) * paymentsPerPage + 1
+              : 0}
+            - {Math.min(currentPage * paymentsPerPage, filteredPayments.length)}{" "}
+            of {filteredPayments.length} results
+            {totalPages > 1 && ` (Page ${currentPage} of ${totalPages})`}
+          </p>
+        </div>
+
+        {/* Payments Table */}
+        <PaymentTable
+          filteredPayments={currentPayments}
+          loadingPayments={loadingPayments}
+          getStatusColor={getStatusColor}
+          toggleSort={toggleSort} // Pass the updated toggleSort
+          sortField={sortField} // Pass the state (now correctly typed)
+          sortDirection={sortDirection} // Pass the current sort direction
+          handleEditPayment={handleEditPayment}
         />
 
-        {/* Generic Filters Component */}
-        <GenericFilters
-            showFilterModal={showFilterModal}
-            setShowFilterModal={setShowFilterModal}
-            initialFilters={currentFilterState}
-            onApplyFilters={handleApplyFilters}
-            onClearFilters={handleClearAllFilters}
-            searchTermPlaceholder="Search User Name or Email..."
-            currencyOptions={currencyOptions}
-            statusOptions={statusOptions}
-            idFilterLabel="Payment ID"
-            idFilterPlaceholder="Filter by Payment ID"
-            showRecipientFilter={false}
-        />
+        {/* Pagination */}
+        {totalPages > 1 && !loadingPayments && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            paginate={paginate}
+            goToPreviousPage={goToPreviousPage}
+            goToNextPage={goToNextPage}
+          />
+        )}
       </div>
-    );
+
+      {/* Edit Payment Modal */}
+      <PaymentEditModal
+        isEditModalOpen={isEditModalOpen}
+        setIsEditModalOpen={setIsEditModalOpen}
+        selectedPaymentForEdit={selectedPaymentForEdit}
+        editFormData={editFormData}
+        setEditFormData={setEditFormData}
+        editLoading={editLoading}
+        handleSaveEdit={handleSaveEdit}
+        statusOptions={statusOptions.filter(
+          (s) => s !== "all" && s !== "unknown"
+        )}
+      />
+
+      {/* Generic Filters Component */}
+      <GenericFilters
+        showFilterModal={showFilterModal}
+        setShowFilterModal={setShowFilterModal}
+        initialFilters={currentFilterState}
+        onApplyFilters={handleApplyFilters}
+        onClearFilters={handleClearAllFilters}
+        searchTermPlaceholder="Search User Name or Email..."
+        currencyOptions={currencyOptions}
+        statusOptions={statusOptions}
+        idFilterLabel="Payment ID"
+        idFilterPlaceholder="Filter by Payment ID"
+        showRecipientFilter={false}
+      />
+    </div>
+  );
 };
 
 export default AdminPaymentsPage;

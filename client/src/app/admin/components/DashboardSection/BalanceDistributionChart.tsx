@@ -750,7 +750,6 @@ import { Button } from "@/components/ui/button";
 import statsAdminService, {
   BalanceDistributionDataPoint,
 } from "../../../services/admin/stats.admin";
-import { cn } from "@/lib/utils";
 import { FaWallet } from "react-icons/fa6"; // FaWallet is used in the final card
 
 const PREDEFINED_COLORS_HSL = [
@@ -879,12 +878,12 @@ export default function BalanceDistributionChart() {
           <Skeleton className="w-full h-[200px] rounded-md" />
           {/* Optional: Add small skeletons for Y-axis/X-axis labels if desired for more detail */}
           <div className="flex justify-between mt-2">
-             <Skeleton className="h-3 w-12 rounded-md" />
-             <Skeleton className="h-3 w-12 rounded-md" />
-             <Skeleton className="h-3 w-12 rounded-md" />
-             <Skeleton className="h-3 w-12 rounded-md" />
-             <Skeleton className="h-3 w-12 rounded-md" />
-           </div>
+            <Skeleton className="h-3 w-12 rounded-md" />
+            <Skeleton className="h-3 w-12 rounded-md" />
+            <Skeleton className="h-3 w-12 rounded-md" />
+            <Skeleton className="h-3 w-12 rounded-md" />
+            <Skeleton className="h-3 w-12 rounded-md" />
+          </div>
         </CardContent>
 
         {/* Skeleton for the Footer Text */}
@@ -934,19 +933,24 @@ export default function BalanceDistributionChart() {
 
   return (
     <Card className="lg:w-1/4 w-full dark:bg-primarybox sm:order-2 order-1 p-4 rounded-xl border border-border relative overflow-hidden">
-      <CardHeader className="items-start pb-2">
+      <CardHeader className="flex flex-wrap gap-3">
         {/* Icon and Title */}
-        <div className="flex items-center gap-2 mb-1">
-          <FaWallet className="w-5 h-5 text-primary" />
-          <CardTitle className="text-neutral-900 dark:text-white text-base sm:text-lg">
+        <div className="flex justify-center items-center size-12 bg-lightgray dark:bg-primarybox rounded-full">
+          <FaWallet  className="size-6 text-primary" />
+        </div>
+
+        <div>
+          <CardTitle className="text-lg font-semibold text-neutral-900 dark:text-white">
             Account Balances
           </CardTitle>
-        </div>
+
         {/* Description */}
-        <CardDescription className="text-xs text-gray-500 dark:text-gray-300">
-          Net calculated balances (Completed Add Money - Completed Send Money)
-          by currency.
-        </CardDescription>
+          <CardDescription className="text-xs text-gray-500 dark:text-gray-300 max-w-68">
+            Net calculated balances (Completed Add Money - Completed Send Money)
+            by currency.
+          </CardDescription>
+        </div>
+
 
         {/* Total Net Balance */}
         <div className="mt-3">
@@ -960,7 +964,7 @@ export default function BalanceDistributionChart() {
       </CardHeader>
 
       {/* Chart Area */}
-      <CardContent className="flex-1 pb-0 pt-4">
+      <CardContent className="flex-1 pb-0 pt-5">
         <ChartContainer
           config={chartConfig}
           className="w-full" // This height is matched in the skeleton
@@ -1033,15 +1037,10 @@ export default function BalanceDistributionChart() {
       {/* Footer Text */}
 
       <CardFooter className="text-xs flex justify-center">
-       <p className="text-gray-500 dark:text-gray-300">
-        Showing balances for active currencies.
-       </p>
+        <p className="text-gray-500 dark:text-gray-300">
+          Showing balances for active currencies.
+        </p>
       </CardFooter>
-      
     </Card>
   );
 }
-
-
-
-
