@@ -3616,6 +3616,7 @@ const SidebarNavItem: React.FC<SidebarNavItemProps> = ({ href, icon: Icon, label
            <Icon className={`size-5 transition-colors duration-200 `} />
        </div>
        <span className="relative z-10 font-medium">{label}</span>
+
        {isActive && (
         <motion.div
           layoutId="active-sidebar-indicator"
@@ -3792,7 +3793,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
           <motion.aside
             key="sidebar"
             ref={sidebarRef}
-            className={`w-64 fixed lg:sticky h-screen bg-white dark:bg-neutral-900 inset-y-0 left-0 lg:translate-x-0 lg:z-auto z-50 border-r dark:border-neutral-700 flex flex-col`}
+            className={`w-64 fixed lg:sticky bg-white border-r dark:bg-neutral-900 inset-y-0 left-0 lg:translate-x-0 lg:z-auto z-50 h-screen flex flex-col`}
             variants={sidebarVariants}
             initial={isMobileView ? "closed" : "open"}
             animate={isMobileView ? (isSidebarOpen ? "open" : "closed") : "open"}
@@ -3800,8 +3801,8 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
             transition={isMobileView ? { duration: 0.3, ease: "easeInOut" } : { duration: 0 }}
           >
             {isMobileView && (
-              <button
-                className="absolute top-1 right-1 bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox z-10 p-2 rounded-full"
+              <button 
+                className="absolute top-1 right-1 cursor-pointer bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox transition-all ease-linear duration-75 z-10 p-2 rounded-full"
                 onClick={toggleSidebar} // This will trigger the body scroll effect
                 aria-label="Close sidebar"
               >
@@ -3809,8 +3810,8 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
               </button>
             )}
 
-            <div className="p-3 border-b dark:border-neutral-700">
-              <div className="h-14 flex justify-center items-center">
+            <div className="p-2 border-b">
+              <div className="h-16 flex justify-center items-center">
                 <Link href="/admin" className="inline-block" onClick={handleMobileInteraction}>
                   <Image
                     src="/assets/images/wise-logo.svg"
@@ -3847,7 +3848,8 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 px-2">
                   Main
                 </span>
-              </div>
+              </div> 
+
               <ul className="space-y-1 px-4">
                 <li> <SidebarNavItem href="/admin" icon={FaChartPie} label="Dashboard" isActive={isDashboardRoute} onClick={handleMobileInteraction} /> </li>
                 <li> <SidebarNavItem href="/admin/activity" icon={LuActivity} label="Activity" isActive={isActivityRoute} onClick={handleMobileInteraction} /> </li>
@@ -3916,14 +3918,14 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
               </ul>
             </nav>
 
-            <div className="p-4 border-t dark:border-neutral-700 mt-auto space-y-3">
+            <div className="p-4 border-t space-y-3">
               <div className="flex justify-center">
                 <ThemeToggle location="admin" className="inline-block" />
               </div>
               {user && (
                 <button
                   onClick={handleLogout}
-                  className="flex items-center justify-center gap-3 w-full px-4 py-2.5 rounded-lg text-red-600 dark:text-red-500 bg-red-500/10 hover:bg-red-500/20 dark:bg-red-500/15 dark:hover:bg-red-500/25 transition-colors duration-200"
+                  className="flex items-center justify-center gap-3 cursor-pointer sm:mb-0 mb-10 w-full px-4 py-2.5 rounded-lg text-red-600 dark:text-red-500 bg-red-500/10 hover:bg-red-500/20 dark:bg-red-500/15 dark:hover:bg-red-500/25 transition-colors duration-200"
                 >
                   <GrLogout className="size-5" aria-hidden="true" />
                   <span className="font-medium text-sm">Logout</span>

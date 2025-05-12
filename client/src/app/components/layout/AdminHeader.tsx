@@ -23,7 +23,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ toggleSidebar }) => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Mobile Menu Button */}
-          <button onClick={toggleSidebar} className="size-12 lg:hidden bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox flex items-center justify-center rounded-full transition-all duration-75 ease-linear">
+          <button onClick={toggleSidebar} className="size-12 lg:hidden cursor-pointer bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox flex items-center justify-center rounded-full transition-all duration-75 ease-linear">
               <span className="text-neutral-900 dark:text-primary">
                 <FaBars size={26} />
               </span>
