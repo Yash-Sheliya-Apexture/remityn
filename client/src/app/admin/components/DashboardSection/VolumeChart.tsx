@@ -1421,11 +1421,11 @@ export function VolumeChart({
               style={{ minHeight: "200px" }}
             >
               <Skeleton className="flex-grow w-full rounded-md" />
-              <div className="flex justify-between w-full px-1 pt-2">
+              <div className="flex justify-between w-full gap-3 px-1 pt-2">
                 {[...Array(7)].map((_, i) => (
                   <Skeleton
                     key={i}
-                    className="h-5 w-20 rounded-xl opacity-70"
+                    className="h-5 w-28 rounded-xl "
                   />
                 ))}
               </div>

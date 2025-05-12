@@ -42,6 +42,7 @@ body {
 
   --color-primaryhover: #8de900;
   --color-dropdowncolor: #2e2e2e;
+  
   --text-15px: 15px;
   --text-13px: 13px;
 }
@@ -288,3 +289,17 @@ input:-webkit-autofill:active {
   /* Ensure it's hidden when not active */
 }
 
+
+
+
+/* Hide number input spinners (Chrome, Safari, Edge) */
+.no-spinner::-webkit-outer-spin-button,
+.no-spinner::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.no-spinner[type=number] {
+  -moz-appearance: textfield;
+}

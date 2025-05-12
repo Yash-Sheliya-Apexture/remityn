@@ -1,19 +1,21 @@
+<!-- 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to {{appName}}!</title>
+
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --text-main: #1f2937;
-            --text-secondary: #4b5563;
-            --background: #f9fafb;
-            --card-bg: #ffffff;
-            --border: #e5e7eb;
-            --success: #10b981;
+            --primary: #adfa1d;
+            --primary-hover: #ffffff1a;
+            --text-main: #171717;
+            --text-secondary: #002330;
+            --background: #fff;
+            --card-bg: #f4f4f4;
+            --border: #e3e3e3;
         }
         
         body {
@@ -249,11 +251,12 @@
         }
     </style>
 </head>
+
+
 <body>
     <div class="email-container">
         <div class="email-header">
             <div class="logo-container">
-                <!-- Replace with your actual logo -->
                 <svg class="logo" viewBox="0 0 24 24" fill="white">
                     <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
                 </svg>
@@ -261,19 +264,10 @@
             <h1 class="welcome-text">Welcome to {{appName}}!</h1>
         </div>
         
+
         <div class="content">
             <p class="greeting">Hi {{userName}},</p>
             <p class="message">Thank you for choosing <strong>{{appName}}</strong>! We're excited to have you join our platform where you can manage international transactions with ease and security.</p>
-            
-            <div class="verification-badge">
-                <span class="verification-icon">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <path d="M10 18.3333C14.6024 18.3333 18.3334 14.6024 18.3334 10C18.3334 5.39763 14.6024 1.66667 10 1.66667C5.39765 1.66667 1.66669 5.39763 1.66669 10C1.66669 14.6024 5.39765 18.3333 10 18.3333Z" stroke="#10B981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M7.5 10L9.16667 11.6667L12.5 8.33333" stroke="#10B981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </span>
-                <span class="verification-text">Your account has been created successfully!</span>
-            </div>
             
             <div class="steps-container">
                 <h3 class="steps-title">Let's get you started:</h3>
@@ -317,6 +311,7 @@
             <p class="message">If you have any questions or need assistance, our support team is available 24/7 to help you.</p>
         </div>
         
+
         <div class="footer">
             <div class="social-links">
                 <a href="#" class="social-link">
@@ -349,4 +344,559 @@
         </div>
     </div>
 </body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to {{appName}}!</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <style>
+      :root {
+        --primary: #adfa1d;
+        --primary-hover: #8de900; /* Transparent white, good for overlays on dark elements or subtle effects */
+        --text-main: #171717;
+        --text-secondary: #002330;
+        --background: #fff;
+        --card-bg: #f4f4f4;
+        --border: #e3e3e3;
+        --text-gray: #6a7282;
+      }
+
+      /* --- Basic Reset & Global Styles --- */
+      body,
+      table,
+      td,
+      div,
+      p,
+      a,
+      li,
+      h1,
+      h2,
+      h3,
+      h4,
+      span {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        font-size: 100%;
+        vertical-align: baseline;
+        box-sizing: border-box;
+        font-family:Verdana, Geneva, Tahoma, sans-serif;
+        line-height: 1.6;
+      }
+
+      body {
+        width: 100% !important;
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+        background-color: var(--card-bg); /* Page background */
+        color: var(--text-main);
+        padding: 0;
+      }
+
+      /* --- Main Wrapper Table --- */
+      .email-wrapper {
+        width: 100%;
+        background-color: var(--card-bg); /* Page background */
+        padding: 20px 0;
+      }
+
+      .email-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: var(--background); /* Main content area background */
+        border-radius: 20px;
+        overflow: hidden;
+      }
+
+      /* --- Header --- */
+      .email-header {
+        background-color: var(
+          --text-secondary
+        ); /* Dark background for header */
+        padding: 40px 30px;
+        text-align: center;
+        color: var(--background); /* White text on dark background */
+      }
+
+      .email-header h1 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-top: 10px;
+        letter-spacing: -0.5px;
+        color: var(--background); /* White heading */
+      }
+
+      /* --- Email Body / Content --- */
+      .email-body {
+        padding: 35px 30px 25px 30px;
+      }
+
+      .greeting {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 15px;
+        color: var(--text-main);
+      }
+
+      .intro-message,
+      .support-message {
+        font-size: 16px;
+        margin-bottom: 20px;
+        color: var(--text-gray); /* Using text-secondary for paragraph text */
+        line-height: 1.7;
+      }
+
+      .intro-message strong {
+        font-weight: 500;
+        color: var(--primary); /* Highlight appName with primary color */
+      }
+
+      /* --- "Let's Get You Started" Section --- */
+      .get-started-section {
+        background-color: var(
+          --card-bg
+        ); /* Light gray background for emphasis */
+        padding: 25px 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+      }
+
+      .get-started-section h2 {
+        font-size: 18px;
+        font-weight: 500;
+        color: var(--text-main);
+        margin-bottom: 15px;
+        text-align: left;
+      }
+
+      .steps-list {
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      .steps-list li {
+        font-size: 16px;
+        color: var(--text-gray);
+        margin-bottom: 15px;
+        font-weight: 400;
+        display: flex;
+        text-align: left;
+      }
+
+      .steps-list li:last-child {
+        margin-bottom: 0;
+      }
+
+      .step-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 24px;
+        height: 24px;
+        background-color: var(--primary); /* Primary accent color */
+        color: var(--text-main); /* Dark text on light primary bg */
+        border-radius: 50%;
+        font-weight: 400;
+        font-size: 14px;
+        margin-right: 12px;
+        flex-shrink: 0;
+      }
+
+      /* --- Features Section --- */
+      .features-section {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        margin-bottom: 35px;
+      }
+
+      .feature-card {
+        background-color: var(--card-bg);
+        padding: 16px;
+        border-radius: 10px;
+        text-align: center;
+        border: 1px solid var(--border);
+        transition: transform 0.2s ease-in, box-shadow 0.2s ease-in;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .feature-circle {
+        height: 50px;
+        width: 50px;
+        background-color: var(--primary);
+        margin: 0 auto;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        margin-bottom: 10px;
+      }
+
+      .feature-icon {
+        font-size: 26px;
+        color: var(--text-main); /* Feature icons with primary color */
+      }
+
+      .feature-card h3 {
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--text-main);
+        margin-bottom: 8px;
+      }
+
+      .feature-card p {
+        font-size: 14px;
+        color: var(--text-gray);
+      }
+
+      /* --- CTA Button --- */
+      .cta-button-container {
+        text-align: center;
+        margin-top: 10px;
+        margin-bottom: 35px;
+      }
+
+      .cta-button {
+        display: inline-block;
+        background-color: var(--primary);
+        color: var(--text-main) !important; /* Dark text on light primary bg */
+        font-weight: 500;
+        padding: 12px 32px;
+        text-decoration: none;
+        border-radius: 30px;
+        transition: background-color 0.2s ease, filter 0.2s ease;
+      }
+
+      .cta-button:hover {
+        background-color: var(--primary-hover);
+      }
+
+      /* --- Footer --- */
+      .email-footer {
+        background-color: var(--text-secondary); /* Dark footer background */
+        color: var(
+          --card-bg
+        ); /* Light text color for footer (using card-bg as light gray) */
+        padding: 30px 40px;
+        text-align: center;
+        font-size: 14px;
+      }
+
+      .social-icons {
+        font-size: 20px;
+        margin-bottom: 35px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .social-icons .box {
+        padding: 10px;
+        background-color: #8de900;
+        border-radius: 10px;
+      }
+
+      .social-icons .fa-twitter,
+      .social-icons .fa-linkedin,
+      .social-icons .fa-instagram {
+        color: var(--text-main);
+      }
+
+      .email-footer p {
+        margin-bottom: 10px;
+        line-height: 1.6;
+      }
+
+      .email-footer a {
+        color: var(--primary); /* Primary color for links in footer */
+        text-decoration: none;
+        font-weight: 400;
+      }
+
+      .email-footer a:hover {
+        text-decoration: underline;
+      }
+
+      .footer-links span {
+        color: var(--text-gray); /* Keeping a neutral separator color */
+        margin: 0 10px;
+      }
+
+      .copyright,
+      .unsubscribe-text {
+        font-size: 14px;
+        color: white; /* Lighter gray for less important text, adjust if needed */
+        margin-top: 10px;
+      }
+      .unsubscribe-text {
+        margin-top: 5px;
+      }
+
+      /* --- Responsive Adjustments --- */
+      @media screen and (max-width: 640px) {
+        .email-wrapper {
+          padding: 10px 0;
+        }
+        .email-container {
+          width: 95% !important;
+          border-radius: 10px;
+        }
+        .email-header {
+          padding: 30px 20px;
+        }
+        .email-header h1 {
+          font-size: 20px;
+          margin-top: 20px;
+        }
+
+        .email-body {
+          padding: 25px 16px 25px 16px;
+        }
+
+        .greeting {
+          font-size: 18px;
+        }
+
+        .intro-message,
+        .support-message {
+          font-size: 16px;
+        }
+
+        .get-started-section {
+          padding: 16px;
+        }
+
+        .get-started-section h2 {
+          font-size: 18px;
+        }
+
+        .steps-list li {
+          font-size: 14px;
+          margin-bottom: 12px;
+        }
+
+        .step-number {
+          min-width: 22px;
+          height: 22px;
+          font-size: 13px;
+          margin-right: 10px;
+        }
+
+        .features-section {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+        .feature-card {
+          padding: 16px;
+        }
+        .feature-icon {
+          font-size: 24px;
+        }
+
+        .feature-card h3 {
+          font-size: 16px;
+        }
+
+        .feature-card p {
+          font-size: 14px;
+        }
+
+        .email-footer {
+          padding: 25px 20px;
+        }
+
+        .email-footer p {
+          font-size: 14px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <table
+      role="presentation"
+      class="email-wrapper"
+      width="100%"
+      cellspacing="0"
+      cellpadding="0"
+      border="0"
+    >
+      <tr>
+        <td align="center">
+          <div class="email-container">
+            <!-- Header-Section -->
+            <div class="email-header">
+              <img
+                src="../../../../client/public/assets/images/wise-logo.svg"
+                alt=""
+                class="email-image"
+              />
+
+              <h1>Welcome to {{appName}}!</h1>
+            </div>
+
+            <div class="email-body">
+              <p class="greeting">Hi {{userName}},</p>
+              <p class="intro-message">
+                Thank you for choosing <strong>{{appName}}</strong>! We're
+                thrilled to have you join our platform. Get ready to manage your
+                international transactions with unparalleled ease and top-tier
+                security.
+              </p>
+
+              <div class="get-started-section">
+                <h2>Let's get you started:</h2>
+                <ul class="steps-list">
+                  <li>
+                    <span class="step-number">1</span>Complete your profile
+                    details and upload your KYC documents for verification.
+                  </li>
+                  <li>
+                    <span class="step-number">2</span>Explore the dashboard to
+                    familiarize yourself with all our powerful features.
+                  </li>
+                  <li>
+                    <span class="step-number">3</span>Set up your payment
+                    preferences and enhance your security settings.
+                  </li>
+                  <li>
+                    <span class="step-number">4</span>Make your first
+                    international transaction smoothly and confidently.
+                  </li>
+                </ul>
+              </div>
+
+              <div class="features-section">
+                <div class="feature-card">
+                  <div class="feature-circle">
+                    <span class="feature-icon">
+                      <i class="fa-solid fa-lock"></i>
+                    </span>
+                  </div>
+                  <h3>Secure Transactions</h3>
+                  <p>
+                    Enjoy bank-level security for all your financial activities,
+                    ensuring your money is always protected.
+                  </p>
+                </div>
+
+                <div class="feature-card">
+                  <div class="feature-circle">
+                    <span class="feature-icon">
+                      <i class="fa-solid fa-globe"></i>
+                    </span>
+                  </div>
+                  <h3>Global Coverage</h3>
+                  <p>
+                    Send money to over 150 countries with speed and
+                    ease—wherever ones are, we’ve got you covered.
+                  </p>
+                </div>
+
+                <div class="feature-card">
+                  <div class="feature-circle">
+                    <span class="feature-icon">
+                      <i class="fa-solid fa-chart-simple"></i>
+                    </span>
+                  </div>
+
+                  <h3>Competitive Rates</h3>
+                  <p>
+                    Benefit from transparent, low-fee pricing designed to give
+                    you more value for every transaction.
+                  </p>
+                </div>
+
+                <div class="feature-card">
+                  <div class="feature-circle">
+                    <span class="feature-icon">
+                      <i class="fa-solid fa-mobile"></i>
+                    </span>
+                  </div>
+                  <h3>Mobile Access</h3>
+                  <p>
+                    Transfer funds on the go. Our platform gives you full
+                    control anytime, from any device.
+                  </p>
+                </div>
+              </div>
+
+              {{#if loginLink}}
+              <div class="cta-button-container">
+                <a href="{{loginLink}}" class="cta-button"
+                  >Access Your Dashboard</a
+                >
+              </div>
+              {{/if}}
+
+              <p class="support-message">
+                If you have any questions or need assistance, our dedicated
+                support team is available 24/7 to help you. We're here for you
+                every step of the way!
+              </p>
+            </div>
+
+            <!-- Footer-Section -->
+            <div class="email-footer">
+              <div class="social-icons">
+                <a href="#" title="Twitter">
+                  <span class="box">
+                    <i class="fa-brands fa-twitter"></i>
+                  </span>
+                </a>
+                <a href="#" title="LinkedIn">
+                  <span class="box">
+                    <i class="fa-brands fa-linkedin"></i>
+                  </span>
+                </a>
+                <a href="#" title="Instagram">
+                  <span class="box">
+                    <i class="fa-brands fa-instagram"></i>
+                  </span>
+                </a>
+              </div>
+              <p>
+                Need help? Contact our support team at
+                <a href="mailto:support@{{appName}}.com"
+                  >support@{{appName}}.com</a
+                >
+              </p>
+
+              <div class="footer-links">
+                <a href="#">Privacy Policy</a><span>|</span>
+                <a href="#">Terms of Service</a><span>|</span>
+                <a href="#">Help Center</a>
+              </div>
+
+              <p class="copyright">
+                &copy; {{currentYear}} {{appName}}. All rights reserved.
+              </p>
+
+              <p class="unsubscribe-text">
+                If you did not sign up for this account, please disregard this
+                email.
+              </p>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </body>
 </html>

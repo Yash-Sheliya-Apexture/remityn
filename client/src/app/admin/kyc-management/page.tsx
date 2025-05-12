@@ -1766,6 +1766,7 @@ const KycManagementPage: React.FC = () => {
                 <FileClock className="h-5 w-5 text-primary" />
                 Pending Applications
               </h2>
+
               {/* Actual Controls (Rendered only if no initial load error) */}
               {!(error && pendingUsers.length === 0) && renderControls()}
             </>
@@ -1784,6 +1785,7 @@ const KycManagementPage: React.FC = () => {
                 >
                   Show:
                 </label>
+                
                 <select
                   id="itemsPerPage"
                   value={itemsPerPage}

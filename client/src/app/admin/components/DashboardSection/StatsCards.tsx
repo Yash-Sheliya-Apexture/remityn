@@ -251,6 +251,7 @@ export default function StatsCards() {
             <p className="text-lg font-medium text-neutral-900 dark:text-white">
               Total Users
             </p>
+
             <h3 className="text-3xl font-bold text-neutral-900 dark:text-white mt-1">
               {stats?.totalUsers ?? "N/A"}
             </h3>

@@ -1982,6 +1982,7 @@ const AdminUsersPage: React.FC = () => {
           initialFilters={currentFilterState}
           onApplyFilters={handleApplyFilters}
           onClearFilters={handleClearAllFilters}
+          searchTermPlaceholder="Search User ID, Name or Email..."
           // searchTermPlaceholder is internal to GenericFilters; it uses initialFilters.searchTerm
           // and has its own placeholder: "Search ID, Name, Email, Ref..."
           statusOptions={kycStatusOptionsStrings} // Pass KYC statuses

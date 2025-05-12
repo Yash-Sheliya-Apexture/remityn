@@ -385,13 +385,13 @@ export default function KycVerificationCard({
     return (
       <div className="w-full bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl border">
         {/* Header Skeleton */}
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-between items-center">
           <Skeleton className="h-6 w-1/4 rounded" />{" "}
           {/* Title: "KYC Verifications" */}
           <Skeleton className="h-5 w-5 rounded" /> {/* Icon */}
         </div>
         {/* Content Rows Skeleton */}
-        <div className="space-y-4">
+        <div className="space-y-3.5 mt-2">
           {/* Row 1 Skeleton (e.g., Not Started) */}
           <div className="flex justify-between items-center">
             <Skeleton className="h-4 w-28 rounded" /> {/* Label */}
