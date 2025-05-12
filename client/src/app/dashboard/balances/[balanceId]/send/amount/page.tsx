@@ -4795,7 +4795,7 @@ import React, {
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { IoIosArrowBack, IoIosInformationCircleOutline } from "react-icons/io";
-import { TrendingUp } from "lucide-react"; // Import TrendingUp
+import { AlertTriangle, TrendingUp } from "lucide-react"; // Import TrendingUp
 import { FaPiggyBank } from "react-icons/fa"; // Import FaPiggyBank
 import { motion, AnimatePresence } from "framer-motion"; // Import framer-motion
 import { IoClose } from "react-icons/io5";
@@ -5158,25 +5158,32 @@ export default function SendAmountPage() {
     return (
       <div className="min-h-screen">
         <DashboardHeader title="Send Money" steps={steps} currentStep={2} />
-        <div className="py-10 text-center">
-           <div
-            className="bg-red-50 border border-red-400 text-red-800 px-8 py-3 rounded-lg relative max-w-md mx-auto mt-10"
-            role="alert"
-          >
-            <strong className="font-bold mr-2">Error!</strong>
-            <span className="block sm:inline">{criticalError}</span>
+        <div className="py-8">
+          <div className="bg-red-50 dark:bg-red-900/25 border border-red-500 rounded-lg p-4 flex items-center gap-3">
+            <div className="flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center bg-red-600/20">
+              <AlertTriangle className="text-red-600 dark:text-red-500 size-5 sm:size-6 flex-shrink-0" />
+            </div>
+            <div className="flex items-center">
+              <span className="font-medium tracking-normal text-red-800 dark:text-red-200 text-base">
+                Error!
+              </span>
+              <span className="ml-2 block sm:inline text-red-700 dark:text-red-300/90">
+                {criticalError}Network Error
+              </span>
+            </div>
           </div>
-
-          <Link
-            href={
-              balanceId
-                ? `/dashboard/balances/${balanceId}/send/select-recipient`
-                : "/dashboard"
-            }
-            className="mt-6 inline-flex items-center px-6 py-3 border border-transparent text-neutral-900 text-base font-medium rounded-full bg-primary hover:bg-primaryhover focus:outline-none duration-75 ease-linear transition-all"
-          >
-            Go back
-          </Link>
+          <div className="text-center">
+            <Link
+              href={
+                balanceId
+                  ? `/dashboard/balances/${balanceId}/send/select-recipient`
+                  : "/dashboard"
+              }
+              className="mt-6 inline-flex justify-center cursor-pointer bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-8 py-3 text-center sm:w-auto w-full transition-all duration-75 ease-linear"
+            >
+              <IoIosArrowBack size={20} className="-ml-1 mr-1" /> Go back
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -5249,7 +5256,6 @@ export default function SendAmountPage() {
             inputId="send-amount"
             data-testid="send-amount-input"
           />
-
           <div className="text-right -mt-4 pr-4">
             <span className="text-sm text-gray-500 dark:text-gray-300">
               Available:{" "}
@@ -5269,7 +5275,7 @@ export default function SendAmountPage() {
               {sourceAccount!.currency.code}
             </button>
           </div>
-
+          {/* Recipient Gets Section */}
           <AmountInput
             ref={receiveInputRef}
             label={
@@ -5302,33 +5308,51 @@ export default function SendAmountPage() {
 
           {displayError && (
             <div
-              className={`relative p-4 rounded-lg dark:border ${
+              className={`relative flex justify-between items-center p-2 rounded-lg border ${
                 isInsufficientBalanceError
-                  ? "bg-red-50  text-red-800 dark:bg-red-900/20 dark:border-red-700 dark:text-red-300"
-                  : "bg-yellow-50 border-yellow-300 text-yellow-800 dark:bg-yellow-900/20 dark:border-yellow-700 dark:text-yellow-300"
+                  ? "bg-red-50 dark:bg-red-900/25 border-red-500"
+                  : "bg-yellow-50 dark:bg-yellow-900/25 border-yellow-500"
               }`}
               role="alert"
             >
-              <div className="flex items-center">
-                <IoIosInformationCircleOutline
-                  className={`w-5 h-5 mr-2 ${
+              <div className="flex items-center gap-3">
+                <div
+                  className={`flex-shrink-0 size-10 rounded-full flex items-center justify-center ${
                     isInsufficientBalanceError
-                      ? "text-red-600 dark:text-red-400"
-                      : "text-yellow-600 dark:text-yellow-400"
+                      ? "bg-red-600/20 text-red-600 dark:text-red-500"
+                      : "bg-yellow-600/20 text-yellow-600 dark:text-yellow-500"
                   }`}
-                />
-                <span className="flex-1 text-sm">{displayError}</span>
-                <button
-                  onClick={() => {
-                    setLogicError(null);
-                    // if (apiError) { /* setApiError(null) or similar if you want to clear it too */ }
-                  }}
-                  className="absolute top-1.5 cursor-pointer right-1.5 p-2 rounded-full text-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none"
-                  aria-label="Dismiss error message"
                 >
-                  <IoClose size={18} />
-                </button>
+                  <IoIosInformationCircleOutline
+                    className={`size-5 sm:size-6 flex-shrink-0`}
+                  />
+                </div>
+                <span
+                  className={`${
+                    isInsufficientBalanceError
+                      ? "text-red-700 dark:text-red-300/90"
+                      : "text-yellow-700 dark:text-yellow-300/90"
+                  }`}
+                >
+                  {displayError}
+                </span>
               </div>
+
+              <button
+                onClick={() => {
+                  setLogicError(null);
+                  // Decide if you want dismissing the error to also clear API errors
+                  // if (apiError) { /* logic to clear apiError if needed */ }
+                }}
+                className={`ml-2 cursor-pointer p-2 rounded-full focus:outline-none ${
+                  isInsufficientBalanceError
+                    ? " text-red-600 dark:text-red-500"
+                    : " text-yellow-600 dark:text-yellow-500"
+                }`}
+                aria-label="Dismiss error message"
+              >
+                <IoClose size={18} />
+              </button>
             </div>
           )}
 
