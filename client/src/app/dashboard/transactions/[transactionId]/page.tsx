@@ -6503,6 +6503,26 @@ const TransactionDetailsPage = () => {
     }
   }, [transactionDetails, isPayment, showAwaitingVerificationView]); // Dependencies for header display
 
+  // Custom SVG Loader Component
+const SvgLoader = () => (
+  <svg
+    className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M12 2V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M12 18V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M4.93 4.93L7.76 7.76" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M16.24 16.24L19.07 19.07" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M2 12H6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M18 12H22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M4.93 19.07L7.76 16.24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M16.24 7.76L19.07 4.93" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+
   // --- Render Logic ---
 
   // 1. Initial Loading State
@@ -6513,15 +6533,25 @@ const TransactionDetailsPage = () => {
   // 2. Error State (Failed to load initial data)
   if (error && !transactionDetails) {
     return (
-      <div className="container mx-auto px-4 py-8 text-center">
-        <div className="bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700/50 text-red-700 dark:text-red-300 px-4 py-3 rounded-md shadow-sm max-w-md mx-auto">
-          <p className="font-medium">Error Loading Transaction</p>
-          <p className="text-sm mt-1">{error}</p>
+      <div className="bg-lightgray dark:bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
+        <h2 className="lg:text-3xl text-2xl font-medium text-neutral-900 dark:text-white">Error Loading Transaction</h2>
+        <p className="lg:text-lg text-base text-gray-500 dark:text-gray-300 max-w-lg mx-auto">{error}</p>
+        <div className="flex sm:flex-row flex-col items-center justify-center gap-3 w-full">
+          <button
+            onClick={() => router.back()}
+            className="inline-flex justify-center items-center font-medium cursor-pointer bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear"
+          >
+            Go Back
+          </button>
+          <button
+            onClick={() => fetchTransactionDetails()}
+            className="inline-flex justify-center items-center font-medium bg-primary hover:bg-primaryhover text-neutral-900 px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear cursor-pointer"
+            disabled={isLoading}
+          >
+            {isLoading && <SvgLoader />}
+            {isLoading ? "Retrying..." : "Try Again"}
+          </button>
         </div>
-        <Button onClick={() => router.back()} variant="outline" className="mt-6">Go Back</Button>
-        <Button onClick={() => fetchTransactionDetails()} variant="secondary" className="mt-6 ml-2" disabled={isLoading}>
-          {isLoading ? 'Retrying...' : 'Try Again'}
-        </Button>
       </div>
     );
   }
@@ -6529,11 +6559,11 @@ const TransactionDetailsPage = () => {
   // 3. Not Found State (Fetch completed, but no data and no error set previously)
   if (!transactionDetails) {
     return (
-      <div className="container mx-auto px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-        <p className="text-lg">Transaction details could not be loaded.</p>
-        <Button onClick={() => router.push("/dashboard/transactions")} variant="outline" className="mt-6">
+      <div className="bg-lightgray dark:bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
+        <p className="lg:text-lg text-base text-neutral-900 dark:text-white max-w-lg mx-auto">Transaction details could not be loaded.</p>
+        <button onClick={() => router.push("/dashboard/transactions")} className="inline-flex justify-center items-center font-medium bg-primary hover:bg-primaryhover text-neutral-900 px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear cursor-pointer">
           View All Transactions
-        </Button>
+        </button>
       </div>
     );
   }

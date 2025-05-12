@@ -8773,6 +8773,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import type { KycStatus } from '@/app/services/kyc';
 import { LuSettings2 } from "react-icons/lu"; // Icon for filter button
+import { AlertTriangle } from "lucide-react";
 
 // --- Interfaces ---
 interface BalanceDetailPageParams extends Record<string, string | string[]> {
@@ -9006,7 +9007,7 @@ const BalanceDetailPage = () => {
 
   if (isPageLoading && !typedBalanceDetail && !error) {
         return (
-            <div className="py-5 animate-pulse">
+            <div className="py-5">
                  <div className="pb-6 mb-8 border-b">
                     <div className="flex sm:flex-row flex-col gap-4 justify-between">
                         <div>
@@ -9051,22 +9052,40 @@ const BalanceDetailPage = () => {
   if ((error && !typedBalanceDetail && !isBalanceLoading) || (!isPageLoading && !typedBalanceDetail)) {
      const message = typeof error === 'string' ? error : "Balance details not found or you may not have access.";
         return (
-            <div className="container mx-auto px-4 py-8 text-center">
-                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/40 text-red-700 dark:text-red-300 p-4 rounded-md max-w-lg mx-auto">
-                     <p className="font-semibold">Error Loading Balance</p>
-                     <p className="text-sm mt-1">{message}</p>
-                </div>
-                <Button onClick={handleBackClick} variant="outline" className="mt-6">Go Back</Button>
+          <>
+            <div className="bg-red-50 dark:bg-red-900/25 border border-red-500 sm:p-10 p-4 flex sm:flex-col sm:items-center justify-center gap-3 rounded-lg ">
+              <div className="flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center bg-red-600/20">
+                <AlertTriangle className="text-red-600 dark:text-red-500 size-5 sm:size-6 flex-shrink-0" />
+              </div>
+              <div className="flex flex-col sm:items-center w-full">
+                <p className="font-semibold text-red-800 dark:text-red-200">
+                  {" "}
+                  Error Loading Balance{" "}
+                </p>
+                <p className="text-sm text-red-700 dark:text-red-300/90 mt-1">
+                  {" "}
+                  {message}{" "}
+                </p>
+              </div>
             </div>
-         );
-   }
+            <div className="text-center">
+              <button
+                onClick={handleBackClick}
+                className="mt-6 inline-flex font-medium cursor-pointer bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear"
+              >
+                Go Back
+              </button>
+            </div>
+          </>
+        );
+    }
 
    if (!typedBalanceDetail) {
         console.error("Invariant violation: Reached main render but typedBalanceDetail is null/undefined despite passing loading/error checks.");
             return (
-                <div className="container mx-auto px-4 py-8 text-center">
-                     <p>Something went wrong. Balance details are unavailable.</p>
-                     <Button onClick={handleBackClick} variant="outline" className="mt-6">Go Back</Button>
+                <div className="bg-lightgray dark:bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
+                     <p className="lg:text-lg text-base text-gray-500 dark:text-gray-300 max-w-lg mx-auto">Something went wrong. Balance details are unavailable.</p>
+                     <button onClick={handleBackClick} className="inline-flex font-medium bg-primary hover:bg-primaryhover text-neutral-900 px-8 py-3 h-12.5 rounded-full transition-all duration-75 ease-linear cursor-pointer">Go Back</button>
                 </div>
             );
    }
