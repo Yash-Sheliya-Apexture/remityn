@@ -931,7 +931,7 @@ export default function AdminHomePage() {
             <h2 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
               Admin Dashboard Home
             </h2>
-            <p className="text-gray-500 dark:text-gray-300 lg:text-lg leading-relaxed">
+            <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg leading-relaxed">
               Welcome to the admin panel! Here you can manage currencies, users,
               transfers, and other aspects of the money transfer platform.
             </p>
