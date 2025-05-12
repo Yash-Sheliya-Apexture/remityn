@@ -281,7 +281,7 @@
 //     const kycStatusConfig = getKycStatusConfig(kyc?.status);
 
 //     return (
-//         <div className="min-h-screen bg-background dark:bg-background pb-10">
+//         <div className="min-h-screen bg-background dark:bg-background">
 //             <div className="container mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
 //                 {/* Back Navigation */}
 //                 <Button asChild variant="outline" size="sm" className="gap-1.5 mb-4 h-8 px-3">
@@ -4773,7 +4773,7 @@ const DetailItem = ({
 // --- Loading Skeleton Component ---
 const LoadingSkeleton = () => (
   <div className="container mx-auto px-4 py-8">
-    <div className="space-y-6 pb-10">
+    <div className="space-y-6">
       {/* Header Skeleton */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
         <div>
@@ -5253,8 +5253,8 @@ const UserDetailPage: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 relative">
-      <div className="space-y-6 pb-10">
+    <div className="container mx-auto px-4 py-5 relative">
+      <div className="space-y-6">
         {/* --- Header Section --- */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
           <div className="Heading">
@@ -5281,7 +5281,7 @@ const UserDetailPage: React.FC = () => {
                 {userId ? `${userId.substring(0, 8)}...` : "Loading..."})
               </span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-bold text-neutral-900 dark:text-white">
+            <h1 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
               User Details
             </h1>
           </div>
@@ -5418,7 +5418,7 @@ const UserDetailPage: React.FC = () => {
           className="w-full"
         >
           <div className="overflow-hidden mb-4 rounded-full">
-            <TabsList className="relative z-20 flex w-full h-full overflow-x-auto whitespace-nowrap dark:bg-primarybox p-1.5 rounded-full justify-normal items-center">
+            <TabsList className="relative z-0 flex w-full h-full overflow-x-auto whitespace-nowrap dark:bg-primarybox p-1.5 rounded-full justify-normal items-center">
               {tabs.map((tab) => (
                 <TabsTrigger
                   key={tab.value}

@@ -3925,7 +3925,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
               {user && (
                 <button
                   onClick={handleLogout}
-                  className="flex items-center justify-center gap-3 cursor-pointer sm:mb-0 mb-10 w-full px-4 py-2.5 rounded-lg text-red-600 dark:text-red-500 bg-red-500/10 hover:bg-red-500/20 dark:bg-red-500/15 dark:hover:bg-red-500/25 transition-colors duration-200"
+                  className="flex items-center justify-center gap-3 cursor-pointer w-full px-4 py-2.5 rounded-lg text-red-600 dark:text-red-500 bg-red-500/10 hover:bg-red-500/20 dark:bg-red-500/15 dark:hover:bg-red-500/25 transition-colors duration-200"
                 >
                   <GrLogout className="size-5" aria-hidden="true" />
                   <span className="font-medium text-sm">Logout</span>
