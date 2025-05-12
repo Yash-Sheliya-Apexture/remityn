@@ -297,7 +297,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
 
                 {/* Essential Meta Tags */}
                 <meta charSet="utf-8" />
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <meta name="viewport" content="width=device-width, initial-scale=1 " />
 
                 {/* Title Tag - Replace with your application's title */}
                 {/* Consider using Next.js Metadata API for more complex/dynamic titles/meta */}

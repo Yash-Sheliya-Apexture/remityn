@@ -454,6 +454,9 @@
 //   );
 // }
 
+
+
+
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -465,7 +468,6 @@ import {
   FileText,
   AlertCircle,
   Clock,
-  ChevronRight,
   RefreshCw,
   Activity as ActivityIcon,
   MessageSquare,
@@ -602,7 +604,7 @@ export default function RecentActivity() {
   if (loading && !refreshing && activities.length === 0) {
     // More specific condition for full component skeleton
     return (
-      <div className="w-full bg-white dark:bg-primarybox sm:p-6 p-4 rounded-xl border">
+      <div className="lg:w-3/4 w-full bg-white dark:bg-primarybox sm:order-1 order-2 sm:p-6 p-4 rounded-xl border">
         <div className="flex items-center justify-between mb-5">
           <Skeleton className="h-6 rounded-md w-40" />
           <Skeleton className="h-9 w-9 rounded-full" />
@@ -631,7 +633,7 @@ export default function RecentActivity() {
     // Don't show main error if we are just trying to refresh
     return (
       <div
-        className="w-full bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30 text-red-700 dark:text-red-300 px-5 py-4 rounded-xl"
+        className="lg:w-3/4 w-full bg-red-50 dark:bg-red-900/20 border sm:order-1 order-2 border-red-200 dark:border-red-800/30 text-red-700 dark:text-red-300 px-5 py-4 rounded-xl"
         role="alert"
       >
         <div className="flex items-center gap-3">
@@ -661,7 +663,7 @@ export default function RecentActivity() {
   );
 
   return (
-    <div className="w-full bg-white dark:bg-primarybox sm:p-6 p-4 rounded-xl border relative overflow-hidden">
+    <div className="lg:w-3/4 w-full bg-white dark:bg-primarybox sm:order-1 order-2 sm:p-6 p-4 rounded-xl border relative overflow-hidden">
       <div className="flex items-center justify-between mb-5 relative">
         <div className="flex items-center gap-2">
           <ActivityIcon className="h-5 w-5 text-primary" />
