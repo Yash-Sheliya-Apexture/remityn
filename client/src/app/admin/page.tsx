@@ -852,25 +852,81 @@
 //   );
 // }
 
-// frontend/src/app/admin/page.tsx
-"use client"; // <-- ADDED: This page now needs hooks for data fetching
+// // frontend/src/app/admin/page.tsx
+// "use client"; // <-- ADDED: This page now needs hooks for data fetching
 
-import React from "react"; // <-- ADDED hooks
-// Import the new components
-import StatsCards from "./components/DashboardSection/StatsCards"; // Adjust path as needed
-import TransferInsights from "./components/DashboardSection/TransferInsights"; // Adjust path as needed
-import RecentActivity from "./components/DashboardSection/RecentActivity"; // Adjust path as needed
-// --- ADD Chart Imports ---
+// import React from "react"; // <-- ADDED hooks
+// // Import the new components
+// import StatsCards from "./components/DashboardSection/StatsCards"; // Adjust path as needed
+// import TransferInsights from "./components/DashboardSection/TransferInsights"; // Adjust path as needed
+// import RecentActivity from "./components/DashboardSection/RecentActivity"; // Adjust path as needed
+// // --- ADD Chart Imports ---
+// import PaymentsVolumeChart from "./components/DashboardSection/PaymentsVolumeChart";
+// import TransfersVolumeChart from "./components/DashboardSection/TransfersVolumeChart";
+// // --- END Chart Imports ---
+
+// export default function AdminHomePage() {
+//   return (
+//     <section className="Admin-Dashboard py-5">
+//       <div className="container mx-auto px-4">
+//         {/* Main dashboard content */}
+//         <div className="overflow-y-auto">
+//           <div className="mb-8">
+//             <h2 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
+//               Admin Dashboard Home
+//             </h2>
+//             <p className="text-gray-500 dark:text-gray-300 lg:text-lg leading-relaxed">
+//               Welcome to the admin panel! Here you can manage currencies, users,
+//               transfers, and other aspects of the money transfer platform.
+//             </p>
+//           </div>
+
+//           {/* Stats cards Component */}
+//           <StatsCards />
+
+//           {/* --- ADD Charts Section --- */}
+//           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+//             <PaymentsVolumeChart />
+//             <TransfersVolumeChart />
+//           </div>
+//           {/* --- END Charts Section --- */}
+
+//           {/* Recent activity and KYC Verifications side-by-side */}
+//           <div className="flex lg:flex-row flex-col gap-6 mb-8">
+//             <RecentActivity />
+//           </div>
+
+//           {/* Transfer Insights Component */}
+//           <TransferInsights />
+
+
+//           {/* Risk Monitoring & Compliance Component */}
+//           {/* <RiskAndCompliance /> */}
+
+//           {/* Payment Methods & Settlement Component */}
+//           {/* <PaymentAndSettlement /> */}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+
+"use client";
+
+import React from "react";
+import StatsCards from "./components/DashboardSection/StatsCards";
+import TransferInsights from "./components/DashboardSection/TransferInsights";
+import RecentActivity from "./components/DashboardSection/RecentActivity";
 import PaymentsVolumeChart from "./components/DashboardSection/PaymentsVolumeChart";
 import TransfersVolumeChart from "./components/DashboardSection/TransfersVolumeChart";
-// --- END Chart Imports ---
+import BalanceDistributionChart from "./components/DashboardSection/BalanceDistributionChart"; // <-- ADD THIS IMPORT
 
 export default function AdminHomePage() {
   return (
     <section className="Admin-Dashboard py-5">
       <div className="container mx-auto px-4">
-        {/* Main dashboard content */}
-        <div className="overflow-y-auto">
+        <div className="overflow-y-auto"> {/* Consider if this is needed at this level or per section */}
           <div className="mb-8">
             <h2 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
               Admin Dashboard Home
@@ -881,30 +937,20 @@ export default function AdminHomePage() {
             </p>
           </div>
 
-          {/* Stats cards Component */}
           <StatsCards />
 
-          {/* --- ADD Charts Section --- */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <PaymentsVolumeChart />
             <TransfersVolumeChart />
           </div>
-          {/* --- END Charts Section --- */}
 
-          {/* Recent activity and KYC Verifications side-by-side */}
-          <div className="flex lg:flex-row flex-col gap-6 mb-8">
+          {/* Recent activity and Balance Distribution side-by-side */}
+          <div className="flex sm:flex-row flex-col gap-6 mb-8"> {/* Changed to grid */}
             <RecentActivity />
+            <BalanceDistributionChart /> {/* <-- ADDED THE NEW CHART */}
           </div>
 
-          {/* Transfer Insights Component */}
           <TransferInsights />
-
-
-          {/* Risk Monitoring & Compliance Component */}
-          {/* <RiskAndCompliance /> */}
-
-          {/* Payment Methods & Settlement Component */}
-          {/* <PaymentAndSettlement /> */}
         </div>
       </div>
     </section>
