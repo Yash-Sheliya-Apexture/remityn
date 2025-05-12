@@ -1460,7 +1460,6 @@ const KycManagementPage: React.FC = () => {
           ? "No applications match your current search query."
           : "There are currently no KYC applications awaiting review so you can try agaain."}
       </p>
-      
     </div>
   );
 
@@ -1515,7 +1514,7 @@ const KycManagementPage: React.FC = () => {
                 )}
               >
                 <Calendar className="h-4 w-4" /> Date
-              </span> 
+              </span>
             </button>
 
             {/* Name Button */}
@@ -1738,7 +1737,9 @@ const KycManagementPage: React.FC = () => {
               </h1>
 
               <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg">
-                Review and manage user Know Your Customer (KYC) applications.
+                Easily review and manage Know Your Customer (KYC) applications.
+                Track pending verifications and ensure compliance with secure
+                identity checks — all from one central dashboard.
               </p>
             </>
           )}
@@ -1784,7 +1785,7 @@ const KycManagementPage: React.FC = () => {
                 >
                   Show:
                 </label>
-                
+
                 <select
                   id="itemsPerPage"
                   value={itemsPerPage}

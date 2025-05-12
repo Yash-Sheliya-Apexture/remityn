@@ -5996,6 +5996,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { FiSearch } from "react-icons/fi";
 import { MdCancel } from "react-icons/md";
 import AccountTypeDropdown from "../../../components/ui/AccountTypeDropdown";
+import { AlertTriangle } from "lucide-react";
 
 // Interfaces (ApiErrorData, ApiErrorResponse, ApiError, NewRecipient) remain the same...
 interface ApiErrorData {
@@ -6339,8 +6340,8 @@ const AddRecipientPage = () => {
             key="currency-step"
             className="bg-white dark:bg-background relative"
           >
-             {/* ... Currency selection UI ... */}
-             <h2 className="lg:text-3xl md:text-2xl text-xl capitalize font-semibold text-mainheading dark:text-white text-left md:text-center mb-4">
+            {/* ... Currency selection UI ... */}
+            <h2 className="lg:text-3xl md:text-2xl text-xl capitalize font-semibold text-mainheading dark:text-white text-left md:text-center mb-4">
               Select their currency
             </h2>
 
@@ -6374,10 +6375,13 @@ const AddRecipientPage = () => {
             {/* General Form Error Display for Currency Step */}
             {formError && !isLoadingCurrencies && (
               <div
-                className="bg-red-100 dark:bg-red-600/20 border border-red-400 dark:border-red-600/50 rounded-xl p-4 relative mb-3"
+                className="bg-red-50 dark:bg-red-900/25 border border-red-500 rounded-xl p-3 flex items-center gap-3 relative mb-3"
                 role="alert"
               >
-                <span className="text-red-600 dark:text-red-400 text-sm font-medium">
+                <div className="flex-shrink-0 size-10 rounded-full flex items-center justify-center bg-red-600/20">
+                  <AlertTriangle className="text-red-600 dark:text-red-500 size-5 sm:size-6 flex-shrink-0" />
+                </div>
+                <span className="text-red-700 dark:text-red-300/90 text-sm font-medium">
                   {formError}
                 </span>
               </div>
@@ -6456,7 +6460,7 @@ const AddRecipientPage = () => {
                             key={currency._id || currency.code}
                             className={`p-3 sm:p-4 rounded-xl cursor-not-allowed opacity-60 border border-transparent dark:border-transparent`}
                           >
-                             <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between">
                               <div className="flex items-center gap-3 sm:gap-4">
                                 {currency.flagImage ? (
                                   <Image
@@ -6488,7 +6492,7 @@ const AddRecipientPage = () => {
                   )}
 
                   {/* No Results Message */}
-                   {!isLoadingCurrencies &&
+                  {!isLoadingCurrencies &&
                     filteredAvailableCurrencies.length === 0 &&
                     filteredComingSoonCurrencies.length === 0 && (
                       <div className="text-center text-gray-700 dark:bg-white/5 bg-lightgray dark:text-gray-300 mt-8 py-5 rounded-lg">
@@ -6516,10 +6520,13 @@ const AddRecipientPage = () => {
             {/* General Form Error Display */}
             {formError && (
               <div
-                className="bg-red-100 dark:bg-red-600/20 border border-red-400 dark:border-red-600/50 rounded-xl p-4 relative mb-3"
+                className="bg-red-50 dark:bg-red-900/25 border border-red-500 rounded-xl p-3 flex items-center gap-3 relative mb-3"
                 role="alert"
               >
-                <span className="text-red-600 dark:text-red-400 text-sm font-medium">
+                <div className="flex-shrink-0 size-10  rounded-full flex items-center justify-center bg-red-600/20">
+                  <AlertTriangle className="text-red-600 dark:text-red-500 size-5 sm:size-6 flex-shrink-0" />
+                </div>
+                <span className="text-red-700 dark:text-red-300/90 text-sm font-medium">
                   {formError}
                 </span>
               </div>
@@ -6528,7 +6535,7 @@ const AddRecipientPage = () => {
             {/* Recipient Form */}
             <form className="mt-2 space-y-5" onSubmit={handleSubmit} noValidate>
               {/* Email Input */}
-               <div>
+              <div>
                 <label
                   htmlFor="email"
                   className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
@@ -6544,7 +6551,7 @@ const AddRecipientPage = () => {
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
-               {/* Heading */}
+              {/* Heading */}
               <h3 className="font-medium text-gray-600 dark:text-white pt-2 pb-1 mb-3 relative after:content-[''] after:block after:w-full after:h-px after:bg-gray-200 dark:after:bg-primarybox after:mt-1">
                 Recipient's bank details
               </h3>
@@ -6646,7 +6653,7 @@ const AddRecipientPage = () => {
                 </div>
 
                 {/* Account Number */}
-                 <div>
+                <div>
                   <label
                     htmlFor="accountNumber"
                     className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
@@ -6664,12 +6671,12 @@ const AddRecipientPage = () => {
                     }`}
                     value={accountNumber}
                     placeholder="Enter account number"
-                     onChange={(e) => {
+                    onChange={(e) => {
                       // Only allow digits
                       const val = e.target.value.replace(/\D/g, "");
                       setAccountNumber(val);
-                       // Clear error as user types
-                      if(accountNumberError) setAccountNumberError("");
+                      // Clear error as user types
+                      if (accountNumberError) setAccountNumberError("");
                     }}
                     required
                     aria-invalid={!!accountNumberError}
@@ -6690,7 +6697,7 @@ const AddRecipientPage = () => {
                 </div>
 
                 {/* Account Type Dropdown */}
-                 <div>
+                <div>
                   <label className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base">
                     Account type <span className="text-red-500 ml-1">*</span>
                   </label>
@@ -6727,7 +6734,7 @@ const AddRecipientPage = () => {
                     onChange={(e) => {
                       setBankName(e.target.value);
                       // Clear error as user types
-                      if(bankNameError) setBankNameError("");
+                      if (bankNameError) setBankNameError("");
                     }}
                     required
                     aria-invalid={!!bankNameError}
@@ -6769,7 +6776,7 @@ const AddRecipientPage = () => {
                     onChange={(e) => {
                       setAddress(e.target.value);
                       // Clear error as user types
-                      if(addressError) setAddressError("");
+                      if (addressError) setAddressError("");
                     }}
                     required
                     aria-invalid={!!addressError}
@@ -6806,16 +6813,69 @@ const AddRecipientPage = () => {
                   {isSubmitting ? (
                     <>
                       {/* SVG Loader */}
-                      <svg className="h-5 w-5 text-neutral-900 animate-spin mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <svg
+                        className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
                         {/* paths... */}
-                         <path d="M12 2V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                         <path d="M12 18V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                         <path d="M4.93 4.93L7.76 7.76" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                         <path d="M16.24 16.24L19.07 19.07" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                         <path d="M2 12H6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                         <path d="M18 12H22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                         <path d="M4.93 19.07L7.76 16.24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                         <path d="M16.24 7.76L19.07 4.93" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path
+                          d="M12 2V6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M12 18V22"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M4.93 4.93L7.76 7.76"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M16.24 16.24L19.07 19.07"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M2 12H6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M18 12H22"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M4.93 19.07L7.76 16.24"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M16.24 7.76L19.07 4.93"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
                       </svg>
                       <span>Confirming...</span>
                     </>
