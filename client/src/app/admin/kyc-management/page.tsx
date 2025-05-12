@@ -1477,7 +1477,7 @@ const KycManagementPage: React.FC = () => {
     >
       {/* Header: Skeleton or Actual */}
       <div className="px-6 py-4 flex sm:flex-row flex-col items-center justify-between gap-4 bg-lightgray dark:bg-primarybox">
-        {isLoading ? (
+        {!isLoading ? (
           <Skeleton className="h-6 w-36" />
         ) : (
           <h4 className="text-lg font-semibold">
@@ -1491,7 +1491,7 @@ const KycManagementPage: React.FC = () => {
           <Skeleton className="h-10 w-44 rounded-full" />
         ) : (
           // Sorting Controls (unchanged)
-          <div className="relative inline-flex items-center rounded-full bg-lightgray dark:bg-primarybox p-1 gap-1">
+          <div className="relative inline-flex items-center rounded-full bg-white dark:bg-primarybox p-1 gap-1">
             {/* Date Button */}
             <button
               onClick={() => setSortBy("date")}
@@ -1766,6 +1766,7 @@ const KycManagementPage: React.FC = () => {
                 <FileClock className="h-5 w-5 text-primary" />
                 Pending Applications
               </h2>
+
               {/* Actual Controls (Rendered only if no initial load error) */}
               {!(error && pendingUsers.length === 0) && renderControls()}
             </>
@@ -1784,6 +1785,7 @@ const KycManagementPage: React.FC = () => {
                 >
                   Show:
                 </label>
+                
                 <select
                   id="itemsPerPage"
                   value={itemsPerPage}

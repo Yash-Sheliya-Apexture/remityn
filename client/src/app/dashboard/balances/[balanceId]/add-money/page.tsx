@@ -2329,14 +2329,17 @@ const AddMoneyPage = () => {
                 >
                     Amount to add
                 </label>
+
+                
                 <div className="relative mt-1 rounded-md">
+
                     <input
                         type="number" // Using type="number" allows browser to handle numeric input keyboard on mobile
                         step="0.01"
                         min="0" // Allow 0 temporarily, validation checks for > 0
                         name="amount"
                         id="amount"
-                        className="block w-full text-xl rounded-xl ps-2 font-bold lg:h-18 h-16 py-3 pl-5 pr-28 border transition-all ease-linear duration-75 focus:outline-0 focus:border-[#5f5f5f] dark:bg-neutral-800 dark:text-white dark:border-neutral-700 dark:focus:border-neutral-600 no-spinners"
+                        className="block w-full text-xl rounded-xl ps-2 font-bold lg:h-18 h-16 py-3 pl-5 pr-28 border transition-all ease-linear duration-75 focus:outline-0 focus:border-[#5f5f5f] dark:bg-neutral-800 dark:text-white dark:border-neutral-700 dark:focus:border-neutral-600 no-spinner"
                         placeholder="0.00"
                         // Input value MUST be a string. Convert number state to string.
                         // An empty string state correctly renders as empty input.
@@ -2344,7 +2347,10 @@ const AddMoneyPage = () => {
                         onChange={handleAmountChange}
                         required // HTML5 validation (client-side hint)
                         aria-describedby="amount-currency"
+
                     />
+
+
                     <div className="absolute inset-y-0 right-0 flex items-center pointer-events-none">
                         <div id="amount-currency" className="px-2 flex items-center md:gap-4 gap-2">
                             <span className="inline-block rounded-full overflow-hidden">

@@ -221,6 +221,8 @@ input:-webkit-autofill:active {
   /* Optional: Prevent transition delays if needed */
   transition: background-color 5000s ease-in-out 0s;
 }
+
+
 /* --- Dark Mode Overrides --- */
 /* Ensure your dark mode is triggered by a class, e.g., 'dark' on the html/body */
 .dark input:-webkit-autofill,

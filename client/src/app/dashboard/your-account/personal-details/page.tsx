@@ -424,7 +424,7 @@ export default function PersonalDetails() {
 
           {/* Email Address (Conditionally Rendered) */}
           {hasEmail && ( // Only render if email exists
-            <div className="flex items-center gap-4 hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear group">
+            <div className="flex items-center gap-4 hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 cursor-pointer ease-linear group">
               <div className="bg-lightborder dark:bg-secondarybox p-3 rounded-full">
                 <LuMail
                   size={24}
@@ -450,7 +450,7 @@ export default function PersonalDetails() {
 
           {/* Phone number (Conditionally Rendered) */}
           {hasPhoneNumber && ( // Only render if phone number exists
-            <div className="flex items-center gap-4 hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl transition-all duration-75 ease-linear group">
+            <div className="flex items-center gap-4 hover:bg-lightgray dark:hover:bg-primarybox p-2 sm:p-4 rounded-2xl cursor-pointer transition-all duration-75 ease-linear group">
               <div className="bg-lightborder dark:bg-secondarybox p-3 rounded-full">
                 <LuPhone
                   size={24}

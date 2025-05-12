@@ -945,10 +945,11 @@ export default function AdminHomePage() {
           </div>
 
           {/* Recent activity and Balance Distribution side-by-side */}
-          <div className="flex sm:flex-row flex-col gap-6 mb-8"> {/* Changed to grid */}
+          <div className="flex lg:flex-row order-1 sm:order-2 flex-col gap-6 mb-8"> {/* Changed to grid */}
             <RecentActivity />
             <BalanceDistributionChart /> {/* <-- ADDED THE NEW CHART */}
           </div>
+          
 
           <TransferInsights />
         </div>
