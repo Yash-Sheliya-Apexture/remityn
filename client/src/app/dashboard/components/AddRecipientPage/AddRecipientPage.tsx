@@ -6428,12 +6428,12 @@ const AddRecipientPage = () => {
                                     className="rounded-full object-cover flex-shrink-0"
                                   />
                                 ) : (
-                                  <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 text-xs font-medium flex-shrink-0">
+                                  <div className="w-10 h-10 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center text-gray-500 dark:text-gray-300 text-xs font-medium flex-shrink-0">
                                     {currency.code}
                                   </div>
                                 )}
-                                <div className="flex-grow">
-                                  <h4 className="font-medium text-neutral-900 dark:text-white text-sm md:text-base truncate">
+                                <div className="flex-grow text-wrap">
+                                  <h4 className="font-medium text-neutral-900 dark:text-white text-sm md:text-base">
                                     {currency.code} - {currency.currencyName}
                                   </h4>
                                 </div>
@@ -6458,7 +6458,7 @@ const AddRecipientPage = () => {
                         {filteredComingSoonCurrencies.map((currency) => (
                           <div
                             key={currency._id || currency.code}
-                            className={`p-3 sm:p-4 rounded-xl cursor-not-allowed opacity-60 border border-transparent dark:border-transparent`}
+                            className={`p-2 sm:p-4 rounded-xl cursor-not-allowed opacity-60 border border-transparent dark:border-transparent`}
                           >
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-3 sm:gap-4">
@@ -6471,12 +6471,12 @@ const AddRecipientPage = () => {
                                     className="rounded-full object-cover flex-shrink-0"
                                   />
                                 ) : (
-                                  <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 text-xs font-medium flex-shrink-0">
+                                  <div className="w-10 h-10 bg-lightborder dark:bg-secondarybox rounded-full flex items-center justify-center text-gray-500 dark:text-gray-300 text-xs font-medium flex-shrink-0">
                                     {currency.code}
                                   </div>
                                 )}
-                                <div className="flex-grow">
-                                  <h4 className="font-medium text-neutral-900 dark:text-white text-sm md:text-base truncate">
+                                <div className="flex-grow text-wrap">
+                                  <h4 className="font-medium text-neutral-900 dark:text-white text-sm md:text-base">
                                     {currency.code} - {currency.currencyName}
                                   </h4>
                                 </div>
