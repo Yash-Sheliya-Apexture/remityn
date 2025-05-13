@@ -1912,19 +1912,21 @@
 
 // export default ReviewCards;
 
+
+
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
 // --- Constants ---
-const MOBILE_BREAKPOINT = 768;
-const REVIEWS_PER_PAGE_MOBILE = 6; // Number of reviews to load at a time on mobile
-const REVIEWS_PER_PAGE_DESKTOP_INITIAL = 12; // Initial number of reviews for desktop if you want to load more there too
+// Tailwind's default breakpoints: md: 768px, lg: 1024px.
+// These are now implicitly used via Tailwind classes like md:hidden, lg:block, etc.
+const REVIEWS_PER_PAGE_MOBILE = 6;
 const LOAD_MORE_DELAY_MS = 750;
 
-// --- StarRating Component (No changes needed from previous version) ---
+// --- StarRating Component (Original Styling) ---
 interface StarRatingProps {
   rating: number;
   maxRating?: number;
@@ -1939,21 +1941,21 @@ const StarRating: React.FC<StarRatingProps> = ({ rating, maxRating = 5 }) => {
     if (i < fullStars) {
       stars.push(
         <FaStar
-          key={`star-full-${i}`}
+          key={i}
           className="inline-block text-[#FBBF24] dark:text-white"
         />
       );
     } else if (i === fullStars && hasHalfStar) {
       stars.push(
         <FaStarHalfAlt
-          key={`star-half-${i}`}
+          key={i}
           className="inline-block text-[#FBBF24] dark:text-white"
         />
       );
     } else {
       stars.push(
         <FaStar
-          key={`star-empty-${i}`}
+          key={i}
           className="inline-block text-gray-300 dark:text-gray-600"
         />
       );
@@ -1962,13 +1964,12 @@ const StarRating: React.FC<StarRatingProps> = ({ rating, maxRating = 5 }) => {
   return <div className="inline-block">{stars}</div>;
 };
 
-// --- ReviewCard Component (No changes needed from previous version) ---
+// --- ReviewCard Component (Original Styling) ---
 interface ReviewCardProps {
   reviewerName: string;
   avatarUrl: string;
   rating: number;
   comment: string;
-  location?: string;
 }
 
 const ReviewCard: React.FC<ReviewCardProps> = ({
@@ -1976,7 +1977,6 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
   avatarUrl,
   rating,
   comment,
-  // location // if you decide to display it
 }) => {
   return (
     <div className="bg-lightgray dark:bg-primarybox rounded-2xl lg:p-6 p-4 flex flex-col items-start shadow-sm h-full">
@@ -2000,7 +2000,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
   );
 };
 
-// --- Loading Dots Component (No changes needed from previous version) ---
+// --- Loading Dots Component (Original Styling) ---
 const LoadingDots: React.FC = () => (
   <div className="flex justify-center items-center space-x-1.5 py-4">
     <motion.div
@@ -2038,7 +2038,7 @@ const LoadingDots: React.FC = () => (
 
 // --- Types for review data ---
 interface Review {
-  id: string; // Ensure your JSON has unique IDs for each review
+  id: string;
   reviewerName: string;
   avatarUrl: string;
   rating: number;
@@ -2046,41 +2046,53 @@ interface Review {
   location?: string;
 }
 
-interface ReviewJson {
-  reviews: Review[]; // Root object now directly contains an array of reviews
+interface ReviewGroup {
+  id: string | number;
+  reviews: Omit<Review, "id">[];
 }
 
-// --- ReviewCards Component ---
+interface ReviewJson {
+  reviewGroups: ReviewGroup[];
+}
+
+// --- ReviewCards Component (Main Logic) ---
 const ReviewCards: React.FC = () => {
-  const [allReviews, setAllReviews] = useState<Review[]>([]);
+  const [reviewGroups, setReviewGroups] = useState<ReviewGroup[]>([]);
   const [initialLoading, setInitialLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
-  const [isMobile, setIsMobile] = useState<boolean>(false);
 
-  // Visible count now applies to both mobile and potentially desktop if implementing "load more" there
+  // State for mobile "load more"
   const [visibleReviewsCount, setVisibleReviewsCount] = useState<number>(
     REVIEWS_PER_PAGE_MOBILE
   );
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
-
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
-  // --- Fetch initial data ---
+  // Flatten reviews from groups
+  const allReviews = useMemo(() => {
+    let flatReviews: Review[] = [];
+    reviewGroups.forEach((group, groupIndex) => {
+      group.reviews.forEach((review, reviewIndex) => {
+        flatReviews.push({
+          ...review,
+          id: `review-${group.id}-${groupIndex}-${reviewIndex}`,
+        });
+      });
+    });
+    return flatReviews;
+  }, [reviewGroups]);
+
+  // Fetch initial data
   useEffect(() => {
     const fetchReviews = async () => {
       setInitialLoading(true);
       setError(null);
       try {
-        const response = await fetch("/Reviews.json"); // Ensure Review.json is in /public
-        if (!response.ok) {
+        const response = await fetch("/Review.json");
+        if (!response.ok)
           throw new Error(`HTTP error! status: ${response.status}`);
-        }
         const data: ReviewJson = await response.json();
-        if (data.reviews && Array.isArray(data.reviews)) {
-          setAllReviews(data.reviews);
-        } else {
-          throw new Error("Review data is not in the expected format.");
-        }
+        setReviewGroups(data.reviewGroups);
       } catch (err: any) {
         console.error("Failed to fetch reviews:", err);
         setError(err);
@@ -2091,23 +2103,7 @@ const ReviewCards: React.FC = () => {
     fetchReviews();
   }, []);
 
-  // --- Detect mobile screen size & set initial visible count ---
-  useEffect(() => {
-    const checkScreenSize = () => {
-      const mobile = window.innerWidth < MOBILE_BREAKPOINT;
-      setIsMobile(mobile);
-      // Set initial visible count based on screen size
-      // For desktop, we might want to show more initially or all if not too many
-      setVisibleReviewsCount(
-        mobile ? REVIEWS_PER_PAGE_MOBILE : REVIEWS_PER_PAGE_DESKTOP_INITIAL
-      );
-    };
-    checkScreenSize();
-    window.addEventListener("resize", checkScreenSize);
-    return () => window.removeEventListener("resize", checkScreenSize);
-  }, [allReviews.length]); // Rerun if allReviews.length changes to reset desktop initial view
-
-  // --- Framer Motion Variants ---
+  // Framer Motion Variants
   const headerContainerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -2118,19 +2114,23 @@ const ReviewCards: React.FC = () => {
 
   const headerItemVariants = {
     hidden: { opacity: 0, y: 25 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
-    },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
   };
 
-  const reviewGridVariants = {
-    // For the main grid container of reviews
+  const gridVariants = { // For the main grid container (2-col or 3-col)
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.1, delayChildren: 0.2 }, // Stagger cards
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 }, // Staggers columns
+    },
+  };
+  
+  const columnVariants = { // For each column within the grid
+    hidden: { opacity: 0, y:20 },
+    visible: {
+      opacity: 1,
+      y:0,
+      transition: { staggerChildren: 0.07, delayChildren: 0.1 }, // Staggers cards within this column
     },
   };
 
@@ -2140,10 +2140,9 @@ const ReviewCards: React.FC = () => {
       opacity: 1,
       y: 0,
       scale: 1,
-      transition: { duration: 0.5, ease: "easeOut" },
+      transition: { duration: 0.4, ease: "easeOut" },
     },
-    exit: {
-      // For AnimatePresence, especially on mobile when items are removed/added
+    exit: { // For mobile AnimatePresence
       opacity: 0,
       y: -20,
       scale: 0.98,
@@ -2151,104 +2150,103 @@ const ReviewCards: React.FC = () => {
     },
   };
 
-  // --- Load more reviews function (primarily for mobile) ---
+  // Load more reviews function (for mobile)
   const loadMoreReviews = useCallback(() => {
     if (isLoadingMore || visibleReviewsCount >= allReviews.length) return;
-
     setIsLoadingMore(true);
     setTimeout(() => {
-      // For mobile, increment by mobile page size.
-      // For desktop, you could have a different increment or load all remaining.
-      const increment = isMobile ? REVIEWS_PER_PAGE_MOBILE : allReviews.length; // Or a desktop page size
       setVisibleReviewsCount((prevCount) =>
-        Math.min(prevCount + increment, allReviews.length)
+        Math.min(prevCount + REVIEWS_PER_PAGE_MOBILE, allReviews.length)
       );
       setIsLoadingMore(false);
     }, LOAD_MORE_DELAY_MS);
-  }, [isLoadingMore, visibleReviewsCount, allReviews.length, isMobile]);
+  }, [isLoadingMore, visibleReviewsCount, allReviews.length]);
 
-  // --- Intersection Observer for mobile auto-load ---
+  // Intersection Observer for mobile auto-load
   useEffect(() => {
-    // Only apply observer on mobile and if there are more reviews to load
-    if (
-      !isMobile ||
-      initialLoading ||
-      allReviews.length === 0 ||
-      visibleReviewsCount >= allReviews.length
-    ) {
-      return;
-    }
-
+    // Only run observer logic if we are effectively on mobile (based on CSS, but this logic is for mobile features)
+    // and other conditions are met.
+    if (initialLoading || allReviews.length === 0 || !sentinelRef.current) return;
+    
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && !isLoadingMore) {
-          loadMoreReviews();
+        // Check if sentinel is visible AND if we are in a "mobile" like layout context
+        // (i.e., the sentinel element itself is visible, implying the mobile layout is active)
+        if (entries[0].isIntersecting && !isLoadingMore && visibleReviewsCount < allReviews.length) {
+          const sentinelIsDisplayed = window.getComputedStyle(entries[0].target).display !== 'none';
+          if (sentinelIsDisplayed) { // Extra check to ensure observer acts only when mobile layout is active
+             loadMoreReviews();
+          }
         }
       },
-      { root: null, rootMargin: "100px", threshold: 0.1 }
+      { root: null, rootMargin: "0px 0px 200px 0px", threshold: 0.1 }
     );
-
     const currentSentinel = sentinelRef.current;
-    if (currentSentinel) {
-      observer.observe(currentSentinel);
-    }
-
+    if (currentSentinel) observer.observe(currentSentinel);
     return () => {
-      if (currentSentinel) {
-        observer.unobserve(currentSentinel);
-      }
+      if (currentSentinel) observer.unobserve(currentSentinel);
       observer.disconnect();
     };
   }, [
-    isMobile,
-    initialLoading,
+    initialLoading, // Removed isMobile state
     isLoadingMore,
     loadMoreReviews,
     allReviews.length,
     visibleReviewsCount,
   ]);
+  
 
-  // --- Loading and Error States ---
+  // Prepare data for different layouts
+  const reviewsToShowMobile = useMemo(() => allReviews.slice(0, visibleReviewsCount), [allReviews, visibleReviewsCount]);
+  const hasMoreReviewsMobile = visibleReviewsCount < allReviews.length;
+
+  const tabletLayoutColumns = useMemo(() => {
+    if (allReviews.length === 0) return [];
+    const columns: Review[][] = [[], []]; // 2 columns
+    allReviews.forEach((review, index) => {
+      columns[index % 2].push(review);
+    });
+    return columns;
+  }, [allReviews]);
+
+  const desktopLayoutColumns = useMemo(() => {
+    if (allReviews.length === 0) return [];
+    const columns: Review[][] = [[], [], []]; // 3 columns
+    allReviews.forEach((review, index) => {
+      columns[index % 3].push(review);
+    });
+    return columns;
+  }, [allReviews]);
+
+
+  // Loading and Error States
   if (initialLoading && allReviews.length === 0) {
-    return (
-      <div className="text-center p-10 min-h-[300px] flex items-center justify-center">
-        Loading reviews...
-      </div>
-    );
+    return <div className="text-center p-10 dark:text-white">Loading reviews...</div>;
   }
   if (error) {
     return (
-      <div className="text-center p-10 text-red-500 min-h-[300px] flex items-center justify-center">
+      <div className="text-center p-10 text-red-500">
         Error loading reviews: {error.message}
       </div>
     );
   }
   if (!initialLoading && allReviews.length === 0 && !error) {
-    return (
-      <div className="text-center p-10 min-h-[300px] flex items-center justify-center">
-        No reviews found.
-      </div>
-    );
+    return <div className="text-center p-10 dark:text-white">No reviews found.</div>;
   }
 
-  // Determine which reviews to show based on visibility count
-  const reviewsToShow = allReviews.slice(0, visibleReviewsCount);
-  const hasMoreReviewsToLoad = visibleReviewsCount < allReviews.length;
-
-  // --- Render Component ---
   return (
-    <section className="Reviews md:pt-14 pt-10 overflow-hidden">
+    <section className="Reviews md:pt-14 pt-10 pb-16 md:pb-24 overflow-hidden">
       <div className="container mx-auto px-4">
-        {/* === Animated Header Section (Same as before) === */}
+        {/* === Animated Header Section === */}
         <motion.div
-          className="space-y-4 text-center md:text-left mb-10 md:mb-12"
+          className="space-y-4 text-center md:text-left"
           variants={headerContainerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
         >
           <motion.div className="inline-block" variants={headerItemVariants}>
-            <div className="px-4 py-1.5 bg-lightgray dark:bg-primarybox rounded-full">
+            <div className="px-4 py-1.5 bg-lightgray dark:bg-primarybox rounded-full inline-block">
               <span className="text-neutral-900 dark:text-white font-medium text-sm capitalize">
                 Genuine Customer Reviews
               </span>
@@ -2258,11 +2256,11 @@ const ReviewCards: React.FC = () => {
             className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white uppercase"
             variants={headerItemVariants}
           >
-            Honest Reviews From{" "}
+            Honest Reviews{" "}
             <span className="text-primary">Real Travelers Like You</span>
           </motion.h1>
           <motion.p
-            className="text-gray-500 dark:text-gray-300 lg:text-lg text-base max-w-3xl mx-auto md:mx-0"
+            className="text-gray-500 dark:text-gray-300 lg:text-lg text-base pb-10"
             variants={headerItemVariants}
           >
             Discover what real travelers have to say about their experiences
@@ -2272,20 +2270,17 @@ const ReviewCards: React.FC = () => {
           </motion.p>
         </motion.div>
 
-        {/* === Reviews Display Section === */}
-        {isMobile ? (
-          // --- Mobile View (Single Column with Auto Load More) ---
+        {/* --- Mobile View: 1 Column --- */}
+        {/* Visible by default, hidden on 'md' (768px) and up */}
+        <div className="block md:hidden">
           <div className="flex flex-col items-center gap-5">
-            <motion.div
-              className="w-full space-y-5"
-              // layout // Optional: if container size changes and you want animation
-            >
+            <div className="w-full space-y-5">
               <AnimatePresence initial={false}>
-                {reviewsToShow.map((review) => (
+                {reviewsToShowMobile.map((review) => (
                   <motion.div
                     key={review.id}
                     variants={cardVariants}
-                    layout="position"
+                    layout
                     initial="hidden"
                     animate="visible"
                     exit="exit"
@@ -2294,16 +2289,10 @@ const ReviewCards: React.FC = () => {
                   </motion.div>
                 ))}
               </AnimatePresence>
-            </motion.div>
-
-            {hasMoreReviewsToLoad && (
-              <div
-                ref={sentinelRef}
-                style={{ height: "20px" }}
-                aria-hidden="true"
-              />
+            </div>
+            {hasMoreReviewsMobile && (
+              <div ref={sentinelRef} style={{ height: "1px" }} aria-hidden="true" />
             )}
-
             <AnimatePresence>
               {isLoadingMore && (
                 <motion.div
@@ -2311,53 +2300,70 @@ const ReviewCards: React.FC = () => {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="py-4"
+                  className="w-full"
                 >
                   <LoadingDots />
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
-        ) : (
-          // --- Desktop View (Responsive Grid for all reviews) ---
-          <>
-            <motion.div
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 relative"
-              variants={reviewGridVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.1 }} // Animate when 10% of grid is visible
-            >
-              <AnimatePresence>
-                {" "}
-                {/* Optional: if you might remove items from desktop too */}
-                {reviewsToShow.map((review) => (
-                  <motion.div
-                    key={review.id}
-                    variants={cardVariants}
-                    className="h-full" // Ensures card can expand
-                    // layout // if you expect reordering or filtering on desktop
-                  >
-                    <ReviewCard {...review} />
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </motion.div>
+        </div>
 
-            {/* Optional: Load More Button for Desktop */}
-            {hasMoreReviewsToLoad && !isMobile && (
-              <div className="text-center mt-8">
-                <button
-                  onClick={loadMoreReviews}
-                  disabled={isLoadingMore}
-                  className="bg-primary text-white font-semibold px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
+        {/* --- Tablet View: 2 Columns --- */}
+        {/* Hidden by default, visible on 'md' (768px) to 'lg' (1024px, exclusive), hidden on 'lg' and up */}
+        <motion.div
+          className="hidden md:grid md:grid-cols-2 lg:hidden gap-5"
+          variants={gridVariants}
+          initial="hidden"
+          whileInView="visible" // Animate when this specific layout becomes visible
+          viewport={{ once: true, amount: 0.05 }} // Lower amount for grid, higher if it's tall
+        >
+          {tabletLayoutColumns.map((columnReviews, colIndex) => (
+            <motion.div
+              key={`tablet-col-${colIndex}`}
+              className="space-y-5 flex flex-col" // Each column stacks cards
+              variants={columnVariants} // This column itself will animate based on gridVariants stagger
+            >
+              {columnReviews.map(review => (
+                <motion.div
+                  key={review.id}
+                  variants={cardVariants} // Each card animates based on columnVariants stagger
+                  className="h-full"
                 >
-                  {isLoadingMore ? <LoadingDots /> : "Load More Reviews"}
-                </button>
-              </div>
-            )}
-          </>
-        )}
+                  <ReviewCard {...review} />
+                </motion.div>
+              ))}
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* --- Desktop View: 3 Columns --- */}
+        {/* Hidden by default, visible on 'lg' (1024px) and up */}
+        <motion.div
+          className="hidden lg:grid lg:grid-cols-3 gap-5"
+          variants={gridVariants}
+          initial="hidden"
+          whileInView="visible" // Animate when this specific layout becomes visible
+          viewport={{ once: true, amount: 0.05 }}
+        >
+          {desktopLayoutColumns.map((columnReviews, colIndex) => (
+            <motion.div
+              key={`desktop-col-${colIndex}`}
+              className="space-y-5 flex flex-col" // Each column stacks cards
+              variants={columnVariants} // This column itself will animate based on gridVariants stagger
+            >
+              {columnReviews.map(review => (
+                <motion.div
+                  key={review.id}
+                  variants={cardVariants} // Each card animates based on columnVariants stagger
+                  className="h-full"
+                >
+                  <ReviewCard {...review} />
+                </motion.div>
+              ))}
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );

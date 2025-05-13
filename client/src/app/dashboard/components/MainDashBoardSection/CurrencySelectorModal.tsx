@@ -1871,6 +1871,18 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
 
   // --- Hooks ---
 
+  // Body Scroll Lock
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+    };
+  }, [isOpen]);
+
   // Detect mobile view
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 640);
@@ -1878,6 +1890,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
+  
 
   // Fetch currencies when modal opens
   useEffect(() => {
