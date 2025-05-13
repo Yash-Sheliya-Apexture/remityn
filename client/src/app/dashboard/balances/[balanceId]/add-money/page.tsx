@@ -2001,6 +2001,7 @@ import { useAuth } from "../../../../contexts/AuthContext";
 import axios from "axios";
 import apiConfig from "../../../../config/apiConfig";
 import { Skeleton } from "@/components/ui/skeleton";
+import { FiAlertTriangle } from "react-icons/fi";
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
@@ -2280,9 +2281,12 @@ const AddMoneyPage = () => {
     // Show fatal error if initial balance currency fetch failed
      if (error && !balanceCurrency && !isLoading) {
         return (
-            <div className="max-w-xl mx-auto p-4 lg:p-8 text-red-500 text-center">
-                Error: {error || "Could not load page details."}
+          <div className="bg-red-50 dark:bg-red-900/25 border border-red-500 rounded-lg p-4 flex items-center gap-3">
+            <div className="flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center bg-red-600/20">
+              <FiAlertTriangle className="text-red-600 dark:text-red-500 size-5 sm:size-6 flex-shrink-0" />
             </div>
+            <p className="text-red-700 dark:text-red-300/90">Error: {error || "Could not load page details."}</p>
+          </div>
         );
     }
 
@@ -2318,7 +2322,9 @@ const AddMoneyPage = () => {
 
             {/* Display calculation errors here */}
              {error && (balanceCurrency || !isLoading) && // Show calculation error if balance loaded or initial load finished
-                 <div className="my-4 p-3 bg-red-700/20 text-red-700 border rounded-md">{error}</div>
+                 <div className="my-4 p-3 bg-red-50 dark:bg-red-900/25 border border-red-500 rounded-lg">
+                    <p className="text-red-700 dark:text-red-300/90">{error}</p>
+                 </div>
              }
 
 

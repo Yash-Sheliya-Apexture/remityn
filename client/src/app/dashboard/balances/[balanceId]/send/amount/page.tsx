@@ -5168,7 +5168,7 @@ export default function SendAmountPage() {
                 Error!
               </span>
               <span className="ml-2 block sm:inline text-red-700 dark:text-red-300/90">
-                {criticalError}Network Error
+                {criticalError}
               </span>
             </div>
           </div>
@@ -5315,7 +5315,7 @@ export default function SendAmountPage() {
               }`}
               role="alert"
             >
-              <div className="flex items-center gap-3">
+              <div className="flex sm:items-center items-start gap-3">
                 <div
                   className={`flex-shrink-0 size-10 rounded-full flex items-center justify-center ${
                     isInsufficientBalanceError
