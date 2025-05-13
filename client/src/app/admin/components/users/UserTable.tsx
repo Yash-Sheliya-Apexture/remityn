@@ -392,6 +392,7 @@ const getStatusConfig = (
       icon: ShieldCheck,
       label: "Verified",
     },
+
     rejected: {
       color:
         "text-red-600 bg-red-100 dark:bg-red-600/20 dark:text-red-400",
@@ -466,7 +467,7 @@ const UserTable: React.FC<UserTableProps> = ({
   // Loading Skeleton
   if (loading) {
     return (
-      <div className="rounded-xl border overflow-hidden dark:border-neutral-800">
+      <div className="rounded-xl border overflow-hidden">
          <div className="overflow-x-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
             <table className="min-w-full">
             <UserTableHeader
@@ -555,14 +556,10 @@ const UserTable: React.FC<UserTableProps> = ({
                     <td className="px-6 py-3 font-medium text-neutral-900 dark:text-white whitespace-nowrap">
                       <div
                         className={cn(
-                          "inline-flex justify-center items-center px-4 py-1 w-32 font-medium rounded-3xl capitalize", // Ensure width is sufficient
+                          "inline-flex justify-center items-center gap-1.5 px-4 py-1 w-28 font-medium rounded-3xl capitalize", // Ensure width is sufficient
                           statusConfig.color
                         )}
                       >
-                        <statusConfig.icon
-                          className="h-3 w-3 mr-1 flex-shrink-0"
-                          aria-hidden="true"
-                        />
                         {statusConfig.label}
                       </div>
                     </td>

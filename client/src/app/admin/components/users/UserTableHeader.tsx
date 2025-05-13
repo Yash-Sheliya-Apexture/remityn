@@ -101,7 +101,8 @@
 // frontend/src/app/admin/components/users/UserTableHeader.tsx
 'use client';
 import React from 'react';
-import { ArrowDownUp } from 'lucide-react';
+import { ArrowDownUp, ArrowUpDown } from 'lucide-react';
+import { BiSolidDownArrow, BiSolidUpArrow } from 'react-icons/bi';
 
 // Define the possible fields users can sort by
 export type UserSortField =
@@ -129,10 +130,10 @@ const UserTableHeader: React.FC<UserTableHeaderProps> = ({
     const renderSortIcon = (field: UserSortField) => {
         if (sortField === field) {
             // Active sort field: show icon and rotation based on direction
-            return <ArrowDownUp size={16} className={`ml-1 transition-transform duration-150 ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />;
+            return <ArrowDownUp size={18} className={`ml-1.5 transition-all duration-75 ease-linear ${sortDirection === 'desc' ? 'rotate-90' : ''}`} />;
         }
         // Inactive sort field: show a subtle icon on hover
-        return <ArrowDownUp size={16} className="ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150" />;
+        return <ArrowDownUp  size={18} className="ml-1.5 opacity-0 group-hover:opacity-100 transition-all duration-75 ease-linear" />;
     };
 
     // Common classes for header cells and buttons (like PaymentTableHeader)
@@ -142,7 +143,7 @@ const UserTableHeader: React.FC<UserTableHeaderProps> = ({
     return (
         // Apply background color directly to the thead (like PaymentTableHeader)
         <thead className='bg-lightgray dark:bg-primarybox '>
-            <tr className="border-b">
+            <tr className="table-head">
                 {/* --- Full Name Column (Sortable) --- */}
                 <th className={headerCellClasses}>
                     <button onClick={() => toggleSort('fullName')} className={buttonClasses}>

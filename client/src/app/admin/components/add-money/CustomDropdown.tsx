@@ -480,7 +480,6 @@
 
 
 
-
 // frontend/src/app/admin/components/add-money/CustomDropdown.tsx
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
@@ -547,7 +546,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
     return (
         <div ref={dropdownRef} className="relative">
             {typeof label === 'string' ? (
-                 <label className={`block font-medium text-neutral-900 dark:text-white mb-1 ${disabled ? 'opacity-70' : ''}`}>{label}</label> // Slightly fade label when disabled
+                 <label className={`block font-medium text-neutral-900 dark:text-white mb-1 ${disabled ? 'opacity-50' : 'opacity-100'}`}>{label}</label> // Slightly fade label when disabled
             ) : (
                 label
             )}

@@ -1412,6 +1412,9 @@
 
 // export default AdminUsersPage;
 
+
+
+
 // frontend/src/app/admin/users/page.tsx
 "use client";
 
@@ -1923,7 +1926,8 @@ const AdminUsersPage: React.FC = () => {
       <div className="space-y-6">
         {/* Header - Matching Payments structure and styling */}
         <div className="flex flex-wrap justify-between items-center gap-4">
-          <div>
+          
+          <div className="header-wrap">
             <h1 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
               User Management
             </h1>
@@ -2060,7 +2064,7 @@ const AdminUsersPage: React.FC = () => {
         {/* Pagination Component Call - Consistent */}
         {/* Only show pagination if more than one page AND not loading */}
         {totalPages > 1 && !loadingUsers && (
-          <div className="mt-6">
+          <div>
             {" "}
             {/* Add margin top consistent with Payments */}
             <Pagination

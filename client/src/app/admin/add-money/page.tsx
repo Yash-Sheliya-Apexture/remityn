@@ -5681,6 +5681,7 @@ const AdminPaymentsPage: React.FC = () => {
         {/* Header Parts */}
         <div className="flex sm:flex-row flex-col justify-between items-center ">
           <div className="flex flex-col mb-5">
+
             <h1 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
               Payment Management
             </h1>
@@ -5699,6 +5700,7 @@ const AdminPaymentsPage: React.FC = () => {
               <Filter size={18} />
               Filters
             </button>
+
             <button
               onClick={refreshData}
               disabled={isRefreshing || loadingPayments}
@@ -5733,13 +5735,15 @@ const AdminPaymentsPage: React.FC = () => {
               </div>
               <button
                 onClick={() => setSuccessMessage(null)}
-                className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-200"
+                className="text-green-600 dark:text-green-400 cursor-pointer hover:text-green-800 dark:hover:text-green-200"
               >
                 <X size={18} />
               </button>
             </motion.div>
           )}
         </AnimatePresence>
+
+        
         <AnimatePresence>
           {error && (
             <motion.div
