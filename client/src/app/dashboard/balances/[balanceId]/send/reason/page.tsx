@@ -837,6 +837,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 // Import the CustomDropdown component
 import CustomDropdown from "../../../../../admin/components/add-money/CustomDropdown"; // Adjust path as needed
+import { AlertTriangle } from "lucide-react";
 
 // Define an interface for the summary data stored in localStorage
 interface SendSummary {
@@ -942,7 +943,14 @@ const TransferReasonPage = () => {
 
   // Render error early if balanceId is fundamentally wrong (optional stricter check)
   if (typeof balanceId !== 'string') {
-      return <div className="container mx-auto max-w-lg p-4 lg:p-8 text-red-600">Error: Invalid page URL.</div>;
+      return (
+        <div className="bg-red-50 dark:bg-red-900/25 border border-red-500 rounded-lg p-4 flex items-center gap-3">
+          <div className="flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center bg-red-600/20">
+              <AlertTriangle className="text-red-600 dark:text-red-500 size-5 sm:size-6 flex-shrink-0" />
+          </div>
+          <p className="text-red-700 dark:text-red-300/90"> Error: Invalid page URL. </p>
+        </div>
+      );
   }
 
   return (

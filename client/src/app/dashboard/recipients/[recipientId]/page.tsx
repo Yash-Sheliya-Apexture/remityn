@@ -2123,6 +2123,7 @@ import DashboardHeader from "../../../components/layout/DashboardHeader"; // Ass
 import DeleteRecipientModal from "@/app/dashboard/components/DeleteRecipientModal";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton"; // Import Skeleton
+import { AlertCircle, AlertTriangle, ReceiptText, ReceiptTextIcon } from "lucide-react";
 
 // Define the structure for the Currency object
 interface Currency {
@@ -2215,9 +2216,13 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
        return (
         <div className="RecipientDetailsPage py-10">
           <DashboardHeader title="Recipients" />
-          <div className="container mx-auto text-red-500 p-4 bg-red-100 dark:bg-red-900/30 rounded-md">
-            Error: Invalid or missing Recipient ID provided in the URL.
-            <Link href="/dashboard/recipients" className="ml-2 text-primary hover:underline">Go back to Recipients</Link>
+          <div className="bg-lightgray dark:bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
+            <div className="lg:size-16 size-14 flex items-center justify-center bg-red-600 dark:bg-transparent dark:bg-gradient-to-t dark:from-red-600 rounded-full mb-2">
+            <AlertTriangle className="lg:size-8 size-6 mx-auto text-white dark:text-red-400" />
+          </div>
+          <p className="lg:text-xl text-lg text-gray-500 dark:text-gray-300 max-w-lg mx-auto">Error: Invalid or missing Recipient ID provided in the URL.</p>
+            
+            <Link href="/dashboard/recipients" className="text-primary hover:underline">Go back to Recipients</Link>
           </div>
         </div>
       );
@@ -2256,9 +2261,22 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
     return (
       <div className="RecipientDetailsPage py-10">
         <DashboardHeader title="Recipients" />
-        <div className="container mx-auto text-red-500 p-4 bg-red-100 dark:bg-red-900/30 rounded-md">
-          Error loading recipient: {error || "Recipient not found."}
-          <Link href="/dashboard/recipients" className="ml-2 text-primary hover:underline">Go back to Recipients</Link>
+        <div className="bg-lightgray dark:bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
+          <div className="lg:size-16 size-14 flex items-center justify-center bg-red-600 dark:bg-transparent dark:bg-gradient-to-t dark:from-red-600 rounded-full mb-2">
+            <ReceiptText className="lg:size-8 size-6 mx-auto text-white dark:text-red-400" />
+          </div>
+          <h2 className="lg:text-3xl text-2xl font-medium text-neutral-900 dark:text-white mt-1">
+            Error loading recipient
+          </h2>
+          <p className="text-gray-500 dark:text-gray-300 max-w-lg mx-auto">
+            {error || "Recipient not found."}{" "}
+            <Link
+              href="/dashboard/recipients"
+              className="text-primary hover:underline"
+            >
+              Go back to Recipients
+            </Link>
+          </p>
         </div>
       </div>
     );
