@@ -105,8 +105,6 @@
 
 
 
-
-
 "use client";
 import React, { useState, useEffect } from "react";
 import adminTransferService from "../../../services/admin/transfer"; // Adjust path
@@ -207,6 +205,7 @@ const TransferStatusDropdown: React.FC<TransferStatusDropdownProps> = ({
             <RefreshCw className="ml-auto mr-2 size-4 animate-spin text-slate-500" />
           )}
         </SelectTrigger>
+
         <SelectContent>
           {statuses.map((status) => (
             <SelectItem
@@ -219,6 +218,7 @@ const TransferStatusDropdown: React.FC<TransferStatusDropdownProps> = ({
             </SelectItem>
           ))}
         </SelectContent>
+
       </Select>
       {isFinalStatus && (
         <p className="text-xs text-gray-500 dark:text-gray-300 mt-1 italic">
