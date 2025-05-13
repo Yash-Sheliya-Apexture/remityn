@@ -2645,8 +2645,9 @@ const ReviewSendPage = () => {
       console.log("Transfer execution response:", response.data);
       localStorage.removeItem("sendTransferSummary"); // Clean up on success
       const transferId = response.data?._id ?? ""; // Use empty string as fallback
+      // UPDATED LINE:
       router.push(
-        `/dashboard?transferSuccess=true&transferId=${transferId}`
+        `/dashboard/transactions/${transferId}?transferSuccess=true&transferId=${transferId}`
       );
     } catch (err: unknown) {
       console.error("Error executing transfer:", err);

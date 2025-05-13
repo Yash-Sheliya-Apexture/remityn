@@ -171,10 +171,10 @@ const PaymentTableHeader: React.FC<PaymentTableHeaderProps> = ({
     const renderSortIcon = (field: PaymentSortField) => {
         if (sortField === field) {
             // Active sort field: show icon and rotation based on direction
-            return <ArrowDownUp size={16} className={`ml-1 transition-transform duration-150 ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />;
+            return <ArrowDownUp size={18} className={`ml-1.5 transition-all duration-75 ease-linear ${sortDirection === 'desc' ? 'rotate-90' : ''}`} />;
         }
         // Inactive sort field: show a subtle icon on hover
-        return <ArrowDownUp size={16} className="ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150" />;
+        return <ArrowDownUp size={18} className="ml-1.5 opacity-0 group-hover:opacity-100 transition-all duration-75 ease-linear" />;
     };
 
     // Common classes for header cells and buttons (copied from UserTableHeader)
@@ -185,7 +185,7 @@ const PaymentTableHeader: React.FC<PaymentTableHeaderProps> = ({
     return (
         // Apply background color directly to the thead
         <thead className='bg-lightgray dark:bg-primarybox '>
-            <tr className="border-b ">
+            <tr className="payment-head">
                 {/* --- Payment ID Column (Sortable) --- */}
                 <th className={headerCellClasses}>
                     <button onClick={() => toggleSort('_id')} className={buttonClasses}>

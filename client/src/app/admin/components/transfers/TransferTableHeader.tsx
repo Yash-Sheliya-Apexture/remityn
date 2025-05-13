@@ -113,10 +113,10 @@ const TransferTableHeader: React.FC<TransferTableHeaderProps> = ({
     const renderSortIcon = (field: TransferSortField) => {
         if (sortField === field) {
             // Active sort field: show icon and rotation based on direction
-            return <ArrowDownUp size={16} className={`ml-1 transition-transform duration-150 ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />;
+            return <ArrowDownUp size={18} className={`ml-1.5 transition-transform duration-150 ${sortDirection === 'desc' ? 'rotate-90' : ''}`} />;
         }
         // Inactive sort field: show a subtle icon on hover
-        return <ArrowDownUp size={16} className="ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150" />;
+        return <ArrowDownUp size={18} className="ml-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150" />;
     };
 
     // Common classes for header cells and buttons (copied from PaymentTableHeader)
