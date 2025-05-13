@@ -3117,6 +3117,20 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
     initialFilters.recipientFilter ?? ""
   );
 
+  // --- Body Scroll Lock ---
+  useEffect(() => {
+    if (showFilterModal) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+    // Cleanup function to ensure the class is removed when the component unmounts
+    // or if the modal was closed by other means not triggering a re-render of this specific effect.
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+    };
+  }, [showFilterModal]);
+
   // Click outside handler (remains the same)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

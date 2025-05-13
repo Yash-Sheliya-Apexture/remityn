@@ -202,6 +202,20 @@ const DeleteRecipientModal: React.FC<DeleteRecipientModalProps> = ({
 }) => {
     const [isMobile, setIsMobile] = useState(false);
 
+    // --- Body Scroll Lock ---
+    useEffect(() => {
+        if (isOpen) {
+            document.body.classList.add("overflow-hidden");
+        } else {
+            document.body.classList.remove("overflow-hidden");
+        }
+        // Cleanup function to ensure the class is removed when the component unmounts
+        // or if the modal was closed by other means.
+        return () => {
+            document.body.classList.remove("overflow-hidden");
+        };
+    }, [isOpen]);
+
     useEffect(() => {
         const checkMobileScreen = () => {
             setIsMobile(window.innerWidth < 640); // Define mobile breakpoint (640px)
