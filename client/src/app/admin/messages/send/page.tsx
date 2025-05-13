@@ -1329,7 +1329,7 @@ const AdminSendAllMessagePage: React.FC = () => {
    }
    if (!isAdmin) {
        return (
-        <div className="container mx-auto px-4 py-12">
+        <div className="container mx-auto px-4 py-10">
           <div className="max-w-lg mx-auto p-4 border border-red-300 bg-red-50 dark:bg-red-900/30 dark:border-red-700 rounded-md flex items-start space-x-3">
               <AlertCircle className="h-5 w-5 text-red-500 dark:text-red-400 flex-shrink-0 mt-0.5" />
               <div>
@@ -1461,12 +1461,12 @@ const AdminSendAllMessagePage: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold leading-tight text-mainheading dark:text-white sm:text-3xl inline-flex items-center gap-2">
-          <MessageSquareText size={28} className="text-primary" />
+      <div className="mb-5">
+        <h1 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
           Send Broadcast Message
         </h1>
-        <p className="text-gray-500 dark:text-gray-300">
+
+        <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg">
           Compose and send messages to all users, and manage past broadcasts.
         </p>
       </div>

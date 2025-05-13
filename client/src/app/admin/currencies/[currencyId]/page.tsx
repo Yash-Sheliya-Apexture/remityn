@@ -8514,7 +8514,7 @@ const AdminEditCurrencyPage = () => {
 
   if (!isLoading && !currency && !formState) {
     return (
-      <div className="container mx-auto px-4 py-8 relative">
+      <div className="container mx-auto px-4 py-5 relative">
         <CurrencyEditHeader currencyName="Error" currencyCode="XXX" />
         <div className="mt-8 text-center text-red-600 bg-red-600/10 border border-red-400 dark:border-red-600 p-4 rounded-lg">
           Failed to load currency details. Please check the ID or try again
@@ -8550,11 +8550,11 @@ const AdminEditCurrencyPage = () => {
           pauseOnHover
           theme="colored"
         />
-        <div className="mx-auto max-w-5xl">
           <CurrencyEditHeader
             currencyName={currency?.currencyName || formState?.currencyName}
             currencyCode={currency?.code || formState?.code}
           />
+        <div className="mx-auto max-w-5xl">
 
           {!isLoading && formState && (
             <motion.form
@@ -8576,7 +8576,7 @@ const AdminEditCurrencyPage = () => {
                 <motion.div variants={itemVariants} className="mb-4 rounded-full overflow-hidden">
                   {" "}
                   {/* itemVariant for the TabsList container */}
-                  <TabsList className="relative z-20 flex w-full h-full whitespace-nowrap overflow-x-auto  dark:bg-primarybox p-1.5 rounded-full justify-normal items-center">
+                  <TabsList className="relative z-0 flex w-full h-full whitespace-nowrap overflow-x-auto  dark:bg-primarybox p-1.5 rounded-full justify-normal items-center">
                     {TABS_CONFIG.map((tabInfo) => (
                       <TabsTrigger
                         key={tabInfo.value}

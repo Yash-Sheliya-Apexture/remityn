@@ -3831,13 +3831,13 @@ const AdminTransferDetailPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Toaster richColors position="top-right" />
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-5">
         <TransferHeader transferId={transfer._id} />
 
         {/* Pass the prepared overviewData */}
         <TransferOverviewCard transfer={overviewData} />
 
-        <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column */}
           <div className="lg:col-span-1 space-y-6">
             <TransferStatusSection

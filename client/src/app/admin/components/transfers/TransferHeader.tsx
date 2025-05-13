@@ -83,9 +83,12 @@ const TransferHeader: React.FC<TransferHeaderProps> = ({ transferId }) => {
             Details ({transferId ? `${transferId.substring(0, 8)}...` : "Loading..."})
           </span>
         </div>
-        <h1 className="text-2xl md:text-3xl font-bold text-neutral-900 dark:text-white">
+
+
+        <h1 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
           Transfer Details
         </h1>
+        
       </div>
 
       <Button

@@ -1154,8 +1154,20 @@ const AdminCurrenciesPage: React.FC = () => {
   return isLoading ? (
     <LoadingSkeleton />
   ) : (
-    <div className="container mx-auto px-4 py-8 relative">
+    <div className="container mx-auto px-4 py-5 relative">
       <div className="space-y-6">
+        {/* Header Section */}
+        <div className="pb-6 border-b">
+          <h1 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
+            Currency Management
+          </h1>
+
+          <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg">
+            Easily manage all supported currencies, customize rates, and
+            maintain real-time control over your exchange offerings
+          </p>
+        </div>
+
         <ToastContainer
           position="top-right"
           autoClose={3000}
@@ -1168,15 +1180,6 @@ const AdminCurrenciesPage: React.FC = () => {
           pauseOnHover
           theme="light"
         />
-        {/* Header Section */}
-        <div className="pb-6 mb-6 border-b">
-          <h1 className="lg:text-3xl text-2xl font-bold text-neutral-900 dark:text-white mb-2.5">
-            Currency Management
-          </h1>
-          <p className="text-gray-500 dark:text-gray-300 capitalize">
-            Manage currency options and custom rates for your application
-          </p>
-        </div>
 
         {/* Action Bar */}
         <div className="flex sm:justify-between flex-row w-full items-center mb-6 gap-4">
@@ -1244,7 +1247,7 @@ const AdminCurrenciesPage: React.FC = () => {
             </h2>
             <p className="text-gray-500 dark:text-gray-300 max-w-lg mx-auto">
               Currently, there are no currencies available with related
-              descriptions at this time. 
+              descriptions at this time.
             </p>
           </div>
         ) : (
@@ -1443,7 +1446,7 @@ const AdminCurrenciesPage: React.FC = () => {
                       className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
                     >
                       Currency Code{" "}
-                      <span className="text-red-600 dark:text-red-400">*</span>
+                      <span className="text-red-600">*</span>
                     </label>
 
                     <input
@@ -1468,7 +1471,7 @@ const AdminCurrenciesPage: React.FC = () => {
                       className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
                     >
                       Currency Name{" "}
-                      <span className="text-red-600 dark:text-red-400">*</span>
+                      <span className="text-red-600">*</span>
                     </label>
                     <input
                       type="text"
@@ -1487,7 +1490,7 @@ const AdminCurrenciesPage: React.FC = () => {
                       className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
                     >
                       Flag Image Path{" "}
-                      <span className="text-red-600 dark:text-red-400">*</span>
+                      <span className="text-red-600">*</span>
                     </label>
 
                     <input
@@ -1510,22 +1513,31 @@ const AdminCurrenciesPage: React.FC = () => {
                       htmlFor="create-rateAdjustmentPercentage"
                       className="text-gray-500 dark:text-gray-300 capitalize text-sm lg:text-base flex items-center gap-2"
                     >
-                      <Percent
-                        size={18}
-                        className="dark:text-white text-neutral-900"
-                      />{" "}
                       Rate Adjustment
+                      <span className="text-red-600">*</span>
                     </label>
-                    <input
-                      type="number" // Ensure type is number for step validation
-                      id="create-rateAdjustmentPercentage"
-                      name="rateAdjustmentPercentage" // Correct name
-                      value={newCurrencyData.rateAdjustmentPercentage}
-                      onChange={handleCreateInputChange}
-                      step="any"
-                      placeholder="e.g., 0.5 (for +0.5%) or -0.1 (for -0.1%)"
-                      className="mt-1 block px-4 py-3 focus:border-[#5f5f5f] bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75" // Added dark mode styles
-                    />
+
+                    <div className="relative">
+                      <input
+                        type="number" // Ensure type is number for step validation
+                        id="create-rateAdjustmentPercentage"
+                        name="rateAdjustmentPercentage" // Correct name
+                        value={newCurrencyData.rateAdjustmentPercentage}
+                        onChange={handleCreateInputChange}
+                        step="any"
+                        placeholder="e.g., 0.5 (for +0.5%) or -0.1 (for -0.1%)"
+                        className="mt-1 block px-4 py-3 focus:border-[#5f5f5f] bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 no-spinner" // Added dark mode styles
+                      />
+                      
+                      <div className="absolute top-4 right-4">
+                        <Percent
+                          size={20}
+                          className="dark:text-white text-neutral-900"
+                        />{" "}
+                      </div>
+
+                    </div>
+
                     <p className="mt-2 text-sm text-gray-500 font-medium  dark:text-gray-300">
                       Enter percentage adjustment. Default is 0%.
                     </p>

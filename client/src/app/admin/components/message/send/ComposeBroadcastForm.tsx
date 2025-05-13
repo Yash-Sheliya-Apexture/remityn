@@ -30,7 +30,7 @@ const ComposeBroadcastForm: React.FC<ComposeBroadcastFormProps> = ({
         {/* Header */}
         <div className="px-6 py-4 border-b bg-lightgray dark:bg-primarybox">
           <h2 className="text-xl font-semibold text-neutral-900-900 dark:text-white flex items-center gap-2">
-            <Newspaper size={22} /> Compose New Broadcast
+            <Newspaper size={22}  className='text-primary'/> Compose New Broadcast
           </h2>
           <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
             This message will be delivered to the inbox of every registered

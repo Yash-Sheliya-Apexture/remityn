@@ -2130,8 +2130,8 @@ export function VolumeChart({
       )}
     >
       <CardHeader className="flex-shrink-0 p-3">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center justify-between w-full gap-3">
+          <div className="flex gap-3">
             <div className="flex justify-center items-center size-12 bg-lightgray dark:bg-primarybox rounded-full">
               {icon}
             </div>
@@ -2148,7 +2148,7 @@ export function VolumeChart({
             </div>
           </div>
           
-          <div className="flex items-center ml-5">
+          <div className="flex ml-5 font-medium">
             {showRefreshButton && (
               <Button
                 variant="ghost"
@@ -2160,7 +2160,7 @@ export function VolumeChart({
                 <RefreshCw
                   className={`size-4 ${loading ? "animate-spin" : ""}`}
                 />
-                <span className="sr-only">Refresh</span>
+                <span className="sr-only"> Refresh</span>
               </Button>
             )}
           </div>
@@ -2220,10 +2220,10 @@ export function VolumeChart({
         {loading && (
           <>
             <div className="flex flex-col items-center justify-center mb-4 pt-2">
-              <Skeleton className="h-7 w-2/5 max-w-[160px] sm:h-8 rounded-md" />
-              <div className="flex items-center gap-3 mt-1">
+              <Skeleton className="w-1/2 max-w-[170px] h-8 rounded-md" />
+              <div className="flex items-center gap-1 mt-1">
                 <Skeleton className="h-4 w-24 rounded-md" />
-                <Skeleton className="h-4 w-12 rounded-md" />
+                <Skeleton className="h-4 w-17 rounded-md" />
               </div>
             </div>
             <div
@@ -2231,8 +2231,8 @@ export function VolumeChart({
               style={{ minHeight: "200px" }}
             >
               <Skeleton className="flex-grow w-full rounded-md" />
-              <div className="flex justify-between w-full px-1 pt-2">
-                {[...Array(timeRange === "by_currency" ? 5 : 10)].map(
+              <div className="flex justify-between w-full gap-1 pt-2">
+                {[...Array(timeRange === "by_currency" ? 5 : 8)].map(
                   (_, i) => (
                     <Skeleton
                       key={i}
