@@ -4,9 +4,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IoClose, IoClose as X } from "react-icons/io5";
 import {
-  MessageSquareText,
-  Loader2,
-  SendHorizonal,
   AlertCircle,
 } from "lucide-react";
 
@@ -145,7 +142,7 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({
                   className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
                 >
                   Subject{" "}
-                  <span className="text-red-600 dark:text-red-400">*</span>
+                  <span className="text-red-600">*</span>
                 </label>
 
                 <input
@@ -164,19 +161,20 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({
                   htmlFor="body"
                   className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
                 >
-                  Body <span className="text-red-600 dark:text-red-400">*</span>
+                  Body <span className="text-red-600">*</span>
                 </label>
 
                 <textarea
                   id="body"
                   value={body}
                   onChange={(e) => setBody(e.target.value)}
-                  className="mt-1 block min-h-[150px] px-4 py-3 bg-white focus:border-[#5f5f5f] dark:bg-background h-14 w-full border focus:outline-none rounded-lg transition-all ease-linear duration-75"
+                  className="mt-1 block min-h-[150px] resize-none px-4 py-3 bg-white focus:border-[#5f5f5f] dark:bg-background h-14 w-full border focus:outline-none rounded-lg transition-all ease-linear duration-75"
                   maxLength={5000}
                   disabled={isSending}
                   placeholder="Enter message content..."
                 />
               </div>
+
               {/* Error Display Area */}
               {sendError && (
                 <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/30 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg text-sm flex items-start gap-2">
@@ -187,6 +185,7 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({
                   </div>
                 </div>
               )}
+              
             </div>
 
             {/* Footer */}

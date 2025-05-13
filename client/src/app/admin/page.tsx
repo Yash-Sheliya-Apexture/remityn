@@ -928,6 +928,7 @@ export default function AdminHomePage() {
       <div className="container mx-auto px-4">
         <div className="overflow-y-auto"> {/* Consider if this is needed at this level or per section */}
           <div className="mb-8">
+
             <h2 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
               Admin Dashboard Home
             </h2>
