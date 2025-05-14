@@ -2268,7 +2268,7 @@ const AdminTransfersPage: React.FC = () => {
         <div className="flex sm:flex-row flex-col justify-between items-center ">
           <div className="flex flex-col mb-5">
             <h1 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
-              Transfer Management
+              Send-Money Management
             </h1>
 
             <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg">

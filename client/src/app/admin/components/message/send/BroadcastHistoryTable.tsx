@@ -614,7 +614,7 @@ const TableHeaderComponent: React.FC = () => {
     const headerCellClasses = "px-6 py-4 text-left font-medium text-neutral-900 dark:text-white tracking-wider whitespace-nowrap uppercase";
     return (
         <thead className='bg-lightgray dark:bg-primarybox'>
-            <tr className="border-b dark:border-neutral-700">
+            <tr className="broadcast-head">
                 <th className={`${headerCellClasses} min-w-[250px]`}>
                     Subject & Snippet
                 </th>
@@ -652,7 +652,7 @@ const BroadcastHistoryTable: React.FC<BroadcastHistoryTableProps> = ({
   const numberOfColumns = 4;
 
   const renderSkeleton = () => (
-    <div className="rounded-xl border overflow-hidden dark:border-neutral-800">
+    <div className="rounded-xl border overflow-hidden">
       <div className="overflow-x-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
         <table className="min-w-full">
           <TableHeaderComponent />
@@ -719,13 +719,14 @@ const BroadcastHistoryTable: React.FC<BroadcastHistoryTableProps> = ({
         {/* Header Section - Always Visible */}
         <div className="flex items-start sm:items-center justify-between mb-6 gap-4">
           <div>
-            <h2 className="text-2xl font-bold leading-tight text-mainheading dark:text-white sm:text-3xl inline-flex items-center gap-2">
-              <History size={28} className="text-primary" />
+            <h2 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
               Broadcast History
             </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-300">
+
+            <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg">
               Review and manage previously sent broadcast messages.
             </p>
+
           </div>
           <button
             type="button"

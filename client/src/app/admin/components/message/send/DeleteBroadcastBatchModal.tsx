@@ -119,7 +119,6 @@
 import React, { useState, useEffect } from "react";
 import type { BroadcastBatchInfo } from "../../../../services/admin/inbox";
 import { IoClose } from "react-icons/io5";
-import { Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Define variants consistent with EditBroadcastBatchModal
@@ -213,7 +212,7 @@ const DeleteBroadcastBatchModal: React.FC<DeleteBroadcastBatchModalProps> = ({
           onClick={onClose} // Close when clicking on backdrop
         >
           <motion.div
-            className="bg-white dark:bg-background sm:rounded-3xl rounded-t-3xl w-full sm:max-w-lg relative" // sm:max-w-md for delete modal
+            className="bg-white dark:bg-background sm:rounded-3xl rounded-t-3xl w-full sm:max-w-xl relative" // sm:max-w-md for delete modal
             variants={modalVariants}
             initial="initial"
             animate="animate"
@@ -221,7 +220,7 @@ const DeleteBroadcastBatchModal: React.FC<DeleteBroadcastBatchModalProps> = ({
             onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
           >
             {/* Header */}
-            <div className="sm:p-6 p-4 border-b">
+            <div className="p-4 sm:p-6 rounded-t-2xl flex items-center justify-between border-b">
               <h3 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white my-4">
                 Confirm Batch Deletion
               </h3>
