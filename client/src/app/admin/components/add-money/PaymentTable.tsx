@@ -736,7 +736,7 @@ const PaymentTable: React.FC<PaymentTableProps> = ({
 
   if (loadingPayments) {
     return (
-      <div className="rounded-xl border overflow-hidden dark:border-neutral-800">
+      <div className="rounded-xl border overflow-hidden">
         <table className="min-w-full">
           <PaymentTableHeader
             toggleSort={toggleSort}
@@ -773,6 +773,7 @@ const PaymentTable: React.FC<PaymentTableProps> = ({
             sortField={sortField}
             sortDirection={sortDirection}
           />
+          
           <tbody className="divide-y overflow-hidden">
             {filteredPayments.length === 0 ? (
               <tr>

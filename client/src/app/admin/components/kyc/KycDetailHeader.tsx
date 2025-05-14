@@ -29,6 +29,7 @@ const KycDetailHeader: React.FC<KycDetailHeaderProps> = ({ userId }) => {
           <Link href="/admin/kyc-management" className="text-gray-500 hover:text-primary dark:text-gray-300 hover:dark:text-primary">
             KYC Management
           </Link>
+          
           <ChevronRight className="size-4 mx-1 flex-shrink-0 dark:text-white" /> {/* Adjusted color */}
 
           {/* Breadcrumb Item 3: Current Details */}

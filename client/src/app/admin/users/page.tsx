@@ -1946,6 +1946,7 @@ const AdminUsersPage: React.FC = () => {
               <Filter size={20} />
               <span>Filters</span>
             </button>
+            
             {/* Refresh Button - Matching Payments styling */}
             <button
               onClick={refreshData}

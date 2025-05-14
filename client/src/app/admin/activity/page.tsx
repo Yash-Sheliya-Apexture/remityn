@@ -1331,7 +1331,8 @@ export default function AllRecentActivityPage() {
         <div className="space-y-6">
           {/* Header and Refresh/Filter Buttons */}
           <div className="flex flex-wrap justify-between items-center gap-4">
-            <div className="Activity">
+            <div className="Activity"> 
+                
               <h1 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
                 All Recent Activity
               </h1>
@@ -1341,6 +1342,9 @@ export default function AllRecentActivityPage() {
                 in real time with detailed logs for complete transparency.
               </p>
             </div>
+
+
+
 
             <div className="flex items-center gap-3 justify-end sm:w-auto w-full">
               <button
