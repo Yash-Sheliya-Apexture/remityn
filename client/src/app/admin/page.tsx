@@ -899,7 +899,6 @@
 //           {/* Transfer Insights Component */}
 //           <TransferInsights />
 
-
 //           {/* Risk Monitoring & Compliance Component */}
 //           {/* <RiskAndCompliance /> */}
 
@@ -911,7 +910,6 @@
 //   );
 // }
 
-
 "use client";
 
 import React from "react";
@@ -921,38 +919,46 @@ import RecentActivity from "./components/DashboardSection/RecentActivity";
 import PaymentsVolumeChart from "./components/DashboardSection/PaymentsVolumeChart";
 import TransfersVolumeChart from "./components/DashboardSection/TransfersVolumeChart";
 import BalanceDistributionChart from "./components/DashboardSection/BalanceDistributionChart"; // <-- ADD THIS IMPORT
+import { AiFillHome } from "react-icons/ai";
 
 export default function AdminHomePage() {
   return (
     <section className="Admin-Dashboard py-5">
       <div className="container mx-auto px-4">
-        <div className="overflow-y-auto"> {/* Consider if this is needed at this level or per section */}
-          <div className="mb-8">
-
-            <h2 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
-              Admin Dashboard Home
-            </h2>
+        <div className="overflow-y-auto">
+          {" "}
+          {/* Consider if this is needed at this level or per section */}
+          <div className="mb-8 flex sm:flex-row flex-col items-start gap-3">
             
-            <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg">
-              Welcome to the admin panel! Here you can manage currencies, users,
-              transfers, and other aspects of the money transfer platform.
-            </p>
+            <div className="size-10 bg-lightgray dark:bg-primarybox  rounded-full flex items-center justify-center">
+              <AiFillHome  size={20} className="text-primary -mt-0.5"/>
+            </div>
+
+            <div>
+              <h2 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
+                Admin Dashboard Home
+              </h2>
+
+              <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg">
+                Welcome to the admin panel! Here you can manage currencies,
+                users, transfers, and other aspects of the money transfer
+                platform.
+              </p>
+            </div>
           </div>
-
+          
           <StatsCards />
-
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <PaymentsVolumeChart />
             <TransfersVolumeChart />
           </div>
-
           {/* Recent activity and Balance Distribution side-by-side */}
-          <div className="flex lg:flex-row order-1 sm:order-2 flex-col gap-6 mb-8"> {/* Changed to grid */}
+          <div className="flex lg:flex-row order-1 sm:order-2 flex-col gap-6 mb-8">
+            {" "}
+            {/* Changed to grid */}
             <RecentActivity />
             <BalanceDistributionChart /> {/* <-- ADDED THE NEW CHART */}
           </div>
-          
-
           <TransferInsights />
         </div>
       </div>
