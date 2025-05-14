@@ -3222,7 +3222,7 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
     "text-gray-500 dark:text-gray-300 font-medium mb-3 leading-8";
   const inputWrapperClassName = "flex items-center justify-between";
   const inputClassName =
-    "`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 focus:border-[#5f5f5f]";
+    "mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 focus:border-[#5f5f5f]";
 
   return (
     <AnimatePresence>

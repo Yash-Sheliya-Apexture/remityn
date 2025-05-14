@@ -264,6 +264,9 @@ const DeleteRecipientModal: React.FC<DeleteRecipientModalProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose} // Close modal on backdrop click
+            aria-modal="true" // Added for accessibility
+            role="dialog"      // Added for accessibility
+            aria-labelledby="delete-recipient-modal-title" // Added for accessibility
           >
             <motion.div
               className="bg-white dark:bg-background sm:rounded-3xl rounded-t-3xl sm:p-8 p-4 w-full sm:max-w-lg relative"
@@ -285,7 +288,7 @@ const DeleteRecipientModal: React.FC<DeleteRecipientModalProps> = ({
                   />
                 </button>
               </div>
-              <h3 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white my-6">
+              <h3 id="delete-recipient-modal-title" className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white my-6">
                 Delete recipient ?
               </h3>
               <p className="text-gray dark:text-gray-300 font-medium mb-6">
