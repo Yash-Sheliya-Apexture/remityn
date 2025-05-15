@@ -106,7 +106,7 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({
             className="bg-white dark:bg-background sm:rounded-3xl rounded-t-3xl w-full sm:max-w-lg relative" // Adjusted max-width slightly
           >
             {/* Header */}
-            <div className="p-4 sm:p-6 rounded-t-2xl flex items-center justify-between border-b">
+            <div className="p-4 sm:p-6 rounded-t-3xl flex items-center justify-between border-b">
               <h2
                 id="send-message-modal-title"
                 className="lg:text-2xl text-xl font-semibold text-mainheading dark:text-white"
@@ -186,7 +186,7 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({
             </div>
 
             {/* Footer */}
-            <div className="flex flex-row items-center justify-end sm:p-6 p-4 gap-4 border-t">
+            <div className="flex sm:flex-row flex-col items-center justify-end sm:p-6 p-4 gap-4 border-t">
               <button
                 onClick={() => setIsOpen(false)}
                 disabled={isSending}

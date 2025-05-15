@@ -5143,6 +5143,8 @@
 
 // export default AdminPaymentsPage;
 
+
+
 // frontend/src/app/admin/payments/page.tsx
 "use client";
 import React, { useState, useEffect, useCallback, useMemo } from "react";
@@ -5161,6 +5163,7 @@ import Pagination from "../components/Pagination"; // Adjust path if needed
 
 // Import Shared Types
 import { Payment } from "../../../types/payment"; // Adjust path as needed
+import { TbMoneybag } from "react-icons/tb";
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
@@ -5679,25 +5682,30 @@ const AdminPaymentsPage: React.FC = () => {
     <div className="container mx-auto px-4 py-5">
       <div className="space-y-6">
         {/* Header Parts */}
-        <div className="flex sm:flex-row flex-col justify-between items-center ">
-          <div className="flex flex-col mb-5">
+        <div className="flex sm:flex-row flex-col justify-between items-center gap-3">
+          
+          <div className="Management">
+            <div className="flex items-center gap-3">
+              <div className="size-12 shrink-0 bg-primary dark:bg-primarybox rounded-full flex items-center justify-center">
+                <TbMoneybag className="size-6 text-mainheading dark:text-primary" />
+              </div>
 
-            <h1 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
-              Add-Money Management
-            </h1>
+              <h1 className="lg:text-3xl text-2xl font-semibold text-mainheading dark:text-primary">
+                Add-Money Management
+              </h1>
+            </div>
 
             <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg">
-              Track and manage all incoming payments, statuses, and user
-              transactions in real time with full control and visibility.
+              Track and manage all incoming payments, statuses, and user transactions in real time with full control and visibility.
             </p>
           </div>
 
           <div className="flex items-center gap-3 justify-end w-full">
             <button
               onClick={() => setShowFilterModal(true)}
-              className="flex items-center bg-primary h-12.5 px-8 py-3 rounded-full sm:w-auto w-full text-neutral-900 justify-center "
+              className="flex items-center bg-primary h-12.5 px-8 py-3 cursor-pointer rounded-full sm:w-auto w-full text-neutral-900 justify-center "
             >
-              <Filter size={18} className="mr-2"/>
+              <Filter size={18} className="mr-2" />
               Filters
             </button>
 
@@ -5743,7 +5751,6 @@ const AdminPaymentsPage: React.FC = () => {
           )}
         </AnimatePresence>
 
-        
         <AnimatePresence>
           {error && (
             <motion.div
