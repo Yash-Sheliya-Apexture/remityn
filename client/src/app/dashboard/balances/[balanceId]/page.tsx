@@ -9840,7 +9840,7 @@ const BalanceDetailPage = () => {
   if (isPageLoading && !typedBalanceDetail && !error) {
       console.log("Rendering Skeleton Loader...");
     return (
-      <div className="py-5">
+      <div className="">
         <div className="pb-6 mb-8 border-b">
           <div className="flex sm:flex-row flex-col gap-4 justify-between">
             <div>
@@ -9905,7 +9905,7 @@ const BalanceDetailPage = () => {
        console.error("Rendering Error State:", error);
      const message = typeof error === 'string' ? error : "Balance details not found or you may not have access.";
         return (
-          <div className="py-5"> {/* Wrap error state in py-5 for consistent spacing */}
+          <> {/* Wrap error state in py-5 for consistent spacing */}
              <div className="bg-red-50 dark:bg-red-900/25 border border-red-500 sm:p-10 p-4 flex sm:flex-col sm:items-center justify-center gap-3 rounded-lg ">
                <div className="flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center bg-red-600/20">
                  <AlertTriangle className="text-red-600 dark:text-red-500 size-5 sm:size-6 flex-shrink-0" />
@@ -9927,7 +9927,7 @@ const BalanceDetailPage = () => {
                  Go Back
                </button>
              </div>
-          </div>
+          </>
         );
     }
 
@@ -9955,7 +9955,7 @@ const BalanceDetailPage = () => {
 
 
   return (
-    <div className="py-5">
+    <>
       <BalanceHeader
         balanceDetail={typedBalanceDetail}
         isLoading={isBalanceLoading}
@@ -9968,7 +9968,7 @@ const BalanceDetailPage = () => {
 
       <div className="mt-10">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky lg:top-28 top-20 z-10 bg-background dark:bg-background">
-          <h3 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
+          <h3 className="lg:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
             Transactions
           </h3>
            {/* Only show search/filter if not initially empty OR if transactions are loading */}
@@ -10053,7 +10053,7 @@ const BalanceDetailPage = () => {
        />
 
       </div>
-    </div>
+    </>
   );
 };
 

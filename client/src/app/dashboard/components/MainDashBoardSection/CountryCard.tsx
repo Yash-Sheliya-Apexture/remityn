@@ -2602,7 +2602,7 @@ const CountryCard = () => {
 
         <div
           ref={containerRef}
-          className="flex overflow-x-auto scroll-smooth scrollbar-hide gap-3 p-2"
+          className="flex overflow-x-auto scroll-smooth scrollbar-hide gap-3"
           style={{
             scrollBehavior: "smooth",
             scrollSnapType: "x mandatory",

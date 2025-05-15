@@ -959,11 +959,11 @@ const TransferReasonPage = () => {
       {/* <DashboardHeader title="Send Money" currentStep={2.5} totalSteps={steps.length} steps={steps} /> */}
 
       <div className="mx-auto lg:max-w-lg">
-        <h1 className="sm:text-3xl text-2xl font-bold text-mainheading dark:text-white mb-4">
+        <h1 className="lg:text-3xl md:text-2xl text-xl font-semibold text-mainheading dark:text-white mb-4">
           What's the reason for your transfer?
         </h1>
         {summary?.receiveCurrencyCode === "INR" && (
-          <p className="text-gray-500 dark:text-gray-300 sm:text-lg text-base mb-6">
+          <p className="text-gray-500 dark:text-gray-300 sm:text-lg text-sm mb-6">
             Please note that transfers to charities or NGOs in India may have
             restrictions.
           </p>

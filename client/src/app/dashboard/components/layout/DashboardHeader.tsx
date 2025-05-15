@@ -177,7 +177,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                           isCompleted
                             ? "bg-primary border-primary text-mainheading"
                             : isActive
-                            ? "border-primary/50 text-primary font-bold ring-2 ring-primary/20 dark:ring-primary/90"
+                            ? "border-primary text-primary font-bold ring-2 ring-primary/20 dark:ring-primary/40"
                             : "text-gray-700 dark:text-gray-300"
                         }`}
                       >

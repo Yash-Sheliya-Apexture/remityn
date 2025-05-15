@@ -500,9 +500,9 @@ const defaultTawkCustomStyle: TawkCustomStyleObject = {
             yOffset: 25
         },
         mobile: {
-            position: 'br',
+            position: 'bl',
             xOffset: 30,
-            yOffset: 100
+            yOffset: 30
         },
         bubble: {
             rotate: '0deg',

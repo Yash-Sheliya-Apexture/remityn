@@ -302,3 +302,9 @@ input:-webkit-autofill:active {
 .no-spinner[type=number] {
   -moz-appearance: textfield;
 }
+
+/* Remove default focus outline for a and button */
+a:focus,
+button:focus {
+  outline: none;
+}

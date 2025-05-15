@@ -2910,7 +2910,7 @@ const PaymentDetailsPage = () => {
         <h1 className="lg:text-3xl md:text-2xl text-xl lg:text-center font-semibold text-mainheading mb-2.5 dark:text-white">
           Use your bank to make a payment to Wise
         </h1>
-        <p className="text-sm text-gray-500 dark:text-gray-300 lg:mb-10 mb-5 text-left lg:text-center">
+        <p className="lg:text-base text-sm text-gray-500 dark:text-gray-300 lg:mb-10 mb-5 text-left lg:text-center">
           Make a {`${payInCurrencyCode}`} payment — not an international one —
           using the details below.
         </p>
