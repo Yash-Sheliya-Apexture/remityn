@@ -969,6 +969,8 @@ import activityAdminService, {
   ActivityItem,
   RecentActivityApiResponse,
 } from "../../services/admin/activity.admin"; // Adjust path
+import { AiFillHome } from "react-icons/ai";
+import { LuActivity } from "react-icons/lu";
 
 // Define possible sort fields for activities
 type ActivitySortField = "timestamp" | "type" | "message";
@@ -1331,11 +1333,17 @@ export default function AllRecentActivityPage() {
         <div className="space-y-6">
           {/* Header and Refresh/Filter Buttons */}
           <div className="flex flex-wrap justify-between items-center gap-4">
-            <div className="Activity"> 
-                
-              <h1 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
-                All Recent Activity
-              </h1>
+            <div className="Activity">
+              <div className="flex items-center gap-3">
+                <div className="size-12 shrink-0 bg-primary dark:bg-primarybox rounded-full flex items-center justify-center">
+                  <LuActivity className="size-6 text-mainheading dark:text-primary" />
+                </div>
+
+                <h1 className="lg:text-3xl text-2xl font-semibold text-mainheading dark:text-primary">
+                  All Recent Activity
+                </h1>
+
+              </div>
 
               <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg">
                 Track all user transactions, KYC submissions, and status updates
@@ -1343,13 +1351,10 @@ export default function AllRecentActivityPage() {
               </p>
             </div>
 
-
-
-
             <div className="flex items-center gap-3 justify-end sm:w-auto w-full">
               <button
                 onClick={() => setShowFilterModal(true)}
-                className="flex items-center justify-center cursor-pointer gap-2 bg-primary text-neutral-900 font-medium text-base px-8 py-3 h-12.5 sm:w-auto w-full rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear"
+                className="flex items-center justify-center cursor-pointer gap-2 bg-primary text-neutral-900 font-medium text-base sm:px-8 px-6 py-3 h-12.5 sm:w-auto w-full rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear"
               >
                 <Filter size={18} />
                 Filters
@@ -1357,7 +1362,7 @@ export default function AllRecentActivityPage() {
               <button
                 onClick={refreshData}
                 disabled={isRefreshing || loading}
-                className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white sm:px-8 px-6 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Refresh activity feed"
               >
                 <RefreshCw
@@ -1429,6 +1434,7 @@ export default function AllRecentActivityPage() {
             isRefreshing={isRefreshing} // Show skeletons on refresh action
             activitiesPerPage={activitiesPerPage} // For skeleton count
           />
+          
           {/* Fallback for when initial load finishes but no activities at all (even before filtering) */}
           {!loading &&
             !isRefreshing &&

@@ -737,29 +737,34 @@ const PaymentTable: React.FC<PaymentTableProps> = ({
   if (loadingPayments) {
     return (
       <div className="rounded-xl border overflow-hidden">
-        <table className="min-w-full">
-          <PaymentTableHeader
-            toggleSort={toggleSort}
-            sortField={sortField}
-            sortDirection={sortDirection}
-          />
-          <tbody>
-            {Array(10)
-              .fill(0)
-              .map((_, i) => (
-                <tr key={i}>
-                  {Array(numberOfColumns)
-                    .fill(0)
-                    .map((_, j) => (
-                      <td key={j} className="px-4 py-3 whitespace-nowrap">
-                        <Skeleton className="h-4 w-full" />{" "}
-                        {/* Use full width skeleton */}
-                      </td>
-                    ))}
-                </tr>
-              ))}
-          </tbody>
-        </table>
+        <div className="overflow-x-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
+          <table className="min-w-full">
+            <PaymentTableHeader
+              toggleSort={toggleSort}
+              sortField={sortField}
+              sortDirection={sortDirection}
+            />
+            <tbody>
+              {Array(10)
+                .fill(0)
+                .map((_, i) => (
+                  <tr key={i} className="border-b">
+                    {Array(numberOfColumns)
+                      .fill(0)
+                      .map((_, j) => (
+                        <td
+                          key={j}
+                          className="px-6 py-4 h-[70px] whitespace-nowrap"
+                        >
+                          {/* Use full width skeleton */}
+                          <Skeleton className="h-4 w-full" />{" "}
+                        </td>
+                      ))}
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     );
   }
@@ -773,7 +778,7 @@ const PaymentTable: React.FC<PaymentTableProps> = ({
             sortField={sortField}
             sortDirection={sortDirection}
           />
-          
+
           <tbody className="divide-y overflow-hidden">
             {filteredPayments.length === 0 ? (
               <tr>

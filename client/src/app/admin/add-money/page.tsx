@@ -5894,6 +5894,7 @@ import Pagination from "../components/Pagination"; // Adjust path if needed
 
 // Import Shared Types
 import { Payment } from "../../../types/payment"; // Adjust path as needed
+import { TbMoneybag } from "react-icons/tb";
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
@@ -6353,16 +6354,15 @@ const AdminPaymentsPage: React.FC = () => {
               Add-Money Management
             </h1>
             <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg">
-              Track and manage all incoming payments, statuses, and user
-              transactions in real time with full control and visibility.
+              Track and manage all incoming payments, statuses, and user transactions in real time with full control and visibility.
             </p>
           </div>
           <div className="flex items-center gap-3 justify-end sm:w-auto w-full">
             <button
               onClick={() => setShowFilterModal(true)}
-              className="flex items-center justify-center cursor-pointer gap-2 bg-primary text-neutral-900 font-medium text-base px-8 py-3 h-12.5 sm:w-auto w-full rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear"
+              className="flex items-center bg-primary h-12.5 px-8 py-3 cursor-pointer rounded-full sm:w-auto w-full text-neutral-900 justify-center "
             >
-              <Filter size={18} />
+              <Filter size={18} className="mr-2" />
               Filters
             </button>
             <button

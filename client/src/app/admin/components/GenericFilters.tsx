@@ -1642,7 +1642,7 @@
 //                         className={`fixed ${
 //                             isMobile
 //                               ? "bottom-0 left-0 right-0 h-[100vh]" // Consider max-h-screen or similar if full height isn't always needed
-//                               : "top-0 right-0 sm:w-[600px] h-full border-l border-gray-200 dark:border-neutral-700" // Dark mode border
+//                               : "top-0 right-0 sm:w-[600px] h-full border-l" // Dark mode border
 //                           } bg-white dark:bg-background z-50 flex flex-col shadow-xl overflow-y-auto`}
 //                         role="dialog" // Add role
 //                         aria-modal="true" // Add aria-modal
@@ -3004,6 +3004,8 @@
 
 // export default GenericFilters;
 
+
+
 // components/admin/shared/GenericFilters.tsx
 "use client";
 import React, { useState, useRef, useEffect } from "react";
@@ -3255,7 +3257,7 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
             className={`fixed ${
               isMobile
                 ? "bottom-0 left-0 right-0 h-[100vh] max-h-screen"
-                : "top-0 right-0 sm:w-[600px] h-full border-l border-gray-200 dark:border-neutral-700"
+                : "top-0 right-0 sm:w-[600px] h-full border-l"
             } bg-white dark:bg-background z-[51] flex flex-col overflow-hidden`}
             role="dialog"
             aria-modal="true"
@@ -3270,19 +3272,18 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
                 Filters
               </h3>
 
-              <div onClick={closePopup} className="size-12 bg-lightgray hover:bg-lightborder cursor-pointer dark:bg-primarybox dark:hover:bg-secondarybox flex items-center justify-center rounded-full transition-all duration-75 ease-linear">
-                  <button className="text-neutral-900 dark:text-primary cursor-pointer">
-                    <IoClose size={28} />
-                  </button>
+              <div
+                onClick={closePopup}
+                className="size-12 bg-lightgray hover:bg-lightborder cursor-pointer dark:bg-primarybox dark:hover:bg-secondarybox flex items-center justify-center rounded-full transition-all duration-75 ease-linear"
+              >
+                <button className="text-neutral-900 dark:text-primary cursor-pointer">
+                  <IoClose size={28} />
+                </button>
               </div>
             </div>
 
             {/* Scrollable Content Area */}
-            <div
-              className={`flex-grow overflow-y-auto scrollbar-hide p-6 space-y-6 ${
-                isMobile ? "pb-[100px]" : ""
-              }`}
-            >
+            <div className="flex-grow overflow-y-auto scrollbar-hide p-6 space-y-6">
               {/* Search Term Filter (remains the same) */}
               {showSearchTermFilter && (
                 <div className="mb-4">
@@ -3333,7 +3334,6 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
                   </div>
                 </div>
               )}
-
 
               {/* Recipient Filter (remains the same) */}
               {showRecipientFilter && (
@@ -3413,12 +3413,8 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
             </div>
 
             {/* Footer (remains the same) */}
-            <div
-              className={`p-4 border-t border-gray-200 dark:border-neutral-700 bg-white dark:bg-background flex-shrink-0 ${
-                isMobile ? "fixed bottom-0 left-0 right-0" : ""
-              }`}
-            >
-              <div className="flex items-center gap-3">
+            <div className="p-4 border-t bg-white dark:bg-background flex-shrink-0">
+              <div className="flex sm:flex-row flex-col items-center gap-3">
                 <button
                   type="button"
                   onClick={handleClearInternalFilters}
@@ -3437,6 +3433,7 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
             </div>
           </motion.div>
         </>
+        
       )}
     </AnimatePresence>
   );

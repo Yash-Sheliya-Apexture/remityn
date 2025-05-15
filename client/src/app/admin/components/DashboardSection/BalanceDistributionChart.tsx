@@ -92,7 +92,7 @@
 
 //   if (loading) {
 //     return (
-//       <Card className="flex flex-col lg:w-1/4 w-full h-full bg-lightgray dark:bg-primarybox border border-border">
+//       <Card className="flex flex-col lg:w-1/4 w-full h-full bg-lightgray dark:bg-primarybox ">
 //         <CardHeader className="items-center pb-0">
 //           <Skeleton className="h-6 w-3/4 rounded-md bg-muted" />
 //           <Skeleton className="h-4 w-1/2 mt-1 rounded-md bg-muted" />
@@ -110,7 +110,7 @@
 
 //   if (error) {
 //     return (
-//       <Card className="flex flex-col items-center justify-center sm:w-1/4 w-full h-full p-6 bg-card dark:bg-primarybox border border-border">
+//       <Card className="flex flex-col items-center justify-center sm:w-1/4 w-full h-full p-6 bg-card dark:bg-primarybox ">
 //         <AlertCircle className="w-12 h-12 text-destructive mb-4" />
 //         <CardTitle className="text-lg text-destructive text-center">Loading Failed</CardTitle>
 //         <CardDescription className="text-sm text-muted-foreground text-center mt-1 mb-4">
@@ -126,7 +126,7 @@
 
 //   if (chartData.length === 0) {
 //      return (
-//       <Card className="flex flex-col items-center justify-center text-center sm:w-1/4 w-full h-full p-6 bg-card dark:bg-primarybox border border-border">
+//       <Card className="flex flex-col items-center justify-center text-center sm:w-1/4 w-full h-full p-6 bg-card dark:bg-primarybox ">
 //         <Info className="w-12 h-12 text-muted-foreground mb-4" />
 //         <CardTitle className="text-lg text-card-foreground">No Balance Data</CardTitle>
 //         <CardDescription className="text-sm text-muted-foreground mt-1">
@@ -143,7 +143,7 @@
 //   };
 
 //   return (
-//     <Card className="sm:w-1/4 w-full bg-card dark:bg-primarybox sm:p-6 p-4 rounded-xl border border-border relative overflow-hidden">
+//     <Card className="sm:w-1/4 w-full bg-card dark:bg-primarybox sm:p-6 p-4 rounded-xl  relative overflow-hidden">
 //       <CardHeader className="items-center pb-0">
 //         <div className="flex items-center gap-2 mt-4 mb-1">
 //             <CircleDollarSign className="w-5 h-5 text-primary" />
@@ -320,7 +320,7 @@
 
 //   if (loading) {
 //     return (
-//       <Card className="flex flex-col sm:w-1/4 w-full h-full bg-card dark:bg-primarybox border border-border">
+//       <Card className="flex flex-col sm:w-1/4 w-full h-full bg-card dark:bg-primarybox ">
 //         <CardHeader className="items-center pb-0">
 //           <Skeleton className="h-6 w-3/4 rounded-md bg-muted" />
 //           <Skeleton className="h-4 w-1/2 mt-1 rounded-md bg-muted" />
@@ -338,7 +338,7 @@
 
 //   if (error) {
 //     return (
-//       <Card className="flex flex-col items-center justify-center sm:w-1/4 w-full h-full p-6 bg-card dark:bg-primarybox border border-border">
+//       <Card className="flex flex-col items-center justify-center sm:w-1/4 w-full h-full p-6 bg-card dark:bg-primarybox ">
 //         <AlertCircle className="w-12 h-12 text-destructive mb-4" />
 //         <CardTitle className="text-lg text-destructive text-center">Loading Failed</CardTitle>
 //         <CardDescription className="text-sm text-muted-foreground text-center mt-1 mb-4">
@@ -354,7 +354,7 @@
 
 //   if (chartData.length === 0) {
 //      return (
-//       <Card className="flex flex-col items-center justify-center text-center sm:w-1/4 w-full h-full p-6 bg-card dark:bg-primarybox border border-border">
+//       <Card className="flex flex-col items-center justify-center text-center sm:w-1/4 w-full h-full p-6 bg-card dark:bg-primarybox ">
 //         <Info className="w-12 h-12 text-muted-foreground mb-4" />
 //         <CardTitle className="text-lg text-card-foreground">No Balance Data</CardTitle>
 //         <CardDescription className="text-sm text-muted-foreground mt-1">
@@ -370,7 +370,7 @@
 //   };
 
 //   return (
-//     <Card className="sm:w-1/4 w-full bg-card dark:bg-primarybox sm:p-6 p-4 rounded-xl border border-border relative overflow-hidden">
+//     <Card className="sm:w-1/4 w-full bg-card dark:bg-primarybox sm:p-6 p-4 rounded-xl  relative overflow-hidden">
 //       <CardHeader className="items-center pb-0">
 //         <div className="flex items-center gap-2 mt-4 mb-1">
 //             <CircleDollarSign className="w-5 h-5 text-primary" />
@@ -580,7 +580,7 @@
 //     return (
 
 //       /* Skleton */
-//       <Card className="flex flex-col sm:w-1/4 w-full h-full bg-card dark:bg-primarybox border border-border">
+//       <Card className="flex flex-col sm:w-1/4 w-full h-full bg-card dark:bg-primarybox ">
 //         <CardHeader className="items-start pb-2">
 //           <div className="flex items-center gap-2 mb-1">
 //             <BarChart2 className="w-5 h-5 text-primary" />
@@ -601,7 +601,7 @@
 
 //   if (error) {
 //     return (
-//       <Card className="flex flex-col items-center justify-center sm:w-1/4 w-full h-full p-6 bg-card dark:bg-primarybox border border-border">
+//       <Card className="flex flex-col items-center justify-center sm:w-1/4 w-full h-full p-6 bg-card dark:bg-primarybox ">
 //         <AlertCircle className="w-12 h-12 text-destructive mb-4" />
 //         <CardTitle className="text-lg text-destructive text-center">Loading Failed</CardTitle>
 //         <CardDescription className="text-sm text-muted-foreground text-center mt-1 mb-4">
@@ -617,7 +617,7 @@
 
 //   if (chartData.length === 0) {
 //      return (
-//       <Card className="flex flex-col items-center justify-center text-center sm:w-1/4 w-full h-full p-6 bg-card dark:bg-primarybox border border-border">
+//       <Card className="flex flex-col items-center justify-center text-center sm:w-1/4 w-full h-full p-6 bg-card dark:bg-primarybox ">
 //         <Info className="w-12 h-12 text-muted-foreground mb-4" />
 //         <CardTitle className="text-lg text-card-foreground">No Balance Data</CardTitle>
 //         <CardDescription className="text-sm text-muted-foreground mt-1">
@@ -628,7 +628,7 @@
 //   }
 
 //   return (
-//     <Card className="sm:w-1/4 w-full bg-lightgray dark:bg-primarybox p-4 rounded-xl border border-border relative overflow-hidden">
+//     <Card className="sm:w-1/4 w-full bg-lightgray dark:bg-primarybox p-4 rounded-xl  relative overflow-hidden">
 //       <CardHeader className="items-start pb-2">
 //         <div className="flex items-center gap-2 mb-1">
 //             <FaWallet className="w-5 h-5 text-primary" />
@@ -851,7 +851,7 @@ export default function BalanceDistributionChart() {
   if (loading) {
     return (
       // Updated Skeleton Structure
-      <Card className="flex flex-col lg:w-1/4 w-full sm:order-2 order-1  dark:bg-primarybox p-6 rounded-xl border border-border relative overflow-hidden">
+      <Card className="flex flex-col xl:w-1/4 w-full sm:order-2 order-1 dark:bg-primarybox p-6 rounded-xl  relative overflow-hidden">
         <CardHeader className="items-start pb-2">
           {/* Icon and Title */}
           <div className="flex items-center gap-2 mb-1">
@@ -896,7 +896,7 @@ export default function BalanceDistributionChart() {
 
   if (error) {
     return (
-      <Card className="flex flex-col items-center justify-center sm:order-2 order-1 lg:w-1/4 w-full h-full p-6 dark:bg-primarybox border border-border text-center">
+      <Card className="flex flex-col items-center justify-center sm:order-2 order-1 xl:w-1/4 w-full h-full p-6 dark:bg-primarybox  text-center">
         {" "}
         {/* Added text-center */}
         <AlertCircle className="w-12 h-12 text-destructive mb-4" />
@@ -919,7 +919,7 @@ export default function BalanceDistributionChart() {
 
   if (chartData.length === 0) {
     return (
-      <Card className="flex flex-col items-center  justify-center sm:order-2 order-1 text-center lg:w-1/4 w-full h-full p-6 dark:bg-primarybox border border-border">
+      <Card className="flex flex-col items-center  justify-center sm:order-2 order-1 text-center xl:w-1/4 w-full h-full p-6 dark:bg-primarybox ">
         <Info className="w-12 h-12 text-muted-foreground mb-4" />
         <CardTitle className="text-lg text-card-foreground">
           No Balance Data
@@ -932,34 +932,39 @@ export default function BalanceDistributionChart() {
   }
 
   return (
-    <Card className="lg:w-1/4 w-full dark:bg-primarybox sm:order-2 order-1 p-4 rounded-xl border border-border relative overflow-hidden">
-      <CardHeader className="flex flex-wrap gap-3">
+    <Card className="xl:w-1/4 w-full dark:bg-primarybox sm:order-2 order-1 p-4 rounded-xl shadow-none relative overflow-hidden">
+      <CardHeader className="flex justify-between flex-wrap gap-3">
         {/* Icon and Title */}
-        <div className="flex justify-center items-center size-12 bg-lightgray dark:bg-primarybox rounded-full">
-          <FaWallet  className="size-6 text-primary" />
+        <div className="flex items-start gap-3">
+          <div className="size-12 shrink-0 bg-primary dark:bg-primarybox rounded-full flex items-center justify-center">
+            <FaWallet className="size-6 text-mainheading dark:text-primary" />
+          </div>
+
+          <div>
+            <CardTitle className="text-lg font-semibold text-neutral-900 dark:text-white">
+              Account Balances
+            </CardTitle>
+
+            {/* Description */}
+            <CardDescription className="text-xs text-gray-500 dark:text-gray-300 max-w-68">
+              Net calculated balances (Completed Add Money - Completed Send
+              Money) by currency.
+            </CardDescription>
+
+          </div>
+
         </div>
-
-        <div>
-          <CardTitle className="text-lg font-semibold text-neutral-900 dark:text-white">
-            Account Balances
-          </CardTitle>
-
-        {/* Description */}
-          <CardDescription className="text-xs text-gray-500 dark:text-gray-300 max-w-68">
-            Net calculated balances (Completed Add Money - Completed Send Money)
-            by currency.
-          </CardDescription>
-        </div>
-
 
         {/* Total Net Balance */}
         <div className="mt-3">
           <p className="text-xs text-gray-500 dark:text-gray-300">
             Total Net Balance
           </p>
+
           <p className="text-2xl font-bold text-primary">
             {formatCurrency(totalOverallBalance)}
           </p>
+
         </div>
       </CardHeader>
 
