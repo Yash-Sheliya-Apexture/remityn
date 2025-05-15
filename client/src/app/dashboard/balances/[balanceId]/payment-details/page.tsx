@@ -2904,7 +2904,7 @@ const PaymentDetailsPage = () => {
 
   return (
     <section className="Payment-Details">
-      <div className="mx-auto py-5 lg:max-w-2xl">
+      <div className="mx-auto lg:max-w-2xl">
         <Toaster richColors position="top-center" />
         {/* Header */}
         <h1 className="lg:text-3xl md:text-2xl text-xl lg:text-center font-semibold text-mainheading mb-2.5 dark:text-white">

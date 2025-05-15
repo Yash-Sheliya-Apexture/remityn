@@ -2393,7 +2393,7 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
   // --- Render ---
   return (
     <section className="Recipient-Details-Page">
-      <DashboardHeader title="Recipients" />
+      <DashboardHeader title="Recipients"/>
       <div className="">
         {/* Profile Section */}
         <div className="flex flex-col mb-8 space-y-4">
@@ -2422,19 +2422,19 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
           <h2 className="sm:text-[26px] text-xl font-semibold text-mainheading dark:text-white break-words">
             {displayName} {/* Use calculated displayName */}
           </h2>
-          <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-4">
             {/* === MODIFIED LINK FOR SEND BUTTON === */}
             <Link
               href={recipientId ? `/dashboard/send/select-balance?recipientId=${recipientId}` : '#'} // Add recipientId as query param
               onClick={(e) => !recipientId && e.preventDefault()} // Prevent navigation if recipientId is somehow missing
-              className={`font-medium bg-primary text-neutral-900 rounded-full w-32 h-10 flex items-center justify-center cursor-pointer hover:bg-primaryhover transition-colors duration-200 ${!recipientId ? 'opacity-50 cursor-not-allowed' : ''}`} // Disable visually if no ID
+              className={`font-medium bg-primary text-neutral-900 rounded-full sm:w-32 w-full h-10 flex items-center justify-center cursor-pointer hover:bg-primaryhover transition-colors duration-200 ${!recipientId ? 'opacity-50 cursor-not-allowed' : ''}`} // Disable visually if no ID
               aria-disabled={!recipientId}
             >
               Send
             </Link>
             {/* === END MODIFIED LINK === */}
             <button
-              className="font-medium bg-red-600 text-white rounded-full w-32 h-10 flex items-center justify-center cursor-pointer hover:bg-red-700 transition-colors duration-200"
+              className="font-medium bg-red-600 text-white rounded-full sm:w-32 w-full h-10 flex items-center justify-center cursor-pointer hover:bg-red-700 transition-colors duration-200"
               onClick={handleDeleteRecipientClick}
               disabled={loadingRecipient} // Disable during loading/deleting
             >
@@ -2444,7 +2444,7 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
         </div>
 
         {/* Account Details Section */}
-        <div className="mb-6 pb-4">
+        <div className="Account-Details">
           <h3 className="font-medium text-gray-500 dark:text-gray-300 mb-3 tracking-wide leading-8 border-b">
             Account Details
           </h3>

@@ -140,8 +140,8 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       : 1;
 
   return (
-    <div className="bg-white dark:bg-background sticky lg:top-28 top-20 z-20">
-      <div className="container mx-auto py-5">
+    <div className="bg-white dark:bg-background sticky lg:top-28 top-20 z-20 pb-5">
+      <div className="container mx-auto">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           {/* Title */}
           <h1 className="text-xl md:text-2xl lg:text-3xl font-semibold dark:text-white text-mainheading">

@@ -1725,7 +1725,7 @@ export default function RecipientsPage() {
         <div className="Recipients-Page">
           {/* Header */}
           <div className="mb-6 flex items-center justify-between ">
-            <h1 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
+            <h1 className="lg:text-3xl text-2xl font-semibold text-mainheading dark:text-white">
               Recipients
             </h1>
             {/* Add Button (Small Screens) */}
