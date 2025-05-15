@@ -5676,7 +5676,7 @@ const AdminPaymentsPage: React.FC = () => {
 
   // --- JSX ---
   return (
-    <div className="container mx-auto px-4 py-5 relative">
+    <div className="container mx-auto px-4 py-5">
       <div className="space-y-6">
         {/* Header Parts */}
         <div className="flex sm:flex-row flex-col justify-between items-center ">
@@ -5692,12 +5692,12 @@ const AdminPaymentsPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex items-center gap-3 justify-end sm:w-auto w-full">
+          <div className="flex items-center gap-3 justify-end w-full">
             <button
               onClick={() => setShowFilterModal(true)}
-              className="flex items-center justify-center cursor-pointer gap-2 bg-primary text-neutral-900 font-medium text-base px-8 py-3 h-12.5 sm:w-auto w-full rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear"
+              className="flex items-center bg-primary h-12.5 px-8 py-3 rounded-full sm:w-auto w-full text-neutral-900 justify-center "
             >
-              <Filter size={18} />
+              <Filter size={18} className="mr-2"/>
               Filters
             </button>
 

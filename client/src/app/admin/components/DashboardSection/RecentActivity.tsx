@@ -476,13 +476,13 @@ import activityAdminService, {
 import moment from "moment";
 // import { Button } from '@/components/ui/button'; // Removed Shadcn Button
 import { Skeleton } from "@/components/ui/skeleton";
+import { LuActivity } from "react-icons/lu";
 
 type ActivityConfig = {
   icon: React.ReactNode;
   color: string;
   bgColor: string;
 };
-
 
 export default function RecentActivity() {
   const [activities, setActivities] = useState<ActivityItem[]>([]);
@@ -595,7 +595,7 @@ export default function RecentActivity() {
   if (loading && !refreshing && activities.length === 0) {
     // More specific condition for full component skeleton
     return (
-      <div className="lg:w-3/4 w-full bg-white dark:bg-primarybox sm:order-1 order-2 sm:p-6 p-4 rounded-xl border">
+      <div className="xl:w-3/4 w-full bg-white dark:bg-primarybox sm:order-1 order-2 sm:p-6 p-4 rounded-xl border">
         <div className="flex items-center justify-between mb-5">
           <Skeleton className="h-6 rounded-md w-40" />
           <Skeleton className="h-9 w-9 rounded-full" />
@@ -624,7 +624,7 @@ export default function RecentActivity() {
     // Don't show main error if we are just trying to refresh
     return (
       <div
-        className="lg:w-3/4 w-full bg-red-50 dark:bg-red-900/20 border sm:order-1 order-2 border-red-200 dark:border-red-800/30 text-red-700 dark:text-red-300 px-5 py-4 rounded-xl"
+        className="xl:w-3/4 w-full bg-red-50 dark:bg-red-900/20 border sm:order-1 order-2 border-red-200 dark:border-red-800/30 text-red-700 dark:text-red-300 px-5 py-4 rounded-xl"
         role="alert"
       >
         <div className="flex items-center gap-3">
@@ -654,24 +654,23 @@ export default function RecentActivity() {
   );
 
   return (
-    <div className="lg:w-3/4 w-full bg-white dark:bg-primarybox sm:order-1 order-2 sm:p-6 p-4 rounded-xl border relative overflow-hidden">
+    <div className="xl:w-3/4 w-full bg-white dark:bg-primarybox sm:order-1 order-2 sm:p-6 p-4 rounded-xl border relative overflow-hidden">
       <div className="flex items-center justify-between mb-5 relative">
         <div className="flex gap-3 items-center">
-          <div className="flex justify-center items-center size-12 bg-lightgray dark:bg-primarybox rounded-full">
-            <ActivityIcon className="size-5 text-primary" />
+          <div className="size-12 shrink-0 bg-primary dark:bg-primarybox rounded-full flex items-center justify-center">
+            <LuActivity className="size-6 text-mainheading dark:text-primary" />
           </div>
 
           <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">
             Recent Activity
           </h3>
-
         </div>
 
         <div className="flex items-center gap-2">
           {!isMobile && (
             <Link
               href="/admin/activity"
-              className="flex items-center justify-center cursor-pointer gap-2 bg-primary text-neutral-900 font-medium text-base px-8 py-3 h-12.5 sm:w-auto w-full rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear"
+              className="flex items-center justify-center cursor-pointer gap-2 bg-primary text-neutral-900 font-medium text-base px-8 py-3 h-10 sm:w-auto w-full rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear"
             >
               <span>All Activity</span>
             </Link>
@@ -691,8 +690,8 @@ export default function RecentActivity() {
         </div>
       </div>
 
-      <div className="space-y-3 relative">
-        {showSkeletons ? ( // Show skeletons for the list if loading OR refreshing
+      <div className="space-y-4 relative">
+        {showSkeletons ? ( // Show skeletons for the list if loading OR refreshing 508px
           [...Array(activitiesToDisplayCount)].map((_, i) => (
             <div
               key={`skel-list-item-${i}`}
@@ -703,7 +702,10 @@ export default function RecentActivity() {
                 <Skeleton className="h-4 w-4/5 rounded-full bg-lightborder dark:bg-accent" />
                 <Skeleton className="h-3 w-2/5 rounded-full bg-lightborder dark:bg-accent" />
               </div>
-              <Skeleton className="h-3 w-24 rounded-full ml-4 flex-shrink-0 self-start mt-1 bg-lightborder dark:bg-accent" />
+              <div className="space-y-1.5">
+                <Skeleton className="h-3 w-32 rounded-full  bg-lightborder dark:bg-accent" />
+                <Skeleton className="h-3 w-22 rounded-full  bg-lightborder dark:bg-accent" />
+              </div>
             </div>
           ))
         ) : activities.length > 0 ? (
@@ -770,6 +772,7 @@ export default function RecentActivity() {
           </div>
         )}
       </div>
+      
       {isMobile && (
         <Link
           href="/admin/activity"

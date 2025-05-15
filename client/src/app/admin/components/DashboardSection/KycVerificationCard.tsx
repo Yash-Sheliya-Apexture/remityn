@@ -611,7 +611,7 @@ export default function KycVerificationCard({
   if (loading) {
     return (
       // Outer container matches the actual card's padding, border, etc.
-      <div className="w-full bg-white dark:bg-white/5 sm:p-6 p-4 rounded-xl border h-fullflex flex-col justify-between">
+      <div className="w-full bg-white dark:bg-primarybox sm:p-6 p-4 rounded-xl border h-fullflex flex-col justify-between">
         {" "}
         {/* Added h-full and flex column layout */}
         {/* Header Skeleton */}
@@ -696,16 +696,14 @@ export default function KycVerificationCard({
   return (
     <div className="w-full bg-white dark:bg-primarybox sm:p-6 p-4 rounded-xl border h-full flex flex-col justify-between">
       <div className="flex-grow">
-        {" "}
-        {/* Content Wrapper, added flex-grow */}
         <div className="flex justify-between items-center mb-4">
-          {" "}
-          {/* mb-4 matches skeleton */}
-          <h4 className="text-lg font-medium text-neutral-900 dark:text-white">
+          <h1 className="text-lg font-medium text-neutral-900 dark:text-white">
             KYC Verifications
-          </h4>
-          <BsShieldLock className="size-5 text-primary" />{" "}
-          {/* size-5 matches skeleton icon size */}
+          </h1>
+
+          <div className="size-12 shrink-0 bg-primary dark:bg-primarybox rounded-full flex items-center justify-center">
+            <BsShieldLock className="size-6 text-mainheading dark:text-primary" />
+          </div>
         </div>
         <div className="space-y-4">
           {" "}
@@ -790,7 +788,7 @@ export default function KycVerificationCard({
         {/* Wrapper div matches skeleton */}
         <Link
           href="/admin/kyc-management"
-          className="mt-6 inline-block text-primary text-sm font-medium hover:text-primaryhover transition-all duration-75 ease-linear cursor-pointer" // mt-6 matches skeleton
+          className="mt-6 inline-block text-primary text-sm font-medium hover:text-primaryhover hover:underline underline-offset-2 transition-all duration-75 ease-linear cursor-pointer" // mt-6 matches skeleton
         >
           Manage KYC Verifications →
         </Link>

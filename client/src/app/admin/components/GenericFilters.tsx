@@ -3004,6 +3004,8 @@
 
 // export default GenericFilters;
 
+
+
 // components/admin/shared/GenericFilters.tsx
 "use client";
 import React, { useState, useRef, useEffect } from "react";
@@ -3222,7 +3224,7 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
     "text-gray-500 dark:text-gray-300 font-medium mb-3 leading-8";
   const inputWrapperClassName = "flex items-center justify-between";
   const inputClassName =
-    "`mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 focus:border-[#5f5f5f]";
+    "mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 focus:border-[#5f5f5f]";
 
   return (
     <AnimatePresence>
@@ -3280,7 +3282,7 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
             {/* Scrollable Content Area */}
             <div
               className={`flex-grow overflow-y-auto scrollbar-hide p-6 space-y-6 ${
-                isMobile ? "pb-[100px]" : ""
+                isMobile ? "" : ""
               }`}
             >
               {/* Search Term Filter (remains the same) */}
@@ -3415,7 +3417,7 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
             {/* Footer (remains the same) */}
             <div
               className={`p-4 border-t border-gray-200 dark:border-neutral-700 bg-white dark:bg-background flex-shrink-0 ${
-                isMobile ? "fixed bottom-0 left-0 right-0" : ""
+                isMobile ? "" : ""
               }`}
             >
               <div className="flex items-center gap-3">
