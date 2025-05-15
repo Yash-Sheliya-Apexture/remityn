@@ -221,16 +221,18 @@ const ActivityList: React.FC<ActivityListProps> = ({
         {[...Array(activitiesPerPage)].map((_, i) => (
           <div
             key={`skel-activity-${i}`}
-            className="flex items-start bg-lightgray dark:bg-primarybox p-4 rounded-lg "
+            className="flex  items-start bg-lightgray dark:bg-primarybox p-4 rounded-lg "
           >
             <Skeleton className="h-10 w-10 rounded-full mr-4 flex-shrink-0 bg-lightborder dark:bg-accent" />
-            <div className="flex-grow space-y-1.5">
-              <Skeleton className="h-4 w-4/5 rounded-full bg-lightborder dark:bg-accent" />
-              <Skeleton className="h-3 w-2/5 rounded-full bg-lightborder dark:bg-accent" />
-            </div>
-            <div className="space-y-1.5">
-              <Skeleton className="h-3 w-36  rounded-full ml-4 flex-shrink-0 self-start mt-1 bg-lightborder dark:bg-accent" />
-              <Skeleton className="h-3 w-26 rounded-full ml-4 flex-shrink-0 self-start mt-1 bg-lightborder dark:bg-accent" />
+            <div className="flex sm:flex-row flex-col justify-between w-full">
+              <div className="flex-grow space-y-1.5">
+                <Skeleton className="h-4 w-4/5 rounded-full bg-lightborder dark:bg-accent" />
+                <Skeleton className="h-3 w-2/5 rounded-full bg-lightborder dark:bg-accent" />
+              </div>
+              <div className="space-y-1.5">
+                <Skeleton className="h-3 w-36  rounded-full flex-shrink-0 self-start mt-1 bg-lightborder dark:bg-accent" />
+                <Skeleton className="h-3 w-26 rounded-full flex-shrink-0 self-start mt-1 bg-lightborder dark:bg-accent" />
+              </div>
             </div>
           </div>
         ))}

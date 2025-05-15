@@ -1412,9 +1412,6 @@
 
 // export default AdminUsersPage;
 
-
-
-
 // frontend/src/app/admin/users/page.tsx
 "use client";
 
@@ -1434,6 +1431,7 @@ import Pagination from "../components/Pagination"; // Use shared Pagination
 import GenericFilters, {
   FiltersState as GenericFiltersState,
 } from "../components/GenericFilters"; // Use GenericFilters from the specified path
+import { FaUsers } from "react-icons/fa";
 
 // Helper function to parse date string (dd-MM-yyyy) - Ensure it's the same as in Payments
 function parseDateString(dateString: string): Date | null {
@@ -1926,32 +1924,50 @@ const AdminUsersPage: React.FC = () => {
       <div className="space-y-6">
         {/* Header - Matching Payments structure and styling */}
         <div className="flex flex-wrap justify-between items-center gap-4">
-          
-          <div className="header-wrap">
+          {/* <div className="header-wrap">
             <h1 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
               User Management
             </h1>
+            
             <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg">
               Monitor user details, manage KYC statuses, and access account
               actions—all in one centralized dashboard
             </p>
           </div>
-          
+           */}
+
+          <div className="Activity">
+            <div className="flex items-center gap-3">
+              <div className="size-12 shrink-0 bg-primary dark:bg-primarybox rounded-full flex items-center justify-center">
+                <FaUsers className="size-6 text-mainheading dark:text-primary" />
+              </div>
+
+              <h1 className="lg:text-3xl text-2xl font-semibold text-mainheading dark:text-primary">
+                All Recent Activity
+              </h1>
+            </div>
+
+            <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg">
+              Track all user transactions, KYC submissions, and status updates
+              in real time with detailed logs for complete transparency.
+            </p>
+          </div>
+
           <div className="flex items-center gap-3 justify-end sm:w-auto w-full">
             {/* Filter Button - Matching Payments styling */}
             <button
               onClick={() => setShowFilterModal(true)}
-              className="flex items-center justify-center cursor-pointer gap-2 bg-primary text-neutral-900 font-medium text-base px-8 py-3 h-12.5 sm:w-auto w-full rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear" // Use text-secondary for light text on dark primary bg
+              className="flex items-center justify-center cursor-pointer gap-2 bg-primary text-neutral-900 font-medium text-base sm:px-8 px-6 py-3 h-12.5 sm:w-auto w-full rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear" // Use text-secondary for light text on dark primary bg
             >
               <Filter size={20} />
               <span>Filters</span>
             </button>
-            
+
             {/* Refresh Button - Matching Payments styling */}
             <button
               onClick={refreshData}
               disabled={isRefreshing || loadingUsers} // Disable while EITHER refreshing OR loading
-              className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white sm:px-8 px-6 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
               title="Refresh user data"
             >
               {/* Apply animate-spin class conditionally based on isRefreshing */}
@@ -1963,48 +1979,7 @@ const AdminUsersPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Success/Error Messages - Matching Payments styling and animation */}
-        {/* 
-          <AnimatePresence>
-            {successMessage && (
-                <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="p-3 rounded-md bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700/50 flex justify-between items-center"
-                    role="status"
-                >
-                    <div className="flex items-center gap-2">
-                        <Check className="text-green-600 dark:text-green-400" size={18} />
-                        <p className="text-sm font-medium text-green-800 dark:text-green-300">{successMessage}</p>
-                    </div>
-                    <button onClick={() => setSuccessMessage(null)} aria-label="Dismiss success message" className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-200">
-                        <X size={18} />
-                    </button>
-                </motion.div>
-            )}
-          </AnimatePresence>
-          <AnimatePresence>
-            {error && (
-                 <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="p-3 rounded-md bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700/50 flex justify-between items-center"
-                    role="alert"
-                >
-                   <div className="flex items-center gap-2">
-                        <AlertCircle className="text-red-600 dark:text-red-400" size={18} />
-                        <p className="text-sm font-medium text-red-800 dark:text-red-300">{error}</p>
-                    </div>
-                    <button onClick={() => setError(null)} aria-label="Dismiss error message" className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200">
-                        <X size={18} />
-                    </button>
-                </motion.div>
-            )}
-          </AnimatePresence> 
-          */}
-
+        
         {/* Pagination and Page Size Controls - Matching Payments structure and styling */}
         <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
           <div className="flex items-center gap-2">

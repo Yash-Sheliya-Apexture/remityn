@@ -3675,6 +3675,1122 @@
 
 // export default AdminCurrenciesPage;
 
+// // frontend/src/app/admin/currencies/page.tsx
+// "use client";
+// import React, { useState, useEffect, useMemo, useCallback } from "react";
+// import { useAuth } from "../../contexts/AuthContext";
+// import axios from "axios";
+// import { useRouter } from "next/navigation";
+// import Link from "next/link";
+// import apiConfig from "../../config/apiConfig";
+// import Image from "next/image"; // Ensure Image from next/image is imported
+// import {
+//   Loader2,
+//   Info,
+//   Edit,
+//   Trash2,
+//   Save,
+//   Percent,
+//   CheckCircle,
+//   // ImageIcon, // Not used directly here, but Image from next/image is
+// } from "lucide-react";
+// import { IoClose } from "react-icons/io5";
+// import { FiSearch } from "react-icons/fi";
+// import { MdCancel, MdCurrencyRupee } from "react-icons/md";
+// import { IoMdAdd, IoMdCloseCircle } from "react-icons/io";
+// import { toast, ToastContainer } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+// import { motion, AnimatePresence } from "framer-motion";
+// import { Skeleton } from "@/components/ui/skeleton";
+// import { FaCoins } from "react-icons/fa";
+
+// axios.defaults.baseURL = apiConfig.baseUrl;
+
+// interface Currency {
+//   _id: string;
+//   code: string;
+//   currencyName: string;
+//   flagImage?: string;
+//   rateAdjustmentPercentage?: number;
+// }
+
+// interface NewCurrencyData {
+//   code: string;
+//   currencyName: string;
+//   flagImage: string;
+//   rateAdjustmentPercentage: string;
+// }
+
+// interface ApiErrorResponse {
+//   message: string;
+// }
+
+// const LoadingSkeleton = () => (
+//   <div className="container mx-auto px-4 py-8 bg-white dark:bg-background">
+//     <div className="space-y-6">
+//       <div className="pb-6 mb-6 border-b">
+//         <Skeleton className="h-8 w-3/5 sm:w-1/3 rounded mb-3" />
+//         <Skeleton className="h-4 w-4/5 sm:w-1/2 rounded" />
+//       </div>
+//       <div className="flex sm:justify-between flex-row w-full items-center mb-6 gap-4">
+//         <Skeleton className="h-12 w-12 sm:h-12.5 sm:w-40 rounded-full" />
+//         <Skeleton className="h-12 sm:h-12.5 flex-1 sm:flex-none sm:w-64 rounded-full" />
+//       </div>
+//       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+//         {Array.from({ length: 6 }).map((_, index) => (
+//           <div
+//             key={index}
+//             className="rounded-xl overflow-hidden border flex flex-col"
+//           >
+//             <div className="lg:p-5 p-4 flex-grow">
+//               <div className="flex items-center gap-4 mb-4">
+//                 <Skeleton className="size-14 rounded-full flex-shrink-0" />
+//                 <div className="flex-1 space-y-1.5">
+//                   <Skeleton className="h-6 w-1/3 rounded" />
+//                   <Skeleton className="h-4 w-2/3 rounded" />
+//                 </div>
+//               </div>
+//               <div className="p-3 space-y-2 rounded-lg border">
+//                 <Skeleton className="h-4 w-1/4 rounded mb-1" />
+//                 <Skeleton className="h-6 w-1/2 rounded" />
+//                 <Skeleton className="h-3 w-full rounded mt-1" />
+//               </div>
+//             </div>
+//             <div className="border-t p-4">
+//               <div className="flex flex-wrap flex-row gap-2">
+//                 <Skeleton className="h-10 lg:h-12.5 flex-1 rounded-full" />
+//                 <Skeleton className="h-10 lg:h-12.5 flex-1 rounded-full" />
+//                 <Skeleton className="h-10 lg:h-12.5 flex-1 rounded-full" />
+//               </div>
+//             </div>
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   </div>
+// );
+
+// const AdminCurrenciesPage: React.FC = () => {
+//   const [currencies, setCurrencies] = useState<Currency[]>([]);
+//   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
+//   const [newCurrencyData, setNewCurrencyData] = useState<NewCurrencyData>({
+//     code: "",
+//     currencyName: "",
+//     flagImage: "",
+//     rateAdjustmentPercentage: "",
+//   });
+//   const [editingCurrencyId, setEditingCurrencyId] = useState<string | null>(
+//     null
+//   );
+//   const [editingFields, setEditingFields] = useState<{
+//     code: string;
+//     rateAdjustmentPercentage: string;
+//   }>({ code: "", rateAdjustmentPercentage: "" });
+
+//   const [isLoading, setIsLoading] = useState<boolean>(true);
+//   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+//   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+//     useState<boolean>(false);
+//   const [currencyToDeleteId, setCurrencyToDeleteId] = useState<string | null>(
+//     null
+//   );
+//   const [searchTerm, setSearchTerm] = useState<string>("");
+//   const { token } = useAuth();
+//   const router = useRouter();
+
+//   // --- NEW: State for flag image error in create modal ---
+//   const [createFlagImageError, setCreateFlagImageError] =
+//     useState<boolean>(false);
+
+//   const filteredCurrencies = useMemo(() => {
+//     if (!searchTerm) return currencies;
+//     const lowerSearchTerm = searchTerm.toLowerCase();
+//     return currencies.filter(
+//       (currency) =>
+//         currency.code.toLowerCase().includes(lowerSearchTerm) ||
+//         currency.currencyName.toLowerCase().includes(lowerSearchTerm)
+//     );
+//   }, [currencies, searchTerm]);
+
+//   const [isMobile, setIsMobile] = useState(false);
+
+//   useEffect(() => {
+//     const checkMobileScreen = () => {
+//       setIsMobile(window.innerWidth < 640);
+//     };
+//     checkMobileScreen();
+//     window.addEventListener("resize", checkMobileScreen);
+//     return () => {
+//       window.removeEventListener("resize", checkMobileScreen);
+//     };
+//   }, []);
+
+//   // This useEffect handles preventing body scroll when any modal is open.
+//   // It correctly includes `isDeleteConfirmationOpen` in its logic.
+//   useEffect(() => {
+//     const originalStyle = window.getComputedStyle(document.body).overflow;
+//     if (isCreateModalOpen || isDeleteConfirmationOpen) {
+//       document.body.style.overflow = "hidden";
+//     } else {
+//       document.body.style.overflow = originalStyle;
+//     }
+//     return () => {
+//       document.body.style.overflow = originalStyle;
+//     };
+//   }, [isCreateModalOpen, isDeleteConfirmationOpen]);
+
+//   const mobileVariants = {
+//     initial: { y: 50, opacity: 0 },
+//     animate: { y: 0, opacity: 1, transition: { stiffness: 100 } },
+//     exit: { y: 50, opacity: 0 },
+//   };
+
+//   const desktopVariants = {
+//     initial: { y: -30, opacity: 0, scale: 0.95 },
+//     animate: {
+//       y: 0,
+//       opacity: 1,
+//       scale: 1,
+//       transition: { type: "spring", stiffness: 100, damping: 15 },
+//     },
+//     exit: { y: -30, opacity: 0, scale: 0.95 },
+//   };
+
+//   const modalVariants = isMobile ? mobileVariants : desktopVariants;
+
+//   const fetchCurrenciesList = useCallback(async () => {
+//     if (!token) {
+//       router.push("/auth/login");
+//       return;
+//     }
+//     setIsLoading(true);
+//     try {
+//       const response = await axios.get<Currency[]>("/admin/currencies", {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       setCurrencies(response.data);
+//     } catch (error: unknown) {
+//       console.error("Error fetching currencies:", error);
+//       if (axios.isAxiosError<ApiErrorResponse>(error)) {
+//         if (error.response?.status === 403 || error.response?.status === 401) {
+//           router.push("/auth/login");
+//         } else {
+//           toast.error(
+//             error.response?.data?.message || "Failed to load currencies"
+//           );
+//         }
+//       } else if (error instanceof Error) {
+//         toast.error(error.message);
+//       } else {
+//         toast.error("An unexpected error occurred while fetching currencies.");
+//       }
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   }, [token, router]);
+
+//   useEffect(() => {
+//     if (token) {
+//       fetchCurrenciesList();
+//     }
+//   }, [fetchCurrenciesList, token]);
+
+//   // --- NEW: Functions to open and close create modal, handling flag error state ---
+//   const openCreateModal = () => {
+//     setNewCurrencyData({
+//       // Reset form data for a fresh modal
+//       code: "",
+//       currencyName: "",
+//       flagImage: "",
+//       rateAdjustmentPercentage: "",
+//     });
+//     setCreateFlagImageError(false); // Reset error when opening
+//     setIsCreateModalOpen(true);
+//   };
+
+//   const closeCreateModal = () => {
+//     setIsCreateModalOpen(false);
+//     setCreateFlagImageError(false); // Reset error when closing
+//     // Optionally re-reset form data if needed, though openCreateModal does this
+//     // setNewCurrencyData({ code: "", currencyName: "", flagImage: "", rateAdjustmentPercentage: "" });
+//   };
+
+//   const handleCreateInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const { name, value } = e.target;
+//     setNewCurrencyData((prev) => ({
+//       ...prev,
+//       [name]: name === "code" ? value.toUpperCase() : value,
+//     }));
+//     // --- MODIFIED: Reset flag image error on change ---
+//     if (name === "flagImage") {
+//       setCreateFlagImageError(false);
+//     }
+//   };
+
+//   const handleCreateCurrency = async () => {
+//     if (!newCurrencyData.code || !newCurrencyData.currencyName) {
+//       toast.error("Currency code and name are required.");
+//       return;
+//     }
+//     if (newCurrencyData.code.length !== 3) {
+//       toast.error("Currency code must be 3 letters.");
+//       return;
+//     }
+//     if (
+//       newCurrencyData.flagImage &&
+//       !newCurrencyData.flagImage.startsWith("/") &&
+//       !newCurrencyData.flagImage.startsWith("http")
+//     ) {
+//       toast.error(
+//         "Flag Image Path must be a relative path starting with '/' or a full URL."
+//       );
+//       return;
+//     }
+
+//     let adjustmentValue: number = 0;
+//     if (newCurrencyData.rateAdjustmentPercentage.trim() !== "") {
+//       adjustmentValue = parseFloat(newCurrencyData.rateAdjustmentPercentage);
+//       if (isNaN(adjustmentValue)) {
+//         toast.error(
+//           "Rate Adjustment must be a valid number (e.g., 0.5 or -0.1)."
+//         );
+//         return;
+//       }
+//     }
+
+//     setIsSubmitting(true);
+//     try {
+//       const payload = {
+//         code: newCurrencyData.code,
+//         currencyName: newCurrencyData.currencyName,
+//         flagImage: newCurrencyData.flagImage.trim() || null,
+//         rateAdjustmentPercentage: adjustmentValue,
+//       };
+//       await axios.post("/admin/currencies", payload, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       // setNewCurrencyData is handled by openCreateModal next time or implicitly by close
+//       closeCreateModal(); // Use new close function
+//       await fetchCurrenciesList();
+//       toast.success("Currency added successfully!");
+//     } catch (error: unknown) {
+//       if (axios.isAxiosError<ApiErrorResponse>(error)) {
+//         toast.error(
+//           error.response?.data?.message || "Failed to create currency"
+//         );
+//       } else if (error instanceof Error) {
+//         toast.error(error.message);
+//       } else {
+//         toast.error(
+//           "An unexpected error occurred while creating the currency."
+//         );
+//       }
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   const startEditing = (currency: Currency) => {
+//     setEditingCurrencyId(currency._id);
+//     setEditingFields({
+//       code: currency.code,
+//       rateAdjustmentPercentage:
+//         currency.rateAdjustmentPercentage?.toString() ?? "0",
+//     });
+//   };
+
+//   const handleEditingInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const { name, value } = e.target;
+//     setEditingFields((prev) => ({
+//       ...prev,
+//       [name]: name === "code" ? value.toUpperCase() : value,
+//     }));
+//   };
+
+//   const handleUpdateCurrency = async () => {
+//     if (!editingCurrencyId) return;
+
+//     if (!editingFields.code || editingFields.code.length !== 3) {
+//       toast.error("Currency code must be 3 letters.");
+//       return;
+//     }
+
+//     let adjustmentValue: number = 0;
+//     if (editingFields.rateAdjustmentPercentage.trim() !== "") {
+//       adjustmentValue = parseFloat(editingFields.rateAdjustmentPercentage);
+//       if (isNaN(adjustmentValue)) {
+//         toast.error("Rate Adjustment must be a valid number.");
+//         return;
+//       }
+//     }
+
+//     setIsSubmitting(true);
+//     try {
+//       const payload = {
+//         code: editingFields.code,
+//         rateAdjustmentPercentage: adjustmentValue,
+//       };
+//       await axios.put(`/admin/currencies/${editingCurrencyId}`, payload, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       setEditingCurrencyId(null);
+//       setEditingFields({ code: "", rateAdjustmentPercentage: "" });
+//       await fetchCurrenciesList();
+//       toast.success("Currency updated successfully!");
+//     } catch (error: unknown) {
+//       if (axios.isAxiosError<ApiErrorResponse>(error)) {
+//         toast.error(
+//           error.response?.data?.message || "Failed to update currency"
+//         );
+//       } else if (error instanceof Error) {
+//         toast.error(error.message);
+//       } else {
+//         toast.error(
+//           "An unexpected error occurred while updating the currency."
+//         );
+//       }
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   const cancelEditing = () => {
+//     setEditingCurrencyId(null);
+//     setEditingFields({ code: "", rateAdjustmentPercentage: "" });
+//   };
+
+//   const handleDeleteCurrency = async () => {
+//     if (!currencyToDeleteId) return;
+//     setIsSubmitting(true);
+//     try {
+//       await axios.delete(`/admin/currencies/${currencyToDeleteId}`, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       setIsDeleteConfirmationOpen(false);
+//       setCurrencyToDeleteId(null);
+//       await fetchCurrenciesList();
+//       toast.success("Currency deleted successfully!");
+//     } catch (error: unknown) {
+//       if (axios.isAxiosError<ApiErrorResponse>(error)) {
+//         toast.error(
+//           error.response?.data?.message || "Failed to delete currency"
+//         );
+//       } else if (error instanceof Error) {
+//         toast.error(error.message);
+//       } else {
+//         toast.error(
+//           "An unexpected error occurred while deleting the currency."
+//         );
+//       }
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   const clearSearchTerm = () => {
+//     setSearchTerm("");
+//   };
+
+//   return isLoading ? (
+//     <LoadingSkeleton />
+//   ) : (
+//     <div className="container mx-auto px-4 py-5 relative">
+//       <div className="space-y-6">
+//         <div className="Activity">
+//           <div className="flex items-center gap-3">
+//             <div className="size-12 shrink-0 bg-primary dark:bg-primarybox rounded-full flex items-center justify-center">
+//               <FaCoins className="size-6 text-mainheading dark:text-primary" />
+//             </div>
+
+//             <h1 className="lg:text-3xl text-2xl font-semibold text-mainheading dark:text-primary">
+//               Currency Management
+//             </h1>
+//           </div>
+
+//           <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg">
+//             Easily manage all supported currencies, customize rates, and
+//             maintain real-time control over your exchange offerings.
+//           </p>
+//         </div>
+
+//         <ToastContainer
+//           position="top-right"
+//           autoClose={3000}
+//           hideProgressBar={false}
+//           newestOnTop
+//           closeOnClick
+//           rtl={false}
+//           pauseOnFocusLoss
+//           draggable
+//           pauseOnHover
+//           theme="light"
+//         />
+
+//         <div className="flex sm:justify-between flex-row w-full items-center mb-6 gap-4">
+//           <div>
+//             <button
+//               onClick={openCreateModal} // Use new open function
+//               className="bg-primary text-neutral-900 flex items-center justify-center gap-1  hover:bg-primaryhover text-nowrap font-medium rounded-full text-center sm:px-8 sm:py-3 h-12.5 sm:w-auto w-12.5 cursor-pointer transition-all duration-75 ease-linear"
+//             >
+//               <IoMdAdd
+//                 size={28}
+//                 title={isMobile ? "Add Currency" : undefined}
+//               />
+//               {!isMobile && <span>Add Currency</span>}
+//             </button>
+//           </div>
+
+//           <div className="relative sm:w-auto w-full">
+//             <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+//               <FiSearch
+//                 className="size-5 text-neutral-900 dark:text-white"
+//                 aria-hidden="true"
+//               />
+//             </div>
+//             <input
+//               type="text"
+//               placeholder="Search currencies..."
+//               className="w-full rounded-full h-12.5 py-3 pl-12 pr-10 border transition-all ease-linear duration-75 focus:outline-0 focus:border-[#5f5f5f] placeholder:text-neutral-900 dark:placeholder:text-white"
+//               value={searchTerm}
+//               onChange={(e) => setSearchTerm(e.target.value)}
+//             />
+//             {searchTerm && (
+//               <button
+//                 type="button"
+//                 onClick={clearSearchTerm}
+//                 className="absolute inset-y-0 right-3 flex items-center text-neutral-900 dark:text-primary focus:outline-none cursor-pointer"
+//                 aria-label="Clear search"
+//               >
+//                 <MdCancel size={24} aria-hidden="true" />
+//               </button>
+//             )}
+//           </div>
+//         </div>
+
+//         {isLoading ? (
+//           <div className="flex justify-center items-center h-64">
+//             <Loader2 size={60} className="text-neutral-900 animate-spin" />
+//           </div>
+//         ) : filteredCurrencies.length === 0 ? (
+//           <div className="bg-lightgray dark:bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
+//             <div className="lg:size-16 size-14 flex items-center justify-center bg-primary dark:bg-transparent dark:bg-gradient-to-t dark:from-primary rounded-full mb-2">
+//               <MdCurrencyRupee className="lg:size-8 size-6 mx-auto text-neutral-900 dark:text-primary" />
+//             </div>
+//             <h2 className="lg:text-3xl text-2xl font-medium text-neutral-900 dark:text-white mt-1">
+//               No currencies found
+//             </h2>
+//             <p className="text-gray-500 dark:text-gray-300 max-w-lg mx-auto">
+//               Currently, there are no currencies available with related
+//               descriptions at this time.
+//             </p>
+//           </div>
+//         ) : (
+//           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+//             {filteredCurrencies.map((currency) => (
+//               <div
+//                 key={currency._id}
+//                 className="rounded-xl overflow-hidden transition-all duration-300 border flex flex-col"
+//               >
+//                 <div className="lg:p-5 p-4 flex-grow">
+//                   <div className="flex items-center gap-4 mb-4">
+//                     {currency.flagImage ? (
+//                       <Image
+//                         src={currency.flagImage}
+//                         alt={`${currency.currencyName} Flag`}
+//                         width={56}
+//                         height={56}
+//                         className="object-contain rounded-full"
+//                         unoptimized={currency.flagImage.startsWith("http")}
+//                       />
+//                     ) : (
+//                       <div className="size-14 border bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center text-xs text-gray-500 dark:text-gray-400">
+//                         No flag
+//                       </div>
+//                     )}
+//                     <div className="flex-1">
+//                       {editingCurrencyId === currency._id ? (
+//                         <input
+//                           type="text"
+//                           name="code"
+//                           value={editingFields.code}
+//                           onChange={handleEditingInputChange}
+//                           className="text-lg font-bold text-main dark:text-white border-b border-primary focus:outline-none bg-primary/8 dark:bg-transparent px-1 py-0.5 w-20"
+//                           autoFocus
+//                           maxLength={3}
+//                         />
+//                       ) : (
+//                         <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+//                           {currency.code}
+//                         </h3>
+//                       )}
+//                       <p className="text-sm text-gray-500 dark:text-gray-300 mt-0.5">
+//                         {currency.currencyName}
+//                       </p>
+//                     </div>
+//                   </div>
+
+//                   <div className="p-3 space-y-2 rounded-lg border">
+//                     <label className="font-medium text-gray-500 dark:text-gray-300 mb-1 flex items-center gap-1">
+//                       Our Rates
+//                     </label>
+//                     {editingCurrencyId === currency._id ? (
+//                       <input
+//                         type="number"
+//                         name="rateAdjustmentPercentage"
+//                         value={editingFields.rateAdjustmentPercentage}
+//                         onChange={handleEditingInputChange}
+//                         placeholder="e.g., 0.5 or +0.1"
+//                         step="any"
+//                         className="text-base font-semibold text-gray-800 dark:text-white border-b border-primary focus:outline-none bg-transparent w-full py-0.5 no-spinner"
+//                       />
+//                     ) : (
+//                       <p
+//                         className={`text-lg font-bold ${
+//                           currency.rateAdjustmentPercentage != null
+//                             ? "text-neutral-900 font-medium dark:text-white"
+//                             : "text-gray-400 italic dark:text-gray-500"
+//                         }`}
+//                       >
+//                         {currency.rateAdjustmentPercentage != null
+//                           ? `${currency.rateAdjustmentPercentage.toLocaleString(
+//                               undefined,
+//                               {
+//                                 minimumFractionDigits: 0,
+//                                 maximumFractionDigits: 2,
+//                               }
+//                             )}%`
+//                           : "Not Set"}
+//                       </p>
+//                     )}
+//                     <p className="text-gray-500 dark:text-gray-300 mt-1">
+//                       Our Rates vs market rate.
+//                     </p>
+//                   </div>
+//                 </div>
+
+//                 <div className=" border-t p-4">
+//                   {editingCurrencyId === currency._id ? (
+//                     <div className="flex gap-2">
+//                       <button
+//                         onClick={handleUpdateCurrency}
+//                         disabled={isSubmitting}
+//                         className="flex-1 flex cursor-pointer justify-center gap-1.5 items-center border text-gray-500 dark:text-gray-300 font-medium lg:px-6 px-4 py-3 h-10 lg:h-12.5 rounded-full transition duration-200 focus:outline-none"
+//                       >
+//                         {isSubmitting ? (
+//                           <>
+//                             <svg
+//                               className="h-5 w-5 text-gray-500 dark:text-gray-300 animate-spin"
+//                               viewBox="0 0 24 24"
+//                               fill="none"
+//                               xmlns="http://www.w3.org/2000/svg"
+//                             >
+//                               <path
+//                                 d="M12 2V6"
+//                                 stroke="currentColor"
+//                                 strokeWidth="2"
+//                                 strokeLinecap="round"
+//                                 strokeLinejoin="round"
+//                               />
+//                               <path
+//                                 d="M12 18V22"
+//                                 stroke="currentColor"
+//                                 strokeWidth="2"
+//                                 strokeLinecap="round"
+//                                 strokeLinejoin="round"
+//                               />
+//                               <path
+//                                 d="M4.93 4.93L7.76 7.76"
+//                                 stroke="currentColor"
+//                                 strokeWidth="2"
+//                                 strokeLinecap="round"
+//                                 strokeLinejoin="round"
+//                               />
+//                               <path
+//                                 d="M16.24 16.24L19.07 19.07"
+//                                 stroke="currentColor"
+//                                 strokeWidth="2"
+//                                 strokeLinecap="round"
+//                                 strokeLinejoin="round"
+//                               />
+//                               <path
+//                                 d="M2 12H6"
+//                                 stroke="currentColor"
+//                                 strokeWidth="2"
+//                                 strokeLinecap="round"
+//                                 strokeLinejoin="round"
+//                               />
+//                               <path
+//                                 d="M18 12H22"
+//                                 stroke="currentColor"
+//                                 strokeWidth="2"
+//                                 strokeLinecap="round"
+//                                 strokeLinejoin="round"
+//                               />
+//                               <path
+//                                 d="M4.93 19.07L7.76 16.24"
+//                                 stroke="currentColor"
+//                                 strokeWidth="2"
+//                                 strokeLinecap="round"
+//                                 strokeLinejoin="round"
+//                               />
+//                               <path
+//                                 d="M16.24 7.76L19.07 4.93"
+//                                 stroke="currentColor"
+//                                 strokeWidth="2"
+//                                 strokeLinecap="round"
+//                                 strokeLinejoin="round"
+//                               />
+//                             </svg>
+//                           </>
+//                         ) : (
+//                           <Save size={20} />
+//                         )}
+//                         Save
+//                       </button>
+//                       <button
+//                         onClick={cancelEditing}
+//                         className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border text-red-600 font-medium lg:px-6 px-4 py-3 h-10 lg:h-12.5 rounded-full transition duration-200 focus:outline-none"
+//                       >
+//                         <IoMdCloseCircle size={20} /> Cancel
+//                       </button>
+//                     </div>
+//                   ) : (
+//                     <div className="flex flex-wrap flex-row gap-2">
+//                       <Link
+//                         href={`/admin/currencies/${currency._id}`}
+//                         className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border  text-gray-700 dark:text-gray-300 font-medium lg:px-6 px-4 py-3 h-10 lg:h-12.5 rounded-full transition duration-200 focus:outline-none"
+//                       >
+//                         <Info size={20} /> Details
+//                       </Link>
+//                       <button
+//                         onClick={() => startEditing(currency)}
+//                         className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border text-gray-700 dark:text-gray-300 font-medium lg:px-6 px-4 py-3 h-10 lg:h-12.5 rounded-full transition duration-200 focus:outline-none"
+//                       >
+//                         <Edit size={20} /> Edit
+//                       </button>
+//                       <button
+//                         onClick={() => {
+//                           setCurrencyToDeleteId(currency._id);
+//                           setIsDeleteConfirmationOpen(true);
+//                         }}
+//                         className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border text-red-600 font-medium lg:px-6 px-4 py-3 h-10 lg:h-12.5 rounded-full transition duration-200 focus:outline-none"
+//                       >
+//                         <Trash2 size={20} /> Delete
+//                       </button>
+//                     </div>
+//                   )}
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         )}
+
+//         {/* Add Currency Modal */}
+//         <AnimatePresence>
+//           {isCreateModalOpen && (
+//             <motion.div
+//               className="fixed top-0 left-0 w-full h-full bg-black/50 dark:bg-white/30 z-80 flex sm:items-center items-end justify-center"
+//               initial={{ opacity: 0 }}
+//               animate={{ opacity: 1 }}
+//               exit={{ opacity: 0 }}
+//               onClick={closeCreateModal} // Use new close function
+//             >
+//               <motion.div
+//                 className="bg-white dark:bg-background sm:rounded-3xl rounded-t-3xl w-full sm:max-w-xl relative"
+//                 onClick={(e) => e.stopPropagation()}
+//                 variants={modalVariants}
+//                 initial="initial"
+//                 animate="animate"
+//                 exit="exit"
+//               >
+//                 {/* Header */}
+//                 <div className="p-4 sm:p-6 rounded-t-2xl flex items-center justify-between border-b">
+//                   {" "}
+//                   {/* Added dark border */}
+//                   <div className="absolute sm:top-2 sm:right-2 top-1 right-1">
+//                     <button
+//                       className="p-3 bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer focus:outline-none"
+//                       onClick={closeCreateModal}
+//                       aria-label="Close modal"
+//                       type="button"
+//                     >
+//                       <IoClose
+//                         size={28}
+//                         className="text-neutral-900 dark:text-primary"
+//                       />
+//                     </button>
+//                   </div>
+//                   <div className="flex justify-between items-center">
+//                     <h2 className="lg:text-2xl text-xl font-semibold text-mainheading dark:text-white">
+//                       Add New Currency
+//                     </h2>
+//                   </div>
+//                 </div>
+
+//                 {/* Scrollable Content Area */}
+//                 <div className="space-y-5 p-4 sm:p-6">
+//                   <div>
+//                     <label
+//                       htmlFor="create-code"
+//                       className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
+//                     >
+//                       Currency Code <span className="text-red-600">*</span>
+//                     </label>
+//                     <input
+//                       type="text"
+//                       id="create-code"
+//                       name="code"
+//                       value={newCurrencyData.code}
+//                       onChange={handleCreateInputChange}
+//                       maxLength={3}
+//                       placeholder="e.g., USD"
+//                       className="mt-1 block px-4 py-3 bg-white dark:bg-background focus:border-[#5f5f5f] h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75"
+//                     />
+//                     <p className="mt-2 text-sm text-gray-500 font-medium  dark:text-gray-300">
+//                       3-letter uppercase code.
+//                     </p>
+//                   </div>
+
+//                   <div>
+//                     <label
+//                       htmlFor="create-currencyName"
+//                       className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
+//                     >
+//                       Currency Name <span className="text-red-600">*</span>
+//                     </label>
+//                     <input
+//                       type="text"
+//                       id="create-currencyName"
+//                       name="currencyName"
+//                       value={newCurrencyData.currencyName}
+//                       onChange={handleCreateInputChange}
+//                       placeholder="e.g., US Dollar"
+//                       className="mt-1 block px-4 py-3 bg-white focus:border-[#5f5f5f] font-medium dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75"
+//                     />
+//                   </div>
+//                   {/* --- UPDATED: Flag Image Path input with preview --- */}
+//                   <div>
+//                     <label
+//                       htmlFor="create-flagImage"
+//                       className="text-gray-500 dark:text-gray-300 inline-block capitalize text-sm lg:text-base"
+//                     >
+//                       Flag Image Path <span className="text-red-600">*</span>
+//                     </label>
+//                     <div className="relative">
+//                       <input
+//                         type="text"
+//                         id="create-flagImage"
+//                         name="flagImage"
+//                         value={newCurrencyData.flagImage}
+//                         onChange={handleCreateInputChange}
+//                         placeholder="/assets/icon/flags/usd.png"
+//                         className="mt-1 block px-4 py-3 focus:border-[#5f5f5f] bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75"
+//                       />
+//                       {newCurrencyData.flagImage && !createFlagImageError && (
+//                         <div className="absolute right-3 top-1/2 -translate-y-1/2 size-8 pointer-events-none">
+//                           <Image
+//                             src={newCurrencyData.flagImage}
+//                             alt={`${
+//                               newCurrencyData.code || "New Currency"
+//                             } flag`}
+//                             fill
+//                             style={{ objectFit: "contain" }}
+//                             onError={() => setCreateFlagImageError(true)}
+//                             unoptimized={newCurrencyData.flagImage.startsWith(
+//                               "http"
+//                             )}
+//                           />
+//                         </div>
+//                       )}
+//                       {createFlagImageError && newCurrencyData.flagImage && (
+//                         <div className="absolute right-3 top-1/2 -translate-y-1/2 text-red-600 font-medium text-xs">
+//                           Load Error
+//                         </div>
+//                       )}
+//                     </div>
+//                     <p className="mt-2 text-sm text-gray-500 font-medium  dark:text-gray-300">
+//                       Relative path (e.g., /assets/icon/flags/eur.png) or full
+//                       URL. Must be accessible.
+//                     </p>
+//                     {createFlagImageError && (
+//                       <p className="mt-2 text-xs font-medium text-red-600">
+//                         Could not load the flag image. Check the path/URL.
+//                       </p>
+//                     )}
+//                   </div>
+//                   {/* --- END: Updated Flag Image Path input --- */}
+
+//                   <div>
+//                     <label
+//                       htmlFor="create-rateAdjustmentPercentage"
+//                       className="text-gray-500 dark:text-gray-300 capitalize text-sm lg:text-base flex items-center gap-2"
+//                     >
+//                       Rate Adjustment
+//                       <span className="text-red-600">*</span>
+//                     </label>
+
+//                     <div className="relative">
+//                       <input
+//                         type="number"
+//                         id="create-rateAdjustmentPercentage"
+//                         name="rateAdjustmentPercentage"
+//                         value={newCurrencyData.rateAdjustmentPercentage}
+//                         onChange={handleCreateInputChange}
+//                         step="any"
+//                         placeholder="e.g., 0.5 (for +0.5%) or -0.1 (for -0.1%)"
+//                         className="mt-1 block px-4 py-3 focus:border-[#5f5f5f] bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75 no-spinner"
+//                       />
+//                       <div className="absolute top-4 right-4">
+//                         <Percent
+//                           size={20}
+//                           className="dark:text-white text-neutral-900"
+//                         />
+//                       </div>
+//                     </div>
+//                     <p className="mt-2 text-sm text-gray-500 font-medium  dark:text-gray-300">
+//                       Enter percentage adjustment. Default is 0%.
+//                     </p>
+//                   </div>
+//                 </div>
+
+//                 {/* Footer (remains the same) */}
+//                 <div className="border-t p-4 sm:p-6 flex sm:flex-row flex-col justify-end gap-3">
+//                   <button
+//                     onClick={closeCreateModal} // Use new close function
+//                     className="inline-flex justify-center cursor-pointer bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear"
+//                   >
+//                     Cancel
+//                   </button>
+//                   <button
+//                     onClick={handleCreateCurrency}
+//                     disabled={
+//                       isSubmitting ||
+//                       !newCurrencyData.code ||
+//                       !newCurrencyData.currencyName
+//                     }
+//                     className="inline-flex justify-center cursor-pointer bg-primary hover:bg-primaryhover text-neutral-900 font-medium rounded-full px-6 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
+//                   >
+//                     {isSubmitting ? (
+//                       <>
+//                         <svg
+//                           className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+//                           viewBox="0 0 24 24"
+//                           fill="none"
+//                           xmlns="http://www.w3.org/2000/svg"
+//                         >
+//                           <path
+//                             d="M12 2V6"
+//                             stroke="currentColor"
+//                             strokeWidth="2"
+//                             strokeLinecap="round"
+//                             strokeLinejoin="round"
+//                           />
+//                           <path
+//                             d="M12 18V22"
+//                             stroke="currentColor"
+//                             strokeWidth="2"
+//                             strokeLinecap="round"
+//                             strokeLinejoin="round"
+//                           />
+//                           <path
+//                             d="M4.93 4.93L7.76 7.76"
+//                             stroke="currentColor"
+//                             strokeWidth="2"
+//                             strokeLinecap="round"
+//                             strokeLinejoin="round"
+//                           />
+//                           <path
+//                             d="M16.24 16.24L19.07 19.07"
+//                             stroke="currentColor"
+//                             strokeWidth="2"
+//                             strokeLinecap="round"
+//                             strokeLinejoin="round"
+//                           />
+//                           <path
+//                             d="M2 12H6"
+//                             stroke="currentColor"
+//                             strokeWidth="2"
+//                             strokeLinecap="round"
+//                             strokeLinejoin="round"
+//                           />
+//                           <path
+//                             d="M18 12H22"
+//                             stroke="currentColor"
+//                             strokeWidth="2"
+//                             strokeLinecap="round"
+//                             strokeLinejoin="round"
+//                           />
+//                           <path
+//                             d="M4.93 19.07L7.76 16.24"
+//                             stroke="currentColor"
+//                             strokeWidth="2"
+//                             strokeLinecap="round"
+//                             strokeLinejoin="round"
+//                           />
+//                           <path
+//                             d="M16.24 7.76L19.07 4.93"
+//                             stroke="currentColor"
+//                             strokeWidth="2"
+//                             strokeLinecap="round"
+//                             strokeLinejoin="round"
+//                           />
+//                         </svg>
+//                       </>
+//                     ) : null}
+//                     {isSubmitting ? "Adding..." : "Add Currency"}
+//                   </button>
+//                 </div>
+
+//               </motion.div>
+//             </motion.div>
+//           )}
+//         </AnimatePresence>
+
+//         {/* Delete Confirmation Modal */}
+//         <AnimatePresence>
+//           {isDeleteConfirmationOpen && (
+//             <motion.div
+//               className="fixed top-0 left-0 w-full h-full bg-black/50 dark:bg-white/30 z-80 flex sm:items-center items-end justify-center"
+//               initial={{ opacity: 0 }}
+//               animate={{ opacity: 1 }}
+//               exit={{ opacity: 0 }}
+//               onClick={() => setIsDeleteConfirmationOpen(false)}
+//             >
+//               <motion.div
+//                 className="bg-white dark:bg-background sm:rounded-3xl rounded-t-3xl sm:p-8 p-4 w-full sm:max-w-xl relative"
+//                 onClick={(e) => e.stopPropagation()}
+//                 variants={modalVariants}
+//                 initial="initial"
+//                 animate="animate"
+//                 exit="exit"
+//               >
+//                 <div className="absolute sm:top-2 sm:right-2 top-1 right-1">
+//                   <button
+//                     className="p-3 bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
+//                     onClick={() => setIsDeleteConfirmationOpen(false)}
+//                     aria-label="Close modal"
+//                   >
+//                     <IoClose
+//                       size={28}
+//                       className="text-neutral-900 dark:text-primary"
+//                     />
+//                   </button>
+//                 </div>
+
+//                 <div className="flex justify-center mb-5">
+//                   <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-full">
+//                     <CheckCircle className="size-10 text-red-600 dark:text-red-400" />
+//                   </div>
+//                 </div>
+
+//                 <div className="text-center">
+//                   <h3 className="lg:text-2xl text-xl font-semibold text-mainheading dark:text-white my-5">
+//                     Delete Currency Confirmation ?
+//                   </h3>
+
+//                   <p className="text-gray-500 dark:text-gray-300 font-medium">
+//                     Confirmation modal to delete a selected currency, warning
+//                     the admin that this action is irreversible.
+//                   </p>
+//                 </div>
+
+//                 <div className="flex flex-row gap-3 mt-5">
+//                   <button
+//                     onClick={handleDeleteCurrency}
+//                     disabled={isSubmitting}
+//                     type="button"
+//                     className="bg-red-600 text-white hover:bg-red-700 font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear flex justify-center items-center disabled:opacity-50 disabled:cursor-not-allowed"
+//                   >
+//                     {isSubmitting ? (
+//                       <>
+//                         <svg
+//                           className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+//                           viewBox="0 0 24 24"
+//                           fill="none"
+//                           xmlns="http://www.w3.org/2000/svg"
+//                         >
+//                           <path
+//                             d="M12 2V6"
+//                             stroke="currentColor"
+//                             strokeWidth="2"
+//                             strokeLinecap="round"
+//                             strokeLinejoin="round"
+//                           />
+//                           <path
+//                             d="M12 18V22"
+//                             stroke="currentColor"
+//                             strokeWidth="2"
+//                             strokeLinecap="round"
+//                             strokeLinejoin="round"
+//                           />
+//                           <path
+//                             d="M4.93 4.93L7.76 7.76"
+//                             stroke="currentColor"
+//                             strokeWidth="2"
+//                             strokeLinecap="round"
+//                             strokeLinejoin="round"
+//                           />
+//                           <path
+//                             d="M16.24 16.24L19.07 19.07"
+//                             stroke="currentColor"
+//                             strokeWidth="2"
+//                             strokeLinecap="round"
+//                             strokeLinejoin="round"
+//                           />
+//                           <path
+//                             d="M2 12H6"
+//                             stroke="currentColor"
+//                             strokeWidth="2"
+//                             strokeLinecap="round"
+//                             strokeLinejoin="round"
+//                           />
+//                           <path
+//                             d="M18 12H22"
+//                             stroke="currentColor"
+//                             strokeWidth="2"
+//                             strokeLinecap="round"
+//                             strokeLinejoin="round"
+//                           />
+//                           <path
+//                             d="M4.93 19.07L7.76 16.24"
+//                             stroke="currentColor"
+//                             strokeWidth="2"
+//                             strokeLinecap="round"
+//                             strokeLinejoin="round"
+//                           />
+//                           <path
+//                             d="M16.24 7.76L19.07 4.93"
+//                             stroke="currentColor"
+//                             strokeWidth="2"
+//                             strokeLinecap="round"
+//                             strokeLinejoin="round"
+//                           />
+//                         </svg>
+//                       </>
+//                     ) : null}
+//                     {isSubmitting ? "Deleting..." : "Delete"}
+//                   </button>
+
+//                   <button
+//                     onClick={() => setIsDeleteConfirmationOpen(false)}
+//                     type="button"
+//                     disabled={isSubmitting}
+//                     className="bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox w-full dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
+//                   >
+//                     Cancel
+//                   </button>
+//                 </div>
+//               </motion.div>
+//             </motion.div>
+//           )}
+//         </AnimatePresence>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default AdminCurrenciesPage;
+
 // frontend/src/app/admin/currencies/page.tsx
 "use client";
 import React, { useState, useEffect, useMemo, useCallback } from "react";
@@ -3825,8 +4941,6 @@ const AdminCurrenciesPage: React.FC = () => {
     };
   }, []);
 
-  // This useEffect handles preventing body scroll when any modal is open.
-  // It correctly includes `isDeleteConfirmationOpen` in its logic.
   useEffect(() => {
     const originalStyle = window.getComputedStyle(document.body).overflow;
     if (isCreateModalOpen || isDeleteConfirmationOpen) {
@@ -3895,24 +5009,20 @@ const AdminCurrenciesPage: React.FC = () => {
     }
   }, [fetchCurrenciesList, token]);
 
-  // --- NEW: Functions to open and close create modal, handling flag error state ---
   const openCreateModal = () => {
     setNewCurrencyData({
-      // Reset form data for a fresh modal
       code: "",
       currencyName: "",
       flagImage: "",
       rateAdjustmentPercentage: "",
     });
-    setCreateFlagImageError(false); // Reset error when opening
+    setCreateFlagImageError(false);
     setIsCreateModalOpen(true);
   };
 
   const closeCreateModal = () => {
     setIsCreateModalOpen(false);
-    setCreateFlagImageError(false); // Reset error when closing
-    // Optionally re-reset form data if needed, though openCreateModal does this
-    // setNewCurrencyData({ code: "", currencyName: "", flagImage: "", rateAdjustmentPercentage: "" });
+    setCreateFlagImageError(false);
   };
 
   const handleCreateInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -3921,7 +5031,6 @@ const AdminCurrenciesPage: React.FC = () => {
       ...prev,
       [name]: name === "code" ? value.toUpperCase() : value,
     }));
-    // --- MODIFIED: Reset flag image error on change ---
     if (name === "flagImage") {
       setCreateFlagImageError(false);
     }
@@ -3969,8 +5078,7 @@ const AdminCurrenciesPage: React.FC = () => {
       await axios.post("/admin/currencies", payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      // setNewCurrencyData is handled by openCreateModal next time or implicitly by close
-      closeCreateModal(); // Use new close function
+      closeCreateModal();
       await fetchCurrenciesList();
       toast.success("Currency added successfully!");
     } catch (error: unknown) {
@@ -4129,7 +5237,7 @@ const AdminCurrenciesPage: React.FC = () => {
         <div className="flex sm:justify-between flex-row w-full items-center mb-6 gap-4">
           <div>
             <button
-              onClick={openCreateModal} // Use new open function
+              onClick={openCreateModal}
               className="bg-primary text-neutral-900 flex items-center justify-center gap-1  hover:bg-primaryhover text-nowrap font-medium rounded-full text-center sm:px-8 sm:py-3 h-12.5 sm:w-auto w-12.5 cursor-pointer transition-all duration-75 ease-linear"
             >
               <IoMdAdd
@@ -4393,36 +5501,44 @@ const AdminCurrenciesPage: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={closeCreateModal} // Use new close function
+              onClick={closeCreateModal}
             >
               <motion.div
-                className="bg-white dark:bg-background sm:rounded-3xl rounded-t-3xl sm:p-8 p-4 w-full sm:max-w-xl relative"
+                className="bg-white dark:bg-background sm:rounded-3xl rounded-none w-full sm:max-w-xl relative flex flex-col overflow-hidden sm:h-auto h-screen"
                 onClick={(e) => e.stopPropagation()}
                 variants={modalVariants}
                 initial="initial"
                 animate="animate"
                 exit="exit"
               >
-                <div className="absolute sm:top-2 sm:right-2 top-1 right-1">
-                  <button
-                    className="p-3 bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer focus:outline-none"
-                    onClick={closeCreateModal} // Use new close function
-                    aria-label="Close modal"
-                  >
-                    <IoClose
-                      size={28}
-                      className="text-neutral-900 dark:text-primary"
-                    />
-                  </button>
-                </div>
-
-                <div className="flex justify-between items-center my-6">
+                {/* Header */}
+                <div className="p-4 sm:p-6 flex items-center justify-between flex-shrink-0 border-b">
                   <h2 className="lg:text-2xl text-xl font-semibold text-mainheading dark:text-white">
                     Add New Currency
-                  </h2>   
+                  </h2>
+
+                  <div
+                    onClick={closeCreateModal}
+                    className="size-12 bg-lightgray hover:bg-lightborder cursor-pointer dark:bg-primarybox dark:hover:bg-secondarybox flex items-center justify-center rounded-full transition-all duration-75 ease-linear"
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ")
+                        closeCreateModal();
+                    }}
+                    aria-label="Close modal"
+                  >
+                    <button
+                      className="text-neutral-900 dark:text-primary cursor-pointer focus:outline-none"
+                      aria-label="Close"
+                    >
+                      <IoClose  size={28}/>
+                    </button>
+                  </div>
                 </div>
 
-                <div className="space-y-4">
+                {/* Scrollable Content Area */}
+                <div className="flex-grow overflow-y-auto scrollbar-hide p-4 sm:p-6 space-y-5">
                   <div>
                     <label
                       htmlFor="create-code"
@@ -4462,7 +5578,6 @@ const AdminCurrenciesPage: React.FC = () => {
                       className="mt-1 block px-4 py-3 bg-white focus:border-[#5f5f5f] font-medium dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none ease-linear duration-75"
                     />
                   </div>
-                  {/* --- UPDATED: Flag Image Path input with preview --- */}
                   <div>
                     <label
                       htmlFor="create-flagImage"
@@ -4512,7 +5627,6 @@ const AdminCurrenciesPage: React.FC = () => {
                       </p>
                     )}
                   </div>
-                  {/* --- END: Updated Flag Image Path input --- */}
 
                   <div>
                     <label
@@ -4547,91 +5661,94 @@ const AdminCurrenciesPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="flex sm:flex-row flex-col justify-end items-center mt-5 gap-3">
-                  <button
-                    onClick={closeCreateModal} // Use new close function
-                    className="inline-flex justify-center cursor-pointer bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleCreateCurrency}
-                    disabled={
-                      isSubmitting ||
-                      !newCurrencyData.code ||
-                      !newCurrencyData.currencyName
-                    }
-                    className="inline-flex justify-center cursor-pointer bg-primary hover:bg-primaryhover text-neutral-900 font-medium rounded-full px-6 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <svg
-                          className="h-5 w-5 text-neutral-900 animate-spin mr-2"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M12 2V6"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                          <path
-                            d="M12 18V22"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                          <path
-                            d="M4.93 4.93L7.76 7.76"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                          <path
-                            d="M16.24 16.24L19.07 19.07"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                          <path
-                            d="M2 12H6"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                          <path
-                            d="M18 12H22"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                          <path
-                            d="M4.93 19.07L7.76 16.24"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                          <path
-                            d="M16.24 7.76L19.07 4.93"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </>
-                    ) : null}
-                    {isSubmitting ? "Adding..." : "Add Currency"}
-                  </button>
+                {/* Footer */}
+                <div className="p-4 sm:p-6 border-t  bg-white dark:bg-background flex-shrink-0">
+                  <div className="flex sm:flex-row flex-col justify-end gap-3">
+                    <button
+                      onClick={closeCreateModal}
+                      className="inline-flex justify-center cursor-pointer bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleCreateCurrency}
+                      disabled={
+                        isSubmitting ||
+                        !newCurrencyData.code ||
+                        !newCurrencyData.currencyName
+                      }
+                      className="inline-flex justify-center cursor-pointer bg-primary hover:bg-primaryhover text-neutral-900 font-medium rounded-full px-6 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <svg
+                            className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M12 2V6"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M12 18V22"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M4.93 4.93L7.76 7.76"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M16.24 16.24L19.07 19.07"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M2 12H6"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M18 12H22"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M4.93 19.07L7.76 16.24"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M16.24 7.76L19.07 4.93"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </>
+                      ) : null}
+                      {isSubmitting ? "Adding..." : "Add Currency"}
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             </motion.div>
@@ -4649,7 +5766,7 @@ const AdminCurrenciesPage: React.FC = () => {
               onClick={() => setIsDeleteConfirmationOpen(false)}
             >
               <motion.div
-                className="bg-white dark:bg-background sm:rounded-3xl rounded-t-3xl sm:p-8 p-4 w-full sm:max-w-xl relative"
+                className="bg-white dark:bg-background sm:rounded-3xl rounded-none sm:p-8 p-4 w-full sm:max-w-xl relative"
                 onClick={(e) => e.stopPropagation()}
                 variants={modalVariants}
                 initial="initial"
