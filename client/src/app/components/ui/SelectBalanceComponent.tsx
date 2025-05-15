@@ -763,7 +763,7 @@ const SelectBalanceComponent: React.FC<SelectBalanceComponentProps> = ({
   );
 
   return (
-    <section className="Select-Balance-Wrapper pt-5">
+    <section className="Select-Balance-Wrapper">
       <div className="All-Balance-Card">
         <h1 className="text-xl md:text-2xl lg:text-3xl capitalize font-semibold text-mainheading dark:text-white text-left md:text-center mb-4">
           {pageTitle}
