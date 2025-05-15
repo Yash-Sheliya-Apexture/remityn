@@ -7263,7 +7263,7 @@ function parseDateString(dateString: string | undefined): Date | null {
 // --- Transactions Page Skeleton ---
 const TransactionsPageSkeleton: React.FC = () => {
   return (
-    <section className="Transaction-Page pb-8 pt-5 md:pb-10">
+    <section className="Transaction-Page pb-8 md:pb-10">
       <div className="container mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky lg:top-28 top-20 z-10 bg-white dark:bg-background">
           <Skeleton className="md:h-12 h-8 md:w-64 w-40 rounded-md" />
@@ -7769,7 +7769,7 @@ const TransactionsPage: React.FC = () => {
   // --- RENDER ---
   return (
     <>
-      <section className="Transaction-Wrapper pb-8 pt-5 md:pb-10">
+      <section className="Transaction-Wrapper">
         <div className="container mx-auto">
           {/* Header and Actions */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 sticky lg:top-28 top-20 z-10 bg-white dark:bg-background">
