@@ -814,9 +814,9 @@ const SelectRecipientContent = () => {
   // Handle loading state
   if (loadingRecipients) {
     return (
-      <div className="container mx-auto py-10">
+      <>
         {/* Enhanced Skeleton */}
-        <Skeleton className="h-10 w-96 mb-6 rounded-full" />
+        <Skeleton className="h-10 sm:w-96 w-full mb-6 rounded-full" />
         <Skeleton className="h-12.5 w-full mb-6 rounded-full" />
         <Skeleton className="h-20 w-full mb-4 rounded-2xl" />
         <Skeleton className="h-6 w-24 mb-3 rounded-md" />
@@ -827,7 +827,7 @@ const SelectRecipientContent = () => {
               <Skeleton key={index} className="h-20 w-full rounded-lg" />
             ))}
         </div>
-      </div>
+      </>
     );
   }
 
@@ -882,7 +882,7 @@ const SelectRecipientContent = () => {
 
   // --- Main Content Render ---
   return (
-    <section className="SelectRecipient-Page pt-5">
+    <section className="SelectRecipient-Page">
       <div className="container mx-auto">
         <h1 className="md:text-2xl text-xl lg:text-3xl font-semibold text-mainheading capitalize dark:text-white mb-4">
           Who are you sending money to?

@@ -7410,49 +7410,49 @@ const TransactionDetailsPage = () => {
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-      />{" "}
+      />
       <path
         d="M12 18V22"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-      />{" "}
+      />
       <path
         d="M4.93 4.93L7.76 7.76"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-      />{" "}
+      />
       <path
         d="M16.24 16.24L19.07 19.07"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-      />{" "}
+      />
       <path
         d="M2 12H6"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-      />{" "}
+      />
       <path
         d="M18 12H22"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-      />{" "}
+      />
       <path
         d="M4.93 19.07L7.76 16.24"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-      />{" "}
+      />
       <path
         d="M16.24 7.76L19.07 4.93"
         stroke="currentColor"
@@ -7486,9 +7486,9 @@ const TransactionDetailsPage = () => {
             className="inline-flex justify-center items-center font-medium bg-primary hover:bg-primaryhover text-neutral-900 px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear cursor-pointer"
             disabled={isLoading}
           >
-            {" "}
-            {isLoading && <SvgLoader />}{" "}
-            {isLoading ? "Retrying..." : "Try Again"}{" "}
+            
+            {isLoading && <SvgLoader />}
+            {isLoading ? "Retrying..." : "Try Again"}
           </button>
         </div>
       </div>
@@ -7504,15 +7504,15 @@ const TransactionDetailsPage = () => {
           onClick={() => router.push("/dashboard/transactions")}
           className="inline-flex justify-center items-center font-medium bg-primary hover:bg-primaryhover text-neutral-900 px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear cursor-pointer"
         >
-          {" "}
-          View All Transactions{" "}
+          
+          View All Transactions
         </button>
       </div>
     );
   }
 
   return (
-    <section className="Transaction-Detial-Page-Wrapper py-5">
+    <section className="Transaction-Detial-Page-Wrapper">
       <div className="Transaction-Detial">
         <div className="bg-white dark:bg-background rounded-2xl border mx-auto lg:max-w-5xl">
           <TransactionHeader
