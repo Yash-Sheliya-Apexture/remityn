@@ -969,6 +969,7 @@ import activityAdminService, {
   ActivityItem,
   RecentActivityApiResponse,
 } from "../../services/admin/activity.admin"; // Adjust path
+import { AiFillHome } from "react-icons/ai";
 
 // Define possible sort fields for activities
 type ActivitySortField = "timestamp" | "type" | "message";
@@ -1331,20 +1332,21 @@ export default function AllRecentActivityPage() {
         <div className="space-y-6">
           {/* Header and Refresh/Filter Buttons */}
           <div className="flex flex-wrap justify-between items-center gap-4">
-            <div className="Activity"> 
-                
-              <h1 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
-                All Recent Activity
-              </h1>
+            <div className="Activity">
+              <div className="flex items-center gap-3">
+                <div className="size-10 bg-lightgray dark:bg-primarybox  rounded-full flex items-center justify-center">
+                  <AiFillHome size={20} className="text-primary -mt-0.5" />
+                </div>
+                <h1 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
+                  All Recent Activity
+                </h1>
+              </div>
 
               <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg">
                 Track all user transactions, KYC submissions, and status updates
                 in real time with detailed logs for complete transparency.
               </p>
             </div>
-
-
-
 
             <div className="flex items-center gap-3 justify-end sm:w-auto w-full">
               <button
