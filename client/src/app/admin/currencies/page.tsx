@@ -3702,6 +3702,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion, AnimatePresence } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
+import { FaCoins } from "react-icons/fa";
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
@@ -4095,13 +4096,20 @@ const AdminCurrenciesPage: React.FC = () => {
   ) : (
     <div className="container mx-auto px-4 py-5 relative">
       <div className="space-y-6">
-        <div className="pb-6 border-b">
-          <h1 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
-            Currency Management
-          </h1>
+        <div className="Activity">
+          <div className="flex items-center gap-3">
+            <div className="size-12 shrink-0 bg-primary dark:bg-primarybox rounded-full flex items-center justify-center">
+              <FaCoins className="size-6 text-mainheading dark:text-primary" />
+            </div>
+
+            <h1 className="lg:text-3xl text-2xl font-semibold text-mainheading dark:text-primary">
+              Currency Management
+            </h1>
+          </div>
+
           <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg">
             Easily manage all supported currencies, customize rates, and
-            maintain real-time control over your exchange offerings
+            maintain real-time control over your exchange offerings.
           </p>
         </div>
 
@@ -4411,7 +4419,7 @@ const AdminCurrenciesPage: React.FC = () => {
                 <div className="flex justify-between items-center my-6">
                   <h2 className="lg:text-2xl text-xl font-semibold text-mainheading dark:text-white">
                     Add New Currency
-                  </h2>
+                  </h2>   
                 </div>
 
                 <div className="space-y-4">
@@ -4539,7 +4547,7 @@ const AdminCurrenciesPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="flex justify-end items-center mt-5 gap-3">
+                <div className="flex sm:flex-row flex-col justify-end items-center mt-5 gap-3">
                   <button
                     onClick={closeCreateModal} // Use new close function
                     className="inline-flex justify-center cursor-pointer bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear"
@@ -4668,7 +4676,6 @@ const AdminCurrenciesPage: React.FC = () => {
                 </div>
 
                 <div className="text-center">
-
                   <h3 className="lg:text-2xl text-xl font-semibold text-mainheading dark:text-white my-5">
                     Delete Currency Confirmation ?
                   </h3>

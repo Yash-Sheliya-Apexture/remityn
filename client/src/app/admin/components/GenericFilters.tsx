@@ -3004,6 +3004,8 @@
 
 // export default GenericFilters;
 
+
+
 // components/admin/shared/GenericFilters.tsx
 "use client";
 import React, { useState, useRef, useEffect } from "react";
@@ -3280,7 +3282,7 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
             {/* Scrollable Content Area */}
             <div
               className={`flex-grow overflow-y-auto scrollbar-hide p-6 space-y-6 ${
-                isMobile ? "pb-[100px]" : ""
+                isMobile ? "" : ""
               }`}
             >
               {/* Search Term Filter (remains the same) */}
@@ -3415,7 +3417,7 @@ const GenericFilters: React.FC<GenericFiltersProps> = ({
             {/* Footer (remains the same) */}
             <div
               className={`p-4 border-t border-gray-200 dark:border-neutral-700 bg-white dark:bg-background flex-shrink-0 ${
-                isMobile ? "fixed bottom-0 left-0 right-0" : ""
+                isMobile ? "" : ""
               }`}
             >
               <div className="flex items-center gap-3">

@@ -1207,12 +1207,15 @@ export default function TransferInsights() {
         {/* Popular Corridors Card */}
         <div className="dark:bg-primarybox sm:p-6 p-4 rounded-xl border">
           <div className="flex justify-between items-center mb-4">
-            <h4 className="text-lg font-medium text-neutral-900 dark:text-white">
+            <h1 className="text-lg font-medium text-neutral-900 dark:text-white">
               Corridors (Last 90d)
-            </h4>
-            <FaPercentage  className="text-primary size-5" />
+            </h1>
+            <div className="size-12 shrink-0 bg-primary dark:bg-primarybox rounded-full flex items-center justify-center">
+              <FaPercentage className="size-6 text-mainheading dark:text-primary" />
+            </div>
           </div>
-          <div className="space-y-3">
+
+          <div className="space-y-4">
             {popularCorridors.length > 0 ? (
               popularCorridors.map((corridor, index) => {
                 const corridorColors = getIconColorStyle(

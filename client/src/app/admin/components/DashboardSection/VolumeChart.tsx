@@ -2125,14 +2125,14 @@ export function VolumeChart({
   return (
     <Card
       className={cn(
-        "flex flex-col h-full dark:bg-primarybox shadow-none border border-border",
+        "flex  flex-col h-full dark:bg-primarybox shadow-none",
         className
       )}
     >
       <CardHeader className="flex-shrink-0 p-3">
         <div className="flex flex-wrap items-center justify-between w-full gap-3">
           <div className="flex gap-3">
-            <div className="flex justify-center items-center size-12 bg-lightgray dark:bg-primarybox rounded-full">
+            <div className="flex justify-center items-center size-12 bg-primary dark:bg-primarybox rounded-full">
               {icon}
             </div>
             
@@ -2148,7 +2148,7 @@ export function VolumeChart({
             </div>
           </div>
           
-          <div className="flex ml-5 font-medium">
+          <div className="flex font-medium">
             {showRefreshButton && (
               <Button
                 variant="ghost"
@@ -2171,7 +2171,7 @@ export function VolumeChart({
             >
               <TabsList
                 className={cn(
-                  "relative inline-flex items-center rounded-full py-5 px-1 overflow-hidden",
+                  "relative flex items-center rounded-full py-5 px-1",
                   "bg-lightgray dark:bg-primarybox",
                   "sm:w-auto w-full z-0"
                 )}
@@ -2220,15 +2220,15 @@ export function VolumeChart({
         {loading && (
           <>
             <div className="flex flex-col items-center justify-center mb-4 pt-2">
-              <Skeleton className="w-1/2 max-w-[170px] h-8 rounded-md" />
-              <div className="flex items-center gap-1 mt-1">
-                <Skeleton className="h-4 w-24 rounded-md" />
-                <Skeleton className="h-4 w-17 rounded-md" />
+              <Skeleton className="sm:w-1/3 w-1/2 h-10 rounded-md" />
+              <div className="flex items-center gap-1.5 mt-1">
+                <Skeleton className="h-6 sm:w-32 w-24 rounded-md" />
+                <Skeleton className="h-6 sm:w-25 w-18 rounded-md" />
               </div>
             </div>
             <div
               className="flex-grow w-full flex flex-col"
-              style={{ minHeight: "200px" }}
+              style={{ minHeight: "180px" }}
             >
               <Skeleton className="flex-grow w-full rounded-md" />
               <div className="flex justify-between w-full gap-1 pt-2">
@@ -2256,7 +2256,7 @@ export function VolumeChart({
                 onClick={handleRefresh}
                 className="mt-3 text-xs"
               >
-                <RefreshCw className="h-3.5 w-3.5 mr-1.5" /> Try Again
+                <RefreshCw className="size-4 mr-1.5" /> Try Again
               </Button>
             </div>
           </div>
