@@ -1482,6 +1482,9 @@
 
 // export default PaymentEditModal;
 
+
+
+
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -1626,7 +1629,7 @@ const PaymentEditModal: React.FC<PaymentEditModalProps> = ({
             className="bg-white dark:bg-background sm:rounded-3xl rounded-t-3xl w-full sm:max-w-xl relative "
           >
             {/* Header */}
-            <div className="p-4 sm:p-6 rounded-t-2xl flex items-center justify-between border-b dark:border-neutral-700">
+            <div className="p-4 sm:p-6 rounded-t-2xl flex items-center justify-between border-b">
               {" "}
               {/* Added dark border */}
               <div className="absolute sm:top-2 sm:right-2 top-1 right-1">

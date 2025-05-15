@@ -192,10 +192,11 @@ const InboxTableHeader: React.FC<InboxTableHeaderProps> = ({
     sortDirection
 }) => {
     const renderSortIcon = (field: InboxSortField) => {
+
             if (sortField === field) {
-                return <ArrowDownUp size={16} className={`ml-1 transition-transform duration-150 ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />;
+                return <ArrowDownUp size={18} className={`ml-1.5 transition-all ease-linear duration-75 ${sortDirection === 'desc' ? 'rotate-90' : ''}`} />;
             }
-            return <ArrowDownUp size={16} className="ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150" />;
+            return <ArrowDownUp size={18} className="ml-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150" />;
         };
 
     const headerCellClasses = "px-6 py-4 text-left font-medium text-neutral-900 dark:text-white tracking-wider whitespace-nowrap";
@@ -203,7 +204,7 @@ const InboxTableHeader: React.FC<InboxTableHeaderProps> = ({
 
     return (
         <thead className='bg-lightgray dark:bg-primarybox'>
-            <tr className="border-b">
+            <tr className="inbox-status">
                 {/* Status Column (Sortable by 'status' which maps to 'isRead') */}
                 <th className={headerCellClasses}>
                     <button onClick={() => toggleSort('status')} className={buttonClasses}>
