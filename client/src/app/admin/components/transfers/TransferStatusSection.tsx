@@ -643,7 +643,187 @@
 
 // export default TransferStatusSection;
 
-// FILE: src/app/admin/components/transfers/TransferStatusSection.tsx
+// // Last latest code 
+// // FILE: src/app/admin/components/transfers/TransferStatusSection.tsx
+// "use client";
+// import React from "react";
+// import TransferStatusDropdown from "./TransferStatusDropdown"; // Adjusted path
+// import {
+//   GetStatusBadge,
+//   getTimeAgo,
+//   formatFullDateTime,
+// } from "../../../utils/helpers"; // Adjusted path
+// import { CheckCircle, RefreshCw, XCircle, AlertCircle } from "lucide-react";
+
+// interface TransferStatusDetails {
+//   _id: string;
+//   status: string | null | undefined;
+//   createdAt: string | Date | null | undefined;
+//   updatedAt: string | Date | null | undefined;
+//   failureReason?: string | null | undefined;
+//   cancellationReason?: string | null | undefined;
+// }
+
+// interface TransferStatusSectionProps {
+//   transfer: TransferStatusDetails | null | undefined;
+//   token: string | null;
+//   onStatusUpdated: () => void;
+// }
+
+// const safeFormatDateInput = (
+//   dateValue: string | Date | null | undefined
+// ): string | undefined => {
+//   if (dateValue instanceof Date) {
+//     return dateValue.toISOString();
+//   }
+//   if (typeof dateValue === "string") {
+//     return dateValue;
+//   }
+//   return undefined;
+// };
+
+// const TransferStatusSection: React.FC<TransferStatusSectionProps> = ({
+//   transfer,
+//   token,
+//   onStatusUpdated,
+// }) => {
+//   if (!transfer) return null;
+
+//   const currentStatus = transfer.status || "unknown"; // Ensures currentStatus is always a string
+
+//   const formattedUpdatedAt = safeFormatDateInput(transfer.updatedAt);
+//   const formattedCreatedAt = safeFormatDateInput(transfer.createdAt);
+
+//   const getTimelineIcon = (status: string) => {
+//     switch (status.toLowerCase()) {
+//       case "processing":
+//         return (
+//           <RefreshCw className="size-4 text-blue-600 mr-2 mt-0.5 flex-shrink-0 animate-spin" />
+//         );
+//       case "completed":
+//         return (
+//           <CheckCircle className="size-4 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+//         );
+//       case "failed":
+//         return (
+//           <XCircle className="size-4 text-rose-600 mr-2 mt-0.5 flex-shrink-0" />
+//         );
+//       case "canceled":
+//       case "cancelled":
+//         return (
+//           <AlertCircle className="size-4 text-red-600 mr-2 mt-0.5 flex-shrink-0" />
+//         );
+//       case "pending":
+//         return (
+//           <AlertCircle className="size-4 text-yellow-600 mr-2 mt-0.5 flex-shrink-0" />
+//         );
+//       default: // Handles 'unknown' and any other unexpected statuses
+//         return (
+//           <AlertCircle className="size-4 text-gray-500 mr-2 mt-0.5 flex-shrink-0" />
+//         );
+//     }
+//   };
+
+//   return (
+//     <div className="bg-white dark:bg-primarybox rounded-xl border">
+//       <div className="bg-lightgray dark:bg-primarybox px-6 py-4">
+//         <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">
+//           Transfer Status
+//         </h3>
+//       </div>
+
+//       <div className="sm:p-6 p-4">
+//         <div className="mb-6">
+//           <div className="flex justify-between items-center flex-wrap mb-2 gap-2">
+//             <h4 className="text-sm font-medium text-neutral-900 dark:text-white">
+//               Current Status
+//             </h4>
+//             <span className="text-xs font-medium text-gray-500 dark:text-gray-300">
+//               Updated {getTimeAgo(formattedUpdatedAt)}
+//             </span>
+//           </div>
+//           <div className="flex items-center">
+//             <GetStatusBadge status={currentStatus} />{" "}
+//             {/* Expects lowercase status */}
+//           </div>
+//         </div>
+
+//         <div className="mb-6">
+//           <h4 className="text-sm font-medium text-gray-500 dark:text-gray-300 mb-4">
+//             Timeline
+//           </h4>
+//           <ul className="space-y-3">
+//             <li className="flex items-start">
+//               <CheckCircle className="size-4 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+//               <div>
+//                 <p className="text-sm font-medium text-neutral-900 dark:text-white">
+//                   Transfer Created
+//                 </p>
+//                 <p className="text-xs text-gray-500 dark:text-gray-300">
+//                   {formatFullDateTime(formattedCreatedAt)}
+//                 </p>
+//               </div>
+//             </li>
+//             {currentStatus !== "pending" && currentStatus !== "unknown" && (
+//               <li className="flex items-start">
+//                 {getTimelineIcon(currentStatus)}
+//                 <div>
+//                   <p className="text-sm font-medium text-neutral-900 dark:text-white capitalize">
+//                     {currentStatus}{" "}
+//                     {/* Display the status safely, capitalize makes it look consistent */}
+//                   </p>
+//                   <p className="text-xs text-gray-500 dark:text-gray-300">
+//                     {formatFullDateTime(formattedUpdatedAt)}
+//                   </p>
+//                 </div>
+//               </li>
+//             )}
+//           </ul>
+//         </div>
+
+//         {currentStatus === "failed" && transfer.failureReason && (
+//           <div className="mb-6 bg-rose-50 border rounded-lg p-4">
+//             <h4 className="flex items-center text-rose-600 font-medium mb-2 text-sm">
+//               <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0" />
+//               Failure Reason
+//             </h4>
+//             <p className="text-rose-600 text-sm">{transfer.failureReason}</p>
+//           </div>
+//         )}
+
+//         {(currentStatus === "canceled" || currentStatus === "cancelled") && (
+//           <div className="mb-6 bg-lightgray dark:bg-primarybox rounded-lg p-4">
+//             <h4 className="flex items-center text-neutral-900 dark:text-white font-medium mb-2 text-sm">
+//               <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0" />
+//               Cancellation Reason
+//             </h4>
+//             <p className="text-gray-500 dark:text-gray-300 text-sm">
+//               {transfer.cancellationReason || "No reason provided."}
+//             </p>
+//           </div>
+//         )}
+
+//         <div className="pt-4 border-t">
+//           <h4 className="text-sm font-medium text-gray-500 dark:text-gray-300 mb-3">
+//             Update Status
+//           </h4>
+//           <TransferStatusDropdown
+//             transferId={transfer._id}
+//             currentStatus={currentStatus} // Pass lowercase or 'unknown' status
+//             token={token}
+//             onStatusUpdated={onStatusUpdated}
+//           />
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default TransferStatusSection;
+
+
+
+// frontend/src/app/admin/components/transfers/TransferStatusSection.tsx
 "use client";
 import React from "react";
 import TransferStatusDropdown from "./TransferStatusDropdown"; // Adjusted path
@@ -653,6 +833,7 @@ import {
   formatFullDateTime,
 } from "../../../utils/helpers"; // Adjusted path
 import { CheckCircle, RefreshCw, XCircle, AlertCircle } from "lucide-react";
+import { CustomToastProps } from "../../../../app/components/CustomToast"; // Import CustomToastProps
 
 interface TransferStatusDetails {
   _id: string;
@@ -663,10 +844,13 @@ interface TransferStatusDetails {
   cancellationReason?: string | null | undefined;
 }
 
-interface TransferStatusSectionProps {
+export interface TransferStatusSectionProps { // Made exportable if needed elsewhere
   transfer: TransferStatusDetails | null | undefined;
   token: string | null;
   onStatusUpdated: () => void;
+  // Add the new props for toast notifications
+  showToast: (message: string, type?: CustomToastProps['type']) => void;
+  mapStatusToToastType: (status: string) => CustomToastProps['type'];
 }
 
 const safeFormatDateInput = (
@@ -685,6 +869,8 @@ const TransferStatusSection: React.FC<TransferStatusSectionProps> = ({
   transfer,
   token,
   onStatusUpdated,
+  showToast, // Destructure new props
+  mapStatusToToastType, // Destructure new props
 }) => {
   if (!transfer) return null;
 
@@ -811,6 +997,9 @@ const TransferStatusSection: React.FC<TransferStatusSectionProps> = ({
             currentStatus={currentStatus} // Pass lowercase or 'unknown' status
             token={token}
             onStatusUpdated={onStatusUpdated}
+            // Pass down the toast functions
+            showToast={showToast}
+            mapStatusToToastType={mapStatusToToastType}
           />
         </div>
       </div>

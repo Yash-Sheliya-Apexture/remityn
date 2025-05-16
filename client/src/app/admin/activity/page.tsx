@@ -1333,6 +1333,7 @@ export default function AllRecentActivityPage() {
         <div className="space-y-6">
           {/* Header and Refresh/Filter Buttons */}
           <div className="flex flex-wrap justify-between items-center gap-4">
+            
             <div className="Activity">
               <div className="flex flex-wrap items-center gap-3">
                 <div className="size-12 shrink-0 bg-primary dark:bg-primarybox rounded-full flex items-center justify-center">
