@@ -106,7 +106,7 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({
             className="bg-white dark:bg-background sm:rounded-3xl rounded-t-3xl w-full sm:max-w-lg relative" // Adjusted max-width slightly
           >
             {/* Header */}
-            <div className="p-4 sm:p-6 rounded-t-3xl flex items-center justify-between border-b">
+            <div className="p-4 sm:p-6 flex items-center justify-between flex-shrink-0 border-b font-medium">
               <h2
                 id="send-message-modal-title"
                 className="lg:text-2xl text-xl font-semibold text-mainheading dark:text-white"
@@ -114,14 +114,16 @@ const SendMessageModal: React.FC<SendMessageModalProps> = ({
                 Send Message to User
               </h2>
 
-              <div className="absolute sm:top-2 sm:right-2 top-1 right-1">
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="p-3 bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
-                  aria-label="Close send message modal"
-                >
+              <div
+                onClick={() => setIsOpen(false)}
+                className="size-12 bg-lightgray hover:bg-lightborder cursor-pointer dark:bg-primarybox dark:hover:bg-secondarybox flex items-center justify-center rounded-full transition-all duration-75 ease-linear"
+                aria-label="Close send message modal"
+                role="button"
+              >
+                <button className="text-neutral-900 dark:text-primary cursor-pointer focus:outline-none">
                   <IoClose
                     size={28}
+                    aria-label="Close"
                     className="text-neutral-900 dark:text-primary"
                   />
                 </button>

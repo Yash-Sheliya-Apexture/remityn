@@ -12,13 +12,13 @@ interface KycDetailHeaderProps {
 }
 
 const KycDetailHeader: React.FC<KycDetailHeaderProps> = ({ userId }) => {
-  const displayUserId = userId ? `${userId.substring(0, 8)}...` : "Loading...";
+  const displayUserId = userId ? `${userId.substring(0, 12)}...` : "Loading...";
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-5 gap-4">
       {/* Left Side: Breadcrumbs and Title */}
       <div className="Heding">
-        <div className="flex items-center text-sm text-slate-500 mb-2 flex-wrap">
+        <div className="flex items-center text-sm mb-2 flex-wrap">
           {/* Breadcrumb Item 1: Admin */}
           <Link href="/admin" className="text-gray-500 hover:text-primary dark:text-gray-300 hover:dark:text-primary">
             Admin
