@@ -1753,7 +1753,7 @@
 // export default AdminTransfersPage;
 
 
-
+// new latest code 
 // frontend/src/app/admin/transfers/page.tsx
 "use client";
 import React, { useState, useEffect, useCallback, useMemo } from "react"; // Added useMemo
@@ -1852,7 +1852,6 @@ const AdminTransfersPage: React.FC = () => {
   const [filteredTransfers, setFilteredTransfers] = useState<Transfer[]>([]);
   const [loadingTransfers, setLoadingTransfers] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
   // Filter state
