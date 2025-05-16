@@ -308,3 +308,26 @@ a:focus,
 button:focus {
   outline: none;
 }
+
+
+/* Add to your global CSS file (e.g., globals.css) if not already present */
+
+.toast-progress-success {
+  background: #22c55e !important; /* Corresponds to green-500 */
+}
+
+.toast-progress-error {
+  background: #ef4444 !important; /* Corresponds to red-500 */
+}
+
+.toast-progress-info {
+  background: #3b82f6 !important; /* Corresponds to blue-500 */
+}
+
+.toast-progress-warning {
+  background: #eab308 !important; /* Corresponds to yellow-500 */
+}
+
+.toast-progress-default {
+  background: #6b7280 !important; /* Corresponds to gray-500 */
+}
