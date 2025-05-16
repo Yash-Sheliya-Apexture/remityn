@@ -412,7 +412,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 <div id="portal-root"></div>
 
                 {tawkToSrc && (
+                    <> 
                     <TawkToManager/>
+                    </>
                 )}
 
                 {/* <BrevoManager /> */}
