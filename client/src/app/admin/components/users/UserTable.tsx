@@ -269,6 +269,8 @@
 // export default UserTable;
 
 
+
+
 // frontend/src/app/admin/components/users/UserTable.tsx
 "use client";
 import React from "react";
@@ -476,7 +478,6 @@ const UserTable: React.FC<UserTableProps> = ({
                 sortDirection={sortDirection}
             />
             {/* Use tbody for skeleton rows */}
-            {/* Removed divide-y and other styles */}
             <tbody>
                 {/* Use skeletonRowCount prop */}
                 {Array(skeletonRowCount)
@@ -484,7 +485,7 @@ const UserTable: React.FC<UserTableProps> = ({
                 .map((_, i) => (
                     <tr key={`skel-${i}`} >
                     {Array(numberOfColumns).fill(0).map((_, j) => (
-                        <td key={`skel-cell-${i}-${j}`} className="px-4 py-3 whitespace-nowrap">
+                        <td key={`skel-cell-${i}-${j}`} className="px-6 py-4 h-[70px] whitespace-nowrap">
                            {/* Use full-width skeleton */}
                            <Skeleton className="h-4 w-full" />
                         </td>

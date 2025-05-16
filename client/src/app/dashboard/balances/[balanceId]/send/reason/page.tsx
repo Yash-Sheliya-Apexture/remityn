@@ -954,7 +954,7 @@ const TransferReasonPage = () => {
   }
 
   return (
-    <div className="TransferReason-Page pt-5">
+    <div className="TransferReason-Page">
       {/* Optional Header */}
       {/* <DashboardHeader title="Send Money" currentStep={2.5} totalSteps={steps.length} steps={steps} /> */}
 

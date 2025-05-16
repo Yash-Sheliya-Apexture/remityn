@@ -1354,7 +1354,7 @@ export default function AllRecentActivityPage() {
             <div className="flex items-center gap-3 justify-end sm:w-auto w-full">
               <button
                 onClick={() => setShowFilterModal(true)}
-                className="flex items-center justify-center cursor-pointer gap-2 bg-primary text-neutral-900 font-medium text-base px-8 py-3 h-12.5 sm:w-auto w-full rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear"
+                className="flex items-center justify-center cursor-pointer gap-2 bg-primary text-neutral-900 font-medium text-base sm:px-8 px-6 py-3 h-12.5 sm:w-auto w-full rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear"
               >
                 <Filter size={18} />
                 Filters
@@ -1362,7 +1362,7 @@ export default function AllRecentActivityPage() {
               <button
                 onClick={refreshData}
                 disabled={isRefreshing || loading}
-                className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white sm:px-8 px-6 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Refresh activity feed"
               >
                 <RefreshCw

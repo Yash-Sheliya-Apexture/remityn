@@ -1302,7 +1302,7 @@ export default function ChangePassword() {
   };
 
   return (
-    <section className="ChangePasswor py-10">
+    <section className="ChangePasswor">
       <div className="">
         <DashboardHeader title="Change Password" />
 

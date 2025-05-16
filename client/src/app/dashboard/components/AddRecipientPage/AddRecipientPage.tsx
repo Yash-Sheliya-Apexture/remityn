@@ -6331,7 +6331,7 @@ const AddRecipientPage = () => {
 
   // --- JSX Section (No changes needed here for IFSC validation logic, but showing relevant part) ---
   return (
-    <div className="AddRecipientPage py-5">
+    <div className="AddRecipientPage">
       <DashboardHeader title="Recipients" onBack={handleBackStep} />
       <div className="Steps">
         {/* Step 1: Currency Selection (No changes needed) */}
@@ -6513,7 +6513,7 @@ const AddRecipientPage = () => {
             key="account-step"
             className="bg-white dark:bg-background w-full lg:max-w-lg"
           >
-            <h2 className="lg:text-3xl md:text-2xl text-xl font-semibold text-mainheading dark:text-white mb-6 text-left">
+            <h2 className="lg:text-2xl text-xl font-semibold text-mainheading dark:text-white mb-6 text-left">
               Enter their account details ({selectedCurrencyCode})
             </h2>
 
@@ -6800,7 +6800,7 @@ const AddRecipientPage = () => {
               <div className="flex sm:flex-row flex-col-reverse justify-center items-center gap-4 pt-4">
                 <button
                   type="button"
-                  className={`sm:order-1 order-2 bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear`}
+                  className={`sm:order-1 order-2 bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear flex items-center justify-center`}
                   onClick={handleClearForm}
                 >
                   Clear All

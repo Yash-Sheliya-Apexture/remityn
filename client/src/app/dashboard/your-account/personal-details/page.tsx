@@ -385,10 +385,10 @@ export default function PersonalDetails() {
     <section className="Personal-Details-Wrapper">
       <div className="Personal-Details">
         <div className="mb-6">
-          <h2 className="sm:text-3xl text-2xl font-semibold text-mainheading dark:text-white mb-1">
+          <h2 className="lg:text-3xl text-2xl font-semibold text-mainheading dark:text-white mb-1">
             {user.fullName || "Your Profile"}
           </h2>
-          <p className="text-gray-500 dark:text-gray-300">
+          <p className="lg:text-base text-sm text-gray-500 dark:text-gray-300">
             Manage your personal details, email and phone number.
           </p>
         </div>
