@@ -8446,6 +8446,8 @@ import CustomToast, { CustomToastProps } from "../../../app/components/CustomToa
 
 // Import Shared Types
 import { Payment } from "../../../types/payment"; // Adjust path as needed
+import { FaCoins } from "react-icons/fa";
+import { TbMoneybag } from "react-icons/tb";
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
@@ -8948,15 +8950,26 @@ const AdminPaymentsPage: React.FC = () => {
       />
       <div className="space-y-6">
         <div className="flex sm:flex-row flex-col justify-between items-center ">
-          <div className="flex flex-col mb-5">
-            <h1 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
-              Add-Money Management
-            </h1>
-            <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg">
-              Track and manage all incoming payments, statuses, and user
+
+     <div className="Add-Money">
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="size-12 shrink-0 bg-primary dark:bg-primarybox rounded-full flex items-center justify-center">
+                  <TbMoneybag className="size-6 text-mainheading dark:text-primary" />
+                </div>
+
+                <h1 className="lg:text-3xl text-2xl font-semibold text-mainheading dark:text-primary">
+                  Add-Money Management
+                </h1>
+
+              </div>
+
+              <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg">
+                Track and manage all incoming payments, statuses, and user
               transactions in real time with full control and visibility.
-            </p>
-          </div>
+              </p>
+            </div>
+
+
           <div className="flex items-center gap-3 justify-end sm:w-auto w-full">
             <button
               onClick={() => setShowFilterModal(true)}
