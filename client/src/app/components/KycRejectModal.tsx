@@ -5,8 +5,8 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IoClose } from "react-icons/io5";
 import { AlertCircle } from "lucide-react";
-import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
 
 // --- Modal Animation Variants ---
 const mobileVariants = {
@@ -90,27 +90,23 @@ const KycRejectModal: React.FC<KycRejectModalProps> = ({
             exit="exit"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-4 sm:p-6 rounded-t-2xl flex items-center justify-between border-b">
+            <div className="p-4 sm:p-6 flex items-center justify-between flex-shrink-0 border-b">
               <h2
-                id="rejection-modal-title"
+                id="edit-message-modal-title"
                 className="lg:text-2xl text-xl font-semibold text-mainheading dark:text-white"
               >
-                Reject KYC Application
+                Reject KYC Application 
               </h2>
-              <div className="absolute sm:top-2 sm:right-2 top-1 right-1">
-                <button
-                  className="p-3 bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer"
-                  onClick={onClose}
-                  disabled={isProcessing}
-                  aria-label="Close modal"
-                >
-                  <IoClose
-                    size={28}
-                    className="text-neutral-900 dark:text-primary"
-                  />
-                </button>
-              </div>
+              <button
+                onClick={onClose}
+                disabled={isProcessing}
+                aria-label="Close modal"
+                className="size-12 bg-lightgray cursor-pointer hover:bg-lightborder text-neutral-900 dark:text-primary dark:bg-primarybox dark:hover:bg-secondarybox flex items-center justify-center rounded-full transition-all duration-75 ease-linear focus:outline-none"
+              >
+                <IoClose size={28} />
+              </button>
             </div>
+
 
             <div className="p-4 sm:p-6 space-y-4">
               <p className="text-sm text-gray-500 dark:text-gray-300">
@@ -159,6 +155,7 @@ const KycRejectModal: React.FC<KycRejectModalProps> = ({
               >
                 Cancel
               </button>
+
               <button
                 className="bg-red-600 text-white hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 onClick={handleSubmit}

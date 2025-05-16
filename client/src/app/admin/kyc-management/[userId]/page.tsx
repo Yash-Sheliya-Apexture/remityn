@@ -6005,7 +6005,7 @@ const KycUserDetailPage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-muted/30 dark:bg-background">
+      <div className="min-h-screen bg-white dark:bg-background">
         <div className="container mx-auto px-4 py-8">
           <Link
             href="/admin/kyc-management"
@@ -6022,7 +6022,7 @@ const KycUserDetailPage: React.FC = () => {
 
   if (!userData) {
     return (
-      <div className="min-h-screen bg-muted/30 dark:bg-background">
+      <div className="min-h-screen bg-white dark:bg-background">
         <div className="container mx-auto px-4 py-8 text-center">
           <Link
             href="/admin/kyc-management"
@@ -6045,6 +6045,7 @@ const KycUserDetailPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white dark:bg-background">
+      
       <KycRejectModal
         isOpen={showRejectionModal}
         onClose={() => setShowRejectionModal(false)}
@@ -6054,6 +6055,7 @@ const KycUserDetailPage: React.FC = () => {
         initialReason={rejectionReasonForModal}
         isMobileView={isMobile}
       />
+      
       <KycApproveModal
         isOpen={showApprovalModal}
         onClose={() => setShowApprovalModal(false)}
@@ -6069,7 +6071,7 @@ const KycUserDetailPage: React.FC = () => {
         <Card className="overflow-hidden border shadow-none">
           <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-5 border-b">
             <div className="flex items-center gap-4">
-              <Avatar className="h-14 w-14 sm:h-16 sm:w-16 flex-shrink-0 bg-lightgray dark:bg-primarybox">
+              <Avatar className="size-14 sm:size-16 flex-shrink-0 bg-lightgray dark:bg-primarybox">
                 <AvatarFallback
                   className={cn(
                     "text-xl font-semibold text-neutral-900 dark:text-white",
@@ -6081,7 +6083,7 @@ const KycUserDetailPage: React.FC = () => {
               </Avatar>
 
               <div className="flex-1 space-y-2">
-                <CardTitle className="text-xl text-neutral-900 dark:text-white">
+                <CardTitle className="text-xl text-neutral-900 dark:text-white">  
                   {userData.fullName || "Unnamed User"}
                 </CardTitle>
 
@@ -6141,20 +6143,21 @@ const KycUserDetailPage: React.FC = () => {
                 <button
                   onClick={openRejectModal}
                   disabled={!!isProcessingAction}
-                  className="text-base bg-red-600 gap-2 text-white hover:bg-red-700 font-medium rounded-full px-6 py-3 md:h-12.5 h-10 flex justify-center items-center transition-all duration-75 ease-linear cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="text-base bg-red-600 gap-2 text-white hover:bg-red-700 font-medium rounded-full px-6 py-3 h-12.5 flex justify-center items-center transition-all duration-75 ease-linear cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  <XCircle className="size-5" />
+                  <XCircle className="size-5"/>
                   Reject Application
                 </button>
 
                 <Button
                   onClick={openApproveModal}
                   disabled={!!isProcessingAction}
-                  className="text-base bg-primary text-neutral-900 hover:bg-primaryhover dark:bg-primary dark:hover:bg-primaryhover font-medium rounded-full px-6 py-3 md:h-12.5 h-10 flex justify-center items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="text-base bg-primary text-neutral-900 hover:bg-primaryhover dark:bg-primary dark:hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 flex justify-center items-center disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  <CheckCircle className="size-5" />
+                  <CheckCircle className="size-5"/>
                   Approve Application
                 </Button>
+
               </div>
             </CardFooter>
           )}

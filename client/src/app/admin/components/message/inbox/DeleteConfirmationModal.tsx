@@ -518,8 +518,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
               onClick={(e) => e.stopPropagation()} // Prevent close on modal content click
             >
               {/* Header */}
-              <div className="p-4 sm:p-6 rounded-t-2xl flex items-center justify-between border-b">
-                {/* Added dark border */}
+              {/* <div className="p-4 sm:p-6 rounded-t-2xl flex items-center justify-between border-b">
                 <div className="absolute sm:top-2 sm:right-2 top-1 right-1">
                   <button
                     className="p-3 bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox rounded-full transition-all duration-75 ease-linear cursor-pointer focus:outline-none"
@@ -539,6 +538,23 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
                     Confirm Deletion
                   </h2>
                 </div>
+              </div> */}
+
+              <div className="p-4 sm:p-6 flex items-center justify-between flex-shrink-0 border-b">
+                <h2
+                  id="edit-message-modal-title"
+                  className="lg:text-2xl text-xl font-semibold text-mainheading dark:text-white"
+                >
+                  Confirm Deletion
+                </h2>
+                <button
+                  onClick={onClose}
+                  disabled={isLoading}
+                  aria-label="Close modal"
+                  className="size-12 bg-lightgray cursor-pointer hover:bg-lightborder text-neutral-900 dark:text-primary dark:bg-primarybox dark:hover:bg-secondarybox flex items-center justify-center rounded-full transition-all duration-75 ease-linear focus:outline-none"
+                >
+                  <IoClose size={28} />
+                </button>
               </div>
 
               {/* Body */}
@@ -581,7 +597,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
               </div>
 
               {/* Footer */}
-              <div className="flex flex-row items-center justify-end sm:p-6 p-4 gap-4 border-t">
+              <div className="flex sm:flex-row flex-col items-center justify-end sm:p-6 p-4 gap-4 border-t">
                 <button
                   type="button"
                   onClick={onClose}

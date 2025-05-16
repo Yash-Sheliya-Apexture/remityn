@@ -1220,11 +1220,16 @@ import {
   SortAsc,
   X, // Import X for closing messages
   ShieldUser,
+  ListChecks,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { FiSearch } from "react-icons/fi";
-import { MdCancel, MdOutlineAccessTime } from "react-icons/md";
+import {
+  MdCancel,
+  MdManageAccounts,
+  MdOutlineAccessTime,
+} from "react-icons/md";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Import Pagination Component
@@ -1446,10 +1451,11 @@ const KycManagementPage: React.FC = () => {
   );
 
   // Empty State (Considers search query)
+
   const renderEmptyState = () => (
     <div className="bg-lightgray dark:bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
       <div className="lg:size-16 size-14 flex items-center justify-center bg-primary dark:bg-transparent dark:bg-gradient-to-t dark:from-primary rounded-full mb-2">
-        <Inbox className="lg:size-8 size-6 mx-auto text-neutral-900 dark:text-primary" />
+        <ListChecks className="lg:size-8 size-6 mx-auto text-neutral-900 dark:text-primary" />
       </div>
       <h2 className="lg:text-3xl text-2xl font-medium text-neutral-900 dark:text-white mt-1">
         {searchQuery ? "No Matches Found" : "All Clear KYC !"}
@@ -1676,7 +1682,6 @@ const KycManagementPage: React.FC = () => {
         />
         {!isMobile && <span>Refresh</span>}
       </button>
-
     </div>
   );
 
@@ -1726,24 +1731,29 @@ const KycManagementPage: React.FC = () => {
       <div className="container mx-auto px-4 py-5">
         {/* Page Header: Skeleton or Actual */}
         <div className="mb-8">
-
           {isLoading && pendingUsers.length === 0 ? (
-            <>
+            <div>
               <Skeleton className="h-10 w-64 mb-3" /> {/* Skeleton for h1 */}
               <Skeleton className="h-4 sm:w-2/3 w-full" />{" "}
-            </>
+            </div>
           ) : (
-            <>
-              <h1 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
-                KYC Management
-              </h1>
+            <div className="Management">
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="size-12 shrink-0 bg-primary dark:bg-primarybox rounded-full flex items-center justify-center">
+                  <MdManageAccounts className="size-6 text-mainheading dark:text-primary" />
+                </div>
+
+                <h1 className="lg:text-3xl text-2xl font-semibold text-mainheading dark:text-primary">
+                  KYC Management
+                </h1>
+              </div>
 
               <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg">
                 Easily review and manage Know Your Customer (KYC) applications.
                 Track pending verifications and ensure compliance with secure
-                identity checks — all from one central dashboard.
+                identity checks — all from one central dashboard.{" "}
               </p>
-            </>
+            </div>
           )}
         </div>
 
@@ -1766,7 +1776,7 @@ const KycManagementPage: React.FC = () => {
               {/* Actual Section Title */}
               <h2 className="inline-flex items-center gap-2 text-xl font-bold text-mainheading dark:text-white flex-shrink-0">
                 <FileClock className="h-5 w-5 text-primary" />
-                Pending Applications
+                Pending 
               </h2>
 
               {/* Actual Controls (Rendered only if no initial load error) */}

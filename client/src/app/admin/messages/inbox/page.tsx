@@ -2404,6 +2404,7 @@ import {
   Filter,
   Inbox,
 } from "lucide-react";
+import { FaInbox } from "react-icons/fa";
 
 const ITEMS_PER_PAGE_OPTIONS = [10, 25, 50, 100];
 
@@ -2849,22 +2850,29 @@ const AdminInboxPage: React.FC = () => {
     <div className="container mx-auto px-4 py-5 relative">
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex flex-wrap justify-between items-center gap-4">
-          <div className="flex-1 min-w-[200px]">
-            <h1 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
-              Admin Inbox
-            </h1>
 
-            <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg max-w-5xl">
+        <div className="flex flex-wrap justify-between items-center gap-4">
+          <div className="inbox-massage">
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="size-12 shrink-0 bg-primary dark:bg-primarybox rounded-full flex items-center justify-center">
+                <FaInbox className="size-6 text-mainheading dark:text-primary" />
+              </div>
+
+              <h1 className="lg:text-3xl text-2xl font-semibold text-mainheading dark:text-primary">
+                Admin Inbox
+              </h1>
+            </div>
+
+            <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg">
               Admin Inbox: View and manage all messages sent to users. Track
-              message status, details, and perform actions like editing or
-              deleting records.
+              message status, details, and perform actions like editing.
             </p>
           </div>
+
           <div className="flex items-center gap-3 justify-end sm:w-auto w-full">
             <button
               onClick={() => setShowFilterModal(true)}
-              className="flex items-center justify-center cursor-pointer gap-2 bg-primary text-neutral-900 font-medium text-base px-8 py-3 h-12.5 sm:w-auto w-full rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear"
+              className="flex items-center justify-center cursor-pointer gap-2 bg-primary text-neutral-900 font-medium text-base px-6 sm:px-8 py-3 h-12.5 sm:w-auto w-full rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear"
             >
               <Filter size={18} />
               Filters
@@ -2872,7 +2880,7 @@ const AdminInboxPage: React.FC = () => {
             <button
               onClick={handleRefresh}
               disabled={isRefreshing || loadingMessages}
-              className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-6 sm:px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
               title="Refresh inbox data"
             >
               <RefreshCw
@@ -2910,6 +2918,7 @@ const AdminInboxPage: React.FC = () => {
             </motion.div>
           )}
         </AnimatePresence>
+        
         <AnimatePresence>
           {errorMessage && (
             <motion.div

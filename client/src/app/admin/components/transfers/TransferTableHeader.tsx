@@ -242,7 +242,6 @@ const TransferTableHeader: React.FC<TransferTableHeaderProps> = ({
   return (
     <thead className="bg-lightgray dark:bg-primarybox">
       <tr className="border-b dark:border-neutral-800">
-        {" "}
         {/* Ensure border for dark mode if needed */}
         <th className={headerCellClasses}>
           <button onClick={() => toggleSort("_id")} className={buttonClasses}>

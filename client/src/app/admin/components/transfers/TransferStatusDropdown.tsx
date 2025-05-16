@@ -229,113 +229,211 @@
 
 // export default TransferStatusDropdown;
 
-// FILE: src/app/admin/components/transfers/TransferStatusDropdown.tsx
+// // Last latest code 
+// // FILE: src/app/admin/components/transfers/TransferStatusDropdown.tsx
+// "use client";
+// import React, { useState, useEffect } from "react";
+// import adminTransferService from "../../../services/admin/transfer"; // Adjust path
+// import CustomDropdown from "../add-money/CustomDropdown"; // Path to your CustomDropdown
+// import { RefreshCw } from "lucide-react"; // Keep for potential direct use if needed, though CustomDropdown handles its own
+// import { toast } from "sonner";
+
+// interface TransferStatusDropdownProps {
+//   transferId: string;
+//   currentStatus: string; // Expects lowercase status, e.g., "pending", "unknown"
+//   token: string | null;
+//   onStatusUpdated: () => void;
+// }
+
+// interface ApiError extends Error {
+//   response?: {
+//     data?: {
+//       message?: string;
+//     };
+//   };
+// }
+
+// // These are the actual values sent to/received from the API (lowercase)
+// const actualStatuses = [
+//   "pending",
+//   "processing",
+//   "completed",
+//   "failed",
+//   "canceled",
+// ];
+
+// // Helper to capitalize status for display
+// const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+// // These are the values shown in the dropdown UI (Capitalized)
+// const displayStatuses = actualStatuses.map(capitalize);
+
+// const TransferStatusDropdown: React.FC<TransferStatusDropdownProps> = ({
+//   transferId,
+//   currentStatus, // This is the lowercase actual status
+//   token,
+//   onStatusUpdated,
+// }) => {
+//   // selectedDisplayStatus stores the capitalized version for the UI
+//   const [selectedDisplayStatus, setSelectedDisplayStatus] = useState<string>(
+//     capitalize(currentStatus)
+//   );
+//   const [isUpdating, setIsUpdating] = useState(false);
+
+//   // Determine if the current status (actual lowercase) is a final one
+//   const isFinalActualStatus = ["completed", "failed", "canceled"].includes(
+//     currentStatus.toLowerCase()
+//   );
+
+//   useEffect(() => {
+//     // Sync display status if the prop (currentStatus, lowercase) changes
+//     setSelectedDisplayStatus(capitalize(currentStatus));
+//   }, [currentStatus]);
+
+//   const handleDropdownChange = async (newDisplayValue: string | null) => {
+//     if (!newDisplayValue) return; // Should not receive null if options are always strings
+
+//     const newActualStatus = newDisplayValue.toLowerCase();
+
+//     if (
+//       newActualStatus === currentStatus.toLowerCase() ||
+//       isUpdating ||
+//       !token ||
+//       isFinalActualStatus
+//     ) {
+//       return;
+//     }
+
+//     setIsUpdating(true);
+//     const toastId = toast.loading("Updating status...");
+
+//     try {
+//       await adminTransferService.updateAdminTransferStatus(
+//         transferId,
+//         newActualStatus, // Send lowercase status to API
+//         null,
+//         token
+//       );
+//       toast.success("Transfer status updated successfully!", { id: toastId });
+//       // selectedDisplayStatus will be updated via useEffect when currentStatus prop changes after onStatusUpdated()
+//       onStatusUpdated(); // Refresh details, which should update currentStatus prop
+//     } catch (err) {
+//       const error = err as ApiError;
+//       const errorMessage =
+//         error.response?.data?.message ||
+//         error.message ||
+//         "Failed to update status.";
+//       toast.error(errorMessage, { id: toastId });
+//       // Do not change selectedDisplayStatus here; let it reflect the actual currentStatus from props
+//     } finally {
+//       setIsUpdating(false);
+//     }
+//   };
+
+//   return (
+//     <div className="space-y-2">
+//       <CustomDropdown
+//         // No explicit label here as "Update Status" is likely above this component
+//         value={selectedDisplayStatus} // Pass the capitalized status for display
+//         onChange={handleDropdownChange} // Receives capitalized status from CustomDropdown
+//         options={displayStatuses} // Pass capitalized statuses as options
+//         disabled={isUpdating || isFinalActualStatus}
+//         isLoading={isUpdating}
+//         placeholder="Select status"
+//       />
+//       {isFinalActualStatus && (
+//         <p className="text-xs text-gray-500 dark:text-gray-300 mt-1">
+//           Final status reached, cannot be changed.
+//         </p>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default TransferStatusDropdown;
+
+
+
+// frontend/src/app/admin/components/transfers/TransferStatusDropdown.tsx
 "use client";
 import React, { useState, useEffect } from "react";
-import adminTransferService from "../../../services/admin/transfer"; // Adjust path
-import CustomDropdown from "../add-money/CustomDropdown"; // Path to your CustomDropdown
-import { RefreshCw } from "lucide-react"; // Keep for potential direct use if needed, though CustomDropdown handles its own
-import { toast } from "sonner";
+import adminTransferService from "../../../services/admin/transfer"; 
+import CustomDropdown from "../add-money/CustomDropdown"; 
+import { CustomToastProps } from "../../../../app/components/CustomToast"; 
 
 interface TransferStatusDropdownProps {
   transferId: string;
-  currentStatus: string; // Expects lowercase status, e.g., "pending", "unknown"
+  currentStatus: string; 
   token: string | null;
   onStatusUpdated: () => void;
+  showToast: (message: string, type?: CustomToastProps['type']) => void;
+  mapStatusToToastType: (status: string) => CustomToastProps['type'];
 }
 
 interface ApiError extends Error {
-  response?: {
-    data?: {
-      message?: string;
-    };
-  };
+  response?: { data?: { message?: string; }; };
 }
 
-// These are the actual values sent to/received from the API (lowercase)
-const actualStatuses = [
-  "pending",
-  "processing",
-  "completed",
-  "failed",
-  "canceled",
-];
-
-// Helper to capitalize status for display
+const actualStatuses = ["pending", "processing", "completed", "failed", "canceled"];
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-
-// These are the values shown in the dropdown UI (Capitalized)
 const displayStatuses = actualStatuses.map(capitalize);
 
 const TransferStatusDropdown: React.FC<TransferStatusDropdownProps> = ({
-  transferId,
-  currentStatus, // This is the lowercase actual status
-  token,
-  onStatusUpdated,
+  transferId, currentStatus, token, onStatusUpdated, showToast, mapStatusToToastType, 
 }) => {
-  // selectedDisplayStatus stores the capitalized version for the UI
-  const [selectedDisplayStatus, setSelectedDisplayStatus] = useState<string>(
-    capitalize(currentStatus)
-  );
+  const [selectedDisplayStatus, setSelectedDisplayStatus] = useState<string>(capitalize(currentStatus));
   const [isUpdating, setIsUpdating] = useState(false);
-
-  // Determine if the current status (actual lowercase) is a final one
-  const isFinalActualStatus = ["completed", "failed", "canceled"].includes(
-    currentStatus.toLowerCase()
-  );
+  const isFinalActualStatus = ["completed", "failed", "canceled"].includes(currentStatus.toLowerCase());
 
   useEffect(() => {
-    // Sync display status if the prop (currentStatus, lowercase) changes
     setSelectedDisplayStatus(capitalize(currentStatus));
   }, [currentStatus]);
 
   const handleDropdownChange = async (newDisplayValue: string | null) => {
-    if (!newDisplayValue) return; // Should not receive null if options are always strings
-
+    if (!newDisplayValue) return;
     const newActualStatus = newDisplayValue.toLowerCase();
 
-    if (
-      newActualStatus === currentStatus.toLowerCase() ||
-      isUpdating ||
-      !token ||
-      isFinalActualStatus
-    ) {
+    console.log('[TransferStatusDropdown] handleDropdownChange:', { newDisplayValue, newActualStatus, currentStatus });
+
+    if (newActualStatus === currentStatus.toLowerCase() || isUpdating || !token || isFinalActualStatus) {
+      console.log('[TransferStatusDropdown] Condition not met, returning early:', {
+        isSameStatus: newActualStatus === currentStatus.toLowerCase(), isUpdating, hasToken: !!token, isFinalActualStatus,
+      });
       return;
     }
 
     setIsUpdating(true);
-    const toastId = toast.loading("Updating status...");
+    console.log('[TransferStatusDropdown] Attempting to update status to:', newActualStatus);
 
     try {
-      await adminTransferService.updateAdminTransferStatus(
-        transferId,
-        newActualStatus, // Send lowercase status to API
-        null,
-        token
-      );
-      toast.success("Transfer status updated successfully!", { id: toastId });
-      // selectedDisplayStatus will be updated via useEffect when currentStatus prop changes after onStatusUpdated()
-      onStatusUpdated(); // Refresh details, which should update currentStatus prop
+      await adminTransferService.updateAdminTransferStatus(transferId, newActualStatus, null, token);
+      const toastType = mapStatusToToastType(newActualStatus);
+      const successMessage = `Transfer status updated to "${newDisplayValue}" successfully!`;
+      
+      console.log(`[TransferStatusDropdown] SUCCESS: API call successful. Preparing to show toast. Message: "${successMessage}", Type: "${toastType}", New Actual Status: "${newActualStatus}"`);
+      showToast(successMessage, toastType);
+      console.log('[TransferStatusDropdown] SUCCESS: showToast called. Calling onStatusUpdated.');
+      
+      onStatusUpdated(); 
     } catch (err) {
       const error = err as ApiError;
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        "Failed to update status.";
-      toast.error(errorMessage, { id: toastId });
-      // Do not change selectedDisplayStatus here; let it reflect the actual currentStatus from props
+      const errorMessage = error.response?.data?.message || error.message || "Failed to update status.";
+      console.error('[TransferStatusDropdown] ERROR: API call failed or error during update.', { errorMessage, errorObj: err });
+      console.log(`[TransferStatusDropdown] ERROR: Preparing to show error toast. Message: "${errorMessage}"`);
+      showToast(errorMessage, 'error');
+      console.log('[TransferStatusDropdown] ERROR: showToast for error called.');
     } finally {
       setIsUpdating(false);
+      console.log('[TransferStatusDropdown] Update process finished, isUpdating set to false.');
     }
   };
 
   return (
     <div className="space-y-2">
       <CustomDropdown
-        // No explicit label here as "Update Status" is likely above this component
-        value={selectedDisplayStatus} // Pass the capitalized status for display
-        onChange={handleDropdownChange} // Receives capitalized status from CustomDropdown
-        options={displayStatuses} // Pass capitalized statuses as options
+        value={selectedDisplayStatus} 
+        onChange={handleDropdownChange} 
+        options={displayStatuses} 
         disabled={isUpdating || isFinalActualStatus}
         isLoading={isUpdating}
         placeholder="Select status"
