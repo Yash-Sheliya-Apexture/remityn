@@ -72,14 +72,16 @@ const brevoConversationsId = process.env.NEXT_PUBLIC_BREVO_CONVERSATIONS_ID;
 
 // --- Brevo Script Snippet (dynamically constructed) ---
 // This snippet loads the main brevo-conversations.js script.
-// We need to ensure window.BrevoConversations is initialized early so we can define
-// callbacks like 'onChatboxLoaded' *before* the main script fully loads.
+// It's designed to be executed early to initialize window.BrevoConversations
+// as a queue function, allowing commands like 'onChatboxLoaded' to be
+// pushed *before* the main script finishes loading.
 const brevoFullSnippet = brevoConversationsId ? `
     (function(d, w, c) {
         w.BrevoConversationsID = '${brevoConversationsId}'; // Set the Conversation ID
         // Initialize w[c] as a function/queue if it doesn't exist.
         // This allows us to push commands (like 'onChatboxLoaded') to a queue
         // before the full API script loads and replaces this function with the real one.
+        // This line is crucial: it ensures window.BrevoConversations exists immediately.
         w[c] = w[c] || function() {
             (w[c].q = w[c].q || []).push(arguments);
         };
@@ -100,12 +102,14 @@ declare global {
         BrevoConversations?: (command: string, ...args: any[]) => void | any;
         // Brevo also uses a queue pattern before the full script loads,
         // where commands like 'onChatboxLoaded' can be pushed to the queue.
+        // Add the queue property explicitly for better type safety if needed,
+        // though the primary API call uses the function signature.
+        // BrevoConversations?: { (...args: any[]): void; q?: any[][] };
     }
 }
 
 // --- Helper Function (Visibility Logic) ---
 // This function determines whether the Brevo widget should be shown based on the current path.
-// It uses the exact same logic as your Tawk.to manager's visibility helper.
 const shouldShowBrevoWidgetBasedOnPath = (currentPath: string): boolean => {
     const isAdminPath = currentPath.startsWith('/admin');
     const isAuthPath = currentPath.startsWith('/auth');
@@ -114,6 +118,9 @@ const shouldShowBrevoWidgetBasedOnPath = (currentPath: string): boolean => {
     // Specific checks for the dashboard pages where we *do* want it to show
     const isYourAccountPath = currentPath === '/dashboard/your-account';
     const isThemeSettingsPath = currentPath === '/dashboard/your-account/theme-settings';
+     // Allow it on the dashboard root if needed, or remove this line
+     const isDashboardRoot = currentPath === '/dashboard';
+
 
     // Rule 1: Hide on admin or auth paths
     if (isAdminPath || isAuthPath) {
@@ -122,10 +129,10 @@ const shouldShowBrevoWidgetBasedOnPath = (currentPath: string): boolean => {
     }
 
     // Rule 2: If it's a dashboard path, ONLY show it if it's the specific
-    // '/dashboard/your-account' or '/dashboard/your-account/theme-settings' path.
+    // '/dashboard', '/dashboard/your-account' or '/dashboard/your-account/theme-settings' path.
     // Otherwise, hide it on all other dashboard sub-paths.
     if (isDashboardPath) {
-         const showOnSpecificDashboardPages = isYourAccountPath || isThemeSettingsPath;
+         const showOnSpecificDashboardPages = isDashboardRoot || isYourAccountPath || isThemeSettingsPath;
          // console.log(`BrevoManager (Visibility Logic): Path ${currentPath} is dashboard. Show on specific pages: ${showOnSpecificDashboardPages}`);
          return showOnSpecificDashboardPages;
     }
@@ -139,24 +146,28 @@ const shouldShowBrevoWidgetBasedOnPath = (currentPath: string): boolean => {
 export default function BrevoManager() {
     const pathname = usePathname();
     // Ref to track if the Brevo API is fully initialized and ready to receive commands
+    // beyond the initial queueing provided by the snippet.
     const brevoApiReady = useRef(false);
 
     // --- Safely Call Brevo API Function ---
     // This function attempts to call the BrevoConversations API with a command.
-    // It checks if the API is marked as ready before calling.
+    // It checks if the API function exists (which it *should* after the snippet runs).
+    // We rely on Brevo's internal queueing if the main script hasn't fully loaded,
+    // but we primarily use this helper after brevoApiReady is true.
     const callBrevoAPI = (command: string, reason: string, currentPath: string, ...args: any[]) => {
-         // The API function itself should exist very early due to the snippet,
-         // but we primarily rely on the brevoApiReady flag set by onChatboxLoaded
-        if (brevoApiReady.current && window.BrevoConversations && typeof window.BrevoConversations === 'function') {
+        // Check if the BrevoConversations function exists (either the queue or the real one)
+        // The snippet ensures window.BrevoConversations is defined very early.
+        if (typeof window !== 'undefined' && window.BrevoConversations && typeof window.BrevoConversations === 'function') {
             try {
-                console.log(`BrevoManager: Calling API command '${command}' (${reason}) for path: ${currentPath}`);
+                // console.log(`BrevoManager: Calling API command '${command}' (${reason}) for path: ${currentPath}`);
                 window.BrevoConversations(command, ...args);
             } catch (error) {
                 console.error(`BrevoManager: Error calling BrevoConversations API command '${command}':`, error);
             }
         } else {
-             // This log can be useful during debugging to understand why a command wasn't sent
-             // console.log(`BrevoManager: Brevo API not ready. Cannot call '${command}' (${reason}) for path: ${currentPath}`);
+             // This should ideally not happen if the script strategy is correct,
+             // unless the environment variable is missing or there's a fundamental script loading issue.
+             console.error(`BrevoManager: window.BrevoConversations API function not available to call '${command}' (${reason}) for path: ${currentPath}. Check script loading and env var.`);
         }
     };
 
@@ -169,7 +180,7 @@ export default function BrevoManager() {
 
         console.log("BrevoManager: Setting up onChatboxLoaded callback.");
 
-        // Define the callback function
+        // Define the callback function that fires when the chatbox UI is ready
         const handleBrevoChatboxLoaded = () => {
             console.log("BrevoManager: Brevo 'onChatboxLoaded' event fired. API is now considered ready.");
 
@@ -182,40 +193,44 @@ export default function BrevoManager() {
             // --- IMPLEMENT "HIDE FIRST" STRATEGY on load ---
             // Immediately hide the widget as soon as it's loaded to prevent flash,
             // then conditionally show based on the path.
-            callBrevoAPI('hideChatbox', 'loaded - hide first', currentPathAtLoaded);
+            // Use the direct window.BrevoConversations call here as this callback
+            // is invoked by Brevo's internal mechanism once the full API is ready.
+             if (typeof window !== 'undefined' && window.BrevoConversations) {
+                console.log(`BrevoManager: Calling 'hideChatbox' initially for path: ${currentPathAtLoaded}`);
+                window.BrevoConversations('hideChatbox'); // Hide immediately
 
-            // Determine the correct visibility based on the path at the moment the chatbox loaded
-            const shouldShow = shouldShowBrevoWidgetBasedOnPath(currentPathAtLoaded);
+                // Determine the correct visibility based on the path at the moment the chatbox loaded
+                const shouldShow = shouldShowBrevoWidgetBasedOnPath(currentPathAtLoaded);
 
-            // Apply the correct visibility state
-            if (shouldShow) {
-                callBrevoAPI('showChatbox', 'loaded - rules allow', currentPathAtLoaded);
-            } else {
-                 // It's already hidden from the "hide first" call, no need to call hide again.
-                 console.log(`BrevoManager: Widget remains hidden for path: ${currentPathAtLoaded} based on rules after load.`);
-            }
+                // Apply the correct visibility state
+                if (shouldShow) {
+                     console.log(`BrevoManager: Path ${currentPathAtLoaded} allows show. Calling 'showChatbox'.`);
+                    window.BrevoConversations('showChatbox');
+                } else {
+                     // It's already hidden from the "hide first" call, no need to call hide again.
+                     console.log(`BrevoManager: Widget remains hidden for path: ${currentPathAtLoaded} based on rules after load.`);
+                }
+             } else {
+                 console.error("BrevoManager: window.BrevoConversations not available inside onChatboxLoaded callback unexpectedly.");
+             }
         };
 
         // Register the callback using the Brevo API command pattern.
-        // Even if the full script isn't loaded yet, this command will be queued.
-        // Check window.BrevoConversations exists before calling, though the snippet
-        // should ensure it does as a queue placeholder.
-        if (window.BrevoConversations) {
+        // This command is pushed to the queue if the main script isn't loaded yet,
+        // or executed directly if it is.
+        // The snippet ensures window.BrevoConversations exists as a function (the queue placeholder) here.
+        if (typeof window !== 'undefined' && window.BrevoConversations) {
             window.BrevoConversations('onChatboxLoaded', handleBrevoChatboxLoaded);
              console.log("BrevoManager: Registered 'onChatboxLoaded' callback.");
         } else {
-             console.error("BrevoManager: window.BrevoConversations not available when trying to register 'onChatboxLoaded'.");
+             // This error should now be fixed by changing the script strategy to 'beforeInteractive'.
+             // If you still see this, there's a deeper issue with script loading or env var.
+             console.error("BrevoManager: window.BrevoConversations not available when trying to register 'onChatboxLoaded'. Check NEXT_PUBLIC_BREVO_CONVERSATIONS_ID and script strategy.");
         }
 
-
-        // Cleanup: Attempt to remove the callback if possible. Brevo's API might not have an explicit way.
-        // For now, we'll just log that the effect is cleaning up. The ref `brevoApiReady` helps manage state.
+        // Cleanup: Standard effect cleanup.
         return () => {
              console.log("BrevoManager: Brevo onChatboxLoaded effect cleanup.");
-             // A more complex cleanup might involve checking if brevoApiReady is true
-             // and calling hideChatbox if the component unmounts, but for a root layout
-             // component that lives across the app's lifecycle, this is often less critical
-             // than managing visibility *during* navigation.
         };
     }, [brevoConversationsId]); // Dependency: Re-run if the ID changes (unlikely)
 
@@ -224,9 +239,13 @@ export default function BrevoManager() {
     // This effect runs whenever the 'pathname' changes.
      useEffect(() => {
         // Only attempt to change visibility if the API is confirmed ready by the first effect.
-        if (brevoApiReady.current) {
+        // We also check window.BrevoConversations again just for robustness, though
+        // brevoApiReady.current implies it should exist.
+        if (brevoApiReady.current && typeof window !== 'undefined' && window.BrevoConversations) {
             const currentPath = pathname; // Use the pathname from the hook for navigation changes
             const shouldShow = shouldShowBrevoWidgetBasedOnPath(currentPath);
+
+            console.log(`BrevoManager: Path changed to ${currentPath}. Should show: ${shouldShow}.`);
 
             // Apply the correct visibility state for the new path
             if (shouldShow) {
@@ -234,14 +253,21 @@ export default function BrevoManager() {
             } else {
                 callBrevoAPI('hideChatbox', 'navigation change', currentPath);
             }
+        } else if (!brevoApiReady.current) {
+             // console.log(`BrevoManager: Path changed to ${pathname}, but API not ready. Visibility will be set on load.`);
+        } else {
+             console.error("BrevoManager: window.BrevoConversations not available during path change effect unexpectedly.");
         }
         // Re-run whenever the path changes.
-    }, [pathname]); // Dependency array: Depends only on pathname
+    }, [pathname, brevoApiReady.current]); // Add brevoApiReady.current as dependency
+     // This ensures that when brevoApiReady *first* becomes true, this effect also runs
+     // to set the correct visibility for the *current* path immediately after load.
+
 
     // --- Render Script ---
     // Render the Script tag only if the environment variable is set.
-    // This script tag injects the initial snippet that defines window.BrevoConversations
-    // as a queue and starts the loading of the main conversations.js file.
+    // Use 'beforeInteractive' strategy to ensure the snippet runs early
+    // and initializes window.BrevoConversations as a queue before client-side React logic.
     if (!brevoConversationsId) {
         console.warn("BrevoManager: Missing NEXT_PUBLIC_BREVO_CONVERSATIONS_ID. Brevo Conversations disabled.");
         return null; // Don't render anything if ID is missing
@@ -251,14 +277,15 @@ export default function BrevoManager() {
         // Use next/script for optimized loading of the inline snippet
         <Script
             id="brevo-conversations-script-manager" // Unique ID for the script tag
-            strategy="lazyOnload" // Load the script when browser is idle. 'afterInteractive' is another option.
+            strategy="beforeInteractive" // CHANGE THIS FROM lazyOnload
             dangerouslySetInnerHTML={{ __html: brevoFullSnippet }} // Inject the Brevo snippet code
             onError={(e) => {
                 console.error('BrevoManager: Brevo Conversations script failed to load:', e);
-                brevoApiReady.current = false; // Ensure flag is false on error if script fails
+                brevoApiReady.current = false; // Ensure flag is false on error
             }}
-            // We don't need an onLoad on the Script tag itself because we are listening
-            // for the *widget's* specific 'onChatboxLoaded' event via the API queue mechanism.
+            // We don't need an onLoad on the Script tag itself because the snippet
+            // defines the queue immediately and the 'onChatboxLoaded' event
+            // is how we know the *widget* is fully ready.
         />
     );
 }
