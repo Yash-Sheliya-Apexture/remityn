@@ -244,7 +244,7 @@ export default function StatsCards() {
       {/* Total Users Card */}
       <div className="dark:bg-primarybox sm:p-6 p-4 rounded-xl border">
         <div className="flex justify-between items-start">
-          <div>
+          <div className="Admin-Card">
             <p className="text-lg font-medium text-gray-500 dark:text-gray-300">
               Total Users
             </p>

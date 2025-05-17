@@ -956,7 +956,14 @@
 import React from "react";
 import { format, formatDistanceToNow } from "date-fns";
 import { motion } from "framer-motion";
-import { Pencil, Trash2, Circle, CircleCheckBig, Edit } from "lucide-react"; // Removed RefreshCw from imports
+import {
+  Pencil,
+  Trash2,
+  Circle,
+  CircleCheckBig,
+  Edit,
+  ListChecks,
+} from "lucide-react"; // Removed RefreshCw from imports
 import { Skeleton } from "@/components/ui/skeleton";
 import InboxTableHeader, { InboxSortField } from "./InboxTableHeader";
 import type { AdminInboxMessage } from "../../../../services/admin/inbox";
@@ -1034,7 +1041,7 @@ const InboxTable: React.FC<InboxTableProps> = ({
     return (
       <div className="rounded-xl border overflow-hidden">
         <div className="overflow-x-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
-          <table className="min-h-full">
+          <table className="min-w-full">
             <InboxTableHeader
               toggleSort={toggleSort}
               sortField={sortField}
@@ -1046,7 +1053,7 @@ const InboxTable: React.FC<InboxTableProps> = ({
                 .map((_, i) => (
                   <tr key={`skeleton-inbox-${i}`} className="border-b">
                     {Array(numberOfColumns)
-                      .fill(0)
+                      .fill(10)
                       .map((_, j) => (
                         <td
                           key={j}
@@ -1078,9 +1085,22 @@ const InboxTable: React.FC<InboxTableProps> = ({
               <tr>
                 <td
                   colSpan={numberOfColumns}
-                  className="px-6 py-10 text-center text-gray-500 dark:text-gray-300"
+                  className="text-center space-y-3 w-full text-gray-500 py-10 dark:text-gray-300"
                 >
-                  No messages found.
+                  <div className="flex justify-center items-center">
+                    <span className="lg:size-16 size-14 flex items-center justify-center bg-primary dark:bg-transparent dark:bg-gradient-to-t dark:from-primary rounded-full mb-2">
+                      <ListChecks className="lg:size-8 size-6 mx-auto text-neutral-900 dark:text-primary" />
+                    </span>
+                  </div>
+
+                  <h1 className="lg:text-3xl text-2xl font-medium text-neutral-900 dark:text-white mt-1">
+                    No messages found.
+                  </h1>
+
+                  <p className="text-gray-500 dark:text-gray-300 max-w-lg mx-auto">
+                    There are currently no past messages in your inbox.
+                    Please check back later for updates and announcements
+                  </p>
                 </td>
               </tr>
             ) : (

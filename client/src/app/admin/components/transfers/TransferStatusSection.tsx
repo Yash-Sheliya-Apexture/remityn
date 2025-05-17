@@ -910,12 +910,12 @@ const TransferStatusSection: React.FC<TransferStatusSectionProps> = ({
   };
 
   return (
-    <div className="bg-white dark:bg-primarybox rounded-xl border">
-      <div className="bg-lightgray dark:bg-primarybox px-6 py-4">
-        <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">
-          Transfer Status
-        </h3>
-      </div>
+    <div className="bg-white dark:bg-primarybox rounded-xl rounded-t-2xl border">
+        <div className="bg-lightgray dark:bg-primarybox rounded-t-2xl px-6 py-4 ">
+          <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">
+            Transfer Status
+          </h3>
+        </div>
 
       <div className="sm:p-6 p-4">
         <div className="mb-6">

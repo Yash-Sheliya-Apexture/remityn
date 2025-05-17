@@ -7647,6 +7647,9 @@
 
 // export default AdminEditCurrencyPage;
 
+
+
+
 // frontend/src/app/admin/currencies/[currencyId]/page.tsx
 "use client";
 import React, { useState, useEffect } from "react";
@@ -8542,6 +8545,7 @@ const AdminEditCurrencyPage = () => {
           exit={{ opacity: 0 }}
           className="bg-white dark:bg-background"
         >
+          
           <ToastContainer
             position="top-right"
             autoClose={3000}
