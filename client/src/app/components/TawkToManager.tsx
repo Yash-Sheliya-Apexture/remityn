@@ -766,12 +766,12 @@ interface TawkCustomStyleObject {
 interface TawkAPI {
     hideWidget: () => void;
     showWidget: () => void;
-    maximize?: () => void;   // <-- Added
-    minimize?: () => void;   // <-- Added
-    toggle?: () => void;     // <-- Added
+    maximize?: () => void;
+    minimize?: () => void;
+    toggle?: () => void;
     onLoad?: () => void;
     customStyle?: TawkCustomStyleObject;
-    [key: string]: any; // Keep for other Tawk.to API methods
+    [key: string]: any;
 }
 
 declare global {
@@ -853,21 +853,20 @@ const getCustomStyleForPath = (currentPath: string): TawkCustomStyleObject => {
 };
 
 
-// --- Helper Function (Visibility Logic) ---
+// --- Helper Function (Visibility Logic) --- MODIFIED
 const shouldShowWidgetBasedOnPath = (currentPath: string): boolean => {
     const isAdminPath = currentPath.startsWith('/admin');
     const isAuthPath = currentPath.startsWith('/auth');
     const isDashboardPath = currentPath.startsWith('/dashboard');
-    const isYourAccountPath = currentPath === '/dashboard/your-account';
-    const isThemeSettingsPath = currentPath === '/dashboard/your-account/theme-settings';
 
-    if (isAdminPath || isAuthPath) return false;
-
-    if (isDashboardPath) {
-        return isYourAccountPath || isThemeSettingsPath;
+    // If the current path is an admin path, an auth path, or ANY dashboard path,
+    // the widget should be hidden.
+    if (isAdminPath || isAuthPath || isDashboardPath) {
+        return false;
     }
 
-    return true; 
+    // For all other paths (e.g., public-facing pages like '/', '/contact'), show the widget.
+    return true;
 };
 
 // --- TawkToManager Component ---
@@ -930,7 +929,7 @@ export default function TawkToManager() {
                 window.Tawk_API.onLoad = undefined;
             }
         };
-    }, []); 
+    }, []);
 
      useEffect(() => {
         if (!tawkApiReady.current || !window.Tawk_API || typeof window === 'undefined') {
@@ -970,7 +969,7 @@ export default function TawkToManager() {
 
     useEffect(() => {
         const targetPaths = ['/dashboard/your-account', '/dashboard/your-account/theme-settings'];
-        const bodyClass = 'your-account-page-active'; 
+        const bodyClass = 'your-account-page-active';
 
         if (targetPaths.includes(pathname)) {
             document.body.classList.add(bodyClass);
@@ -982,7 +981,7 @@ export default function TawkToManager() {
                 document.body.classList.remove(bodyClass);
              }
         }
-    }, [pathname]); 
+    }, [pathname]);
 
     if (!tawkToSrc) {
         console.warn("TawkToManager: Missing Tawk.to Property ID or Widget ID. Tawk.to disabled.");
@@ -996,7 +995,7 @@ export default function TawkToManager() {
             src={tawkToSrc}
             onError={(e) => {
                 console.error('TawkToManager: Tawk.to script failed to load:', e);
-                tawkApiReady.current = false; 
+                tawkApiReady.current = false;
             }}
         />
     );
