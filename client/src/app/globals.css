@@ -22,6 +22,7 @@ body {
   /* Background-Color */
   --color-primary: #adfa1d;
   --color-primarybox: #ffffff1a;
+  --color-primaryboxhover: #2d2d2d;
   /* Text-color */
   --color-secondary: #002330;
   --color-lightgray: #f4f4f4;
