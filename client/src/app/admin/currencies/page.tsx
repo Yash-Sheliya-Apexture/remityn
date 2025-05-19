@@ -5973,7 +5973,7 @@ const LoadingSkeleton = () => (
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {Array.from({ length: 6 }).map((_, index) => (
+        {Array.from({ length: 8 }).map((_, index) => (
           <div
             key={index}
             className="rounded-xl overflow-hidden border flex flex-col"
@@ -5993,9 +5993,9 @@ const LoadingSkeleton = () => (
                 <Skeleton className="h-6 w-full rounded mt-1" />
               </div>
             </div>
-                
+
             <div className="border-t p-4">
-              <div className="flex flex-wrap flex-row gap-2">
+              <div className="flex w-full gap-2">
                 <Skeleton className="h-10 lg:h-12.5 flex-1 rounded-full" />
                 <Skeleton className="h-10 lg:h-12.5 flex-1 rounded-full" />
                 <Skeleton className="h-10 lg:h-12.5 flex-1 rounded-full" />
