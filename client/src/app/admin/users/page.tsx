@@ -2584,7 +2584,7 @@ const AdminUsersPage: React.FC = () => {
         {/* Header - Matching Payments structure and styling */}
         <div className="flex flex-wrap justify-between items-center gap-3">
           <div className="Activity">
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-3">
               <div className="size-12 shrink-0 bg-primary dark:bg-primarybox rounded-full flex items-center justify-center">
                 <FaUsers className="size-6 text-mainheading dark:text-primary" />
               </div>

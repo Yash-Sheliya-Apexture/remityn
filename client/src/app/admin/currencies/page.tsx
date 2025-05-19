@@ -7091,7 +7091,7 @@ const AdminCurrenciesPage: React.FC = () => {
       />
       <div className="space-y-6">
         <div className="Activity pb-6 mb-6 border-b">
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-3">
             <div className="size-12 shrink-0 bg-primary dark:bg-primarybox rounded-full flex items-center justify-center">
               <FaCoins className="size-6 text-mainheading dark:text-primary" />
             </div>

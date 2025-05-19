@@ -2165,7 +2165,7 @@ const FaqSection: React.FC = () => {
                 <div className="flex gap-2">
                   {/* WhatsApp Button */}
                   <Link
-                    href="/WhatsApp" // Replace with your actual WhatsApp link/handler
+                    href="https://web.whatsapp.com/" // Replace with your actual WhatsApp link/handler
                     aria-label="Chat on WhatsApp"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -2175,9 +2175,10 @@ const FaqSection: React.FC = () => {
                       <span>WhatsApp</span>
                     </button>
                   </Link>
+
                   {/* Telegram Button */}
                   <Link
-                    href="/Telegram" // Replace with your actual Telegram link/handler
+                    href="/https://web.telegram.org/k/" // Replace with your actual Telegram link/handler
                     aria-label="Chat on Telegram"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -2188,6 +2189,7 @@ const FaqSection: React.FC = () => {
                     </button>
                   </Link>
                 </div>
+                
                 {/* Read More FAQs Link */}
                 <Link
                   href="/faqs" // Link to your full FAQs page
