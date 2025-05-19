@@ -8920,7 +8920,7 @@ const AdminPaymentsPage: React.FC = () => {
 
   const getToastContainerStyle = (): React.CSSProperties & { [key: `--${string}`]: string | number } => {
     const baseStyle = { 
-      zIndex: 99999,
+      zIndex: 30,
     };
 
     if (isMobile) {

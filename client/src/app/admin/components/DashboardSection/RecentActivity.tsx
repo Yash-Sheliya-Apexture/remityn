@@ -733,7 +733,7 @@ export default function RecentActivity() {
                     )}
                   </p>
                   {isMobile && (
-                    <div className="mt-1 flex items-center gap-2">
+                    <div className="mt-1 flex flex-wrap items-center gap-2">
                       <p className="text-xs text-gray-500 dark:text-gray-300 whitespace-nowrap">
                         {moment(activity.timestamp).format(
                           "MMM D, YYYY h:mm A"

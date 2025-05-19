@@ -23051,7 +23051,7 @@ const HeroSection: React.FC = () => {
                         isCalculating;
 
                       return user ? (
-                        <Link href="/send-money" passHref>
+                        <Link href="dashboard/send/select-balance" passHref>
                           <button
                             type="button"
                             className="w-full inline-flex items-center justify-center px-8 lg:py-3 py-2.5 h-12.5 border border-transparent capitalize cursor-pointer font-medium rounded-full text-mainheading bg-primary hover:bg-primaryhover transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"

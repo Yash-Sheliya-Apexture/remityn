@@ -6613,7 +6613,7 @@ const UserDetailPage: React.FC = () => {
   const getToastContainerStyle = (): React.CSSProperties & {
     [key: `--${string}`]: string | number;
   } => {
-    const baseStyle = { zIndex: 99999 };
+    const baseStyle = { zIndex: 30 };
     if (isMobile)
       return {
         ...baseStyle,
@@ -6995,7 +6995,7 @@ const UserDetailPage: React.FC = () => {
                     {activeTab === tab.value && (
                       <motion.div
                         layoutId="active-tab-indicator"
-                        className="absolute inset-0 -z-10 bg-primary dark:bg-secondarybox rounded-full shadow-sm"
+                        className="absolute inset-0 -z-10 bg-primary dark:bg-secondarybox rounded-full"
                         transition={{ stiffness: 350, damping: 30 }}
                       />
                     )}

@@ -229,10 +229,19 @@ const ActivityList: React.FC<ActivityListProps> = ({
                 <Skeleton className="h-4 w-4/5 rounded-full bg-lightborder dark:bg-accent" />
                 <Skeleton className="h-3 w-2/5 rounded-full bg-lightborder dark:bg-accent" />
               </div>
-              <div className="space-y-1.5">
-                <Skeleton className="h-3 w-36  rounded-full flex-shrink-0 self-start mt-1 bg-lightborder dark:bg-accent" />
-                <Skeleton className="h-3 w-26 rounded-full flex-shrink-0 self-start mt-1 bg-lightborder dark:bg-accent" />
+              {isMobile && (
+              <div className="flex flex-col items-start gap-1 mt-1">
+                <Skeleton className="h-3 w-36  rounded-full flex-shrink-0 mt-1 bg-lightborder dark:bg-accent" />
+                <Skeleton className="h-3 w-26 rounded-full flex-shrink-0 mt-1 bg-lightborder dark:bg-accent" />
               </div>
+              )}
+              {!isMobile && (
+              <div className="flex flex-col items-end gap-1">
+                <Skeleton className="h-3 w-36  rounded-full flex-shrink-0 mt-1 bg-lightborder dark:bg-accent" />
+                <Skeleton className="h-3 w-26 rounded-full flex-shrink-0 mt-1 bg-lightborder dark:bg-accent" />
+              </div>
+              )}
+
             </div>
           </div>
         ))}

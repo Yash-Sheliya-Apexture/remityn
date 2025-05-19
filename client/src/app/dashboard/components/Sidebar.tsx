@@ -4237,7 +4237,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={toggleSidebar}
-            className="fixed inset-0 bg-black/50 dark:bg-black/70 z-30 lg:hidden"
+            className="fixed inset-0 bg-black/50 dark:bg-black/70 z-40 lg:hidden"
             aria-hidden="true"
           />
         )}
@@ -4288,7 +4288,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
               )}
             </div>
             {/* Scrollable Navigation Area */}
-            <div className="p-2 flex-grow overflow-y-auto [&::-webkit-scrollbar-track]:rounded-3xl [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-3xl [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
+            <div className="p-2 flex-grow overflow-y-auto sm:[&::-webkit-scrollbar]:w-3 sm:[&::-webkit-scrollbar]:h-3  sm:[&::-webkit-scrollbar-track]:bg-gray-100 sm:[&::-webkit-scrollbar-thumb]:bg-lightborder sm:dark:[&::-webkit-scrollbar-track]:bg-primarybox sm:dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
               <nav className="flex-grow">
                 {isAuthenticated && isLoadingBalances ? (
                   <>
