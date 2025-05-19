@@ -291,7 +291,6 @@ const NicknamePopup: React.FC<NicknamePopupProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          // Removed onClick here
           aria-modal="true" // Added for accessibility
           role="dialog"      // Added for accessibility
           aria-labelledby="nickname-popup-title" // Added for accessibility
