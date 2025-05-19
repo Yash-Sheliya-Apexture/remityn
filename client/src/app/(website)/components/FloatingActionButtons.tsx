@@ -977,8 +977,8 @@ const FloatingButton: React.FC<FloatingButtonProps> = ({
 
 const FloatingActionButtons: React.FC = () => {
   const handleWhatsAppClick = () => {
-    console.log("WhatsApp clicked: +91 9779816382");
-    // window.open('https://wa.me/919779816382', '_blank');
+    console.log("WhatsApp clicked: +91 9265348797");
+    window.open('https://wa.me/919265348797', '_blank');
   };
 
   const handleMessagesClick = useCallback(() => {
