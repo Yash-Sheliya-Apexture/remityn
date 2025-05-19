@@ -928,7 +928,6 @@ export default function AdminHomePage() {
         <div className="overflow-y-auto">
           {/* Admin-Header */}
           <div className="Admin-Header mb-5">
-            
             <div className="flex flex-wrap items-center gap-3">
               <div className="size-12 shrink-0 bg-primary dark:bg-primarybox rounded-full flex items-center justify-center">
                 <FaChartPie className="size-6 text-mainheading dark:text-primary" />
@@ -937,7 +936,7 @@ export default function AdminHomePage() {
                 Admin Dashboard Home
               </h1>
             </div>
-            
+
             <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg">
               Welcome to your Admin Dashboard – the central hub for managing and
               monitoring your platform. Get a quick overview of key metrics,
@@ -948,7 +947,7 @@ export default function AdminHomePage() {
           </div>
 
           <StatsCards />
-          
+
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
             <PaymentsVolumeChart />
             <TransfersVolumeChart />

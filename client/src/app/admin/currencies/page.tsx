@@ -5900,7 +5900,6 @@
 
 // export default AdminCurrenciesPage;
 
-
 // frontend/src/app/admin/currencies/page.tsx
 "use client";
 import React, { useState, useEffect, useMemo, useCallback } from "react";
@@ -5954,18 +5953,27 @@ interface ApiErrorResponse {
 }
 
 const LoadingSkeleton = () => (
-  <div className="container mx-auto px-4 py-8 bg-white dark:bg-background">
+  <div className="container mx-auto px-4 py-5 bg-white dark:bg-background">
     <div className="space-y-6">
       <div className="pb-6 mb-6 border-b">
-        <Skeleton className="h-8 w-3/5 sm:w-1/3 rounded mb-3" />
-        <Skeleton className="h-4 w-4/5 sm:w-1/2 rounded" />
+        <div className="flex gap-3 items-center">
+          <Skeleton className="size-12 rounded-full mb-3" />
+          <Skeleton className="h-9 w-3/5 sm:w-1/5 rounded mb-3" />
+        </div>
+        <div className="space-y-1.5">
+          <Skeleton className="h-4 w-full sm:w-3/4 rounded" />
+          <Skeleton className="h-4 w-full sm:w-1/2 rounded sm:hidden block" />
+          <Skeleton className="h-4 w-40 sm:w-1/2 rounded sm:hidden block" />
+        </div>
       </div>
+
       <div className="flex sm:justify-between flex-row w-full items-center mb-6 gap-4">
-        <Skeleton className="h-12 w-12 sm:h-12.5 sm:w-40 rounded-full" />
-        <Skeleton className="h-12 sm:h-12.5 flex-1 sm:flex-none sm:w-64 rounded-full" />
+        <Skeleton className="size-12.5 sm:w-50 rounded-full" />
+        <Skeleton className="h-12.5 flex-1 sm:flex-none sm:w-70 rounded-full" />
       </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {Array.from({ length: 6 }).map((_, index) => (
+        {Array.from({ length: 8 }).map((_, index) => (
           <div
             key={index}
             className="rounded-xl overflow-hidden border flex flex-col"
@@ -5974,18 +5982,20 @@ const LoadingSkeleton = () => (
               <div className="flex items-center gap-4 mb-4">
                 <Skeleton className="size-14 rounded-full flex-shrink-0" />
                 <div className="flex-1 space-y-1.5">
-                  <Skeleton className="h-6 w-1/3 rounded" />
-                  <Skeleton className="h-4 w-2/3 rounded" />
+                  <Skeleton className="h-7 w-1/3 rounded" />
+                  <Skeleton className="h-5 w-2/3 rounded" />
                 </div>
               </div>
+
               <div className="p-3 space-y-2 rounded-lg border">
-                <Skeleton className="h-4 w-1/4 rounded mb-1" />
-                <Skeleton className="h-6 w-1/2 rounded" />
-                <Skeleton className="h-3 w-full rounded mt-1" />
+                <Skeleton className="h-6 w-1/4 rounded mb-1" />
+                <Skeleton className="h-7 w-1/2 rounded" />
+                <Skeleton className="h-6 w-full rounded mt-1" />
               </div>
             </div>
+
             <div className="border-t p-4">
-              <div className="flex flex-wrap flex-row gap-2">
+              <div className="flex w-full gap-2">
                 <Skeleton className="h-10 lg:h-12.5 flex-1 rounded-full" />
                 <Skeleton className="h-10 lg:h-12.5 flex-1 rounded-full" />
                 <Skeleton className="h-10 lg:h-12.5 flex-1 rounded-full" />
@@ -6296,7 +6306,7 @@ const AdminCurrenciesPage: React.FC = () => {
   ) : (
     <div className="container mx-auto px-4 py-5 relative">
       <div className="space-y-6">
-        <div className="Activity">
+        <div className="Activity pb-6 mb-6 border-b">
           <div className="flex flex-wrap items-center gap-3">
             <div className="size-12 shrink-0 bg-primary dark:bg-primarybox rounded-full flex items-center justify-center">
               <FaCoins className="size-6 text-mainheading dark:text-primary" />

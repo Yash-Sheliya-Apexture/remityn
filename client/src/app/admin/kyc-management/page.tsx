@@ -1507,7 +1507,7 @@ const KycManagementPage: React.FC = () => {
               {sortBy === "date" && (
                 <motion.div
                   layoutId="activeSortBackground"
-                  className="absolute inset-0 rounded-full bg-primary shadow-sm z-0"
+                  className="absolute inset-0 rounded-full bg-primary z-0"
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 />
               )}
@@ -1533,7 +1533,7 @@ const KycManagementPage: React.FC = () => {
               {sortBy === "name" && (
                 <motion.div
                   layoutId="activeSortBackground"
-                  className="absolute inset-0 rounded-full bg-primary shadow-sm z-0"
+                  className="absolute inset-0 rounded-full bg-primary z-0"
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 />
               )}
