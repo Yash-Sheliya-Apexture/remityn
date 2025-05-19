@@ -3165,7 +3165,6 @@ export default function KycIdentityPage() {
                 }
               >
                 {isSubmitting ? (
-                  // ----- Loading State (Original SVG) -----
                   <>
                     <svg
                       className="h-5 w-5 text-neutral-900 animate-spin mr-2"

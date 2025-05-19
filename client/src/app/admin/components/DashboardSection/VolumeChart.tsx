@@ -2184,14 +2184,15 @@ export function VolumeChart({
                       "flex-1 relative text-xs sm:text-sm px-3 py-4 sm:p-4 font-medium rounded-full",
                       "flex items-center justify-center",
                       "transition-colors duration-200 ease-linear focus:outline-none cursor-pointer",
-                      "focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none data-[state=active]:shadow-sm"
+                      "focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none",
+                      "data-[state=active]:text-neutral-900 border-none data-[state=active]:bg-transparent dark:data-[state=active]:bg-transparent data-[state=active]:shadow-none"
                     )}
                     style={{ WebkitTapHighlightColor: "transparent" }}
                   >
                     {timeRange === tab.id && (
                       <motion.div
                         layoutId={`activeVolumeChartTabIndicator-${chartType}`}
-                        className="absolute inset-0 rounded-full bg-primary dark:bg-primarybox"
+                        className="absolute inset-0 rounded-full bg-primary"
                         transition={{
                           type: "spring",
                           stiffness: 300,

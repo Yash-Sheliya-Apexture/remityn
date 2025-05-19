@@ -5321,9 +5321,6 @@ export default function KycPersonalPage() {
                           date > startOfDay(subYears(new Date(), 18)) ||
                           date < new Date("1900-01-01")
                         }
-                        captionLayout="dropdown-buttons"
-                        fromYear={1900}
-                        toYear={subYears(new Date(), 18).getFullYear()}
                         initialFocus
                       />
                       <div className="p-3 border-t">
