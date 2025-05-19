@@ -3178,7 +3178,7 @@ const ReviewSendPage = () => {
   };
 
   const getToastContainerStyle = (): React.CSSProperties & { [key: `--${string}`]: string | number } => {
-    const baseStyle = { zIndex: 99999 };
+    const baseStyle = { zIndex: 30 };
     if (isMobile) {
       return { ...baseStyle, top: "1rem", left: "1rem", right: "1rem", width: "auto" };
     } else {
@@ -3461,7 +3461,7 @@ const ReviewSendPage = () => {
     <div className="min-h-screen relative"> {/* Added relative for ToastContainer */}
       <ToastContainer {...toastContainerProps} style={getToastContainerStyle()} />
       <DashboardHeader title="Send Money" currentStep={3} steps={steps} />
-      <div className="mx-auto lg:max-w-2xl mt-5 px-4"> {/* Added px-4 for container padding */}
+      <div className="mx-auto lg:max-w-2xl mt-5"> {/* Added px-4 for container padding */}
         <h1 className="lg:text-3xl md:text-2xl text-xl lg:text-center text-left capitalize font-semibold text-mainheading pb-4 dark:text-white">
           Review details of your transfer
         </h1>
@@ -3506,7 +3506,7 @@ const ReviewSendPage = () => {
                 <span className="text-gray-500 dark:text-gray-300">
                   Guaranteed rate
                 </span>
-                <span className="font-semibold p-2 px-5 rounded-full bg-primary text-mainheading cursor-default">
+                <span className="font-semibold p-2 px-4 rounded-full bg-primary text-mainheading cursor-default">
                   1 {summary.sendCurrencyCode} ={" "}
                   {summary.exchangeRate.toFixed(2)}{" "}
                   {summary.receiveCurrencyCode}

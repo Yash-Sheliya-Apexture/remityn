@@ -8967,7 +8967,7 @@ const AdminEditCurrencyPage = () => {
   const getToastContainerStyle = (): React.CSSProperties & {
     [key: `--${string}`]: string | number;
   } => {
-    const baseStyle = { zIndex: 99999 };
+    const baseStyle = { zIndex: 30 };
     if (isMobile) {
       return {
         ...baseStyle,

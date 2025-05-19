@@ -4229,7 +4229,7 @@ const AdminTransferDetailPage = () => {
   };
 
   const getToastContainerStyle = (): React.CSSProperties & { [key: `--${string}`]: string | number } => {
-    const baseStyle = { zIndex: 99999 };
+    const baseStyle = { zIndex: 30 };
     if (isMobile) return { ...baseStyle, top: "1rem", left: "1rem", right: "1rem", width: "auto" };
     return { ...baseStyle, top: "0.75rem", right: "0.75rem", width: "320px" };
   };
@@ -4279,7 +4279,7 @@ const AdminTransferDetailPage = () => {
               <TransferInfoCard transfer={transfer} />
             </div>
             <div className="lg:col-span-2">
-              <div className="rounded-xl bg-white dark:bg-primarybox overflow-hidden">
+              <div className="rounded-xl border bg-white dark:bg-primarybox overflow-hidden">
                 <div className="bg-lightgray dark:bg-secondarybox px-6 py-4 border-b dark:border-b-neutral-700">
                   <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">Detailed Information</h3>
                 </div>

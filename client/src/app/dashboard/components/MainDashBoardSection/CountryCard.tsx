@@ -2678,7 +2678,7 @@ const CountryCard = () => {
               <GoPlus size={30} className="text-neutral-900 dark:text-white" />
             </div>
             <span className="text-sm text-neutral-500 dark:text-white">
-              Add another currency to your account.
+              Add new currency to your account.
             </span>
           </div>
         </div>

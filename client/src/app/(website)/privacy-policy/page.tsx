@@ -472,8 +472,8 @@ const sections: PolicySection[] = [
         cookies. However, please be aware that disabling cookies may affect the
         functionality of certain features on our website. For more details about
         how we use cookies, please refer to our Cookie Policy.
-        <Link href="/cookie-policy" legacyBehavior>
-          <a className="underline">cookie policy</a>
+        <Link href="/cookie-policy" >
+          <span className="underline">cookie policy</span>
         </Link>
         .
       </p>

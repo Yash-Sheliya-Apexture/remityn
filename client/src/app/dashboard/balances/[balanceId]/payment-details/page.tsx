@@ -3818,7 +3818,7 @@ const PaymentDetailsPage = () => {
   };
 
   const getToastContainerStyle = (): React.CSSProperties & { [key: `--${string}`]: string | number } => {
-    const baseStyle = { zIndex: 99999 };
+    const baseStyle = { zIndex: 30 };
     if (isMobile) {
       return { ...baseStyle, top: "1rem", left: "1rem", right: "1rem", width: "auto" };
     } else {
