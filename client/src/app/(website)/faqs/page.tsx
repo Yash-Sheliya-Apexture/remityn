@@ -1463,7 +1463,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
             initial="initial"
             animate="animate"
             exit="exit"
-            className="overflow-hidden lg:text-lg text-sm text-gray-500 dark:text-gray-300"
+            className="overflow-hidden lg:text-lg text-base text-gray-500 dark:text-gray-300"
           >
             <p className="pt-0 pb-4 md:px-5 px-4">{item.answer}</p>
           </motion.div>

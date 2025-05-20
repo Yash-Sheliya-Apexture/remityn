@@ -22740,7 +22740,7 @@ const HeroSection: React.FC = () => {
                         <TooltipContent
                           side="bottom"
                           sideOffset={5}
-                          className="bg-[#e4e4e4] dark:bg-secondarybox text-white p-2 px-3 rounded-2xl max-w-64"
+                          className="bg-[#e4e4e4] dark:bg-secondarybox text-white p-2 px-3 rounded-lg max-w-72 text-center"
                         >
                           <p className="font-medium dark:text-white text-neutral-900 text-xs">
                             Rate includes Ours Rate of{" "}
@@ -22781,7 +22781,7 @@ const HeroSection: React.FC = () => {
                         <TooltipContent
                           side="bottom"
                           sideOffset={5}
-                          className="bg-[#e4e4e4] dark:bg-secondarybox text-white p-2 px-3 rounded-2xl max-w-47"
+                          className="bg-[#e4e4e4] dark:bg-secondarybox text-white p-2 px-3 rounded-lg max-w-48 text-center"
                         >
                           <p className="font-medium dark:text-white text-neutral-900 text-xs">
                             Current mid-market rate. For comparison purposes
