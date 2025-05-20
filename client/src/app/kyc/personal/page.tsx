@@ -2317,7 +2317,7 @@
 //                 onClick={prevStep}
 //                 disabled={isSubmittingForm || isSkipping}
 //               >
-                
+
 //                 <ArrowLeft className="mr-2 size-4.5" /> Back
 //               </button>
 //               {/* Show skip button if not started, or if previously rejected/skipped */}
@@ -2330,7 +2330,7 @@
 //                   disabled={isSubmittingForm || isSkipping}
 //                   className="bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-6 py-3 h-12.5 w-full rounded-full transition-all duration-75 ease-linear focus:outline-none"
 //                 >
-                  
+
 //                   {isSkipping ? (
 //                     <Loader2 className="mr-2 size-4.5 animate-spin" />
 //                   ) : null}
@@ -2351,7 +2351,7 @@
 //                 ) : (
 //                   <ArrowRight className="ml-2 size-4.5" />
 //                 )}
-                
+
 //               </button>
 //             </div>
 //           </form>
@@ -2360,15 +2360,6 @@
 //     </Card>
 //   );
 // }
-
-
-
-
-
-
-
-
-
 
 // // frontend/src/app/kyc/personal/page.tsx
 // "use client";
@@ -2768,7 +2759,7 @@
 //     <Card className="w-full max-w-2xl mx-auto shadow border animate-fadeIn sm:p-8 p-4">
 //       <CardHeader className="border-b pb-6 mb-6 space-y-2">
 //         <CardTitle className="sm:text-2xl text-xl font-semibold tracking-tight flex items-start gap-2 text-mainheading dark:text-white">
-//           <User className="h-6 w-6 text-primary mt-1 flex-shrink-0" /> Personal Details (Step 
+//           <User className="h-6 w-6 text-primary mt-1 flex-shrink-0" /> Personal Details (Step
 //           {formStepOrder.indexOf("personal") + 1} of {formStepOrder.length})
 //         </CardTitle>
 //         <CardDescription className="text-gray-500 dark:text-gray-300">
@@ -3108,8 +3099,6 @@
 //     </Card>
 //   );
 // }
-
-
 
 // // frontend/src/app/kyc/personal/page.tsx
 // "use client";
@@ -3510,7 +3499,7 @@
 //       <CardHeader className="border-b pb-6 mb-6 space-y-2">
 //         <CardTitle className="sm:text-2xl text-xl font-semibold tracking-normal flex items-start gap-2 text-mainheading dark:text-white">
 //           <User className="h-6 w-6 text-primary mt-1 flex-shrink-0" /> Personal
-//           Details (Step 
+//           Details (Step
 //           {formStepOrder.indexOf("personal") + 1} of {formStepOrder.length})
 //         </CardTitle>
 //         <CardDescription className="text-gray-500 dark:text-gray-300">
@@ -3874,7 +3863,7 @@
 //                   // ----- Loading State -----
 //                   <>
 //                     <svg
-//                       className="h-5 w-5 text-neutral-900 animate-spin mr-2" 
+//                       className="h-5 w-5 text-neutral-900 animate-spin mr-2"
 //                       viewBox="0 0 24 24"
 //                       fill="none"
 //                       xmlns="http://www.w3.org/2000/svg"
@@ -3960,8 +3949,6 @@
 //     </Card>
 //   );
 // }
-
-
 
 // // last code
 // // frontend/src/app/kyc/personal/page.tsx
@@ -4337,7 +4324,7 @@
 //       <CardHeader className="border-b pb-6 mb-6 space-y-2">
 //         <CardTitle className="sm:text-2xl text-xl font-semibold tracking-normal flex items-start gap-2 text-mainheading dark:text-white">
 //           <User className="h-6 w-6 text-primary mt-1 flex-shrink-0" /> Personal
-//           Details (Step 
+//           Details (Step
 //           {formStepOrder.indexOf("personal") + 1} of {formStepOrder.length})
 //         </CardTitle>
 //         <CardDescription className="text-gray-500 dark:text-gray-300">
@@ -4693,7 +4680,7 @@
 //                 {isSubmittingForm ? (
 //                   <>
 //                     <svg
-//                       className="h-5 w-5 text-neutral-900 animate-spin mr-2" 
+//                       className="h-5 w-5 text-neutral-900 animate-spin mr-2"
 //                       viewBox="0 0 24 24"
 //                       fill="none"
 //                       xmlns="http://www.w3.org/2000/svg"
@@ -4775,7 +4762,6 @@
 //     </Card>
 //   );
 // }
-
 
 // frontend/src/app/kyc/personal/page.tsx
 "use client";
@@ -4898,8 +4884,18 @@ const datePickerYears = Array.from(
   (_, i) => new Date().getFullYear() - i
 ).reverse();
 const datePickerMonths = [
-  "January", "February", "March", "April", "May", "June", "July",
-  "August", "September", "October", "November", "December",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 export default function KycPersonalPage() {
@@ -5063,7 +5059,9 @@ export default function KycPersonalPage() {
   const handleSkip = useCallback(async () => {
     // If KYC status is already 'skipped', redirect to dashboard immediately.
     if (backendStatus === "skipped") {
-      console.log("KYC Personal: KYC status is already 'skipped'. Redirecting to dashboard.");
+      console.log(
+        "KYC Personal: KYC status is already 'skipped'. Redirecting to dashboard."
+      );
       router.push("/dashboard");
       return;
     }
@@ -5084,22 +5082,34 @@ export default function KycPersonalPage() {
       // However, the primary guard is the backendStatus === "skipped" check above.
       console.log("KYC Personal: Attempting to skip KYC via service...");
       await kycService.skipKyc();
-      console.log("KYC Personal: Skip API call successful. Refetching contexts...");
+      console.log(
+        "KYC Personal: Skip API call successful. Refetching contexts..."
+      );
       await refetchUser();
       await fetchKycStatus(true); // Force refetch of KYC status
-      console.log("KYC Personal: Contexts refetched. Redirecting to dashboard.");
+      console.log(
+        "KYC Personal: Contexts refetched. Redirecting to dashboard."
+      );
       router.push("/dashboard"); // Redirect after successful skip
     } catch (err: any) {
       console.error("KYC Personal: Error skipping KYC:", err);
       setFormActionError(
-        err?.response?.data?.message || err.message || "Skip failed. Please try again."
+        err?.response?.data?.message ||
+          err.message ||
+          "Skip failed. Please try again."
       );
       // setIsSkipping(false) is in the finally block
     } finally {
       setIsSkipping(false);
     }
-  }, [backendStatus, refetchUser, fetchKycStatus, router, setFormActionError, setIsSkipping]);
-
+  }, [
+    backendStatus,
+    refetchUser,
+    fetchKycStatus,
+    router,
+    setFormActionError,
+    setIsSkipping,
+  ]);
 
   const handleYearChange = (year: string) => {
     const newDate = new Date(calendarDate);
@@ -5135,31 +5145,40 @@ export default function KycPersonalPage() {
     kycInitialized &&
     !["not_started", "rejected", "skipped"].includes(backendStatus as string)
   ) {
-     // This block will be hit for "pending", "verified", "error", "loading" (if kycLoadingStatus is false), "unauthenticated"
-     // KycProvider should ideally redirect away from this page for these states.
-     // Showing a message and dashboard link as a fallback.
-     return (
-       <div className="flex justify-center items-center min-h-[400px] text-center">
-         <Card className="p-6 bg-white dark:bg-background shadow-lg rounded-lg">
-           <CardTitle className="text-xl font-semibold text-mainheading dark:text-white">
-             KYC Status: {backendStatus.replace("_", " ").toUpperCase()}
-           </CardTitle>
-           <CardDescription className="text-gray-600 dark:text-gray-300 mt-2">
-             Your personal details cannot be edited at this stage.
-             {backendStatus === "error" && " An error occurred with your KYC process. Please contact support."}
-             {backendStatus === "unauthenticated" && " Please log in to continue."}
-           </CardDescription>
-           <Button 
-            onClick={() => router.push(backendStatus === "unauthenticated" ? '/auth/login' : '/dashboard')} 
+    // This block will be hit for "pending", "verified", "error", "loading" (if kycLoadingStatus is false), "unauthenticated"
+    // KycProvider should ideally redirect away from this page for these states.
+    // Showing a message and dashboard link as a fallback.
+    return (
+      <div className="flex justify-center items-center min-h-[400px] text-center">
+        <Card className="p-6 bg-white dark:bg-background shadow-lg rounded-lg">
+          <CardTitle className="text-xl font-semibold text-mainheading dark:text-white">
+            KYC Status: {backendStatus.replace("_", " ").toUpperCase()}
+          </CardTitle>
+          <CardDescription className="text-gray-600 dark:text-gray-300 mt-2">
+            Your personal details cannot be edited at this stage.
+            {backendStatus === "error" &&
+              " An error occurred with your KYC process. Please contact support."}
+            {backendStatus === "unauthenticated" &&
+              " Please log in to continue."}
+          </CardDescription>
+          <Button
+            onClick={() =>
+              router.push(
+                backendStatus === "unauthenticated"
+                  ? "/auth/login"
+                  : "/dashboard"
+              )
+            }
             className="mt-6 bg-primary hover:bg-primaryhover text-neutral-900 rounded-full px-6 py-2.5"
-           >
-             {backendStatus === "unauthenticated" ? "Go to Login" : "Go to Dashboard"}
-           </Button>
-         </Card>
-       </div>
-     );
+          >
+            {backendStatus === "unauthenticated"
+              ? "Go to Login"
+              : "Go to Dashboard"}
+          </Button>
+        </Card>
+      </div>
+    );
   }
-
 
   return (
     <Card className="w-full max-w-2xl mx-auto shadow-none border animate-fadeIn sm:p-8 p-4 bg-white dark:bg-background">
@@ -5174,6 +5193,7 @@ export default function KycPersonalPage() {
           with <span className="text-red-500">*</span> are required.
         </CardDescription>
       </CardHeader>
+
       <CardContent>
         {formActionError && (
           <Alert className="bg-red-50 dark:bg-red-900/25 border-red-500 rounded-lg p-4 gap-3 mb-6">
@@ -5190,6 +5210,7 @@ export default function KycPersonalPage() {
             </div>
           </Alert>
         )}
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -5199,7 +5220,7 @@ export default function KycPersonalPage() {
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <FormLabel className="text-neutral-900 dark:text-white">
-                      Legal First Name <span className="text-red-500">*</span>
+                      Legal First Name <span className="text-red-600">*</span>
                     </FormLabel>
                     <FormControl>
                       <Input placeholder="e.g., Jane" {...field} />
@@ -5208,13 +5229,14 @@ export default function KycPersonalPage() {
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name="lastName"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <FormLabel className="text-neutral-900 dark:text-white">
-                      Legal Last Name <span className="text-red-500">*</span>
+                      Legal Last Name <span className="text-red-600">*</span>
                     </FormLabel>
                     <FormControl>
                       <Input placeholder="e.g., Doe" {...field} />
@@ -5231,7 +5253,7 @@ export default function KycPersonalPage() {
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel className="text-neutral-900 dark:text-white">
-                    Date of Birth <span className="text-red-500">*</span>
+                    Date of Birth <span className="text-red-600">*</span>
                   </FormLabel>
                   <Popover
                     open={dateOfBirthPickerOpen}
@@ -5242,7 +5264,7 @@ export default function KycPersonalPage() {
                         if (field.value && isDateValid(field.value)) {
                           setCalendarDate(field.value);
                         } else {
-                           setCalendarDate(subYears(new Date(), 30)); // Reset calendar view if no valid date
+                          setCalendarDate(subYears(new Date(), 30)); // Reset calendar view if no valid date
                         }
                       }
                     }}
@@ -5325,16 +5347,18 @@ export default function KycPersonalPage() {
                       />
                       <div className="p-3 border-t">
                         <Button
-                            type="button"
-                            className="w-full bg-primary hover:bg-primaryhover text-neutral-900 rounded-full"
-                            onClick={() => {
-                                field.onChange(tempDateOfBirth);
-                                form.trigger("dateOfBirth"); // Manually trigger validation for DOB
-                                setDateOfBirthPickerOpen(false);
-                            }}
-                            disabled={!tempDateOfBirth || !isDateValid(tempDateOfBirth)}
+                          type="button"
+                          className="w-full bg-primary hover:bg-primaryhover text-neutral-900 rounded-full"
+                          onClick={() => {
+                            field.onChange(tempDateOfBirth);
+                            form.trigger("dateOfBirth"); // Manually trigger validation for DOB
+                            setDateOfBirthPickerOpen(false);
+                          }}
+                          disabled={
+                            !tempDateOfBirth || !isDateValid(tempDateOfBirth)
+                          }
                         >
-                            Apply
+                          Apply
                         </Button>
                       </div>
                     </PopoverContent>
@@ -5349,9 +5373,9 @@ export default function KycPersonalPage() {
 
             <div className="space-y-2">
               <FormLabel className="flex items-center gap-1.5 text-neutral-900 dark:text-white">
-                <Phone className="h-4 w-4 text-muted-foreground" /> Mobile
-                Number <span className="text-red-500">*</span>
+                Mobile Number <span className="text-red-600">*</span>
               </FormLabel>
+
               <div className="flex items-start gap-2">
                 <FormField
                   control={form.control}
@@ -5420,7 +5444,8 @@ export default function KycPersonalPage() {
                                   <CommandItem
                                     key={option.label}
                                     value={option.label} // Important for Command's internal filtering/selection
-                                    onSelect={() => { // Simpler onSelect
+                                    onSelect={() => {
+                                      // Simpler onSelect
                                       form.setValue(
                                         "mobileCountryCode",
                                         option.value,
@@ -5513,30 +5538,75 @@ export default function KycPersonalPage() {
                 {isSubmittingForm ? (
                   <>
                     <svg
-                      className="h-5 w-5 text-neutral-900 animate-spin mr-2" 
+                      className="h-5 w-5 text-neutral-900 animate-spin mr-2"
                       viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                       aria-hidden="true"
                     >
-                      <path d="M12 2V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M12 18V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M4.93 4.93L7.76 7.76" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M16.24 16.24L19.07 19.07" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M2 12H6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M18 12H22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M4.93 19.07L7.76 16.24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M16.24 7.76L19.07 4.93" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path
+                        d="M12 2V6"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M12 18V22"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M4.93 4.93L7.76 7.76"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M16.24 16.24L19.07 19.07"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M2 12H6"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M18 12H22"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M4.93 19.07L7.76 16.24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M16.24 7.76L19.07 4.93"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                     <span>Processing...</span> {/* Changed from Continue... */}
                   </>
                 ) : (
                   <>
                     <span>Continue</span>
-                    <ArrowRight
-                      className="ml-2 size-5"
-                      aria-hidden="true"
-                    />
+                    <ArrowRight className="ml-2 size-5" aria-hidden="true" />
                   </>
                 )}
               </button>
