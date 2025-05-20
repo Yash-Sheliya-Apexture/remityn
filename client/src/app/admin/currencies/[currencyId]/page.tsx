@@ -111,7 +111,7 @@
 //                     <textarea id="bankAddress" name="bankAddress" value={currency.bankAddress || ''} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
 //                 </div>
 //                 <div className="mb-4">
-//                     <label htmlFor="wiseFeePercentage" className="block text-gray-700 text-sm font-bold mb-2">Wise Fee Percentage</label>
+//                     <label htmlFor="wiseFeePercentage" className="block text-gray-700 text-sm font-bold mb-2">remityn Fee Percentage</label>
 //                     <input type="number" id="wiseFeePercentage" name="wiseFeePercentage" value={currency.wiseFeePercentage !== undefined ? currency.wiseFeePercentage : 0} onChange={handleChange} step="0.0001" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
 //                 </div>
 //                 <div className="mb-6">
@@ -379,10 +379,10 @@
 //               />
 //             </div>
 
-//             {/* Wise Fee Percentage */}
+//             {/* remityn Fee Percentage */}
 //             <div>
 //               <label className="block text-gray-700 font-semibold mb-2">
-//                 Wise Fee Percentage
+//                 remityn Fee Percentage
 //               </label>
 //               <input
 //                 type="number"
@@ -702,10 +702,10 @@
 //                 />
 //               </div>
 
-//               {/* Wise Fee Percentage */}
+//               {/* remityn Fee Percentage */}
 //               <div>
 //                 <label className="inline-block text-gray font-medium mb-2">
-//                   Wise Fee Percentage
+//                   remityn Fee Percentage
 //                 </label>
 //                 <input
 //                   type="number"
@@ -1040,10 +1040,10 @@
 //                   />
 //                 </div>
 
-//                 {/* Wise Fee Percentage */}
+//                 {/* remityn Fee Percentage */}
 //                 <div className="space-y-2">
 //                   <label className="block text-sm font-medium text-slate-700">
-//                     Wise Fee Percentage
+//                     remityn Fee Percentage
 //                   </label>
 //                   <div className="relative">
 //                     <input
@@ -1615,12 +1615,12 @@
 //                   {/* Fees */}
 //                   <div className={activeTab === "fees" ? "block" : "hidden"}>
 //                     <div className="space-y-6">
-//                       {/* Wise Fee Percentage */}
+//                       {/* remityn Fee Percentage */}
 //                       <div>
 //                         <div className="flex items-center mb-2">
 //                           <FaPercentage className="h-5 w-5 text-indigo-500 mr-2" />
 //                           <label className="block text-sm font-medium text-gray-700">
-//                             Wise Fee Percentage
+//                             remityn Fee Percentage
 //                           </label>
 //                         </div>
 //                         <div className="relative">
@@ -1638,7 +1638,7 @@
 //                           </div>
 //                         </div>
 //                         <p className="mt-1 text-xs text-gray-500">
-//                           The fee percentage charged by Wise for this currency
+//                           The fee percentage charged by remityn for this currency
 //                         </p>
 //                       </div>
 
@@ -3235,12 +3235,12 @@
 //                 </h2>
 //                 <div className="bg-white rounded-xl p-4 border border-gray-200">
 //                   <div className="space-y-6">
-//                     {/* Wise Fee Percentage */}
+//                     {/* remityn Fee Percentage */}
 //                     <div>
 //                       <div className="flex items-center mb-2">
 //                         <FaPercentage className="h-5 w-5 text-primary mr-2" />
 //                         <label className="block font-medium text-main">
-//                           Wise Fee Percentage
+//                           remityn Fee Percentage
 //                         </label>
 //                       </div>
 //                       <div className="relative">
@@ -3258,7 +3258,7 @@
 //                         </div>
 //                       </div>
 //                       <p className="mt-1 text-xs text-gray-500">
-//                         The fee percentage charged by Wise for this currency
+//                         The fee percentage charged by remityn for this currency
 //                       </p>
 //                     </div>
 
@@ -3536,7 +3536,7 @@
 //       payload.wiseFeePercentage !== null &&
 //       (isNaN(payload.wiseFeePercentage) || payload.wiseFeePercentage < 0)
 //     ) {
-//       setError("Wise Fee % must be non-negative.");
+//       setError("remityn Fee % must be non-negative.");
 //       setIsSubmitting(false);
 //       return;
 //     }
@@ -3911,14 +3911,14 @@
 //                 Fees & Custom Rate
 //               </h3>
 //               <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-6">
-//                 {/* Wise Fee Percentage */}
+//                 {/* remityn Fee Percentage */}
 //                 <div className="sm:col-span-2">
 //                   <label
 //                     htmlFor="wiseFeePercentage"
 //                     className="text-sm font-medium leading-6 text-gray-900 flex items-center gap-1.5"
 //                   >
 //
-//                     <Percent size={18} /> Wise Fee %
+//                     <Percent size={18} /> remityn Fee %
 //                   </label>
 //                   <div className="relative mt-1 rounded-md shadow-sm">
 //                     <input
@@ -4283,7 +4283,7 @@
 //       payload.wiseFeePercentage !== null &&
 //       (isNaN(payload.wiseFeePercentage) || payload.wiseFeePercentage < 0)
 //     ) {
-//       setError("Wise Fee % must be non-negative.");
+//       setError("remityn Fee % must be non-negative.");
 //       setIsSubmitting(false);
 //       return;
 //     }
@@ -4611,14 +4611,14 @@
 //               </h3>
 
 //               <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-6">
-//                 {/* Wise Fee Percentage */}
+//                 {/* remityn Fee Percentage */}
 //                 <div>
 //                   <label
 //                     htmlFor="wiseFeePercentage"
 //                     className="mb-2 flex items-center gap-1.5 font-medium text-gray"
 //                   >
 //                     <Percent size={18} className="text-primary" />
-//                     Wise Fee Percentage
+//                     remityn Fee Percentage
 //                   </label>
 //                   <div className="relative">
 //                     <input
@@ -4637,7 +4637,7 @@
 //                     </div>
 //                   </div>
 //                   <p className="mt-2 text-xs text-gray-500">
-//                     Applicable fee percentage for Wise transfers
+//                     Applicable fee percentage for remityn transfers
 //                   </p>
 //                 </div>
 
@@ -5100,7 +5100,7 @@
 //       payload.wiseFeePercentage !== null &&
 //       (isNaN(payload.wiseFeePercentage) || payload.wiseFeePercentage < 0)
 //     ) {
-//       toast.error("Wise Fee % must be non-negative.");
+//       toast.error("remityn Fee % must be non-negative.");
 //       setIsSubmitting(false);
 //       return;
 //     }
@@ -5432,14 +5432,14 @@
 //               </h3>
 
 //               <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-6">
-//                 {/* Wise Fee Percentage */}
+//                 {/* remityn Fee Percentage */}
 //                 <div>
 //                   <label
 //                     htmlFor="wiseFeePercentage"
 //                     className="mb-2 flex items-center gap-1.5 font-medium text-gray-500 dark:text-gray-300"
 //                   >
 //                     <Percent size={18} className="text-primary" />
-//                     Wise Fee Percentage
+//                     remityn Fee Percentage
 //                   </label>
 //                   <div className="relative">
 //                     <input
@@ -5458,7 +5458,7 @@
 //                     </div>
 //                   </div>
 //                   <p className="mt-2 text-xs text-gray-500 dark:text-gray-300">
-//                     Applicable fee percentage for Wise transfers
+//                     Applicable fee percentage for remityn transfers
 //                   </p>
 //                 </div>
 
@@ -5941,7 +5941,7 @@
 //       payload.wiseFeePercentage !== null &&
 //       (isNaN(payload.wiseFeePercentage) || payload.wiseFeePercentage < 0)
 //     ) {
-//       toast.error("Wise Fee % must be a non-negative number.");
+//       toast.error("remityn Fee % must be a non-negative number.");
 //       setIsSubmitting(false);
 //       return;
 //     }
@@ -6305,14 +6305,14 @@
 //               </h3>
 
 //               <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-6">
-//                 {/* Wise Fee Percentage */}
+//                 {/* remityn Fee Percentage */}
 //                 <div>
 //                   <label
 //                     htmlFor="wiseFeePercentage"
 //                     className="mb-2 flex items-center gap-1.5 font-medium text-gray-500 dark:text-gray-300"
 //                   >
 //                     <Percent size={18} className="text-primary" />
-//                     Wise Fee %
+//                     remityn Fee %
 //                   </label>
 //                   <div className="relative">
 //                     <input
@@ -6331,7 +6331,7 @@
 //                     </div>
 //                   </div>
 //                   <p className="mt-2 text-xs text-gray-500 dark:text-gray-300">
-//                     Percentage fee for Wise transfers (leave blank if none).
+//                     Percentage fee for remityn transfers (leave blank if none).
 //                   </p>
 //                 </div>
 
@@ -6869,7 +6869,7 @@
 //       const parsed = parseFloat(formState.wiseFeePercentage);
 //       // FIX 2 & 3 & 4: Validate parsed number before assignment
 //       if (isNaN(parsed) || parsed < 0) {
-//         toast.error("Wise Fee % must be a non-negative number.");
+//         toast.error("remityn Fee % must be a non-negative number.");
 //         setIsSubmitting(false);
 //         return;
 //       }
@@ -7305,14 +7305,14 @@
 //               </h3>
 
 //               <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-6">
-//                 {/* Wise Fee Percentage */}
+//                 {/* remityn Fee Percentage */}
 //                 <div>
 //                   <label
 //                     htmlFor="wiseFeePercentage"
 //                     className="mb-2 flex items-center gap-2 font-medium text-gray-500 dark:text-gray-300"
 //                   >
 //                     <Percent size={20} className="text-primary" />
-//                     Wise Fee %
+//                     remityn Fee %
 //                   </label>
 //                   <div className="relative">
 //                     <input
@@ -7333,7 +7333,7 @@
 //                     </div>
 //                   </div>
 //                   <p className="mt-2 text-xs text-gray-500 dark:text-gray-300">
-//                     Percentage fee for Wise transfers (leave blank if none).
+//                     Percentage fee for remityn transfers (leave blank if none).
 //                   </p>
 //                 </div>
 
@@ -7967,7 +7967,7 @@
 //     if (formState.wiseFeePercentage.trim() !== "") {
 //       const parsed = parseFloat(formState.wiseFeePercentage);
 //       if (isNaN(parsed) || parsed < 0) {
-//         toast.error("Wise Fee % must be a non-negative number.");
+//         toast.error("remityn Fee % must be a non-negative number.");
 //         setIsSubmitting(false);
 //         return;
 //       }
@@ -8396,7 +8396,7 @@
 //                 className="text-gray-500 dark:text-gray-300 capitalize text-sm flex items-center gap-1 lg:text-base"
 //               >
 //                 <Percent size={18} className="text-primary" />
-//                 Wise Fees <span className="text-red-600">*</span>
+//                 remityn Fees <span className="text-red-600">*</span>
 //               </label>
 
 //               <div className="relative">
@@ -8416,7 +8416,7 @@
 //                 </div>
 //               </div>
 //               <p className="mt-2 text-sm text-gray-500  dark:text-gray-300">
-//                 Percentage fee for Wise transfers (leave blank if none).
+//                 Percentage fee for remityn transfers (leave blank if none).
 //               </p>
 //             </div>
 //             <div>
@@ -9104,7 +9104,7 @@ const AdminEditCurrencyPage = () => {
     if (formState.wiseFeePercentage.trim() !== "") {
       const parsed = parseFloat(formState.wiseFeePercentage);
       if (isNaN(parsed) || parsed < 0) {
-        showToast("Wise Fee % must be a non-negative number.", "error");
+        showToast("remityn Fee % must be a non-negative number.", "error");
         setIsSubmitting(false);
         return;
       }
@@ -9397,6 +9397,7 @@ const AdminEditCurrencyPage = () => {
                 <Building size={18} className="text-primary" />
                 Payee Name<span className="text-red-600">*</span>
               </label>
+              
               <input
                 type="text"
                 name="payeeName"
@@ -9495,7 +9496,7 @@ const AdminEditCurrencyPage = () => {
                 className="text-gray-500 dark:text-gray-300 capitalize text-sm flex items-center gap-1 lg:text-base"
               >
                 <Percent size={18} className="text-primary" />
-                Wise Fees <span className="text-red-600">*</span>
+                remityn Fees <span className="text-red-600">*</span>
               </label>
               <div className="relative">
                 <input
@@ -9514,7 +9515,7 @@ const AdminEditCurrencyPage = () => {
                 </div>
               </div>
               <p className="mt-2 text-sm text-gray-500  dark:text-gray-300">
-                Percentage fee for Wise transfers (leave blank if none).
+                Percentage fee for remityn transfers (leave blank if none).
               </p>
             </div>
             <div>
@@ -9578,7 +9579,7 @@ const AdminEditCurrencyPage = () => {
           </div>
           <div className="lg:p-6 p-4">
             <div className="rounded-md bg-lightgray dark:bg-background border overflow-hidden">
-              <h4 className="px-4 py-3 md:text-lg text-base font-medium bg-lightborder border-b dark:bg-primarybox text-neutral-900 dark:text-white">
+              <h4 className="px-4 py-3 md:text-lg text-base font-medium bg-lightborder  dark:bg-primarybox text-neutral-900 dark:text-white">
                 Exchange Rate Info
               </h4>
               <p className="px-4 py-3 text-sm text-gray-500 dark:text-gray-300">

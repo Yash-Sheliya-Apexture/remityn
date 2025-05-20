@@ -2841,7 +2841,7 @@ const AdminSendAllMessagePage: React.FC = () => {
         style={getToastContainerStyle()}
       />
       <div className="Send mb-5">
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex items-center gap-3">
           <div className="size-12 shrink-0 bg-primary dark:bg-primarybox rounded-full flex items-center justify-center">
             <FaPaperPlane className="size-6 text-mainheading dark:text-primary" />
           </div>
@@ -2906,6 +2906,7 @@ const AdminSendAllMessagePage: React.FC = () => {
         isDeleting={deletingBatchId === showDeleteConfirm?.batchId}
         formatDateForDisplay={formatDateForDisplay}
       />
+      
     </div>
   );
 };

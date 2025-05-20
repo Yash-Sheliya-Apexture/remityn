@@ -4670,7 +4670,6 @@ import Pagination from "../../components/Pagination";
 import { GoDotFill } from "react-icons/go";
 import { FaRegCommentDots } from "react-icons/fa";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MdOutlineAccessTime } from "react-icons/md";
 
 const MESSAGES_PER_PAGE = 10;
 
@@ -5086,6 +5085,7 @@ const InboxPage: React.FC = () => {
                                 size={28}
                               />
                             </div>
+
                             <h2 className="text-xl font-medium dark:text-white text-mainheading">
                               New Messages
                               <span className="ml-2 text-xs font-semibold dark:bg-primary bg-lightborder text-neutral-900 px-1.5 py-0.5 rounded-full inline-flex items-center justify-center min-w-[20px]">
@@ -5129,7 +5129,8 @@ const InboxPage: React.FC = () => {
                                 className="dark:text-white text-neutral-900"
                                 size={28}
                               />
-                            </div >
+                            </div>
+                            
                             <h2 className="text-xl font-medium dark:text-white text-mainheading">
                               Previous Messages
                               <span className="ml-2 text-xs font-semibold dark:bg-primary bg-lightborder text-neutral-900 px-1.5 py-0.5 rounded-full inline-flex items-center justify-center min-w-[20px]">
