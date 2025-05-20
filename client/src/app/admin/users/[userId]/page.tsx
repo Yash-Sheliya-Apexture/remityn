@@ -5931,14 +5931,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ArrowLeft,
   User,
-  Mail,
-  ShieldCheck,
   CalendarDays,
   ChevronRight,
   Phone,
   Briefcase,
-  UserCheck,
-  UserX,
   HelpCircle,
   BadgeDollarSign,
   Fingerprint,
@@ -5959,6 +5955,7 @@ import {
   XCircle,
   ArrowUpDown,
   ArrowDownUp,
+  ListChecks,
 } from "lucide-react";
 
 // Utility & Toast
@@ -6330,9 +6327,9 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
     if (sortField === field) {
       const activeClasses = `${baseIconClasses} ${hoverRevealClasses} group-hover:text-primary`;
       return sortDirection === "asc" ? (
-        <ArrowUpDown size={16} className={activeClasses} />
+        <ArrowUpDown size={18} className={activeClasses} />
       ) : (
-        <ArrowDownUp size={16} className={activeClasses} />
+        <ArrowDownUp size={18} className={activeClasses} />
       );
     }
     return (
@@ -6887,6 +6884,7 @@ const UserDetailPage: React.FC = () => {
               </button>
             </div>
           </div>
+
           <Card className="overflow-hidden border shadow-none">
             <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-5 border-b">
               <div className="flex items-center gap-4">
@@ -7153,6 +7151,7 @@ const UserDetailPage: React.FC = () => {
                         Documents
                       </CardTitle>
                     </CardHeader>
+
                     {kyc?.documents && kyc.documents.length > 0 ? (
                       <div className="p-4 sm:p-6">
                         <div className="flex md:flex-row flex-col gap-4">
@@ -7215,9 +7214,17 @@ const UserDetailPage: React.FC = () => {
                         </div>
                       </div>
                     ) : (
-                      <CardContent className="p-4">
-                        <p className="text-sm text-gray-500 dark:text-gray-300 italic text-center">
+                      <CardContent className="p-4 flex items-center justify-center flex-col space-y-4">
+                        <div className="lg:size-16 size-14 flex items-center justify-center bg-primary dark:bg-transparent dark:bg-gradient-to-t dark:from-primary rounded-full mb-2">
+                          <ListChecks className="lg:size-8 size-6 mx-auto text-neutral-900 dark:text-primary" />
+                        </div>
+
+                        <h2 className="lg:text-3xl text-2xl font-medium text-neutral-900 dark:text-white mt-1">
                           No documents submitted.
+                        </h2>
+
+                        <p className="text-gray-500 dark:text-gray-300 max-w-lg mx-auto">
+                          No files have been uploaded in Submitted Documents.
                         </p>
                       </CardContent>
                     )}

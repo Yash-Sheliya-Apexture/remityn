@@ -2592,8 +2592,9 @@ const AdminUsersPage: React.FC = () => {
               <h1 className="lg:text-3xl text-2xl font-semibold text-mainheading dark:text-primary">
                 All Recent Activity
               </h1>
-            </div>
 
+            </div>
+    
             <p className="text-gray-500 mt-2 dark:text-gray-300 lg:text-lg">
               Track all user transactions, KYC submissions, and status updates
               in real time with detailed logs for complete transparency.

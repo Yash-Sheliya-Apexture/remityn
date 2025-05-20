@@ -2230,6 +2230,7 @@ export default function KycDetailsPage() {
                Nationality{" "}
               <span className="text-red-600">*</span>
             </Label>
+
             <Popover
               open={nationalityPopoverOpen}
               onOpenChange={setNationalityPopoverOpen}
@@ -2253,10 +2254,13 @@ export default function KycDetailsPage() {
                     : "Select nationality..."}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
+                
               </PopoverTrigger>
+              
+              
               <PopoverContent
                 align="start"
-                className="w-[--radix-popover-trigger-width] max-h-[--radix-popover-content-available-height]"
+                className="sm:w-[450px] max-h-[--radix-popover-content-available-height] p-0"
               >
                 <Command
                   filter={(value, search) => {
@@ -2271,8 +2275,10 @@ export default function KycDetailsPage() {
                   }}
                 >
                   <CommandInput placeholder="Search nationality..." />
+                  
                   <CommandList>
                     <CommandEmpty>No nationality found.</CommandEmpty>
+                    
                     <CommandGroup>
                       <div className="space-y-1">
                         {countryOptions.map((country) => (

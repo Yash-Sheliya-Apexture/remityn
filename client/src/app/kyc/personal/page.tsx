@@ -5402,6 +5402,7 @@ export default function KycPersonalPage() {
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </PopoverTrigger>
+                        
                         <PopoverContent
                           align="start"
                           className="sm:w-[450px] max-h-[--radix-popover-content-available-height] p-0"
@@ -5437,9 +5438,11 @@ export default function KycPersonalPage() {
                             }}
                           >
                             <CommandInput placeholder="Search country or code..." />
+
                             <CommandList>
                               <CommandEmpty>No country found.</CommandEmpty>
-                              <CommandGroup className="max-h-[250px] overflow-y-auto">
+                              
+                              <CommandGroup className="max-h-[250px] overflow-y-auto sm:[&::-webkit-scrollbar]:w-2 sm:[&::-webkit-scrollbar]:h-3 sm:[&::-webkit-scrollbar-track]:rounded-full sm:[&::-webkit-scrollbar-track]:bg-gray-100 sm:[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-lightborder sm:dark:[&::-webkit-scrollbar-track]:bg-primarybox sm:dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
                                 {countryCodeOptions.map((option) => (
                                   <CommandItem
                                     key={option.label}
