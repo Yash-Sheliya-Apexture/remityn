@@ -240,7 +240,7 @@ const WhyChooseUs: React.FC = () => {
                 {feature.title}
               </h3>
               {/* Description */}
-              <p className="sm:text-base text-sm text-gray-500 dark:text-gray-300">
+              <p className="sm:text-lg text-base text-gray-500 dark:text-gray-300">
                 {feature.description}
               </p>
             </motion.div>
