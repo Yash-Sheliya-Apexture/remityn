@@ -397,7 +397,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1 " />
 
-                <title>Wise Clone - Money Transfer</title>
+                <title>Remityn Clone - Money Transfer</title>
                 <meta name="description" content="Send and receive money internationally with low fees and real exchange rates." />
 
                 <link rel="icon" href="/favicon.ico" sizes="any" />
