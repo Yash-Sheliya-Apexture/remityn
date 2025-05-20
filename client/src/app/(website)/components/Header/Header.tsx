@@ -4353,12 +4353,26 @@ const Header: React.FC = () => {
                 aria-label="Wise Home"
               >
                 <Image
-                  src="/assets/images/wise-logo.svg"
+                  src="/assets/images/white_logo.svg"
                   alt="Wise Logo"
-                  width={100}
-                  height={24}
+                  width={160}
+                  height={50}
                   priority
-                  className="w-28 h-auto"
+                  className="w-40 h-auto dark:hidden block"
+                />
+              </Link>
+              <Link
+                href="/"
+                onClick={isMobileMenuOpen ? closeMobileMenu : undefined}
+                aria-label="Wise Home"
+              >
+                <Image
+                  src="/assets/images/dark_logo.svg"
+                  alt="Wise Logo"
+                  width={160}
+                  height={50}
+                  priority
+                  className="w-40 h-auto dark:block hidden"
                 />
               </Link>
             </div>

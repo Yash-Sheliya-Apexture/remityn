@@ -727,7 +727,7 @@ const FlagSection = () => {
                 className="text-3xl md:text-4xl xl:text-6xl font-black text-mainheading dark:text-white uppercase"
               >
                 Send Money to{" "}
-                <span className="text-primary"> INDIA With Wise</span>
+                <span className="text-primary"> INDIA With Remityn</span>
               </motion.h1>
               <motion.p
                 variants={itemVariants}
