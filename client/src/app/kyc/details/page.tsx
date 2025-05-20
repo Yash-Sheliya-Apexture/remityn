@@ -2169,9 +2169,8 @@ export default function KycDetailsPage() {
             {/* Mimics FormItem spacing */}
             <Label className="flex items-center gap-1.5 text-neutral-900 dark:text-white">
               {" "}
-              {/* Replaces FormLabel */}
-              <Briefcase className="h-4 w-4 text-muted-foreground" /> Occupation{" "}
-              <span className="text-red-500">*</span>{" "}
+             Occupation{" "}
+              <span className="text-red-600">*</span>{" "}
             </Label>
             <Select
               onValueChange={handleOccupationChange}
@@ -2200,8 +2199,7 @@ export default function KycDetailsPage() {
           {/* Salary Range Select */}
           <div className="space-y-2">
             <Label className="flex items-center gap-1.5 text-neutral-900 dark:text-white">
-              <BadgeDollarSign className="h-4 w-4 text-muted-foreground" />{" "}
-              Annual Income Range <span className="text-red-500">*</span>
+              Annual Income Range <span className="text-red-600">*</span>
             </Label>
             <Select
               onValueChange={handleSalaryChange}
@@ -2229,8 +2227,8 @@ export default function KycDetailsPage() {
             {" "}
             {/* Mimics FormItem structure */}
             <Label className="flex items-center gap-1.5 text-neutral-900 dark:text-white">
-              <Globe className="h-4 w-4 text-muted-foreground" /> Nationality{" "}
-              <span className="text-red-500">*</span>
+               Nationality{" "}
+              <span className="text-red-600">*</span>
             </Label>
             <Popover
               open={nationalityPopoverOpen}
