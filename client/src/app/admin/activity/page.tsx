@@ -1359,6 +1359,7 @@ export default function AllRecentActivityPage() {
                 <Filter size={18} />
                 Filters
               </button>
+
               <button
                 onClick={refreshData}
                 disabled={isRefreshing || loading}
@@ -1444,8 +1445,8 @@ export default function AllRecentActivityPage() {
                 <p>No activities recorded yet.</p>
               </div>
             )}
-          {/* Note: ActivityList itself handles "No activities found matching your criteria." if currentActivitiesToDisplay is empty but allActivities (and thus sortedActivities) had data */}
-
+            
+            
           {/* Pagination Component: Uses client-calculated totalPages */}
           {totalPages > 1 &&
             !loading &&
@@ -1459,6 +1460,7 @@ export default function AllRecentActivityPage() {
               />
             )}
         </div>
+
 
         {/* GenericFilters Component */}
         <GenericFilters

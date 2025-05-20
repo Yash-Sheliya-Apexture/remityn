@@ -3579,7 +3579,7 @@ const AdminInboxPage: React.FC = () => {
       <div className="space-y-6">
         <div className="flex flex-wrap justify-between items-center gap-4">
           <div className="inbox-massage">
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-3">
               <div className="size-12 shrink-0 bg-primary dark:bg-primarybox rounded-full flex items-center justify-center">
                 <FaInbox className="size-6 text-mainheading dark:text-primary" />
               </div>

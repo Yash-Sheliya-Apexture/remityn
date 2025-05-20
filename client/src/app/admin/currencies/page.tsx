@@ -6697,6 +6697,7 @@ const LoadingSkeleton = () => (
           <Skeleton className="h-4 w-40 sm:w-1/2 rounded sm:hidden block" />
         </div>
       </div>
+
       <div className="flex sm:justify-between flex-row w-full items-center mb-6 gap-4">
         <Skeleton className="size-12.5 sm:w-50 rounded-full" />
         <Skeleton className="h-12.5 flex-1 sm:flex-none sm:w-70 rounded-full" />
@@ -6723,9 +6724,9 @@ const LoadingSkeleton = () => (
             </div>
             <div className="border-t p-4">
               <div className="flex w-full gap-2">
-                <Skeleton className="h-10 lg:h-12.5 flex-1 rounded-full" />
-                <Skeleton className="h-10 lg:h-12.5 flex-1 rounded-full" />
-                <Skeleton className="h-10 lg:h-12.5 flex-1 rounded-full" />
+                <Skeleton className="h-12.5 flex-1 rounded-full" />
+                <Skeleton className="h-12.5 flex-1 rounded-full" />
+                <Skeleton className="h-12.5 flex-1 rounded-full" />
               </div>
             </div>
           </div>
@@ -7089,6 +7090,7 @@ const AdminCurrenciesPage: React.FC = () => {
         {...customToastContainerProps}
         style={getToastContainerStyle()}
       />
+
       <div className="space-y-6">
         <div className="Activity pb-6 mb-6 border-b">
           <div className="flex items-center gap-3">
@@ -7147,7 +7149,7 @@ const AdminCurrenciesPage: React.FC = () => {
 
         {isLoading &&
           currencies.length > 0 && ( // Show loader overlay if loading but already have some data
-            <div className="fixed inset-0 bg-white/70 dark:bg-black/70 flex items-center justify-center z-50">
+            <div className="fixed inset-0 bg-white/50  dark:bg-black/50 flex items-center justify-center z-50">
               <Loader2 size={48} className="text-primary animate-spin" />
             </div>
           )}
@@ -7247,13 +7249,14 @@ const AdminCurrenciesPage: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                <div className=" border-t p-4">
+
+                <div className="border-t p-4">
                   {editingCurrencyId === currency._id ? (
                     <div className="flex gap-2">
                       <button
                         onClick={handleUpdateCurrency}
                         disabled={isSubmitting}
-                        className="flex-1 flex cursor-pointer justify-center gap-1.5 items-center border text-gray-500 dark:text-gray-300 font-medium lg:px-6 px-4 py-3 h-10 lg:h-12.5 rounded-full transition duration-200 focus:outline-none"
+                        className="flex-1 flex cursor-pointer justify-center gap-1.5 items-center border text-gray-500 dark:text-gray-300 font-medium lg:px-6 px-4 py-3 h-12.5 rounded-full transition duration-200 focus:outline-none"
                       >
                         {isSubmitting ? (
                           <svg
@@ -7326,31 +7329,33 @@ const AdminCurrenciesPage: React.FC = () => {
                       </button>
                       <button
                         onClick={cancelEditing}
-                        className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border text-red-600 font-medium lg:px-6 px-4 py-3 h-10 lg:h-12.5 rounded-full transition duration-200 focus:outline-none"
+                        className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border text-red-600 font-medium lg:px-6 px-4 py-3 h-12.5 rounded-full transition duration-200 focus:outline-none"
                       >
                         <IoMdCloseCircle size={20} /> Cancel
                       </button>
                     </div>
                   ) : (
-                    <div className="flex flex-wrap flex-row gap-2">
+                    <div className="flex flex-wrap flex-row gap-3">
                       <Link
                         href={`/admin/currencies/${currency._id}`}
-                        className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border text-gray-700 dark:text-gray-300 font-medium lg:px-6 px-4 py-3 h-10 lg:h-12.5 rounded-full transition duration-200 focus:outline-none"
+                        className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border text-gray-700 dark:text-gray-300 font-medium lg:px-6 px-4 py-3 h-12.5 rounded-full transition duration-200 focus:outline-none"
                       >
                         <Info size={20} /> Details
                       </Link>
+
                       <button
                         onClick={() => startEditing(currency)}
-                        className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border text-gray-700 dark:text-gray-300 font-medium lg:px-6 px-4 py-3 h-10 lg:h-12.5 rounded-full transition duration-200 focus:outline-none"
+                        className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border text-gray-700 dark:text-gray-300 font-medium lg:px-6 px-4 py-3 h-12.5 rounded-full transition duration-200 focus:outline-none"
                       >
                         <Edit size={20} /> Edit
                       </button>
+
                       <button
                         onClick={() => {
                           setCurrencyToDeleteId(currency._id);
                           setIsDeleteConfirmationOpen(true);
                         }}
-                        className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border text-red-600 font-medium lg:px-6 px-4 py-3 h-10 lg:h-12.5 rounded-full transition duration-200 focus:outline-none"
+                        className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border text-red-600 font-medium lg:px-6 px-4 py-3 h-12.5 rounded-full transition duration-200 focus:outline-none"
                       >
                         <Trash2 size={20} /> Delete
                       </button>
@@ -7361,6 +7366,7 @@ const AdminCurrenciesPage: React.FC = () => {
             ))}
           </div>
         )}
+
         <AddCurrencyModal
           isOpen={isCreateModalOpen}
           onClose={closeCreateModal}
@@ -7372,6 +7378,7 @@ const AdminCurrenciesPage: React.FC = () => {
           setCreateFlagImageError={setCreateFlagImageError}
           isMobile={isMobile}
         />
+
         <DeleteCurrencyModal
           isOpen={isDeleteConfirmationOpen}
           onClose={() => setIsDeleteConfirmationOpen(false)}
