@@ -4272,9 +4272,10 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                   width={160}
                   height={50}
                   priority
-                  className=" hidden dark:block"
+                  className="hidden dark:block"
                 />
               </Link>
+
               <Link
                 href="/dashboard"
                 className="inline-block"
@@ -4288,9 +4289,10 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                   width={160}
                   height={50}
                   priority
-                  className=" dark:hidden block"
+                  className="dark:hidden block"
                 />
               </Link>
+                
               {isMobileView && (
                 <button
                   onClick={toggleSidebar}

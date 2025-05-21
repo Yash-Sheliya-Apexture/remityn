@@ -3249,8 +3249,6 @@
 
 // export default Header;
 
-
-
 // // frontend/src/app/components/layout/Header.tsx
 // "use client";
 // import React, { useState, useEffect } from "react";
@@ -3540,8 +3538,6 @@
 
 // export default Header;
 
-
-
 // // frontend/src/app/components/layout/Header.tsx
 // "use client";
 // import React, { useState, useEffect } from "react";
@@ -3830,7 +3826,6 @@
 // };
 
 // export default Header;
-
 
 // // frontend/src/app/components/layout/Header.tsx
 // "use client";
@@ -4150,9 +4145,6 @@
 
 // export default Header;
 
-
-
-
 // frontend/src/app/components/layout/Header.tsx
 "use client";
 import React, { useState, useEffect, useRef } from "react";
@@ -4350,7 +4342,6 @@ const Header: React.FC = () => {
               <Link
                 href="/"
                 onClick={isMobileMenuOpen ? closeMobileMenu : undefined}
-                aria-label="Remityn Home"
               >
                 <Image
                   src="/assets/images/white_logo.svg"
@@ -4360,12 +4351,7 @@ const Header: React.FC = () => {
                   priority
                   className="w-40 h-auto dark:hidden block"
                 />
-              </Link>
-              <Link
-                href="/"
-                onClick={isMobileMenuOpen ? closeMobileMenu : undefined}
-                aria-label="Remityn Home"
-              >
+
                 <Image
                   src="/assets/images/dark_logo.svg"
                   alt="Remityn Logo"
@@ -4374,7 +4360,7 @@ const Header: React.FC = () => {
                   priority
                   className="w-40 h-auto dark:block hidden"
                 />
-              </Link>
+                </Link>
             </div>
 
             {/* START: Desktop Navigation & Actions - Conditionally Rendered */}
@@ -4448,7 +4434,6 @@ const Header: React.FC = () => {
               </div>
             )}
             {/* END: Desktop Navigation & Actions */}
-
 
             {/* Mobile Actions (Hamburger/Close) */}
             <div className="flex lg:hidden items-center gap-2">
