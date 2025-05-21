@@ -400,7 +400,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 <title>Remityn Clone - Money Transfer</title>
                 <meta name="description" content="Send and receive money internationally with low fees and real exchange rates." />
 
-                <link rel="icon" href="/favicon.ico" sizes="any" />
+                <link rel="icon" href="./Remityn.ico" sizes="any" />
 
             </head>
 
