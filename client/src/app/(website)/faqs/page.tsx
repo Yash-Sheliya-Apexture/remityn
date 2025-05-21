@@ -1452,6 +1452,8 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
           </motion.span>
         </button>
       </h3>
+
+
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
@@ -1463,7 +1465,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
             initial="initial"
             animate="animate"
             exit="exit"
-            className="overflow-hidden lg:text-lg text-base text-gray-500 dark:text-gray-300"
+            className="overflow-hidden text-sm md:text-base lg:text-lg text-gray-500 dark:text-gray-300"
           >
             <p className="pt-0 pb-4 md:px-5 px-4">{item.answer}</p>
           </motion.div>

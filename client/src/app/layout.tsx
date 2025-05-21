@@ -397,11 +397,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1 " />
 
-                <title>Remityn Clone - Money Transfer</title>
+                <title>Remityn Clone - Money Transfer Appication</title>
                 <meta name="description" content="Send and receive money internationally with low fees and real exchange rates." />
 
                 <link rel="icon" href="./Remityn.ico" sizes="any" />
-
             </head>
 
             <body className="bg-white dark:bg-background text-neutral-900 dark:text-white transition-all duration-75 ease-linear" suppressHydrationWarning={true}>

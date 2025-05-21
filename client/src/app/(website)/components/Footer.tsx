@@ -1702,7 +1702,6 @@ const Footer: React.FC = () => {
         links: [
           { href: "/", label: "Home" },
           { href: "/about-us", label: "About" },
-          { href: "/features", label: "Features" },
           { href: "/reviews", label: "Reviews" },
         ],
       },
@@ -1805,7 +1804,7 @@ const Footer: React.FC = () => {
                 width={160}
                 height={50}
                 priority
-                className=" mb-4 w-40 h-auto dark:hidden block"
+                className="mb-4 w-40 h-auto dark:hidden block"
               />
 
               <Image
@@ -1817,6 +1816,7 @@ const Footer: React.FC = () => {
                 className="mb-4 w-40 h-auto dark:block hidden"
               />
             </Link>
+
             <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
               {/* Adjusted text size and leading */}
               We provide reliable and competitive currency exchange services

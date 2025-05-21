@@ -4345,15 +4345,16 @@ const Header: React.FC = () => {
               >
                 <Image
                   src="/assets/images/white_logo.svg"
-                  alt="Wise Logo"
+                  alt="Remityn Logo"
                   width={160}
                   height={50}
                   priority
                   className="w-40 h-auto dark:hidden block"
                 />
+
                 <Image
                   src="/assets/images/dark_logo.svg"
-                  alt="Wise Logo"
+                  alt="Remityn Logo"
                   width={160}
                   height={50}
                   priority
@@ -4369,21 +4370,26 @@ const Header: React.FC = () => {
                 <Link href="/" className={getLinkClasses("/")}>
                   Home
                 </Link>
+
                 <Link href="/about-us" className={getLinkClasses("/about-us")}>
                   About
                 </Link>
+
                 <FeatureDropdown
                   buttonText="Features"
                   links={featureLinks}
                   topContent={topContent}
                   buttonClassName={getLinkClasses("/features", true)} // Pass `true` for feature dropdown check
                 />
+
                 <Link href="/reviews" className={getLinkClasses("/reviews")}>
                   Reviews
                 </Link>
+
                 <Link href="/faqs" className={getLinkClasses("/faqs")}>
                   Help
                 </Link>
+                
                 <div className="mx-2">
                   <ThemeToggle location="header" />
                 </div>

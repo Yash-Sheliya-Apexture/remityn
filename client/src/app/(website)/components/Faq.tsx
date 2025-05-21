@@ -2132,7 +2132,7 @@ const FaqSection: React.FC = () => {
                           initial="initial"
                           animate="animate"
                           exit="exit"
-                          className="overflow-hidden text-sm md:text-base lg:text-lg leading-relaxed text-gray-500 dark:text-gray-300"
+                          className="overflow-hidden text-sm md:text-base lg:text-lg text-gray-500 dark:text-gray-300"
                         >
                           <div className="pt-0 pb-4 md:px-6 px-4">
                             {item.answer}
