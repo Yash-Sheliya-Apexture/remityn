@@ -20,7 +20,7 @@ body {
   --color-gray: #454745;
   --color-green: #163300;
   /* Background-Color */
-  --color-primary: #adfa1d;
+  --color-primary: #adfa1c;
   --color-primarybox: #ffffff1a;
   --color-primaryboxhover: #2d2d2d;
   /* Text-color */
@@ -87,7 +87,7 @@ body {
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.9 0.2334 128.99);
+  --primary: oklch(0.9008 0.2337 128.97);
   --primarybox: oklch(1 0 0 / 10.2%);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(23.9% 0.0463 227.39);
@@ -126,7 +126,7 @@ body {
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.9 0.2334 128.99);
+  --primary: oklch(0.9008 0.2337 128.97);
   --primarybox: oklch(1 0 0 / 10.2%);
   --secondarybox: oklch(0.44 0 0);
 

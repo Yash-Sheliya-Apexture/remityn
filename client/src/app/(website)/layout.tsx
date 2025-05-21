@@ -425,6 +425,7 @@ export default function WebsiteLayout({ children }: LayoutProps) {
 
   return (
     <WebsiteAppProvider>
+      
       {/* Header */}
       <Header />
 

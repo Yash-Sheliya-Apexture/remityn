@@ -4261,17 +4261,34 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
             <div className="flex-shrink-0 flex items-center justify-start px-4 lg:h-28 h-20 relative">
               <Link
                 href="/dashboard"
+                className="dark:inline-block"
+                onClick={() => {
+                  if (isMobileView && sidebarOpen) toggleSidebar();
+                }}
+              >
+                <Image
+                  src="/assets/images/dark_logo.svg"
+                  alt="Wise Logo"
+                  width={160}
+                  height={50}
+                  priority
+                  className=" hidden dark:block"
+                />
+              </Link>
+              <Link
+                href="/dashboard"
                 className="inline-block"
                 onClick={() => {
                   if (isMobileView && sidebarOpen) toggleSidebar();
                 }}
               >
                 <Image
-                  src="/assets/images/wise-logo.svg"
+                  src="/assets/images/white_logo.svg"
                   alt="Wise Logo"
-                  width={120}
-                  height={30}
+                  width={160}
+                  height={50}
                   priority
+                  className=" dark:hidden block"
                 />
               </Link>
               {isMobileView && (

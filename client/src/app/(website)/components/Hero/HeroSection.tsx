@@ -22813,7 +22813,7 @@ const HeroSection: React.FC = () => {
                             <div>
                               <p className="font-bold text-neutral-900 dark:text-primary lg:text-base text-sm flex items-center gap-1">
                                 <span>
-                                  Save up to ₹{savingsAmount} with Wise
+                                  Save up to ₹{savingsAmount} with Remityn
                                 </span>
                                 <TrendingUp size={18} />
                               </p>
@@ -22997,7 +22997,7 @@ const HeroSection: React.FC = () => {
                           </div>
                           <div className="flex justify-between">
                             <span className="text-gray-500 dark:text-gray-300">
-                              Wise fee{" "}
+                              Remityn fee{" "}
                               {showFees &&
                                 wiseFeePercentage > 0 &&
                                 `(${wiseFeePercentage.toFixed(2)}%)`}

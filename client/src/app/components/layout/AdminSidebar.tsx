@@ -4104,14 +4104,25 @@ const SidebarContents: React.FC<SidebarContentsProps> = ({
       )}
 
       <div className="p-2 border-b">
-        <div className="h-16 flex justify-center items-center">
+        <div className="h-16 flex sm:justify-center justify-start items-center">
           <Link href="/admin" className="inline-block" onClick={onLinkClick}>
             <Image
-              src="/assets/images/wise-logo.svg"
+              src="/assets/images/white_logo.svg"
               height={100}
               width={100}
               alt="Wise Admin Logo"
-              className="h-auto w-auto max-h-10"
+              className="h-auto w-auto max-h-10 dark:hidden block"
+              priority
+            />
+          </Link>
+
+          <Link href="/admin" className="inline-block" onClick={onLinkClick}>
+            <Image
+              src="/assets/images/dark_logo.svg"
+              height={100}
+              width={100}
+              alt="Wise Admin Logo"
+              className="h-auto w-auto max-h-10 dark:block hidden"
               priority
             />
           </Link>

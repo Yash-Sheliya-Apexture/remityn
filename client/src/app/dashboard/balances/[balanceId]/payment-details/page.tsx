@@ -4083,7 +4083,7 @@ const PaymentDetailsPage = () => {
 
   const bankDetails = paymentDetails.bankDetails || {};
   const referenceCode = paymentDetails.referenceCode || "N/A";
-  const defaultBankAddress = "Wise Europe SA/NV\nRue du Trône 100, box 3\nBrussels 1050\nBelgium";
+  const defaultBankAddress = "Remityn Europe SA/NV\nRue du Trône 100, box 3\nBrussels 1050\nBelgium";
   const bankAddress = bankDetails.bankAddress || defaultBankAddress;
 
   return (
@@ -4091,7 +4091,7 @@ const PaymentDetailsPage = () => {
       <ToastContainer {...toastContainerProps} style={getToastContainerStyle()} />
       <div className="mx-auto lg:max-w-2xl">
         <h1 className="lg:text-3xl md:text-2xl text-xl lg:text-center font-semibold text-mainheading mb-2.5 dark:text-white">
-          Use your bank to make a payment to Wise
+          Use your bank to make a payment to Remityn
         </h1>
         <p className="lg:text-base text-sm text-gray-500 dark:text-gray-300 lg:mb-10 mb-5 text-left lg:text-center">
           Make a {`${payInCurrencyCode}`} payment — not an international one — using the details below.
@@ -4104,7 +4104,7 @@ const PaymentDetailsPage = () => {
           <div className="lg:space-y-4 space-y-2.5">
             <DetailItem
               label="Payee name"
-              value={bankDetails.payeeName || "Wise Europe SA"}
+              value={bankDetails.payeeName || "Remityn Europe SA"}
               fieldName="Payee name"
               showToast={showToast}
             />

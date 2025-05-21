@@ -4350,15 +4350,29 @@ const Header: React.FC = () => {
               <Link
                 href="/"
                 onClick={isMobileMenuOpen ? closeMobileMenu : undefined}
-                aria-label="Wise Home"
+                aria-label="Remityn Home"
               >
                 <Image
-                  src="/assets/images/wise-logo.svg"
-                  alt="Wise Logo"
-                  width={100}
-                  height={24}
+                  src="/assets/images/white_logo.svg"
+                  alt="Remityn Logo"
+                  width={160}
+                  height={50}
                   priority
-                  className="w-28 h-auto"
+                  className="w-40 h-auto dark:hidden block"
+                />
+              </Link>
+              <Link
+                href="/"
+                onClick={isMobileMenuOpen ? closeMobileMenu : undefined}
+                aria-label="Remityn Home"
+              >
+                <Image
+                  src="/assets/images/dark_logo.svg"
+                  alt="Remityn Logo"
+                  width={160}
+                  height={50}
+                  priority
+                  className="w-40 h-auto dark:block hidden"
                 />
               </Link>
             </div>
@@ -4370,21 +4384,26 @@ const Header: React.FC = () => {
                 <Link href="/" className={getLinkClasses("/")}>
                   Home
                 </Link>
+
                 <Link href="/about-us" className={getLinkClasses("/about-us")}>
                   About
                 </Link>
+
                 <FeatureDropdown
                   buttonText="Features"
                   links={featureLinks}
                   topContent={topContent}
                   buttonClassName={getLinkClasses("/features", true)} // Pass `true` for feature dropdown check
                 />
+
                 <Link href="/reviews" className={getLinkClasses("/reviews")}>
                   Reviews
                 </Link>
+
                 <Link href="/faqs" className={getLinkClasses("/faqs")}>
                   Help
                 </Link>
+                
                 <div className="mx-2">
                   <ThemeToggle location="header" />
                 </div>
