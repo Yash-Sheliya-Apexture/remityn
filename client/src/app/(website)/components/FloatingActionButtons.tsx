@@ -920,7 +920,7 @@ const FloatingButton: React.FC<FloatingButtonProps> = ({
         style={buttonStyle}
         className={`relative z-10 flex items-center rounded-full p-2 bg-white border ${borderColorClass} ${
           applyBaseShadow ? "shadow-lg" : ""
-        } transition-all duration-300 ease-in-out overflow-hidden group-hover:px-4 group-hover:border-none focus:outline-none cursor-pointer ${hoverButtonBgClass} ${buttonSpecificAnimationClass}`}
+        } transition-all duration-300 ease-in-out overflow-hidden group-hover:px-4 group-hover:border-transparent focus:outline-none cursor-pointer ${hoverButtonBgClass} ${buttonSpecificAnimationClass}`}
       >
         <span className={`flex-shrink-0 ${iconColorClass}`}>{icon}</span>
         <span
