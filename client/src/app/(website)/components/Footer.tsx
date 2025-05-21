@@ -1659,9 +1659,6 @@
 
 // export default Footer;
 
-
-
-
 // app/components/Footer.tsx
 "use client";
 import Link from "next/link";
@@ -1785,7 +1782,7 @@ const Footer: React.FC = () => {
           </div>
         </li>
       ))}
-    </ul> 
+    </ul>
   );
 
   const handleCurrencyConverterClick = (converter: string) => {
@@ -1801,23 +1798,25 @@ const Footer: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className=" flex flex-col lg:flex-row justify-between w-full">
           <div className="flex flex-col w-full lg:w-1/2 mb-8 lg:mb-0">
-            <Image
-              src="/assets/images/white_logo.svg"
-              alt="Wise Logo"
-              width={160}
-              height={50}
-              priority
-              className=" mb-4 w-40 h-auto dark:hidden block"
-            />
+            <Link href="/">
+              <Image
+                src="/assets/images/white_logo.svg"
+                alt="Wise Logo"
+                width={160}
+                height={50}
+                priority
+                className=" mb-4 w-40 h-auto dark:hidden block"
+              />
 
-            <Image
-              src="/assets/images/dark_logo.svg"
-              alt="Wise Logo"
-              width={160}
-              height={50}
-              priority
-              className="mb-4 w-40 h-auto dark:block hidden"
-            />
+              <Image
+                src="/assets/images/dark_logo.svg"
+                alt="Wise Logo"
+                width={160}
+                height={50}
+                priority
+                className="mb-4 w-40 h-auto dark:block hidden"
+              />
+            </Link>
             <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
               {/* Adjusted text size and leading */}
               We provide reliable and competitive currency exchange services
