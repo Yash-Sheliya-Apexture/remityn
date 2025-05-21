@@ -4145,347 +4145,6 @@
 
 // export default Header;
 
-// // frontend/src/app/components/layout/Header.tsx
-// "use client";
-// import React, { useState, useEffect, useRef } from "react";
-// import Link from "next/link";
-// import Image from "next/image";
-// import { usePathname } from "next/navigation";
-// import { GiHamburgerMenu } from "react-icons/gi";
-// import { motion, AnimatePresence } from "framer-motion";
-// import MobileMenu from "./MobileMenu"; // Adjust path if needed
-// import FeatureDropdown from "@/app/components/ui/FeatureDropdown"; // Adjust path if needed
-// import ThemeToggle from "../../../contexts/ThemeToggle"; // Adjust path if needed
-// import { IoMdClose } from "react-icons/io";
-// import { FaRocket } from "react-icons/fa6";
-// import { useAuth } from "@/app/contexts/AuthContext";
-
-// interface FeatureLink {
-//   href: string;
-//   text: string;
-// }
-
-// const HEADER_HEIGHT_THRESHOLD = 60; // Pixels - When to start applying sticky/hiding logic
-// const SCROLL_UP_THRESHOLD = 20; // Pixels - How much user needs to scroll up to reveal header
-
-// const Header: React.FC = () => {
-//   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
-//   const [isLargeScreen, setIsLargeScreen] = useState<boolean>(true); // Default to true for SSR/initial render maybe? Check effect.
-//   const [isScrolled, setIsScrolled] = useState<boolean>(false); // Is the page scrolled past the height threshold?
-//   const [isHeaderVisible, setIsHeaderVisible] = useState<boolean>(true); // Should the header be visible (animated state)?
-//   const lastScrollY = useRef<number>(0); // Use ref to store last scroll position efficiently
-//   const pathname = usePathname();
-//   const { user, logout, loading: authLoading } = useAuth();
-
-//   const toggleMobileMenu = () => setIsMobileMenuOpen((prev) => !prev);
-//   const closeMobileMenu = () => setIsMobileMenuOpen(false);
-
-//   // Effect for handling screen size changes and mobile menu
-//   useEffect(() => {
-//     const checkScreenSize = () => {
-//       const large = window.innerWidth >= 1024;
-//       setIsLargeScreen(large);
-//       if (large && isMobileMenuOpen) {
-//         closeMobileMenu(); // Close mobile menu if screen becomes large
-//       }
-//     };
-//     // Check on mount
-//     checkScreenSize();
-//     // Add listener
-//     window.addEventListener("resize", checkScreenSize);
-//     // Cleanup listener
-//     return () => window.removeEventListener("resize", checkScreenSize);
-//   }, [isMobileMenuOpen]); // Dependency ensures it runs when menu state changes too
-
-//   // Effect for preventing body scroll when mobile menu is open
-//   useEffect(() => {
-//     if (isMobileMenuOpen && !isLargeScreen) {
-//       document.body.style.overflow = "hidden";
-//     } else {
-//       document.body.style.overflow = "auto";
-//     }
-//     // Cleanup function to restore scroll
-//     return () => {
-//       document.body.style.overflow = "auto";
-//     };
-//   }, [isMobileMenuOpen, isLargeScreen]); // Runs when menu or screen size changes
-
-//   // Effect for handling scroll, stickiness, and visibility animation
-//   useEffect(() => {
-//     let ticking = false;
-
-//     const handleScroll = () => {
-//       const currentScrollY = window.scrollY;
-//       const deltaY = lastScrollY.current - currentScrollY; // Positive when scrolling up, negative when scrolling down
-
-//       // 1. Determine if scrolled past threshold (for background/shadow/stickiness)
-//       const scrolledPastThreshold = currentScrollY > HEADER_HEIGHT_THRESHOLD;
-//       setIsScrolled(scrolledPastThreshold);
-
-//       // 2. Determine header visibility based on scroll direction and threshold
-//       if (currentScrollY <= HEADER_HEIGHT_THRESHOLD) {
-//         // Always show if near the top or scrolled back to top
-//         setIsHeaderVisible(true);
-//       } else {
-//         // Scrolled down past the main threshold:
-//         if (deltaY < 0) {
-//           // Scrolling Down: Hide the header
-//           setIsHeaderVisible(false);
-//         } else if (deltaY >= SCROLL_UP_THRESHOLD) {
-//           // Scrolling Up sufficiently: Show the header
-//           setIsHeaderVisible(true);
-//         }
-//         // else: Scrolling up slightly (less than SCROLL_UP_THRESHOLD)
-//         //       Do nothing, keep the current visibility state (avoids flickering)
-//       }
-
-//       // Update last scroll position for the next event
-//       lastScrollY.current = currentScrollY <= 0 ? 0 : currentScrollY;
-//       ticking = false;
-//     };
-
-//     const onScroll = () => {
-//       if (!ticking) {
-//         window.requestAnimationFrame(handleScroll);
-//         ticking = true;
-//       }
-//     };
-
-//     // Initialize state based on initial scroll position on mount
-//     lastScrollY.current = window.scrollY;
-//     handleScroll(); // Run once immediately
-
-//     window.addEventListener("scroll", onScroll, { passive: true });
-
-//     // Cleanup scroll listener on unmount
-//     return () => window.removeEventListener("scroll", onScroll);
-//   }, []); // Empty dependency array: This effect runs only once on mount and cleans up on unmount
-
-//   const mobileMenuVariants = {
-//     open: {
-//       x: 0,
-//       opacity: 1,
-//       transition: { type: "tween", duration: 0.3, ease: "easeOut" },
-//     },
-//     closed: {
-//       x: "-100%",
-//       opacity: 0.8,
-//       transition: { type: "tween", duration: 0.3, ease: "easeIn" },
-//     },
-//   };
-
-//   const featureLinks: FeatureLink[] = [
-//     { href: "/send-money", text: "Send Money" },
-//     { href: "/add-money", text: "Add Money" },
-//   ];
-//   const topContent = (
-//     <div className="space-y-4">
-//       <FaRocket className="lg:size-10 size-6 text-mainheading dark:text-primary " />
-//       <p className="text-gray-500 max-w-sm leading-normal dark:text-gray-300">
-//         Learn how millions of customers move their money globally right.
-//       </p>
-//     </div>
-//   );
-
-//   const getLinkClasses = (href: string, isFeatureDropdown = false): string => {
-//     const baseClasses =
-//       "px-4 py-1.5 rounded-full font-medium transition-all duration-75 ease-linear";
-//     const inactiveClasses =
-//       "text-mainheading dark:text-white dark:hover:text-primary hover:bg-lightgray hover:dark:bg-primarybox";
-//     const activeClasses =
-//       "bg-lightgray dark:bg-primarybox text-mainheading dark:text-primary";
-
-//     let isActive = false;
-//     const isRootPath = pathname === "/";
-
-//     if (isFeatureDropdown) {
-//       isActive = featureLinks.some((link) => pathname?.startsWith(link.href));
-//     } else if (href === "/") {
-//       isActive = isRootPath;
-//     } else {
-//       // Ensure pathname is not null or undefined before calling startsWith
-//       isActive = !!pathname && pathname !== "/" && pathname.startsWith(href);
-//     }
-
-//     return `${baseClasses} ${isActive ? activeClasses : inactiveClasses}`;
-//   };
-
-//   const handleLogout = () => {
-//     logout();
-//     closeMobileMenu();
-//   };
-
-//   // --- Header Classes Logic ---
-//   const headerBaseClasses = "w-full z-50 transition-all duration-300 ease-in-out";
-//   const scrolledClasses = "fixed top-0 left-0 right-0 bg-white dark:bg-background shadow-sm";
-//   const notScrolledClasses = "relative bg-white dark:bg-background"; // Or make transparent if desired
-//   const visibilityClasses = isHeaderVisible ? "translate-y-0" : "-translate-y-full";
-
-//   return (
-//     <>
-//       <header
-//         className={`
-//           ${headerBaseClasses}
-//           ${isScrolled ? scrolledClasses : notScrolledClasses}
-//           ${
-//             isScrolled ? visibilityClasses : "translate-y-0"
-//           } // Apply visibility transform only when sticky
-//         `}
-//       >
-//         <div className="container mx-auto px-4">
-//           <nav
-//             className="flex items-center justify-between h-20"
-//             aria-label="Global"
-//           >
-//             {/* Logo */}
-//             <div className="flex-shrink-0">
-//               <Link
-//                 href="/"
-//                 onClick={isMobileMenuOpen ? closeMobileMenu : undefined}
-//               >
-//                 <Image
-//                   src="/assets/images/white_logo.svg"
-//                   alt="Wise Logo"
-//                   width={160}
-//                   height={50}
-//                   priority
-//                   className="w-40 h-auto dark:hidden block"
-//                 />
-//                 <Image
-//                   src="/assets/images/dark_logo.svg"
-//                   alt="Wise Logo"
-//                   width={160}
-//                   height={50}
-//                   priority
-//                   className="w-40 h-auto dark:block hidden"
-//                 />
-//                 </Link>
-//             </div>
-
-//             {/* START: Desktop Navigation & Actions - Conditionally Rendered */}
-//             {isLargeScreen && ( // <--- Added Condition Here
-//               <div className="lg:flex flex-grow items-center justify-end gap-2.5">
-//                 {/* Core Navigation Links */}
-//                 <Link href="/" className={getLinkClasses("/")}>
-//                   Home
-//                 </Link>
-//                 <Link href="/about-us" className={getLinkClasses("/about-us")}>
-//                   About
-//                 </Link>
-//                 <FeatureDropdown
-//                   buttonText="Features"
-//                   links={featureLinks}
-//                   topContent={topContent}
-//                   buttonClassName={getLinkClasses("/features", true)} // Pass `true` for feature dropdown check
-//                 />
-//                 <Link href="/reviews" className={getLinkClasses("/reviews")}>
-//                   Reviews
-//                 </Link>
-//                 <Link href="/faqs" className={getLinkClasses("/faqs")}>
-//                   Help
-//                 </Link>
-//                 <div className="mx-2">
-//                   <ThemeToggle location="header" />
-//                 </div>
-
-//                 {/* === Dynamic Auth Links (Desktop) === */}
-//                 {authLoading ? (
-//                   <div className="flex gap-2">
-//                     <div className="h-8 w-24 bg-lightgray dark:bg-white/5 rounded-full animate-pulse"></div>
-//                     <div className="h-8 w-24 bg-lightgray dark:bg-white/5 rounded-full animate-pulse"></div>
-//                   </div>
-//                 ) : user ? (
-//                   <>
-//                     <Link
-//                       href="/dashboard"
-//                       className={getLinkClasses("/dashboard")}
-//                     >
-//                       Dashboard
-//                     </Link>
-//                     <button
-//                       onClick={handleLogout}
-//                       className="bg-primary ml-1 px-4 py-1.5 text-nowrap font-medium rounded-full hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading cursor-pointer"
-//                     >
-//                       Log out
-//                     </button>
-//                   </>
-//                 ) : (
-//                   <>
-//                     <Link
-//                       href="/auth/register"
-//                       className="px-4 py-1.5 dark:text-white text-nowrap dark:hover:text-primary font-medium hover:bg-lightgray dark:hover:bg-secondary rounded-full transition-colors ease-in-out duration-300 text-main cursor-pointer"
-//                     >
-//                       Register
-//                     </Link>
-//                     <Link
-//                       href="/auth/login"
-//                       className="bg-primary ml-1 px-5 py-1.5 text-nowrap font-medium rounded-full hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading cursor-pointer"
-//                     >
-//                       Log in
-//                     </Link>
-//                   </>
-//                 )}
-//               </div>
-//             )}
-//             {/* END: Desktop Navigation & Actions */}
-
-//             {/* Mobile Actions (Hamburger/Close) */}
-//             <div className="flex lg:hidden items-center gap-2">
-//               <button
-//                 onClick={toggleMobileMenu}
-//                 className="size-12 flex items-center justify-center bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox cursor-pointer text-neutral-900 dark:text-primary rounded-full transition-all ease-linear duration-75"
-//                 aria-label={isMobileMenuOpen ? "Close Menu" : "Open Menu"}
-//                 aria-expanded={isMobileMenuOpen}
-//                 aria-controls="mobile-menu-content"
-//               >
-//                 {isMobileMenuOpen ? (
-//                   <IoMdClose
-//                     size={26}
-//                     className="text-neutral-900 dark:text-primary"
-//                   />
-//                 ) : (
-//                   <GiHamburgerMenu
-//                     size={26}
-//                     className="text-neutral-900 dark:text-primary"
-//                   />
-//                 )}
-//               </button>
-//             </div>
-//           </nav>
-//         </div>
-//       </header>
-
-//       {/* Mobile Menu Overlay */}
-//       <AnimatePresence>
-//         {/* Condition here ensures it only renders when menu is open AND screen is not large */}
-//         {isMobileMenuOpen && !isLargeScreen && (
-//           <motion.div
-//             key="mobile-menu"
-//             id="mobile-menu-content"
-//             className={`fixed inset-x-0 top-20 z-40 bg-white dark:bg-background h-[calc(100dvh-80px)]`} // 80px = h-20
-//             variants={mobileMenuVariants}
-//             initial="closed"
-//             animate="open"
-//             exit="closed"
-//             aria-modal="true"
-//           >
-//             <MobileMenu
-//               isOpen={isMobileMenuOpen}
-//               onClose={closeMobileMenu}
-//               featureLinks={featureLinks}
-//               isLoggedIn={!!user}
-//               onLogout={handleLogout}
-//               authLoading={authLoading}
-//             />
-//           </motion.div>
-//         )}
-//       </AnimatePresence>
-//     </>
-//   );
-// };
-
-// export default Header;
-
 // frontend/src/app/components/layout/Header.tsx
 "use client";
 import React, { useState, useEffect, useRef } from "react";
@@ -4657,14 +4316,10 @@ const Header: React.FC = () => {
   };
 
   // --- Header Classes Logic ---
-  const headerBaseClasses =
-    "w-full z-50 transition-all duration-300 ease-in-out";
-  const scrolledClasses =
-    "fixed top-0 left-0 right-0";
-  const notScrolledClasses = "relative"; // Or make transparent if desired
-  // const visibilityClasses = isHeaderVisible
-  //   ? "translate-y-0"
-  //   : "-translate-y-full";
+  const headerBaseClasses = "w-full z-50 transition-all duration-300 ease-in-out";
+  const scrolledClasses = "fixed top-0 left-0 right-0 bg-white dark:bg-background shadow-sm";
+  const notScrolledClasses = "relative bg-white dark:bg-background"; // Or make transparent if desired
+  const visibilityClasses = isHeaderVisible ? "translate-y-0" : "-translate-y-full";
 
   return (
     <>
@@ -4672,134 +4327,131 @@ const Header: React.FC = () => {
         className={`
           ${headerBaseClasses}
           ${isScrolled ? scrolledClasses : notScrolledClasses}
-          
+          ${
+            isScrolled ? visibilityClasses : "translate-y-0"
+          } // Apply visibility transform only when sticky
         `}
       >
         <div className="container mx-auto px-4">
-          <div className="bg-lightgray dark:bg-primaryboxhover rounded-full sm:p-5 p-3 sm:mt-4 mt-3 sm:-mx-4 -mx-2">
-            <nav
-              className="flex items-center justify-between"
-              aria-label="Global"
-            >
-              {/* Logo */}
-              <div className="flex-shrink-0">
-                <Link
-                  href="/"
-                  onClick={isMobileMenuOpen ? closeMobileMenu : undefined}
-                >
-                  <Image
-                    src="/assets/images/white_logo.svg"
-                    alt="Wise Logo"
-                    width={140}
-                    height={50}
-                    priority
-                    className="w-34 h-auto dark:hidden block"
-                  />
-                  <Image
-                    src="/assets/images/dark_logo.svg"
-                    alt="Wise Logo"
-                    width={140}
-                    height={50}
-                    priority
-                    className="w-34 h-auto dark:block hidden"
-                  />
+          <nav
+            className="flex items-center justify-between h-20"
+            aria-label="Global"
+          >
+            {/* Logo */}
+            <div className="flex-shrink-0">
+              <Link
+                href="/"
+                onClick={isMobileMenuOpen ? closeMobileMenu : undefined}
+              >
+                <Image
+                  src="/assets/images/white_logo.svg"
+                  alt="Wise Logo"
+                  width={160}
+                  height={50}
+                  priority
+                  className="w-40 h-auto dark:hidden block"
+                />
+                <Image
+                  src="/assets/images/dark_logo.svg"
+                  alt="Wise Logo"
+                  width={160}
+                  height={50}
+                  priority
+                  className="w-40 h-auto dark:block hidden"
+                />
                 </Link>
-              </div>
+            </div>
 
-              {/* START: Desktop Navigation & Actions - Conditionally Rendered */}
-              {isLargeScreen && ( // <--- Added Condition Here
-                <div className="lg:flex flex-grow items-center justify-end gap-2.5">
-                  {/* Core Navigation Links */}
-                  <Link href="/" className={getLinkClasses("/")}>
-                    Home
-                  </Link>
-                  <Link
-                    href="/about-us"
-                    className={getLinkClasses("/about-us")}
-                  >
-                    About
-                  </Link>
-                  <FeatureDropdown
-                    buttonText="Features"
-                    links={featureLinks}
-                    topContent={topContent}
-                    buttonClassName={getLinkClasses("/features", true)} // Pass `true` for feature dropdown check
-                  />
-                  <Link href="/reviews" className={getLinkClasses("/reviews")}>
-                    Reviews
-                  </Link>
-                  <Link href="/faqs" className={getLinkClasses("/faqs")}>
-                    Help
-                  </Link>
-                  <div className="mx-2">
-                    <ThemeToggle location="header" />
-                  </div>
-
-                  {/* === Dynamic Auth Links (Desktop) === */}
-                  {authLoading ? (
-                    <div className="flex gap-2">
-                      <div className="h-8 w-24 bg-lightgray dark:bg-white/5 rounded-full animate-pulse"></div>
-                      <div className="h-8 w-24 bg-lightgray dark:bg-white/5 rounded-full animate-pulse"></div>
-                    </div>
-                  ) : user ? (
-                    <>
-                      <Link
-                        href="/dashboard"
-                        className={getLinkClasses("/dashboard")}
-                      >
-                        Dashboard
-                      </Link>
-                      <button
-                        onClick={handleLogout}
-                        className="bg-primary ml-1 px-4 py-1.5 text-nowrap font-medium rounded-full hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading cursor-pointer"
-                      >
-                        Log out
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <Link
-                        href="/auth/register"
-                        className="px-4 py-1.5 dark:text-white text-nowrap dark:hover:text-primary font-medium hover:bg-lightgray dark:hover:bg-secondary rounded-full transition-colors ease-in-out duration-300 text-main cursor-pointer"
-                      >
-                        Register
-                      </Link>
-                      <Link
-                        href="/auth/login"
-                        className="bg-primary ml-1 px-5 py-1.5 text-nowrap font-medium rounded-full hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading cursor-pointer"
-                      >
-                        Log in
-                      </Link>
-                    </>
-                  )}
+            {/* START: Desktop Navigation & Actions - Conditionally Rendered */}
+            {isLargeScreen && ( // <--- Added Condition Here
+              <div className="lg:flex flex-grow items-center justify-end gap-2.5">
+                {/* Core Navigation Links */}
+                <Link href="/" className={getLinkClasses("/")}>
+                  Home
+                </Link>
+                <Link href="/about-us" className={getLinkClasses("/about-us")}>
+                  About
+                </Link>
+                <FeatureDropdown
+                  buttonText="Features"
+                  links={featureLinks}
+                  topContent={topContent}
+                  buttonClassName={getLinkClasses("/features", true)} // Pass `true` for feature dropdown check
+                />
+                <Link href="/reviews" className={getLinkClasses("/reviews")}>
+                  Reviews
+                </Link>
+                <Link href="/faqs" className={getLinkClasses("/faqs")}>
+                  Help
+                </Link>
+                <div className="mx-2">
+                  <ThemeToggle location="header" />
                 </div>
-              )}
-              {/* END: Desktop Navigation & Actions */}
 
-              {/* Mobile Actions (Hamburger/Close) */}
-              <div className="flex lg:hidden items-center gap-2">
-                <button
-                  onClick={toggleMobileMenu}
-                  className="size-12 flex items-center justify-center bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox cursor-pointer text-neutral-900 dark:text-primary rounded-full transition-all ease-linear duration-75"
-                  aria-label={isMobileMenuOpen ? "Close Menu" : "Open Menu"}
-                  aria-expanded={isMobileMenuOpen}
-                  aria-controls="mobile-menu-content"
-                >
-                  {isMobileMenuOpen ? (
-                    <IoMdClose
-                      size={26}
-                      className="text-neutral-900 dark:text-primary"
-                    />
-                  ) : (
-                    <GiHamburgerMenu
-                      size={26}
-                      className="text-neutral-900 dark:text-primary"
-                    />
-                  )}
-                </button>
+                {/* === Dynamic Auth Links (Desktop) === */}
+                {authLoading ? (
+                  <div className="flex gap-2">
+                    <div className="h-8 w-24 bg-lightgray dark:bg-white/5 rounded-full animate-pulse"></div>
+                    <div className="h-8 w-24 bg-lightgray dark:bg-white/5 rounded-full animate-pulse"></div>
+                  </div>
+                ) : user ? (
+                  <>
+                    <Link
+                      href="/dashboard"
+                      className={getLinkClasses("/dashboard")}
+                    >
+                      Dashboard
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="bg-primary ml-1 px-4 py-1.5 text-nowrap font-medium rounded-full hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading cursor-pointer"
+                    >
+                      Log out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href="/auth/register"
+                      className="px-4 py-1.5 dark:text-white text-nowrap dark:hover:text-primary font-medium hover:bg-lightgray dark:hover:bg-secondary rounded-full transition-colors ease-in-out duration-300 text-main cursor-pointer"
+                    >
+                      Register
+                    </Link>
+                    <Link
+                      href="/auth/login"
+                      className="bg-primary ml-1 px-5 py-1.5 text-nowrap font-medium rounded-full hover:bg-primaryhover transition-colors ease-in-out duration-300 text-mainheading cursor-pointer"
+                    >
+                      Log in
+                    </Link>
+                  </>
+                )}
               </div>
-            </nav>
-          </div>
+            )}
+            {/* END: Desktop Navigation & Actions */}
+
+            {/* Mobile Actions (Hamburger/Close) */}
+            <div className="flex lg:hidden items-center gap-2">
+              <button
+                onClick={toggleMobileMenu}
+                className="size-12 flex items-center justify-center bg-lightborder hover:bg-neutral-300 dark:bg-primarybox dark:hover:bg-secondarybox cursor-pointer text-neutral-900 dark:text-primary rounded-full transition-all ease-linear duration-75"
+                aria-label={isMobileMenuOpen ? "Close Menu" : "Open Menu"}
+                aria-expanded={isMobileMenuOpen}
+                aria-controls="mobile-menu-content"
+              >
+                {isMobileMenuOpen ? (
+                  <IoMdClose
+                    size={26}
+                    className="text-neutral-900 dark:text-primary"
+                  />
+                ) : (
+                  <GiHamburgerMenu
+                    size={26}
+                    className="text-neutral-900 dark:text-primary"
+                  />
+                )}
+              </button>
+            </div>
+          </nav>
         </div>
       </header>
 
