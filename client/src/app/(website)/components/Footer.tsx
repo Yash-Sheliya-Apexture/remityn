@@ -1929,28 +1929,6 @@ const Footer: React.FC = () => {
             ))}
           </div>
         </div>
-
-        {/* Copyright and Social Icons Section */}
-        <hr className="lg:my-6 my-4" />
-        <div className="flex flex-col md:flex-row justify-between items-center container mx-auto gap-4">
-          <p className="text-mainheading dark:text-primary capitalize lg:text-base text-sm text-center md:text-left">
-            <span className="text-gray-500 dark:text-gray-300">
-              Created by{" "}
-            </span>
-            <span className="font-medium">Apexture Private Limited</span> ©{" "}
-            {new Date().getFullYear()}
-          </p>
-          <div className="flex lg:gap-4 gap-2 pb-10 sm:pb-0">
-            <Link href="#" aria-label="Chat on WhatsApp">
-              {/* Replace # with actual link */}
-              <IoLogoWhatsapp className="lg:size-7 size-6 text-[#25D366] hover:opacity-80 transition-opacity" />
-            </Link>
-            <Link href="#" aria-label="Contact us on Telegram">
-              {/* Replace # with actual link */}
-              <FaTelegram className="lg:size-7 size-6 text-[#3390EC] hover:opacity-80 transition-opacity" />
-            </Link>
-          </div>
-        </div>
       </div>
     </footer>
   );

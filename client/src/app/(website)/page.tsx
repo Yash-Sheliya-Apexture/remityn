@@ -12,14 +12,19 @@ export default function Home() {
   return (
     <>
       <HeroSection />
-      <ProtectionSection />
-      <SecuritySection />
+      <ProtectionSection /> 
       <SocialTrustSection />
+      <SecuritySection />
       <FlagSection />
       <MissionSection />
-      <Principles />
+      <Principles />   
       <TransferMoney />
       <Faq />
     </>
   );
 }
+
+ 
+
+
+

@@ -783,14 +783,14 @@
 
 // export default FeaturesSection;
 
+
+
 "use client"; // Required for Framer Motion
 import React from "react";
 import Image from "next/image";
 import { FaChartLine, FaHeadset, FaFastForward } from "react-icons/fa";
 import { FiGlobe } from "react-icons/fi";
 import { motion } from "framer-motion"; // Import motion
-
-// --- Animation Variants ---
 
 // Variants for the overall section container
 const sectionVariants = {

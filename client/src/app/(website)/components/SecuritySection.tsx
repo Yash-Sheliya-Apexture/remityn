@@ -276,6 +276,7 @@
 // };
 // export default SecuritySection;
 
+
 // components/SecuritySection.tsx
 "use client"; // Required for Framer Motion
 
@@ -403,11 +404,7 @@ const SecuritySection = () => {
                 alt="Padlock symbolizing security"
                 className="object-contain"
               />
-
-              
             </div>
-
-
           </motion.div>
         </div>
 

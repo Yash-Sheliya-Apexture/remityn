@@ -109,14 +109,22 @@ body {
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --chart-1: 220 80% 60%; /* Blueish */
-  --chart-2: 150 70% 45%; /* Greenish */
-  --chart-3: 40 90% 55%;  /* Orange/Yellow */
-  --chart-4: 300 75% 60%; /* Purple/Magenta */
-  --chart-5: 0 70% 50%;   /* Reddish */
-  --chart-6: 180 60% 40%; /* Cyan/Teal */
-  --chart-7: 260 70% 65%; /* Indigo */
-  --chart-8: 60 85% 50%;  /* Bright Yellow */
+  --chart-1: 220 80% 60%;
+  /* Blueish */
+  --chart-2: 150 70% 45%;
+  /* Greenish */
+  --chart-3: 40 90% 55%;
+  /* Orange/Yellow */
+  --chart-4: 300 75% 60%;
+  /* Purple/Magenta */
+  --chart-5: 0 70% 50%;
+  /* Reddish */
+  --chart-6: 180 60% 40%;
+  /* Cyan/Teal */
+  --chart-7: 260 70% 65%;
+  /* Indigo */
+  --chart-8: 60 85% 50%;
+  /* Bright Yellow */
 }
 
 .dark {
@@ -199,7 +207,7 @@ body {
   }
 }
 
-.your-account-page-active .widget-visible{
+.your-account-page-active .widget-visible {
   position: absolute !important;
 
 }
@@ -314,21 +322,34 @@ button:focus {
 /* Add to your global CSS file (e.g., globals.css) if not already present */
 
 .toast-progress-success {
-  background: #22c55e !important; /* Corresponds to green-500 */
+  background: #22c55e !important;
+  /* Corresponds to green-500 */
 }
 
 .toast-progress-error {
-  background: #ef4444 !important; /* Corresponds to red-500 */
+  background: #ef4444 !important;
+  /* Corresponds to red-500 */
 }
 
 .toast-progress-info {
-  background: #3b82f6 !important; /* Corresponds to blue-500 */
+  background: #3b82f6 !important;
+  /* Corresponds to blue-500 */
 }
 
 .toast-progress-warning {
-  background: #eab308 !important; /* Corresponds to yellow-500 */
+  background: #eab308 !important;
+  /* Corresponds to yellow-500 */
 }
 
 .toast-progress-default {
-  background: #6b7280 !important; /* Corresponds to gray-500 */
+  background: #6b7280 !important;
+  /* Corresponds to gray-500 */
 }
+
+
+/* .background-image  {
+  background-image: url(../../public/assets/images/faqbackground.jpg);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+} */
