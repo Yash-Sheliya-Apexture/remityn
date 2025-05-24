@@ -41,7 +41,7 @@ const KycDetailHeader: React.FC<KycDetailHeaderProps> = ({ userId }) => {
           </span>
         </div>
         
-        <h1 className="lg:text-3xl text-2xl font-medium text-mainheading  dark:text-primary">
+        <h1 className="lg:text-3xl text-2xl font-medium text-mainheading dark:text-primary">
           KYC Application Details
         </h1>
 
