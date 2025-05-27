@@ -345,38 +345,38 @@ import TawkToManager from './components/TawkToManager'; // Ensure path is correc
 import BrevoManager from './components/BrevoManager'; // <-- Import BrevoManager
 
 
-const ThemeInitializerScript = `
-(function() {
-  function getInitialPreference() {
-    // ... (your existing getInitialPreference logic) ...
-     if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
-          return 'system'; // Default if localStorage is unavailable (SSR, etc.)
-     }
-     try {
-        const stored = localStorage.getItem('theme');
-        if (stored === 'light' || stored === 'dark') {
-            return stored;
-        }
-         return 'system';
-     } catch (e) {
-         console.error('Error reading theme from localStorage:', e);
-         return 'system';
-     }
-  }
+// const ThemeInitializerScript = `
+// (function() {
+//   function getInitialPreference() {
+//     // ... (your existing getInitialPreference logic) ...
+//      if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
+//           return 'system'; // Default if localStorage is unavailable (SSR, etc.)
+//      }
+//      try {
+//         const stored = localStorage.getItem('theme');
+//         if (stored === 'light' || stored === 'dark') {
+//             return stored;
+//         }
+//          return 'system';
+//      } catch (e) {
+//          console.error('Error reading theme from localStorage:', e);
+//          return 'system';
+//      }
+//   }
 
-  const preference = getInitialPreference();
-  let themeToApply = preference;
+//   const preference = getInitialPreference();
+//   let themeToApply = preference;
 
-  if (preference === 'system') {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    themeToApply = prefersDark.matches ? 'dark' : 'light';
-  }
+//   if (preference === 'system') {
+//     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+//     themeToApply = prefersDark.matches ? 'dark' : 'light';
+//   }
 
-  const root = document.documentElement;
-  root.classList.remove('light', 'dark');
-  root.classList.add(themeToApply);
-})();
-`;
+//   const root = document.documentElement;
+//   root.classList.remove('light', 'dark');
+//   root.classList.add(themeToApply);
+// })();
+// `;
 const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
 const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
 
@@ -392,7 +392,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
     return (
         <html lang="en" suppressHydrationWarning>
             <head>
-                <script dangerouslySetInnerHTML={{ __html: ThemeInitializerScript }} />
+                {/* <script dangerouslySetInnerHTML={{ __html: ThemeInitializerScript }} /> */}
 
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1 " />
@@ -404,7 +404,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
 
             </head>
 
-            <body className="bg-white dark:bg-background text-neutral-900 dark:text-white transition-all duration-75 ease-linear" suppressHydrationWarning={true}>
+            <body className="bg-background text-neutral-900 dark:text-white transition-all duration-75 ease-linear" suppressHydrationWarning={true}>
                 <AuthProvider>
                     {children}
                 </AuthProvider>

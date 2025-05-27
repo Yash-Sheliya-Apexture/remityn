@@ -9,20 +9,44 @@
 
 body {
   /* font-family: var(--font-Outfit); */
-  font-family: var(--font-Inter);
+  font-family: var(--font-SatoshiVariable);
 }
 
 @theme {
   --font-mont: var(--font-Montserrat);
+  --font-SatoshiVariable: var(--font-SatoshiVariable);
+  --font-SatoshiVariableItalic: var(--font-SatoshiVariableItalic);
+
+  /* Background Color Start*/
+  --color-background: #22282a;
+  --color-primary: #66e8fa;
+  --color-primaryhover: #9cf0fc;
+  /* aacho */
+  --color-primarybox: #39424780;
+  /* ghato */
+  --color-primary-foreground: #2e3539;
+  /* Background color End */
+
+  /* Text Color Start*/
+  --color-mainheadingWhite: #d5e1e7;
+  --color-mainheading: #22282a;
+  --color-subheadingWhite: #b1c5ce;
+  --color-subheading: #394247;
+  --color-secondheadingWhite: #e4edf1;
+
+  /* Text Color End*/
+
+  --color-stock-hover: #6a7282;
+
+
   --color-main: #0e0f0c;
   --color-lightgreen: #9fe870;
   --color-lightgreen-hover: #80e142;
   --color-gray: #454745;
   --color-green: #163300;
   /* Background-Color */
-  --color-primary: #adfa1c;
-  --color-primarybox: #ffffff1a;
-  --color-primaryboxhover: #2d2d2d;
+  --color-primaryboxdubal: #394247cc;
+
   /* Text-color */
   --color-secondary: #002330;
   --color-lightgray: #f4f4f4;
@@ -31,17 +55,16 @@ body {
   --shadow-darkcolor: inset 0 0 0 2px #171717;
 
   /* Border-Color */
+  --color-border: #4a5565;
+
+
   --color-lightborder: #e3e3e3;
 
-  --color-mainheading: #171717;
-  --color-subheading: #171717;
   --color-secondarybox: #525252;
   /* Background-color Hover-Button */
-  --color-primaryhover: #bcf65f;
 
-  /* text-color : text-neutral-900 */
+  --color-dark-text: #22282a;
 
-  --color-primaryhover: #8de900;
   --color-dropdowncolor: #2e2e2e;
   --text-15px: 15px;
   --text-13px: 13px;
@@ -60,6 +83,13 @@ body {
     transform: translateY(0) rotate(360deg);
   }
 }
+
+
+/* Optional: Smoother scrolling for the whole page */
+html {
+  scroll-behavior: smooth;
+}
+
 
 .animate-float {
   animation: float 15s infinite;
@@ -80,25 +110,43 @@ body {
 }
 
 :root {
+  /* Background Color Start*/
+  --background: oklch(0.2717 0.0093 219.82);
+  --primary: oklch(0.8651 0.1162 207.69);
+  --primarybox: oklch(0.4025 0.0252 215.64 / 36.08%);
+  --primaryboxdubal: oklch(0.3728 0.0147 232.08 / 80%);
+  --primary-foreground: oklch(0.3239 0.0119 232.79);
+  /* Background Color End*/
+
+  /* Text Color Start*/
+  --mainheadingWhite: oklch(0.9024 0.0153 228.98);
+  --mainheading: oklch(0.2717 0.0093 219.82);
+  --subheadingWhite: oklch(0.8111 0.0253 226.55);
+  --subheading: oklch(0.3728 0.0147 232.08);
+  --secondheadingWhite: oklch(0.9405 0.0111 225.98);
+
+  /* --border: oklch(0.4461 0.0298 257.68); old */
+  --border: oklch(0.4461 0.0298 257.68);
+
+  /* Text Color End*/
+
+
+  --secondary: oklch(23.9% 0.0463 227.39);
+  --secondarybox: oklch(0.44 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.9008 0.2337 128.97);
-  --primarybox: oklch(1 0 0 / 10.2%);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(23.9% 0.0463 227.39);
-  --secondarybox: oklch(0.44 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
+
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
   --accent: oklch(0.97 0 0);
   /* --accent-foreground: oklch(0.205 0 0); */
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
   --sidebar: oklch(0.985 0 0);
@@ -109,46 +157,52 @@ body {
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --chart-1: 220 80% 60%; /* Blueish */
-  --chart-2: 150 70% 45%; /* Greenish */
-  --chart-3: 40 90% 55%;  /* Orange/Yellow */
-  --chart-4: 300 75% 60%; /* Purple/Magenta */
-  --chart-5: 0 70% 50%;   /* Reddish */
-  --chart-6: 180 60% 40%; /* Cyan/Teal */
-  --chart-7: 260 70% 65%; /* Indigo */
-  --chart-8: 60 85% 50%;  /* Bright Yellow */
-}
+  --chart-1: 220 80% 60%;
+  /* Blueish */
+  --chart-2: 150 70% 45%;
+  /* Greenish */
+  --chart-3: 40 90% 55%;
+  /* Orange/Yellow */
+  --chart-4: 300 75% 60%;
+  /* Purple/Magenta */
+  --chart-5: 0 70% 50%;
+  /* Reddish */
+  --chart-6: 180 60% 40%;
+  /* Cyan/Teal */
+  --chart-7: 260 70% 65%;
+  /* Indigo */
+  --chart-8: 60 85% 50%;
+  /* Bright Yellow */
 
-.dark {
-  --background: oklch(0.2 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.9008 0.2337 128.97);
-  --primarybox: oklch(1 0 0 / 10.2%);
-  --secondarybox: oklch(0.44 0 0);
+  /* Icon Background Gradient Color Start */
 
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* UPDATED: For the larger, inner circle (w-20 h-20) - top to bottom linear glow */
+  --icon-direct-bg-top: rgba(102, 232, 250, 10%);
+  /* Top color of the gradient for the icon's background */
+  --icon-direct-bg-bottom: rgba(102, 232, 250, 0%);
+  /* Bottom color of the gradient for the icon's background */
+
+  /* For the subtle inner bevel/highlight on the inner circle */
+  --icon-inner-bevel-highlight: rgba(102, 232, 250, 0.15);
+  /* Light color for top inner shadow */
+  --icon-inner-bevel-shadow: rgba(20, 22, 15, 0.3);
+  /* Dark color for bottom inner shadow */
+
+  /* UPDATED: For the larger, outer circle (w-20 h-20) - top to bottom linear glow */
+  --icon-outer-linear-glow-top: rgba(102, 232, 250, 10%);
+  /* Lighter part of the glow, at the top */
+  --icon-outer-linear-glow-bottom: rgba(102, 232, 250, 0%);
+  /* Darker part of the glow, at the bottom */
+
+  /* Icon Background Gradient Color End */
+
+  --card-stack-offset-y: 20px;
+  /* How much the card below peeks out from its top */
+  --card-stack-scale: 0.93;
+  /* How much the card behind scales down */
+  --card-stack-transition-duration: 0.4s;
+  /* Smoothness of transition */
+
 }
 
 @theme inline {
@@ -199,7 +253,7 @@ body {
   }
 }
 
-.your-account-page-active .widget-visible{
+.your-account-page-active .widget-visible {
   position: absolute !important;
 
 }
@@ -314,21 +368,120 @@ button:focus {
 /* Add to your global CSS file (e.g., globals.css) if not already present */
 
 .toast-progress-success {
-  background: #22c55e !important; /* Corresponds to green-500 */
+  background: #22c55e !important;
+  /* Corresponds to green-500 */
 }
 
 .toast-progress-error {
-  background: #ef4444 !important; /* Corresponds to red-500 */
+  background: #ef4444 !important;
+  /* Corresponds to red-500 */
 }
 
 .toast-progress-info {
-  background: #3b82f6 !important; /* Corresponds to blue-500 */
+  background: #3b82f6 !important;
+  /* Corresponds to blue-500 */
 }
 
 .toast-progress-warning {
-  background: #eab308 !important; /* Corresponds to yellow-500 */
+  background: #eab308 !important;
+  /* Corresponds to yellow-500 */
 }
 
 .toast-progress-default {
-  background: #6b7280 !important; /* Corresponds to gray-500 */
+  background: #6b7280 !important;
+  /* Corresponds to gray-500 */
+}
+
+/* Icon Background Gradient Color Start */
+.icon-outer-wrapper {
+  /* UPDATED: Linear gradient for a top-to-bottom glow effect */
+  background-image: linear-gradient(to bottom,
+      /* Direction of the gradient */
+      var(--icon-outer-linear-glow-top) 0%,
+      var(--icon-outer-linear-glow-bottom) 100%);
+}
+
+.icon-inner-background {
+  background-image: linear-gradient(180deg,
+      var(--icon-direct-bg-top) 0%,
+      var(--icon-direct-bg-bottom) 100%);
+  /* Creates a subtle bevel effect using inset shadows */
+  box-shadow: inset 0 1px 1px 0 var(--icon-inner-bevel-highlight),
+    /* Top light part of bevel */
+    inset 0 1px 1px 0 var(--icon-inner-bevel-shadow);
+  /* Bottom dark part of bevel */
+}
+
+/* Icon Background Gradient Color End */
+
+
+
+/* Add these to your global CSS file */
+
+/* These classes define the transform/opacity states. */
+/* Tailwind's `transition-all duration-500 ease-out` on the element will animate these. */
+/* z-index will be applied directly via Tailwind classes in the component. */
+
+.card-active {
+  transform: scale(1) translateY(0px);
+  opacity: 1;
+}
+
+.card-covered-1 {
+  /* Directly behind the active card */
+  transform: scale(0.95) translateY(10px);
+  /* Scale down, move slightly down to recede */
+  opacity: 0.7;
+  /* Optional: slightly fade out, or set to 1 if only scale changes */
+}
+
+.card-covered-2 {
+  /* Two cards behind the active card (this one will be hidden) */
+  transform: scale(0.90) translateY(20px);
+  opacity: 0;
+  pointer-events: none;
+  /* Important for hidden cards */
+}
+
+.card-covered-deep {
+  /* Cards further behind (also hidden) */
+  transform: scale(0.85) translateY(30px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.card-upcoming {
+  /* Cards that haven't reached the sticky position yet */
+  transform: scale(1) translateY(0px);
+  /* Default state */
+  opacity: 1;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: #ffffff;
+    transition: background-color 5000s ease-in-out 0s;
+    box-shadow: inset 0 0 20px 20px transparent;
+    caret-color: #fff;
 }
