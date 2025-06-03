@@ -5956,6 +5956,7 @@ import {
   ArrowUpDown,
   ArrowDownUp,
   ListChecks,
+  Loader2,
 } from "lucide-react";
 
 // Utility & Toast
@@ -6031,34 +6032,32 @@ const getKycStatusConfig = (status?: KycStatus | null) => {
     { color: string; icon: React.ElementType; label: string }
   > = {
     verified: {
-      color:
-        "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
+      color: "bg-green-900/40 text-green-400",
       icon: CheckCircle,
       label: "Verified",
     },
     rejected: {
-      color: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
+      color: "bg-red-900/40 text-red-400",
       icon: XCircle,
       label: "Rejected",
     },
     pending: {
-      color:
-        "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
+      color: "bg-yellow-900/40 text-yellow-400",
       icon: Clock,
       label: "Pending",
     },
     skipped: {
-      color: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
+      color: "bg-blue-900/40 text-blue-400",
       icon: ArrowLeft,
       label: "Skipped",
     },
     not_started: {
-      color: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300",
+      color: "bg-secondarybox text-mainheadingWhite",
       icon: HelpCircle,
       label: "Not Started",
     },
     unknown: {
-      color: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300",
+      color: "bg-gray-700/40 text-gray-400",
       icon: AlertCircle,
       label: "Unknown",
     },
@@ -6069,19 +6068,19 @@ const getTransactionStatusColorClasses = (status?: string | null): string => {
   switch (status?.toLowerCase()) {
     case "completed":
     case "credited":
-      return "text-green-600 bg-green-100 dark:bg-green-600/20 dark:text-green-400";
+      return "bg-green-600/20 text-green-400";
     case "pending":
-      return "text-yellow-600 bg-yellow-100 dark:bg-yellow-600/20 dark:text-yellow-400";
+      return "bg-yellow-600/20 text-yellow-400";
     case "processing":
     case "in progress":
-      return "text-blue-600 bg-blue-100 dark:bg-blue-600/20 dark:text-blue-400";
+      return "bg-blue-600/20 text-blue-400";
     case "failed":
-      return "text-rose-600 bg-rose-100 dark:bg-rose-600/20 dark:text-rose-400";
+      return "bg-rose-600/20 text-rose-400";
     case "canceled":
     case "cancelled":
-      return "text-red-600 bg-red-100 dark:bg-red-600/20 dark:text-red-400";
+      return "bg-red-600/20 text-red-400";
     default:
-      return "text-gray-600 bg-gray-100 dark:bg-gray-600/20 dark:text-gray-400";
+      return "bg-gray-600/20 text-gray-400";
   }
 };
 const getInitials = (name?: string | null): string => {
@@ -6124,13 +6123,13 @@ const DetailItem = ({
   className?: string;
 }) => (
   <div className={cn("py-2 space-y-2", className)}>
-    <dt className="text-sm font-medium text-neutral-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+    <dt className="text-sm font-medium text-mainheadingWhite uppercase tracking-wider flex items-center gap-2">
       {Icon && <Icon className="flex-shrink-0 text-primary size-4" />}
       {label}
     </dt>
     <dd
       className={cn(
-        "text-sm break-words text-gray-500 dark:text-gray-300",
+        "text-sm break-words text-subheadingWhite",
         isImportant ? "font-semibold" : ""
       )}
     >
@@ -6144,31 +6143,32 @@ const LoadingSkeleton = () => (
     <div className="space-y-6 pb-10">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
         <div>
-          <Skeleton className="h-4 w-64 mb-3 rounded " />
+          <Skeleton className="h-4 w-64 mb-1 rounded " />
           <Skeleton className="h-10 w-48 rounded " />
         </div>
         <div className="flex items-center gap-2">
-          <Skeleton className="h-12 w-50 rounded-full" />
+          <Skeleton className="h-12 w-44 rounded-full" />
         </div>
       </div>
-      <div className="border rounded-lg bg-card overflow-hidden">
+
+      <div className="border rounded-lg overflow-hidden">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-5 border-b">
           <div className="flex items-center gap-4 flex-1">
-            <Skeleton className="h-14 w-14 sm:h-16 sm:w-16 rounded-full flex-shrink-0 " />
+            <Skeleton className="h-14 w-14 sm:h-16 sm:w-16 rounded-full flex-shrink-0" />
             <div className="space-y-1.5 flex-1">
-              <Skeleton className="h-6 w-3/4  rounded" />
-              <Skeleton className="h-4 w-1/2  rounded" />
-              <Skeleton className="h-5 w-20  rounded-md" />
+              <Skeleton className="h-6 w-3/4 rounded" />
+              <Skeleton className="h-4 w-1/2 rounded" />
+              <Skeleton className="h-8.5 w-27 rounded-full" />
             </div>
           </div>
           <div className="space-y-1 text-right flex-shrink-0">
-            <Skeleton className="h-3 w-28  rounded" />
-            <Skeleton className="h-3 w-24  rounded" />
-            <Skeleton className="h-3 w-32  rounded" />
+            <Skeleton className="h-3 w-28 rounded" />
+            <Skeleton className="h-3 w-24 rounded" />
+            <Skeleton className="h-3 w-32 rounded" />
           </div>
         </div>
         <div className="p-4 sm:p-6">
-          <Skeleton className="h-5 w-1/4  rounded mb-4" />
+          <Skeleton className="h-5 w-1/4 rounded mb-4" />
           <div className="flex flex-nowrap overflow-x-auto space-x-4 pb-2 sm:grid sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 sm:space-x-0 sm:pb-0 sm:overflow-x-visible">
             {[...Array(5)].map((_, i) => (
               <Skeleton
@@ -6179,34 +6179,38 @@ const LoadingSkeleton = () => (
           </div>
         </div>
       </div>
+
       <div className="w-full">
         <div className="overflow-hidden mb-4">
-          <div className="relative flex w-full h-full overflow-x-auto whitespace-nowrap gap-3 bg-lightborder dark:bg-primarybox p-1.5 rounded-full justify-normal items-center">
-            <Skeleton className="h-9 flex-1 rounded-full" />
-            <Skeleton className="h-9 flex-1 rounded-full" />
-            <Skeleton className="h-9 flex-1 rounded-full" />
+          <div className="relative flex w-full h-full overflow-x-auto bg-primarybox whitespace-nowrap gap-3 p-1.5 rounded-full justify-normal items-center">
+            <Skeleton className="h-9 flex-1 rounded-full bg-background/50" />
+            <Skeleton className="h-9 flex-1 rounded-full bg-background/50" />
+            <Skeleton className="h-9 flex-1 rounded-full bg-background/50" />
           </div>
         </div>
+
         <div className="space-y-4">
-          <div className="border rounded-lg bg-card overflow-hidden">
-            <div className="px-6 py-4 bg-lightgray dark:bg-primarybox">
+          <div className="border rounded-lg bg-background overflow-hidden">
+            <div className="px-6 py-4">
               <div className="flex items-center justify-between">
-                <Skeleton className="h-6 w-40  rounded" />
-                <Skeleton className="h-7 w-24  rounded-full" />
+                <Skeleton className="h-6 w-40 rounded" />
+                <Skeleton className="h-7 w-24 rounded-full" />
               </div>
             </div>
-            <div className="p-4 sm:p-6 space-y-4">
+
+            <div className="p-4 sm:p-6 space-y-4 bg-background">
               <div>
                 <Skeleton className="h-4 w-32  rounded mb-3 border-b border-transparent pb-2" />
                 <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
                   {[...Array(6)].map((_, i) => (
                     <div key={`pd-skel-${i}`} className="py-2 space-y-2">
-                      <Skeleton className="h-4 w-1/3  rounded" />
-                      <Skeleton className="h-5 w-3/4  rounded" />
+                      <Skeleton className="h-4 w-1/3 rounded" />
+                      <Skeleton className="h-5 w-3/4 rounded" />
                     </div>
                   ))}
                 </div>
               </div>
+
               <div>
                 <Skeleton className="h-4 w-40  rounded mb-3 border-b border-transparent pb-2" />
                 <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
@@ -6231,21 +6235,22 @@ const LoadingSkeleton = () => (
               </div>
             </div>
           </div>
-          <div className="border rounded-lg bg-card overflow-hidden">
-            <div className="px-6 py-4 bg-lightgray dark:bg-primarybox">
+
+          <div className="border rounded-lg bg-background overflow-hidden">
+            <div className="px-6 py-4">
               <Skeleton className="h-6 w-44 rounded" />
             </div>
             <div className="p-4 sm:p-6">
               <div className="flex md:flex-row flex-col gap-4">
                 <div className="border rounded-lg overflow-hidden md:w-1/2 w-full">
                   <div className="p-3">
-                    <Skeleton className="h-4 w-1/3  rounded" />
+                    <Skeleton className="h-4 w-1/3 rounded" />
                   </div>
                   <Skeleton className="aspect-video w-full rounded-none" />
                 </div>
                 <div className="border rounded-lg overflow-hidden md:w-1/2 w-full">
                   <div className="p-3">
-                    <Skeleton className="h-4 w-1/3  rounded" />
+                    <Skeleton className="h-4 w-1/3 rounded" />
                   </div>
                   <Skeleton className="aspect-video w-full rounded-none" />
                 </div>
@@ -6265,21 +6270,32 @@ const ErrorDisplay = ({
   error: string | null;
   onRetry: () => void;
 }) => (
-  <Alert variant="destructive" className="mt-6">
-    <AlertCircle className="h-4 w-4" />
-    <AlertTitle>Error Loading User Details</AlertTitle>
-    <AlertDescription>
-      {error || "An unexpected error occurred."}
-      <Button
-        variant="destructive"
-        size="sm"
-        onClick={onRetry}
-        className="mt-2 ml-auto block"
-      >
+  <div className="my-10">
+    <div
+      className="w-full flex justify-between relative items-center bg-red-900/25 border sm:order-1 order-2 border-red-500 p-4 rounded-xl"
+      role="alert"
+    >
+      <div className="flex items-center gap-3 text-center">
+        <div className="sm:size-12 size-10 rounded-full flex items-center justify-center bg-red-600/20 flex-shrink-0">
+          <AlertCircle className="text-red-500 size-5 sm:size-6 flex-shrink-0" />
+        </div>
+
+        <div className="flex-1 text-left">
+          <h4 className="font-medium sm:text-2xl text-lg text-red-600 capitalize">
+            Error Loading User Details
+          </h4>
+
+          <p className="text-sm text-left text-red-300/90">
+            {error || "An unexpected error occurred."}
+          </p>
+        </div>
+      </div>
+
+      <button onClick={onRetry} className="mt-2 block px-6 py-2 bg-red-700/20 rounded-full text-red-600 hover:bg-red-800/20 transition-all ease-linear duration-75 cursor-pointer font-medium">
         Retry
-      </Button>
-    </AlertDescription>
-  </Alert>
+      </button>
+    </div>
+  </div>
 );
 
 interface TransactionTableProps {
@@ -6341,7 +6357,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
   };
 
   const headerCellClasses =
-    "px-6 py-4 text-left font-medium text-neutral-900 dark:text-white tracking-wider whitespace-nowrap";
+    "px-6 py-4 text-left font-medium text-mainheadingWhite tracking-wider whitespace-nowrap";
   const buttonClasses =
     "flex items-center gap-1 hover:text-primary uppercase group cursor-pointer";
 
@@ -6378,9 +6394,9 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
     .filter((col) => (type === "payment" ? true : !col.paymentOnly)).length;
 
   return (
-    <div className="rounded-xl border overflow-hidden overflow-x-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-lightborder dark:[&::-webkit-scrollbar-track]:bg-primarybox dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
+    <div className="rounded-xl border overflow-hidden overflow-x-auto sm:[&::-webkit-scrollbar]:w-2 sm:[&::-webkit-scrollbar]:h-3 sm:[&::-webkit-scrollbar-track]:rounded-full sm:[&::-webkit-scrollbar-thumb]:rounded-full sm:[&::-webkit-scrollbar-track]:bg-primarybox sm:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
       <table className="min-w-full overflow-hidden">
-        <thead className="bg-lightgray dark:bg-primarybox ">
+        <thead className="bg-primarybox ">
           <tr>
             {columns.map((col) => {
               if (type === "payment" && col.transferOnly) return null;
@@ -6407,7 +6423,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
             <tr>
               <td
                 colSpan={numberOfDataColumns}
-                className="px-6 py-10 text-center text-gray-500 dark:text-gray-300"
+                className="px-6 py-10 text-center text-subheadingWhite"
               >
                 No {type}s found.
               </td>
@@ -6440,7 +6456,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
               const isCopied = copiedId === item._id;
               return (
                 <tr key={item._id}>
-                  <td className="px-4 py-3 whitespace-nowrap font-medium text-neutral-900 dark:text-white">
+                  <td className="px-4 py-3 whitespace-nowrap font-medium text-mainheadingWhite">
                     <div className="flex items-center gap-2">
                       <span className="underline decoration-dashed decoration-border cursor-default">
                         {item._id.substring(item._id.length - 6)}
@@ -6449,7 +6465,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
                         <TooltipTrigger asChild>
                           <button
                             className={cn(
-                              "h-5 w-5 p-0 text-muted-foreground hover:text-foreground transition-colors",
+                              "h-5 w-5 p-0 text-mainheadingWhite cursor-pointer hover:text-subheadingWhite transition-all ease-linear duration-75",
                               isCopied && "text-green-500 hover:text-green-600"
                             )}
                             onClick={() => handleCopy(item._id)}
@@ -6465,22 +6481,23 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
                         <TooltipContent
                           side="bottom"
                           sideOffset={5}
-                          className="bg-[#e4e4e4] dark:bg-secondarybox text-white p-2 px-3 rounded-2xl max-w-50 xl:max-w-lg"
+                          className="bg-secondarybox text-mainheadingWhite p-2 px-3 rounded-2xl max-w-50 xl:max-w-lg"
                         >
-                          <p>{isCopied ? "Copied!" : "Copy ID"}</p>
+                          <p>{isCopied ? "Copied!" : "Copy Id"}</p>
                         </TooltipContent>
                       </Tooltip>
                     </div>
                   </td>
+
                   {type === "transfer" && (
-                    <td className="px-4 py-3 whitespace-nowrap font-medium capitalize text-neutral-900 dark:text-white">
+                    <td className="px-4 py-3 whitespace-nowrap font-medium capitalize text-mainheadingWhite">
                       {recipientName || "N/A"}
                     </td>
                   )}
-                  <td className="px-4 py-3 whitespace-nowrap font-medium text-neutral-900 dark:text-white">
+                  <td className="px-4 py-3 whitespace-nowrap font-medium text-mainheadingWhite">
                     {formattedAmount}
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap font-medium text-neutral-900 dark:text-white">
+                  <td className="px-4 py-3 whitespace-nowrap font-medium text-mainheadingWhite">
                     {currencyCode || "N/A"}
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">
@@ -6493,19 +6510,18 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
                       {item.status || "Unknown"}
                     </span>
                   </td>
-                  <td className="px-6 py-3 whitespace-nowrap font-medium">
+                  <td className="px-6 py-3 whitespace-nowrap font-medium text-mainheadingWhite">
                     {formatDate(item.createdAt, true)}
                   </td>
                   <td className="px-6 py-3 whitespace-nowrap ">
-                    <Button
-                      asChild
-                      className="inline-flex items-center group px-6 py-2 rounded-3xl space-x-1 transition-colors duration-300 font-medium bg-primary hover:bg-primaryhover dark:bg-primarybox hover:dark:bg-secondarybox text-neutral-900 dark:text-primary focus:outline-none"
+                    <button
+                      className="inline-flex items-center group px-6 py-2 rounded-3xl transition-all duration-75 ease-linear font-medium bg-primarybox hover:bg-secondarybox text-primary focus:outline-none"
                       title={`View ${type} details`}
                     >
                       <Link href={detailLink}>
                         <span>View Details</span>
                       </Link>
-                    </Button>
+                    </button>
                   </td>
                 </tr>
               );
@@ -6791,6 +6807,7 @@ const UserDetailPage: React.FC = () => {
       </div>
     );
   }
+
   if (error && !userData) {
     return (
       <div className="relative min-h-screen bg-background p-4 sm:p-6 lg:p-8">
@@ -6802,15 +6819,18 @@ const UserDetailPage: React.FC = () => {
       </div>
     );
   }
+
   if (!userData) {
     return (
-      <div className="relative min-h-screen bg-background p-4 sm:p-6 lg:p-8 text-center py-16 text-muted-foreground">
-        <ToastContainer
+       <div className="fixed gap-2 inset-0 bg-black/50 backdrop-blur-[1px] h-screen flex items-center justify-center z-50">
+         <ToastContainer
           {...customToastContainerProps}
           style={getToastContainerStyle()}
         />
-        User data not found. This might be due to an earlier error or invalid
-        ID.
+        <Loader2 size={48} className="text-primary animate-spin" />
+        <p className="text-mainheadingWhite font-medium">
+          Loading UsersData...
+        </p>
       </div>
     );
   }
@@ -6848,56 +6868,56 @@ const UserDetailPage: React.FC = () => {
         <div className="space-y-6 pb-10">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
             <div className="Heading">
-              <div className="flex items-center text-sm text-gray-500 mb-2 flex-wrap">
+              <div className="flex items-center text-sm flex-wrap">
                 <Link
                   href="/admin"
-                  className="text-gray-500 hover:text-primary dark:text-gray-300 hover:dark:text-primary"
+                  className="text-subheadingWhite hover:text-primary"
                 >
                   Admin
                 </Link>
-                <ChevronRight className="size-4 mx-1 flex-shrink-0 dark:text-white" />
+                <ChevronRight className="size-4 mx-1 flex-shrink-0 text-mainheadingWhite" />
                 <Link
                   href="/admin/users"
-                  className="text-gray-500 hover:text-primary dark:text-gray-300 hover:dark:text-primary"
+                  className="text-subheadingWhite hover:text-primary"
                 >
                   Users
                 </Link>
-                <ChevronRight className="size-4 mx-1 flex-shrink-0 dark:text-white" />
-                <span
-                  className="text-neutral-900 dark:text-white truncate"
-                  title={userId}
-                >
+                <ChevronRight className="size-4 mx-1 flex-shrink-0 text-mainheadingWhite" />
+                <span className="text-subheadingWhite truncate" title={userId}>
                   Details (
                   {userId ? `${userId.substring(0, 8)}...` : "Loading..."})
                 </span>
               </div>
-              <h1 className="text-2xl md:text-3xl font-bold text-neutral-900 dark:text-white">
+
+              <h1 className="text-2xl md:text-3xl mt-1 font-bold text-mainheadingWhite">
                 User Details
               </h1>
             </div>
+
             <div className="flex items-center gap-2 flex-wrap">
               <button
                 onClick={() => setIsSendMessageModalOpen(true)}
-                className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear"
+                className="flex items-center justify-center cursor-pointer gap-2 bg-primarybox hover:bg-secondarybox text-mainheadingWhite px-6 py-3 h-12 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear"
               >
-                <MessageSquarePlus className="size-4 mr-1.5" /> Send Message
+                <MessageSquarePlus className="size-4" /> Send Message
               </button>
             </div>
           </div>
 
-          <Card className="overflow-hidden border shadow-none">
-            <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-5 border-b">
+          <Card className="overflow-hidden bg-primarybox shadow-none">
+            <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-5">
               <div className="flex items-center gap-4">
-                <Avatar className="h-14 w-14 sm:h-16 sm:w-16 flex-shrink-0 bg-lightgray dark:bg-primarybox">
-                  <AvatarFallback className="text-xl font-semibold text-neutral-900 dark:text-white">
+                <Avatar className="size-14 sm:size-16 flex-shrink-0">
+                  <AvatarFallback className="text-xl font-semibold text-mainheadingWhite">
                     {getInitials(userData.fullName)}
                   </AvatarFallback>
                 </Avatar>
+
                 <div className="space-y-0.5">
-                  <CardTitle className="text-lg sm:text-xl text-neutral-900 dark:text-white">
+                  <CardTitle className="text-lg sm:text-xl text-mainheadingWhite">
                     {userData.fullName}
                   </CardTitle>
-                  <CardDescription className="text-sm text-gray-500 dark:text-gray-300">
+                  <CardDescription className="text-sm text-subheadingWhite">
                     {userData.email}
                   </CardDescription>
                   <Badge
@@ -6908,20 +6928,21 @@ const UserDetailPage: React.FC = () => {
                       "mt-1.5 text-xs capitalize px-3 py-2 rounded-full",
                       userData.role === "admin"
                         ? "bg-primary text-neutral-900"
-                        : "bg-lightgray dark:bg-primarybox text-neutral-900 dark:text-white"
+                        : "bg-secondarybox text-mainheadingWhite"
                     )}
                   >
                     {userData.role} Account
                   </Badge>
                 </div>
               </div>
-              <div className="flex flex-col items-start sm:items-end gap-1 text-sm text-gray-500 dark:text-gray-300 flex-shrink-0">
+
+              <div className="flex flex-col items-start sm:items-end gap-1 text-sm text-subheadingWhite flex-shrink-0">
                 <span className="flex items-center gap-1.5">
-                  <CalendarDays className="h-4 w-4" /> Joined:{" "}
+                  <CalendarDays className="h-4 w-4 text-primary" /> Joined:{" "}
                   {formatDate(userData.createdAt)}
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <Clock className="h-4 w-4" /> Updated:{" "}
+                  <Clock className="h-4 w-4 text-primary" /> Updated:{" "}
                   {formatDate(userData.updatedAt)}
                 </span>
                 <Tooltip>
@@ -6930,36 +6951,37 @@ const UserDetailPage: React.FC = () => {
                       ID: {userData._id.substring(userData._id.length - 8)}
                     </span>
                   </TooltipTrigger>
+
                   <TooltipContent
                     side="bottom"
                     sideOffset={5}
-                    className="bg-[#e4e4e4] dark:bg-secondarybox text-white p-2 px-3 sm:mr-5 mr-0 rounded-2xl max-w-60 xl:max-w-lg"
+                    className="bg-secondarybox text-mainheadingWhite p-2 px-3 sm:mr-5 mr-0 rounded-2xl max-w-60 xl:max-w-lg"
                   >
-                    <p className="font-medium dark:text-white text-neutral-900 text-xs">
-                      {userData._id}
-                    </p>
+                    <p className="font-medium text-xs">{userData._id}</p>
                   </TooltipContent>
                 </Tooltip>
               </div>
             </CardHeader>
+
             {accounts && accounts.length > 0 && (
               <CardContent className="p-4 sm:p-6">
-                <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-4 flex items-center gap-2">
+                <h3 className="text-lg font-semibold text-mainheadingWhite mb-4 flex items-center gap-2">
                   <Wallet className="h-5 w-5 text-primary" /> Account Balances
                 </h3>
+
                 <div className="flex flex-nowrap overflow-x-auto space-x-4 pb-2 sm:grid sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 sm:space-x-0 sm:pb-0 sm:overflow-x-visible">
                   {accounts.map((acc) => (
                     <div
                       key={acc._id}
-                      className="flex-shrink-0 w-36 sm:w-auto border rounded-lg p-4 hover:bg-lightgray dark:hover:bg-primarybox transition-all duration-75 ease-linear flex flex-col justify-between"
+                      className="flex-shrink-0 w-36 sm:w-auto border rounded-lg p-4 hover:bg-secondarybox transition-all duration-75 ease-linear flex flex-col justify-between"
                     >
                       <div>
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                          <span className="text-xs font-medium uppercase tracking-wide text-subheadingWhite">
                             {acc.currency?.code || "N/A"}
                           </span>
                         </div>
-                        <div className="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-white tracking-tight mb-1">
+                        <div className="text-xl sm:text-2xl font-bold text-mainheadingWhite tracking-tight mb-1">
                           {acc.balance != null
                             ? acc.balance.toLocaleString(undefined, {
                                 minimumFractionDigits: 2,
@@ -6974,6 +6996,7 @@ const UserDetailPage: React.FC = () => {
               </CardContent>
             )}
           </Card>
+
           <Tabs
             defaultValue="kyc"
             value={activeTab}
@@ -6981,19 +7004,19 @@ const UserDetailPage: React.FC = () => {
             className="w-full"
           >
             <div className="overflow-hidden mb-4 rounded-full z-0">
-              <TabsList className="relative z-20 flex w-full h-full overflow-x-auto whitespace-nowrap dark:bg-primarybox p-1.5 rounded-full justify-normal items-center">
+              <TabsList className="relative z-20 flex w-full h-full overflow-x-auto whitespace-nowrap bg-primarybox p-1.5 rounded-full justify-normal items-center">
                 {tabs.map((tab) => (
                   <TabsTrigger
                     key={tab.value}
                     value={tab.value}
                     className={cn(
-                      "relative px-4 py-3 flex items-center justify-center gap-2 text-base shrink-0 min-w-max rounded-full text-neutral-900 dark:text-white data-[state=active]:text-neutral-900 dark:data-[state=active]:text-primary border-none data-[state=active]:bg-transparent dark:data-[state=active]:bg-transparent data-[state=active]:shadow-none cursor-pointer transition-colors duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      "relative px-4 py-3 flex items-center justify-center gap-2 text-base shrink-0 min-w-max rounded-full text-mainheadingWhite data-[state=active]:text-mainheading dark:data-[state=active]:text-primary border-none data-[state=active]:bg-transparent dark:data-[state=active]:bg-transparent data-[state=active]:shadow-none cursor-pointer transition-colors duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     )}
                   >
                     {activeTab === tab.value && (
                       <motion.div
                         layoutId="active-tab-indicator"
-                        className="absolute inset-0 -z-10 bg-primary dark:bg-secondarybox rounded-full"
+                        className="absolute inset-0 -z-10 bg-primary rounded-full"
                         transition={{ stiffness: 350, damping: 30 }}
                       />
                     )}
@@ -7003,6 +7026,7 @@ const UserDetailPage: React.FC = () => {
                 ))}
               </TabsList>
             </div>
+
             <TabsContent value="kyc">
               <motion.div
                 key="kyc-content"
@@ -7013,9 +7037,9 @@ const UserDetailPage: React.FC = () => {
               >
                 <motion.div variants={itemVariants}>
                   <Card className="border overflow-hidden mb-4 shadow-none">
-                    <CardHeader className="px-6 py-4 bg-lightgray dark:bg-primarybox ">
+                    <CardHeader className="px-6 py-4 bg-primarybox">
                       <div className="flex items-center justify-between">
-                        <CardTitle className="text-lg font-semibold flex items-center gap-2 text-neutral-900 dark:text-white ">
+                        <CardTitle className="text-lg font-semibold flex items-center gap-2 text-mainheadingWhite ">
                           <FileText className="text-primary size-5" /> KYC
                           Information
                         </CardTitle>
@@ -7029,8 +7053,9 @@ const UserDetailPage: React.FC = () => {
                           {kycStatusConfig.label}
                         </Badge>
                       </div>
+
                       {kyc?.status === "rejected" && kyc.rejectionReason && (
-                        <p className="text-xs text-destructive pt-2 mt-2 border-t border-destructive/20">
+                        <p className="text-xs text-red-600 pt-2 mt-2 border-t">
                           <span className="font-medium">Rejection Reason:</span>{" "}
                           {kyc.rejectionReason}
                         </p>
@@ -7040,7 +7065,7 @@ const UserDetailPage: React.FC = () => {
                       {kyc ? (
                         <>
                           <div className="p-4 sm:p-6">
-                            <h4 className="border-b pb-2 mb-2 font-medium text-neutral-900 dark:text-white">
+                            <h4 className="border-b pb-2 mb-2 font-medium text-mainheadingWhite">
                               Personal Details
                             </h4>
                             <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 sm:gap-6 gap-4">
@@ -7086,7 +7111,7 @@ const UserDetailPage: React.FC = () => {
                             </div>
                           </div>
                           <div className="p-4 sm:p-6">
-                            <h4 className="border-b pb-2 mb-2 text-neutral-900 dark:text-white">
+                            <h4 className="border-b pb-2 mb-2 text-mainheadingWhite">
                               Identification Details
                             </h4>
                             <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
@@ -7118,7 +7143,7 @@ const UserDetailPage: React.FC = () => {
                             </div>
                           </div>
                           <div className="p-4 sm:p-6">
-                            <h4 className="border-b pb-2 mb-2 text-neutral-900 dark:text-white">
+                            <h4 className="border-b pb-2 mb-2 text-mainheadingWhite">
                               Updating Information
                             </h4>
                             <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3">
@@ -7136,17 +7161,18 @@ const UserDetailPage: React.FC = () => {
                           </div>
                         </>
                       ) : (
-                        <p className="text-sm text-gray-500 dark:text-gray-300 italic py-4 text-center">
+                        <p className="text-sm text-subheadingWhite italic py-4 text-center">
                           KYC details not submitted.
                         </p>
                       )}
                     </CardContent>
                   </Card>
                 </motion.div>
+
                 <motion.div variants={itemVariants}>
                   <Card className="border overflow-hidden mb-4 shadow-none">
-                    <CardHeader className="px-6 py-4 bg-lightgray dark:bg-primarybox ">
-                      <CardTitle className="text-lg font-semibold flex items-center gap-2 text-neutral-900 dark:text-white ">
+                    <CardHeader className="px-6 py-4 bg-primarybox ">
+                      <CardTitle className="text-lg font-semibold flex items-center gap-2 text-mainheadingWhite ">
                         <CloudUpload className="text-primary" /> Submitted
                         Documents
                       </CardTitle>
@@ -7158,18 +7184,19 @@ const UserDetailPage: React.FC = () => {
                           {kyc.documents.map((doc) => (
                             <div
                               key={doc.public_id}
-                              className="border rounded-lg overflow-hidden bg-muted/30 dark:bg-muted/20 md:w-1/2 w-full"
+                              className="border rounded-lg overflow-hidden bg-primarybox text-mainheadingWhite md:w-1/2 w-full"
                             >
-                              <div className="p-3 border-b text-neutral-900 dark:text-white">
+                              <div className="p-3 border-b text-mainheadingWhite">
                                 <h4 className="text-sm font-medium capitalize">
                                   {doc.docType.replace("_", " ")}
                                 </h4>
                               </div>
-                              <div className="p-2 flex items-center justify-center aspect-video bg-white dark:bg-background overflow-hidden relative group">
+
+                              <div className="p-2 flex items-center justify-center aspect-video bg-background overflow-hidden relative group">
                                 {doc.url ? (
                                   <>
                                     {doc.url.toLowerCase().endsWith(".pdf") ? (
-                                      <div className="flex flex-col items-center justify-center text-center text-muted-foreground">
+                                      <div className="flex flex-col items-center justify-center text-center text-mainheadingWhite">
                                         <FileText className="h-12 w-12 mb-2" />
                                         <span className="text-xs">
                                           {" "}
@@ -7189,21 +7216,21 @@ const UserDetailPage: React.FC = () => {
                                       href={doc.url}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white transition-opacity cursor-pointer"
+                                      className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition-opacity cursor-pointer"
                                       aria-label={`View full ${doc.docType.replace(
                                         "_",
                                         " "
                                       )} document`}
                                     >
-                                      <Eye className="h-6 w-6 mb-1" />{" "}
-                                      <span className="text-xs font-medium">
+                                      <Eye className="h-6 w-6 mb-1 text-white" />{" "}
+                                      <span className="text-sm font-medium text-white">
                                         {" "}
                                         View Full Document{" "}
                                       </span>
                                     </a>
                                   </>
                                 ) : (
-                                  <p className="text-xs text-muted-foreground italic">
+                                  <p className="text-xs text-subheadingWhite italic">
                                     {" "}
                                     Document URL missing.{" "}
                                   </p>
@@ -7215,15 +7242,15 @@ const UserDetailPage: React.FC = () => {
                       </div>
                     ) : (
                       <CardContent className="p-4 flex items-center justify-center flex-col space-y-4">
-                        <div className="lg:size-16 size-14 flex items-center justify-center bg-primary dark:bg-transparent dark:bg-gradient-to-t dark:from-primary rounded-full mb-2">
-                          <ListChecks className="lg:size-8 size-6 mx-auto text-neutral-900 dark:text-primary" />
+                        <div className="lg:size-16 size-14 flex items-center justify-center bg-primary rounded-full">
+                          <ListChecks className="lg:size-8 size-6 mx-auto text-mainheading dark:text-primary" />
                         </div>
 
-                        <h2 className="lg:text-3xl text-2xl font-medium text-neutral-900 dark:text-white mt-1">
+                        <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite">
                           No documents submitted.
                         </h2>
 
-                        <p className="text-gray-500 dark:text-gray-300 max-w-lg mx-auto">
+                        <p className="text-subheadingWhite max-w-lg mx-auto">
                           No files have been uploaded in Submitted Documents.
                         </p>
                       </CardContent>
@@ -7232,6 +7259,7 @@ const UserDetailPage: React.FC = () => {
                 </motion.div>
               </motion.div>
             </TabsContent>
+
             <TabsContent value="transfers">
               <motion.div
                 key="transfers-content"
@@ -7242,14 +7270,16 @@ const UserDetailPage: React.FC = () => {
                 <motion.div variants={itemVariants}>
                   <Card className="border-0 bg-transparent shadow-none overflow-hidden">
                     <CardHeader className="p-4 ">
-                      <CardTitle className="text-lg font-semibold flex items-center gap-2 text-neutral-900 dark:text-white">
+                      <CardTitle className="text-lg font-semibold flex items-center gap-2 text-mainheadingWhite">
                         <Send className="h-5 w-5 text-primary" /> Recent
                         Transfers (Send Money)
                       </CardTitle>
-                      <CardDescription className="text-sm mt-1 text-gray-500 dark:text-gray-300">
+
+                      <CardDescription className="text-sm mt-1 text-subheadingWhite">
                         Last 5 transfers by this user.
                       </CardDescription>
                     </CardHeader>
+                    
                     <CardContent className="p-0">
                       <TransactionTable
                         data={sortedTransfers}
@@ -7276,11 +7306,11 @@ const UserDetailPage: React.FC = () => {
                 <motion.div variants={itemVariants}>
                   <Card className="border-0 bg-transparent shadow-none overflow-hidden">
                     <CardHeader className="p-4">
-                      <CardTitle className="text-lg font-semibold flex items-center gap-2 text-neutral-900 dark:text-white">
+                      <CardTitle className="text-lg font-semibold flex items-center gap-2 text-mainheadingWhite">
                         <Landmark className="h-5 w-5 text-primary" /> Recent
                         Payments (Add Money)
                       </CardTitle>
-                      <CardDescription className="text-sm !mt-1 text-gray-500 dark:text-gray-300">
+                      <CardDescription className="text-sm !mt-1 text-subheadingWhite">
                         Last 5 payment attempts.
                       </CardDescription>
                     </CardHeader>

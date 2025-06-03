@@ -2363,6 +2363,7 @@ import Link from "next/link";
 import { GoPlus } from "react-icons/go";
 import { Skeleton } from "@/components/ui/skeleton"; // Adjust the path to your Skeleton component
 import { AnimatePresence, motion } from "framer-motion";
+import { AlertCircle } from "lucide-react";
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
@@ -2457,7 +2458,7 @@ const CountryCard = () => {
     if (token) {
       fetchAccounts();
     } else {
-      console.log("No token found, skipping account fetch.");
+      // console.log("No token found, skipping account fetch.");
       setIsLoading(false);
     }
   }, [token]);
@@ -2530,19 +2531,20 @@ const CountryCard = () => {
                 className="w-64 shrink-0"
                 style={{ scrollSnapAlign: "start" }}
               >
-                <div className="p-6 bg-lightgray dark:bg-primarybox rounded-2xl flex flex-col justify-between h-[176px]">
+                <div className="p-6 bg-primarybox rounded-2xl flex flex-col justify-between h-[176px]">
                   <div className="flex items-center gap-4">
-                    <Skeleton className="h-12 w-12 rounded-full bg-lightborder dark:bg-accent" />
-                    <Skeleton className="h-5 w-24 rounded-md bg-lightborder dark:bg-accent" />
+                    <Skeleton className="h-12 w-12 rounded-full bg-background/50" />
+                    <Skeleton className="h-5 w-24 rounded-md bg-background/50" />
                   </div>
                   <div className="pt-16">
-                    <Skeleton className="h-6 w-32 rounded-md bg-lightborder dark:bg-accent" />
+                    <Skeleton className="h-6 w-32 rounded-md bg-background/50" />
                   </div>
                 </div>
               </div>
             ))}
+
           <div className="w-64 shrink-0" style={{ scrollSnapAlign: "start" }}>
-            <Skeleton className="p-6 h-[176px] bg-lightgray dark:bg-primarybox/70 rounded-2xl flex flex-col justify-center items-center border-2 border-dashed border-neutral-900 dark:border-neutral-300" />
+            <Skeleton className="p-6 h-[176px] bg-primarybox/70 rounded-2xl flex flex-col justify-center items-center border-2 border-dashed" />
           </div>
         </div>
       </section>
@@ -2552,11 +2554,13 @@ const CountryCard = () => {
   if (error) {
     // Error UI (unchanged)
     return (
-      <section className="Country-card px-2 py-4">
-        <div className="text-red-500 dark:text-red-400 text-lg bg-red-50 dark:bg-red-900/30 p-4 rounded-lg border border-red-200 dark:border-red-600/50">
-          Error loading accounts: {error}
-        </div>
-      </section>
+       <div
+        className="mb-8 bg-red-900/30 border border-red-700 text-red-300 px-4 py-3 rounded-xl relative flex items-center"
+        role="alert"
+      >
+        <AlertCircle className="h-5 w-5 mr-2" />
+        <span className="block sm:inline">Error loading accounts: {error}</span>
+      </div>
     );
   }
 
@@ -2620,7 +2624,7 @@ const CountryCard = () => {
                 account.currency?.code || "account"
               }`}
             >
-              <div className="p-6 bg-lightgray dark:bg-primarybox hover:dark:bg-secondarybox rounded-2xl flex flex-col justify-between h-[176px] transition-all duration-150 ease-linear cursor-pointer hover:bg-neutral-200/70">
+              <div className="p-6 bg-primarybox hover:bg-[#2f373b] rounded-2xl flex flex-col justify-between h-[176px] transition-all duration-150 ease-linear cursor-pointer">
                 <div className="flex items-center gap-4">
                   <Image
                     src={
@@ -2646,12 +2650,12 @@ const CountryCard = () => {
                         "/assets/icon/default.svg";
                     }}
                   />
-                  <span className="text-neutral-900 dark:text-white text-xl font-semibold">
+                  <span className="text-mainheadingWhite text-xl font-semibold">
                     {account.currency?.code || "N/A"}
                   </span>
                 </div>
                 <div className="pt-12">
-                  <span className="text-neutral-900 dark:text-white text-2xl font-semibold">
+                  <span className="text-mainheadingWhite text-2xl font-semibold">
                     {account.balance != null &&
                     !isNaN(parseFloat(account.balance))
                       ? parseFloat(account.balance).toLocaleString(undefined, {
@@ -2667,17 +2671,17 @@ const CountryCard = () => {
 
           <div
             onClick={() => setIsModalOpen(true)}
-            className="p-6 bg-lightgray dark:bg-primarybox/70 hover:dark:bg-secondarybox rounded-2xl flex flex-col justify-between items-start w-64 shrink-0 cursor-pointer hover:bg-neutral-200/70 transition-all duration-150 ease-linear border-2 border-dashed border-neutral-900 dark:border-neutral-300 h-[176px] group"
+            className="p-6 bg-primarybox hover:bg-[#2f373b] rounded-2xl flex flex-col justify-between items-start w-64 shrink-0 cursor-pointer transition-all duration-150 ease-linear border-2 border-dashed border-gray-400 h-[176px] group"
             style={{ scrollSnapAlign: "start" }}
             role="button"
             tabIndex={0}
             onKeyPress={(e) => e.key === "Enter" && setIsModalOpen(true)}
             aria-label="Add another currency account"
           >
-            <div className="rounded-full border-2 border-neutral-900 dark:border-white p-2 flex items-center justify-center mb-2 transition-transform duration-150 ease-in-out">
-              <GoPlus size={30} className="text-neutral-900 dark:text-white" />
+            <div className="rounded-full border-2 border-gray-400/40 p-2 flex items-center justify-center mb-2 transition-transform duration-150 ease-in-out">
+              <GoPlus size={30} className="text-white" />
             </div>
-            <span className="text-sm text-neutral-500 dark:text-white">
+            <span className="text-sm text-white">
               Add new currency to your account.
             </span>
           </div>

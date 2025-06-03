@@ -276,6 +276,10 @@
 // };
 // export default SecuritySection;
 
+
+
+
+
 // components/SecuritySection.tsx
 "use client"; // Required for Framer Motion
 
@@ -287,26 +291,27 @@ const SecuritySection = () => {
   return (
     // Apply whileInView to the main section to trigger animations
     <section
-      className="Security-section md:py-20 py-5 overflow-hidden" // Hide horizontal overflow during animation
+      className="Security-section sm:py-16 py-10 overflow-hidden" // Hide horizontal overflow during animation
       id="security"
     >
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row items-center gap-8">
           {/* Left Text Block */}
           <div
-            className="w-full lg:w-1/2 order-2 md:order-1"
+            className="w-full lg:w-1/2 order-2 lg:order-1"
             // Inherits initial/whileInView timing from parent section
           >
             <div className="space-y-4 text-center md:text-left">
-              <div className="sm:inline-block hidden">
+              <div className="lg:inline-block hidden">
                 <span className="text-subheadingWhite font-medium text-sm uppercase">
                   <span className="text-subheadingWhite/30">[</span> Built for
                   safety. Trusted worldwide{" "}
                   <span className="text-subheadingWhite/30">]</span>
                 </span>
               </div>
+              
               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
-                <h3 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight text-mainheadingWhite sm:block hidden">
+                <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite lg:block hidden">
                   Secure Currency Exchange{" "}
                   <span className="text-primary">You Can Trust</span>
                 </h3>
@@ -319,12 +324,13 @@ const SecuritySection = () => {
                   and always secure.
                 </p>
               </div>
+              
               <div className="flex justify-center md:justify-start mt-8">
                 <Link
                   href="/faqs"
                   className="inline-block" // Added inline-block
                 >
-                  <button className="bg-primary hover:bg-primaryhover text-neutral-900 cursor-pointer font-medium text-base lg:text-lg py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
+                  <button className="bg-primary hover:bg-primaryhover text-mainheading cursor-pointer font-medium text-base lg:text-lg py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
                     How we keep your money safe
                   </button>
                 </Link>
@@ -333,8 +339,8 @@ const SecuritySection = () => {
           </div>
 
           {/* Right Image Block */}
-          <div className="w-full lg:w-1/2 order-1 md:order-2">
-            <div className="sm:hidden block">
+          <div className="w-full lg:w-1/2 order-1 lg:order-2">
+            <div className="lg:hidden block">
                 <span className="text-subheadingWhite font-medium text-sm mb-1 text-center md:text-left block uppercase">
                   <span className="text-subheadingWhite/30">[</span> Built for
                   safety. Trusted worldwide{" "}

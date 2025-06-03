@@ -50,13 +50,13 @@ function GoogleCallbackLogic() {
         setIsProcessing(true);
         setError(null);
 
-        console.log("GoogleCallbackHandler: Processing callback.");
-        // Log presence, not value
-        console.log("GoogleCallbackHandler: Initial token:", initialToken ? 'Present' : 'MISSING');
-        console.log("GoogleCallbackHandler: Encoded User Data (ud):", encodedUserData ? 'Present' : 'MISSING');
+        // console.log("GoogleCallbackHandler: Processing callback.");
+        // // Log presence, not value
+        // console.log("GoogleCallbackHandler: Initial token:", initialToken ? 'Present' : 'MISSING');
+        // console.log("GoogleCallbackHandler: Encoded User Data (ud):", encodedUserData ? 'Present' : 'MISSING');
 
-        // --- Clean URL immediately ---
-        console.log("GoogleCallbackHandler: Cleaning params from URL.");
+        // // --- Clean URL immediately ---
+        // console.log("GoogleCallbackHandler: Cleaning params from URL.");
         window.history.replaceState(null, '', window.location.pathname);
         // ---------------------------
 
@@ -76,12 +76,12 @@ function GoogleCallbackLogic() {
 
         try {
             // --- *** CORRECTED DECODING HERE *** ---
-            console.log("GoogleCallbackHandler: Decoding user data using base64UrlDecode...");
+            // console.log("GoogleCallbackHandler: Decoding user data using base64UrlDecode...");
             const decodedString = base64UrlDecode(encodedUserData); // Use helper function
             // --- *** END CORRECTION *** ---
 
             const decodedUser = JSON.parse(decodedString) as Partial<BackendUser>;
-            console.log("GoogleCallbackHandler: Decoded user data:", decodedUser);
+            // console.log("GoogleCallbackHandler: Decoded user data:", decodedUser);
 
             // --- Validate Decoded User Data Structure ---
             if (!isValidBackendUser(decodedUser)) {
@@ -98,9 +98,9 @@ function GoogleCallbackLogic() {
             // -----------------------------------------
 
             // ----- SUCCESS -----
-            console.log("GoogleCallbackHandler: User data decoded and validated. Calling AuthContext login...");
+            // console.log("GoogleCallbackHandler: User data decoded and validated. Calling AuthContext login...");
             login(validUser, initialToken);
-            console.log("GoogleCallbackHandler: AuthContext login called. Navigation should occur via context effect.");
+            // console.log("GoogleCallbackHandler: AuthContext login called. Navigation should occur via context effect.");
             // No need to set loading state here, navigation takes over
 
         } catch (err: any) {
@@ -118,22 +118,24 @@ function GoogleCallbackLogic() {
 
     // Render minimal loading or error
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground p-4">
-            {isProcessing && !error && (
-                <>
-                    <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-                    <p className="text-lg font-semibold">Finalizing authentication...</p>
-                    <p className="text-muted-foreground">Please wait.</p>
-                 </>
-            )}
-            {error && (
-                 <div className="text-center text-destructive-foreground bg-destructive p-6 rounded-lg shadow-md max-w-md mx-auto">
-                    <p className="text-xl font-semibold mb-2">Authentication Failed</p>
-                    <p className="mb-4">{error}</p>
-                    <p className="text-sm">Redirecting to login page...</p>
-                 </div>
-            )}
-        </div>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4">
+        {isProcessing && !error && (
+          <>
+            <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+            <p className="text-lg font-semibold text-mainheadingWhite">
+              Finalizing authentication...
+            </p>
+            <p className="text-subheadingWhite">Please wait.</p>
+          </>
+        )}
+        {error && (
+          <div className="text-center bg-red-600/20 border border-red-500/30 text-red-300 p-6 rounded-lg shadow-md max-w-md mx-auto">
+            <p className="text-xl font-semibold mb-2">Authentication Failed</p>
+            <p className="mb-4">{error}</p>
+            <p className="text-sm">Redirecting to login page...</p>
+          </div>
+        )}
+      </div>
     );
 }
 
@@ -141,7 +143,7 @@ function GoogleCallbackLogic() {
 export default function GoogleCallbackHandler() {
     return (
         <Suspense fallback={
-            <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground p-4">
+            <div className="flex flex-col items-center justify-center min-h-screen bg-background text-subheadingWhite p-4">
                 <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
             </div>
         }>

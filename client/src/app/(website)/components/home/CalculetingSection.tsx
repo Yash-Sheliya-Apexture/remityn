@@ -24975,24 +24975,7 @@ const CalculetingSection: React.FC = () => {
   const getButtonLink = () => {
     if (authLoading) return "#";
     if (user) {
-      const queryParams = new URLSearchParams();
-      if (state.sendAmount && parseNumericAmount(state.sendAmount) > 0) {
-        queryParams.append(
-          "sendAmount",
-          parseNumericAmount(state.sendAmount).toString()
-        );
-      }
-      if (selectedSendCurrency) {
-        queryParams.append("sendCurrency", selectedSendCurrency);
-      }
-      if (
-        calculation.receiveAmount &&
-        parseFloat(calculation.receiveAmount) > 0
-      ) {
-        queryParams.append("receiveAmount", calculation.receiveAmount);
-      }
-      queryParams.append("receiveCurrency", CONFIG.RECEIVE_CURRENCY);
-      return `/dashboard/send-money?${queryParams.toString()}`;
+      return `/dashboard/send/select-balance`;
     }
     return "/register";
   };
@@ -25004,8 +24987,9 @@ const CalculetingSection: React.FC = () => {
   return (
     <section className="Hero-Section lg:pb-10 pb-5 relative">
       <div className="container mx-auto sm:px-4 px-2 relative">
-        <div className="rounded-3xl p-px bg-gradient-to-b from-primary to-transparent to-88% min-h-[500px] relative z-0">
-          <div className="bg-background rounded-3xl overflow-hidden xl:p-10 lg:p-6 p-4  h-full relative flex flex-col">
+        {/* <div className="rounded-3xl p-[2px] bg-gradient-to-b from-primary to-transparent to-88% min-h-[500px] relative z-0"> */}
+        <div className="rounded-3xl bg-gradient-to-b from-primary to-transparent to-88% min-h-[500px] relative z-0">
+          <div className="bg-background border-2 bg-clip-padding border-transparent rounded-3xl overflow-hidden xl:p-10 lg:p-6 p-4  h-full relative flex flex-col">
             {/* Background decorations */}
             <div className="shep">
               <div className="absolute -left-1 -top-1">
@@ -25328,7 +25312,7 @@ const CalculetingSection: React.FC = () => {
                       </span>
                     </div>
 
-                    <hr className="border my-2" />
+                    <div className="border my-2" />
 
                     <div className="flex justify-between items-center">
                       <span className="text-white dark:text-white font-semibold">
@@ -25386,11 +25370,11 @@ const CalculetingSection: React.FC = () => {
                 <Link
                   href={!isButtonDisabled ? getButtonLink() : "#"}
                   passHref
-                  className={`w-full block text-center py-3.5 px-6 font-medium rounded-full text-base lg:text-lg transition-all duration-200 ease-in-out transform active:scale-95
+                  className={`w-full block text-center py-3.5 px-6 font-medium rounded-full text-base lg:text-lg transition-all duration-75 ease-linear transform active:scale-95
                     ${
                       isButtonDisabled
                         ? "bg-gray-500 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed opacity-70"
-                        : "bg-primary hover:bg-primaryhover text-neutral-900 "
+                        : "bg-primary hover:bg-primaryhover text-mainheading "
                     }`}
                   aria-disabled={isButtonDisabled}
                   onClick={(e) => {

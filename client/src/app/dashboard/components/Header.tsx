@@ -395,6 +395,7 @@ import { useAuth } from "../../contexts/AuthContext"; // Path is likely correct 
 import { IoIosArrowForward } from "react-icons/io";
 import Image from "next/image";
 import { GiHamburgerMenu } from "react-icons/gi";
+import { TbMenu3 } from "react-icons/tb";
 
 interface HeaderProps {
   toggleSidebar: () => void;
@@ -450,53 +451,41 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   const userInitials = getInitials(user?.fullName);
 
   return (
-    <header className="sticky top-0 bg-white dark:bg-background z-5">
+    <header className="sticky bg-background top-0 z-5">
       <div className="max-w-5xl mx-auto px-4">
         <div className="flex justify-between items-center lg:h-28 h-20">
           <div className="flex justify-center items-center gap-4">
             <button
               onClick={toggleSidebar}
-              className="text-gray focus:outline-none cursor-pointer p-2.5 bg-lightgray dark:bg-secondary dark:text-primary rounded-full transition-colors lg:hidden sm:block hidden"
+              className="focus:outline-none cursor-pointer p-2.5 bg-primarybox hover:bg-secondarybox text-primary rounded-full transition-colors lg:hidden sm:block hidden"
             >
-              <GiHamburgerMenu
-                size={26}
-                className="text-mainheading dark:text-primary"
+              <TbMenu3
+                size={28}
               />
             </button>
 
             {isMobile && (
               <Link href="/dashboard">
                 <Image
-                  src="/assets/images/mobile_white_logo.svg"
+                  src="/assets/images/mobile_logo.svg"
                   alt="logo"
                   width={40}
                   height={40}
-                  className="block dark:hidden"
+                  // priority
                 />
               </Link>
-              
+        
             )}
-            {isMobile && (
-              <Link href="/dashboard">
-                <Image
-                  src="/assets/images/mobile_dark_logo.svg"
-                  alt="logo"
-                  width={40}
-                  height={40}
-                  className="hidden dark:block"
-                />
-              </Link>
-              
-            )}
+          
 
             {showBackArrow && (
               <button
                 onClick={handleBack}
-                className="focus:outline-none cursor-pointer p-2.5 bg-lightborder dark:bg-primarybox rounded-full text-neutral-900 dark:text-white hover:bg-primary dark:hover:bg-secondarybox transition-all duration-75 ease-linear"
+                className="focus:outline-none w-12 h-12 flex justify-center items-center
+                 cursor-pointer p-2.5 bg-primarybox rounded-full text-primary hover:bg-[#2f373b] transition-all duration-75 ease-linear"
               >
                 <HiArrowLeft
-                  size={26}
-                  className="text-mainheading dark:text-primary"
+                  size={22}
                 />
               </button>
             )}
@@ -505,23 +494,23 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
           {user && !loading && (
             <Link href="/dashboard/your-account">
               <div
-                className="relative flex items-center group sm:hover:bg-lightgray bg-transparent sm:dark:hover:bg-primarybox rounded-full cursor-pointer gap-2 
+                className="relative flex items-center group bg-transparent hover:bg-primarybox rounded-full cursor-pointer gap-2 
                sm:p-1.5 transition-all duration-75 ease-linear"
               >
-                <span className="relative size-12.5 bg-lightborder dark:bg-primary rounded-full flex items-center justify-center font-bold text-neutral-900 dark:text-background capitalize text-sm md:text-base">
+                <span className="relative size-12.5 bg-primary rounded-full flex items-center justify-center font-bold text-background capitalize text-sm md:text-base">
                   {userInitials}
                   {/* --- Notification Dot --- */}
                   {unreadMessageCount > 0 && (
                     <span
-                      className="absolute top-1 right-1 block h-3 w-3 transform translate-x-1/4 -translate-y-1/4 rounded-full bg-red-700 ring-2 ring-white group-hover:ring-lightgray  dark:group-hover:ring-[#2e2e2e] dark:ring-background"
+                      className="absolute top-1 right-1 block h-3 w-3 transform translate-x-1/4 -translate-y-1/4 rounded-full bg-red-700 ring-2 ring-background group-hover:ring-primarybox"
                       aria-label="New notifications"
                     />
                   )}
                 </span>
-                <div className="text-neutral-900 dark:text-white capitalize hidden sm:block font-medium text-sm md:text-base">
+                <div className="text-white capitalize hidden sm:block font-medium text-sm md:text-base">
                   {userName}
                 </div>
-                <IoIosArrowForward className="size-4 md:size-5 text-neutral-900 dark:text-white mr-1 md:mr-2 hidden md:block transition-transform ease-in-out duration-300" />
+                <IoIosArrowForward className="size-4 md:size-5 text-white mr-1 md:mr-2 hidden md:block transition-transform ease-in-out duration-300" />
               </div>
             </Link>
           )}

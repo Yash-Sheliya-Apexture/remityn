@@ -118,7 +118,7 @@ const FeaturesCard: React.FC<FeaturesCardProps> = ({
   return (
     <div
       key={id}
-      className={`group bg-background relative w-full xl:w-[28rem] h-full xl:h-[28rem]
+      className={`group bg-background relative w-full xl:w-[26rem] h-full xl:h-[26rem]
                   flex-shrink-0 cursor-pointer overflow-hidden text-white rounded-3xl 
                   transition-all duration-300 ease-in-out transform
                   p-5 md:p-6 flex flex-col`} // Added padding and flex-col here
@@ -127,11 +127,11 @@ const FeaturesCard: React.FC<FeaturesCardProps> = ({
       <div className="mb-4">
         {/* Container for icon, provides spacing */}
         <div
-          className="xl:w-24 w-18 xl:h-24 h-18 rounded-2xl flex items-center justify-center"
+          className="xl:w-24 lg:w-18 w-14 xl:h-24 lg:h-18 h-14 xl:rounded-2xl rounded-xl flex items-center justify-center"
           style={{ backgroundColor: iconBgColor }} // Apply dynamic background color
         >
           <Icon
-            className="text-mainheading transition-colors duration-300 ease-in-out xl:size-8 size-6"
+            className="text-mainheading transition-colors duration-300 ease-in-out xl:size-8 size-5"
           />
         </div>
         {/* Adjust size and color as needed */}
