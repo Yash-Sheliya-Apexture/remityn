@@ -2763,7 +2763,7 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
             <Skeleton className="w-32 h-10 rounded-full" />
           </div>
         </div>
-        <Skeleton className="h-4 w-32 rounded-md mb-2" />
+        <Skeleton className="h-4 w-36 rounded-md mb-2" />
         <div className="grid sm:grid-cols-2 gap-x-8 gap-y-14 py-3">
           {Array(7)
             .fill(0)
@@ -2923,45 +2923,6 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
     <section className="Recipient-Details-Page">
       <DashboardHeader title="Recipients" />
       <div>
-        {/* <div className="RecipientDetailsPage py-10">
-        <div className="bg-red-900/25 border border-red-500 rounded-xl sm:p-6 p-4 space-y-4 min-h-[300px] flex flex-col justify-center items-center gap-3">
-          <div className="lg:size-16 size-14 rounded-full flex items-center justify-center bg-red-600/20">
-            <AlertTriangle className="text-red-500 lg:size-8 size-6 mx-auto flex-shrink-0" />
-          </div>
-          <p className="lg:text-xl text-lg text-subheadingWhite max-w-lg text-center">
-            Error: Invalid or missing Recipient ID provided in the URL.
-          </p>
-          <span>
-            <Link
-              href="/dashboard/recipients"
-              className="text-primary underline underline-offset-2"
-            >
-              Go back to Recipients
-            </Link>
-          </span>
-        </div> */}
-
-        <div className="RecipientDetailsPage py-10">
-          <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
-            <div className="lg:size-16 size-14 flex items-center justify-center bg-red-600 dark:bg-transparent dark:bg-gradient-to-t dark:from-red-500 rounded-full mb-2">
-              <AlertTriangle className="lg:size-8 size-6 mx-auto text-white " />
-            </div>
-
-            <p className="lg:text-3xl md:text-2xl text-xl font-medium text-mainheadingWhite mt-1 max-w-xl">
-              Error: Invalid or missing Recipient ID provided in the URL.{" "}
-            </p>
-
-            <span>
-              <Link
-                href="/dashboard/recipients"
-                className="text-primary underline underline-offset-2 capitalize"
-              >
-                Go back to Recipients
-              </Link>
-            </span>
-          </div>
-        </div>
-
         {/* Profile Section */}
         <div className="flex flex-col mb-8 space-y-4">
           <div className="relative size-20 rounded-full bg-[#52636C] flex items-center justify-center">
@@ -2970,15 +2931,15 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
             </span>
             {/* Conditional Flag Display - Robust check */}
             {currentRecipient.currency?.code && (
-              <div className="absolute bottom-1 right-0 w-6 h-6 rounded-full overflow-hidden border-2 border-white">
+              <div className="absolute bottom-1 right-0 w-6.5 h-6.5 rounded-full overflow-hidden border-2 border-background">
                 <Image
                   src={
                     currentRecipient.currency.flagImage ||
                     `/assets/icon/${currentRecipient.currency.code.toLowerCase()}.svg`
                   }
                   alt={`${currentRecipient.currency.code} flag`}
-                  width={24}
-                  height={24}
+                  width={26}
+                  height={26}
                   unoptimized // Consider if optimization is needed based on source
                   onError={(e) => {
                     console.error(
@@ -3169,7 +3130,7 @@ const RecipientDetailsPage: React.FC<RecipientDetailsPageProps> = () => {
             />
             <p
               id="nickname-char-count"
-              className="mt-2 text-subheadingWhite font-semibold text-xs"
+              className="mt-2 text-subheadingWhite font-semibold text-xs text-left"
             >
               {nicknameInput.length}/40 characters
             </p>

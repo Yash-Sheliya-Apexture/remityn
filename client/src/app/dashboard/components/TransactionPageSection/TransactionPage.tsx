@@ -7266,10 +7266,10 @@ const TransactionsPageSkeleton: React.FC = () => {
     <section className="Transaction-Page pb-8 md:pb-10">
       <div className="container mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky lg:top-28 top-20 z-10 bg-background">
-          <Skeleton className="md:h-12 h-8 md:w-64 w-40 rounded-lg" />
+          <Skeleton className="h-8 w-48 rounded-md" />
           <div className="flex items-center gap-4 w-full md:w-auto justify-end">
-            <Skeleton className="h-11.5 w-full sm:w-70 rounded-full" />
-            <Skeleton className="h-11.5 w-36 rounded-full" />
+            <Skeleton className="h-12.5 w-full sm:w-70 rounded-full" />
+            <Skeleton className="h-12.5 sm:w-36 w-12.5 shrink-0 rounded-full" />
           </div>
         </div>
         <div className="space-y-6">
@@ -7286,22 +7286,14 @@ const TransactionsPageSkeleton: React.FC = () => {
                   key={`sk-pending-${index}`}
                   className="block p-2 sm:p-4 rounded-2xl"
                 >
-                  <div className="flex items-center gap-4">
-                    {/* Icon Skeleton */}
-                    <div className="relative flex-shrink-0">
-                      <div className="flex items-center justify-center">
-                        <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="flex items-center sm:gap-4 gap-2">
+                    <Skeleton className="size-12 rounded-full flex-shrink-0" />
+                    <div className="flex-grow flex flex-row justify-between sm:items-center sm:gap-4 gap-1">
+                      <div className="">
+                        <Skeleton className="h-4 sm:w-40 w-28 mb-2" />
+                        <Skeleton className="h-3 sm:w-32 w-20" />
                       </div>
-                    </div>
-                    {/* Text and Button Skeletons */}
-                    <div className="flex-grow flex flex-row justify-between items-center gap-4">
-                      <div className="flex-grow">
-                        <Skeleton className="h-4 w-40 mb-2" />
-                        <Skeleton className="h-3 w-32" />
-                      </div>
-                      <div className="shrink-0">
-                        <Skeleton className="h-5 w-20 rounded-full" />
-                      </div>
+                      <Skeleton className="h-4 sm:w-26 w-18 rounded-full" />
                     </div>
                   </div>
                 </div>
@@ -7781,7 +7773,7 @@ const TransactionsPage: React.FC = () => {
         <div className="container mx-auto">
           {/* Header and Actions */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 sticky lg:top-28 top-20 z-10 bg-background">
-            <h1 className="sm:text-3xl text-2xl font-semibold text-mainheadingWhite">
+            <h1 className="lg:text-3xl text-2xl font-semibold text-mainheadingWhite">
               Transactions
             </h1>
 
@@ -7801,8 +7793,8 @@ const TransactionsPage: React.FC = () => {
 
           {/* Error Display: Only show error if not loading */}
           {error && ( // isLoading check is implicitly handled by the main isLoading guard above
-            <div className="text-center py-5 text-red-500 bg-red-600/20 p-4 mb-4 rounded-md border border-red-800/30">
-              <strong>Error:</strong> {error}
+            <div className="text-center py-5 bg-red-600/25 p-4 mb-4 rounded-md border border-red-500">
+              <strong className="text-red-500">Error:</strong> {error}
             </div>
           )}
 
@@ -8102,7 +8094,7 @@ const TransactionsPage: React.FC = () => {
 
                       <Button
                         onClick={clearAllAppliedFiltersAndSearch}
-                        className="px-6 cursor-pointer lg:py-3 py-2.5 lg:text-base text-sm font-medium w-auto bg-primary text-neutral-900 rounded-full hover:bg-primaryhover transition-colors duration-500 ease-in-out"
+                        className="px-6 cursor-pointer lg:py-3 py-2.5 lg:text-base text-sm font-medium w-auto bg-primary text-neutral-900 rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear"
                       >
                         Clear{" "}
                         {filtersAreActive && searchIsActive

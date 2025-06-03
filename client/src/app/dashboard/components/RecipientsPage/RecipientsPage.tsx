@@ -1665,8 +1665,8 @@ export default function RecipientsPage() {
         <div>
           {/* Header Skeleton */}
           <div className="flex justify-between items-center mb-6">
-            <Skeleton className="h-8 w-40 rounded-md" />
-            <Skeleton className="h-10 w-24 rounded-full md:hidden block" />
+            <Skeleton className="h-8 w-48 rounded-md" />
+            <Skeleton className="h-12.5 w-12.5 rounded-full md:hidden block" />
           </div>
           {/* Search/Button Skeleton */}
           <div className="mb-8 flex items-center gap-4">
@@ -1711,11 +1711,11 @@ export default function RecipientsPage() {
   // --- Error State (Only show recipient fetch error for now) ---
   if (error) {
     return (
-      <div className="bg-red-50 dark:bg-red-900/25 border border-red-500 rounded-lg p-4 flex items-center gap-3">
+      <div className="bg-red-900/25 border border-red-500 rounded-lg p-4 flex items-center gap-3">
         <div className="flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center bg-red-600/20">
-          <FiAlertTriangle className="text-red-600 dark:text-red-500 size-5 sm:size-6 flex-shrink-0" />
+          <FiAlertTriangle className="text-red-500 size-5 sm:size-6 flex-shrink-0" />
         </div>
-        <p className="text-red-700 dark:text-red-300/90">
+        <p className="text-red-400">
           {" "}
           Error loading recipients: {error}{" "}
         </p>
@@ -1730,7 +1730,7 @@ export default function RecipientsPage() {
         <div className="Recipients-Page">
           {/* Header */}
           <div className="mb-6 flex items-center justify-between ">
-            <h1 className="lg:text-3xl text-2xl font-semibold text-mainheadingWhite">
+            <h1 className="sm:text-3xl text-2xl font-semibold text-mainheadingWhite">
               Recipients
             </h1>
             {/* Add Button (Small Screens) */}
@@ -1786,7 +1786,7 @@ export default function RecipientsPage() {
           {/* Recipient List or "Add New" Prompt */}
           {/* Check if token exists before showing list/prompt */}
           {!token && !isAuthLoading ? (
-            <div className="text-center text-gray-500 dark:text-gray-300 mt-10">
+            <div className="text-center text-subheadingWhite mt-10">
               Please log in to view or add recipients.
             </div>
           ) : filteredRecipients.length > 0 ? (

@@ -9873,7 +9873,7 @@ const BalanceDetailPage = () => {
             <Skeleton className="h-8 w-48 rounded-md" />
             <div className="flex items-center gap-4 w-full md:w-auto md:justify-end">
               <Skeleton className="h-12.5 w-full sm:w-68 rounded-full" />
-              <Skeleton className="h-12.5 w-36 rounded-full" />
+              <Skeleton className="h-12.5 sm:w-36 w-12.5 shrink-0 rounded-full" />
             </div>
           </div>
           <div className="space-y-2">
@@ -9881,14 +9881,14 @@ const BalanceDetailPage = () => {
               .fill(0)
               .map((_, index) => (
                 <div key={index} className="block p-2 sm:p-4 rounded-2xl">
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center sm:gap-4 gap-2">
                     <Skeleton className="size-12 rounded-full flex-shrink-0" />
-                    <div className="flex-grow flex flex-row justify-between items-center gap-4">
-                      <div className="flex-grow">
-                        <Skeleton className="h-4 w-40 mb-2" />
-                        <Skeleton className="h-3 w-32" />
+                    <div className="flex-grow flex flex-row justify-between sm:items-center sm:gap-4 gap-1">
+                      <div className="">
+                        <Skeleton className="h-4 sm:w-40 w-28 mb-2" />
+                        <Skeleton className="h-3 sm:w-32 w-20" />
                       </div>
-                      <Skeleton className="h-6 w-26 rounded-full" />
+                      <Skeleton className="h-4 sm:w-26 w-18 rounded-full" />
                     </div>
                   </div>
                 </div>
@@ -9905,28 +9905,31 @@ const BalanceDetailPage = () => {
        console.error("Rendering Error State:", error);
      const message = typeof error === 'string' ? error : "Balance details not found or you may not have access.";
         return (
-          <> {/* Wrap error state in py-5 for consistent spacing */}
-             <div className="bg-red-900/25 border border-red-500 sm:p-10 p-4 flex sm:flex-col sm:items-center justify-center gap-3 rounded-lg ">
-               <div className="flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center bg-red-600/20">
-                 <AlertTriangle className="text-red-500 size-5 sm:size-6 flex-shrink-0" />
-               </div>
-               <div className="flex flex-col sm:items-center w-full">
-                 <p className="font-semibold text-red-200">
-                   Error Loading Balance
-                 </p>
-                 <p className="text-sm text-red-300/90 mt-1">
-                   {message}
-                 </p>
-               </div>
-             </div>
-             <div className="text-center">
-               <button
-                 onClick={handleBackClick}
-                 className="mt-6 inline-flex font-medium cursor-pointer bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear"
-               >
-                 Go Back
-               </button>
-             </div>
+          <>
+            {" "}
+            {/* Wrap error state in py-5 for consistent spacing */}
+            <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
+              <div className="lg:size-16 size-14 rounded-full flex items-center justify-center bg-red-600/20 flex-shrink-0">
+                <AlertTriangle className="text-red-500 lg:size-8 size-6 mx-auto flex-shrink-0" />
+              </div>
+              <div className="flex flex-col sm:items-center w-full gap-2">
+                <p className="lg:text-3xl text-2xl font-medium text-mainheadingWhite">
+                  Error Loading Balance
+                </p>
+                <p className="lg:text-lg text-base text-subheadingWhite max-w-xl mx-auto">
+                  {message}
+                </p>
+              </div>
+
+              <div className="text-center">
+                <button
+                  onClick={handleBackClick}
+                  className="inline-flex font-medium cursor-pointer text-mainheading bg-primary hover:bg-primaryhover px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear"
+                >
+                  Go Back
+                </button>
+              </div>
+            </div>
           </>
         );
     }
@@ -9936,12 +9939,21 @@ const BalanceDetailPage = () => {
         // This is a safeguard, should theoretically not be reached after the checks above
         console.error("Invariant violation: Balance detail is unexpectedly null/undefined in main render.");
             return (
-                <div className="py-5"> {/* Wrap safeguard in py-5 */}
-                   <div className="bg-lightgray dark:bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
-                        <p className="lg:text-lg text-base text-gray-500 dark:text-gray-300 max-w-lg mx-auto">Something went wrong. Balance details are unavailable.</p>
-                        <button onClick={handleBackClick} className="inline-flex font-medium bg-primary hover:bg-primaryhover text-neutral-900 px-8 py-3 h-12.5 rounded-full transition-all duration-75 ease-linear cursor-pointer">Go Back</button>
-                   </div>
+              <div className="py-5">
+                {" "}
+                {/* Wrap safeguard in py-5 */}
+                <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[250px] flex flex-col justify-center items-center">
+                  <p className="lg:text-lg text-base text-mainheadingWhite max-w-lg mx-auto">
+                    Something went wrong. Balance details are unavailable.
+                  </p>
+                  <button
+                    onClick={handleBackClick}
+                    className="inline-flex font-medium bg-primary hover:bg-primaryhover text-neutral-900 px-8 py-3 h-12.5 rounded-full transition-all duration-75 ease-linear cursor-pointer"
+                  >
+                    Go Back
+                  </button>
                 </div>
+              </div>
             );
    }
 
@@ -9967,7 +9979,7 @@ const BalanceDetailPage = () => {
       />
 
       <div className="mt-10">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky lg:top-28 top-20 z-10 bg-background dark:bg-background">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-8 sticky lg:top-28 top-20 z-10 bg-background">
           <h3 className="lg:text-3xl text-2xl font-semibold text-mainheadingWhite">
             Transactions
           </h3>
@@ -10016,8 +10028,8 @@ const BalanceDetailPage = () => {
         {/* "No Transactions Match Filters" Empty State */}
         {showNoMatchEmptyState && (
           <div className="text-center flex flex-col items-center text-lg px-4 text-gray-500  py-8 bg-primarybox rounded-lg space-y-4">
-            <div className="lg:size-16 size-14 flex items-center justify-center bg-primary dark:bg-transparent dark:bg-gradient-to-t dark:from-primary rounded-full">
-              <Inbox className="lg:size-8 size-6 mx-auto text-mainheading dark:text-primary" />
+            <div className="lg:size-16 size-14 flex items-center justify-center bg-primary rounded-full">
+              <Inbox className="lg:size-8 size-6 mx-auto text-mainheading" />
             </div>
             <span className="text-subheadingWhite">
               No transactions match your current filter or search criteria.

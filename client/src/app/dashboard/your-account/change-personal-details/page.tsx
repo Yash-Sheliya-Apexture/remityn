@@ -1721,6 +1721,463 @@
 
 
 
+// "use client";
+
+// import DashboardHeader from "@/app/components/layout/DashboardHeader";
+// import React, { useState, useEffect, useCallback } from "react";
+// import { useRouter } from "next/navigation";
+// import Link from "next/link";
+// import { useAuth } from "@/app/contexts/AuthContext";
+// import kycService, { UpdateDetailsPayload, type KycDetails, KycMobile } from "@/app/services/kyc"; // Import types
+// import { getData as getCountryData } from 'country-list';
+
+// // Shadcn UI & Form Handling Imports
+// import { zodResolver } from "@hookform/resolvers/zod";
+// import { useForm } from "react-hook-form";
+// import * as z from "zod";
+// import { Button } from "@/components/ui/button";
+// import {
+//     Form,
+//     FormControl,
+//     FormDescription,
+//     FormField,
+//     FormItem,
+//     FormLabel,
+//     FormMessage,
+// } from "@/components/ui/form";
+// import { Input } from "@/components/ui/input";
+// import {
+//     Popover,
+//     PopoverContent,
+//     PopoverTrigger,
+// } from "@/components/ui/popover";
+// import {
+//     Command,
+//     CommandEmpty,
+//     CommandGroup,
+//     CommandInput,
+//     CommandItem,
+//     CommandList,
+// } from "@/components/ui/command";
+// import { Check, ChevronsUpDown, Globe, Phone, Loader2 } from "lucide-react"; // Keep Icons + Loader2
+// import { cn } from "@/lib/utils"; // For Shadcn class merging
+// import { format, parseISO, isValid } from 'date-fns';
+// import { FiAlertTriangle } from "react-icons/fi";
+
+// // --- Zod Schema Definition (REVISED) ---
+// // Only include fields that the user CAN edit
+// const formSchema = z.object({
+//     firstName: z.string().min(1, { message: "First name is required." }).trim(),
+//     lastName: z.string().min(1, { message: "Last name is required." }).trim(),
+//     occupation: z.string().optional().nullable(), // Allow optional and explicitly null/undefined
+//     // REMOVED: nationality, mobileCountryCode, mobileNumber
+// });
+
+// // Infer the TypeScript type from the REVISED Zod schema
+// type ProfileFormValues = z.infer<typeof formSchema>;
+
+// // Helper function for date formatting (remains the same)
+// const formatDateForInput = (date: string | Date | undefined | null): { day: string; month: string; year: string } => {
+//     const result = { day: '', month: '', year: '' };
+//     if (!date) return result;
+//     try {
+//         const dateObj = typeof date === 'string' ? parseISO(date) : date;
+//         if (isValid(dateObj)) {
+//             result.day = format(dateObj, 'dd');
+//             result.month = format(dateObj, 'MM'); // Use MM for month number key
+//             result.year = format(dateObj, 'yyyy');
+//         }
+//     } catch (e) {
+//         console.error("Error formatting date:", date, e);
+//     }
+//     return result;
+// };
+
+// // Helper function for displaying mobile (new)
+// const formatMobileForDisplay = (mobile: KycMobile | undefined | null): string => {
+//     if (!mobile || !mobile.countryCode || !mobile.number) return 'N/A';
+//     // Ensure country code always starts with '+'
+//     const formattedCode = mobile.countryCode.startsWith('+') ? mobile.countryCode : `+${mobile.countryCode}`;
+//     return `${formattedCode} ${mobile.number}`;
+// }
+
+// export default function ChangePersonalDetails() {
+//     const { user, loading: authLoading, updateAuthUserKyc } = useAuth();
+//     const router = useRouter();
+
+//     // State for display-only values
+//     const [displayDob, setDisplayDob] = useState({ day: '', month: '', year: '' });
+//     const [displayNationality, setDisplayNationality] = useState<string>('N/A');
+//     const [displayMobile, setDisplayMobile] = useState<string>('N/A');
+
+//     // State for dropdown options (only Occupation needed now for editing)
+//     const [countryOptions, setCountryOptions] = useState<{ value: string; label: string }[]>([]); // Keep for display lookup
+//     const [monthLabels, setMonthLabels] = useState<Record<string, string>>({}); // For displaying month name
+//     const [occupationOptions, setOccupationOptions] = useState<{ value: string; label: string }[]>([]);
+//     const [occupationPopoverOpen, setOccupationPopoverOpen] = useState(false);
+
+//     // UI state
+//     const [isSubmitting, setIsSubmitting] = useState(false);
+//     const [error, setError] = useState<string | null>(null);
+//     const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+//     // --- Initialize React Hook Form (REVISED defaultValues) ---
+//     const form = useForm<ProfileFormValues>({
+//         resolver: zodResolver(formSchema),
+//         defaultValues: {
+//             firstName: '',
+//             lastName: '',
+//             occupation: null, // Set default to null for optional combobox
+//         },
+//         mode: "onChange", // Validate on change for better UX
+//     });
+
+//     // --- Populate Dropdown/Display Options ---
+//     useEffect(() => {
+//         // Countries (for Nationality display lookup - CODE as value)
+//         const countries = getCountryData()
+//             .map(c => ({ value: c.code, label: c.name }))
+//             .sort((a, b) => a.label.localeCompare(b.label));
+//         setCountryOptions(countries);
+
+//         // Months (for display only)
+//         const monthsMap: Record<string, string> = {};
+//         monthsMap["01"] = "January"; monthsMap["02"] = "February"; monthsMap["03"] = "March"; monthsMap["04"] = "April";
+//         monthsMap["05"] = "May"; monthsMap["06"] = "June"; monthsMap["07"] = "July"; monthsMap["08"] = "August";
+//         monthsMap["09"] = "September"; monthsMap["10"] = "October"; monthsMap["11"] = "November"; monthsMap["12"] = "December";
+//         setMonthLabels(monthsMap);
+
+//         // Occupations (Static list for Combobox)
+//         const occupations = [
+//             { value: 'Student', label: 'Student' },
+//             { value: 'Employed', label: 'Employed' },
+//             { value: 'Self-Employed', label: 'Self-Employed' },
+//             { value: 'Business Owner', label: 'Business Owner' },
+//             { value: 'Investor', label: 'Investor' },
+//             { value: 'Retired', label: 'Retired' },
+//             { value: 'Unemployed', label: 'Unemployed' },
+//             { value: "Other", label: "Other" },
+//         ];
+//         setOccupationOptions(occupations);
+
+//     }, []); // Runs only once on mount
+
+//     // --- Pre-fill Form Data & Display-Only Fields (REVISED) ---
+//     useEffect(() => {
+//         // Ensure user data and country options are available before pre-filling
+//         if (user?.kyc && countryOptions.length > 0) {
+//             const kyc = user.kyc;
+
+//             // Set display-only states
+//             const dobParts = formatDateForInput(kyc.dateOfBirth);
+//             setDisplayDob(dobParts);
+//             setDisplayMobile(formatMobileForDisplay(kyc.mobile));
+
+//             // Find nationality name for display
+//             const nationalityCodeOrName = kyc.nationality;
+//             let nationalityDisplay = 'N/A';
+//             if (nationalityCodeOrName) {
+//                 // Try finding by code first (assuming backend might send 'US')
+//                 const foundByCode = countryOptions.find(opt => opt.value.toUpperCase() === nationalityCodeOrName.toUpperCase());
+//                 if (foundByCode) {
+//                     nationalityDisplay = foundByCode.label;
+//                 } else {
+//                     // Fallback: Try finding by name (assuming backend might send 'United States')
+//                     const foundByName = countryOptions.find(opt => opt.label.toLowerCase() === nationalityCodeOrName.toLowerCase());
+//                      if (foundByName) {
+//                          nationalityDisplay = foundByName.label;
+//                      } else {
+//                          // If neither code nor name matches, display the raw value from API
+//                          nationalityDisplay = nationalityCodeOrName;
+//                          console.warn(`Nationality "${nationalityCodeOrName}" from API couldn't be matched to country list. Displaying raw value.`);
+//                      }
+//                 }
+//             }
+//             setDisplayNationality(nationalityDisplay);
+
+//             // Use form.reset ONLY for editable fields
+//             form.reset({
+//                 firstName: kyc.firstName || '',
+//                 lastName: kyc.lastName || '',
+//                 occupation: kyc.occupation || null, // Use null if occupation is undefined/null/empty string
+//             });
+//         }
+//     // Dependency array includes user, form instance, and countryOptions list
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//     }, [user, form, countryOptions]);
+
+//     // --- Handle Form Submission (REVISED payload) ---
+//     const onSubmit = useCallback(async (data: ProfileFormValues) => {
+//         setError(null);
+//         setSuccessMessage(null);
+//         setIsSubmitting(true);
+
+//         // Construct payload ONLY from editable form data
+//         const payload: Partial<UpdateDetailsPayload> = { // Use Partial as not all fields are sent
+//             firstName: data.firstName,
+//             lastName: data.lastName,
+//             // Ensure optional fields are sent as undefined or null if empty/not selected
+//             // Send 'undefined' if null, so backend can distinguish between explicit null and not provided
+//             occupation: data.occupation === null ? undefined : data.occupation,
+//             // REMOVED: nationality, mobile
+//         };
+
+//         // Check if payload is empty (no actual changes made to editable fields)
+//         // This check might be redundant if the submit button is disabled when form is not dirty
+//         if (Object.keys(payload).length === 0 || !form.formState.isDirty) {
+//              setError("No changes detected to save.");
+//              setIsSubmitting(false);
+//              return;
+//         }
+
+
+//         try {
+//             // console.log("Submitting KYC Update Payload:", payload);
+//             // Ensure the payload type matches what the service expects, even if partial
+//             const updatedKycResult = await kycService.updateMyKycDetails(payload as UpdateDetailsPayload);
+
+//             // Update Auth Context state locally for immediate feedback
+//             if (updatedKycResult?.kyc) {
+//                 //  console.log("Updating AuthContext with API result:", updatedKycResult.kyc);
+//                  // Update the specific fields that were changed + potentially others returned by API
+//                  updateAuthUserKyc({
+//                      firstName: updatedKycResult.kyc.firstName,
+//                      lastName: updatedKycResult.kyc.lastName,
+//                      occupation: updatedKycResult.kyc.occupation,
+//                      lastUpdatedAt: updatedKycResult.kyc.lastUpdatedAt, // Track update time
+//                      // Keep existing mobile/nationality/dob from context as they weren't submitted/changed
+//                  });
+//             } else {
+//                  console.warn("API did not return updated KYC details, updating context with submitted payload.");
+//                  // Fallback update - uses the submitted data
+//                  updateAuthUserKyc(payload as Partial<KycDetails>);
+//             }
+
+//             setSuccessMessage("Personal details updated successfully!");
+//             // Keep the form values displayed but reset dirty/touched state
+//             form.reset(data, { keepValues: true, keepDirty: false, keepTouched: false });
+
+//         } catch (err: any) {
+//             const message = err.message || "Failed to update details. Please try again.";
+//             console.error("KYC Update Error:", err);
+//             setError(message);
+//         } finally {
+//             setIsSubmitting(false);
+//         }
+//     // Dependencies: updateAuthUserKyc function and form instance
+//     }, [updateAuthUserKyc, form]);
+
+//     // --- Loading State ---
+//     if (authLoading) {
+//       return (
+//         <section className="change-personal-details py-10 flex justify-center items-center min-h-[400px]">
+//             <Loader2 className="h-8 w-8 animate-spin text-primary" />
+//         </section>
+//       );
+//     // return <ChangePersonalDetailsSkeleton />; 
+//     }
+
+//     // --- No User State ---
+//     if (!user) {
+//         return (
+//           <div className="bg-red-50 dark:bg-red-900/25 border border-red-500 rounded-lg p-4 flex items-center gap-3">
+//             <div className="flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center bg-red-600/20">
+//               <FiAlertTriangle className="text-red-600 dark:text-red-500 size-5 sm:size-6 flex-shrink-0" />
+//             </div>
+           
+//               <p className="text-red-700 dark:text-red-300/90">
+//                 Could not load user data. Please{" "}
+//                 <Link href="/auth/login" className="text-primary font-medium underline">
+//                   log in
+//                 </Link>{" "}
+//                 again.
+//               </p>
+            
+//           </div>
+//         );
+//     }
+
+//     // --- Render Form ---
+//     return (
+//         <section className="Change-Personal-Details-Wrapper">
+//             <div className="Change-Personal-Information">
+//                     <DashboardHeader title="Update your personal details" />
+//                 <div className="w-full lg:max-w-xl rounded-lg">
+
+//                     <div className="">
+//                         {error && <p className="mb-4 text-center text-red-600 bg-red-100 dark:bg-red-900/30 p-3 rounded-lg text-sm">{error}</p>}
+//                         {successMessage && <p className="mb-4 text-center text-green-700 bg-green-100 dark:bg-green-900/30 p-3 rounded-lg text-sm">{successMessage}</p>}
+
+//                         {/* Use Shadcn Form component */}
+//                         <Form {...form}>
+//                             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+
+//                                 {/* Personal details Section */}
+//                                 <div className="space-y-6">
+//                                     <h3 className="text-lg font-semibold text-white/90 mb-4 border-b pb-2">
+//                                         Personal Details
+//                                     </h3>
+
+//                                     {/* First Name (Editable) */}
+//                                     <FormField control={form.control} name="firstName" render={({ field }) => (
+//                                         <FormItem>
+//                                             <FormLabel className="text-mainheadingWhite block capitalize text-sm lg:text-base">First Name(s) </FormLabel>
+//                                             <FormControl>
+//                                                 <Input className="block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0" placeholder="Enter your first name(s)" {...field} />
+//                                             </FormControl>
+//                                             <FormMessage />
+//                                         </FormItem>
+//                                     )} />
+
+//                                     {/* Last Name (Editable) */}
+//                                     <FormField control={form.control} name="lastName" render={({ field }) => (
+//                                         <FormItem>
+//                                             <FormLabel className="text-mainheadingWhite block capitalize text-sm lg:text-base">Last Name(s) </FormLabel>
+//                                             <FormControl>
+//                                                 <Input className="block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0" placeholder="Enter your last name(s)" {...field} />
+//                                             </FormControl>
+//                                             <FormMessage />
+//                                         </FormItem>
+//                                     )} />
+
+//                                     {/* Nationality */}
+//                                     <FormItem>
+//                                         <FormLabel className="text-mainheadingWhite block capitalize text-sm lg:text-base">Nationality</FormLabel>
+//                                         <FormControl>
+//                                             <Input value={displayNationality} readOnly className="block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0 cursor-not-allowed" />
+//                                         </FormControl>
+
+//                                         <FormDescription className="text-subheadingWhite">Nationality cannot be changed here. Contact support if incorrect.</FormDescription>
+//                                         {/* No FormMessage needed as it's not validated/submitted */}
+//                                     </FormItem>
+
+//                                     {/* Date of birth - Read Only Section */}
+//                                     <div>
+//                                          <h3 className="text-lg font-semibold text-white/90 mb-4 border-b pb-2">
+//                                              Date of birth
+//                                          </h3>
+//                                          <div className="flex gap-2">
+//                                              <div className="w-1/3">
+//                                                  <Label htmlFor="dob-day" className="text-mainheadingWhite block capitalize text-sm lg:text-base">Day</Label>
+//                                                  <Input id="dob-day" name="dob-day" value={displayDob.day} readOnly className="mt-1 block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0 cursor-not-allowed" />
+//                                              </div>
+//                                              <div className="w-1/2">
+//                                                  <Label htmlFor="dob-month" className="text-mainheadingWhite block capitalize text-sm lg:text-base">Month</Label>
+//                                                  <Input id="dob-month" name="dob-month" value={monthLabels[displayDob.month] || ''} readOnly className="mt-1 block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0 cursor-not-allowed" />
+//                                              </div>
+//                                              <div className="w-1/3">
+//                                                  <Label htmlFor="dob-year" className="text-mainheadingWhite block capitalize text-sm lg:text-base">Year</Label>
+//                                                  <Input id="dob-year" name="dob-year" value={displayDob.year} readOnly className="mt-1 block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0 cursor-not-allowed" />
+//                                              </div>
+//                                          </div>
+//                                          <p className="text-sm text-subheadingWhite mt-1">Date of birth usually cannot be changed after verification. Contact support if incorrect.</p>
+//                                      </div>
+
+
+//                                      {/* Mobile Number Fields*/}
+//                                     <div className="pt-2">
+//                                         <FormLabel className="text-mainheadingWhite block capitalize text-sm lg:text-base">Mobile Number</FormLabel>
+//                                         <FormControl>
+//                                              <Input value={displayMobile} readOnly className="mt-1 block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0 cursor-not-allowed" />
+//                                          </FormControl>
+//                                          <FormDescription className="text-sm text-subheadingWhite mt-1">Mobile number cannot be changed here. Contact support if needed.</FormDescription>
+//                                          {/* No FormMessage needed */}
+//                                      </div>
+//                                 </div>
+
+//                                 {/* Additional Information Section */}
+//                                 <div className="space-y-6">
+//                                     <h3 className="text-lg font-semibold text-white/90 mb-4 border-b pb-2">
+//                                         Additional Information
+//                                     </h3>
+
+//                                     {/* Occupation Combobox (Editable - Optional) */}
+//                                     <FormField control={form.control} name="occupation" render={({ field }) => (
+//                                         <FormItem className="flex flex-col">
+//                                             <FormLabel className="text-mainheadingWhite block capitalize text-sm lg:text-base">Occupation (Optional)</FormLabel>
+//                                              <Popover open={occupationPopoverOpen} onOpenChange={setOccupationPopoverOpen}>
+//                                                 <PopoverTrigger asChild>
+//                                                     <FormControl>
+//                                                         <Button role="combobox" aria-label="Select occupation" className={cn( "mt-1 justify-between px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0", !field.value && "text-gray-400" )} >
+//                                                              {field.value ? occupationOptions.find( (option) => option.value === field.value )?.label : "Select Occupation"}
+//                                                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+//                                                          </Button>
+//                                                     </FormControl>
+//                                                 </PopoverTrigger>
+//                                                 <PopoverContent align="start" className="bg-background sm:w-[450px] max-h-[--radix-popover-content-available-height]">
+//                                                     <Command className="bg-background">
+//                                                         <CommandInput className="placeholder:text-white/90 h-12 text-white/90" placeholder="Search occupation..." />
+//                                                          <CommandList>
+//                                                             <CommandEmpty>No occupation found.</CommandEmpty>
+//                                                             <CommandGroup>
+//                                                                 {occupationOptions.map((option) => (
+//                                                                      <CommandItem
+//                                                                          value={option.value} // Use value for selection logic
+//                                                                          key={option.value}
+//                                                                          onSelect={(currentValue) => {
+//                                                                              form.setValue("occupation", currentValue === field.value ? null : currentValue, { shouldValidate: true }); // Allow deselecting by setting to null
+//                                                                              setOccupationPopoverOpen(false);
+//                                                                          }}
+//                                                                      >
+//                                                                          {option.label}
+//                                                                          <Check className={cn( "ml-2 h-4 w-4 text-mainheadingWhite", option.value === field.value ? "opacity-100" : "opacity-0" )} />
+//                                                                       </CommandItem>
+//                                                                 ))}
+//                                                             </CommandGroup>
+//                                                         </CommandList>
+//                                                     </Command>
+//                                                 </PopoverContent>
+//                                             </Popover>
+//                                             <FormMessage />
+//                                         </FormItem>
+//                                     )} />
+//                                 </div>
+
+//                                 {/* Save Button */}
+//                                 <div className="mt-8">
+//                                     <Button
+//                                         type="submit"
+//                                         className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+//                                         disabled={isSubmitting || !form.formState.isDirty} // Disable if submitting or no changes
+//                                     >
+//                                         {isSubmitting ? (
+//                                             <> <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving... </>
+//                                         ) : ( 'Save Changes' )}
+//                                     </Button>
+//                                      {/* Show message if form isn't dirty and not submitting */}
+//                                      {!form.formState.isDirty && !isSubmitting && (
+//                                         <p className="text-xs text-center text-muted-foreground mt-2">No changes detected to save.</p>
+//                                     )}
+//                                 </div>
+//                             </form>
+//                         </Form>
+//                     </div>
+                    
+//                 </div>
+//             </div>
+//         </section>
+//     );
+// }
+
+// // --- Shadcn UI Label component (keep if not globally available) ---
+// const Label = React.forwardRef<
+//     React.ElementRef<"label">,
+//     React.ComponentPropsWithoutRef<"label">
+// >(({ className, ...props }, ref) => (
+//     <label
+//         ref={ref}
+//         className={cn(
+//             "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
+//             className
+//         )}
+//         {...props}
+//     />
+// ));
+// Label.displayName = "Label";
+
+
+
+
 "use client";
 
 import DashboardHeader from "@/app/components/layout/DashboardHeader";
@@ -1759,24 +2216,36 @@ import {
     CommandItem,
     CommandList,
 } from "@/components/ui/command";
-import { Check, ChevronsUpDown, Globe, Phone, Loader2 } from "lucide-react"; // Keep Icons + Loader2
+import { Check, ChevronsUpDown, Loader2 } from "lucide-react"; // Globe, Phone removed as not used directly in imports
 import { cn } from "@/lib/utils"; // For Shadcn class merging
 import { format, parseISO, isValid } from 'date-fns';
 import { FiAlertTriangle } from "react-icons/fi";
 
+// Import react-toastify
+import {
+  ToastContainer,
+  toast,
+  Slide,
+  ToastContainerProps,
+  TypeOptions,
+} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+// Import CustomToast
+import CustomToast, {
+  CustomToastProps,
+} from "@/app/components/CustomToast"; // Adjusted path to match common alias
+
+
 // --- Zod Schema Definition (REVISED) ---
-// Only include fields that the user CAN edit
 const formSchema = z.object({
     firstName: z.string().min(1, { message: "First name is required." }).trim(),
     lastName: z.string().min(1, { message: "Last name is required." }).trim(),
-    occupation: z.string().optional().nullable(), // Allow optional and explicitly null/undefined
-    // REMOVED: nationality, mobileCountryCode, mobileNumber
+    occupation: z.string().optional().nullable(),
 });
 
-// Infer the TypeScript type from the REVISED Zod schema
 type ProfileFormValues = z.infer<typeof formSchema>;
 
-// Helper function for date formatting (remains the same)
 const formatDateForInput = (date: string | Date | undefined | null): { day: string; month: string; year: string } => {
     const result = { day: '', month: '', year: '' };
     if (!date) return result;
@@ -1784,7 +2253,7 @@ const formatDateForInput = (date: string | Date | undefined | null): { day: stri
         const dateObj = typeof date === 'string' ? parseISO(date) : date;
         if (isValid(dateObj)) {
             result.day = format(dateObj, 'dd');
-            result.month = format(dateObj, 'MM'); // Use MM for month number key
+            result.month = format(dateObj, 'MM');
             result.year = format(dateObj, 'yyyy');
         }
     } catch (e) {
@@ -1793,10 +2262,8 @@ const formatDateForInput = (date: string | Date | undefined | null): { day: stri
     return result;
 };
 
-// Helper function for displaying mobile (new)
 const formatMobileForDisplay = (mobile: KycMobile | undefined | null): string => {
     if (!mobile || !mobile.countryCode || !mobile.number) return 'N/A';
-    // Ensure country code always starts with '+'
     const formattedCode = mobile.countryCode.startsWith('+') ? mobile.countryCode : `+${mobile.countryCode}`;
     return `${formattedCode} ${mobile.number}`;
 }
@@ -1805,49 +2272,88 @@ export default function ChangePersonalDetails() {
     const { user, loading: authLoading, updateAuthUserKyc } = useAuth();
     const router = useRouter();
 
-    // State for display-only values
     const [displayDob, setDisplayDob] = useState({ day: '', month: '', year: '' });
     const [displayNationality, setDisplayNationality] = useState<string>('N/A');
     const [displayMobile, setDisplayMobile] = useState<string>('N/A');
 
-    // State for dropdown options (only Occupation needed now for editing)
-    const [countryOptions, setCountryOptions] = useState<{ value: string; label: string }[]>([]); // Keep for display lookup
-    const [monthLabels, setMonthLabels] = useState<Record<string, string>>({}); // For displaying month name
+    const [countryOptions, setCountryOptions] = useState<{ value: string; label: string }[]>([]);
+    const [monthLabels, setMonthLabels] = useState<Record<string, string>>({});
     const [occupationOptions, setOccupationOptions] = useState<{ value: string; label: string }[]>([]);
     const [occupationPopoverOpen, setOccupationPopoverOpen] = useState(false);
 
-    // UI state
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    // Removed: const [error, setError] = useState<string | null>(null);
+    // Removed: const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-    // --- Initialize React Hook Form (REVISED defaultValues) ---
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 640); // Example breakpoint
+        };
+        handleResize();
+        window.addEventListener("resize", handleResize);
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
+
+    const showToast = useCallback(
+        (message: string, type?: CustomToastProps["type"]) => {
+            const effectiveType = type || "default";
+            let progressClassName: string;
+
+            switch (effectiveType) {
+                case "success":
+                    progressClassName = "toast-progress-success";
+                    break;
+                case "error":
+                    progressClassName = "toast-progress-error";
+                    break;
+                case "info":
+                    progressClassName = "toast-progress-info";
+                    break;
+                case "warning":
+                    progressClassName = "toast-progress-warning";
+                    break;
+                case "default":
+                default:
+                    progressClassName = "toast-progress-default";
+                    break;
+            }
+
+            toast(<CustomToast message={message} type={effectiveType} />, {
+                progressClassName: progressClassName,
+                type: effectiveType as TypeOptions,
+                icon: false, // CustomToast handles its own icon
+            });
+        },
+        []
+    );
+
     const form = useForm<ProfileFormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             firstName: '',
             lastName: '',
-            occupation: null, // Set default to null for optional combobox
+            occupation: null,
         },
-        mode: "onChange", // Validate on change for better UX
+        mode: "onChange",
     });
 
-    // --- Populate Dropdown/Display Options ---
     useEffect(() => {
-        // Countries (for Nationality display lookup - CODE as value)
         const countries = getCountryData()
             .map(c => ({ value: c.code, label: c.name }))
             .sort((a, b) => a.label.localeCompare(b.label));
         setCountryOptions(countries);
 
-        // Months (for display only)
-        const monthsMap: Record<string, string> = {};
-        monthsMap["01"] = "January"; monthsMap["02"] = "February"; monthsMap["03"] = "March"; monthsMap["04"] = "April";
-        monthsMap["05"] = "May"; monthsMap["06"] = "June"; monthsMap["07"] = "July"; monthsMap["08"] = "August";
-        monthsMap["09"] = "September"; monthsMap["10"] = "October"; monthsMap["11"] = "November"; monthsMap["12"] = "December";
+        const monthsMap: Record<string, string> = {
+            "01": "January", "02": "February", "03": "March", "04": "April",
+            "05": "May", "06": "June", "07": "July", "08": "August",
+            "09": "September", "10": "October", "11": "November", "12": "December"
+        };
         setMonthLabels(monthsMap);
 
-        // Occupations (Static list for Combobox)
         const occupations = [
             { value: 'Student', label: 'Student' },
             { value: 'Employed', label: 'Employed' },
@@ -1859,307 +2365,425 @@ export default function ChangePersonalDetails() {
             { value: "Other", label: "Other" },
         ];
         setOccupationOptions(occupations);
+    }, []);
 
-    }, []); // Runs only once on mount
-
-    // --- Pre-fill Form Data & Display-Only Fields (REVISED) ---
     useEffect(() => {
-        // Ensure user data and country options are available before pre-filling
         if (user?.kyc && countryOptions.length > 0) {
             const kyc = user.kyc;
-
-            // Set display-only states
             const dobParts = formatDateForInput(kyc.dateOfBirth);
             setDisplayDob(dobParts);
             setDisplayMobile(formatMobileForDisplay(kyc.mobile));
 
-            // Find nationality name for display
             const nationalityCodeOrName = kyc.nationality;
             let nationalityDisplay = 'N/A';
             if (nationalityCodeOrName) {
-                // Try finding by code first (assuming backend might send 'US')
                 const foundByCode = countryOptions.find(opt => opt.value.toUpperCase() === nationalityCodeOrName.toUpperCase());
                 if (foundByCode) {
                     nationalityDisplay = foundByCode.label;
                 } else {
-                    // Fallback: Try finding by name (assuming backend might send 'United States')
                     const foundByName = countryOptions.find(opt => opt.label.toLowerCase() === nationalityCodeOrName.toLowerCase());
                      if (foundByName) {
                          nationalityDisplay = foundByName.label;
                      } else {
-                         // If neither code nor name matches, display the raw value from API
                          nationalityDisplay = nationalityCodeOrName;
-                         console.warn(`Nationality "${nationalityCodeOrName}" from API couldn't be matched to country list. Displaying raw value.`);
+                         console.warn(`Nationality "${nationalityCodeOrName}" from API couldn't be matched. Displaying raw value.`);
                      }
                 }
             }
             setDisplayNationality(nationalityDisplay);
 
-            // Use form.reset ONLY for editable fields
             form.reset({
                 firstName: kyc.firstName || '',
                 lastName: kyc.lastName || '',
-                occupation: kyc.occupation || null, // Use null if occupation is undefined/null/empty string
+                occupation: kyc.occupation || null,
             });
         }
-    // Dependency array includes user, form instance, and countryOptions list
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user, form, countryOptions]);
 
-    // --- Handle Form Submission (REVISED payload) ---
     const onSubmit = useCallback(async (data: ProfileFormValues) => {
-        setError(null);
-        setSuccessMessage(null);
+        // Removed: setError(null);
+        // Removed: setSuccessMessage(null);
         setIsSubmitting(true);
 
-        // Construct payload ONLY from editable form data
-        const payload: Partial<UpdateDetailsPayload> = { // Use Partial as not all fields are sent
+        const payload: Partial<UpdateDetailsPayload> = {
             firstName: data.firstName,
             lastName: data.lastName,
-            // Ensure optional fields are sent as undefined or null if empty/not selected
-            // Send 'undefined' if null, so backend can distinguish between explicit null and not provided
             occupation: data.occupation === null ? undefined : data.occupation,
-            // REMOVED: nationality, mobile
         };
 
-        // Check if payload is empty (no actual changes made to editable fields)
-        // This check might be redundant if the submit button is disabled when form is not dirty
         if (Object.keys(payload).length === 0 || !form.formState.isDirty) {
-             setError("No changes detected to save.");
+             showToast("No changes detected to save.", "info");
              setIsSubmitting(false);
              return;
         }
 
-
         try {
-            // console.log("Submitting KYC Update Payload:", payload);
-            // Ensure the payload type matches what the service expects, even if partial
             const updatedKycResult = await kycService.updateMyKycDetails(payload as UpdateDetailsPayload);
 
-            // Update Auth Context state locally for immediate feedback
             if (updatedKycResult?.kyc) {
-                //  console.log("Updating AuthContext with API result:", updatedKycResult.kyc);
-                 // Update the specific fields that were changed + potentially others returned by API
                  updateAuthUserKyc({
                      firstName: updatedKycResult.kyc.firstName,
                      lastName: updatedKycResult.kyc.lastName,
                      occupation: updatedKycResult.kyc.occupation,
-                     lastUpdatedAt: updatedKycResult.kyc.lastUpdatedAt, // Track update time
-                     // Keep existing mobile/nationality/dob from context as they weren't submitted/changed
+                     lastUpdatedAt: updatedKycResult.kyc.lastUpdatedAt,
                  });
             } else {
                  console.warn("API did not return updated KYC details, updating context with submitted payload.");
-                 // Fallback update - uses the submitted data
                  updateAuthUserKyc(payload as Partial<KycDetails>);
             }
 
-            setSuccessMessage("Personal details updated successfully!");
-            // Keep the form values displayed but reset dirty/touched state
+            showToast("Personal details updated successfully!", "success");
             form.reset(data, { keepValues: true, keepDirty: false, keepTouched: false });
 
         } catch (err: any) {
             const message = err.message || "Failed to update details. Please try again.";
             console.error("KYC Update Error:", err);
-            setError(message);
+            showToast(message, "error");
         } finally {
             setIsSubmitting(false);
         }
-    // Dependencies: updateAuthUserKyc function and form instance
-    }, [updateAuthUserKyc, form]);
+    }, [updateAuthUserKyc, form, showToast]);
 
-    // --- Loading State ---
+
+    const toastContainerProps: ToastContainerProps = {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        newestOnTop: true,
+        closeOnClick: false, // Keep toast until manually closed or autoClose timeout
+        closeButton: false, // CustomToast has its own close button logic if needed (passed via props)
+        rtl: false,
+        pauseOnFocusLoss: true,
+        draggable: true,
+        pauseOnHover: true,
+        transition: Slide,
+        toastClassName: () => "p-0 shadow-none rounded-md bg-transparent w-full relative mb-3",
+        // bodyClassName: // Can be used to style the body if CustomToast doesn't cover all needs
+    };
+
+    const getToastContainerStyle = (): React.CSSProperties & { [key: `--${string}`]: string | number; } => {
+        const baseStyle = { zIndex: 9999 }; // Ensure toasts are on top
+        if (isMobile) {
+            return { ...baseStyle, top: "1rem", left: "1rem", right: "1rem", width: "auto" };
+        } else {
+            return { ...baseStyle, top: "0.75rem", right: "0.75rem", width: "320px" };
+        }
+    };
+
+
     if (authLoading) {
       return (
         <section className="change-personal-details py-10 flex justify-center items-center min-h-[400px]">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </section>
       );
-    // return <ChangePersonalDetailsSkeleton />; 
     }
 
-    // --- No User State ---
     if (!user) {
         return (
           <div className="bg-red-50 dark:bg-red-900/25 border border-red-500 rounded-lg p-4 flex items-center gap-3">
             <div className="flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center bg-red-600/20">
               <FiAlertTriangle className="text-red-600 dark:text-red-500 size-5 sm:size-6 flex-shrink-0" />
             </div>
-           
-              <p className="text-red-700 dark:text-red-300/90">
-                Could not load user data. Please{" "}
-                <Link href="/auth/login" className="text-primary font-medium underline">
-                  log in
-                </Link>{" "}
-                again.
-              </p>
-            
+            <p className="text-red-700 dark:text-red-300/90">
+              Could not load user data. Please{" "}
+              <Link href="/auth/login" className="text-primary font-medium underline">
+                log in
+              </Link>{" "}
+              again.
+            </p>
           </div>
         );
     }
 
-    // --- Render Form ---
     return (
-        <section className="Change-Personal-Details-Wrapper">
-            <div className="Change-Personal-Information">
-                    <DashboardHeader title="Update your personal details" />
-                <div className="w-full lg:max-w-xl rounded-lg">
+      <section className="Change-Personal-Details-Wrapper relative"> {/* Added relative for ToastContainer context if needed */}
+        <ToastContainer {...toastContainerProps} style={getToastContainerStyle()} />
+        <div className="Change-Personal-Information">
+          <DashboardHeader title="Update your personal details" />
+          <div className="w-full lg:max-w-xl rounded-lg">
+            <div className="">
+              {/* Removed old error and success message displays */}
 
-                    <div className="">
-                        {error && <p className="mb-4 text-center text-red-600 bg-red-100 dark:bg-red-900/30 p-3 rounded-lg text-sm">{error}</p>}
-                        {successMessage && <p className="mb-4 text-center text-green-700 bg-green-100 dark:bg-green-900/30 p-3 rounded-lg text-sm">{successMessage}</p>}
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-8"
+                >
+                  {/* Personal details Section */}
+                  <div className="space-y-6">
+                    <h3 className="lg:text-lg text-base font-semibold text-white/90 mb-4 border-b pb-2">
+                      Personal Details
+                    </h3>
 
-                        {/* Use Shadcn Form component */}
-                        <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                    <FormField
+                      control={form.control}
+                      name="firstName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-mainheadingWhite block capitalize text-sm lg:text-base">
+                            First Name(s)
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              className="block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0"
+                              placeholder="Enter your first name(s)"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                                {/* Personal details Section */}
-                                <div className="space-y-6">
-                                    <h3 className="text-lg font-semibold text-white/90 mb-4 border-b pb-2">
-                                        Personal Details
-                                    </h3>
+                    <FormField
+                      control={form.control}
+                      name="lastName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-mainheadingWhite block capitalize text-sm lg:text-base">
+                            Last Name(s)
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              className="block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0"
+                              placeholder="Enter your last name(s)"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                                    {/* First Name (Editable) */}
-                                    <FormField control={form.control} name="firstName" render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel className="text-mainheadingWhite block capitalize text-sm lg:text-base">First Name(s) </FormLabel>
-                                            <FormControl>
-                                                <Input className="block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0" placeholder="Enter your first name(s)" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )} />
+                    <FormItem>
+                      <FormLabel className="text-mainheadingWhite block capitalize text-sm lg:text-base">
+                        Nationality
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          value={displayNationality}
+                          readOnly
+                          className="block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0 cursor-not-allowed"
+                        />
+                      </FormControl>
+                      <FormDescription className="text-subheadingWhite">
+                        Nationality cannot be changed here. Contact support if
+                        incorrect.
+                      </FormDescription>
+                    </FormItem>
 
-                                    {/* Last Name (Editable) */}
-                                    <FormField control={form.control} name="lastName" render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel className="text-mainheadingWhite block capitalize text-sm lg:text-base">Last Name(s) </FormLabel>
-                                            <FormControl>
-                                                <Input className="block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0" placeholder="Enter your last name(s)" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )} />
-
-                                    {/* Nationality */}
-                                    <FormItem>
-                                        <FormLabel className="text-mainheadingWhite block capitalize text-sm lg:text-base">Nationality</FormLabel>
-                                        <FormControl>
-                                            <Input value={displayNationality} readOnly className="block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0 cursor-not-allowed" />
-                                        </FormControl>
-
-                                        <FormDescription className="text-subheadingWhite">Nationality cannot be changed here. Contact support if incorrect.</FormDescription>
-                                        {/* No FormMessage needed as it's not validated/submitted */}
-                                    </FormItem>
-
-                                    {/* Date of birth - Read Only Section */}
-                                    <div>
-                                         <h3 className="text-lg font-semibold text-white/90 mb-4 border-b pb-2">
-                                             Date of birth
-                                         </h3>
-                                         <div className="flex gap-2">
-                                             <div className="w-1/3">
-                                                 <Label htmlFor="dob-day" className="text-mainheadingWhite block capitalize text-sm lg:text-base">Day</Label>
-                                                 <Input id="dob-day" name="dob-day" value={displayDob.day} readOnly className="mt-1 block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0 cursor-not-allowed" />
-                                             </div>
-                                             <div className="w-1/2">
-                                                 <Label htmlFor="dob-month" className="text-mainheadingWhite block capitalize text-sm lg:text-base">Month</Label>
-                                                 <Input id="dob-month" name="dob-month" value={monthLabels[displayDob.month] || ''} readOnly className="mt-1 block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0 cursor-not-allowed" />
-                                             </div>
-                                             <div className="w-1/3">
-                                                 <Label htmlFor="dob-year" className="text-mainheadingWhite block capitalize text-sm lg:text-base">Year</Label>
-                                                 <Input id="dob-year" name="dob-year" value={displayDob.year} readOnly className="mt-1 block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0 cursor-not-allowed" />
-                                             </div>
-                                         </div>
-                                         <p className="text-sm text-subheadingWhite mt-1">Date of birth usually cannot be changed after verification. Contact support if incorrect.</p>
-                                     </div>
-
-
-                                     {/* Mobile Number Fields*/}
-                                    <div className="pt-2">
-                                        <FormLabel className="text-mainheadingWhite block capitalize text-sm lg:text-base">Mobile Number</FormLabel>
-                                        <FormControl>
-                                             <Input value={displayMobile} readOnly className="mt-1 block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0 cursor-not-allowed" />
-                                         </FormControl>
-                                         <FormDescription className="text-sm text-subheadingWhite mt-1">Mobile number cannot be changed here. Contact support if needed.</FormDescription>
-                                         {/* No FormMessage needed */}
-                                     </div>
-                                </div>
-
-                                {/* Additional Information Section */}
-                                <div className="space-y-6">
-                                    <h3 className="text-lg font-semibold text-white/90 mb-4 border-b pb-2">
-                                        Additional Information
-                                    </h3>
-
-                                    {/* Occupation Combobox (Editable - Optional) */}
-                                    <FormField control={form.control} name="occupation" render={({ field }) => (
-                                        <FormItem className="flex flex-col">
-                                            <FormLabel className="text-mainheadingWhite block capitalize text-sm lg:text-base">Occupation (Optional)</FormLabel>
-                                             <Popover open={occupationPopoverOpen} onOpenChange={setOccupationPopoverOpen}>
-                                                <PopoverTrigger asChild>
-                                                    <FormControl>
-                                                        <Button role="combobox" aria-label="Select occupation" className={cn( "mt-1 justify-between px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0", !field.value && "text-gray-400" )} >
-                                                             {field.value ? occupationOptions.find( (option) => option.value === field.value )?.label : "Select Occupation"}
-                                                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                         </Button>
-                                                    </FormControl>
-                                                </PopoverTrigger>
-                                                <PopoverContent align="start" className="bg-background sm:w-[450px] max-h-[--radix-popover-content-available-height]">
-                                                    <Command className="bg-background">
-                                                        <CommandInput className="placeholder:text-white/90 h-12 text-white/90" placeholder="Search occupation..." />
-                                                         <CommandList>
-                                                            <CommandEmpty>No occupation found.</CommandEmpty>
-                                                            <CommandGroup>
-                                                                {occupationOptions.map((option) => (
-                                                                     <CommandItem
-                                                                         value={option.value} // Use value for selection logic
-                                                                         key={option.value}
-                                                                         onSelect={(currentValue) => {
-                                                                             form.setValue("occupation", currentValue === field.value ? null : currentValue, { shouldValidate: true }); // Allow deselecting by setting to null
-                                                                             setOccupationPopoverOpen(false);
-                                                                         }}
-                                                                     >
-                                                                         {option.label}
-                                                                         <Check className={cn( "ml-2 h-4 w-4 text-mainheadingWhite", option.value === field.value ? "opacity-100" : "opacity-0" )} />
-                                                                      </CommandItem>
-                                                                ))}
-                                                            </CommandGroup>
-                                                        </CommandList>
-                                                    </Command>
-                                                </PopoverContent>
-                                            </Popover>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )} />
-                                </div>
-
-                                {/* Save Button */}
-                                <div className="mt-8">
-                                    <Button
-                                        type="submit"
-                                        className="bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-                                        disabled={isSubmitting || !form.formState.isDirty} // Disable if submitting or no changes
-                                    >
-                                        {isSubmitting ? (
-                                            <> <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving... </>
-                                        ) : ( 'Save Changes' )}
-                                    </Button>
-                                     {/* Show message if form isn't dirty and not submitting */}
-                                     {!form.formState.isDirty && !isSubmitting && (
-                                        <p className="text-xs text-center text-muted-foreground mt-2">No changes detected to save.</p>
-                                    )}
-                                </div>
-                            </form>
-                        </Form>
+                    <div>
+                      <h3 className="lg:text-lg text-base font-semibold text-white/90 mb-4 border-b pb-2">
+                        Date of birth
+                      </h3>
+                      <div className="flex gap-2">
+                        <div className="w-1/3">
+                          <Label
+                            htmlFor="dob-day"
+                            className="text-mainheadingWhite block capitalize text-sm lg:text-base"
+                          >
+                            Day
+                          </Label>
+                          <Input
+                            id="dob-day"
+                            name="dob-day"
+                            value={displayDob.day}
+                            readOnly
+                            className="mt-1 block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0 cursor-not-allowed"
+                          />
+                        </div>
+                        <div className="w-1/2">
+                          <Label
+                            htmlFor="dob-month"
+                            className="text-mainheadingWhite block capitalize text-sm lg:text-base"
+                          >
+                            Month
+                          </Label>
+                          <Input
+                            id="dob-month"
+                            name="dob-month"
+                            value={monthLabels[displayDob.month] || ""}
+                            readOnly
+                            className="mt-1 block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0 cursor-not-allowed"
+                          />
+                        </div>
+                        <div className="w-1/3">
+                          <Label
+                            htmlFor="dob-year"
+                            className="text-mainheadingWhite block capitalize text-sm lg:text-base"
+                          >
+                            Year
+                          </Label>
+                          <Input
+                            id="dob-year"
+                            name="dob-year"
+                            value={displayDob.year}
+                            readOnly
+                            className="mt-1 block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0 cursor-not-allowed"
+                          />
+                        </div>
+                      </div>
+                      <p className="text-sm text-subheadingWhite mt-1">
+                        Date of birth usually cannot be changed after
+                        verification. Contact support if incorrect.
+                      </p>
                     </div>
-                    
-                </div>
+
+                    <div className="pt-2">
+                      <FormLabel className="text-mainheadingWhite block capitalize text-sm lg:text-base">
+                        Mobile Number
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          value={displayMobile}
+                          readOnly
+                          className="mt-1 block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0 cursor-not-allowed"
+                        />
+                      </FormControl>
+                      <FormDescription className="text-sm text-subheadingWhite mt-1">
+                        Mobile number cannot be changed here. Contact support if
+                        needed.
+                      </FormDescription>
+                    </div>
+                  </div>
+
+                  <div className="space-y-6">
+                    <h3 className="lg:text-lg text-base font-semibold text-white/90 mb-4 border-b pb-2">
+                      Additional Information
+                    </h3>
+                    <FormField
+                      control={form.control}
+                      name="occupation"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel className="text-mainheadingWhite block capitalize text-sm lg:text-base">
+                            Occupation (Optional)
+                          </FormLabel>
+                          <Popover
+                            open={occupationPopoverOpen}
+                            onOpenChange={setOccupationPopoverOpen}
+                          >
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  role="combobox"
+                                  aria-label="Select occupation"
+                                  className={cn(
+                                    "mt-1 justify-between px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0",
+                                    !field.value && "text-gray-400"
+                                  )}
+                                >
+                                  {field.value
+                                    ? occupationOptions.find(
+                                        (option) => option.value === field.value
+                                      )?.label
+                                    : "Select Occupation"}
+                                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent
+                              align="start"
+                              className="sm:w-[450px] max-h-[--radix-popover-content-available-height]"
+                            >
+                              <Command>
+                                <CommandInput
+                                  className="placeholder:text-white/90 h-12 text-white/90"
+                                  placeholder="Search occupation..."
+                                />
+                                <CommandList>
+                                  <CommandEmpty>
+                                    No occupation found.
+                                  </CommandEmpty>
+                                  <CommandGroup>
+                                    {occupationOptions.map((option) => (
+                                      <CommandItem
+                                        value={option.value}
+                                        key={option.value}
+                                        onSelect={(currentValue) => {
+                                          const newValue =
+                                            currentValue === field.value
+                                              ? null
+                                              : currentValue;
+                                          form.setValue(
+                                            "occupation",
+                                            newValue,
+                                            {
+                                              shouldValidate: true,
+                                              shouldDirty: true,
+                                            }
+                                          );
+                                          setOccupationPopoverOpen(false);
+                                        }}
+                                      >
+                                        {option.label}
+                                        <Check
+                                          className={cn(
+                                            "ml-2 h-4 w-4 text-mainheadingWhite",
+                                            option.value === field.value
+                                              ? "opacity-100"
+                                              : "opacity-0"
+                                          )}
+                                        />
+                                      </CommandItem>
+                                    ))}
+                                  </CommandGroup>
+                                </CommandList>
+                              </Command>
+                            </PopoverContent>
+                          </Popover>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="mt-8">
+                    <Button
+                      type="submit"
+                      className="bg-primary text-mainheading hover:bg-primaryhover font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                      disabled={isSubmitting || !form.formState.isDirty}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <svg
+                            className="h-5 w-5 text-mainheading animate-spin"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path d="M12 2V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M12 18V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M4.93 4.93L7.76 7.76" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M16.24 16.24L19.07 19.07" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M2 12H6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M18 12H22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M4.93 19.07L7.76 16.24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M16.24 7.76L19.07 4.93" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                          <span>Saving...</span>
+                        </>
+                      ) : (
+                        "Save Changes"
+                      )}
+                    </Button>
+                    {!form.formState.isDirty && !isSubmitting && (
+                      <p className="text-xs text-center text-muted-foreground mt-2">
+                        No changes detected to save.
+                      </p>
+                    )}
+                  </div>
+                </form>
+              </Form>
             </div>
-        </section>
+          </div>
+        </div>
+      </section>
     );
 }
 
-// --- Shadcn UI Label component (keep if not globally available) ---
 const Label = React.forwardRef<
     React.ElementRef<"label">,
     React.ComponentPropsWithoutRef<"label">
