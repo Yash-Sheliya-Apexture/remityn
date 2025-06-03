@@ -25374,7 +25374,7 @@ const CalculetingSection: React.FC = () => {
                     ${
                       isButtonDisabled
                         ? "bg-primary hover:bg-primaryhover text-mainheading  cursor-not-allowed opacity-70"
-                        : "bg-primary hover:bg-primaryhovertext-mainheading "
+                        : "bg-primary hover:bg-primaryhover text-mainheading "
                     }`}
                   aria-disabled={isButtonDisabled}
                   onClick={(e) => {
