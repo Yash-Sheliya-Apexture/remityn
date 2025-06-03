@@ -4049,34 +4049,30 @@ const PaymentDetailsPage = () => {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto py-8 max-w-2xl relative">
+      <div className="container mx-auto lg:max-w-2xl relative">
         <ToastContainer
           {...toastContainerProps}
           style={getToastContainerStyle()}
         />
         {/* Skeleton structure remains the same */}
-        <Skeleton className="h-8 w-3/5 mb-2 mx-auto" />
-        <Skeleton className="h-4 w-4/5 mb-6 mx-auto" />
-        <div className="border p-4 sm:p-6 rounded-xl mb-8">
+        <Skeleton className="h-9 w-3/5 mb-2.5 mx-auto" />
+        <Skeleton className="h-6 w-4/5 lg:mb-10 mb-5 mx-auto" />
+
+        <div className="border p-4 rounded-xl">
           <Skeleton className="h-6 w-1/2 mb-5" />
-          <div className="space-y-4 mb-6">
-            <Skeleton className="h-[72px] w-full rounded-lg" />
-            <Skeleton className="h-[72px] w-full rounded-lg" />
-            <Skeleton className="h-[72px] w-full rounded-lg" />
-            <Skeleton className="h-[72px] w-full rounded-lg" />
-            <Skeleton className="h-[72px] w-full rounded-lg" />
-            <Skeleton className="h-[90px] w-full rounded-lg" />
+          <div className="space-y-4">
+            <Skeleton className="h-[76px] w-full rounded-lg" />
+            <Skeleton className="h-[76px] w-full rounded-lg" />
+            <Skeleton className="h-[76px] w-full rounded-lg" />
+            <Skeleton className="h-[76px] w-full rounded-lg" />
+            <Skeleton className="h-[76px] w-full rounded-lg" />
+            <Skeleton className="h-[76px] w-full rounded-lg" />
           </div>
         </div>
-        <div className="border p-4 rounded-lg mb-8">
-          <Skeleton className="h-6 w-1/4 mb-4" />
-          <Skeleton className="h-4 w-full mb-3" />
-          <Skeleton className="h-4 w-3/4 mb-3" />
-          <Skeleton className="h-5 w-1/3" />
-        </div>
-        <div className="space-y-3">
-          <Skeleton className="h-12 w-full rounded-full" />
-          <Skeleton className="h-12 w-full rounded-full" />
+
+        <div className="space-y-3 mt-5">
+          <Skeleton className="h-12.5 w-full rounded-full" />
+          <Skeleton className="h-12.5 w-full rounded-full" />
         </div>
       </div>
     );

@@ -4429,7 +4429,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={() => setIsActionMenuOpen(false)}
-            className="fixed inset-0 bg-black/50 dark:bg-white/30 z-40 sm:hidden"
+            className="fixed inset-0 bg-white/15 z-40 sm:hidden"
             aria-hidden="true"
           />
         )}
@@ -4524,7 +4524,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                   aria-controls="action-menu-popup"
                   aria-label="Open actions menu"
                   disabled={!isAuthenticated}
-                  className={`absolute -top-1/2 z-50 flex items-center bg-white dark:bg-background rounded-full ${
+                  className={`absolute -top-1/2 z-50 flex items-center rounded-full ${
                     !isAuthenticated ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                 >
@@ -4532,6 +4532,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                     <BsSend className="size-6 text-neutral-900" />
                   </div>
                 </button>
+
                 <AnimatePresence>
                   {isAuthenticated && isActionMenuOpen && (
                     <motion.div
@@ -4549,7 +4550,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                         stiffness: 350,
                         damping: 25,
                       }}
-                      className="absolute bottom-12 bg-white dark:bg-background rounded-2xl p-3 z-48 flex flex-col gap-1 w-48"
+                      className="absolute bottom-12 bg-background rounded-2xl p-3 z-48 flex flex-col gap-1 w-48"
                     >
                       {actionItems.map((action) => {
                         // action is ActionListItem, has mandatory 'route'
@@ -4578,8 +4579,8 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                             className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors duration-150
                               ${
                                 isDisabled
-                                  ? "text-neutral-400 dark:text-gray-600 cursor-not-allowed opacity-70"
-                                  : `text-neutral-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10`
+                                  ? "text-gray-600 cursor-not-allowed opacity-70"
+                                  : `text-gray-200 hover:bg-white/10`
                               }`}
                             aria-disabled={isDisabled}
                             tabIndex={isDisabled ? -1 : 0}
@@ -4587,7 +4588,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                             <div
                               className={`p-2 rounded-md ${
                                 isDisabled
-                                  ? "bg-gray-300 dark:bg-gray-700"
+                                  ? "not-[]:bg-gray-700"
                                   : action.color
                               }`}
                             >
@@ -4595,7 +4596,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, toggleSidebar }) => {
                                 <IconComponent
                                   className={`size-5 ${
                                     isDisabled
-                                      ? "text-gray-500"
+                                      ? "text-mainheadingWhite"
                                       : "text-background"
                                   }`}
                                 />

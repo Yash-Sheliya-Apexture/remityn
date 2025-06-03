@@ -368,6 +368,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IoClose } from "react-icons/io5";
+import { FiAlertCircle } from "react-icons/fi";
 
 interface InsufficientBalanceModalProps {
   isOpen: boolean;
@@ -465,28 +466,19 @@ useEffect(() => {
             </div>
 
             {/* Image & Fallback Container */}
-            <div className="flex justify-center w-20 h-20 mx-auto mb-4 relative">
-              {/* SVG Fallback (Initially hidden by class, shown via onError) */}
+            {/* <div className="flex justify-center w-20 h-20 mx-auto mb-4 relative">
               <div
-                className="w-full h-full bg-yellow-900/30 rounded-full flex items-center justify-center text-yellow-400 border-3 border-yellow-700/50" // Use 'hidden' class
+                className="bg-yellow-900/30 rounded-full flex items-center justify-center text-yellow-400" // Use 'hidden' class
                 aria-hidden="true" // Hide from screen readers as it's decorative/redundant with text
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-10 h-10"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.008v.008H12v-.008Z"
-                  />
-                </svg>
+                
               </div>
-            </div>
+            </div> */}
+
+               <div className="lg:size-16 size-14 rounded-full flex items-center justify-center bg-yellow-600/20 flex-shrink-0 mx-auto">
+                      <FiAlertCircle  className="text-yellow-500 lg:size-8 size-6 flex-shrink-0" />
+                    </div>
+            
 
             {/* Title */}
             <h3 id="insufficient-balance-modal-title" className="sm:text-3xl text-2xl font-semibold text-mainheadingWhite my-6">

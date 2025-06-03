@@ -4781,6 +4781,667 @@
 //   );
 // }
 
+// // frontend/src/app/dashboard/balances/[balanceId]/send/amount/page.tsx
+// "use client";
+// import React, {
+//   useState,
+//   useCallback,
+//   useMemo,
+//   useEffect,
+//   useRef,
+// } from "react"; // Import useRef
+// import { useParams, useRouter, useSearchParams } from "next/navigation";
+// import Link from "next/link";
+// import { IoIosArrowBack, IoIosInformationCircleOutline } from "react-icons/io";
+// import { AlertTriangle, TrendingUp } from "lucide-react"; // Import TrendingUp
+// import { FaPiggyBank } from "react-icons/fa"; // Import FaPiggyBank
+// import { motion, AnimatePresence } from "framer-motion"; // Import framer-motion
+// import { IoClose } from "react-icons/io5";
+
+// // Hooks & Logic
+// import { useSendAmountLogic } from "../../../../../hooks/useSendAmountLogic"; // Adjust path
+
+// // Components
+// import DashboardHeader from "@/app/dashboard/components/layout/DashboardHeader"; // Adjust path
+// import RateDisplay from "../../../../components/send/RateDisplay"; // Adjust path
+// import AmountInput from "../../../../components/send/AmountInput"; // Adjust path
+// import PayingWithDisplay from "../../../../components/send/PayingWithDisplay"; // Adjust path
+// import { Skeleton } from "@/components/ui/skeleton"; // Adjust path
+// import { FiAlertCircle } from "react-icons/fi";
+// import { error } from "console";
+
+// // --- Component Definition ---
+// const steps = ["Recipient", "Amount", "Review", "Pay"];
+
+// interface SendAmountPageParams extends Record<string, string | string[]> {
+//   balanceId: string;
+// }
+
+// // --- Skeleton Component ---
+// const SkeletonAmountSection = () => (
+//   <div className="space-y-4 mb-4">
+//     <div className="flex items-end flex-col gap-1.5">
+//       <Skeleton className="h-10 w-72 rounded-full" />
+//       <Skeleton className="h-9 w-65 rounded-full" />
+//     </div>
+//     <div className="space-y-1 mb-2">
+//       <Skeleton className="h-6 w-20" />
+//       <div className="flex justify-between">
+//         <Skeleton className="h-12.5 w-1/4 rounded-full mt-3" />
+//         <Skeleton className="h-12.5 w-40 rounded-lg mt-3" />
+//       </div>
+//       <Skeleton className="h-5 w-1/3 ml-auto mb-4" />
+//     </div>
+//     <div className="space-y-1 mb-2">
+//       <Skeleton className="h-6 w-1/3" />
+//       <div className="flex justify-between">
+//         <Skeleton className="h-12.5 w-1/4 rounded-full mt-3" />
+//         <Skeleton className="h-12.5 w-40 rounded-lg mt-3" />
+//       </div>
+//       <Skeleton className="h-5 w-1/3 ml-auto mb-4" />
+//     </div>
+//   </div>
+// );
+
+// // --- Framer Motion Variants (Copied from HeroSection for consistency) ---
+// const savingsBannerVariants = {
+//   hidden: { opacity: 0, y: -10, scaleY: 0.9, height: 0 },
+//   visible: {
+//     opacity: 1,
+//     y: 0,
+//     scaleY: 1,
+//     height: "auto",
+//     transition: {
+//       duration: 0.4,
+//       ease: [0.25, 0.46, 0.45, 0.94],
+//       height: { duration: 0.3, ease: [0.4, 0, 0.2, 1], delay: 0.05 },
+//     },
+//   },
+//   exit: {
+//     opacity: 0,
+//     y: -15,
+//     scaleY: 0.95,
+//     height: 0,
+//     transition: {
+//       duration: 0.35, // Faster exit
+//       ease: "easeIn",
+//       height: { duration: 0.2, ease: [0.4, 0, 0.2, 1] },
+//     },
+//   },
+// };
+
+// export default function SendAmountPage() {
+//   // --- Hooks ---
+//   const router = useRouter();
+//   const params = useParams<SendAmountPageParams>();
+//   const searchParams = useSearchParams();
+//   const { balanceId } = params;
+//   const recipientId = searchParams.get("recipientId");
+
+//   // --- Custom Hook for Data and Logic ---
+//   const {
+//     sourceAccount,
+//     recipient,
+//     summary,
+//     initialRateSummary,
+//     isLoading,
+//     isCalculating,
+//     error: logicError,
+//     apiError,
+//     calculateSummary,
+//     cancelCalculation,
+//     setError: setLogicError,
+//   } = useSendAmountLogic(balanceId, recipientId);
+
+//   // --- UI State ---
+//   const [sendAmount, setSendAmount] = useState<string>("");
+//   const [receiveAmount, setReceiveAmount] = useState<string>("");
+//   const [lastEdited, setLastEdited] = useState<"send" | "receive" | null>(null);
+//   const [isSendFocused, setIsSendFocused] = useState(false);
+//   const [isReceiveFocused, setIsReceiveFocused] = useState(false);
+
+//   // --- Refs for Inputs and Timers ---
+//   const sendInputRef = useRef<HTMLInputElement>(null);
+//   const receiveInputRef = useRef<HTMLInputElement>(null);
+//   const sendBlurTimerRef = useRef<NodeJS.Timeout | null>(null);
+//   const receiveBlurTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+//   // --- Derived State for UI ---
+//   const rateContext = summary ?? initialRateSummary;
+//   const isInsufficientBalanceError = logicError === "Insufficient balance.";
+//   const displayError = logicError || apiError;
+
+//   // Effect to sync hook summary changes back to the *other* input field
+//   useEffect(() => {
+//     if (!summary) return;
+//     const newSend = summary.sendAmount.toFixed(2);
+//     const newReceive = summary.receiveAmount.toFixed(2);
+//     if (lastEdited === "send") {
+//       setReceiveAmount(newReceive);
+//     } else if (lastEdited === "receive") {
+//       setSendAmount(newSend);
+//     }
+//     // Also update if no field was edited last (initial load or external update)
+//     else if (!lastEdited) {
+//       setSendAmount(newSend);
+//       setReceiveAmount(newReceive);
+//     }
+//   }, [summary, lastEdited]);
+
+//   // --- Timer Cleanup ---
+//   useEffect(() => {
+//     // Clear timers when the component unmounts
+//     return () => {
+//       if (sendBlurTimerRef.current) clearTimeout(sendBlurTimerRef.current);
+//       if (receiveBlurTimerRef.current)
+//         clearTimeout(receiveBlurTimerRef.current);
+//     };
+//   }, []);
+
+//   // --- Input Handlers ---
+//   const handleAmountChange = useCallback(
+//     (value: string, type: "send" | "receive") => {
+//       setLastEdited(type);
+
+//       // Clear existing blur timer for this input
+//       const timerRef = type === "send" ? sendBlurTimerRef : receiveBlurTimerRef;
+//       if (timerRef.current) {
+//         clearTimeout(timerRef.current);
+//         timerRef.current = null;
+//       }
+
+//       if (type === "send") setSendAmount(value);
+//       else setReceiveAmount(value);
+
+//       const amountNum = parseFloat(value);
+//       const isValidAmount = !isNaN(amountNum) && amountNum > 0;
+
+//       if (isValidAmount && logicError && !isInsufficientBalanceError) {
+//         setLogicError(null); // Clear non-balance errors when user types valid amount
+//       }
+
+//       if (isValidAmount) {
+//         calculateSummary(amountNum, type === "send");
+
+//         // Start new blur timer
+//         timerRef.current = setTimeout(() => {
+//           const inputRef =
+//             type === "send" ? sendInputRef.current : receiveInputRef.current;
+//           inputRef?.blur(); // Trigger blur on the specific input
+//           timerRef.current = null; // Clear the stored timer ID after it fires
+//         }, 1000); // 1 second delay
+//       } else {
+//         cancelCalculation();
+//         if (type === "send") setReceiveAmount("");
+//         else setSendAmount("");
+//         // Trigger calculation with 0. The hook will handle setting its internal summary state.
+//         calculateSummary(0, true); // Or type === "send" based on current context
+
+//         if (value && isNaN(amountNum)) {
+//           setLogicError("Please enter a valid number.");
+//         } else if (logicError === "Please enter a valid number.") {
+//           setLogicError(null); // Clear valid number error if input becomes empty/valid
+//         }
+//       }
+//     },
+//     [
+//       calculateSummary,
+//       cancelCalculation,
+//       setLogicError,
+//       logicError,
+//       isInsufficientBalanceError,
+//     ]
+//   );
+
+//   const handleFocus = useCallback((type: "send" | "receive") => {
+//     // Clear blur timer when input gains focus manually
+//     const timerRef = type === "send" ? sendBlurTimerRef : receiveBlurTimerRef;
+//     if (timerRef.current) {
+//       clearTimeout(timerRef.current);
+//       timerRef.current = null;
+//     }
+
+//     if (type === "send") setIsSendFocused(true);
+//     else setIsReceiveFocused(true);
+//   }, []);
+
+//   const handleBlur = useCallback((type: "send" | "receive") => {
+//     // Clear blur timer if input loses focus for any reason
+//     const timerRef = type === "send" ? sendBlurTimerRef : receiveBlurTimerRef;
+//     if (timerRef.current) {
+//       clearTimeout(timerRef.current);
+//       timerRef.current = null;
+//     }
+
+//     if (type === "send") setIsSendFocused(false);
+//     else setIsReceiveFocused(false);
+//   }, []);
+
+//   const handleAvailableBalanceClick = useCallback(() => {
+//     if (sourceAccount) {
+//       const availableBalance = sourceAccount.balance.toFixed(2);
+//       if (sendBlurTimerRef.current) {
+//         clearTimeout(sendBlurTimerRef.current);
+//         sendBlurTimerRef.current = null;
+//       }
+//       handleAmountChange(availableBalance, "send");
+//       setTimeout(() => sendInputRef.current?.focus(), 0);
+//     }
+//   }, [sourceAccount, handleAmountChange]);
+
+//   // --- Continue Logic ---
+//   const handleContinue = useCallback(() => {
+//     if (!summary || !(summary.sendAmount > 0) || !(summary.receiveAmount > 0)) {
+//       if (!logicError && !apiError) {
+//         setLogicError("Please enter a valid amount and wait for calculation.");
+//       }
+//       return;
+//     }
+//     if (isCalculating) return;
+
+//     if (logicError === "Insufficient balance.") {
+//       // Error is already displayed
+//       return;
+//     }
+
+//     if (logicError || apiError) {
+//       setLogicError(`Cannot proceed due to: ${logicError || apiError}`);
+//       return;
+//     }
+
+//     // Final balance check before proceeding (belt and suspenders)
+//     if (sourceAccount && summary.sendAmount > sourceAccount.balance) {
+//       setLogicError("Insufficient balance.");
+//       return;
+//     }
+
+//     setLogicError(null); // Clear any previous non-blocking errors
+
+//     // console.log("Saving transfer summary:", summary);
+//     localStorage.setItem("sendTransferSummary", JSON.stringify(summary));
+
+//     const needsReason = recipient?.currency.code === "INR";
+//     const nextPath = needsReason
+//       ? `/dashboard/balances/${balanceId}/send/reason?recipientId=${recipientId}`
+//       : `/dashboard/balances/${balanceId}/send/review?recipientId=${recipientId}`;
+//     router.push(nextPath);
+//   }, [
+//     summary,
+//     isCalculating,
+//     apiError,
+//     logicError,
+//     sourceAccount,
+//     recipient,
+//     balanceId,
+//     recipientId,
+//     router,
+//     setLogicError,
+//   ]);
+
+//   // Enable continue button logic
+//   const canContinue = useMemo(
+//     () =>
+//       !!summary &&
+//       summary.sendAmount > 0 &&
+//       summary.receiveAmount > 0 &&
+//       !isCalculating &&
+//       !apiError &&
+//       logicError !== "Please enter a valid number." &&
+//       logicError !== "Please enter a valid amount and wait for calculation." &&
+//       logicError !== "Missing required information." &&
+//       !logicError?.startsWith("Cannot proceed due to:") &&
+//       logicError !== "Insufficient balance.", // Block on insufficient balance
+//     [summary, isCalculating, apiError, logicError]
+//   );
+
+//   // --- Savings Calculation (Adapted from HeroSection) ---
+//   const savingsAmount = useMemo(() => {
+//     if (
+//       !summary ||
+//       !summary.liveExchangeRate ||
+//       summary.sendAmount <= 0 ||
+//       summary.receiveAmount <= 0 ||
+//       isCalculating ||
+//       isInsufficientBalanceError ||
+//       !!apiError ||
+//       logicError === "Please enter a valid number."
+//     ) {
+//       return null;
+//     }
+
+//     const marketRate = summary.liveExchangeRate;
+//     const ourRate = summary.exchangeRate;
+
+//     if (ourRate <= marketRate) {
+//       return null;
+//     }
+
+//     const amountConverted = summary.receiveAmount / ourRate;
+//     const marketEquivalentReceive = amountConverted * marketRate;
+//     const rateDifferenceValue = summary.receiveAmount - marketEquivalentReceive;
+
+//     if (rateDifferenceValue <= 0.01) {
+//       return null;
+//     }
+
+//     return rateDifferenceValue.toFixed(2);
+//   }, [
+//     summary,
+//     isCalculating,
+//     isInsufficientBalanceError,
+//     apiError,
+//     logicError,
+//   ]);
+
+//   // --- Render Skeleton ---
+//   if (isLoading) {
+//     return (
+//       <div className="min-h-screen animate-pulse">
+//         <DashboardHeader title="Send Money" steps={steps} currentStep={2} />
+//         <div className="mx-auto lg:max-w-xl p-4 sm:p-6 mt-5 border rounded-2xl bg-background">
+//           <SkeletonAmountSection />
+//           <div className="space-y-2">
+//             <Skeleton className="h-6 w-30" />
+//             <Skeleton className="h-26 w-full rounded-2xl" />
+//             <Skeleton className="h-12.5 w-full rounded-full" />
+//           </div>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   const criticalError =
+//     !sourceAccount || !recipient
+//       ? logicError || apiError || "Error loading essential page details."
+//       : null;
+//   if (criticalError) {
+//     return (
+//       <div className="min-h-screen">
+//         <DashboardHeader title="Send Money" steps={steps} currentStep={2} />
+//         <div className="py-10">
+//           <div className="bg-primarybox sm:p-6 p-4 space-y-4 flex flex-col sm:items-center justify-center text-center rounded-lg">
+//             <div className="flex-shrink-0 sm:size-14 size-12 rounded-full flex items-center justify-center bg-red-600/20 mx-auto">
+//               <AlertTriangle className="text-red-500 sm:size-8 size-6 flex-shrink-0" />
+//             </div>
+
+//             <h1 className="font-semibold text-mainheadingWhite lg:text-3xl text-2xl">
+//               Error Loading Balance
+//             </h1>
+
+//             <p className="text-subheadingWhite max-w-2xl">
+//               {criticalError}
+//             </p>
+
+//             <div className="text-center">
+//               <Link
+//                 href={
+//                   balanceId
+//                     ? `/dashboard/balances/${balanceId}/send/select-recipient`
+//                     : "/dashboard"
+//                 }
+//                 className="inline-flex justify-center cursor-pointer gap-2 bg-secondarybox hover:bg-secondaryboxhover text-primary font-medium rounded-full px-8 py-3 text-center sm:w-auto w-full transition-all duration-75 ease-linear"
+//               >
+//                 <IoIosArrowBack size={20} /> Go back
+//               </Link>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   // --- Main Render ---
+//   return (
+//     <div className="SendAmount-Page">
+//       <DashboardHeader title="Send Money" steps={steps} currentStep={2} />
+
+//       <div className="mx-auto lg:max-w-xl p-4 sm:p-6 mt-5 border rounded-2xl bg-background">
+//         <RateDisplay
+//           rateContext={rateContext}
+//           apiError={apiError && !logicError ? apiError : null}
+//         />
+
+//         <AnimatePresence>
+//           {savingsAmount && recipient && (
+//             <motion.div
+//               key="savings-banner-send-page"
+//               className="my-6 overflow-hidden"
+//               variants={savingsBannerVariants}
+//               initial="hidden"
+//               animate="visible"
+//               exit="exit"
+//             >
+//               <div className="bg-primarybox rounded-xl lg:p-4 p-3 border-l-4 border-primary">
+//                 <div className="flex items-center gap-2">
+//                   <div className="bg-primary rounded-full p-2 flex-shrink-0">
+//                     <FaPiggyBank
+//                       size={20}
+//                       className="lg:size-6 size-4 text-mainheading"
+//                     />
+//                   </div>
+//                   <div>
+//                     <p className="font-bold text-primary lg:text-base text-sm flex items-center gap-1">
+//                       <span>
+//                         Save up to {recipient.currency.code} {savingsAmount}{" "}
+//                         with Remityn
+//                       </span>
+//                       <TrendingUp size={18} />
+//                     </p>
+//                     <p className="text-sm text-subheadingWhite">
+//                       Better rates than traditional banks!
+//                     </p>
+//                   </div>
+//                 </div>
+//               </div>
+//             </motion.div>
+//           )}
+//         </AnimatePresence>
+
+//         <div className="space-y-4 mt-4">
+//           <AmountInput
+//             ref={sendInputRef}
+//             label="You send"
+//             labelSuffix={
+//               summary?.sendAmount && !isCalculating && !displayError
+//                 ? "exactly"
+//                 : ""
+//             }
+//             currencyCode={sourceAccount!.currency.code}
+//             flagImage={sourceAccount!.currency.flagImage}
+//             value={sendAmount}
+//             onValueChange={(val) => handleAmountChange(val, "send")}
+//             onFocus={() => handleFocus("send")}
+//             onBlur={() => handleBlur("send")}
+//             isFocused={isSendFocused}
+//             isDimmed={lastEdited === "receive" && !isCalculating}
+//             hasError={isInsufficientBalanceError} // This ensures the input field shows error style
+//             inputId="send-amount"
+//             data-testid="send-amount-input"
+//           />
+//           <div className="text-right -mt-4 pr-4">
+//             <span className="text-sm text-subheadingWhite">Available: </span>
+//             <button
+//               onClick={handleAvailableBalanceClick}
+//               className="text-sm font-medium text-primary cursor-pointer hover:underline focus:outline-none focus:underline disabled:opacity-50 disabled:cursor-not-allowed"
+//               aria-label={`Use available balance: ${sourceAccount!.balance.toFixed(
+//                 2
+//               )} ${sourceAccount!.currency.code}`}
+//               disabled={isLoading || isCalculating}
+//             >
+//               {sourceAccount!.balance.toLocaleString(undefined, {
+//                 minimumFractionDigits: 2,
+//                 maximumFractionDigits: 2,
+//               })}{" "}
+//               {sourceAccount!.currency.code}
+//             </button>
+//           </div>
+
+//           {/* Recipient Gets Section */}
+//           <AmountInput
+//             ref={receiveInputRef}
+//             label={
+//               recipient!.nickname || recipient!.accountHolderName || "Recipient"
+//             }
+//             labelPrefix=""
+//             labelSuffix={
+//               summary?.receiveAmount && !isCalculating && !displayError
+//                 ? "gets exactly"
+//                 : "gets approx."
+//             }
+//             currencyCode={recipient!.currency.code}
+//             flagImage={`/assets/icon/${recipient!.currency.code.toLowerCase()}.svg`}
+//             value={receiveAmount}
+//             onValueChange={(val) => handleAmountChange(val, "receive")}
+//             onFocus={() => handleFocus("receive")}
+//             onBlur={() => handleBlur("receive")}
+//             isFocused={isReceiveFocused}
+//             isDimmed={lastEdited === "send" && !isCalculating}
+//             // No hasError prop here unless you want to display a specific error for this input too
+//             inputId="receive-amount"
+//             data-testid="receive-amount-input"
+//           />
+//           {recipient?.accountNumber && (
+//             <p className="text-sm text-subheadingWhite text-right -mt-4 pr-4">
+//               Account Number:{" "}
+//               <span className="text-sm font-medium text-primary">
+//                 {recipient.accountNumber}
+//               </span>
+//             </p>
+//           )}
+
+//           <PayingWithDisplay sourceAccount={sourceAccount!} />
+
+//           {displayError && (
+//             <div
+//               className={`relative flex justify-between items-center p-2 rounded-lg border ${
+//                 isInsufficientBalanceError
+//                   ? "bg-red-900/25 border-red-500"
+//                   : "bg-yellow-900/25 border-yellow-500"
+//               }`}
+//               role="alert"
+//             >
+//               <div className="flex sm:items-center items-start gap-3">
+//                 <div
+//                   className={`flex-shrink-0 sm:size-12 size-10 rounded-full flex items-center justify-center ${
+//                     isInsufficientBalanceError
+//                       ? "bg-red-600/20 text-red-500"
+//                       : "bg-yellow-600/20 text-yellow-500"
+//                   }`}
+//                 >
+//                   <FiAlertCircle className={`size-6 flex-shrink-0`} />
+//                 </div>
+//                 <span
+//                   className={`${
+//                     isInsufficientBalanceError
+//                       ? "text-red-300/90"
+//                       : "text-yellow-300/90"
+//                   }`}
+//                 >
+//                   {displayError}
+//                 </span>
+//               </div>
+
+//               <button
+//                 onClick={() => {
+//                   setLogicError(null);
+//                   // Decide if you want dismissing the error to also clear API errors
+//                   // if (apiError) { /* logic to clear apiError if needed */ }
+//                 }}
+//                 className={`ml-2 cursor-pointer absolute top-2 right-2 rounded-full focus:outline-none ${
+//                   isInsufficientBalanceError
+//                     ? " text-red-500"
+//                     : "text-yellow-500"
+//                 }`}
+//                 aria-label="Dismiss error message"
+//               >
+//                 <IoClose size={24} />
+//               </button>
+//             </div>
+//           )}
+
+//           <button
+//             onClick={handleContinue}
+//             disabled={!canContinue || isCalculating}
+//             className={`flex items-center justify-center w-full bg-primary text-mainheading font-semibold hover:bg-primaryhover gap-2 py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed`}
+//             data-testid="continue-button"
+//           >
+//             {isCalculating ? (
+//               <>
+//                 <svg
+//                   className="size-5 text-mainheading animate-spin"
+//                   viewBox="0 0 24 24"
+//                   fill="none"
+//                   xmlns="http://www.w3.org/2000/svg"
+//                 >
+//                   <path
+//                     d="M12 2V6"
+//                     stroke="currentColor"
+//                     strokeWidth="2"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />
+//                   <path
+//                     d="M12 18V22"
+//                     stroke="currentColor"
+//                     strokeWidth="2"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />
+//                   <path
+//                     d="M4.93 4.93L7.76 7.76"
+//                     stroke="currentColor"
+//                     strokeWidth="2"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />
+//                   <path
+//                     d="M16.24 16.24L19.07 19.07"
+//                     stroke="currentColor"
+//                     strokeWidth="2"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />
+//                   <path
+//                     d="M2 12H6"
+//                     stroke="currentColor"
+//                     strokeWidth="2"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />
+//                   <path
+//                     d="M18 12H22"
+//                     stroke="currentColor"
+//                     strokeWidth="2"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />
+//                   <path
+//                     d="M4.93 19.07L7.76 16.24"
+//                     stroke="currentColor"
+//                     strokeWidth="2"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />
+//                   <path
+//                     d="M16.24 7.76L19.07 4.93"
+//                     stroke="currentColor"
+//                     strokeWidth="2"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />
+//                 </svg>
+//                 <span>Calculating...</span>
+//               </>
+//             ) : (
+//               "Continue"
+//             )}
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
 // frontend/src/app/dashboard/balances/[balanceId]/send/amount/page.tsx
 "use client";
 import React, {
@@ -4807,6 +5468,8 @@ import RateDisplay from "../../../../components/send/RateDisplay"; // Adjust pat
 import AmountInput from "../../../../components/send/AmountInput"; // Adjust path
 import PayingWithDisplay from "../../../../components/send/PayingWithDisplay"; // Adjust path
 import { Skeleton } from "@/components/ui/skeleton"; // Adjust path
+import { FiAlertCircle, FiAlertTriangle } from "react-icons/fi";
+// import { error } from "console"; // This import seems unused and 'error' is a common variable name
 
 // --- Component Definition ---
 const steps = ["Recipient", "Amount", "Review", "Pay"];
@@ -4815,28 +5478,73 @@ interface SendAmountPageParams extends Record<string, string | string[]> {
   balanceId: string;
 }
 
-// --- Skeleton Component ---
-const SkeletonAmountSection = () => (
-  <div className="space-y-4 mb-4">
-    <div className="flex items-end flex-col gap-1.5">
-      <Skeleton className="h-10 w-72 rounded-full" />
-      <Skeleton className="h-9 w-65 rounded-full" />
+// --- NEW Skeleton Component for the entire page content ---
+const SendAmountPageSkeletonLayout = () => (
+  <div className="space-y-4">
+    {" "}
+    {/* Overall vertical spacing for content blocks */}
+    {/* Rates Section Skeleton */}
+    <div className="flex flex-col items-end space-y-2">
+      <Skeleton className="h-10 w-73 rounded-full" />{" "}
+      {/* Mimics "Our Rate" pill */}
+      <Skeleton className="h-9 w-64 rounded-full" />{" "}
+      {/* Mimics "Market Rate" pill */}
     </div>
-    <div className="space-y-1 mb-2">
-      <Skeleton className="h-6 w-20" />
-      <div className="flex justify-between">
-        <Skeleton className="h-12.5 w-1/4 rounded-full mt-3" />
-        <Skeleton className="h-12.5 w-40 rounded-lg mt-3" />
+
+    {/* "You send" Section Skeleton */}
+    <div className="space-y-1.5">
+      <Skeleton className="h-6 w-30 mb-1 rounded-md" />{" "}
+      {/* Mimics "You send" label */}
+      <div className="flex items-center justify-between min-h-[72px] border border-transparent">
+        <Skeleton className="h-11.5 w-26.5 rounded-full" />{" "}
+        {/* Mimics Flag + Currency button (e.g., USD) */}
+        <Skeleton className="h-16 w-40 rounded-lg" />{" "}
+        {/* Mimics Amount input field (e.g., 0.00) */}
       </div>
-      <Skeleton className="h-5 w-1/3 ml-auto mb-4" />
+
+      <div className="flex justify-end mt-2">
+        {" "}
+        {/* Align with actual "Available" text position */}
+        <Skeleton className="h-6 w-60 rounded-md" />{" "}
+        {/* Mimics "Available: 1,000.00 USD" text */}
+      </div>
     </div>
-    <div className="space-y-1 mb-2">
-      <Skeleton className="h-6 w-1/3" />
-      <div className="flex justify-between">
-        <Skeleton className="h-12.5 w-1/4 rounded-full mt-3" />
-        <Skeleton className="h-12.5 w-40 rounded-lg mt-3" />
+
+    {/* "Recipient gets approx." Section Skeleton */}
+      <div className="space-y-1.5">
+      <Skeleton className="h-6 w-30 mb-1 rounded-md" />{" "}
+      {/* Mimics "You send" label */}
+      <div className="flex items-center justify-between min-h-[72px] border border-transparent">
+        <Skeleton className="h-11.5 w-26.5 rounded-full" />{" "}
+        {/* Mimics Flag + Currency button (e.g., USD) */}
+        <Skeleton className="h-16 w-40 rounded-lg" />{" "}
+        {/* Mimics Amount input field (e.g., 0.00) */}
       </div>
-      <Skeleton className="h-5 w-1/3 ml-auto mb-4" />
+
+      <div className="flex justify-end mt-2">
+        {" "}
+        {/* Align with actual "Available" text position */}
+        <Skeleton className="h-6 w-60 rounded-md" />{" "}
+        {/* Mimics "Available: 1,000.00 USD" text */}
+      </div>
+    </div>
+
+    
+    {/* "Paying with" Section Skeleton */}
+    <div className="mt-6 space-y-1.5">
+      {" "}
+      {/* Margin-top for separation, tight spacing for label and box */}
+      <Skeleton className="h-6 w-30 mb-1 rounded-md" />{" "}
+      {/* Mimics "Paying with" label */}
+      <Skeleton className="h-26 w-full rounded-xl" />{" "}
+      {/* Mimics the "Paying With" details box. h-24 is 96px, close to image. */}
+    </div>
+    {/* Continue Button Skeleton */}
+    <div className="mt-4">
+      {" "}
+      {/* Margin-top for separation before the button */}
+      <Skeleton className="h-12.5 w-full rounded-full" />{" "}
+      {/* Mimics "Continue" button */}
     </div>
   </div>
 );
@@ -5131,18 +5839,13 @@ export default function SendAmountPage() {
     logicError,
   ]);
 
-  // --- Render Logic ---
+  // --- Render Skeleton ---
   if (isLoading) {
     return (
-      <div className="min-h-screen animate-pulse">
+      <div>
         <DashboardHeader title="Send Money" steps={steps} currentStep={2} />
         <div className="mx-auto lg:max-w-xl p-4 sm:p-6 mt-5 border rounded-2xl bg-background">
-          <SkeletonAmountSection />
-          <div className="space-y-2">
-            <Skeleton className="h-6 w-30" />
-            <Skeleton className="h-26 w-full rounded-2xl" />
-            <Skeleton className="h-12.5 w-full rounded-full" />
-          </div>
+          <SendAmountPageSkeletonLayout />{" "}
         </div>
       </div>
     );
@@ -5154,35 +5857,37 @@ export default function SendAmountPage() {
       : null;
   if (criticalError) {
     return (
-      <div className="min-h-screen">
+      <div>
         <DashboardHeader title="Send Money" steps={steps} currentStep={2} />
-        <div className="py-8">
-          <div className="bg-red-900/25 border border-red-500 rounded-lg p-4 flex items-center gap-3">
-            <div className="flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center bg-red-600/20">
-              <AlertTriangle className="text-red-500 size-5 sm:size-6 flex-shrink-0" />
+                <div className="bg-red-900/25 border border-red-500 rounded-xl p-4 flex items-center gap-4 mb-3 py-5">
+                  <div className="flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center bg-red-600/20">
+                    <FiAlertTriangle
+                      size={20}
+                      className="text-red-500 size-5 sm:size-6 flex-shrink-0"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-red-200 text-base">
+                      Error: Invalid page URL.
+                    </h3>
+                    <p className="text-red-300/90">
+                      page URL is not found try again later
+                    </p>
+                  </div>
+                </div>
+
+                 <div className="text-center mt-5">
+              <Link
+                href={
+                  balanceId
+                    ? `/dashboard/balances/${balanceId}/send/select-recipient`
+                    : "/dashboard"
+                }
+                className="inline-flex justify-center cursor-pointer gap-2 bg-secondarybox hover:bg-secondaryboxhover text-primary font-medium rounded-full px-8 py-3 text-center sm:w-auto w-full transition-all duration-75 ease-linear"
+              >
+                <IoIosArrowBack size={20} /> Go back
+              </Link>
             </div>
-            <div className="flex items-center">
-              <span className="font-medium tracking-normal text-red-200 text-base">
-                Error!
-              </span>
-              <span className="ml-2 block sm:inline text-red-300/90">
-                {criticalError}
-              </span>
-            </div>
-          </div>
-          <div className="text-center">
-            <Link
-              href={
-                balanceId
-                  ? `/dashboard/balances/${balanceId}/send/select-recipient`
-                  : "/dashboard"
-              }
-              className="mt-6 inline-flex justify-center cursor-pointer bg-primarybox hover:bg-secondarybox text-primary font-medium rounded-full px-8 py-3 text-center sm:w-auto w-full transition-all duration-75 ease-linear"
-            >
-              <IoIosArrowBack size={20} className="-ml-1 mr-1" /> Go back
-            </Link>
-          </div>
-        </div>
       </div>
     );
   }
@@ -5191,6 +5896,7 @@ export default function SendAmountPage() {
   return (
     <div className="SendAmount-Page">
       <DashboardHeader title="Send Money" steps={steps} currentStep={2} />
+
       <div className="mx-auto lg:max-w-xl p-4 sm:p-6 mt-5 border rounded-2xl bg-background">
         <RateDisplay
           rateContext={rateContext}
@@ -5271,6 +5977,7 @@ export default function SendAmountPage() {
               {sourceAccount!.currency.code}
             </button>
           </div>
+
           {/* Recipient Gets Section */}
           <AmountInput
             ref={receiveInputRef}
@@ -5297,9 +6004,13 @@ export default function SendAmountPage() {
           />
           {recipient?.accountNumber && (
             <p className="text-sm text-subheadingWhite text-right -mt-4 pr-4">
-              Account Number: <span className="text-sm font-medium text-primary">{recipient.accountNumber}</span>
+              Account Number:{" "}
+              <span className="text-sm font-medium text-primary">
+                {recipient.accountNumber}
+              </span>
             </p>
           )}
+
           <PayingWithDisplay sourceAccount={sourceAccount!} />
 
           {displayError && (
@@ -5313,15 +6024,13 @@ export default function SendAmountPage() {
             >
               <div className="flex sm:items-center items-start gap-3">
                 <div
-                  className={`flex-shrink-0 size-10 rounded-full flex items-center justify-center ${
+                  className={`flex-shrink-0 sm:size-12 size-10 rounded-full flex items-center justify-center ${
                     isInsufficientBalanceError
                       ? "bg-red-600/20 text-red-500"
                       : "bg-yellow-600/20 text-yellow-500"
                   }`}
                 >
-                  <IoIosInformationCircleOutline
-                    className={`size-5 sm:size-6 flex-shrink-0`}
-                  />
+                  <FiAlertCircle className={`size-6 flex-shrink-0`} />
                 </div>
                 <span
                   className={`${
@@ -5340,14 +6049,14 @@ export default function SendAmountPage() {
                   // Decide if you want dismissing the error to also clear API errors
                   // if (apiError) { /* logic to clear apiError if needed */ }
                 }}
-                className={`ml-2 cursor-pointer p-2 rounded-full focus:outline-none ${
+                className={`ml-2 cursor-pointer absolute top-2 right-2 rounded-full focus:outline-none ${
                   isInsufficientBalanceError
                     ? " text-red-500"
-                    : " text-yellow-500"
+                    : "text-yellow-500"
                 }`}
                 aria-label="Dismiss error message"
               >
-                <IoClose size={18} />
+                <IoClose size={24} />
               </button>
             </div>
           )}
@@ -5355,13 +6064,13 @@ export default function SendAmountPage() {
           <button
             onClick={handleContinue}
             disabled={!canContinue || isCalculating}
-            className={`flex items-center justify-center w-full bg-primary text-mainheading font-medium hover:bg-primaryhover space-x-3 py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed`}
+            className={`flex items-center justify-center w-full bg-primary text-mainheading font-semibold hover:bg-primaryhover gap-2 py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed`}
             data-testid="continue-button"
           >
             {isCalculating ? (
               <>
                 <svg
-                  className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                  className="size-5 text-mainheading animate-spin"
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"

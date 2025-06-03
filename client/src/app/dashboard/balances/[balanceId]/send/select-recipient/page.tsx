@@ -645,7 +645,7 @@
 // frontend/src/app/dashboard/balances/[balanceId]/send/select-recipient/page.tsx
 "use client";
 import React, { useState, ChangeEvent, useEffect, Suspense } from "react"; // Added Suspense
-import { FiSearch } from "react-icons/fi";
+import { FiAlertCircle, FiSearch } from "react-icons/fi";
 import RecipientList from "@/app/dashboard/components/RecipientList"; // Check path
 import { IoIosArrowForward } from "react-icons/io";
 import { useParams, useRouter, useSearchParams } from "next/navigation"; // Added useSearchParams
@@ -806,13 +806,13 @@ const SelectRecipientContent = () => {
         {/* Enhanced Skeleton */}
         <Skeleton className="h-9 sm:w-1/2 w-full mb-4 rounded-md" />
         <Skeleton className="h-12.5 w-full mb-6 rounded-full" />
-        <Skeleton className="h-20.5 w-full mb-4 rounded-2xl" />
-        <Skeleton className="h-8 w-28 my-3 rounded-md" />
-        <div className="space-y-2">
-          {Array(3)
+        <Skeleton className="h-20.5 w-full mb-5 rounded-2xl" />
+        <Skeleton className="h-6 w-32 mb-2 rounded-md" />
+        <div className="space-y-2 border-t">
+          {Array(2)
             .fill(0)
             .map((_, index) => (
-              <Skeleton key={index} className="h-21 w-full rounded-lg" />
+              <Skeleton key={index} className="h-21 w-full rounded-lg mt-2" />
             ))}
         </div>
       </>
@@ -823,16 +823,18 @@ const SelectRecipientContent = () => {
   if (error) {
     return (
       <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
-        <div className="lg:size-16 size-14 flex items-center justify-center bg-red-600 rounded-full mb-2">
-          <BiSolidError className="lg:size-8 size-6 mx-auto text-white" />
+        <div className="lg:size-16 size-14 rounded-full flex items-center justify-center bg-red-600/20 flex-shrink-0">
+          <FiAlertCircle  className="text-red-500 lg:size-8 size-6 mx-auto flex-shrink-0" />
         </div>
 
-        <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite mt-1">
+        <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite">
           Error Encountered
         </h2>
+
         <p className="lg:text-lg text-base text-subheadingWhite max-w-xl mx-auto">
           {error} {/* Display the specific error message */} {/* Add a space */}
-          Please{" "}
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+          Perspiciatis, fugit? Please{"  "}
           <Link
             href="/dashboard/send/select-balance"
             className="text-primary hover:underline font-medium" // Style the link
@@ -848,8 +850,8 @@ const SelectRecipientContent = () => {
   if (!isValidParam) {
     return (
       <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
-        <div className="lg:size-16 size-14 flex items-center justify-center bg-red-600 rounded-full mb-2">
-          <BiSolidError className="lg:size-8 size-6 mx-auto text-white" />
+        <div className="lg:size-16 size-14 rounded-full flex items-center justify-center bg-red-600/20 flex-shrink-0">
+          <FiAlertCircle  className="text-red-500 lg:size-8 size-6 mx-auto flex-shrink-0" />
         </div>
         <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite mt-1">
           Invalid Page Parameters
@@ -859,7 +861,7 @@ const SelectRecipientContent = () => {
           information is missing. Please{""}
           <Link
             href="/dashboard/send/select-balance"
-            className="ml-2 text-primary hover:underline"
+            className="ml-2 text-primary hover:underline font-medium"
           >
             Select a Balance
           </Link>
@@ -920,6 +922,7 @@ const SelectRecipientContent = () => {
             <h5 className="font-medium md:text-lg text-base text-mainheadingWhite">
               Add a new recipient
             </h5>
+
             <p className="text-xs text-subheadingWhite">
               Add bank details for someone new.
             </p>
@@ -970,11 +973,17 @@ const SelectRecipientContent = () => {
         ) : (
           // Only show "No results" if there was a search term
           searchTerm && (
-            <div className="text-center  rounded-2xl text-mainheadingWhite text-base md:text-lg bg-primarybox py-5">
-              <p className="font-medium capitalize">
+            <div className="text-center p-4 rounded-2xl space-y-4 text-mainheadingWhite text-base md:text-lg bg-primarybox py-10">
+              
+               <div className="lg:size-16 size-14 rounded-full flex items-center justify-center bg-red-600/20 flex-shrink-0 mx-auto">
+              <FiAlertCircle  className="text-red-500 lg:size-8 size-6 flex-shrink-0" />
+            </div>
+
+              <p className="font-medium capitalize max-w-lg mx-auto">
                 No recipients found matching '{searchTerm}'.
               </p>
-              <p className="text-sm mt-0.5 text-subheadingWhite">
+
+              <p className="text-sm text-subheadingWhite">
                 Check the spelling or try adding them as a new recipient.
               </p>
             </div>
