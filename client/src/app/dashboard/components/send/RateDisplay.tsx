@@ -204,7 +204,7 @@ const RateDisplay: React.FC<RateDisplayProps> = ({ rateContext, apiError }) => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   {/* The element that triggers the tooltip */}
-                  <div className="font-medium sm:text-base text-sm p-2 sm:px-8 px-4 rounded-full bg-primary/25 text-primary inline-flex items-center gap-1.5 cursor-default">
+                  <div className="font-medium sm:text-base text-sm p-2 sm:px-8 px-4 rounded-full bg-primary/25 text-primary inline-flex items-center gap-2 cursor-pointer">
                     <FaLock size={16} /> Our Rate: {adjustedRateDisplay}
                   </div>
                 </TooltipTrigger>
@@ -212,9 +212,9 @@ const RateDisplay: React.FC<RateDisplayProps> = ({ rateContext, apiError }) => {
                 <TooltipContent
                   side="bottom"
                   sideOffset={5}
-                  className="bg-primarybox text-white p-2 px-3 rounded-2xl max-w-60" // Copied styling
+                  className="bg-secondarybox p-2 px-4 rounded-2xl max-w-64 text-center" // Copied styling
                 >
-                  <p className="text-subheadingWhite text-xs">
+                  <p className="text-mainheadingWhite text-xs font-medium">
                     {" "}
                     {/* Copied styling */}
                     Rate includes Our Rate of {rateAdjustmentDisplay}%. This is
@@ -229,7 +229,7 @@ const RateDisplay: React.FC<RateDisplayProps> = ({ rateContext, apiError }) => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   {/* The element that triggers the tooltip */}
-                  <div className="font-medium sm:text-sm text-13px p-2 px-4 rounded-full bg-blue-700/20 text-blue-500 inline-flex items-center gap-1.5 cursor-help">
+                  <div className="font-medium sm:text-sm text-13px p-2 px-4 rounded-full bg-blue-700/20 text-blue-500 inline-flex items-center gap-2 cursor-pointer">
                     <FaInfoCircle size={16} /> Market Rate: {liveRateDisplay}
                   </div>
                 </TooltipTrigger>
@@ -237,9 +237,9 @@ const RateDisplay: React.FC<RateDisplayProps> = ({ rateContext, apiError }) => {
                 <TooltipContent
                   side="bottom"
                   sideOffset={5}
-                  className="bg-primarybox text-white p-2 px-3 rounded-2xl max-w-47" // Copied styling
+                  className="bg-secondarybox p-2 px-4 rounded-2xl max-w-50 text-center" // Copied styling
                 >
-                  <p className="text-subheadingWhite text-xs">
+                  <p className="text-mainheadingWhite text-xs font-medium">
                     {" "}
                     {/* Copied styling */}
                     Current mid-market rate. For comparison purposes only.

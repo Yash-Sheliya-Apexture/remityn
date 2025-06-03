@@ -351,12 +351,12 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import WiseLogo from "../../../../../../public/assets/images/plane-medium.png"; // Adjust path as needed
 import { useAuth } from "../../../../contexts/AuthContext"; // Adjust path as needed
 import paymentService, {
   PaymentDetailsResponse,
 } from "../../../../services/payment"; // Adjust path as needed
 import { Skeleton } from "@/components/ui/skeleton";
+import { FiAlertTriangle } from "react-icons/fi";
 
 // Interface for component state
 interface PaymentDetails {
@@ -476,7 +476,7 @@ const PaymentSuccessPage = () => {
       <div className="flex flex-col items-center justify-center bg-background text-subheadingWhite mt-10">
         <div className="md:mb-8 mb-6">
           <Image
-            src={WiseLogo}
+            src="/assets/images/planes.png"
             alt="Wise Logo"
             width={200}
             height={200}
@@ -517,8 +517,15 @@ const PaymentSuccessPage = () => {
 
           {/* Error Message Display */}
           {error && !isLoading && (
-            <div className="bg-red-600/20 border border-red-600/50 rounded-xl p-4">
-              <p className="text-red-400 text-sm font-medium">
+            <div className="bg-red-600/20 border flex gap-2 items-center border-red-600/50 rounded-xl p-4">
+
+                <div className="flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center bg-red-600/20">
+                                  <FiAlertTriangle
+                                    size={20}
+                                    className="text-red-500 size-5 sm:size-6 flex-shrink-0"
+                                  />
+                                </div>
+              <p className="text-red-400 text-sm font-medium text-left">
                 {error}
               </p>
             </div>
