@@ -4960,11 +4960,11 @@ const InboxPage: React.FC = () => {
 
   if (!authLoading && !user) {
     return (
-      <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
-        <div className="lg:size-16 size-14 flex items-center justify-center bg-red-600 rounded-full mb-2">
-          <Inbox className="lg:size-8 size-6 mx-auto text-white" />
+      <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[250px] flex flex-col justify-center items-center">
+        <div className="lg:size-16 size-14 rounded-full flex items-center justify-center bg-red-600/20 flex-shrink-0">
+          <Inbox className="text-red-500 lg:size-8 size-6 mx-auto flex-shrink-0" />
         </div>
-        <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite mt-1">
+        <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite">
           Access Denied
         </h2>
         <p className="text-subheadingWhite max-w-lg mx-auto">
@@ -5055,10 +5055,10 @@ const InboxPage: React.FC = () => {
               <>
                 {!isInitialLoad.current && !hasMessagesInTotal && (
                   <div className="bg-primarybox rounded-3xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
-                    <div className="lg:size-16 size-14 flex items-center justify-center bg-primary rounded-full mb-2">
+                    <div className="lg:size-16 size-14 flex items-center justify-center bg-primary rounded-full">
                       <Inbox className="lg:size-8 size-6 mx-auto text-mainheading" />
                     </div>
-                    <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite mt-1">
+                    <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite">
                       All Messages Clear!
                     </h2>
                     <p className="text-subheadingWhite max-w-lg mx-auto">

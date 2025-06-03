@@ -2250,8 +2250,8 @@ const TransactionList: React.FC<TransactionListProps> = ({
 
   if (error) {
      return (
-        <div className="flex flex-col items-center gap-3 sm:p-10 p-4 text-red-700 dark:text-red-300/90 bg-red-50 dark:bg-red-900/25 border border-red-500 rounded-lg text-center">
-          <strong className="text-red-600 dark:text-red-400">Transaction Error</strong> {error}
+        <div className="flex flex-col items-center gap-3 sm:p-10 p-4 bg-red-900/25 border border-red-500 rounded-lg text-center">
+          <strong className="text-red-500">Transaction Error</strong> {error}
         </div>
       );
   }
@@ -2528,15 +2528,15 @@ const TransactionList: React.FC<TransactionListProps> = ({
         !error &&
         !hasAnyTransactionsToDisplay &&
         wasInitiallyEmpty && (
-          <div className="bg-lightgray dark:bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
-            <div className="lg:size-16 size-14 flex items-center justify-center bg-primary dark:bg-transparent dark:bg-gradient-to-t dark:from-primary rounded-full mb-2">
-              <ClipboardXIcon className="lg:size-8 size-6 mx-auto text-neutral-900 dark:text-primary" />
+          <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
+            <div className="lg:size-16 size-14 flex items-center justify-center bg-primary rounded-full mb-2">
+              <ClipboardXIcon className="lg:size-8 size-6 mx-auto text-mainheading" />
             </div>
-            <h2 className="lg:text-3xl text-2xl font-medium text-neutral-900 dark:text-white mt-1">
+            <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite">
               {" "}
               No transactions found for your {currencyCode} balance yet.
             </h2>
-            <p className="mt-2 lg:text-lg text-base text-gray-500 dark:text-gray-300 max-w-lg mx-auto">
+            <p className="lg:text-lg text-base text-subheadingWhite max-w-lg mx-auto">
               You can{" "}
               <button
                 type="button"

@@ -8248,7 +8248,7 @@ const TransactionDetailsPage = () => {
     if (!transactionDetails)
       return {
         headerStatusText: "Loading...",
-        headerStatusColorClass: "text-gray-500 dark:text-gray-400",
+        headerStatusColorClass: "text-subheadingWhite",
       };
     if (
       isPayment &&
@@ -8258,7 +8258,7 @@ const TransactionDetailsPage = () => {
       return {
         headerStatusText: "Verifying Payment",
         headerStatusColorClass:
-          "text-blue-600 dark:text-blue-400 animate-pulse",
+          "text-blue-600 animate-pulse",
       };
     }
     switch (transactionDetails.status) {
@@ -8267,37 +8267,37 @@ const TransactionDetailsPage = () => {
           headerStatusText: isPayment
             ? "Waiting for payment"
             : "Transfer Pending",
-          headerStatusColorClass: "text-orange-600 dark:text-orange-400",
+          headerStatusColorClass: "text-orange-600",
         };
       case "in progress":
         return {
           headerStatusText: "Processing Payment",
-          headerStatusColorClass: "text-blue-600 dark:text-blue-400",
+          headerStatusColorClass: "text-blue-600",
         };
       case "processing":
         return {
           headerStatusText: "Transfer Processing",
-          headerStatusColorClass: "text-blue-600 dark:text-blue-400",
+          headerStatusColorClass: "text-blue-600",
         };
       case "completed":
         return {
           headerStatusText: isPayment ? "Money Added" : "Transfer Completed",
-          headerStatusColorClass: "text-green-600 dark:text-green-400",
+          headerStatusColorClass: "text-green-600",
         };
       case "canceled":
         return {
           headerStatusText: "Transaction Cancelled",
-          headerStatusColorClass: "text-red-600 dark:text-red-400",
+          headerStatusColorClass: "text-red-600",
         };
       case "failed":
         return {
           headerStatusText: "Transaction Failed",
-          headerStatusColorClass: "text-red-600 dark:text-red-400",
+          headerStatusColorClass: "text-red-600",
         };
       default:
         return {
           headerStatusText: `Status: ${transactionDetails.status}`,
-          headerStatusColorClass: "text-gray-500 dark:text-gray-400",
+          headerStatusColorClass: "text-gray-500",
         };
     }
   }, [transactionDetails, isPayment, showAwaitingVerificationView]);
@@ -8376,13 +8376,13 @@ const TransactionDetailsPage = () => {
         <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite">
           Error Loading Transaction
         </h2>
-        <p className="lg:text-lg text-base text-gray-500 dark:text-gray-300 max-w-lg mx-auto">
+        <p className="lg:text-lg text-base text-subheadingWhite max-w-lg mx-auto">
           {error}
         </p>
         <div className="flex sm:flex-row flex-col items-center justify-center gap-3 w-full">
           <button
             onClick={() => router.back()}
-            className="inline-flex justify-center items-center font-medium cursor-pointer bg-background/60 hover:bg-secondarybox text-primary dark:text-primary px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear"
+            className="inline-flex justify-center items-center font-medium cursor-pointer bg-background/60 hover:bg-secondarybox text-primary px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear"
           >
             Go Back
           </button>
@@ -8400,13 +8400,13 @@ const TransactionDetailsPage = () => {
   }
   if (!transactionDetails) {
     return (
-      <div className="bg-lightgray dark:bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
-        <p className="lg:text-lg text-base text-neutral-900 dark:text-white max-w-lg mx-auto">
+      <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[250px] flex flex-col justify-center items-center">
+        <p className="lg:text-lg text-base text-mainheadingWhite max-w-lg mx-auto">
           Transaction details could not be loaded.
         </p>
         <button
           onClick={() => router.push("/dashboard/transactions")}
-          className="inline-flex justify-center items-center font-medium bg-primary hover:bg-primaryhover text-neutral-900 px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear cursor-pointer"
+          className="inline-flex justify-center items-center font-medium bg-primary hover:bg-primaryhover text-mainheading px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear cursor-pointer"
         >
           View All Transactions
         </button>

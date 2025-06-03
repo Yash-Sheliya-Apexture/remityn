@@ -7266,60 +7266,80 @@ const AddRecipientPage = () => {
 
   return (
     <div className="AddRecipientPage">
-      <DashboardHeader title="Recipients" onBack={handleBackStep} />
+      {isLoadingCurrencies ? (
+        <Skeleton className="h-8 mb-6 w-48 rounded-md" /> // Skeleton for DashboardHeader
+      ) : (
+        <DashboardHeader title="Recipients" onBack={handleBackStep} />
+      )}
       <div className="Steps">
         {step === 1 && (
           <div key="currency-step" className="relative">
-            <h2 className="md:text-2xl text-xl capitalize font-semibold text-mainheadingWhite mb-4">
-              Select their currency
-            </h2>
-            <div className="relative mb-4">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                <FiSearch
-                  className="size-5 text-mainheadingWhite"
-                  aria-hidden="true"
-                />
-              </div>
-              <input
-                type="text"
-                className="w-full rounded-full h-12.5 py-3 pl-12 pr-3  focus:outline-0 transition-all duration-75 ease-in-out placeholder:text-gray-400 border border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white bg-primarybox/50"
-                placeholder="Search currency by name or code..."
-                value={searchCurrency}
-                onChange={(e) => setSearchCurrency(e.target.value)}
-              />
-              {searchCurrency && (
-                <button
-                  type="button"
-                  onClick={clearSearchTerm}
-                  className="absolute inset-y-0 right-3 flex items-center text-primary focus:outline-none cursor-pointer"
-                  aria-label="Clear search"
-                >
-                  <MdCancel size={22} aria-hidden="true" />
-                </button>
-              )}
-            </div>
-            {formError && !isLoadingCurrencies && (
-              <div
-                className="bg-red-900/25 border border-red-500 rounded-xl p-3 flex items-center gap-3 relative mb-3"
-                role="alert"
-              >
-                <div className="flex-shrink-0 size-10 rounded-full flex items-center justify-center bg-red-600/20">
-                  <AlertTriangle className="text-red-500 size-5 sm:size-6 flex-shrink-0" />
+            {isLoadingCurrencies ? (
+              <>
+                {/* Skeleton for "Select their currency" heading */}
+                <Skeleton className="h-8 w-64 mb-4 rounded-md" />
+                {/* Skeleton for Search input */}
+                <Skeleton className="h-12.5 w-full mb-4 rounded-full" />
+                {/* Skeletons for Currency List Section */}
+                <div className="space-y-6 mt-6">
+                  {/* Skeleton for "All currencies" title */}
+                  <Skeleton className="h-4 w-32 mb-3 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-16 rounded-xl w-full" />
+                    <Skeleton className="h-16 rounded-xl w-full" />
+                    <Skeleton className="h-16 rounded-xl w-full" />
+                  </div>
+                  {/* Optionally, add skeleton for "Coming Soon" if it's a common section */}
+                  {/* <Skeleton className="h-7 w-1/3 mt-6 mb-3 rounded" /> */}
+                  {/* <div className="space-y-2"> */}
+                  {/*   <Skeleton className="h-16 rounded-xl w-full" /> */}
+                  {/* </div> */}
                 </div>
-                <span className="text-red-300/90 text-sm font-medium">
-                  {formError}
-                </span>
-              </div>
-            )}
-            <div className="space-y-6">
-              {isLoadingCurrencies ? (
-                <>
-                  <Skeleton className="h-16 rounded-xl w-full" />
-                  <Skeleton className="h-16 rounded-xl w-full" />
-                  <Skeleton className="h-16 rounded-xl w-full" />
-                </>
-              ) : (
-                <>
+              </>
+            ) : (
+              <>
+                <h2 className="lg:text-2xl text-xl capitalize font-semibold text-mainheadingWhite mb-4">
+                  Select their currency
+                </h2>
+                <div className="relative mb-4">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                    <FiSearch
+                      className="size-5 text-mainheadingWhite"
+                      aria-hidden="true"
+                    />
+                  </div>
+                  <input
+                    type="text"
+                    className="w-full rounded-full h-12.5 py-3 pl-12 pr-3  focus:outline-0 transition-all duration-75 ease-in-out placeholder:text-gray-400 border border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white bg-primarybox/50"
+                    placeholder="Search currency by name or code..."
+                    value={searchCurrency}
+                    onChange={(e) => setSearchCurrency(e.target.value)}
+                  />
+                  {searchCurrency && (
+                    <button
+                      type="button"
+                      onClick={clearSearchTerm}
+                      className="absolute inset-y-0 right-3 flex items-center text-primary focus:outline-none cursor-pointer"
+                      aria-label="Clear search"
+                    >
+                      <MdCancel size={22} aria-hidden="true" />
+                    </button>
+                  )}
+                </div>
+                {formError && !isLoadingCurrencies && (
+                  <div
+                    className="bg-red-900/25 border border-red-500 rounded-xl p-3 flex items-center gap-3 relative mb-3"
+                    role="alert"
+                  >
+                    <div className="flex-shrink-0 size-10 rounded-full flex items-center justify-center bg-red-600/20">
+                      <AlertTriangle className="text-red-500 size-5 sm:size-6 flex-shrink-0" />
+                    </div>
+                    <span className="text-red-300/90 text-sm font-medium">
+                      {formError}
+                    </span>
+                  </div>
+                )}
+                <div className="space-y-6">
                   {filteredAvailableCurrencies.length > 0 && (
                     <div>
                       <h3 className="font-medium text-white/90 mb-3 leading-8 border-b">
@@ -7378,7 +7398,7 @@ const AddRecipientPage = () => {
                         {filteredComingSoonCurrencies.map((currency) => (
                           <div
                             key={currency._id || currency.code}
-                            className={`p-2 sm:p-4 rounded-xl cursor-not-allowed opacity-60 border border-transparent dark:border-transparent`}
+                            className={`p-2 sm:p-4 rounded-xl cursor-not-allowed opacity-60 border border-transparent`}
                           >
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-3 sm:gap-4">
@@ -7419,9 +7439,9 @@ const AddRecipientPage = () => {
                           : "No currencies available."}
                       </div>
                     )}
-                </>
-              )}
-            </div>
+                </div>
+              </>
+            )}
           </div>
         )}
 
@@ -7555,7 +7575,7 @@ const AddRecipientPage = () => {
                     </p>
                   )}
                   {isFetchingBankDetails && (
-                    <div className="mt-2 flex items-center text-sm text-gray-500 dark:text-gray-400">
+                    <div className="mt-2 flex items-center text-sm text-subheadingWhite">
                       <svg
                         className="animate-spin -ml-1 mr-2 h-4 w-4 text-primary"
                         xmlns="http://www.w3.org/2000/svg"
@@ -7684,7 +7704,7 @@ const AddRecipientPage = () => {
                   {isSubmitting ? (
                     <>
                       <svg
-                        className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                        className="h-5 w-5 text-mainheading animate-spin mr-2"
                         viewBox="0 0 24 24"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"

@@ -1146,19 +1146,402 @@
 
 
 
+// "use client";
+// import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
+// import { BsExclamationLg } from "react-icons/bs";
+// import { FiAlertTriangle } from "react-icons/fi";
+// import { LuCheck, LuEye, LuEyeOff } from "react-icons/lu";
+// import { useAuth } from "@/app/contexts/AuthContext"; // Import useAuth
+// import userService from "@/app/services/user"; // Import user service
+// import DashboardHeader from "@/app/components/layout/DashboardHeader";
+
+// export default function ChangePassword() {
+//   const { token, logout } = useAuth(); // Get token and logout function from context
+//   const [currentPassword, setCurrentPassword] = useState("");
+//   const [newPassword, setNewPassword] = useState("");
+//   const [showSamePasswordError, setShowSamePasswordError] = useState(false);
+//   const [showInvalidCurrentPasswordError, setShowInvalidCurrentPasswordError] = useState(false);
+//   const [showPasswordMessage, setShowPasswordMessage] = useState(true);
+//   const [showSortedMessage, setShowSortedMessage] = useState(false);
+//   const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
+//   const [loading, setLoading] = useState(false); // API loading state
+//   const [apiError, setApiError] = useState<string | null>(null); // General API error message
+//   const [successMessage, setSuccessMessage] = useState<string | null>(null); // Success message
+
+//   // --- Existing functions: isNewPasswordValid, handleCurrentPasswordChange, handleNewPasswordChange, validateNewPassword, toggleNewPasswordVisibility, handleCopyPassword ---
+
+//   const isNewPasswordValid = () => {
+//     const hasLetter = /[a-zA-Z]/.test(newPassword);
+//     const hasNumber = /[0-9]/.test(newPassword);
+//     const isLongEnough = newPassword.length >= 8; // Match backend minimum length
+//     return hasLetter && hasNumber && isLongEnough;
+//   };
+
+//   const isSaveButtonDisabled =
+//     !currentPassword || !newPassword || !isNewPasswordValid() || loading; // Disable during loading
+
+//   // Removed hardcoded 'correctCurrentPassword'
+
+//   const handleCurrentPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+//     setCurrentPassword(e.target.value);
+//     setShowInvalidCurrentPasswordError(false); // Clear specific error on change
+//     setApiError(null); // Clear general API error
+//     setSuccessMessage(null); // Clear success message
+//   };
+
+//   const handleNewPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+//     const passwordValue = e.target.value;
+//     setNewPassword(passwordValue);
+//     setShowSamePasswordError(false); // Clear specific error on change
+//     setApiError(null); // Clear general API error
+//     setSuccessMessage(null); // Clear success message
+//     validateNewPassword(passwordValue);
+//   };
+
+//   const validateNewPassword = (password: string) => {
+//     const hasLetter = /[a-zA-Z]/.test(password);
+//     const hasNumber = /[0-9]/.test(password);
+//     const isLongEnough = password.length >= 8; // Match backend minimum length
+
+//     if (hasLetter && hasNumber && isLongEnough) {
+//       setShowPasswordMessage(false);
+//       setShowSortedMessage(true);
+//     } else {
+//       setShowPasswordMessage(true);
+//       setShowSortedMessage(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     validateNewPassword(newPassword);
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [newPassword]);
+
+//   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+//     e.preventDefault();
+//     // Clear previous errors/messages
+//     setShowSamePasswordError(false);
+//     setShowInvalidCurrentPasswordError(false);
+//     setApiError(null);
+//     setSuccessMessage(null);
+
+//     if (isSaveButtonDisabled) {
+//       return;
+//     }
+
+//     // Client-side check for same password (optional, backend does it too)
+//     if (currentPassword === newPassword) {
+//       setShowSamePasswordError(true);
+//       return;
+//     }
+
+//     // Ensure token exists
+//     if (!token) {
+//       setApiError("Authentication error. Please log in again.");
+//       // Optionally logout or redirect here
+//       // logout('manual');
+//       return;
+//     }
+
+//     setLoading(true); // Start loading indicator
+
+//     try {
+//       // Call the API service function
+//       const response = await userService.changePassword(
+//         { currentPassword, newPassword },
+//         token
+//       );
+
+//       // --- Success ---
+//       // console.log("Password change successful:", response.message);
+//       setSuccessMessage(response.message || "Password changed successfully!"); // Use message from API
+
+//       // Reset state after successful change
+//       setCurrentPassword("");
+//       setNewPassword("");
+//       setShowPasswordMessage(true);
+//       setShowSortedMessage(false);
+//       setIsNewPasswordVisible(false);
+//       setShowInvalidCurrentPasswordError(false);
+//       setShowSamePasswordError(false);
+//       setApiError(null);
+
+//       // Optional: Keep success message for a few seconds
+//       // setTimeout(() => setSuccessMessage(null), 5000);
+
+//     } catch (error: any) {
+//       console.error("Password change failed:", error);
+//       const errorMessage = error.message || "An unexpected error occurred.";
+
+//       // Handle specific error messages from the backend
+//       if (errorMessage.includes('Incorrect current password')) {
+//         setShowInvalidCurrentPasswordError(true);
+//         setApiError(null); // Don't show general error if specific one is shown
+//       } else if (errorMessage.includes('New password cannot be the same')) {
+//         setShowSamePasswordError(true);
+//          setApiError(null);
+//       } else {
+//         // Show general API error message
+//         setApiError(errorMessage);
+//         setShowInvalidCurrentPasswordError(false); // Hide specific error if showing general one
+//         setShowSamePasswordError(false);
+//       }
+//     } finally {
+//       setLoading(false); // Stop loading indicator
+//     }
+//   };
+
+//   const toggleNewPasswordVisibility = () => {
+//     setIsNewPasswordVisible(!isNewPasswordVisible);
+//   };
+
+//   const handleCopyPassword = (e: React.ClipboardEvent<HTMLInputElement>) => {
+//     e.preventDefault();
+//   };
+
+//   return (
+//     <section className="ChangePasswor">
+//       <div className="">
+//         <DashboardHeader title="Change Password" />
+
+//         <div className="space-y-4 w-full lg:max-w-lg mt-8">
+//           {/* Added mt-8 */}
+//           {/* Informational Message */}
+//           <div className="bg-primarybox rounded-xl p-4 flex items-start gap-4 ">
+//             <div className="p-3 bg-yellow-400 rounded-full flex-shrink-0">
+//               <BsExclamationLg size={24} className="text-main" />
+//             </div>
+
+//             <p className="text-subheadingWhite">
+//               We will never send you a temporary password by phone, email or
+//               text message. When changing your password, always use something
+//               that’s only known by you.
+//             </p>
+//           </div>
+//           {/* --- Messages Area --- */}
+//           <div className="space-y-3">
+//             {/* API Error Message */}
+
+//             {apiError && (
+//               <div className="bg-red-900/25 border border-red-500 rounded-lg p-3 flex items-center gap-3">
+//                 <div className="flex-shrink-0 size-10  rounded-full flex items-center justify-center bg-red-600/20">
+//                   <FiAlertTriangle className="text-red-500 size-5 sm:size-6 flex-shrink-0" />
+//                 </div>
+//                 <p className="text-red-300/90">{apiError}</p>
+//               </div>
+//             )}
+
+//             {/* Success Message */}
+//             {successMessage && (
+//               <div className="bg-green-900/25 border border-green-500 rounded-lg p-3 flex items-center gap-3">
+//                 <div className="flex-shrink-0 size-10 rounded-full flex items-center justify-center bg-green-600/20">
+//                   <LuCheck className="text-green-500 size-5 sm:size-6 flex-shrink-0" />
+//                 </div>
+//                 <p className="text-green-300/90">
+//                   {successMessage}
+//                 </p>
+//               </div>
+//             )}
+
+//             {/* Error Message: Invalid Current Password */}
+//             {showInvalidCurrentPasswordError && (
+//               <div className="bg-red-900/25 border border-red-500 rounded-lg p-3 flex items-center gap-3">
+//                 <div className="flex-shrink-0 size-10  rounded-full flex items-center justify-center bg-red-600/20">
+//                   <FiAlertTriangle className="text-red-500 size-5 sm:size-6 flex-shrink-0" />
+//                 </div>
+//                 <p className="text-red-300/90">
+//                   Incorrect current password.
+//                 </p>
+//               </div>
+//             )}
+
+//             {/* Error Message: Same Password */}
+//             {showSamePasswordError && (
+//               <div className="bg-red-900/25 border border-red-500 rounded-lg p-3 flex items-center gap-3">
+//                 <div className="flex-shrink-0 size-10  rounded-full flex items-center justify-center bg-red-600/20">
+//                   <FiAlertTriangle className="text-red-500 size-5 sm:size-6 flex-shrink-0" />
+//                 </div>
+//                 <p className="text-red-300/90">
+//                   Your new password can't be the same as the current one.
+//                 </p>
+//               </div>
+//             )}
+//           </div>
+//           {/* --- End Messages Area --- */}
+//           {/* Password Change Form */}
+//           <div>
+//             <form className="space-y-6" onSubmit={handleSubmit} noValidate>
+//               {/* Current Password Input */}
+//               <div>
+//                 <label
+//                   htmlFor="currentPassword"
+//                   className="text-white block capitalize text-sm lg:text-base"
+//                 >
+//                   Current password
+//                 </label>
+//                 <input
+//                   type="password"
+//                   id="currentPassword"
+//                   name="currentPassword"
+//                   autoComplete="current-password"
+//                   className={`mt-1 block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0 pr-10 ${
+//                     showInvalidCurrentPasswordError
+//                       ? "border-red-600 ring-1 ring-red-600"
+//                       : "border-primarybox"
+//                   }`}
+//                   placeholder="Enter current password"
+//                   value={currentPassword}
+//                   onChange={handleCurrentPasswordChange}
+//                   required
+//                   disabled={loading} // Disable input when loading
+//                 />
+//               </div>
+
+//               {/* New Password Input */}
+//               <div className="relative">
+//                 <label
+//                   htmlFor="newPassword"
+//                   className="text-white block capitalize text-sm lg:text-base"
+//                 >
+//                   New password
+//                 </label>
+//                 <div className="relative">
+//                   <input
+//                     type={isNewPasswordVisible ? "text" : "password"}
+//                     id="newPassword"
+//                     name="newPassword"
+//                     autoComplete="new-password"
+//                     className={`mt-1 block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0 pr-10 ${
+//                       (showSamePasswordError ||
+//                         (newPassword && !isNewPasswordValid())) &&
+//                       !showSortedMessage &&
+//                       !successMessage // Show error border if same password or invalid (and not yet sorted/successful)
+//                         ? "border-red-600 ring-1 ring-red-600"
+//                         : "border-primarybox"
+//                     }`}
+//                     placeholder="Enter new password"
+//                     value={newPassword}
+//                     onChange={handleNewPasswordChange}
+//                     onCopy={handleCopyPassword}
+//                     onCut={handleCopyPassword}
+//                     required
+//                     aria-describedby="password-hint"
+//                     disabled={loading} // Disable input when loading
+//                   />
+//                   <button
+//                     type="button"
+//                     className="absolute right-3 top-1/2 -translate-y-1/2 transform cursor-pointer text-gray-500 hover:text-gray-300 focus:outline-none"
+//                     onClick={toggleNewPasswordVisibility}
+//                     aria-label={
+//                       isNewPasswordVisible ? "Hide password" : "Show password"
+//                     }
+//                     disabled={loading} // Disable button when loading
+//                   >
+//                     {isNewPasswordVisible ? (
+//                       <LuEye size={18} />
+//                     ) : (
+//                       <LuEyeOff size={18} />
+//                     )}
+//                   </button>
+//                 </div>
+//               </div>
+
+//               {/* Password Hint/Validation Message Area */}
+//               {/* Only show hints if no success message */}
+//               {!successMessage && (
+//                 <div id="password-hint">
+//                   {/* Password Requirements Message */}
+//                   {showPasswordMessage && (
+//                     <div className="bg-yellow-900/25 border border-yellow-500 rounded-lg p-3 flex items-start gap-3">
+//                       <div className="flex-shrink-0 size-10 rounded-full flex items-center justify-center bg-yellow-600/20">
+//                         <BsExclamationLg className="text-yellow-500 size-5 sm:size-6 flex-shrink-0" />
+//                       </div>
+//                       <p className="text-yellow-300/90">
+//                         Password must contain a letter and a number, and be
+//                         minimum 8 characters long.
+//                       </p>
+//                     </div>
+//                   )}
+
+//                   {/* Password Valid Message */}
+//                   {/* Only show if requirements met and initial message hidden */}
+//                   {showSortedMessage && !showPasswordMessage && (
+//                     <div className="bg-green-900/25 border border-green-500 rounded-lg p-3 flex items-center gap-3">
+//                       <div className="flex-shrink-0 size-10 rounded-full flex items-center justify-center bg-green-600/20">
+//                         <LuCheck className="text-green-500 size-5 sm:size-6 flex-shrink-0" />
+//                       </div>
+//                       <p className="text-green-300/90">
+//                         That’s your new password sorted.
+//                       </p>
+//                     </div>
+//                   )}
+//                 </div>
+//               )}
+
+//               {/* Save Button */}
+//               <div className="pt-2">
+//                 <button
+//                   type="submit"
+//                   disabled={isSaveButtonDisabled} // Updated condition
+//                   className={` flex items-center justify-center bg-primary text-mainheading hover:bg-primaryhover font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed `}
+//                 >
+//                   {loading ? (
+//                     <svg
+//                       className="h-5 w-5 text-mainheading animate-spin mr-2"
+//                       viewBox="0 0 24 24"
+//                       fill="none"
+//                       xmlns="http://www.w3.org/2000/svg"
+//                     >
+//                       <path d="M12 2V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+//                       <path d="M12 18V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+//                       <path d="M4.93 4.93L7.76 7.76" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+//                       <path d="M16.24 16.24L19.07 19.07" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+//                       <path d="M2 12H6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+//                       <path d="M18 12H22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+//                       <path d="M4.93 19.07L7.76 16.24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+//                       <path d="M16.24 7.76L19.07 4.93" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+//                     </svg>
+//                   ) : null}
+//                   {loading ? "Saving..." : "Save changes"}
+//                 </button>
+//               </div>
+//             </form>
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+
+
 "use client";
-import Link from "next/link";
-import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import React, { useState, useEffect, ChangeEvent, FormEvent, useCallback } from "react"; // Added useCallback
 import { BsExclamationLg } from "react-icons/bs";
 import { FiAlertTriangle } from "react-icons/fi";
 import { LuCheck, LuEye, LuEyeOff } from "react-icons/lu";
-import { useAuth } from "@/app/contexts/AuthContext"; // Import useAuth
-import userService from "@/app/services/user"; // Import user service
-import { Loader2 } from "lucide-react"; // For loading indicator
+import { useAuth } from "@/app/contexts/AuthContext";
+import userService from "@/app/services/user";
 import DashboardHeader from "@/app/components/layout/DashboardHeader";
 
+// Import react-toastify
+import {
+  ToastContainer,
+  toast,
+  Slide,
+  ToastContainerProps,
+  TypeOptions,
+} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+// Import CustomToast (ensure the path is correct for your project structure)
+import CustomToast, {
+  CustomToastProps,
+} from "@/app/components/CustomToast";
+
+
 export default function ChangePassword() {
-  const { token, logout } = useAuth(); // Get token and logout function from context
+  const { token, logout } = useAuth();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [showSamePasswordError, setShowSamePasswordError] = useState(false);
@@ -1166,44 +1549,87 @@ export default function ChangePassword() {
   const [showPasswordMessage, setShowPasswordMessage] = useState(true);
   const [showSortedMessage, setShowSortedMessage] = useState(false);
   const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
-  const [loading, setLoading] = useState(false); // API loading state
-  const [apiError, setApiError] = useState<string | null>(null); // General API error message
-  const [successMessage, setSuccessMessage] = useState<string | null>(null); // Success message
+  const [loading, setLoading] = useState(false);
+  // Removed: const [apiError, setApiError] = useState<string | null>(null);
+  // Removed: const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // --- Existing functions: isNewPasswordValid, handleCurrentPasswordChange, handleNewPasswordChange, validateNewPassword, toggleNewPasswordVisibility, handleCopyPassword ---
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+      const handleResize = () => {
+          setIsMobile(window.innerWidth < 640); // Example breakpoint
+      };
+      handleResize();
+      window.addEventListener("resize", handleResize);
+      return () => {
+          window.removeEventListener("resize", handleResize);
+      };
+  }, []);
+
+  const showToast = useCallback(
+      (message: string, type?: CustomToastProps["type"]) => {
+          const effectiveType = type || "default";
+          let progressClassName: string;
+
+          switch (effectiveType) {
+              case "success":
+                  progressClassName = "toast-progress-success";
+                  break;
+              case "error":
+                  progressClassName = "toast-progress-error";
+                  break;
+              case "info":
+                  progressClassName = "toast-progress-info";
+                  break;
+              case "warning":
+                  progressClassName = "toast-progress-warning";
+                  break;
+              case "default":
+              default:
+                  progressClassName = "toast-progress-default";
+                  break;
+          }
+
+          toast(<CustomToast message={message} type={effectiveType} />, {
+              progressClassName: progressClassName,
+              type: effectiveType as TypeOptions,
+              icon: false, // CustomToast handles its own icon
+          });
+      },
+      []
+  );
+
 
   const isNewPasswordValid = () => {
     const hasLetter = /[a-zA-Z]/.test(newPassword);
     const hasNumber = /[0-9]/.test(newPassword);
-    const isLongEnough = newPassword.length >= 8; // Match backend minimum length
+    const isLongEnough = newPassword.length >= 8;
     return hasLetter && hasNumber && isLongEnough;
   };
 
   const isSaveButtonDisabled =
-    !currentPassword || !newPassword || !isNewPasswordValid() || loading; // Disable during loading
-
-  // Removed hardcoded 'correctCurrentPassword'
+    !currentPassword || !newPassword || !isNewPasswordValid() || loading;
 
   const handleCurrentPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setCurrentPassword(e.target.value);
-    setShowInvalidCurrentPasswordError(false); // Clear specific error on change
-    setApiError(null); // Clear general API error
-    setSuccessMessage(null); // Clear success message
+    setShowInvalidCurrentPasswordError(false);
+    // Removed: setApiError(null);
+    // Removed: setSuccessMessage(null);
   };
 
   const handleNewPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     const passwordValue = e.target.value;
     setNewPassword(passwordValue);
-    setShowSamePasswordError(false); // Clear specific error on change
-    setApiError(null); // Clear general API error
-    setSuccessMessage(null); // Clear success message
+    setShowSamePasswordError(false);
+    // Removed: setApiError(null);
+    // Removed: setSuccessMessage(null);
     validateNewPassword(passwordValue);
   };
 
   const validateNewPassword = (password: string) => {
     const hasLetter = /[a-zA-Z]/.test(password);
     const hasNumber = /[0-9]/.test(password);
-    const isLongEnough = password.length >= 8; // Match backend minimum length
+    const isLongEnough = password.length >= 8;
 
     if (hasLetter && hasNumber && isLongEnough) {
       setShowPasswordMessage(false);
@@ -1221,44 +1647,37 @@ export default function ChangePassword() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Clear previous errors/messages
     setShowSamePasswordError(false);
     setShowInvalidCurrentPasswordError(false);
-    setApiError(null);
-    setSuccessMessage(null);
+    // Removed: setApiError(null);
+    // Removed: setSuccessMessage(null);
 
     if (isSaveButtonDisabled) {
       return;
     }
 
-    // Client-side check for same password (optional, backend does it too)
     if (currentPassword === newPassword) {
       setShowSamePasswordError(true);
+      // Optionally show a toast here too if desired, e.g.:
+      // showToast("Your new password can't be the same as the current one.", "warning");
       return;
     }
 
-    // Ensure token exists
     if (!token) {
-      setApiError("Authentication error. Please log in again.");
-      // Optionally logout or redirect here
-      // logout('manual');
+      showToast("Authentication error. Please log in again.", "error");
       return;
     }
 
-    setLoading(true); // Start loading indicator
+    setLoading(true);
 
     try {
-      // Call the API service function
       const response = await userService.changePassword(
         { currentPassword, newPassword },
         token
       );
 
-      // --- Success ---
-      // console.log("Password change successful:", response.message);
-      setSuccessMessage(response.message || "Password changed successfully!"); // Use message from API
+      showToast(response.message || "Password changed successfully!", "success");
 
-      // Reset state after successful change
       setCurrentPassword("");
       setNewPassword("");
       setShowPasswordMessage(true);
@@ -1266,30 +1685,25 @@ export default function ChangePassword() {
       setIsNewPasswordVisible(false);
       setShowInvalidCurrentPasswordError(false);
       setShowSamePasswordError(false);
-      setApiError(null);
-
-      // Optional: Keep success message for a few seconds
-      // setTimeout(() => setSuccessMessage(null), 5000);
+      // Removed: setApiError(null);
 
     } catch (error: any) {
       console.error("Password change failed:", error);
       const errorMessage = error.message || "An unexpected error occurred.";
 
-      // Handle specific error messages from the backend
       if (errorMessage.includes('Incorrect current password')) {
         setShowInvalidCurrentPasswordError(true);
-        setApiError(null); // Don't show general error if specific one is shown
+        // showToast("Incorrect current password.", "error"); // Or let the specific UI handle it
       } else if (errorMessage.includes('New password cannot be the same')) {
         setShowSamePasswordError(true);
-         setApiError(null);
+        // showToast("New password cannot be the same as the current one.", "warning"); // Or let specific UI handle
       } else {
-        // Show general API error message
-        setApiError(errorMessage);
-        setShowInvalidCurrentPasswordError(false); // Hide specific error if showing general one
+        showToast(errorMessage, "error");
+        setShowInvalidCurrentPasswordError(false);
         setShowSamePasswordError(false);
       }
     } finally {
-      setLoading(false); // Stop loading indicator
+      setLoading(false);
     }
   };
 
@@ -1301,49 +1715,55 @@ export default function ChangePassword() {
     e.preventDefault();
   };
 
+
+  const toastContainerProps: ToastContainerProps = {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      newestOnTop: true,
+      closeOnClick: false,
+      closeButton: false, // CustomToast can have its own if needed, but react-toastify's is fine too
+      rtl: false,
+      pauseOnFocusLoss: true,
+      draggable: true,
+      pauseOnHover: true,
+      transition: Slide,
+      toastClassName: () => "p-0 shadow-none rounded-md bg-transparent w-full relative mb-3",
+  };
+
+  const getToastContainerStyle = (): React.CSSProperties & { [key: `--${string}`]: string | number; } => {
+      const baseStyle = { zIndex: 9999 }; // Ensure toasts are on top
+      if (isMobile) {
+          return { ...baseStyle, top: "1rem", left: "1rem", right: "1rem", width: "auto" };
+      } else {
+          return { ...baseStyle, top: "0.75rem", right: "0.75rem", width: "320px" };
+      }
+  };
+
+
   return (
-    <section className="ChangePasswor">
+    <section className="ChangePasswor relative"> {/* Added relative for ToastContainer */}
+      <ToastContainer {...toastContainerProps} style={getToastContainerStyle()} />
       <div className="">
         <DashboardHeader title="Change Password" />
 
         <div className="space-y-4 w-full lg:max-w-lg mt-8">
-          {/* Added mt-8 */}
-          {/* Informational Message */}
           <div className="bg-primarybox rounded-xl p-4 flex items-start gap-4 ">
             <div className="p-3 bg-yellow-400 rounded-full flex-shrink-0">
               <BsExclamationLg size={24} className="text-main" />
             </div>
-
             <p className="text-subheadingWhite">
               We will never send you a temporary password by phone, email or
               text message. When changing your password, always use something
               that’s only known by you.
             </p>
           </div>
-          {/* --- Messages Area --- */}
           <div className="space-y-3">
-            {/* API Error Message */}
+            {/* API Error Message - Removed in favor of toast, specific errors below remain */}
+            {/* {apiError && ( ... )} */}
 
-            {apiError && (
-              <div className="bg-red-900/25 border border-red-500 rounded-lg p-3 flex items-center gap-3">
-                <div className="flex-shrink-0 size-10  rounded-full flex items-center justify-center bg-red-600/20">
-                  <FiAlertTriangle className="text-red-500 size-5 sm:size-6 flex-shrink-0" />
-                </div>
-                <p className="text-red-300/90">{apiError}</p>
-              </div>
-            )}
-
-            {/* Success Message */}
-            {successMessage && (
-              <div className="bg-green-900/25 border border-green-500 rounded-lg p-3 flex items-center gap-3">
-                <div className="flex-shrink-0 size-10 rounded-full flex items-center justify-center bg-green-600/20">
-                  <LuCheck className="text-green-500 size-5 sm:size-6 flex-shrink-0" />
-                </div>
-                <p className="text-green-300/90">
-                  {successMessage}
-                </p>
-              </div>
-            )}
+            {/* Success Message - Removed in favor of toast */}
+            {/* {successMessage && ( ... )} */}
 
             {/* Error Message: Invalid Current Password */}
             {showInvalidCurrentPasswordError && (
@@ -1369,11 +1789,8 @@ export default function ChangePassword() {
               </div>
             )}
           </div>
-          {/* --- End Messages Area --- */}
-          {/* Password Change Form */}
           <div>
             <form className="space-y-6" onSubmit={handleSubmit} noValidate>
-              {/* Current Password Input */}
               <div>
                 <label
                   htmlFor="currentPassword"
@@ -1389,17 +1806,16 @@ export default function ChangePassword() {
                   className={`mt-1 block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0 pr-10 ${
                     showInvalidCurrentPasswordError
                       ? "border-red-600 ring-1 ring-red-600"
-                      : "border-primarybox"
+                      : "border-primarybox" // Assuming border-primarybox is a valid class or replace with "border-gray-600"
                   }`}
                   placeholder="Enter current password"
                   value={currentPassword}
                   onChange={handleCurrentPasswordChange}
                   required
-                  disabled={loading} // Disable input when loading
+                  disabled={loading}
                 />
               </div>
 
-              {/* New Password Input */}
               <div className="relative">
                 <label
                   htmlFor="newPassword"
@@ -1416,10 +1832,9 @@ export default function ChangePassword() {
                     className={`mt-1 block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0 pr-10 ${
                       (showSamePasswordError ||
                         (newPassword && !isNewPasswordValid())) &&
-                      !showSortedMessage &&
-                      !successMessage // Show error border if same password or invalid (and not yet sorted/successful)
-                        ? "border-red-600 ring-1 ring-red-600"
-                        : "border-primarybox"
+                      !showSortedMessage // Removed !successMessage check as success is now a toast
+                        ? "border-red-600"
+                        : "border-primarybox" // Assuming border-primarybox is a valid class or replace with "border-gray-600"
                     }`}
                     placeholder="Enter new password"
                     value={newPassword}
@@ -1428,7 +1843,7 @@ export default function ChangePassword() {
                     onCut={handleCopyPassword}
                     required
                     aria-describedby="password-hint"
-                    disabled={loading} // Disable input when loading
+                    disabled={loading}
                   />
                   <button
                     type="button"
@@ -1437,7 +1852,7 @@ export default function ChangePassword() {
                     aria-label={
                       isNewPasswordVisible ? "Hide password" : "Show password"
                     }
-                    disabled={loading} // Disable button when loading
+                    disabled={loading}
                   >
                     {isNewPasswordVisible ? (
                       <LuEye size={18} />
@@ -1449,24 +1864,22 @@ export default function ChangePassword() {
               </div>
 
               {/* Password Hint/Validation Message Area */}
-              {/* Only show hints if no success message */}
-              {!successMessage && (
+              {/* Only show hints if password not yet changed (newPassword still has value or specific conditions met) */}
+              {/* This logic can remain as is, as it's tied to the input process, not API response */}
+              {(newPassword || showPasswordMessage || showSortedMessage) && ( // Simplified condition
                 <div id="password-hint">
-                  {/* Password Requirements Message */}
                   {showPasswordMessage && (
-                    <div className="bg-yellow-900/25 border border-yellow-500 rounded-lg p-3 flex items-start gap-3">
+                    <div className="bg-yellow-900/25 border border-yellow-500 rounded-lg p-3 flex sm:items-center gap-3">
                       <div className="flex-shrink-0 size-10 rounded-full flex items-center justify-center bg-yellow-600/20">
                         <BsExclamationLg className="text-yellow-500 size-5 sm:size-6 flex-shrink-0" />
                       </div>
                       <p className="text-yellow-300/90">
-                        Password must contain a letter and a number, and be
+                        New Password must contain a letter and a number, and be
                         minimum 8 characters long.
                       </p>
                     </div>
                   )}
 
-                  {/* Password Valid Message */}
-                  {/* Only show if requirements met and initial message hidden */}
                   {showSortedMessage && !showPasswordMessage && (
                     <div className="bg-green-900/25 border border-green-500 rounded-lg p-3 flex items-center gap-3">
                       <div className="flex-shrink-0 size-10 rounded-full flex items-center justify-center bg-green-600/20">
@@ -1480,15 +1893,28 @@ export default function ChangePassword() {
                 </div>
               )}
 
-              {/* Save Button */}
               <div className="pt-2">
                 <button
                   type="submit"
-                  disabled={isSaveButtonDisabled} // Updated condition
+                  disabled={isSaveButtonDisabled}
                   className={` flex items-center justify-center bg-primary text-mainheading hover:bg-primaryhover font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed `}
                 >
                   {loading ? (
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    <svg
+                      className="h-5 w-5 text-mainheading animate-spin mr-2"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M12 2V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M12 18V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M4.93 4.93L7.76 7.76" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M16.24 16.24L19.07 19.07" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M2 12H6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M18 12H22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M4.93 19.07L7.76 16.24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M16.24 7.76L19.07 4.93" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
                   ) : null}
                   {loading ? "Saving..." : "Save changes"}
                 </button>
