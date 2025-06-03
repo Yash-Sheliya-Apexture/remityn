@@ -749,7 +749,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 suppressHydrationWarning={true}
             >
                 <AnimatePresence>
-                    {showAppPreloader && (
+                    {!showAppPreloader && (
                         <AppPreloader onAnimationComplete={handlePreloaderComplete} />
                     )}
                 </AnimatePresence>
