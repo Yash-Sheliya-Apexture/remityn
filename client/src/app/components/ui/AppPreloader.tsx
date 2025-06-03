@@ -621,7 +621,7 @@ const AppPreloader: React.FC<AppPreloaderProps> = ({ onAnimationComplete }) => {
     return (
       <div className="fixed inset-0 bg-background overflow-hidden p-4 z-[99999]">
         <div className="absolute inset-0 bg-[url('/assets/images/dot.svg')] bg-center bg-repeat z-0"></div>
-        <div className="top-0 left-0 w-full h-[calc(100vh-32px)] flex flex-col justify-between items-center font-satoshi text-mainheadingWhite relative z-4">
+        <div className="top-0 left-0 w-full h-[calc(100dvh-32px)] flex flex-col justify-between items-center sm:p-8 p-0 font-satoshi text-mainheadingWhite relative z-4">
           {/* Top Section Static */}
           <div className="w-full flex justify-between items-start mb-8 sm:mb-12">
             <div className="text-xl lg:text-2xl opacity-80 leading-snug text-subheadingWhite">
@@ -671,7 +671,7 @@ const AppPreloader: React.FC<AppPreloaderProps> = ({ onAnimationComplete }) => {
       <div className="absolute inset-0 bg-[url('/assets/images/dot.svg')] bg-center bg-repeat z-0"></div>
 
       <motion.div
-        className="top-0 left-0 w-full h-[calc(100vh-32px)] flex flex-col justify-between items-center font-satoshi text-mainheadingWhite relative z-4"
+        className="top-0 left-0 w-full h-[calc(100vh-32px)] flex flex-col justify-between items-center sm:p-8 p-0 font-satoshi text-mainheadingWhite relative z-4"
         variants={cardVariants}
         // initial/animate will be inherited from parent's animate state if not explicitly set
         // For this component, we let the parent `motion.div` handle initial/animate/exit for the whole preloader
