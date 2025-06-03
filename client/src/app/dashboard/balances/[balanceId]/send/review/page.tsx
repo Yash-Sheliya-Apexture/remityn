@@ -3037,6 +3037,735 @@
 
 // export default ReviewSendPage;
 
+// "use client";
+// import React, { useState, useEffect, useCallback } from "react"; // Added useCallback
+// import { useParams, useRouter, useSearchParams } from "next/navigation";
+// import { FiArrowLeft, FiCheckCircle, FiAlertTriangle } from "react-icons/fi";
+// import { useAuth } from "../../../../../contexts/AuthContext";
+// import axios, { AxiosError } from "axios";
+// import apiConfig from "../../../../../config/apiConfig";
+// import Link from "next/link";
+// import { Skeleton } from "@/components/ui/skeleton";
+// import DashboardHeader from "../../../../components/layout/DashboardHeader";
+
+// // Import react-toastify and CustomToast
+// import {
+//   ToastContainer,
+//   toast as reactToastifyToast,
+//   Slide,
+//   ToastContainerProps,
+//   TypeOptions,
+//   ToastOptions,
+// } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+// // Adjust the path to your CustomToast component if necessary
+// import CustomToast, {
+//   CustomToastProps,
+// } from "../../../../../components/CustomToast";
+// // Assuming CustomToast is in frontend/src/app/components/CustomToast.tsx
+// // If it's in frontend/src/components/CustomToast.tsx, then it would be:
+// // import CustomToast, { CustomToastProps } from "../../../../../components/CustomToast";
+
+// axios.defaults.baseURL = apiConfig.baseUrl;
+
+// // Interfaces
+// interface SendSummary {
+//   userId?: string;
+//   sourceAccountId: string;
+//   recipientId: string;
+//   sendAmount: number;
+//   receiveAmount: number;
+//   sendCurrencyCode: string;
+//   receiveCurrencyCode: string;
+//   exchangeRate: number;
+//   availableBalance?: number;
+//   reason?: string;
+// }
+
+// interface RecipientDetails {
+//   _id: string;
+//   accountHolderName: string;
+//   ifscCode?: string;
+//   accountNumber: string;
+//   bankName?: string;
+//   address?: string;
+//   nickname?: string;
+//   currency: { code: string };
+// }
+
+// interface ApiErrorData {
+//   message?: string;
+// }
+
+// // Component Definition
+// const steps = ["Recipient", "Amount", "Review", "Pay"];
+
+// const ReviewSendPage = () => {
+//   // Hooks
+//   const router = useRouter();
+//   const params = useParams();
+//   const searchParams = useSearchParams();
+//   const balanceId =
+//     typeof params.balanceId === "string" ? params.balanceId : undefined;
+//   const recipientId = searchParams.get("recipientId");
+//   const { token } = useAuth();
+
+//   // State
+//   const [summary, setSummary] = useState<SendSummary | null>(null);
+//   const [recipientDetails, setRecipientDetails] =
+//     useState<RecipientDetails | null>(null);
+//   const [userReference, setUserReference] = useState("");
+//   const [isSubmitting, setIsSubmitting] = useState(false);
+//   const [error, setError] = useState<string | null>(null); // For persistent on-page errors
+//   const [isLoadingDetails, setIsLoadingDetails] = useState(true);
+//   const [isMobile, setIsMobile] = useState(false); // For ToastContainer styling
+
+//   // --- Mobile Detection Effect (for ToastContainer) ---
+//   useEffect(() => {
+//     const handleResize = () => {
+//       setIsMobile(window.innerWidth < 640);
+//     };
+//     handleResize();
+//     window.addEventListener("resize", handleResize);
+//     return () => window.removeEventListener("resize", handleResize);
+//   }, []);
+
+//   // --- Custom Toast Invocation ---
+//   const showToast = useCallback(
+//     (
+//       message: string,
+//       type?: CustomToastProps["type"],
+//       toastSpecificOptions?: Partial<ToastOptions>
+//     ) => {
+//       const effectiveType = type || "default";
+//       let progressClassName: string;
+//       switch (effectiveType) {
+//         case "success":
+//           progressClassName = "toast-progress-success";
+//           break;
+//         case "error":
+//           progressClassName = "toast-progress-error";
+//           break;
+//         case "info":
+//           progressClassName = "toast-progress-info";
+//           break;
+//         case "warning":
+//           progressClassName = "toast-progress-warning";
+//           break;
+//         case "default":
+//         default:
+//           progressClassName = "toast-progress-default";
+//           break;
+//       }
+//       reactToastifyToast(
+//         <CustomToast message={message} type={effectiveType} />,
+//         {
+//           progressClassName: progressClassName,
+//           type: effectiveType as TypeOptions,
+//           icon: false,
+//           ...toastSpecificOptions,
+//         }
+//       );
+//     },
+//     []
+//   );
+
+//   // --- ToastContainer Props and Style ---
+//   const toastContainerProps: ToastContainerProps = {
+//     position: "top-right",
+//     autoClose: 5000,
+//     hideProgressBar: false,
+//     newestOnTop: true,
+//     closeOnClick: false,
+//     closeButton: false,
+//     rtl: false,
+//     pauseOnFocusLoss: true,
+//     draggable: true,
+//     pauseOnHover: true,
+//     transition: Slide,
+//     toastClassName: () =>
+//       "p-0 shadow-none rounded-md bg-transparent w-full relative mb-3",
+//   };
+
+//   const getToastContainerStyle = (): React.CSSProperties & {
+//     [key: `--${string}`]: string | number;
+//   } => {
+//     const baseStyle = { zIndex: 30 };
+//     if (isMobile) {
+//       return {
+//         ...baseStyle,
+//         top: "1rem",
+//         left: "1rem",
+//         right: "1rem",
+//         width: "auto",
+//       };
+//     } else {
+//       return { ...baseStyle, top: "0.75rem", right: "0.75rem", width: "320px" };
+//     }
+//   };
+
+//   // Previous Step Link Logic
+//   const getPreviousStepLink = () => {
+//     if (!balanceId || !recipientId) {
+//       return "/dashboard";
+//     }
+//     const needsReason = summary?.receiveCurrencyCode === "INR"; // Check summary if available
+//     const baseLink = `/dashboard/balances/${balanceId}/send`;
+//     if (needsReason) {
+//       return `${baseLink}/reason?recipientId=${recipientId}`;
+//     } else {
+//       return `${baseLink}/amount?recipientId=${recipientId}`;
+//     }
+//   };
+
+//   // Load Summary and Fetch Recipient
+//   useEffect(() => {
+//     if (!balanceId) {
+//       setError("Balance ID is missing from the URL."); // Set persistent error
+//       showToast("Balance ID is missing. Please go back.", "error");
+//       setIsLoadingDetails(false);
+//       return;
+//     }
+
+//     const storedSummary = localStorage.getItem("sendTransferSummary");
+//     let parsedSummary: SendSummary | null = null;
+
+//     if (storedSummary) {
+//       try {
+//         parsedSummary = JSON.parse(storedSummary) as SendSummary;
+//         if (
+//           !parsedSummary?.sourceAccountId ||
+//           !parsedSummary?.recipientId ||
+//           !parsedSummary?.sendAmount ||
+//           !parsedSummary?.receiveAmount ||
+//           !parsedSummary?.sendCurrencyCode ||
+//           !parsedSummary?.receiveCurrencyCode
+//         ) {
+//           throw new Error("Stored summary data is incomplete or invalid.");
+//         }
+//         setSummary(parsedSummary);
+//       } catch (e) {
+//         console.error("Failed to parse or validate stored summary:", e);
+//         setError(
+//           "Invalid transfer details found. Please start the transfer again."
+//         );
+//         showToast("Invalid transfer details. Please restart.", "error");
+//         setIsLoadingDetails(false);
+//         localStorage.removeItem("sendTransferSummary");
+//         return;
+//       }
+//     } else {
+//       setError(
+//         "Transfer details are missing. Please start the transfer again."
+//       );
+//       showToast("Transfer details missing. Please restart.", "error");
+//       setIsLoadingDetails(false);
+//       return;
+//     }
+
+//     const fetchRecipient = async () => {
+//       setError(null); // Clear previous on-page errors
+//       if (!recipientId || !token) {
+//         setError("Recipient ID or authentication token is missing.");
+//         showToast("Recipient ID or token missing.", "error");
+//         setIsLoadingDetails(false);
+//         return;
+//       }
+//       try {
+//         const response = await axios.get<RecipientDetails>(
+//           `/recipients/${recipientId}`,
+//           { headers: { Authorization: `Bearer ${token}` } }
+//         );
+//         setRecipientDetails(response.data);
+//       } catch (err: unknown) {
+//         console.error("Error fetching recipient details for review:", err);
+//         const apiErrorMsg =
+//           (axios.isAxiosError(err) &&
+//             (err as AxiosError<ApiErrorData>).response?.data?.message) ||
+//           (err instanceof Error
+//             ? err.message
+//             : "Failed to load recipient details.");
+//         setError(apiErrorMsg); // Set persistent error for on-page display
+//         showToast(apiErrorMsg, "error");
+//       } finally {
+//         setIsLoadingDetails(false);
+//       }
+//     };
+
+//     if (parsedSummary) {
+//       fetchRecipient();
+//     }
+//   }, [recipientId, token, balanceId, showToast, router]); // Added showToast & router
+
+//   // Confirm and Send Handler
+//   const handleConfirmAndSend = async () => {
+//     if (!summary || !recipientDetails || !token) {
+//       showToast(
+//         "Cannot proceed. Missing critical transfer or recipient information, or authentication token.",
+//         "error"
+//       );
+//       setError(
+//         "Cannot proceed. Missing critical transfer or recipient information, or authentication token."
+//       ); // For on-page display
+//       setIsSubmitting(false);
+//       return;
+//     }
+
+//     if (balanceId !== summary.sourceAccountId) {
+//       showToast(
+//         "Mismatch between current balance and transfer details. Please restart.",
+//         "error"
+//       );
+//       setError(
+//         "Mismatch between current balance and transfer details. Please restart."
+//       ); // For on-page display
+//       setIsSubmitting(false);
+//       return;
+//     }
+
+//     setIsSubmitting(true);
+//     setError(null); // Clear previous on-page submission errors
+
+//     try {
+//       const payload = {
+//         sourceAccountId: summary.sourceAccountId,
+//         recipientId: summary.recipientId,
+//         sendAmount: summary.sendAmount,
+//         receiveAmount: summary.receiveAmount,
+//         sendCurrencyCode: summary.sendCurrencyCode,
+//         receiveCurrencyCode: summary.receiveCurrencyCode,
+//         exchangeRate: summary.exchangeRate,
+//         reason: summary.reason,
+//         reference: userReference.trim() || undefined,
+//       };
+
+//       const response = await axios.post<{ _id?: string }>(
+//         "/transfers/execute",
+//         payload,
+//         {
+//           headers: { Authorization: `Bearer ${token}` },
+//         }
+//       );
+
+//       // console.log("Transfer execution response:", response.data);
+//       localStorage.removeItem("sendTransferSummary");
+//       const transferId = response.data?._id ?? "";
+
+//       showToast("Transfer initiated successfully!", "success", {
+//         onClose: () => {
+//           router.push(
+//             `/dashboard/transactions/${transferId}?transferSuccess=true&transferId=${transferId}`
+//           );
+//         },
+//       });
+//       // setIsSubmitting will remain true until navigation or further error
+//     } catch (err: unknown) {
+//       console.error("Error executing transfer:", err);
+//       const apiErrorMsg =
+//         (axios.isAxiosError(err) &&
+//           (err as AxiosError<ApiErrorData>).response?.data?.message) ||
+//         (err instanceof Error
+//           ? err.message
+//           : "Failed to send money. Please try again later.");
+//       setError(apiErrorMsg); // Set error for on-page display
+//       showToast(apiErrorMsg, "error");
+//       setIsSubmitting(false); // Reset submitting state on error
+//     }
+//   };
+
+//   // --- Loading State ---
+//   if (isLoadingDetails) {
+//     return (
+//       <div className="min-h-screen relative">
+//         {/* Added relative for ToastContainer */}
+//         <ToastContainer
+//           {...toastContainerProps}
+//           style={getToastContainerStyle()}
+//         />
+//         <DashboardHeader title="Send Money" currentStep={3} steps={steps} />
+//         <div className="container mx-auto max-w-2xl px-4 py-8">
+//           <div className="bg-background border rounded-xl overflow-hidden mb-6">
+//             <div className="px-6 py-4 bg-primarybox/30">
+//               <Skeleton className="h-7 w-48" />
+//             </div>
+//             <div className="p-6 border-b">
+//               <h3 className="text-sm font-medium text-mainheading dark:text-gray-500 uppercase tracking-wider mb-4">
+//                 <Skeleton className="h-5 w-32" />
+//               </h3>
+//               <div className="space-y-3">
+//                 <Skeleton className="h-6 w-full mb-2" />
+//                 <Skeleton className="h-8 w-3/4 mb-2" />
+//                 <Skeleton className="h-8 w-full mb-2" />
+//               </div>
+//             </div>
+//             <div className="p-6 border-b">
+//               <h3 className="text-sm font-medium text-mainheading dark:text-gray-500 uppercase tracking-wider mb-4">
+//                 <Skeleton className="h-5 w-36" />
+//               </h3>
+//               <div className="space-y-3">
+//                 <Skeleton className="h-6 w-full mb-2" />
+//                 <Skeleton className="h-6 w-full mb-2" />
+//                 <Skeleton className="h-6 w-3/4 mb-2" />
+//               </div>
+//             </div>
+//             <div className="p-6">
+//               <Skeleton className="h-6 w-48 mb-2" />
+//               <Skeleton className="h-12 w-full rounded-lg" />
+//             </div>
+//           </div>
+//           <Skeleton className="h-12 w-full rounded-xl mt-6" />
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   // --- Error State (Post-Loading, for critical loading errors) ---
+//   // This error state is primarily for when loading fails and we cannot proceed to show review details.
+//   // Submission errors are handled within the main render.
+//   if (error && !summary && !recipientDetails && !isSubmitting) {
+//     // Check if critical data is missing due to error
+//     return (
+//       <div className="min-h-screen relative">
+//         {/* Added relative for ToastContainer */}
+//         <ToastContainer
+//           {...toastContainerProps}
+//           style={getToastContainerStyle()}
+//         />
+//         <DashboardHeader title="Send Money" currentStep={3} steps={steps} />
+//         <div className="container mx-auto max-w-2xl px-4 py-8">
+//           <div className="bg-red-900/25 border border-red-500 rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
+//             <div className="lg:size-16 size-14 flex items-center justify-center bg-red-600 dark:bg-transparent dark:bg-gradient-to-t dark:from-red-600 rounded-full mb-2">
+//               <FiAlertTriangle
+//                 className="lg:size-8 size-6 mx-auto text-white"
+//                 aria-hidden="true"
+//               />
+//             </div>
+//             <h2 className="lg:text-3xl text-2xl font-medium mt-1 text-red-100 ">
+//               Something went wrong
+//             </h2>
+//             <p className="text-red-300/90 max-w-lg mx-auto">
+//               {error || "An unexpected error occurred. Please try again."}
+//             </p>
+//             {balanceId && recipientId ? (
+//               <Link
+//                 href={getPreviousStepLink()}
+//                 className="inline-flex items-center justify-center bg-red-600 text-white hover:bg-red-700 font-medium rounded-full px-8 py-3 h-12.5 text-center sm:w-auto w-full cursor-pointer transition-all duration-75 ease-linear"
+//               >
+//                 <FiArrowLeft className="mr-2 h-5 w-5" aria-hidden="true" />
+//                 Go back and try again
+//               </Link>
+//             ) : (
+//               <Link
+//                 href="/dashboard/balances"
+//                 className="inline-flex items-center justify-center bg-red-600 text-white hover:bg-red-700 font-medium rounded-full px-8 py-3 h-12.5 text-center sm:w-auto w-full cursor-pointer transition-all duration-75 ease-linear"
+//               >
+//                 <FiArrowLeft className="mr-2 h-5 w-5" aria-hidden="true" />
+//                 Return to Balances
+//               </Link>
+//             )}
+//           </div>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   // --- Data Missing State (Post-Loading, No specific error yet but data is null) ---
+//   if (!summary || !recipientDetails) {
+//     console.warn(
+//       "Review page rendered without summary or recipient details after loading."
+//     );
+//     // This usually indicates an issue caught by the error state, but as a fallback.
+//     // The useEffect should have set an error or redirected if data couldn't be loaded.
+//     // If we reach here, it implies a logic flaw or an uncaught edge case.
+//     // A generic "missing info" message is appropriate.
+//     return (
+//       <div className="min-h-screen relative">
+//         {/* Added relative for ToastContainer */}
+//         <ToastContainer
+//           {...toastContainerProps}
+//           style={getToastContainerStyle()}
+//         />
+//         <DashboardHeader title="Send Money" currentStep={3} steps={steps} />
+//         <div className="container mx-auto max-w-2xl px-4 py-8">
+//           <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
+//             <div className="lg:size-16 size-14 flex items-center justify-center bg-primary dark:bg-transparent dark:bg-gradient-to-t dark:from-primary rounded-full mb-2">
+//               <FiAlertTriangle className="lg:size-8 size-6 mx-auto text-mainheading" />
+//             </div>
+//             <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite mt-1">
+//               Missing Information
+//             </h2>
+//             <p className="text-subheadingWhite max-w-lg mx-auto">
+//               Could not load the necessary transfer details. Please start the
+//               process again.
+//             </p>
+//             <Link
+//               href={
+//                 balanceId
+//                   ? `/dashboard/balances/${balanceId}/send/select-recipient`
+//                   : "/dashboard/balances"
+//               }
+//               className="inline-flex justify-center items-center px-8 py-3 bg-primary hover:bg-primaryhover text-mainheading font-medium rounded-full sm:w-auto w-full transition-all duration-75 ease-linear cursor-pointer"
+//             >
+//               Start Transfer Again
+//             </Link>
+//           </div>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   // --- Main Render ---
+//   return (
+//     <div className="min-h-screen relative">
+//       {/* Added relative for ToastContainer */}
+//       <ToastContainer
+//         {...toastContainerProps}
+//         style={getToastContainerStyle()}
+//       />
+
+//       <DashboardHeader title="Send Money" currentStep={3} steps={steps} />
+
+//       <div className="mx-auto lg:max-w-2xl mt-5">
+//         {/* Added px-4 for container padding */}
+//         <h1 className="lg:text-3xl md:text-2xl text-xl lg:text-center text-left capitalize font-semibold text-mainheadingWhite pb-4">
+//           Review details of your transfer
+//         </h1>
+
+//         {/* Submission Error Display - This is for errors during the 'Confirm and Send' action */}
+//         {error && !isSubmitting && (
+//           <div className="bg-red-900/25 border border-red-500 rounded-xl p-4 flex items-center gap-4 mb-3">
+//             <div className="flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center bg-red-600/20">
+//               <FiAlertTriangle
+//                 size={20}
+//                 className="text-red-500 size-5 sm:size-6 flex-shrink-0"
+//               />
+//             </div>
+//             <div>
+//               <h3 className="font-medium text-red-200 text-base">
+//                 Transfer Failed
+//               </h3>
+//               <p className="text-red-300/90">
+//                 {error}
+//                 {/* This 'error' state is specifically for submission errors now */}
+//               </p>
+//             </div>
+//           </div>
+//         )}
+
+//         <div className="bg-background border rounded-xl overflow-hidden mb-6">
+//           <div className="px-6 py-4 bg-primarybox">
+//             <h2 className="font-medium text-lg text-mainheadingWhite">
+//               Transaction Summary
+//             </h2>
+//           </div>
+//           <div className="sm:p-6 p-4 border-b">
+//             <h3 className="text-sm font-medium text-mainheadingWhite uppercase tracking-wider mb-4">
+//               Transfer details
+//             </h3>
+//             <div className="space-y-3">
+//               <div className="flex justify-between items-center">
+//                 <span className="text-subheadingWhite">
+//                   You send exactly
+//                 </span>
+//                 <span className="font-semibold text-mainheadingWhite">
+//                   {summary.sendAmount.toFixed(2)} {summary.sendCurrencyCode}
+//                 </span>
+//               </div>
+//               <div className="flex justify-between items-center">
+//                 <span className="text-subheadingWhite">
+//                   Guaranteed rate
+//                 </span>
+//                 <span className="font-semibold p-2 px-4 rounded-full bg-primary text-mainheading cursor-default">
+//                   1 {summary.sendCurrencyCode} =
+//                   {summary.exchangeRate.toFixed(2)}
+//                   {summary.receiveCurrencyCode}
+//                 </span>
+//               </div>
+//               <div className="flex justify-between items-center mt-2 rounded-md">
+//                 <span className="text-subheadingWhite capitalize">
+//                   {recipientDetails.nickname ||
+//                     recipientDetails.accountHolderName}
+//                   gets
+//                 </span>
+//                 <span className="font-medium text-sm p-1.5 px-4 rounded-full bg-primarybox text-mainheadingWhite cursor-default">
+//                   {summary.receiveAmount.toFixed(2)}
+//                   {summary.receiveCurrencyCode}
+//                 </span>
+//               </div>
+//             </div>
+//           </div>
+//           <div className="sm:p-6 p-4 border-b">
+//             <h3 className="text-sm font-medium text-mainheadingWhite uppercase tracking-wider mb-4">
+//               Recipient details
+//             </h3>
+//             <div className="space-y-3">
+//               <div className="grid grid-cols-2 gap-2">
+//                 <span className="text-subheadingWhite">
+//                   Account holder
+//                 </span>
+//                 <span className="font-semibold text-mainheadingWhite text-right capitalize">
+//                   {recipientDetails.accountHolderName}
+//                 </span>
+//               </div>
+//               {recipientDetails.ifscCode && (
+//                 <div className="grid grid-cols-2 gap-2">
+//                   <span className="text-subheadingWhite">
+//                     IFSC code
+//                   </span>
+//                   <span className="font-semibold text-mainheadingWhite text-right">
+//                     {recipientDetails.ifscCode}
+//                   </span>
+//                 </div>
+//               )}
+//               <div className="grid grid-cols-2 gap-2">
+//                 <span className="text-subheadingWhite">
+//                   Account number
+//                 </span>
+//                 <span className="font-semibold text-mainheadingWhite text-right">
+//                   {recipientDetails.accountNumber}
+//                 </span>
+//               </div>
+//               {recipientDetails.bankName && (
+//                 <div className="grid grid-cols-2 gap-2">
+//                   <span className="text-subheadingWhite">
+//                     Bank name
+//                   </span>
+//                   <span className="font-semibold text-mainheadingWhite text-right capitalize">
+//                     {recipientDetails.bankName}
+//                   </span>
+//                 </div>
+//               )}
+//             </div>
+//           </div>
+//           {summary.reason && (
+//             <div className="sm:p-6 p-4 border-b ">
+//               <h3 className="text-sm font-medium text-mainheadingWhite capitalize tracking-wider mb-2">
+//                 Reason for transfer
+//               </h3>
+//               <p className="font-medium text-mainheadingWhite dark:text-white p-3 bg-primarybox rounded-md">
+//                 {summary.reason}
+//               </p>
+//             </div>
+//           )}
+//           <div className="sm:p-6 p-4">
+//             <label
+//               htmlFor="reference"
+//               className="text-mainheadingWhite block capitalize text-sm lg:text-base mb-1"
+//             >
+//               Reference for recipient (optional)
+//             </label>
+//             <input
+//               type="text"
+//               id="reference"
+//               value={userReference}
+//               onChange={(e) => setUserReference(e.target.value)}
+//               maxLength={35}
+//               placeholder="e.g., Invoice payment, Gift"
+//               className="w-full rounded-md h-12.5 px-6 py-3 focus:outline-0 transition-all duration-75 ease-in-out placeholder:text-gray-400 border border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white bg-primarybox/50"
+//               aria-label="Reference for recipient (optional)"
+//             />
+//             <p className="text-sm text-subheadingWhite mt-2">
+//               Max 35 characters. This may appear on the recipient's statement.
+//             </p>
+//           </div>
+//         </div>
+
+//         <button
+//           onClick={handleConfirmAndSend}
+//           disabled={isSubmitting || !summary || !recipientDetails}
+//           className="flex items-center justify-center bg-primary text-mainheading gap-2 hover:bg-primaryhover font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
+//           data-testid="confirm-send-button"
+//         >
+//           {isSubmitting ? (
+//             <>
+//               <svg
+//                 /* SVG spinner */ className="h-5 w-5 text-mainheading animate-spin"
+//                 viewBox="0 0 24 24"
+//                 fill="none"
+//                 xmlns="http://www.w3.org/2000/svg"
+//               >
+//                 <path
+//                   d="M12 2V6"
+//                   stroke="currentColor"
+//                   strokeWidth="2"
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                 />
+//                 <path
+//                   d="M12 18V22"
+//                   stroke="currentColor"
+//                   strokeWidth="2"
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                 />
+//                 <path
+//                   d="M4.93 4.93L7.76 7.76"
+//                   stroke="currentColor"
+//                   strokeWidth="2"
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                 />
+//                 <path
+//                   d="M16.24 16.24L19.07 19.07"
+//                   stroke="currentColor"
+//                   strokeWidth="2"
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                 />
+//                 <path
+//                   d="M2 12H6"
+//                   stroke="currentColor"
+//                   strokeWidth="2"
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                 />
+//                 <path
+//                   d="M18 12H22"
+//                   stroke="currentColor"
+//                   strokeWidth="2"
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                 />
+//                 <path
+//                   d="M4.93 19.07L7.76 16.24"
+//                   stroke="currentColor"
+//                   strokeWidth="2"
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                 />
+//                 <path
+//                   d="M16.24 7.76L19.07 4.93"
+//                   stroke="currentColor"
+//                   strokeWidth="2"
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                 />
+//               </svg>
+//               <span>Processing...</span>
+//             </>
+//           ) : (
+//             <>
+//               <FiCheckCircle size={20} />
+//               Confirm and send
+//             </>
+//           )}
+//         </button>
+//         <div className="mt-3 mb-8">
+//           {/* Added mb-8 for spacing */}
+//           <Link
+//             href={getPreviousStepLink()}
+//             className="inline-flex items-center gap-2 justify-center bg-primarybox hover:bg-secondarybox text-primary font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear"
+//           >
+//             <FiArrowLeft size={20} /> Go back
+//           </Link>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ReviewSendPage;
+
 "use client";
 import React, { useState, useEffect, useCallback } from "react"; // Added useCallback
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -3045,8 +3774,8 @@ import { useAuth } from "../../../../../contexts/AuthContext";
 import axios, { AxiosError } from "axios";
 import apiConfig from "../../../../../config/apiConfig";
 import Link from "next/link";
-import { Skeleton } from "@/components/ui/skeleton";
-import DashboardHeader from "../../../../components/layout/DashboardHeader";
+import { Skeleton } from "@/components/ui/skeleton"; // Make sure this path is correct
+import DashboardHeader from "../../../../components/layout/DashboardHeader"; // Make sure this path is correct
 
 // Import react-toastify and CustomToast
 import {
@@ -3061,10 +3790,7 @@ import "react-toastify/dist/ReactToastify.css";
 // Adjust the path to your CustomToast component if necessary
 import CustomToast, {
   CustomToastProps,
-} from "../../../../../components/CustomToast";
-// Assuming CustomToast is in frontend/src/app/components/CustomToast.tsx
-// If it's in frontend/src/components/CustomToast.tsx, then it would be:
-// import CustomToast, { CustomToastProps } from "../../../../../components/CustomToast";
+} from "../../../../../components/CustomToast"; // Make sure this path is correct
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
@@ -3347,7 +4073,6 @@ const ReviewSendPage = () => {
         }
       );
 
-      // console.log("Transfer execution response:", response.data);
       localStorage.removeItem("sendTransferSummary");
       const transferId = response.data?._id ?? "";
 
@@ -3358,7 +4083,6 @@ const ReviewSendPage = () => {
           );
         },
       });
-      // setIsSubmitting will remain true until navigation or further error
     } catch (err: unknown) {
       console.error("Error executing transfer:", err);
       const apiErrorMsg =
@@ -3377,79 +4101,140 @@ const ReviewSendPage = () => {
   if (isLoadingDetails) {
     return (
       <div className="min-h-screen relative">
-        {/* Added relative for ToastContainer */}
         <ToastContainer
           {...toastContainerProps}
           style={getToastContainerStyle()}
         />
         <DashboardHeader title="Send Money" currentStep={3} steps={steps} />
-        <div className="container mx-auto max-w-2xl px-4 py-8">
+
+        <div className="mx-auto lg:max-w-2xl mt-5">
+          {/* Page Title: "Review details of your transfer" */}
+          <Skeleton className="h-8 md:h-9 w-11/12 sm:w-5/6 md:w-3/4 lg:w-2/3 lg:mx-auto mb-6" />
           <div className="bg-background border rounded-xl overflow-hidden mb-6">
-            <div className="px-6 py-4 bg-primarybox/30">
-              <Skeleton className="h-7 w-48" />
+            {/* Transaction Summary Header */}
+            <div className="px-6 py-4 bg-primarybox">
+              <Skeleton className="h-7 w-48 bg-background/50" />{" "}
+              {/* "Transaction Summary" */}
             </div>
-            <div className="p-6 border-b">
-              <h3 className="text-sm font-medium text-mainheading dark:text-gray-500 uppercase tracking-wider mb-4">
-                <Skeleton className="h-5 w-32" />
-              </h3>
+
+            {/* Transfer Details Section */}
+            <div className="sm:p-6 p-4 border-b">
+              <Skeleton className="h-5 w-32 mb-4" />{" "}
+              {/* "Transfer details" title */}
               <div className="space-y-3">
-                <Skeleton className="h-6 w-full mb-2" />
-                <Skeleton className="h-8 w-3/4 mb-2" />
-                <Skeleton className="h-8 w-full mb-2" />
+                {/* You send exactly */}
+                <div className="flex justify-between items-center">
+                  <Skeleton className="h-6 w-2/5 sm:w-1/3" /> {/* Label */}
+                  <Skeleton className="h-6 w-1/3 sm:w-1/4" /> {/* Value */}
+                </div>
+                {/* Guaranteed rate */}
+                <div className="flex justify-between items-center">
+                  <Skeleton className="h-6 w-2/5 sm:w-1/3" /> {/* Label */}
+                  <Skeleton className="h-10 w-39 rounded-full" /> {/* Pill */}
+                </div>
+                {/* Recipient gets */}
+                <div className="flex justify-between items-center">
+                  <Skeleton className="h-6 w-2/5 sm:w-1/3" /> {/* Label */}
+                  <Skeleton className="h-8 w-1/2 sm:w-27 rounded-full" />{" "}
+                  {/* Pill */}
+                </div>
               </div>
             </div>
-            <div className="p-6 border-b">
-              <h3 className="text-sm font-medium text-mainheading dark:text-gray-500 uppercase tracking-wider mb-4">
-                <Skeleton className="h-5 w-36" />
-              </h3>
+
+            {/* Recipient Details Section */}
+            <div className="sm:p-6 p-4 border-b">
+              <Skeleton className="h-5 w-36 mb-4" />{" "}
+              {/* "Recipient details" title */}
               <div className="space-y-3">
-                <Skeleton className="h-6 w-full mb-2" />
-                <Skeleton className="h-6 w-full mb-2" />
-                <Skeleton className="h-6 w-3/4 mb-2" />
+                {/* Account holder */}
+                <div className="flex justify-between w-full gap-2">
+                  <Skeleton className="h-6 w-1/3" />{" "}
+                  {/* Label takes more space in grid */}
+                  <Skeleton className="h-6 w-1/3" />
+                </div>
+
+                {/* IFSC code (placeholder) */}
+                <div className="flex justify-between w-full gap-2">
+                  <Skeleton className="h-6 w-1/3" />{" "}
+                  {/* Label takes more space in grid */}
+                  <Skeleton className="h-6 w-1/3" />
+                </div>
+                {/* Account number */}
+                <div className="flex justify-between w-full gap-2">
+                  <Skeleton className="h-6 w-1/3" />{" "}
+                  {/* Label takes more space in grid */}
+                  <Skeleton className="h-6 w-1/3" />
+                </div>
+                {/* Bank name (placeholder) */}
+                <div className="flex justify-between w-full gap-2">
+                  <Skeleton className="h-6 w-1/3" />{" "}
+                  {/* Label takes more space in grid */}
+                  <Skeleton className="h-6 w-1/3" />
+                </div>
               </div>
             </div>
-            <div className="p-6">
-              <Skeleton className="h-6 w-48 mb-2" />
-              <Skeleton className="h-12 w-full rounded-lg" />
+
+            {/* Reason For Transfer Section (placeholder) */}
+            <div className="sm:p-6 p-4 border-b">
+              <Skeleton className="h-5 w-40 mb-2" />{" "}
+              {/* "Reason for transfer" title */}
+              <Skeleton className="h-12  w-full rounded-md" />{" "}
+              {/* Reason box */}
+            </div>
+
+            {/* Reference for Recipient Section */}
+            <div className="sm:p-6 p-4">
+              <Skeleton className="h-6 w-1/2 mb-1" /> {/* Label */}
+              <Skeleton className="h-12.5 w-full rounded-md" />{" "}
+              {/* Input (h-12.5 is approx h-12) */}
+              <Skeleton className="h-5 w-3/4 mt-2" /> {/* Helper text */}
             </div>
           </div>
-          <Skeleton className="h-12 w-full rounded-xl mt-6" />
+          {/* Confirm and Send Button */}
+          <Skeleton className="h-12.5 w-full rounded-full" />{" "}
+          {/* h-12.5 is approx h-12 */}
+          {/* Go back Button */}
+          <div className="mt-3 mb-8">
+            <Skeleton className="h-12.5 w-full rounded-full" />{" "}
+            {/* h-12.5 is approx h-12 */}
+          </div>
         </div>
       </div>
     );
   }
 
   // --- Error State (Post-Loading, for critical loading errors) ---
-  // This error state is primarily for when loading fails and we cannot proceed to show review details.
-  // Submission errors are handled within the main render.
   if (error && !summary && !recipientDetails && !isSubmitting) {
-    // Check if critical data is missing due to error
     return (
       <div className="min-h-screen relative">
-        {/* Added relative for ToastContainer */}
         <ToastContainer
           {...toastContainerProps}
           style={getToastContainerStyle()}
         />
+        
         <DashboardHeader title="Send Money" currentStep={3} steps={steps} />
-        <div className="container mx-auto max-w-2xl px-4 py-8">
+
+        <div className="container mx-auto px-4 py-8">
           <div className="bg-red-900/25 border border-red-500 rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
-            <div className="lg:size-16 size-14 flex items-center justify-center bg-red-600 dark:bg-transparent dark:bg-gradient-to-t dark:from-red-600 rounded-full mb-2">
+            <div className="flex-shrink-0 lg:size-16 size-14 rounded-full flex items-center justify-center bg-red-600/20">
               <FiAlertTriangle
-                className="lg:size-8 size-6 mx-auto text-white"
-                aria-hidden="true"
+                size={20}
+                className="text-red-500 size-6 lg:size-8 flex-shrink-0"
               />
             </div>
-            <h2 className="lg:text-3xl text-2xl font-medium mt-1 text-red-100 ">
+
+            <h2 className="lg:text-3xl text-2xl font-medium mt-1 text-red-500">
               Something went wrong
             </h2>
+
             <p className="text-red-300/90 max-w-lg mx-auto">
               {error || "An unexpected error occurred. Please try again."}
             </p>
+
             {balanceId && recipientId ? (
               <Link
                 href={getPreviousStepLink()}
-                className="inline-flex items-center justify-center bg-red-600 text-white hover:bg-red-700 font-medium rounded-full px-8 py-3 h-12.5 text-center sm:w-auto w-full cursor-pointer transition-all duration-75 ease-linear"
+                className="inline-flex items-center justify-center bg-red-600 text-mainheadingWhite hover:bg-red-700 font-medium rounded-full px-8 py-3 h-12.5 text-center sm:w-auto w-full cursor-pointer transition-all duration-75 ease-linear"
               >
                 <FiArrowLeft className="mr-2 h-5 w-5" aria-hidden="true" />
                 Go back and try again
@@ -3457,7 +4242,7 @@ const ReviewSendPage = () => {
             ) : (
               <Link
                 href="/dashboard/balances"
-                className="inline-flex items-center justify-center bg-red-600 text-white hover:bg-red-700 font-medium rounded-full px-8 py-3 h-12.5 text-center sm:w-auto w-full cursor-pointer transition-all duration-75 ease-linear"
+                className="inline-flex items-center justify-center bg-red-600 text-mainheadingWhite hover:bg-red-700 font-medium rounded-full px-8 py-3 h-12.5 text-center sm:w-auto w-full cursor-pointer transition-all duration-75 ease-linear"
               >
                 <FiArrowLeft className="mr-2 h-5 w-5" aria-hidden="true" />
                 Return to Balances
@@ -3471,16 +4256,8 @@ const ReviewSendPage = () => {
 
   // --- Data Missing State (Post-Loading, No specific error yet but data is null) ---
   if (!summary || !recipientDetails) {
-    console.warn(
-      "Review page rendered without summary or recipient details after loading."
-    );
-    // This usually indicates an issue caught by the error state, but as a fallback.
-    // The useEffect should have set an error or redirected if data couldn't be loaded.
-    // If we reach here, it implies a logic flaw or an uncaught edge case.
-    // A generic "missing info" message is appropriate.
     return (
       <div className="min-h-screen relative">
-        {/* Added relative for ToastContainer */}
         <ToastContainer
           {...toastContainerProps}
           style={getToastContainerStyle()}
@@ -3517,19 +4294,19 @@ const ReviewSendPage = () => {
   // --- Main Render ---
   return (
     <div className="min-h-screen relative">
-      {/* Added relative for ToastContainer */}
       <ToastContainer
         {...toastContainerProps}
         style={getToastContainerStyle()}
       />
+
       <DashboardHeader title="Send Money" currentStep={3} steps={steps} />
+
       <div className="mx-auto lg:max-w-2xl mt-5">
-        {/* Added px-4 for container padding */}
         <h1 className="lg:text-3xl md:text-2xl text-xl lg:text-center text-left capitalize font-semibold text-mainheadingWhite pb-4">
           Review details of your transfer
         </h1>
-        {/* Submission Error Display - This is for errors during the 'Confirm and Send' action */}
-        {error && isSubmitting && (
+
+        {error && !isSubmitting && (
           <div className="bg-red-900/25 border border-red-500 rounded-xl p-4 flex items-center gap-4 mb-3">
             <div className="flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center bg-red-600/20">
               <FiAlertTriangle
@@ -3541,10 +4318,7 @@ const ReviewSendPage = () => {
               <h3 className="font-medium text-red-200 text-base">
                 Transfer Failed
               </h3>
-              <p className="text-red-300/90">
-                {error}
-                {/* This 'error' state is specifically for submission errors now */}
-              </p>
+              <p className="text-red-300/90">{error}</p>
             </div>
           </div>
         )}
@@ -3561,17 +4335,13 @@ const ReviewSendPage = () => {
             </h3>
             <div className="space-y-3">
               <div className="flex justify-between items-center">
-                <span className="text-subheadingWhite">
-                  You send exactly
-                </span>
+                <span className="text-subheadingWhite">You send exactly</span>
                 <span className="font-semibold text-mainheadingWhite">
                   {summary.sendAmount.toFixed(2)} {summary.sendCurrencyCode}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-subheadingWhite">
-                  Guaranteed rate
-                </span>
+                <span className="text-subheadingWhite">Guaranteed rate</span>
                 <span className="font-semibold p-2 px-4 rounded-full bg-primary text-mainheading cursor-default">
                   1 {summary.sendCurrencyCode} =
                   {summary.exchangeRate.toFixed(2)}
@@ -3581,7 +4351,7 @@ const ReviewSendPage = () => {
               <div className="flex justify-between items-center mt-2 rounded-md">
                 <span className="text-subheadingWhite capitalize">
                   {recipientDetails.nickname ||
-                    recipientDetails.accountHolderName}
+                    recipientDetails.accountHolderName}{" "}
                   gets
                 </span>
                 <span className="font-medium text-sm p-1.5 px-4 rounded-full bg-primarybox text-mainheadingWhite cursor-default">
@@ -3597,36 +4367,28 @@ const ReviewSendPage = () => {
             </h3>
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-2">
-                <span className="text-subheadingWhite">
-                  Account holder
-                </span>
+                <span className="text-subheadingWhite">Account holder</span>
                 <span className="font-semibold text-mainheadingWhite text-right capitalize">
                   {recipientDetails.accountHolderName}
                 </span>
               </div>
               {recipientDetails.ifscCode && (
                 <div className="grid grid-cols-2 gap-2">
-                  <span className="text-subheadingWhite">
-                    IFSC code
-                  </span>
+                  <span className="text-subheadingWhite">IFSC code</span>
                   <span className="font-semibold text-mainheadingWhite text-right">
                     {recipientDetails.ifscCode}
                   </span>
                 </div>
               )}
               <div className="grid grid-cols-2 gap-2">
-                <span className="text-subheadingWhite">
-                  Account number
-                </span>
+                <span className="text-subheadingWhite">Account number</span>
                 <span className="font-semibold text-mainheadingWhite text-right">
                   {recipientDetails.accountNumber}
                 </span>
               </div>
               {recipientDetails.bankName && (
                 <div className="grid grid-cols-2 gap-2">
-                  <span className="text-subheadingWhite">
-                    Bank name
-                  </span>
+                  <span className="text-subheadingWhite">Bank name</span>
                   <span className="font-semibold text-mainheadingWhite text-right capitalize">
                     {recipientDetails.bankName}
                   </span>
@@ -3636,10 +4398,10 @@ const ReviewSendPage = () => {
           </div>
           {summary.reason && (
             <div className="sm:p-6 p-4 border-b ">
-              <h3 className="text-sm font-medium text-mainheadingWhite uppercase tracking-wider mb-2">
+              <h3 className="text-sm font-medium text-mainheadingWhite capitalize tracking-wider mb-2">
                 Reason for transfer
               </h3>
-              <p className="font-medium text-mainheadingWhite dark:text-white p-2.5 bg-primarybox rounded-md">
+              <p className="font-medium text-mainheadingWhite dark:text-white p-3 bg-primarybox rounded-md">
                 {summary.reason}
               </p>
             </div>
@@ -3658,24 +4420,25 @@ const ReviewSendPage = () => {
               onChange={(e) => setUserReference(e.target.value)}
               maxLength={35}
               placeholder="e.g., Invoice payment, Gift"
-              className="w-full rounded-2xl h-14.5 p-3 focus:outline-0 transition-all duration-75 ease-in-out placeholder:text-gray-400 border border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white bg-primarybox/50"
+              className="w-full rounded-md h-12.5 px-6 py-3 focus:outline-0 transition-all duration-75 ease-in-out placeholder:text-gray-400 border border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white bg-primarybox/50"
               aria-label="Reference for recipient (optional)"
             />
-            <p className="text-xs text-gray-500 dark:text-gray-300 mt-2">
+            <p className="text-sm text-subheadingWhite mt-2">
               Max 35 characters. This may appear on the recipient's statement.
             </p>
           </div>
         </div>
+
         <button
           onClick={handleConfirmAndSend}
           disabled={isSubmitting || !summary || !recipientDetails}
-          className="flex items-center justify-center bg-primary text-mainheading hover:bg-primaryhover font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center justify-center bg-primary text-mainheading gap-2 hover:bg-primaryhover font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
           data-testid="confirm-send-button"
         >
           {isSubmitting ? (
             <>
               <svg
-                /* SVG spinner */ className="h-5 w-5 text-mainheading animate-spin mr-2"
+                className="h-5 w-5 text-mainheading animate-spin"
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -3741,18 +4504,17 @@ const ReviewSendPage = () => {
             </>
           ) : (
             <>
-              <FiCheckCircle className="mr-2" size={20} />
+              <FiCheckCircle size={20} />
               Confirm and send
             </>
           )}
         </button>
         <div className="mt-3 mb-8">
-          {/* Added mb-8 for spacing */}
           <Link
             href={getPreviousStepLink()}
-            className="inline-flex items-center justify-center bg-primarybox hover:bg-secondarybox text-primary font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear"
+            className="inline-flex items-center gap-2 justify-center bg-primarybox hover:bg-secondarybox text-primary font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear"
           >
-            <FiArrowLeft className="mr-1" /> Go back
+            <FiArrowLeft size={20} /> Go back
           </Link>
         </div>
       </div>

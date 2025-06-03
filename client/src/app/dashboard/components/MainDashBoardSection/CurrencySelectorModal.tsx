@@ -3173,6 +3173,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
         </div>
       );
     }
+
     if (!isFetching && error && currencies.length === 0) {
       return (
         <div className="flex-grow flex flex-col items-center justify-center text-center py-4 min-h-[100px]">
@@ -3194,6 +3195,8 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
         </div>
       );
     }
+
+
     return (
       <div className="space-y-2 min-h-[150px]">
         {filteredCurrencies.length > 0
@@ -3293,12 +3296,14 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
                 >
                   Open a balance
                 </h2>
+
                 <p
                   id="currency-modal-description"
                   className="text-secondheadingWhite font-normal text-sm sm:text-base"
                 >
                   Choose a currency to add to your account.
                 </p>
+                
               </div>
               <button
                 className="p-2.5 bg-primarybox hover:bg-secondarybox text-primary rounded-full transition-all duration-75 ease-linear cursor-pointer focus:outline-none"
@@ -3374,15 +3379,16 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
               <div className="p-4 sm:p-6 border-t flex-shrink-0">
                 <div className="flex sm:flex-row flex-col justify-end gap-3">
                   <button
-                    className="inline-flex justify-center cursor-pointer text-primary bg-primarybox hover:bg-secondarybox order-2 sm:order-1 disabled:opacity-50 disabled:cursor-not-allowed  font-medium rounded-full px-8 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear"
+                    className="inline-flex justify-center cursor-pointer text-primary bg-primarybox hover:bg-secondarybox order-1 sm:order-2 disabled:opacity-50 disabled:cursor-not-allowed  font-medium rounded-full px-8 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear"
                     onClick={onClose}
                     disabled={isAdding}
                     type="button"
                   >
                     Cancel
                   </button>
+
                   <button
-                    className="inline-flex items-center justify-center cursor-pointer bg-primary text-mainheading hover:bg-primaryhover order-1 sm:order-2 disabled:opacity-50 disabled:bg-primary/80 disabled:cursor-not-allowed font-medium rounded-full px-8 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear"
+                    className="inline-flex items-center **:gap-2 justify-center cursor-pointer bg-primary text-mainheading hover:bg-primaryhover order-2 sm:order-1 disabled:opacity-50 disabled:bg-primary/80 disabled:cursor-not-allowed font-medium rounded-full px-8 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear"
                     type="button"
                     onClick={handleConfirm}
                     disabled={
@@ -3394,7 +3400,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
                     {isAdding ? (
                       <>
                         <svg
-                          className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                          className="h-5 w-5 text-mainheading animate-spin"
                           viewBox="0 0 24 24"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"

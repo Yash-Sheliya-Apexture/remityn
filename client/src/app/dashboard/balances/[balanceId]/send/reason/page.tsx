@@ -303,8 +303,6 @@
 
 // export default TransferReasonPage;
 
-
-
 // // frontend/src/app/dashboard/balances/[balanceId]/send/reason/page.tsx
 // "use client";
 // import React, { useState, useEffect, useRef } from "react";
@@ -330,7 +328,6 @@
 //   reason?: string; // Reason will be added here
 //   // Add other relevant fields from your summary object
 // }
-
 
 // // Define steps for the header (if using)
 // // const steps = ["Recipient", "Amount", "Review", "Pay"]; // Removed unused variable
@@ -388,7 +385,6 @@
 //       document.removeEventListener("mousedown", handleClickOutside);
 //     };
 //   }, []); // Removed balanceId and recipientId from dependency array as they don't directly affect this effect
-
 
 //   const reasons = [
 //     "Sending money home to family",
@@ -542,8 +538,6 @@
 
 // export default TransferReasonPage;
 
-
-
 // // frontend/src/app/dashboard/balances/[balanceId]/send/reason/page.tsx
 // "use client";
 // import React, { useState, useEffect, useRef } from "react";
@@ -573,7 +567,6 @@
 //   // Add other relevant fields from your summary object
 // }
 
-
 // // Define steps for the header (if using)
 // // const steps = ["Recipient", "Amount", "Review", "Pay"]; // Removed unused variable
 
@@ -601,7 +594,6 @@
 //     // router.push('/dashboard'); // Redirect to a safe page
 //     // For now, let's just log and potentially show an error state later if needed
 //   }
-
 
 //   const recipientId = searchParams.get("recipientId");
 //   const [selectedReason, setSelectedReason] = useState("");
@@ -658,7 +650,6 @@
 //     };
 //    // eslint-disable-next-line react-hooks/exhaustive-deps
 //   }, []); // Keep dependency array minimal for this effect
-
 
 //   const reasons = [
 //     "Sending money home to family",
@@ -826,9 +817,6 @@
 
 // export default TransferReasonPage;
 
-
-
-
 // frontend/src/app/dashboard/balances/[balanceId]/send/reason/page.tsx
 "use client";
 import React, { useState, useEffect } from "react"; // Removed useRef
@@ -838,6 +826,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 // Import the CustomDropdown component
 import CustomDropdown from "../../../../../admin/components/add-money/CustomDropdown"; // Adjust path as needed
 import { AlertTriangle } from "lucide-react";
+import { FiAlertTriangle } from "react-icons/fi";
 
 // Define an interface for the summary data stored in localStorage
 interface SendSummary {
@@ -858,7 +847,7 @@ const TransferReasonPage = () => {
   const searchParams = useSearchParams();
   const balanceId = params.balanceId as string;
 
-  if (typeof balanceId !== 'string') {
+  if (typeof balanceId !== "string") {
     console.error("Invalid balanceId parameter:", balanceId);
     // Consider showing an error message or redirecting immediately
     // return <div>Error: Invalid page URL.</div>;
@@ -875,24 +864,28 @@ const TransferReasonPage = () => {
   useEffect(() => {
     const storedSummary = localStorage.getItem("sendTransferSummary");
     if (storedSummary) {
-        try {
-            const parsedSummary: SendSummary = JSON.parse(storedSummary);
-            if (parsedSummary && typeof parsedSummary === 'object' && parsedSummary.recipientId) {
-                 setSummary(parsedSummary);
-            } else {
-                 throw new Error("Invalid summary format");
-            }
-        } catch (e) {
-            setError("Failed to load transfer details. Please start again.");
-            console.error("Error parsing transfer summary from localStorage:", e);
-            // Optional: Clear invalid storage item
-            // localStorage.removeItem("sendTransferSummary");
+      try {
+        const parsedSummary: SendSummary = JSON.parse(storedSummary);
+        if (
+          parsedSummary &&
+          typeof parsedSummary === "object" &&
+          parsedSummary.recipientId
+        ) {
+          setSummary(parsedSummary);
+        } else {
+          throw new Error("Invalid summary format");
         }
+      } catch (e) {
+        setError("Failed to load transfer details. Please start again.");
+        console.error("Error parsing transfer summary from localStorage:", e);
+        // Optional: Clear invalid storage item
+        // localStorage.removeItem("sendTransferSummary");
+      }
     } else {
       setError("Transfer details missing. Please start again.");
       console.error("Transfer summary missing from localStorage");
     }
-   // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Keep dependency array minimal
 
   const reasons = [
@@ -906,8 +899,9 @@ const TransferReasonPage = () => {
   // Updated handler for CustomDropdown's onChange
   const handleReasonSelect = (reason: string | null) => {
     setSelectedReason(reason);
-    if (reason) { // Clear error only if a valid reason is selected
-        setError("");
+    if (reason) {
+      // Clear error only if a valid reason is selected
+      setError("");
     }
   };
 
@@ -921,15 +915,15 @@ const TransferReasonPage = () => {
       setError("Transfer details missing. Please start again.");
       return;
     }
-    if (typeof balanceId !== 'string') {
-        setError("Page URL is invalid. Please go back.");
-        console.error("Attempted submit with invalid balanceId");
-        return;
+    if (typeof balanceId !== "string") {
+      setError("Page URL is invalid. Please go back.");
+      console.error("Attempted submit with invalid balanceId");
+      return;
     }
     if (!recipientId) {
-        setError("Recipient information is missing. Please go back.");
-        console.error("Recipient ID missing from search params on reason page");
-        return;
+      setError("Recipient information is missing. Please go back.");
+      console.error("Recipient ID missing from search params on reason page");
+      return;
     }
 
     // Add reason to summary object
@@ -942,15 +936,25 @@ const TransferReasonPage = () => {
   };
 
   // Render error early if balanceId is fundamentally wrong (optional stricter check)
-  if (typeof balanceId !== 'string') {
-      return (
-        <div className="bg-red-50 dark:bg-red-900/25 border border-red-500 rounded-lg p-4 flex items-center gap-3">
-          <div className="flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center bg-red-600/20">
-              <AlertTriangle className="text-red-600 dark:text-red-500 size-5 sm:size-6 flex-shrink-0" />
-          </div>
-          <p className="text-red-700 dark:text-red-300/90"> Error: Invalid page URL. </p>
+  if (typeof balanceId !== "string") {
+    return (
+      <div className="bg-red-900/25 border border-red-500 rounded-xl p-4 flex items-center gap-4 mb-3 py-5">
+        <div className="flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center bg-red-600/20">
+          <FiAlertTriangle
+            size={20}
+            className="text-red-500 size-5 sm:size-6 flex-shrink-0"
+          />
         </div>
-      );
+        <div>
+          <h3 className="font-medium text-red-200 text-base">
+            Error: Invalid page URL.
+          </h3>
+          <p className="text-red-300/90">
+            page URL is not found try again later
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -968,27 +972,32 @@ const TransferReasonPage = () => {
 
         {/* Use CustomDropdown component */}
         <div className="mb-6">
-           <CustomDropdown
-              label={ <label className="text-mainheadingWhite block capitalize text-sm lg:text-base mb-1">
-                         Select an option that best describes the reason
-                      </label>
-                    }
-              options={reasons}
-              value={selectedReason}
-              onChange={handleReasonSelect}
-              displayAllOption="Select an option" // Set placeholder text
-              // The 'disabled' prop could be used if needed, e.g., disabled={!summary}
-           />
+          <CustomDropdown
+            label={
+              <label className="text-mainheadingWhite block capitalize text-sm lg:text-base mb-1">
+                Select an option that best describes the reason
+              </label>
+            }
+            options={reasons}
+            value={selectedReason}
+            onChange={handleReasonSelect}
+            displayAllOption="Select an option" // Set placeholder text
+            // The 'disabled' prop could be used if needed, e.g., disabled={!summary}
+          />
           {/* Display error only if relevant */}
-          {error && !selectedReason && <p className="text-red-600 text-sm mt-2">{error}</p>}
-          {/* Display other errors (like missing summary/recipientId) separately */}
-          {error && selectedReason && <p className="text-red-600 text-sm mt-2">{error}</p>}
-        </div>
+          {error && !selectedReason && (
+            <p className="text-red-600 text-sm mt-2">{error}</p>
+          )}
 
+          {/* Display other errors (like missing summary/recipientId) separately */}
+          {error && selectedReason && (
+            <p className="text-red-600 text-sm mt-2">{error}</p>
+          )}
+        </div>
 
         <button
           onClick={handleSubmit}
-          className="flex items-center justify-center w-full bg-primary text-mainheading font-medium hover:bg-primaryhover space-x-3 py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center justify-center w-full bg-primary text-mainheading font-medium hover:bg-primaryhover py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={!summary || !selectedReason || !recipientId}
         >
           Continue

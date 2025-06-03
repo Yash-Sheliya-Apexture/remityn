@@ -162,7 +162,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     {/* Connector Line (before step, except first) */}
                     {index > 0 && (
                       <div
-                        className={`flex-1 h-0.5 transition-colors duration-300 ease-in-out  ${
+                        className={`flex-1 h-0.5 transition-all duration-75 ease-linear  ${
                           isCompleted || isActive
                             ? "bg-primary"
                             : "bg-mainheadingWhite"
@@ -173,15 +173,15 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     {/* Step Circle and Text */}
                     <div className="flex items-center flex-shrink-0 py-2">
                       <div
-                        className={`size-8 rounded-full flex items-center justify-center border-2  transition-all duration-300 ${
+                        className={`size-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
                           isCompleted
                             ? "bg-primary border-primary text-mainheading"
                             : isActive
-                            ? "border-primary text-primary font-bold ring-3 ring-primary/20 dark:ring-primary/40"
+                            ? "border-primary text-primary font-bold ring-3 ring-primary/40"
                             : "text-mainheadingWhite border-subheadingWhite"
-                        }`}
+                        }`} 
                       >
-                        {isCompleted ? <FaCheck size={16} /> : stepNumber}
+                        {isCompleted ? <FaCheck size={18} /> : stepNumber}
                       </div>
                       <span
                         className={`text-xs md:text-base capitalize transition-colors duration-300 ease-in-out hidden sm:block ml-2 ${
@@ -191,7 +191,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                             ? "text-primary font-bold"
                             : "text-mainheadingWhite"
                         }`}
-                      >
+                      > 
                         {stepName}
                       </span>
                     </div>

@@ -726,15 +726,15 @@ const SelectBalanceComponent: React.FC<SelectBalanceComponentProps> = ({
   if (isLoading) {
     return (
       <>
-        <Skeleton className="md:h-12 h-8 w-72 sm:w-96 mx-auto rounded-lg mb-4" />
+        <Skeleton className="md:h-9 h-7 w-72 md:w-96 mx-auto rounded-lg mb-4" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {allowAddBalance && (
-            <Skeleton className="lg:h-32 h-28 w-full rounded-2xl border-2 border-dashed" />
+            <Skeleton className="lg:h-32 h-28 w-full rounded-2xl bg-primarybox/50 border-2 border-dashed" />
           )}
           {Array(allowAddBalance ? 8 : 8)
             .fill(0)
             .map((_, i) => (
-              <Skeleton key={`skel-${i}`} className="h-32 w-full rounded-2xl" />
+              <Skeleton key={`skel-${i}`} className="md:h-32 h-28 w-full rounded-2xl" />
             ))}
         </div>
       </>
