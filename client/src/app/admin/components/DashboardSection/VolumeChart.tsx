@@ -833,7 +833,6 @@
 //   className?: string;
 // }
 
-
 // // export function VolumeChart({
 //   title,
 //   description,
@@ -1145,7 +1144,6 @@
 //     </Card>
 //   );
 // }
-
 
 // // frontend/src/components/DashboardSection/VolumeChart.tsx
 
@@ -1468,7 +1466,7 @@
 //                 <span className="text-sm">
 //                   Total {timeRange === "month" ? "30 days" : "12 months"}
 //                 </span>
-                
+
 //                 <Badge
 //                   variant="outline"
 //                   className="text-xs font-normal bg-[oklch(0.44_0_0)] text-white"
@@ -1477,7 +1475,7 @@
 //                 </Badge>
 //               </div>
 //             </div>
-            
+
 //             <ChartContainer
 //               config={chartConfig}
 //               className="aspect-auto h-[200px] w-full flex-grow"
@@ -1531,7 +1529,6 @@
 //     </Card>
 //   );
 // }
-
 
 // // frontend/src/app/admin/components/DashboardSection/VolumeChart.tsx
 // "use client";
@@ -1917,8 +1914,6 @@
 //   );
 // }
 
-
-
 "use client";
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
@@ -1947,7 +1942,6 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import statsAdminService, {
   ChartDataPoint, // Using the updated ChartDataPoint
@@ -2027,8 +2021,7 @@ export function VolumeChart({
         );
         setChartData(data);
       } catch (err: any) {
-        const errorMessage =
-          err.message || `Failed to load ${chartType} data.`;
+        const errorMessage = err.message || `Failed to load ${chartType} data.`;
         setError(errorMessage);
         setChartData([]);
       } finally {
@@ -2117,15 +2110,14 @@ export function VolumeChart({
     if (timeRange === "month") return "last 30 days";
     if (timeRange === "year") return "last 12 months";
     if (timeRange === "all") return "all time";
-    if (timeRange === "by_currency")
-      return "across all currencies (all time)";
+    if (timeRange === "by_currency") return "across all currencies (all time)";
     return "";
   };
 
   return (
     <Card
       className={cn(
-        "flex  flex-col h-full dark:bg-primarybox shadow-none",
+        "flex flex-col h-full bg-primarybox shadow-none",
         className
       )}
     >
@@ -2133,16 +2125,16 @@ export function VolumeChart({
         <div className="flex lg:flex-row flex-col items-center justify-between w-full gap-3">
           <div className="flex items-center justify-between gap-3 w-full">
             <div className="flex gap-3">
-              <div className="flex justify-center items-center size-12 bg-primary dark:bg-primarybox rounded-full">
+              <div className="flex justify-center items-center size-12 bg-primary rounded-full flex-shrink-0">
                 {icon}
               </div>
 
               <div>
-                <CardTitle className="text-lg font-semibold text-neutral-900 dark:text-white">
+                <CardTitle className="text-lg font-semibold text-mainheadingWhite capitalize">
                   {title}
                 </CardTitle>
 
-                <CardDescription className="text-xs text-gray-500 dark:text-gray-300 max-w-44">
+                <CardDescription className="text-subheadingWhite">
                   {description}
                 </CardDescription>
               </div>
@@ -2150,18 +2142,18 @@ export function VolumeChart({
 
             <div className="flex font-medium">
               {showRefreshButton && (
-                <Button
-                  variant="ghost"
-                  size="icon"
+                <button
                   onClick={handleRefresh}
                   disabled={loading}
-                  className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white size-10 rounded-full transition-all duration-75 ease-linear"
+                  className="flex items-center justify-center cursor-pointer gap-2 bg-secondarybox hover:bg-secondaryboxhover size-10 rounded-full transition-all duration-75 ease-linear"
                 >
                   <RefreshCw
-                    className={`size-4 ${loading ? "animate-spin" : ""}`}
+                    className={`size-4 text-primary ${
+                      loading ? "animate-spin" : ""
+                    }`}
                   />
                   <span className="sr-only"> Refresh</span>
-                </Button>
+                </button>
               )}
             </div>
           </div>
@@ -2176,8 +2168,8 @@ export function VolumeChart({
               <TabsList
                 className={cn(
                   "relative flex justify-normal items-center rounded-full p-1",
-                  "bg-lightgray dark:bg-primarybox",
-                  "w-full h-auto  whitespace-nowrap z-0 overflow-x-auto"
+                  "bg-secondarybox",
+                  "w-full h-auto whitespace-nowrap z-0 overflow-x-auto"
                 )}
               >
                 {timeRangeTabs.map((tab) => (
@@ -2187,9 +2179,9 @@ export function VolumeChart({
                     className={cn(
                       "flex-1 relative text-xs sm:text-sm px-4 py-1.5 font-medium rounded-full",
                       "flex items-center justify-center",
-                      "transition-colors duration-200 ease-linear focus:outline-none cursor-pointer",
+                      "transition-all duration-75 ease-linear focus:outline-none cursor-pointer",
                       "focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none",
-                      "data-[state=active]:text-neutral-900 border-none data-[state=active]:bg-transparent dark:data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+                      "border-none data-[state=active]:bg-transparent data-[state=active]:shadow-none"
                     )}
                     style={{ WebkitTapHighlightColor: "transparent" }}
                   >
@@ -2208,8 +2200,8 @@ export function VolumeChart({
                       className={cn(
                         "relative z-10 ",
                         timeRange === tab.id
-                          ? "text-neutral-900"
-                          : "text-gray-500 dark:text-gray-300"
+                          ? "text-mainheading font-semibold"
+                          : "text-mainheadingWhite"
                       )}
                     >
                       {tab.label}
@@ -2222,53 +2214,53 @@ export function VolumeChart({
         </div>
       </CardHeader>
 
-      <CardContent className="flex-grow flex flex-col px-2 pb-4 pt-0 sm:px-4 sm:pb-6">
+      <CardContent className="flex-grow flex bg-primarybox rounded-xl flex-col px-2 pb-4 pt-0 sm:px-4 sm:pb-6">
         {loading && (
           <>
             <div className="flex flex-col items-center justify-center mb-4 pt-2">
-              <Skeleton className="sm:w-1/3 w-1/2 h-10 rounded-md" />
+              <Skeleton className="sm:w-1/3 w-1/2 h-10 rounded-md bg-background/50" />
               <div className="flex items-center gap-1.5 mt-1">
-                <Skeleton className="h-6 sm:w-32 w-24 rounded-md" />
-                <Skeleton className="h-6 sm:w-25 w-18 rounded-md" />
+                <Skeleton className="h-6 sm:w-32 w-24 rounded-md bg-background/50" />
+                <Skeleton className="h-6 sm:w-25 w-18 rounded-md bg-background/50" />
               </div>
             </div>
             <div
               className="flex-grow w-full flex flex-col"
-              style={{ minHeight: "180px" }}
+              style={{ minHeight: "194px" }}
             >
-              <Skeleton className="flex-grow w-full rounded-md" />
+              <Skeleton className="flex-grow w-full rounded-md bg-background/50" />
               <div className="flex justify-between w-full gap-1 pt-2">
                 {[...Array(timeRange === "by_currency" ? 5 : 8)].map((_, i) => (
                   <Skeleton
                     key={i}
-                    className="h-5 w-12 sm:w-16 rounded-xl opacity-70"
+                    className="h-5 w-12 sm:w-16 rounded-xl opacity-70 bg-background/50"
                   />
                 ))}
               </div>
             </div>
           </>
         )}
-
+        
         {error && !loading && (
-          <div className="flex-grow flex flex-col justify-center items-center text-center p-4">
-            <div className="text-destructive dark:text-destructive-foreground">
-              <p className="text-sm font-semibold">Error Loading Chart Data</p>
-              <p className="text-xs mt-1">{error}</p>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleRefresh}
-                className="mt-3 text-xs"
-              >
-                <RefreshCw className="size-4 mr-1.5" /> Try Again
-              </Button>
-            </div>
+          <div className="flex-grow flex flex-col justify-center items-center text-center space-y-3 py-10">
+
+            <h1 className="lg:text-2xl text-xl font-semibold text-mainheadingWhite">
+              Error Loading Chart Data
+            </h1>
+
+            <p className="text-subheadingWhite">{error} </p>
+            <button
+              onClick={handleRefresh}
+              className="flex items-center text-center px-8 py-3 mx-auto bg-secondarybox font-medium hover:bg-secondaryboxhover text-primary transition-all ease-linear duration-75 cursor-pointer rounded-full"
+            >
+              <RefreshCw className="size-5 mr-1.5" /> Try Again
+            </button>
           </div>
         )}
 
         {!loading && !error && chartData.length === 0 && (
-          <div className="flex-grow flex justify-center items-center text-center text-muted-foreground p-4">
-            <p className="text-sm">
+          <div className="flex-grow flex justify-center items-center text-center p-4">
+            <p className="text-base text-mainheadingWhite">
               No data available for the selected period.
             </p>
           </div>
@@ -2276,17 +2268,18 @@ export function VolumeChart({
 
         {!loading && !error && chartData.length > 0 && (
           <>
-            <div className="flex flex-col items-center sm:space-y-1 space-y-0.5 justify-center mb-4 pt-2">
-              <div className="text-2xl sm:text-3xl font-bold text-primary dark:text-primary">
+            <div className="flex flex-col items-center space-y-1 justify-center mb-4 pt-2">
+              <div className="text-2xl sm:text-3xl font-bold text-primary">
                 {formatCurrency(totalVolume)}
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xs sm:text-sm text-muted-foreground">
+                <span className="text-xs sm:text-sm text-subheadingWhite">
                   Total {getSubtitleText()}
                 </span>
+
                 <Badge
                   variant="outline"
-                  className="text-xs font-normal dark:border-primary border-primarybox text-white bg-secondarybox dark:text-primary dark:bg-primary/20"
+                  className="text-sm text-primary bg-primary/20 border border-primary font-medium"
                 >
                   {chartType === "payments" ? "Add Money" : "Send Money"}
                 </Badge>
@@ -2321,6 +2314,7 @@ export function VolumeChart({
                     stroke="hsl(var(--border))"
                     strokeOpacity={0.7}
                   />
+
                   <XAxis
                     dataKey={xAxisDataKey} // Use generic 'category'
                     tickLine={false}
@@ -2340,6 +2334,7 @@ export function VolumeChart({
                     tickFormatter={formatYAxisTick}
                     stroke="hsl(var(--muted-foreground))"
                   />
+
                   <ChartTooltip
                     cursor={{ fill: "hsl(var(--primary) / 0.1)" }}
                     content={
@@ -2365,13 +2360,13 @@ export function VolumeChart({
                           return formattedValue;
                         }}
                         indicator="dot"
-                        className="bg-popover text-popover-foreground dark:bg-primarybox/95 dark:text-white backdrop-blur-sm"
+                        className="bg-primarybox/95 border border-gray-600 text-mainheadingWhite backdrop-blur-sm"
                       />
                     }
                   />
                   <Bar
                     dataKey={dataKey} // 'volume'
-                    fill="#adfa1c"
+                    fill="#66e8fa"
                     radius={[4, 4, 0, 0]}
                     animationDuration={500}
                   />

@@ -337,52 +337,225 @@
 // }
 
 
+// // app/layout.tsx
+// import './globals.css'
+// import { AuthProvider } from './contexts/AuthContext';
+// import { ReactNode } from 'react';
+// import TawkToManager from './components/TawkToManager'; // Ensure path is correct
+// import BrevoManager from './components/BrevoManager'; // <-- Import BrevoManager
+
+
+// // const ThemeInitializerScript = `
+// // (function() {
+// //   function getInitialPreference() {
+// //     // ... (your existing getInitialPreference logic) ...
+// //      if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
+// //           return 'system'; // Default if localStorage is unavailable (SSR, etc.)
+// //      }
+// //      try {
+// //         const stored = localStorage.getItem('theme');
+// //         if (stored === 'light' || stored === 'dark') {
+// //             return stored;
+// //         }
+// //          return 'system';
+// //      } catch (e) {
+// //          console.error('Error reading theme from localStorage:', e);
+// //          return 'system';
+// //      }
+// //   }
+
+// //   const preference = getInitialPreference();
+// //   let themeToApply = preference;
+
+// //   if (preference === 'system') {
+// //     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+// //     themeToApply = prefersDark.matches ? 'dark' : 'light';
+// //   }
+
+// //   const root = document.documentElement;
+// //   root.classList.remove('light', 'dark');
+// //   root.classList.add(themeToApply);
+// // })();
+// // `;
+// const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
+// const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
+
+// const tawkToSrc = tawkToPropertyId && tawkToWidgetId
+//     ? `https://embed.tawk.to/${tawkToPropertyId}/${tawkToWidgetId}`
+//     : null;
+
+// interface RootLayoutProps {
+//     children: ReactNode;
+// }
+
+// export default function RootLayout({ children }: RootLayoutProps) {
+//     return (
+//         <html lang="en" suppressHydrationWarning>
+//             <head>
+//                 {/* <script dangerouslySetInnerHTML={{ __html: ThemeInitializerScript }} /> */}
+
+//                 <meta charSet="utf-8" />
+//                 <meta name="viewport" content="width=device-width, initial-scale=1 " />
+
+//                 <title>Remityn Clone - Money Transfer</title>
+//                 <meta name="description" content="Send and receive money internationally with low fees and real exchange rates." />
+
+//                 <link rel="icon" href="./Remityn.ico" sizes="any" />
+
+//             </head>
+
+//             <body className="bg-background text-neutral-900 dark:text-white transition-all duration-75 ease-linear" suppressHydrationWarning={true}>
+//                 <AuthProvider>
+//                     {children}
+//                 </AuthProvider>
+
+//                 <div id="portal-root"></div>
+
+//                 {tawkToSrc && (
+//                     <> 
+//                     <TawkToManager/>
+//                     </>
+//                 )}
+
+//                 {/* <BrevoManager /> */}
+//             </body>
+//         </html>
+//     );
+// }
+
+
+// // app/layout.tsx
+// import './globals.css'
+// import { AuthProvider } from './contexts/AuthContext';
+// import { ReactNode } from 'react';
+// import TawkToManager from './components/TawkToManager'; // Ensure path is correct
+
+// const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
+// const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
+
+// const tawkToSrc = tawkToPropertyId && tawkToWidgetId
+//     ? `https://embed.tawk.to/${tawkToPropertyId}/${tawkToWidgetId}`
+//     : null;
+
+// interface RootLayoutProps {
+//     children: ReactNode;
+// }
+
+// export default function RootLayout({ children }: RootLayoutProps) {
+//     return (
+//         <html lang="en" suppressHydrationWarning>
+//             <head>
+//                 <meta charSet="utf-8" />
+//                 <meta name="viewport" content="width=device-width, initial-scale=1 " />
+
+//                 <title>Remityn Clone - Money Transfer</title>
+//                 <meta name="description" content="Send and receive money internationally with low fees and real exchange rates." />
+
+//                 <link rel="icon" href="./Remityn.ico" sizes="any" />
+
+//             </head>
+
+//             <body className="bg-background text-neutral-900 dark:text-white transition-all duration-75 ease-linear" suppressHydrationWarning={true}>
+//                 <AuthProvider>
+//                     {children}
+//                 </AuthProvider>
+
+//                 <div id="portal-root"></div>
+
+//                 {tawkToSrc && (
+//                     <> 
+//                     <TawkToManager/>
+//                     </>
+//                 )}
+//             </body>
+//         </html>
+//     );
+// }
+
+
 // app/layout.tsx
 import './globals.css'
 import { AuthProvider } from './contexts/AuthContext';
 import { ReactNode } from 'react';
 import TawkToManager from './components/TawkToManager'; // Ensure path is correct
-import BrevoManager from './components/BrevoManager'; // <-- Import BrevoManager
+import { Metadata, Viewport } from 'next'; // Import Metadata and Viewport
 
-
-const ThemeInitializerScript = `
-(function() {
-  function getInitialPreference() {
-    // ... (your existing getInitialPreference logic) ...
-     if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
-          return 'system'; // Default if localStorage is unavailable (SSR, etc.)
-     }
-     try {
-        const stored = localStorage.getItem('theme');
-        if (stored === 'light' || stored === 'dark') {
-            return stored;
-        }
-         return 'system';
-     } catch (e) {
-         console.error('Error reading theme from localStorage:', e);
-         return 'system';
-     }
-  }
-
-  const preference = getInitialPreference();
-  let themeToApply = preference;
-
-  if (preference === 'system') {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    themeToApply = prefersDark.matches ? 'dark' : 'light';
-  }
-
-  const root = document.documentElement;
-  root.classList.remove('light', 'dark');
-  root.classList.add(themeToApply);
-})();
-`;
 const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
 const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
 
 const tawkToSrc = tawkToPropertyId && tawkToWidgetId
     ? `https://embed.tawk.to/${tawkToPropertyId}/${tawkToWidgetId}`
     : null;
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'; // Fallback for local
+
+// Default metadata for the entire application
+export const metadata: Metadata = {
+    metadataBase: new URL(siteUrl), // Crucial for resolving relative OpenGraph image paths
+    title: {
+        default: 'Remityn - Money Transfer', // Default title
+        template: '%s | Remityn ', // Template for page-specific titles
+    },
+    description: 'Send and receive money internationally with low fees and real exchange rates. Secure, fast, and reliable.',
+    applicationName: 'Remityn',
+    keywords: ['money transfer', 'international payments', 'remittance', 'low fees', 'exchange rates'],
+    authors: [{ name: 'Your Company Name', url: siteUrl }],
+    creator: 'Your Company Name',
+    publisher: 'Your Company Name',
+    robots: { // Default robots policy (can be overridden per page)
+        index: true,
+        follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            'max-video-preview': -1,
+            'max-image-preview': 'large',
+            'max-snippet': -1,
+        },
+    },
+    icons: {
+        icon: '/assets/images/Remityn.ico', // Path relative to public folder
+        // apple: '/apple-touch-icon.png', // Example for Apple touch icon
+    },
+    openGraph: {
+        title: 'Remityn Clone - Money Transfer',
+        description: 'Send and receive money internationally with low fees and real exchange rates.',
+        url: siteUrl,
+        siteName: 'Remityn Clone',
+        images: [
+            {
+                url: '/og-image.png', // Place in public folder: public/og-image.png (e.g., 1200x630px)
+                width: 1200,
+                height: 630,
+                alt: 'Remityn Clone Money Transfer Service',
+            },
+        ],
+        locale: 'en_US',
+        type: 'website',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Remityn Clone - Money Transfer',
+        description: 'Send and receive money internationally with low fees and real exchange rates.',
+        // siteId: 'YourTwitterSiteID', // Optional: Your Twitter @username numeric ID
+        creator: '@YourTwitterHandle', // Optional: Your Twitter @username
+        // creatorId: 'YourTwitterCreatorID', // Optional
+        images: ['/twitter-image.png'], // Place in public folder: public/twitter-image.png (e.g., 1200x600px)
+    },
+    // manifest: '/site.webmanifest', // If you have a web app manifest
+};
+
+// Viewport settings
+export const viewport: Viewport = {
+    width: 'device-width',
+    initialScale: 1,
+    // maximumScale: 1, // You might want to allow zooming
+    // userScalable: false, // Consider setting to true for accessibility
+    themeColor: [ // For PWA theming
+      { media: '(prefers-color-scheme: light)', color: '#22282a' },
+    ],
+}
+
 
 interface RootLayoutProps {
     children: ReactNode;
@@ -391,32 +564,13 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
     return (
         <html lang="en" suppressHydrationWarning>
-            <head>
-                <script dangerouslySetInnerHTML={{ __html: ThemeInitializerScript }} />
-
-                <meta charSet="utf-8" />
-                <meta name="viewport" content="width=device-width, initial-scale=1 " />
-
-                <title>Remityn Clone - Money Transfer Appication</title>
-                <meta name="description" content="Send and receive money internationally with low fees and real exchange rates." />
-
-                <link rel="icon" href="./Remityn.ico" sizes="any" />
-            </head>
-
-            <body className="bg-white dark:bg-background text-neutral-900 dark:text-white transition-all duration-75 ease-linear" suppressHydrationWarning={true}>
+            {/* <head> is now managed by Next.js Metadata API, keep only essential, non-metadata tags here if any */}
+            <body className="bg-background text-neutral-900 dark:text-white transition-all duration-75 ease-linear" suppressHydrationWarning={true}>
                 <AuthProvider>
                     {children}
                 </AuthProvider>
-
                 <div id="portal-root"></div>
-
-                {tawkToSrc && (
-                    <> 
-                    <TawkToManager/>
-                    </>
-                )}
-
-                {/* <BrevoManager /> */}
+                {tawkToSrc && <TawkToManager />}
             </body>
         </html>
     );

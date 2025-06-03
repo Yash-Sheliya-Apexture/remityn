@@ -1659,274 +1659,781 @@
 
 // export default Footer;
 
+// // app/components/Footer.tsx
+// "use client";
+// import Link from "next/link";
+// import Image from "next/image";
+// import { useState, useEffect } from "react";
+// import { IconType } from "react-icons";
+// import { motion, AnimatePresence } from "framer-motion";
+// import { useAppContext } from "../../contexts/WebsiteAppContext"; // Adjust path if needed
+// import { useRouter } from "next/navigation";
+// import { IoLogoWhatsapp } from "react-icons/io";
+// import { FaTelegram } from "react-icons/fa";
+// import { ReactNode } from "react";
+// import { FiChevronDown, FiChevronUp } from "react-icons/fi";
+
+// interface FooterLink {
+//   href: string;
+//   label: string | ReactNode;
+// }
+
+// interface SocialLink extends FooterLink {
+//   icon: IconType;
+// }
+
+// interface FooterSection {
+//   title: string;
+//   links?: FooterLink[];
+//   socialLinks?: SocialLink[];
+// }
+
+// interface FooterData {
+//   sections: FooterSection[];
+//   currencyConverters: string[];
+//   disclaimer: string;
+// }
+
+// const Footer: React.FC = () => {
+//   const footerData: FooterData = {
+//     sections: [
+//       {
+//         title: "Company",
+//         links: [
+//           { href: "/", label: "Home" },
+//           { href: "/about-us", label: "About" },
+//           { href: "/features", label: "Features" },
+//           { href: "/reviews", label: "Reviews" },
+//         ],
+//       },
+//       {
+//         title: "Help",
+//         links: [
+//           { href: "/privacy-policy", label: "Privacy Policy" },
+//           {
+//             href: "/terms-and-conditions",
+//             label: <>Terms and Conditions</>,
+//           },
+//           { href: "/faqs", label: "FAQs" }, // Assuming FAQ might be a section on the page
+//         ],
+//       },
+//     ],
+
+//     currencyConverters: [
+//       "USD to INR",
+//       "AED to INR",
+//       "AUD to INR",
+//       "CAD to INR",
+//       "EUR to INR",
+//     ],
+//     disclaimer:
+//       "Wise is authorised by the Financial Conduct Authority under the Electronic Money Regulations 2011, Firm Reference 900507, for the issuing of electronic money. Wise works with a local bank partner to offer the service in India with the approval of the Reserve Bank of India.",
+//   };
+
+//   // --- STATE ---
+//   // Start with "Company" open by default for mobile experience
+//   const [openDropdown, setOpenDropdown] = useState<string | null>("Company");
+//   const [isMobile, setIsMobile] = useState(false);
+//   // --- END STATE ---
+
+//   const { setSelectedSendCurrency } = useAppContext();
+//   const router = useRouter();
+
+//   // --- TOGGLE FUNCTION ---
+//   // This function correctly handles opening and closing
+//   const toggleDropdown = (title: string) => {
+//     setOpenDropdown((currentOpen) => (currentOpen === title ? null : title));
+//   };
+//   // --- END TOGGLE FUNCTION ---
+
+//   // --- EFFECT FOR RESIZE ---
+//   useEffect(() => {
+//     // Function to check window size and update isMobile state
+//     const handleResize = () => {
+//       const mobileCheck = window.innerWidth < 640; // md breakpoint
+//       setIsMobile(mobileCheck);
+//       // Optional: If resizing TO desktop, you might want to ensure all accordions appear open
+//       // by setting openDropdown to null, but the conditional rendering already handles visibility.
+//       // We don't need to force 'Company' open here on every resize, only check the screen size.
+//     };
+
+//     // Initial check on component mount
+//     handleResize();
+
+//     // Add resize event listener
+//     window.addEventListener("resize", handleResize);
+
+//     // Cleanup listener on component unmount
+//     return () => {
+//       window.removeEventListener("resize", handleResize);
+//     };
+//   }, []); // Empty dependency array: runs only once on mount for setup and cleanup on unmount
+//   // --- END EFFECT ---
+
+//   const renderLinkList = (links: FooterLink[] | undefined) => (
+//     <ul className="space-y-3 py-2">
+//       {links?.map((link) => (
+//         <li key={link.href}>
+//           <div className="relative group w-fit  text-neutral-900 dark:text-white font-medium lg:text-base text-sm">
+//             <Link href={link.href} className="relative z-10">
+//               {link.label}
+//             </Link>
+//             <span className="absolute bottom-0 left-0 w-full h-[2px] bg-neutral-900 dark:bg-primary transform scale-x-0 origin-right transition-transform duration-500 ease-in-out group-hover:origin-left group-hover:scale-x-100"></span>
+//           </div>
+//         </li>
+//       ))}
+//     </ul>
+//   );
+
+//   const handleCurrencyConverterClick = (converter: string) => {
+//     const currencyCode = converter.split(" ")[0];
+//     if (setSelectedSendCurrency) {
+//       setSelectedSendCurrency(currencyCode);
+//     }
+//     router.push("/");
+//   };
+
+//   return (
+//     <footer className="bg-white dark:bg-background lg:py-10 py-5 overflow-hidden">
+//       <div className="container mx-auto px-4">
+//         <div className=" flex flex-col lg:flex-row justify-between w-full">
+//           <div className="flex flex-col w-full lg:w-1/2 mb-8 lg:mb-0">
+//             <Link href="/">
+//               <Image
+//                 src="/assets/images/white_logo.svg"
+//                 alt="Wise Logo"
+//                 width={160}
+//                 height={50}
+//                 priority
+//                 className=" mb-4 w-40 h-auto dark:hidden block"
+//               />
+
+//               <Image
+//                 src="/assets/images/dark_logo.svg"
+//                 alt="Wise Logo"
+//                 width={160}
+//                 height={50}
+//                 priority
+//                 className="mb-4 w-40 h-auto dark:block hidden"
+//               />
+//             </Link>
+//             <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
+//               {/* Adjusted text size and leading */}
+//               We provide reliable and competitive currency exchange services
+//               with real-time rates, secure transactions, and excellent customer
+//               support. Whether you're traveling, investing, or sending money
+//               abroad, trust us to handle your currency needs with transparency
+//               and speed.
+//             </p>
+//           </div>
+
+//           <div className="grid grid-cols-1 sm:grid-cols-2 lg:gap-y-6 gap-y-4 w-full lg:w-1/4">
+//             {footerData.sections.map((section) => (
+//               <div key={section.title}>
+//                 {/* Section Header (Mobile Accordion Trigger) */}
+//                 <div
+//                   className={`flex items-center justify-between lg:pb-4 pb-2 ${
+//                     isMobile ? "cursor-pointer" : "" // Make header clickable only on mobile
+//                   }`}
+//                   onClick={
+//                     // Assign toggle only if mobile
+//                     isMobile ? () => toggleDropdown(section.title) : undefined
+//                   }
+//                   // Add accessibility attributes for the accordion header
+//                   role={isMobile ? "button" : undefined}
+//                   aria-expanded={
+//                     isMobile ? openDropdown === section.title : true
+//                   }
+//                   aria-controls={
+//                     isMobile
+//                       ? `${section.title.toLowerCase()}-dropdown-menu`
+//                       : undefined
+//                   }
+//                   tabIndex={isMobile ? 0 : -1} // Make it focusable on mobile
+//                 >
+//                   <h3 className="text-primary lg:text-lg text-base font-semibold">
+//                     {section.title}
+//                   </h3>
+//                   {/* Icon container - important: don't put onClick here, keep it on parent div */}
+//                   {isMobile && (
+//                     <span className="text-mainheading dark:text-white pointer-events-none">
+//                       {/* Prevent nested clicks */}
+//                       {openDropdown === section.title ? (
+//                         <FiChevronUp className="size-4" />
+//                       ) : (
+//                         <FiChevronDown className="size-4" />
+//                       )}
+//                     </span>
+//                   )}
+//                 </div>
+
+//                 {/* Section Content (Mobile Accordion Content) */}
+//                 <AnimatePresence initial={false}>
+//                   {/* Show content if NOT mobile OR if mobile AND it's the open dropdown */}
+//                   {(!isMobile ||
+//                     (isMobile && openDropdown === section.title)) && (
+//                     <motion.div
+//                       id={
+//                         isMobile
+//                           ? `${section.title.toLowerCase()}-dropdown-menu`
+//                           : undefined
+//                       }
+//                       key={`${section.title}-content`}
+//                       initial={{ height: 0, opacity: 0 }}
+//                       animate={{ height: "auto", opacity: 1 }}
+//                       exit={{ height: 0, opacity: 0 }}
+//                       transition={{ duration: 0.3, ease: "easeInOut" }}
+//                       style={{ overflow: "hidden" }}
+//                       // Add role region for accessibility
+//                       role="region"
+//                       aria-labelledby={
+//                         isMobile
+//                           ? section.title.toLowerCase() + "-heading"
+//                           : undefined
+//                       } // Assuming h3 gets an id
+//                     >
+//                       {/* Render links or social links */}
+//                       {section.links && renderLinkList(section.links)}
+//                     </motion.div>
+//                   )}
+//                 </AnimatePresence>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+
+//         {/* Currency Converters Section */}
+//         <hr className="lg:my-6 my-4" />
+//         <div className="Currency-Convertors">
+//           <h3 className="text-primary lg:text-lg text-base font-semibold pb-4">
+//             Currency Converters
+//           </h3>
+//           <div className="flex flex-wrap gap-y-2">
+//             {footerData.currencyConverters.map((pair, index) => (
+//               <div className="flex items-center" key={pair}>
+//                 <div className="relative group inline-block">
+//                   <button
+//                     className="relative z-10 cursor-pointer text-sm lg:text-base text-neutral-900 dark:text-white"
+//                     onClick={() => handleCurrencyConverterClick(pair)}
+//                   >
+//                     {pair}
+//                   </button>
+//                   <span className="absolute bottom-0 left-0 w-full h-[2px] bg-neutral-900 dark:bg-primary transform scale-x-0 origin-right transition-transform duration-500 ease-in-out group-hover:origin-left group-hover:scale-x-100"></span>
+//                 </div>
+//                 {index !== footerData.currencyConverters.length - 1 && (
+//                   <span className="mx-4 text-gray-500 dark:text-gray-300">
+//                     |
+//                   </span>
+//                 )}
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+
+//         {/* Copyright and Social Icons Section */}
+//         <hr className="lg:my-6 my-4" />
+//         <div className="flex flex-col md:flex-row justify-between items-center container mx-auto gap-4">
+//           <p className="text-mainheading dark:text-primary capitalize lg:text-base text-sm text-center md:text-left">
+//             <span className="text-gray-500 dark:text-gray-300">
+//               Created by{" "}
+//             </span>
+//             <span className="font-medium">Apexture Private Limited</span> ©{" "}
+//             {new Date().getFullYear()}
+//           </p>
+//           <div className="flex lg:gap-4 gap-2 pb-10 sm:pb-0">
+//             <Link href="#" aria-label="Chat on WhatsApp">
+//               {/* Replace # with actual link */}
+//               <IoLogoWhatsapp className="lg:size-7 size-6 text-[#25D366] hover:opacity-80 transition-opacity" />
+//             </Link>
+//             <Link href="#" aria-label="Contact us on Telegram">
+//               {/* Replace # with actual link */}
+//               <FaTelegram className="lg:size-7 size-6 text-[#3390EC] hover:opacity-80 transition-opacity" />
+//             </Link>
+//           </div>
+//         </div>
+//       </div>
+//     </footer>
+//   );
+// };
+
+// export default Footer;
+
+// // app/components/Footer.tsx
+// "use client";
+// import Link from "next/link";
+// import { IconType } from "react-icons";
+// import { MdEmail, MdPhone, MdLocationOn } from "react-icons/md";
+// import { FaTwitter } from "react-icons/fa"; // FaLinkedinIn was imported but not used, FaLinkedin is used.
+// import Image from "next/image";
+// import { FaFacebook, FaLinkedin } from "react-icons/fa6";
+// import { useRouter } from "next/navigation"; // Added for currency converter logic
+// import { useAppContext } from "../../contexts/WebsiteAppContext"; // Added for currency converter logic - Adjust path if needed
+
+// interface NavLinkItem {
+//   href: string;
+//   label: string;
+// }
+
+// interface ContactInfoItem {
+//   icon: IconType;
+//   text: string;
+//   href?: string;
+//   ariaLabel?: string;
+// }
+
+// interface SocialLinkItem {
+//   icon: IconType;
+//   href: string;
+//   label: string; // for aria-label
+// }
+
+// const navLinks: NavLinkItem[] = [
+//   { href: "/", label: "Home" },
+//   { href: "/about-us", label: "About" },
+//   { href: "/features", label: "Features" },
+//   { href: "/reviews", label: "Reviews" },
+//   { href: "/faqs", label: "Help" },
+// ];
+
+// const contactInfo: ContactInfoItem[] = [
+//   {
+//     icon: MdEmail,
+//     text: "hello@skillbirdge.com",
+//     href: "mailto:hello@skillbirdge.com",
+//     ariaLabel: "Email us at hello@skillbirdge.com",
+//   },
+//   {
+//     icon: MdPhone,
+//     text: "+91 8849498140",
+//     href: "tel:+91 8849498140",
+//     ariaLabel: "Call us at +91 91813 23 2309",
+//   },
+//   {
+//     icon: MdLocationOn,
+//     text: "Somewhere in the World",
+//     ariaLabel: "Our location: Somewhere in the World ",
+//   },
+// ];
+
+// const socialLinks: SocialLinkItem[] = [
+//   { icon: FaFacebook, href: "https://www.facebook.com/", label: "Facebook" },
+//   { icon: FaTwitter, href: "https://x.com/home", label: "Twitter" },
+//   {
+//     icon: FaLinkedin,
+//     href: "https://www.linkedin.com/company/apextureprivatelimited/posts/?feedView=all",
+//     label: "LinkedIn",
+//   },
+// ];
+
+// const copyrightText = "Remityn. All Rights Reserved";
+// const currentYear = new Date().getFullYear();
+
+// // Data for Currency Converters
+// const currencyConverterLinksData = [
+//   "USD to INR",
+//   "AED to INR",
+//   "AUD to INR",
+//   "CAD to INR",
+//   "EUR to INR",
+// ];
+
+// const Footer: React.FC = () => {
+//   const router = useRouter();
+//   const { setSelectedSendCurrency } = useAppContext(); // Ensure WebsiteAppContext is provided in your app
+
+//   const handleCurrencyConverterClick = (converter: string) => {
+//     const currencyCode = converter.split(" ")[0];
+//     if (setSelectedSendCurrency) {
+//       setSelectedSendCurrency(currencyCode);
+//     }
+//     router.push("/"); // Navigate to home page or a relevant page
+//   };
+
+//   return (
+//     <footer className="lg:py-16 py-10">
+//       <div className="container mx-auto px-4">
+//         {/* Top Section: Logo and Nav Links */}
+//         <div className="flex flex-col items-center ">
+//           {/* Logo */}
+//           <div className="sm:mb-12.5 mb-7.5">
+//             {/* Footer-Logo */}
+//             <Link href="/" className="relative">
+//               <Image
+//                 src="/assets/images/main_logo.svg"
+//                 alt="Wise Logo"
+//                 width={160}
+//                 height={50}
+//                 priority
+//                 className="w-46 h-auto"
+//               />
+//             </Link>
+//           </div>
+
+//           {/* Desktop Navigation Links */}
+//           <nav className="hidden sm:flex items-center space-x-6 mb-12.5">
+//             {navLinks.map((link) => (
+//               <Link
+//                 key={link.href}
+//                 href={link.href}
+//                 className="text-lg lg:text-xl text-subheadingWhite hover:text-primary transition-colors duration-75 ease-linear "
+//               >
+//                 {link.label}
+//               </Link>
+//             ))}
+//           </nav>
+//         </div>
+
+
+//         {/* Mobile Navigation Links (appears below logo, above contact on mobile) */}
+//         <nav className="sm:hidden flex flex-wrap items-center justify-center gap-3.5 sm:mb-10 mb-7.5">
+//           {navLinks.map((link) => (
+//             <Link
+//               key={link.href}
+//               href={link.href}
+//               className="text-lg text-subheadingWhite hover:text-primary transition-colors duration-75 ease-linear"
+//             >
+//               {link.label}
+//             </Link>
+//           ))}
+//         </nav>
+
+
+//         {/* Middle Section: Contact Info */}
+//         <div className="flex items-center flex-row justify-center gap-3.5 sm:text-lg text-base mb-7.5 sm:mb-12.5 shrink-0 flex-wrap border-t border-b py-12.5">
+//           {contactInfo.map((item, index) => (
+//             <a // Use <a> tag for mailto and tel links
+//               key={index}
+//               href={item.href}
+//               aria-label={item.ariaLabel}
+//               target={
+//                 item.href &&
+//                 (item.href.startsWith("mailto:") ||
+//                   item.href.startsWith("tel:"))
+//                   ? "_blank"
+//                   : undefined
+//               }
+//               rel={
+//                 item.href &&
+//                 (item.href.startsWith("mailto:") ||
+//                   item.href.startsWith("tel:"))
+//                   ? "noopener noreferrer"
+//                   : undefined
+//               }
+//               className={`flex items-center ${
+//                 item.href ? "hover:text-[#A5CC3D]" : "cursor-default"
+//               } transition-colors duration-200 group`}
+//             >
+//               <item.icon className="sm:size-6 size-5 text-primary mr-1.5 transition-colors duration-200 shrink" />
+//               <span className="text-subheadingWhite max-w-48 sm:max-w-full">
+//                 {item.text}
+//               </span>
+//             </a>
+//           ))}
+//         </div>
+
+
+//         <div className="Currency-Convertors text-center sm:text-left mb-7.5 sm:mb-12.5">
+//           <div className="flex flex-wrap justify-center gap-3.5">
+//             {currencyConverterLinksData.map((pair, index) => (
+//               <div className="flex items-center" key={pair}>
+//                 <div className="relative group inline-block">
+//                   <button
+//                     className="relative z-10 cursor-pointer bg-primary-foreground font-medium hover:bg-primaryhover px-4 py-2 rounded-full sm:text-base text-sm text-subheadingWhite transition-all duration-75 ease-linear hover:text-subheading"
+//                     onClick={() => handleCurrencyConverterClick(pair)}
+//                   >
+//                     {pair}
+//                   </button>
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+
+
+//         {/* Bottom Bar: Social, Copyright, Legal */}
+//         <div className="bg-primary-foreground border-gray-700/50 sm:p-3 p-4 mt-16 pb-8 sm:mt-0 border rounded-xl sm:rounded-full ">
+//           <div className="flex flex-col sm:flex-row justify-between items-center space-y-5 sm:space-y-0">
+//             {/* Social Media Icons */}
+//             <div className="flex space-x-3.5 items-center order-1 -mt-10 sm:mt-0">
+//               {socialLinks.map((link) => (
+//                 <a
+//                   key={link.label}
+//                   href={link.href}
+//                   aria-label={link.label}
+//                   target="_blank"
+//                   rel="noopener noreferrer"
+//                   className="bg-primary text-mainheading rounded-full flex items-center justify-center
+// sm:size-13 size-11
+// transition-all duration-300"
+//                 >
+//                   <link.icon className="w-5 h-5 sm:size-6" />{" "}
+//                 </a>
+//               ))}
+//             </div>
+
+//             {/* Copyright Text */}
+//             <p className="text-subheadingWhite text-center order-2 sm:text-center">
+//               {copyrightText} © {currentYear}
+//             </p>
+
+//             {/* Legal Links */}
+//             <div className="flex sm:flex-row items-center gap-3 order-3">
+//               <Link
+//                 href="/privacy-policy"
+//                 className="text-base text-subheadingWhite hover:text-primary transition-colors duration-200"
+//               >
+//                 Privacy Policy
+//               </Link>
+//               <span className="text-subheadingWhite">|</span>
+//               <Link
+//                 href="/terms-and-conditions"
+//                 className="text-subheadingWhite hover:text-primary transition-colors duration-200"
+//               >
+//                 Terms of Service
+//               </Link>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </footer>
+//   );
+// };
+
+// export default Footer;
+
+
 // app/components/Footer.tsx
 "use client";
 import Link from "next/link";
-import Image from "next/image";
-import { useState, useEffect } from "react";
 import { IconType } from "react-icons";
-import { motion, AnimatePresence } from "framer-motion";
-import { useAppContext } from "../../contexts/WebsiteAppContext"; // Adjust path if needed
+import { MdEmail, MdPhone, MdLocationOn } from "react-icons/md";
+import { FaTwitter } from "react-icons/fa";
+import Image from "next/image";
+import { FaFacebook, FaLinkedin } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
-import { IoLogoWhatsapp } from "react-icons/io";
-import { FaTelegram } from "react-icons/fa";
-import { ReactNode } from "react";
-import { FiChevronDown, FiChevronUp } from "react-icons/fi";
+import { useAppContext } from "../../contexts/WebsiteAppContext"; // Adjust path if needed
 
-interface FooterLink {
+interface NavLinkItem {
   href: string;
-  label: string | ReactNode;
+  label: string;
 }
 
-interface SocialLink extends FooterLink {
+interface ContactInfoItem {
   icon: IconType;
+  text: string;
+  href?: string;
+  ariaLabel?: string;
 }
 
-interface FooterSection {
-  title: string;
-  links?: FooterLink[];
-  socialLinks?: SocialLink[];
+interface SocialLinkItem {
+  icon: IconType;
+  href: string;
+  label: string; // for aria-label
 }
 
-interface FooterData {
-  sections: FooterSection[];
-  currencyConverters: string[];
-  disclaimer: string;
-}
+const navLinks: NavLinkItem[] = [
+  { href: "/", label: "Home" },
+  { href: "/about-us", label: "About" },
+  { href: "/features", label: "Features" },
+  { href: "/reviews", label: "Reviews" },
+  { href: "/faqs", label: "Help" },
+];
+
+const contactInfo: ContactInfoItem[] = [
+  {
+    icon: MdEmail,
+    text: "hello@skillbirdge.com", // Assuming this is a placeholder, update if needed
+    href: "mailto:hello@skillbirdge.com",
+    ariaLabel: "Email us at hello@skillbirdge.com",
+  },
+  {
+    icon: MdPhone,
+    text: "+91 8849498140",
+    href: "tel:+918849498140",
+    ariaLabel: "Call us at +91 88494 98140",
+  },
+  {
+    icon: MdLocationOn,
+    text: "Somewhere in the World",
+    ariaLabel: "Our location: Somewhere in the World",
+  },
+];
+
+const socialLinks: SocialLinkItem[] = [
+  { icon: FaFacebook, href: "https://www.facebook.com/", label: "Facebook" },
+  { icon: FaTwitter, href: "https://x.com/home", label: "Twitter" },
+  {
+    icon: FaLinkedin,
+    href: "https://www.linkedin.com/company/apextureprivatelimited/posts/?feedView=all", // Assuming this is a placeholder, update if needed
+    label: "LinkedIn",
+  },
+];
+
+const copyrightText = "Remityn. All Rights Reserved";
+const currentYear = new Date().getFullYear();
+
+// Data for Currency Converters
+const currencyConverterLinksData = [
+  "USD to INR",
+  "AED to INR",
+  "AUD to INR",
+  "CAD to INR",
+  "EUR to INR",
+];
 
 const Footer: React.FC = () => {
-  const footerData: FooterData = {
-    sections: [
-      {
-        title: "Company",
-        links: [
-          { href: "/", label: "Home" },
-          { href: "/about-us", label: "About" },
-          { href: "/reviews", label: "Reviews" },
-        ],
-      },
-      {
-        title: "Help",
-        links: [
-          { href: "/privacy-policy", label: "Privacy Policy" },
-          {
-            href: "/terms-and-conditions",
-            label: <>Terms and Conditions</>,
-          },
-          { href: "/faqs", label: "FAQs" }, // Assuming FAQ might be a section on the page
-        ],
-      },
-    ],
-
-    currencyConverters: [
-      "USD to INR",
-      "AED to INR",
-      "AUD to INR",
-      "CAD to INR",
-      "EUR to INR",
-    ],
-    disclaimer:
-      "Wise is authorised by the Financial Conduct Authority under the Electronic Money Regulations 2011, Firm Reference 900507, for the issuing of electronic money. Wise works with a local bank partner to offer the service in India with the approval of the Reserve Bank of India.",
-  };
-
-  // --- STATE ---
-  // Start with "Company" open by default for mobile experience
-  const [openDropdown, setOpenDropdown] = useState<string | null>("Company");
-  const [isMobile, setIsMobile] = useState(false);
-  // --- END STATE ---
-
-  const { setSelectedSendCurrency } = useAppContext();
   const router = useRouter();
-
-  // --- TOGGLE FUNCTION ---
-  // This function correctly handles opening and closing
-  const toggleDropdown = (title: string) => {
-    setOpenDropdown((currentOpen) => (currentOpen === title ? null : title));
-  };
-  // --- END TOGGLE FUNCTION ---
-
-  // --- EFFECT FOR RESIZE ---
-  useEffect(() => {
-    // Function to check window size and update isMobile state
-    const handleResize = () => {
-      const mobileCheck = window.innerWidth < 640; // md breakpoint
-      setIsMobile(mobileCheck);
-      // Optional: If resizing TO desktop, you might want to ensure all accordions appear open
-      // by setting openDropdown to null, but the conditional rendering already handles visibility.
-      // We don't need to force 'Company' open here on every resize, only check the screen size.
-    };
-
-    // Initial check on component mount
-    handleResize();
-
-    // Add resize event listener
-    window.addEventListener("resize", handleResize);
-
-    // Cleanup listener on component unmount
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []); // Empty dependency array: runs only once on mount for setup and cleanup on unmount
-  // --- END EFFECT ---
-
-  const renderLinkList = (links: FooterLink[] | undefined) => (
-    <ul className="space-y-3 py-2">
-      {links?.map((link) => (
-        <li key={link.href}>
-          <div className="relative group w-fit  text-neutral-900 dark:text-white font-medium lg:text-base text-sm">
-            <Link href={link.href} className="relative z-10">
-              {link.label}
-            </Link>
-            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-neutral-900 dark:bg-primary transform scale-x-0 origin-right transition-transform duration-500 ease-in-out group-hover:origin-left group-hover:scale-x-100"></span>
-          </div>
-        </li>
-      ))}
-    </ul>
-  );
+  const { setSelectedSendCurrency } = useAppContext(); // Ensure WebsiteAppContext is provided in your app
 
   const handleCurrencyConverterClick = (converter: string) => {
     const currencyCode = converter.split(" ")[0];
     if (setSelectedSendCurrency) {
       setSelectedSendCurrency(currencyCode);
     }
-    router.push("/");
+    router.push("/"); // Navigate to home page or a relevant page
   };
 
   return (
-    <footer className="bg-white dark:bg-background lg:py-10 py-5 overflow-hidden">
+    <footer className="lg:py-16 py-10">
       <div className="container mx-auto px-4">
-        <div className=" flex flex-col lg:flex-row justify-between w-full">
-          <div className="flex flex-col w-full lg:w-1/2 mb-8 lg:mb-0">
-            <Link href="/">
+        {/* Top Section: Logo and Nav Links */}
+        <div className="flex flex-col items-center ">
+          {/* Logo */}
+          <div className="sm:mb-12.5 mb-7.5">
+            {/* Footer-Logo */}
+            <Link href="/" className="relative">
               <Image
-                src="/assets/images/white_logo.svg"
-                alt="Wise Logo"
+                src="/assets/images/main_logo.svg"
+                alt="Remityn Logo" 
                 width={160}
                 height={50}
                 priority
-                className="mb-4 w-40 h-auto dark:hidden block"
-              />
-
-              <Image
-                src="/assets/images/dark_logo.svg"
-                alt="Wise Logo"
-                width={160}
-                height={50}
-                priority
-                className="mb-4 w-40 h-auto dark:block hidden"
+                className="w-46 h-auto" // Consider using explicit width e.g., w-[160px] or w-40 if using Tailwind's scale
               />
             </Link>
-
-            <p className="text-gray-500 dark:text-gray-300 lg:text-lg text-base">
-              {/* Adjusted text size and leading */}
-              We provide reliable and competitive currency exchange services
-              with real-time rates, secure transactions, and excellent customer
-              support. Whether you're traveling, investing, or sending money
-              abroad, trust us to handle your currency needs with transparency
-              and speed.
-            </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:gap-y-6 gap-y-4 w-full lg:w-1/4">
-            {footerData.sections.map((section) => (
-              <div key={section.title}>
-                {/* Section Header (Mobile Accordion Trigger) */}
-                <div
-                  className={`flex items-center justify-between lg:pb-4 pb-2 ${
-                    isMobile ? "cursor-pointer" : "" // Make header clickable only on mobile
-                  }`}
-                  onClick={
-                    // Assign toggle only if mobile
-                    isMobile ? () => toggleDropdown(section.title) : undefined
-                  }
-                  // Add accessibility attributes for the accordion header
-                  role={isMobile ? "button" : undefined}
-                  aria-expanded={
-                    isMobile ? openDropdown === section.title : true
-                  }
-                  aria-controls={
-                    isMobile
-                      ? `${section.title.toLowerCase()}-dropdown-menu`
-                      : undefined
-                  }
-                  tabIndex={isMobile ? 0 : -1} // Make it focusable on mobile
-                >
-                  <h3 className="text-primary lg:text-lg text-base font-semibold">
-                    {section.title}
-                  </h3>
-                  {/* Icon container - important: don't put onClick here, keep it on parent div */}
-                  {isMobile && (
-                    <span className="text-mainheading dark:text-white pointer-events-none">
-                      {/* Prevent nested clicks */}
-                      {openDropdown === section.title ? (
-                        <FiChevronUp className="size-4" />
-                      ) : (
-                        <FiChevronDown className="size-4" />
-                      )}
-                    </span>
-                  )}
-                </div>
+          {/* Desktop Navigation Links */}
+          <nav className="hidden sm:flex items-center space-x-6 mb-12.5">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-lg lg:text-xl text-subheadingWhite hover:text-primary transition-colors duration-75 ease-linear "
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
 
-                {/* Section Content (Mobile Accordion Content) */}
-                <AnimatePresence initial={false}>
-                  {/* Show content if NOT mobile OR if mobile AND it's the open dropdown */}
-                  {(!isMobile ||
-                    (isMobile && openDropdown === section.title)) && (
-                    <motion.div
-                      id={
-                        isMobile
-                          ? `${section.title.toLowerCase()}-dropdown-menu`
-                          : undefined
-                      }
-                      key={`${section.title}-content`}
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                      style={{ overflow: "hidden" }}
-                      // Add role region for accessibility
-                      role="region"
-                      aria-labelledby={
-                        isMobile
-                          ? section.title.toLowerCase() + "-heading"
-                          : undefined
-                      } // Assuming h3 gets an id
-                    >
-                      {/* Render links or social links */}
-                      {section.links && renderLinkList(section.links)}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+
+        {/* Mobile Navigation Links (appears below logo, above contact on mobile) */}
+        <nav className="sm:hidden flex flex-wrap items-center justify-center gap-3.5 sm:mb-10 mb-7.5">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="text-lg text-subheadingWhite hover:text-primary transition-colors duration-75 ease-linear"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+
+
+        {/* Middle Section: Contact Info */}
+        <div className="flex items-center flex-row justify-center gap-3.5 sm:text-lg text-base mb-7.5 sm:mb-12.5 shrink-0 flex-wrap border-t border-b py-12.5">
+          {contactInfo.map((item, index) => (
+            <a
+              key={index}
+              href={item.href}
+              aria-label={item.ariaLabel}
+              target={
+                item.href &&
+                (item.href.startsWith("mailto:") ||
+                  item.href.startsWith("tel:"))
+                  ? "_blank"
+                  : undefined
+              }
+              rel={
+                item.href &&
+                (item.href.startsWith("mailto:") ||
+                  item.href.startsWith("tel:"))
+                  ? "noopener noreferrer"
+                  : undefined
+              }
+              className={`flex items-center ${
+                item.href ? "hover:text-[#A5CC3D]" : "cursor-default"
+              } transition-colors duration-200 group`}
+            >
+              <item.icon className="sm:size-6 size-5 text-primary mr-1.5 transition-colors duration-200 shrink-0" /> {/* Added shrink-0 */}
+              <span className="text-subheadingWhite max-w-48 sm:max-w-full">
+                {item.text}
+              </span>
+            </a>
+          ))}
+        </div>
+
+
+        <div className="Currency-Convertors text-center sm:text-left mb-7.5 sm:mb-12.5">
+          <div className="flex flex-wrap justify-center gap-3.5">
+            {currencyConverterLinksData.map((pair) => ( // Removed index as it wasn't used
+              <div className="flex items-center" key={pair}>
+                <div className="relative group inline-block">
+                  <button
+                    className="relative z-10 cursor-pointer bg-primary-foreground font-medium hover:bg-primaryhover px-4 py-2 rounded-full sm:text-base text-sm text-subheadingWhite transition-all duration-75 ease-linear hover:text-subheading"
+                    onClick={() => handleCurrencyConverterClick(pair)}
+                  >
+                    {pair}
+                  </button>
+                </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Currency Converters Section */}
-        <hr className="lg:my-6 my-4" />
-        <div className="Currency-Convertors">
-          <h3 className="text-primary lg:text-lg text-base font-semibold pb-4">
-            Currency Converters
-          </h3>
-          <div className="flex flex-wrap gap-y-2">
-            {footerData.currencyConverters.map((pair, index) => (
-              <div className="flex items-center" key={pair}>
-                <div className="relative group inline-block">
-                  <button
-                    className="relative z-10 cursor-pointer text-sm lg:text-base text-neutral-900 dark:text-white"
-                    onClick={() => handleCurrencyConverterClick(pair)}
-                  >
-                    {pair}
-                  </button>
-                  <span className="absolute bottom-0 left-0 w-full h-[2px] bg-neutral-900 dark:bg-primary transform scale-x-0 origin-right transition-transform duration-500 ease-in-out group-hover:origin-left group-hover:scale-x-100"></span>
-                </div>
-                {index !== footerData.currencyConverters.length - 1 && (
-                  <span className="mx-4 text-gray-500 dark:text-gray-300">
-                    |
-                  </span>
-                )}
-              </div>
-            ))}
+
+        {/* Bottom Bar: Social, Copyright, Legal */}
+        <div className="bg-primary-foreground border-gray-700/50 sm:p-3 p-4 mt-16 pb-8 sm:mt-0 border rounded-xl sm:rounded-full ">
+          <div className="flex flex-col sm:flex-row justify-between items-center space-y-5 sm:space-y-0">
+            {/* Social Media Icons */}
+            <div className="flex space-x-3.5 items-center order-1 sm:order-none -mt-10 sm:mt-0"> {/* Adjusted order for desktop */}
+              {socialLinks.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  aria-label={link.label}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-primary text-mainheading rounded-full flex items-center justify-center sm:size-13 size-11 transition-all duration-300 hover:opacity-80" // Added hover effect
+                >
+                  <link.icon className="w-5 h-5 sm:size-6" />
+                </a>
+              ))}
+            </div>
+
+            {/* Copyright Text */}
+            <p className="text-subheadingWhite text-center order-2 sm:order-none"> {/* Adjusted order for desktop */}
+              {copyrightText} © {currentYear}
+            </p>
+
+            {/* Legal Links */}
+            <div className="flex sm:flex-row items-center gap-3 order-3 sm:order-none"> {/* Adjusted order for desktop */}
+              <Link
+                href="/privacy-policy"
+                className="text-base text-subheadingWhite hover:text-primary transition-colors duration-200"
+              >
+                Privacy Policy
+              </Link>
+              <span className="text-subheadingWhite">|</span>
+              <Link
+                href="/terms-and-conditions"
+                className="text-subheadingWhite hover:text-primary transition-colors duration-200" // Removed text-base as it was redundant with parent
+              >
+                Terms of Service
+              </Link>
+            </div>
           </div>
         </div>
       </div>

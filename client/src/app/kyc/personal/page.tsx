@@ -5059,9 +5059,9 @@ export default function KycPersonalPage() {
   const handleSkip = useCallback(async () => {
     // If KYC status is already 'skipped', redirect to dashboard immediately.
     if (backendStatus === "skipped") {
-      console.log(
-        "KYC Personal: KYC status is already 'skipped'. Redirecting to dashboard."
-      );
+      // console.log(
+      //   "KYC Personal: KYC status is already 'skipped'. Redirecting to dashboard."
+      // );
       router.push("/dashboard");
       return;
     }
@@ -5080,16 +5080,16 @@ export default function KycPersonalPage() {
       // The API call should only happen if the status allows (e.g., not_started, or if backend handles rejected->skipped)
       // For robustness, one might add a check here: if (backendStatus !== "not_started" && backendStatus !== "rejected") return;
       // However, the primary guard is the backendStatus === "skipped" check above.
-      console.log("KYC Personal: Attempting to skip KYC via service...");
+      // console.log("KYC Personal: Attempting to skip KYC via service...");
       await kycService.skipKyc();
-      console.log(
-        "KYC Personal: Skip API call successful. Refetching contexts..."
-      );
+      // console.log(
+      //   "KYC Personal: Skip API call successful. Refetching contexts..."
+      // );
       await refetchUser();
       await fetchKycStatus(true); // Force refetch of KYC status
-      console.log(
-        "KYC Personal: Contexts refetched. Redirecting to dashboard."
-      );
+      // console.log(
+      //   "KYC Personal: Contexts refetched. Redirecting to dashboard."
+      // );
       router.push("/dashboard"); // Redirect after successful skip
     } catch (err: any) {
       console.error("KYC Personal: Error skipping KYC:", err);
@@ -5150,11 +5150,11 @@ export default function KycPersonalPage() {
     // Showing a message and dashboard link as a fallback.
     return (
       <div className="flex justify-center items-center min-h-[400px] text-center">
-        <Card className="p-6 bg-white dark:bg-background shadow-lg rounded-lg">
-          <CardTitle className="text-xl font-semibold text-mainheading dark:text-white">
+        <Card className="p-6 bg-primarybox shadow-lg rounded-lg">
+          <CardTitle className="text-xl font-semibold  text-mainheadingWhite">
             KYC Status: {backendStatus.replace("_", " ").toUpperCase()}
           </CardTitle>
-          <CardDescription className="text-gray-600 dark:text-gray-300 mt-2">
+          <CardDescription className="text-subheadingWhite mt-2">
             Your personal details cannot be edited at this stage.
             {backendStatus === "error" &&
               " An error occurred with your KYC process. Please contact support."}
@@ -5169,7 +5169,7 @@ export default function KycPersonalPage() {
                   : "/dashboard"
               )
             }
-            className="mt-6 bg-primary hover:bg-primaryhover text-neutral-900 rounded-full px-6 py-2.5"
+            className="mt-4 bg-primary hover:bg-primaryhover text-mainheading rounded-full px-6 py-2.5"
           >
             {backendStatus === "unauthenticated"
               ? "Go to Login"
@@ -5181,14 +5181,15 @@ export default function KycPersonalPage() {
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto shadow-none border animate-fadeIn sm:p-8 p-4 bg-white dark:bg-background">
+
+    <Card className="w-full lg:max-w-2xl max-w-full shadow-none border animate-fadeIn sm:p-8 p-4 bg-transparent">
       <CardHeader className="border-b pb-6 mb-6 space-y-2">
-        <CardTitle className="sm:text-2xl text-xl font-semibold tracking-normal flex items-start gap-2 text-mainheading dark:text-white">
+        <CardTitle className="sm:text-2xl text-xl font-semibold tracking-normal flex items-start gap-2 text-mainheadingWhite">
           <User className="h-6 w-6 text-primary mt-1 flex-shrink-0" /> Personal
           Details (Step 
           {formStepOrder.indexOf("personal") + 1} of {formStepOrder.length})
         </CardTitle>
-        <CardDescription className="text-gray-500 dark:text-gray-300">
+        <CardDescription className="text-subheadingWhite">
           Enter your legal name, date of birth, and mobile number. Fields marked
           with <span className="text-red-500">*</span> are required.
         </CardDescription>
@@ -5196,15 +5197,15 @@ export default function KycPersonalPage() {
 
       <CardContent>
         {formActionError && (
-          <Alert className="bg-red-50 dark:bg-red-900/25 border-red-500 rounded-lg p-4 gap-3 mb-6">
+          <Alert className="bg-red-900/25 border-red-500 rounded-lg p-4 gap-3 mb-6">
             <div className="flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center bg-red-600/20">
-              <AlertTriangle className="text-red-600 dark:text-red-500 size-5 sm:size-6 flex-shrink-0" />
+              <AlertTriangle className="text-red-500 size-5 sm:size-6 flex-shrink-0" />
             </div>
             <div>
-              <AlertTitle className="font-medium tracking-normal text-red-800 dark:text-red-200 text-base">
+              <AlertTitle className="font-medium tracking-normal text-red-600 text-base">
                 Action Failed
               </AlertTitle>
-              <AlertDescription className="text-red-700 dark:text-red-300/90">
+              <AlertDescription className="text-red-300/90">
                 {formActionError}
               </AlertDescription>
             </div>
@@ -5219,11 +5220,11 @@ export default function KycPersonalPage() {
                 name="firstName"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel className="text-neutral-900 dark:text-white">
+                    <FormLabel className="text-mainheadingWhite block capitalize text-sm lg:text-base">
                       Legal First Name <span className="text-red-600">*</span>
                     </FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., Jane" {...field} />
+                      <Input className="block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0" placeholder="e.g., Jane" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -5235,11 +5236,11 @@ export default function KycPersonalPage() {
                 name="lastName"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel className="text-neutral-900 dark:text-white">
+                    <FormLabel className="text-mainheadingWhite block capitalize text-sm lg:text-base">
                       Legal Last Name <span className="text-red-600">*</span>
                     </FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., Doe" {...field} />
+                      <Input className="block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0" placeholder="e.g., Doe" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -5252,7 +5253,7 @@ export default function KycPersonalPage() {
               name="dateOfBirth"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel className="text-neutral-900 dark:text-white">
+                  <FormLabel className="block capitalize text-sm lg:text-base">
                     Date of Birth <span className="text-red-600">*</span>
                   </FormLabel>
                   <Popover
@@ -5271,14 +5272,13 @@ export default function KycPersonalPage() {
                   >
                     <PopoverTrigger asChild>
                       <Button
-                        variant={"outline"}
                         className={cn(
-                          "w-full h-12 justify-start text-left font-normal",
-                          !field.value && "text-muted-foreground"
+                          "justify-start text-left font-normal mt-1 px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0",
+                          !field.value && "text-gray-400"
                         )}
                         type="button" // Ensure it's not a submit button
                       >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
                         {field.value && isDateValid(field.value) ? (
                           format(field.value, "PPP")
                         ) : (
@@ -5295,7 +5295,7 @@ export default function KycPersonalPage() {
                           value={datePickerMonths[calendarDate.getMonth()]}
                           onValueChange={handleMonthChange}
                         >
-                          <SelectTrigger className="w-36 h-8">
+                          <SelectTrigger className="w-36 h-8 text-white/90">
                             <SelectValue placeholder="Month" />
                           </SelectTrigger>
                           <SelectContent className="h-72">
@@ -5311,7 +5311,7 @@ export default function KycPersonalPage() {
                           value={calendarDate.getFullYear().toString()}
                           onValueChange={handleYearChange}
                         >
-                          <SelectTrigger className="w-28 h-8">
+                          <SelectTrigger className="w-28 h-8 text-white/90">
                             <SelectValue placeholder="Year" />
                           </SelectTrigger>
                           <SelectContent className="h-72">
@@ -5348,7 +5348,7 @@ export default function KycPersonalPage() {
                       <div className="p-3 border-t">
                         <Button
                           type="button"
-                          className="w-full bg-primary hover:bg-primaryhover text-neutral-900 rounded-full"
+                          className="w-full bg-primary hover:bg-primaryhover text-mainheading font-medium rounded-full"
                           onClick={() => {
                             field.onChange(tempDateOfBirth);
                             form.trigger("dateOfBirth"); // Manually trigger validation for DOB
@@ -5363,7 +5363,7 @@ export default function KycPersonalPage() {
                       </div>
                     </PopoverContent>
                   </Popover>
-                  <FormDescription className="text-gray-500 dark:text-gray-300 pt-1">
+                  <FormDescription className="text-subheadingWhite pt-1">
                     You must be 18 years or older.
                   </FormDescription>
                   <FormMessage />
@@ -5372,7 +5372,7 @@ export default function KycPersonalPage() {
             />
 
             <div className="space-y-2">
-              <FormLabel className="flex items-center gap-1.5 text-neutral-900 dark:text-white">
+              <FormLabel className="text-mainheadingWhite block capitalize text-sm lg:text-base">
                 Mobile Number <span className="text-red-600">*</span>
               </FormLabel>
 
@@ -5388,18 +5388,17 @@ export default function KycPersonalPage() {
                       >
                         <PopoverTrigger asChild>
                           <Button
-                            variant="outline"
                             role="combobox"
                             aria-expanded={countryCodePopoverOpen}
                             className={cn(
-                              "w-full h-12 justify-between",
-                              !field.value && "text-muted-foreground"
+                              "mt-1 justify-between px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0",
+                              !field.value && "text-gray-400 "
                             )}
                             aria-label="Select country calling code"
                             type="button" // Ensure not submit
                           >
                             {field.value ? field.value : "Code"}
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0" />
                           </Button>
                         </PopoverTrigger>
                         
@@ -5437,12 +5436,12 @@ export default function KycPersonalPage() {
                               return isInLabel || isInCode ? 1 : 0;
                             }}
                           >
-                            <CommandInput placeholder="Search country or code..." />
+                            <CommandInput className="placeholder:text-white/90 h-12 text-white/90" placeholder="Search country or code..." />
 
                             <CommandList>
                               <CommandEmpty>No country found.</CommandEmpty>
                               
-                              <CommandGroup className="max-h-[250px] overflow-y-auto sm:[&::-webkit-scrollbar]:w-2 sm:[&::-webkit-scrollbar]:h-3 sm:[&::-webkit-scrollbar-track]:rounded-full sm:[&::-webkit-scrollbar-track]:bg-gray-100 sm:[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-lightborder sm:dark:[&::-webkit-scrollbar-track]:bg-primarybox sm:dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
+                              <CommandGroup className="max-h-[250px] overflow-y-auto sm:[&::-webkit-scrollbar]:w-2 sm:[&::-webkit-scrollbar]:h-3 sm:[&::-webkit-scrollbar-track]:rounded-full sm:[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-lightborder sm:[&::-webkit-scrollbar-track]:bg-primarybox sm:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
                                 {countryCodeOptions.map((option) => (
                                   <CommandItem
                                     key={option.label}
@@ -5461,7 +5460,7 @@ export default function KycPersonalPage() {
                                     <span>{option.label}</span>
                                     <Check
                                       className={cn(
-                                        "ml-2 h-4 w-4",
+                                        "ml-2 h-4 w-4 text-mainheadingWhite",
                                         option.value === field.value
                                           ? "opacity-100"
                                           : "opacity-0"
@@ -5489,7 +5488,7 @@ export default function KycPersonalPage() {
                           inputMode="numeric"
                           placeholder="Enter number"
                           {...field}
-                          className="h-12"
+                          className="mt-1 block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0"
                         />
                       </FormControl>
                       <FormMessage />
@@ -5497,7 +5496,7 @@ export default function KycPersonalPage() {
                   )}
                 />
               </div>
-              <FormDescription className="text-gray-500 dark:text-gray-300 pt-1">
+              <FormDescription className="text-subheadingWhite pt-1">
                 Used for verification and communications.
               </FormDescription>
             </div>
@@ -5505,7 +5504,7 @@ export default function KycPersonalPage() {
             <div className="flex flex-col sm:flex-row justify-between items-center pt-6 border-t mt-6 gap-4">
               <button
                 type="button"
-                className="inline-flex items-center justify-center bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center justify-center text-primary bg-primarybox hover:bg-secondarybox font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={prevStep}
                 disabled={isSubmittingForm || isSkipping}
                 aria-label="Go back to previous step"
@@ -5520,7 +5519,7 @@ export default function KycPersonalPage() {
                   type="button"
                   onClick={handleSkip}
                   disabled={isSubmittingForm || isSkipping}
-                  className="bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-6 py-3 h-12.5 w-full rounded-full transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-secondarybox hover:bg-secondaryboxhover text-primary px-6 py-3 h-12.5 w-full rounded-full transition-all duration-75 ease-linear focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   aria-label="Skip KYC process for now"
                 >
                   {isSkipping ? (
@@ -5532,7 +5531,7 @@ export default function KycPersonalPage() {
 
               <button
                 type="submit"
-                className="inline-flex items-center justify-center bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center justify-center bg-primary text-mainheading hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={
                   isSubmittingForm || isSkipping || !form.formState.isValid
                 }
@@ -5541,7 +5540,7 @@ export default function KycPersonalPage() {
                 {isSubmittingForm ? (
                   <>
                     <svg
-                      className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                      className="h-5 w-5 text-mainheading animate-spin mr-2"
                       viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"

@@ -4780,7 +4780,7 @@ const InboxPage: React.FC = () => {
         await inboxService.markAsRead(message._id);
         if (fetchUnreadInboxCount) {
             await fetchUnreadInboxCount();
-            console.log("InboxPage: Unread count refreshed after marking message as read.");
+            // console.log("InboxPage: Unread count refreshed after marking message as read.");
         }
       } catch (err) {
         console.error("Failed to mark as read:", err);
@@ -4960,32 +4960,33 @@ const InboxPage: React.FC = () => {
 
   if (!authLoading && !user) {
     return (
-      <section className="Your-Inbox py-5 md:py-10">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <Inbox className="size-16 mx-auto text-muted-foreground mb-4" />
-          <h1 className="text-xl font-semibold text-mainheading dark:text-white mb-2">
-            Access Denied
-          </h1>
-          <p className="text-muted-foreground">
-            {error || "Please log in to view your inbox."}
-          </p>
+      <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
+        <div className="lg:size-16 size-14 flex items-center justify-center bg-red-600 rounded-full mb-2">
+          <Inbox className="lg:size-8 size-6 mx-auto text-white" />
         </div>
-      </section>
+        <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite mt-1">
+          Access Denied
+        </h2>
+        <p className="text-subheadingWhite max-w-lg mx-auto">
+          {error || "Please log in to view your inbox."}
+        </p>
+      </div>
     );
   }
+
 
   return (
     <section className="Your-Inbox ">
       <div className="container mx-auto">
-        <div className="flex flex-row justify-between items-start md:items-center gap-4 pb-8 sticky lg:top-28 top-20 z-10 bg-white dark:bg-background">
+        <div className="flex flex-row justify-between items-start md:items-center gap-4 pb-8 sticky lg:top-28 top-20 z-10 bg-background">
           <div className="flex items-center gap-3">
             <div>
-              <h1 className="text-2xl md:text-3xl font-semibold text-nowrap text-mainheading dark:text-white">
+              <h1 className="text-2xl md:text-3xl font-semibold text-nowrap text-mainheadingWhite">
                 Your Inbox
               </h1>
-              
+
               {!loading && inboxData && hasMessagesInTotal && (
-                <div className="text-sm text-muted-foreground">
+                <div className="text-sm text-subheadingWhite">
                   {unreadMessages.length > 0 ? (
                     <span className="flex items-center gap-1.5">
                       <span className="font-medium text-primary">
@@ -4993,10 +4994,7 @@ const InboxPage: React.FC = () => {
                       </span>
                       {readMessages.length > 0 && (
                         <>
-                          <GoDotFill
-                            size={8}
-                            className="text-gray"
-                          />
+                          <GoDotFill size={8} className="text-white/90" />
                           <span>{readMessages.length} read</span>
                         </>
                       )}
@@ -5024,8 +5022,8 @@ const InboxPage: React.FC = () => {
             <>
               <button
                 onClick={handleRefresh}
-                disabled={loading && !isInitialLoad.current} 
-                className="flex items-center justify-center cursor-pointer gap-2 bg-lightgray hover:bg-lightborder dark:bg-primarybox dark:hover:bg-secondarybox text-neutral-900 dark:text-white px-4 sm:px-8 py-3 h-[50px] w-auto rounded-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={loading && !isInitialLoad.current}
+                className="flex items-center justify-center cursor-pointer gap-2 bg-primarybox text-primary hover:bg-primaryboxhover px-4 sm:px-8 py-3 h-[50px] w-auto rounded-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <RefreshCw
                   className={`size-5 ${
@@ -5056,39 +5054,32 @@ const InboxPage: React.FC = () => {
             !error && (
               <>
                 {!isInitialLoad.current && !hasMessagesInTotal && (
-                  <div 
-                    className="bg-lightgray dark:bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center"
-                  >
-                    <div className="lg:size-16 size-14 flex items-center justify-center bg-primary dark:bg-transparent dark:bg-gradient-to-t dark:from-primary rounded-full mb-2">
-                      <Inbox className="lg:size-8 size-6 mx-auto text-neutral-900 dark:text-primary" />
+                  <div className="bg-primarybox rounded-3xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
+                    <div className="lg:size-16 size-14 flex items-center justify-center bg-primary rounded-full mb-2">
+                      <Inbox className="lg:size-8 size-6 mx-auto text-mainheading" />
                     </div>
-                    <h2 className="lg:text-3xl text-2xl font-medium text-neutral-900 dark:text-white mt-1">
+                    <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite mt-1">
                       All Messages Clear!
                     </h2>
-                    <p className="text-gray-500 dark:text-gray-300 max-w-lg mx-auto">
-                      Your inbox is currently empty. New messages and
-                      important updates will show up here as soon as they
-                      arrive.
+                    <p className="text-subheadingWhite max-w-lg mx-auto">
+                      Your inbox is currently empty. New messages and important
+                      updates will show up here as soon as they arrive.
                     </p>
                   </div>
                 )}
-                
                 {hasMessagesInTotal && (
                   <motion.div key={listAnimationKey}>
-                    <div className="space-y-4"> 
+                    <div className="space-y-4">
                       {unreadMessages.length > 0 && (
                         <div className="space-y-4">
                           <div className="flex items-center gap-2 mb-4">
-                            <div className="dark:bg-primarybox bg-primary p-2 rounded-md">
-                              <Bell
-                                className="dark:text-white text-neutral-900"
-                                size={28}
-                              />
+                            <div className="bg-primary p-2 rounded-md">
+                              <Bell className="text-mainheading" size={28} />
                             </div>
 
-                            <h2 className="text-xl font-medium dark:text-white text-mainheading">
+                            <h2 className="text-xl font-medium text-mainheadingWhite">
                               New Messages
-                              <span className="ml-2 text-xs font-semibold dark:bg-primary bg-lightborder text-neutral-900 px-1.5 py-0.5 rounded-full inline-flex items-center justify-center min-w-[20px]">
+                              <span className="ml-2 text-xs font-semibold bg-primarybox text-primary px-1.5 py-0.5 rounded-full inline-flex items-center justify-center min-w-[20px]">
                                 {unreadMessages.length}
                               </span>
                             </h2>
@@ -5118,22 +5109,22 @@ const InboxPage: React.FC = () => {
                       )}
 
                       {unreadMessages.length > 0 && readMessages.length > 0 && (
-                        <Separator className="sm:my-8 my-5 bg-border/50" />
+                        <Separator className="sm:my-8 my-5 bg-gray-600/50" />
                       )}
 
                       {readMessages.length > 0 && (
                         <div className="space-y-4">
                           <div className="flex items-center gap-2 mb-4">
-                            <div className="dark:bg-primarybox bg-primary p-2 rounded-md">
+                            <div className="bg-primary p-2 rounded-md">
                               <FaRegCommentDots
-                                className="dark:text-white text-neutral-900"
+                                className="text-mainheading"
                                 size={28}
                               />
                             </div>
-                            
-                            <h2 className="text-xl font-medium dark:text-white text-mainheading">
+
+                            <h2 className="text-xl font-medium text-mainheadingWhite">
                               Previous Messages
-                              <span className="ml-2 text-xs font-semibold dark:bg-primary bg-lightborder text-neutral-900 px-1.5 py-0.5 rounded-full inline-flex items-center justify-center min-w-[20px]">
+                              <span className="ml-2 text-xs font-semibold bg-primarybox text-primary px-1.5 py-0.5 rounded-full inline-flex items-center justify-center min-w-[20px]">
                                 {readMessages.length}
                               </span>
                             </h2>
@@ -5161,24 +5152,24 @@ const InboxPage: React.FC = () => {
                         </div>
                       )}
 
-                      {!loading && 
-                        !hasAnyMessagesOnPage &&
-                        (
-                          <div className="text-center py-12 bg-muted/30 dark:bg-primarybox/50 rounded-lg border border-border/50 min-h-[200px] flex flex-col justify-center items-center">
-                            <AlertCircle className="size-12 mx-auto text-muted-foreground mb-3" />
-                            <p className="text-lg font-medium text-foreground mb-1">
-                              No messages on this page
-                            </p>
-                            <p className="text-muted-foreground">
-                              Try navigating to a different page or refreshing
-                              your inbox.
-                            </p>
+                      {!loading && !hasAnyMessagesOnPage && (
+                        <div className="bg-primarybox rounded-3xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
+                          <div className="lg:size-16 size-14 flex items-center justify-center bg-primary rounded-full mb-2">
+                            <AlertCircle className="lg:size-8 size-6 mx-auto text-mainheading" />
                           </div>
-                        )}
+                          <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite mt-1">
+                            No messages on this page
+                          </h2>
+                          <p className="text-subheadingWhite max-w-lg mx-auto">
+                            Try navigating to a different page or refreshing
+                            your inbox.
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </motion.div>
                 )}
-                
+
                 {!error && !isInitialLoad.current && totalPages > 1 && (
                   <div className="mt-8">
                     <Pagination
