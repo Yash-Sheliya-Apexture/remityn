@@ -473,104 +473,293 @@
 // }
 
 
-// app/layout.tsx
-import './globals.css'
-import { AuthProvider } from './contexts/AuthContext';
-import { ReactNode } from 'react';
-import TawkToManager from './components/TawkToManager'; // Ensure path is correct
-import { Metadata, Viewport } from 'next'; // Import Metadata and Viewport
+// // app/layout.tsx
+// import './globals.css'
+// import { AuthProvider } from './contexts/AuthContext';
+// import { ReactNode } from 'react';
+// import TawkToManager from './components/TawkToManager'; // Ensure path is correct
+// import { Metadata, Viewport } from 'next'; // Import Metadata and Viewport
+// import { satoshi, montserrat, outfit, inter } from './fonts'; // ADJUST PATH IF NEEDED
 
-const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
-const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
+// const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
+// const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
 
-const tawkToSrc = tawkToPropertyId && tawkToWidgetId
-    ? `https://embed.tawk.to/${tawkToPropertyId}/${tawkToWidgetId}`
-    : null;
+// const tawkToSrc = tawkToPropertyId && tawkToWidgetId
+//     ? `https://embed.tawk.to/${tawkToPropertyId}/${tawkToWidgetId}`
+//     : null;
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'; // Fallback for local
+// const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'; // Fallback for local
 
-// Default metadata for the entire application
-export const metadata: Metadata = {
-    metadataBase: new URL(siteUrl), // Crucial for resolving relative OpenGraph image paths
-    title: {
-        default: 'Remityn - Money Transfer', // Default title
-        template: '%s | Remityn ', // Template for page-specific titles
-    },
-    description: 'Send and receive money internationally with low fees and real exchange rates. Secure, fast, and reliable.',
-    applicationName: 'Remityn',
-    keywords: ['money transfer', 'international payments', 'remittance', 'low fees', 'exchange rates'],
-    authors: [{ name: 'Your Company Name', url: siteUrl }],
-    creator: 'Your Company Name',
-    publisher: 'Your Company Name',
-    robots: { // Default robots policy (can be overridden per page)
-        index: true,
-        follow: true,
-        googleBot: {
-            index: true,
-            follow: true,
-            'max-video-preview': -1,
-            'max-image-preview': 'large',
-            'max-snippet': -1,
-        },
-    },
-    icons: {
-        icon: '/assets/images/Remityn.ico', // Path relative to public folder
-        // apple: '/apple-touch-icon.png', // Example for Apple touch icon
-    },
-    openGraph: {
-        title: 'Remityn Clone - Money Transfer',
-        description: 'Send and receive money internationally with low fees and real exchange rates.',
-        url: siteUrl,
-        siteName: 'Remityn Clone',
-        images: [
-            {
-                url: '/og-image.png', // Place in public folder: public/og-image.png (e.g., 1200x630px)
-                width: 1200,
-                height: 630,
-                alt: 'Remityn Clone Money Transfer Service',
-            },
-        ],
-        locale: 'en_US',
-        type: 'website',
-    },
-    twitter: {
-        card: 'summary_large_image',
-        title: 'Remityn Clone - Money Transfer',
-        description: 'Send and receive money internationally with low fees and real exchange rates.',
-        // siteId: 'YourTwitterSiteID', // Optional: Your Twitter @username numeric ID
-        creator: '@YourTwitterHandle', // Optional: Your Twitter @username
-        // creatorId: 'YourTwitterCreatorID', // Optional
-        images: ['/twitter-image.png'], // Place in public folder: public/twitter-image.png (e.g., 1200x600px)
-    },
-    // manifest: '/site.webmanifest', // If you have a web app manifest
-};
+// // Default metadata for the entire application
+// export const metadata: Metadata = {
+//     metadataBase: new URL(siteUrl), // Crucial for resolving relative OpenGraph image paths
+//     title: {
+//         default: 'Remityn - Money Transfer', // Default title
+//         template: '%s | Remityn ', // Template for page-specific titles
+//     },
+//     description: 'Send and receive money internationally with low fees and real exchange rates. Secure, fast, and reliable.',
+//     applicationName: 'Remityn',
+//     keywords: ['money transfer', 'international payments', 'remittance', 'low fees', 'exchange rates'],
+//     authors: [{ name: 'Your Company Name', url: siteUrl }],
+//     creator: 'Your Company Name',
+//     publisher: 'Your Company Name',
+//     robots: { // Default robots policy (can be overridden per page)
+//         index: true,
+//         follow: true,
+//         googleBot: {
+//             index: true,
+//             follow: true,
+//             'max-video-preview': -1,
+//             'max-image-preview': 'large',
+//             'max-snippet': -1,
+//         },
+//     },
+//     icons: {
+//         icon: '/assets/images/Remityn.ico', // Path relative to public folder
+//         // apple: '/apple-touch-icon.png', // Example for Apple touch icon
+//     },
+//     openGraph: {
+//         title: 'Remityn Clone - Money Transfer',
+//         description: 'Send and receive money internationally with low fees and real exchange rates.',
+//         url: siteUrl,
+//         siteName: 'Remityn Clone',
+//         images: [
+//             {
+//                 url: '/og-image.png', // Place in public folder: public/og-image.png (e.g., 1200x630px)
+//                 width: 1200,
+//                 height: 630,
+//                 alt: 'Remityn Clone Money Transfer Service',
+//             },
+//         ],
+//         locale: 'en_US',
+//         type: 'website',
+//     },
+//     twitter: {
+//         card: 'summary_large_image',
+//         title: 'Remityn Clone - Money Transfer',
+//         description: 'Send and receive money internationally with low fees and real exchange rates.',
+//         // siteId: 'YourTwitterSiteID', // Optional: Your Twitter @username numeric ID
+//         creator: '@YourTwitterHandle', // Optional: Your Twitter @username
+//         // creatorId: 'YourTwitterCreatorID', // Optional
+//         images: ['/twitter-image.png'], // Place in public folder: public/twitter-image.png (e.g., 1200x600px)
+//     },
+//     // manifest: '/site.webmanifest', // If you have a web app manifest
+// };
 
-// Viewport settings
-export const viewport: Viewport = {
-    width: 'device-width',
-    initialScale: 1,
-    // maximumScale: 1, // You might want to allow zooming
-    // userScalable: false, // Consider setting to true for accessibility
-    themeColor: [ // For PWA theming
-      { media: '(prefers-color-scheme: light)', color: '#22282a' },
-    ],
-}
+// // Viewport settings
+// export const viewport: Viewport = {
+//     width: 'device-width',
+//     initialScale: 1,
+//     // maximumScale: 1, // You might want to allow zooming
+//     // userScalable: false, // Consider setting to true for accessibility
+//     themeColor: [ // For PWA theming
+//       { media: '(prefers-color-scheme: light)', color: '#22282a' },
+//     ],
+// }
 
+
+// interface RootLayoutProps {
+//     children: ReactNode;
+// }
+
+// export default function RootLayout({ children }: RootLayoutProps) {
+//     return (
+//         <html
+//             lang="en"
+//             // Apply all font variables to the html tag for global availability
+//             className={`${satoshi.variable} ${montserrat.variable} ${outfit.variable} ${inter.variable}`}
+//             suppressHydrationWarning // Let's keep this for now, address potential underlying issues later
+//         >
+//             {/* <head> is now managed by Next.js Metadata API, keep only essential, non-metadata tags here if any */}
+//             <body
+//                 // Apply a default font (Satoshi) to the body using its generated className.
+//                 // You can also use Tailwind utility classes like `font-satoshi` throughout your app.
+//                 className={`bg-background text-mainheadingWhite transition-all duration-75 ease-linear ${satoshi.className}`}
+//                 suppressHydrationWarning={true}
+//             >
+//                 <AuthProvider>
+//                     {children}
+//                 </AuthProvider>
+//                 <div id="portal-root"></div>
+//                 {tawkToSrc && <TawkToManager />}
+//             </body>
+//         </html>
+//     );
+// }
+
+// // app/layout.tsx
+// import './globals.css';
+// import { AuthProvider } from './contexts/AuthContext'; // Assuming path app/contexts/AuthContext.tsx
+// import { ReactNode } from 'react';
+// import TawkToManager from './components/TawkToManager'; // Assuming path app/components/TawkToManager.tsx
+// import { Metadata, Viewport } from 'next';
+// import { satoshi, montserrat, outfit, inter } from './fonts'; // Assuming path app/fonts.ts
+
+// const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
+// const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
+// const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
+// export const metadata: Metadata = {
+//     metadataBase: new URL(siteUrl),
+//     title: {
+//         default: 'Remityn - Money Transfer',
+//         template: '%s | Remityn',
+//     },
+//     description: 'Send and receive money internationally with low fees and real exchange rates. Secure, fast, and reliable.',
+//     applicationName: 'Remityn',
+//     keywords: ['money transfer', 'international payments', 'remittance', 'low fees', 'exchange rates'],
+//     authors: [{ name: 'Your Company Name', url: siteUrl }], // Replace with actual company name
+//     creator: 'Your Company Name', // Replace
+//     publisher: 'Your Company Name', // Replace
+//     robots: {
+//         index: true,
+//         follow: true,
+//         googleBot: {
+//             index: true,
+//             follow: true,
+//             'max-video-preview': -1,
+//             'max-image-preview': 'large',
+//             'max-snippet': -1,
+//         },
+//     },
+//     icons: {
+//         icon: '/assets/images/Remityn.ico', // Ensure this path is correct in your public folder
+//         // apple: '/apple-touch-icon.png',
+//     },
+//     openGraph: {
+//         title: 'Remityn - Money Transfer', // Consider making this consistent or more specific
+//         description: 'Send and receive money internationally with low fees and real exchange rates.',
+//         url: siteUrl,
+//         siteName: 'Remityn', // Consistent site name
+//         images: [
+//             {
+//                 url: '/og-image.png', // Ensure public/og-image.png exists (1200x630px)
+//                 width: 1200,
+//                 height: 630,
+//                 alt: 'Remityn Money Transfer Service',
+//             },
+//         ],
+//         locale: 'en_US',
+//         type: 'website',
+//     },
+//     twitter: {
+//         card: 'summary_large_image',
+//         title: 'Remityn - Money Transfer',
+//         description: 'Send and receive money internationally with low fees and real exchange rates.',
+//         creator: '@YourTwitterHandle', // Replace with actual Twitter handle
+//         images: ['/twitter-image.png'], // Ensure public/twitter-image.png exists (e.g., 1200x600px)
+//     },
+//     // manifest: '/site.webmanifest', // If you have one
+// };
+
+// export const viewport: Viewport = {
+//     width: 'device-width',
+//     initialScale: 1,
+//     themeColor: [
+//       { media: '(prefers-color-scheme: light)', color: '#22282a' }, // Adjust light theme color
+//       // { media: '(prefers-color-scheme: dark)', color: '#YOUR_DARK_THEME_COLOR' }, // Optional dark theme
+//     ],
+// };
+
+// interface RootLayoutProps {
+//     children: ReactNode;
+// }
+
+// export default function RootLayout({ children }: RootLayoutProps) {
+//     const shouldLoadTawkTo = tawkToPropertyId && tawkToWidgetId;
+
+//     return (
+//         <html
+//             lang="en"
+//             className={`${satoshi.variable} ${montserrat.variable} ${outfit.variable} ${inter.variable}`}
+//             suppressHydrationWarning // Keep if necessary, but investigate underlying causes if possible
+//         >
+//             <body
+//                 className={`bg-background text-mainheadingWhite transition-all duration-75 ease-linear ${satoshi.className}`}
+//                 suppressHydrationWarning={true} // Keep if necessary
+//             >
+//                 <AuthProvider>
+//                     {/* AuthProvider will show a spinner or children */}
+//                     {children}
+//                 </AuthProvider>
+//                 <div id="portal-root"></div>
+//                 {shouldLoadTawkTo && <TawkToManager />}
+//             </body>
+//         </html>
+//     );
+// }
+
+"use client"; // This layout now uses client-side state and effects for the preloader
+
+import './globals.css';
+import { AuthProvider } from './contexts/AuthContext'; // Corrected path
+import { ReactNode, useState,useEffect } from 'react'; // Added useState
+import TawkToManager from './components/TawkToManager'; // Corrected path
+import { satoshi, montserrat, outfit, inter } from './fonts'; // Corrected path
+import AppPreloader from './components/ui/AppPreloader'; // Assuming path app/components/AppPreloader.tsx
+import { AnimatePresence } from 'framer-motion'; // For animating preloader out
 
 interface RootLayoutProps {
     children: ReactNode;
 }
 
 export default function RootLayout({ children }: RootLayoutProps) {
+    const [showAppPreloader, setShowAppPreloader] = useState(true);
+
+    const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
+    const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
+    const shouldLoadTawkTo = tawkToPropertyId && tawkToWidgetId;
+
+    useEffect(() => {
+        // This effect manages the body's overflow style based on preloader visibility
+        const originalOverflow = document.body.style.overflow;
+
+        if (showAppPreloader) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Only restore if it was previously set to hidden by this effect or similar.
+            // Check if current overflow is 'hidden' before changing it,
+            // to avoid interfering if something else set it to a specific value.
+            if (document.body.style.overflow === 'hidden') {
+                 document.body.style.overflow = originalOverflow || ''; // Restore original or set to default
+            }
+        }
+
+        // Cleanup function: ensures original overflow is restored if RootLayout unmounts
+        // while the preloader was active.
+        return () => {
+            if (document.body.style.overflow === 'hidden') { // Check again before restoring
+                document.body.style.overflow = originalOverflow || '';
+            }
+        };
+    }, [showAppPreloader]); // Re-run this effect when showAppPreloader changes
+
+    const handlePreloaderComplete = () => {
+        setShowAppPreloader(false);
+    };
+
     return (
-        <html lang="en" suppressHydrationWarning>
-            {/* <head> is now managed by Next.js Metadata API, keep only essential, non-metadata tags here if any */}
-            <body className="bg-background text-neutral-900 dark:text-white transition-all duration-75 ease-linear" suppressHydrationWarning={true}>
+        <html
+            lang="en"
+            className={`${satoshi.variable} ${montserrat.variable} ${outfit.variable} ${inter.variable}`}
+            suppressHydrationWarning
+        >
+            <body
+                className={`bg-background text-mainheadingWhite transition-all duration-75 ease-linear ${satoshi.className}`}
+                suppressHydrationWarning={true}
+            >
+                <AnimatePresence>
+                    {showAppPreloader && (
+                        <AppPreloader onAnimationComplete={handlePreloaderComplete} />
+                    )}
+                </AnimatePresence>
+
                 <AuthProvider>
                     {children}
                 </AuthProvider>
+                
                 <div id="portal-root"></div>
-                {tawkToSrc && <TawkToManager />}
+                {shouldLoadTawkTo && <TawkToManager />}
             </body>
         </html>
     );
