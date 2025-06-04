@@ -10027,16 +10027,19 @@ const BalanceDetailPage = () => {
 
         {/* "No Transactions Match Filters" Empty State */}
         {showNoMatchEmptyState && (
-          <div className="text-center flex flex-col items-center text-lg px-4 text-gray-500  py-8 bg-primarybox rounded-lg space-y-4">
+          <div className="text-center flex flex-col items-center text-lg px-4 py-10 bg-primarybox rounded-lg space-y-4">
+
             <div className="lg:size-16 size-14 flex items-center justify-center bg-primary rounded-full">
               <Inbox className="lg:size-8 size-6 mx-auto text-mainheading" />
             </div>
+
             <span className="text-subheadingWhite">
               No transactions match your current filter or search criteria.
             </span>
+
             <Button
               onClick={clearAllFiltersAndSearch}
-              className="px-6 cursor-pointer lg:py-3 py-2.5 lg:text-base text-sm font-medium w-auto bg-primary text-mainheading rounded-full hover:bg-primaryhover transition-colors duration-500 ease-in-out"
+              className="px-6 cursor-pointer py-3 font-medium w-auto bg-primary text-mainheading rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear"
             >
               Clear Filters
             </Button>

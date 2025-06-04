@@ -20,8 +20,6 @@
 //     );
 // }
 
-
-
 // // frontend/src/app/layout.tsx
 // import './globals.css'
 // import { AuthProvider } from './contexts/AuthContext';
@@ -43,7 +41,6 @@
 //         </html>
 //     );
 // }
-
 
 // // app/layout.tsx
 // import './globals.css'
@@ -114,9 +111,6 @@
 //       </html>
 //   );
 // }
-
-
-
 
 // // app/layout.tsx
 // import './globals.css' // Ensure your global styles are imported
@@ -198,7 +192,7 @@
 
 //                 {/* Add links to favicons, webmanifest, fonts, etc. here */}
 //                 <link rel="globe.svg" href="/globe.svg" />
-                
+
 //             </head>
 
 //             {/* The <body> section: Contains the visible content of the page */}
@@ -225,8 +219,6 @@
 //         </html>
 //     );
 // }
-
-
 
 // // app/layout.tsx
 // import './globals.css' // Ensure your global styles are imported
@@ -308,7 +300,7 @@
 
 //                 {/* Add links to favicons, webmanifest, fonts, etc. here */}
 //                 <link rel="globe.svg" href="/globe.svg" />
-                
+
 //             </head>
 
 //             {/* The <body> section: Contains the visible content of the page */}
@@ -330,12 +322,11 @@
 //                 {tawkToSrc && (
 //                     <TawkToManager/>
 //                 )}
-                
+
 //             </body>
 //         </html>
 //     );
 // }
-
 
 // // app/layout.tsx
 // import './globals.css'
@@ -343,7 +334,6 @@
 // import { ReactNode } from 'react';
 // import TawkToManager from './components/TawkToManager'; // Ensure path is correct
 // import BrevoManager from './components/BrevoManager'; // <-- Import BrevoManager
-
 
 // // const ThemeInitializerScript = `
 // // (function() {
@@ -412,7 +402,7 @@
 //                 <div id="portal-root"></div>
 
 //                 {tawkToSrc && (
-//                     <> 
+//                     <>
 //                     <TawkToManager/>
 //                     </>
 //                 )}
@@ -422,7 +412,6 @@
 //         </html>
 //     );
 // }
-
 
 // // app/layout.tsx
 // import './globals.css'
@@ -463,7 +452,7 @@
 //                 <div id="portal-root"></div>
 
 //                 {tawkToSrc && (
-//                     <> 
+//                     <>
 //                     <TawkToManager/>
 //                     </>
 //                 )}
@@ -471,7 +460,6 @@
 //         </html>
 //     );
 // }
-
 
 // // app/layout.tsx
 // import './globals.css'
@@ -556,7 +544,6 @@
 //       { media: '(prefers-color-scheme: light)', color: '#22282a' },
 //     ],
 // }
-
 
 // interface RootLayoutProps {
 //     children: ReactNode;
@@ -855,16 +842,16 @@ const TawkToManager = dynamic(() => import('./components/TawkToManager'), {
 });
 
 interface RootLayoutProps {
-    children: ReactNode;
+  children: ReactNode;
 }
 
 export default function RootLayout({ children }: RootLayoutProps) {
     const [showAppPreloader, setShowAppPreloader] = useState(true);
     const originalBodyOverflowRef = useRef<string | null>(null);
 
-    const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
-    const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
-    const shouldLoadTawkTo = tawkToPropertyId && tawkToWidgetId;
+  const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
+  const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
+  const shouldLoadTawkTo = tawkToPropertyId && tawkToWidgetId;
 
     useEffect(() => {
         if (originalBodyOverflowRef.current === null) {
@@ -892,17 +879,18 @@ export default function RootLayout({ children }: RootLayoutProps) {
         setShowAppPreloader(false);
     }, []);
 
-    return (
-        <html
-            lang="en"
-            className={`${satoshi.variable} ${montserrat.variable} ${outfit.variable} ${inter.variable}`}
-            suppressHydrationWarning
-        >
-            <body
-                className={`bg-background text-mainheadingWhite transition-all duration-75 ease-linear ${satoshi.className}`}
-                suppressHydrationWarning={true}
-            >
-                <AnimatePresence>
+
+  return (
+    <html
+      lang="en"
+      className={`${satoshi.variable} ${montserrat.variable} ${outfit.variable} ${inter.variable}`}
+      suppressHydrationWarning
+    >
+      <body
+        className={`bg-background text-mainheadingWhite transition-all duration-75 ease-linear ${satoshi.className}`}
+        suppressHydrationWarning={true}
+      >
+        <AnimatePresence>
                     {showAppPreloader && (
                         <AppPreloader onAnimationComplete={handlePreloaderComplete} />
                     )}

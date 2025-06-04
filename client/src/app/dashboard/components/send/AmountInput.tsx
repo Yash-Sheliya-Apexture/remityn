@@ -643,7 +643,7 @@ const AmountInput = forwardRef<HTMLInputElement, AmountInputProps>(
       : "text-3xl lg:text-5xl";
 
     const textColorClass = clsx({
-      "text-red-400": hasError, // Styles input text color on error
+      "text-red-500": hasError, // Styles input text color on error
       "text-gray-500 font-medium": !hasError && isDimmed && hasValue,
       "text-mainheadingWhite": !hasError && !isDimmed && isFocused,
       "text-white":
@@ -658,7 +658,7 @@ const AmountInput = forwardRef<HTMLInputElement, AmountInputProps>(
           className={clsx("block font-medium mb-1 ml-2 text-mainheadingWhite", {
             "text-gray-700": hasValue,
             "text-mainheadingWhite": !hasValue,
-            "text-red-500": hasError, // Styles label color on error
+            "": hasError, // Styles label color on error
           })}
         >
           {labelPrefix} {label} {labelSuffix}
@@ -670,7 +670,7 @@ const AmountInput = forwardRef<HTMLInputElement, AmountInputProps>(
             {
               "border-b":
                 isFocused && !hasError, // Adjusted focus style to be more visible
-              "border border-red-700 rounded-md": hasError, // Styles border on error
+              "rounded-md border border-red-500": hasError, // Styles border on error
               "border border-transparent": !isFocused && !hasError, // Default border state
             }
           )}

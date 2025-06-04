@@ -963,6 +963,7 @@ const TransferReasonPage = () => {
         <h1 className="lg:text-3xl md:text-2xl text-xl font-semibold text-mainheadingWhite mb-4">
           What's the reason for your transfer?
         </h1>
+
         {summary?.receiveCurrencyCode === "INR" && (
           <p className="text-subheadingWhite sm:text-lg text-sm mb-6">
             Please note that transfers to charities or NGOs in India may have
