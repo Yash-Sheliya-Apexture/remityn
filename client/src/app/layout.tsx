@@ -689,15 +689,91 @@
 //     );
 // }
 
-"use client"; // This layout now uses client-side state and effects for the preloader
+// "use client"; // This layout now uses client-side state and effects for the preloader
+
+// import './globals.css';
+// import { AuthProvider } from './contexts/AuthContext'; // Corrected path
+// import { ReactNode, useState,useEffect } from 'react'; // Added useState
+// import TawkToManager from './components/TawkToManager'; // Corrected path
+// import { satoshi, montserrat, outfit, inter } from './fonts'; // Corrected path
+// import AppPreloader from './components/ui/AppPreloader'; // Assuming path app/components/AppPreloader.tsx
+// import { AnimatePresence } from 'framer-motion'; // For animating preloader out
+
+// interface RootLayoutProps {
+//     children: ReactNode;
+// }
+
+// export default function RootLayout({ children }: RootLayoutProps) {
+//     const [showAppPreloader, setShowAppPreloader] = useState(true);
+
+//     const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
+//     const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
+//     const shouldLoadTawkTo = tawkToPropertyId && tawkToWidgetId;
+
+//     useEffect(() => {
+//         // This effect manages the body's overflow style based on preloader visibility
+//         const originalOverflow = document.body.style.overflow;
+
+//         if (showAppPreloader) {
+//             document.body.style.overflow = 'hidden';
+//         } else {
+//             // Only restore if it was previously set to hidden by this effect or similar.
+//             // Check if current overflow is 'hidden' before changing it,
+//             // to avoid interfering if something else set it to a specific value.
+//             if (document.body.style.overflow === 'hidden') {
+//                  document.body.style.overflow = originalOverflow || ''; // Restore original or set to default
+//             }
+//         }
+
+//         // Cleanup function: ensures original overflow is restored if RootLayout unmounts
+//         // while the preloader was active.
+//         return () => {
+//             if (document.body.style.overflow === 'hidden') { // Check again before restoring
+//                 document.body.style.overflow = originalOverflow || '';
+//             }
+//         };
+//     }, [showAppPreloader]); // Re-run this effect when showAppPreloader changes
+
+//     const handlePreloaderComplete = () => {
+//         setShowAppPreloader(false);
+//     };
+
+//     return (
+//         <html
+//             lang="en"
+//             className={`${satoshi.variable} ${montserrat.variable} ${outfit.variable} ${inter.variable}`}
+//             suppressHydrationWarning
+//         >
+//             <body
+//                 className={`bg-background text-mainheadingWhite transition-all duration-75 ease-linear ${satoshi.className}`}
+//                 suppressHydrationWarning={true}
+//             >
+//                 <AnimatePresence>
+//                     {showAppPreloader && (
+//                         <AppPreloader onAnimationComplete={handlePreloaderComplete} />
+//                     )}
+//                 </AnimatePresence>
+
+//                 <AuthProvider>
+//                     {children}
+//                 </AuthProvider>
+                
+//                 <div id="portal-root"></div>
+//                 {shouldLoadTawkTo && <TawkToManager />}
+//             </body>
+//         </html>
+//     );
+// }
+
+"use client"; 
 
 import './globals.css';
-import { AuthProvider } from './contexts/AuthContext'; // Corrected path
-import { ReactNode, useState,useEffect } from 'react'; // Added useState
-import TawkToManager from './components/TawkToManager'; // Corrected path
-import { satoshi, montserrat, outfit, inter } from './fonts'; // Corrected path
-import AppPreloader from './components/ui/AppPreloader'; // Assuming path app/components/AppPreloader.tsx
-import { AnimatePresence } from 'framer-motion'; // For animating preloader out
+import { AuthProvider } from './contexts/AuthContext';
+import { ReactNode, useState, useEffect, useCallback, useRef } from 'react'; // Added useCallback, useRef
+import TawkToManager from './components/TawkToManager';
+import { satoshi, montserrat, outfit, inter } from './fonts';
+import AppPreloader from './components/ui/AppPreloader';
+import { AnimatePresence } from 'framer-motion';
 
 interface RootLayoutProps {
     children: ReactNode;
@@ -705,38 +781,36 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
     const [showAppPreloader, setShowAppPreloader] = useState(true);
+    const originalBodyOverflowRef = useRef<string | null>(null); // To store original body overflow
 
     const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
     const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
     const shouldLoadTawkTo = tawkToPropertyId && tawkToWidgetId;
 
     useEffect(() => {
-        // This effect manages the body's overflow style based on preloader visibility
-        const originalOverflow = document.body.style.overflow;
+        // Capture original body overflow only once on mount
+        if (originalBodyOverflowRef.current === null) {
+            originalBodyOverflowRef.current = document.body.style.overflow || '';
+        }
 
         if (showAppPreloader) {
             document.body.style.overflow = 'hidden';
         } else {
-            // Only restore if it was previously set to hidden by this effect or similar.
-            // Check if current overflow is 'hidden' before changing it,
-            // to avoid interfering if something else set it to a specific value.
-            if (document.body.style.overflow === 'hidden') {
-                 document.body.style.overflow = originalOverflow || ''; // Restore original or set to default
-            }
+            // Restore to the original captured value
+            document.body.style.overflow = originalBodyOverflowRef.current;
         }
 
-        // Cleanup function: ensures original overflow is restored if RootLayout unmounts
-        // while the preloader was active.
+        // Cleanup function for unmount, though RootLayout typically doesn't unmount
         return () => {
-            if (document.body.style.overflow === 'hidden') { // Check again before restoring
-                document.body.style.overflow = originalOverflow || '';
+            if (originalBodyOverflowRef.current !== null) {
+                 document.body.style.overflow = originalBodyOverflowRef.current;
             }
         };
-    }, [showAppPreloader]); // Re-run this effect when showAppPreloader changes
+    }, [showAppPreloader]);
 
-    const handlePreloaderComplete = () => {
+    const handlePreloaderComplete = useCallback(() => {
         setShowAppPreloader(false);
-    };
+    }, []); // Empty dependency array as setShowAppPreloader is stable
 
     return (
         <html
