@@ -1,7 +1,7 @@
 :root {
-    --font-Montserrat: "Montserrat";
-    --font-Outfit: "Outfit";
-    --font-Inter: "Inter";
-    --font-SatoshiVariable: "SatoshiVariable";
-    --font-SatoshiVariableItalic: "SatoshiVariableItalic";
+    --font-Montserrat: "Montserrat", sans-serif;
+    --font-Outfit: "Outfit", sans-serif;
+    --font-Inter: "Inter", sans-serif;
+    --font-SatoshiVariable: "Satoshi Variable", sans-serif;
+    --font-SatoshiVariableItalic: "Satoshi Variable", sans-serif;
 }
