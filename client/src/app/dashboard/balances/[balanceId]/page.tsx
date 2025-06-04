@@ -10027,7 +10027,7 @@ const BalanceDetailPage = () => {
 
         {/* "No Transactions Match Filters" Empty State */}
         {showNoMatchEmptyState && (
-          <div className="text-center flex flex-col items-center text-lg px-4 text-gray-500  py-8 bg-primarybox rounded-lg space-y-4">
+          <div className="text-center flex flex-col items-center text-lg px-4 py-8 bg-primarybox rounded-lg space-y-4">
             <div className="lg:size-16 size-14 flex items-center justify-center bg-primary rounded-full">
               <Inbox className="lg:size-8 size-6 mx-auto text-mainheading" />
             </div>

@@ -168,7 +168,7 @@ const TransactionUpdateActions: React.FC<TransactionUpdateActionsProps> = ({
           </p>
           {/* Error specific to Confirm Payment */}
           {submissionError && !isCancellationError && ( // Show only if not a cancellation error
-             <p className="mb-4 text-sm text-center text-red-400 bg-red-900/20 p-2 rounded border border-red-700/40">
+             <p className="mb-4 text-sm text-center text-red-400 bg-red-900/25 p-2 rounded border border-red-500">
                {submissionError}
              </p>
           )}
@@ -236,7 +236,7 @@ const TransactionUpdateActions: React.FC<TransactionUpdateActionsProps> = ({
       {/* --- Fallback Error Display --- */}
       {/* Shows error if it exists but NO actions were rendered */}
       {submissionError && !shouldRenderConfirmPayment && !shouldRenderCancelAction && (
-         <p className="text-sm text-center text-red-400 bg-red-900/20 p-3 rounded-md border border-red-700/40">
+         <p className="text-sm text-center text-red-400 bg-red-900/25 p-3 rounded-md border border-red-500">
            {submissionError}
          </p>
       )}
