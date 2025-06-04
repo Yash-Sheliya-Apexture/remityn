@@ -765,15 +765,94 @@
 //     );
 // }
 
-"use client"; 
+// "use client"; 
+
+// import './globals.css';
+// import { AuthProvider } from './contexts/AuthContext';
+// import { ReactNode, useState, useEffect, useCallback, useRef } from 'react'; // Added useCallback, useRef
+// import TawkToManager from './components/TawkToManager';
+// import { satoshi, montserrat, outfit, inter } from './fonts';
+// import AppPreloader from './components/ui/AppPreloader';
+// import { AnimatePresence } from 'framer-motion';
+
+// interface RootLayoutProps {
+//     children: ReactNode;
+// }
+
+// export default function RootLayout({ children }: RootLayoutProps) {
+//     const [showAppPreloader, setShowAppPreloader] = useState(true);
+//     const originalBodyOverflowRef = useRef<string | null>(null); // To store original body overflow
+
+//     const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
+//     const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
+//     const shouldLoadTawkTo = tawkToPropertyId && tawkToWidgetId;
+
+//     useEffect(() => {
+//         // Capture original body overflow only once on mount
+//         if (originalBodyOverflowRef.current === null) {
+//             originalBodyOverflowRef.current = document.body.style.overflow || '';
+//         }
+
+//         if (showAppPreloader) {
+//             document.body.style.overflow = 'hidden';
+//         } else {
+//             // Restore to the original captured value
+//             document.body.style.overflow = originalBodyOverflowRef.current;
+//         }
+
+//         // Cleanup function for unmount, though RootLayout typically doesn't unmount
+//         return () => {
+//             if (originalBodyOverflowRef.current !== null) {
+//                  document.body.style.overflow = originalBodyOverflowRef.current;
+//             }
+//         };
+//     }, [showAppPreloader]);
+
+//     const handlePreloaderComplete = useCallback(() => {
+//         setShowAppPreloader(false);
+//     }, []); // Empty dependency array as setShowAppPreloader is stable
+
+//     return (
+//         <html
+//             lang="en"
+//             className={`${satoshi.variable} ${montserrat.variable} ${outfit.variable} ${inter.variable}`}
+//             suppressHydrationWarning
+//         >
+//             <body
+//                 className={`bg-background text-mainheadingWhite transition-all duration-75 ease-linear ${satoshi.className}`}
+//                 suppressHydrationWarning={true}
+//             >
+//                 <AnimatePresence>
+//                     {showAppPreloader && (
+//                         <AppPreloader onAnimationComplete={handlePreloaderComplete} />
+//                     )}
+//                 </AnimatePresence>
+
+//                 <AuthProvider>
+//                     {children}
+//                 </AuthProvider>
+                
+//                 <div id="portal-root"></div>
+//                 {shouldLoadTawkTo && <TawkToManager />}
+//             </body>
+//         </html>
+//     );
+// }
+
+"use client";
 
 import './globals.css';
 import { AuthProvider } from './contexts/AuthContext';
-import { ReactNode, useState, useEffect, useCallback, useRef } from 'react'; // Added useCallback, useRef
-import TawkToManager from './components/TawkToManager';
+import { ReactNode, useState, useEffect, useCallback, useRef } from 'react';
 import { satoshi, montserrat, outfit, inter } from './fonts';
 import AppPreloader from './components/ui/AppPreloader';
 import { AnimatePresence } from 'framer-motion';
+import dynamic from 'next/dynamic'; // Import next/dynamic
+
+// Dynamically import TawkToManager - only loads on client-side, non-SSR
+const TawkToManager = dynamic(() => import('./components/TawkToManager'), {
+    ssr: false,
+});
 
 interface RootLayoutProps {
     children: ReactNode;
@@ -781,14 +860,13 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
     const [showAppPreloader, setShowAppPreloader] = useState(true);
-    const originalBodyOverflowRef = useRef<string | null>(null); // To store original body overflow
+    const originalBodyOverflowRef = useRef<string | null>(null);
 
     const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
     const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
     const shouldLoadTawkTo = tawkToPropertyId && tawkToWidgetId;
 
     useEffect(() => {
-        // Capture original body overflow only once on mount
         if (originalBodyOverflowRef.current === null) {
             originalBodyOverflowRef.current = document.body.style.overflow || '';
         }
@@ -796,21 +874,23 @@ export default function RootLayout({ children }: RootLayoutProps) {
         if (showAppPreloader) {
             document.body.style.overflow = 'hidden';
         } else {
-            // Restore to the original captured value
-            document.body.style.overflow = originalBodyOverflowRef.current;
-        }
-
-        // Cleanup function for unmount, though RootLayout typically doesn't unmount
-        return () => {
             if (originalBodyOverflowRef.current !== null) {
-                 document.body.style.overflow = originalBodyOverflowRef.current;
+                document.body.style.overflow = originalBodyOverflowRef.current;
+            }
+        }
+        
+        const capturedOriginalOverflow = originalBodyOverflowRef.current;
+        return () => {
+            // Ensure overflow is restored if component unmounts while preloader was active
+            if (document.body.style.overflow === 'hidden' && capturedOriginalOverflow !== null) {
+                 document.body.style.overflow = capturedOriginalOverflow;
             }
         };
     }, [showAppPreloader]);
 
     const handlePreloaderComplete = useCallback(() => {
         setShowAppPreloader(false);
-    }, []); // Empty dependency array as setShowAppPreloader is stable
+    }, []);
 
     return (
         <html
@@ -829,11 +909,13 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 </AnimatePresence>
 
                 <AuthProvider>
-                    {children}
+                    {!showAppPreloader && children} {/* Render children only after preloader is done if preferred */}
+                    {/* Or always render children: */}
+                    {/* {children} */}
                 </AuthProvider>
                 
                 <div id="portal-root"></div>
-                {shouldLoadTawkTo && <TawkToManager />}
+                {!showAppPreloader && shouldLoadTawkTo && <TawkToManager />} {/* Load TawkTo after preloader */}
             </body>
         </html>
     );

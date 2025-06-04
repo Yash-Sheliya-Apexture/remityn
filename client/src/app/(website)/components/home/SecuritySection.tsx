@@ -276,31 +276,114 @@
 // };
 // export default SecuritySection;
 
+// // components/SecuritySection.tsx
+// "use client"; // Required for Framer Motion
 
+// import React from "react";
+// import Image from "next/image";
+// import Link from "next/link";
 
+// const SecuritySection = () => {
+//   return (
+//     // Apply whileInView to the main section to trigger animations
+//     <section
+//       className="Security-section sm:py-16 py-10 overflow-hidden" // Hide horizontal overflow during animation
+//       id="security"
+//     >
+//       <div className="container mx-auto px-4">
+//         <div className="flex flex-col lg:flex-row items-center gap-8">
+//           {/* Left Text Block */}
+//           <div
+//             className="w-full lg:w-1/2 order-2 lg:order-1"
+//             // Inherits initial/whileInView timing from parent section
+//           >
+//             <div className="space-y-4 text-center md:text-left">
+//               <div className="lg:inline-block hidden">
+//                 <span className="text-subheadingWhite font-medium text-sm uppercase">
+//                   <span className="text-subheadingWhite/30">[</span> Built for
+//                   safety. Trusted worldwide{" "}
+//                   <span className="text-subheadingWhite/30">]</span>
+//                 </span>
+//               </div>
 
+//               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
+//                 <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite lg:block hidden">
+//                   Secure Currency Exchange{" "}
+//                   <span className="text-primary">You Can Trust</span>
+//                 </h3>
+//                 <p className="text-subheadingWhite md:text-lg text-base max-w-5xl">
+//                   Exchange currency with confidence—fast, secure, and
+//                   dependable. Enjoy competitive rates, zero hidden fees, and
+//                   complete encryption for peace of mind at every step. Thousands
+//                   trust us for our transparency, real-time tracking, and
+//                   round-the-clock support. Your money, your rules—simple, safe,
+//                   and always secure.
+//                 </p>
+//               </div>
 
-// components/SecuritySection.tsx
-"use client"; // Required for Framer Motion
+//               <div className="flex justify-center md:justify-start mt-8">
+//                 <Link
+//                   href="/faqs"
+//                   className="inline-block" // Added inline-block
+//                 >
+//                   <button className="bg-primary hover:bg-primaryhover text-mainheading cursor-pointer font-medium text-base lg:text-lg py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
+//                     How we keep your money safe
+//                   </button>
+//                 </Link>
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* Right Image Block */}
+//           <div className="w-full lg:w-1/2 order-1 lg:order-2">
+//             <div className="lg:hidden block">
+//                 <span className="text-subheadingWhite font-medium text-sm mb-1 text-center md:text-left block uppercase">
+//                   <span className="text-subheadingWhite/30">[</span> Built for
+//                   safety. Trusted worldwide{" "}
+//                   <span className="text-subheadingWhite/30">]</span>
+//                 </span>
+//               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
+//                 <h3 className="text-4xl md:text-5xl lg:text-7xl font-bold mb-6 leading-tight text-mainheadingWhite">
+//                   Secure Currency Exchange{" "}
+//                   <span className="text-primary">You Can Trust</span>
+//                 </h3>
+//               </div>
+//             </div>
+//             <div className="relative w-full flex justify-center">
+//               <Image
+//                 src="/assets/images/eretrtgcbvcb.png"
+//                 width={550}
+//                 height={800}
+//                 alt="Padlock symbolizing security"
+//                 className="object-contain rounded-3xl"
+//               />
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+// export default SecuritySection;
+
+"use client"; // Keep "use client" if you plan to add client-side animations (e.g., Framer Motion variants for scroll reveal) later.
+// If it's purely static content with no client-side JS, this could be a Server Component.
+// However, given its placement in a components directory often shared by client components, "use client" is safe.
 
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-const SecuritySection = () => {
+const SecuritySection: React.FC = () => {
   return (
-    // Apply whileInView to the main section to trigger animations
     <section
-      className="Security-section sm:py-16 py-10 overflow-hidden" // Hide horizontal overflow during animation
+      className="Security-section sm:py-16 py-10 overflow-hidden" // overflow-hidden can be useful if animations might extend slightly
       id="security"
     >
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row items-center gap-8">
           {/* Left Text Block */}
-          <div
-            className="w-full lg:w-1/2 order-2 lg:order-1"
-            // Inherits initial/whileInView timing from parent section
-          >
+          <div className="w-full lg:w-1/2 order-2 lg:order-1">
             <div className="space-y-4 text-center md:text-left">
               <div className="lg:inline-block hidden">
                 <span className="text-subheadingWhite font-medium text-sm uppercase">
@@ -309,7 +392,7 @@ const SecuritySection = () => {
                   <span className="text-subheadingWhite/30">]</span>
                 </span>
               </div>
-              
+
               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
                 <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite lg:block hidden">
                   Secure Currency Exchange{" "}
@@ -324,12 +407,9 @@ const SecuritySection = () => {
                   and always secure.
                 </p>
               </div>
-              
+
               <div className="flex justify-center md:justify-start mt-8">
-                <Link
-                  href="/faqs"
-                  className="inline-block" // Added inline-block
-                >
+                <Link href="/faqs" className="inline-block">
                   <button className="bg-primary hover:bg-primaryhover text-mainheading cursor-pointer font-medium text-base lg:text-lg py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
                     How we keep your money safe
                   </button>
@@ -341,13 +421,15 @@ const SecuritySection = () => {
           {/* Right Image Block */}
           <div className="w-full lg:w-1/2 order-1 lg:order-2">
             <div className="lg:hidden block">
-                <span className="text-subheadingWhite font-medium text-sm mb-1 text-center md:text-left block uppercase">
-                  <span className="text-subheadingWhite/30">[</span> Built for
-                  safety. Trusted worldwide{" "}
-                  <span className="text-subheadingWhite/30">]</span>
-                </span>
+              <span className="text-subheadingWhite font-medium text-sm mb-1 text-center md:text-left block uppercase">
+                <span className="text-subheadingWhite/30">[</span> Built for
+                safety. Trusted worldwide{" "}
+                <span className="text-subheadingWhite/30">]</span>
+              </span>
               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
-                <h3 className="text-4xl md:text-5xl lg:text-7xl font-bold mb-6 leading-tight text-mainheadingWhite">
+                <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
+                  {" "}
+                  {/* Adjusted xl:text-6xl from lg:text-7xl for consistency with above */}
                   Secure Currency Exchange{" "}
                   <span className="text-primary">You Can Trust</span>
                 </h3>
@@ -355,11 +437,17 @@ const SecuritySection = () => {
             </div>
             <div className="relative w-full flex justify-center">
               <Image
-                src="/assets/images/eretrtgcbvcb.png"
-                width={550}
-                height={800}
-                alt="Padlock symbolizing security"
+                src="/assets/images/eretrtgcbvcb.png" // Ensure this path is correct and relative to the /public directory
+                width={550} // Original width
+                height={550} // Assuming the image is roughly square or you want to display it as such.
+                // The original had height={800}, which would make it very tall. Adjust based on aspect ratio.
+                alt="Padlock icon symbolizing secure currency exchange and trust" // More descriptive alt text
                 className="object-contain rounded-3xl"
+                loading="lazy" // This section is likely below the fold, so lazy load.
+                sizes="(max-width: 768px) 90vw, (max-width: 1024px) 50vw, 550px" // Provide responsive sizes
+                // 90vw for smaller screens
+                // 50vw for medium screens (lg column width)
+                // 550px as a fallback for larger screens
               />
             </div>
           </div>
@@ -368,4 +456,5 @@ const SecuritySection = () => {
     </section>
   );
 };
-export default SecuritySection;
+
+export default React.memo(SecuritySection);
