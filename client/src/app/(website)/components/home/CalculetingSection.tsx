@@ -24209,6 +24209,1195 @@
 
 // export default CalculetingSection;
 
+// "use client";
+
+// import React, {
+//   useState,
+//   useEffect,
+//   useMemo,
+//   useRef,
+//   useCallback,
+// } from "react";
+// import Link from "next/link";
+// import Image from "next/image";
+// import { motion, AnimatePresence } from "framer-motion";
+// import { IoIosInformationCircleOutline } from "react-icons/io";
+// import { CiBank } from "react-icons/ci";
+// import { FaPiggyBank } from "react-icons/fa";
+// import { TrendingUp } from "lucide-react";
+
+// import CountryDropdown from "../../../components/ui/CountryDropdown";
+// import { useAppContext } from "../../../contexts/WebsiteAppContext";
+// import { useAuth } from "../../../contexts/AuthContext";
+// import exchangeRateService from "../../../services/exchangeRate";
+// import currencyService, { Currency } from "../../../services/currency";
+
+// interface ExchangeRates {
+//   [currencyCode: string]: number;
+// }
+
+// interface CalculatedRates {
+//   market: number;
+//   our: number;
+//   adjustment: number;
+// }
+
+// interface FeeStructure {
+//   wiseFee: number; // This seems to be calculated as part of `ourFee` now
+//   bankTransferFee: number;
+//   wisePercentage: number;
+// }
+
+// interface CalculationResult {
+//   receiveAmount: string;
+//   ourFee: number; // This is the percentage-based fee
+//   totalFees: number;
+//   savings: string | null;
+// }
+
+// interface ValidationError {
+//   field: "sendAmount" | "api" | "general";
+//   message: string;
+// }
+
+// interface HeroState {
+//   // Core amounts
+//   sendAmount: string;
+//   receiveAmount: string; // Note: receiveAmount is now part of `calculation` derived state
+
+//   // Data states
+//   exchangeRates: ExchangeRates | null;
+//   currencies: Currency[];
+//   calculatedRates: CalculatedRates | null;
+//   feeStructure: FeeStructure;
+
+//   // Loading & error states
+//   isInitialLoading: boolean;
+//   isCalculating: boolean;
+//   errors: ValidationError[];
+
+//   // Auto-cycling
+//   isAutoCycling: boolean;
+//   currentCycleIndex: number;
+
+//   // Metadata
+//   // arrivalDate: string | null; // This is now a constant from useBusinessDateCalculation
+// }
+
+// // =============================================================================
+// // CONSTANTS
+// // =============================================================================
+
+// const CONFIG = {
+//   CYCLE_AMOUNTS: ["100", "300", "500", "700", "1000"] as const,
+//   CYCLE_DELAY: 2500,
+//   MAX_SEND_AMOUNT: 50000,
+//   RECEIVE_CURRENCY: "INR",
+//   BUSINESS_DAYS_TO_ARRIVAL: 2,
+// } as const;
+
+// const INITIAL_STATE: HeroState = {
+//   sendAmount: "",
+//   receiveAmount: "", // Effectively unused directly, derived through calculation
+//   exchangeRates: null,
+//   currencies: [],
+//   calculatedRates: null,
+//   feeStructure: { wiseFee: 0, bankTransferFee: 0, wisePercentage: 0 },
+//   isInitialLoading: true,
+//   isCalculating: false,
+//   errors: [],
+//   isAutoCycling: true,
+//   currentCycleIndex: -1,
+//   // arrivalDate: null, // Handled by custom hook
+// };
+
+// // =============================================================================
+// // CUSTOM HOOKS
+// // =============================================================================
+
+// const useBusinessDateCalculation = () => {
+//   return useMemo(() => {
+//     const calculateBusinessDate = (daysToAdd: number): string => {
+//       const today = new Date();
+//       const result = new Date(today);
+//       let addedDays = 0;
+
+//       while (addedDays < daysToAdd) {
+//         result.setDate(result.getDate() + 1);
+//         const dayOfWeek = result.getDay();
+//         if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+//           // Skip weekends
+//           addedDays++;
+//         }
+//       }
+
+//       return result.toLocaleDateString(undefined, { weekday: "long" });
+//     };
+
+//     return calculateBusinessDate(CONFIG.BUSINESS_DAYS_TO_ARRIVAL);
+//   }, []);
+// };
+
+// const useAmountValidation = (amount: string, maxAmount: number) => {
+//   return useMemo(() => {
+//     if (!amount) return null;
+
+//     const numericAmount = parseFloat(amount.replace(/,/g, ""));
+
+//     if (isNaN(numericAmount)) {
+//       return "Invalid amount format";
+//     }
+
+//     if (numericAmount <= 0) {
+//       return "Amount must be greater than zero";
+//     }
+
+//     if (numericAmount > maxAmount) {
+//       return `Amount exceeds maximum limit of ${maxAmount.toLocaleString()}`;
+//     }
+
+//     return null;
+//   }, [amount, maxAmount]);
+// };
+
+// // =============================================================================
+// // UTILITY FUNCTIONS
+// // =============================================================================
+
+// const parseNumericAmount = (amount: string): number => {
+//   return parseFloat(amount.replace(/,/g, "")) || 0;
+// };
+
+// const sanitizeAmountInput = (input: string): string => {
+//   if (input === "") return "";
+//   // Allow only numbers and a single decimal point
+//   let sanitized = input.replace(/[^0-9.]/g, "");
+//   const parts = sanitized.split(".");
+//   if (parts.length > 2) {
+//     sanitized = parts[0] + "." + parts.slice(1).join("");
+//   }
+//   return sanitized;
+// };
+
+// const createError = (
+//   field: ValidationError["field"],
+//   message: string
+// ): ValidationError => ({
+//   field,
+//   message,
+// });
+
+// // =============================================================================
+// // CALCULATION FUNCTIONS
+// // =============================================================================
+
+// const calculateRates = (
+//   exchangeRates: ExchangeRates,
+//   currency: Currency,
+//   sendCurrency: string
+// ): CalculatedRates | null => {
+//   const marketRate = exchangeRates[sendCurrency];
+
+//   if (!marketRate || marketRate <= 0) {
+//     console.error(`Market rate not found or invalid for ${sendCurrency}`);
+//     return null;
+//   }
+
+//   const adjustment = currency.rateAdjustmentPercentage ?? 0;
+//   // Assuming adjustment is a percentage added to the market rate to get "our rate"
+//   const ourRate = marketRate * (1 + adjustment / 100);
+
+//   return {
+//     market: parseFloat(marketRate.toFixed(4)), // Higher precision for market rate
+//     our: parseFloat(ourRate.toFixed(4)), // Higher precision for our rate
+//     adjustment,
+//   };
+// };
+
+// const calculateFees = (currency: Currency): FeeStructure => ({
+//   wisePercentage: currency.wiseFeePercentage ?? 0, // This is Remityn's percentage fee
+//   bankTransferFee: parseFloat(String(currency.bankTransferFee ?? 0)) || 0,
+//   wiseFee: 0, // This specific field seems redundant if wisePercentage is used for `ourFee`
+// });
+
+// const calculateAmounts = (
+//   sendAmount: string,
+//   rates: CalculatedRates,
+//   feeStructure: FeeStructure
+// ): CalculationResult => {
+//   const numericSendAmount = parseNumericAmount(sendAmount);
+
+//   if (numericSendAmount <= 0) {
+//     return {
+//       receiveAmount: "",
+//       ourFee: 0,
+//       totalFees: 0,
+//       savings: null,
+//     };
+//   }
+
+//   const ourCalculatedFee =
+//     numericSendAmount * (feeStructure.wisePercentage / 100);
+//   const totalFees = feeStructure.bankTransferFee + ourCalculatedFee;
+//   const amountAfterFees = numericSendAmount - totalFees;
+
+//   if (amountAfterFees <= 0) {
+//     return {
+//       receiveAmount: "0.00",
+//       ourFee: parseFloat(ourCalculatedFee.toFixed(2)),
+//       totalFees: parseFloat(totalFees.toFixed(2)),
+//       savings: null,
+//     };
+//   }
+
+//   const receiveAmountUsingOurRate = amountAfterFees * rates.our;
+//   const receiveAmountUsingMarketRate = amountAfterFees * rates.market;
+//   const savingsValue = receiveAmountUsingOurRate - receiveAmountUsingMarketRate;
+
+//   return {
+//     receiveAmount: receiveAmountUsingOurRate.toFixed(2),
+//     ourFee: parseFloat(ourCalculatedFee.toFixed(2)),
+//     totalFees: parseFloat(totalFees.toFixed(2)),
+//     savings: savingsValue > 0.01 ? savingsValue.toFixed(2) : null,
+//   };
+// };
+
+// // =============================================================================
+// // ANIMATION VARIANTS
+// // =============================================================================
+
+// const animations = {
+//   numberChange: {
+//     initial: { opacity: 0, y: -10 },
+//     animate: {
+//       opacity: 1,
+//       y: 0,
+//       transition: { duration: 0.3, ease: "easeOut" },
+//     },
+//     exit: { opacity: 0, y: 10, transition: { duration: 0.2, ease: "easeIn" } },
+//   },
+//   savingsBanner: {
+//     hidden: { opacity: 0, y: -10, scaleY: 0.9, height: 0, marginBottom: 0 },
+//     visible: {
+//       opacity: 1,
+//       y: 0,
+//       scaleY: 1,
+//       height: "auto",
+//       transition: {
+//         duration: 0.4,
+//         ease: [0.25, 0.46, 0.45, 0.94],
+//       },
+//     },
+//     exit: {
+//       opacity: 0,
+//       y: -15,
+//       scaleY: 0.95,
+//       height: 0,
+//       marginBottom: 0,
+//       transition: { duration: 0.35, ease: "easeIn" },
+//     },
+//   },
+//   error: {
+//     hidden: { opacity: 0, y: -10, height: 0, marginTop: 0 },
+//     visible: {
+//       opacity: 1,
+//       y: 0,
+//       height: "auto",
+//       marginTop: "0.35rem",
+//       transition: { duration: 0.3, ease: "easeOut" },
+//     },
+//     exit: {
+//       opacity: 0,
+//       y: -5,
+//       height: 0,
+//       marginTop: 0,
+//       transition: { duration: 0.2, ease: "easeIn" },
+//     },
+//   },
+// } as const;
+
+// // =============================================================================
+// // MAIN COMPONENT
+// // =============================================================================
+
+// const CalculetingSection: React.FC = () => {
+//   // Context hooks
+//   const { selectedSendCurrency, setSelectedSendCurrency } = useAppContext();
+//   const { user, loading: authLoading } = useAuth();
+
+//   // State management
+//   const [state, setState] = useState<HeroState>(INITIAL_STATE);
+
+//   // Refs
+//   const cycleTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+//   // Custom hooks
+//   const arrivalDate = useBusinessDateCalculation();
+//   const sendAmountError = useAmountValidation(
+//     state.sendAmount,
+//     CONFIG.MAX_SEND_AMOUNT
+//   );
+
+//   // Derived state
+//   const apiError = state.errors.find((error) => error.field === "api");
+//   const generalError = state.errors.find((error) => error.field === "general");
+
+//   const hasValidRates = !!state.calculatedRates && !apiError && !generalError; // Ensure no general error either
+
+//   const calculation = useMemo(() => {
+//     if (hasValidRates && state.calculatedRates) {
+//       return calculateAmounts(
+//         state.sendAmount,
+//         state.calculatedRates,
+//         state.feeStructure
+//       );
+//     }
+//     return { receiveAmount: "", ourFee: 0, totalFees: 0, savings: null };
+//   }, [
+//     state.sendAmount,
+//     state.calculatedRates,
+//     state.feeStructure,
+//     hasValidRates,
+//   ]);
+
+//   // =============================================================================
+//   // EVENT HANDLERS
+//   // =============================================================================
+
+//   const stopAutoCycling = useCallback(() => {
+//     if (state.isAutoCycling) {
+//       setState((prev) => ({ ...prev, isAutoCycling: false }));
+//       if (cycleTimerRef.current) {
+//         clearInterval(cycleTimerRef.current);
+//         cycleTimerRef.current = null;
+//       }
+//     }
+//   }, [state.isAutoCycling]);
+
+//   const handleSendAmountChange = useCallback(
+//     (event: React.ChangeEvent<HTMLInputElement>) => {
+//       stopAutoCycling();
+//       const sanitizedAmount = sanitizeAmountInput(event.target.value);
+
+//       if (sanitizedAmount === "" || sanitizedAmount === ".") {
+//         setState((prev) => ({
+//           ...prev,
+//           sendAmount: sanitizedAmount,
+//           errors: prev.errors.filter((e) => e.field !== "sendAmount"),
+//         }));
+//         return;
+//       }
+
+//       const numericValue = parseFloat(sanitizedAmount);
+
+//       if (isNaN(numericValue) && sanitizedAmount.endsWith(".")) {
+//         setState((prev) => ({
+//           ...prev,
+//           sendAmount: sanitizedAmount,
+//           errors: prev.errors.filter((e) => e.field !== "sendAmount"),
+//         }));
+//       } else if (isNaN(numericValue)) {
+//         setState((prev) => ({ ...prev, sendAmount: sanitizedAmount }));
+//         return;
+//       } else {
+//         const cappedAmount =
+//           numericValue > CONFIG.MAX_SEND_AMOUNT
+//             ? CONFIG.MAX_SEND_AMOUNT.toString()
+//             : sanitizedAmount;
+//         setState((prev) => ({
+//           ...prev,
+//           sendAmount: cappedAmount,
+//           errors: prev.errors.filter((e) => e.field !== "sendAmount"),
+//         }));
+//       }
+//     },
+//     [stopAutoCycling]
+//   );
+
+//   const handleSendAmountFocus = useCallback(() => {
+//     stopAutoCycling();
+//   }, [stopAutoCycling]);
+
+//   const handleSendAmountKeyDown = useCallback(
+//     (event: React.KeyboardEvent<HTMLInputElement>) => {
+//       if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+//         stopAutoCycling();
+//         event.preventDefault();
+
+//         const currentValue = parseNumericAmount(state.sendAmount) || 0;
+//         let step = 1;
+//         if (event.shiftKey) step = 10;
+//         if (event.ctrlKey || event.metaKey) step = 100;
+
+//         const newValue =
+//           event.key === "ArrowUp"
+//             ? Math.min(currentValue + step, CONFIG.MAX_SEND_AMOUNT)
+//             : Math.max(0, currentValue - step);
+
+//         setState((prev) => ({ ...prev, sendAmount: newValue.toString() }));
+//       }
+//     },
+//     [state.sendAmount, stopAutoCycling]
+//   );
+
+//   const handleCurrencyChange = useCallback(
+//     (newCurrency: string) => {
+//       stopAutoCycling();
+//       setSelectedSendCurrency(newCurrency);
+//       setState((prev) => ({
+//         ...prev,
+//         sendAmount: prev.isAutoCycling ? prev.sendAmount : "",
+//         calculatedRates: null,
+//         feeStructure: INITIAL_STATE.feeStructure,
+//         errors: prev.errors.filter(
+//           (e) => e.field !== "api" && e.field !== "general"
+//         ),
+//       }));
+//     },
+//     [setSelectedSendCurrency, stopAutoCycling]
+//   );
+
+//   // =============================================================================
+//   // DATA FETCHING
+//   // =============================================================================
+
+//   useEffect(() => {
+//     const fetchInitialData = async () => {
+//       setState((prev) => ({ ...prev, isInitialLoading: true, errors: [] }));
+
+//       try {
+//         const [ratesResponse, currenciesResponse] = await Promise.all([
+//           exchangeRateService.getExchangeRatesForCurrencies(),
+//           currencyService.getAllCurrencies(true),
+//         ]);
+
+//         if (!ratesResponse?.rates || typeof ratesResponse.rates !== "object") {
+//           throw createError(
+//             "api",
+//             "Could not load exchange rates. Please try again later."
+//           );
+//         }
+
+//         const validRates: ExchangeRates = {};
+//         Object.entries(ratesResponse.rates).forEach(([code, rate]) => {
+//           const numericRate = parseFloat(String(rate));
+//           if (!isNaN(numericRate) && numericRate > 0) {
+//             validRates[code] = numericRate;
+//           }
+//         });
+
+//         if (Object.keys(validRates).length === 0) {
+//           throw createError(
+//             "api",
+//             "No valid exchange rates available at the moment."
+//           );
+//         }
+
+//         if (
+//           !Array.isArray(currenciesResponse) ||
+//           currenciesResponse.length === 0
+//         ) {
+//           throw createError("api", "Could not load currency list.");
+//         }
+
+//         let currentSelectedCurrency = selectedSendCurrency;
+//         if (
+//           !currentSelectedCurrency ||
+//           !currenciesResponse.some((c) => c.code === currentSelectedCurrency)
+//         ) {
+//           const defaultCurrency =
+//             currenciesResponse.find((c) => c.code === "USD") ||
+//             currenciesResponse[0];
+//           if (defaultCurrency) {
+//             setSelectedSendCurrency(defaultCurrency.code);
+//             // currentSelectedCurrency = defaultCurrency.code; // Not needed, setSelectedSendCurrency will trigger re-render and subsequent effects
+//           } else {
+//             throw createError("general", "No suitable default currency found.");
+//           }
+//         }
+
+//         setState((prev) => ({
+//           ...prev,
+//           exchangeRates: validRates,
+//           currencies: currenciesResponse,
+//           isInitialLoading: false,
+//         }));
+//       } catch (rawError: unknown) {
+//         let errorToSet: ValidationError;
+//         // Check if rawError is already a ValidationError (e.g., thrown by createError)
+//         if (
+//           rawError &&
+//           typeof rawError === "object" &&
+//           "field" in rawError &&
+//           typeof (rawError as { field: unknown }).field === "string" &&
+//           "message" in rawError &&
+//           typeof (rawError as { message: unknown }).message === "string"
+//         ) {
+//           errorToSet = rawError as ValidationError;
+//         } else if (rawError instanceof Error) {
+//           errorToSet = createError("api", rawError.message);
+//         } else {
+//           errorToSet = createError(
+//             "api",
+//             "Failed to load initial data. Please refresh."
+//           );
+//         }
+//         setState((prev) => ({
+//           ...prev,
+//           isInitialLoading: false,
+//           errors: [errorToSet],
+//         }));
+//       }
+//     };
+
+//     fetchInitialData();
+
+//     return () => {
+//       if (cycleTimerRef.current) {
+//         clearInterval(cycleTimerRef.current);
+//       }
+//     };
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [setSelectedSendCurrency]);
+
+//   // =============================================================================
+//   // RATE AND FEE CALCULATIONS (triggered by currency or data change)
+//   // =============================================================================
+
+//   useEffect(() => {
+//     if (
+//       state.isInitialLoading ||
+//       !state.exchangeRates ||
+//       !selectedSendCurrency ||
+//       state.currencies.length === 0
+//     ) {
+//       if (
+//         !state.isInitialLoading &&
+//         (!state.exchangeRates || !selectedSendCurrency)
+//       ) {
+//         setState((prev) => ({ ...prev, calculatedRates: null }));
+//       }
+//       return;
+//     }
+
+//     setState((prev) => ({ ...prev, isCalculating: true }));
+
+//     try {
+//       const currency = state.currencies.find(
+//         (c) => c.code === selectedSendCurrency
+//       );
+//       if (!currency) {
+//         throw createError(
+//           "api",
+//           `Currency details for ${selectedSendCurrency} not found.`
+//         );
+//       }
+
+//       const rates = calculateRates(
+//         state.exchangeRates,
+//         currency,
+//         selectedSendCurrency
+//       );
+//       if (!rates) {
+//         throw createError(
+//           "api",
+//           `Exchange rate for ${selectedSendCurrency} is currently unavailable.`
+//         );
+//       }
+
+//       const fees = calculateFees(currency);
+
+//       setState((prev) => ({
+//         ...prev,
+//         calculatedRates: rates,
+//         feeStructure: fees,
+//         isCalculating: false,
+//         errors: prev.errors.filter((error) => error.field === "sendAmount"),
+//       }));
+//     } catch (rawError: unknown) {
+//       let errorToSet: ValidationError;
+//       // Check if rawError is already a ValidationError
+//       if (
+//         rawError &&
+//         typeof rawError === "object" &&
+//         "field" in rawError &&
+//         typeof (rawError as { field: unknown }).field === "string" &&
+//         "message" in rawError &&
+//         typeof (rawError as { message: unknown }).message === "string"
+//       ) {
+//         errorToSet = rawError as ValidationError;
+//       } else if (rawError instanceof Error) {
+//         errorToSet = createError("api", rawError.message);
+//       } else {
+//         errorToSet = createError("api", "Failed to calculate rates.");
+//       }
+//       setState((prev) => ({
+//         ...prev,
+//         isCalculating: false,
+//         calculatedRates: null,
+//         errors: [
+//           ...prev.errors.filter((e) => e.field === "sendAmount"),
+//           errorToSet,
+//         ],
+//       }));
+//     }
+//   }, [
+//     selectedSendCurrency,
+//     state.exchangeRates,
+//     state.currencies,
+//     state.isInitialLoading,
+//   ]);
+
+//   // =============================================================================
+//   // AUTO-CYCLING LOGIC
+//   // =============================================================================
+
+//   useEffect(() => {
+//     const shouldStartCycling =
+//       state.isAutoCycling &&
+//       !state.isInitialLoading &&
+//       !authLoading &&
+//       hasValidRates &&
+//       !state.isCalculating &&
+//       state.errors.length === 0;
+
+//     if (!shouldStartCycling) {
+//       if (cycleTimerRef.current) {
+//         clearInterval(cycleTimerRef.current);
+//         cycleTimerRef.current = null;
+//       }
+//       return;
+//     }
+
+//     const performCycle = () => {
+//       setState((prev) => {
+//         const nextIndex =
+//           (prev.currentCycleIndex + 1) % CONFIG.CYCLE_AMOUNTS.length;
+//         const nextAmount = CONFIG.CYCLE_AMOUNTS[nextIndex];
+
+//         return {
+//           ...prev,
+//           currentCycleIndex: nextIndex,
+//           sendAmount: nextAmount,
+//         };
+//       });
+//     };
+
+//     const initialDelay =
+//       state.currentCycleIndex === -1 || !cycleTimerRef.current
+//         ? 500
+//         : CONFIG.CYCLE_DELAY;
+
+//     const timeoutId = setTimeout(() => {
+//       performCycle();
+//       if (cycleTimerRef.current) clearInterval(cycleTimerRef.current);
+//       cycleTimerRef.current = setInterval(performCycle, CONFIG.CYCLE_DELAY);
+//     }, initialDelay);
+
+//     return () => {
+//       clearTimeout(timeoutId);
+//       if (cycleTimerRef.current) {
+//         clearInterval(cycleTimerRef.current);
+//       }
+//     };
+//   }, [
+//     state.isAutoCycling,
+//     state.isInitialLoading,
+//     state.isCalculating,
+//     state.currentCycleIndex,
+//     state.errors,
+//     authLoading,
+//     hasValidRates,
+//   ]);
+
+//   // =============================================================================
+//   // DISPLAY LOGIC
+//   // =============================================================================
+
+//   const displayTexts = useMemo(() => {
+//     const getOurRate = (): string => {
+//       if (!selectedSendCurrency) return "Select currency";
+//       if (state.isInitialLoading || state.isCalculating)
+//         return "Calculating rate...";
+//       if (apiError || generalError) return "Rate unavailable";
+//       if (!state.calculatedRates) return "Rate unavailable";
+//       return `1 ${selectedSendCurrency} = ${state.calculatedRates.our.toFixed(
+//         2
+//       )} ${CONFIG.RECEIVE_CURRENCY}`;
+//     };
+
+//     const getMarketRate = (): string | null => {
+//       if (!hasValidRates || !state.calculatedRates) return null; // apiError and generalError already checked by hasValidRates
+//       return `Market: 1 ${selectedSendCurrency} ≈ ${state.calculatedRates.market.toFixed(
+//         2
+//       )} ${CONFIG.RECEIVE_CURRENCY}`;
+//     };
+
+//     const getAdjustmentText = (): string | null => {
+//       if (
+//         !hasValidRates ||
+//         !state.calculatedRates ||
+//         state.calculatedRates.adjustment === 0
+//       )
+//         return null;
+//       const adj = state.calculatedRates.adjustment;
+//       return `(${adj > 0 ? "+" : ""}${adj.toFixed(2)}% vs market)`;
+//     };
+
+//     return {
+//       ourRate: getOurRate(),
+//       marketRate: getMarketRate(),
+//       adjustmentText: getAdjustmentText(),
+//     };
+//   }, [
+//     state.isInitialLoading,
+//     state.isCalculating,
+//     apiError,
+//     generalError,
+//     hasValidRates,
+//     selectedSendCurrency,
+//     state.calculatedRates,
+//   ]);
+
+//   const isButtonDisabled =
+//     state.isInitialLoading ||
+//     authLoading ||
+//     !hasValidRates ||
+//     !!sendAmountError ||
+//     !state.sendAmount ||
+//     parseNumericAmount(state.sendAmount) <= 0 ||
+//     !calculation.receiveAmount ||
+//     parseFloat(calculation.receiveAmount) <= 0 ||
+//     state.isCalculating ||
+//     !!apiError ||
+//     !!generalError;
+
+//   const getButtonLink = () => {
+//     if (authLoading) return "#";
+//     if (user) {
+//       return `/dashboard/send/select-balance`;
+//     }
+//     return "/auth/register";
+//   };
+
+//   // =============================================================================
+//   // RENDER
+//   // =============================================================================
+
+//   return (
+//     <section className="Hero-Section lg:pb-10 pb-5 relative">
+//       <div className="container mx-auto sm:px-4 px-2 relative">
+//         {/* <div className="rounded-3xl p-[2px] bg-gradient-to-b from-primary to-transparent to-88% min-h-[500px] relative z-0"> */}
+//         <div className="rounded-3xl bg-gradient-to-b from-primary to-transparent to-88% min-h-[500px] relative z-0">
+//           <div className="bg-background border-2 bg-clip-padding border-transparent rounded-3xl overflow-hidden xl:p-10 lg:p-6 p-4  h-full relative flex flex-col">
+//             {/* Background decorations */}
+//             <div className="shep">
+//               <div className="absolute -left-1 -top-1">
+//                 <img
+//                   src="/assets/images/dsfsfdsfdsf.svg"
+//                   className="z-1"
+//                   alt=""
+//                 />
+//               </div>
+//               <div className="absolute -right-1 -top-1">
+//                 <img
+//                   src="/assets/images/zdfsdfwsedg.svg"
+//                   className="z-1"
+//                   alt=""
+//                 />
+//               </div>
+//             </div>
+
+//             <div className="bg-gradient-to-b from-primary-foreground to-transparent to-92% rounded-3xl flex flex-col md:flex-row gap-4 xl:p-10 lg:p-6 p-4 z-2 relative">
+//               {/* Left Panel - Amount Input and Rates */}
+//               <div className="w-full xl:w-2/3 lg:w-1/2">
+//                 <div className="flex flex-col xl:flex-row gap-4">
+//                   {/* Send Amount Input */}
+//                   <div className="xl:mb-6 mb-0 w-full relative">
+//                     <label
+//                       htmlFor="sendAmountInput"
+//                       className="block text-gray-200 lg:text-base text-sm mb-1"
+//                     >
+//                       You send
+//                     </label>
+//                     <div
+//                       className={`w-full border  rounded-xl flex items-center justify-between transition-all duration-150 ease-linear ${
+//                         sendAmountError ? "border-red-600 " : ""
+//                       }`}
+//                     >
+//                       <input
+//                         id="sendAmountInput"
+//                         type="text"
+//                         inputMode="decimal"
+//                         placeholder={
+//                           state.isAutoCycling && !state.sendAmount
+//                             ? " "
+//                             : "0.00"
+//                         }
+//                         value={state.sendAmount}
+//                         onChange={handleSendAmountChange}
+//                         onFocus={handleSendAmountFocus}
+//                         onKeyDown={handleSendAmountKeyDown}
+//                         className="block w-full sm:h-17 h-14 p-3 text-white dark:text-white md:text-2xl text-xl font-bold focus:outline-none bg-transparent rounded-l-xl transition-all ease-linear duration-150 placeholder-gray-500 dark:placeholder-gray-400"
+//                         disabled={
+//                           state.isInitialLoading ||
+//                           !selectedSendCurrency ||
+//                           !!apiError ||
+//                           !!generalError
+//                         }
+//                         aria-label="Amount to send"
+//                         aria-invalid={!!sendAmountError}
+//                         aria-describedby={
+//                           sendAmountError ? "send-amount-error-msg" : undefined
+//                         }
+//                       />
+//                       <div className="z-10 flex items-center cursor-pointer">
+//                         <CountryDropdown
+//                           selectedCurrency={selectedSendCurrency}
+//                           onCurrencyChange={handleCurrencyChange}
+//                           disabled={
+//                             state.isInitialLoading ||
+//                             !!apiError ||
+//                             !!generalError
+//                           }
+//                           // currencies={state.currencies} // Removed this prop
+//                         />
+//                       </div>
+//                     </div>
+
+//                     <AnimatePresence>
+//                       {sendAmountError && (
+//                         <motion.p
+//                           id="send-amount-error-msg"
+//                           className="text-red-500 dark:text-red-400 text-xs font-medium absolute -bottom-5 left-1 flex items-center gap-1"
+//                           variants={animations.error}
+//                           initial="hidden"
+//                           animate="visible"
+//                           exit="exit"
+//                           aria-live="polite"
+//                         >
+//                           <IoIosInformationCircleOutline
+//                             className="flex-shrink-0"
+//                             size={14}
+//                           />
+//                           {sendAmountError}
+//                         </motion.p>
+//                       )}
+//                     </AnimatePresence>
+//                   </div>
+
+//                   {/* Receive Amount Display */}
+//                   <div className="xl:mb-6 mb-4 w-full">
+//                     <label
+//                       htmlFor="receiveAmountInput"
+//                       className="block text-gray-200 lg:text-base text-sm mb-1"
+//                     >
+//                       Recipient gets
+//                     </label>
+//                     <div className="w-full rounded-xl flex items-center justify-between sm:h-17 h-14 relative overflow-hidden border">
+//                       <AnimatePresence mode="wait">
+//                         <motion.div
+//                           key={`${calculation.receiveAmount}-${CONFIG.RECEIVE_CURRENCY}`}
+//                           className="absolute inset-0 flex items-center"
+//                           variants={animations.numberChange}
+//                           initial="initial"
+//                           animate="animate"
+//                           exit="exit"
+//                         >
+//                           <input
+//                             id="receiveAmountInput"
+//                             type="text"
+//                             inputMode="decimal"
+//                             placeholder={
+//                               state.isAutoCycling && !state.sendAmount
+//                                 ? " "
+//                                 : "0.00"
+//                             }
+//                             value={
+//                               calculation.receiveAmount &&
+//                               parseFloat(calculation.receiveAmount) > 0
+//                                 ? parseFloat(
+//                                     calculation.receiveAmount
+//                                   ).toLocaleString(undefined, {
+//                                     minimumFractionDigits: 2,
+//                                     maximumFractionDigits: 2,
+//                                   })
+//                                 : state.sendAmount &&
+//                                   parseNumericAmount(state.sendAmount) > 0 &&
+//                                   !sendAmountError &&
+//                                   !apiError &&
+//                                   !generalError &&
+//                                   !state.isCalculating
+//                                 ? "0.00"
+//                                 : ""
+//                             }
+//                             readOnly
+//                             className="block w-full h-full p-3 text-white  md:text-2xl text-xl font-bold focus:outline-none bg-transparent rounded-l-xl placeholder-gray-500 cursor-default"
+//                             aria-label="Amount recipient gets"
+//                           />
+//                         </motion.div>
+//                       </AnimatePresence>
+//                       <div className="flex items-center gap-2 w-auto px-3 md:px-4 py-3 flex-shrink-0 ml-auto relative h-18">
+//                         <Image
+//                           src="/assets/icon/flags/inr.svg"
+//                           alt={`${CONFIG.RECEIVE_CURRENCY} Flag`}
+//                           width={30}
+//                           height={30}
+//                           className="rounded-full"
+//                         />
+//                         <p className="text-white dark:text-gray-300 font-semibold text-sm md:text-base">
+//                           {CONFIG.RECEIVE_CURRENCY}
+//                         </p>
+//                       </div>
+//                     </div>
+//                   </div>
+//                 </div>
+
+//                 {/* Rate Information & Errors */}
+//                 <div className="mb-4 space-y-1 text-xs md:text-sm">
+//                   {(apiError || generalError) && (
+//                     <motion.div
+//                       className="font-medium p-2.5 my-2 border border-red-700/30 rounded-md bg-red-600/20 text-red-400 flex items-center gap-2"
+//                       variants={animations.error}
+//                       initial="hidden"
+//                       animate="visible"
+//                       exit="exit"
+//                     >
+//                       <IoIosInformationCircleOutline size={20} />
+//                       <span>
+//                         Error: {apiError?.message || generalError?.message}
+//                       </span>
+//                     </motion.div>
+//                   )}
+
+//                   <div
+//                     className={`flex items-center gap-2 ${
+//                       (state.isCalculating && !state.calculatedRates) ||
+//                       state.isInitialLoading
+//                         ? "animate-pulse"
+//                         : ""
+//                     }`}
+//                   >
+//                     <span
+//                       className={`sm:text-xl text-lg font-medium ${
+//                         !hasValidRates &&
+//                         !state.isCalculating &&
+//                         !state.isInitialLoading
+//                           ? "text-gray-500"
+//                           : "text-white"
+//                       }`}
+//                     >
+//                       {displayTexts.ourRate}
+//                     </span>
+//                     {displayTexts.adjustmentText && (
+//                       <span className="text-primary text-xs sm:font-semibold">
+//                         {displayTexts.adjustmentText}
+//                       </span>
+//                     )}
+//                   </div>
+
+//                   {displayTexts.marketRate && (
+//                     <div className="text-gray-400 dark:text-gray-500">
+//                       {displayTexts.marketRate}
+//                     </div>
+//                   )}
+//                 </div>
+
+//                 {/* Savings Banner */}
+//                 <AnimatePresence>
+//                   {calculation.savings &&
+//                     parseFloat(calculation.savings) > 0 &&
+//                     hasValidRates && (
+//                       <motion.div
+//                         key="savings-banner"
+//                         className="mt-3 sm:mb-2 mb-1"
+//                         variants={animations.savingsBanner}
+//                         initial="hidden"
+//                         animate="visible"
+//                         exit="exit"
+//                       >
+//                         <div className="bg-primary/10 rounded-xl sm:py-4 sm:pe-4 p-2">
+//                           <div className="flex items-center gap-3">
+//                             <div className="bg-primary/80 rounded-full sm:p-3 p-1.5 flex-shrink-0 sm:-ml-6 ml-0 sm:border-3 border-0 border-primary-foreground">
+//                               <FaPiggyBank className="size-6 text-primary-foreground" />
+//                             </div>
+//                             <div>
+//                               <p className="font-semibold text-primary lg:text-base text-sm flex items-center gap-1">
+//                                 <span>
+//                                   You could save up to {calculation.savings}{" "}
+//                                   {CONFIG.RECEIVE_CURRENCY}
+//                                 </span>
+//                                 <TrendingUp
+//                                   size={18}
+//                                   className="text-primary/80"
+//                                 />
+//                               </p>
+//                               <p className="text-xs md:text-sm font-medium text-gray-400">
+//                                 Compared to typical bank rates on this amount.
+//                               </p>
+//                             </div>
+//                           </div>
+//                         </div>
+//                       </motion.div>
+//                     )}
+//                 </AnimatePresence>
+//               </div>
+
+//               {/* Right Panel - Payment Method and Fees */}
+//               <div className="w-full xl:w-1/3 lg:w-1/2 flex flex-col">
+//                 {/* Payment Method */}
+//                 <div className="mb-3 md:mb-4">
+//                   <label className="block text-gray-200 lg:text-base text-sm mb-1">
+//                     Paying with
+//                   </label>
+//                   <div className="sm:p-4 p-3 sm:h-17 h-14 border rounded-xl flex items-center justify-between text-white bg-primarybox">
+//                     <div className="flex items-center gap-2">
+//                       <CiBank className=" w-5 h-5 md:w-6 md:h-6" />
+//                       <span className="font-medium md:text-base text-sm">
+//                         Bank Transfer
+//                       </span>
+//                     </div>
+//                   </div>
+//                 </div>
+//                 {/* Fees Breakdown */}
+//                 <div className="mb-3 md:mb-4">
+//                   <label className="block text-gray-200 lg:text-base text-sm mb-1">
+//                     Fee breakdown
+//                   </label>
+//                   <div className="space-y-2 sm:p-4 p-3 border rounded-xl bg-primarybox">
+//                     <div className="flex justify-between items-center">
+//                       <span className="text-gray-400 dark:text-gray-500 sm:text-base text-sm">
+//                         Our fee
+//                       </span>
+//                       <AnimatePresence mode="wait">
+//                         <motion.span
+//                           key={`our-fee-${calculation.ourFee.toFixed(
+//                             2
+//                           )}-${selectedSendCurrency}`}
+//                           variants={animations.numberChange}
+//                           initial="initial"
+//                           animate="animate"
+//                           exit="exit"
+//                           className="font-medium text-white dark:text-white"
+//                         >
+//                           {hasValidRates &&
+//                           state.sendAmount &&
+//                           parseNumericAmount(state.sendAmount) > 0
+//                             ? `${calculation.ourFee.toFixed(2)}${
+//                                 selectedSendCurrency
+//                                   ? ` ${selectedSendCurrency}`
+//                                   : ""
+//                               }`
+//                             : `0`}
+//                         </motion.span>
+//                       </AnimatePresence>
+//                     </div>
+
+//                     <div className="flex justify-between items-center">
+//                       <span className="text-gray-400 dark:text-gray-500 sm:text-base text-sm">
+//                         Bank transfer fee
+//                       </span>
+//                       <span className="font-medium text-white dark:text-white">
+//                         {hasValidRates
+//                           ? state.feeStructure.bankTransferFee > 0
+//                             ? `${state.feeStructure.bankTransferFee.toFixed(
+//                                 2
+//                               )}${
+//                                 selectedSendCurrency
+//                                   ? ` ${selectedSendCurrency}`
+//                                   : ""
+//                               }`
+//                             : `Free`
+//                           : `0`}
+//                       </span>
+//                     </div>
+
+//                     <div className="border my-2" />
+
+//                     <div className="flex justify-between items-center">
+//                       <span className="text-white dark:text-white font-semibold">
+//                         Total fees
+//                       </span>
+//                       <AnimatePresence mode="wait">
+//                         <motion.span
+//                           key={`total-fees-${calculation.totalFees.toFixed(
+//                             2
+//                           )}-${selectedSendCurrency}`}
+//                           variants={animations.numberChange}
+//                           initial="initial"
+//                           animate="animate"
+//                           exit="exit"
+//                           className="font-semibold text-white dark:text-white"
+//                         >
+//                           {hasValidRates &&
+//                           state.sendAmount &&
+//                           parseNumericAmount(state.sendAmount) > 0
+//                             ? `${calculation.totalFees.toFixed(2)}${
+//                                 selectedSendCurrency
+//                                   ? ` ${selectedSendCurrency}`
+//                                   : ""
+//                               }`
+//                             : `0`}
+//                         </motion.span>
+//                       </AnimatePresence>
+//                     </div>
+//                   </div>
+//                 </div>
+//                 {/* Arrival Time */}
+//                 <div className="mb-4 md:mb-6 flex justify-between items-center">
+//                   <label className="block text-gray-200 lg:text-base text-sm mb-1">
+//                     Should arrive around
+//                   </label>
+//                   <div
+//                     className={`text-primary font-semibold md:text-base text-sm ${
+//                       state.isInitialLoading ||
+//                       (state.isCalculating && !arrivalDate)
+//                         ? "animate-pulse"
+//                         : ""
+//                     }`}
+//                   >
+//                     {state.isInitialLoading ||
+//                     (state.isCalculating && !arrivalDate)
+//                       ? "Calculating..."
+//                       : arrivalDate
+//                       ? `By ${arrivalDate}`
+//                       : "Unavailable"}
+//                   </div>
+//                 </div>
+//                 <div className="flex-grow"></div>{" "}
+//                 {/* Spacer to push button to bottom */}
+//                 {/* Get Started Button */}
+//                 <Link
+//                   href={!isButtonDisabled ? getButtonLink() : "#"}
+//                   passHref
+//                   className={`w-full block text-center py-3.5 px-6 font-medium rounded-full text-base lg:text-lg transition-all duration-75 ease-linear transform active:scale-95
+//                     ${
+//                       isButtonDisabled
+//                         ? "bg-primary hover:bg-primaryhover text-mainheading  cursor-not-allowed opacity-70"
+//                         : "bg-primary hover:bg-primaryhover text-mainheading "
+//                     }`}
+//                   aria-disabled={isButtonDisabled}
+//                   onClick={(e) => {
+//                     if (isButtonDisabled) e.preventDefault();
+//                   }}
+//                 >
+//                   {authLoading
+//                     ? "Loading..."
+//                     : user
+//                     ? "Send Money"
+//                     : "Get Started"}
+//                 </Link>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default CalculetingSection;
+
 "use client";
 
 import React, {
@@ -24219,75 +25408,62 @@ import React, {
   useCallback,
 } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "next/image"; // Import next/image
 import { motion, AnimatePresence } from "framer-motion";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import { CiBank } from "react-icons/ci";
 import { FaPiggyBank } from "react-icons/fa";
 import { TrendingUp } from "lucide-react";
 
-import CountryDropdown from "../../../components/ui/CountryDropdown";
-import { useAppContext } from "../../../contexts/WebsiteAppContext";
-import { useAuth } from "../../../contexts/AuthContext";
-import exchangeRateService from "../../../services/exchangeRate";
-import currencyService, { Currency } from "../../../services/currency";
+import CountryDropdown from "../../../components/ui/CountryDropdown"; // Adjust path if your structure is different
+import { useAppContext } from "../../../contexts/WebsiteAppContext"; // Adjust path
+import { useAuth } from "../../../contexts/AuthContext"; // Adjust path
+import exchangeRateService from "../../../services/exchangeRate"; // Adjust path
+import currencyService, { Currency } from "../../../services/currency"; // Adjust path
 
+// =============================================================================
+// INTERFACES & TYPES (Keep as they are)
+// =============================================================================
 interface ExchangeRates {
   [currencyCode: string]: number;
 }
-
 interface CalculatedRates {
   market: number;
   our: number;
   adjustment: number;
 }
-
 interface FeeStructure {
-  wiseFee: number; // This seems to be calculated as part of `ourFee` now
+  wiseFee: number;
   bankTransferFee: number;
   wisePercentage: number;
 }
-
 interface CalculationResult {
   receiveAmount: string;
-  ourFee: number; // This is the percentage-based fee
+  ourFee: number;
   totalFees: number;
   savings: string | null;
 }
-
 interface ValidationError {
   field: "sendAmount" | "api" | "general";
   message: string;
 }
-
 interface HeroState {
-  // Core amounts
   sendAmount: string;
-  receiveAmount: string; // Note: receiveAmount is now part of `calculation` derived state
-
-  // Data states
+  receiveAmount: string;
   exchangeRates: ExchangeRates | null;
   currencies: Currency[];
   calculatedRates: CalculatedRates | null;
   feeStructure: FeeStructure;
-
-  // Loading & error states
   isInitialLoading: boolean;
   isCalculating: boolean;
   errors: ValidationError[];
-
-  // Auto-cycling
   isAutoCycling: boolean;
   currentCycleIndex: number;
-
-  // Metadata
-  // arrivalDate: string | null; // This is now a constant from useBusinessDateCalculation
 }
 
 // =============================================================================
-// CONSTANTS
+// CONSTANTS (Keep as they are)
 // =============================================================================
-
 const CONFIG = {
   CYCLE_AMOUNTS: ["100", "300", "500", "700", "1000"] as const,
   CYCLE_DELAY: 2500,
@@ -24298,7 +25474,7 @@ const CONFIG = {
 
 const INITIAL_STATE: HeroState = {
   sendAmount: "",
-  receiveAmount: "", // Effectively unused directly, derived through calculation
+  receiveAmount: "",
   exchangeRates: null,
   currencies: [],
   calculatedRates: null,
@@ -24308,32 +25484,26 @@ const INITIAL_STATE: HeroState = {
   errors: [],
   isAutoCycling: true,
   currentCycleIndex: -1,
-  // arrivalDate: null, // Handled by custom hook
 };
 
 // =============================================================================
-// CUSTOM HOOKS
+// CUSTOM HOOKS (Keep as they are)
 // =============================================================================
-
 const useBusinessDateCalculation = () => {
   return useMemo(() => {
     const calculateBusinessDate = (daysToAdd: number): string => {
       const today = new Date();
       const result = new Date(today);
       let addedDays = 0;
-
       while (addedDays < daysToAdd) {
         result.setDate(result.getDate() + 1);
         const dayOfWeek = result.getDay();
         if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-          // Skip weekends
           addedDays++;
         }
       }
-
       return result.toLocaleDateString(undefined, { weekday: "long" });
     };
-
     return calculateBusinessDate(CONFIG.BUSINESS_DAYS_TO_ARRIVAL);
   }, []);
 };
@@ -24341,119 +25511,80 @@ const useBusinessDateCalculation = () => {
 const useAmountValidation = (amount: string, maxAmount: number) => {
   return useMemo(() => {
     if (!amount) return null;
-
     const numericAmount = parseFloat(amount.replace(/,/g, ""));
-
-    if (isNaN(numericAmount)) {
-      return "Invalid amount format";
-    }
-
-    if (numericAmount <= 0) {
-      return "Amount must be greater than zero";
-    }
-
-    if (numericAmount > maxAmount) {
+    if (isNaN(numericAmount)) return "Invalid amount format";
+    if (numericAmount <= 0) return "Amount must be greater than zero";
+    if (numericAmount > maxAmount)
       return `Amount exceeds maximum limit of ${maxAmount.toLocaleString()}`;
-    }
-
     return null;
   }, [amount, maxAmount]);
 };
 
 // =============================================================================
-// UTILITY FUNCTIONS
+// UTILITY FUNCTIONS (Keep as they are)
 // =============================================================================
-
-const parseNumericAmount = (amount: string): number => {
-  return parseFloat(amount.replace(/,/g, "")) || 0;
-};
-
+const parseNumericAmount = (amount: string): number =>
+  parseFloat(amount.replace(/,/g, "")) || 0;
 const sanitizeAmountInput = (input: string): string => {
   if (input === "") return "";
-  // Allow only numbers and a single decimal point
   let sanitized = input.replace(/[^0-9.]/g, "");
   const parts = sanitized.split(".");
-  if (parts.length > 2) {
-    sanitized = parts[0] + "." + parts.slice(1).join("");
-  }
+  if (parts.length > 2) sanitized = parts[0] + "." + parts.slice(1).join("");
   return sanitized;
 };
-
 const createError = (
   field: ValidationError["field"],
   message: string
-): ValidationError => ({
-  field,
-  message,
-});
+): ValidationError => ({ field, message });
 
 // =============================================================================
-// CALCULATION FUNCTIONS
+// CALCULATION FUNCTIONS (Keep as they are)
 // =============================================================================
-
 const calculateRates = (
   exchangeRates: ExchangeRates,
   currency: Currency,
   sendCurrency: string
 ): CalculatedRates | null => {
   const marketRate = exchangeRates[sendCurrency];
-
   if (!marketRate || marketRate <= 0) {
     console.error(`Market rate not found or invalid for ${sendCurrency}`);
     return null;
   }
-
   const adjustment = currency.rateAdjustmentPercentage ?? 0;
-  // Assuming adjustment is a percentage added to the market rate to get "our rate"
   const ourRate = marketRate * (1 + adjustment / 100);
-
   return {
-    market: parseFloat(marketRate.toFixed(4)), // Higher precision for market rate
-    our: parseFloat(ourRate.toFixed(4)), // Higher precision for our rate
+    market: parseFloat(marketRate.toFixed(4)),
+    our: parseFloat(ourRate.toFixed(4)),
     adjustment,
   };
 };
-
 const calculateFees = (currency: Currency): FeeStructure => ({
-  wisePercentage: currency.wiseFeePercentage ?? 0, // This is Remityn's percentage fee
+  wisePercentage: currency.wiseFeePercentage ?? 0,
   bankTransferFee: parseFloat(String(currency.bankTransferFee ?? 0)) || 0,
-  wiseFee: 0, // This specific field seems redundant if wisePercentage is used for `ourFee`
+  wiseFee: 0,
 });
-
 const calculateAmounts = (
   sendAmount: string,
   rates: CalculatedRates,
   feeStructure: FeeStructure
 ): CalculationResult => {
   const numericSendAmount = parseNumericAmount(sendAmount);
-
-  if (numericSendAmount <= 0) {
-    return {
-      receiveAmount: "",
-      ourFee: 0,
-      totalFees: 0,
-      savings: null,
-    };
-  }
-
+  if (numericSendAmount <= 0)
+    return { receiveAmount: "", ourFee: 0, totalFees: 0, savings: null };
   const ourCalculatedFee =
     numericSendAmount * (feeStructure.wisePercentage / 100);
   const totalFees = feeStructure.bankTransferFee + ourCalculatedFee;
   const amountAfterFees = numericSendAmount - totalFees;
-
-  if (amountAfterFees <= 0) {
+  if (amountAfterFees <= 0)
     return {
       receiveAmount: "0.00",
       ourFee: parseFloat(ourCalculatedFee.toFixed(2)),
       totalFees: parseFloat(totalFees.toFixed(2)),
       savings: null,
     };
-  }
-
   const receiveAmountUsingOurRate = amountAfterFees * rates.our;
   const receiveAmountUsingMarketRate = amountAfterFees * rates.market;
   const savingsValue = receiveAmountUsingOurRate - receiveAmountUsingMarketRate;
-
   return {
     receiveAmount: receiveAmountUsingOurRate.toFixed(2),
     ourFee: parseFloat(ourCalculatedFee.toFixed(2)),
@@ -24463,9 +25594,8 @@ const calculateAmounts = (
 };
 
 // =============================================================================
-// ANIMATION VARIANTS
+// ANIMATION VARIANTS (Keep as they are)
 // =============================================================================
-
 const animations = {
   numberChange: {
     initial: { opacity: 0, y: -10 },
@@ -24483,10 +25613,7 @@ const animations = {
       y: 0,
       scaleY: 1,
       height: "auto",
-      transition: {
-        duration: 0.4,
-        ease: [0.25, 0.46, 0.45, 0.94],
-      },
+      transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] },
     },
     exit: {
       opacity: 0,
@@ -24519,30 +25646,19 @@ const animations = {
 // =============================================================================
 // MAIN COMPONENT
 // =============================================================================
-
 const CalculetingSection: React.FC = () => {
-  // Context hooks
   const { selectedSendCurrency, setSelectedSendCurrency } = useAppContext();
   const { user, loading: authLoading } = useAuth();
-
-  // State management
   const [state, setState] = useState<HeroState>(INITIAL_STATE);
-
-  // Refs
   const cycleTimerRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Custom hooks
   const arrivalDate = useBusinessDateCalculation();
   const sendAmountError = useAmountValidation(
     state.sendAmount,
     CONFIG.MAX_SEND_AMOUNT
   );
-
-  // Derived state
   const apiError = state.errors.find((error) => error.field === "api");
   const generalError = state.errors.find((error) => error.field === "general");
-
-  const hasValidRates = !!state.calculatedRates && !apiError && !generalError; // Ensure no general error either
+  const hasValidRates = !!state.calculatedRates && !apiError && !generalError;
 
   const calculation = useMemo(() => {
     if (hasValidRates && state.calculatedRates) {
@@ -24560,10 +25676,7 @@ const CalculetingSection: React.FC = () => {
     hasValidRates,
   ]);
 
-  // =============================================================================
-  // EVENT HANDLERS
-  // =============================================================================
-
+  // EVENT HANDLERS (Keep as they are)
   const stopAutoCycling = useCallback(() => {
     if (state.isAutoCycling) {
       setState((prev) => ({ ...prev, isAutoCycling: false }));
@@ -24573,12 +25686,10 @@ const CalculetingSection: React.FC = () => {
       }
     }
   }, [state.isAutoCycling]);
-
   const handleSendAmountChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       stopAutoCycling();
       const sanitizedAmount = sanitizeAmountInput(event.target.value);
-
       if (sanitizedAmount === "" || sanitizedAmount === ".") {
         setState((prev) => ({
           ...prev,
@@ -24587,9 +25698,7 @@ const CalculetingSection: React.FC = () => {
         }));
         return;
       }
-
       const numericValue = parseFloat(sanitizedAmount);
-
       if (isNaN(numericValue) && sanitizedAmount.endsWith(".")) {
         setState((prev) => ({
           ...prev,
@@ -24613,33 +25722,27 @@ const CalculetingSection: React.FC = () => {
     },
     [stopAutoCycling]
   );
-
   const handleSendAmountFocus = useCallback(() => {
     stopAutoCycling();
   }, [stopAutoCycling]);
-
   const handleSendAmountKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>) => {
       if (event.key === "ArrowUp" || event.key === "ArrowDown") {
         stopAutoCycling();
         event.preventDefault();
-
         const currentValue = parseNumericAmount(state.sendAmount) || 0;
         let step = 1;
         if (event.shiftKey) step = 10;
         if (event.ctrlKey || event.metaKey) step = 100;
-
         const newValue =
           event.key === "ArrowUp"
             ? Math.min(currentValue + step, CONFIG.MAX_SEND_AMOUNT)
             : Math.max(0, currentValue - step);
-
         setState((prev) => ({ ...prev, sendAmount: newValue.toString() }));
       }
     },
     [state.sendAmount, stopAutoCycling]
   );
-
   const handleCurrencyChange = useCallback(
     (newCurrency: string) => {
       stopAutoCycling();
@@ -24657,65 +25760,41 @@ const CalculetingSection: React.FC = () => {
     [setSelectedSendCurrency, stopAutoCycling]
   );
 
-  // =============================================================================
-  // DATA FETCHING
-  // =============================================================================
-
+  // DATA FETCHING (Keep as they are, including error handling)
   useEffect(() => {
     const fetchInitialData = async () => {
       setState((prev) => ({ ...prev, isInitialLoading: true, errors: [] }));
-
       try {
         const [ratesResponse, currenciesResponse] = await Promise.all([
           exchangeRateService.getExchangeRatesForCurrencies(),
           currencyService.getAllCurrencies(true),
         ]);
-
-        if (!ratesResponse?.rates || typeof ratesResponse.rates !== "object") {
-          throw createError(
-            "api",
-            "Could not load exchange rates. Please try again later."
-          );
-        }
-
+        if (!ratesResponse?.rates || typeof ratesResponse.rates !== "object")
+          throw createError("api", "Could not load exchange rates.");
         const validRates: ExchangeRates = {};
         Object.entries(ratesResponse.rates).forEach(([code, rate]) => {
           const numericRate = parseFloat(String(rate));
-          if (!isNaN(numericRate) && numericRate > 0) {
+          if (!isNaN(numericRate) && numericRate > 0)
             validRates[code] = numericRate;
-          }
         });
-
-        if (Object.keys(validRates).length === 0) {
-          throw createError(
-            "api",
-            "No valid exchange rates available at the moment."
-          );
-        }
-
+        if (Object.keys(validRates).length === 0)
+          throw createError("api", "No valid exchange rates available.");
         if (
           !Array.isArray(currenciesResponse) ||
           currenciesResponse.length === 0
-        ) {
+        )
           throw createError("api", "Could not load currency list.");
-        }
-
-        let currentSelectedCurrency = selectedSendCurrency;
         if (
-          !currentSelectedCurrency ||
-          !currenciesResponse.some((c) => c.code === currentSelectedCurrency)
+          !selectedSendCurrency ||
+          !currenciesResponse.some((c) => c.code === selectedSendCurrency)
         ) {
           const defaultCurrency =
             currenciesResponse.find((c) => c.code === "USD") ||
             currenciesResponse[0];
-          if (defaultCurrency) {
-            setSelectedSendCurrency(defaultCurrency.code);
-            // currentSelectedCurrency = defaultCurrency.code; // Not needed, setSelectedSendCurrency will trigger re-render and subsequent effects
-          } else {
+          if (defaultCurrency) setSelectedSendCurrency(defaultCurrency.code);
+          else
             throw createError("general", "No suitable default currency found.");
-          }
         }
-
         setState((prev) => ({
           ...prev,
           exchangeRates: validRates,
@@ -24724,23 +25803,19 @@ const CalculetingSection: React.FC = () => {
         }));
       } catch (rawError: unknown) {
         let errorToSet: ValidationError;
-        // Check if rawError is already a ValidationError (e.g., thrown by createError)
         if (
           rawError &&
           typeof rawError === "object" &&
           "field" in rawError &&
-          typeof (rawError as { field: unknown }).field === "string" &&
+          typeof (rawError as any).field === "string" &&
           "message" in rawError &&
-          typeof (rawError as { message: unknown }).message === "string"
+          typeof (rawError as any).message === "string"
         ) {
           errorToSet = rawError as ValidationError;
         } else if (rawError instanceof Error) {
           errorToSet = createError("api", rawError.message);
         } else {
-          errorToSet = createError(
-            "api",
-            "Failed to load initial data. Please refresh."
-          );
+          errorToSet = createError("api", "Failed to load initial data.");
         }
         setState((prev) => ({
           ...prev,
@@ -24749,21 +25824,13 @@ const CalculetingSection: React.FC = () => {
         }));
       }
     };
-
     fetchInitialData();
-
     return () => {
-      if (cycleTimerRef.current) {
-        clearInterval(cycleTimerRef.current);
-      }
+      if (cycleTimerRef.current) clearInterval(cycleTimerRef.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setSelectedSendCurrency]);
+  }, [setSelectedSendCurrency, selectedSendCurrency]); // Added selectedSendCurrency to deps for safety on re-fetch if needed
 
-  // =============================================================================
-  // RATE AND FEE CALCULATIONS (triggered by currency or data change)
-  // =============================================================================
-
+  // RATE AND FEE CALCULATIONS (Keep as they are)
   useEffect(() => {
     if (
       state.isInitialLoading ||
@@ -24774,39 +25841,31 @@ const CalculetingSection: React.FC = () => {
       if (
         !state.isInitialLoading &&
         (!state.exchangeRates || !selectedSendCurrency)
-      ) {
+      )
         setState((prev) => ({ ...prev, calculatedRates: null }));
-      }
       return;
     }
-
     setState((prev) => ({ ...prev, isCalculating: true }));
-
     try {
       const currency = state.currencies.find(
         (c) => c.code === selectedSendCurrency
       );
-      if (!currency) {
+      if (!currency)
         throw createError(
           "api",
           `Currency details for ${selectedSendCurrency} not found.`
         );
-      }
-
       const rates = calculateRates(
         state.exchangeRates,
         currency,
         selectedSendCurrency
       );
-      if (!rates) {
+      if (!rates)
         throw createError(
           "api",
-          `Exchange rate for ${selectedSendCurrency} is currently unavailable.`
+          `Exchange rate for ${selectedSendCurrency} is unavailable.`
         );
-      }
-
       const fees = calculateFees(currency);
-
       setState((prev) => ({
         ...prev,
         calculatedRates: rates,
@@ -24816,14 +25875,13 @@ const CalculetingSection: React.FC = () => {
       }));
     } catch (rawError: unknown) {
       let errorToSet: ValidationError;
-      // Check if rawError is already a ValidationError
       if (
         rawError &&
         typeof rawError === "object" &&
         "field" in rawError &&
-        typeof (rawError as { field: unknown }).field === "string" &&
+        typeof (rawError as any).field === "string" &&
         "message" in rawError &&
-        typeof (rawError as { message: unknown }).message === "string"
+        typeof (rawError as any).message === "string"
       ) {
         errorToSet = rawError as ValidationError;
       } else if (rawError instanceof Error) {
@@ -24848,10 +25906,7 @@ const CalculetingSection: React.FC = () => {
     state.isInitialLoading,
   ]);
 
-  // =============================================================================
-  // AUTO-CYCLING LOGIC
-  // =============================================================================
-
+  // AUTO-CYCLING LOGIC (Keep as they are)
   useEffect(() => {
     const shouldStartCycling =
       state.isAutoCycling &&
@@ -24860,7 +25915,6 @@ const CalculetingSection: React.FC = () => {
       hasValidRates &&
       !state.isCalculating &&
       state.errors.length === 0;
-
     if (!shouldStartCycling) {
       if (cycleTimerRef.current) {
         clearInterval(cycleTimerRef.current);
@@ -24868,13 +25922,11 @@ const CalculetingSection: React.FC = () => {
       }
       return;
     }
-
     const performCycle = () => {
       setState((prev) => {
         const nextIndex =
           (prev.currentCycleIndex + 1) % CONFIG.CYCLE_AMOUNTS.length;
         const nextAmount = CONFIG.CYCLE_AMOUNTS[nextIndex];
-
         return {
           ...prev,
           currentCycleIndex: nextIndex,
@@ -24882,23 +25934,18 @@ const CalculetingSection: React.FC = () => {
         };
       });
     };
-
     const initialDelay =
       state.currentCycleIndex === -1 || !cycleTimerRef.current
         ? 500
         : CONFIG.CYCLE_DELAY;
-
     const timeoutId = setTimeout(() => {
       performCycle();
       if (cycleTimerRef.current) clearInterval(cycleTimerRef.current);
       cycleTimerRef.current = setInterval(performCycle, CONFIG.CYCLE_DELAY);
     }, initialDelay);
-
     return () => {
       clearTimeout(timeoutId);
-      if (cycleTimerRef.current) {
-        clearInterval(cycleTimerRef.current);
-      }
+      if (cycleTimerRef.current) clearInterval(cycleTimerRef.current);
     };
   }, [
     state.isAutoCycling,
@@ -24910,10 +25957,7 @@ const CalculetingSection: React.FC = () => {
     hasValidRates,
   ]);
 
-  // =============================================================================
-  // DISPLAY LOGIC
-  // =============================================================================
-
+  // DISPLAY LOGIC (Keep as they are)
   const displayTexts = useMemo(() => {
     const getOurRate = (): string => {
       if (!selectedSendCurrency) return "Select currency";
@@ -24925,14 +25969,12 @@ const CalculetingSection: React.FC = () => {
         2
       )} ${CONFIG.RECEIVE_CURRENCY}`;
     };
-
     const getMarketRate = (): string | null => {
-      if (!hasValidRates || !state.calculatedRates) return null; // apiError and generalError already checked by hasValidRates
+      if (!hasValidRates || !state.calculatedRates) return null;
       return `Market: 1 ${selectedSendCurrency} ≈ ${state.calculatedRates.market.toFixed(
         2
       )} ${CONFIG.RECEIVE_CURRENCY}`;
     };
-
     const getAdjustmentText = (): string | null => {
       if (
         !hasValidRates ||
@@ -24943,7 +25985,6 @@ const CalculetingSection: React.FC = () => {
       const adj = state.calculatedRates.adjustment;
       return `(${adj > 0 ? "+" : ""}${adj.toFixed(2)}% vs market)`;
     };
-
     return {
       ourRate: getOurRate(),
       marketRate: getMarketRate(),
@@ -24958,7 +25999,6 @@ const CalculetingSection: React.FC = () => {
     selectedSendCurrency,
     state.calculatedRates,
   ]);
-
   const isButtonDisabled =
     state.isInitialLoading ||
     authLoading ||
@@ -24971,39 +26011,43 @@ const CalculetingSection: React.FC = () => {
     state.isCalculating ||
     !!apiError ||
     !!generalError;
-
   const getButtonLink = () => {
     if (authLoading) return "#";
-    if (user) {
-      return `/dashboard/send/select-balance`;
-    }
+    if (user) return `/dashboard/send/select-balance`;
     return "/auth/register";
   };
 
-  // =============================================================================
-  // RENDER
-  // =============================================================================
-
   return (
     <section className="Hero-Section lg:pb-10 pb-5 relative">
+      {" "}
+      {/* Note: Class name "Hero-Section" might be a typo for "Calculator-Section" */}
       <div className="container mx-auto sm:px-4 px-2 relative">
-        {/* <div className="rounded-3xl p-[2px] bg-gradient-to-b from-primary to-transparent to-88% min-h-[500px] relative z-0"> */}
-        <div className="rounded-3xl bg-gradient-to-b from-primary to-transparent to-88% min-h-[500px] relative z-0">
-          <div className="bg-background border-2 bg-clip-padding border-transparent rounded-3xl overflow-hidden xl:p-10 lg:p-6 p-4  h-full relative flex flex-col">
+        <div className="rounded-3xl bg-gradient-to-b from-primary to-transparent to-88% min-h-[500px] relative z-0 p-[1px] sm:p-[2px]">
+          {" "}
+          {/* Added p-[1px] for gradient border visibility */}
+          <div className="bg-background border-transparent rounded-3xl overflow-hidden xl:p-10 lg:p-6 p-4 h-full relative flex flex-col">
             {/* Background decorations */}
-            <div className="shep">
+            <div className="shep pointer-events-none">
+              {" "}
+              {/* Added pointer-events-none */}
               <div className="absolute -left-1 -top-1">
-                <img
-                  src="/assets/images/dsfsfdsfdsf.svg"
+                <Image
+                  src="/assets/images/dsfsfdsfdsf.svg" // Path relative to /public
+                  width={150} // Provide appropriate dimensions
+                  height={150}
                   className="z-1"
-                  alt=""
+                  alt="" // Decorative
+                  loading="lazy" // Decorative, likely not LCP
                 />
               </div>
               <div className="absolute -right-1 -top-1">
-                <img
-                  src="/assets/images/zdfsdfwsedg.svg"
+                <Image
+                  src="/assets/images/zdfsdfwsedg.svg" // Path relative to /public
+                  width={150} // Provide appropriate dimensions
+                  height={150}
                   className="z-1"
-                  alt=""
+                  alt="" // Decorative
+                  loading="lazy"
                 />
               </div>
             </div>
@@ -25021,8 +26065,10 @@ const CalculetingSection: React.FC = () => {
                       You send
                     </label>
                     <div
-                      className={`w-full border  rounded-xl flex items-center justify-between transition-all duration-150 ease-linear ${
-                        sendAmountError ? "border-red-600 " : ""
+                      className={`w-full border rounded-xl flex items-center justify-between transition-all duration-150 ease-linear ${
+                        sendAmountError
+                          ? "border-red-600"
+                          : "hover:border-gray-500"
                       }`}
                     >
                       <input
@@ -25060,11 +26106,9 @@ const CalculetingSection: React.FC = () => {
                             !!apiError ||
                             !!generalError
                           }
-                          // currencies={state.currencies} // Removed this prop
                         />
                       </div>
                     </div>
-
                     <AnimatePresence>
                       {sendAmountError && (
                         <motion.p
@@ -25132,14 +26176,16 @@ const CalculetingSection: React.FC = () => {
                                 : ""
                             }
                             readOnly
-                            className="block w-full h-full p-3 text-white  md:text-2xl text-xl font-bold focus:outline-none bg-transparent rounded-l-xl placeholder-gray-500 cursor-default"
+                            className="block w-full h-full p-3 text-white md:text-2xl text-xl font-bold focus:outline-none bg-transparent rounded-l-xl placeholder-gray-500 cursor-default"
                             aria-label="Amount recipient gets"
                           />
                         </motion.div>
                       </AnimatePresence>
-                      <div className="flex items-center gap-2 w-auto px-3 md:px-4 py-3 flex-shrink-0 ml-auto relative h-18">
+                      <div className="flex items-center gap-2 w-auto px-3 md:px-4 py-3 flex-shrink-0 ml-auto relative h-full">
+                        {" "}
+                        {/* Changed h-18 to h-full */}
                         <Image
-                          src="/assets/icon/flags/inr.svg"
+                          src="/assets/icon/flags/inr.svg" // Path relative to /public
                           alt={`${CONFIG.RECEIVE_CURRENCY} Flag`}
                           width={30}
                           height={30}
@@ -25169,7 +26215,6 @@ const CalculetingSection: React.FC = () => {
                       </span>
                     </motion.div>
                   )}
-
                   <div
                     className={`flex items-center gap-2 ${
                       (state.isCalculating && !state.calculatedRates) ||
@@ -25195,7 +26240,6 @@ const CalculetingSection: React.FC = () => {
                       </span>
                     )}
                   </div>
-
                   {displayTexts.marketRate && (
                     <div className="text-gray-400 dark:text-gray-500">
                       {displayTexts.marketRate}
@@ -25245,26 +26289,24 @@ const CalculetingSection: React.FC = () => {
 
               {/* Right Panel - Payment Method and Fees */}
               <div className="w-full xl:w-1/3 lg:w-1/2 flex flex-col">
-                {/* Payment Method */}
                 <div className="mb-3 md:mb-4">
                   <label className="block text-gray-200 lg:text-base text-sm mb-1">
                     Paying with
                   </label>
-                  <div className="sm:p-4 p-3 sm:h-17 h-14 border rounded-xl flex items-center justify-between text-white bg-primarybox">
+                  <div className="sm:p-4 p-3 sm:h-17 h-14 border border-gray-700/50 rounded-xl flex items-center justify-between text-white bg-primarybox">
                     <div className="flex items-center gap-2">
-                      <CiBank className=" w-5 h-5 md:w-6 md:h-6" />
+                      <CiBank className="w-5 h-5 md:w-6 md:h-6" />
                       <span className="font-medium md:text-base text-sm">
                         Bank Transfer
                       </span>
                     </div>
                   </div>
                 </div>
-                {/* Fees Breakdown */}
                 <div className="mb-3 md:mb-4">
                   <label className="block text-gray-200 lg:text-base text-sm mb-1">
                     Fee breakdown
                   </label>
-                  <div className="space-y-2 sm:p-4 p-3 border rounded-xl bg-primarybox">
+                  <div className="space-y-2 sm:p-4 p-3 border border-gray-700/50 rounded-xl bg-primarybox">
                     <div className="flex justify-between items-center">
                       <span className="text-gray-400 dark:text-gray-500 sm:text-base text-sm">
                         Our fee
@@ -25292,7 +26334,6 @@ const CalculetingSection: React.FC = () => {
                         </motion.span>
                       </AnimatePresence>
                     </div>
-
                     <div className="flex justify-between items-center">
                       <span className="text-gray-400 dark:text-gray-500 sm:text-base text-sm">
                         Bank transfer fee
@@ -25311,9 +26352,8 @@ const CalculetingSection: React.FC = () => {
                           : `0`}
                       </span>
                     </div>
-
-                    <div className="border my-2" />
-
+                    <div className="border-t border-gray-700/50 my-2" />{" "}
+                    {/* Changed border to border-t */}
                     <div className="flex justify-between items-center">
                       <span className="text-white dark:text-white font-semibold">
                         Total fees
@@ -25343,11 +26383,11 @@ const CalculetingSection: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                {/* Arrival Time */}
                 <div className="mb-4 md:mb-6 flex justify-between items-center">
-                  <label className="block text-gray-200 lg:text-base text-sm mb-1">
-                    Should arrive around
-                  </label>
+                  <label className="block text-gray-200 lg:text-base text-sm">
+                    Should arrive
+                  </label>{" "}
+                  {/* Removed mb-1 */}
                   <div
                     className={`text-primary font-semibold md:text-base text-sm ${
                       state.isInitialLoading ||
@@ -25364,16 +26404,14 @@ const CalculetingSection: React.FC = () => {
                       : "Unavailable"}
                   </div>
                 </div>
-                <div className="flex-grow"></div>{" "}
-                {/* Spacer to push button to bottom */}
-                {/* Get Started Button */}
+                <div className="flex-grow"></div>
                 <Link
                   href={!isButtonDisabled ? getButtonLink() : "#"}
                   passHref
-                  className={`w-full block text-center py-3.5 px-6 font-medium rounded-full text-base lg:text-lg transition-all duration-75 ease-linear transform active:scale-95
+                  className={`w-full block text-center py-3.5 px-6 font-medium rounded-full text-base lg:text-lg transition-all duration-150 ease-linear transform active:scale-95
                     ${
                       isButtonDisabled
-                        ? "bg-primary hover:bg-primaryhover text-mainheading  cursor-not-allowed opacity-70"
+                        ? "bg-gray-600 text-gray-400 cursor-not-allowed opacity-70"
                         : "bg-primary hover:bg-primaryhover text-mainheading "
                     }`}
                   aria-disabled={isButtonDisabled}
@@ -25396,4 +26434,4 @@ const CalculetingSection: React.FC = () => {
   );
 };
 
-export default CalculetingSection;
+export default React.memo(CalculetingSection);
