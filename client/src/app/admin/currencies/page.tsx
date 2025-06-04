@@ -6661,6 +6661,7 @@ import { FaCoins } from "react-icons/fa";
 // Import the modal components (ensure paths are correct)
 import AddCurrencyModal from "../components/AddCurrencyModal";
 import DeleteCurrencyModal from "../components/DeleteCurrencyModal";
+import { error } from "console";
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
@@ -7096,6 +7097,7 @@ const AdminCurrenciesPage: React.FC = () => {
       <div className="space-y-6">
         <div className="Activity pb-6 mb-6 border-b">
           <div className="flex items-center gap-3">
+            
             <div className="p-2.5 shrink-0 bg-primary rounded-full flex items-center justify-center">
               <FaCoins className="text-mainheading" size={26} />
             </div>
@@ -7169,8 +7171,8 @@ const AdminCurrenciesPage: React.FC = () => {
 
         {!isLoading && filteredCurrencies.length === 0 ? (
           <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
-            <div className="lg:size-12 size-10 flex items-center justify-center bg-primary rounded-full mb-2">
-              <MdCurrencyRupee className="lg:size-6 size-4 mx-auto text-mainheading" />
+            <div className="lg:size-16 size-14 flex items-center justify-center bg-primary rounded-full mb-2">
+              <MdCurrencyRupee className="lg:size-8 size-6 mx-auto text-mainheading" />
             </div>
 
             <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite mt-1">

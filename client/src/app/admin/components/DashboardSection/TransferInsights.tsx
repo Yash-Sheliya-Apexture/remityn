@@ -1250,7 +1250,7 @@ export default function TransferInsights() {
               Corridors (Last 90d)
             </h1>
             <div className="size-12 shrink-0 bg-primary rounded-full flex items-center justify-center">
-              <FaRegClock  className="size-6 text-mainheading" />
+              <FaRegClock className="size-6 text-mainheading" />
             </div>
           </div>
 
@@ -1292,9 +1292,11 @@ export default function TransferInsights() {
                 );
               })
             ) : (
-              <p className="font-medium text-center text-mainheadingWhite">
-                No popular corridor data available Now.
-              </p>
+              <div className="flex justify-center items-center py-20">
+                <p className="font-medium text-center text-mainheadingWhite">
+                  No popular corridor data available Now.
+                </p>
+              </div>
             )}
           </div>
         </div>
