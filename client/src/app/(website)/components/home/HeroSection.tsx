@@ -808,7 +808,7 @@ const HeroSection: React.FC = () => {
         </div>
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight text-mainheadingWhite">
           Easy Global Money Exchange at{" "}
-          <span className="text-primary font-SatoshiVariableItalic">0% Fees</span>
+          <span className="text-primary">0% Fees</span>
         </h1>
         <p className="text-lg md:text-xl text-subheadingWhite mb-10 max-w-3xl px-2">
           Experience global money exchange with 0% fees and instant transfers.
