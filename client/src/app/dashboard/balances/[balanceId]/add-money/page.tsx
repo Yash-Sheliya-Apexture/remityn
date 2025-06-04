@@ -4084,16 +4084,25 @@ const AddMoneyPage = () => {
     return (
       <div className="max-w-lg mx-auto">
         {/* Title Skeleton */}
-        <Skeleton className="md:h-13 h-11 w-2/3 mx-auto mb-4 rounded-md" />
+        <Skeleton className="h-8 w-52 lg:mx-auto mb-4 rounded-md" />
         {/* Amount to add section Skeleton */}
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           <Skeleton className="h-4 w-24 rounded" />
-          <Skeleton className="h-16 lg:h-18 w-full rounded-xl" />
+          <div className="bg-primarybox h-18 w-full border rounded-xl overflow-hidden flex items-center justify-between p-5">
+            <Skeleton className="h-6 w-16 rounded bg-background/50" />
+            <div className="flex items-center gap-2">
+              <Skeleton className="size-10 rounded-full flex-shrink-0 bg-background/50" />
+              <Skeleton className="h-6 w-12 rounded bg-background/50" />
+            </div>
+          </div>
         </div>
         {/* Paying with section Skeleton */}
-        <div className="space-y-1.5 mt-4">
-          <Skeleton className="h-4 w-20 rounded" />
-          <Skeleton className="h-14 lg:h-18.5 w-full rounded-xl" />
+        <div className="space-y-2 mt-4">
+          <Skeleton className="h-4 w-24 rounded" />
+          <div className="bg-background h-18 w-full border rounded-xl overflow-hidden flex items-center gap-4 p-5">
+            <Skeleton className="size-10 rounded-full flex-shrink-0" />
+            <Skeleton className="h-4 w-28 rounded-full" />
+          </div>
         </div>
         {/* Currency calculation section Skeleton */}
         <div className="border rounded-xl p-4 mt-6">
@@ -4132,7 +4141,7 @@ const AddMoneyPage = () => {
         <div className="flex-shrink-0 sm:size-12 size-10 rounded-full flex items-center justify-center bg-red-600/20">
           <FiAlertTriangle className="text-red-500 size-5 sm:size-6 flex-shrink-0" />
         </div>
-        <p className="text-red-300/90">
+        <p className="text-red-500">
           Error: {error || "Could not load page details."}
         </p>
       </div>
@@ -4141,8 +4150,22 @@ const AddMoneyPage = () => {
 
   if (!balanceCurrency) {
     return (
-      <div className="max-w-xl mx-auto p-4 lg:p-8 text-center text-mainheadingWhite">
-        Loading balance details or encountered an issue...
+      <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
+        <div className="lg:size-16 size-14 flex items-center justify-center bg-red-600/20 rounded-full">
+          <FiAlertTriangle className="lg:size-8 size-6 text-red-500" />
+        </div>
+          <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite">
+            Unable to Load Add Money Page
+          </h2>
+          <p className="lg:text-lg text-base text-subheadingWhite max-w-lg mx-auto">
+            Page couldn't be loaded. Please refresh the page and try again.
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="flex items-center justify-center bg-primary text-mainheading hover:bg-primaryhover font-medium rounded-full px-8 py-3 h-12.5 w-32 text-center cursor-pointer transition-all duration-75 ease-linear"
+          >
+            Retry
+          </button>
       </div>
     );
   }
@@ -4216,7 +4239,7 @@ const AddMoneyPage = () => {
             inputMode="decimal" // Provides appropriate keyboard on mobile
             name="amount"
             id="amount"
-            className={`block w-full text-xl rounded-xl ps-2 font-bold lg:h-18 h-16 py-3 pl-5 pr-28 border focus:outline-0 transition-all duration-75 ease-in-out placeholder:text-gray-400 text-mainheadingWhite bg-primarybox/50 no-spinner ${
+            className={`block w-full text-xl rounded-xl ps-2 font-bold lg:h-18 h-16 py-3 pl-5 pr-28 border focus:outline-0 transition-all duration-75 ease-in-out placeholder:text-gray-400 text-mainheadingWhite bg-primarybox no-spinner ${
               maxAmountError
                 ? "border-red-500 hover:border-red-600 focus:border-red-600 bg-red-900/20 text-red-500"
                 : "border-gray-600 hover:border-gray-500 focus:border-gray-500"

@@ -631,8 +631,8 @@ export default function RecentActivity() {
       >
         <div className="flex flex-col items-center gap-3 text-center">
           
-          <div className="sm:size-12 size-10 rounded-full flex items-center justify-center bg-red-600/20 flex-shrink-0">
-            <AlertCircle className="text-red-500 size-5 sm:size-6 flex-shrink-0" />
+          <div className="sm:size-14 size-12 rounded-full flex items-center justify-center bg-red-600/20 flex-shrink-0">
+            <AlertCircle className="text-red-500 size-6 sm:size-8 flex-shrink-0" />
           </div>
 
           <div className="flex-1">

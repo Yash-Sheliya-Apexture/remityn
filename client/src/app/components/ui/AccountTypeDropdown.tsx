@@ -86,8 +86,8 @@ const AccountTypeDropdown: React.FC<AccountTypeDropdownProps> = ({ value, onChan
               {accountTypes.map((type) => (
                 <li
                   key={type}
-                  className={`block px-4 py-2 cursor-pointer rounded-full transition-colors font-medium duration-75 ease-linear ${
-                    value === type ? 'bg-primary hover:bg-primaryhover' : 'text-mainheadingWhite hover:bg-primarybox'
+                  className={`block px-4 py-2 cursor-pointer rounded-full transition-all font-medium duration-75 ease-linear ${
+                    value === type ? 'bg-primary hover:bg-primaryhover text-mainheading' : 'text-mainheadingWhite hover:bg-primarybox'
                   }`}
                   onClick={() => handleAccountTypeSelect(type)}
                 >

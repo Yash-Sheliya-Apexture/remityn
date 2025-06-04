@@ -9495,7 +9495,7 @@ const AdminEditCurrencyPage = () => {
       >
         <motion.div
           variants={itemVariants}
-          className="rounded-xl bg-background border shadow-sm"
+          className="rounded-xl bg-background border"
         >
           <h3 className="border-b px-4 py-3 md:text-lg text-base font-medium text-mainheadingWhite">
             Fees & Exchange Rate Settings (Optional)
@@ -9724,6 +9724,7 @@ const AdminEditCurrencyPage = () => {
                   <TabsContent value="bank">{renderBankContent()}</TabsContent>
                   <TabsContent value="fees">{renderFeesContent()}</TabsContent>
                 </Tabs>
+
                 <motion.div
                   variants={itemVariants}
                   className="flex flex-col sm:flex-row justify-end gap-3"

@@ -1600,21 +1600,21 @@ export default function BalanceDistributionChart() {
 
   if (chartData.length === 0) {
     return (
-    <div>
-        <div className="bg-primarybox h-full rounded-2xl sm:p-6 p-4 text-center space-y-3 flex flex-col justify-center items-center">
-          <div className="lg:size-14 size-12 flex items-center justify-center bg-primary rounded-full">
-            <Info className="lg:size-8 size-6 mx-auto text-mainheading" />
-          </div>
-
-          <h1 className="sm:text-3xl text-2xl font-medium text-mainheadingWhite max-w-xl">
-            No Balance Data
-          </h1>
-
-          <p className="text-subheadingWhite">
-            There are currently no calculated account balances to display.
-          </p>
+    <div className="sm:order-2 order-1">
+      <div className="bg-primarybox h-full rounded-2xl sm:p-6 p-4 text-center space-y-3 flex flex-col justify-center items-center">
+        <div className="lg:size-14 size-12 flex items-center justify-center bg-primary rounded-full">
+          <Info className="lg:size-8 size-6 mx-auto text-mainheading" />
         </div>
+
+        <h1 className="sm:text-3xl text-2xl font-medium text-mainheadingWhite max-w-xl">
+          No Balance Data
+        </h1>
+
+        <p className="text-subheadingWhite">
+          There are currently no calculated account balances to display.
+        </p>
       </div>
+    </div>
     );
   }
 

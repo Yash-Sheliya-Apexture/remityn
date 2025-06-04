@@ -3628,7 +3628,6 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "../../../../contexts/AuthContext"; // Adjusted path
 import paymentService from "../../../../services/payment"; // Adjusted path
 import { Skeleton } from "@/components/ui/skeleton"; // Adjust path
-import { Button } from "@/components/ui/button"; // Adjust path
 import { Copy, AlertTriangle, Check } from "lucide-react";
 
 // Import react-toastify and CustomToast
@@ -4055,18 +4054,40 @@ const PaymentDetailsPage = () => {
           style={getToastContainerStyle()}
         />
         {/* Skeleton structure remains the same */}
-        <Skeleton className="h-9 w-3/5 mb-2.5 mx-auto" />
-        <Skeleton className="h-6 w-4/5 lg:mb-10 mb-5 mx-auto" />
+        <div className="space-y-2.5 lg:mb-10 mb-5">
+          <Skeleton className="h-8 w-2/3 lg:mx-auto" />
+          <Skeleton className="h-6 w-1/2 lg:mx-auto" />
+        </div>
 
         <div className="border p-4 rounded-xl">
           <Skeleton className="h-6 w-1/2 mb-5" />
           <div className="space-y-4">
+            {Array(5)
+              .fill(0)
+              .map((_, index) => (
+
+              <div key={index} className="h-[76px] bg-primarybox p-4 rounded-lg flex justify-between items-center gap-4"> 
+                  <div className="flex flex-col gap-1">
+                      <Skeleton className="h-3 w-32 rounded-full bg-background/50" />
+                      <Skeleton className="h-4 w-18 rounded-full bg-background/50" />
+                  </div>
+                  <div>
+                    <Skeleton className="h-6 w-14 rounded bg-background/50" />
+                  </div>
+              </div>
+              ))}
+
+              <div className="h-[76px] bg-primarybox p-4 rounded-lg"> 
+                  <div className="flex flex-col gap-1">
+                      <Skeleton className="h-3 w-32 rounded-full bg-background/50" />
+                      <Skeleton className="h-4 w-18 rounded-full bg-background/50" />
+                  </div>
+              </div>
+            {/* <Skeleton className="h-[76px] w-full rounded-lg" />
             <Skeleton className="h-[76px] w-full rounded-lg" />
             <Skeleton className="h-[76px] w-full rounded-lg" />
             <Skeleton className="h-[76px] w-full rounded-lg" />
-            <Skeleton className="h-[76px] w-full rounded-lg" />
-            <Skeleton className="h-[76px] w-full rounded-lg" />
-            <Skeleton className="h-[76px] w-full rounded-lg" />
+            <Skeleton className="h-[76px] w-full rounded-lg" /> */}
           </div>
         </div>
 
@@ -4080,31 +4101,32 @@ const PaymentDetailsPage = () => {
 
   if (!isLoading && error && !paymentDetails) {
     return (
-      <div className="mx-auto px-4 py-8 text-center text-subheadingWhite md:max-w-lg relative">
+      <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center relative">
         <ToastContainer
           {...toastContainerProps}
           style={getToastContainerStyle()}
         />
-        <div className="bg-destructive/10 border border-destructive/30 text-destructive p-4 rounded-lg flex flex-col items-center space-y-2 mb-6">
-          <AlertTriangle className="w-6 h-6" />
-          <p className="font-semibold">Error Loading Payment Details</p>
-          <p className="text-sm">{error}</p>{" "}
-          {/* This 'error' state is for persistent on-page error messages */}
+        <div className="lg:size-16 size-14 flex items-center justify-center bg-red-600/20 rounded-full">
+          <AlertTriangle className="lg:size-8 size-6 text-red-500" />
         </div>
-        <Button
-          onClick={() => router.back()}
-          variant="outline"
-          className="text-primary bg-primarybox hover:bg-secondarybox font-medium rounded-full px-8 py-3 h-12.5 text-center border-0 sm:mr-4 m-0 cursor-pointer transition-all duration-75 ease-linear"
-        >
-          Go Back
-        </Button>
-        <Button
-          onClick={() => router.push("/dashboard/transactions")}
-          variant="link"
-          className="mt-4 bg-primary text-mainheading hover:bg-primaryhover font-medium rounded-full px-8 py-3 h-12.5 text-center cursor-pointer transition-all duration-75 ease-linear"
-        >
-          View Transactions
-        </Button>
+
+        <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite">Error Loading Payment Details</h2>
+        <p className="lg:text-lg text-base text-subheadingWhite max-w-lg mx-auto">{error}</p>{" "}
+          {/* This 'error' state is for persistent on-page error messages */}
+        <div className="flex sm:flex-row flex-col items-center gap-4">
+          <button
+            onClick={() => router.back()}
+            className="bg-background/60 hover:bg-secondarybox text-primary font-medium rounded-full px-8 py-3 h-12.5 text-center border-0 cursor-pointer transition-all duration-75 ease-linear"
+          >
+            Go Back
+          </button>
+          <button
+            onClick={() => router.push("/dashboard/transactions")}
+            className="bg-primary text-mainheading hover:bg-primaryhover font-medium rounded-full px-8 py-3 h-12.5 text-center cursor-pointer transition-all duration-75 ease-linear"
+          >
+            View Transactions
+          </button>
+        </div>
       </div>
     );
   }
@@ -4182,13 +4204,15 @@ const PaymentDetailsPage = () => {
         style={getToastContainerStyle()}
       />
       <div className="mx-auto lg:max-w-2xl">
-        <h1 className="lg:text-3xl md:text-2xl text-xl lg:text-center font-semibold text-mainheadingWhite mb-2.5">
-          Use your bank to make a payment to Remityn
-        </h1>
-        <p className="lg:text-base text-sm text-subheadingWhite lg:mb-10 mb-5 text-left lg:text-center">
-          Make a {`${payInCurrencyCode}`} payment — not an international one —
-          using the details below.
-        </p>
+        <div className="space-y-2.5 lg:mb-10 mb-5 text-left lg:text-center">
+          <h1 className="lg:text-3xl md:text-2xl text-xl font-semibold text-mainheadingWhite">
+            Use your bank to make a payment to Remityn
+          </h1>
+          <p className="lg:text-base text-sm text-subheadingWhite">
+            Make a {`${payInCurrencyCode}`} payment — not an international one —
+            using the details below.
+          </p>
+        </div>
 
         <div className="rounded-xl bg-background border p-4">
           <h2 className="lg:text-lg text-base font-medium mb-4 text-mainheadingWhite">
@@ -4270,7 +4294,7 @@ const PaymentDetailsPage = () => {
             {isSubmitting ? (
               <>
                 <svg
-                  className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                  className="h-5 w-5 text-mainheading animate-spin mr-2"
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"

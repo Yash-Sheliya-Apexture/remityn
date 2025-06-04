@@ -3357,8 +3357,9 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
                       role="alert"
                     >
                       <div className="bg-red-900/25 border border-red-500 rounded-xl p-3 flex items-center gap-3">
-                        <div className="size-10 rounded-full flex items-center justify-center bg-red-600/20">
-                          <FaExclamationCircle className="text-red-500 size-5 sm:size-6 flex-shrink-0" />
+                        <div className="size-10 rounded-full flex items-center justify-center bg-red-600/20 flex-shrink-0">
+                          <FaExclamationCircle className="text-red-500 size-5 sm:size-6
+                          " />
                         </div>
                         <p className="font-medium text-red-600">
                           {error}
@@ -3388,7 +3389,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
                   </button>
 
                   <button
-                    className="inline-flex items-center **:gap-2 justify-center cursor-pointer bg-primary text-mainheading hover:bg-primaryhover order-2 sm:order-1 disabled:opacity-50 disabled:bg-primary/80 disabled:cursor-not-allowed font-medium rounded-full px-8 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear"
+                    className="inline-flex items-center gap-2 justify-center cursor-pointer bg-primary text-mainheading hover:bg-primaryhover order-2 sm:order-1 disabled:opacity-50 disabled:bg-primary/80 disabled:cursor-not-allowed font-medium rounded-full px-8 py-3 h-12.5 text-center w-full transition-all duration-75 ease-linear"
                     type="button"
                     onClick={handleConfirm}
                     disabled={

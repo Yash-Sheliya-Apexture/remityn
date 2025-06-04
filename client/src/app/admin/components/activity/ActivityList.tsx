@@ -231,6 +231,7 @@ const ActivityList: React.FC<ActivityListProps> = ({
                 <Skeleton className="h-4 w-4/5 rounded-full bg-background/50" />
                 <Skeleton className="h-3 w-2/5 rounded-full bg-background/50" />
               </div>
+              
               {isMobile && (
                 <div className="flex flex-col items-start gap-1 mt-1">
                   <Skeleton className="h-3 w-36  rounded-full flex-shrink-0 mt-1 bg-background/50" />

@@ -68,7 +68,7 @@ const AddCurrencyModal: React.FC<AddCurrencyModalProps> = ({
           onClick={onClose} // Close modal when clicking on the backdrop
         >
           <motion.div
-            className="bg-background sm:rounded-3xl rounded-none w-full sm:max-w-xl relative flex flex-col overflow-hidden sm:h-auto h-screen"
+            className="bg-background sm:rounded-3xl rounde  d-none w-full sm:max-w-xl relative flex flex-col overflow-hidden sm:h-auto h-screen"
             onClick={(e) => e.stopPropagation()} // Prevent click propagation to backdrop
             variants={modalVariants}
             initial="initial"
@@ -175,22 +175,25 @@ const AddCurrencyModal: React.FC<AddCurrencyModalProps> = ({
                       />
                     </div>
                   )}
+
                   {createFlagImageError && newCurrencyData.flagImage && (
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-red-600 font-medium text-xs">
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 font-medium text-xs">
                       Load Error
-                    </div>
+                    </div>  
                   )}
+
                 </div>
-                <p className="mt-2 text-sm text-subheadingWhite">
+                <p className="mt-1 text-sm text-subheadingWhite">
                   Relative path (e.g., /assets/icon/flags/eur.png) or full URL.
                   Must be accessible.
                 </p>
                 
                 {createFlagImageError && (
-                  <p className="mt-2 text-xs font-medium text-red-600">
+                  <p className="mt-1 text-xs font-medium text-red-500">
                     Could not load the flag image. Check the path/URL.
                   </p>
                 )}
+
               </div>
 
               <div>
@@ -219,7 +222,7 @@ const AddCurrencyModal: React.FC<AddCurrencyModalProps> = ({
                     />
                   </div>
                 </div>
-                <p className="mt-2 text-sm text-subheadingWhite">
+                <p className="mt-1 text-sm text-subheadingWhite">
                   Enter percentage adjustment. Default is 0%.
                 </p>
               </div>

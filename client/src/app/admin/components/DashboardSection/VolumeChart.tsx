@@ -2259,12 +2259,12 @@ export function VolumeChart({
         )}
 
         {!loading && !error && chartData.length === 0 && (
-          <div className="flex-grow flex justify-center items-center text-center p-4">
+           <div className="flex-grow flex justify-center items-center h-full py-33 text-center">
             <p className="text-base text-mainheadingWhite">
               No data available for the selected period.
             </p>
           </div>
-        )}
+        )}  
 
         {!loading && !error && chartData.length > 0 && (
           <>
