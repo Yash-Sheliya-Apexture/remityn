@@ -2385,7 +2385,7 @@ const BroadcastHistoryTable: React.FC<BroadcastHistoryTableProps> = ({
           <div className="Broadcast-History">
             <div className="flex items-center gap-3">
               <div className="p-2.5 shrink-0 bg-primary rounded-full flex items-center justify-center">
-                <FaBroadcastTower className="size-6 text-mainheading dark:text-primary" />
+                <FaBroadcastTower className="size-6 text-mainheading" />
               </div>
               <h1 className="lg:text-3xl text-2xl font-semibold text-mainheadingWhite">
                 Broadcast History

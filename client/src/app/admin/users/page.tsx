@@ -2610,7 +2610,7 @@ const AdminUsersPage: React.FC = () => {
             {/* Filter Button - Matching Payments styling */}
             <button
               onClick={() => setShowFilterModal(true)}
-              className="flex items-center bg-primary hover:bg-primaryhover gap-2 h-12.5 px-8 py-3 cursor-pointer font-medium rounded-full sm:w-auto w-full justify-center transition-all duration-75 ease-linear" // Use text-secondary for light text on dark primary bg
+              className="flex items-center bg-primary hover:bg-primaryhover text-mainheading gap-2 h-12.5 px-8 py-3 cursor-pointer font-medium rounded-full sm:w-auto w-full justify-center transition-all duration-75 ease-linear" // Use text-secondary for light text on dark primary bg
             >
               <Filter size={18} />
               <span>Filters</span>
