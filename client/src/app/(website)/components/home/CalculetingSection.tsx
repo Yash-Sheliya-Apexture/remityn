@@ -26263,7 +26263,7 @@ const CalculetingSection: React.FC = () => {
                         <div className="bg-primary/10 rounded-xl sm:py-4 sm:pe-4 p-2">
                           <div className="flex items-center gap-3">
                             <div className="bg-primary/80 rounded-full sm:p-3 p-1.5 flex-shrink-0 sm:-ml-6 ml-0 sm:border-3 border-0 border-primary-foreground">
-                              <FaPiggyBank className="size-6 text-primary-foreground" />
+                              <FaPiggyBank className="size-6 text-background" />
                             </div>
                             <div>
                               <p className="font-semibold text-primary lg:text-base text-sm flex items-center gap-1">
@@ -26293,7 +26293,7 @@ const CalculetingSection: React.FC = () => {
                   <label className="block text-gray-200 lg:text-base text-sm mb-1">
                     Paying with
                   </label>
-                  <div className="sm:p-4 p-3 sm:h-17 h-14 border border-gray-700/50 rounded-xl flex items-center justify-between text-white bg-primarybox">
+                  <div className="sm:p-4 p-3 sm:h-17 h-14 border rounded-xl flex items-center justify-between text-white bg-primarybox">
                     <div className="flex items-center gap-2">
                       <CiBank className="w-5 h-5 md:w-6 md:h-6" />
                       <span className="font-medium md:text-base text-sm">
@@ -26306,9 +26306,9 @@ const CalculetingSection: React.FC = () => {
                   <label className="block text-gray-200 lg:text-base text-sm mb-1">
                     Fee breakdown
                   </label>
-                  <div className="space-y-2 sm:p-4 p-3 border border-gray-700/50 rounded-xl bg-primarybox">
+                  <div className="space-y-2 sm:p-4 p-3 border rounded-xl bg-primarybox">
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-400 dark:text-gray-500 sm:text-base text-sm">
+                      <span className="text-subheadingWhite sm:text-base text-sm">
                         Our fee
                       </span>
                       <AnimatePresence mode="wait">
@@ -26335,7 +26335,7 @@ const CalculetingSection: React.FC = () => {
                       </AnimatePresence>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-400 dark:text-gray-500 sm:text-base text-sm">
+                      <span className="text-subheadingWhite sm:text-base text-sm">
                         Bank transfer fee
                       </span>
                       <span className="font-medium text-white dark:text-white">
@@ -26355,7 +26355,7 @@ const CalculetingSection: React.FC = () => {
                     <div className="border-t border-gray-700/50 my-2" />{" "}
                     {/* Changed border to border-t */}
                     <div className="flex justify-between items-center">
-                      <span className="text-white dark:text-white font-semibold">
+                      <span className="text-white font-semibold">
                         Total fees
                       </span>
                       <AnimatePresence mode="wait">
@@ -26367,7 +26367,7 @@ const CalculetingSection: React.FC = () => {
                           initial="initial"
                           animate="animate"
                           exit="exit"
-                          className="font-semibold text-white dark:text-white"
+                          className="font-semibold text-white"
                         >
                           {hasValidRates &&
                           state.sendAmount &&
@@ -26411,7 +26411,7 @@ const CalculetingSection: React.FC = () => {
                   className={`w-full block text-center py-3.5 px-6 font-medium rounded-full text-base lg:text-lg transition-all duration-150 ease-linear transform active:scale-95
                     ${
                       isButtonDisabled
-                        ? "bg-gray-600 text-gray-400 cursor-not-allowed opacity-70"
+                        ? "bg-primary hover:bg-primaryhover text-mainheading cursor-not-allowed opacity-70"
                         : "bg-primary hover:bg-primaryhover text-mainheading "
                     }`}
                   aria-disabled={isButtonDisabled}
