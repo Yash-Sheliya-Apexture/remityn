@@ -4106,10 +4106,10 @@ const ReviewSendPage = () => {
           style={getToastContainerStyle()}
         />
         <DashboardHeader title="Send Money" currentStep={3} steps={steps} />
-
         <div className="mx-auto lg:max-w-2xl mt-5">
           {/* Page Title: "Review details of your transfer" */}
-          <Skeleton className="h-8 md:h-9 w-11/12 sm:w-5/6 md:w-3/4 lg:w-2/3 lg:mx-auto mb-6" />
+          <Skeleton className="h-8 md:h-9 w-11/12 sm:w-1/2 lg:w-2/3 lg:mx-auto mb-6" />
+
           <div className="bg-background border rounded-xl overflow-hidden mb-6">
             {/* Transaction Summary Header */}
             <div className="px-6 py-4 bg-primarybox">
@@ -4206,48 +4206,54 @@ const ReviewSendPage = () => {
   // --- Error State (Post-Loading, for critical loading errors) ---
   if (error && !summary && !recipientDetails && !isSubmitting) {
     return (
-      <div className="min-h-screen relative">
+      <div className="relative">
         <ToastContainer
           {...toastContainerProps}
           style={getToastContainerStyle()}
         />
-        
+
         <DashboardHeader title="Send Money" currentStep={3} steps={steps} />
 
-        <div className="container mx-auto px-4 py-8">
-          <div className="bg-red-900/25 border border-red-500 rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
-            <div className="flex-shrink-0 lg:size-16 size-14 rounded-full flex items-center justify-center bg-red-600/20">
-              <FiAlertTriangle
-                size={20}
-                className="text-red-500 size-6 lg:size-8 flex-shrink-0"
-              />
+        <div className="container mx-auto">
+          <div className="bg-red-900/25 border border-red-500 rounded-2xl sm:p-6 p-4 text-center flex flex-col sm:flex-row gap-3 justify-between items-center">
+            <div className="flex items-center gap-3">
+              <div className="flex-shrink-0 lg:size-12 size-10 rounded-full flex items-center justify-center bg-red-600/20">
+                <FiAlertTriangle
+                  size={20}
+                  className="text-red-500 size-4 lg:size-6 flex-shrink-0"
+                />
+              </div>
+
+              <div className="text-left">
+                <h2 className="text-lg font-medium mt-1 text-red-500">
+                  Something went wrong
+                </h2>
+
+                <p className="text-red-300/90 max-w-lg mx-auto">
+                  {error || "An unexpected error occurred. Please try again."}
+                </p>
+              </div>
             </div>
 
-            <h2 className="lg:text-3xl text-2xl font-medium mt-1 text-red-500">
-              Something went wrong
-            </h2>
-
-            <p className="text-red-300/90 max-w-lg mx-auto">
-              {error || "An unexpected error occurred. Please try again."}
-            </p>
-
-            {balanceId && recipientId ? (
-              <Link
-                href={getPreviousStepLink()}
-                className="inline-flex items-center justify-center bg-red-600 text-mainheadingWhite hover:bg-red-700 font-medium rounded-full px-8 py-3 h-12.5 text-center sm:w-auto w-full cursor-pointer transition-all duration-75 ease-linear"
-              >
-                <FiArrowLeft className="mr-2 h-5 w-5" aria-hidden="true" />
-                Go back and try again
-              </Link>
-            ) : (
-              <Link
-                href="/dashboard/balances"
-                className="inline-flex items-center justify-center bg-red-600 text-mainheadingWhite hover:bg-red-700 font-medium rounded-full px-8 py-3 h-12.5 text-center sm:w-auto w-full cursor-pointer transition-all duration-75 ease-linear"
-              >
-                <FiArrowLeft className="mr-2 h-5 w-5" aria-hidden="true" />
-                Return to Balances
-              </Link>
-            )}
+            <div>
+              {balanceId && recipientId ? (
+                <Link
+                  href={getPreviousStepLink()}
+                  className="inline-flex gap-2 items-center justify-center bg-red-900/20 text-red-300 hover:bg-red-700/20 font-medium rounded-full px-8 py-3 h-12.5 text-center sm:w-auto w-full cursor-pointer transition-all duration-75 ease-linear"
+                >
+                  <FiArrowLeft className="h-5 w-5" aria-hidden="true" />
+                  Go back
+                </Link>
+              ) : (
+                <Link
+                  href="/dashboard/balances"
+                  className="inline-flex gap-2 items-center justify-center bg-red-900/20 text-red-300 hover:bg-red-700/20 font-medium rounded-full px-8 py-3 h-12.5 text-center sm:w-auto w-full cursor-pointer transition-all duration-75 ease-linear"
+                >
+                  <FiArrowLeft className="h-5 w-5" aria-hidden="true" />
+                  Return to Balances
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -4257,24 +4263,30 @@ const ReviewSendPage = () => {
   // --- Data Missing State (Post-Loading, No specific error yet but data is null) ---
   if (!summary || !recipientDetails) {
     return (
-      <div className="min-h-screen relative">
+      <div className="relative">
         <ToastContainer
           {...toastContainerProps}
           style={getToastContainerStyle()}
         />
         <DashboardHeader title="Send Money" currentStep={3} steps={steps} />
-        <div className="container mx-auto max-w-2xl px-4 py-8">
+        <div className="container mx-auto py-10">
           <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
-            <div className="lg:size-16 size-14 flex items-center justify-center bg-primary dark:bg-transparent dark:bg-gradient-to-t dark:from-primary rounded-full mb-2">
-              <FiAlertTriangle className="lg:size-8 size-6 mx-auto text-mainheading" />
+            <div className="flex-shrink-0 sm:size-16 size-14  rounded-full flex items-center justify-center bg-red-600/20">
+              <FiAlertTriangle
+                size={20}
+                className="text-red-500 size-6 sm:size-8 flex-shrink-0"
+              />
             </div>
-            <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite mt-1">
+
+            <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite">
               Missing Information
             </h2>
+
             <p className="text-subheadingWhite max-w-lg mx-auto">
               Could not load the necessary transfer details. Please start the
               process again.
             </p>
+
             <Link
               href={
                 balanceId
@@ -4308,16 +4320,17 @@ const ReviewSendPage = () => {
 
         {error && !isSubmitting && (
           <div className="bg-red-900/25 border border-red-500 rounded-xl p-4 flex items-center gap-4 mb-3">
-            <div className="flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center bg-red-600/20">
+            <div className="flex-shrink-0 lg:size-12 size-10 rounded-full flex items-center justify-center bg-red-600/20">
               <FiAlertTriangle
                 size={20}
-                className="text-red-500 size-5 sm:size-6 flex-shrink-0"
+                className="text-red-500 size-5 lg:size-6 flex-shrink-0"
               />
             </div>
             <div>
-              <h3 className="font-medium text-red-200 text-base">
+              <h3 className="font-medium text-red-300 text-base">
                 Transfer Failed
               </h3>
+
               <p className="text-red-300/90">{error}</p>
             </div>
           </div>
@@ -4398,7 +4411,7 @@ const ReviewSendPage = () => {
           </div>
           {summary.reason && (
             <div className="sm:p-6 p-4 border-b ">
-              <h3 className="text-sm font-medium text-mainheadingWhite capitalize tracking-wider mb-2">
+              <h3 className="text-sm font-medium text-mainheadingWhite uppercase tracking-wider mb-2">
                 Reason for transfer
               </h3>
               <p className="font-medium text-mainheadingWhite dark:text-white p-3 bg-primarybox rounded-md">

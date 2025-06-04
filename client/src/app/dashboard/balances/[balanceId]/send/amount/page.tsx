@@ -5442,6 +5442,8 @@
 //   );
 // }
 
+
+
 // frontend/src/app/dashboard/balances/[balanceId]/send/amount/page.tsx
 "use client";
 import React, {
@@ -5485,10 +5487,10 @@ const SendAmountPageSkeletonLayout = () => (
     {/* Overall vertical spacing for content blocks */}
     {/* Rates Section Skeleton */}
     <div className="flex flex-col items-end space-y-2">
-      <Skeleton className="h-10 w-73 rounded-full" />{" "}
+      <Skeleton className="sm:h-10 h-9 sm:w-73 w-63 rounded-full" />{" "}
       {/* Mimics "Our Rate" pill */}
-      <Skeleton className="h-9 w-64 rounded-full" />{" "}
-      {/* Mimics "Market Rate" pill */}
+      <Skeleton className="sm:h-9 h-8.5 sm:w-64 w-58 rounded-full" />{" "}
+      {/* Mimics "Market Rate" pill */} 
     </div>
 
     {/* "You send" Section Skeleton */}
@@ -5498,10 +5500,9 @@ const SendAmountPageSkeletonLayout = () => (
       <div className="flex items-center justify-between min-h-[72px] border border-transparent">
         <Skeleton className="h-11.5 w-26.5 rounded-full" />{" "}
         {/* Mimics Flag + Currency button (e.g., USD) */}
-        <Skeleton className="h-16 w-40 rounded-lg" />{" "}
+        <Skeleton className="lg:h-16 h-9 w-40 rounded-lg" />{" "}
         {/* Mimics Amount input field (e.g., 0.00) */}
       </div>
-
       <div className="flex justify-end mt-2">
         {" "}
         {/* Align with actual "Available" text position */}
@@ -5509,18 +5510,16 @@ const SendAmountPageSkeletonLayout = () => (
         {/* Mimics "Available: 1,000.00 USD" text */}
       </div>
     </div>
-
     {/* "Recipient gets approx." Section Skeleton */}
-      <div className="space-y-1.5">
+    <div className="space-y-1.5">
       <Skeleton className="h-6 w-30 mb-1 rounded-md" />{" "}
       {/* Mimics "You send" label */}
       <div className="flex items-center justify-between min-h-[72px] border border-transparent">
         <Skeleton className="h-11.5 w-26.5 rounded-full" />{" "}
         {/* Mimics Flag + Currency button (e.g., USD) */}
-        <Skeleton className="h-16 w-40 rounded-lg" />{" "}
+        <Skeleton className="lg:h-16 h-9 w-40 rounded-lg" />{" "}
         {/* Mimics Amount input field (e.g., 0.00) */}
       </div>
-
       <div className="flex justify-end mt-2">
         {" "}
         {/* Align with actual "Available" text position */}
@@ -5528,10 +5527,8 @@ const SendAmountPageSkeletonLayout = () => (
         {/* Mimics "Available: 1,000.00 USD" text */}
       </div>
     </div>
-
-    
     {/* "Paying with" Section Skeleton */}
-    <div className="mt-6 space-y-1.5">
+    <div className="mt-4 space-y-1.5">
       {" "}
       {/* Margin-top for separation, tight spacing for label and box */}
       <Skeleton className="h-6 w-30 mb-1 rounded-md" />{" "}
@@ -5844,6 +5841,7 @@ export default function SendAmountPage() {
     return (
       <div>
         <DashboardHeader title="Send Money" steps={steps} currentStep={2} />
+
         <div className="mx-auto lg:max-w-xl p-4 sm:p-6 mt-5 border rounded-2xl bg-background">
           <SendAmountPageSkeletonLayout />{" "}
         </div>
@@ -5859,35 +5857,38 @@ export default function SendAmountPage() {
     return (
       <div>
         <DashboardHeader title="Send Money" steps={steps} currentStep={2} />
-                <div className="bg-red-900/25 border border-red-500 rounded-xl p-4 flex items-center gap-4 mb-3 py-5">
-                  <div className="flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center bg-red-600/20">
-                    <FiAlertTriangle
-                      size={20}
-                      className="text-red-500 size-5 sm:size-6 flex-shrink-0"
-                    />
-                  </div>
-                  <div>
-                    <h3 className="font-medium text-red-200 text-base">
-                      Error: Invalid page URL.
-                    </h3>
-                    <p className="text-red-300/90">
-                      page URL is not found try again later
-                    </p>
-                  </div>
-                </div>
 
-                 <div className="text-center mt-5">
-              <Link
-                href={
-                  balanceId
-                    ? `/dashboard/balances/${balanceId}/send/select-recipient`
-                    : "/dashboard"
-                }
-                className="inline-flex justify-center cursor-pointer gap-2 bg-secondarybox hover:bg-secondaryboxhover text-primary font-medium rounded-full px-8 py-3 text-center sm:w-auto w-full transition-all duration-75 ease-linear"
-              >
-                <IoIosArrowBack size={20} /> Go back
-              </Link>
+        <div className="bg-red-900/25 border border-red-500 rounded-xl sm:p-6 p-4 flex sm:flex-row flex-col gap-3 items-center justify-between mb-3">
+          <div className="flex items-center gap-3">
+            <div className="flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center bg-red-600/20">
+              <FiAlertTriangle
+                size={20}
+                className="text-red-500 size-5 sm:size-6 flex-shrink-0"
+              />
             </div>
+            <div>
+              <h3 className="font-medium text-red-500 text-base">
+                Error: Invalid page URL.
+              </h3>
+              <p className="text-red-300/90">
+                page URL is not found try again later
+              </p>
+            </div>
+          </div>
+
+          <div className="Go-button">
+            <Link
+              href={
+                balanceId
+                  ? `/dashboard/balances/${balanceId}/send/select-recipient`
+                  : "/dashboard"
+              }
+              className="inline-flex justify-center items-center cursor-pointer gap-2 bg-red-900/20 hover:bg-red-700/20 text-red-500 font-medium rounded-full sm:px-8 px-6 py-3 text-center sm:w-auto w-full transition-all duration-75 ease-linear"
+            >
+              <IoIosArrowBack size={20} /> Go back
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }
@@ -6035,8 +6036,8 @@ export default function SendAmountPage() {
                 <span
                   className={`${
                     isInsufficientBalanceError
-                      ? "text-red-300/90"
-                      : "text-yellow-300/90"
+                      ? "text-red-300"
+                      : "text-yellow-300"
                   }`}
                 >
                   {displayError}
