@@ -231,21 +231,138 @@
 
 // export default CurrencyExchangeServices;
 
+// // frontend/src/components/Easymoney.tsx
+// "use client";
 
-// frontend/src/components/Easymoney.tsx
+// import Image from "next/image";
+// import React from "react";
+// import Link from "next/link";
+// import { useAuth } from "@/app/contexts/AuthContext"; // Import useAuth
+
+// interface CurrencyExchangeServicesProps {}
+
+// const CurrencyExchangeServices: React.FC<
+//   CurrencyExchangeServicesProps
+// > = () => {
+//   const { user } = useAuth(); // Get user from AuthContext
+
+//   const buttonText = user ? "Get Started" : "Create A Free Account";
+//   const buttonLink = user ? "/dashboard/send/select-balance" : "/auth/register";
+
+//   return (
+//     <section className="CurrencyExchangeServicesSection sm:py-16 py-10 overflow-hidden">
+//       <div className="container mx-auto px-4">
+//         <div className="flex flex-col lg:flex-row items-center gap-8">
+//           {/* Image Area - Appears on the LEFT on large screens (lg:order-1), FIRST on small screens (order-1) */}
+//           <div
+//             className="w-full lg:w-1/2 lg:order-1 order-2" // Image first on SM, left on LG
+//           >
+//             <div className="sm:hidden block">
+//               <span className="text-subheadingWhite font-medium text-sm mb-1 text-center md:text-left block uppercase">
+//                 <span className="text-subheadingWhite/30">[</span> Our mission
+//                 <span className="text-subheadingWhite/30">]</span>
+//               </span>
+//               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
+//                 <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
+//                   Empowering Transparent{" "}
+//                   <span className="text-primary">Global Exchange</span>{" "}
+//                   {/* Corrected typo: lobal -> Global */}
+//                 </h3>
+//               </div>
+//             </div>
+
+//             <div className="relative w-full flex justify-center">
+//               <Image
+//                 src="/assets/images/women.png" // Original image path
+//                 alt="Currency exchange services illustration" // Updated alt text for clarity
+//                 width={550}
+//                 height={800}
+//                 className="object-contain rounded-3xl"
+//                 priority
+//                 sizes="(max-width: 767px) 100vw, (max-width: 1023px) 768px, (max-width: 1279px) 60vw, 768px"
+//               />
+//             </div>
+
+//             <div className="block md:hidden">
+//               <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full pt-8 text-center">
+//                 We are committed to making global currency exchange simple and
+//                 clear. Our platform ensures transparency with honest rates and
+//                 no hidden fees. Trust and reliability are at the heart of every
+//                 transaction we facilitate. We empower travelers and businesses
+//                 to exchange money confidently worldwide. With us, your currency
+//                 exchange experience is secure, fast, and hassle-free.
+//               </p>
+
+//               <div className="flex justify-center md:justify-start mt-8">
+//                 <Link href={buttonLink} className="inline-block">
+//                   {" "}
+//                   {/* MODIFIED Link */}
+//                   <button className="bg-primary hover:bg-primaryhover text-mainheading cursor-pointer font-medium text-base lg:text-lg py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
+//                     {buttonText} {/* MODIFIED Text */}
+//                   </button>
+//                 </Link>
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* Text Content Area - Appears on the RIGHT on large screens (lg:order-2), SECOND on small screens (order-2) */}
+//           <div
+//             className="w-full lg:w-1/2 lg:order-2 order-1 hidden md:block" // Text second on SM, right on LG
+//           >
+//             <div className="space-y-4 text-center md:text-left">
+//               <div className="sm:inline-block hidden">
+//                 <span className="text-subheadingWhite font-medium text-sm uppercase">
+//                   <span className="text-subheadingWhite/30">[</span> Our mission
+//                   <span className="text-subheadingWhite/30">]</span>
+//                 </span>
+//               </div>
+
+//               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
+//                 <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite sm:block hidden">
+//                   Empowering Transparent{" "}
+//                   <span className="text-primary">Global Exchange </span>
+//                 </h3>
+//                 <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
+//                   We are committed to making global currency exchange simple and
+//                   clear. Our platform ensures transparency with honest rates and
+//                   no hidden fees. Trust and reliability are at the heart of
+//                   every transaction we facilitate. We empower travelers and
+//                   businesses to exchange money confidently worldwide. With us,
+//                   your currency exchange experience is secure, fast, and
+//                   hassle-free.
+//                 </p>
+//               </div>
+//             </div>
+
+//             <div className="flex justify-center md:justify-start mt-8">
+//               <Link href={buttonLink} className="inline-block">
+//                 {" "}
+//                 {/* MODIFIED Link */}
+//                 <button className="bg-primary hover:bg-primaryhover text-mainheading cursor-pointer font-medium text-base lg:text-lg py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
+//                   {buttonText} {/* MODIFIED Text */}
+//                 </button>
+//               </Link>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default CurrencyExchangeServices;
+
+
 "use client";
-
 import Image from "next/image";
-import React from "react";
+import React from "react"; // Import React for React.memo
 import Link from "next/link";
-import { useAuth } from "@/app/contexts/AuthContext"; // Import useAuth
+import { useAuth } from "@/app/contexts/AuthContext";
 
 interface CurrencyExchangeServicesProps {}
 
-const CurrencyExchangeServices: React.FC<
-  CurrencyExchangeServicesProps
-> = () => {
-  const { user } = useAuth(); // Get user from AuthContext
+const CurrencyExchangeServices: React.FC<CurrencyExchangeServicesProps> = () => {
+  const { user } = useAuth();
 
   const buttonText = user ? "Get Started" : "Create A Free Account";
   const buttonLink = user ? "/dashboard/send/select-balance" : "/auth/register";
@@ -254,11 +371,9 @@ const CurrencyExchangeServices: React.FC<
     <section className="CurrencyExchangeServicesSection sm:py-16 py-10 overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row items-center gap-8">
-          {/* Image Area - Appears on the LEFT on large screens (lg:order-1), FIRST on small screens (order-1) */}
-          <div
-            className="w-full lg:w-1/2 lg:order-1 order-2" // Image first on SM, left on LG
-          >
-            <div className="sm:hidden block">
+          <div className="w-full lg:w-1/2 lg:order-1 order-2">
+            {/* ... (content remains the same) ... */}
+             <div className="sm:hidden block">
               <span className="text-subheadingWhite font-medium text-sm mb-1 text-center md:text-left block uppercase">
                 <span className="text-subheadingWhite/30">[</span> Our mission
                 <span className="text-subheadingWhite/30">]</span>
@@ -266,22 +381,22 @@ const CurrencyExchangeServices: React.FC<
               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
                 <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
                   Empowering Transparent{" "}
-                  <span className="text-primary">Global Exchange</span> {/* Corrected typo: lobal -> Global */}
+                  <span className="text-primary">Global Exchange</span>
                 </h3>
               </div>
             </div>
-
             <div className="relative w-full flex justify-center">
               <Image
-                src="/assets/images/women.png" // Original image path
-                alt="Currency exchange services illustration" // Updated alt text for clarity
+                src="/assets/images/women.png"
+                alt="Currency exchange services illustration"
                 width={550}
                 height={800}
                 className="object-contain rounded-3xl"
-                priority
+                loading="lazy" // This image is likely below the fold, so lazy load
+                sizes="(max-width: 767px) 100vw, (max-width: 1023px) 768px, (max-width: 1279px) 60vw, 768px"
               />
             </div>
-
+            {/* ... (rest of the content) ... */}
             <div className="block md:hidden">
               <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full pt-8 text-center">
                 We are committed to making global currency exchange simple and
@@ -293,20 +408,17 @@ const CurrencyExchangeServices: React.FC<
               </p>
 
               <div className="flex justify-center md:justify-start mt-8">
-                <Link href={buttonLink} className="inline-block"> {/* MODIFIED Link */}
+                <Link href={buttonLink} className="inline-block">
                   <button className="bg-primary hover:bg-primaryhover text-mainheading cursor-pointer font-medium text-base lg:text-lg py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
-                    {buttonText} {/* MODIFIED Text */}
+                    {buttonText}
                   </button>
                 </Link>
               </div>
             </div>
           </div>
-
-          {/* Text Content Area - Appears on the RIGHT on large screens (lg:order-2), SECOND on small screens (order-2) */}
-          <div
-            className="w-full lg:w-1/2 lg:order-2 order-1 hidden md:block" // Text second on SM, right on LG
-          >
-            <div className="space-y-4 text-center md:text-left">
+          <div className="w-full lg:w-1/2 lg:order-2 order-1 hidden md:block">
+            {/* ... (content remains the same) ... */}
+             <div className="space-y-4 text-center md:text-left">
               <div className="sm:inline-block hidden">
                 <span className="text-subheadingWhite font-medium text-sm uppercase">
                   <span className="text-subheadingWhite/30">[</span> Our mission
@@ -332,9 +444,9 @@ const CurrencyExchangeServices: React.FC<
             </div>
 
             <div className="flex justify-center md:justify-start mt-8">
-              <Link href={buttonLink} className="inline-block"> {/* MODIFIED Link */}
+              <Link href={buttonLink} className="inline-block">
                 <button className="bg-primary hover:bg-primaryhover text-mainheading cursor-pointer font-medium text-base lg:text-lg py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
-                  {buttonText} {/* MODIFIED Text */}
+                  {buttonText}
                 </button>
               </Link>
             </div>
@@ -345,4 +457,4 @@ const CurrencyExchangeServices: React.FC<
   );
 };
 
-export default CurrencyExchangeServices;
+export default React.memo(CurrencyExchangeServices); // Memoize component
