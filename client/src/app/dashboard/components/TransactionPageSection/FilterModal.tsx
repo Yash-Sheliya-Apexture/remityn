@@ -1450,7 +1450,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Account } from "@/types/account";
 import { IoClose } from "react-icons/io5";
-import { IoIosCloseCircleOutline } from "react-icons/io";
+import { IoIosCloseCircle, IoIosCloseCircleOutline } from "react-icons/io";
 import DateInput from "./Filter/DateInput";
 import Recipients from "./Filter/Recipients";
 import DirectionFilter from "./Filter/DirectionFilter";
@@ -1793,7 +1793,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
             animate={{ opacity: 0.5 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-white/30 z-50"
+            className="fixed inset-0 bg-white/15 z-50"
             // onClick={onClose} // Keep if you want backdrop click to close, can be annoying during interaction
           />
 
@@ -1803,7 +1803,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
             className={`fixed ${
               isMobile
                 ? "bottom-0 left-0 right-0 h-[100dvh]"
-                : "top-0 right-0 sm:w-[600px] h-full"
+                : "top-0 right-0 lg:w-[600px] h-full"
             } bg-background z-80 flex flex-col`}
             initial={
               isMobile ? { y: "100%", opacity: 0 } : { x: "100%", opacity: 0 }
@@ -1834,9 +1834,10 @@ const FilterModal: React.FC<FilterModalProps> = ({
                 <h4 className="font-medium text-white/90 mb-3 leading-8 border-b">
                   Date
                 </h4>
+
                 <div className="flex items-center flex-wrap gap-2 mb-4">
                   <button
-                    className={`font-medium border flex items-center gap-1 rounded-full px-4 py-2 cursor-pointer transition-colors ${
+                    className={`font-medium border flex items-center gap-1 rounded-full px-4 py-2 cursor-pointer transition-all duration-75 ease-linear ${
                       isLastMonthActive
                         ? " bg-primarybox hover:bg-secondarybox text-primary border-transparent"
                         : " text-white/90 bg-background hover:border-gray-500"
@@ -1849,9 +1850,8 @@ const FilterModal: React.FC<FilterModalProps> = ({
                   >
                     Last month
                     {isLastMonthActive && (
-                      <IoIosCloseCircleOutline
-                        size={20}
-                        className="ml-1"
+                      <IoIosCloseCircle 
+                        size={22}
                         onClick={(e) => {
                           e.stopPropagation();
                           handleClearDateRange("month");
@@ -1859,8 +1859,9 @@ const FilterModal: React.FC<FilterModalProps> = ({
                       />
                     )}
                   </button>
+                  
                   <button
-                    className={`font-medium border flex items-center gap-1 rounded-full px-4 py-2 cursor-pointer transition-colors ${
+                    className={`font-medium border flex items-center gap-1 rounded-full px-4 py-2 cursor-pointer transition-all duration-75 ease-linear ${
                       isLastQuarterActive
                         ? "bg-primarybox hover:bg-secondarybox text-primary border-transparent"
                         : "text-white/90 bg-background hover:border-gray-500"
@@ -1873,9 +1874,8 @@ const FilterModal: React.FC<FilterModalProps> = ({
                   >
                     Last quarter
                     {isLastQuarterActive && (
-                      <IoIosCloseCircleOutline
-                        size={20}
-                        className="ml-1"
+                      <IoIosCloseCircle
+                        size={22}
                         onClick={(e) => {
                           e.stopPropagation();
                           handleClearDateRange("quarter");
@@ -1884,7 +1884,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
                     )}
                   </button>
                   <button
-                    className={`font-medium border flex items-center gap-1 rounded-full px-4 py-2 cursor-pointer transition-colors ${
+                    className={`font-medium border flex items-center gap-1 rounded-full px-4 py-2 cursor-pointer transition-all duration-75 ease-linear ${
                       isLastYearActive
                         ? "bg-primarybox hover:bg-secondarybox text-primary border-transparent"
                         : "text-white/90 bg-background hover:border-gray-500"
@@ -1897,9 +1897,8 @@ const FilterModal: React.FC<FilterModalProps> = ({
                   >
                     Last year
                     {isLastYearActive && (
-                      <IoIosCloseCircleOutline
-                        size={20}
-                        className="ml-1"
+                      <IoIosCloseCircle
+                        size={22}
                         onClick={(e) => {
                           e.stopPropagation();
                           handleClearDateRange("year");
@@ -1922,6 +1921,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
                   />
                 </div>
               </div>
+
               <div>
                 <h4 className="font-medium text-white/90 mb-3 leading-8 border-b">
                   Recipients
@@ -1948,6 +1948,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
                   <h4 className="font-medium text-white/90 mb-3 leading-8 border-b">
                     Balance
                   </h4>
+
                   <div className="space-y-2">
                     {userAccounts.map((account) => {
                       const currencyBalanceProps: CurrencyBalance = {
@@ -1975,15 +1976,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
               )}
             </div>
 
-            <div className="sm:p-6 p-4 border-t bg-background flex-shrink-0">
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  className="text-primary bg-primarybox hover:bg-secondarybox font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear"
-                  onClick={handleClearAllFilters}
-                >
-                  Clear all
-                </button>
+            <div className="sm:p-6 p-4 flex flex-col w-full sm:flex-row gap-3 border-t bg-background flex-shrink-0">
                 <button
                   type="button"
                   className="bg-primary text-mainheading hover:bg-primaryhover font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear"
@@ -1991,8 +1984,16 @@ const FilterModal: React.FC<FilterModalProps> = ({
                 >
                   Apply
                 </button>
-              </div>
+
+                <button
+                  type="button"
+                  className="text-primary bg-primarybox hover:bg-secondarybox font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear"
+                  onClick={handleClearAllFilters}
+                >
+                  Clear all
+                </button>
             </div>
+            
           </motion.div>
         </>
       )}

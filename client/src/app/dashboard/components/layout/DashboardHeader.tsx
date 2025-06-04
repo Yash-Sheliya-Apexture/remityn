@@ -115,7 +115,6 @@
 // export default DashboardHeader;
 
 import React from "react";
-import { CheckIcon } from "lucide-react"; // Using lucide icons instead of react-icons
 import { FaCheck } from "react-icons/fa";
 
 interface DashboardHeaderProps {
@@ -173,7 +172,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     {/* Step Circle and Text */}
                     <div className="flex items-center flex-shrink-0 py-2">
                       <div
-                        className={`size-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
+                        className={`sm:size-10 size-8 rounded-full flex shrink-0 items-center justify-center border-2 transition-all duration-75 ease-linear ${
                           isCompleted
                             ? "bg-primary border-primary text-mainheading"
                             : isActive
@@ -181,10 +180,11 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                             : "text-mainheadingWhite border-subheadingWhite"
                         }`} 
                       >
-                        {isCompleted ? <FaCheck size={18} /> : stepNumber}
+                        {isCompleted ? <FaCheck size={20} /> : stepNumber}
                       </div>
+                      
                       <span
-                        className={`text-xs md:text-base capitalize transition-colors duration-300 ease-in-out hidden sm:block ml-2 ${
+                        className={`text-xs md:text-base capitalize transition-all duration-75 ease-linear hidden sm:block ml-2 ${
                           isCompleted
                             ? "text-primary font-medium"
                             : isActive

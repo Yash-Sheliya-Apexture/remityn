@@ -363,7 +363,6 @@
 
 // export default InsufficientBalanceModal;
 
-
 "use client";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -403,18 +402,18 @@ const InsufficientBalanceModal: React.FC<InsufficientBalanceModalProps> = ({
   const [isMobile, setIsMobile] = useState(false);
 
   // --- Body Scroll Lock ---
-useEffect(() => {
+  useEffect(() => {
     if (isOpen) {
-        document.body.classList.add("overflow-hidden");
+      document.body.classList.add("overflow-hidden");
     } else {
-        document.body.classList.remove("overflow-hidden");
+      document.body.classList.remove("overflow-hidden");
     }
     // Cleanup function to ensure the class is removed when the component unmounts
     // or if the modal was closed by other means.
     return () => {
-        document.body.classList.remove("overflow-hidden");
+      document.body.classList.remove("overflow-hidden");
     };
-}, [isOpen]);
+  }, [isOpen]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -441,11 +440,11 @@ useEffect(() => {
           exit={{ opacity: 0 }}
           onClick={onClose} // Close on overlay click
           aria-modal="true" // Added for accessibility
-          role="dialog"      // Added for accessibility
+          role="dialog" // Added for accessibility
           aria-labelledby="insufficient-balance-modal-title" // Added for accessibility
         >
           <motion.div
-            className="bg-background sm:rounded-3xl rounded-t-3xl sm:p-8 p-4 w-full sm:max-w-lg relative text-center" // Added dark mode and shadow
+            className="bg-background sm:rounded-3xl space-y-4 rounded-t-3xl sm:p-6 p-4 w-full sm:max-w-lg relative text-center" // Added dark mode and shadow
             variants={modalVariants} // Apply variants here
             initial="initial"
             animate="animate"
@@ -459,41 +458,32 @@ useEffect(() => {
                 onClick={onClose}
                 aria-label="Close modal"
               >
-                <IoClose
-                  size={28}
-                />
+                <IoClose size={28} />
               </button>
             </div>
 
             {/* Image & Fallback Container */}
-            {/* <div className="flex justify-center w-20 h-20 mx-auto mb-4 relative">
-              <div
-                className="bg-yellow-900/30 rounded-full flex items-center justify-center text-yellow-400" // Use 'hidden' class
-                aria-hidden="true" // Hide from screen readers as it's decorative/redundant with text
-              >
-                
-              </div>
-            </div> */}
-
-               <div className="lg:size-16 size-14 rounded-full flex items-center justify-center bg-yellow-600/20 flex-shrink-0 mx-auto">
-                      <FiAlertCircle  className="text-yellow-500 lg:size-8 size-6 flex-shrink-0" />
-                    </div>
-            
+            <div className="lg:size-16 size-14 rounded-full flex items-center justify-center bg-yellow-600/20 flex-shrink-0 mx-auto">
+              <FiAlertCircle className="text-yellow-500 lg:size-8 size-6 flex-shrink-0" />
+            </div>
 
             {/* Title */}
-            <h3 id="insufficient-balance-modal-title" className="sm:text-3xl text-2xl font-semibold text-mainheadingWhite my-6">
+            <h3
+              id="insufficient-balance-modal-title"
+              className="sm:text-3xl text-2xl font-semibold text-mainheadingWhite"
+            >
               Insufficient Balance
             </h3>
 
             {/* Description */}
-            <p className="text-secondheadingWhite font-medium mb-6">
+            <p className="text-secondheadingWhite">
               {/* Corrected the apostrophe */}
               You don&apos;t have enough funds in your {currencyCode} balance to
               send money. Please add funds first.
             </p>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row justify-center gap-3">
+            <div className="flex flex-col sm:flex-row justify-center gap-3 mt-6">
               {/* Added focus styles */}
               <button
                 className="bg-primary text-mainheading hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none"
@@ -501,6 +491,7 @@ useEffect(() => {
               >
                 Add Money
               </button>
+
               {/* Added dark mode and focus styles */}
               <button
                 className="text-primary bg-primarybox hover:bg-secondarybox font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none"

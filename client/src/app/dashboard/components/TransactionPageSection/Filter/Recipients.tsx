@@ -810,14 +810,14 @@ const Recipients: React.FC<RecipientsProps> = ({
           {/* Optional: Add a heading skeleton if needed */}
           {/* <Skeleton className="h-6 w-24 mb-3" /> */}
           <div className="space-y-2">
-            {Array(3).fill(0).map((_, index) => (
-                <div key={index} className="flex items-center gap-4 p-2 sm:p-4">
-                    <Skeleton className="h-12 w-12 rounded-full flex-shrink-0" />
-                    <div className="flex-grow space-y-2">
-                        <Skeleton className="h-4 w-3/4" />
-                        <Skeleton className="h-3 w-1/2" />
+            {Array(2).fill(0).map((_, index) => (
+                <div key={index} className="flex items-center p-2 sm:p-4">
+                    <Skeleton className="size-12.5 rounded-full flex-shrink-0" />
+                    <div className="flex-grow ml-4">
+                        <Skeleton className="h-7 w-1/2" />
+                        <Skeleton className="h-5 w-3/4 mt-1" />
                     </div>
-                    <Skeleton className="h-6 w-6 rounded" /> {/* Checkbox Skeleton */}
+                    <Skeleton className="size-5 rounded" /> {/* Checkbox Skeleton */}
                 </div>
              ))}
           </div>

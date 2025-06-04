@@ -586,11 +586,13 @@ export default function RecipientList({
     >
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center">
-          <div className="w-12.5 h-12.5 rounded-full bg-secondarybox flex items-center justify-center relative flex-shrink-0">
+
+          <div className="size-12.5 rounded-full bg-secondarybox flex items-center justify-center relative flex-shrink-0">
             <span className="font-bold text-white/90">
               {getInitials(recipient.accountHolderName)}
             </span>
-            <div className="absolute bottom-0 right-0 w-4 h-4 rounded-full overflow-hidden">
+
+            <div className="absolute bottom-0 right-0 size-4 rounded-full overflow-hidden">
               {recipient.currency?.code && ( // Add check for currency code existence
                  <Image
                  src={`/assets/icon/${recipient.currency.code.toLowerCase()}.svg`} // Use dynamic icon path
@@ -606,6 +608,7 @@ export default function RecipientList({
               )}
             </div>
           </div>
+
           <div className="ml-4">
             <h5 className="font-medium leading-relaxed text-mainheadingWhite sm:text-lg">
               {recipient.accountHolderName}
@@ -622,8 +625,9 @@ export default function RecipientList({
 
         {showCheckbox ? (
           // Add onClick handler with stopPropagation to the Checkbox container
-          <div className="pt-1.5" onClick={(e) => e.stopPropagation()}>
+          <div onClick={(e) => e.stopPropagation()}>
             <Checkbox
+              className="size-5 shadow-none"
               id={`recipient-checkbox-${recipient._id}`} // Added id for accessibility
               // ref={checkboxRef} // Remove or keep based on Solution 1 or 2 above
               checked={isSelected}
@@ -633,7 +637,7 @@ export default function RecipientList({
           </div>
         ) : (
           <div className="ml-4">
-            <IoIosArrowForward className="size-5 text-mainheadingWhite" />
+            <IoIosArrowForward className="size-4 text-mainheadingWhite" />
           </div>
         )}
       </div>
