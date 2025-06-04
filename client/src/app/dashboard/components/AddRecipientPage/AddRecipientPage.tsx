@@ -7280,20 +7280,29 @@ const AddRecipientPage = () => {
                 <Skeleton className="h-8 w-64 mb-4 rounded-md" />
                 {/* Skeleton for Search input */}
                 <Skeleton className="h-12.5 w-full mb-4 rounded-full" />
+                <Skeleton className="h-5 mb-2 w-40 rounded-md" />
                 {/* Skeletons for Currency List Section */}
-                <div className="space-y-6 mt-6">
-                  {/* Skeleton for "All currencies" title */}
-                  <Skeleton className="h-4 w-32 mb-3 rounded-full" />
-                  <div className="space-y-2">
-                    <Skeleton className="h-16 rounded-xl w-full" />
-                    <Skeleton className="h-16 rounded-xl w-full" />
-                    <Skeleton className="h-16 rounded-xl w-full" />
-                  </div>
-                  {/* Optionally, add skeleton for "Coming Soon" if it's a common section */}
-                  {/* <Skeleton className="h-7 w-1/3 mt-6 mb-3 rounded" /> */}
-                  {/* <div className="space-y-2"> */}
-                  {/*   <Skeleton className="h-16 rounded-xl w-full" /> */}
-                  {/* </div> */}
+                <div className="space-y-2">
+                  {Array(3)
+                    .fill(0)
+                    .map((_, index) => (
+                      <div key={index} className="block">
+                        <div className="block p-2 sm:p-4 rounded-2xl">
+                          <div className="flex items-center gap-4">
+                            <Skeleton className="size-12 rounded-full flex-shrink-0" />
+                            <div className="flex-grow flex flex-row justify-between items-center gap-4">
+                              <div>
+                                <Skeleton className="h-4 sm:w-40 w-28 rounded-full mb-2" />
+                                <Skeleton className="h-3 sm:w-26 w-18 rounded-full" />
+                              </div>
+                              <div className="shrink-0">
+                                <Skeleton className="h-5 w-10 rounded-full" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                 </div>
               </>
             ) : (

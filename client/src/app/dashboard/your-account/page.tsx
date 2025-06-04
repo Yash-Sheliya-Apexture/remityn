@@ -164,14 +164,6 @@ const AccountSettings: React.FC = () => {
           <div className="space-y-2">
             <MenuItem
               icon={
-                <IoMoonOutline className="size-6 text-white/90" />
-              }
-              label="Theme Settings"
-              description="Customize appearance with light, dark, or system themes."
-              href="your-account/theme-settings"
-            />
-            <MenuItem
-              icon={
                 <RiShieldLine className="size-6 text-white/90" />
               }
               label="Security and privacy"

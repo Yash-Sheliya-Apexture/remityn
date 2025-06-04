@@ -355,7 +355,6 @@ import { useAuth } from "../../../../contexts/AuthContext"; // Adjust path as ne
 import paymentService, {
   PaymentDetailsResponse,
 } from "../../../../services/payment"; // Adjust path as needed
-import { Skeleton } from "@/components/ui/skeleton";
 import { FiAlertTriangle } from "react-icons/fi";
 
 // Interface for component state
@@ -517,7 +516,7 @@ const PaymentSuccessPage = () => {
 
           {/* Error Message Display */}
           {error && !isLoading && (
-            <div className="bg-red-600/20 border flex gap-2 items-center border-red-600/50 rounded-xl p-4">
+            <div className="bg-red-600/20 border flex gap-2 items-center border-red-500 rounded-xl p-4">
 
                 <div className="flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center bg-red-600/20">
                                   <FiAlertTriangle
@@ -525,7 +524,7 @@ const PaymentSuccessPage = () => {
                                     className="text-red-500 size-5 sm:size-6 flex-shrink-0"
                                   />
                                 </div>
-              <p className="text-red-400 text-sm font-medium text-left">
+              <p className="text-red-500 text-sm font-medium text-left">
                 {error}
               </p>
             </div>

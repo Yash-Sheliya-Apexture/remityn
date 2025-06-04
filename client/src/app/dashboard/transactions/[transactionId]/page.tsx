@@ -8304,7 +8304,7 @@ const TransactionDetailsPage = () => {
 
   const SvgLoader = () => (
     <svg
-      className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+      className="h-5 w-5 text-mainheading animate-spin mr-2"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -8388,7 +8388,7 @@ const TransactionDetailsPage = () => {
           </button>
           <button
             onClick={() => fetchTransactionDetails()}
-            className="inline-flex justify-center items-center font-medium bg-primary hover:bg-primaryhover text-neutral-900 px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear cursor-pointer"
+            className="inline-flex justify-center items-center font-medium bg-primary hover:bg-primaryhover text-mainheading px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear cursor-pointer"
             disabled={isLoading}
           >
             {isLoading && <SvgLoader />}

@@ -1673,26 +1673,22 @@ export default function RecipientsPage() {
             <Skeleton className="h-12.5 flex-1 rounded-full" />
             <Skeleton className="h-12.5 w-36 rounded-full hidden md:block" />
           </div>
+          
           {/* List Skeleton */}
-          <div className="border-b">
-            <Skeleton className="h-5 mb-2 w-40 rounded-md" />
-          </div>
+          <Skeleton className="h-5 mb-2 w-40 rounded-md" />
+          
           <div className="space-y-2">
             {Array(3)
               .fill(0)
               .map((_, index) => (
                 <div key={index} className="block">
                   <div className="block p-2 sm:p-4 rounded-2xl">
-                    <div className="flex items-center gap-4">
-                      <div className="relative flex-shrink-0">
-                        <div className="flex items-center justify-center">
-                          <Skeleton className="h-12 w-12 rounded-full" />
-                        </div>
-                      </div>
+                    <div className="flex items-center gap-4">                                              
+                      <Skeleton className="size-12 rounded-full flex-shrink-0" />
                       <div className="flex-grow flex flex-row justify-between items-center gap-4">
-                        <div className="flex-grow">
-                          <Skeleton className="h-4 w-40 mb-2" />
-                          <Skeleton className="h-3 w-32" />
+                        <div>
+                          <Skeleton className="h-4 sm:w-40 w-28 rounded-full mb-2" />
+                          <Skeleton className="h-3 sm:w-26 w-18 rounded-full" />
                         </div>
                         <div className="shrink-0">
                           <Skeleton className="h-5 w-10 rounded-full" />

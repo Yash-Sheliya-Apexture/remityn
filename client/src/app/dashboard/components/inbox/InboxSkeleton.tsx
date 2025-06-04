@@ -250,7 +250,7 @@ export const InboxSkeleton: React.FC = () => {
             </div>
           </div>
           {/* Refresh Button */}
-          <Skeleton className="h-[50px] w-24 sm:w-32 rounded-full" />
+          <Skeleton className="h-12.5 w-12.5 sm:w-32 rounded-full" />
         </div>
 
         {/* This div can simulate the space where an error might appear or just general layout spacing */}

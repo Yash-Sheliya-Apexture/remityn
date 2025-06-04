@@ -1985,22 +1985,14 @@ const TransactionsSection: React.FC = () => {
                 .fill(0)
                 .map((_, index) => (
                   <div key={index} className="block p-2 sm:p-4 rounded-2xl">
-                    <div className="flex items-center gap-4">
-                      {/* Icon Skeleton */}
-                      <div className="relative flex-shrink-0">
-                        <div className="flex items-center justify-center">
-                          <Skeleton className="h-12 w-12 rounded-full" />
+                    <div className="flex items-center sm:gap-4 gap-2">
+                      <Skeleton className="size-12 rounded-full flex-shrink-0" />
+                      <div className="flex-grow flex flex-row justify-between sm:items-center sm:gap-4 gap-1">
+                        <div className="">
+                          <Skeleton className="h-4 sm:w-40 w-28 mb-2" />
+                          <Skeleton className="h-3 sm:w-32 w-20" />
                         </div>
-                      </div>
-                      {/* Text and Button Skeletons */}
-                      <div className="flex-grow flex flex-row justify-between items-center gap-4">
-                        <div className="flex-grow">
-                          <Skeleton className="h-4 w-40 mb-2" />
-                          <Skeleton className="h-3 w-32" />
-                        </div>
-                        <div className="shrink-0">
-                          <Skeleton className="h-5 w-20 rounded-full" />
-                        </div>
+                        <Skeleton className="h-4 sm:w-26 w-18 rounded-full" />
                       </div>
                     </div>
                   </div>
