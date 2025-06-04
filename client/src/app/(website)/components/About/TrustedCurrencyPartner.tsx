@@ -114,8 +114,6 @@
 
 // export default TrustedCurrencyPartner;
 
-
-
 // // frontend/src/components/AboutSection.tsx
 // "use client";
 // import Image from "next/image";
@@ -198,16 +196,107 @@
 
 // export default TrustedCurrencyPartner;
 
+// // frontend/src/components/AboutSection.tsx
+// "use client";
+// import Image from "next/image";
+// import Link from "next/link";
+// import React from "react";
+// import { useAuth } from "@/app/contexts/AuthContext"; // Import useAuth
 
-// frontend/src/components/AboutSection.tsx
+// const TrustedCurrencyPartner = () => {
+//   const { user } = useAuth(); // Get user from AuthContext
+
+//   const buttonText = user ? "Get Started" : "Create A Free Account";
+//   const buttonLink = user ? "/dashboard/send/select-balance" : "/auth/register";
+
+//   return (
+//     <section
+//       className="TrustedCurrencySection sm:py-16 py-10 overflow-hidden"
+//       id="about-us"
+//     >
+//       <div className="container mx-auto px-4">
+//         <div className="flex flex-col lg:flex-row items-center gap-8">
+//           <div className="w-full lg:w-1/2 order-2 md:order-1">
+//             <div className="space-y-4 text-center md:text-left">
+//               <div className="sm:inline-block hidden">
+//                 <span className="text-subheadingWhite font-medium text-sm uppercase">
+//                   <span className="text-subheadingWhite/30">[</span> About us{" "}
+//                   <span className="text-subheadingWhite/30">]</span>
+//                 </span>
+//               </div>
+
+//               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
+//                 <h2 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite sm:block hidden">
+//                   Exchange with Confidence,{" "}
+//                   <span className="text-primary">Worldwide</span>
+//                 </h2>
+
+//                 <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
+//                   At Remityn, Experience seamless and secure currency exchange
+//                   services no matter where you are. Whether you're traveling for
+//                   business or leisure, our trusted global network ensures fast,
+//                   transparent, and competitive rates—without hidden fees. Join
+//                   thousands of satisfied customers who rely on us for safe,
+//                   reliable money exchange solutions across borders.
+//                 </p>
+//               </div>
+
+//               <div className="flex justify-center md:justify-start mt-8">
+//                 <Link href={buttonLink} className="inline-block">
+//                   {" "}
+//                   {/* MODIFIED Link */}
+//                   <button className="bg-primary hover:bg-primaryhover text-mainheading cursor-pointer font-medium text-base lg:text-lg py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
+//                     {buttonText} {/* MODIFIED Text */}
+//                   </button>
+//                 </Link>
+//               </div>
+//             </div>
+//           </div>
+
+//           <div className="w-full lg:w-1/2 lg:order-2 order-1">
+//             <div className="sm:hidden block">
+//               <span className="text-subheadingWhite font-medium text-sm mb-1 text-center md:text-left block uppercase">
+//                 <span className="text-subheadingWhite/30">[</span> About us
+//                 <span className="text-subheadingWhite/30">]</span>
+//               </span>
+//               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
+//                 <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
+//                   Exchange with Confidence{" "}
+//                   <span className="text-primary">Worldwide</span>
+//                 </h3>
+//               </div>
+//             </div>
+
+//             <div className="relative w-full flex justify-center">
+//               <Image
+//                 src="/assets/images/TrustedPartner.png"
+//                 width={550}
+//                 height={800}
+//                 alt="Person smiling while using a laptop and wearing headphones"
+//                 className="object-contain rounded-3xl"
+//                 priority
+//                 sizes="(max-width: 767px) 100vw, (max-width: 1023px) 768px, (max-width: 1279px) 60vw, 768px"
+//                 loading="eager"
+//               />
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default TrustedCurrencyPartner;
+
+
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
-import { useAuth } from "@/app/contexts/AuthContext"; // Import useAuth
+import React from "react"; // Import React for React.memo
+import { useAuth } from "@/app/contexts/AuthContext";
 
 const TrustedCurrencyPartner = () => {
-  const { user } = useAuth(); // Get user from AuthContext
+  const { user } = useAuth();
 
   const buttonText = user ? "Get Started" : "Create A Free Account";
   const buttonLink = user ? "/dashboard/send/select-balance" : "/auth/register";
@@ -220,6 +309,7 @@ const TrustedCurrencyPartner = () => {
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row items-center gap-8">
           <div className="w-full lg:w-1/2 order-2 md:order-1">
+            {/* ... (content remains the same) ... */}
             <div className="space-y-4 text-center md:text-left">
               <div className="sm:inline-block hidden">
                 <span className="text-subheadingWhite font-medium text-sm uppercase">
@@ -245,9 +335,9 @@ const TrustedCurrencyPartner = () => {
               </div>
 
               <div className="flex justify-center md:justify-start mt-8">
-                <Link href={buttonLink} className="inline-block"> {/* MODIFIED Link */}
+                <Link href={buttonLink} className="inline-block">
                   <button className="bg-primary hover:bg-primaryhover text-mainheading cursor-pointer font-medium text-base lg:text-lg py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
-                    {buttonText} {/* MODIFIED Text */}
+                    {buttonText}
                   </button>
                 </Link>
               </div>
@@ -255,6 +345,7 @@ const TrustedCurrencyPartner = () => {
           </div>
 
           <div className="w-full lg:w-1/2 lg:order-2 order-1">
+            {/* ... (content remains the same) ... */}
             <div className="sm:hidden block">
               <span className="text-subheadingWhite font-medium text-sm mb-1 text-center md:text-left block uppercase">
                 <span className="text-subheadingWhite/30">[</span> About us
@@ -267,7 +358,6 @@ const TrustedCurrencyPartner = () => {
                 </h3>
               </div>
             </div>
-
             <div className="relative w-full flex justify-center">
               <Image
                 src="/assets/images/TrustedPartner.png"
@@ -275,7 +365,9 @@ const TrustedCurrencyPartner = () => {
                 height={800}
                 alt="Person smiling while using a laptop and wearing headphones"
                 className="object-contain rounded-3xl"
-                priority
+                priority // Assuming this is the LCP for /about-us page. If not, set loading="lazy".
+                sizes="(max-width: 767px) 100vw, (max-width: 1023px) 768px, (max-width: 1279px) 60vw, 768px"
+                // loading="eager" is implied by priority
               />
             </div>
           </div>
@@ -285,4 +377,4 @@ const TrustedCurrencyPartner = () => {
   );
 };
 
-export default TrustedCurrencyPartner;
+export default React.memo(TrustedCurrencyPartner); // Memoize component

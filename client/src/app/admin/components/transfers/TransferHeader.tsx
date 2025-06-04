@@ -132,7 +132,7 @@ const TransferHeader: React.FC<TransferHeaderProps> = ({ transferId }) => {
 
       <Link
         href="/admin/transfers" // Corrected link from /admin/transfer to /admin/transfers
-        className="flex items-center text-mainheading gap-2 bg-primary px-6 py-3 cursor-pointer font-medium rounded-full sm:w-auto w-full justify-center transition-all duration-75 ease-linear"
+        className="flex items-center text-mainheading gap-2 bg-primary hover:bg-primaryhover px-6 py-3 cursor-pointer font-medium rounded-full sm:w-auto w-full justify-center transition-all duration-75 ease-linear"
       >
         <ArrowLeft className="size-5" />
         All Transfers

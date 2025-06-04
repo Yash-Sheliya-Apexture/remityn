@@ -3,7 +3,7 @@
 /* @import './style/font.css'; */
 @import './style/style.css';
 
-@custom-variant dark (&:is(.dark *));
+/* @custom-variant dark (&:is(.dark *)); */
 
 body {
   /* font-family: var(--font-Outfit); */

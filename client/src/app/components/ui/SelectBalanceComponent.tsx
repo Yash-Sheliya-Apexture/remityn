@@ -726,7 +726,8 @@ const SelectBalanceComponent: React.FC<SelectBalanceComponentProps> = ({
   if (isLoading) {
     return (
       <>
-        <Skeleton className="md:h-9 h-7 w-72 md:w-96 mx-auto rounded-lg mb-4" />
+        <Skeleton className="lg:h-9 sm:h-8 h-7 sm:w-85 w-full lg:w-96 sm:mx-auto rounded-lg mb-4" />
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {allowAddBalance && (
             <Skeleton className="lg:h-32 h-28 w-full rounded-2xl bg-primarybox/50 border-2 border-dashed" />
@@ -734,7 +735,27 @@ const SelectBalanceComponent: React.FC<SelectBalanceComponentProps> = ({
           {Array(allowAddBalance ? 8 : 8)
             .fill(0)
             .map((_, i) => (
-              <Skeleton key={`skel-${i}`} className="md:h-32 h-28 w-full rounded-2xl" />
+              <div
+                key={`skel-${i}`}
+                className="sm:h-32 h-28 w-full bg-primarybox flex rounded-2xl"
+              >
+                <div className="flex items-center justify-between w-full sm:p-4 p-2">
+                  <div className="flex items-center gap-4">
+                    <Skeleton className="size-10 rounded-full flex-shrink-0 bg-background/50" />
+                    <div className="flex-grow flex flex-row items-center gap-4">
+                      <div>
+                        <Skeleton className="h-4 sm:w-34 w-28 mb-1 bg-background/50" />
+                        <Skeleton className="h-3 sm:w-26 w-18 bg-background/50" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="shrink-0">
+                    <Skeleton className="h-4 w-8 rounded-full bg-background/50" />
+                  </div>
+
+                </div>
+              </div>
             ))}
         </div>
       </>
@@ -749,10 +770,8 @@ const SelectBalanceComponent: React.FC<SelectBalanceComponentProps> = ({
       <div className="rounded-full border-2 border-gray-400/40 p-2 flex items-center justify-center mb-2">
         <GoPlus size={28} className="text-white" />
       </div>
-      
-      <span className="text-center text-white">
-        {addBalanceLinkText}
-      </span>
+
+      <span className="text-center text-white">{addBalanceLinkText}</span>
     </>
   );
 
@@ -908,7 +927,6 @@ const SelectBalanceComponent: React.FC<SelectBalanceComponentProps> = ({
           </div>
         )}
       </div>
-      
     </section>
   );
 };

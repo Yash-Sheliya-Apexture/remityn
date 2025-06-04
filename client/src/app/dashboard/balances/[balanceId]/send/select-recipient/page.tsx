@@ -804,15 +804,35 @@ const SelectRecipientContent = () => {
     return (
       <>
         {/* Enhanced Skeleton */}
-        <Skeleton className="h-9 sm:w-1/2 w-full mb-4 rounded-md" />
+        <Skeleton className="lg:h-9 sm:h-8 h-7 sm:w-1/2 w-full mb-4 rounded-md" />
         <Skeleton className="h-12.5 w-full mb-6 rounded-full" />
-        <Skeleton className="h-20.5 w-full mb-5 rounded-2xl" />
-        <Skeleton className="h-6 w-32 mb-2 rounded-md" />
-        <div className="space-y-2 border-t">
-          {Array(2)
+        <Skeleton className="md:h-20.5 h-16.5 w-full mb-4 rounded-2xl" />
+        <Skeleton className="h-6 w-32 mb-3 rounded-md leading-8" />
+
+        <div className="space-y-2">
+          {Array(3)
             .fill(0)
             .map((_, index) => (
-              <Skeleton key={index} className="h-21 w-full rounded-lg mt-2" />
+              <div key={index} className="block">
+                <div className="block p-2 sm:p-4 rounded-2xl">
+                  <div className="flex items-center gap-4">
+                    <div className="relative flex-shrink-0">
+                      <div className="flex items-center justify-center">
+                        <Skeleton className="h-12 w-12 rounded-full" />
+                      </div>
+                    </div>
+                    <div className="flex-grow flex flex-row justify-between items-center gap-4">
+                      <div className="flex-grow">
+                        <Skeleton className="h-4 w-40 mb-2" />
+                        <Skeleton className="h-3 w-32" />
+                      </div>
+                      <div className="shrink-0">
+                        <Skeleton className="h-5 w-10 rounded-full" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             ))}
         </div>
       </>
@@ -824,7 +844,7 @@ const SelectRecipientContent = () => {
     return (
       <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
         <div className="lg:size-16 size-14 rounded-full flex items-center justify-center bg-red-600/20 flex-shrink-0">
-          <FiAlertCircle  className="text-red-500 lg:size-8 size-6 mx-auto flex-shrink-0" />
+          <FiAlertCircle className="text-red-500 lg:size-8 size-6 mx-auto flex-shrink-0" />
         </div>
 
         <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite">
@@ -851,7 +871,7 @@ const SelectRecipientContent = () => {
     return (
       <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
         <div className="lg:size-16 size-14 rounded-full flex items-center justify-center bg-red-600/20 flex-shrink-0">
-          <FiAlertCircle  className="text-red-500 lg:size-8 size-6 mx-auto flex-shrink-0" />
+          <FiAlertCircle className="text-red-500 lg:size-8 size-6 mx-auto flex-shrink-0" />
         </div>
         <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite mt-1">
           Invalid Page Parameters
@@ -877,6 +897,7 @@ const SelectRecipientContent = () => {
         <h1 className="md:text-2xl text-xl lg:text-3xl font-semibold text-mainheadingWhite capitalize mb-4">
           Who are you sending money to?
         </h1>
+
         {/* Search Input */}
         <div className="mb-6 relative">
           <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
@@ -975,11 +996,11 @@ const SelectRecipientContent = () => {
           searchTerm && (
             <div className="text-center p-4 rounded-2xl space-y-4 text-mainheadingWhite text-base md:text-lg bg-primarybox py-10">
               
-               <div className="lg:size-16 size-14 rounded-full flex items-center justify-center bg-red-600/20 flex-shrink-0 mx-auto">
-              <FiAlertCircle  className="text-red-500 lg:size-8 size-6 flex-shrink-0" />
-            </div>
+              <div className="lg:size-16 size-14 rounded-full flex items-center justify-center bg-red-600/20 flex-shrink-0 mx-auto">
+                <FiAlertCircle className="text-red-500 lg:size-8 size-6 flex-shrink-0" />
+              </div>
 
-              <p className="font-medium capitalize max-w-lg mx-auto">
+              <p className="font-medium capitalize max-w-lg mx-auto text-mainheadingWhite">
                 No recipients found matching '{searchTerm}'.
               </p>
 

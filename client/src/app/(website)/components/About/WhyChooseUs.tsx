@@ -163,22 +163,137 @@
 
 // export default WhyChooseUs;
 
-// XeFeaturesSection.tsx
-"use client"; // This can be kept or removed, doesn't strictly affect functionality without client-side hooks like motion
+// // XeFeaturesSection.tsx
+// "use client"; // This can be kept or removed, doesn't strictly affect functionality without client-side hooks like motion
 
-import React, { JSX } from "react";
-import { BsCashStack, BsEmojiSmile } from "react-icons/bs"; // BsEmojiSmile is imported but not used, can be removed if not needed elsewhere
+// import React, { JSX } from "react";
+// import { BsCashStack, BsEmojiSmile } from "react-icons/bs"; // BsEmojiSmile is imported but not used, can be removed if not needed elsewhere
+// import { FaGlobe } from "react-icons/fa6";
+// import { RiMoneyDollarCircleLine } from "react-icons/ri";
+
+// // Interface for the feature data structure
+// interface FeatureItem {
+//   title: string;
+//   description: string;
+//   icons: JSX.Element;
+// }
+
+// // Array containing the data for the feature boxes
+// const featuresData: FeatureItem[] = [
+//   {
+//     title: "Effortless Transactions, Every Time",
+//     description:
+//       "We've designed Remityn for ultimate simplicity. From instant account setup to easy recipient management and intuitive transfers, sending money to India is just a few clicks away.",
+//     icons: <FaGlobe className="size-6 lg:size-8 text-primary" />,
+//   },
+//   {
+//     title: "Swift Setup & Secure Wallets",
+//     description:
+//       "Get started in minutes with our quick sign-up and simple KYC. Create your secure digital wallets for USD, EUR, GBP and many more, fund them easily, and gain full control over your international transfers.",
+//     icons: <BsCashStack className="size-6 lg:size-8 text-primary" />,
+//   },
+//   {
+//     title: " Transparent Tracking & Trusted Service",
+//     description:
+//       "Add recipients with ease, save their details for future use, and monitor your transaction status every step of the way. Experience the peace of mind that comes with a reliable and transparent money transfer service.",
+//     icons: (
+//       <RiMoneyDollarCircleLine className="size-6 lg:size-8 text-primary" />
+//     ),
+//   },
+// ];
+
+// // --- Component ---
+// const WhyChooseUs: React.FC = () => {
+
+//   const currentProducts = featuresData;
+
+
+//   return (
+//     // Add overflow-hidden to prevent scrollbars during card animation (can be kept or removed based on static layout needs)
+//     <section className="WhyChooseUsSection sm:py-16 py-10 overflow-hidden ">
+//       <div className="mx-auto container px-4">
+//         {/* Heading Section */}
+//         <div className="mx-auto max-w-4xl text-center space-y-4">
+//           <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
+//             Find Out Why{" "}
+//             <span className="text-primary">Millions Choose Remityn</span>
+//           </h3>
+
+//           <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
+//             At Remityn, we’re redefining how international money transfers work. With a focus on security, simplicity, and speed, thousands trust us to move their money reliably to India. Whether you're supporting family or managing personal finances abroad, our platform offers an intuitive experience, competitive exchange rates, and bank transfer method—all backed by responsive customer support and transparent processes.
+//           </p>
+//         </div>
+
+//         {/* Features Grid */}
+//         <div
+//           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 sm:gap-10 gap-8 sm:mt-16 mt-10" // Added flex-col for small screens, md:flex-row for medium and up
+//         >
+//           {featuresData.map((product, index) => {
+//             const isLast = index === currentProducts.length - 1;
+//             let conditionalClasses = "";
+
+//             if (!isLast) {
+//               // Original border and padding logic for non-last items
+//               conditionalClasses =
+//                 "lg:border-r border-r-gray-600/50 lg:border-b-0 border-b border-b-gray-600/50 pr-0 lg:pr-10 pb-8 sm:pb-10 lg:pb-0";
+//             } else {
+//               if (
+//                 currentProducts.length === 1 ||
+//                 currentProducts.length % 2 !== 0
+//               ) {
+//                 conditionalClasses = "sm:col-span-2 lg:col-span-1"; // lg:col-span-1 ensures it takes 1/3 on large screens
+//               } else {
+//                 conditionalClasses = "lg:col-span-1";
+//               }
+//             }
+
+//             return (
+//             <div
+//               key={index} // Key goes on the outer div
+//               className={`text-center space-y-6${conditionalClasses ? ' ' + conditionalClasses.trim() : ''}`}// Added md:w-1/3 for equal width on medium screens and up
+//             >
+//               {/* Icon */}
+//               <div className="flex justify-center">
+//                 <div className="w-20 h-20 rounded-full icon-outer-wrapper flex items-center justify-center">
+//                   <div className="w-14 h-14 rounded-full icon-inner-background flex items-center justify-center">
+//                     {product.icons}
+//                   </div>
+//                 </div>
+//               </div>
+
+//               {/* Title */}
+//               <h3 className="text-2xl text-mainheadingWhite font-semibold">
+//                 {product.title}
+//               </h3>
+
+//               {/* Description */}
+//               <p className="text-subheadingWhite lg:text-lg text-base">
+//                 {product.description}
+//               </p>
+//             </div>
+//             );
+//           })}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default WhyChooseUs;
+
+
+"use client";
+import React, { JSX } from "react"; // Import React for React.memo
+import { BsCashStack } from "react-icons/bs"; // BsEmojiSmile removed as it was unused
 import { FaGlobe } from "react-icons/fa6";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
 
-// Interface for the feature data structure
 interface FeatureItem {
   title: string;
   description: string;
   icons: JSX.Element;
 }
 
-// Array containing the data for the feature boxes
 const featuresData: FeatureItem[] = [
   {
     title: "Effortless Transactions, Every Time",
@@ -202,19 +317,15 @@ const featuresData: FeatureItem[] = [
   },
 ];
 
-// --- Component ---
 const WhyChooseUs: React.FC = () => {
-
-  const currentProducts = featuresData;
-
+  const currentProducts = featuresData; // This variable isn't strictly necessary if always using featuresData
 
   return (
-    // Add overflow-hidden to prevent scrollbars during card animation (can be kept or removed based on static layout needs)
     <section className="WhyChooseUsSection sm:py-16 py-10 overflow-hidden ">
       <div className="mx-auto container px-4">
-        {/* Heading Section */}
         <div className="mx-auto max-w-4xl text-center space-y-4">
-          <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
+          {/* ... (heading content remains the same) ... */}
+           <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
             Find Out Why{" "}
             <span className="text-primary">Millions Choose Remityn</span>
           </h3>
@@ -224,35 +335,54 @@ const WhyChooseUs: React.FC = () => {
           </p>
         </div>
 
-        {/* Features Grid */}
         <div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 sm:gap-10 gap-8 sm:mt-16 mt-10" // Added flex-col for small screens, md:flex-row for medium and up
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 sm:gap-10 gap-8 sm:mt-16 mt-10"
         >
           {featuresData.map((product, index) => {
-            const isLast = index === currentProducts.length - 1;
+            const isLast = index === featuresData.length - 1;
+            // Simplified conditional classes for borders, assuming standard grid behavior handles alignment.
+            // The complex logic for col-span might be unnecessary if the grid itself handles item flow correctly.
+            // Focus on border logic.
             let conditionalClasses = "";
+            if (featuresData.length > 1 && !isLast) {
+                // Add right border for items not last in their row on larger screens
+                // And bottom border for items not in the last row on smaller screens
+                conditionalClasses = "lg:border-r border-r-gray-600/50 lg:border-b-0 border-b border-b-gray-600/50 pr-0 lg:pr-10 pb-8 sm:pb-10 lg:pb-0";
 
-            if (!isLast) {
-              // Original border and padding logic for non-last items
-              conditionalClasses =
-                "lg:border-r border-r-gray-600/50 lg:border-b-0 border-b border-b-gray-600/50 pr-0 lg:pr-10 pb-8 sm:pb-10 lg:pb-0";
-            } else {
-              if (
-                currentProducts.length === 1 ||
-                currentProducts.length % 2 !== 0
-              ) {
-                conditionalClasses = "sm:col-span-2 lg:col-span-1"; // lg:col-span-1 ensures it takes 1/3 on large screens
-              } else {
-                conditionalClasses = "lg:col-span-1";
-              }
+                // Refinement: Only add lg:border-r if not the last item in a 3-column row
+                if ((index + 1) % 3 === 0) { // Last in a 3-col row
+                    conditionalClasses = conditionalClasses.replace("lg:border-r border-r-gray-600/50", "").replace("lg:pr-10", "");
+                }
+                // Refinement: Only add border-b if not the last item in a 2-column row (for sm)
+                 if ((index + 1) % 2 === 0 && index < featuresData.length -1 ) { // Last in a 2-col row, but not overall last
+                    // The original class had border-b for all non-last items. This might be fine.
+                 } else if (index >= featuresData.length - (featuresData.length % 2 === 0 ? 2:1) && featuresData.length %3 ===0 && index >= featuresData.length -3 ) {
+                    // If in last row of sm or lg, no bottom border needed
+                 }
+
+
+                 // Sticking to the original simpler logic for borders on non-last items, as it's hard to perfect without visual testing.
+                 // The key is that `isLast` determines if ANY border styling for "non-last" items applies.
+                 // The original:
+                 if (!isLast) {
+                    conditionalClasses = "lg:border-r border-r-gray-600/50 lg:border-b-0 border-b border-b-gray-600/50 pr-0 lg:pr-10 pb-8 sm:pb-10 lg:pb-0";
+                 } else {
+                    // The original col-span logic for the last item
+                    if (featuresData.length === 1 || (featuresData.length % 2 !== 0 && isLast)) {
+                        conditionalClasses = "sm:col-span-2 lg:col-span-1";
+                    } else if (isLast) {
+                        conditionalClasses = "lg:col-span-1";
+                    }
+                 }
             }
+
 
             return (
             <div
-              key={index} // Key goes on the outer div
-              className={`text-center space-y-6${conditionalClasses ? ' ' + conditionalClasses.trim() : ''}`}// Added md:w-1/3 for equal width on medium screens and up
+              key={index}
+              className={`text-center space-y-6${conditionalClasses ? ' ' + conditionalClasses.trim() : ''}`}
             >
-              {/* Icon */}
+              {/* ... (icon, title, description remains the same) ... */}
               <div className="flex justify-center">
                 <div className="w-20 h-20 rounded-full icon-outer-wrapper flex items-center justify-center">
                   <div className="w-14 h-14 rounded-full icon-inner-background flex items-center justify-center">
@@ -260,13 +390,9 @@ const WhyChooseUs: React.FC = () => {
                   </div>
                 </div>
               </div>
-
-              {/* Title */}
               <h3 className="text-2xl text-mainheadingWhite font-semibold">
                 {product.title}
               </h3>
-
-              {/* Description */}
               <p className="text-subheadingWhite lg:text-lg text-base">
                 {product.description}
               </p>
@@ -279,4 +405,4 @@ const WhyChooseUs: React.FC = () => {
   );
 };
 
-export default WhyChooseUs;
+export default React.memo(WhyChooseUs); // Memoize component

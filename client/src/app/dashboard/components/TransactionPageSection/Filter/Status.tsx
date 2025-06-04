@@ -62,7 +62,7 @@
 
 // components/Filter/Status.tsx
 import React from "react";
-import { IoIosCloseCircleOutline } from "react-icons/io";
+import { IoIosCloseCircle, IoIosCloseCircleOutline } from "react-icons/io";
 
 interface StatusProps {
   selectedStatus: string | null; // Expects lowercase status key or null
@@ -118,7 +118,7 @@ export default function Status({ selectedStatus, onStatusChange }: StatusProps) 
                 className="inline-flex items-center justify-center leading-none" // Adjusted styling slightly
                 aria-label={`Clear status ${status.display}`}
               >
-                <IoIosCloseCircleOutline size={20} /> {/* Adjusted size slightly */}
+                <IoIosCloseCircle size={22} /> {/* Adjusted size slightly */}
               </span>
             )}
           </button>

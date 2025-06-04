@@ -456,7 +456,7 @@ const BalanceFilterItem: React.FC<BalanceFilterItemProps> = ({
   return (
     // Make the entire div clickable
     <div
-      className="flex items-center justify-between hover:bg-primarybox sm:p-4 p-2 rounded-2xl transition-colors duration-150 ease-in-out cursor-pointer"
+      className="flex items-center justify-between hover:bg-primarybox sm:p-4 p-2 rounded-2xl transition-all duration-150 ease-linear cursor-pointer"
       onClick={handleDivClick}
       ref={containerRef}
       role="checkbox" // Accessibility: Indicate the div acts like a checkbox container
@@ -493,6 +493,7 @@ const BalanceFilterItem: React.FC<BalanceFilterItemProps> = ({
       <label htmlFor={`balance-checkbox-${currencyBalance.currencyCode}`} className="sr-only">
           Select {currencyBalance.currencyName}
       </label>
+      
       <Checkbox
         id={`balance-checkbox-${currencyBalance.currencyCode}`}
         checked={checked}

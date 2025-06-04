@@ -4785,6 +4785,283 @@
 
 // export default Header;
 
+// "use client";
+// import React, { useState, useEffect, useRef } from "react";
+// import Link from "next/link";
+// import Image from "next/image";
+// import { usePathname } from "next/navigation";
+// import { GiHamburgerMenu } from "react-icons/gi";
+// import { motion, AnimatePresence } from "framer-motion";
+// import MobileMenu from "./MobileMenu";
+// import { IoMdClose } from "react-icons/io";
+// import { useAuth } from "@/app/contexts/AuthContext";
+// import { HiOutlineLogout } from "react-icons/hi";
+// import { IoClose } from "react-icons/io5";
+// import { TbMenu3 } from "react-icons/tb";
+
+// // Define navigation links
+// const navLinks = [
+//   { href: "/", text: "Home" },
+//   { href: "/about-us", text: "About" },
+//   { href: "/features", text: "Features" },
+//   { href: "/reviews", text: "Reviews" },
+//   { href: "/faqs", text: "Help" },
+// ];
+
+// const HEADER_HEIGHT_THRESHOLD = 60;
+// const SCROLL_UP_THRESHOLD = 20;
+
+// const Header: React.FC = () => {
+//   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+//   const [isLargeScreen, setIsLargeScreen] = useState<boolean>(true);
+//   const [isScrolled, setIsScrolled] = useState<boolean>(false);
+//   const [isHeaderVisible, setIsHeaderVisible] = useState<boolean>(true);
+//   const lastScrollY = useRef<number>(0);
+//   const pathname = usePathname();
+//   const { user, logout, loading: authLoading } = useAuth();
+
+//   const toggleMobileMenu = () => setIsMobileMenuOpen((prev) => !prev);
+//   const closeMobileMenu = () => setIsMobileMenuOpen(false);
+
+//   useEffect(() => {
+//     const checkScreenSize = () => {
+//       const large = window.innerWidth >= 1024; // lg breakpoint
+//       setIsLargeScreen(large);
+//       if (large && isMobileMenuOpen) {
+//         closeMobileMenu();
+//       }
+//     };
+//     checkScreenSize();
+//     window.addEventListener("resize", checkScreenSize);
+//     return () => window.removeEventListener("resize", checkScreenSize);
+//   }, [isMobileMenuOpen]);
+
+//   useEffect(() => {
+//     if (isMobileMenuOpen && !isLargeScreen) {
+//       document.body.style.overflow = "hidden";
+//     } else {
+//       document.body.style.overflow = "auto";
+//     }
+//     return () => {
+//       document.body.style.overflow = "auto";
+//     };
+//   }, [isMobileMenuOpen, isLargeScreen]);
+
+//   useEffect(() => {
+//     let ticking = false;
+//     const handleScroll = () => {
+//       const currentScrollY = window.scrollY;
+//       const deltaY = lastScrollY.current - currentScrollY;
+
+//       const scrolledPastThreshold = currentScrollY > HEADER_HEIGHT_THRESHOLD;
+//       setIsScrolled(scrolledPastThreshold);
+
+//       if (currentScrollY <= HEADER_HEIGHT_THRESHOLD) {
+//         setIsHeaderVisible(true);
+//       } else {
+//         if (deltaY < 0 && currentScrollY > HEADER_HEIGHT_THRESHOLD * 2) {
+//           // Hide only if scrolled down past a bit more
+//           setIsHeaderVisible(false);
+//         } else if (
+//           deltaY >= SCROLL_UP_THRESHOLD ||
+//           currentScrollY <= HEADER_HEIGHT_THRESHOLD
+//         ) {
+//           setIsHeaderVisible(true);
+//         }
+//       }
+//       lastScrollY.current = currentScrollY <= 0 ? 0 : currentScrollY;
+//       ticking = false;
+//     };
+
+//     const onScroll = () => {
+//       if (!ticking) {
+//         window.requestAnimationFrame(handleScroll);
+//         ticking = true;
+//       }
+//     };
+//     lastScrollY.current = window.scrollY;
+//     handleScroll(); // Initial check
+//     window.addEventListener("scroll", onScroll, { passive: true });
+//     return () => window.removeEventListener("scroll", onScroll);
+//   }, []);
+
+//   const mobileMenuVariants = {
+//     open: {
+//       y: 0,
+//       opacity: 1,
+//       transition: { type: "tween", duration: 0.3, ease: "easeOut" },
+//     },
+//     closed: {
+//       y: "-100%",
+//       opacity: 0.8,
+//       transition: { type: "tween", duration: 0.3, ease: "easeIn" },
+//     },
+//   };
+
+//   const getNavLinkClasses = (href: string): string => {
+//     const baseClasses =
+//       "px-3 sm:px-4 py-1.5 text-base font-medium rounded-md transition-all ease-linear duration-75"; // Adjusted py
+//     const isActive = pathname === href;
+//     return `${baseClasses} ${
+//       isActive ? "text-white" : "text-gray-300 hover:text-white"
+//     }`;
+//   };
+
+//   const handleLogout = () => {
+//     logout();
+//     closeMobileMenu();
+//   };
+
+//   const headerBaseClasses =
+//     "w-full z-50 transition-all duration-300 ease-in-out py-3 sm:py-4";
+//   const scrolledClasses = "fixed top-0 left-0 right-0 bg-transparent";
+//   const notScrolledClasses = "relative bg-transparent";
+//   const visibilityClasses = isHeaderVisible
+//     ? "translate-y-0"
+//     : "-translate-y-full";
+
+//   return (
+//     <>
+//       <header
+//         className={`
+//           ${headerBaseClasses}
+//           ${isScrolled ? scrolledClasses : notScrolledClasses}
+//           ${isScrolled ? visibilityClasses : "translate-y-0"}
+//         `}
+//       >
+//         <div className="container mx-auto px-4">
+//           <nav
+//             className="flex w-full items-center justify-center" // Centers the pill container
+//             aria-label="Global"
+//           >
+//             {/* Pill container */}
+//             <div className="flex items-center justify-between w-full max-w-screen-md lg:max-w-screen-lg sm:p-3 p-2.5 bg-primary-foreground border border-gray-500/30 rounded-full">
+//               {/* Logo */}
+//               <div className="flex-shrink-0">
+//                 <Link
+//                   href="/"
+//                   onClick={isMobileMenuOpen ? closeMobileMenu : undefined}
+//                   className="block relative" // Added for better click area
+//                 >
+//                   <Image
+//                     src="/assets/images/main_logo.svg"
+//                     alt="Remityn Logo"
+//                     width={140}
+//                     height={40}
+//                     priority
+//                     className="w-32 sm:w-36 md:w-40 h-auto"
+//                     sizes="(max-width: 639px) 128px, (max-width: 767px) 144px, 160px" // Optimized sizes attribute
+//                   />
+//                 </Link>
+//               </div>
+
+//               {/* Desktop Navigation Links */}
+//               <div className="hidden lg:flex items-center space-x-1 sm:space-x-2">
+//                 {navLinks.map((link) => (
+//                   <Link
+//                     key={link.href}
+//                     href={link.href}
+//                     className={getNavLinkClasses(link.href)}
+//                   >
+//                     {link.text}
+//                   </Link>
+//                 ))}
+//               </div>
+
+//               {/* Right side Actions (Desktop) or Mobile Hamburger */}
+//               {isLargeScreen ? (
+//                 <div className="hidden lg:flex items-center space-x-2 sm:space-x-3">
+//                   {authLoading ? (
+//                     <div className="flex gap-2">
+//                       <div className="h-10 w-20 bg-gray-600/30 rounded-full animate-pulse"></div>
+//                       <div className="h-10 w-24 bg-gray-600/30 rounded-full animate-pulse"></div>
+//                     </div>
+//                   ) : user ? (
+//                     <>
+//                       <button
+//                         onClick={handleLogout}
+//                         title="Logout"
+//                         className="border border-gray-600 hover:border-gray-500 w-10 h-10 flex justify-center items-center rounded-full transition-all ease-linear duration-75 text-gray-300 hover:text-white cursor-pointer"
+//                       >
+//                         <HiOutlineLogout className="text-xl" />
+//                       </button>
+
+//                       <Link
+//                         href="/dashboard"
+//                         className="bg-primary px-4 sm:px-5 py-2 h-10 flex items-center text-nowrap text-sm font-medium rounded-full hover:bg-primaryhover transition-all ease-linear duration-75 text-mainheading cursor-pointer"
+//                       >
+//                         Dashboard
+//                       </Link>
+//                     </>
+//                   ) : (
+//                     <>
+//                       <Link
+//                         href="/auth/register"
+//                         className="border hover:border-stock-hover px-4 sm:px-5 py-2 flex justify-center items-center rounded-full transition-all ease-linear duration-75 text-gray-300 hover:text-white cursor-pointer"
+//                       >
+//                         Register
+//                       </Link>
+//                       <Link
+//                         href="/auth/login"
+//                         className="bg-primary border border-primary hover:border-primaryhover px-4 sm:px-5 py-2 text-nowrap font-medium rounded-full hover:bg-primaryhover transition-all ease-linear duration-75 text-mainheading cursor-pointer h-10 flex items-center"
+//                       >
+//                         Log in
+//                       </Link>
+//                     </>
+//                   )}
+//                 </div>
+//               ) : (
+//                 // Mobile Hamburger Menu Button
+//                 <div className="flex lg:hidden items-center">
+//                   <button
+//                     onClick={toggleMobileMenu}
+//                     className="cursor-pointer bg-secondarybox hover:bg-secondaryboxhover transition-all ease-linear duration-75 rounded-full p-2 text-gray-300 hover:text-white focus:outline-none"
+//                     aria-label={isMobileMenuOpen ? "Close Menu" : "Open Menu"}
+//                     aria-expanded={isMobileMenuOpen}
+//                     aria-controls="mobile-menu-content"
+//                   >
+//                     {isMobileMenuOpen ? (
+//                       <IoClose size={28} className="text-primary" />
+//                     ) : (
+//                       <TbMenu3 size={28} className="text-primary" />
+//                     )}
+//                   </button>
+//                 </div>
+//               )}
+//             </div>
+//           </nav>
+//         </div>
+//       </header>
+
+//       {/* Mobile Menu Overlay */}
+//       <AnimatePresence>
+//         {isMobileMenuOpen && !isLargeScreen && (
+//           <motion.div
+//             key="mobile-menu"
+//             id="mobile-menu-content"
+//             className={`fixed inset-x-0 top-0 z-40 h-[calc(100%-16px)] sm:pt-24 pt-22`} // Adjusted padding-top based on typical header height
+//             variants={mobileMenuVariants}
+//             initial="closed"
+//             animate="open"
+//             exit="closed"
+//             aria-modal="true"
+//           >
+//             <MobileMenu
+//               isOpen={isMobileMenuOpen}
+//               onClose={closeMobileMenu}
+//               navLinks={navLinks}
+//               isLoggedIn={!!user}
+//               onLogout={handleLogout}
+//               authLoading={authLoading}
+//             />
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+//     </>
+//   );
+// };
+
+// export default Header;
 
 
 "use client";
@@ -4800,6 +5077,24 @@ import { useAuth } from "@/app/contexts/AuthContext";
 import { HiOutlineLogout } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
 import { TbMenu3 } from "react-icons/tb";
+
+// --- LCP Optimization Note ---
+// The Lighthouse report indicates an LCP issue with an image: /assets/images/sdfsfd.png
+// This image is NOT the logo in this Header component.
+// To fix the LCP for /assets/images/sdfsfd.png:
+// 1. Locate the component rendering this image.
+// 2. If using <Image> from next/image:
+//    - Add the `priority` prop.
+//    - Ensure `width`, `height`, and `sizes` props are accurately set.
+//    e.g., <Image src="/assets/images/sdfsfd.png" ... priority sizes="..." />
+// 3. If using a native <img> tag:
+//    - Ensure it does not have `loading="lazy"`.
+//    - Add `fetchpriority="high"`.
+//    - Consider a manual <link rel="preload"> in the document <head>.
+// 4. Optimize the image file itself (compression, format like WebP, correct dimensions).
+// 5. Check for render-blocking JavaScript or CSS that might delay its loading.
+// The primary issue noted was "Load Delay", suggesting the browser discovered or started loading the image late.
+// ---
 
 // Define navigation links
 const navLinks = [
@@ -4912,11 +5207,16 @@ const Header: React.FC = () => {
 
   const headerBaseClasses =
     "w-full z-50 transition-all duration-300 ease-in-out py-3 sm:py-4";
-  const scrolledClasses = "fixed top-0 left-0 right-0 bg-transparent";
-  const notScrolledClasses = "relative bg-transparent";
+  const scrolledClasses = "fixed top-0 left-0 right-0 bg-transparent"; // Assuming transparent when scrolled & sticky
+  const notScrolledClasses = "relative bg-transparent"; // Assuming transparent initially
   const visibilityClasses = isHeaderVisible
     ? "translate-y-0"
     : "-translate-y-full";
+
+  // Define logo sizes based on Tailwind classes: w-32 (128px), sm:w-36 (144px), md:w-40 (160px)
+  // Tailwind breakpoints: sm: 640px, md: 768px
+  const logoSizes = "(min-width: 768px) 160px, (min-width: 640px) 144px, 128px";
+
 
   return (
     <>
@@ -4944,10 +5244,11 @@ const Header: React.FC = () => {
                   <Image
                     src="/assets/images/main_logo.svg" // Ensure this path is correct
                     alt="Remityn Logo"
-                    width={140} // Slightly reduced for balance
-                    height={40}  // Slightly reduced for balance
-                    priority
-                    className="w-32 sm:w-36 md:w-40 h-auto" // Responsive logo size
+                    width={140} // Intrinsic width of the SVG (or desired base for aspect ratio)
+                    height={40}  // Intrinsic height of the SVG
+                    priority // Crucial for LCP potential elements
+                    className="w-32 sm:w-36 md:w-40 h-auto" // Responsive logo size via CSS
+                    sizes={logoSizes} // Added for optimal preloading of priority images with responsive widths
                   />
                 </Link>
               </div>
