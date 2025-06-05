@@ -4,11 +4,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/server.js",
-    "start": "node src/server.js",
-    "build": "npm install",
-    "postinstall": "npx playwright install --with-deps"
-  },
+  "dev": "nodemon src/server.js",
+  "start": "node src/server.js",
+  "build": "npm install",
+  "postinstall": "playwright install --with-deps"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -33,7 +33,7 @@
     "multer-storage-cloudinary": "^4.0.0",
     "node-cron": "^3.0.3",
     "nodemailer": "^6.10.0",
-    "playwright": "^1.40.0",
+    "playwright": "^1.52.0",
     "uuid": "^11.1.0",
     "validator": "^13.12.0"
   },
@@ -43,6 +43,6 @@
     "nodemon": "^3.1.9"
   },
   "engines": {
-  "node": "20.x"
-}
+    "node": "20.x"
+  }
 }
