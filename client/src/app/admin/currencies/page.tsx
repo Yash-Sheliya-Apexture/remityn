@@ -6661,6 +6661,7 @@ import { FaCoins } from "react-icons/fa";
 // Import the modal components (ensure paths are correct)
 import AddCurrencyModal from "../components/AddCurrencyModal";
 import DeleteCurrencyModal from "../components/DeleteCurrencyModal";
+import { error } from "console";
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
@@ -6686,7 +6687,7 @@ interface ApiErrorResponse {
 const LoadingSkeleton = () => (
   <div className="container mx-auto px-4 py-5">
     <div className="space-y-6">
-      <div className="pb-6 mb-6 border-b">
+      <div className="pb-6 mb-6">
         <div className="flex gap-3 items-center">
           <Skeleton className="size-12 rounded-full mb-3" />
           <Skeleton className="h-9 w-3/5 sm:w-1/5 rounded mb-3" />
@@ -6694,6 +6695,7 @@ const LoadingSkeleton = () => (
         <div className="space-y-1.5">
           <Skeleton className="h-4 w-full rounded" />
           <Skeleton className="h-4 w-full sm:w-1/2 rounded" />
+          <Skeleton className="h-4 w-full sm:w-1/2 rounded sm:hidden block" />
           <Skeleton className="h-4 w-full sm:w-1/2 rounded sm:hidden block" />
           <Skeleton className="h-4 w-40 sm:w-1/2 rounded sm:hidden block" />
         </div>
@@ -7159,18 +7161,21 @@ const AdminCurrenciesPage: React.FC = () => {
         {/* loding chalu karavanu che */}
         {isLoading &&
           currencies.length > 0 && ( // Show loader overlay if loading but already have some data
-            <div className="fixed gap-2 inset-0 bg-black/50 backdrop-blur-[1px] capitalize h-screen flex items-center justify-center z-50">
-              <Loader2 size={48} className="text-primary animate-spin" />
+            <div className="fixed gap-2 inset-0 bg-black/60 capitalize h-screen flex items-center justify-center z-50">
+              {/* <Loader2  className="text-primary lg:size-12 size-8 animate-spin" />
               <p className="text-mainheadingWhite font-medium">
                 Loading currency data...
-              </p>
+              </p> */}
+              <div className="loader">
+                <div className="justify-content-center jimu-primary-loading"></div>
+              </div>
             </div>
           )}
 
-        {!isLoading && filteredCurrencies.length === 0 ? (
+        {isLoading && filteredCurrencies.length === 0 ? (
           <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
-            <div className="lg:size-12 size-10 flex items-center justify-center bg-primary rounded-full mb-2">
-              <MdCurrencyRupee className="lg:size-6 size-4 mx-auto text-mainheading" />
+            <div className="lg:size-16 size-14 flex items-center justify-center bg-primary rounded-full mb-2">
+              <MdCurrencyRupee className="lg:size-8 size-6 mx-auto text-mainheading" />
             </div>
 
             <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite mt-1">

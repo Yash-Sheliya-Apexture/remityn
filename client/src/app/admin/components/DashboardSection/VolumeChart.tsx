@@ -2592,6 +2592,7 @@ export function VolumeChart({
         <div className="flex flex-wrap lg:flex-row flex-col items-center justify-between w-full gap-3">
           <div className="flex items-center justify-between gap-3 w-64">
             <div className="flex gap-3">
+              
               <div className="flex justify-center items-center size-12 bg-primary rounded-full flex-shrink-0">
                 {icon}
               </div>
@@ -2725,12 +2726,12 @@ export function VolumeChart({
         )}
 
         {!loading && !error && chartData.length === 0 && (
-          <div className="flex-grow flex justify-center items-center text-center p-4">
+           <div className="flex-grow flex justify-center items-center h-full py-33 text-center">
             <p className="text-base text-mainheadingWhite">
               No data available for the selected period.
             </p>
           </div>
-        )}
+        )}  
 
         {!loading && !error && chartData.length > 0 && (
           <>

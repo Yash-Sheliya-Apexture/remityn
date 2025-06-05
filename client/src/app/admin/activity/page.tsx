@@ -966,7 +966,6 @@ import ActivityList from "../components/activity/ActivityList"; // Adjust path
 // Import Types
 import activityAdminService, {
   ActivityItem,
-  RecentActivityApiResponse,
 } from "../../services/admin/activity.admin"; // Adjust path
 import { LuActivity } from "react-icons/lu";
 
@@ -1448,8 +1447,10 @@ export default function AllRecentActivityPage() {
             !isRefreshing &&
             allActivities.length === 0 &&
             !error && (
-              <div className="text-center font-medium py-16 text-mainheadingWhite">
-                <p>No activities recorded yet.</p>
+              <div className="text-center font-medium py-20 h-full">
+                <p className="text-mainheadingWhite capitalize">
+                  No activities recorded yet.
+                </p>
               </div>
             )}
 

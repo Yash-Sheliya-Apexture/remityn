@@ -30,14 +30,15 @@ const CurrencyEditHeader: React.FC<CurrencyEditHeaderProps> = ({
           <div className="flex items-center text-sm mb-2 flex-wrap">
             <Link
               href="/admin"
-              className="text-subheadingWhite hover:dark:text-primary"
+              className="text-subheadingWhite hover:text-primary"
             >
               Admin
             </Link>
             <ChevronRight className="size-4 mx-1 flex-shrink-0 text-mainheadingWhite" />
+
             <Link
               href="/admin/currencies"
-              className="text-subheadingWhite hover:dark:text-primary"
+              className="text-subheadingWhite hover:text-primary"
             >
               Currencies
             </Link>
@@ -54,7 +55,7 @@ const CurrencyEditHeader: React.FC<CurrencyEditHeaderProps> = ({
           <h1 className="lg:text-3xl text-2xl font-medium text-primary">
             Edit Currency
           </h1>
-
+          
         </div>
 
         {/* Back Button */}

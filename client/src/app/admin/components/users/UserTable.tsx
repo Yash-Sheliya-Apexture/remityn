@@ -518,7 +518,7 @@
                   <td
                     // Ensure colSpan matches numberOfColumns
                     colSpan={numberOfColumns}
-                    className="px-4 py-10 text-center text-mainheadingWhite"
+                    className="py-20 text-center lg:text-xl text-lg text-mainheadingWhite"
                   >
                     No users found matching your criteria.
                   </td>
@@ -571,7 +571,7 @@
                         {formatDateJoined(user.createdAt)}
                       </td>
                       {/* Actions - Style Link to look like PaymentTable button */}
-                      <td className="px-4 py-3 font-medium text-mainheadingWhite whitespace-nowrap ">
+                      <td className="px-4 py-3 font-medium text-mainheadingWhite whitespace-nowrap">
                       
                           <Link
                             href={`/admin/users/${user._id}`}

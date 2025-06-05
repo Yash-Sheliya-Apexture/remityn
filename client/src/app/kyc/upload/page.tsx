@@ -1743,7 +1743,7 @@ const FileInput: React.FC<FileInputProps> = ({
           )}
         >
           {/* Preview Area */}
-          <div className="flex-shrink-0 h-16 w-16 flex items-center justify-center bg-background dark:bg-muted rounded border overflow-hidden">
+          <div className="flex-shrink-0 size-14 flex items-center justify-center bg-background rounded border overflow-hidden">
             {preview ? (
               <Image
                 src={preview}
@@ -1758,6 +1758,7 @@ const FileInput: React.FC<FileInputProps> = ({
               <FileCheck className="h-8 w-8 text-green-600" /> // Generic file icon
             )}
           </div>
+
           {/* File Info */}
           <div className="flex-grow text-sm text-center sm:text-left overflow-hidden space-y-1">
             <p
@@ -1775,15 +1776,15 @@ const FileInput: React.FC<FileInputProps> = ({
             type="button"
             onClick={handleRemoveFile}
             className={cn(
-              "inline-flex items-center justify-center text-red-500",
-              "bg-red-600/25 hover:bg-red-800/30",
-              "ml-0 mt-2 sm:mt-0 sm:ml-2 py-1.5 px-4 rounded-full text-sm font-medium transition-all duration-75 ease-linear", // Adjusted padding/size
+              "inline-flex items-center gap-1 justify-center text-red-500",
+              "bg-red-700/20 hover:bg-red-500/20",
+              "ml-0 mt-2 sm:mt-0 sm:ml-2 py-2 px-4 rounded-full text-sm font-medium transition-all duration-75 ease-linear", // Adjusted padding/size
               disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
             )}
             disabled={disabled}
             aria-label={`Remove ${label}`}
           >
-            <FileX className="h-4 w-4 mr-1" /> Remove
+            <FileX className="h-4 w-4" /> Remove
           </button>
         </div>
       ) : (
@@ -1794,7 +1795,7 @@ const FileInput: React.FC<FileInputProps> = ({
             className={cn(
               "flex flex-col items-center justify-center w-full h-36 border-2 border-dashed rounded-lg transition-colors cursor-pointer",
               disabled
-                ? "opacity-50 cursor-not-allowed bg-muted/50 border-gray-300 dark:border-gray-700"
+                ? "opacity-50 cursor-not-allowed bg-muted/50"
                 : "",
               error
                 ? "bg-red-600/25 hover:bg-red-800/30 border-red-500 hover:border-red-500/90"
@@ -1847,7 +1848,7 @@ const FileInput: React.FC<FileInputProps> = ({
       )}
       {/* Error Message Area */}
       {error && !file && ( // Only show error if there's an error *and* no file is currently selected
-        <p className="text-sm text-red-700 dark:text-red-400 flex items-center gap-1 pt-1">
+        <p className="text-sm text-red-500 flex items-center gap-1 pt-1">
           <AlertTriangle className="h-5 w-5 flex-shrink-0" />
           {error}
         </p>
@@ -1966,6 +1967,7 @@ export default function KycUploadPage() {
       </div>
     );
   }
+  
   if (
     !["not_started", "rejected", "skipped", "loading"].includes(
       backendStatus as string
@@ -2012,6 +2014,7 @@ export default function KycUploadPage() {
             </div>
           </Alert>
         )}
+
         {/* Front ID Upload */}
         <FileInput
           id="idFrontFile"
@@ -2022,6 +2025,7 @@ export default function KycUploadPage() {
           disabled={isProcessing}
         />
         {/* Back ID Upload (Conditional) */}
+
         {isBackRequired && (
           <FileInput
             id="idBackFile"
@@ -2032,17 +2036,19 @@ export default function KycUploadPage() {
             disabled={isProcessing}
           />
         )}
+        
         {/* Info for Passport */}
         {kycData.idType === "passport" && (
-          <Alert className="bg-blue-50 dark:bg-blue-900/25 border-blue-500 rounded-lg p-4 gap-3">
+          <Alert className="bg-blue-900/25 border-blue-500 rounded-lg p-4 gap-3">
             <div className="flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center bg-blue-600/20">
-              <CheckCircle className="text-blue-600 dark:text-blue-500 size-5 sm:size-6 flex-shrink-0" />
+              <CheckCircle className="text-blue-500 size-5 sm:size-6 flex-shrink-0" />
             </div>
+
             <div>
-              <AlertTitle className="font-medium text-blue-800 dark:text-blue-200 tracking-normal text-base">
+              <AlertTitle className="font-medium text-blue-200 tracking-normal text-base">
                 Passport Upload
               </AlertTitle>
-              <AlertDescription className="text-blue-700 dark:text-blue-300/90">
+              <AlertDescription className="text-blue-300/90">
                 Only the main photo page (the page with your photo and personal
                 details) is required.
               </AlertDescription>
@@ -2063,7 +2069,7 @@ export default function KycUploadPage() {
           </button>
           <button
             type="button"
-            className=" inline-flex items-center justify-center bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styles
+            className=" inline-flex items-center justify-center bg-primary text-mainheading hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styles
             onClick={handleContinue}
             disabled={isProcessing || !isFormValid} // Disable if processing OR if required files are missing
           >
@@ -2071,7 +2077,7 @@ export default function KycUploadPage() {
               // ----- Loading State -----
               <>
                 <svg
-                  className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                  className="h-5 w-5 text-mainheading animate-spin mr-2"
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"

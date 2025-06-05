@@ -2079,9 +2079,8 @@ import { useAuth } from "../../contexts/AuthContext"; // Adjust path if needed
 import userAdminService from "../../services/admin/user.admin"; // Adjust path
 import type { AdminUserListItem } from "../../services/admin/user.admin"; // Adjust path
 import type { KycStatus } from "../../services/kyc"; // Adjust path
-import { motion, AnimatePresence } from "framer-motion";
 // Use consistent icons from Payments page where applicable
-import { Filter, Loader2, RefreshCw, Users } from "lucide-react";
+import { Filter,RefreshCw } from "lucide-react";
 
 // Import Components (using consistent naming/paths if possible)
 import UserTable from "../components/users/UserTable"; // Path verified
@@ -2568,13 +2567,14 @@ const AdminUsersPage: React.FC = () => {
 
   // --- Auth Loading State ---
   if (authLoading) {
-    // Consistent basic loading indicator
+    // Consistent basic loading indicator 
     return (
-      <div className="fixed gap-2 inset-0 bg-black/50 backdrop-blur-[1px] h-screen flex items-center justify-center z-50">
-        <Loader2 size={48} className="text-primary animate-spin" />
-        <p className="text-mainheadingWhite font-medium">
-          Loading authentication...
-        </p>
+      <div className="fixed gap-2 inset-0 bg-black/60 h-screen flex items-center justify-center z-50">
+        {/* <Loader className="text-primary sm:size-10 size-8 animate-spin" /> */}
+        {/* <!-- From Uiverse.io by Donewenfu -->  */}
+        <div className="loader">
+          <div className="justify-content-center jimu-primary-loading"></div>
+        </div>
       </div>
     );
   }
@@ -2588,7 +2588,6 @@ const AdminUsersPage: React.FC = () => {
         <div className="flex flex-wrap justify-between items-center gap-3">
           <div className="Activity">
             <div className="flex items-center gap-3">
-              
               <div className="p-2.5 shrink-0 bg-primary rounded-full flex items-center justify-center">
                 <FaUsers className="size-6 text-mainheading" />
               </div>
@@ -2610,7 +2609,7 @@ const AdminUsersPage: React.FC = () => {
             {/* Filter Button - Matching Payments styling */}
             <button
               onClick={() => setShowFilterModal(true)}
-              className="flex items-center bg-primary hover:bg-primaryhover gap-2 h-12.5 px-8 py-3 cursor-pointer font-medium rounded-full sm:w-auto w-full justify-center transition-all duration-75 ease-linear" // Use text-secondary for light text on dark primary bg
+              className="flex items-center bg-primary hover:bg-primaryhover text-mainheading gap-2 h-12.5 px-8 py-3 cursor-pointer font-medium rounded-full sm:w-auto w-full justify-center transition-all duration-75 ease-linear" // Use text-secondary for light text on dark primary bg
             >
               <Filter size={18} />
               <span>Filters</span>

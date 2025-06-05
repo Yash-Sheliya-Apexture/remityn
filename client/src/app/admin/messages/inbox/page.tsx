@@ -3095,6 +3095,7 @@ import {
   X as XIcon,
   Filter,
   Inbox,
+  AlertCircle,
 } from "lucide-react";
 import { FaInbox } from "react-icons/fa";
 
@@ -3619,29 +3620,26 @@ const AdminInboxPage: React.FC = () => {
         </div>
 
         {/* Page Level Error Display for critical load errors */}
-        <AnimatePresence>
           {pageLevelError && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="p-3 rounded-md bg-red-900/30 border border-red-700/50 flex justify-between items-center"
-            >
-              <div className="flex items-center gap-2">
-                <XIcon className="text-red-400" size={18} />
-                <p className="text-sm font-medium text-red-300">
-                  {pageLevelError}
-                </p>
-              </div>
-              <button
-                onClick={() => setPageLevelError(null)}
-                className="text-red-400 hover:text-red-200"
+              <div
+                className="w-full flex relative items-center  bg-red-900/25 border sm:order-1 order-2 border-red-500 p-4 rounded-xl"
+                role="alert"
               >
-                <XIcon size={18} />
-              </button>
-            </motion.div>
+                <div className="flex items-center gap-3 text-center">
+                  <div className="sm:size-12 size-10 rounded-full flex items-center justify-center bg-red-600/20 flex-shrink-0">
+                    <AlertCircle className="text-red-500 size-5 sm:size-6 flex-shrink-0" />
+                  </div>
+        
+                  <div className="flex-1 text-left">
+                    <h4 className="font-medium sm:text-2xl text-lg text-red-600 capitalize">
+                      Error Message Inbox
+                    </h4>
+        
+                    <p className="text-sm text-left text-red-300/90">{pageLevelError}</p>
+                  </div>
+                </div>
+              </div>
           )}
-        </AnimatePresence>
 
         <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
           <div className="flex items-center gap-2">
@@ -3662,7 +3660,7 @@ const AdminInboxPage: React.FC = () => {
                 <option
                   key={size}
                   value={size}
-                  className="dark:bg-dropdowncolor cursor-pointer"
+                  className="bg-primarybox cursor-pointer"
                 >
                   {size}
                 </option>
