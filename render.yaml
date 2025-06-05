@@ -1,16 +1,13 @@
-# render.yaml
+# render.yaml (should be at the ROOT of your GitHub repository)
 services:
-  - type: web # Ensure this matches your service type on Render (e.g., web, worker)
-    name: remityn # IMPORTANT: This MUST match the name of your service on Render
-    # This assumes your "Root Directory" in Render UI settings is 'server/'
-    # If your "Root Directory" is the repository root, and your package.json is in 'server/',
-    # you might need to adjust the build command in the UI to 'cd server && npm install && npx playwright install chromium'
-    # and ensure this render.yaml is still at the repo root.
-    envVars: # Optional: Define Node version if needed, Render defaults to a recent one
-      - key: NODE_VERSION
-        value: "20" # Or 18, or remove if default is fine. Logs showed 22.14.0
+  - type: web # <-- Is this "web" in your Render settings? Or "worker"?
+    name: Remityn # <-- Does this EXACTLY match your service name on Render? Case-sensitive!
+    env: node # Or specify your Node version: node 20 / node 18 etc.
+    # plan: free # (Optional, Render infers or uses default)
+    # region: oregon # (Optional, Render infers or uses default)
+    # rootDir: server # (Optional, if also set in UI, UI might take precedence or conflict if different)
     aptPackages:
-      # Debian/Ubuntu packages required by Playwright's Chromium
+      # --- Debian/Ubuntu packages required by Playwright's Chromium ---
       # Essential runtime libraries
       - libc6
       - libgcc1
@@ -33,25 +30,29 @@ services:
       - libpangocairo-1.0-0
       - fonts-liberation # Recommended for headless browsers
       # Image format libraries
-      - libjpeg62-turbo
+      - libjpeg62-turbo # or libjpeg-turbo8
       - libexpat1 # XML parser
-      # Accessibility and UI (some might be optional for pure headless)
+      # Accessibility and UI
       - libatk1.0-0
       - libatk-bridge2.0-0
-      # - libgtk-3-0 # Often large, try without first if build time is an issue
       # Networking and security
       - libnspr4
       - libnss3
       - ca-certificates # For HTTPS
-      # Audio (often needed for full browser functionality)
+      # Audio
       - libasound2
       # Other common dependencies
       - libcups2
       - libdbus-1-3
       - libgbm1
       - libglib2.0-0
-      # Utilities Playwright might use (lsb-release is common)
+      # Utilities
       - lsb-release
-      # The following are sometimes needed as well:
-      # - wget
+      # Might also need:
+      # - libgdk-pixbuf2.0-0 # For some image operations
+      # - libgtk-3-0 # Large, try to avoid if not strictly necessary
       # - xdg-utils
+      # - wget
+    # If your Build Command & Start Command are in Render UI, you don't need them here
+    # buildCommand: "npm install && npx playwright install chromium" # (This would be relative to Root Directory)
+    # startCommand: "npm start"
