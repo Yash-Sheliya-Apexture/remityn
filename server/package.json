@@ -3,6 +3,9 @@
   "type": "module",
   "version": "1.0.0",
   "main": "index.js",
+  "engines": { 
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
@@ -32,16 +35,11 @@
     "multer-storage-cloudinary": "^4.0.0",
     "node-cron": "^3.0.3",
     "nodemailer": "^6.10.0",
-    "playwright": "^1.40.0",
+    "playwright": "^1.52.0",
     "uuid": "^11.1.0",
     "validator": "^13.12.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.52.0",
-    "@types/node": "^22.15.29",
     "nodemon": "^3.1.9"
-  },
-  "engines": {
-  "node": "20.x"
-}
+  }
 }
