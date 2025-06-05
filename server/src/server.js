@@ -850,8 +850,6 @@ dotenv.config(); // Load environment variables from .env file
 
 const app = express();
 
-app.set('trust proxy', 1); // <--- ADD THIS LINE
-
 // --- Security Middleware ---
 app.use(helmet.crossOriginOpenerPolicy({ policy: "same-origin-allow-popups" }));
 app.use(helmet.hidePoweredBy());
