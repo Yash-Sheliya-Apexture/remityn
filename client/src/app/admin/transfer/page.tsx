@@ -2158,7 +2158,8 @@ const AdminTransfersPage: React.FC = () => {
         return "bg-green-600/20 text-green-400";
       case "pending":
         return "bg-yellow-600/20 text-yellow-400";
-      case "in progress":
+      case "processing":
+      case "in-progress":
         return "bg-blue-600/20 text-blue-400";
       case "canceled":
       case "cancelled":

@@ -3733,7 +3733,7 @@ const DetailItem: React.FC<DetailItemProps> = ({
           type="button"
           onClick={handleCopyToClipboard}
           aria-label={`Copy ${label}`}
-          className={`shrink-0 h-8 px-2.5 text-xs font-medium transition-colors duration-150 ease-in-out focus-visible:outline-none rounded-md flex items-center justify-center text-subheadingWhite bg-secondarybox hover:bg-secondaryboxhover
+          className={`shrink-0 h-8 px-2.5 text-xs font-medium transition-all duration-75 ease-linear focus-visible:outline-none rounded-md flex items-center justify-center text-subheadingWhite bg-secondarybox hover:bg-secondaryboxhover
             ${isCopied ? "cursor-default" : "cursor-pointer"}
           `}
           disabled={isCopied}

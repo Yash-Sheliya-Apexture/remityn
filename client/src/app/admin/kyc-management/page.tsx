@@ -1200,6 +1200,644 @@
 
 // export default KycManagementPage;
 
+// // frontend/src/app/admin/kyc-management/page.tsx
+// "use client";
+
+// import React, { useState, useEffect, useCallback, useMemo } from "react"; // Added useMemo
+// import Link from "next/link";
+// import kycAdminService from "../../services/admin/kyc.admin";
+// import type { PendingKycUser } from "../../services/admin/kyc.admin";
+// import { motion } from "framer-motion";
+
+// // Icons
+// import {
+//   FileClock,
+//   ChevronRight,
+//   Inbox,
+//   AlertCircle,
+//   RefreshCw,
+//   Calendar,
+//   SortAsc,
+//   X, // Import X for closing messages
+//   ShieldUser,
+//   ListChecks,
+// } from "lucide-react";
+
+// import { cn } from "@/lib/utils";
+// import { FiSearch } from "react-icons/fi";
+// import { MdCancel, MdManageAccounts } from "react-icons/md";
+// import { Skeleton } from "@/components/ui/skeleton";
+
+// // Import Pagination Component
+// import Pagination from "../components/Pagination"; // Adjust path as needed
+
+// // --- Helper Functions ---
+// const formatDate = (dateInput?: string | Date): string => {
+//   if (!dateInput) return "N/A";
+//   try {
+//     const date = new Date(dateInput);
+//     if (isNaN(date.getTime())) return "Invalid Date";
+//     return date.toLocaleDateString("en-US", {
+//       year: "numeric",
+//       month: "short",
+//       day: "numeric",
+//       hour: "2-digit",
+//       minute: "2-digit",
+//     });
+//   } catch (e) {
+//     return "Invalid Date";
+//   }
+// };
+
+// const KycManagementPage: React.FC = () => {
+//   const [pendingUsers, setPendingUsers] = useState<PendingKycUser[]>([]);
+//   const [isLoading, setIsLoading] = useState<boolean>(true);
+//   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+//   const [error, setError] = useState<string | null>(null);
+//   const [searchQuery, setSearchQuery] = useState<string>("");
+//   const [sortBy, setSortBy] = useState<"name" | "date">("date");
+//   const [listKey, setListKey] = useState(0);
+//   const [isMobile, setIsMobile] = useState(false);
+//   // --- Pagination State ---
+//   const [currentPage, setCurrentPage] = useState<number>(1);
+//   const [itemsPerPage, setItemsPerPage] = useState<number>(10); // Changed name for clarity
+//   const pageSizeOptions: number[] = [10, 25, 50];
+
+//   // --- Data Fetching ---
+//   const fetchPendingUsers = useCallback(
+//     async (isRefreshAction = false) => {
+//       if (isRefreshAction) {
+//         setIsRefreshing(true);
+//       } else {
+//         // Only set setIsLoading on initial load or if users array is empty
+//         if (pendingUsers.length === 0) {
+//           setIsLoading(true);
+//         }
+//       }
+//       setError(null); // Clear error before fetch
+
+//       try {
+//         const users = await kycAdminService.getPendingKycUsersAdmin();
+//         setPendingUsers(users);
+//         if (isRefreshAction) {
+//           setListKey((prevKey) => prevKey + 1);
+//         }
+//       } catch (err: any) {
+//         console.error("Failed to fetch pending KYC users:", err);
+//         setError(
+//           err.message ||
+//             "An unknown error occurred while fetching applications."
+//         );
+//         // Don't clear pendingUsers on refresh error, only on initial load error
+//         if (!isRefreshAction) {
+//           setPendingUsers([]);
+//         }
+//       } finally {
+//         setIsLoading(false);
+//         setIsRefreshing(false);
+//       }
+//     },
+//     [pendingUsers.length]
+//   ); // Dependency on pendingUsers.length to handle initial load state
+
+//   const clearSearchQuery = () => {
+//     setSearchQuery("");
+//   };
+
+//   // --- Initial Data Fetch ---
+//   useEffect(() => {
+//     // Fetch only if loading is true AND there are no users yet.
+//     // This prevents refetching just because isLoading was true momentarily.
+//     if (isLoading && pendingUsers.length === 0) {
+//       fetchPendingUsers(false);
+//     }
+//   }, [fetchPendingUsers, isLoading, pendingUsers.length]);
+
+//   // --- Responsive Check ---
+//   useEffect(() => {
+//     const checkMobileScreen = () => {
+//       setIsMobile(typeof window !== "undefined" && window.innerWidth < 640);
+//     };
+//     checkMobileScreen();
+//     window.addEventListener("resize", checkMobileScreen);
+//     return () => {
+//       window.removeEventListener("resize", checkMobileScreen);
+//     };
+//   }, []);
+
+//   // --- Filtering and Sorting ---
+//   const filteredUsers = useMemo(() => {
+//     return pendingUsers.filter((user) => {
+//       if (!searchQuery) return true;
+//       const query = searchQuery.toLowerCase();
+//       return (
+//         user.fullName?.toLowerCase().includes(query) ||
+//         false ||
+//         user.email?.toLowerCase().includes(query) ||
+//         false
+//       );
+//     });
+//   }, [pendingUsers, searchQuery]);
+
+//   const sortedUsers = useMemo(() => {
+//     return [...filteredUsers].sort((a, b) => {
+//       if (sortBy === "name") {
+//         return (a.fullName || "").localeCompare(b.fullName || "");
+//       } else {
+//         // Default to date sort
+//         const dateA = a.kyc?.submittedAt
+//           ? new Date(a.kyc.submittedAt).getTime()
+//           : 0;
+//         const dateB = b.kyc?.submittedAt
+//           ? new Date(b.kyc.submittedAt).getTime()
+//           : 0;
+//         return dateB - dateA; // Descending (latest first)
+//       }
+//     });
+//   }, [filteredUsers, sortBy]);
+
+//   // --- Reset Page on Filter/Sort Change ---
+//   useEffect(() => {
+//     if (currentPage !== 1) {
+//       setCurrentPage(1);
+//     }
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [searchQuery, sortBy, itemsPerPage]); // Also reset on itemsPerPage change
+
+//   // --- Pagination Calculation ---
+//   const { currentUsers, totalPages } = useMemo(() => {
+//     const indexOfLastUser = currentPage * itemsPerPage;
+//     const indexOfFirstUser = indexOfLastUser - itemsPerPage;
+//     const paginatedData = sortedUsers.slice(indexOfFirstUser, indexOfLastUser);
+//     const pages = Math.ceil(sortedUsers.length / itemsPerPage);
+//     return { currentUsers: paginatedData, totalPages: pages };
+//   }, [sortedUsers, currentPage, itemsPerPage]);
+
+//   // --- Effect to Adjust Page if it becomes invalid ---
+//   useEffect(() => {
+//     if (totalPages > 0 && currentPage > totalPages) {
+//       setCurrentPage(totalPages); // Go to last available page
+//     } else if (totalPages === 0 && currentPage !== 1) {
+//       setCurrentPage(1); // Reset to 1 if no pages
+//     }
+//   }, [currentPage, totalPages]);
+
+//   // --- Pagination Handlers ---
+//   const paginate = (pageNumber: number) => {
+//     if (pageNumber >= 1 && pageNumber <= totalPages) setCurrentPage(pageNumber);
+//     else if (pageNumber < 1 && totalPages > 0) setCurrentPage(1);
+//     else if (pageNumber > totalPages && totalPages > 0)
+//       setCurrentPage(totalPages);
+//     // Do nothing if totalPages is 0
+//   };
+//   const goToPreviousPage = () => paginate(currentPage - 1);
+//   const goToNextPage = () => paginate(currentPage + 1);
+
+//   // --- Page Size Handler ---
+//   const handlePageSizeChange = (size: number) => {
+//     setItemsPerPage(size);
+//     // No need to reset currentPage here, the useEffect above handles it
+//   };
+
+//   // --- Render Functions ---
+
+//   // Error Message Display
+//   const renderError = () => (
+//     <motion.div
+//       initial={{ opacity: 0, y: -10 }}
+//       animate={{ opacity: 1, y: 0 }}
+//       exit={{ opacity: 0, y: -10 }}
+//       className="p-3 rounded-md bg-red-900/30 border border-red-700/50 flex justify-between items-center mt-4"
+//       role="alert"
+//     >
+//       <div className="flex items-center gap-2">
+//         <AlertCircle className="text-red-400" size={18} />
+//         <div>
+//           <p className="text-sm font-medium text-red-300">
+//             {error && pendingUsers.length > 0
+//               ? "Error Refreshing Data"
+//               : "Error Loading Applications"}
+//           </p>
+//           <p className="mt-1 text-xs text-red-400">{error}</p>
+//         </div>
+//       </div>
+//       <div className="flex items-center gap-2">
+//         {/* Retry button only makes sense if there was an error */}
+//         <button
+//           onClick={() => fetchPendingUsers(pendingUsers.length > 0)} // Pass true if refreshing existing data
+//           className="text-xs font-medium text-red-300 hover:underline flex items-center gap-1 disabled:opacity-50"
+//           disabled={isRefreshing || isLoading}
+//         >
+//           <RefreshCw
+//             className={cn(
+//               "h-3 w-3",
+//               (isLoading || isRefreshing) && "animate-spin"
+//             )}
+//           />{" "}
+//           Retry
+//         </button>
+//         <button
+//           onClick={() => setError(null)}
+//           className="text-red-400 hover:text-red-200"
+//         >
+//           <X size={16} />
+//         </button>
+//       </div>
+//     </motion.div>
+//   );
+
+//   // Empty State (Considers search query)
+
+//   const renderEmptyState = () => (
+//     <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
+//       <div className="lg:size-16 size-14 flex items-center justify-center bg-primary rounded-full mb-2">
+//         <ListChecks className="lg:size-8 size-6 mx-auto text-mainheading" />
+//       </div>
+
+//       <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite mt-1">
+//         {searchQuery ? "No Matches Found" : "All Clear KYC !"}
+//       </h2>
+
+//       <p className="text-subheadingWhite max-w-lg mx-auto">
+//         {searchQuery
+//           ? "No applications match your current search query."
+//           : "There are currently no KYC applications awaiting review so you can try agaain."}
+//       </p>
+//     </div>
+//   );
+
+//   // Render the user list OR its skeleton loading state
+//   const renderUserList = () => (
+//     <div
+//       key={listKey} // Used for refresh animation trigger
+//       className={cn(
+//         "border rounded-xl overflow-hidden mt-5", // Keep mt-6 here
+//         isRefreshing &&
+//           !isLoading &&
+//           "opacity-75 transition-opacity duration-300"
+//       )}
+//     >
+//       {/* Header: Skeleton or Actual */}
+//       <div className="px-6 py-4 flex sm:flex-row flex-col items-center justify-between gap-4 bg-primarybox">
+//         {isLoading ? (
+//           <Skeleton className="h-6 w-36" />
+//         ) : (
+//           <h4 className="text-lg text-mainheadingWhite font-semibold">
+//             {/* Show total filtered count, not just current page count */}
+//             {filteredUsers.length}{" "}
+//             {filteredUsers.length === 1 ? "Application" : "Applications"}
+//           </h4>
+//         )}
+
+//         {isLoading ? (
+//           <Skeleton className="h-10 w-44 rounded-full" />
+//         ) : (
+//           // Sorting Controls (unchanged)
+//           <div className="relative inline-flex items-center rounded-full bg-secondarybox p-1 gap-1">
+//             {/* Date Button */}
+//             <button
+//               onClick={() => setSortBy("date")}
+//               className={cn(
+//                 "relative text-sm px-4 py-2 font-medium rounded-full flex items-center gap-1.5 transition-colors duration-200 ease-linear focus:outline-none cursor-pointer z-10"
+//               )}
+//             >
+//               {sortBy === "date" && (
+//                 <motion.div
+//                   layoutId="activeSortBackground"
+//                   className="absolute inset-0 rounded-full bg-primary z-0"
+//                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
+//                 />
+//               )}
+//               <span
+//                 className={cn(
+//                   "relative z-10 flex items-center font-medium gap-1.5",
+//                   sortBy === "date" ? "text-mainheading" : "text-white"
+//                 )}
+//               >
+//                 <Calendar className="h-4 w-4" /> Date
+//               </span>
+//             </button>
+
+//             {/* Name Button */}
+//             <button
+//               onClick={() => setSortBy("name")}
+//               className={cn(
+//                 "relative text-sm px-4 py-2 font-medium rounded-full flex items-center gap-1.5 transition-colors duration-200 ease-linear focus:outline-none cursor-pointer z-10"
+//               )}
+//             >
+//               {sortBy === "name" && (
+//                 <motion.div
+//                   layoutId="activeSortBackground"
+//                   className="absolute inset-0 rounded-full bg-primary z-0"
+//                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
+//                 />
+//               )}
+//               <span
+//                 className={cn(
+//                   "relative z-10 flex items-center font-medium gap-1.5",
+//                   sortBy === "name" ? "text-mainheading" : "text-white"
+//                 )}
+//               >
+//                 <SortAsc className="h-4 w-4" /> Name
+//               </span>
+//             </button>
+//           </div>
+//         )}
+//       </div>
+
+//       {/* List Body: Skeleton or Actual */}
+//       {isLoading ? (
+//         // Skeleton Loading State (Unchanged)
+//         <div className="divide-y divide-border">
+//           {[...Array(itemsPerPage)].map(
+//             (
+//               _,
+//               i // Show skeletons based on itemsPerPage
+//             ) => (
+//               <div
+//                 key={i}
+//                 className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4"
+//               >
+//                 <div className="min-w-0 w-full space-y-2">
+//                   <div className="flex flex-wrap items-center gap-3 mb-2">
+//                     <Skeleton className="h-5 w-38" />
+//                     <Skeleton className="h-5 w-18 rounded-full" />
+//                   </div>
+//                   <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+//                     <Skeleton className="h-4 w-52" />
+//                     <Skeleton className="h-4 w-44" />
+//                   </div>
+//                 </div>
+//                 <Skeleton className="h-9 w-full sm:w-24 rounded-full mt-3 sm:mt-0 flex-shrink-0" />
+//               </div>
+//             )
+//           )}
+//         </div>
+//       ) : (
+//         // Actual User List (Uses currentUsers for pagination)
+//         <motion.ul role="list" className="divide-y divide-border">
+//           {currentUsers.map((user, index) => (
+//             <motion.li
+//               key={user._id}
+//               className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4"
+//               initial={{ opacity: 0, y: 20 }}
+//               animate={{ opacity: 1, y: 0 }}
+//               transition={{ delay: index * 0.05 }}
+//             >
+//               {/* User data */}
+//               <div className="min-w-0 w-full">
+//                 <div className="flex flex-wrap items-center gap-3 mb-2 sm:mb-1">
+//                   <p className="font-medium text-mainheadingWhite truncate">
+//                     {user.fullName || "N/A"}
+//                   </p>
+//                   <span className="rounded-full whitespace-nowrap px-3 py-1 text-xs font-medium bg-yellow-600/20 text-yellow-400">
+//                     Pending
+//                   </span>
+//                 </div>
+//                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-sm text-subheadingWhite">
+//                   <p
+//                     className="truncate max-w-full sm:max-w-xs"
+//                     title={user.email}
+//                   >
+//                     {user.email}
+//                   </p>
+//                   <svg
+//                     viewBox="0 0 2 2"
+//                     className="h-1 w-1 fill-current hidden sm:block flex-shrink-0"
+//                   >
+//                     <circle cx={1} cy={1} r={1} />
+//                   </svg>
+//                   <p className="flex-shrink-0">
+//                     Submitted:{" "}
+//                     <time dateTime={user.kyc?.submittedAt?.toString()}>
+//                       {formatDate(user.kyc?.submittedAt)}
+//                     </time>
+//                   </p>
+//                 </div>
+//               </div>
+//               {/* Link to review page */}
+//               <Link
+//                 href={`/admin/kyc-management/${user._id}`}
+//                 className="mt-3 sm:mt-0 inline-flex items-center justify-center sm:justify-start gap-1 text-sm font-semibold px-4 py-3 text-mainheading bg-primary rounded-full transition-all duration-75 ease-linear sm:flex-shrink-0"
+//               >
+//                 Review<span className="sr-only">, {user.fullName}</span>
+//                 <ChevronRight className="size-5" />
+//               </Link>
+//             </motion.li>
+//           ))}
+//         </motion.ul>
+//       )}
+//     </div>
+//   );
+
+//   // --- Renders the Search/Refresh Controls ---
+//   const renderControls = () => (
+//     <div className="flex justify-between items-center gap-4 sm:w-auto w-full">
+//       {/* Search Input */}
+//       <div className="relative flex-1">
+//         <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+//           <FiSearch
+//             className="size-5 text-mainheadingWhite"
+//             aria-hidden="true"
+//           />
+//         </div>
+//         <input
+//           type="text"
+//           className="w-full sm:w-80 rounded-full h-12.5 py-3 pl-12 pr-3  focus:outline-0 transition-all duration-75 ease-in-out placeholder:text-gray-400 border border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white bg-primarybox/50"
+//           placeholder="Search by name or email..."
+//           value={searchQuery}
+//           onChange={(e) => setSearchQuery(e.target.value)}
+//           disabled={isRefreshing || isLoading} // Disable during initial load or refresh
+//         />
+//         {searchQuery && (
+//           <button
+//             onClick={clearSearchQuery}
+//             className="absolute inset-y-0 right-3 flex items-center text-primary focus:outline-none cursor-pointer"
+//             disabled={isRefreshing || isLoading}
+//           >
+//             <MdCancel size={22} aria-hidden="true" />
+//           </button>
+//         )}
+//       </div>
+
+//       {/* Refresh Button */}
+//       <button
+//         onClick={() => fetchPendingUsers(true)} // Always trigger refresh
+//         disabled={isRefreshing || isLoading} // Disable during initial load or refresh
+//         className="flex items-center justify-center cursor-pointer font-medium gap-2 text-primary bg-primarybox hover:bg-secondarybox sm:px-8 sm:py-3 h-12.5 sm:w-auto w-12.5  rounded-full transition-all duration-75 ease-linear disabled:opacity-60 disabled:cursor-not-allowed"
+//         title="Refresh KYC Application List"
+//       >
+//         <RefreshCw
+//           className={cn(
+//             "size-5",
+//             (isRefreshing || isLoading) && "animate-spin"
+//           )}
+//         />
+//         {!isMobile && <span>Refresh</span>}
+//       </button>
+//     </div>
+//   );
+
+//   // --- Renders the List/Empty State/Error Logic ---
+//   const renderListData = () => {
+//     // Initial Loading: Show skeletons for controls and list
+//     if (isLoading && pendingUsers.length === 0) {
+//       // Skeleton for list is handled within renderUserList
+//       return renderUserList();
+//     }
+
+//     // Initial Load Error: Show only the error message
+//     if (error && pendingUsers.length === 0 && !isLoading) {
+//       return renderError();
+//     }
+
+//     // Data Loaded (or refreshing): Show list or empty state
+//     return (
+//       <>
+//         {/* Show Empty State if NO filtered users, otherwise show list */}
+//         {filteredUsers.length === 0 ? renderEmptyState() : renderUserList()}
+
+//         {/* Pagination Controls - Show only if more than one page AND not loading */}
+//         {totalPages > 1 && !isLoading && (
+//           <Pagination
+//             currentPage={currentPage}
+//             totalPages={totalPages}
+//             paginate={paginate}
+//             goToPreviousPage={goToPreviousPage}
+//             goToNextPage={goToNextPage}
+//           />
+//         )}
+
+//         {/* Refresh Error - Show below list/pagination if data exists */}
+//         {error &&
+//           pendingUsers.length > 0 &&
+//           !isLoading &&
+//           !isRefreshing &&
+//           renderError()}
+//       </>
+//     );
+//   };
+
+//   // --- Component Return ---
+//   return (
+//     <div className="min-h-screen">
+//       <div className="container mx-auto px-4 py-5">
+//         {/* Page Header: Skeleton or Actual */}
+//         <div className="mb-8">
+//           {isLoading && pendingUsers.length === 0 ? (
+//             <div>
+//               <Skeleton className="h-10 w-64 mb-3" /> {/* Skeleton for h1 */}
+//               <Skeleton className="h-4 sm:w-2/3 w-full" />{" "}
+//             </div>
+//           ) : (
+//             <div className="Management">
+//               <div className="flex items-center gap-3">
+//                 <div className="p-2.5 shrink-0 bg-primary rounded-full flex items-center justify-center">
+//                   <MdManageAccounts className="text-mainheading" size={26} />
+//                 </div>
+
+//                 <h1 className="lg:text-3xl text-2xl font-semibold text-mainheadingWhite">
+//                   KYC Management
+//                 </h1>
+//               </div>
+
+//               <p className="mt-2 text-subheadingWhite text-base lg:text-lg">
+//                 Simplify identity verification and regulatory compliance with
+//                 the powerful KYC Management system. Effortlessly review,
+//                 approve, or reject Know Your Customer (KYC) applications through
+//                 a secure and centralized dashboard. Track pending, approved, and
+//                 rejected submissions in real time, and view detailed user
+//                 documents with full audit logs.
+//               </p>
+//             </div>
+//           )}
+//         </div>
+
+//         {/* Section Header with Controls: Skeleton or Actual */}
+//         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 border-b border-border pb-4">
+//           {isLoading && pendingUsers.length === 0 ? (
+//             <>
+//               {/* Skeleton for Section Title */}
+//               <Skeleton className="h-8 w-48 flex-shrink-0" />
+//               {/* Skeleton for Controls Area */}
+//               <div className="flex justify-between items-center gap-4 sm:w-auto w-full">
+//                 <Skeleton className="h-12.5 sm:w-64 w-full rounded-full" />{" "}
+//                 {/* Search Skeleton */}
+//                 <Skeleton className="sm:h-12.5 sm:w-28 size-12.5 rounded-full flex-shrink-0" />{" "}
+//                 {/* Refresh Button Skeleton */}
+//               </div>
+//             </>
+//           ) : (
+//             <>
+//               {/* Actual Section Title */}
+//               <h2 className="inline-flex items-center gap-2 text-xl font-bold text-mainheadingWhite flex-shrink-0">
+//                 <FileClock className="h-5 w-5 text-primary" />
+//                 Pending
+//               </h2>
+
+//               {/* Actual Controls (Rendered only if no initial load error) */}
+//               {!(error && pendingUsers.length === 0) && renderControls()}
+//             </>
+//           )}
+//         </div>
+
+//         {/* Pagination and Page Size Controls - Render only when not loading initial data */}
+//         {!isLoading &&
+//           !(error && pendingUsers.length === 0) &&
+//           filteredUsers.length > 0 && (
+//             <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
+//               <div className="flex items-center gap-2">
+//                 <label
+//                   htmlFor="itemsPerPage"
+//                   className="text-sm font-medium text-subheadingWhite whitespace-nowrap"
+//                 >
+//                   Show:
+//                 </label>
+
+//                 <select
+//                   id="itemsPerPage"
+//                   value={itemsPerPage}
+//                   onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+//                   className="block w-auto pl-3 pr-8 py-2 text-sm border rounded-md focus:outline-none bg-primarybox text-mainheadingWhite cursor-pointer"
+//                   disabled={isLoading || isRefreshing} // Disable while loading/refreshing
+//                 >
+//                   {pageSizeOptions.map((size) => (
+//                     <option
+//                       key={size}
+//                       value={size}
+//                       className="bg-primarybox cursor-pointer"
+//                     >
+//                       {size}
+//                     </option>
+//                   ))}
+//                 </select>
+//                 <span className="text-sm font-medium text-subheadingWhite whitespace-nowrap">
+//                   Entries
+//                 </span>
+//               </div>
+//               <p className="text-sm text-subheadingWhite">
+//                 Showing{" "}
+//                 {filteredUsers.length > 0
+//                   ? (currentPage - 1) * itemsPerPage + 1
+//                   : 0}
+//                 - {Math.min(currentPage * itemsPerPage, filteredUsers.length)}{" "}
+//                 of {filteredUsers.length} results
+//                 {totalPages > 1 && ` (Page ${currentPage} of ${totalPages})`}
+//               </p>
+//             </div>
+//           )}
+
+//         {/* Main Content Area (List Data, Empty, or Error) */}
+//         {renderListData()}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default KycManagementPage;
+
+
+
 // frontend/src/app/admin/kyc-management/page.tsx
 "use client";
 
@@ -1249,6 +1887,45 @@ const formatDate = (dateInput?: string | Date): string => {
   }
 };
 
+// --- Skeleton Component for User List ---
+const UserListSkeleton: React.FC<{ listKey: number }> = ({ listKey }) => {
+  return (
+    <div
+      key={`skeleton-${listKey}`} // Use a distinct key for the skeleton wrapper
+      className="border rounded-xl overflow-hidden mt-5"
+    >
+      {/* Header: Skeleton */}
+      <div className="px-6 py-4 flex sm:flex-row flex-col items-center justify-between gap-4 bg-primarybox">
+        <Skeleton className="h-6 w-36 bg-background/50" />
+        <Skeleton className="h-10 w-44 rounded-full bg-background/50" />
+      </div>
+
+      {/* List Body: Skeleton */}
+      <div className="divide-y divide-border">
+        {[...Array(7)].map((_, i) => (
+          <div
+            key={`skeleton-item-${i}`}
+            className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4"
+          >
+            <div className="min-w-0 w-full space-y-2">
+              <div className="flex flex-wrap items-center gap-3 mb-2">
+                <Skeleton className="h-5 w-36" /> {/* Adjusted width */}
+                <Skeleton className="h-5 w-20 rounded-full" /> {/* Adjusted width */}
+              </div>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <Skeleton className="h-4 w-52" />
+                <Skeleton className="h-4 w-44" />
+              </div>
+            </div>
+            <Skeleton className="h-9 w-full sm:w-24 rounded-full mt-3 sm:mt-0 flex-shrink-0" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+
 const KycManagementPage: React.FC = () => {
   const [pendingUsers, setPendingUsers] = useState<PendingKycUser[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -1260,7 +1937,7 @@ const KycManagementPage: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
   // --- Pagination State ---
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [itemsPerPage, setItemsPerPage] = useState<number>(10); // Changed name for clarity
+  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
   const pageSizeOptions: number[] = [10, 25, 50];
 
   // --- Data Fetching ---
@@ -1269,12 +1946,12 @@ const KycManagementPage: React.FC = () => {
       if (isRefreshAction) {
         setIsRefreshing(true);
       } else {
-        // Only set setIsLoading on initial load or if users array is empty
+        // Only set isLoading to true for the very first fetch or if explicitly needed
         if (pendingUsers.length === 0) {
           setIsLoading(true);
         }
       }
-      setError(null); // Clear error before fetch
+      setError(null);
 
       try {
         const users = await kycAdminService.getPendingKycUsersAdmin();
@@ -1288,8 +1965,8 @@ const KycManagementPage: React.FC = () => {
           err.message ||
             "An unknown error occurred while fetching applications."
         );
-        // Don't clear pendingUsers on refresh error, only on initial load error
         if (!isRefreshAction) {
+          // If initial load fails, ensure pendingUsers is empty to trigger error/empty states correctly
           setPendingUsers([]);
         }
       } finally {
@@ -1297,8 +1974,8 @@ const KycManagementPage: React.FC = () => {
         setIsRefreshing(false);
       }
     },
-    [pendingUsers.length]
-  ); // Dependency on pendingUsers.length to handle initial load state
+    [pendingUsers.length] // Recreate if pendingUsers.length changes, affecting isLoading logic
+  );
 
   const clearSearchQuery = () => {
     setSearchQuery("");
@@ -1306,12 +1983,13 @@ const KycManagementPage: React.FC = () => {
 
   // --- Initial Data Fetch ---
   useEffect(() => {
-    // Fetch only if loading is true AND there are no users yet.
-    // This prevents refetching just because isLoading was true momentarily.
+    // Fetch only if isLoading is true (initial state) and no users are loaded yet.
+    // fetchPendingUsers will manage setIsLoading internally.
     if (isLoading && pendingUsers.length === 0) {
-      fetchPendingUsers(false);
+        fetchPendingUsers(false);
     }
   }, [fetchPendingUsers, isLoading, pendingUsers.length]);
+
 
   // --- Responsive Check ---
   useEffect(() => {
@@ -1344,14 +2022,13 @@ const KycManagementPage: React.FC = () => {
       if (sortBy === "name") {
         return (a.fullName || "").localeCompare(b.fullName || "");
       } else {
-        // Default to date sort
         const dateA = a.kyc?.submittedAt
           ? new Date(a.kyc.submittedAt).getTime()
           : 0;
         const dateB = b.kyc?.submittedAt
           ? new Date(b.kyc.submittedAt).getTime()
           : 0;
-        return dateB - dateA; // Descending (latest first)
+        return dateB - dateA;
       }
     });
   }, [filteredUsers, sortBy]);
@@ -1361,8 +2038,7 @@ const KycManagementPage: React.FC = () => {
     if (currentPage !== 1) {
       setCurrentPage(1);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery, sortBy, itemsPerPage]); // Also reset on itemsPerPage change
+  }, [searchQuery, sortBy, itemsPerPage]);
 
   // --- Pagination Calculation ---
   const { currentUsers, totalPages } = useMemo(() => {
@@ -1376,9 +2052,9 @@ const KycManagementPage: React.FC = () => {
   // --- Effect to Adjust Page if it becomes invalid ---
   useEffect(() => {
     if (totalPages > 0 && currentPage > totalPages) {
-      setCurrentPage(totalPages); // Go to last available page
+      setCurrentPage(totalPages);
     } else if (totalPages === 0 && currentPage !== 1) {
-      setCurrentPage(1); // Reset to 1 if no pages
+      setCurrentPage(1);
     }
   }, [currentPage, totalPages]);
 
@@ -1388,7 +2064,6 @@ const KycManagementPage: React.FC = () => {
     else if (pageNumber < 1 && totalPages > 0) setCurrentPage(1);
     else if (pageNumber > totalPages && totalPages > 0)
       setCurrentPage(totalPages);
-    // Do nothing if totalPages is 0
   };
   const goToPreviousPage = () => paginate(currentPage - 1);
   const goToNextPage = () => paginate(currentPage + 1);
@@ -1396,12 +2071,10 @@ const KycManagementPage: React.FC = () => {
   // --- Page Size Handler ---
   const handlePageSizeChange = (size: number) => {
     setItemsPerPage(size);
-    // No need to reset currentPage here, the useEffect above handles it
   };
 
   // --- Render Functions ---
 
-  // Error Message Display
   const renderError = () => (
     <motion.div
       initial={{ opacity: 0, y: -10 }}
@@ -1422,9 +2095,8 @@ const KycManagementPage: React.FC = () => {
         </div>
       </div>
       <div className="flex items-center gap-2">
-        {/* Retry button only makes sense if there was an error */}
         <button
-          onClick={() => fetchPendingUsers(pendingUsers.length > 0)} // Pass true if refreshing existing data
+          onClick={() => fetchPendingUsers(pendingUsers.length > 0)}
           className="text-xs font-medium text-red-300 hover:underline flex items-center gap-1 disabled:opacity-50"
           disabled={isRefreshing || isLoading}
         >
@@ -1446,18 +2118,14 @@ const KycManagementPage: React.FC = () => {
     </motion.div>
   );
 
-  // Empty State (Considers search query)
-
   const renderEmptyState = () => (
     <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
       <div className="lg:size-16 size-14 flex items-center justify-center bg-primary rounded-full mb-2">
         <ListChecks className="lg:size-8 size-6 mx-auto text-mainheading" />
       </div>
-
       <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite mt-1">
         {searchQuery ? "No Matches Found" : "All Clear KYC !"}
       </h2>
-
       <p className="text-subheadingWhite max-w-lg mx-auto">
         {searchQuery
           ? "No applications match your current search query."
@@ -1467,34 +2135,29 @@ const KycManagementPage: React.FC = () => {
   );
 
   // Render the user list OR its skeleton loading state
-  const renderUserList = () => (
-    <div
-      key={listKey} // Used for refresh animation trigger
-      className={cn(
-        "border rounded-xl overflow-hidden mt-5", // Keep mt-6 here
-        isRefreshing &&
-          !isLoading &&
-          "opacity-75 transition-opacity duration-300"
-      )}
-    >
-      {/* Header: Skeleton or Actual */}
-      <div className="px-6 py-4 flex sm:flex-row flex-col items-center justify-between gap-4 bg-primarybox">
-        {isLoading ? (
-          <Skeleton className="h-6 w-36" />
-        ) : (
+  const renderUserList = () => {
+    // isLoading is true only during the initial data fetch if pendingUsers is empty.
+    // Subsequent refreshes use isRefreshing for UI cues if data already exists.
+    if (isLoading && pendingUsers.length === 0) {
+      return <UserListSkeleton listKey={listKey} />;
+    }
+
+    return (
+      <div
+        key={listKey} // Used for refresh animation trigger
+        className={cn(
+          "border rounded-xl overflow-hidden mt-5",
+          isRefreshing && "opacity-75 transition-opacity duration-300" // Apply opacity if refreshing non-loading data
+        )}
+      >
+        {/* Header: Actual */}
+        <div className="px-6 py-4 flex sm:flex-row flex-col items-center justify-between gap-4 bg-primarybox">
           <h4 className="text-lg text-mainheadingWhite font-semibold">
-            {/* Show total filtered count, not just current page count */}
             {filteredUsers.length}{" "}
             {filteredUsers.length === 1 ? "Application" : "Applications"}
           </h4>
-        )}
-
-        {isLoading ? (
-          <Skeleton className="h-10 w-44 rounded-full" />
-        ) : (
-          // Sorting Controls (unchanged)
+          {/* Sorting Controls */}
           <div className="relative inline-flex items-center rounded-full bg-secondarybox p-1 gap-1">
-            {/* Date Button */}
             <button
               onClick={() => setSortBy("date")}
               className={cn(
@@ -1517,8 +2180,6 @@ const KycManagementPage: React.FC = () => {
                 <Calendar className="h-4 w-4" /> Date
               </span>
             </button>
-
-            {/* Name Button */}
             <button
               onClick={() => setSortBy("name")}
               className={cn(
@@ -1542,39 +2203,9 @@ const KycManagementPage: React.FC = () => {
               </span>
             </button>
           </div>
-        )}
-      </div>
-
-      {/* List Body: Skeleton or Actual */}
-      {isLoading ? (
-        // Skeleton Loading State (Unchanged)
-        <div className="divide-y divide-border">
-          {[...Array(itemsPerPage)].map(
-            (
-              _,
-              i // Show skeletons based on itemsPerPage
-            ) => (
-              <div
-                key={i}
-                className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4"
-              >
-                <div className="min-w-0 w-full space-y-2">
-                  <div className="flex flex-wrap items-center gap-3 mb-2">
-                    <Skeleton className="h-5 w-38" />
-                    <Skeleton className="h-5 w-18 rounded-full" />
-                  </div>
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                    <Skeleton className="h-4 w-52" />
-                    <Skeleton className="h-4 w-44" />
-                  </div>
-                </div>
-                <Skeleton className="h-9 w-full sm:w-24 rounded-full mt-3 sm:mt-0 flex-shrink-0" />
-              </div>
-            )
-          )}
         </div>
-      ) : (
-        // Actual User List (Uses currentUsers for pagination)
+
+        {/* List Body: Actual User List */}
         <motion.ul role="list" className="divide-y divide-border">
           {currentUsers.map((user, index) => (
             <motion.li
@@ -1584,7 +2215,6 @@ const KycManagementPage: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
             >
-              {/* User data */}
               <div className="min-w-0 w-full">
                 <div className="flex flex-wrap items-center gap-3 mb-2 sm:mb-1">
                   <p className="font-medium text-mainheadingWhite truncate">
@@ -1615,7 +2245,6 @@ const KycManagementPage: React.FC = () => {
                   </p>
                 </div>
               </div>
-              {/* Link to review page */}
               <Link
                 href={`/admin/kyc-management/${user._id}`}
                 className="mt-3 sm:mt-0 inline-flex items-center justify-center sm:justify-start gap-1 text-sm font-semibold px-4 py-3 text-mainheading bg-primary rounded-full transition-all duration-75 ease-linear sm:flex-shrink-0"
@@ -1626,14 +2255,12 @@ const KycManagementPage: React.FC = () => {
             </motion.li>
           ))}
         </motion.ul>
-      )}
-    </div>
-  );
+      </div>
+    );
+  };
 
-  // --- Renders the Search/Refresh Controls ---
   const renderControls = () => (
     <div className="flex justify-between items-center gap-4 sm:w-auto w-full">
-      {/* Search Input */}
       <div className="relative flex-1">
         <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
           <FiSearch
@@ -1647,23 +2274,21 @@ const KycManagementPage: React.FC = () => {
           placeholder="Search by name or email..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          disabled={isRefreshing || isLoading} // Disable during initial load or refresh
+          disabled={isRefreshing || isLoading} // Disabled during initial load or refresh
         />
         {searchQuery && (
           <button
             onClick={clearSearchQuery}
             className="absolute inset-y-0 right-3 flex items-center text-primary focus:outline-none cursor-pointer"
-            disabled={isRefreshing || isLoading}
+            disabled={isRefreshing || isLoading} // Disabled during initial load or refresh
           >
             <MdCancel size={22} aria-hidden="true" />
           </button>
         )}
       </div>
-
-      {/* Refresh Button */}
       <button
-        onClick={() => fetchPendingUsers(true)} // Always trigger refresh
-        disabled={isRefreshing || isLoading} // Disable during initial load or refresh
+        onClick={() => fetchPendingUsers(true)}
+        disabled={isRefreshing || isLoading} // Disabled during initial load or refresh
         className="flex items-center justify-center cursor-pointer font-medium gap-2 text-primary bg-primarybox hover:bg-secondarybox sm:px-8 sm:py-3 h-12.5 sm:w-auto w-12.5  rounded-full transition-all duration-75 ease-linear disabled:opacity-60 disabled:cursor-not-allowed"
         title="Refresh KYC Application List"
       >
@@ -1678,26 +2303,21 @@ const KycManagementPage: React.FC = () => {
     </div>
   );
 
-  // --- Renders the List/Empty State/Error Logic ---
   const renderListData = () => {
-    // Initial Loading: Show skeletons for controls and list
+    // If initial load (isLoading is true and no users yet), renderUserList will show UserListSkeleton.
     if (isLoading && pendingUsers.length === 0) {
-      // Skeleton for list is handled within renderUserList
       return renderUserList();
     }
 
-    // Initial Load Error: Show only the error message
+    // If error occurred during initial load (no users, not loading anymore), show error.
     if (error && pendingUsers.length === 0 && !isLoading) {
       return renderError();
     }
 
-    // Data Loaded (or refreshing): Show list or empty state
+    // Otherwise, render empty state or the list, pagination, and potential refresh error.
     return (
       <>
-        {/* Show Empty State if NO filtered users, otherwise show list */}
-        {filteredUsers.length === 0 ? renderEmptyState() : renderUserList()}
-
-        {/* Pagination Controls - Show only if more than one page AND not loading */}
+        {filteredUsers.length === 0 && !isLoading ? renderEmptyState() : renderUserList()}
         {totalPages > 1 && !isLoading && (
           <Pagination
             currentPage={currentPage}
@@ -1707,8 +2327,7 @@ const KycManagementPage: React.FC = () => {
             goToNextPage={goToNextPage}
           />
         )}
-
-        {/* Refresh Error - Show below list/pagination if data exists */}
+        {/* Show error if it occurred during a refresh (users exist, not loading, not currently refreshing) */}
         {error &&
           pendingUsers.length > 0 &&
           !isLoading &&
@@ -1718,29 +2337,20 @@ const KycManagementPage: React.FC = () => {
     );
   };
 
-  // --- Component Return ---
   return (
     <div className="min-h-screen">
       <div className="container mx-auto px-4 py-5">
-        {/* Page Header: Skeleton or Actual */}
         <div className="mb-8">
-          {isLoading && pendingUsers.length === 0 ? (
-            <div>
-              <Skeleton className="h-10 w-64 mb-3" /> {/* Skeleton for h1 */}
-              <Skeleton className="h-4 sm:w-2/3 w-full" />{" "}
-            </div>
-          ) : (
+           {/* Always render the Management header. Loading state handled by content below or disabled controls. */}
             <div className="Management">
               <div className="flex items-center gap-3">
                 <div className="p-2.5 shrink-0 bg-primary rounded-full flex items-center justify-center">
                   <MdManageAccounts className="text-mainheading" size={26} />
                 </div>
-
                 <h1 className="lg:text-3xl text-2xl font-semibold text-mainheadingWhite">
                   KYC Management
                 </h1>
               </div>
-
               <p className="mt-2 text-subheadingWhite text-base lg:text-lg">
                 Simplify identity verification and regulatory compliance with
                 the powerful KYC Management system. Effortlessly review,
@@ -1750,38 +2360,20 @@ const KycManagementPage: React.FC = () => {
                 documents with full audit logs.
               </p>
             </div>
-          )}
         </div>
 
-        {/* Section Header with Controls: Skeleton or Actual */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 border-b border-border pb-4">
-          {isLoading && pendingUsers.length === 0 ? (
-            <>
-              {/* Skeleton for Section Title */}
-              <Skeleton className="h-8 w-48 flex-shrink-0" />
-              {/* Skeleton for Controls Area */}
-              <div className="flex justify-between items-center gap-4 sm:w-auto w-full">
-                <Skeleton className="h-12.5 sm:w-64 w-full rounded-full" />{" "}
-                {/* Search Skeleton */}
-                <Skeleton className="sm:h-12.5 sm:w-28 size-12.5 rounded-full flex-shrink-0" />{" "}
-                {/* Refresh Button Skeleton */}
-              </div>
-            </>
-          ) : (
-            <>
-              {/* Actual Section Title */}
-              <h2 className="inline-flex items-center gap-2 text-xl font-bold text-mainheadingWhite flex-shrink-0">
-                <FileClock className="h-5 w-5 text-primary" />
-                Pending
-              </h2>
-
-              {/* Actual Controls (Rendered only if no initial load error) */}
-              {!(error && pendingUsers.length === 0) && renderControls()}
-            </>
-          )}
+          {/* Always render the "Pending" title. Controls rendering/disabled state handled by renderControls. */}
+          <h2 className="inline-flex items-center gap-2 text-xl font-bold text-mainheadingWhite flex-shrink-0">
+            <FileClock className="h-5 w-5 text-primary" />
+            Pending
+          </h2>
+          {/* Render controls unless there's an initial load error with no users.
+              Controls themselves will be disabled if isLoading or isRefreshing. */}
+          {!(error && pendingUsers.length === 0 && !isLoading) && renderControls()}
         </div>
 
-        {/* Pagination and Page Size Controls - Render only when not loading initial data */}
+        {/* This section (Items per page, showing results) is only shown when not loading and there are results */}
         {!isLoading &&
           !(error && pendingUsers.length === 0) &&
           filteredUsers.length > 0 && (
@@ -1793,13 +2385,12 @@ const KycManagementPage: React.FC = () => {
                 >
                   Show:
                 </label>
-
                 <select
                   id="itemsPerPage"
                   value={itemsPerPage}
                   onChange={(e) => handlePageSizeChange(Number(e.target.value))}
                   className="block w-auto pl-3 pr-8 py-2 text-sm border rounded-md focus:outline-none bg-primarybox text-mainheadingWhite cursor-pointer"
-                  disabled={isLoading || isRefreshing} // Disable while loading/refreshing
+                  disabled={isLoading || isRefreshing}
                 >
                   {pageSizeOptions.map((size) => (
                     <option
@@ -1827,7 +2418,6 @@ const KycManagementPage: React.FC = () => {
             </div>
           )}
 
-        {/* Main Content Area (List Data, Empty, or Error) */}
         {renderListData()}
       </div>
     </div>
