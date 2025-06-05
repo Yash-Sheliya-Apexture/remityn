@@ -2765,6 +2765,7 @@ export default function KycIdentityPage() {
           required once an ID type is selected.
         </CardDescription>
       </CardHeader>
+
       <CardContent>
         {formError && (
           <Alert className="bg-red-900/25 border-red-500 rounded-lg p-4 gap-3 mb-6">
@@ -3038,7 +3039,7 @@ export default function KycIdentityPage() {
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
                       <FormLabel className="text-mainheadingWhite block capitalize text-sm lg:text-base">
-                        Date of Expiry <span className="text-red-500">*</span>
+                        Date of Expiry <span className="text-red-600">*</span>
                       </FormLabel>
                       <Popover
                         open={expiryDatePickerOpen}
@@ -3068,8 +3069,10 @@ export default function KycIdentityPage() {
                             ) : (
                               <span>Pick expiry date</span>
                             )}
+
                           </Button>
                         </PopoverTrigger>
+                        
                         <PopoverContent
                           align="end"
                           className="sm:w-[450px] max-h-[calc(var(--radix-popover-content-available-height)_-_1rem)] w-auto p-0 overflow-y-auto"
@@ -3100,7 +3103,7 @@ export default function KycIdentityPage() {
                                 .toString()}
                               onValueChange={handleExpiryYearChange}
                             >
-                              <SelectTrigger className="w-28 h-8 ">
+                              <SelectTrigger className="w-28 h-8">
                                 {" "}
                                 {/* Reverted: removed size="sm" */}
                                 <SelectValue placeholder="Year" />
@@ -3120,6 +3123,8 @@ export default function KycIdentityPage() {
                               </SelectContent>
                             </Select>
                           </div>
+                          
+
                           <Calendar
                             mode="single"
                             selected={
@@ -3143,7 +3148,7 @@ export default function KycIdentityPage() {
                             {/* Using ShadCN Button for Apply */}
                             <Button
                               type="button"
-                              className="w-full bg-primary hover:bg-primaryhover text-neutral-900 rounded-full"
+                              className="w-full bg-primary hover:bg-primaryhover text-mainheading rounded-full"
                               size="sm" // Keep size sm for apply button within popover
                               onClick={() => {
                                 field.onChange(tempExpiryDate);
@@ -3176,6 +3181,7 @@ export default function KycIdentityPage() {
               >
                 <ArrowLeft className="mr-2 size-4.5" /> Back
               </button>
+              
               <button
                 type="submit"
                 className=" inline-flex items-center justify-center bg-primary text-mainheading hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"

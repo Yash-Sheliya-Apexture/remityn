@@ -503,10 +503,6 @@ input:-webkit-autofill:active {
   /* Example: gray-700 */
 }
 
-.text-accent-foreground {
-  color: #6b7280;
-  /* Example: gray-500 */
-}
 
 .text-link-foreground {
   color: #2563eb;

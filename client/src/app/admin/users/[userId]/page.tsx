@@ -5917,7 +5917,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -6272,7 +6271,7 @@ const ErrorDisplay = ({
 }) => (
   <div className="my-10">
     <div
-      className="w-full flex justify-between relative items-center bg-red-900/25 border sm:order-1 order-2 border-red-500 p-4 rounded-xl"
+      className="w-full flex sm:flex-row flex-col gap-3 justify-between relative sm:items-center items-start bg-red-900/25 border sm:order-1 order-2 border-red-500 p-4 rounded-xl"
       role="alert"
     >
       <div className="flex items-center gap-3 text-center">
@@ -6286,13 +6285,18 @@ const ErrorDisplay = ({
           </h4>
 
           <p className="text-sm text-left text-red-300/90">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro,
+            pariatur.
             {error || "An unexpected error occurred."}
           </p>
         </div>
       </div>
 
-      <button onClick={onRetry} className="mt-2 block px-6 py-2 bg-red-700/20 rounded-full text-red-600 hover:bg-red-800/20 transition-all ease-linear duration-75 cursor-pointer font-medium">
-        Retry
+      <button
+        onClick={onRetry}
+        className="block px-6 py-2 bg-red-900/20 w-full sm:w-auto rounded-full text-red-500 hover:bg-red-700/20 transition-all ease-linear duration-150 cursor-pointer font-medium"
+      >
+        Try Again
       </button>
     </div>
   </div>
@@ -6383,7 +6387,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
     {
       key: type === "transfer" ? "sendCurrency.code" : "payInCurrency.code",
       label: "Currency",
-      sortable: true,
+      sortable: false,
     },
     { key: "status", label: "Status", sortable: true },
     { key: "createdAt", label: "Date", sortable: true },
@@ -6396,8 +6400,8 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
   return (
     <div className="rounded-xl border overflow-hidden overflow-x-auto sm:[&::-webkit-scrollbar]:w-2 sm:[&::-webkit-scrollbar]:h-3 sm:[&::-webkit-scrollbar-track]:rounded-full sm:[&::-webkit-scrollbar-thumb]:rounded-full sm:[&::-webkit-scrollbar-track]:bg-primarybox sm:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
       <table className="min-w-full overflow-hidden">
-        <thead className="bg-primarybox ">
-          <tr>
+        <thead className="bg-primarybox border-b">
+          <tr>  
             {columns.map((col) => {
               if (type === "payment" && col.transferOnly) return null;
               if (type === "transfer" && col.paymentOnly) return null;
@@ -6423,7 +6427,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
             <tr>
               <td
                 colSpan={numberOfDataColumns}
-                className="px-6 py-10 text-center text-subheadingWhite"
+                className="py-20 text-center lg:text-xl text-lg text-subheadingWhite capitalize" 
               >
                 No {type}s found.
               </td>
@@ -6808,9 +6812,9 @@ const UserDetailPage: React.FC = () => {
     );
   }
 
-  if (error && !userData) {
+  if (error && userData) {
     return (
-      <div className="relative min-h-screen bg-background p-4 sm:p-6 lg:p-8">
+      <div className="relative bg-background p-4 sm:p-6">
         <ToastContainer
           {...customToastContainerProps}
           style={getToastContainerStyle()}
@@ -6822,15 +6826,18 @@ const UserDetailPage: React.FC = () => {
 
   if (!userData) {
     return (
-       <div className="fixed gap-2 inset-0 bg-black/50 backdrop-blur-[1px] h-screen flex items-center justify-center z-50">
-         <ToastContainer
+      <div className="fixed gap-2 inset-0 bg-black/60 h-screen flex items-center justify-center z-50">
+        <ToastContainer
           {...customToastContainerProps}
           style={getToastContainerStyle()}
         />
-        <Loader2 size={48} className="text-primary animate-spin" />
+        {/* <Loader2 size={48} className="text-primary animate-spin" />
         <p className="text-mainheadingWhite font-medium">
           Loading UsersData...
-        </p>
+        </p> */}
+        <div className="loader">
+          <div className="justify-content-center jimu-primary-loading"></div>
+        </div>
       </div>
     );
   }
@@ -6897,7 +6904,7 @@ const UserDetailPage: React.FC = () => {
             <div className="flex items-center gap-2 flex-wrap">
               <button
                 onClick={() => setIsSendMessageModalOpen(true)}
-                className="flex items-center justify-center cursor-pointer gap-2 bg-primarybox hover:bg-secondarybox text-mainheadingWhite px-6 py-3 h-12 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear"
+                className="flex items-center justify-center cursor-pointer gap-2 bg-primarybox hover:bg-secondarybox text-primary font-medium px-6 py-3 h-12 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear"
               >
                 <MessageSquarePlus className="size-4" /> Send Message
               </button>
@@ -7010,7 +7017,7 @@ const UserDetailPage: React.FC = () => {
                     key={tab.value}
                     value={tab.value}
                     className={cn(
-                      "relative px-4 py-3 flex items-center justify-center gap-2 text-base shrink-0 min-w-max rounded-full text-mainheadingWhite data-[state=active]:text-mainheading dark:data-[state=active]:text-primary border-none data-[state=active]:bg-transparent dark:data-[state=active]:bg-transparent data-[state=active]:shadow-none cursor-pointer transition-colors duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      "relative px-4 py-3 flex items-center justify-center gap-2 text-base shrink-0 min-w-max rounded-full text-mainheadingWhite data-[state=active]:text-mainheading border-none data-[state=active]:bg-transparent data-[state=active]:shadow-none cursor-pointer transition-colors duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     )}
                   >
                     {activeTab === tab.value && (
@@ -7024,7 +7031,7 @@ const UserDetailPage: React.FC = () => {
                     <span className="truncate">{tab.label}</span>
                   </TabsTrigger>
                 ))}
-              </TabsList>
+              </TabsList> 
             </div>
 
             <TabsContent value="kyc">
@@ -7037,7 +7044,7 @@ const UserDetailPage: React.FC = () => {
               >
                 <motion.div variants={itemVariants}>
                   <Card className="border overflow-hidden mb-4 shadow-none">
-                    <CardHeader className="px-6 py-4 bg-primarybox">
+                    <CardHeader className="sm:px-6 px-4 py-4 bg-primarybox border-b">
                       <div className="flex items-center justify-between">
                         <CardTitle className="text-lg font-semibold flex items-center gap-2 text-mainheadingWhite ">
                           <FileText className="text-primary size-5" /> KYC
@@ -7161,7 +7168,7 @@ const UserDetailPage: React.FC = () => {
                           </div>
                         </>
                       ) : (
-                        <p className="text-sm text-subheadingWhite italic py-4 text-center">
+                        <p className="text-mainheadingWhite lg:text-xl text-lg py-20 text-center capitalize">
                           KYC details not submitted.
                         </p>
                       )}
@@ -7171,7 +7178,7 @@ const UserDetailPage: React.FC = () => {
 
                 <motion.div variants={itemVariants}>
                   <Card className="border overflow-hidden mb-4 shadow-none">
-                    <CardHeader className="px-6 py-4 bg-primarybox ">
+                    <CardHeader className="lg:px-6 px-4 py-4 bg-primarybox border-b">
                       <CardTitle className="text-lg font-semibold flex items-center gap-2 text-mainheadingWhite ">
                         <CloudUpload className="text-primary" /> Submitted
                         Documents
@@ -7241,9 +7248,9 @@ const UserDetailPage: React.FC = () => {
                         </div>
                       </div>
                     ) : (
-                      <CardContent className="p-4 flex items-center justify-center flex-col space-y-4">
+                      <CardContent className="flex items-center text-center justify-center flex-col space-y-4 py-10">
                         <div className="lg:size-16 size-14 flex items-center justify-center bg-primary rounded-full">
-                          <ListChecks className="lg:size-8 size-6 mx-auto text-mainheading dark:text-primary" />
+                          <ListChecks className="lg:size-8 size-6 mx-auto text-mainheading" />
                         </div>
 
                         <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite">
@@ -7279,7 +7286,7 @@ const UserDetailPage: React.FC = () => {
                         Last 5 transfers by this user.
                       </CardDescription>
                     </CardHeader>
-                    
+
                     <CardContent className="p-0">
                       <TransactionTable
                         data={sortedTransfers}
@@ -7292,10 +7299,12 @@ const UserDetailPage: React.FC = () => {
                         showToast={showToast}
                       />
                     </CardContent>
+
                   </Card>
                 </motion.div>
               </motion.div>
             </TabsContent>
+            
             <TabsContent value="payments">
               <motion.div
                 key="payments-content"

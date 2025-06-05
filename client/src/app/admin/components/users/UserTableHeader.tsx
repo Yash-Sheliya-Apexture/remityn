@@ -367,7 +367,7 @@ const UserTableHeader: React.FC<UserTableHeaderProps> = ({
     "flex items-center gap-1 hover:text-primary uppercase group cursor-pointer"; // Added group class
 
   return (
-    <thead className="bg-primarybox">
+    <thead className="bg-primarybox border-b">
       <tr className="table-head">
         {/* --- Full Name Column (Sortable) --- */}
         <th className={headerCellClasses}>
