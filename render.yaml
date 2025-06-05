@@ -1,7 +1,7 @@
 # render.yaml (should be at the ROOT of your GitHub repository)
 services:
   - type: web # <-- Is this "web" in your Render settings? Or "worker"?
-    name: Remityn # <-- Does this EXACTLY match your service name on Render? Case-sensitive!
+    name: remityn # <-- Does this EXACTLY match your service name on Render? Case-sensitive!
     env: node # Or specify your Node version: node 20 / node 18 etc.
     # plan: free # (Optional, Render infers or uses default)
     # region: oregon # (Optional, Render infers or uses default)
