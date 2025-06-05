@@ -41,5 +41,8 @@
     "@playwright/test": "^1.52.0",
     "@types/node": "^22.15.29",
     "nodemon": "^3.1.9"
-  }
+  },
+  "engines": {
+  "node": "20.x"
+}
 }
