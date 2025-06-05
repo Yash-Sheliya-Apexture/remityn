@@ -1,0 +1,57 @@
+# render.yaml
+services:
+  - type: web # Ensure this matches your service type on Render (e.g., web, worker)
+    name: remityn # IMPORTANT: This MUST match the name of your service on Render
+    # This assumes your "Root Directory" in Render UI settings is 'server/'
+    # If your "Root Directory" is the repository root, and your package.json is in 'server/',
+    # you might need to adjust the build command in the UI to 'cd server && npm install && npx playwright install chromium'
+    # and ensure this render.yaml is still at the repo root.
+    envVars: # Optional: Define Node version if needed, Render defaults to a recent one
+      - key: NODE_VERSION
+        value: "20" # Or 18, or remove if default is fine. Logs showed 22.14.0
+    aptPackages:
+      # Debian/Ubuntu packages required by Playwright's Chromium
+      # Essential runtime libraries
+      - libc6
+      - libgcc1
+      - libstdc++6
+      # Core X11 and graphics libraries
+      - libx11-6
+      - libx11-xcb1
+      - libxcb1
+      - libxcomposite1
+      - libxdamage1
+      - libxext6
+      - libxfixes3
+      - libxrandr2
+      - libxrender1
+      - libxss1
+      - libxtst6
+      # Font and text rendering
+      - libfontconfig1
+      - libpango-1.0-0
+      - libpangocairo-1.0-0
+      - fonts-liberation # Recommended for headless browsers
+      # Image format libraries
+      - libjpeg62-turbo
+      - libexpat1 # XML parser
+      # Accessibility and UI (some might be optional for pure headless)
+      - libatk1.0-0
+      - libatk-bridge2.0-0
+      # - libgtk-3-0 # Often large, try without first if build time is an issue
+      # Networking and security
+      - libnspr4
+      - libnss3
+      - ca-certificates # For HTTPS
+      # Audio (often needed for full browser functionality)
+      - libasound2
+      # Other common dependencies
+      - libcups2
+      - libdbus-1-3
+      - libgbm1
+      - libglib2.0-0
+      # Utilities Playwright might use (lsb-release is common)
+      - lsb-release
+      # The following are sometimes needed as well:
+      # - wget
+      # - xdg-utils
