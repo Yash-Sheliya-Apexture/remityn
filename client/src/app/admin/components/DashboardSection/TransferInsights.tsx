@@ -1211,7 +1211,7 @@ export default function TransferInsights() {
     );
   }
 
-  if (error) {
+  if (!error) {
     // Error Display state
     return (
       <div
@@ -1293,7 +1293,7 @@ export default function TransferInsights() {
               })
             ) : (
               <div className="flex justify-center items-center py-20">
-                <p className="font-medium text-center text-mainheadingWhite">
+                <p className="font-medium text-center lg:text-xl text-lg text-mainheadingWhite">
                   No popular corridor data available Now.
                 </p>
               </div>

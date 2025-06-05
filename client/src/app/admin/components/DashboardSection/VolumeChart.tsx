@@ -2125,6 +2125,7 @@ export function VolumeChart({
         <div className="flex lg:flex-row flex-col items-center justify-between w-full gap-3">
           <div className="flex items-center justify-between gap-3 w-full">
             <div className="flex gap-3">
+              
               <div className="flex justify-center items-center size-12 bg-primary rounded-full flex-shrink-0">
                 {icon}
               </div>
