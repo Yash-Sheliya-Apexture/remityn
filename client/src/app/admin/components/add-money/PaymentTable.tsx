@@ -786,7 +786,7 @@ const PaymentTable: React.FC<PaymentTableProps> = ({
               <tr>
                 <td
                   colSpan={numberOfColumns} // Use numberOfColumns here as well
-                  className="px-4 py-10 text-center text-mainheadingWhite"
+                  className="py-20 text-center lg:text-xl text-lg text-mainheadingWhite"
                 >
                   No payments found.
                 </td>

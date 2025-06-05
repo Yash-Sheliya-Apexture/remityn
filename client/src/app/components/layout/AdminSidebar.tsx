@@ -4135,7 +4135,7 @@ const SidebarContents: React.FC<SidebarContentsProps> = ({
         </div>
       )}
 
-      <nav className="flex-1 py-4 overflow-x-hidden overflow-y-auto sm:[&::-webkit-scrollbar]:w-2 sm:[&::-webkit-scrollbar]:h-3  sm:[&::-webkit-scrollbar-track]:bg-gray-100 sm:[&::-webkit-scrollbar-thumb]:bg-lightborder sm:dark:[&::-webkit-scrollbar-track]:bg-primarybox sm:dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
+      <nav className="flex-1 py-4 overflow-x-hidden overflow-y-auto sm:[&::-webkit-scrollbar]:w-2 sm:[&::-webkit-scrollbar]:h-3 sm:[&::-webkit-scrollbar-track]:bg-primarybox sm:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
         <div className="px-4 mb-4">
           <span className="text-xs font-semibold uppercase tracking-wider text-mainheadingWhite px-2">
             Main
