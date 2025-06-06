@@ -804,7 +804,7 @@ const EditBroadcastBatchModal: React.FC<EditBroadcastBatchModalProps> = ({
     <AnimatePresence>
       {isOpen && batchToEdit && (
         <motion.div
-          className="fixed inset-0 w-full h-full bg-black/50 dark:bg-white/30 z-50 flex sm:items-center items-end justify-center"
+          className="fixed inset-0 w-full h-full bg-white/15 z-50 flex sm:items-center items-end justify-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -814,7 +814,7 @@ const EditBroadcastBatchModal: React.FC<EditBroadcastBatchModalProps> = ({
           aria-modal="true"
         >
           <motion.div
-            className="bg-white dark:bg-background sm:rounded-3xl rounded-none w-full sm:max-w-lg relative flex flex-col overflow-hidden sm:h-auto h-screen"
+            className="bg-background sm:rounded-3xl rounded-none w-full sm:max-w-lg relative flex flex-col overflow-hidden sm:h-auto h-screen"
             variants={modalVariants}
             initial="initial"
             animate="animate"
@@ -825,7 +825,7 @@ const EditBroadcastBatchModal: React.FC<EditBroadcastBatchModalProps> = ({
             <div className="p-4 sm:p-6 flex items-center justify-between flex-shrink-0 border-b">
               <h2
                 id="edit-broadcast-modal-title"
-                className="lg:text-2xl text-xl font-semibold text-mainheading dark:text-white"
+                className="lg:text-2xl text-xl font-semibold text-mainheadingWhite"
               >
                 Edit Broadcast Message
               </h2>
@@ -834,7 +834,7 @@ const EditBroadcastBatchModal: React.FC<EditBroadcastBatchModalProps> = ({
                 onClick={onClose}
                 disabled={isUpdating}
                 aria-label="Close modal"
-                className="size-12 bg-lightgray cursor-pointer hover:bg-lightborder text-neutral-900 dark:text-primary dark:bg-primarybox dark:hover:bg-secondarybox flex items-center justify-center rounded-full transition-all duration-75 ease-linear focus:outline-none"
+                className="size-12 cursor-pointer text-primary bg-primarybox hover:bg-secondarybox flex items-center justify-center rounded-full transition-all duration-75 ease-linear focus:outline-none"
               >
                 <IoClose size={28} />
               </button>
@@ -843,14 +843,15 @@ const EditBroadcastBatchModal: React.FC<EditBroadcastBatchModalProps> = ({
             {/* Scrollable Content Area */}
             <div className="flex-grow overflow-y-auto scrollbar-hide">
               <div className="p-4 sm:p-6 space-y-5">
-                <p className="text-gray-500 dark:text-gray-300 font-medium">
+                <p className="text-subheadingWhite font-medium">
                   Modify subject and body. This will update messages for all
                   recipients in this batch.
                 </p>
-                <div className="mt-1 text-sm text-gray-500 dark:text-gray-300 border px-4 py-3 h-[50px] rounded-lg flex items-center">
-                  <span className="font-medium text-neutral-900 dark:text-white shrink-0">
+                <div className="mt-1 text-sm border px-4 py-3 h-[50px] rounded-lg flex items-center">
+                  <span className="font-medium text-mainheadingWhite shrink-0">
                     Batch ID:
                   </span>
+
                   <span className="ml-1.5 flex-1 wrap-break-word text-primary">
                     {/* Truncated version for small screens (visible by default, hidden on sm+) */}
                     <span
@@ -869,7 +870,7 @@ const EditBroadcastBatchModal: React.FC<EditBroadcastBatchModalProps> = ({
                 </div>
 
                 {!fullBodyFetched ? (
-                  <div className="flex items-center justify-center text-gray-600 dark:text-gray-300 min-h-[250px]">
+                  <div className="flex items-center justify-center text-mainheadingWhite min-h-[250px]">
                     <SvgBodyLoader />
                     <span className="ml-2">Loading message details...</span>
                   </div>
@@ -878,7 +879,7 @@ const EditBroadcastBatchModal: React.FC<EditBroadcastBatchModalProps> = ({
                     <div className="space-y-1.5">
                       <label
                         htmlFor="edit-batch-subject"
-                        className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
+                        className="text-subheadingWhite block capitalize text-sm lg:text-base"
                       >
                         Subject <span className="text-red-600">*</span>
                       </label>
@@ -889,14 +890,14 @@ const EditBroadcastBatchModal: React.FC<EditBroadcastBatchModalProps> = ({
                         onChange={(e) => onSubjectChange(e.target.value)}
                         disabled={isUpdating}
                         maxLength={200}
-                        className="mt-1 block px-4 py-3 bg-white dark:bg-background h-14 w-full border rounded-lg transition-all focus:outline-none focus:border-[#5f5f5f] ease-linear duration-75"
+                        className="mt-1 block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0 pr-10"
                         placeholder="Enter subject"
                       />
                     </div>
                     <div className="space-y-1.5">
                       <label
                         htmlFor="edit-batch-body"
-                        className="text-gray-500 dark:text-gray-300 block capitalize text-sm lg:text-base"
+                        className="text-subheadingWhite block capitalize text-sm lg:text-base"
                       >
                         Body <span className="text-red-600">*</span>
                       </label>
@@ -904,7 +905,7 @@ const EditBroadcastBatchModal: React.FC<EditBroadcastBatchModalProps> = ({
                         id="edit-batch-body"
                         value={editBody}
                         onChange={(e) => onBodyChange(e.target.value)}
-                        className="min-h-[150px] resize-none sm:[&::-webkit-scrollbar]:w-2 sm:[&::-webkit-scrollbar]:h-3 sm:[&::-webkit-scrollbar-track]:rounded-full sm:[&::-webkit-scrollbar-track]:bg-gray-100 sm:[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-lightborder sm:dark:[&::-webkit-scrollbar-track]:bg-primarybox sm:dark:[&::-webkit-scrollbar-thumb]:bg-secondarybox block px-4 py-3 bg-white dark:bg-background h-14 w-full transition-all border rounded-lg focus:outline-none focus:border-[#5f5f5f] ease-linear duration-75"
+                        className="min-h-[150px] resize-none sm:[&::-webkit-scrollbar]:w-2 sm:[&::-webkit-scrollbar]:h-3 sm:[&::-webkit-scrollbar-track]:rounded-full sm:[&::-webkit-scrollbar-track]:bg-primarybox sm:[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primarybox sm:[&::-webkit-scrollbar-thumb]:bg-secondarybox block px-4 py-3 bg-background h-14 w-full transition-all border rounded-lg focus:outline-none border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white ease-linear duration-75"
                         disabled={isUpdating}
                         placeholder="Enter updated message body..."
                         rows={6}
@@ -916,16 +917,9 @@ const EditBroadcastBatchModal: React.FC<EditBroadcastBatchModalProps> = ({
             </div>
 
             {/* Footer */}
-            <div className="p-4 sm:p-6 border-t bg-white dark:bg-background flex-shrink-0">
+            <div className="p-4 sm:p-6 border-t flex-shrink-0">
               <div className="flex sm:flex-row flex-col justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  disabled={isUpdating}
-                  className="inline-flex justify-center cursor-pointer bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-6 py-3 h-[48px] text-center w-full transition-all duration-75 ease-linear"
-                >
-                  Cancel
-                </button>
+               
                 <button
                   type="button"
                   onClick={onUpdate}
@@ -935,10 +929,18 @@ const EditBroadcastBatchModal: React.FC<EditBroadcastBatchModalProps> = ({
                     !editBody.trim() ||
                     !fullBodyFetched
                   }
-                  className="inline-flex items-center text-nowrap justify-center cursor-pointer bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-[48px] text-center w-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="inline-flex items-center text-nowrap justify-center cursor-pointer bg-primary text-mainheading hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12 text-center w-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isUpdating && <SvgButtonLoader />}
                   {isUpdating ? "Saving..." : "Save Changes"}
+                </button>
+                 <button
+                  type="button"
+                  onClick={onClose}
+                  disabled={isUpdating}
+                  className="inline-flex justify-center cursor-pointer bg-primarybox hover:bg-secondarybox text-primary font-medium rounded-full px-6 py-3 h-12 text-center w-full transition-all duration-75 ease-linear"
+                >
+                  Cancel
                 </button>
               </div>
             </div>

@@ -2008,12 +2008,13 @@ const TransactionsSection: React.FC = () => {
           {/* No Transactions Message */}
           {!loading && !error && latestTransactions.length === 0 && (
             <>
-              <div className="flex items-center sm:gap-4 gap-2">
-                <div className="p-3 bg-secondarybox rounded-full flex items-center justify-center flex-shrink-0">
-                  <MdOutlineAccessTime size={22} className="text-white" />
+              <div className="flex flex-col items-center justify-center gap-4 py-10">
+                <div className="size-12 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                  <MdOutlineAccessTime className="text-mainheading size-6" />
                 </div>
-                <p className="text-center text-subheadingWhite">
-                  No recent transactions found.
+
+                <p className="text-center text-subheadingWhite capitalize">
+                  No recent transactions found Here.
                 </p>
               </div>
             </>

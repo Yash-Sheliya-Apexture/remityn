@@ -1075,23 +1075,24 @@ const InboxTable: React.FC<InboxTableProps> = ({
     <div className="rounded-xl border overflow-hidden">
       <div className="overflow-x-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-primarybox [&::-webkit-scrollbar-thumb]:bg-secondarybox">
         <table className="min-w-full overflow-hidden">
+
           <InboxTableHeader
             toggleSort={toggleSort}
             sortField={sortField}
             sortDirection={sortDirection}
           />
-          <tbody className="divide-y overflow-hidden">
+          <tbody className="divide-y overflow-hidden py-20">
             {messages.length === 0 ? (
-              <tr>
+             <tr>
                 <td
                   colSpan={numberOfColumns}
-                  className="text-center space-y-3 w-full text-mainheadingWhite"
+                  className="text-center space-y-4 w-full text-mainheadingWhite py-20"
                 >
-                  <div className="flex justify-center items-center">
-                    <span className="lg:size-12 size-10 flex items-center justify-center bg-primary rounded-full ">
-                      <ListChecks className="lg:size-6 size-4 mx-auto text-mainheadingWhite" />
-                    </span>
-                  </div>
+
+                    <div className="lg:size-16 size-14 flex items-center justify-center bg-primary shrink-0 rounded-full mx-auto">
+                      <ListChecks className="lg:size-8 size-6 text-mainheading" />
+                    </div>
+    
 
                   <h1 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite">
                     No messages found.
@@ -1110,6 +1111,7 @@ const InboxTable: React.FC<InboxTableProps> = ({
                 // const showSpinnerForRow = isCurrentDeleting || isCurrentUpdating; // No longer needed for this rendering
 
                 return (
+                  
                   <motion.tr
                     key={msg._id}
                     initial={{ opacity: 0, y: 20 }}

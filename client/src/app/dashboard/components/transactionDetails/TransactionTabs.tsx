@@ -112,14 +112,14 @@ const tabs = [
 const TransactionTabs: React.FC<TransactionTabsProps> = ({ activeTab, onTabChange }) => {
     return (
       <div className='p-2 sm:border-b border-b-none w-full'>
-        <div className="relative inline-flex items-center rounded-full p-1.5 gap-1 border sm:bg-transparent bg-primarybox sm:w-auto w-full">
+        <div className="relative inline-flex items-center rounded-full p-1 gap-1 border sm:bg-transparent bg-primarybox sm:w-auto w-full">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
               // Base button styles from reference, adjusted for tab context
               className={cn(
-                "w-full relative text-sm px-4 py-1.5 font-medium rounded-full flex items-center gap-1.5 transition-colors duration-200 ease-linear focus:outline-none cursor-pointer"
+                "w-full relative text-sm px-4 py-2 font-medium rounded-full flex items-center gap-1.5 transition-colors duration-200 ease-linear focus:outline-none cursor-pointer"
               )}
               // Optional: Improves touch interaction on mobile by removing tap highlight
               style={{ WebkitTapHighlightColor: "transparent" }}
@@ -136,7 +136,7 @@ const TransactionTabs: React.FC<TransactionTabsProps> = ({ activeTab, onTabChang
               {/* Tab Label: Text is always rendered */}
               <span
                 className={cn(
-                  "relative z-0 flex items-center justify-center gap-1.5 w-full", // Ensure text is above the animated background
+                  "relative z-0 flex items-center font-medium justify-center gap-1.5 w-full", // Ensure text is above the animated background
                   // Conditional text color based on active state
                   activeTab === tab.id
                     ? "text-mainheading" // Text color when tab is active (ensure good contrast with bg-primary)

@@ -13,7 +13,7 @@ interface ComposeBroadcastFormProps {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
-const ComposeBroadcastForm: React.FC<ComposeBroadcastFormProps> = ({
+const   ComposeBroadcastForm: React.FC<ComposeBroadcastFormProps> = ({
   subject,
   onSubjectChange,
   body,
@@ -29,7 +29,7 @@ const ComposeBroadcastForm: React.FC<ComposeBroadcastFormProps> = ({
       <form onSubmit={onSubmit}>
         {/* Header */}
 
-        <div className="sm:px-6 px-4 py-4 bg-primarybox">
+        <div className="sm:px-6 px-4 py-4 bg-primarybox border-b">
           <h2 className="text-xl font-semibold text-mainheadingWhite flex flex-wrap items-center gap-2">
             <Newspaper size={22} className="text-primary" /> Compose New
             Broadcast
@@ -116,7 +116,7 @@ const ComposeBroadcastForm: React.FC<ComposeBroadcastFormProps> = ({
               type="submit"
               disabled={isSubmitDisabled}
               className={cn(
-                "bg-primary text-mainheading hover:bg-primaryhover font-medium gap-2 rounded-full px-8 py-3 h-12.5 text-center sm:w-auto w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                "bg-primary text-mainheading hover:bg-primaryhover font-medium gap-2 rounded-full px-6 py-3 h-12.5 text-center sm:w-auto w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               )}
             >
               {isSending ? (
@@ -184,7 +184,7 @@ const ComposeBroadcastForm: React.FC<ComposeBroadcastFormProps> = ({
                   />
                 </svg>
               ) : (
-                <Send className="mr-2 h-5 w-5" />
+                <Send className="h-5 w-5" />
               )}
               {isSending ? "Broadcasting..." : "Send to All Users"}
             </button>

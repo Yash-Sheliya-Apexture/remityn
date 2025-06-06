@@ -104,21 +104,21 @@ const KycRequiredModal: React.FC<KycRequiredModalProps> = ({
             <div className="flex justify-center w-20 h-20 mx-auto mb-4 relative">
               {/* Styled container for the icon */}
               <div
-                className="w-full h-full bg-yellow-900/30 rounded-full flex items-center justify-center text-yellow-400 border-3 border-yellow-700/50"
+                className="w-full h-full bg-yellow-900/30 rounded-full flex items-center justify-center text-yellow-400"
                 aria-hidden="true"
               >
                 {/* Use AlertTriangle icon */}
-                <AlertTriangle className="w-10 h-10" strokeWidth={1.5} />
+                <AlertTriangle className="w-10 h-10" />
               </div>
             </div>
 
             {/* Title */}
-            <h3 id="kyc-required-modal-title" className="sm:text-3xl text-2xl font-semibold text-mainheadingWhite my-6">
+            <h3 id="kyc-required-modal-title" className="lg:text-3xl text-2xl font-semibold text-mainheadingWhite">
               KYC Verification Required
             </h3>
 
             {/* Description */}
-            <p className="text-secondheadingWhite font-medium mb-6">
+            <p className="text-secondheadingWhite font-medium">
               Please complete your KYC verification first. This helps us keep
               your account secure.
             </p>
@@ -132,6 +132,7 @@ const KycRequiredModal: React.FC<KycRequiredModalProps> = ({
               >
                 Start Verification
               </button>
+              
               {/* Cancel Button (Secondary Style) */}
               <button
                 className="text-primary bg-primarybox hover:bg-secondarybox font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none"

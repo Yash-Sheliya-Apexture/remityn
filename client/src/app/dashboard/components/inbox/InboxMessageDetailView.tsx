@@ -239,11 +239,11 @@ export const InboxMessageDetailView: React.FC<InboxMessageDetailViewProps> = ({
     <>
       <div className="border rounded-2xl overflow-hidden transition-all ease-linear duration-75 flex flex-col h-full">
         {/* Top Action Bar */}
-        <div className="flex items-center justify-between p-4 sm:px-6  bg-primarybox">
+        <div className="flex items-center justify-between p-4 sm:px-6 bg-primarybox">
           <button
             onClick={onBack}
             aria-label="Back to inbox list"
-            className="flex items-center justify-center cursor-pointer gap-2 bg-background/60 hover:bg-secondarybox text-primary sm:px-4 sm:py-2 sm:h-auto h-8 sm:w-auto w-8 rounded-full transition-all duration-75 ease-linear disabled:opacity-60 disabled:cursor-not-allowed"
+            className="flex items-center justify-center cursor-pointer gap-2 bg-secondarybox hover:bg-secondaryboxhover text-primary sm:px-4 sm:py-2 sm:h-auto h-8 sm:w-auto w-8 rounded-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isDeleting}
           >
             <ChevronLeft  size={20} />
@@ -251,7 +251,7 @@ export const InboxMessageDetailView: React.FC<InboxMessageDetailViewProps> = ({
           </button>
 
           <button
-            className="size-8 bg-secondarybox text-white/90 hover:bg-secondaryboxhover rounded-full transition-all duration-75 ease-linear flex justify-center items-center gap-2 cursor-pointer"
+            className="size-8 bg-secondarybox text-white hover:bg-secondaryboxhover rounded-full transition-all duration-75 ease-linear flex justify-center items-center gap-2 cursor-pointer"
             onClick={handleOpenDeleteModal}
             aria-label="Delete message"
             disabled={isDeleting} // Disable button if delete is in progress
@@ -259,6 +259,7 @@ export const InboxMessageDetailView: React.FC<InboxMessageDetailViewProps> = ({
             {/* Keep the icon consistent, spinner logic is inside the modal */}
             <Trash2 className="size-4" />
           </button>
+          
         </div>
 
         {/* Message Header & Metadata */}

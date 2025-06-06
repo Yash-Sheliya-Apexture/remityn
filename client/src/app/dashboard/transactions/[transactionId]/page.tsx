@@ -7622,8 +7622,6 @@ import paymentService from "../../../services/payment"; // Adjust path
 import transferService from "../../../services/transfer"; // Adjust path
 
 // UI Components & Utils
-import { cn } from "@/lib/utils"; // Adjust path
-import { Button } from "@/components/ui/button"; // Adjust path
 import CancelTransferModal from "../../components/CancelTransferModal"; // Adjust path
 
 // Transaction Specific Components & Types
@@ -7642,6 +7640,7 @@ import TransactionDetailsContent from "../../components/transactionDetails/Trans
 import AwaitingVerificationView from "../../components/transactionDetails/AwaitingVerificationView"; // Adjust path
 import TransactionUpdateActions from "../../components/transactionDetails/TransactionUpdateActions"; // Adjust path
 import TransactionDetailsPageSkeleton from "../../components/TransactionPageSection/TransactionDetailsPageSkeleton"; // Adjust path
+import { AlertCircle, ListChecks } from "lucide-react";
 
 // --- Helper function to calculate estimated arrival date ---
 function calculateEstimatedArrivalDate(
@@ -8257,8 +8256,7 @@ const TransactionDetailsPage = () => {
     ) {
       return {
         headerStatusText: "Verifying Payment",
-        headerStatusColorClass:
-          "text-blue-600 animate-pulse",
+        headerStatusColorClass: "text-blue-600 animate-pulse",
       };
     }
     switch (transactionDetails.status) {
@@ -8370,25 +8368,32 @@ const TransactionDetailsPage = () => {
 
   if (isLoading && !transactionDetails)
     return <TransactionDetailsPageSkeleton />;
-  if (error && !transactionDetails) {
+  if (error && transactionDetails) {
     return (
       <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
+        <div className="sm:size-16 size-14 rounded-full flex items-center justify-center bg-red-600/20 flex-shrink-0">
+          <AlertCircle className="text-red-500 size-6 sm:size-8 flex-shrink-0" />
+        </div>
+
         <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite">
           Error Loading Transaction
         </h2>
-        <p className="lg:text-lg text-base text-subheadingWhite max-w-lg mx-auto">
+        
+        <p className="text-subheadingWhite max-w-lg mx-auto">
           {error}
         </p>
+
         <div className="flex sm:flex-row flex-col items-center justify-center gap-3 w-full">
           <button
             onClick={() => router.back()}
-            className="inline-flex justify-center items-center font-medium cursor-pointer bg-background/60 hover:bg-secondarybox text-primary px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear"
+            className="inline-flex justify-center items-center font-medium cursor-pointer bg-secondarybox hover:bg-secondaryboxhover text-primary px-8 py-3 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear"
           >
             Go Back
           </button>
+
           <button
             onClick={() => fetchTransactionDetails()}
-            className="inline-flex justify-center items-center font-medium bg-primary hover:bg-primaryhover text-mainheading px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear cursor-pointer"
+            className="inline-flex justify-center items-center font-medium bg-primary hover:bg-primaryhover text-mainheading px-8 py-3 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear cursor-pointer"
             disabled={isLoading}
           >
             {isLoading && <SvgLoader />}
@@ -8398,15 +8403,19 @@ const TransactionDetailsPage = () => {
       </div>
     );
   }
+
   if (!transactionDetails) {
     return (
-      <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[250px] flex flex-col justify-center items-center">
-        <p className="lg:text-lg text-base text-mainheadingWhite max-w-lg mx-auto">
+      <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
+           <div className="lg:size-16 size-14 flex items-center justify-center bg-primary rounded-full">
+                        <ListChecks className="lg:size-8 size-6 mx-auto text-mainheading" />
+                      </div>
+        <p className="lg:text-3xl text-2xl text-mainheadingWhite max-w-lg mx-auto">
           Transaction details could not be loaded.
         </p>
         <button
           onClick={() => router.push("/dashboard/transactions")}
-          className="inline-flex justify-center items-center font-medium bg-primary hover:bg-primaryhover text-mainheading px-8 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear cursor-pointer"
+          className="inline-flex justify-center items-center font-medium bg-primary hover:bg-primaryhover text-mainheading px-6 py-3 h-12.5 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear cursor-pointer"
         >
           View All Transactions
         </button>
@@ -8423,7 +8432,9 @@ const TransactionDetailsPage = () => {
             statusText={headerStatusText}
             statusColorClass={headerStatusColorClass}
           />
+
           <TransactionTabs activeTab={activeTab} onTabChange={setActiveTab} />
+
           <div className="p-4 sm:p-6">
             {activeTab === "Updates" && (
               <div>
@@ -8438,6 +8449,7 @@ const TransactionDetailsPage = () => {
                       : transactionDetails._id}
                   </span>
                 </div>
+
                 {isPayment &&
                 transactionDetails.status === "pending" &&
                 showAwaitingVerificationView ? (
@@ -8489,6 +8501,7 @@ const TransactionDetailsPage = () => {
           </div>
         </div>
       </div>
+      
       {transactionDetails && (
         <CancelTransferModal
           isOpen={isCancelModalOpen}

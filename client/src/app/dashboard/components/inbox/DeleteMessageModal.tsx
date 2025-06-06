@@ -85,7 +85,7 @@ const DeleteMessageModal: React.FC<DeleteMessageModalProps> = ({
             </div>
 
             <div className="flex justify-center">
-              <div className="p-3 bg-red-900/30 rounded-full">
+              <div className="p-3 bg-red-900/30 rounded-full shrink-0">
                 <CheckCircle className="size-10 text-red-400" />
               </div>
             </div>

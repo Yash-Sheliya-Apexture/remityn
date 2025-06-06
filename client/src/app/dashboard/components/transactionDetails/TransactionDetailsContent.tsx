@@ -942,11 +942,11 @@ const TransactionDetailsContent: React.FC<TransactionDetailsContentProps> = ({
         </h3>
         <textarea
           id="transactionNote"
-          className="px-4 py-3 w-full rounded-lg focus:outline-0 transition-all duration-75 ease-in-out placeholder:text-gray-400 border border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white bg-primarybox/50"
+          className="px-4 py-3 w-full rounded-lg focus:outline-0 transition-all duration-75 resize-none ease-in-out placeholder:text-gray-400 border border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white bg-primarybox/50"
           placeholder="Add personal notes about this transaction..."
           value={note}
           onChange={onNoteChange}
-          rows={3}
+          rows={2}
           aria-label="Transaction Note"
         />
       </div>

@@ -264,7 +264,7 @@ const DeleteRecipientModal: React.FC<DeleteRecipientModalProps> = ({
           aria-labelledby="delete-recipient-modal-title" // Added for accessibility
         >
           <motion.div
-            className="bg-background sm:rounded-3xl rounded-t-3xl sm:p-8 p-4 w-full sm:max-w-lg relative text-center"
+            className="bg-background sm:rounded-3xl rounded-t-3xl sm:p-6 p-4 space-y-4 w-full sm:max-w-lg relative text-center"
             variants={modalVariants}
             initial="initial"
             animate="animate"
@@ -281,22 +281,23 @@ const DeleteRecipientModal: React.FC<DeleteRecipientModalProps> = ({
               </button>
             </div>
 
-            <div className="flex items-center justify-center">
-                <CircleCheckBig className="text-primary size-12" />
+            <div className="flex items-center justify-center shrink-0 rounded-full bg-red-700/20 sm:size-16 size-14 mx-auto">
+                <CircleCheckBig className="text-red-500 sm:size-8 size-6" />
             </div>
 
             <h3
               id="delete-recipient-modal-title"
-              className="sm:text-3xl text-2xl font-semibold text-mainheadingWhite my-6"
+              className="lg:text-3xl text-2xl font-semibold text-mainheadingWhite"
             >
               Delete recipient ?
             </h3>
 
-            <p className="text-secondheadingWhite font-medium mb-6">
+            <p className="text-secondheadingWhite font-medium">
               {/* Escaped the apostrophe in "You'll" */}
               You&apos;ll have to add {recipientName} again as a recipient to
               send money to them.
             </p>
+
             <div className="flex flex-col sm:flex-row justify-center gap-3">
               <button
                 className="bg-primary text-mainheading hover:bg-primaryhover font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear"

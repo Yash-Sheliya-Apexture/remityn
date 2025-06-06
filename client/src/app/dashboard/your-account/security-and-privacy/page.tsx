@@ -101,6 +101,8 @@
 //   );
 // }
 
+
+
 import React from "react";
 import Link from "next/link";
 import { IoIosArrowForward } from "react-icons/io";
@@ -115,7 +117,7 @@ export default function SecurityAndPrivacyPage() {
         <DashboardHeader title=" Security and privacy" />
 
         <div className="mt-8">
-          <h4 className="lg:text-2xl text-xl font-semibold text-white/90 mb-3">
+          <h4 className="lg:text-2xl text-xl font-semibold text-white mb-3">
             Security
           </h4>
 
@@ -129,7 +131,7 @@ export default function SecurityAndPrivacyPage() {
                   <div className="bg-secondarybox p-3 rounded-full">
                     <FiShield
                       size={24}
-                      className="text-white/90"
+                      className="text-white"
                     />
                   </div>
 
@@ -146,7 +148,7 @@ export default function SecurityAndPrivacyPage() {
                   <div className="ml-4">
                     <IoIosArrowForward
                       size={20}
-                      className="text-white/90 group-hover:translate-x-2.5 font-medium transition-transform ease-in-out duration-300"
+                      className="text-white group-hover:translate-x-2.5 font-medium transition-transform ease-in-out duration-300"
                     />
                   </div>
                 </div>
@@ -156,7 +158,7 @@ export default function SecurityAndPrivacyPage() {
         </div>
 
         <div className="mt-8">
-          <h4 className="lg:text-2xl text-xl font-semibold text-white/90 mb-3">
+          <h4 className="lg:text-2xl text-xl font-semibold text-white mb-3">
             Privacy
           </h4>
 
@@ -166,7 +168,7 @@ export default function SecurityAndPrivacyPage() {
               <div className="bg-secondarybox p-3 rounded-full">
                 <ImInfo
                   size={24}
-                  className="text-white/90"
+                  className="text-white"
                 />
               </div>
 
@@ -184,7 +186,7 @@ export default function SecurityAndPrivacyPage() {
               <div className="ml-4">
                 <IoIosArrowForward
                   size={20}
-                  className="text-white/90 group-hover:translate-x-2.5 font-medium transition-transform ease-in-out duration-300"
+                  className="text-white group-hover:translate-x-2.5 font-medium transition-transform ease-in-out duration-300"
                 />
               </div>
             </div>

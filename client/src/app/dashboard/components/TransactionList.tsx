@@ -2193,7 +2193,7 @@ import { GoArrowUp } from "react-icons/go";
 import { MdErrorOutline } from "react-icons/md";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
-import { ClipboardXIcon } from "lucide-react";
+import { AlertCircle, ClipboardXIcon } from "lucide-react";
 
 interface TransactionListProps {
   transactions: Transaction[];
@@ -2253,8 +2253,25 @@ const TransactionList: React.FC<TransactionListProps> = ({
 
   if (error) {
      return (
-        <div className="flex flex-col items-center gap-3 sm:p-10 p-4 bg-red-900/25 border border-red-500 rounded-lg text-center">
-          <strong className="text-red-500">Transaction Error</strong> {error}
+        <div
+          className="w-full flex relative items-center  bg-red-900/25 border sm:order-1 order-2 border-red-500 p-4 rounded-xl"
+          role="alert"
+        >
+          <div className="flex items-center gap-3 text-center">
+            <div className="sm:size-12 size-10 rounded-full flex items-center justify-center bg-red-600/20 flex-shrink-0">
+              <AlertCircle className="text-red-500 size-5 sm:size-6 flex-shrink-0" />
+            </div>
+
+            <div className="flex-1 text-left">
+              <h4 className="font-medium sm:text-2xl text-lg text-red-600 capitalize">
+                Transaction Error
+              </h4>
+
+              <p className="text-left text-red-300/90">
+                {error}
+              </p>
+            </div>
+          </div>
         </div>
       );
   }
@@ -2532,13 +2549,16 @@ const TransactionList: React.FC<TransactionListProps> = ({
         !hasAnyTransactionsToDisplay &&
         wasInitiallyEmpty && (
           <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
+            
             <div className="lg:size-16 size-14 flex items-center justify-center bg-primary rounded-full mb-2">
               <ClipboardXIcon className="lg:size-8 size-6 mx-auto text-mainheading" />
             </div>
+
             <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite">
               {" "}
               No transactions found for your {currencyCode} balance yet.
             </h2>
+              
             <p className="lg:text-lg text-base text-subheadingWhite max-w-lg mx-auto">
               You can{" "}
               <button
