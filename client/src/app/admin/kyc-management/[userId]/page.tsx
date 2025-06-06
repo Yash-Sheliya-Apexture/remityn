@@ -6399,6 +6399,1037 @@
 
 // export default KycUserDetailPage;
 
+// // frontend/src/app/admin/kyc-management/[userId]/page.tsx
+// "use client";
+
+// import React, { useState, useEffect, useCallback } from "react";
+// import { useParams, useRouter } from "next/navigation";
+// import Link from "next/link";
+// import Image from "next/image";
+// import kycAdminService from "@/app/services/admin/kyc.admin";
+// import type {
+//   AdminKycUserResponse,
+//   KycDetails,
+//   SalaryRange,
+// } from "@/app/services/admin/kyc.admin";
+// import KycDetailHeader from "@/app/admin/components/kyc/KycDetailHeader";
+// import KycRejectModal from "@/app/components/KycRejectModal"; // Assuming correct path from /admin/kyc-management/[userId]/
+// import KycApproveModal from "@/app/components/KycApproveModal"; // Assuming correct path
+
+// // Icons
+// import {
+//   ArrowLeft,
+//   ExternalLink,
+//   CheckCircle,
+//   XCircle,
+//   Clock,
+//   AlertCircle,
+//   FileText,
+//   User,
+//   CalendarDays,
+//   Phone,
+//   Mail,
+//   Briefcase,
+//   BadgeDollarSign,
+//   Fingerprint,
+//   Eye,
+//   Globe,
+//   Info,
+//   Image as ImageIcon,
+//   RefreshCw,
+//   IdCard,
+// } from "lucide-react";
+// import { cn } from "@/lib/utils";
+// import { Button } from "@/components/ui/button";
+// import {
+//   Card,
+//   CardContent,
+//   CardHeader,
+//   CardTitle,
+//   CardDescription,
+//   CardFooter,
+// } from "@/components/ui/card";
+// import { Badge } from "@/components/ui/badge";
+// import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+// import { Skeleton } from "@/components/ui/skeleton";
+
+// // --- Import Custom Toast and react-toastify components ---
+// import {
+//   ToastContainer,
+//   toast as reactToastifyToast,
+//   Slide,
+//   ToastContainerProps,
+//   TypeOptions,
+//   ToastOptions,
+// } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+// // **IMPORTANT**: Adjust this path if your CustomToast component is elsewhere
+// import CustomToast, { CustomToastProps } from "../../../components/CustomToast";
+// // Example: if CustomToast.tsx is in frontend/src/app/components/
+// // import CustomToast, { CustomToastProps } from "../../../components/CustomToast";
+
+// // --- Helper Functions (Keep as is) ---
+// const formatDate = (
+//   dateInput?: string | Date | null,
+//   includeTime = false
+// ): string => {
+//   if (!dateInput) return "N/A";
+//   try {
+//     const date = new Date(dateInput);
+//     if (isNaN(date.getTime())) {
+//       console.warn("formatDate received invalid dateInput:", dateInput);
+//       return "Invalid Date";
+//     }
+//     const options: Intl.DateTimeFormatOptions = {
+//       year: "numeric",
+//       month: "long",
+//       day: "numeric",
+//       ...(includeTime && { hour: "2-digit", minute: "2-digit", hour12: true }),
+//     };
+//     return date.toLocaleDateString("en-US", options);
+//   } catch (e) {
+//     console.error("Error formatting date:", e, "Input:", dateInput);
+//     return "Invalid Date";
+//   }
+// };
+// const formatMobile = (mobile?: KycDetails["mobile"]): string => {
+//   if (!mobile || !mobile.countryCode?.trim() || !mobile.number?.trim())
+//     return "N/A";
+//   return `${mobile.countryCode} ${mobile.number}`;
+// };
+// const salaryDisplayMap: Record<SalaryRange, string> = {
+//   "0-1000": "Below $10,000",
+//   "10000-50000": "$10,000 - $49,999",
+//   "50000-100000": "$50,000 - $99,999",
+//   "100000+": "$100,000 or more",
+// };
+// const getStatusConfig = (status?: string) => {
+//   const statusMap = {
+//     verified: {
+//       color: "bg-green-900/30 text-green-300",
+//       icon: CheckCircle,
+//       label: "Verified",
+//     },
+//     rejected: {
+//       color: "bg-red-900/30 text-red-300",
+//       icon: XCircle,
+//       label: "Rejected",
+//     },
+//     pending: {
+//       color: "bg-yellow-900/30 text-yellow-300",
+//       icon: Clock,
+//       label: "Pending",
+//     },
+//     skipped: {
+//       color: "bg-blue-900/30 text-blue-300",
+//       icon: ArrowLeft,
+//       label: "Skipped",
+//     },
+//     default: {
+//       color: "bg-gray-700 text-gray-300",
+//       icon: AlertCircle,
+//       label: "Not Started",
+//     },
+//   };
+//   return statusMap[status as keyof typeof statusMap] || statusMap.default;
+// };
+// const getInitials = (name?: string): string => {
+//   if (!name) return "??";
+//   return name
+//     .split(" ")
+//     .map((part) => part[0])
+//     .join("")
+//     .substring(0, 2)
+//     .toUpperCase();
+// };
+
+// // --- DetailItem Component (Keep as is) ---
+// const DetailItem = ({
+//   label,
+//   value,
+//   icon: Icon,
+//   isImportant = false,
+// }: {
+//   label: string;
+//   value: React.ReactNode;
+//   icon?: React.ElementType;
+//   isImportant?: boolean;
+// }) => (
+//   <div className="py-2 space-y-2">
+//     <dt className="text-sm font-medium text-mainheadingWhite uppercase tracking-wider flex items-center gap-2">
+//       {" "}
+//       {Icon && <Icon className="flex-shrink-0 text-primary size-4" />} {label}{" "}
+//     </dt>
+//     <dd
+//       className={cn(
+//         "text-sm break-words text-subheadingWhite",
+//         isImportant ? "font-semibold" : ""
+//       )}
+//     >
+//       {" "}
+//       {value || (
+//         <span className="italic text-mainheadingWhite">Not Provided</span>
+//       )}{" "}
+//     </dd>
+//   </div>
+// );
+
+// // --- Main Detail Page Component ---
+// const KycUserDetailPage: React.FC = () => {
+//   const params = useParams();
+//   const router = useRouter();
+//   const userId = params.userId as string;
+
+//   const [userData, setUserData] = useState<AdminKycUserResponse | null>(null);
+//   const [isLoading, setIsLoading] = useState<boolean>(true);
+//   const [error, setError] = useState<string | null>(null); // For page load errors
+//   const [actionError, setActionError] = useState<string | null>(null); // For modal action errors
+//   const [isProcessingAction, setIsProcessingAction] = useState<
+//     false | "approve" | "reject"
+//   >(false);
+//   const [showRejectionModal, setShowRejectionModal] = useState<boolean>(false);
+//   const [showApprovalModal, setShowApprovalModal] = useState<boolean>(false);
+//   const [rejectionReasonForModal, setRejectionReasonForModal] =
+//     useState<string>("");
+//   const [isMobile, setIsMobile] = useState(false); // For ToastContainer
+
+//   // --- Mobile Detection Effect (for ToastContainer & Modals) ---
+//   useEffect(() => {
+//     const handleResize = () => setIsMobile(window.innerWidth < 640);
+//     if (typeof window !== "undefined") {
+//       handleResize();
+//       window.addEventListener("resize", handleResize);
+//       return () => window.removeEventListener("resize", handleResize);
+//     }
+//   }, []);
+
+//   // --- Custom Toast Invocation ---
+//   const showToast = useCallback(
+//     (
+//       message: string,
+//       type?: CustomToastProps["type"],
+//       toastSpecificOptions?: Partial<ToastOptions>
+//     ) => {
+//       const effectiveType = type || "default";
+//       let progressClassName: string;
+//       switch (effectiveType) {
+//         case "success":
+//           progressClassName = "toast-progress-success";
+//           break;
+//         case "error":
+//           progressClassName = "toast-progress-error";
+//           break;
+//         case "info":
+//           progressClassName = "toast-progress-info";
+//           break;
+//         case "warning":
+//           progressClassName = "toast-progress-warning";
+//           break;
+//         default:
+//           progressClassName = "toast-progress-default";
+//           break;
+//       }
+//       reactToastifyToast(
+//         <CustomToast message={message} type={effectiveType} />,
+//         {
+//           progressClassName,
+//           type: effectiveType as TypeOptions,
+//           icon: false,
+//           ...toastSpecificOptions,
+//         }
+//       );
+//     },
+//     []
+//   );
+
+//   // --- ToastContainer Props and Style ---
+//   const customToastContainerProps: ToastContainerProps = {
+//     position: "top-right",
+//     autoClose: 5000,
+//     hideProgressBar: false,
+//     newestOnTop: true,
+//     closeOnClick: false,
+//     closeButton: false,
+//     rtl: false,
+//     pauseOnFocusLoss: true,
+//     draggable: true,
+//     pauseOnHover: true,
+//     transition: Slide,
+//     toastClassName: () =>
+//       "p-0 shadow-none rounded-md bg-transparent w-full relative mb-3",
+//   };
+
+//   const getToastContainerStyle = (): React.CSSProperties & {
+//     [key: `--${string}`]: string | number;
+//   } => {
+//     const baseStyle = { zIndex: 30 };
+//     if (isMobile)
+//       return {
+//         ...baseStyle,
+//         top: "1rem",
+//         left: "1rem",
+//         right: "1rem",
+//         width: "auto",
+//       };
+//     return { ...baseStyle, top: "0.75rem", right: "0.75rem", width: "320px" };
+//   };
+
+//   // --- Fetching Logic ---
+//   const fetchUserDetails = useCallback(
+//     async (showLoadingIndicator = true) => {
+//       if (!userId) {
+//         setError("User ID is missing from the URL.");
+//         showToast("User ID is missing from the URL.", "error");
+//         setIsLoading(false);
+//         return;
+//       }
+//       if (showLoadingIndicator || !userData) setIsLoading(true); // Show loading if explicitly asked or no data yet
+
+//       setError(null);
+//       setActionError(null);
+//       try {
+//         const data = await kycAdminService.getKycDetailsAdmin(userId);
+//         setUserData(data);
+//       } catch (err: any) {
+//         console.error("Error fetching user details:", err);
+//         const errorMsg =
+//           err.message ||
+//           "An unknown error occurred while fetching user details.";
+//         setError(errorMsg);
+//         showToast(errorMsg, "error");
+//         setUserData(null);
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     },
+//     [userId, showToast, userData]
+//   ); // Added showToast and userData to dependencies
+
+//   useEffect(() => {
+//     fetchUserDetails();
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [userId]); // Initial fetch only on userId change, fetchUserDetails will handle its own deps
+
+//   useEffect(() => {
+//     const body = document.body;
+//     const originalOverflow = body.style.overflow;
+//     if (showRejectionModal || showApprovalModal) body.style.overflow = "hidden";
+//     else body.style.overflow = originalOverflow;
+//     return () => {
+//       body.style.overflow = originalOverflow;
+//     };
+//   }, [showRejectionModal, showApprovalModal]);
+
+//   // --- Action Handlers ---
+//   const openRejectModal = () => {
+//     setRejectionReasonForModal("");
+//     setActionError(null);
+//     setShowRejectionModal(true);
+//   };
+
+//   const submitRejection = async (reason: string) => {
+//     if (
+//       !userId ||
+//       !userData ||
+//       userData.kyc?.status !== "pending" ||
+//       isProcessingAction
+//     )
+//       return;
+//     setIsProcessingAction("reject");
+//     setActionError(null);
+//     try {
+//       await kycAdminService.updateKycStatusAdmin(userId, {
+//         status: "rejected",
+//         rejectionReason: reason,
+//       });
+//       showToast("KYC application rejected.", "success"); // SUCCESS TOAST
+//       setShowRejectionModal(false);
+//       await fetchUserDetails(false); // Fetch without full page loading indicator
+//     } catch (err: any) {
+//       const errorMsg = err.message || "Failed to reject KYC status.";
+//       setActionError(errorMsg); // For modal display
+//       showToast(errorMsg, "error"); // For page level display
+//     } finally {
+//       setIsProcessingAction(false);
+//     }
+//   };
+
+//   const openApproveModal = () => {
+//     setActionError(null);
+//     setShowApprovalModal(true);
+//   };
+
+//   const submitApproval = async () => {
+//     if (
+//       !userId ||
+//       !userData ||
+//       userData.kyc?.status !== "pending" ||
+//       isProcessingAction
+//     )
+//       return;
+//     setIsProcessingAction("approve");
+//     setActionError(null);
+//     try {
+//       await kycAdminService.updateKycStatusAdmin(userId, {
+//         status: "verified",
+//       });
+//       showToast("KYC application approved successfully!", "success"); // SUCCESS TOAST
+//       setShowApprovalModal(false);
+//       await fetchUserDetails(false); // Fetch without full page loading indicator
+//     } catch (err: any) {
+//       const errorMsg = err.message || "Failed to approve KYC status.";
+//       setActionError(errorMsg); // For modal display
+//       showToast(errorMsg, "error"); // For page level display
+//     } finally {
+//       setIsProcessingAction(false);
+//     }
+//   };
+
+//   // --- Render Functions ---
+//   const renderLoading = () => (
+//     <div className="space-y-8">
+//       <div className="shadow-none border rounded-xl overflow-hidden">
+//         <CardHeader className="flex sm:flex-row flex-col sm:items-center items-start justify-between sm:p-6 p-4 gap-4">
+//           <div className="flex sm:flex-row flex-col sm:items-center gap-4 flex-1">
+//             <Skeleton className="h-16 w-16 rounded-full flex-shrink-0" />
+//             <div className="flex-1 space-y-2">
+//               <Skeleton className="h-6 w-1/2 rounded" />
+//               <Skeleton className="h-4 w-3/4 rounded" />
+//             </div>
+//           </div>
+//           <Skeleton className="h-9 w-27 rounded-full" />
+//         </CardHeader>
+//         <CardContent className="sm:p-6 p-4 border-t">
+//           <div className="flex md:flex-row flex-col justify-between md:items-center gap-4">
+//             <Skeleton className="h-5 w-48 rounded" />
+//             <Skeleton className="h-5 w-48 rounded" />
+//           </div>
+//         </CardContent>
+//         <div className="flex justify-end items-center p-4 border-t gap-3">
+//           <Skeleton className="h-12 w-52 rounded-full" />
+//           <Skeleton className="h-12 w-52 rounded-full" />
+//         </div>
+//       </div>
+//       <div className="flex xl:flex-row flex-col justify-between gap-6 mt-6">
+//         <div className="w-full xl:w-2/3 flex flex-col gap-6">
+//           <div className="shadow-none border rounded-xl gap-0 overflow-hidden">
+//             <CardHeader className="bg-primarybox px-5 py-4 h-[70]">
+//               <Skeleton className="h-6 w-48 rounded" />
+//             </CardHeader>
+//             <CardContent className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 sm:gap-6 gap-4">
+//               {[...Array(6)].map((_, i) => (
+//                 <div key={`personal-skel-${i}`} className="py-2 space-y-2">
+//                   <Skeleton className="h-3 w-1/4 rounded" />
+//                   <Skeleton className="h-5 w-3/4 rounded" />
+//                 </div>
+//               ))}
+//             </CardContent>
+//           </div>
+//           <div className="shadow-none border rounded-xl gap-0 overflow-hidden">
+//             <CardHeader className="bg-primarybox px-5 py-4 h-[70px]">
+//               <Skeleton className="h-6 w-56 rounded" />
+//             </CardHeader>
+//             <CardContent className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 sm:gap-6 gap-4">
+//               {[...Array(4)].map((_, i) => (
+//                 <div key={`id-skel-${i}`} className="py-2 space-y-2">
+//                   <Skeleton className="h-3 w-1/4 rounded" />
+//                   <Skeleton className="h-5 w-3/4 rounded" />
+//                 </div>
+//               ))}
+//             </CardContent>
+//           </div>
+//         </div>
+//         <div className="shadow-none border rounded-xl w-full xl:w-1/3 h-fit gap-0 overflow-hidden">
+//           <CardHeader className="bg-primarybox px-5 py-4">
+//             <Skeleton className="h-6 w-40 rounded mb-2" />
+//             <Skeleton className="h-4 w-full rounded" />
+//           </CardHeader>
+//           <CardContent className="p-4 sm:p-6">
+//             <div className="flex xl:flex-col sm:flex-row flex-col gap-4">
+//               {[...Array(2)].map((_, i) => (
+//                 <div
+//                   key={`doc-skel-${i}`}
+//                   className="border rounded-xl overflow-hidden w-full"
+//                 >
+//                   <CardHeader className="p-3">
+//                     <Skeleton className="h-4 w-1/3 rounded" />
+//                   </CardHeader>
+//                   <div className="aspect-[16/10] relative bg-primarybox flex items-center justify-center">
+//                     <ImageIcon className="h-12 w-12 text-muted-foreground/30" />
+//                   </div>
+//                   <CardFooter className="p-2">
+//                     <Skeleton className="h-6 w-3/4 mx-auto rounded" />
+//                   </CardFooter>
+//                 </div>
+//               ))}
+//             </div>
+//           </CardContent>
+//         </div>
+//       </div>
+//     </div>
+//   );
+
+//   const renderErrorDisplay = (
+//     message: string | null,
+//     isActionErrorType = false,
+//     isModalError = false
+//   ) => {
+//     /* Remains the same */
+//     if (!message) return null;
+//     return (
+//       <div
+//         className={cn(
+//           "border-l-4 p-4 rounded-md mb-6",
+//           isModalError
+//             ? "border-destructive bg-destructive/10"
+//             : isActionErrorType
+//             ? "border-destructive bg-destructive/10"
+//             : "border-yellow-500 bg-yellow-900/20"
+//         )}
+//         role="alert"
+//       >
+//         <div className="flex items-center">
+//           <AlertCircle
+//             className={cn(
+//               "h-5 w-5 mr-3 flex-shrink-0",
+//               isActionErrorType || isModalError
+//                 ? "text-destructive"
+//                 : "text-yellow-400"
+//             )}
+//           />
+//           <div>
+//             <p
+//               className={cn(
+//                 "text-sm font-medium",
+//                 isActionErrorType || isModalError
+//                   ? "text-red-300"
+//                   : "text-yellow-300"
+//               )}
+//             >
+//               {isActionErrorType || isModalError ? "Action Error" : "Error"}
+//             </p>
+//             <p
+//               className={cn(
+//                 "text-sm",
+//                 isActionErrorType || isModalError
+//                   ? "text-red-400"
+//                   : "text-yellow-400"
+//               )}
+//             >
+//               {message}
+//             </p>
+//             {!isActionErrorType &&
+//               !isModalError &&
+//               (message.includes("fetching") || message.includes("details")) && (
+//                 <button
+//                   onClick={() => fetchUserDetails()}
+//                   className="mt-2 text-sm font-medium text-yellow-700 dark:text-yellow-300 hover:underline flex items-center gap-1"
+//                   disabled={isLoading || isProcessingAction !== false}
+//                 >
+//                   <RefreshCw
+//                     className={cn(
+//                       "h-3 w-3",
+//                       (isLoading || isProcessingAction !== false) &&
+//                         "animate-spin"
+//                     )}
+//                   />{" "}
+//                   Retry Fetch
+//                 </button>
+//               )}
+//           </div>
+//         </div>
+//       </div>
+//     );
+//   };
+
+//   // // --- Main Render Logic ---
+//   // if (isLoading && !userData) {
+//   //   return (
+//   //     <div className="space-y-8">
+
+//   //       <div className="flex xl:flex-row flex-col justify-between gap-6 mt-6">
+//   //         <div className="w-full xl:w-2/3 flex flex-col gap-6">
+//   //           <div className="shadow-none border rounded-xl gap-0 overflow-hidden">
+//   //             <CardHeader className="bg-primarybox px-5 py-4 h-[70]">
+//   //               <Skeleton className="h-6 w-48 rounded" />
+//   //             </CardHeader>
+//   //             <CardContent className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 sm:gap-6 gap-4">
+//   //               {[...Array(6)].map((_, i) => (
+//   //                 <div key={`personal-skel-${i}`} className="py-2 space-y-2">
+//   //                   <Skeleton className="h-3 w-1/4 rounded" />
+//   //                   <Skeleton className="h-5 w-3/4 rounded" />
+//   //                 </div>
+//   //               ))}
+//   //             </CardContent>
+//   //           </div>
+//   //           <div className="shadow-none border rounded-xl gap-0 overflow-hidden">
+//   //             <CardHeader className="bg-primarybox px-5 py-4 h-[70px]">
+//   //               <Skeleton className="h-6 w-56 rounded" />
+//   //             </CardHeader>
+//   //             <CardContent className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 sm:gap-6 gap-4">
+//   //               {[...Array(4)].map((_, i) => (
+//   //                 <div key={`id-skel-${i}`} className="py-2 space-y-2">
+//   //                   <Skeleton className="h-3 w-1/4 rounded" />
+//   //                   <Skeleton className="h-5 w-3/4 rounded" />
+//   //                 </div>
+//   //               ))}
+//   //             </CardContent>
+//   //           </div>
+//   //         </div>
+//   //         <div className="shadow-none border rounded-xl w-full xl:w-1/3 h-fit gap-0 overflow-hidden">
+//   //           <CardHeader className="bg-primarybox px-5 py-4">
+//   //             <Skeleton className="h-6 w-40 rounded mb-2" />
+//   //             <Skeleton className="h-4 w-full rounded" />
+//   //           </CardHeader>
+//   //           <CardContent className="p-4 sm:p-6">
+//   //             <div className="flex xl:flex-col sm:flex-row flex-col gap-4">
+//   //               {[...Array(2)].map((_, i) => (
+//   //                 <div
+//   //                   key={`doc-skel-${i}`}
+//   //                   className="border rounded-xl overflow-hidden w-full"
+//   //                 >
+//   //                   <CardHeader className="p-3">
+//   //                     <Skeleton className="h-4 w-1/3 rounded" />
+//   //                   </CardHeader>
+//   //                   <div className="aspect-[16/10] relative flex items-center justify-center">
+//   //                     <ImageIcon className="h-12 w-12 text-secondarybox" />
+//   //                   </div>
+//   //                   <CardFooter className="p-2">
+//   //                     <Skeleton className="h-6 w-3/4 mx-auto rounded" />
+//   //                   </CardFooter>
+//   //                 </div>
+//   //               ))}
+//   //             </div>
+//   //           </CardContent>
+//   //         </div>
+//   //       </div>
+//   //     </div>
+//   //   );
+//   // }
+
+//   // --- Main Render Logic ---
+//   if (isLoading && userData) {
+//     return (
+//       <div className="min-h-screen ">
+//         <div className="container mx-auto px-4 py-8">
+//           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+//             <div>
+//               <Skeleton className="h-10 w-64 mb-3 rounded " />
+//               <Skeleton className="h-4 w-48  rounded " />
+//             </div>
+//             <Skeleton className="h-12.5 w-50 rounded-full" />
+//           </div>
+//           {renderLoading()}
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   if (error && !isLoading) {
+//     // Show error if loading is complete and error exists
+//     return (
+//       <div className="min-h-screen bg-background relative">
+//         <ToastContainer
+//           {...customToastContainerProps}
+//           style={getToastContainerStyle()}
+//         />
+//         <div className="container mx-auto px-4 py-8">
+//           <Link
+//             href="/admin/kyc-management"
+//             className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline transition-colors mb-6"
+//           >
+//             <ArrowLeft className="h-4 w-4" />
+//             Back to KYC Management
+//           </Link>
+//           {renderErrorDisplay(error)}
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   if (!userData && !isLoading) {
+//     // If no data and not loading (implies an earlier error or user not found)
+//     return (
+//       <div className="min-h-screen bg-background relative">
+//         <ToastContainer
+//           {...customToastContainerProps}
+//           style={getToastContainerStyle()}
+//         />
+//         <div className="container mx-auto px-4 py-8 text-center">
+//           <Link
+//             href="/admin/kyc-management"
+//             className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline transition-colors mb-6"
+//           >
+//             <ArrowLeft className="h-4 w-4" />
+//             Back to KYC Management
+//           </Link>
+//           <p className="py-16 text-muted-foreground">
+//             User data could not be loaded or user not found.
+//           </p>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   // Fallback if userData is somehow still null after checks (should ideally not be hit)
+//   if (!userData)
+//     return (
+//       <div className="min-h-screen bg-background relative">
+//         <ToastContainer
+//           {...customToastContainerProps}
+//           style={getToastContainerStyle()}
+//         />
+//         <div className="container mx-auto px-4 py-8 text-center">
+//           Loading or unexpected state...
+//         </div>
+//       </div>
+//     );
+
+//   const { kyc } = userData;
+//   const canTakeAction = kyc?.status === "pending";
+//   const statusConfig = getStatusConfig(kyc?.status);
+
+//   return (
+//     <div className="min-h-screen relative">
+//       <ToastContainer
+//         {...customToastContainerProps}
+//         style={getToastContainerStyle()}
+//       />
+
+//       <KycRejectModal
+//         isOpen={showRejectionModal}
+//         onClose={() => setShowRejectionModal(false)}
+//         onSubmit={submitRejection}
+//         isProcessing={isProcessingAction === "reject"}
+//         processingError={isProcessingAction === "reject" ? actionError : null}
+//         initialReason={rejectionReasonForModal}
+//         isMobileView={isMobile}
+//       />
+//       <KycApproveModal
+//         isOpen={showApprovalModal}
+//         onClose={() => setShowApprovalModal(false)}
+//         onSubmit={submitApproval}
+//         isProcessing={isProcessingAction === "approve"}
+//         processingError={isProcessingAction === "approve" ? actionError : null}
+//         isMobileView={isMobile}
+//       />
+//       <div className="container mx-auto px-4 py-5">
+//         <KycDetailHeader userId={userId} />
+
+//         <div className="overflow-hidden border rounded-xl">
+//           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-5 border-b">
+//             <div className="flex items-center gap-4">
+//               <Avatar className="size-14 sm:size-16 flex-shrink-0">
+//                 <AvatarFallback
+//                   className={cn(
+//                     "text-xl font-semibold text-mainheadingWhite",
+//                     statusConfig.color
+//                   )}
+//                 >
+//                   {getInitials(userData.fullName)}
+//                 </AvatarFallback>
+//               </Avatar>
+//               <div className="flex-1 space-y-2">
+//                 <CardTitle className="text-xl text-mainheadingWhite">
+//                   {userData.fullName || "Unnamed User"}
+//                 </CardTitle>
+//                 <CardDescription className="flex flex-wrap flex-row items-center gap-3 text-sm text-subheadingWhite">
+//                   <span className="flex items-center gap-2">
+//                     <Mail className="text-primary size-5" /> {userData.email}
+//                   </span>
+//                   {kyc?.mobile && (
+//                     <span className="flex items-center gap-2">
+//                       <Phone className="text-primary size-5" />
+//                       {formatMobile(kyc?.mobile)}
+//                     </span>
+//                   )}
+//                 </CardDescription>
+//               </div>
+//             </div>
+//             <Badge
+//               className={cn(
+//                 "px-4 py-2 text-sm flex items-center rounded-full gap-1.5",
+//                 statusConfig.color
+//               )}
+//             >
+//               <statusConfig.icon className="h-4 w-4" /> {statusConfig.label}
+//             </Badge>
+//           </div>
+//           <CardContent className="sm:p-6 p-4">
+//             <div className="flex md:flex-row flex-col justify-between md:items-center gap-4 md:text-base text-sm text-subheadingWhite">
+//               {kyc?.submittedAt && (
+//                 <span className="flex items-center gap-2">
+//                   <Clock className="size-5 text-primary" /> Submitted:{" "}
+//                   {formatDate(kyc.submittedAt, true)}
+//                 </span>
+//               )}
+//               {kyc?.verifiedAt && (
+//                 <span className="flex items-center gap-2 text-green-400">
+//                   <CheckCircle className="size-5" /> Verified:{" "}
+//                   {formatDate(kyc.verifiedAt, true)}
+//                 </span>
+//               )}
+//               {kyc?.rejectedAt && (
+//                 <span className="flex items-center gap-2 text-red-400">
+//                   <XCircle className="size-5" /> Rejected:{" "}
+//                   {formatDate(kyc.rejectedAt, true)}
+//                 </span>
+//               )}
+//             </div>
+//           </CardContent>
+//           {canTakeAction && (
+//             <CardFooter className="border-t sm:p-6 p-4">
+//               <div className="flex sm:flex-row flex-col gap-3 w-full sm:justify-end">
+//                 <button
+//                   onClick={openRejectModal}
+//                   disabled={!!isProcessingAction}
+//                   className="bg-red-500 text-white gap-2 flex justify-center items-center hover:bg-red-600 font-medium rounded-full px-8 py-3 h-12.5 text-center cursor-pointer transition-all duration-75 ease-linear sm:w-fit w-full disabled:opacity-60 disabled:cursor-not-allowed"
+//                 >
+//                   <XCircle className="size-5" />
+//                   Reject Application
+//                 </button>
+//                 <Button
+//                   onClick={openApproveModal}
+//                   disabled={!!isProcessingAction}
+//                   className="text-base bg-primary text-mainheading hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 flex justify-center items-center disabled:opacity-60 disabled:cursor-not-allowed"
+//                 >
+//                   <CheckCircle className="size-5" />
+//                   Approve Application
+//                 </Button>
+//               </div>
+//             </CardFooter>
+//           )}
+//           {actionError &&
+//             !showRejectionModal &&
+//             !showApprovalModal &&
+//             isProcessingAction === false && (
+//               <div className="px-4 sm:px-6 pb-4">
+//                 {renderErrorDisplay(actionError, true)}
+//               </div>
+//             )}
+//         </div>
+//         <div className="flex xl:flex-row flex-col justify-between gap-6 mt-6">
+//           <div className="w-full xl:w-2/3 flex flex-col gap-6">
+//             {kyc?.status === "rejected" && kyc.rejectionReason && (
+//               <div className="border-red-900 bg-red-700/10 border rounded-xl">
+//                 <CardHeader className="p-4">
+//                   <CardTitle className="text-base flex items-center gap-1.5 text-red-400">
+//                     <AlertCircle className="h-5 w-5" /> Rejection Reason
+//                   </CardTitle>
+//                 </CardHeader>
+//                 <CardContent className="p-4 pt-0">
+//                   <p className="text-sm text-red-300 font-normal">
+//                     {kyc.rejectionReason}
+//                   </p>
+//                 </CardContent>
+//               </div>
+//             )}
+
+//             <div className="shadow-none border rounded-xl gap-0 overflow-hidden">
+//               <CardHeader className="inline-flex items-center w-full bg-primarybox px-5 py-4 h-[70px]">
+//                 <CardTitle className="text-lg flex items-center gap-2 text-mainheadingWhite">
+//                   <IdCard className="size-5 text-primary" /> Personal
+//                   Information
+//                 </CardTitle>
+//               </CardHeader>
+//               <CardContent className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 sm:gap-6 gap-4">
+//                 <DetailItem
+//                   label="Full Name"
+//                   value={userData.fullName}
+//                   isImportant={true}
+//                   icon={User}
+//                 />
+//                 <DetailItem
+//                   label="Email Address"
+//                   value={userData.email}
+//                   icon={Mail}
+//                   isImportant={true}
+//                 />
+//                 <DetailItem
+//                   label="Date of Birth"
+//                   value={formatDate(kyc?.dateOfBirth)}
+//                   icon={CalendarDays}
+//                 />
+//                 <DetailItem
+//                   label="Mobile Number"
+//                   value={formatMobile(kyc?.mobile)}
+//                   icon={Phone}
+//                 />
+//                 <DetailItem
+//                   label="Nationality"
+//                   value={kyc?.nationality}
+//                   icon={Globe}
+//                 />
+//                 <DetailItem
+//                   label="Occupation"
+//                   value={kyc?.occupation}
+//                   icon={Briefcase}
+//                 />
+//                 <DetailItem
+//                   label="Salary Range"
+//                   value={
+//                     kyc?.salaryRange
+//                       ? salaryDisplayMap[kyc.salaryRange]
+//                       : undefined
+//                   }
+//                   icon={BadgeDollarSign}
+//                 />
+//               </CardContent>
+//             </div>
+//             <div className="shadow-none border rounded-xl gap-0 overflow-hidden">
+//               <CardHeader className="inline-flex items-center w-full bg-primarybox px-5 py-4  h-[70px]">
+//                 <CardTitle className="text-lg flex items-center gap-2 text-mainheadingWhite">
+//                   <Fingerprint className="size-5 text-primary" /> Identity
+//                   Document Details
+//                 </CardTitle>
+//               </CardHeader>
+//               <CardContent className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 sm:gap-6 gap-4">
+//                 <DetailItem
+//                   label="ID Type"
+//                   value={
+//                     <span className="capitalize">
+//                       {kyc?.idType?.replace("_", " ")}
+//                     </span>
+//                   }
+//                   isImportant={true}
+//                   icon={IdCard}
+//                 />
+//                 <DetailItem
+//                   label="ID Number"
+//                   value={kyc?.idNumber}
+//                   isImportant={true}
+//                   icon={IdCard}
+//                 />
+//                 <DetailItem
+//                   label="Date of Issue"
+//                   value={formatDate(kyc?.idIssueDate)}
+//                   icon={CalendarDays}
+//                 />
+//                 <DetailItem
+//                   label="Date of Expiry"
+//                   value={formatDate(kyc?.idExpiryDate)}
+//                   icon={CalendarDays}
+//                 />
+//               </CardContent>
+//             </div>
+//           </div>
+//           <div className="shadow-none border rounded-xl w-full xl:w-1/3 h-fit gap-0 overflow-hidden">
+//             <CardHeader className="bg-primarybox px-5 py-4">
+//               <CardTitle className="text-lg flex items-center gap-2 text-mainheadingWhite">
+//                 <FileText className="size-5 text-primary" /> Submitted Documents
+//               </CardTitle>
+//               <CardDescription className="text-subheadingWhite pt-1">
+//                 Review identification documents submitted by the user
+//               </CardDescription>
+//             </CardHeader>
+//             <CardContent className="p-4 sm:p-6">
+//               {kyc?.documents && kyc.documents.length > 0 ? (
+//                 <div className="flex xl:flex-col sm:flex-row flex-col gap-4">
+//                   {kyc.documents.map((doc) => (
+//                     <div
+//                       key={doc.public_id}
+//                       className="overflow-hidden border rounded-xl w-full"
+//                     >
+//                       <CardHeader className="p-3 bg-primarybox">
+//                         <CardTitle className="text-sm capitalize text-mainheadingWhite flex items-center gap-1.5">
+//                           {doc.docType === "id_front" ? "ID Front" : "ID Back"}
+//                         </CardTitle>
+//                       </CardHeader>
+//                       {doc.url && !doc.url.toLowerCase().endsWith(".pdf") ? (
+//                         <div className="aspect-[16/10] relative group bg-background">
+//                           <Image
+//                             src={doc.url}
+//                             alt={`${doc.docType} preview`}
+//                             fill
+//                             className="object-contain p-1"
+//                             unoptimized
+//                           />
+//                           <Link
+//                             href={doc.url}
+//                             target="_blank"
+//                             rel="noopener noreferrer"
+//                             className="absolute inset-0 bg-black/50 opacity-0 flex-col group-hover:opacity-100 flex items-center justify-center transition-opacity duration-200 text-white"
+//                             aria-label={`View full ${
+//                               doc.docType === "id_front"
+//                                 ? "ID Front"
+//                                 : "ID Back"
+//                             } document`}
+//                           >
+//                             <Eye className="size-5 mb-1" />
+//                             <span className="text-xs font-medium">
+//                               View Full
+//                             </span>
+//                           </Link>
+//                         </div>
+//                       ) : (
+//                         <CardContent className="flex items-center justify-center py-8">
+//                           <Link
+//                             href={doc.url || "#"}
+//                             target="_blank"
+//                             rel="noopener noreferrer"
+//                             className={cn(
+//                               "flex flex-col items-center text-muted-foreground hover:text-primary transition-colors",
+//                               !doc.url && "pointer-events-none opacity-50"
+//                             )}
+//                             aria-label={`View ${
+//                               doc.docType === "id_front"
+//                                 ? "ID Front"
+//                                 : "ID Back"
+//                             } document`}
+//                           >
+//                             <FileText className="h-12 w-12 mb-2" />
+//                             <span className="text-xs font-medium flex items-center">
+//                               View PDF
+//                               <ExternalLink className="h-3 w-3 ml-1 opacity-70 inline-block" />
+//                             </span>
+//                           </Link>
+//                         </CardContent>
+//                       )}
+//                       <CardFooter className="p-2 bg-primarybox">
+//                         <Link
+//                           href={doc.url || "#"}
+//                           target="_blank"
+//                           rel="noopener noreferrer"
+//                           className={cn(
+//                             "w-full",
+//                             !doc.url && "pointer-events-none opacity-50"
+//                           )}
+//                         >
+//                           <Button
+//                             variant="link"
+//                             size="sm"
+//                             className="w-full text-xs justify-center items-center gap-1 text-primary"
+//                             disabled={!doc.url}
+//                           >
+//                             View Full Document{" "}
+//                             <ExternalLink className="size-3.5" />
+//                           </Button>
+//                         </Link>
+//                       </CardFooter>
+//                     </div>
+//                   ))}
+//                 </div>
+//               ) : (
+//                 <div className="text-center py-8 px-4 border border-dashed rounded-lg">
+//                   <Info className="h-10 w-10 text-mainheadingWhite mx-auto mb-3" />
+//                   <p className="text-sm text-mainheadingWhite">
+//                     No documents submitted.
+//                   </p>
+//                 </div>
+//               )}
+//             </CardContent>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default KycUserDetailPage;
+
+
+
+
 // frontend/src/app/admin/kyc-management/[userId]/page.tsx
 "use client";
 
@@ -6814,7 +7845,7 @@ const KycUserDetailPage: React.FC = () => {
         <div className="w-full xl:w-2/3 flex flex-col gap-6">
           <div className="shadow-none border rounded-xl gap-0 overflow-hidden">
             <CardHeader className="bg-primarybox px-5 py-4 h-[70]">
-              <Skeleton className="h-6 w-48 rounded" />
+              <Skeleton className="h-6 w-48 rounded bg-background/50" />
             </CardHeader>
             <CardContent className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 sm:gap-6 gap-4">
               {[...Array(6)].map((_, i) => (
@@ -6827,7 +7858,7 @@ const KycUserDetailPage: React.FC = () => {
           </div>
           <div className="shadow-none border rounded-xl gap-0 overflow-hidden">
             <CardHeader className="bg-primarybox px-5 py-4 h-[70px]">
-              <Skeleton className="h-6 w-56 rounded" />
+              <Skeleton className="h-6 w-56 rounded bg-background/50" />
             </CardHeader>
             <CardContent className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 sm:gap-6 gap-4">
               {[...Array(4)].map((_, i) => (
@@ -6841,8 +7872,8 @@ const KycUserDetailPage: React.FC = () => {
         </div>
         <div className="shadow-none border rounded-xl w-full xl:w-1/3 h-fit gap-0 overflow-hidden">
           <CardHeader className="bg-primarybox px-5 py-4">
-            <Skeleton className="h-6 w-40 rounded mb-2" />
-            <Skeleton className="h-4 w-full rounded" />
+            <Skeleton className="h-6 w-40 rounded mb-2 bg-background/50" />
+            <Skeleton className="h-4 w-full rounded bg-background/50" />
           </CardHeader>
           <CardContent className="p-4 sm:p-6">
             <div className="flex xl:flex-col sm:flex-row flex-col gap-4">
@@ -6851,14 +7882,14 @@ const KycUserDetailPage: React.FC = () => {
                   key={`doc-skel-${i}`}
                   className="border rounded-xl overflow-hidden w-full"
                 >
-                  <CardHeader className="p-3">
-                    <Skeleton className="h-4 w-1/3 rounded" />
+                  <CardHeader className="p-3 bg-primarybox">
+                    <Skeleton className="h-4 w-1/3 rounded bg-background/50" />
                   </CardHeader>
-                  <div className="aspect-[16/10] relative bg-primarybox flex items-center justify-center">
-                    <ImageIcon className="h-12 w-12 text-muted-foreground/30" />
+                  <div className="aspect-[16/10] relative flex items-center justify-center">
+                    <ImageIcon className="h-12 w-12 text-primarybox" />
                   </div>
-                  <CardFooter className="p-2">
-                    <Skeleton className="h-6 w-3/4 mx-auto rounded" />
+                  <CardFooter className="p-2 bg-primarybox">
+                    <Skeleton className="h-3 w-32 mx-auto rounded bg-background/50" />
                   </CardFooter>
                 </div>
               ))}
@@ -6923,7 +7954,7 @@ const KycUserDetailPage: React.FC = () => {
               (message.includes("fetching") || message.includes("details")) && (
                 <button
                   onClick={() => fetchUserDetails()}
-                  className="mt-2 text-sm font-medium text-yellow-700 dark:text-yellow-300 hover:underline flex items-center gap-1"
+                  className="mt-2 text-sm font-medium text-yellow-300 hover:underline flex items-center gap-1"
                   disabled={isLoading || isProcessingAction !== false}
                 >
                   <RefreshCw
@@ -7014,10 +8045,10 @@ const KycUserDetailPage: React.FC = () => {
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
             <div>
-              <Skeleton className="h-10 w-64 mb-3 rounded " />
-              <Skeleton className="h-4 w-48  rounded " />
+              <Skeleton className="h-4 sm:w-72 w-64 mb-3 rounded " />
+              <Skeleton className="h-8 w-48 rounded " />
             </div>
-            <Skeleton className="h-12.5 w-50 rounded-full" />
+            <Skeleton className="h-4 w-40 rounded-full" />
           </div>
           {renderLoading()}
         </div>

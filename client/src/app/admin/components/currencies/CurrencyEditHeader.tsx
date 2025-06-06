@@ -55,6 +55,7 @@ const CurrencyEditHeader: React.FC<CurrencyEditHeaderProps> = ({
           <h1 className="lg:text-3xl text-2xl font-medium text-primary">
             Edit Currency
           </h1>
+          
         </div>
 
         {/* Back Button */}

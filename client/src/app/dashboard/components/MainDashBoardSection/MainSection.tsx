@@ -637,7 +637,7 @@ const MainDashBoard = () => {
        
         <Link href={"/dashboard/send/select-balance"}>
           {/* Added icon, added `gap-1.5` for spacing */}
-          <button className="flex items-center justify-center gap-1.5 bg-primary text-neutral-900 hover:bg-primaryhover py-1 px-4 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer">
+          <button className="flex items-center justify-center gap-1.5 bg-primary text-mainheading hover:bg-primaryhover py-1 px-4 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer">
             <BsSend size={18} /> {/* Adjust size as needed */}
             Send
           </button>
@@ -645,7 +645,7 @@ const MainDashBoard = () => {
 
         <Link href={"/dashboard/add-money/select-balance"}>
           {/* Added icon, added `gap-1.5` for spacing */}
-          <button className="flex items-center justify-center gap-1.5 bg-primarybox text-primary hover:bg-primaryhover hover:text-neutral-900 py-1 px-4 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer">
+          <button className="flex items-center justify-center gap-1.5 bg-primarybox text-primary hover:bg-primaryhover hover:text-mainheading py-1 px-4 font-medium rounded-full transition-all duration-75 ease-linear cursor-pointer">
             <TbMoneybag size={18} /> {/* Adjust size as needed */}
             Add
           </button>

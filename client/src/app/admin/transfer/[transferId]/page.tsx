@@ -4273,6 +4273,639 @@
 
 // export default AdminTransferDetailPage;
 
+// // frontend/src/app/admin/transfers/[transferId]/page.tsx
+// "use client";
+// import React, { useState, useEffect, useCallback } from "react";
+// import adminTransferService from "../../../services/admin/transfer";
+// import adminCurrencyService from "../../../services/admin/currency";
+// import { useAuth } from "../../../contexts/AuthContext";
+// import { useParams, useRouter } from "next/navigation";
+// import { Skeleton } from "@/components/ui/skeleton";
+// import { XCircle, RefreshCw, ArrowLeft, AlertCircle } from "lucide-react";
+// import Link from "next/link";
+
+// // Import react-toastify
+// import {
+//   ToastContainer,
+//   toast,
+//   Slide,
+//   ToastContainerProps,
+//   TypeOptions,
+// } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+
+// // Import CustomToast (adjust path as per your project structure)
+// import CustomToast, {
+//   CustomToastProps,
+// } from "../../../../app/components/CustomToast";
+
+// // Import the new components
+// import TransferHeader from "../../components/transfers/TransferHeader";
+// import TransferOverviewCard from "../../components/transfers/TransferOverviewCard";
+// import TransferStatusSection from "../../components/transfers/TransferStatusSection";
+// import TransferInfoCard from "../../components/transfers/TransferInfoCard";
+// import SenderInfoCard from "../../components/transfers/SenderInfoCard";
+// import RecipientInfoCard from "../../components/transfers/RecipientInfoCard";
+// import TransactionDetailsCard from "../../components/transfers/TransactionDetailsCard";
+
+// // --- Define Interfaces (Ideally move to a central types file, e.g., types/index.ts) ---
+// // Note: These interfaces are defined here for direct reference within the provided code context.
+// // In a real project, put these in a shared types file.
+
+// interface User {
+//   _id: string;
+//   firstName?: string;
+//   lastName?: string;
+//   email?: string;
+//   fullName?: string; // Added for SenderInfoCard, often a computed field or separate
+//   profileImage?: string;
+//   createdAt?: string | Date; // Added for SenderInfoCard
+// }
+
+// interface Recipient {
+//   _id: string;
+//   name?: string;
+//   email?: string;
+//   accountNumber?: string;
+//   bankName?: string;
+//   accountHolderName?: string; // For RecipientInfoCard
+//   profileImage?: string;
+//   nickname?: string;
+//   accountType?: string;
+//   ifscCode?: string;
+//   swiftCode?: string;
+//   iban?: string;
+//   address?: string;
+// }
+
+// // Currency reference for cases where only ID or code is present
+// interface CurrencyRef {
+//   _id?: string;
+//   code: string;
+// }
+
+// // Full Currency object as returned by currency service
+// interface Currency {
+//   _id: string;
+//   name: string;
+//   code: string;
+//   symbol: string;
+//   flagImage?: string | null;
+// }
+
+// // Main Transfer interface combining potential fields from various APIs/stages
+// interface Transfer {
+//   _id: string;
+//   user: User;
+//   recipient: Recipient;
+//   // Original fields
+//   sourceCurrency: string; // Typically an ID
+//   targetCurrency: string; // Typically an ID
+//   sourceAmount: number;
+//   targetAmount: number;
+//   // More flexible fields that might be used
+//   sendAmount?: number | null; // Preferred if available
+//   receiveAmount?: number | null; // Preferred if available
+//   sendCurrency?: string | CurrencyRef | null; // ID or object with code
+//   receiveCurrency?: string | CurrencyRef | null; // ID or object with code
+//   status: string;
+//   exchangeRate?: number | null;
+//   fee?: number | null; // Original fee
+//   fees?: number | null; // Alternative fee field
+//   createdAt: string;
+//   updatedAt: string;
+//   reference?: string;
+//   paymentMethod?: string;
+//   transferPurpose?: string;
+//   failureReason?: string | null; // For failed transfers
+//   cancellationReason?: string | null; // For cancelled transfers
+// }
+
+// interface AdminTransferDetailPageParams
+//   extends Record<string, string | string[]> {
+//   transferId: string;
+// }
+
+// // --- Loading Skeleton Component ---
+// const LoadingSkeleton = () => (
+//   <div className="container mx-auto px-4 py-8">
+//     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+//       <div>
+//         <Skeleton className="h-4 w-64 mb-3 rounded" />
+//         <Skeleton className="h-8 w-48 rounded" />
+//       </div>
+//       <Skeleton className="h-12 w-43 rounded-full" />
+//     </div>
+
+//     <div className="bg-primarybox rounded-xl sm:p-6 p-4 mb-8">
+//       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+//         <div className="flex items-center gap-4">
+//           <Skeleton className="h-8 w-24 bg-background/50 rounded-full" />
+//           <div className="space-y-1.5">
+//             <Skeleton className="h-3 w-16 bg-background/50 rounded" />
+//             <Skeleton className="h-4 w-32 bg-background/50 rounded" />
+//           </div>
+//         </div>
+//         <div className="flex flex-col sm:flex-row sm:items-center gap-4 md:gap-6 mt-4 md:mt-0">
+//           <Skeleton className="h-14 sm:w-40 w-full bg-background/50 rounded-lg" />
+//           <Skeleton className="h-14 sm:w-44 w-full bg-background/50 rounded-lg" />
+//         </div>
+//       </div>
+//     </div>
+
+//     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+//       <div className="lg:col-span-1 space-y-6">
+//         <div className="bg-primarybox rounded-xl overflow-hidden border">
+//           <div className="bg-secondarybox px-6 py-4">
+//             <Skeleton className="h-6 w-3/5 rounded bg-background/50" />
+//           </div>
+//           <div className="sm:p-6 p-4 space-y-6">
+//             <div className="space-y-2">
+//               <Skeleton className="h-4 w-1/3 rounded bg-background/50" />
+//               <Skeleton className="h-8 w-28 rounded-full bg-background/50" />
+//             </div>
+//             <div className="space-y-3">
+//               <Skeleton className="h-4 w-1/4 rounded mb-3" />
+//               <Skeleton className="h-10 w-full rounded bg-background/50" />
+//               <Skeleton className="h-10 w-full rounded bg-background/50" />
+//             </div>
+//             <div className="pt-4">
+//               <Skeleton className="h-4 w-1/3 rounded mb-3 bg-background/50" />
+//               <Skeleton className="h-10 w-full rounded-md bg-background/50" />
+//             </div>
+//           </div>
+//         </div>
+
+//         <div className="bg-primarybox rounded-xl overflow-hidden border">
+//           <div className="bg-secondarybox px-6 py-4">
+//             <Skeleton className="h-6 w-1/2 rounded bg-background/50" />
+//           </div>
+//           <div className="sm:p-6 p-4 space-y-4">
+//             <Skeleton className="h-14 w-full rounded-lg bg-background/50" />
+//             <Skeleton className="h-14 w-full rounded-lg bg-background/50" />
+//             <Skeleton className="h-14 w-full rounded-lg bg-background/50" />
+//           </div>
+//         </div>
+//       </div>
+
+//       <div className="lg:col-span-2 border rounded-2xl">
+//         <div className="rounded-xl bg-primarybox overflow-hidden">
+//           <div className="bg-secondarybox px-6 py-4">
+//             <Skeleton className="h-6 w-48 rounded bg-background/50" />
+//           </div>
+//           <div className="sm:p-6 p-4 space-y-8">
+//             <div>
+//               <Skeleton className="h-6 w-40 rounded-full mb-4" />
+//               <div className="flex items-start sm:items-center rounded-xl border p-4 flex-col sm:flex-row">
+//                 <Skeleton className="size-12 sm:size-16 rounded-full flex-shrink-0 mb-3 sm:mb-0 bg-background/50" />
+//                 <div className="ml-0 sm:ml-4 flex-grow w-full space-y-2">
+//                   <div className="flex justify-between items-center">
+//                     <Skeleton className="h-5 w-1/2 rounded bg-background/50" />
+//                     <Skeleton className="h-5 w-16 rounded-full bg-background/50" />
+//                   </div>
+//                   <Skeleton className="h-4 w-3/4 rounded bg-background/50" />
+//                   <div className="mt-3 pt-3 flex gap-6">
+//                     <Skeleton className="h-10 w-1/2 rounded bg-background/50" />
+//                     <Skeleton className="h-10 w-1/2 rounded bg-background/50" />
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//             <div>
+//               <Skeleton className="h-6 w-44 rounded-full mb-4 bg-background/50" />
+//               <div className="rounded-xl border p-4">
+//                 <div className="flex items-start sm:items-center mb-4 flex-col sm:flex-row">
+//                   <Skeleton className="size-12 sm:size-16 rounded-full flex-shrink-0 mb-3 sm:mb-0 bg-background/50" />
+//                   <div className="ml-0 sm:ml-4 flex-grow w-full space-y-2">
+//                     <div className="flex justify-between items-center">
+//                       <Skeleton className="h-5 w-1/2 rounded bg-background/50" />
+//                       <Skeleton className="h-5 w-20 rounded-full bg-background/50" />
+//                     </div>
+//                     <Skeleton className="h-4 w-full rounded bg-background/50" />
+//                   </div>
+//                 </div>
+//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 mt-2 pt-3">
+//                   <Skeleton className="h-12 w-full rounded bg-background/50" />
+//                   <Skeleton className="h-12 w-full rounded bg-background/50" />
+//                   <Skeleton className="h-12 w-full rounded bg-background/50" />
+//                   <Skeleton className="h-12 w-full rounded bg-background/50" />
+//                 </div>
+//               </div>
+//             </div>
+//             <div>
+//               <Skeleton className="h-6 w-48 rounded-full mb-4 bg-background/50" />
+//               <div className="rounded-xl border overflow-hidden">
+//                 <div className="sm:p-5 p-4">
+//                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+//                     <Skeleton className="h-20 w-full rounded-lg bg-background/50" />
+//                     <Skeleton className="h-20 w-full rounded-lg bg-background/50" />
+//                   </div>
+//                 </div>
+//                 <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x border-y">
+//                   <div className="p-4">
+//                     {" "}
+//                     <Skeleton className="h-10 w-full rounded bg-background/50" />{" "}
+//                   </div>
+//                   <div className="p-4">
+//                     {" "}
+//                     <Skeleton className="h-10 w-full rounded bg-background/50" />{" "}
+//                   </div>
+//                 </div>
+//                 <div className="p-4">
+//                   {" "}
+//                   <Skeleton className="h-10 w-full rounded-lg bg-background/50" />{" "}
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   </div>
+// );
+
+// // --- Error Display Component ---
+// const ErrorDisplay = ({
+//   error,
+//   onRetry,
+// }: {
+//   error: string | null;
+//   onRetry: () => void;
+// }) => (
+//   <div className="container mx-auto px-4 py-5">
+//     <div className="bg-primarybox space-y-3 rounded-xl p-4 text-center">
+//       <div className="sm:size-12 mx-auto size-10 rounded-full flex items-center justify-center bg-primary flex-shrink-0">
+//         <XCircle className="text-mainheading sm:size-6 size-5 flex-shrink-0" />
+//       </div>
+
+//       <h2 className="lg:text-2xl text-xl font-semibold text-mainheadingWhite">
+//         Unable to Load Transfer
+//       </h2>
+
+//       <p className="text-subheadingWhite lg:text-base test-sm max-w-lg mx-auto">
+//         {error ||
+//           "The requested transfer details could not be found or accessed."}
+//       </p>
+
+//       <div className="flex flex-wrap justify-center gap-4 mt-6">
+//         <button
+//           onClick={onRetry}
+//           className="flex justify-center items-center gap-2 bg-primary text-mainheading hover:bg-primaryhover font-medium rounded-full px-8 py-3 h-12 transition-all cursor-pointer duration-75 ease-linear"
+//         >
+//           <RefreshCw className="size-4" /> Retry
+//         </button>
+
+//         <Link
+//           href="/admin/transfers"
+//           className=" flex justify-center items-center gap-2 text-primary bg-secondarybox hover:bg-secondaryboxhover font-medium rounded-full px-8 py-3 h-12 transition-all duration-75 ease-linear"
+//         >
+//           <ArrowLeft className="size-4" /> Back to Transfers
+//         </Link>
+//       </div>
+//     </div>
+//   </div>
+// );
+
+// // --- Access Restricted Component ---
+// const AccessRestrictedDisplay = () => (
+//   <div className="container mx-auto px-4 py-5">
+//     <div className="bg-secondarybox rounded-xl p-4 text-center space-y-4">
+//       <div className="mx-auto sm:size-12 size-10 flex items-center font-medium justify-center rounded-full bg-primary">
+//         <AlertCircle className="size-6 text-mainheading" />
+//       </div>
+//       <h2 className="lg:text-2xl text-xl font-semibold text-mainheadingWhite">
+//         Access Restricted
+//       </h2>
+//       <p className="text-subheadyingWhite max-w-lg lg:text-base text-sm mx-auto">
+//         This page requires administrator privileges. You do not have the
+//         necessary permissions to view this content.
+//       </p>
+
+//       <div className="inline-block">
+//         <Link
+//           href="/dashboard"
+//           className="flex justify-center gap-2 items-center bg-primary text-mainheading hover:bg-primaryhover font-medium rounded-full px-8 py-3 h-12 transition-all cursor-pointer duration-75 ease-linear"
+//         >
+//           <ArrowLeft className="size-4" /> Return to Dashboard
+//         </Link>
+//       </div>
+//     </div>
+//   </div>
+// );
+
+// // Helper to map transfer status to Toast type
+// const mapTransferStatusToToastType = (
+//   status: string
+// ): CustomToastProps["type"] => {
+//   const lowerStatus = status.toLowerCase();
+//   switch (lowerStatus) {
+//     case "completed":
+//       return "success";
+//     case "pending":
+//     case "processing":
+//     case "in-progress": // Added for robustness if 'in-progress' is used
+//       return "info";
+//     case "canceled":
+//     case "cancelled":
+//     case "failed":
+//     case "rejected": // Added for robustness
+//       return "error";
+//     case "on-hold": // Added for robustness
+//     case "requires-action": // Added for robustness
+//     case "unknown":
+//       return "warning";
+//     default:
+//       return "default";
+//   }
+// };
+
+// // Helper to get currency reference for cards
+// // This helper needs to handle string IDs (from `sourceCurrency`/`targetCurrency`)
+// // AND objects (from `sendCurrency`/`receiveCurrency`)
+// const getCurrencyRefForOverviewCard = (
+//   currencyIdentifier: string | CurrencyRef | null | undefined,
+//   map: { [key: string]: Currency } // Map of ID to full Currency object
+// ): CurrencyRef | null => {
+//   if (!currencyIdentifier) return null;
+
+//   if (typeof currencyIdentifier === "string") {
+//     // If it's a string, it's an ID. Look up in the map.
+//     const foundCurrency = map[currencyIdentifier];
+//     return foundCurrency
+//       ? { _id: foundCurrency._id, code: foundCurrency.code }
+//       : null;
+//   }
+//   // If it's an object, it's already a CurrencyRef (or similar).
+//   // Ensure it has a 'code' property.
+//   if (
+//     typeof currencyIdentifier === "object" &&
+//     currencyIdentifier !== null &&
+//     typeof currencyIdentifier.code === "string"
+//   ) {
+//     return { _id: currencyIdentifier._id, code: currencyIdentifier.code };
+//   }
+//   return null;
+// };
+
+// const AdminTransferDetailPage = () => {
+//   const params = useParams<AdminTransferDetailPageParams>();
+//   const { transferId } = params;
+//   const [transfer, setTransfer] = useState<Transfer | null>(null);
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+//   const { token, isAdmin, loading: authLoading } = useAuth();
+//   const router = useRouter();
+//   // currenciesMap: key is Currency._id, value is Currency object
+//   const [currenciesMap, setCurrenciesMap] = useState<{
+//     [key: string]: Currency;
+//   }>({});
+//   const [isMobile, setIsMobile] = useState(false);
+
+//   useEffect(() => {
+//     const handleResize = () => setIsMobile(window.innerWidth < 640);
+//     handleResize(); // Set initial value
+//     window.addEventListener("resize", handleResize);
+//     return () => window.removeEventListener("resize", handleResize);
+//   }, []);
+
+//   const showToast = useCallback(
+//     (message: string, type?: CustomToastProps["type"]) => {
+//       const effectiveType = type || "default";
+//       let progressClassName: string;
+
+//       switch (effectiveType) {
+//         case "success":
+//           progressClassName = "toast-progress-success";
+//           break;
+//         case "error":
+//           progressClassName = "toast-progress-error";
+//           break;
+//         case "info":
+//           progressClassName = "toast-progress-info";
+//           break;
+//         case "warning":
+//           progressClassName = "toast-progress-warning";
+//           break;
+//         case "default":
+//         default:
+//           progressClassName = "toast-progress-default";
+//           break;
+//       }
+
+//       toast(<CustomToast message={message} type={effectiveType} />, {
+//         progressClassName: progressClassName,
+//         type: effectiveType as TypeOptions, // Pass type to react-toastify
+//         icon: false, // Disable react-toastify's default icon
+//         // Consider adding a unique toastId if multiple toasts could appear rapidly
+//         // toastId: message, // Example: simple unique ID for prevent duplicates
+//       });
+//     },
+//     []
+//   );
+
+//   const fetchData = useCallback(async () => {
+//     if (!token || !transferId) {
+//       setIsLoading(false);
+//       return;
+//     }
+//     setIsLoading(true);
+//     setError(null);
+//     try {
+//       const [transferData, currenciesData] = await Promise.all([
+//         adminTransferService.getAdminTransferById(transferId, token),
+//         adminCurrencyService.getAllCurrenciesAdmin(token),
+//       ]);
+
+//       setTransfer(transferData as Transfer);
+
+//       const map: { [key: string]: Currency } = {};
+//       if (Array.isArray(currenciesData)) {
+//         currenciesData.forEach((currency: any) => {
+//           if (
+//             currency &&
+//             typeof currency === "object" &&
+//             typeof currency._id === "string"
+//           ) {
+//             map[currency._id] = currency as Currency;
+//           }
+//         });
+//       }
+//       setCurrenciesMap(map);
+//     } catch (err: unknown) {
+//       let errorMessage = "Failed to load transfer details.";
+//       if (err instanceof Error) errorMessage = err.message;
+//       if (typeof err === "object" && err !== null) {
+//         const potentialError = err as any; // Cast to any to access potential 'response.data.message'
+//         errorMessage =
+//           potentialError.response?.data?.message ||
+//           potentialError.message ||
+//           errorMessage;
+//       } else if (typeof err === "string") errorMessage = err;
+//       showToast(errorMessage, "error");
+//       setError(errorMessage);
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   }, [token, transferId, showToast]); // fetchData depends on showToast now
+
+//   useEffect(() => {
+//     if (authLoading) return; // Wait for authentication status to resolve
+//     if (!token) {
+//       router.push("/auth/login?redirect=/admin/transfers/" + transferId);
+//       return;
+//     }
+//     if (!isAdmin) {
+//       setIsLoading(false); // Stop loading if not admin
+//       return;
+//     }
+//     fetchData();
+//   }, [transferId, token, isAdmin, authLoading, router, fetchData]); // Re-run if auth or transferId changes
+
+//   const handleStatusUpdated = () => {
+//     fetchData(); // Refetch data after status update
+//     // Optionally, show a success toast after status update + refetch
+//     // showToast("Transfer status refreshed.", "info");
+//   };
+
+//   const toastContainerProps: ToastContainerProps = {
+//     position: "top-right",
+//     autoClose: 5000,
+//     hideProgressBar: false,
+//     newestOnTop: true,
+//     closeOnClick: false,
+//     closeButton: false,
+//     rtl: false,
+//     pauseOnFocusLoss: true,
+//     draggable: true,
+//     pauseOnHover: true,
+//     transition: Slide,
+//     toastClassName: () =>
+//       "p-0 shadow-none rounded-md bg-transparent w-full relative mb-3",
+//   };
+
+//   const getToastContainerStyle = (): React.CSSProperties & {
+//     [key: `--${string}`]: string | number;
+//   } => {
+//     const baseStyle = { zIndex: 30 }; // Ensure toast is above other elements
+//     if (isMobile)
+//       return {
+//         ...baseStyle,
+//         top: "1rem",
+//         left: "1rem",
+//         right: "1rem",
+//         width: "auto",
+//       };
+//     return { ...baseStyle, top: "0.75rem", right: "0.75rem", width: "320px" };
+//   };
+
+//   const overviewDataForCard = (() => {
+//     if (!transfer) return null;
+//     return {
+//       _id: transfer._id,
+//       status: transfer.status,
+//       createdAt: transfer.createdAt,
+//       sendAmount: transfer.sendAmount ?? transfer.sourceAmount,
+//       // Pass the sendCurrency directly, let TransferOverviewCard handle resolution
+//       sendCurrency: getCurrencyRefForOverviewCard(
+//         transfer.sendCurrency ?? transfer.sourceCurrency,
+//         currenciesMap
+//       ),
+//     };
+//   })();
+
+//   if (authLoading) {
+//     return <LoadingSkeleton />;
+//   }
+
+//   if (!isAdmin) {
+//     return <AccessRestrictedDisplay />;
+//   }
+
+//   if (isLoading) {
+//     return <LoadingSkeleton />;
+//   }
+
+//   if (error && !transfer) {
+//     return (
+//       <div className="container mx-auto px-4 py-5">
+//         <ErrorDisplay error={error} onRetry={fetchData} />
+//       </div>
+//     );
+//   }
+
+//   if (!transfer) {
+//     return (
+//       <div className="container mx-auto p-8 text-center text-slate-600 dark:text-neutral-300">
+//         Transfer data not found. Please try refreshing or check the transfer ID.
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="min-h-screen bg-background">
+//       <ToastContainer
+//         {...toastContainerProps}
+//         style={getToastContainerStyle()}
+//       />
+
+//       <div className="container mx-auto px-4 py-5">
+//         <TransferHeader transferId={transfer._id} />
+//         {overviewDataForCard && (
+//           <TransferOverviewCard transfer={overviewDataForCard} />
+//         )}
+//         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+//           <div className="lg:col-span-1 space-y-6">
+//             <TransferStatusSection
+//               transfer={transfer}
+//               token={token!} // token is guaranteed to be present here due to checks above
+//               onStatusUpdated={handleStatusUpdated}
+//               showToast={showToast}
+//               mapStatusToToastType={mapTransferStatusToToastType}
+//             />
+//             <TransferInfoCard transfer={transfer} />
+//           </div>
+
+//           <div className="lg:col-span-2">
+//             <div className="rounded-xl border bg-primarybox overflow-hidden">
+//               <div className="bg-secondarybox px-6 py-4">
+//                 <h3 className="text-lg font-semibold text-mainheadingWhite">
+//                   Detailed Information
+//                 </h3>
+//               </div>
+//               <div className="sm:p-6 p-4 space-y-8">
+//                 {/* Sender's full name might be constructed from firstName/lastName or provided directly */}
+//                 <SenderInfoCard
+//                   user={{
+//                     _id: transfer.user._id,
+//                     fullName:
+//                       `${transfer.user.firstName || ""} ${
+//                         transfer.user.lastName || ""
+//                       }`.trim() || transfer.user.email,
+//                     email: transfer.user.email,
+//                     // profileImage and createdAt are not directly on transfer.user in provided interfaces,
+//                     // but often exist on a full User object. Assuming their presence for the component.
+//                     // If not present, remove from prop, or extend User interface if service provides.
+//                   }}
+//                 />
+//                 <RecipientInfoCard recipient={transfer.recipient} />
+//                 <TransactionDetailsCard
+//                   transfer={transfer}
+//                   currenciesMap={currenciesMap}
+//                 />
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default AdminTransferDetailPage;
+
+
+
+
 // frontend/src/app/admin/transfers/[transferId]/page.tsx
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
@@ -4287,10 +4920,11 @@ import Link from "next/link";
 // Import react-toastify
 import {
   ToastContainer,
-  toast,
+  toast, // Direct import of react-toastify's toast
   Slide,
   ToastContainerProps,
   TypeOptions,
+  ToastOptions,
 } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -4308,18 +4942,15 @@ import SenderInfoCard from "../../components/transfers/SenderInfoCard";
 import RecipientInfoCard from "../../components/transfers/RecipientInfoCard";
 import TransactionDetailsCard from "../../components/transfers/TransactionDetailsCard";
 
-// --- Define Interfaces (Ideally move to a central types file, e.g., types/index.ts) ---
-// Note: These interfaces are defined here for direct reference within the provided code context.
-// In a real project, put these in a shared types file.
-
+// --- Define Interfaces ---
 interface User {
   _id: string;
   firstName?: string;
   lastName?: string;
   email?: string;
-  fullName?: string; // Added for SenderInfoCard, often a computed field or separate
+  fullName?: string;
   profileImage?: string;
-  createdAt?: string | Date; // Added for SenderInfoCard
+  createdAt?: string | Date;
 }
 
 interface Recipient {
@@ -4328,7 +4959,7 @@ interface Recipient {
   email?: string;
   accountNumber?: string;
   bankName?: string;
-  accountHolderName?: string; // For RecipientInfoCard
+  accountHolderName?: string;
   profileImage?: string;
   nickname?: string;
   accountType?: string;
@@ -4338,47 +4969,42 @@ interface Recipient {
   address?: string;
 }
 
-// Currency reference for cases where only ID or code is present
 interface CurrencyRef {
   _id?: string;
   code: string;
 }
 
-// Full Currency object as returned by currency service
 interface Currency {
   _id: string;
-  name: string;
-  code: string;
-  symbol: string;
+  name: string; // Assuming 'name' for display like 'Euro'
+  code: string; // e.g., 'EUR'
+  symbol: string; // e.g., '€'
   flagImage?: string | null;
 }
 
-// Main Transfer interface combining potential fields from various APIs/stages
 interface Transfer {
   _id: string;
   user: User;
   recipient: Recipient;
-  // Original fields
-  sourceCurrency: string; // Typically an ID
-  targetCurrency: string; // Typically an ID
+  sourceCurrency: string;
+  targetCurrency: string;
   sourceAmount: number;
   targetAmount: number;
-  // More flexible fields that might be used
-  sendAmount?: number | null; // Preferred if available
-  receiveAmount?: number | null; // Preferred if available
-  sendCurrency?: string | CurrencyRef | null; // ID or object with code
-  receiveCurrency?: string | CurrencyRef | null; // ID or object with code
+  sendAmount?: number | null;
+  receiveAmount?: number | null;
+  sendCurrency?: string | CurrencyRef | null;
+  receiveCurrency?: string | CurrencyRef | null;
   status: string;
   exchangeRate?: number | null;
-  fee?: number | null; // Original fee
-  fees?: number | null; // Alternative fee field
+  fee?: number | null;
+  fees?: number | null;
   createdAt: string;
   updatedAt: string;
   reference?: string;
   paymentMethod?: string;
   transferPurpose?: string;
-  failureReason?: string | null; // For failed transfers
-  cancellationReason?: string | null; // For cancelled transfers
+  failureReason?: string | null;
+  cancellationReason?: string | null;
 }
 
 interface AdminTransferDetailPageParams
@@ -4391,8 +5017,8 @@ const LoadingSkeleton = () => (
   <div className="container mx-auto px-4 py-8">
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
       <div>
-        <Skeleton className="h-4 w-64 mb-3 rounded" />
-        <Skeleton className="h-8 w-48 rounded" />
+         <Skeleton className="h-4 sm:w-72 w-64 mb-3 rounded " />
+          <Skeleton className="h-8 w-48 rounded " />
       </div>
       <Skeleton className="h-12 w-43 rounded-full" />
     </div>
@@ -4416,7 +5042,7 @@ const LoadingSkeleton = () => (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-1 space-y-6">
         <div className="bg-primarybox rounded-xl overflow-hidden border">
-          <div className="bg-secondarybox px-6 py-4">
+          <div className="px-6 py-4">
             <Skeleton className="h-6 w-3/5 rounded bg-background/50" />
           </div>
           <div className="sm:p-6 p-4 space-y-6">
@@ -4437,7 +5063,7 @@ const LoadingSkeleton = () => (
         </div>
 
         <div className="bg-primarybox rounded-xl overflow-hidden border">
-          <div className="bg-secondarybox px-6 py-4">
+          <div className="px-6 py-4">
             <Skeleton className="h-6 w-1/2 rounded bg-background/50" />
           </div>
           <div className="sm:p-6 p-4 space-y-4">
@@ -4450,7 +5076,7 @@ const LoadingSkeleton = () => (
 
       <div className="lg:col-span-2 border rounded-2xl">
         <div className="rounded-xl bg-primarybox overflow-hidden">
-          <div className="bg-secondarybox px-6 py-4">
+          <div className="px-6 py-4">
             <Skeleton className="h-6 w-48 rounded bg-background/50" />
           </div>
           <div className="sm:p-6 p-4 space-y-8">
@@ -4576,7 +5202,7 @@ const AccessRestrictedDisplay = () => (
       <h2 className="lg:text-2xl text-xl font-semibold text-mainheadingWhite">
         Access Restricted
       </h2>
-      <p className="text-subheadyingWhite max-w-lg lg:text-base text-sm mx-auto">
+      <p className="text-subheadingWhite max-w-lg lg:text-base text-sm mx-auto"> {/* Corrected class name */}
         This page requires administrator privileges. You do not have the
         necessary permissions to view this content.
       </p>
@@ -4593,7 +5219,6 @@ const AccessRestrictedDisplay = () => (
   </div>
 );
 
-// Helper to map transfer status to Toast type
 const mapTransferStatusToToastType = (
   status: string
 ): CustomToastProps["type"] => {
@@ -4603,15 +5228,15 @@ const mapTransferStatusToToastType = (
       return "success";
     case "pending":
     case "processing":
-    case "in-progress": // Added for robustness if 'in-progress' is used
+    case "in-progress":
       return "info";
     case "canceled":
     case "cancelled":
     case "failed":
-    case "rejected": // Added for robustness
+    case "rejected":
       return "error";
-    case "on-hold": // Added for robustness
-    case "requires-action": // Added for robustness
+    case "on-hold":
+    case "requires-action":
     case "unknown":
       return "warning";
     default:
@@ -4619,24 +5244,18 @@ const mapTransferStatusToToastType = (
   }
 };
 
-// Helper to get currency reference for cards
-// This helper needs to handle string IDs (from `sourceCurrency`/`targetCurrency`)
-// AND objects (from `sendCurrency`/`receiveCurrency`)
 const getCurrencyRefForOverviewCard = (
   currencyIdentifier: string | CurrencyRef | null | undefined,
-  map: { [key: string]: Currency } // Map of ID to full Currency object
+  map: { [key: string]: Currency }
 ): CurrencyRef | null => {
   if (!currencyIdentifier) return null;
 
   if (typeof currencyIdentifier === "string") {
-    // If it's a string, it's an ID. Look up in the map.
     const foundCurrency = map[currencyIdentifier];
     return foundCurrency
       ? { _id: foundCurrency._id, code: foundCurrency.code }
       : null;
   }
-  // If it's an object, it's already a CurrencyRef (or similar).
-  // Ensure it has a 'code' property.
   if (
     typeof currencyIdentifier === "object" &&
     currencyIdentifier !== null &&
@@ -4655,7 +5274,6 @@ const AdminTransferDetailPage = () => {
   const [error, setError] = useState<string | null>(null);
   const { token, isAdmin, loading: authLoading } = useAuth();
   const router = useRouter();
-  // currenciesMap: key is Currency._id, value is Currency object
   const [currenciesMap, setCurrenciesMap] = useState<{
     [key: string]: Currency;
   }>({});
@@ -4663,13 +5281,16 @@ const AdminTransferDetailPage = () => {
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 640);
-    handleResize(); // Set initial value
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Renamed react-toastify's toast to avoid conflict if showToast was named just 'toast'
+  const reactToastifyToast = toast; 
+
   const showToast = useCallback(
-    (message: string, type?: CustomToastProps["type"]) => {
+    (message: string, type?: CustomToastProps["type"], options?: ToastOptions) => {
       const effectiveType = type || "default";
       let progressClassName: string;
 
@@ -4692,23 +5313,25 @@ const AdminTransferDetailPage = () => {
           break;
       }
 
-      toast(<CustomToast message={message} type={effectiveType} />, {
-        progressClassName: progressClassName,
-        type: effectiveType as TypeOptions, // Pass type to react-toastify
-        icon: false, // Disable react-toastify's default icon
-        // Consider adding a unique toastId if multiple toasts could appear rapidly
-        // toastId: message, // Example: simple unique ID for prevent duplicates
-      });
+      reactToastifyToast(
+        <CustomToast message={message} type={effectiveType} />,
+        {
+          progressClassName: progressClassName,
+          type: effectiveType as TypeOptions,
+          icon: false,
+          ...options, // Spread additional react-toastify options
+        }
+      );
     },
-    []
+    [reactToastifyToast] // Add reactToastifyToast to dependencies
   );
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (isStatusUpdate = false) => {
     if (!token || !transferId) {
-      setIsLoading(false);
+      setIsLoading(!isStatusUpdate); // Only set main loading if not a status update refresh
       return;
     }
-    setIsLoading(true);
+    if (!isStatusUpdate) setIsLoading(true); // Set loading true for initial fetch or manual retry
     setError(null);
     try {
       const [transferData, currenciesData] = await Promise.all([
@@ -4731,49 +5354,58 @@ const AdminTransferDetailPage = () => {
         });
       }
       setCurrenciesMap(map);
+
+      // If this fetchData was triggered by a status update, the success toast is handled
+      // in TransferStatusDropdown. We only show error toasts here.
+
     } catch (err: unknown) {
       let errorMessage = "Failed to load transfer details.";
       if (err instanceof Error) errorMessage = err.message;
       if (typeof err === "object" && err !== null) {
-        const potentialError = err as any; // Cast to any to access potential 'response.data.message'
+        const potentialError = err as any;
         errorMessage =
           potentialError.response?.data?.message ||
           potentialError.message ||
           errorMessage;
       } else if (typeof err === "string") errorMessage = err;
-      showToast(errorMessage, "error");
+      
+      // Only show error toast if it's not a status update scenario that already showed a success toast
+      if (!isStatusUpdate) {
+          showToast(errorMessage, "error");
+      }
       setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
-  }, [token, transferId, showToast]); // fetchData depends on showToast now
+  }, [token, transferId, showToast]); // Added showToast to dependency array
 
   useEffect(() => {
-    if (authLoading) return; // Wait for authentication status to resolve
+    if (authLoading) return;
     if (!token) {
       router.push("/auth/login?redirect=/admin/transfers/" + transferId);
       return;
     }
     if (!isAdmin) {
-      setIsLoading(false); // Stop loading if not admin
+      setIsLoading(false);
       return;
     }
     fetchData();
-  }, [transferId, token, isAdmin, authLoading, router, fetchData]); // Re-run if auth or transferId changes
+  }, [transferId, token, isAdmin, authLoading, router, fetchData]);
 
-  const handleStatusUpdated = () => {
-    fetchData(); // Refetch data after status update
-    // Optionally, show a success toast after status update + refetch
-    // showToast("Transfer status refreshed.", "info");
-  };
+  // This function is called by TransferStatusDropdown after a successful API call and its own toast
+  // Its primary role now is to refetch the data.
+  const handleStatusUpdated = useCallback(() => {
+    fetchData(true); // Pass true to indicate it's a refresh after status update
+  }, [fetchData]);
+
 
   const toastContainerProps: ToastContainerProps = {
     position: "top-right",
     autoClose: 5000,
     hideProgressBar: false,
     newestOnTop: true,
-    closeOnClick: false,
-    closeButton: false,
+    closeOnClick: false, // Kept false as CustomToast might have its own close logic
+    closeButton: false, // CustomToast handles its own close
     rtl: false,
     pauseOnFocusLoss: true,
     draggable: true,
@@ -4786,7 +5418,7 @@ const AdminTransferDetailPage = () => {
   const getToastContainerStyle = (): React.CSSProperties & {
     [key: `--${string}`]: string | number;
   } => {
-    const baseStyle = { zIndex: 30 }; // Ensure toast is above other elements
+    const baseStyle = { zIndex: 9999 }; // High z-index
     if (isMobile)
       return {
         ...baseStyle,
@@ -4805,7 +5437,6 @@ const AdminTransferDetailPage = () => {
       status: transfer.status,
       createdAt: transfer.createdAt,
       sendAmount: transfer.sendAmount ?? transfer.sourceAmount,
-      // Pass the sendCurrency directly, let TransferOverviewCard handle resolution
       sendCurrency: getCurrencyRefForOverviewCard(
         transfer.sendCurrency ?? transfer.sourceCurrency,
         currenciesMap
@@ -4813,7 +5444,7 @@ const AdminTransferDetailPage = () => {
     };
   })();
 
-  if (authLoading) {
+  if (authLoading || (isLoading && !transfer) ) { // Show skeleton if auth is loading OR main data is loading initially
     return <LoadingSkeleton />;
   }
 
@@ -4821,26 +5452,30 @@ const AdminTransferDetailPage = () => {
     return <AccessRestrictedDisplay />;
   }
 
-  if (isLoading) {
-    return <LoadingSkeleton />;
-  }
-
-  if (error && !transfer) {
+  // If error occurred during initial load and no transfer data is present
+  if (error && !transfer && !isLoading) { 
     return (
       <div className="container mx-auto px-4 py-5">
-        <ErrorDisplay error={error} onRetry={fetchData} />
+        <ErrorDisplay error={error} onRetry={() => fetchData()} />
       </div>
     );
   }
-
-  if (!transfer) {
+  
+  // If loading is done, no error, but still no transfer (e.g., 404 not caught as specific error)
+  if (!transfer && !isLoading) {
     return (
       <div className="container mx-auto p-8 text-center text-slate-600 dark:text-neutral-300">
         Transfer data not found. Please try refreshing or check the transfer ID.
+         <div className="mt-4">
+            <Link href="/admin/transfers" className="text-primary hover:underline">
+                Back to Transfers
+            </Link>
+        </div>
       </div>
     );
   }
-
+  
+  // If transfer is loaded, render the page (isLoading might be true for a quick refresh)
   return (
     <div className="min-h-screen bg-background">
       <ToastContainer
@@ -4848,55 +5483,57 @@ const AdminTransferDetailPage = () => {
         style={getToastContainerStyle()}
       />
 
-      <div className="container mx-auto px-4 py-5">
-        <TransferHeader transferId={transfer._id} />
-        {overviewDataForCard && (
-          <TransferOverviewCard transfer={overviewDataForCard} />
-        )}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-1 space-y-6">
-            <TransferStatusSection
-              transfer={transfer}
-              token={token!} // token is guaranteed to be present here due to checks above
-              onStatusUpdated={handleStatusUpdated}
-              showToast={showToast}
-              mapStatusToToastType={mapTransferStatusToToastType}
-            />
-            <TransferInfoCard transfer={transfer} />
-          </div>
+      {isLoading && !transfer && <LoadingSkeleton/> /* Show skeleton if still loading critical data */}
 
-          <div className="lg:col-span-2">
-            <div className="rounded-xl border bg-primarybox overflow-hidden">
-              <div className="bg-secondarybox px-6 py-4">
-                <h3 className="text-lg font-semibold text-mainheadingWhite">
-                  Detailed Information
-                </h3>
-              </div>
-              <div className="sm:p-6 p-4 space-y-8">
-                {/* Sender's full name might be constructed from firstName/lastName or provided directly */}
-                <SenderInfoCard
-                  user={{
-                    _id: transfer.user._id,
-                    fullName:
-                      `${transfer.user.firstName || ""} ${
-                        transfer.user.lastName || ""
-                      }`.trim() || transfer.user.email,
-                    email: transfer.user.email,
-                    // profileImage and createdAt are not directly on transfer.user in provided interfaces,
-                    // but often exist on a full User object. Assuming their presence for the component.
-                    // If not present, remove from prop, or extend User interface if service provides.
-                  }}
-                />
-                <RecipientInfoCard recipient={transfer.recipient} />
-                <TransactionDetailsCard
-                  transfer={transfer}
-                  currenciesMap={currenciesMap}
-                />
+      {transfer && (
+        <div className="container mx-auto px-4 py-5">
+          <TransferHeader transferId={transfer._id} />
+          {overviewDataForCard && (
+            <TransferOverviewCard transfer={overviewDataForCard} />
+          )}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-1 space-y-6">
+              <TransferStatusSection
+                transfer={transfer}
+                token={token!} 
+                onStatusUpdated={handleStatusUpdated}
+                showToast={showToast} // Pass down the memoized showToast
+                mapStatusToToastType={mapTransferStatusToToastType}
+              />
+              <TransferInfoCard transfer={transfer} />
+            </div>
+
+            <div className="lg:col-span-2">
+              <div className="rounded-xl border bg-primarybox overflow-hidden">
+                <div className="bg-secondarybox px-6 py-4">
+                  <h3 className="text-lg font-semibold text-mainheadingWhite">
+                    Detailed Information
+                  </h3>
+                </div>
+                <div className="sm:p-6 p-4 space-y-8">
+                  <SenderInfoCard
+                    user={{
+                      _id: transfer.user._id,
+                      fullName:
+                        `${transfer.user.firstName || ""} ${
+                          transfer.user.lastName || ""
+                        }`.trim() || transfer.user.email || "N/A",
+                      email: transfer.user.email || "N/A",
+                      profileImage: transfer.user.profileImage,
+                      createdAt: transfer.user.createdAt,
+                    }}
+                  />
+                  <RecipientInfoCard recipient={transfer.recipient} />
+                  <TransactionDetailsCard
+                    transfer={transfer}
+                    currenciesMap={currenciesMap}
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

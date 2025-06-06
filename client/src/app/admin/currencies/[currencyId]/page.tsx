@@ -8817,14 +8817,14 @@ const LoadingSkeleton = () => (
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
         <div>
           <Skeleton className="h-4 w-88 mb-3 rounded" />
-          <Skeleton className="h-8 w-50 rounded " />
+          <Skeleton className="h-8 w-50 rounded" />
         </div>
-        <Skeleton className="h-4 w-40 rounded-md" />
+        <Skeleton className="h-6 w-40 rounded-md" />
       </div>
 
       <div className="mx-auto max-w-5xl space-y-8">
         <div className="space-y-8">
-          <div className="overflow-hidden mb-4">
+          <div className="overflow-hidden mb-5">
             <div className="relative flex w-full h-full overflow-x-auto gap-3 whitespace-nowrap bg-primarybox p-1.5 rounded-full justify-normal items-center">
               <Skeleton className="h-10 flex-1 rounded-full bg-background/50" />
               <Skeleton className="h-10 flex-1 rounded-full bg-background/50" />
@@ -8834,41 +8834,42 @@ const LoadingSkeleton = () => (
 
           <div className="space-y-6">
             <div className="rounded-xl border lg:p-6 p-4">
-              <Skeleton className="h-5 w-1/3 rounded mb-4 border-b border-transparent pb-2" />
-              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Skeleton className="h-5 px-4 py-3 sm:w-1/3 w-1/2 rounded mb-4 border-b border-transparent" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Skeleton className="h-4 w-1/4 rounded" />
-                  <Skeleton className="h-12 w-full rounded-md" />
+                  <Skeleton className="h-6 w-1/3 rounded" />
+                  <Skeleton className="h-14 w-full rounded-md" />
                 </div>
                 <div className="space-y-2">
-                  <Skeleton className="h-4 w-1/3 rounded" />
-                  <Skeleton className="h-12 w-full rounded-md" />
+                  <Skeleton className="h-6 w-1/3 rounded" />
+                  <Skeleton className="h-14 w-full rounded-md" />
                 </div>
                 <div className="md:col-span-2 space-y-2">
-                  <Skeleton className="h-4 w-1/3 rounded" />
-                  <Skeleton className="h-12 w-full rounded-md" />
-                  <Skeleton className="h-3 w-3/4 rounded" />
+                  <Skeleton className="h-6 lg:w-40 w-28 rounded" />
+                  <Skeleton className="h-14 w-full rounded-md" />
+                  <Skeleton className="h-5 sm:w-1/2 w-full rounded" />
                 </div>
               </div>
             </div>
 
-            <div className="rounded-xl border">
-              <Skeleton className="h-5 w-1/4 rounded m-4 lg:m-6 mb-0 border-b border-transparent pb-3" />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:p-6 p-4">
+            <div className="rounded-xl border lg:p-6 p-4">
+              <Skeleton className="h-5 px-4 py-3 sm:w-1/3 w-1/2 rounded mb-4 border-b border-transparent" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Skeleton className="h-4 w-1/3 rounded" />
+                  <Skeleton className="h-6 w-1/3 rounded" />
                   <Skeleton className="h-12 w-full rounded-md" />
                 </div>
                 <div className="space-y-2">
-                  <Skeleton className="h-4 w-1/3 rounded" />
+                  <Skeleton className="h-6 w-1/3 rounded" />
                   <Skeleton className="h-12 w-full rounded-md" />
                 </div>
               </div>
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row justify-end gap-3 mt-8 pt-6 border-t">
-            <Skeleton className="h-12 w-full sm:w-28 rounded-full" />
-            <Skeleton className="h-12 w-full sm:w-36 rounded-full" />
+
+          <div className="flex flex-col sm:flex-row justify-end gap-3">
+            <Skeleton className="h-12.5 w-full sm:w-32.5 rounded-full" />
+            <Skeleton className="h-12.5 w-full sm:w-37.5 rounded-full" />
           </div>
         </div>
       </div>
@@ -9702,7 +9703,7 @@ const AdminEditCurrencyPage = () => {
                           key={tabInfo.value}
                           value={tabInfo.value}
                           className={cn(
-                            "relative px-4 py-3 flex items-center justify-center gap-2 text-base shrink-0 min-w-max rounded-full text-white data-[state=active]:text-mainheading dark:data-[state=active]:text-primary border-none data-[state=active]:bg-transparent dark:data-[state=active]:bg-transparent data-[state=active]:shadow-none cursor-pointer transition-colors duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                            "relative px-4 py-3 flex items-center justify-center gap-2 text-base shrink-0 min-w-max rounded-full text-white data-[state=active]:text-mainheading border-none data-[state=active]:bg-transparent data-[state=active]:shadow-none cursor-pointer transition-colors duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                           )}
                         >
                           {activeTab === tabInfo.value && (
@@ -9749,7 +9750,7 @@ const AdminEditCurrencyPage = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting || !formChanged}
-                    className="inline-flex items-center justify-center cursor-pointer bg-primary hover:bg-primaryhover text-mainheading disabled:opacity-50 disabled:cursor-not-allowed font-medium rounded-full px-6 py-3 h-12 text-center w-full sm:w-auto transition-all duration-75 ease-linear"
+                    className="inline-flex items-center justify-center cursor-pointer bg-primary h-12.5 hover:bg-primaryhover text-mainheading disabled:opacity-50 disabled:cursor-not-allowed font-medium rounded-full px-6 py-3 text-center w-full sm:w-auto transition-all duration-75 ease-linear"
                   >
                     {isSubmitting ? (
                       <>

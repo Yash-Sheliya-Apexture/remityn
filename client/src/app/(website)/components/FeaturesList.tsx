@@ -16,7 +16,7 @@ const FeaturesList: React.FC = () => {
           </p>
         </div>
         <div className="w-full box-border lg:mt-16 mt-10">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-[3] bg-[#394247] rounded-3xl border-3 border-[#394247]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-[3px] bg-[#394247] rounded-3xl border-3 border-[#394247]">
             {/* Use the imported features array */}
             {features.map((feature: Feature) => ( // Explicitly typing feature here is optional but good practice
               <div key={feature.id} className={feature.colSpanLarge}>

@@ -1914,6 +1914,473 @@
 //   );
 // }
 
+// "use client";
+
+// import React, { useState, useEffect, useMemo, useCallback } from "react";
+// import {
+//   Bar,
+//   BarChart,
+//   CartesianGrid,
+//   XAxis,
+//   ResponsiveContainer,
+//   Tooltip,
+//   YAxis,
+// } from "recharts";
+// import {
+//   Card,
+//   CardContent,
+//   CardDescription,
+//   CardHeader,
+//   CardTitle,
+// } from "@/components/ui/card";
+// import {
+//   ChartConfig,
+//   ChartContainer,
+//   ChartTooltip,
+//   ChartTooltipContent,
+// } from "@/components/ui/chart";
+// import { Skeleton } from "@/components/ui/skeleton";
+// import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+// import { RefreshCw } from "lucide-react";
+// import { Badge } from "@/components/ui/badge";
+// import statsAdminService, {
+//   ChartDataPoint, // Using the updated ChartDataPoint
+//   ChartType,
+//   ChartRange,
+// } from "../../../services/admin/stats.admin";
+// import moment from "moment";
+// import { motion } from "framer-motion";
+// import { cn } from "@/lib/utils";
+
+// interface VolumeChartProps {
+//   title: string;
+//   description: string;
+//   chartType: ChartType;
+//   icon: React.ReactNode;
+//   initialRange?: ChartRange;
+//   yAxisLabel?: string;
+//   dataKey?: string; // This will always be 'volume'
+//   fillColorVar?: string;
+//   showRefreshButton?: boolean;
+//   className?: string;
+// }
+
+// const timeRangeTabs = [
+//   { id: "month", label: "30 Days" },
+//   { id: "year", label: "12 Months" },
+//   { id: "all", label: "All Time" },
+//   { id: "by_currency", label: "By Currency" },
+// ] as const;
+
+// export function VolumeChart({
+//   title,
+//   description,
+//   chartType,
+//   icon,
+//   initialRange = "month",
+//   yAxisLabel = "Volume",
+//   dataKey = "volume",
+//   fillColorVar,
+//   showRefreshButton = true,
+//   className = "",
+// }: VolumeChartProps) {
+//   const [timeRange, setTimeRange] = useState<ChartRange>(initialRange);
+//   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
+//   const [loading, setLoading] = useState<boolean>(true);
+//   const [error, setError] = useState<string | null>(null);
+
+//   const chartConfig = useMemo<ChartConfig>(() => {
+//     const baseConfig: ChartConfig = {
+//       [dataKey]: {
+//         // 'volume'
+//         label: yAxisLabel,
+//         color: fillColorVar || "hsl(var(--primary))",
+//       },
+//     };
+//     if (timeRange === "by_currency" && chartData.length > 0) {
+//       chartData.forEach((item) => {
+//         if (item.category) {
+//           baseConfig[item.category] = {
+//             label: item.currencyName || item.category,
+//             color: fillColorVar || "hsl(var(--primary))",
+//           };
+//         }
+//       });
+//     }
+//     return baseConfig;
+//   }, [dataKey, yAxisLabel, fillColorVar, chartData, timeRange]);
+
+//   const fetchData = useCallback(
+//     async (range: ChartRange) => {
+//       setLoading(true);
+//       setError(null);
+//       try {
+//         const data = await statsAdminService.getAdminChartData(
+//           chartType,
+//           range
+//         );
+//         setChartData(data);
+//       } catch (err: any) {
+//         const errorMessage = err.message || `Failed to load ${chartType} data.`;
+//         setError(errorMessage);
+//         setChartData([]);
+//       } finally {
+//         setLoading(false);
+//       }
+//     },
+//     [chartType]
+//   );
+
+//   useEffect(() => {
+//     fetchData(timeRange);
+//   }, [timeRange, fetchData]);
+
+//   const handleRefresh = () => {
+//     fetchData(timeRange);
+//   };
+
+//   const totalVolume = useMemo(
+//     () => chartData.reduce((acc, curr) => acc + (curr.volume || 0), 0),
+//     [chartData]
+//   );
+
+//   const formatCurrency = (value: number) => {
+//     if (isNaN(value) || value === null) return "N/A";
+//     // Display full amount
+//     return `$${value.toLocaleString(undefined, {
+//       minimumFractionDigits: 2, // Always show 2 decimal places for consistency
+//       maximumFractionDigits: 2,
+//     })}`;
+//   };
+
+//   const formatYAxisTick = (value: number) => {
+//     // For Y-axis, using K/M might still be preferable for very large numbers
+//     // to avoid clutter. If full numbers are strictly needed here too,
+//     // then this function should also be changed.
+//     // For now, keeping K/M for Y-axis ticks for better readability of scale.
+//     if (value >= 1000000) return `${(value / 1000000).toFixed(0)}M`;
+//     if (value >= 1000) return `${(value / 1000).toFixed(0)}K`;
+//     return `${value}`;
+//   };
+
+//   const formatCategory = (
+//     categoryString: string,
+//     formatType: "tooltip" | "axis"
+//   ): string => {
+//     if (timeRange === "by_currency") {
+//       const dataPoint = chartData.find((d) => d.category === categoryString);
+//       if (formatType === "tooltip" && dataPoint?.currencyName) {
+//         return `${dataPoint.currencyName} (${categoryString})`;
+//       }
+//       return categoryString;
+//     }
+//     const date = moment(categoryString, "YYYY-MM-DD");
+//     if (!date.isValid()) return categoryString;
+
+//     if (formatType === "tooltip") {
+//       if (timeRange === "month") return date.format("MMM DD, YYYY");
+//       if (timeRange === "year") return date.format("MMM YYYY");
+//       if (timeRange === "all") return date.format("YYYY");
+//     }
+//     if (timeRange === "month") return date.format("D MMM");
+//     if (timeRange === "year") return date.format("MMM");
+//     if (timeRange === "all") return date.format("YYYY");
+//     return categoryString;
+//   };
+
+//   const barSize = useMemo(() => {
+//     if (timeRange === "month") return 12;
+//     if (timeRange === "year") return 24;
+//     if (timeRange === "all" || timeRange === "by_currency") {
+//       return Math.max(10, 60 - chartData.length * 2);
+//     }
+//     return 12;
+//   }, [timeRange, chartData.length]);
+
+//   const minTickGap = useMemo(() => {
+//     if (timeRange === "month") return 5;
+//     if (timeRange === "year") return 15;
+//     if (timeRange === "all" || timeRange === "by_currency") return 0;
+//     return 5;
+//   }, [timeRange]);
+
+//   const xAxisDataKey = "category";
+
+//   const getSubtitleText = () => {
+//     if (timeRange === "month") return "last 30 days";
+//     if (timeRange === "year") return "last 12 months";
+//     if (timeRange === "all") return "all time";
+//     if (timeRange === "by_currency") return "across all currencies (all time)";
+//     return "";
+//   };
+
+//   return (
+//     <Card
+//       className={cn(
+//         "flex flex-col h-full bg-primarybox shadow-none",
+//         className
+//       )}
+//     >
+//       <CardHeader className="flex-shrink-0 p-3">
+//         <div className="flex lg:flex-row flex-col items-center justify-between w-full gap-3">
+//           <div className="flex items-center justify-between gap-3 w-full">
+//             <div className="flex gap-3">
+//               <div className="flex justify-center items-center size-12 bg-primary rounded-full flex-shrink-0">
+//                 {icon}
+//               </div>
+
+//               <div>
+//                 <CardTitle className="text-lg font-semibold text-mainheadingWhite capitalize">
+//                   {title}
+//                 </CardTitle>
+
+//                 <CardDescription className="text-subheadingWhite">
+//                   {description}
+//                 </CardDescription>
+//               </div>
+//             </div>
+
+//             <div className="flex font-medium">
+//               {showRefreshButton && (
+//                 <button
+//                   onClick={handleRefresh}
+//                   disabled={loading}
+//                   className="flex items-center justify-center cursor-pointer gap-2 bg-secondarybox hover:bg-secondaryboxhover size-10 rounded-full transition-all duration-75 ease-linear"
+//                 >
+//                   <RefreshCw
+//                     className={`size-4 text-primary ${
+//                       loading ? "animate-spin" : ""
+//                     }`}
+//                   />
+//                   <span className="sr-only"> Refresh</span>
+//                 </button>
+//               )}
+//             </div>
+//           </div>
+
+//           {/* Tabing */}
+//           <Tabs
+//             value={timeRange}
+//             onValueChange={(value) => setTimeRange(value as ChartRange)}
+//             className="w-full"
+//           >
+//             <div className="rounded-full overflow-hidden">
+//               <TabsList
+//                 className={cn(
+//                   "relative flex justify-normal items-center rounded-full p-1",
+//                   "bg-secondarybox",
+//                   "w-full h-auto whitespace-nowrap z-0 overflow-x-auto"
+//                 )}
+//               >
+//                 {timeRangeTabs.map((tab) => (
+//                   <TabsTrigger
+//                     key={tab.id}
+//                     value={tab.id}
+//                     className={cn(
+//                       "flex-1 relative text-xs sm:text-sm px-4 py-1.5 font-medium rounded-full",
+//                       "flex items-center justify-center",
+//                       "transition-all duration-75 ease-linear focus:outline-none cursor-pointer",
+//                       "focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none",
+//                       "border-none data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+//                     )}
+//                     style={{ WebkitTapHighlightColor: "transparent" }}
+//                   >
+//                     {timeRange === tab.id && (
+//                       <motion.div
+//                         layoutId={`activeVolumeChartTabIndicator-${chartType}`}
+//                         className="absolute inset-0 rounded-full bg-primary"
+//                         transition={{
+//                           type: "spring",
+//                           stiffness: 300,
+//                           damping: 30,
+//                         }}
+//                       />
+//                     )}
+//                     <span
+//                       className={cn(
+//                         "relative z-10 ",
+//                         timeRange === tab.id
+//                           ? "text-mainheading font-semibold"
+//                           : "text-mainheadingWhite"
+//                       )}
+//                     >
+//                       {tab.label}
+//                     </span>
+//                   </TabsTrigger>
+//                 ))}
+//               </TabsList>
+//             </div>
+//           </Tabs>
+//         </div>
+//       </CardHeader>
+
+//       <CardContent className="flex-grow flex bg-primarybox rounded-xl flex-col px-2 pb-4 pt-0 sm:px-4 sm:pb-6">
+//         {loading && (
+//           <>
+//             <div className="flex flex-col items-center justify-center mb-4 pt-2">
+//               <Skeleton className="sm:w-1/3 w-1/2 h-10 rounded-md bg-background/50" />
+//               <div className="flex items-center gap-1.5 mt-1">
+//                 <Skeleton className="h-6 sm:w-32 w-24 rounded-md bg-background/50" />
+//                 <Skeleton className="h-6 sm:w-25 w-18 rounded-md bg-background/50" />
+//               </div>
+//             </div>
+//             <div
+//               className="flex-grow w-full flex flex-col"
+//               style={{ minHeight: "194px" }}
+//             >
+//               <Skeleton className="flex-grow w-full rounded-md bg-background/50" />
+//               <div className="flex justify-between w-full gap-1 pt-2">
+//                 {[...Array(timeRange === "by_currency" ? 5 : 8)].map((_, i) => (
+//                   <Skeleton
+//                     key={i}
+//                     className="h-5 w-12 sm:w-16 rounded-xl opacity-70 bg-background/50"
+//                   />
+//                 ))}
+//               </div>
+//             </div>
+//           </>
+//         )}
+        
+//         {error && !loading && (
+//           <div className="flex-grow flex flex-col justify-center items-center text-center space-y-3 py-10">
+
+//             <h1 className="lg:text-2xl text-xl font-semibold text-mainheadingWhite">
+//               Error Loading Chart Data
+//             </h1>
+
+//             <p className="text-subheadingWhite">{error} </p>
+//             <button
+//               onClick={handleRefresh}
+//               className="flex items-center text-center px-8 py-3 mx-auto bg-secondarybox font-medium hover:bg-secondaryboxhover text-primary transition-all ease-linear duration-75 cursor-pointer rounded-full"
+//             >
+//               <RefreshCw className="size-5 mr-1.5" /> Try Again
+//             </button>
+//           </div>
+//         )}
+
+//         {!loading && !error && chartData.length === 0 && (
+//           <div className="flex-grow flex justify-center items-center text-center p-4">
+//             <p className="text-base text-mainheadingWhite">
+//               No data available for the selected period.
+//             </p>
+//           </div>
+//         )}
+
+//         {!loading && !error && chartData.length > 0 && (
+//           <>
+//             <div className="flex flex-col items-center space-y-1 justify-center mb-4 pt-2">
+//               <div className="text-2xl sm:text-3xl font-bold text-primary">
+//                 {formatCurrency(totalVolume)}
+//               </div>
+//               <div className="flex items-center gap-2">
+//                 <span className="text-xs sm:text-sm text-subheadingWhite">
+//                   Total {getSubtitleText()}
+//                 </span>
+
+//                 <Badge
+//                   variant="outline"
+//                   className="text-sm text-primary bg-primary/20 border border-primary font-medium"
+//                 >
+//                   {chartType === "payments" ? "Add Money" : "Send Money"}
+//                 </Badge>
+//               </div>
+//             </div>
+
+//             <ChartContainer
+//               config={chartConfig}
+//               className="aspect-auto h-[200px] w-full flex-grow"
+//             >
+//               <ResponsiveContainer width="100%" height="100%">
+//                 <BarChart
+//                   data={chartData}
+//                   margin={{ left: -10, right: 10, top: 5, bottom: 0 }}
+//                   barGap={
+//                     timeRange === "month"
+//                       ? 2
+//                       : timeRange === "by_currency"
+//                       ? 4
+//                       : 4
+//                   }
+//                   barCategoryGap={
+//                     timeRange === "all" || timeRange === "by_currency"
+//                       ? "20%"
+//                       : "10%"
+//                   }
+//                   barSize={barSize}
+//                 >
+//                   <CartesianGrid
+//                     vertical={false}
+//                     strokeDasharray="3 3"
+//                     stroke="hsl(var(--border))"
+//                     strokeOpacity={0.7}
+//                   />
+
+//                   <XAxis
+//                     dataKey={xAxisDataKey} // Use generic 'category'
+//                     tickLine={false}
+//                     axisLine={false}
+//                     tickMargin={8}
+//                     minTickGap={minTickGap}
+//                     tickFormatter={(value) => formatCategory(value, "axis")}
+//                     fontSize={10}
+//                     stroke="hsl(var(--muted-foreground))"
+//                     interval={timeRange === "by_currency" ? 0 : undefined} // Show all labels for currency
+//                   />
+//                   <YAxis
+//                     tickLine={false}
+//                     axisLine={false}
+//                     tickMargin={8}
+//                     fontSize={10}
+//                     tickFormatter={formatYAxisTick}
+//                     stroke="hsl(var(--muted-foreground))"
+//                   />
+
+//                   <ChartTooltip
+//                     cursor={{ fill: "hsl(var(--primary) / 0.1)" }}
+//                     content={
+//                       <ChartTooltipContent
+//                         labelFormatter={(label) =>
+//                           formatCategory(label, "tooltip")
+//                         }
+//                         formatter={(value, name, props) => {
+//                           const formattedValue = formatCurrency(
+//                             value as number
+//                           );
+//                           if (
+//                             timeRange === "by_currency" &&
+//                             props.payload?.currencyName &&
+//                             props.payload?.category !==
+//                               props.payload?.currencyName
+//                           ) {
+//                             return [
+//                               formattedValue,
+//                               `${props.payload.currencyName} (${props.payload.category})`,
+//                             ];
+//                           }
+//                           return formattedValue;
+//                         }}
+//                         indicator="dot"
+//                         className="bg-primarybox/95 border border-gray-600 text-mainheadingWhite backdrop-blur-sm"
+//                       />
+//                     }
+//                   />
+//                   <Bar
+//                     dataKey={dataKey} // 'volume'
+//                     fill="#66e8fa"
+//                     radius={[4, 4, 0, 0]}
+//                     animationDuration={500}
+//                   />
+//                 </BarChart>
+//               </ResponsiveContainer>
+//             </ChartContainer>
+//           </>
+//         )}
+//       </CardContent>
+//     </Card>
+//   );
+// }
+
+
 "use client";
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
@@ -2122,9 +2589,10 @@ export function VolumeChart({
       )}
     >
       <CardHeader className="flex-shrink-0 p-3">
-        <div className="flex lg:flex-row flex-col items-center justify-between w-full gap-3">
-          <div className="flex items-center justify-between gap-3 w-full">
+        <div className="flex flex-wrap lg:flex-row flex-col items-center justify-between w-full gap-3">
+          <div className="flex items-center justify-between gap-3 w-64">
             <div className="flex gap-3">
+              
               <div className="flex justify-center items-center size-12 bg-primary rounded-full flex-shrink-0">
                 {icon}
               </div>
@@ -2139,7 +2607,14 @@ export function VolumeChart({
                 </CardDescription>
               </div>
             </div>
+          </div>
 
+          {/* Tabing */}
+          <Tabs
+            value={timeRange}
+            onValueChange={(value) => setTimeRange(value as ChartRange)}
+            className="sm:w-auto w-full flex-row items-center" 
+          >
             <div className="flex font-medium">
               {showRefreshButton && (
                 <button
@@ -2156,18 +2631,10 @@ export function VolumeChart({
                 </button>
               )}
             </div>
-          </div>
-
-          {/* Tabing */}
-          <Tabs
-            value={timeRange}
-            onValueChange={(value) => setTimeRange(value as ChartRange)}
-            className="w-full"
-          >
             <div className="rounded-full overflow-hidden">
               <TabsList
                 className={cn(
-                  "relative flex justify-normal items-center rounded-full p-1",
+                  "relative flex justify-normal items-center rounded-full p-1.5",
                   "bg-secondarybox",
                   "w-full h-auto whitespace-nowrap z-0 overflow-x-auto"
                 )}
@@ -2177,7 +2644,7 @@ export function VolumeChart({
                     key={tab.id}
                     value={tab.id}
                     className={cn(
-                      "flex-1 relative text-xs sm:text-sm px-4 py-1.5 font-medium rounded-full",
+                      "flex-1 relative text-xs sm:text-sm px-4 py-2 font-medium rounded-full",
                       "flex items-center justify-center",
                       "transition-all duration-75 ease-linear focus:outline-none cursor-pointer",
                       "focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none",

@@ -749,7 +749,7 @@ const HeroSection: React.FC = () => {
     buttonLink = "/dashboard/send/select-balance";
   } else {
     buttonText = "Create A Free Account";
-    buttonLink = "/signup"; // Assuming /signup, adjust if it's /auth/register
+    buttonLink = "/auth/register"; // Assuming /signup, adjust if it's /auth/register
   }
 
   return (

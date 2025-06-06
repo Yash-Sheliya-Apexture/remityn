@@ -438,7 +438,7 @@ const Error404Page: React.FC = () => {
             <div className="inline-block group">
               <Link
                 href={buttonHref} // Use the dynamic href
-                className="bg-primary hover:bg-primaryhover gap-2 capitalize text- w-fit cursor-pointer font-medium text-sm lg:text-base py-3 px-10 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center"
+                className="bg-primary hover:bg-primaryhover gap-2 capitalize text-mainheading w-fit cursor-pointer font-medium text-sm lg:text-base py-3 px-10 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center"
               >
                 {buttonText}{" "}
                 {/* Use the dynamic text. 'capitalize' class will style it */}

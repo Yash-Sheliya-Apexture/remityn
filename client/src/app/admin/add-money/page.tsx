@@ -9188,7 +9188,6 @@ import CustomToast, {
 
 // Import Shared Types
 import { Payment } from "../../../types/payment"; // Adjust path as needed
-import { FaCoins } from "react-icons/fa";
 import { TbMoneybag } from "react-icons/tb";
 
 axios.defaults.baseURL = apiConfig.baseUrl;
