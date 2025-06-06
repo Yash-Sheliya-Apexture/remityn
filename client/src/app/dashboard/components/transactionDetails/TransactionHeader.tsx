@@ -18,7 +18,7 @@ const TransactionHeader: React.FC<TransactionHeaderProps> = ({
 }) => {
     const isPayment = transaction.type === 'payment';
 
-    const headerIcon = isPayment ? <LuPlus size={24} className="text-mainheadingWhite"/> : <GoArrowUp size={24} className="text-mainheadingWhite"/>;
+    const headerIcon = isPayment ? <LuPlus size={24} className="text-white"/> : <GoArrowUp size={24} className="text-white"/>;
     const headerTitle = isPayment
         ? `To your ${(transaction as PaymentDetails).balanceCurrency?.code ?? 'Balance'}`
         : (transaction as TransferDetails).recipient?.accountHolderName || "Outgoing Transfer";

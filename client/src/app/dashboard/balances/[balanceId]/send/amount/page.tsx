@@ -5465,7 +5465,7 @@ import { IoClose } from "react-icons/io5";
 import { useSendAmountLogic } from "../../../../../hooks/useSendAmountLogic"; // Adjust path
 
 // Components
-import DashboardHeader from "@/app/dashboard/components/layout/DashboardHeader"; // Adjust path
+import DashboardHeader from "@/app/dashboard/components/layout/DashboardLayout"; // Adjust path
 import RateDisplay from "../../../../components/send/RateDisplay"; // Adjust path
 import AmountInput from "../../../../components/send/AmountInput"; // Adjust path
 import PayingWithDisplay from "../../../../components/send/PayingWithDisplay"; // Adjust path

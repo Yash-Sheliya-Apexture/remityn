@@ -556,6 +556,7 @@
 // }
 
 
+
 'use client';
 
 import React from 'react';
@@ -623,6 +624,7 @@ export default function KycStepper() {
                     "relative flex-1 flex flex-col items-center"
                   )}
                 >
+                  
                   {/* Connection line */}
                   {stepIdx < steps.length - 1 && (
                     <div 

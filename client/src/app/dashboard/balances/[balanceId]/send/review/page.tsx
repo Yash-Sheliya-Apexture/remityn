@@ -3775,7 +3775,7 @@ import axios, { AxiosError } from "axios";
 import apiConfig from "../../../../../config/apiConfig";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton"; // Make sure this path is correct
-import DashboardHeader from "../../../../components/layout/DashboardHeader"; // Make sure this path is correct
+import DashboardHeader from "../../../../components/layout/DashboardLayout"; // Make sure this path is correct
 
 // Import react-toastify and CustomToast
 import {

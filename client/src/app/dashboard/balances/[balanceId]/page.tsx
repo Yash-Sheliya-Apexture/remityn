@@ -9351,7 +9351,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import type { KycStatus } from "@/app/services/kyc";
 import { LuSettings2 } from "react-icons/lu";
-import { AlertTriangle, Inbox } from "lucide-react";
+import { AlertTriangle, Inbox, ListCheck } from "lucide-react";
 
 // --- Interfaces ---
 interface BalanceDetailPageParams extends Record<string, string | string[]> {
@@ -9942,13 +9942,15 @@ const BalanceDetailPage = () => {
               <div className="py-5">
                 {" "}
                 {/* Wrap safeguard in py-5 */}
-                <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[250px] flex flex-col justify-center items-center">
+                <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
+
                   <p className="lg:text-lg text-base text-mainheadingWhite max-w-lg mx-auto">
                     Something went wrong. Balance details are unavailable.
                   </p>
+
                   <button
                     onClick={handleBackClick}
-                    className="inline-flex font-medium bg-primary hover:bg-primaryhover text-neutral-900 px-8 py-3 h-12.5 rounded-full transition-all duration-75 ease-linear cursor-pointer"
+                    className="inline-flex font-medium bg-primary hover:bg-primaryhover text-neutral-900 px-8 py-3 rounded-full transition-all duration-75 ease-linear cursor-pointer"
                   >
                     Go Back
                   </button>
@@ -10027,22 +10029,22 @@ const BalanceDetailPage = () => {
 
         {/* "No Transactions Match Filters" Empty State */}
         {showNoMatchEmptyState && (
-          <div className="text-center flex flex-col items-center text-lg px-4 py-10 bg-primarybox rounded-lg space-y-4">
+          <div className="text-center flex flex-col items-center justify-center text-lg px-4 min-h-[300px] bg-primarybox rounded-lg space-y-4">
 
             <div className="lg:size-16 size-14 flex items-center justify-center bg-primary rounded-full">
-              <Inbox className="lg:size-8 size-6 mx-auto text-mainheading" />
+              <ListCheck className="lg:size-8 size-6 mx-auto text-mainheading" />
             </div>
 
             <span className="text-subheadingWhite">
               No transactions match your current filter or search criteria.
             </span>
 
-            <Button
+            <button
               onClick={clearAllFiltersAndSearch}
-              className="px-6 cursor-pointer py-3 font-medium w-auto bg-primary text-mainheading rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear"
+              className="px-6 cursor-pointer py-2.5 font-medium w-auto bg-primary text-mainheading rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear"
             >
               Clear Filters
-            </Button>
+            </button>
           </div>
         )}
 
@@ -10053,11 +10055,13 @@ const BalanceDetailPage = () => {
         onAddMoney={handleAddMoneyFromInsufficientModal}
         currencyCode={currencyCode}
       />
+
       <KycRequiredModal
         isOpen={isKycModalOpen}
         onClose={handleCloseKycModal}
         onStartVerification={handleStartVerification}
       />
+
       {/* Pass necessary props to FilterModal, including userAccounts if you use them for recipient filtering */}
        <FilterModal
          isOpen={isFilterModalOpen}

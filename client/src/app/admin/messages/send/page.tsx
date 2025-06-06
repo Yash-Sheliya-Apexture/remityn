@@ -3303,16 +3303,21 @@ const AdminSendAllMessagePage: React.FC = () => {
 
   if (authLoading) {
     return (
-      <div className="flex items-center justify-center h-screen text-subheadingWhite relative">
+      <div className="fixed gap-2 inset-0 bg-black/60 capitalize h-screen flex items-center justify-center z-50">
         <ToastContainer
           {...customToastContainerProps}
           style={getToastContainerStyle()}
         />
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="ml-2 text-lg">Loading...</span>
+        {/* <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <span className="ml-2 text-lg">Loading...</span> */}
+
+        <div className="loader">
+          <div className="justify-content-center jimu-primary-loading"></div>
+        </div>
       </div>
     );
   }
+
   if (!isAdmin) {
     return (
       <div className="container mx-auto px-4 py-10 relative">
@@ -3320,14 +3325,15 @@ const AdminSendAllMessagePage: React.FC = () => {
           {...customToastContainerProps}
           style={getToastContainerStyle()}
         />
+        
         {batchesError && (
-          <div className="max-w-lg mx-auto p-4 border bg-red-900/30 border-red-700 rounded-md flex items-start space-x-3">
-            <AlertCircle className="h-5 w-5 text-red-400 flex-shrink-0 mt-0.5" />
+          <div className="max-w-lg mx-auto p-4 border bg-red-900/30 border-red-500 rounded-md flex items-start space-x-3">
+            <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
             <div>
-              <h3 className="text-lg font-medium text-red-200">
+              <h3 className="text-lg font-medium text-red-500">
                 Access Denied
               </h3>
-              <p className="text-sm text-red-300 mt-1">{batchesError}</p>
+              <p className="text-sm text-red-900/20 mt-1">{batchesError}</p>
             </div>
           </div>
         )}
@@ -3341,9 +3347,9 @@ const AdminSendAllMessagePage: React.FC = () => {
         {...customToastContainerProps}
         style={getToastContainerStyle()}
       />
+
       <div className="Send mb-5">
         <div className="flex items-center gap-3">
-          
           <div className="p-2.5 shrink-0 bg-primary rounded-full flex items-center justify-center">
             <FaPaperPlane className="text-mainheading" size={26} />
           </div>
@@ -3359,7 +3365,6 @@ const AdminSendAllMessagePage: React.FC = () => {
           administrators to send announcements, alerts, or critical information
           to all users at once.
         </p>
-        
       </div>
 
       <ComposeBroadcastForm

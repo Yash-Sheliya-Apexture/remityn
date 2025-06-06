@@ -2253,7 +2253,7 @@ const TableHeaderComponent: React.FC<TableHeaderComponentProps> = ({
   };
 
   return (
-    <thead className="bg-primarybox">
+    <thead className="bg-primarybox border-b">
       <tr className="broadcast-head">
         {/* Subject & Snippet - No longer sortable */}
         <th className={`${headerCellClasses} min-w-[250px]`}>
@@ -2340,24 +2340,31 @@ const BroadcastHistoryTable: React.FC<BroadcastHistoryTableProps> = ({
   );
 
   const renderError = () => (
-    <div className="mt-5 p-4 border bg-red-900/30 border-red-700 rounded-md flex items-start space-x-3">
-      <AlertCircle className="h-5 w-5 text-red-400 flex-shrink-0 mt-0.5" />
+    <div className="mt-5 p-4 border bg-red-600/20 border-red-500 rounded-md flex items-center justify-between w-full space-x-3">
+      <div className="flex items-center gap-3">
+        <div className="sm:size-12 size-10 rounded-full flex items-center justify-center bg-red-600/20 flex-shrink-0">
+          <AlertCircle className="text-red-500 size-5 sm:size-6 flex-shrink-0" />
+        </div>
+        <div>
+          <h3 className="text-lg font-medium text-red-700">
+            Error Loading History
+          </h3>
+          <p className="text-sm text-red-500">{error} Lorem ipsum dolor sit amet, consectetur adipisicing elit. Esse, eius.</p>
+        </div>
+      </div>
+
       <div>
-        <h3 className="text-lg font-medium text-red-200">
-          Error Loading History
-        </h3>
-        <p className="text-sm text-red-300 mt-1">{error}</p>
         <button
           type="button"
           onClick={onRefresh}
           disabled={isLoading}
           className={cn(
-            "mt-2 inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 disabled:opacity-50 disabled:pointer-events-none",
-            "h-9 px-3",
-            "text-red-300 hover:bg-red-800/50"
+            "inline-flex items-center justify-center gap-2 rounded-full cursor-pointer font-medium transition-all duration-150 ease-linear focus-visible:outline-none disabled:opacity-50 disabled:pointer-events-none",
+            "py-2 px-6",
+            "text-red-500 bg-red-900/20 hover:bg-red-700/20"
           )}
         >
-          <RefreshCw className="mr-1.5 h-3.5 w-3.5" /> Try Again
+          <RefreshCw className="size-4" /> Try Again
         </button>
       </div>
     </div>
@@ -2397,11 +2404,12 @@ const BroadcastHistoryTable: React.FC<BroadcastHistoryTableProps> = ({
               including their content, delivery time, and recipient reach
             </p>
           </div>
+
           <button
             type="button"
             onClick={onRefresh}
             disabled={isLoading}
-            className="flex items-center justify-center cursor-pointer gap-2 text-primary bg-primarybox hover:bg-secondarybox font-medium sm:px-8 sm:py-3 aspect-square sm:aspect-auto h-12.5 sm:w-auto w-12.5 rounded-full transition-all duration-75 ease-linear disabled:opacity-60 disabled:cursor-not-allowed"
+            className="flex items-center justify-center cursor-pointer gap-2 text-primary bg-primarybox hover:bg-secondarybox font-medium sm:px-8 sm:py-3 aspect-square sm:aspect-auto size-11 sm:w-auto rounded-full transition-all duration-75 ease-linear disabled:opacity-60 disabled:cursor-not-allowed"
             title="Refresh history"
           >
             <RefreshCw className={cn("size-5", isLoading && "animate-spin")} />
@@ -2428,11 +2436,11 @@ const BroadcastHistoryTable: React.FC<BroadcastHistoryTableProps> = ({
                       <tr>
                         <td
                           colSpan={numberOfColumns} // Use numberOfColumns here
-                          className="text-center space-y-3 w-full text-subheadingWhite"
+                          className="text-center space-y-4 w-full text-subheadingWhite py-20"
                         >
                           <div className="flex justify-center items-center">
-                            <span className="lg:size-12 size-10 flex items-center justify-center bg-primary rounded-full">
-                              <ListChecks className="lg:size-6 size-4 mx-auto text-mainheading " />
+                            <span className="lg:size-16 size-14 flex items-center justify-center bg-primary rounded-full">
+                              <ListChecks className="lg:size-8 size-6 mx-auto text-mainheading " />
                             </span>
                           </div>
 
@@ -2445,6 +2453,7 @@ const BroadcastHistoryTable: React.FC<BroadcastHistoryTableProps> = ({
                             display at the moment. Once a broadcast is sent, it
                             will appear here.
                           </p>
+
                         </td>
                       </tr>
                     ) : (
