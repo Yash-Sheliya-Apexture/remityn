@@ -3176,9 +3176,9 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
 
     if (!isFetching && error && currencies.length === 0) {
       return (
-        <div className="flex-grow flex flex-col items-center justify-center text-center py-4 min-h-[100px]">
+        <div className="flex-grow flex flex-col items-center justify-center text-center py-4 min-h-[100px] bg-red-600/25 border border-red-500 rounded-lg">
           <div className="size-10 rounded-full flex items-center justify-center bg-red-600/20">
-            <FaExclamationCircle className="text-red-600 dark:text-red-500 size-5 sm:size-6 flex-shrink-0" />
+            <FaExclamationCircle className="text-red-500 size-5 sm:size-6 flex-shrink-0" />
           </div>
           <p className="text-red-500 font-medium">
             {error || "Could not load currencies."}
@@ -3231,7 +3231,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
                         );
                         (e.target as HTMLImageElement).style.display = "none";
                       }}
-                      className="rounded-full object-cover flex-shrink-0 w-[40px] h-[40px] bg-gray-200 dark:bg-gray-700"
+                      className="rounded-full object-cover flex-shrink-0 w-[40px] h-[40px]"
                       unoptimized={currency.flagImage.includes("flagcdn.com")}
                     />
                   ) : (
@@ -3321,7 +3321,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
                 <div className="relative flex-shrink-0">
                   <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                     <FiSearch
-                      className="size-5 text-neutral-500 dark:text-neutral-400"
+                      className="size-5  text-mainheadingWhite"
                       aria-hidden="true"
                     />
                   </div>
@@ -3329,7 +3329,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
                     ref={searchInputRef} // Ref is still attached
                     type="text"
                     placeholder="Search currency (e.g., USD, Euro)"
-                    className="w-full rounded-full h-12 py-3 pl-11 pr-10 border placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white bg-primarybox/50 transition-all duration-75 ease-linear focus:outline-none"
+                    className="w-full rounded-full h-12.5 py-3 pl-12 pr-3 border placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white bg-primarybox/50 transition-all duration-75 ease-linear focus:outline-none"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     aria-label="Search for a currency"
@@ -3470,6 +3470,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
                       "Confirm"
                     )}
                   </button>
+                  
                 </div>
               </div>
             )}

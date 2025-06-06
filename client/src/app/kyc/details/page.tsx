@@ -2339,85 +2339,8 @@ export default function KycDetailsPage() {
               className="inline-flex items-center justify-center bg-primary text-mainheading hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isSubmitting || !isFormValid} // Disable if submitting OR form is invalid
             >
-              {isSubmitting ? (
-                // ----- Loading State -----
-                <>
-                  <svg
-                    className="h-5 w-5 text-mainheading animate-spin mr-2"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true" // Hide decorative icon from screen readers
-                  >
-                    <path
-                      d="M12 2V6"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M12 18V22"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M4.93 4.93L7.76 7.76"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M16.24 16.24L19.07 19.07"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M2 12H6"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M18 12H22"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M4.93 19.07L7.76 16.24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M16.24 7.76L19.07 4.93"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <span>Continue...</span>
-                </>
-              ) : (
-                // ----- End Loading State -----
-                // ----- Normal State -----
-                <>
-                  <span>Continue</span>
-                  <ArrowRight className="ml-2 size-5" aria-hidden="true" />{" "}
-                  {/* Use ml-2 for margin before the icon */}
-                </>
-                // ----- End Normal State -----
-              )}
+              <span>Continue</span>
+              <ArrowRight className="ml-2 size-5" aria-hidden="true" />{" "}
             </button>
           </div>
         </form>
