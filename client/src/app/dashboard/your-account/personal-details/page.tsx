@@ -401,7 +401,7 @@ export default function PersonalDetails() {
                 <div className="bg-secondarybox p-3 rounded-full">
                   <LuUser
                     size={24}
-                    className="text-white/90"
+                    className="text-white"
                   />
                 </div>
                 <div className="flex-grow">
@@ -415,7 +415,7 @@ export default function PersonalDetails() {
                 <div>
                   <IoIosArrowForward
                     size={20}
-                    className="text-white/90 group-hover:translate-x-2.5 font-medium transition-transform ease-in-out duration-300"
+                    className="text-mainheadingWhite group-hover:translate-x-2.5 font-medium transition-transform ease-in-out duration-300"
                   />
                 </div>
               </div>
@@ -428,7 +428,7 @@ export default function PersonalDetails() {
               <div className="bg-secondarybox p-3 rounded-full">
                 <LuMail
                   size={24}
-                  className="text-white/90"
+                  className="text-white"
                 />
               </div>
               <div className="flex-grow">
@@ -442,7 +442,7 @@ export default function PersonalDetails() {
               <div>
                 <IoIosArrowForward
                   size={20}
-                  className="text-white/90 group-hover:translate-x-2.5 font-medium transition-transform ease-in-out duration-300"
+                  className="text-mainheadingWhite group-hover:translate-x-2.5 font-medium transition-transform ease-in-out duration-300"
                 />
               </div>
             </div>
@@ -454,7 +454,7 @@ export default function PersonalDetails() {
               <div className="bg-secondarybox p-3 rounded-full">
                 <LuPhone
                   size={24}
-                  className="text-white/90"
+                  className="text-white"
                 />
               </div>
               <div className="flex-grow">
@@ -468,7 +468,7 @@ export default function PersonalDetails() {
               <div>
                 <IoIosArrowForward
                   size={20}
-                  className="text-white/90 group-hover:translate-x-2.5 font-medium transition-transform ease-in-out duration-300"
+                  className="text-mainheadingWhite group-hover:translate-x-2.5 font-medium transition-transform ease-in-out duration-300"
                 />
               </div>
             </div>

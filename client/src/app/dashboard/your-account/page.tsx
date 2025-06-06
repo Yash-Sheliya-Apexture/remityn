@@ -114,7 +114,6 @@ import { FiUser } from "react-icons/fi";
 import { RxQuestionMark } from "react-icons/rx";
 import { RiShieldLine } from "react-icons/ri";
 import { FaRegBell } from "react-icons/fa6";
-import { IoMoonOutline } from "react-icons/io5";
 import { useAuth } from '@/app/contexts/AuthContext'; // Assuming @ alias
 
 const AccountSettings: React.FC = () => {
@@ -135,10 +134,13 @@ const AccountSettings: React.FC = () => {
     <section className="Your-Account">
       <div className="lg:max-w-2xl lg:mx-auto grid grid-cols-1 md:grid-cols-[auto,1fr] gap-10">
         <AccountCard username={displayName} />
+
         <div className="flex flex-col w-full">
           <h2 className="lg:text-3xl text-2xl font-semibold text-mainheadingWhite mb-4">
             Your account
           </h2>
+
+          
           <div className="space-y-2 mb-6">
             <MenuItem
               icon={

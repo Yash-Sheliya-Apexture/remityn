@@ -23,7 +23,7 @@ const TransactionDetailsPageSkeleton = () => {
           </div>
 
           {/* Tabs Navigation Skeleton */}
-          <div className="flex border-b py-4">
+          <div className="flex py-4">
             <Skeleton className="h-10 w-26 mr-4 rounded-t-md" />
             {/* Active Tab */}
             <Skeleton className="h-10 w-26 rounded-t-md" /> {/* Inactive Tab */}
@@ -57,7 +57,7 @@ const TransactionDetailsPageSkeleton = () => {
               )}
             </div>
 
-            <div className="py-4 border-t mt-5 space-y-2">
+            <div className="py-4 mt-5 space-y-2">
               <Skeleton className="h-5 w-1/3" />
               <Skeleton className="h-5 w-full" />
               <div className="flex  flex-col md:flex-row lg:justify-end gap-3 mt-5">

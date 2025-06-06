@@ -1834,9 +1834,10 @@ export default function RecipientsPage() {
                         size={24}
                         className="text-white"
                       />
-                      <div className="absolute -bottom-1 -right-1 size-5 rounded-full overflow-hidden bg-secondarybox flex items-center justify-center">
+                      <div className="absolute -bottom-1 -right-1 size-5 rounded-full overflow-hidden bg-primarybox flex items-center justify-center">
                         <FaCirclePlus size={18} className="text-green-500" />
                       </div>
+
                     </div>
                     <div className="min-w-0">
                       <h5 className="font-medium text-white text-sm md:text-base capitalize truncate">

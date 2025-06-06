@@ -648,10 +648,10 @@ const AccountCard: React.FC<AccountCardProps> = ({ username }) => {
         </div>
 
         {/* Logout button */}
-        <div className="text-center mt-6">
+        <div className="text-center">
           <button
             onClick={handleLogout}
-            className="bg-background/60 hover:bg-secondarybox text-primary px-6 py-2 rounded-full font-semibold transition-all duration-75 ease-linear cursor-pointer"
+            className="bg-secondarybox hover:bg-secondaryboxhover text-primary px-6 py-2.5 rounded-full font-medium transition-all duration-75 ease-linear cursor-pointer"
           >
             Log Out
           </button>
