@@ -668,7 +668,7 @@ const TransferTable: React.FC<TransferTableProps> = ({
               <tr>
                 <td
                   colSpan={numberOfColumns} // Use the defined constant
-                  className="px-4 py-10 text-center text-mainheadingWhite"
+                  className="py-20 text-center lg:text-xl text-lg text-mainheadingWhite"
                 >
                   No transfers found matching your filters.
                 </td>
@@ -726,7 +726,7 @@ const TransferTable: React.FC<TransferTableProps> = ({
                   <td className="px-4 py-3 font-medium whitespace-nowrap ">
                     <Link
                       href={`/admin/transfer/${transfer._id}`}
-                      className="bg-primarybox hover:bg-secondarybox transition-all duration-75 ease-linear cursor-pointer rounded-3xl px-6 py-2 font-medium text-primary focus:outline-none flex items-center"
+                      className="bg-primarybox hover:bg-secondarybox transition-all duration-75 ease-linear cursor-pointer rounded-3xl px-6 py-2 font-medium text-primary focus:outline-none flex items-center justify-center"
                     >
                       <span>View Details</span>
                     </Link>
