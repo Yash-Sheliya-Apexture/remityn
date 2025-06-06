@@ -1211,7 +1211,7 @@ export default function TransferInsights() {
     );
   }
 
-  if (!error) {
+  if (error) {
     // Error Display state
     return (
       <div

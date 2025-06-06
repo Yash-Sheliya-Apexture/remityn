@@ -36,15 +36,16 @@ export const InboxErrorState: React.FC<InboxErrorStateProps> = ({ error, onRetry
       <Alert className="bg-red-900/25 border border-red-500 rounded-xl flex justify-between items-center">
         <div className="flex sm:items-center gap-3">
 
-        <div className="size-10 rounded-full flex items-center justify-center bg-red-600/20 shrink-0">
+        <div className="size-12 rounded-full flex items-center justify-center bg-red-600/20 shrink-0">
           <AlertCircle className="text-red-500 size-5 sm:size-6 flex-shrink-0" />
         </div>
+
         <div>
-          <AlertTitle className="text-red-500">Error</AlertTitle>
+          <AlertTitle className="text-red-500 lg:text-2xl text-lg">Error</AlertTitle>
           <AlertDescription className="font-medium text-red-300/90">{error}Error fetching inbox messages</AlertDescription>
         </div>
         </div>
-        <button onClick={onRetry} className="inline-flex items-center py-2 px-4 rounded-full bg-red-600/20 text-red-500 cursor-pointer">
+        <button onClick={onRetry} className="inline-flex items-center py-2 px-4 rounded-full bg-red-900/20 hover:bg-red-700/20 text-red-500 cursor-pointer">
           <RefreshCw className="mr-2 h-4 w-4" /> Retry
         </button>
       </Alert>

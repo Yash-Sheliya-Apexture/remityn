@@ -385,9 +385,9 @@ const CancelTransferModal: React.FC<CancelTransferModalProps> = ({
               )}
               {/* --- END: Error Display Area --- */}
 
-              <div className="flex flex-col justify-center gap-4 mt-8">
+              <div className="flex flex-col justify-center gap-3 mt-8">
                 <button
-                  className="bg-red-600 hover:bg-red-700 text-white font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styles
+                  className="bg-red-500 hover:bg-red-600 text-white font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styles
                   onClick={onConfirmCancel}
                   disabled={isSubmitting}
                 >
@@ -395,6 +395,7 @@ const CancelTransferModal: React.FC<CancelTransferModalProps> = ({
                     ? `Cancelling ${typeText}...`
                     : `Yes, Cancel ${typeText}`}
                 </button>
+
                 <button
                   className="text-primary bg-primarybox hover:bg-secondarybox font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed" // Added disabled styles
                   onClick={onClose}

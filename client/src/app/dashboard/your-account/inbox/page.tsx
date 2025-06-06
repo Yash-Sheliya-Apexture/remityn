@@ -4658,7 +4658,6 @@ import {
   RefreshCw,
   Bell,
   AlertCircle,
-  Loader2,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -5023,7 +5022,7 @@ const InboxPage: React.FC = () => {
               <button
                 onClick={handleRefresh}
                 disabled={loading && !isInitialLoad.current}
-                className="flex items-center justify-center cursor-pointer gap-2 bg-primarybox text-primary hover:bg-primaryboxhover px-4 sm:px-8 py-3 h-12.5 w-auto rounded-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center justify-center cursor-pointer gap-2 bg-primarybox text-primary hover:bg-secondarybox px-4 sm:px-8 py-3 h-12.5 w-auto rounded-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <RefreshCw
                   className={`size-5 ${

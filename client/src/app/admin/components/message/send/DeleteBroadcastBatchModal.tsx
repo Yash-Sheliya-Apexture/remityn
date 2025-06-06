@@ -429,14 +429,14 @@ const DeleteBroadcastBatchModal: React.FC<DeleteBroadcastBatchModalProps> = ({
     <AnimatePresence>
       {isOpen && batchToDelete && (
         <motion.div
-          className="fixed inset-0 w-full h-full bg-black/50 dark:bg-white/30 z-50 flex sm:items-center items-end justify-center"
+          className="fixed inset-0 w-full h-full bg-white/15 z-50 flex sm:items-center items-end justify-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose} // Close when clicking on backdrop
         >
           <motion.div
-            className="bg-white dark:bg-background sm:rounded-3xl rounded-t-3xl w-full sm:max-w-xl relative" // sm:max-w-md for delete modal
+            className="bg-background sm:rounded-3xl rounded-t-3xl w-full sm:max-w-xl relative" // sm:max-w-md for delete modal
             variants={modalVariants}
             initial="initial"
             animate="animate"
@@ -445,14 +445,14 @@ const DeleteBroadcastBatchModal: React.FC<DeleteBroadcastBatchModalProps> = ({
           >
             {/* Header */}
             <div className="p-4 sm:p-6 flex items-center justify-between flex-shrink-0 border-b">
-              <h2 className="lg:text-2xl text-xl font-semibold text-mainheading dark:text-white">
+              <h2 className="lg:text-2xl text-xl font-semibold text-mainheadingWhite">
                 Confirm Batch Deletion
               </h2>
 
               <button
                 type="button"
                 onClick={onClose}
-                className="size-12 bg-lightgray cursor-pointer hover:bg-lightborder text-neutral-900 dark:text-primary dark:bg-primarybox dark:hover:bg-secondarybox flex items-center justify-center rounded-full transition-all duration-75 ease-linear focus:outline-none"
+                className="size-12 cursor-pointer text-primary bg-primarybox hover:bg-secondarybox flex items-center justify-center rounded-full transition-all duration-75 ease-linear focus:outline-none"
                 disabled={isDeleting}
               >
                 <IoClose size={28} />
@@ -461,29 +461,31 @@ const DeleteBroadcastBatchModal: React.FC<DeleteBroadcastBatchModalProps> = ({
 
             {/* Body */}
             <div className="sm:p-6 p-4 space-y-4">
-              <p className="text-neutral-900 dark:text-white">
+              <p className="text-subheadingWhite">
                 Are you sure you want to delete all{" "}
-                <strong>{batchToDelete?.recipientCount ?? 0}</strong> messages
+                <strong className="text-primary">{batchToDelete?.recipientCount ?? 0}</strong> messages
                 in this broadcast batch?
               </p>
-              <p className="font-medium text-red-600 dark:text-red-400">
+
+              <p className="font-medium text-red-500">
                 This action cannot be undone.
               </p>
+
               <div className="text-sm space-y-1 border-t pt-4 mt-4">
-                <p className="text-gray-500 dark:text-gray-300">
-                  <strong className="text-mainheading dark:text-white">
+                <p className="text-subheadingWhite">
+                  <strong className="text-mainheadingWhite">
                     Subject :-
                   </strong>{" "}
                   {batchToDelete?.subject}
                 </p>
-                <p className="text-gray-500 dark:text-gray-300">
-                  <strong className="text-mainheading dark:text-white">
+                <p className="text-subheadingWhite">
+                  <strong className="text-mainheadingWhite">
                     Sent :-
                   </strong>{" "}
                   {formatDateForDisplay(batchToDelete?.sentAt)}
                 </p>
-                <p className="text-gray-500 dark:text-gray-300">
-                  <strong className="text-mainheading dark:text-white">
+                <p className="text-subheadingWhite">
+                  <strong className="text-mainheadingWhite">
                     Batch ID :-
                   </strong>{" "}
                   {batchToDelete?.batchId}
@@ -492,23 +494,24 @@ const DeleteBroadcastBatchModal: React.FC<DeleteBroadcastBatchModalProps> = ({
             </div>
 
             {/* Footer */}
-            <div className="flex sm:flex-row flex-col items-center justify-end sm:p-6 p-4 gap-4 border-t">
-              <button
-                type="button"
-                onClick={onClose}
-                disabled={isDeleting}
-                className="bg-neutral-900 hover:bg-neutral-700 text-primary dark:bg-primarybox dark:hover:bg-secondarybox dark:text-primary font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear"
-              >
-                Cancel
-              </button>
+            <div className="flex sm:flex-row flex-col items-center justify-end sm:p-6 p-4 gap-3 border-t">
               <button
                 type="button"
                 onClick={onDelete}
                 disabled={isDeleting}
-                className="flex items-center justify-center bg-red-600 text-white hover:bg-red-700 font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center justify-center bg-red-500 text-white hover:bg-red-600 font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isDeleting && <SvgLoader />}
                 {isDeleting ? "Deleting..." : "Delete Batch"}
+              </button>
+              
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={isDeleting}
+                className="bg-primarybox hover:bg-secondarybox text-primary font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear"
+              >
+                Cancel
               </button>
             </div>
           </motion.div>

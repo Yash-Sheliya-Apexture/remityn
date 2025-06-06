@@ -655,7 +655,7 @@ import { MdCancel } from "react-icons/md";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link"; // Import Link
 import { LuPlus } from "react-icons/lu";
-import { BiSolidError } from "react-icons/bi";
+import { ListCheck } from "lucide-react";
 
 // Define Recipient type (ensure consistency with other files)
 interface Recipient {
@@ -940,11 +940,11 @@ const SelectRecipientContent = () => {
           </div>
 
           <div className="ml-4 flex-grow">
-            <h5 className="font-medium md:text-lg text-base text-mainheadingWhite">
+            <h5 className="font-medium md:text-lg text-base text-mainheadingWhite capitalize">
               Add a new recipient
             </h5>
 
-            <p className="text-xs text-subheadingWhite">
+            <p className="text-sm text-subheadingWhite">
               Add bank details for someone new.
             </p>
           </div>
@@ -953,17 +953,25 @@ const SelectRecipientContent = () => {
 
         {/* Recipient List or Empty/No Results Message */}
         {recipients.length === 0 && !searchTerm ? (
-          <div className="text-center rounded-2xl text-mainheadingWhite text-lg bg-primarybox py-10 mt-6">
-            <p className="font-medium">No recipients found.</p>
-            <p className="text-sm mt-1">
-              You haven't added any recipients yet. Click above to add someone.
+          <div className="text-center rounded-2xl text-mainheadingWhite text-lg bg-primarybox min-h-[300px] justify-center items-center flex space-y-4 flex-col">
+            
+            <div className="sm:size-16 size-14 rounded-full flex items-center justify-center bg-primary flex-shrink-0">
+              <ListCheck className="text-mainheading size-6 sm:size-8 flex-shrink-0" />
+            </div>
+
+            <h1 className="font-medium lg:text-3xl text-2xl">No recipients found.</h1>
+
+            <p className="text-subheadingWhite">
+              You haven't added any recipients yet,Click above to add someone.
             </p>
+
           </div>
         ) : filteredRecipients.length > 0 ? (
           <div>
-            <h3 className="font-medium text-mainheadingWhite mb-3 leading-8 border-b">
+            <h3 className="font-medium text-mainheadingWhite leading-8 border-b mb-2">
               Your Recipients
             </h3>
+
             <div className="space-y-2">
               {filteredRecipients.map((recipient) => (
                 // Make the whole div clickable
@@ -994,19 +1002,20 @@ const SelectRecipientContent = () => {
         ) : (
           // Only show "No results" if there was a search term
           searchTerm && (
-            <div className="text-center p-4 rounded-2xl space-y-4 text-mainheadingWhite text-base md:text-lg bg-primarybox py-10">
-              
+            <div className="text-center p-4 rounded-2xl space-y-4 flex flex-col justify-center items-center text-mainheadingWhite bg-primarybox min-h-[300px]">
+
               <div className="lg:size-16 size-14 rounded-full flex items-center justify-center bg-red-600/20 flex-shrink-0 mx-auto">
                 <FiAlertCircle className="text-red-500 lg:size-8 size-6 flex-shrink-0" />
               </div>
 
-              <p className="font-medium capitalize max-w-lg mx-auto text-mainheadingWhite">
+              <h1 className="font-medium max-w-lg lg:text-3xl text-2xl text-mainheadingWhite">
                 No recipients found matching '{searchTerm}'.
-              </p>
+              </h1>
 
-              <p className="text-sm text-subheadingWhite">
+              <p className="text-subheadingWhite">
                 Check the spelling or try adding them as a new recipient.
               </p>
+
             </div>
           )
         )}

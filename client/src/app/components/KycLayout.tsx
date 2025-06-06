@@ -175,6 +175,7 @@
 
 // export default KycLayoutComponent;
 
+
 // frontend/src/app/kyc/components/KycLayout.tsx
 "use client";
 
@@ -262,6 +263,7 @@ const KycLayoutComponent: React.FC<KycLayoutProps> = ({ children }) => {
   return (
     <div className="flex flex-col min-h-screen">
       <KycHeader />
+      
       <main className="flex-grow container mx-auto px-4 py-5 md:py-10 flex flex-col items-center">
         {/* Show stepper only if KYC context is initialized and on a form step */}
         {showStepper && (

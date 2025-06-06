@@ -7198,9 +7198,7 @@ import accountService from "../../../services/account";
 import { Transaction, TransactionStatus } from "@/types/transaction";
 import { Account } from "@/types/account";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
-import { ClipboardXIcon } from "lucide-react";
-import { MdOutlineAccessTime } from "react-icons/md";
+import { AlertCircle, ClipboardXIcon, ListChecks } from "lucide-react";
 
 // Define a type for potential API errors
 interface ApiError extends Error {
@@ -7311,7 +7309,7 @@ const TransactionsPageSkeleton: React.FC = () => {
                   key={`sk-processed-${index}`}
                   className="block p-2 sm:p-4 rounded-2xl"
                 >
-              <div className="flex items-center sm:gap-4 gap-2">
+                  <div className="flex items-center sm:gap-4 gap-2">
                     <Skeleton className="size-12 rounded-full flex-shrink-0" />
                     <div className="flex-grow flex flex-row justify-between sm:items-center sm:gap-4 gap-1">
                       <div className="">
@@ -7786,8 +7784,23 @@ const TransactionsPage: React.FC = () => {
 
           {/* Error Display: Only show error if not loading */}
           {error && ( // isLoading check is implicitly handled by the main isLoading guard above
-            <div className="text-center py-5 bg-red-600/25 p-4 mb-4 rounded-md border border-red-500">
-              <strong className="text-red-500">Error:</strong> {error}
+            <div
+              className="w-full flex relative items-center bg-red-900/20 border sm:order-1 order-2 border-red-500 p-4 rounded-xl my-5"
+              role="alert"
+            >
+              <div className="flex items-center gap-3 text-center">
+                <div className="sm:size-12 size-10 rounded-full flex items-center justify-center bg-red-600/20 flex-shrink-0">
+                  <AlertCircle className="text-red-500 size-5 sm:size-6 flex-shrink-0" />
+                </div>
+
+                <div className="flex-1 text-left">
+                  <h4 className="font-medium sm:text-2xl text-lg text-red-600 capitalize">
+                    Error Transactions Lists
+                  </h4>
+
+                  <p className="text-sm text-left text-red-300/90">{error}</p>
+                </div>
+              </div>
             </div>
           )}
 
@@ -7867,6 +7880,7 @@ const TransactionsPage: React.FC = () => {
                     </div>
                   </div>
                 )}
+
                 {/* ---- In Progress Section ---- */}
                 {inProgressTransactions.length > 0 && (
                   <div className="InProcess-Transaction-Lists">
@@ -7877,9 +7891,9 @@ const TransactionsPage: React.FC = () => {
                       {inProgressTransactions.map((transaction) => {
                         const isAddMoney = transaction.type === "Add Money";
                         const icon = isAddMoney ? (
-                          <LuPlus size={22} className="text-white/90" />
+                          <LuPlus size={22} className="text-white" />
                         ) : (
-                          <GoArrowUp size={22} className="text-white/90" />
+                          <GoArrowUp size={22} className="text-white" />
                         );
                         const description = isAddMoney
                           ? "Processing payment"
@@ -7917,7 +7931,7 @@ const TransactionsPage: React.FC = () => {
                                     </h3>
                                     <p className="sm:text-sm text-13px text-subheadingWhite mt-1">
                                       {description}
-                                    </p>
+                                    </p>  
                                   </div>
                                   <div
                                     className={`font-medium text-mainheadingWhite whitespace-nowrap shrink-0 sm:text-base text-15px`}
@@ -7938,6 +7952,7 @@ const TransactionsPage: React.FC = () => {
                     </div>
                   </div>
                 )}
+
                 {/* ---- Processed Section (Grouped by Date) ---- */}
                 {Object.entries(groupedProcessedTransactions).length > 0 && (
                   <div className="space-y-4">
@@ -8045,6 +8060,7 @@ const TransactionsPage: React.FC = () => {
                     )}
                   </div>
                 )}
+
                 {/* ---- Empty State Logic ---- */}
                 {/* Case 1: No transactions *at all* (and not because of filters/search) */}
                 {allTransactions.length === 0 &&
@@ -8052,31 +8068,38 @@ const TransactionsPage: React.FC = () => {
                   !filtersAreActive &&
                   !searchIsActive && ( // Explicitly check that no filters/search are active
                     <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
-                      <div className="lg:size-16 size-14 flex items-center justify-center bg-primary rounded-full mb-2">
-                        <MdOutlineAccessTime className="lg:size-8 size-6 mx-auto text-mainheading" />
+                      <div className="lg:size-16 size-14 flex items-center justify-center bg-primary rounded-full">
+                        <ListChecks className="lg:size-8 size-6 mx-auto text-mainheading" />
                       </div>
-                      <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite mt-1">
-                        You haven't made any transactions yet.
+
+                      <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite">
+                        You haven't made any transactions.
                       </h2>
+
                       <p className="lg:text-lg text-base text-subheadingWhite max-w-lg mx-auto">
                         Once you start{" "}
-                        <strong className="text-primary"><Link href="add-money/select-balance">Adding</Link> </strong> or{" "}
-                        <strong className="text-primary"><Link href="send/select-balance">Sending</Link></strong> money,
-                        your transactions will show up here.
+                        <strong className="text-primary">
+                          <Link href="add-money/select-balance">Adding</Link>{" "}
+                        </strong>{" "}
+                        or{" "}
+                        <strong className="text-primary">
+                          <Link href="send/select-balance">Sending</Link>
+                        </strong>{" "}
+                        money, your transactions will show up here.
                       </p>
                     </div>
                   )}
+
                 {/* Case 2: Have transactions, but none match filter/search */}
                 {filteredTransactions.length === 0 &&
                   allTransactions.length > 0 && // Only show if there *are* transactions to filter from
                   (filtersAreActive || searchIsActive) && ( // Only show if filters or search are active
                     <div className="text-center flex flex-col items-center text-lg px-4 space-y-4 py-10 bg-primarybox rounded-lg">
-                     
                       <div className="lg:size-16 size-14 flex items-center justify-center bg-primary rounded-full">
                         <ClipboardXIcon className="lg:size-8 size-6 mx-auto text-mainheading" />
                       </div>
 
-                      <span className="text-subheadingWhite">
+                      <p className="text-subheadingWhite lg:text-3xl text-2xl max-w-lg">
                         No transactions match your current{" "}
                         {filtersAreActive && searchIsActive
                           ? "filter and search criteria"
@@ -8084,11 +8107,11 @@ const TransactionsPage: React.FC = () => {
                           ? "filter criteria"
                           : "search criteria"}
                         .
-                      </span>
+                      </p>
 
-                      <Button
+                      <button
                         onClick={clearAllAppliedFiltersAndSearch}
-                        className="px-6 cursor-pointer py-3 font-medium w-auto bg-primary text-mainheading rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear"
+                        className="px-6 cursor-pointer py-2.5 font-medium w-auto bg-primary text-mainheading rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear"
                       >
                         Clear{" "}
                         {filtersAreActive && searchIsActive
@@ -8096,7 +8119,7 @@ const TransactionsPage: React.FC = () => {
                           : filtersAreActive
                           ? "Filters"
                           : "Search"}
-                      </Button>
+                      </button>
                     </div>
                   )}
               </div>
@@ -8104,7 +8127,7 @@ const TransactionsPage: React.FC = () => {
         </div>
       </section>
 
-      <FilterModal
+      <FilterModal  
         isOpen={isFilterModalOpen}
         onClose={handleCloseFilterModal}
         userAccounts={userAccounts}

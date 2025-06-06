@@ -133,7 +133,6 @@
 
 // export default Search;
 
-
 // // frontend/src/app/dashboard/components/TransactionPageSection/Search.tsx
 // "use client";
 
@@ -176,43 +175,101 @@
 
 // export default Search;
 
-// Note: Keep Search.tsx as it is in your original post - it's correctly defined.
-// frontend/src/app/dashboard/components/TransactionPageSection/Search.tsx - NO CHANGES NEEDED HERE
+// // Note: Keep Search.tsx as it is in your original post - it's correctly defined.
+// // frontend/src/app/dashboard/components/TransactionPageSection/Search.tsx - NO CHANGES NEEDED HERE
+// "use client";
+
+// import React from "react";
+// import { FiSearch } from "react-icons/fi";
+
+// interface SearchProps {
+//   searchTerm: string; // Receive current search term
+//   onSearchChange: (newSearchTerm: string) => void; // Callback to update parent state
+// }
+
+// const Search: React.FC<SearchProps> = ({
+//   searchTerm,
+//   onSearchChange,
+// }) => {
+
+//   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+//     onSearchChange(event.target.value); // Update parent state on input change
+//   };
+
+//   return (
+//     <div className="relative w-full">
+//       <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+//         <FiSearch
+//           className="size-5  text-mainheadingWhite"
+//           aria-hidden="true"
+//         />
+//       </div>
+//       <input
+//         type="text"
+//         placeholder="Search Name, Type, Status..." // Updated placeholder
+//         className="w-full sm:w-80 rounded-full h-12.5 py-3 pl-12 pr-3  focus:outline-0 transition-all duration-75 ease-in-out placeholder:text-gray-400 border border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white bg-primarybox/50" // Added more styling for consistency
+//         value={searchTerm} // Controlled input
+//         onChange={handleInputChange}
+//         aria-label="Search transactions" // Accessibility
+//       />
+//     </div>
+//   );
+// };
+
+// export default Search;
+
 "use client";
 
 import React from "react";
 import { FiSearch } from "react-icons/fi";
+import { MdCancel } from "react-icons/md"; // Import MdCancel icon
 
 interface SearchProps {
   searchTerm: string; // Receive current search term
   onSearchChange: (newSearchTerm: string) => void; // Callback to update parent state
 }
 
-const Search: React.FC<SearchProps> = ({
-  searchTerm,
-  onSearchChange,
-}) => {
-
+const Search: React.FC<SearchProps> = ({ searchTerm, onSearchChange }) => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     onSearchChange(event.target.value); // Update parent state on input change
   };
 
+  const clearSearchTerm = () => {
+    onSearchChange(""); // Clear the search term by calling onSearchChange with an empty string
+  };
+
   return (
-    <div className="relative w-full">
+    // The parent div now controls the overall width of the search component
+    <div className="relative w-full sm:w-80">
       <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
         <FiSearch
-          className="size-5  text-mainheadingWhite"
+          className="size-5 text-mainheadingWhite" // Assuming mainheadingWhite is a defined color
           aria-hidden="true"
         />
       </div>
       <input
         type="text"
-        placeholder="Search Name, Type, Status..." // Updated placeholder
-        className="w-full sm:w-80 rounded-full h-12.5 py-3 pl-12 pr-3  focus:outline-0 transition-all duration-75 ease-in-out placeholder:text-gray-400 border border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white bg-primarybox/50" // Added more styling for consistency
-        value={searchTerm} // Controlled input
+        placeholder="Search Name, Type, Status..."
+        // w-full makes input take full width of its parent (sm:w-80)
+        // pr-10 (padding-right) to make space for the clear button
+        className="w-full rounded-full h-12.5 py-3 pl-12 pr-10 focus:outline-0 transition-all duration-75 ease-in-out placeholder:text-gray-400 border border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white bg-primarybox/50"
+        value={searchTerm}
         onChange={handleInputChange}
-        aria-label="Search transactions" // Accessibility
+        aria-label="Search transactions"
       />
+      {/* Conditionally render the clear button if searchTerm is not empty */}
+      {searchTerm && (
+        <button
+          type="button"
+          onClick={clearSearchTerm}
+          // Position the button inside the input field on the right
+          // right-3 positions it 0.75rem from the right edge
+          className="absolute inset-y-0 right-3 flex items-center text-primary dark:text-primary focus:outline-none cursor-pointer"
+          aria-label="Clear search"
+        >
+          <MdCancel size={24} aria-hidden="true" />{" "}  
+        </button>
+      )}
     </div>
   );
 };

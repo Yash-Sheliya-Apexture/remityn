@@ -6900,14 +6900,15 @@ import DashboardHeader from "../../../components/layout/DashboardHeader";
 import { useAuth } from "../../../contexts/AuthContext";
 import recipientService from "../../../services/recipient"; // Adjusted path if needed
 import currencyService, { Currency } from "../../../services/currency"; // Adjusted path
-import { IoMdCloseCircle } from "react-icons/io";
+import { IoIosArrowForward, IoMdCloseCircle } from "react-icons/io";
 import Image from "next/image";
 import { IoArrowForward } from "react-icons/io5";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FiSearch } from "react-icons/fi";
 import { MdCancel } from "react-icons/md";
 import AccountTypeDropdown from "../../../components/ui/AccountTypeDropdown"; // Adjusted path
-import { AlertTriangle } from "lucide-react";
+import { AlertCircle, AlertTriangle } from "lucide-react";
+import { LuClipboardX } from "react-icons/lu";
 
 // Interfaces
 interface ApiErrorData {
@@ -7267,7 +7268,7 @@ const AddRecipientPage = () => {
   return (
     <div className="AddRecipientPage">
       {isLoadingCurrencies ? (
-        <Skeleton className="h-8 mb-6 w-48 rounded-md" /> // Skeleton for DashboardHeader
+        <Skeleton className="h-10 mb-6 w-48 rounded-md" /> // Skeleton for DashboardHeader
       ) : (
         <DashboardHeader title="Recipients" onBack={handleBackStep} />
       )}
@@ -7310,6 +7311,7 @@ const AddRecipientPage = () => {
                 <h2 className="lg:text-2xl text-xl capitalize font-semibold text-mainheadingWhite mb-4">
                   Select their currency
                 </h2>
+
                 <div className="relative mb-4">
                   <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                     <FiSearch
@@ -7335,19 +7337,22 @@ const AddRecipientPage = () => {
                     </button>
                   )}
                 </div>
+
                 {formError && !isLoadingCurrencies && (
                   <div
                     className="bg-red-900/25 border border-red-500 rounded-xl p-3 flex items-center gap-3 relative mb-3"
                     role="alert"
                   >
-                    <div className="flex-shrink-0 size-10 rounded-full flex items-center justify-center bg-red-600/20">
-                      <AlertTriangle className="text-red-500 size-5 sm:size-6 flex-shrink-0" />
+                    <div className="flex-shrink-0 lg:size-12 size-10 rounded-full flex items-center justify-center bg-red-600/20">
+                      <AlertTriangle className="text-red-500 size-4 sm:size-6 flex-shrink-0" />
                     </div>
+
                     <span className="text-red-300/90 text-sm font-medium">
                       {formError}
                     </span>
                   </div>
                 )}
+
                 <div className="space-y-6">
                   {filteredAvailableCurrencies.length > 0 && (
                     <div>
@@ -7390,7 +7395,7 @@ const AddRecipientPage = () => {
                                 </div>
                               </div>
                               <div className="ml-4">
-                                <IoArrowForward className="size-5 text-mainheadingWhite" />
+                                <IoIosArrowForward className="size-5 text-mainheadingWhite" />
                               </div>
                             </div>
                           </div>
@@ -7398,11 +7403,13 @@ const AddRecipientPage = () => {
                       </div>
                     </div>
                   )}
+
                   {filteredComingSoonCurrencies.length > 0 && (
                     <div>
                       <h3 className="font-medium text-white/90 mb-3 leading-8 border-b">
                         Coming soon
                       </h3>
+
                       <div className="space-y-2">
                         {filteredComingSoonCurrencies.map((currency) => (
                           <div
@@ -7439,10 +7446,15 @@ const AddRecipientPage = () => {
                       </div>
                     </div>
                   )}
+
                   {!isLoadingCurrencies &&
                     !filteredAvailableCurrencies.length &&
                     !filteredComingSoonCurrencies.length && (
-                      <div className="text-center bg-primarybox text-subheadingWhite mt-8 py-5 rounded-lg">
+                      <div className="text-center flex-col bg-primarybox text-subheadingWhite flex items-center lg:text-lg text-base justify-center min-h-[300px] rounded-2xl">
+                        <div className="sm:size-14 size-12 rounded-full flex items-center justify-center bg-primary flex-shrink-0 mb-4">
+                          <LuClipboardX className="text-mainheading size-6 sm:size-8 flex-shrink-0" />
+                        </div>
+
                         {searchCurrency.trim() !== ""
                           ? `No currencies found for "${searchCurrency}".`
                           : "No currencies available."}
@@ -7707,13 +7719,13 @@ const AddRecipientPage = () => {
                 </button>
                 <button
                   type="submit"
-                  className={`sm:order-2 order-1 bg-primary text-mainheading hover:bg-primaryhover font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center`}
+                  className={`sm:order-2 order-1 bg-primary text-mainheading gap-2 hover:bg-primaryhover font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center`}
                   disabled={isSubmitting || isFormInvalid}
                 >
                   {isSubmitting ? (
                     <>
                       <svg
-                        className="h-5 w-5 text-mainheading animate-spin mr-2"
+                        className="h-5 w-5 text-mainheading animate-spin"
                         viewBox="0 0 24 24"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
