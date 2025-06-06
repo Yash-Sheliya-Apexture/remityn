@@ -5956,6 +5956,7 @@ import {
   ArrowDownUp,
   ListChecks,
   Loader2,
+  ScanText,
 } from "lucide-react";
 
 // Utility & Toast
@@ -6145,8 +6146,10 @@ const LoadingSkeleton = () => (
           <Skeleton className="h-4 w-64 mb-1 rounded " />
           <Skeleton className="h-10 w-48 rounded " />
         </div>
-        <div className="flex items-center gap-2">
-          <Skeleton className="h-12 w-44 rounded-full" />
+        <div className="flex sm:flex-row flex-col items-center gap-3 sm:w-auto w-full">
+          <Skeleton className="h-12 sm:w-44 w-full rounded-full" />
+          <Skeleton className="h-12 sm:w-44 w-full rounded-full" />
+
         </div>
       </div>
 
@@ -6190,10 +6193,10 @@ const LoadingSkeleton = () => (
 
         <div className="space-y-4">
           <div className="border rounded-lg bg-background overflow-hidden">
-            <div className="px-6 py-4">
+            <div className="px-6 py-4 bg-primarybox">
               <div className="flex items-center justify-between">
-                <Skeleton className="h-6 w-40 rounded" />
-                <Skeleton className="h-7 w-24 rounded-full" />
+                <Skeleton className="h-6 w-40 rounded bg-background/50" />
+                <Skeleton className="h-7 w-24 rounded-full bg-background/50" />
               </div>
             </div>
 
@@ -6236,22 +6239,22 @@ const LoadingSkeleton = () => (
           </div>
 
           <div className="border rounded-lg bg-background overflow-hidden">
-            <div className="px-6 py-4">
-              <Skeleton className="h-6 w-44 rounded" />
+            <div className="px-6 py-4 bg-primarybox">
+              <Skeleton className="h-6 w-44 rounded bg-background/50" />
             </div>
             <div className="p-4 sm:p-6">
               <div className="flex md:flex-row flex-col gap-4">
                 <div className="border rounded-lg overflow-hidden md:w-1/2 w-full">
-                  <div className="p-3">
-                    <Skeleton className="h-4 w-1/3 rounded" />
+                  <div className="p-3 bg-primarybox">
+                    <Skeleton className="h-4 w-1/3 rounded bg-background/50" />
                   </div>
-                  <Skeleton className="aspect-video w-full rounded-none" />
+                  <Skeleton className="aspect-video w-full rounded-none bg-background" />
                 </div>
                 <div className="border rounded-lg overflow-hidden md:w-1/2 w-full">
-                  <div className="p-3">
-                    <Skeleton className="h-4 w-1/3 rounded" />
+                  <div className="p-3 bg-primarybox">
+                    <Skeleton className="h-4 w-1/3 rounded bg-background/50" />
                   </div>
-                  <Skeleton className="aspect-video w-full rounded-none" />
+                  <Skeleton className="aspect-video w-full rounded-none bg-background" />
                 </div>
               </div>
             </div>
@@ -6901,13 +6904,21 @@ const UserDetailPage: React.FC = () => {
               </h1>
             </div>
 
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-3 flex-wrap sm:w-auto w-full">
               <button
                 onClick={() => setIsSendMessageModalOpen(true)}
                 className="flex items-center justify-center cursor-pointer gap-2 bg-primarybox hover:bg-secondarybox text-primary font-medium px-6 py-3 h-12 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear"
               >
                 <MessageSquarePlus className="size-4" /> Send Message
               </button>
+
+              {/* Kyc Information */}
+              <Link 
+                href={`/admin/kyc-management/${userData._id}`}
+                className="flex items-center justify-center cursor-pointer gap-2 bg-primarybox hover:bg-secondarybox text-primary font-medium px-6 py-3 h-12 sm:w-auto w-full rounded-full transition-all duration-75 ease-linear"
+              >
+                <ScanText className="size-4" /> KYC Information
+              </Link>
             </div>
           </div>
 

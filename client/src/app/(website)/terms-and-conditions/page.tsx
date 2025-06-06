@@ -28,8 +28,8 @@ const sections: TermSection[] = [
           By accessing or using the Remityn platform, users are deemed to have
           read, understood, and agreed to be bound by our terms and conditions,
           along with all applicable policies. This forms a legally binding
-          agreement between the user and Remityn, operated by apexture Limited.
-        </p>
+          agreement between the user and Remityn.
+        </p>  
         <p>
           To access certain services on our platform, users are required to
           create an account by providing accurate and up-to-date personal

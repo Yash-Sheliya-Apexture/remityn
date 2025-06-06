@@ -166,11 +166,10 @@ const sections: PolicySection[] = [
     content: (
       <>
         <p>
-          Welcome to Remityn, a service provided by Apexture . Remityn is a
-          modern currency exchange and remittance platform designed to make
-          international money transfers faster, more affordable, and
-          transparent. Our service leverages secure technology to simplify how
-          people send and receive money across borders.
+          Welcome to Remityn - a modern currency exchange and remittance
+          platform designed to make international money transfers faster, more
+          affordable, and transparent. Our service leverages secure technology
+          to simplify how people send and receive money across borders.
         </p>
         <p>
           We are committed to protecting your privacy and handling your personal
@@ -254,7 +253,6 @@ const sections: PolicySection[] = [
           health, and genetic and biometric data). Nor do we collect any
           information about criminal convictions and offences.
         </p>
-
       </>
     ),
   },
@@ -486,10 +484,10 @@ const sections: PolicySection[] = [
       <>
         <p>
           Remityn is a trusted remittance platform powered by cutting-edge
-          technology and a commitment to transparency, security, and customer
-          satisfaction. Operated by Apexture Limited, our mission is to make
-          international money transfers faster, more affordable, and more
-          accessible for individuals and businesses across the globe.
+          technology and a strong commitment to transparency, security, and
+          customer satisfaction. Our mission is to make international money
+          transfers faster, more affordable, and more accessible for individuals
+          and businesses across the globe.
         </p>
         <p>
           We understand the importance of handling your personal data with care.
