@@ -1883,7 +1883,7 @@ const stepsData: StepData[] = [
     contentTitle: "Sign Up and Get Verified",
     contentSubtitle: "Sign up quickly with our instant account setup by providing basic details. Complete a simple KYC verification process to unlock full access, including wallet creation and international money transfers.",
     contentImages: {
-      img: "/assets/images/Register-and-verify.png",
+      img: "/assets/images/asdasdadawsdsdsfsdtgrhnfd.svg",
       imgTitle: "Remityn showing registration and verification screen", // <-- ADDED
     },
     contentBlocks: [
