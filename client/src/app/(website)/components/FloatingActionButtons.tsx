@@ -854,6 +854,199 @@
 // export default FloatingActionButtons;
 
 
+// // src/components/FloatingActionButtons.tsx
+// import React, { useCallback } from "react";
+// import { IoLogoWhatsapp } from "react-icons/io5"; // IoCall removed
+// import { BsChatDots } from "react-icons/bs";
+
+// interface FloatingButtonProps {
+//   onClick: () => void;
+//   icon: React.ReactNode;
+//   textOnHover: string;
+//   iconColorClass: string;
+//   borderColorClass?: string;
+//   initialTextColorClass?: string;
+//   hoverTextColorClass?: string;
+//   hoverButtonBgClass?: string;
+//   ariaLabel: string;
+//   animationConfig?: {
+//     type: "whatsapp" | "message"; // "phone" type removed from animationConfig
+//     trigger: "always" | "on-hover";
+//   };
+//   animationDelay?: string;
+// }
+
+// const FloatingButton: React.FC<FloatingButtonProps> = ({
+//   onClick,
+//   icon,
+//   textOnHover,
+//   iconColorClass,
+//   initialTextColorClass = "text-white",
+//   borderColorClass = "border-gray-300",
+//   hoverTextColorClass = "group-hover:text-white",
+//   hoverButtonBgClass = "group-hover:bg-black",
+//   ariaLabel,
+//   animationConfig,
+//   animationDelay = "0s",
+// }) => {
+//   let buttonSpecificAnimationClass = "";
+
+//   if (animationConfig) {
+//     if (animationConfig.trigger === "always") {
+//       if (animationConfig.type === "whatsapp") {
+//         buttonSpecificAnimationClass = "animate-pulse-whatsapp-fab";
+//       } else if (animationConfig.type === "message") {
+//         buttonSpecificAnimationClass = "animate-pulse-message-fab";
+//       }
+//       // Removed phone animation type handling
+//     }
+//     // Removed phone hover animation handling
+//   }
+
+//   const applyBaseShadow = !(
+//     animationConfig && animationConfig.trigger === "always"
+//   );
+
+//   const buttonStyle = {
+//     '--animation-delay': animationDelay,
+//   } as React.CSSProperties;
+
+//   return (
+//     <div className="relative group">
+//       <button
+//         onClick={onClick}
+//         aria-label={ariaLabel}
+//         type="button"
+//         style={buttonStyle}
+//         className={`relative z-10 flex items-center rounded-full p-2 bg-white border ${borderColorClass} ${
+//           applyBaseShadow ? "shadow-lg" : ""
+//         } transition-all duration-300 ease-in-out overflow-hidden group-hover:px-4 group-hover:border-transparent focus:outline-none cursor-pointer ${hoverButtonBgClass} ${buttonSpecificAnimationClass}`}
+//       >
+//         <span className={`flex-shrink-0 ${iconColorClass}`}>{icon}</span>
+//         <span
+//           className={`whitespace-nowrap transition-all duration-300 ease-in-out overflow-hidden max-w-0 opacity-0 ml-0 group-hover:max-w-xs group-hover:opacity-100 group-hover:ml-2 ${initialTextColorClass} ${hoverTextColorClass}`}
+//         >
+//           {textOnHover}
+//         </span>
+//       </button>
+//       <style jsx>{`
+//         /* WhatsApp Button Animation */
+//         @keyframes pulse_whatsapp_fab_kf {
+//           0% {
+//             box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5);
+//           }
+//           80% {
+//             box-shadow: 0 0 0 14px rgba(37, 211, 102, 0);
+//           }
+//           100% {
+//             box-shadow: 0 0 0 14px rgba(37, 211, 102, 0);
+//           }
+//         }
+//         .animate-pulse-whatsapp-fab {
+//           animation: pulse_whatsapp_fab_kf 1.5s ease-out infinite;
+//           animation-delay: var(--animation-delay);
+//         }
+
+//         /* Message Button Animation */
+//         @keyframes pulse_message_fab_kf {
+//           0% {
+//             box-shadow: 0 0 0 0 rgba(0, 152, 233, 0.5);
+//           }
+//           80% {
+//             box-shadow: 0 0 0 14px rgba(0, 152, 233, 0);
+//           }
+//           100% {
+//             box-shadow: 0 0 0 14px rgba(0, 152, 233, 0);
+//           }
+//         }
+//         .animate-pulse-message-fab {
+//           animation: pulse_message_fab_kf 1.5s ease-out infinite;
+//           animation-delay: var(--animation-delay);
+//         }
+
+//         /* Phone Button Animation Removed */
+//         /* @keyframes pulse_phone_fab_kf { ... } */
+//         /* .animate-pulse-phone-fab { ... } */
+
+//         /* Target class for hover-triggered phone animation (if used) */
+//         /* .group:hover .phone-hover-animation-target { ... } */
+//       `}</style>
+//     </div>
+//   );
+// };
+
+// const FloatingActionButtons: React.FC = () => {
+//   const handleWhatsAppClick = () => {
+//     console.log("WhatsApp clicked: +91 9779816382");
+//     window.open('https://wa.me/919779816382', '_blank');
+//   };
+
+//   const handleMessagesClick = useCallback(() => {
+//     console.log("Messages FAB clicked: Attempting to open Tawk.to chat");
+//     if (typeof window !== 'undefined' && window.Tawk_API) {
+//       if (typeof window.Tawk_API.maximize === 'function') {
+//         window.Tawk_API.maximize();
+//       } else if (typeof window.Tawk_API.toggle === 'function') {
+//         window.Tawk_API.toggle();
+//       } else {
+//         console.warn("Tawk_API.maximize() or Tawk_API.toggle() is not available.");
+//       }
+//     } else {
+//       console.warn("Tawk_API is not initialized or not available on window. Cannot open chat.");
+//     }
+//   }, []);
+
+//   // handlePhoneClick removed
+//   // const handlePhoneClick = () => {
+//   //   console.log("Phone clicked: Call support");
+//   //   // window.location.href = 'tel:+1234567890';
+//   // };
+
+//   const iconSize = "h-6 w-6";
+
+//   return (
+//     <div className="fixed bottom-6 right-6 flex flex-col items-end gap-6 z-30">
+//       <FloatingButton
+//         onClick={handleWhatsAppClick}
+//         icon={<IoLogoWhatsapp className={iconSize} />}
+//         textOnHover="+91 9779816382"
+//         iconColorClass="text-green-500"
+//         borderColorClass="border-green-500"
+//         ariaLabel="Contact on WhatsApp"
+//         animationConfig={{ type: "whatsapp", trigger: "always" }}
+//         animationDelay="0s"
+//       />
+//       <FloatingButton
+//         onClick={handleMessagesClick}
+//         icon={<BsChatDots className={iconSize} />}
+//         textOnHover="Chat with us"
+//         iconColorClass="text-blue-500"
+//         borderColorClass="border-blue-500"
+//         ariaLabel="Chat with us via Tawk.to"
+//         animationConfig={{ type: "message", trigger: "always" }}
+//         animationDelay="0.3s" // This delay is fine, it will now be the last button
+//       />
+//       {/* FloatingButton for Phone removed */}
+//       {/*
+//       <FloatingButton
+//         onClick={handlePhoneClick}
+//         icon={<IoCall className={iconSize} />}
+//         textOnHover="Call support"
+//         iconColorClass="text-purple-500"
+//         borderColorClass="border-purple-500"
+//         ariaLabel="Call us"
+//         animationConfig={{ type: "phone", trigger: "always" }}
+//         animationDelay="0.6s"
+//       />
+//       */}
+//     </div>
+//   );
+// };
+
+// export default FloatingActionButtons;
+
+
+
 // src/components/FloatingActionButtons.tsx
 import React, { useCallback } from "react";
 import { IoLogoWhatsapp } from "react-icons/io5"; // IoCall removed
@@ -950,13 +1143,13 @@ const FloatingButton: React.FC<FloatingButtonProps> = ({
         /* Message Button Animation */
         @keyframes pulse_message_fab_kf {
           0% {
-            box-shadow: 0 0 0 0 rgba(0, 152, 233, 0.5);
+            box-shadow: 0 0 0 0 rgba(102, 232, 250, 0.5);
           }
           80% {
-            box-shadow: 0 0 0 14px rgba(0, 152, 233, 0);
+            box-shadow: 0 0 0 14px rgba(102, 232, 250, 0);
           }
           100% {
-            box-shadow: 0 0 0 14px rgba(0, 152, 233, 0);
+            box-shadow: 0 0 0 14px rgba(102, 232, 250, 0);
           }
         }
         .animate-pulse-message-fab {
@@ -1006,7 +1199,7 @@ const FloatingActionButtons: React.FC = () => {
 
   return (
     <div className="fixed bottom-6 right-6 flex flex-col items-end gap-6 z-30">
-      <FloatingButton
+      {/* <FloatingButton
         onClick={handleWhatsAppClick}
         icon={<IoLogoWhatsapp className={iconSize} />}
         textOnHover="+91 9779816382"
@@ -1015,13 +1208,13 @@ const FloatingActionButtons: React.FC = () => {
         ariaLabel="Contact on WhatsApp"
         animationConfig={{ type: "whatsapp", trigger: "always" }}
         animationDelay="0s"
-      />
+      /> */}
       <FloatingButton
         onClick={handleMessagesClick}
         icon={<BsChatDots className={iconSize} />}
         textOnHover="Chat with us"
-        iconColorClass="text-blue-500"
-        borderColorClass="border-blue-500"
+        iconColorClass="text-primary"
+        borderColorClass="border-primary"
         ariaLabel="Chat with us via Tawk.to"
         animationConfig={{ type: "message", trigger: "always" }}
         animationDelay="0.3s" // This delay is fine, it will now be the last button
