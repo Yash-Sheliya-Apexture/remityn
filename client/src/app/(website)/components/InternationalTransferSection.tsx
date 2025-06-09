@@ -112,6 +112,185 @@
 
 // export default InternationalTransferSection;
 
+// "use client"; // This component uses React state/effects implicitly or explicitly via icons, so "use client" is appropriate.
+
+// import React from 'react';
+// import {
+//   IoRocketOutline,
+//   IoSwapHorizontalOutline,
+//   IoWalletOutline,
+// } from 'react-icons/io5';
+
+// // Define type for Product data
+// type Product = {
+//   icon: React.ReactNode; // Using React.ReactNode for flexibility (can be JSX, string, etc.)
+//   title: string;
+//   description: string;
+// };
+
+// // Icon components for better readability and potential reusability
+// const TransferIcon = () => <IoSwapHorizontalOutline className="w-8 h-8 text-primary" />;
+// const RocketIcon = () => <IoRocketOutline className="w-8 h-8 text-primary" />;
+// const WalletIcon = () => <IoWalletOutline className="w-8 h-8 text-primary" />;
+
+// // Data for the "individuals" products
+// // This data is static, so it can be defined outside the component.
+// const individualsProductsData: Product[] = [
+//   {
+//     icon: <TransferIcon />,
+//     title: 'Effortless Money Transfers to India',
+//     description: 'Easily transfer funds to family and friends in India. Enjoy a seamless experience with direct bank deposits and UPI payments.',
+//   },
+//   {
+//     icon: <RocketIcon />,
+//     title: 'Fast & Secure Transfers',
+//     description: 'Experience swift and secure international money transfers to INR. Our robust platform ensures your money reaches its destination safely and quickly.',
+//   },
+//   {
+//     icon: <WalletIcon />,
+//     title: 'Competitive INR Exchange Rates',
+//     description: 'Get the best value for your money with our highly competitive exchange rates for USD, EUR, GBP (and more) to INR, and transparent zero fees.',
+//   },
+// ];
+
+// const InternationalTransferSection: React.FC = () => {
+//   // Since currentProducts will always be individualsProductsData in this version,
+//   // we can use it directly.
+//   // const currentProducts = individualsProductsData; // This line is not strictly needed anymore
+
+//   return (
+//     <section className="InternationalTransferSection sm:py-14 pt-7.5 pb-10">
+//       <div className="container mx-auto px-4">
+//         {/* Header Section */}
+//         <div className="text-center lg:text-left">
+//           <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
+//             Send Money to <span className="text-primary">India</span>
+//           </h3>
+//           <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
+//             Transfer funds internationally to India with ease, speed, and
+//             security. We offer competitive exchange rates and a seamless
+//             experience for your INR remittances.
+//           </p>
+//         </div>
+
+//         {/* Products Grid */}
+//         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 sm:gap-10 gap-8 sm:mt-16 mt-10">
+//           {individualsProductsData.map((product, index) => {
+//             const isLastItemInRowSm = (index + 1) % 2 === 0;
+//             const isLastItemInRowLg = (index + 1) % 3 === 0;
+//             const isLastItemOverall = index === individualsProductsData.length - 1;
+
+//             // Simplified border logic:
+//             // - On small screens (sm), items get a bottom border unless they are in the last row.
+//             // - On large screens (lg), items get a right border unless they are the last in a 3-column row.
+//             // - The very last item overall, or the last item in a row on its respective breakpoint, doesn't get a trailing border.
+//             // - Padding is adjusted to accommodate borders.
+
+//             let conditionalClasses = "pb-8 sm:pb-10"; // Default bottom padding
+
+//             if (!isLastItemOverall) {
+//                 // Small screens: bottom border if not last in a 2-col layout or if it's a single column item not last overall
+//                 if (individualsProductsData.length > 1 && (individualsProductsData.length % 2 !== 0 && index < individualsProductsData.length -1) || (individualsProductsData.length % 2 === 0 && index < individualsProductsData.length - 2) ) {
+//                    // Simpler: Add bottom border to all but the actual last items on small screens
+//                    if (index < individualsProductsData.length - (individualsProductsData.length % 2 === 0 ? 2 : 1) || (individualsProductsData.length % 2 !== 0 && index < individualsProductsData.length -1 && individualsProductsData.length > 2 ) ) {
+//                         // This condition becomes tricky. Let's simplify:
+//                         // All items get bottom border on SM, except the last 1 or 2 depending on count.
+//                    }
+//                 }
+//                 // More robust border handling for grid:
+//                 // Add bottom border to all items except those that would be in the last row on 'sm'
+//                 if (index < individualsProductsData.length - (individualsProductsData.length % 2 === 0 ? 2 : 1)) {
+//                     conditionalClasses += " border-b border-b-gray-600/50";
+//                 }
+//                  // Add right border to all items except those that would be in the last column on 'lg'
+//                 if ((index + 1) % 3 !== 0 && index < individualsProductsData.length -1 ) { // Not last in LG row and not the very last item
+//                     conditionalClasses += " lg:border-r lg:border-r-gray-600/50 lg:pr-10";
+//                 }
+//                 // Remove bottom border if it's also getting a right border on LG
+//                 if ((index + 1) % 3 !== 0 && index < individualsProductsData.length -1) {
+//                     conditionalClasses += " lg:border-b-0 lg:pb-0";
+//                 } else {
+//                     // If it IS the last in an LG row (but not the overall last row), it might still need bottom padding for SM
+//                     // This logic for conditionalClasses was complex. Let's use the original simpler one and refine it.
+//                 }
+//             }
+
+//             // Reverting to a slightly modified version of your original logic for conditional classes, as it was closer.
+//             // The main goal is to avoid borders on the very edges of the grid.
+//             conditionalClasses = ""; // Reset
+
+//             if (!isLastItemOverall) {
+//                 // Default padding for items that are not the absolute last.
+//                 conditionalClasses = "pb-8 sm:pb-10";
+
+//                 // Add bottom border for items not in the last row on small screens
+//                 // If 2 items per row, all items except the last 2 (if even) or last 1 (if odd) get bottom border.
+//                 if (index < individualsProductsData.length - (individualsProductsData.length % 2 === 0 ? 2 : (individualsProductsData.length === 1 ? 0 : 1) ) ) {
+//                      conditionalClasses += " border-b border-b-gray-600/50";
+//                 }
+
+
+//                 // Add right border for items not in the last column on large screens
+//                 if (!isLastItemInRowLg) {
+//                     conditionalClasses += " lg:border-r lg:border-r-gray-600/50 lg:pr-10";
+//                 }
+
+//                 // If it has a right border on LG, it shouldn't have a bottom border on LG
+//                 if (!isLastItemInRowLg) {
+//                     conditionalClasses += " lg:border-b-0 lg:pb-0"; // Remove bottom border/padding for LG
+//                 }
+//             }
+
+
+//             // Handle the special col-span for the last item if the total count is odd
+//             // This ensures the last item centers if it's alone on the last row (for sm) or takes full width (for lg if desired)
+//             if (isLastItemOverall && individualsProductsData.length % 2 !== 0 && individualsProductsData.length > 1) { // For sm screens if odd number of items
+//                 conditionalClasses += " sm:col-span-2 sm:col-span-2 lg:col-span-1";
+//             }
+//              if (isLastItemOverall && individualsProductsData.length % 3 !== 0 && individualsProductsData.length > 1) { // For lg screens, if items don't fill last row
+//                  if (individualsProductsData.length % 3 === 1) { // last item is alone on lg row
+//                     // conditionalClasses += " lg:col-span-3"; // Option to make it full width
+//                     // Or let it be 1/3 width:
+//                     // conditionalClasses += " lg:col-span-1"; // This is default
+//                  } else if (individualsProductsData.length % 3 === 2) { // last two items on lg row
+//                     // if (index === individualsProductsData.length - 2) conditionalClasses += " lg:col-span-1"; // previous one
+//                     // if (index === individualsProductsData.length - 1) conditionalClasses += " lg:col-span-1"; // this one
+//                  }
+//              }
+
+
+//             return (
+//               <div
+//                 key={product.title + index} // Using title + index for a more stable key if titles are unique
+//                 className={`text-center space-y-6${conditionalClasses ? ' ' + conditionalClasses.trim() : ''}`}
+//               >
+//                 <div className="flex justify-center">
+//                   <div className="w-20 h-20 rounded-full icon-outer-wrapper flex items-center justify-center">
+//                     <div className="w-14 h-14 rounded-full icon-inner-background flex items-center justify-center">
+//                       {product.icon}
+//                     </div>
+//                   </div>
+//                 </div>
+//                 <h3 className="text-2xl text-mainheadingWhite font-semibold">
+//                   {product.title}
+//                 </h3>
+//                 <p className="text-subheadingWhite lg:text-lg text-base">
+//                   {product.description}
+//                 </p>
+//               </div>
+//             );
+//           })}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default React.memo(InternationalTransferSection);
+
+
+
+
 "use client"; // This component uses React state/effects implicitly or explicitly via icons, so "use client" is appropriate.
 
 import React from 'react';
@@ -123,7 +302,7 @@ import {
 
 // Define type for Product data
 type Product = {
-  icon: React.ReactNode; // Using React.ReactNode for flexibility (can be JSX, string, etc.)
+  icon: React.ReactNode;
   title: string;
   description: string;
 };
@@ -134,149 +313,94 @@ const RocketIcon = () => <IoRocketOutline className="w-8 h-8 text-primary" />;
 const WalletIcon = () => <IoWalletOutline className="w-8 h-8 text-primary" />;
 
 // Data for the "individuals" products
-// This data is static, so it can be defined outside the component.
 const individualsProductsData: Product[] = [
   {
     icon: <TransferIcon />,
-    title: 'Effortless Money Transfers to India',
-    description: 'Easily transfer funds to family and friends in India. Enjoy a seamless experience with direct bank deposits and UPI payments.',
+    title: 'Effortless Money Transfers',
+    description: 'Easily send funds directly to Indian bank accounts with a smooth experience.',
   },
   {
     icon: <RocketIcon />,
     title: 'Fast & Secure Transfers',
-    description: 'Experience swift and secure international money transfers to INR. Our robust platform ensures your money reaches its destination safely and quickly.',
+    description: 'Transfer funds swiftly and safely with our full data protection.',
   },
   {
     icon: <WalletIcon />,
-    title: 'Competitive INR Exchange Rates',
-    description: 'Get the best value for your money with our highly competitive exchange rates for USD, EUR, GBP (and more) to INR, and transparent zero fees.',
+    title: 'Competitive Exchange Rates',
+    description: 'Get the best, transparent exchange rates with zero hidden fees, saving you money on every transfer.',
   },
 ];
 
 const InternationalTransferSection: React.FC = () => {
-  // Since currentProducts will always be individualsProductsData in this version,
-  // we can use it directly.
-  // const currentProducts = individualsProductsData; // This line is not strictly needed anymore
-
   return (
     <section className="InternationalTransferSection sm:py-14 pt-7.5 pb-10">
       <div className="container mx-auto px-4">
         {/* Header Section */}
         <div className="text-center lg:text-left">
-          <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
-            Send Money to <span className="text-primary">India</span>
+          <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite lg:max-w-4xl max-w-full">
+            Send Money to India,{" "}<span className="text-primary">The Smarter Way</span>
           </h3>
           <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
-            Transfer funds internationally to India with ease, speed, and
-            security. We offer competitive exchange rates and a seamless
-            experience for your INR remittances.
+            Send money with confidence through our fast, secure, and cost-effective platform. Whether it's for family, education, or emergencies, Remitin offers effortless transfers, competitive exchange rates, and a seamless user experience—all backed by bank-level security.
           </p>
         </div>
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 sm:gap-10 gap-8 sm:mt-16 mt-10">
+        {/* 
+          Products Grid:
+          - Mobile (default): 1 column
+          - Tablet (md): 2 columns, with the last item spanning both
+          - Desktop (lg): 3 columns
+        */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:mt-16 mt-10">
           {individualsProductsData.map((product, index) => {
-            const isLastItemInRowSm = (index + 1) % 2 === 0;
-            const isLastItemInRowLg = (index + 1) % 3 === 0;
-            const isLastItemOverall = index === individualsProductsData.length - 1;
+            const totalItems = individualsProductsData.length;
 
-            // Simplified border logic:
-            // - On small screens (sm), items get a bottom border unless they are in the last row.
-            // - On large screens (lg), items get a right border unless they are the last in a 3-column row.
-            // - The very last item overall, or the last item in a row on its respective breakpoint, doesn't get a trailing border.
-            // - Padding is adjusted to accommodate borders.
+            // Specific check for the third item in a list of three to apply the full-width span on tablets.
+            const isThirdItem = totalItems === 3 && index === 2;
 
-            let conditionalClasses = "pb-8 sm:pb-10"; // Default bottom padding
-
-            if (!isLastItemOverall) {
-                // Small screens: bottom border if not last in a 2-col layout or if it's a single column item not last overall
-                if (individualsProductsData.length > 1 && (individualsProductsData.length % 2 !== 0 && index < individualsProductsData.length -1) || (individualsProductsData.length % 2 === 0 && index < individualsProductsData.length - 2) ) {
-                   // Simpler: Add bottom border to all but the actual last items on small screens
-                   if (index < individualsProductsData.length - (individualsProductsData.length % 2 === 0 ? 2 : 1) || (individualsProductsData.length % 2 !== 0 && index < individualsProductsData.length -1 && individualsProductsData.length > 2 ) ) {
-                        // This condition becomes tricky. Let's simplify:
-                        // All items get bottom border on SM, except the last 1 or 2 depending on count.
-                   }
-                }
-                // More robust border handling for grid:
-                // Add bottom border to all items except those that would be in the last row on 'sm'
-                if (index < individualsProductsData.length - (individualsProductsData.length % 2 === 0 ? 2 : 1)) {
-                    conditionalClasses += " border-b border-b-gray-600/50";
-                }
-                 // Add right border to all items except those that would be in the last column on 'lg'
-                if ((index + 1) % 3 !== 0 && index < individualsProductsData.length -1 ) { // Not last in LG row and not the very last item
-                    conditionalClasses += " lg:border-r lg:border-r-gray-600/50 lg:pr-10";
-                }
-                // Remove bottom border if it's also getting a right border on LG
-                if ((index + 1) % 3 !== 0 && index < individualsProductsData.length -1) {
-                    conditionalClasses += " lg:border-b-0 lg:pb-0";
-                } else {
-                    // If it IS the last in an LG row (but not the overall last row), it might still need bottom padding for SM
-                    // This logic for conditionalClasses was complex. Let's use the original simpler one and refine it.
-                }
-            }
-
-            // Reverting to a slightly modified version of your original logic for conditional classes, as it was closer.
-            // The main goal is to avoid borders on the very edges of the grid.
-            conditionalClasses = ""; // Reset
-
-            if (!isLastItemOverall) {
-                // Default padding for items that are not the absolute last.
-                conditionalClasses = "pb-8 sm:pb-10";
-
-                // Add bottom border for items not in the last row on small screens
-                // If 2 items per row, all items except the last 2 (if even) or last 1 (if odd) get bottom border.
-                if (index < individualsProductsData.length - (individualsProductsData.length % 2 === 0 ? 2 : (individualsProductsData.length === 1 ? 0 : 1) ) ) {
-                     conditionalClasses += " border-b border-b-gray-600/50";
-                }
-
-
-                // Add right border for items not in the last column on large screens
-                if (!isLastItemInRowLg) {
-                    conditionalClasses += " lg:border-r lg:border-r-gray-600/50 lg:pr-10";
-                }
-
-                // If it has a right border on LG, it shouldn't have a bottom border on LG
-                if (!isLastItemInRowLg) {
-                    conditionalClasses += " lg:border-b-0 lg:pb-0"; // Remove bottom border/padding for LG
-                }
-            }
-
-
-            // Handle the special col-span for the last item if the total count is odd
-            // This ensures the last item centers if it's alone on the last row (for sm) or takes full width (for lg if desired)
-            if (isLastItemOverall && individualsProductsData.length % 2 !== 0 && individualsProductsData.length > 1) { // For sm screens if odd number of items
-                conditionalClasses += " sm:col-span-2 sm:col-span-2 lg:col-span-1";
-            }
-             if (isLastItemOverall && individualsProductsData.length % 3 !== 0 && individualsProductsData.length > 1) { // For lg screens, if items don't fill last row
-                 if (individualsProductsData.length % 3 === 1) { // last item is alone on lg row
-                    // conditionalClasses += " lg:col-span-3"; // Option to make it full width
-                    // Or let it be 1/3 width:
-                    // conditionalClasses += " lg:col-span-1"; // This is default
-                 } else if (individualsProductsData.length % 3 === 2) { // last two items on lg row
-                    // if (index === individualsProductsData.length - 2) conditionalClasses += " lg:col-span-1"; // previous one
-                    // if (index === individualsProductsData.length - 1) conditionalClasses += " lg:col-span-1"; // this one
-                 }
-             }
-
+            const itemWrapperClasses = `
+              relative 
+              ${isThirdItem ? 'md:col-span-2 lg:col-span-1' : ''}
+            `;
 
             return (
               <div
-                key={product.title + index} // Using title + index for a more stable key if titles are unique
-                className={`text-center space-y-6${conditionalClasses ? ' ' + conditionalClasses.trim() : ''}`}
+                key={product.title + index}
+                className={itemWrapperClasses}
               >
-                <div className="flex justify-center">
-                  <div className="w-20 h-20 rounded-full icon-outer-wrapper flex items-center justify-center">
-                    <div className="w-14 h-14 rounded-full icon-inner-background flex items-center justify-center">
-                      {product.icon}
+                {/* Content Area with Padding */}
+                <div className="px-5 py-8 text-center space-y-4">
+                  <div className="flex justify-center">
+                    <div className="w-20 h-20 rounded-full icon-outer-wrapper flex items-center justify-center">
+                      <div className="w-14 h-14 rounded-full icon-inner-background flex items-center justify-center">
+                        {product.icon}
+                      </div>
                     </div>
                   </div>
+                  <h3 className="text-2xl text-mainheadingWhite font-semibold">
+                    {product.title}
+                  </h3>
+                  <p className="text-subheadingWhite lg:text-lg text-base">
+                    {product.description}
+                  </p>
                 </div>
-                <h3 className="text-2xl text-mainheadingWhite font-semibold">
-                  {product.title}
-                </h3>
-                <p className="text-subheadingWhite lg:text-lg text-base">
-                  {product.description}
-                </p>
+
+                {/* --- SEPARATE BORDER DIVS --- */}
+
+                {/* Vertical Border: Show ONLY on large screens (lg) between items */}
+                {/* It will appear after items 1 and 2 in a 3-column layout */}
+                { (index + 1) % 3 !== 0 && index < totalItems - 1 && (
+                   <div className="absolute top-0 right-0 h-full w-px bg-gray-600/50 hidden lg:block" aria-hidden="true" />
+                )}
+
+                {/* Horizontal Border: Show on mobile and tablet, but hide on large screens */}
+                {/* This applies a bottom border to the first two items, fulfilling the request. */}
+                { index < 2 && (
+                   <div
+                      className="absolute bottom-0 left-0 w-full h-px bg-gray-600/50 block lg:hidden"
+                      aria-hidden="true"
+                   />
+                )}
               </div>
             );
           })}
