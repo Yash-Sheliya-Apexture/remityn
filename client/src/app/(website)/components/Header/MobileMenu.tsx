@@ -2075,8 +2075,8 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
 
   // A more robust way to create the ordered list for the mobile menu:
   const orderedMobileLinks: { href: string; text: string }[] = [];
-  const linksOrder = ["/", "/about-us", "/features", "/reviews", "/faqs"];
-  const tempNavLinks = [...navLinks, { href: "/reviews", text: "Reviews" }]; // Combine and add reviews
+  const linksOrder = ["/", "/about-us", "/features", "/reviews", "/faqs", "/contactUs"];
+  const tempNavLinks = [...navLinks, { href: "/reviews", text: "Reviews", }]; // Combine and add reviews
 
   linksOrder.forEach((href) => {
     const link = tempNavLinks.find((l) => l.href === href);
