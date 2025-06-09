@@ -207,7 +207,6 @@
 
 //   const currentProducts = featuresData;
 
-
 //   return (
 //     // Add overflow-hidden to prevent scrollbars during card animation (can be kept or removed based on static layout needs)
 //     <section className="WhyChooseUsSection sm:py-16 py-10 overflow-hidden ">
@@ -281,12 +280,9 @@
 
 // export default WhyChooseUs;
 
-
 "use client";
+import { Globe, Handshake, LockKeyhole } from "lucide-react";
 import React, { JSX } from "react"; // Import React for React.memo
-import { BsCashStack } from "react-icons/bs"; // BsEmojiSmile removed as it was unused
-import { FaGlobe } from "react-icons/fa6";
-import { RiMoneyDollarCircleLine } from "react-icons/ri";
 
 interface FeatureItem {
   title: string;
@@ -296,24 +292,22 @@ interface FeatureItem {
 
 const featuresData: FeatureItem[] = [
   {
-    title: "Effortless Transactions, Every Time",
+    title: "Your Global Footprint, Simplified",
     description:
-      "We've designed Remityn for ultimate simplicity. From instant account setup to easy recipient management and intuitive transfers, sending money to India is just a few clicks away.",
-    icons: <FaGlobe className="size-6 lg:size-8 text-primary" />,
+      "Easily manage, convert, and send money across borders—all in one secure, intuitive platform. Your finances, globally connected and locally empowered.",
+    icons: <Globe className="size-6 lg:size-8 text-primary" />,
   },
   {
-    title: "Swift Setup & Secure Wallets",
+    title: "Security That Never Sleeps",
     description:
-      "Get started in minutes with our quick sign-up and simple KYC. Create your secure digital wallets for USD, EUR, GBP and many more, fund them easily, and gain full control over your international transfers.",
-    icons: <BsCashStack className="size-6 lg:size-8 text-primary" />,
+      "Your trust is our top priority. That’s why every transaction is protected with bank-grade encryption, two-factor authentication, and 24/7 fraud monitoring.",
+    icons: <LockKeyhole className="size-6 lg:size-8 text-primary" />,
   },
   {
-    title: " Transparent Tracking & Trusted Service",
+    title: "Partnership, Not Just Processing",
     description:
-      "Add recipients with ease, save their details for future use, and monitor your transaction status every step of the way. Experience the peace of mind that comes with a reliable and transparent money transfer service.",
-    icons: (
-      <RiMoneyDollarCircleLine className="size-6 lg:size-8 text-primary" />
-    ),
+      "At Remityn, we don’t just process your transfers—we walk the journey with you. Whether you're sending your first payment or managing complex international.",
+    icons: <Handshake className="size-6 lg:size-8 text-primary" />,
   },
 ];
 
@@ -325,19 +319,23 @@ const WhyChooseUs: React.FC = () => {
       <div className="mx-auto container px-4">
         <div className="mx-auto max-w-4xl text-center space-y-4">
           {/* ... (heading content remains the same) ... */}
-           <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
-            Find Out Why{" "}
-            <span className="text-primary">Millions Choose Remityn</span>
+          <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
+            Remityn: Where Your Money {"  "}
+            <span className="text-primary">Journey Truly Matters</span>
           </h3>
 
           <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
-            At Remityn, we’re redefining how international money transfers work. With a focus on security, simplicity, and speed, thousands trust us to move their money reliably to India. Whether you're supporting family or managing personal finances abroad, our platform offers an intuitive experience, competitive exchange rates, and bank transfer method—all backed by responsive customer support and transparent processes.
+            Your money isn’t just currency—it’s care, commitment, and
+            connection. At Remityn, we treat every transfer as a personal
+            mission. With cutting-edge security, real-time tracking, and
+            dedicated support, we make sure your funds reach their destination
+            safely and swiftly. From families to freelancers, from first-time
+            users to global citizens—Remityn is built for those who value more
+            than just speed.
           </p>
         </div>
 
-        <div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 sm:gap-10 gap-8 sm:mt-16 mt-10"
-        >
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 sm:gap-10 gap-8 sm:mt-16 mt-10">
           {featuresData.map((product, index) => {
             const isLast = index === featuresData.length - 1;
             // Simplified conditional classes for borders, assuming standard grid behavior handles alignment.
@@ -345,58 +343,73 @@ const WhyChooseUs: React.FC = () => {
             // Focus on border logic.
             let conditionalClasses = "";
             if (featuresData.length > 1 && !isLast) {
-                // Add right border for items not last in their row on larger screens
-                // And bottom border for items not in the last row on smaller screens
-                conditionalClasses = "lg:border-r border-r-gray-600/50 lg:border-b-0 border-b border-b-gray-600/50 pr-0 lg:pr-10 pb-8 sm:pb-10 lg:pb-0";
+              // Add right border for items not last in their row on larger screens
+              // And bottom border for items not in the last row on smaller screens
+              conditionalClasses =
+                "lg:border-r border-r-gray-600/50 lg:border-b-0 border-b border-b-gray-600/50 pr-0 lg:pr-10 pb-8 sm:pb-10 lg:pb-0";
 
-                // Refinement: Only add lg:border-r if not the last item in a 3-column row
-                if ((index + 1) % 3 === 0) { // Last in a 3-col row
-                    conditionalClasses = conditionalClasses.replace("lg:border-r border-r-gray-600/50", "").replace("lg:pr-10", "");
+              // Refinement: Only add lg:border-r if not the last item in a 3-column row
+              if ((index + 1) % 3 === 0) {
+                // Last in a 3-col row
+                conditionalClasses = conditionalClasses
+                  .replace("lg:border-r border-r-gray-600/50", "")
+                  .replace("lg:pr-10", "");
+              }
+              // Refinement: Only add border-b if not the last item in a 2-column row (for sm)
+              if ((index + 1) % 2 === 0 && index < featuresData.length - 1) {
+                // Last in a 2-col row, but not overall last
+                // The original class had border-b for all non-last items. This might be fine.
+              } else if (
+                index >=
+                  featuresData.length -
+                    (featuresData.length % 2 === 0 ? 2 : 1) &&
+                featuresData.length % 3 === 0 &&
+                index >= featuresData.length - 3
+              ) {
+                // If in last row of sm or lg, no bottom border needed
+              }
+
+              // Sticking to the original simpler logic for borders on non-last items, as it's hard to perfect without visual testing.
+              // The key is that `isLast` determines if ANY border styling for "non-last" items applies.
+              // The original:
+              if (!isLast) {
+                conditionalClasses =
+                  "lg:border-r border-r-gray-600/50 lg:border-b-0 border-b border-b-gray-600/50 pr-0 lg:pr-10 pb-8 sm:pb-10 lg:pb-0";
+              } else {
+                // The original col-span logic for the last item
+                if (
+                  featuresData.length === 1 ||
+                  (featuresData.length % 2 !== 0 && isLast)
+                ) {
+                  conditionalClasses = "sm:col-span-2 lg:col-span-1";
+                } else if (isLast) {
+                  conditionalClasses = "lg:col-span-1";
                 }
-                // Refinement: Only add border-b if not the last item in a 2-column row (for sm)
-                 if ((index + 1) % 2 === 0 && index < featuresData.length -1 ) { // Last in a 2-col row, but not overall last
-                    // The original class had border-b for all non-last items. This might be fine.
-                 } else if (index >= featuresData.length - (featuresData.length % 2 === 0 ? 2:1) && featuresData.length %3 ===0 && index >= featuresData.length -3 ) {
-                    // If in last row of sm or lg, no bottom border needed
-                 }
-
-
-                 // Sticking to the original simpler logic for borders on non-last items, as it's hard to perfect without visual testing.
-                 // The key is that `isLast` determines if ANY border styling for "non-last" items applies.
-                 // The original:
-                 if (!isLast) {
-                    conditionalClasses = "lg:border-r border-r-gray-600/50 lg:border-b-0 border-b border-b-gray-600/50 pr-0 lg:pr-10 pb-8 sm:pb-10 lg:pb-0";
-                 } else {
-                    // The original col-span logic for the last item
-                    if (featuresData.length === 1 || (featuresData.length % 2 !== 0 && isLast)) {
-                        conditionalClasses = "sm:col-span-2 lg:col-span-1";
-                    } else if (isLast) {
-                        conditionalClasses = "lg:col-span-1";
-                    }
-                 }
+              }
             }
 
-
             return (
-            <div
-              key={index}
-              className={`text-center space-y-6${conditionalClasses ? ' ' + conditionalClasses.trim() : ''}`}
-            >
-              {/* ... (icon, title, description remains the same) ... */}
-              <div className="flex justify-center">
-                <div className="w-20 h-20 rounded-full icon-outer-wrapper flex items-center justify-center">
-                  <div className="w-14 h-14 rounded-full icon-inner-background flex items-center justify-center">
-                    {product.icons}
+              <div
+                key={index}
+                className={`text-center space-y-6${
+                  conditionalClasses ? " " + conditionalClasses.trim() : ""
+                }`}
+              >
+                {/* ... (icon, title, description remains the same) ... */}
+                <div className="flex justify-center">
+                  <div className="size-20 rounded-full icon-outer-wrapper flex items-center justify-center">
+                    <div className="size-14 rounded-full icon-inner-background flex items-center justify-center">
+                      {product.icons}
+                    </div>
                   </div>
                 </div>
+                <h3 className="text-2xl text-mainheadingWhite font-semibold">
+                  {product.title}
+                </h3>
+                <p className="text-subheadingWhite lg:text-lg text-base">
+                  {product.description}
+                </p>
               </div>
-              <h3 className="text-2xl text-mainheadingWhite font-semibold">
-                {product.title}
-              </h3>
-              <p className="text-subheadingWhite lg:text-lg text-base">
-                {product.description}
-              </p>
-            </div>
             );
           })}
         </div>

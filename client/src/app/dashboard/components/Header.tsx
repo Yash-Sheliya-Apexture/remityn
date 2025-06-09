@@ -387,14 +387,12 @@
 // components/Header.tsx
 "use client";
 import React, { useEffect, useState } from "react";
-import { FiMenu } from "react-icons/fi";
 import { useRouter, usePathname } from "next/navigation";
 import { HiArrowLeft } from "react-icons/hi";
 import Link from "next/link";
 import { useAuth } from "../../contexts/AuthContext"; // Path is likely correct based on existing structure
 import { IoIosArrowForward } from "react-icons/io";
 import Image from "next/image";
-import { GiHamburgerMenu } from "react-icons/gi";
 import { TbMenu3 } from "react-icons/tb";
 
 interface HeaderProps {

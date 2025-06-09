@@ -85,8 +85,8 @@ export default function Home() {
       <CalculetingSection />
       <InternationalTransferSection />
       <SecuritySection />
-      <ClientTestimonialSection />
       <FeaturesList />
+      <ClientTestimonialSection />
       <StepCardContent />
       <CallToActionSection />
     </>
