@@ -3,8 +3,16 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useAuth } from "@/app/contexts/AuthContext";
 
 const SecuritySection = () => {
+  const { user } = useAuth();
+
+  const buttonText = user
+    ? "Launch Your Dashboard"
+    : "Start Your Money Journey";
+  const buttonLink = user ? "/dashboard" : "/auth/register";
+
   return (
     // Apply whileInView to the main section to trigger animations
     <section
@@ -21,20 +29,25 @@ const SecuritySection = () => {
             <div className="space-y-4 text-center md:text-left">
               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
                 <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
-                  Streamlined Control for{" "}
-                  <span className="text-primary">Seamless Transfers</span>
+                  Smart Dashboard for{" "}
+                  <span className="text-primary">
+                    Effortless Currency Management
+                  </span>
                 </h3>
+
                 <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
-                  Easily manage your money transfers with track transactions in real time, create and manage currency wallets, add recipients, and monitor exchange rates—all in one secure and streamlined interface.
+                  Gain full visibility and control over your international
+                  transactions with a sleek, real-time dashboard. Track
+                  balances, exchange rates, and transaction history—all in one
+                  intuitive interface designed for secure, seamless money
+                  movement across borders.
                 </p>
               </div>
+
               <div className="flex justify-center md:justify-start mt-8">
-                <Link
-                  href="/faqs"
-                  className="inline-block" // Added inline-block
-                >
-                  <button className="bg-primary hover:bg-primaryhover text-mainheading cursor-pointer font-medium text-base lg:text-lg py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
-                    Get Started Now
+                <Link href={buttonLink} className="inline-block">
+                  <button className="bg-primary hover:bg-primaryhover lg:text-lg text-base font-medium text-mainheading cursor-pointer py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
+                    {buttonText}
                   </button>
                 </Link>
               </div>

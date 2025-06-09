@@ -1498,6 +1498,8 @@
 // export default ReviewCards;
 
 
+
+
 "use client";
 
 import Image from "next/image"; // Import next/image
@@ -1733,6 +1735,7 @@ const ReviewCards: React.FC = () => {
     return allReviews.length > 0 && numVisibleReviews < allReviews.length;
   }, [allReviews, numVisibleReviews]);
 
+
   const renderHeader = () => (
     <div className="space-y-4 text-center md:text-left mb-10">
       <div className="inline-block">
@@ -1777,6 +1780,7 @@ const ReviewCards: React.FC = () => {
     );
   }
 
+  
   if (!initialLoading && allReviews.length === 0 && !error) {
     return (
       <section className="Reviews md:pt-14 pt-10 overflow-hidden">

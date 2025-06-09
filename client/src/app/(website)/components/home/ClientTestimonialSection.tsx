@@ -478,218 +478,208 @@
 
 // export default ClientTestimonialSection;
 
-"use client"; // Required for Framer Motion and Swiper interactivity
+// "use client"; // Required for Framer Motion and Swiper interactivity
 
-import React from "react";
-// Import Swiper React components
-import { Swiper, SwiperSlide } from "swiper/react";
-// Import Swiper modules
-import { Autoplay, Navigation } from "swiper/modules";
+// import React from "react";
+// // Import Swiper React components
+// import { Swiper, SwiperSlide } from "swiper/react";
+// // Import Swiper modules
+// import { Autoplay, Navigation } from "swiper/modules";
 
-// Import Swiper styles
-import "swiper/css";
-import "swiper/css/navigation";
-// import 'swiper/css/autoplay';
+// // Import Swiper styles
+// import "swiper/css";
+// import "swiper/css/navigation";
+// // import 'swiper/css/autoplay';
 
-// Define a type for your testimonial data
-interface Testimonial {
-  id: number;
-  imageSrc: string;
-  quote: string;
-  name: string;
-}
+// // Define a type for your testimonial data
+// interface Testimonial {
+//   id: number;
+//   imageSrc: string;
+//   quote: string;
+//   name: string;
+// }
 
-const testimonialsData: Testimonial[] = [
-  {
-    id: 1,
-    imageSrc: "./assets/images/John.png",
-    quote:
-      "The platform delivers on its promise of simple steps. Quick account setup, easy KYC, and my USD wallet was ready to go. Transferring to India was seamless. Happy with the transaction tracking.",
-    name: "Rushil Vaghela",
-  },
-  {
-    id: 2,
-    imageSrc: "./assets/images/Lisa-Carter.jpg",
-    quote:
-      "Finally, a truly user-friendly way to send AED to India! The wallet creation is intuitive, and adding funds was no hassle. Selecting the recipient and sending money was very quick.",
-    name: "Noora Al Hammadi",
-  },
-  {
-    id: 3,
-    imageSrc: "./assets/images/Tom.jpg",
-    quote:
-      "I've used a few services to send AED to India, but this one stands out for its simplicity. The signup really is quick, and the KYC verification didn't take long at all. Once that was done, setting up my AED wallet and transferring funds into it from my bank was smooth. The best part for me is managing recipients; I send to different family members, and being able to add all their details (name, bank account, IFSC) and save them is incredibly convenient. Initiating the transfer itself is very intuitive – select wallet, select recipient, enter amount, confirm. The tracking is also a great feature. Definitely my new go-to.",
-    name: "Sanjay Parmar",
-  },
-  {
-    id: 4,
-    imageSrc: "./assets/images/Sofia.png",
-    quote:
-      "Used this for a EUR transfer. The process of adding my recipient and their bank details was very clear. I like that I can save them for next time. The digital wallet system is also very convenient.",
-    name: "Chelsy Desai",
-  },
-  {
-    id: 5,
-    imageSrc: "./assets/images/Ryan.jpg",
-    quote:
-      "Good overall service for GBP to INR. Signup and KYC were quick. I appreciate being able to manage multiple recipients. The transfer was completed in a reasonable time.",
-    name: "Ben Carter",
-  },
-  {
-    id: 6,
-    imageSrc: "./assets/images/Emily.avif",
-    quote:
-      "I was a bit apprehensive about online money transfers, but this website made it so easy. The initial sign-up asked for just basic details. The KYC was a simple verification step, and after that, I had full access to create my GBP wallet. The instructions for adding funds via bank transfer were clear and easy to follow. What I really appreciated was the recipient management – I entered my sister's full name, her Indian bank account number, and the IFSC code, and now she's saved for future transfers. Sending the money was then just a matter of selecting her, my wallet, and the amount. I could even track the transaction status, which was reassuring.",
-    name: "Isha Bhatt",
-  },
-];
+// const testimonialsData: Testimonial[] = [
+//   {
+//     id: 1,
+//     imageSrc: "./assets/images/John.png",
+//     quote:
+//       "The platform delivers on its promise of simple steps. Quick account setup, easy KYC, and my USD wallet was ready to go. Transferring to India was seamless. Happy with the transaction tracking.",
+//     name: "Rushil Vaghela",
+//   },
+//   {
+//     id: 2,
+//     imageSrc: "./assets/images/Lisa-Carter.jpg",
+//     quote:
+//       "Finally, a truly user-friendly way to send AED to India! The wallet creation is intuitive, and adding funds was no hassle. Selecting the recipient and sending money was very quick.",
+//     name: "Noora Al Hammadi",
+//   },
+//   {
+//     id: 3,
+//     imageSrc: "./assets/images/Tom.jpg",
+//     quote:
+//       "I've used a few services to send AED to India, but this one stands out for its simplicity. The signup really is quick, and the KYC verification didn't take long at all. Once that was done, setting up my AED wallet and transferring funds into it from my bank was smooth. The best part for me is managing recipients; I send to different family members, and being able to add all their details (name, bank account, IFSC) and save them is incredibly convenient. Initiating the transfer itself is very intuitive – select wallet, select recipient, enter amount, confirm. The tracking is also a great feature. Definitely my new go-to.",
+//     name: "Sanjay Parmar",
+//   },
+//   {
+//     id: 4,
+//     imageSrc: "./assets/images/Sofia.png",
+//     quote:
+//       "Used this for a EUR transfer. The process of adding my recipient and their bank details was very clear. I like that I can save them for next time. The digital wallet system is also very convenient.",
+//     name: "Chelsy Desai",
+//   },
+//   {
+//     id: 5,
+//     imageSrc: "./assets/images/Ryan.jpg",
+//     quote:
+//       "Good overall service for GBP to INR. Signup and KYC were quick. I appreciate being able to manage multiple recipients. The transfer was completed in a reasonable time.",
+//     name: "Ben Carter",
+//   },
+//   {
+//     id: 6,
+//     imageSrc: "./assets/images/Emily.avif",
+//     quote:
+//       "I was a bit apprehensive about online money transfers, but this website made it so easy. The initial sign-up asked for just basic details. The KYC was a simple verification step, and after that, I had full access to create my GBP wallet. The instructions for adding funds via bank transfer were clear and easy to follow. What I really appreciated was the recipient management – I entered my sister's full name, her Indian bank account number, and the IFSC code, and now she's saved for future transfers. Sending the money was then just a matter of selecting her, my wallet, and the amount. I could even track the transaction status, which was reassuring.",
+//     name: "Isha Bhatt",
+//   },
+// ];
 
-const ClientTestimonialSection: React.FC = () => {
-  return (
-    <>
-      <section className="ClientTestimonialSection sm:py-40 py-10 overflow-hidden">
-        {" "}
-        {/* Note: overflow-hidden might clip some animations if they extend outwards temporarily */}
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="wrpa relative">
-            {" "}
-            {/* Consider renaming 'wrpa' to 'wrapper' if it's a typo */}
-            <div className="absolute left-0 sm:-top-[2px] -top-10 h-[2px] w-full bg-gradient-to-r from-transparent via-white to-transparent"></div>
-            <div>
-              <div className="max-w-5xl mx-auto relative">
-                <div className="absolute sm:-left-[2px] left-4 sm:top-1/2 -top-18 sm:-translate-y-1/2 translate-y-0 w-[2px] sm:h-[calc(100%+300px)] h-[350px] bg-gradient-to-t from-transparent via-white to-transparent sm:block hidden"></div>
-                <div className="absolute left-auto md:left-[338px] sm:right-auto right-4 sm:top-1/2 -top-18 sm:-translate-y-1/2 translate-y-0 w-[2px] sm:h-[calc(100%+300px)] h-[350px] bg-gradient-to-t from-transparent via-white to-transparent sm:block hidden"></div>
+// const ClientTestimonialSection: React.FC = () => {
+//   return (
+//     <>
+//       <section className="ClientTestimonialSection sm:py-40 py-10 overflow-hidden">
+//         {" "}
+//         {/* Note: overflow-hidden might clip some animations if they extend outwards temporarily */}
+//         <div className="container mx-auto px-4 relative z-10">
+//           <div className="wrpa relative">
+//             {" "}
+//             {/* Consider renaming 'wrpa' to 'wrapper' if it's a typo */}
+//             <div className="absolute left-0 sm:-top-[2px] -top-10 h-[2px] w-full bg-gradient-to-r from-transparent via-white to-transparent"></div>
+//             <div>
+//               <div className="max-w-5xl mx-auto relative">
+//                 <div className="absolute sm:-left-[2px] left-4 sm:top-1/2 -top-18 sm:-translate-y-1/2 translate-y-0 w-[2px] sm:h-[calc(100%+300px)] h-[350px] bg-gradient-to-t from-transparent via-white to-transparent sm:block hidden"></div>
+//                 <div className="absolute left-auto md:left-[338px] sm:right-auto right-4 sm:top-1/2 -top-18 sm:-translate-y-1/2 translate-y-0 w-[2px] sm:h-[calc(100%+300px)] h-[350px] bg-gradient-to-t from-transparent via-white to-transparent sm:block hidden"></div>
 
-                <Swiper
-                  className="!overflow-visible" // Allows peeking slides if slidesPerView > 1 and spaceBetween allows
-                  modules={[Autoplay, Navigation]}
-                  spaceBetween={50}
-                  slidesPerView={1}
-                  loop={false}
-                  // autoplay={{
-                  //   delay: 5000,
-                  //   disableOnInteraction: false,
-                  // }}
-                  navigation={{
-                    nextEl: ".swiper-button-next-custom",
-                    prevEl: ".swiper-button-prev-custom",
-                  }}
-                >
-                  {testimonialsData.map((testimonial) => (
-                    <SwiperSlide key={testimonial.id}>
-                      <div className="flex flex-col md:flex-row lg:gap-10 relative items-center md:items-start">
-                        {/* Target '.imags' for animation */}
-                        <div className="w-[240px] md:w-[338px] relative flex-shrink-0 imags">
-                          {" "}
-                          {/* Added 'imags' class here directly for animation targeting */}
-                          {/* <div className="imags"> Removed inner div to simplify targeting */}
-                          <img
-                            src={testimonial.imageSrc}
-                            alt={testimonial.name}
-                            className="rounded-3xl w-full h-auto object-cover"
-                          />
-                          {/* </div> */}
-                        </div>
-                        <div className="w-full md:w-[calc(100%-338px-2.5rem)]">
-                          {/* Target '.content' for animation */}
-                          <div className="content lg:py-8 sm:py-4 py-8 h-full flex flex-col justify-between text-center md:text-left">
-                            <p className="text-xl sm:text-2xl lg:text-3xl text-subheadingWhite font-medium line-clamp-5">
-                              ”{testimonial.quote}”
-                            </p>
-                            <div className="mt-5">
-                              <span className="text-primary text-lg sm:text-xl font-semibold block">
-                                {testimonial.name}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
+//                 <Swiper
+//                   className="!overflow-visible" // Allows peeking slides if slidesPerView > 1 and spaceBetween allows
+//                   modules={[Autoplay, Navigation]}
+//                   spaceBetween={50}
+//                   slidesPerView={1}
+//                   loop={false}
+//                   // autoplay={{
+//                   //   delay: 5000,
+//                   //   disableOnInteraction: false,
+//                   // }}
+//                   navigation={{
+//                     nextEl: ".swiper-button-next-custom",
+//                     prevEl: ".swiper-button-prev-custom",
+//                   }}
+//                 >
+//                   {testimonialsData.map((testimonial) => (
+//                     <SwiperSlide key={testimonial.id}>
+//                       <div className="flex flex-col md:flex-row lg:gap-10 relative items-center md:items-start">
+//                         {/* Target '.imags' for animation */}
+//                         <div className="w-[240px] md:w-[338px] relative flex-shrink-0 imags">
+//                           {" "}
+//                           {/* Added 'imags' class here directly for animation targeting */}
+//                           {/* <div className="imags"> Removed inner div to simplify targeting */}
+//                           <img
+//                             src={testimonial.imageSrc}
+//                             alt={testimonial.name}
+//                             className="rounded-3xl w-full h-auto object-cover"
+//                           />
+//                           {/* </div> */}
+//                         </div>
+//                         <div className="w-full md:w-[calc(100%-338px-2.5rem)]">
+//                           {/* Target '.content' for animation */}
+//                           <div className="content lg:py-8 sm:py-4 py-8 h-full flex flex-col justify-between text-center md:text-left">
+//                             <p className="text-xl sm:text-2xl lg:text-3xl text-subheadingWhite font-medium line-clamp-5">
+//                               ”{testimonial.quote}”
+//                             </p>
+//                             <div className="mt-5">
+//                               <span className="text-primary text-lg sm:text-xl font-semibold block">
+//                                 {testimonial.name}
+//                               </span>
+//                             </div>
+//                           </div>
+//                         </div>
+//                       </div>
+//                     </SwiperSlide>
+//                   ))}
+//                 </Swiper>
 
-                <div className="swiper-button-prev-custom inline-block group absolute left-0 top-1/4 sm:left-4 md:left-4 md:-bottom-26 md:top-auto xl:-left-20 xl:top-1/2 xl:bottom-auto -translate-y-1/2 z-30 cursor-pointer p-2 md:p-3 bg-black/30 hover:bg-black/50 active:bg-black/70 rounded-full transition-all duration-300 [&.swiper-button-disabled]:opacity-40 [&.swiper-button-disabled]:cursor-not-allowed">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2.5}
-                    stroke="white"
-                    className="w-5 h-5 md:w-6 md:h-6 group-hover:stroke-primary transition-colors duration-300"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M15.75 19.5L8.25 12l7.5-7.5"
-                    />
-                  </svg>
-                </div>
-                <div className="swiper-button-next-custom inline-block group absolute right-0 top-1/4 sm:right-4 md:right-[414px] md:-bottom-26 md:top-auto lg:right-[664px] xl:bottom-auto xl:-right-20 xl:top-1/2 -translate-y-1/2 z-30 cursor-pointer p-2 md:p-3 bg-black/30 hover:bg-black/50 active:bg-black/70 rounded-full transition-all duration-300 [&.swiper-button-disabled]:opacity-40 [&.swiper-button-disabled]:cursor-not-allowed">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2.5}
-                    stroke="white"
-                    className="w-5 h-5 md:w-6 md:h-6 group-hover:stroke-primary transition-colors duration-300"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M8.25 4.5l7.5 7.5-7.5 7.5"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div className="absolute left-0 -bottom-[2px] h-[2px] w-full bg-gradient-to-r from-transparent via-white to-transparent"></div>
-          </div>
-        </div>
-        {/* Added <style jsx global> for animations */}
-        <style jsx global>{`
-          /* Initial state for elements to be animated */
-          .swiper-slide .imags,
-          .swiper-slide .content {
-            opacity: 0;
-            transform: translateY(25px); /* Start slightly lower */
-            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-          }
+//                 <div className="swiper-button-prev-custom inline-block group absolute left-0 top-1/4 sm:left-4 md:left-4 md:-bottom-26 md:top-auto xl:-left-20 xl:top-1/2 xl:bottom-auto -translate-y-1/2 z-30 cursor-pointer p-2 md:p-3 bg-black/30 hover:bg-black/50 active:bg-black/70 rounded-full transition-all duration-300 [&.swiper-button-disabled]:opacity-40 [&.swiper-button-disabled]:cursor-not-allowed">
+//                   <svg
+//                     xmlns="http://www.w3.org/2000/svg"
+//                     fill="none"
+//                     viewBox="0 0 24 24"
+//                     strokeWidth={2.5}
+//                     stroke="white"
+//                     className="w-5 h-5 md:w-6 md:h-6 group-hover:stroke-primary transition-colors duration-300"
+//                   >
+//                     <path
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                       d="M15.75 19.5L8.25 12l7.5-7.5"
+//                     />
+//                   </svg>
+//                 </div>
+//                 <div className="swiper-button-next-custom inline-block group absolute right-0 top-1/4 sm:right-4 md:right-[414px] md:-bottom-26 md:top-auto lg:right-[664px] xl:bottom-auto xl:-right-20 xl:top-1/2 -translate-y-1/2 z-30 cursor-pointer p-2 md:p-3 bg-black/30 hover:bg-black/50 active:bg-black/70 rounded-full transition-all duration-300 [&.swiper-button-disabled]:opacity-40 [&.swiper-button-disabled]:cursor-not-allowed">
+//                   <svg
+//                     xmlns="http://www.w3.org/2000/svg"
+//                     fill="none"
+//                     viewBox="0 0 24 24"
+//                     strokeWidth={2.5}
+//                     stroke="white"
+//                     className="w-5 h-5 md:w-6 md:h-6 group-hover:stroke-primary transition-colors duration-300"
+//                   >
+//                     <path
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                       d="M8.25 4.5l7.5 7.5-7.5 7.5"
+//                     />
+//                   </svg>
+//                 </div>
+//               </div>
+//             </div>
+//             <div className="absolute left-0 -bottom-[2px] h-[2px] w-full bg-gradient-to-r from-transparent via-white to-transparent"></div>
+//           </div>
+//         </div>
+//         {/* Added <style jsx global> for animations */}
+//         <style jsx global>{`
+//           /* Initial state for elements to be animated */
+//           .swiper-slide .imags,
+//           .swiper-slide .content {
+//             opacity: 0;
+//             transform: translateY(25px); /* Start slightly lower */
+//             transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+//           }
 
-          /* State for elements in the ACTIVE slide */
-          .swiper-slide-active .imags,
-          .swiper-slide-active .content {
-            opacity: 1;
-            transform: translateY(0);
-          }
+//           /* State for elements in the ACTIVE slide */
+//           .swiper-slide-active .imags,
+//           .swiper-slide-active .content {
+//             opacity: 1;
+//             transform: translateY(0);
+//           }
 
-          /* Optional: Stagger the animation for content */
-          .swiper-slide-active .content {
-            transition-delay: 0.15s; /* Content animates slightly after the image */
-          }
+//           /* Optional: Stagger the animation for content */
+//           .swiper-slide-active .content {
+//             transition-delay: 0.15s; /* Content animates slightly after the image */
+//           }
 
-          /* Ensure Swiper container itself has some padding if animations cause temporary overflow */
-          .testimonial-swiper {
-            /* You might need to add this class to your Swiper component if not already present */
-            padding-top: 10px; /* Adjust if animations get clipped at the top */
-            padding-bottom: 10px; /* Adjust if animations get clipped at the bottom */
-          }
-        `}</style>
-      </section>
-    </>
-  );
-};
+//           /* Ensure Swiper container itself has some padding if animations cause temporary overflow */
+//           .testimonial-swiper {
+//             /* You might need to add this class to your Swiper component if not already present */
+//             padding-top: 10px; /* Adjust if animations get clipped at the top */
+//             padding-bottom: 10px; /* Adjust if animations get clipped at the bottom */
+//           }
+//         `}</style>
+//       </section>
+//     </>
+//   );
+// };
 
-export default ClientTestimonialSection;
-
-
-
-
-
-
-
-
-
-
+// export default ClientTestimonialSection;
 
 // "use client";
 
@@ -790,7 +780,7 @@ export default ClientTestimonialSection;
 //                   return (
 //                     <SwiperSlide key={testimonial.id}>
 //                       <div className="relative bg-[#e9f0ef] text-gray-800 rounded-2xl sm:rounded-3xl p-6 md:p-8 flex flex-col h-full w-full overflow-hidden">
-                        
+
 //                         {/* Background Decorative Quote Mark */}
 //                         <div className="absolute top-5 right-5 sm:top-6 sm:right-6 text-[10rem] sm:text-[12rem] md:text-[13rem] text-[#d7e0de] font-bold opacity-100 leading-none z-0 select-none pointer-events-none">
 //                           “
@@ -855,8 +845,8 @@ export default ClientTestimonialSection;
 //         </div>
 //         <style jsx global>{`
 //           .testimonial-swiper-card {
-//             width: 450px; 
-//             height: 600px; 
+//             width: 450px;
+//             height: 600px;
 //             margin: 0 auto;
 //           }
 
@@ -885,13 +875,13 @@ export default ClientTestimonialSection;
 //             .testimonial-swiper-card {
 //               width: 88vw; /* Use viewport width for smaller screens */
 //               max-width: 350px; /* Cap the max width */
-//               height: 500px; 
+//               height: 500px;
 //             }
 //             /* On very small screens, nav buttons might be hidden or need different placement */
 //              .swiper-button-prev-custom,
 //              .swiper-button-next-custom {
 //                 /* Example: hide on very small screens if they clutter */
-//                 /* display: none; */ 
+//                 /* display: none; */
 //                 /* Or adjust positioning further */
 //                 top: auto;
 //                 bottom: -45px; /* Position below the card */
@@ -903,17 +893,16 @@ export default ClientTestimonialSection;
 //           }
 //            @media (max-width: 420px) { /* even smaller */
 //             .testimonial-swiper-card {
-//               height: 480px; 
+//               height: 480px;
 //             }
 //             .swiper-button-prev-custom { left: 30%;}
 //             .swiper-button-next-custom { right: 30%;}
 //            }
 
-
 //           .testimonial-swiper-card .swiper-slide {
 //             border-radius: 1.5rem; /* 24px */
-//             background-color: #e9f0ef; 
-//             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); 
+//             background-color: #e9f0ef;
+//             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 //             overflow: hidden;
 //             -webkit-backface-visibility: hidden;
 //             backface-visibility: hidden;
@@ -934,7 +923,6 @@ export default ClientTestimonialSection;
 // };
 
 // export default ClientTestimonialSection;
-
 
 // "use client";
 
@@ -960,36 +948,43 @@ export default ClientTestimonialSection;
 //     id: 1,
 //     imageSrc: "/assets/images/nelson-dunk.jpg",
 //     quote:
-//       "Phenomenal job. We are a very niche market and I'm sure it took some extra digging to find all the information for the market research report. The report is incredibly detailed, accurate and well written. Very very happy with the work!",
-//     name: "Nelson Dunk | CHIEF CREATIVE OFFICE AT SKYLIGIIT VISUAL MEDIA",
+//       "The instant account setup was genuinely fast. KYC was simpler than I expected. Funding my USD wallet and sending to India was straightforward. Being able to save recipient details is a huge time saver.",
+//     name: "Nelson Dunk",
 //   },
 //   {
 //     id: 2,
 //     imageSrc: "/assets/images/ben-cane.jpg",
 //     quote:
-//       "Working with Addiffico was a pleasure. Despite needing market research and competitor analysis in a niche area, they delivered beyond my expectations. All of the work was comprehensive, well-structured and extremely detailed. The communication was perfect and they operated with great professionalism.",
-//     name: "Ben Cane | FOUNDER OF MUNITY",
+//       "Impressed with the ease of creating a EUR wallet. Bank transfer for funding was clear. Adding my family's Indian bank details (IFSC code and all) was simple. Transfer status tracking is very helpful.",
+//     name: "Ben Cane",
 //   },
 //   {
 //     id: 3,
 //     imageSrc: "/assets/images/deshawn-robinson.jpg",
 //     quote:
-//       "Addiffico was phenomenal and worked quickly to help me get the information I needed. In addition to purchasing one of the programs/plans they had, they helped me figure out what I needed best. They were able to also help me break down the data and provided some additional feedback on my pitch deck. I look forward to working with them further as I expand on my project. Highly recommend.",
-//     name: "Deshawn Robinson | CEO AT DOORS OPEN CONNECT",
+//       "I've used a few services to send AED to India, but this one stands out for its simplicity. The signup really is quick, and the KYC verification didn't take long at all. Once that was done, setting up my AED wallet and transferring funds into it from my bank was smooth.",
+//     name: "Deshawn Robinson",
 //   },
 //   {
 //     id: 4,
 //     imageSrc: "/assets/images/Tom.jpg",
 //     quote:
-//       "Planning my honeymoon abroad was stressful, but at least exchanging money wasn’t. This site gave me the best rate after comparing a few options online. The instructions were clear.",
-//     name: "Tom Diaz | THE SALES BOOSTER",
+//       "I was a bit apprehensive about online money transfers, but this website made it so easy. The initial sign-up asked for just basic details. The KYC was a simple verification step, and after that, I had full access to create my GBP wallet.",
+//     name: "Tom Diaz",
 //   },
 //   {
 //     id: 5,
 //     imageSrc: "/assets/images/Sofia.png",
 //     quote:
-//       "I found this service while researching currency exchange options before my backpacking trip. It turned out to be a great find with very competitive rates. Signing up was easy, and the whole process was seamless.",
-//     name: "Sofia Vyas | FREELANCE WRITER",
+//       "The instant account setup was genuinely fast. KYC was simpler than I expected. Funding my USD wallet and sending to India was straightforward. Being able to save recipient details is a huge time saver.",
+//     name: "Sofia Vyas",
+//   },
+//   {
+//     id: 6,
+//     imageSrc: "/assets/images/Sofia.png",
+//     quote:
+//       "Used this for a EUR transfer. The process of adding my recipient and their bank details was very clear. I like that I can save them for next time. The digital wallet system is also very convenient.",
+//     name: "Chelsy Desai",
 //   },
 // ];
 
@@ -1012,7 +1007,7 @@ export default ClientTestimonialSection;
 //                   <span className="text-subheadingWhite/30">]</span>
 //                 </span>
 //               </div>
-              
+
 //               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
 //                 <h3 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight text-mainheadingWhite lg:block hidden">
 //                   Hear it from {" "}
@@ -1027,7 +1022,7 @@ export default ClientTestimonialSection;
 //                   and always secure.
 //                 </p>
 //               </div>
-              
+
 //               <div className="flex justify-center md:justify-start mt-8">
 //                 <Link
 //                   href="/faqs"
@@ -1070,43 +1065,30 @@ export default ClientTestimonialSection;
 //                     const currentSlideDisplay = swiperInstance ? swiperInstance.realIndex : index;
 //                     return (
 //                       <SwiperSlide key={testimonial.id}>
-//                         <div className="relative bg-primarybox text-gray-800 rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 flex flex-col h-full w-full overflow-hidden">
-                          
-//                           <div className="absolute top-5 right-5 sm:top-6 sm:right-6 text-[9rem] sm:text-[10rem] md:text-[11rem] text-subheadingWhite/30 font-bold opacity-100 leading-none z-0 select-none pointer-events-none">
+//                         <div className="relative bg-primarybox rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 flex flex-col h-full w-full overflow-hidden">
+
+//                           <div className="absolute top-5 right-5 sm:top-6 sm:right-6 text-[9rem] sm:text-[10rem] md:text-[11rem] text-primary font-bold opacity-100 leading-none z-0 select-none pointer-events-none">
 //                             “
 //                           </div>
 
 //                           <div className="flex justify-between items-center mb-4 sm:mb-5 z-20">
-//                             <div className="px-6 py-2.5 bg-secondarybox rounded-full sm:text-sm font-medium text-mainheadingWhite">
+//                             <div className="px-6 py-2.5 bg-secondarybox hover:bg-secondaryboxhover transition-all ease-linear duration-150 rounded-full sm:text-sm font-medium text-mainheadingWhite">
 //                               {/* Custom Pagination: X of X+1 */}
 //                               {`${currentSlideDisplay} of ${currentSlideDisplay + 1}`}
 //                             </div>
-//                             {/* "Read more" button removed */}
 //                           </div>
 
-//                           <div className="flex-grow overflow-y-auto my-3 sm:my-4 z-10 relative">
-//                             <p className="text-sm sm:text-2xl text-mainheadingWhite font-normal leading-relaxed sm:leading-7">
+//                           <div className="flex-grow overflow-y-auto my-3 sm:py-5 z-10 relative">
+//                             <p className="text-base sm:text-2xl text-mainheadingWhite font-normal leading-normal">
 //                               {testimonial.quote}
 //                             </p>
 //                           </div>
 
-//                           <div className="mt-auto flex items-center gap-3 sm:gap-4 z-10 pt-3 sm:pt-4">
-//                             <div className="w-11 h-11 sm:w-12 sm:h-12 md:w-14 md:h-14 flex-shrink-0">
-//                               <img
-//                                 src={testimonial.imageSrc}
-//                                 alt={name}
-//                                 className="rounded-full w-full h-full object-cover shadow-sm"
-//                               />
-//                             </div>
+//                           <div className="flex justify-end gap-3 sm:gap-4 z-10">
 //                             <div>
-//                               <span className="text-mainheadingWhite text-sm sm:text-base font-semibold block">
+//                               <span className="text-mainheadingWhite text-lg sm:text-2xl font-semibold block">
 //                                 {name}
 //                               </span>
-//                               {title && (
-//                                 <span className="text-subheadingWhite text-[10px] sm:text-xs font-medium tracking-wide block">
-//                                   {title.toUpperCase()}
-//                                 </span>
-//                               )}
 //                             </div>
 //                           </div>
 //                         </div>
@@ -1117,26 +1099,26 @@ export default ClientTestimonialSection;
 
 //                 {/* Custom navigation buttons */}
 //                 {/* Adjusted positioning: hidden on mobile, then appear relative to the swiper container */}
-//                 <div className="swiper-button-prev-custom hidden md:inline-block group absolute left-0 lg:-left-4 xl:-left-6 top-1/2 -translate-y-1/2 z-30 cursor-pointer p-2 md:p-3 bg-black/20 hover:bg-black/40 active:bg-black/60 rounded-full transition-all duration-300 [&.swiper-button-disabled]:opacity-30 [&.swiper-button-disabled]:cursor-not-allowed">
-//                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="white" className="w-5 h-5 md:w-6 md:h-6 group-hover:stroke-gray-200 transition-colors duration-300">
+//                 <div className="swiper-button-prev-custom hidden md:inline-block group absolute left-0 lg:-left-4 xl:-left-6 top-1/2 -translate-y-1/2 z-30 cursor-pointer p-2 md:p-3 bg-black/20 hover:bg-black/40 active:bg-black/60 rounded-full ease-linear transition-all duration-150 [&.swiper-button-disabled]:opacity-30 [&.swiper-button-disabled]:cursor-not-allowed">
+//                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="white" className="w-5 h-5 md:w-6 md:h-6 group-hover:stroke-mainheadingWhite transition-colors duration-150">
 //                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
 //                   </svg>
 //                 </div>
-//                 <div className="swiper-button-next-custom hidden md:inline-block group absolute right-0 lg:-right-4 xl:-right-6 top-1/2 -translate-y-1/2 z-30 cursor-pointer p-2 md:p-3 bg-black/20 hover:bg-black/40 active:bg-black/60 rounded-full transition-all duration-300 [&.swiper-button-disabled]:opacity-30 [&.swiper-button-disabled]:cursor-not-allowed">
-//                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="white" className="w-5 h-5 md:w-6 md:h-6 group-hover:stroke-gray-200 transition-colors duration-300">
+//                 <div className="swiper-button-next-custom hidden md:inline-block group absolute right-0 lg:-right-4 xl:-right-6 top-1/2 -translate-y-1/2 z-30 cursor-pointer p-2 md:p-3 bg-black/20 hover:bg-black/40 active:bg-black/60 rounded-full ease-linear transition-all duration-150 [&.swiper-button-disabled]:opacity-30 [&.swiper-button-disabled]:cursor-not-allowed">
+//                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="white" className="w-5 h-5 md:w-6 md:h-6 group-hover:stroke-mainheadingWhite transition-colors duration-150">
 //                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
 //                   </svg>
 //                 </div>
 
 //                 {/* Navigation for smaller screens (below card) */}
 //                 <div className="md:hidden flex justify-center gap-6 mt-6 w-full">
-//                     <div className="swiper-button-prev-custom group cursor-pointer p-3 bg-black/20 hover:bg-black/40 active:bg-black/60 rounded-full transition-all duration-300 [&.swiper-button-disabled]:opacity-30 [&.swiper-button-disabled]:cursor-not-allowed">
-//                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="white" className="w-5 h-5 group-hover:stroke-gray-200 transition-colors duration-300">
+//                     <div className="swiper-button-prev-custom group cursor-pointer p-3 bg-black/20 hover:bg-black/40 active:bg-black/60 rounded-full ease-linear transition-all duration-150 [&.swiper-button-disabled]:opacity-30 [&.swiper-button-disabled]:cursor-not-allowed">
+//                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="white" className="w-5 h-5 group-hover:stroke-mainheadingWhite transition-colors duration-150">
 //                             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
 //                         </svg>
 //                     </div>
-//                     <div className="swiper-button-next-custom group cursor-pointer p-3 bg-black/20 hover:bg-black/40 active:bg-black/60 rounded-full transition-all duration-300 [&.swiper-button-disabled]:opacity-30 [&.swiper-button-disabled]:cursor-not-allowed">
-//                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="white" className="w-5 h-5 group-hover:stroke-gray-200 transition-colors duration-300">
+//                     <div className="swiper-button-next-custom group cursor-pointer p-3 bg-black/20 hover:bg-black/40 active:bg-black/60 rounded-full ease-linear transition-all duration-150 [&.swiper-button-disabled]:opacity-30 [&.swiper-button-disabled]:cursor-not-allowed">
+//                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="white" className="w-5 h-5 group-hover:stroke-mainheadingWhite transition-colors duration-150">
 //                             <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
 //                         </svg>
 //                     </div>
@@ -1146,13 +1128,14 @@ export default ClientTestimonialSection;
 //             </div>
 //           </div>
 //         </div>
+
 //         <style jsx global>{`
 //           .testimonial-swiper-card {
 //             /* Base dimensions for the swiper card itself */
 //             width: 430px; /* Default width, good for lg screens */
 //             height: 580px; /* Default height */
 //           }
-          
+
 //           @media (max-width: 1280px) { /* xl */
 //              .testimonial-swiper-card {
 //                 width: 410px;
@@ -1161,7 +1144,7 @@ export default ClientTestimonialSection;
 //           }
 //           @media (max-width: 1024px) { /* lg - swiper takes more central stage if left col shrinks */
 //             .testimonial-swiper-card {
-//               width: 400px; 
+//               width: 400px;
 //               height: 550px;
 //             }
 //           }
@@ -1175,21 +1158,21 @@ export default ClientTestimonialSection;
 //             .testimonial-swiper-card {
 //               width: 85vw; /* Responsive width */
 //               max-width: 340px; /* Cap width */
-//               height: 490px; 
+//               height: 490px;
 //             }
 //           }
 //            @media (max-width: 420px) {
 //             .testimonial-swiper-card {
 //               width: 90vw;
 //               max-width: 320px;
-//               height: 470px; 
+//               height: 470px;
 //             }
 //            }
 
 //           .testimonial-swiper-card .swiper-slide {
 //             border-radius: 1.5rem; /* 24px */
-//             background-color: #394247; 
-//             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); 
+//             background-color: #394247;
+//             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 //             overflow: hidden;
 //             -webkit-backface-visibility: hidden;
 //             backface-visibility: hidden;
@@ -1210,3 +1193,710 @@ export default ClientTestimonialSection;
 // };
 
 // export default ClientTestimonialSection;
+
+// "use client";
+
+// import React, { useState } from "react";
+// import { Swiper, SwiperSlide } from "swiper/react";
+// import { Autoplay, Navigation, EffectCards } from "swiper/modules";
+
+// import "swiper/css";
+// import "swiper/css/navigation";
+// import "swiper/css/effect-cards";
+// import Link from "next/link";
+
+// interface Testimonial {
+//   id: number;
+//   imageSrc: string;
+//   quote: string;
+//   name: string;
+// }
+
+// // Sample data (ensure image paths are correct for your project)
+// const testimonialsData: Testimonial[] = [
+//   {
+//     id: 1,
+//     imageSrc: "/assets/images/nelson-dunk.jpg",
+//     quote:
+//       "The instant account setup was genuinely fast. KYC was simpler than I expected. Funding my USD wallet and sending to India was straightforward. Being able to save recipient details is a huge time saver.",
+//     name: "Nelson Dunk",
+//   },
+//   {
+//     id: 2,
+//     imageSrc: "/assets/images/ben-cane.jpg",
+//     quote:
+//       "Impressed with the ease of creating a EUR wallet. Bank transfer for funding was clear. Adding my family's Indian bank details (IFSC code and all) was simple. Transfer status tracking is very helpful.",
+//     name: "Ben Cane",
+//   },
+//   {
+//     id: 3,
+//     imageSrc: "/assets/images/deshawn-robinson.jpg",
+//     quote:
+//       "I've used a few services to send AED to India, but this one stands out for its simplicity. The signup really is quick, and the KYC verification didn't take long at all. Once that was done, setting up my AED wallet and transferring funds into it from my bank was smooth.",
+//     name: "Deshawn Robinson",
+//   },
+//   {
+//     id: 4,
+//     imageSrc: "/assets/images/Tom.jpg",
+//     quote:
+//       "I was a bit apprehensive about online money transfers, but this website made it so easy. The initial sign-up asked for just basic details. The KYC was a simple verification step, and after that, I had full access to create my GBP wallet.",
+//     name: "Tom Diaz",
+//   },
+//   {
+//     id: 5,
+//     imageSrc: "/assets/images/Sofia.png",
+//     quote:
+//       "The instant account setup was genuinely fast. KYC was simpler than I expected. Funding my USD wallet and sending to India was straightforward. Being able to save recipient details is a huge time saver.",
+//     name: "Sofia Vyas",
+//   },
+//   {
+//     id: 6,
+//     imageSrc: "/assets/images/Sofia.png",
+//     quote:
+//       "Used this for a EUR transfer. The process of adding my recipient and their bank details was very clear. I like that I can save them for next time. The digital wallet system is also very convenient.",
+//     name: "Chelsy Desai",
+//   },
+// ];
+
+// const ClientTestimonialSection: React.FC = () => {
+//   const [swiperInstance, setSwiperInstance] = useState<any>(null);
+//   const [activeIndex, setActiveIndex] = useState(0); // State to track active slide index
+
+//   return (
+//     <>
+//       <section className="ClientTestimonialSection py-20 sm:py-32 lg:py-40 overflow-hidden">
+//         <div className="container mx-auto px-4">
+//           <div className="lg:flex lg:items-center lg:gap-12 xl:gap-20">
+//             {/* Left Content: Heading and Buttons */}
+//             <div className="lg:w-2/5 xl:w-[38%] text-center lg:text-left mb-12 lg:mb-0">
+//               <div className="space-y-4 text-center md:text-left">
+//                 <div className="lg:inline-block hidden">
+//                   <span className="text-subheadingWhite font-medium text-sm uppercase">
+//                     <span className="text-subheadingWhite/30">[</span> Built for
+//                     safety. Trusted worldwide{" "}
+//                     <span className="text-subheadingWhite/30">]</span>
+//                   </span>
+//                 </div>
+
+//                 <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
+//                   <h3 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight text-mainheadingWhite lg:block hidden">
+//                     Hear it from{" "}
+//                     <span className="text-primary">our clients</span>
+//                   </h3>
+//                   <p className="text-subheadingWhite md:text-lg text-base max-w-5xl">
+//                     Exchange currency with confidence—fast, secure, and
+//                     dependable. Enjoy competitive rates, zero hidden fees, and
+//                     complete encryption for peace of mind at every step.
+//                     Thousands trust us for our transparency, real-time tracking,
+//                     and round-the-clock support. Your money, your rules—simple,
+//                     safe, and always secure.
+//                   </p>
+//                 </div>
+
+//                 <div className="flex justify-center md:justify-start mt-8">
+//                   <Link href="/faqs" className="inline-block">
+//                     <button className="bg-primary hover:bg-primaryhover text-neutral-900 cursor-pointer font-medium text-base lg:text-lg py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
+//                       How we keep your money safe
+//                     </button>
+//                   </Link>
+//                 </div>
+//               </div>
+//             </div>
+
+//             {/* Right Content: Swiper Testimonials */}
+//             <div className="lg:w-3/5 xl:w-[62%]">
+//               <div className="relative w-full flex justify-center lg:justify-end items-center min-h-[550px] sm:min-h-[600px] lg:min-h-[650px]">
+//                 <Swiper
+//                   className="!overflow-visible testimonial-swiper-card"
+//                   modules={[Navigation, EffectCards, Autoplay]}
+//                   effect={"cards"}
+//                   grabCursor={true}
+//                   loop={false}
+//                   // autoplay={{
+//                   //   delay: 7000,
+//                   //   disableOnInteraction: false,
+//                   // }}
+//                   navigation={{
+//                     nextEl: ".swiper-button-next-custom",
+//                     prevEl: ".swiper-button-prev-custom",
+//                   }}
+//                   onSwiper={(swiper) => {
+//                     setSwiperInstance(swiper);
+//                     // Initialize activeIndex when Swiper is ready
+//                     setActiveIndex(
+//                       swiper.realIndex !== undefined ? swiper.realIndex : 0
+//                     );
+//                   }}
+//                   onSlideChange={() => {
+//                     if (swiperInstance) {
+//                       setActiveIndex(swiperInstance.realIndex);
+//                     }
+//                   }}
+//                 >
+//                   {testimonialsData.map((testimonial, index) => {
+//                     const name = testimonial.name; // Corrected name extraction
+
+//                     // Determine the current slide number for display (1-based)
+//                     // If swiper is initialized, use its realIndex (via activeIndex state).
+//                     // Otherwise (e.g. initial render of slides before swiper takes over), use the map index.
+//                     const currentSlideNumberForDisplay =
+//                       (swiperInstance ? activeIndex : index) + 1;
+
+//                     return (
+//                       <SwiperSlide key={testimonial.id}>
+//                         <div className="relative bg-primarybox rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 flex flex-col h-full w-full overflow-hidden">
+//                           <div className="absolute top-5 right-5 sm:top-6 sm:right-6 text-[9rem] sm:text-[10rem] md:text-[11rem] text-primary font-bold opacity-100 leading-none z-0 select-none pointer-events-none">
+//                             “
+//                           </div>
+
+//                           <div className="flex justify-between items-center mb-4 sm:mb-5 z-20">
+//                             <div className="px-6 py-2.5 bg-secondarybox hover:bg-secondaryboxhover transition-all ease-linear duration-150 rounded-full sm:text-sm font-medium text-mainheadingWhite">
+//                               {/* Custom Pagination: X of Total */}
+//                               {`${currentSlideNumberForDisplay} of ${testimonialsData.length}`}
+//                             </div>
+//                           </div>
+
+//                           <div className="flex-grow overflow-y-auto my-3 sm:py-5 z-10 relative">
+//                             <p className="text-base sm:text-2xl text-mainheadingWhite font-normal leading-normal">
+//                               {testimonial.quote}
+//                             </p>
+//                           </div>
+
+//                           <div className="flex justify-end gap-3 sm:gap-4 z-10">
+//                             <div>
+//                               <span className="text-mainheadingWhite text-lg sm:text-2xl font-semibold block">
+//                                 {name}
+//                               </span>
+//                             </div>
+//                           </div>
+//                         </div>
+//                       </SwiperSlide>
+//                     );
+//                   })}
+//                 </Swiper>
+
+//                 {/* Custom navigation buttons */}
+//                 <div className="swiper-button-prev-custom hidden md:inline-block group absolute left-0 lg:-left-4 xl:-left-6 top-1/2 -translate-y-1/2 z-30 cursor-pointer p-2 md:p-3 bg-black/20 hover:bg-black/40 active:bg-black/60 rounded-full ease-linear transition-all duration-150 [&.swiper-button-disabled]:opacity-30 [&.swiper-button-disabled]:cursor-not-allowed">
+//                   <svg
+//                     xmlns="http://www.w3.org/2000/svg"
+//                     fill="none"
+//                     viewBox="0 0 24 24"
+//                     strokeWidth={2.5}
+//                     stroke="white"
+//                     className="w-5 h-5 md:w-6 md:h-6 group-hover:stroke-mainheadingWhite transition-colors duration-150"
+//                   >
+//                     <path
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                       d="M15.75 19.5L8.25 12l7.5-7.5"
+//                     />
+//                   </svg>
+//                 </div>
+//                 <div className="swiper-button-next-custom hidden md:inline-block group absolute right-0 lg:-right-4 xl:-right-6 top-1/2 -translate-y-1/2 z-30 cursor-pointer p-2 md:p-3 bg-black/20 hover:bg-black/40 active:bg-black/60 rounded-full ease-linear transition-all duration-150 [&.swiper-button-disabled]:opacity-30 [&.swiper-button-disabled]:cursor-not-allowed">
+//                   <svg
+//                     xmlns="http://www.w3.org/2000/svg"
+//                     fill="none"
+//                     viewBox="0 0 24 24"
+//                     strokeWidth={2.5}
+//                     stroke="white"
+//                     className="w-5 h-5 md:w-6 md:h-6 group-hover:stroke-mainheadingWhite transition-colors duration-150"
+//                   >
+//                     <path
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                       d="M8.25 4.5l7.5 7.5-7.5 7.5"
+//                     />
+//                   </svg>
+//                 </div>
+
+//                 {/* Navigation for smaller screens (below card) */}
+//                 <div className="md:hidden flex justify-center gap-6 mt-6 w-full">
+//                   <div className="swiper-button-prev-custom group cursor-pointer p-3 bg-black/20 hover:bg-black/40 active:bg-black/60 rounded-full ease-linear transition-all duration-150 [&.swiper-button-disabled]:opacity-30 [&.swiper-button-disabled]:cursor-not-allowed">
+//                     <svg
+//                       xmlns="http://www.w3.org/2000/svg"
+//                       fill="none"
+//                       viewBox="0 0 24 24"
+//                       strokeWidth={2.5}
+//                       stroke="white"
+//                       className="w-5 h-5 group-hover:stroke-mainheadingWhite transition-colors duration-150"
+//                     >
+//                       <path
+//                         strokeLinecap="round"
+//                         strokeLinejoin="round"
+//                         d="M15.75 19.5L8.25 12l7.5-7.5"
+//                       />
+//                     </svg>
+//                   </div>
+//                   <div className="swiper-button-next-custom group cursor-pointer p-3 bg-black/20 hover:bg-black/40 active:bg-black/60 rounded-full ease-linear transition-all duration-150 [&.swiper-button-disabled]:opacity-30 [&.swiper-button-disabled]:cursor-not-allowed">
+//                     <svg
+//                       xmlns="http://www.w3.org/2000/svg"
+//                       fill="none"
+//                       viewBox="0 0 24 24"
+//                       strokeWidth={2.5}
+//                       stroke="white"
+//                       className="w-5 h-5 group-hover:stroke-mainheadingWhite transition-colors duration-150"
+//                     >
+//                       <path
+//                         strokeLinecap="round"
+//                         strokeLinejoin="round"
+//                         d="M8.25 4.5l7.5 7.5-7.5 7.5"
+//                       />
+//                     </svg>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+
+//         <style jsx global>{`
+//           .testimonial-swiper-card {
+//             /* Base dimensions for the swiper card itself */
+//             width: 430px; /* Default width, good for lg screens */
+//             height: 580px; /* Default height */
+//           }
+
+//           @media (max-width: 1280px) {
+//             /* xl */
+//             .testimonial-swiper-card {
+//               width: 410px;
+//               height: 560px;
+//             }
+//           }
+//           @media (max-width: 1024px) {
+//             /* lg - swiper takes more central stage if left col shrinks */
+//             .testimonial-swiper-card {
+//               width: 400px;
+//               height: 550px;
+//             }
+//           }
+//           @media (max-width: 767px) {
+//             /* md - below lg, stack layout, swiper centered */
+//             .testimonial-swiper-card {
+//               width: 360px; /* Slightly smaller for md */
+//               height: 520px;
+//             }
+//           }
+//           @media (max-width: 640px) {
+//             /* sm */
+//             .testimonial-swiper-card {
+//               width: 85vw; /* Responsive width */
+//               max-width: 340px; /* Cap width */
+//               height: 490px;
+//             }
+//           }
+//           @media (max-width: 420px) {
+//             .testimonial-swiper-card {
+//               width: 90vw;
+//               max-width: 320px;
+//               height: 470px;
+//             }
+//           }
+
+//           .testimonial-swiper-card .swiper-slide {
+//             border-radius: 1.5rem; /* 24px */
+//             background-color: #394247;
+//             box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+//             overflow: hidden;
+//             -webkit-backface-visibility: hidden;
+//             backface-visibility: hidden;
+//             -webkit-transform: translate3d(0, 0, 0);
+//             transform: translate3d(0, 0, 0);
+//           }
+
+//           .testimonial-swiper-card .swiper-slide > div {
+//             height: 100%;
+//             width: 100%;
+//             display: flex;
+//             flex-direction: column;
+//           }
+//         `}</style>
+
+//       </section>
+//     </>
+//   );
+// };
+
+// export default ClientTestimonialSection;
+
+"use client";
+
+import React, { useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation, EffectCards } from "swiper/modules";
+
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/effect-cards";
+import Link from "next/link";
+
+interface Testimonial {
+  id: number;
+  imageSrc: string; // Kept for consistency, though not directly used in this snippet's display
+  quote: string;
+  name: string;
+  trustpilotRating: number; // Added for Trustpilot rating
+}
+
+// Sample data with Trustpilot ratings
+const testimonialsData: Testimonial[] = [
+  {
+    id: 1,
+    imageSrc: "/assets/images/nelson-dunk.jpg",
+    quote:
+      "The instant account setup was genuinely fast. KYC was simpler than I expected. Funding my USD wallet and sending to India was straightforward. Being able to save recipient details is a huge time saver.",
+    name: "Nelson Dunk",
+    trustpilotRating: 5, // Example: 4.8 out of 5
+  },
+  {
+    id: 2,
+    imageSrc: "/assets/images/ben-cane.jpg",
+    quote:
+      "Impressed with the ease of creating a EUR wallet. Bank transfer for funding was clear. Adding my family's Indian bank details (IFSC code and all) was simple. Transfer status tracking is very helpful.",
+    name: "Ben Cane",
+    trustpilotRating: 4.5, // Example: 5 out of 5
+  },
+  {
+    id: 3,
+    imageSrc: "/assets/images/deshawn-robinson.jpg",
+    quote:
+      "I've used a few services to send AED to India, but this one stands out for its simplicity. The signup really is quick, and the KYC verification didn't take long at all. Once that was done, setting up my AED wallet and transferring funds into it from my bank was smooth.",
+    name: "Deshawn Robinson",
+    trustpilotRating: 4.5, // Example: 4.2 out of 5
+  },
+  {
+    id: 4,
+    imageSrc: "/assets/images/Tom.jpg",
+    quote:
+      "I was a bit apprehensive about online money transfers, but this website made it so easy. The initial sign-up asked for just basic details. The KYC was a simple verification step, and after that, I had full access to create my GBP wallet.",
+    name: "Tom Diaz",
+    trustpilotRating: 5, // Example: 4 out of 5
+  },
+  {
+    id: 5,
+    imageSrc: "/assets/images/Sofia.png",
+    quote:
+      "The instant account setup was genuinely fast. KYC was simpler than I expected. Funding my USD wallet and sending to India was straightforward. Being able to save recipient details is a huge time saver.",
+    name: "Sofia Vyas",
+    trustpilotRating: 5, // Example: 3.5 out of 5
+  },
+  {
+    id: 6,
+    imageSrc: "/assets/images/Sofia.png", // Assuming this is a placeholder or different Sofia
+    quote:
+      "Used this for a EUR transfer. The process of adding my recipient and their bank details was very clear. I like that I can save them for next time. The digital wallet system is also very convenient.",
+    name: "Chelsy Desai",
+    trustpilotRating: 4.5, // Example: 4.7 out of 5
+  },
+];
+
+// Trustpilot Logo Star Component (Flat Green)
+const TrustpilotLogoStar = ({ className }: { className?: string }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="#00B67B" // Trustpilot Green
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+    aria-hidden="true"
+  >
+    <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279L12 19.432l-7.416 4.001 1.481-8.279-6.064-5.828 8.332-1.151L12 .587z" />
+  </svg>
+);
+
+// Single White Star Icon for Rating
+const SingleRatingStarIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="white"
+    xmlns="http://www.w3.org/2000/svg"
+    className="w-full h-full" // Star fills its container
+    aria-hidden="true"
+  >
+    <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279L12 19.432l-7.416 4.001 1.481-8.279-6.064-5.828 8.332-1.151L12 .587z" />
+  </svg>
+);
+
+// Rating Star Component (renders one of the 5 small stars)
+const RatingStar = ({
+  rating,
+  starIndex,
+}: {
+  rating: number;
+  starIndex: number;
+}) => {
+  const greenColor = "#00B67B";
+  const greyColor = "#DCDCE6"; // Light grey for empty part of background
+
+  let backgroundStyle: React.CSSProperties = {};
+  const starValue = starIndex + 1; // 1-indexed star
+
+  if (rating >= starValue) {
+    // Full star
+    backgroundStyle = { backgroundColor: greenColor };
+  } else if (rating > starIndex && rating < starValue) {
+    // Partial star (starIndex is 0-based, rating is e.g., 4.5, starIndex is 4)
+    // rating = 4.5, starIndex = 4. starValue = 5.
+    // rating > 4 and rating < 5. This is the 5th star, partially filled.
+    const percentage = (rating - starIndex) * 100;
+    backgroundStyle = {
+      background: `linear-gradient(to right, ${greenColor} ${percentage}%, ${greyColor} ${percentage}%)`,
+    };
+  } else {
+    // Empty star
+    backgroundStyle = { backgroundColor: greyColor };
+  }
+
+  return (
+    <div
+      className="w-5 h-5 sm:w-6 sm:h-6 mr-1 p-0.5 relative" // Square container for each star
+      style={backgroundStyle}
+    >
+      <SingleRatingStarIcon />
+    </div>
+  );
+};
+
+const ClientTestimonialSection: React.FC = () => {
+  const [swiperInstance, setSwiperInstance] = useState<any>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  return (
+    <>
+      <section className="ClientTestimonialSection py-10 lg:py-40 overflow-hidden">
+        <div className="container mx-auto px-4">
+          <div className="lg:flex lg:items-center lg:gap-12 xl:gap-20">
+            {/* Left Content: Heading and Buttons */}
+            <div className="lg:w-2/5 xl:w-[38%] text-center lg:text-left mb-12 lg:mb-0">
+              <div className="space-y-4 text-center md:text-left">
+                <div className="lg:inline-block hidden">
+                  <span className="text-subheadingWhite font-medium text-sm uppercase">
+                    <span className="text-subheadingWhite/30">[</span> Built for
+                    safety. Trusted worldwide{" "}
+                    <span className="text-subheadingWhite/30">]</span>
+                  </span>
+                </div>
+
+                <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
+                  <h3 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight text-mainheadingWhite lg:block hidden">
+                    Real Stories,{" "}
+                    <span className="text-primary">Real Trust</span>
+                  </h3>
+                  <p className="text-subheadingWhite md:text-lg text-base max-w-5xl">
+                    From quick account setup to secure global transfers,
+                    thousands rely on us every day. Real experiences from real
+                    people—proof that your money is in trusted hands.
+                  </p>
+                </div>
+
+                <div className="flex justify-center md:justify-start mt-8">
+                  <Link href="/reviews" className="inline-block">
+                    <button className="bg-primary hover:bg-primaryhover text-neutral-900 cursor-pointer font-medium text-base lg:text-lg py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
+                      Read Their Stories
+                    </button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Content: Swiper Testimonials */}
+            <div className="lg:w-3/5 xl:w-[62%]">
+              <div className="relative w-full flex justify-center lg:justify-end items-center min-h-[550px] sm:min-h-[600px] lg:min-h-[650px]">
+                <Swiper
+                  className="!overflow-visible testimonial-swiper-card"
+                  modules={[Navigation, EffectCards, Autoplay]}
+                  effect={"cards"}
+                  grabCursor={true}
+                  loop={false}
+                  // autoplay={{
+                  //   delay: 7000,
+                  //   disableOnInteraction: false,
+                  // }}
+                  navigation={{
+                    nextEl: ".swiper-button-next-custom",
+                    prevEl: ".swiper-button-prev-custom",
+                  }}
+                  onSwiper={(swiper) => {
+                    setSwiperInstance(swiper);
+                    setActiveIndex(
+                      swiper.realIndex !== undefined ? swiper.realIndex : 0
+                    );
+                  }}
+                  onSlideChange={() => {
+                    if (swiperInstance) {
+                      setActiveIndex(swiperInstance.realIndex);
+                    }
+                  }}
+                >
+                  {testimonialsData.map((testimonial, index) => {
+                    const currentSlideNumberForDisplay =
+                      (swiperInstance ? activeIndex : index) + 1;
+
+                    return (
+                      <SwiperSlide key={testimonial.id}>
+                        <div className="relative bg-primarybox rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 flex flex-col h-full w-full overflow-hidden">
+                          <div className="absolute top-5 right-5 text-[9rem] sm:text-[10rem] md:text-[11rem] text-primary font-bold opacity-100 leading-none z-0 select-none pointer-events-none">
+                            “
+                          </div>
+
+                          <div className="flex justify-between items-center mb-4 sm:mb-5 z-20">
+                            <div className="sm:px-6 px-4 sm:py-2.5 py-2 bg-secondarybox transition-all ease-linear duration-150 rounded-full sm:text-sm font-medium text-mainheadingWhite">
+                              {`${currentSlideNumberForDisplay} of ${testimonialsData.length}`}
+                            </div>
+                          </div>
+
+                          <div className="flex-grow overflow-y-auto my-3 sm:my-5 z-10 relative">
+                            {" "}
+                            {/* Adjusted sm:py-5 to sm:my-3 */}
+                            <p className="text-base md:text-2xl text-mainheadingWhite font-normal leading-normal">
+                              {" "}
+                              {/* Adjusted text size for quote */}
+                              {testimonial.quote}
+                            </p>
+                          </div>
+
+                          {/* Trustpilot Section */}
+                          <div className="my-3 sm:my-4 space-y-2 z-10">
+                            <div className="flex items-center">
+                              <TrustpilotLogoStar className="w-6 h-6 sm:w-7 sm:h-7 mr-2" />
+                              <span className="text-lg sm:text-xl font-semibold text-mainheadingWhite">
+                                {" "}
+                                {/* Slightly off-black like Trustpilot uses */}
+                                Trustpilot
+                              </span>
+                            </div>
+                            <div className="flex">
+                              {Array.from({ length: 5 }).map((_, i) => (
+                                <RatingStar
+                                  key={i}
+                                  rating={testimonial.trustpilotRating}
+                                  starIndex={i}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                          {/* End Trustpilot Section */}
+
+                          <div className="flex justify-end gap-3 sm:gap-4 z-10 mt-auto">
+                            {" "}
+                            {/* Added mt-auto to push name to bottom if space allows */}
+                            <div>
+                              <span className="text-mainheadingWhite text-base sm:text-xl font-semibold block">
+                                {" "}
+                                {/* Adjusted text size for name */}
+                                {testimonial.name}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </SwiperSlide>
+                    );
+                  })}
+                </Swiper>
+
+                {/* Custom navigation buttons */}
+                <div className="swiper-button-prev-custom hidden md:inline-block group absolute left-0 lg:-left-4 xl:-left-6 top-1/2 -translate-y-1/2 z-30 cursor-pointer p-2 md:p-3 bg-black/20 hover:bg-black/40 active:bg-black/60 rounded-full ease-linear transition-all duration-150 [&.swiper-button-disabled]:opacity-30 [&.swiper-button-disabled]:cursor-not-allowed">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2.5}
+                    stroke="white"
+                    className="w-5 h-5 md:w-6 md:h-6 group-hover:stroke-mainheadingWhite transition-colors duration-150"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15.75 19.5L8.25 12l7.5-7.5"
+                    />
+                  </svg>
+                </div>
+
+                <div className="swiper-button-next-custom hidden md:inline-block group absolute  right-0 lg:-right-4 xl:-right-6 top-1/2 -translate-y-1/2 z-30 cursor-pointer p-2 md:p-3 bg-black/20 hover:bg-black/40 active:bg-black/60 rounded-full ease-linear transition-all duration-150 [&.swiper-button-disabled]:opacity-30 [&.swiper-button-disabled]:cursor-not-allowed">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2.5}
+                    stroke="white"
+                    className="w-5 h-5 md:w-6 md:h-6 group-hover:stroke-mainheadingWhite transition-colors duration-150"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <style jsx global>{`
+          .testimonial-swiper-card {
+            /* Base dimensions for the swiper card itself */
+            width: 430px; /* Default width, good for lg screens */
+            height: 580px; /* Default height */
+          }
+
+          @media (max-width: 1280px) {
+            /* xl */
+            .testimonial-swiper-card {
+              width: 410px;
+              height: 560px;
+            }
+          }
+          @media (max-width: 1024px) {
+            /* lg - swiper takes more central stage if left col shrinks */
+            .testimonial-swiper-card {
+              width: 400px;
+              height: 550px;
+            }
+          }
+          @media (max-width: 767px) {
+            /* md - below lg, stack layout, swiper centered */
+            .testimonial-swiper-card {
+              width: 360px; /* Slightly smaller for md */
+              height: 520px;
+            }
+          }
+          @media (max-width: 640px) {
+            /* sm */
+            .testimonial-swiper-card {
+              width: 85vw; /* Responsive width */
+              max-width: 340px; /* Cap width */
+              height: 490px;
+            }
+          }
+          @media (max-width: 420px) {
+            .testimonial-swiper-card {
+              width: 90vw;
+              max-width: 320px;
+              height: 470px; /* Adjusted height for potentially more content */
+            }
+          }
+
+          .testimonial-swiper-card .swiper-slide {
+            border-radius: 1.5rem; /* 24px */
+            background-color: #394247; /* This is bg-primarybox */
+            box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            -webkit-transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
+          }
+
+          .testimonial-swiper-card .swiper-slide > div {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+          }
+        `}</style>
+      </section>
+    </>
+  );
+};
+
+export default ClientTestimonialSection;
