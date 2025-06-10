@@ -352,8 +352,6 @@
 
 // export default CurrencyExchangeServices;
 
-
-
 "use client";
 import Image from "next/image";
 import React from "react"; // Import React for React.memo
@@ -367,7 +365,7 @@ const CurrencyExchangeServices: React.FC<
 > = () => {
   const { user } = useAuth();
 
-  const buttonText = user ? "Get Started" : "Join Remityn Now";
+  const buttonText = user ? "Go to Exchange Dashboard" : "Join Remityn Now";
   const buttonLink = user ? "/dashboard/send/select-balance" : "/auth/register";
 
   return (
@@ -399,7 +397,7 @@ const CurrencyExchangeServices: React.FC<
                 sizes="(max-width: 767px) 100vw, (max-width: 1023px) 768px, (max-width: 1279px) 60vw, 768px"
               />
             </div>
-            
+
             {/* ... (rest of the content) ... */}
             <div className="block md:hidden">
               <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full pt-8 text-center">
@@ -413,7 +411,7 @@ const CurrencyExchangeServices: React.FC<
 
               <div className="flex justify-center md:justify-start mt-8">
                 <Link href={buttonLink} className="inline-block">
-                  <button className="bg-primary hover:bg-primaryhover text-mainheading cursor-pointer font-medium lg:text-lg text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
+                  <button className="bg-primary hover:bg-primaryhover text-mainheading cursor-pointer font-semibold lg:text-lg text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
                     {buttonText}
                   </button>
                 </Link>
