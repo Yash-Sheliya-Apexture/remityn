@@ -2235,8 +2235,9 @@ const navLinks: NavLinkItem[] = [
   { href: "/", label: "Home" },
   { href: "/about-us", label: "About" },
   { href: "/features", label: "Features" },
-  { href: "/faqs", label: "Help" },
-  { href: "/contactus", label: "Contact-Us" },
+  { href: "/reviews", label: "Reviews" },
+  { href: "/faqs", label: "FAQ" },
+  { href: "/contact-us", label: "Contact-Us" },
 ];
 
 

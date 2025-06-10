@@ -436,7 +436,7 @@ const SecuritySection: React.FC = () => {
             </div>
             <div className="relative w-full flex justify-center">
               <Image
-                src="/assets/images/eretrtgcbvcb.png" // Ensure this path is correct and relative to the /public directory
+                src="/assets/images/gwdrgwerfg.png" // Ensure this path is correct and relative to the /public directory
                 width={550} // Original width
                 height={800} // Assuming the image is roughly square or you want to display it as such.
                 // The original had height={800}, which would make it very tall. Adjust based on aspect ratio.

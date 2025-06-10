@@ -1500,42 +1500,523 @@
 
 
 
+// "use client";
+
+// import Image from "next/image"; // Import next/image
+// import React, { useState, useEffect, useMemo } from "react"; // Added React for React.FC, React.memo
+// import { FaStar, FaStarHalfAlt } from "react-icons/fa";
+// import { motion, AnimatePresence } from "framer-motion";
+// import { Skeleton } from "@/components/ui/skeleton";
+// // --- Constants ---
+// const INITIAL_REVIEWS_COUNT = 6; // Number of reviews to show initially and to load on "Read More"
+
+// // --- StarRating Component ---
+// interface StarRatingProps {
+//   rating: number;
+//   maxRating?: number;
+// }
+
+// const StarRating: React.FC<StarRatingProps> = React.memo(({ rating, maxRating = 5 }) => {
+//   const stars = [];
+//   const fullStars = Math.floor(rating);
+//   const hasHalfStar = rating % 1 !== 0;
+
+//   for (let i = 0; i < maxRating; i++) {
+//     if (i < fullStars) {
+//       stars.push(<FaStar key={`star-full-${i}-${rating}`} className="inline-block text-yellow-500" />);
+//     } else if (i === fullStars && hasHalfStar) {
+//       stars.push(<FaStarHalfAlt key={`star-half-${i}-${rating}`} className="inline-block text-yellow-500" />);
+//     } else {
+//       stars.push(<FaStar key={`star-empty-${i}-${rating}`} className="inline-block text-gray-300 dark:text-gray-600"/>);
+//     }
+//   }
+//   return <div className="inline-block space-x-[1px]">{stars}</div>;
+// });
+// StarRating.displayName = 'StarRating'; // For better debugging in React DevTools
+
+// // --- ReviewCard Component ---
+// interface ReviewCardProps {
+//   reviewerName: string;
+//   avatarUrl: string; // Example: "/assets/avatars/Tom.jpg" (path relative to /public)
+//   rating: number;
+//   comment: string;
+//   DateAndTime: string;
+// }
+
+// const ReviewCard: React.FC<ReviewCardProps> = React.memo(({
+//   reviewerName,
+//   avatarUrl,
+//   rating,
+//   comment,
+//   DateAndTime,
+// }) => {
+//   return (
+//     <div className="rounded-2xl bg-primary-foreground border border-gray-600/50 lg:p-6 p-4 flex flex-col sm:items-start items-end h-full">
+//       <div className="flex justify-between items-center gap-4 w-full">
+//         <div className="flex items-center gap-3">
+//           <Image
+//             src={avatarUrl}
+//             alt={`Avatar of ${reviewerName}`}
+//             width={64} // Corresponds to lg:size-16
+//             height={64}
+//             className="lg:size-16 size-14 rounded-full object-cover flex-shrink-0"
+//             sizes="(max-width: 1024px) 3.5rem, 4rem"
+//             // loading="lazy" // Next.js default is lazy, explicit not always needed
+//             // Consider placeholder="blur" if you have blurDataURLs for avatars
+//           />
+//           <div className="flex flex-col items-start">
+//             <div className="text-mainheadingWhite lg:text-lg text-base capitalize dark:text-primary font-medium">
+//               {reviewerName}
+//             </div>
+//             <StarRating rating={rating} />
+//           </div>
+//         </div>
+
+//         <div className="flex gap-1.5 flex-shrink-0">
+//           <Image
+//             src="/assets/images/trustpilot.png" // Ensure this path is correct (relative to /public)
+//             alt="Social media icon" // More descriptive alt text
+//             height={24} // Corresponds to size-6
+//             width={24}
+//             className="size-10 object-cover rounded-lg"
+//             sizes="(max-width: 1024px) 2.5rem, 3rem"
+
+//           />
+//         </div>
+//       </div>
+//       <div className="text-subheadingWhite lg:text-lg text-base mt-5 flex-grow">
+//         {comment}
+//       </div>
+//       <div className="mt-5">
+//         <span className="text-subheadingWhite text-sm font-medium capitalize">
+//           {DateAndTime}
+//         </span>
+//       </div>
+//     </div>
+//   );
+// });
+// ReviewCard.displayName = 'ReviewCard'; // For better debugging
+
+// // --- Types for review data ---
+// interface Review {
+//   id: string; // Unique ID for each review item for React keys
+//   reviewerName: string;
+//   avatarUrl: string;
+//   rating: number;
+//   comment: string;
+//   DateAndTime: string;
+//   location?: string; // Optional location property
+// }
+
+// // Describes the structure of each group in the JSON
+// interface ReviewGroup {
+//   id: string | number; // ID for the group itself
+//   reviews: Omit<Review, "id">[]; // Reviews within this group; 'id' will be generated
+// }
+
+// // Describes the overall structure of Review.json
+// interface ReviewJson {
+//   reviewGroups: ReviewGroup[];
+// }
+
+// // --- Animation Variants (Keep as they are if they work for your design) ---
+// const listContainerVariants = {
+//   hidden: { opacity: 0 },
+//   visible: {
+//     opacity: 1,
+//     transition: {
+//       staggerChildren: 0.10,
+//       delayChildren: 0.2,
+//     },
+//   },
+// };
+
+// const cardItemVariants = {
+//   hidden: { opacity: 0, y: 20, scale: 0.95 },
+//   visible: {
+//     opacity: 1,
+//     y: 0,
+//     scale: 1,
+//     transition: {
+//       duration: 0.4,
+//       ease: "easeOut",
+//     },
+//   },
+// };
+
+// // --- ReviewCards Component (Main Logic with Load More & Animation) ---
+// const ReviewCards: React.FC = () => {
+//   const [reviewGroups, setReviewGroups] = useState<ReviewGroup[]>([]);
+//   const [initialLoading, setInitialLoading] = useState<boolean>(true);
+//   const [error, setError] = useState<Error | null>(null);
+//   const [numVisibleReviews, setNumVisibleReviews] = useState<number>(
+//     INITIAL_REVIEWS_COUNT
+//   );
+
+//   const allReviews = useMemo(() => {
+//     let flatReviews: Review[] = [];
+//     reviewGroups.forEach((group, groupIndex) => {
+//       group.reviews.forEach((review, reviewIndex) => {
+//         // Generate a more robust unique ID for each review item
+//         const uniqueId = `review-${group.id || `group${groupIndex}`}-${reviewIndex}-${review.reviewerName.replace(/\s+/g, '-').toLowerCase()}-${review.rating}`;
+//         flatReviews.push({
+//           ...review,
+//           id: uniqueId,
+//         });
+//       });
+//     });
+//     return flatReviews;
+//   }, [reviewGroups]);
+
+//   useEffect(() => {
+//     const fetchReviews = async () => {
+//       setInitialLoading(true);
+//       setError(null);
+//       try {
+//         const response = await fetch("/Review.json"); // Path relative to the /public directory
+//         if (!response.ok) {
+//           throw new Error(`HTTP error! status: ${response.status}`);
+//         }
+//         const data: ReviewJson = await response.json();
+
+//         // Basic validation of the fetched data structure
+//         if (!data || !Array.isArray(data.reviewGroups)) {
+//             console.error("Fetched data is not in the expected format:", data);
+//             throw new Error("Invalid review data format received from server.");
+//         }
+//         data.reviewGroups.forEach(group => {
+//             if (!group || !Array.isArray(group.reviews)) {
+//                 console.error("Invalid group structure in review data:", group);
+//                 throw new Error("Invalid group structure within review data.");
+//             }
+//         });
+
+//         setReviewGroups(data.reviewGroups);
+//       } catch (err: any) {
+//         console.error("Failed to fetch or parse reviews:", err);
+//         // Ensure err is an Error object
+//         setError(err instanceof Error ? err : new Error(String(err.message || "An unknown error occurred while fetching reviews.")));
+//       } finally {
+//         setInitialLoading(false);
+//       }
+//     };
+//     fetchReviews();
+//   }, []); // Empty dependency array means this effect runs once on mount
+
+//   const reviewsToDisplay = useMemo(() => {
+//     return allReviews.slice(0, numVisibleReviews);
+//   }, [allReviews, numVisibleReviews]);
+
+//   const tabletLayoutColumns = useMemo(() => {
+//     if (reviewsToDisplay.length === 0) return [];
+//     const columns: Review[][] = [[], []]; // Initialize two columns
+//     reviewsToDisplay.forEach((review, index) => {
+//       columns[index % 2].push(review); // Distribute reviews into two columns
+//     });
+//     return columns;
+//   }, [reviewsToDisplay]);
+
+//   const desktopLayoutColumns = useMemo(() => {
+//     if (reviewsToDisplay.length === 0) return [];
+//     const columns: Review[][] = [[], [], []]; // Initialize three columns
+//     reviewsToDisplay.forEach((review, index) => {
+//       columns[index % 3].push(review); // Distribute reviews into three columns
+//     });
+//     return columns;
+//   }, [reviewsToDisplay]);
+
+//   const handleLoadMore = () => {
+//     setNumVisibleReviews((prevCount) =>
+//       Math.min(prevCount + INITIAL_REVIEWS_COUNT, allReviews.length)
+//     );
+//   };
+
+//   const canLoadMore = useMemo(() => {
+//     return allReviews.length > 0 && numVisibleReviews < allReviews.length;
+//   }, [allReviews, numVisibleReviews]);
+
+
+//   const renderHeader = () => (
+//     <div className="space-y-4 text-center md:text-left mb-10">
+//       <div className="inline-block">
+//         <span className="text-subheadingWhite font-medium text-sm uppercase">
+//           <span className="text-subheadingWhite/30">[</span> Ours Reviews{" "}
+//           <span className="text-subheadingWhite/30">]</span>
+//         </span>
+//       </div>
+//       <div className="space-y-4 text-center md:text-left">
+//         <h2 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite lg:max-w-3xl max-w-full">
+//           Honest Reviews,{" "}
+//           <span className="text-primary">Real Travelers Like You</span>
+//         </h2>
+//         <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
+//           Discover what real travelers have to say about their experiences with
+//           our currency exchange services. From frequent flyers to first-time
+//           tourists, our customers share honest feedback about fast, reliable,
+//           and secure transactions.
+//         </p>
+//       </div>
+//     </div>
+//   );
+
+//   if (error) {
+//     return (
+//       <section className="Reviews md:pt-14 pt-10 overflow-hidden">
+//         <div className="container mx-auto px-4">
+//           {renderHeader()}
+//           <div className="mt-10 text-center p-6 md:p-10 border border-red-500 bg-red-900/25 rounded-lg shadow-md">
+//             <h3 className="text-xl md:text-2xl font-semibold text-red-400 mb-3">
+//               Oops! Something Went Wrong
+//             </h3>
+//             <p className="text-red-500 mb-1">
+//               We couldn't load the reviews at this time. Please try again later.
+//             </p>
+//             <p className="mt-2 text-sm text-red-500">
+//               Error details: {error.message}
+//             </p>
+//           </div>
+//         </div>
+//       </section>
+//     );
+//   }
+
+  
+//   if (!initialLoading && allReviews.length === 0 && !error) {
+//     return (
+//       <section className="Reviews md:pt-14 pt-10 overflow-hidden">
+//         <div className="container mx-auto px-4">
+//           {renderHeader()}
+//           <div className="text-center p-10 mt-10 bg-primary-foreground rounded-lg"> {/* Changed bg-lightgray dark:bg-primarybox */}
+//             <p className="text-lg text-gray-400 dark:text-gray-300">
+//               No reviews found yet. Be the first to share your experience!
+//             </p>
+//           </div>
+//         </div>
+//       </section>
+//     );
+//   }
+
+//   return (
+//     <section className="Reviews md:pt-14 pt-10 overflow-hidden relative pb-10 sm:pb-16">
+//       <div className="container mx-auto px-4">
+//         {renderHeader()}
+
+//          {initialLoading && (
+//           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-5">
+//             {Array.from({ length: INITIAL_REVIEWS_COUNT }).map((_, index) => (
+//               <div key={`skeleton-${index}`} className="rounded-2xl bg-primary-foreground border border-gray-600/50 lg:p-6 p-4 flex flex-col h-full">
+//                 <div className="flex justify-between items-center gap-4 w-full">
+//                   <div className="flex items-center gap-3">
+//                     <Skeleton className="lg:size-16 size-14 rounded-full flex-shrink-0 bg-background/30" />
+//                     <div className="flex-1 space-y-2 py-1">
+//                       <Skeleton className="h-5 w-3/4 rounded bg-background/30" /> {/* Reviewer Name (lg:text-lg) */}
+//                       <Skeleton className="h-4 w-1/2 rounded bg-background/30 " /> {/* Star Rating line */}
+//                     </div>
+//                   </div>
+//                   <Skeleton className="size-10 rounded-lg flex-shrink-0 bg-background/30" /> {/* Trustpilot Icon */}
+//                 </div>
+//                 <div className="space-y-2.5 mt-5 flex-grow"> {/* Comment section */}
+//                   <Skeleton className="h-4 rounded bg-background/30" />
+//                   <Skeleton className="h-4 rounded bg-background/30" />
+//                   <Skeleton className="h-4 rounded w-11/12 bg-background/30" />
+//                   <Skeleton className="h-4 rounded w-5/6 bg-background/30" />
+//                 </div>
+//                 <div className="mt-5"> {/* Date and Time */}
+//                   <Skeleton className="h-4 w-1/3 rounded bg-background/30" />
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         )}
+
+//         {!initialLoading && (
+//           <>
+//             {/* --- Mobile View: 1 Column --- */}
+//             <div className="block md:hidden mt-5">
+//               <motion.div
+//                 className="w-full space-y-5"
+//                 variants={listContainerVariants}
+//                 initial="hidden"
+//                 animate="visible" // Animate when data is ready
+//               >
+//                 <AnimatePresence>
+//                   {reviewsToDisplay.map((review) => (
+//                     <motion.div key={review.id} variants={cardItemVariants} layout>
+//                       <ReviewCard {...review} />
+//                     </motion.div>
+//                   ))}
+//                 </AnimatePresence>
+//               </motion.div>
+//             </div>
+
+//             {/* --- Tablet View: 2 Columns --- */}
+//             <div className="hidden md:grid md:grid-cols-2 lg:hidden gap-5 mt-5">
+//               {tabletLayoutColumns.map((columnReviews, colIndex) => (
+//                 <motion.div
+//                   key={`tablet-col-${colIndex}`}
+//                   className="space-y-5 flex flex-col"
+//                   variants={listContainerVariants}
+//                   initial="hidden"
+//                   animate="visible"
+//                 >
+//                   <AnimatePresence>
+//                     {columnReviews.map((review) => (
+//                       <motion.div key={review.id} variants={cardItemVariants} layout>
+//                         <ReviewCard {...review} />
+//                       </motion.div>
+//                     ))}
+//                   </AnimatePresence>
+//                 </motion.div>
+//               ))}
+//             </div>
+
+//             {/* --- Desktop View: 3 Columns --- */}
+//             <div className="hidden lg:grid lg:grid-cols-3 gap-5 mt-5">
+//               {desktopLayoutColumns.map((columnReviews, colIndex) => (
+//                 <motion.div
+//                   key={`desktop-col-${colIndex}`}
+//                   className="space-y-5 flex flex-col"
+//                   variants={listContainerVariants}
+//                   initial="hidden"
+//                   animate="visible"
+//                 >
+//                   <AnimatePresence>
+//                     {columnReviews.map((review) => (
+//                       <motion.div key={review.id} variants={cardItemVariants} layout >
+//                         <ReviewCard {...review} />
+//                       </motion.div>
+//                     ))}
+//                   </AnimatePresence>
+//                 </motion.div>
+//               ))}
+//             </div>
+//           </>
+//         )}
+
+//         {/* "Read More" Button */}
+//         {!initialLoading && canLoadMore && (
+//           <div className="text-center relative z-10 mt-8">
+//             <button
+//               onClick={handleLoadMore}
+//               className="border border-gray-700/50 text-sm hover:border-gray-600 hover:text-white text-subheadingWhite cursor-pointer font-semibold py-3 px-10 rounded-full transition-all ease-linear duration-150"
+//               // Removed sm:-mt-10 as it might cause overlap with the gradient if not enough content
+//             >
+//               Read More
+//             </button>
+//           </div>
+//         )}
+//       </div>
+
+//       {/* Conditional Gradient Overlay for "Read More" visual cue */}
+//       {!initialLoading && canLoadMore && (
+//         <motion.div
+//           className="absolute bottom-0 left-0 right-0 sm:h-1/3 h-96 bg-gradient-to-t from-[#22282a] to-transparent pointer-events-none w-full z-0" // Ensured full opacity at bottom
+//           initial={{ opacity: 0 }}
+//           animate={{ opacity: 1 }}
+//           exit={{ opacity: 0 }} // This might not be strictly needed if it only appears/disappears with canLoadMore
+//           transition={{ duration: 0.3 }}
+//         ></motion.div>
+//       )}
+//     </section>
+//   );
+// };
+
+// export default React.memo(ReviewCards);
+
+
+
 "use client";
 
 import Image from "next/image";
 import React, { useState, useEffect, useMemo } from "react";
-import { FaStar, FaStarHalfAlt } from "react-icons/fa";
+// --- CHANGE 1: REMOVED react-icons import ---
+// import { FaStar, FaStarHalfAlt } from "react-icons/fa"; 
 import { motion, AnimatePresence } from "framer-motion";
-import { Skeleton } from "@/components/ui/skeleton"; // Ensure this path is correct
+import { Skeleton } from "@/components/ui/skeleton";
 
 // --- Constants ---
-const INITIAL_REVIEWS_COUNT = 6;
+const INITIAL_REVIEWS_COUNT = 9; // Show 9 reviews initially
 
-// --- StarRating Component ---
+// --- CHANGE 2: ADDED your new custom star components ---
+
+// Single White Star Icon for Rating
+const SingleRatingStarIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="white"
+    xmlns="http://www.w3.org/2000/svg"
+    className="w-full h-full" // Star fills its container
+    aria-hidden="true"
+  >
+    <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279L12 19.432l-7.416 4.001 1.481-8.279-6.064-5.828 8.332-1.151L12 .587z" />
+  </svg>
+);
+
+// Rating Star Component (renders one of the 5 small stars)
+const RatingStar = ({
+  rating,
+  starIndex,
+}: {
+  rating: number;
+  starIndex: number;
+}) => {
+  const greenColor = "#00B67B"; // Example: Your primary color for stars
+  const greyColor = "#4A5568";  // Example: A fitting dark-mode grey
+
+  let backgroundStyle: React.CSSProperties = {};
+  const starValue = starIndex + 1; // 1-indexed star
+
+  if (rating >= starValue) {
+    // Full star
+    backgroundStyle = { backgroundColor: greenColor };
+  } else if (rating > starIndex && rating < starValue) {
+    // Partial star
+    const percentage = (rating - starIndex) * 100;
+    backgroundStyle = {
+      background: `linear-gradient(to right, ${greenColor} ${percentage}%, ${greyColor} ${percentage}%)`,
+    };
+  } else {
+    // Empty star
+    backgroundStyle = { backgroundColor: greyColor };
+  }
+
+  return (
+    <div
+      className="w-4 h-4 mr-1 p-0.5 relative" // Container for each star
+      style={backgroundStyle}
+    >
+      <SingleRatingStarIcon />
+    </div>
+  );
+};
+
+
+// --- CHANGE 3: REPLACED the implementation of StarRating ---
 interface StarRatingProps {
   rating: number;
   maxRating?: number;
 }
 
 const StarRating: React.FC<StarRatingProps> = React.memo(({ rating, maxRating = 5 }) => {
-  const stars = [];
-  const fullStars = Math.floor(rating);
-  const hasHalfStar = rating % 1 !== 0;
+  // Create an array of star indexes from 0 to maxRating-1
+  const starIndexes = Array.from({ length: maxRating }, (_, i) => i);
 
-  for (let i = 0; i < maxRating; i++) {
-    if (i < fullStars) {
-      stars.push(<FaStar key={`star-full-${i}-${rating}`} className="inline-block text-yellow-500" />);
-    } else if (i === fullStars && hasHalfStar) {
-      stars.push(<FaStarHalfAlt key={`star-half-${i}-${rating}`} className="inline-block text-yellow-500" />);
-    } else {
-      stars.push(<FaStar key={`star-empty-${i}-${rating}`} className="inline-block text-gray-300 dark:text-gray-600"/>);
-    }
-  }
-  return <div className="inline-block space-x-[1px]">{stars}</div>;
+  return (
+    <div className="flex items-center"> {/* Use flex to align the star containers */}
+      {starIndexes.map((index) => (
+        <RatingStar
+          key={`star-${index}-${rating}`} // A robust key is good for re-renders
+          rating={rating}
+          starIndex={index}
+        />
+      ))}
+    </div>
+  );
 });
 StarRating.displayName = 'StarRating';
 
-// --- ReviewCard Component ---
+
+// --- ReviewCard Component (No changes needed here) ---
 interface ReviewCardProps {
   reviewerName: string;
   avatarUrl: string;
@@ -1563,22 +2044,13 @@ const ReviewCard: React.FC<ReviewCardProps> = React.memo(({
             className="lg:size-16 size-14 rounded-full object-cover flex-shrink-0"
             sizes="(max-width: 1024px) 3.5rem, 4rem"
           />
-          <div className="flex flex-col items-start">
+          <div className="flex flex-col items-start gap-1">
             <div className="text-mainheadingWhite lg:text-lg text-base capitalize dark:text-primary font-medium">
               {reviewerName}
             </div>
+            {/* This now renders your new custom star component */}
             <StarRating rating={rating} />
           </div>
-        </div>
-        <div className="flex gap-1.5 flex-shrink-0">
-          <Image
-            src="/assets/images/trustpilot.png"
-            alt="Trustpilot icon"
-            height={24}
-            width={24}
-            className="size-10 object-cover rounded-lg"
-            sizes="(max-width: 1024px) 2.5rem, 3rem"
-          />
         </div>
       </div>
       <div className="text-subheadingWhite lg:text-lg text-base mt-5 flex-grow">
@@ -1594,6 +2066,8 @@ const ReviewCard: React.FC<ReviewCardProps> = React.memo(({
 });
 ReviewCard.displayName = 'ReviewCard';
 
+// ... (The rest of your file remains unchanged) ...
+
 // --- Types for review data ---
 interface Review {
   id: string;
@@ -1604,12 +2078,10 @@ interface Review {
   DateAndTime: string;
   location?: string;
 }
-
 interface ReviewGroup {
   id: string | number;
   reviews: Omit<Review, "id">[];
 }
-
 interface ReviewJson {
   reviewGroups: ReviewGroup[];
 }
@@ -1625,7 +2097,6 @@ const listContainerVariants = {
     },
   },
 };
-
 const cardItemVariants = {
   hidden: { opacity: 0, y: 20, scale: 0.95 },
   visible: {
@@ -1644,7 +2115,9 @@ const ReviewCards: React.FC = () => {
   const [reviewGroups, setReviewGroups] = useState<ReviewGroup[]>([]);
   const [initialLoading, setInitialLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
-  const [numVisibleReviews, setNumVisibleReviews] = useState<number>(INITIAL_REVIEWS_COUNT);
+  const [numVisibleReviews, setNumVisibleReviews] = useState<number>(
+    INITIAL_REVIEWS_COUNT
+  );
 
   const allReviews = useMemo(() => {
     let flatReviews: Review[] = [];
@@ -1665,48 +2138,33 @@ const ReviewCards: React.FC = () => {
       setInitialLoading(true);
       setError(null);
       try {
-        // CRITICAL: Ensure Review.json is in the /public directory and is VALID JSON.
-        // The error "undefined is not valid JSON" means the content of /Review.json
-        // was likely the literal string "undefined".
         const response = await fetch("/Review.json");
-
         if (!response.ok) {
-          // This catches 404s if the file is missing or path is wrong,
-          // or other HTTP errors like 500.
-          throw new Error(`HTTP error! status: ${response.status}. Failed to fetch /Review.json. Check if the file exists and the server is responding correctly.`);
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-
-        // CRITICAL: response.json() attempts to parse the response body as JSON.
-        // If the response body is the string "undefined", this line will throw
-        // the "SyntaxError: 'undefined' is not valid JSON" error.
-        // The `catch` block below will handle this error.
         const data: ReviewJson = await response.json();
 
-        // Basic validation of the fetched data structure after successful parsing.
         if (!data || !Array.isArray(data.reviewGroups)) {
-          console.error("Fetched data is not in the expected format:", data);
-          throw new Error("Invalid review data format: 'reviewGroups' array not found or data is null.");
+            console.error("Fetched data is not in the expected format:", data);
+            throw new Error("Invalid review data format received from server.");
         }
-        data.reviewGroups.forEach((group, index) => {
-          if (!group || typeof group.id === 'undefined' || !Array.isArray(group.reviews)) {
-            console.error(`Invalid group structure in review data at index ${index}:`, group);
-            throw new Error(`Invalid group structure at index ${index} within review data: 'id' or 'reviews' array is missing or invalid.`);
-          }
+        data.reviewGroups.forEach(group => {
+            if (!group || !Array.isArray(group.reviews)) {
+                console.error("Invalid group structure in review data:", group);
+                throw new Error("Invalid group structure within review data.");
+            }
         });
 
         setReviewGroups(data.reviewGroups);
       } catch (err: any) {
-        // This catch block WILL handle errors from fetch (e.g., network error),
-        // errors from !response.ok, AND errors from response.json() (parsing errors).
         console.error("Failed to fetch or parse reviews:", err);
-        // Store the error to display it in the UI
         setError(err instanceof Error ? err : new Error(String(err.message || "An unknown error occurred while fetching reviews.")));
       } finally {
         setInitialLoading(false);
       }
     };
     fetchReviews();
-  }, []); // Empty dependency array ensures this runs once on mount
+  }, []);
 
   const reviewsToDisplay = useMemo(() => {
     return allReviews.slice(0, numVisibleReviews);
@@ -1764,7 +2222,6 @@ const ReviewCards: React.FC = () => {
     </div>
   );
 
-  // If an error occurred during fetching or parsing
   if (error) {
     return (
       <section className="Reviews md:pt-14 pt-10 overflow-hidden">
@@ -1779,11 +2236,6 @@ const ReviewCards: React.FC = () => {
             </p>
             <p className="mt-2 text-sm text-red-500">
               Error details: {error.message}
-            </p>
-            <p className="mt-2 text-xs text-gray-400">
-              This might be due to an issue with the review data source (e.g., '/Review.json' being malformed or inaccessible) or a network problem.
-              If the error mentions "JSON", ensure '/Review.json' contains valid JSON and not plain text like "undefined".
-              Also, check for interfering browser extensions by testing in incognito mode.
             </p>
           </div>
         </div>
@@ -1807,76 +2259,105 @@ const ReviewCards: React.FC = () => {
     );
   }
 
-  // If loading is finished, no error, and reviews are present
   return (
     <section className="Reviews md:pt-14 pt-10 overflow-hidden relative pb-10 sm:pb-16">
       <div className="container mx-auto px-4">
         {renderHeader()}
 
-        {/* Content is displayed only if not initialLoading */}
-        {/* Mobile View: 1 Column */}
-        <div className="block md:hidden mt-5">
-          <motion.div
-            className="w-full space-y-5"
-            variants={listContainerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            <AnimatePresence>
-              {reviewsToDisplay.map((review) => (
-                <motion.div key={review.id} variants={cardItemVariants} layout>
-                  <ReviewCard {...review} />
+         {initialLoading && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-5">
+            {Array.from({ length: INITIAL_REVIEWS_COUNT }).map((_, index) => (
+              <div key={`skeleton-${index}`} className="rounded-2xl bg-primary-foreground border border-gray-600/50 lg:p-6 p-4 flex flex-col h-full">
+                <div className="flex justify-between items-center gap-4 w-full">
+                  <div className="flex items-center gap-3">
+                    <Skeleton className="lg:size-16 size-14 rounded-full flex-shrink-0 bg-background/30" />
+                    <div className="flex-1 space-y-2 py-1">
+                      <Skeleton className="h-5 w-3/4 rounded bg-background/30" />
+                      <Skeleton className="h-4 w-1/2 rounded bg-background/30 " />
+                    </div>
+                  </div>
+                  <Skeleton className="size-10 rounded-lg flex-shrink-0 bg-background/30" />
+                </div>
+                <div className="space-y-2.5 mt-5 flex-grow">
+                  <Skeleton className="h-4 rounded bg-background/30" />
+                  <Skeleton className="h-4 rounded bg-background/30" />
+                  <Skeleton className="h-4 rounded w-11/12 bg-background/30" />
+                  <Skeleton className="h-4 rounded w-5/6 bg-background/30" />
+                </div>
+                <div className="mt-5">
+                  <Skeleton className="h-4 w-1/3 rounded bg-background/30" />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {!initialLoading && (
+          <>
+            {/* --- Mobile View: 1 Column --- */}
+            <div className="block md:hidden mt-5">
+              <motion.div
+                className="w-full space-y-5"
+                variants={listContainerVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                <AnimatePresence>
+                  {reviewsToDisplay.map((review) => (
+                    <motion.div key={review.id} variants={cardItemVariants} layout>
+                      <ReviewCard {...review} />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </motion.div>
+            </div>
+
+            {/* --- Tablet View: 2 Columns --- */}
+            <div className="hidden md:grid md:grid-cols-2 lg:hidden gap-5 mt-5">
+              {tabletLayoutColumns.map((columnReviews, colIndex) => (
+                <motion.div
+                  key={`tablet-col-${colIndex}`}
+                  className="space-y-5 flex flex-col"
+                  variants={listContainerVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  <AnimatePresence>
+                    {columnReviews.map((review) => (
+                      <motion.div key={review.id} variants={cardItemVariants} layout>
+                        <ReviewCard {...review} />
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
                 </motion.div>
               ))}
-            </AnimatePresence>
-          </motion.div>
-        </div>
+            </div>
 
-        {/* Tablet View: 2 Columns */}
-        <div className="hidden md:grid md:grid-cols-2 lg:hidden gap-5 mt-5">
-          {tabletLayoutColumns.map((columnReviews, colIndex) => (
-            <motion.div
-              key={`tablet-col-${colIndex}`}
-              className="space-y-5 flex flex-col"
-              variants={listContainerVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              <AnimatePresence>
-                {columnReviews.map((review) => (
-                  <motion.div key={review.id} variants={cardItemVariants} layout>
-                    <ReviewCard {...review} />
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Desktop View: 3 Columns */}
-        <div className="hidden lg:grid lg:grid-cols-3 gap-5 mt-5">
-          {desktopLayoutColumns.map((columnReviews, colIndex) => (
-            <motion.div
-              key={`desktop-col-${colIndex}`}
-              className="space-y-5 flex flex-col"
-              variants={listContainerVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              <AnimatePresence>
-                {columnReviews.map((review) => (
-                  <motion.div key={review.id} variants={cardItemVariants} layout >
-                    <ReviewCard {...review} />
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </motion.div>
-          ))}
-        </div>
-
+            {/* --- Desktop View: 3 Columns --- */}
+            <div className="hidden lg:grid lg:grid-cols-3 gap-5 mt-5">
+              {desktopLayoutColumns.map((columnReviews, colIndex) => (
+                <motion.div
+                  key={`desktop-col-${colIndex}`}
+                  className="space-y-5 flex flex-col"
+                  variants={listContainerVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  <AnimatePresence>
+                    {columnReviews.map((review) => (
+                      <motion.div key={review.id} variants={cardItemVariants} layout >
+                        <ReviewCard {...review} />
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </motion.div>
+              ))}
+            </div>
+          </>
+        )}
 
         {/* "Read More" Button */}
-        {canLoadMore && ( // Simplified: show if !initialLoading already handled by outer conditions
+        {!initialLoading && canLoadMore && (
           <div className="text-center relative z-10 mt-8">
             <button
               onClick={handleLoadMore}
@@ -1889,7 +2370,7 @@ const ReviewCards: React.FC = () => {
       </div>
 
       {/* Conditional Gradient Overlay for "Read More" visual cue */}
-      {canLoadMore && ( // Simplified: show if !initialLoading already handled
+      {!initialLoading && canLoadMore && (
         <motion.div
           className="absolute bottom-0 left-0 right-0 sm:h-1/3 h-96 bg-gradient-to-t from-[#22282a] to-transparent pointer-events-none w-full z-0"
           initial={{ opacity: 0 }}
