@@ -1502,13 +1502,14 @@
 
 "use client";
 
-import Image from "next/image"; // Import next/image
-import React, { useState, useEffect, useMemo } from "react"; // Added React for React.FC, React.memo
+import Image from "next/image";
+import React, { useState, useEffect, useMemo } from "react";
 import { FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton"; // Ensure this path is correct
+
 // --- Constants ---
-const INITIAL_REVIEWS_COUNT = 6; // Number of reviews to show initially and to load on "Read More"
+const INITIAL_REVIEWS_COUNT = 6;
 
 // --- StarRating Component ---
 interface StarRatingProps {
@@ -1532,12 +1533,12 @@ const StarRating: React.FC<StarRatingProps> = React.memo(({ rating, maxRating = 
   }
   return <div className="inline-block space-x-[1px]">{stars}</div>;
 });
-StarRating.displayName = 'StarRating'; // For better debugging in React DevTools
+StarRating.displayName = 'StarRating';
 
 // --- ReviewCard Component ---
 interface ReviewCardProps {
   reviewerName: string;
-  avatarUrl: string; // Example: "/assets/avatars/Tom.jpg" (path relative to /public)
+  avatarUrl: string;
   rating: number;
   comment: string;
   DateAndTime: string;
@@ -1557,12 +1558,10 @@ const ReviewCard: React.FC<ReviewCardProps> = React.memo(({
           <Image
             src={avatarUrl}
             alt={`Avatar of ${reviewerName}`}
-            width={64} // Corresponds to lg:size-16
+            width={64}
             height={64}
             className="lg:size-16 size-14 rounded-full object-cover flex-shrink-0"
             sizes="(max-width: 1024px) 3.5rem, 4rem"
-            // loading="lazy" // Next.js default is lazy, explicit not always needed
-            // Consider placeholder="blur" if you have blurDataURLs for avatars
           />
           <div className="flex flex-col items-start">
             <div className="text-mainheadingWhite lg:text-lg text-base capitalize dark:text-primary font-medium">
@@ -1571,16 +1570,14 @@ const ReviewCard: React.FC<ReviewCardProps> = React.memo(({
             <StarRating rating={rating} />
           </div>
         </div>
-
         <div className="flex gap-1.5 flex-shrink-0">
           <Image
-            src="/assets/images/trustpilot.png" // Ensure this path is correct (relative to /public)
-            alt="Social media icon" // More descriptive alt text
-            height={24} // Corresponds to size-6
+            src="/assets/images/trustpilot.png"
+            alt="Trustpilot icon"
+            height={24}
             width={24}
             className="size-10 object-cover rounded-lg"
             sizes="(max-width: 1024px) 2.5rem, 3rem"
-
           />
         </div>
       </div>
@@ -1595,31 +1592,29 @@ const ReviewCard: React.FC<ReviewCardProps> = React.memo(({
     </div>
   );
 });
-ReviewCard.displayName = 'ReviewCard'; // For better debugging
+ReviewCard.displayName = 'ReviewCard';
 
 // --- Types for review data ---
 interface Review {
-  id: string; // Unique ID for each review item for React keys
+  id: string;
   reviewerName: string;
   avatarUrl: string;
   rating: number;
   comment: string;
   DateAndTime: string;
-  location?: string; // Optional location property
+  location?: string;
 }
 
-// Describes the structure of each group in the JSON
 interface ReviewGroup {
-  id: string | number; // ID for the group itself
-  reviews: Omit<Review, "id">[]; // Reviews within this group; 'id' will be generated
+  id: string | number;
+  reviews: Omit<Review, "id">[];
 }
 
-// Describes the overall structure of Review.json
 interface ReviewJson {
   reviewGroups: ReviewGroup[];
 }
 
-// --- Animation Variants (Keep as they are if they work for your design) ---
+// --- Animation Variants ---
 const listContainerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -1644,20 +1639,17 @@ const cardItemVariants = {
   },
 };
 
-// --- ReviewCards Component (Main Logic with Load More & Animation) ---
+// --- ReviewCards Component (Main Logic) ---
 const ReviewCards: React.FC = () => {
   const [reviewGroups, setReviewGroups] = useState<ReviewGroup[]>([]);
   const [initialLoading, setInitialLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
-  const [numVisibleReviews, setNumVisibleReviews] = useState<number>(
-    INITIAL_REVIEWS_COUNT
-  );
+  const [numVisibleReviews, setNumVisibleReviews] = useState<number>(INITIAL_REVIEWS_COUNT);
 
   const allReviews = useMemo(() => {
     let flatReviews: Review[] = [];
     reviewGroups.forEach((group, groupIndex) => {
       group.reviews.forEach((review, reviewIndex) => {
-        // Generate a more robust unique ID for each review item
         const uniqueId = `review-${group.id || `group${groupIndex}`}-${reviewIndex}-${review.reviewerName.replace(/\s+/g, '-').toLowerCase()}-${review.rating}`;
         flatReviews.push({
           ...review,
@@ -1673,35 +1665,48 @@ const ReviewCards: React.FC = () => {
       setInitialLoading(true);
       setError(null);
       try {
-        const response = await fetch("/Review.json"); // Path relative to the /public directory
+        // CRITICAL: Ensure Review.json is in the /public directory and is VALID JSON.
+        // The error "undefined is not valid JSON" means the content of /Review.json
+        // was likely the literal string "undefined".
+        const response = await fetch("/Review.json");
+
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          // This catches 404s if the file is missing or path is wrong,
+          // or other HTTP errors like 500.
+          throw new Error(`HTTP error! status: ${response.status}. Failed to fetch /Review.json. Check if the file exists and the server is responding correctly.`);
         }
+
+        // CRITICAL: response.json() attempts to parse the response body as JSON.
+        // If the response body is the string "undefined", this line will throw
+        // the "SyntaxError: 'undefined' is not valid JSON" error.
+        // The `catch` block below will handle this error.
         const data: ReviewJson = await response.json();
 
-        // Basic validation of the fetched data structure
+        // Basic validation of the fetched data structure after successful parsing.
         if (!data || !Array.isArray(data.reviewGroups)) {
-            console.error("Fetched data is not in the expected format:", data);
-            throw new Error("Invalid review data format received from server.");
+          console.error("Fetched data is not in the expected format:", data);
+          throw new Error("Invalid review data format: 'reviewGroups' array not found or data is null.");
         }
-        data.reviewGroups.forEach(group => {
-            if (!group || !Array.isArray(group.reviews)) {
-                console.error("Invalid group structure in review data:", group);
-                throw new Error("Invalid group structure within review data.");
-            }
+        data.reviewGroups.forEach((group, index) => {
+          if (!group || typeof group.id === 'undefined' || !Array.isArray(group.reviews)) {
+            console.error(`Invalid group structure in review data at index ${index}:`, group);
+            throw new Error(`Invalid group structure at index ${index} within review data: 'id' or 'reviews' array is missing or invalid.`);
+          }
         });
 
         setReviewGroups(data.reviewGroups);
       } catch (err: any) {
+        // This catch block WILL handle errors from fetch (e.g., network error),
+        // errors from !response.ok, AND errors from response.json() (parsing errors).
         console.error("Failed to fetch or parse reviews:", err);
-        // Ensure err is an Error object
+        // Store the error to display it in the UI
         setError(err instanceof Error ? err : new Error(String(err.message || "An unknown error occurred while fetching reviews.")));
       } finally {
         setInitialLoading(false);
       }
     };
     fetchReviews();
-  }, []); // Empty dependency array means this effect runs once on mount
+  }, []); // Empty dependency array ensures this runs once on mount
 
   const reviewsToDisplay = useMemo(() => {
     return allReviews.slice(0, numVisibleReviews);
@@ -1709,18 +1714,18 @@ const ReviewCards: React.FC = () => {
 
   const tabletLayoutColumns = useMemo(() => {
     if (reviewsToDisplay.length === 0) return [];
-    const columns: Review[][] = [[], []]; // Initialize two columns
+    const columns: Review[][] = [[], []];
     reviewsToDisplay.forEach((review, index) => {
-      columns[index % 2].push(review); // Distribute reviews into two columns
+      columns[index % 2].push(review);
     });
     return columns;
   }, [reviewsToDisplay]);
 
   const desktopLayoutColumns = useMemo(() => {
     if (reviewsToDisplay.length === 0) return [];
-    const columns: Review[][] = [[], [], []]; // Initialize three columns
+    const columns: Review[][] = [[], [], []];
     reviewsToDisplay.forEach((review, index) => {
-      columns[index % 3].push(review); // Distribute reviews into three columns
+      columns[index % 3].push(review);
     });
     return columns;
   }, [reviewsToDisplay]);
@@ -1759,6 +1764,7 @@ const ReviewCards: React.FC = () => {
     </div>
   );
 
+  // If an error occurred during fetching or parsing
   if (error) {
     return (
       <section className="Reviews md:pt-14 pt-10 overflow-hidden">
@@ -1774,6 +1780,11 @@ const ReviewCards: React.FC = () => {
             <p className="mt-2 text-sm text-red-500">
               Error details: {error.message}
             </p>
+            <p className="mt-2 text-xs text-gray-400">
+              This might be due to an issue with the review data source (e.g., '/Review.json' being malformed or inaccessible) or a network problem.
+              If the error mentions "JSON", ensure '/Review.json' contains valid JSON and not plain text like "undefined".
+              Also, check for interfering browser extensions by testing in incognito mode.
+            </p>
           </div>
         </div>
       </section>
@@ -1786,7 +1797,7 @@ const ReviewCards: React.FC = () => {
       <section className="Reviews md:pt-14 pt-10 overflow-hidden">
         <div className="container mx-auto px-4">
           {renderHeader()}
-          <div className="text-center p-10 mt-10 bg-primary-foreground rounded-lg"> {/* Changed bg-lightgray dark:bg-primarybox */}
+          <div className="text-center p-10 mt-10 bg-primary-foreground rounded-lg">
             <p className="text-lg text-gray-400 dark:text-gray-300">
               No reviews found yet. Be the first to share your experience!
             </p>
@@ -1796,110 +1807,80 @@ const ReviewCards: React.FC = () => {
     );
   }
 
+  // If loading is finished, no error, and reviews are present
   return (
     <section className="Reviews md:pt-14 pt-10 overflow-hidden relative pb-10 sm:pb-16">
       <div className="container mx-auto px-4">
         {renderHeader()}
 
-         {initialLoading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-5">
-            {Array.from({ length: INITIAL_REVIEWS_COUNT }).map((_, index) => (
-              <div key={`skeleton-${index}`} className="rounded-2xl bg-primary-foreground border border-gray-600/50 lg:p-6 p-4 flex flex-col h-full">
-                <div className="flex justify-between items-center gap-4 w-full">
-                  <div className="flex items-center gap-3">
-                    <Skeleton className="lg:size-16 size-14 rounded-full flex-shrink-0 bg-background/30" />
-                    <div className="flex-1 space-y-2 py-1">
-                      <Skeleton className="h-5 w-3/4 rounded bg-background/30" /> {/* Reviewer Name (lg:text-lg) */}
-                      <Skeleton className="h-4 w-1/2 rounded bg-background/30 " /> {/* Star Rating line */}
-                    </div>
-                  </div>
-                  <Skeleton className="size-10 rounded-lg flex-shrink-0 bg-background/30" /> {/* Trustpilot Icon */}
-                </div>
-                <div className="space-y-2.5 mt-5 flex-grow"> {/* Comment section */}
-                  <Skeleton className="h-4 rounded bg-background/30" />
-                  <Skeleton className="h-4 rounded bg-background/30" />
-                  <Skeleton className="h-4 rounded w-11/12 bg-background/30" />
-                  <Skeleton className="h-4 rounded w-5/6 bg-background/30" />
-                </div>
-                <div className="mt-5"> {/* Date and Time */}
-                  <Skeleton className="h-4 w-1/3 rounded bg-background/30" />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {!initialLoading && (
-          <>
-            {/* --- Mobile View: 1 Column --- */}
-            <div className="block md:hidden mt-5">
-              <motion.div
-                className="w-full space-y-5"
-                variants={listContainerVariants}
-                initial="hidden"
-                animate="visible" // Animate when data is ready
-              >
-                <AnimatePresence>
-                  {reviewsToDisplay.map((review) => (
-                    <motion.div key={review.id} variants={cardItemVariants} layout>
-                      <ReviewCard {...review} />
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-              </motion.div>
-            </div>
-
-            {/* --- Tablet View: 2 Columns --- */}
-            <div className="hidden md:grid md:grid-cols-2 lg:hidden gap-5 mt-5">
-              {tabletLayoutColumns.map((columnReviews, colIndex) => (
-                <motion.div
-                  key={`tablet-col-${colIndex}`}
-                  className="space-y-5 flex flex-col"
-                  variants={listContainerVariants}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  <AnimatePresence>
-                    {columnReviews.map((review) => (
-                      <motion.div key={review.id} variants={cardItemVariants} layout>
-                        <ReviewCard {...review} />
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
+        {/* Content is displayed only if not initialLoading */}
+        {/* Mobile View: 1 Column */}
+        <div className="block md:hidden mt-5">
+          <motion.div
+            className="w-full space-y-5"
+            variants={listContainerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <AnimatePresence>
+              {reviewsToDisplay.map((review) => (
+                <motion.div key={review.id} variants={cardItemVariants} layout>
+                  <ReviewCard {...review} />
                 </motion.div>
               ))}
-            </div>
+            </AnimatePresence>
+          </motion.div>
+        </div>
 
-            {/* --- Desktop View: 3 Columns --- */}
-            <div className="hidden lg:grid lg:grid-cols-3 gap-5 mt-5">
-              {desktopLayoutColumns.map((columnReviews, colIndex) => (
-                <motion.div
-                  key={`desktop-col-${colIndex}`}
-                  className="space-y-5 flex flex-col"
-                  variants={listContainerVariants}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  <AnimatePresence>
-                    {columnReviews.map((review) => (
-                      <motion.div key={review.id} variants={cardItemVariants} layout >
-                        <ReviewCard {...review} />
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-                </motion.div>
-              ))}
-            </div>
-          </>
-        )}
+        {/* Tablet View: 2 Columns */}
+        <div className="hidden md:grid md:grid-cols-2 lg:hidden gap-5 mt-5">
+          {tabletLayoutColumns.map((columnReviews, colIndex) => (
+            <motion.div
+              key={`tablet-col-${colIndex}`}
+              className="space-y-5 flex flex-col"
+              variants={listContainerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <AnimatePresence>
+                {columnReviews.map((review) => (
+                  <motion.div key={review.id} variants={cardItemVariants} layout>
+                    <ReviewCard {...review} />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Desktop View: 3 Columns */}
+        <div className="hidden lg:grid lg:grid-cols-3 gap-5 mt-5">
+          {desktopLayoutColumns.map((columnReviews, colIndex) => (
+            <motion.div
+              key={`desktop-col-${colIndex}`}
+              className="space-y-5 flex flex-col"
+              variants={listContainerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <AnimatePresence>
+                {columnReviews.map((review) => (
+                  <motion.div key={review.id} variants={cardItemVariants} layout >
+                    <ReviewCard {...review} />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          ))}
+        </div>
+
 
         {/* "Read More" Button */}
-        {!initialLoading && canLoadMore && (
+        {canLoadMore && ( // Simplified: show if !initialLoading already handled by outer conditions
           <div className="text-center relative z-10 mt-8">
             <button
               onClick={handleLoadMore}
               className="border border-gray-700/50 text-sm hover:border-gray-600 hover:text-white text-subheadingWhite cursor-pointer font-semibold py-3 px-10 rounded-full transition-all ease-linear duration-150"
-              // Removed sm:-mt-10 as it might cause overlap with the gradient if not enough content
             >
               Read More
             </button>
@@ -1908,12 +1889,12 @@ const ReviewCards: React.FC = () => {
       </div>
 
       {/* Conditional Gradient Overlay for "Read More" visual cue */}
-      {!initialLoading && canLoadMore && (
+      {canLoadMore && ( // Simplified: show if !initialLoading already handled
         <motion.div
-          className="absolute bottom-0 left-0 right-0 sm:h-1/3 h-96 bg-gradient-to-t from-[#22282a] to-transparent pointer-events-none w-full z-0" // Ensured full opacity at bottom
+          className="absolute bottom-0 left-0 right-0 sm:h-1/3 h-96 bg-gradient-to-t from-[#22282a] to-transparent pointer-events-none w-full z-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }} // This might not be strictly needed if it only appears/disappears with canLoadMore
+          exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
         ></motion.div>
       )}

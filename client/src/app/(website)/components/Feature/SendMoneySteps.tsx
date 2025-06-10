@@ -188,10 +188,10 @@ const SendMoneySteps = () => {
             <div className="relative w-full flex justify-center">
               <Image
                 src="/assets/images/steps_image-1.png"
-                width={550}
-                height={800}
+                width={2000}
+                height={2000}
                 alt="Padlock symbolizing security"
-                className="object-contain w-[70%] hrounded-3xl"
+                className="object-contain w-[70%] rounded-3xl"
               />
             </div>
           </div>

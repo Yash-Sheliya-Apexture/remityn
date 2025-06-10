@@ -5258,12 +5258,629 @@
 //   );
 // }
 
+// "use client";
+
+// import { useState, useEffect, FormEvent } from "react";
+// import authService from "../../services/auth"; // Ensure this path is correct
+// import { useAuth } from "../../contexts/AuthContext"; // Ensure this path is correct
+// import { useRouter, useSearchParams } from "next/navigation";
+// import Image from "next/image";
+// import Link from "next/link";
+// import { IoMdCloseCircle } from "react-icons/io";
+// import { FiX } from "react-icons/fi";
+// import { motion, AnimatePresence } from "framer-motion";
+// import { FaCheck } from "react-icons/fa6";
+// import apiConfig from "../../config/apiConfig"; // Ensure this path is correct
+// import { LuEye, LuEyeOff } from "react-icons/lu";
+
+// const pageContainerVariants = {
+//   hidden: { opacity: 0 },
+//   visible: {
+//     opacity: 1,
+//     transition: {
+//       staggerChildren: 0.1,
+//       delayChildren: 0.2,
+//     },
+//   },
+//   exit: {
+//     opacity: 0,
+//     transition: { duration: 0.2 },
+//   },
+// };
+
+// const itemVariants = {
+//   hidden: { y: 20, opacity: 0 },
+//   visible: {
+//     y: 0,
+//     opacity: 1,
+//     transition: {
+//       duration: 0.4,
+//       ease: "easeOut",
+//     },
+//   },
+//   exit: {
+//     y: -10,
+//     opacity: 0,
+//     transition: {
+//       duration: 0.2,
+//       ease: "easeIn",
+//     },
+//   },
+// };
+
+// const errorVariants = {
+//   initial: { opacity: 0.5, y: 10, scale: 0.95, rotate: "2deg" },
+//   animate: {
+//     opacity: 1,
+//     y: 0,
+//     scale: 1,
+//     rotate: "0deg",
+//     transition: {
+//       duration: 0.3,
+//       ease: "easeInOut",
+//       type: "spring",
+//       stiffness: 95,
+//       damping: 10,
+//     },
+//   },
+//   exit: {
+//     opacity: 0,
+//     y: 10,
+//     scale: 0.95,
+//     rotate: "-2deg",
+//     transition: { duration: 0.2, ease: "easeIn" },
+//   },
+// };
+
+// const successVariants = {
+//   initial: { opacity: 0, y: -20 },
+//   animate: {
+//     opacity: 1,
+//     y: 0,
+//     transition: { duration: 0.3, ease: "easeOut" },
+//   },
+//   exit: { opacity: 0, y: -20, transition: { duration: 0.2, ease: "easeIn" } },
+// };
+
+// export default function LoginPage() {
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [showPassword, setShowPassword] = useState(false);
+//   const [emailError, setEmailError] = useState("");
+//   const [passwordError, setPasswordError] = useState("");
+//   const [generalError, setGeneralError] = useState("");
+//   const { login, user, loading } = useAuth();
+//   const router = useRouter();
+//   const searchParams = useSearchParams();
+//   const [isSubmitting, setIsSubmitting] = useState(false);
+//   const [sessionExpiredMessage, setSessionExpiredMessage] = useState("");
+//   const [isGeneralErrorVisible, setIsGeneralErrorVisible] = useState(false);
+//   const [loginSuccess, setLoginSuccess] = useState(false);
+//   const [isLoginSuccessVisible, setIsLoginSuccessVisible] = useState(false);
+
+//   useEffect(() => {
+//     const urlParams = new URLSearchParams(searchParams.toString());
+//     const sessionExpired = urlParams.get("sessionExpired");
+//     const googleErr = urlParams.get("googleError");
+//     const registerSuccessParam = urlParams.get("registerSuccess");
+//     const resetSuccessParam = urlParams.get("resetSuccess");
+//     let urlNeedsCleaning = false;
+
+//     setSessionExpiredMessage("");
+//     setGeneralError("");
+//     setIsGeneralErrorVisible(false);
+
+//     if (googleErr) {
+//       setGeneralError(decodeURIComponent(googleErr));
+//       urlNeedsCleaning = true;
+//     } else if (sessionExpired === "true") {
+//       setSessionExpiredMessage(
+//         "Your session has expired. Please log in again."
+//       );
+//       urlNeedsCleaning = true;
+//     } else if (registerSuccessParam === "true") {
+//       // console.log("Registration successful parameter detected.");
+//       urlNeedsCleaning = true;
+//     } else if (resetSuccessParam === "true") {
+//       // console.log("Password reset successful parameter detected.");
+//       urlNeedsCleaning = true;
+//     }
+
+//     if (urlNeedsCleaning) {
+//       window.history.replaceState(null, "", "/auth/login");
+//     }
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [searchParams]);
+
+//   useEffect(() => {
+//     if (!loading && user) {
+//       // console.log("Login page: User logged in. AuthContext handles redirect.");
+//       // The AuthContext should handle the redirect logic.
+//       // Example: router.push('/dashboard');
+//     }
+//   }, [user, loading, router]);
+
+//   useEffect(() => {
+//     setIsGeneralErrorVisible(!!generalError);
+//   }, [generalError]);
+
+//   useEffect(() => {
+//     setIsLoginSuccessVisible(loginSuccess);
+//   }, [loginSuccess]);
+
+//   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+//     e.preventDefault();
+//     setEmailError("");
+//     setPasswordError("");
+//     setGeneralError("");
+//     setIsGeneralErrorVisible(false);
+//     setSessionExpiredMessage("");
+//     setLoginSuccess(false);
+//     setIsLoginSuccessVisible(false);
+
+//     let isValid = true;
+//     if (!email) {
+//       setEmailError("Email is required");
+//       isValid = false;
+//     }
+//     if (!password) {
+//       setPasswordError("Password is required");
+//       isValid = false;
+//     } else if (password.length < 8) {
+//       // This error will make the password field red if set
+//       // The static helper "Must be at least 8 characters" is always visible
+//       setPasswordError("Password must be at least 8 characters.");
+//       isValid = false;
+//     }
+
+//     if (!isValid) return;
+
+//     setIsSubmitting(true);
+//     try {
+//       const { user: loggedInUser, token } = await authService.login({
+//         email,
+//         password,
+//       });
+//       console.log("Login successful in component");
+//       setLoginSuccess(true);
+//       // Delay redirect slightly to show success message
+//       setTimeout(() => {
+//         login(loggedInUser, token);
+//         // AuthContext will handle redirect after login state is updated
+//       }, 1000);
+//     } catch (err: any) {
+//       let message = "Sorry, that email or password didn't work.";
+//       if (err.response?.data?.message) {
+//         message = err.response.data.message;
+//       } else if (err.message) {
+//         message = err.message;
+//       }
+//       setGeneralError(message);
+//       setIsGeneralErrorVisible(true);
+//       setLoginSuccess(false);
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   const togglePasswordVisibility = () => setShowPassword(!showPassword);
+
+//   const handleGoogleLogin = () => {
+//     setGeneralError("");
+//     setIsGeneralErrorVisible(false);
+//     setSessionExpiredMessage("");
+//     window.location.href = `${apiConfig.baseUrl}/auth/google`;
+//   };
+
+//   return (
+//     <div className="flex flex-col lg:flex-row min-h-screen lg:p-3">
+//       {/* Left Panel - Visible on large screens */}
+//       <div className="hidden lg:flex lg:w-[55%] xl:w-[60%] background-image p-10 xl:p-16 rounded-3xl flex-col justify-between relative">
+//         <div className="absolute top-16 xl:left-16 ">
+//           <Link href={"/"}>
+//             <Image
+//               src="/assets/images/main_logo.svg"
+//               width={200}
+//               height={90}
+//               alt="Remityn Logo"
+//             />
+//           </Link>
+//         </div>
+
+//         <div className="flex-grow flex flex-col justify-end items-start text-white pt-20">
+//           <motion.h1
+//             className="text-4xl xl:text-5xl font-bold mb-4"
+//             initial={{ opacity: 0, y: 20 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             transition={{ duration: 0.5, delay: 0.2 }}
+//           >
+//             Get Started
+//             <br />
+//             with Us
+//           </motion.h1>
+//           <motion.p
+//             className="text-base xl:text-lg text-gray-200 mb-10 xl:mb-12 leading-relaxed"
+//             initial={{ opacity: 0, y: 20 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             transition={{ duration: 0.5, delay: 0.4 }}
+//           >
+//             Complete these easy steps
+//             <br />
+//             to register your account.
+//           </motion.p>
+
+//           <div className="flex xl:flex-row flex-col gap-4 w-full">
+//             {[
+//               { num: 1, title: "Sign up your account", active: false },
+//               { num: 2, title: "Sign in your account", active: true },
+//               { num: 3, title: "Set up your KYC", active: false },
+//             ].map((step, index) => (
+//               <motion.div
+//                 key={step.num}
+//                 className={`flex flex-col justify-between xl:w-50 xl:h-50 w-full h-26 p-3.5 xl:p-4 rounded-xl ${
+//                   step.active ? "bg-white shadow-lg" : "bg-white/12"
+//                 }`}
+//                 initial={{ opacity: 0, y: 20 }}
+//                 animate={{ opacity: 1, y: 0 }}
+//                 transition={{ duration: 0.5 }}
+//               >
+//                 <div
+//                   className={`flex items-center justify-center size-7 xl:size-10 rounded-full mr-3 xl:mr-4 shrink-0 ${
+//                     step.active
+//                       ? "bg-background text-white"
+//                       : "bg-white/12  text-white"
+//                   } font-semibold text-lg`}
+//                 >
+//                   {step.num}
+//                 </div>
+//                 <span
+//                   className={`text-lg ${
+//                     step.active
+//                       ? "font-medium text-mainheading"
+//                       : "text-gray-200"
+//                   }`}
+//                 >
+//                   {step.title}
+//                 </span>
+//               </motion.div>
+//             ))}
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* Right Panel - Login Form */}
+//       <div className="w-full lg:w-[45%] xl:w-[40%] flex flex-col items-center justify-center p-6 sm:p-8 md:p-10 lg:p-12 xl:p-16 overflow-y-auto">
+//         <div className="lg:hidden mb-10 self-center">
+//           <Link href={"/"}>
+//             <Image
+//               src="/assets/images/main_logo.svg"
+//               width={200}
+//               height={90}
+//               alt="Remityn Logo"
+//             />
+//           </Link>
+//         </div>
+//         <AnimatePresence mode="wait">
+//           <motion.div
+//             className="w-full max-w-sm md:max-w-md"
+//             key="login-form-container"
+//             variants={pageContainerVariants}
+//             initial="hidden"
+//             animate="visible"
+//             exit="exit"
+//           >
+//             <AnimatePresence>
+//               {sessionExpiredMessage && (
+//                 <motion.div
+//                   key="session-expired-msg"
+//                   className="bg-primary-foreground rounded-xl p-4 flex items-center gap-3 mb-4"
+//                   role="alert"
+//                   initial="initial"
+//                   animate="animate"
+//                   exit="exit"
+//                   variants={errorVariants}
+//                 >
+//                   <div className="flex bg-red-500/20 justify-center rounded-full items-center size-10 shrink-0">
+//                     <FiX className="text-red-400 size-6" />
+//                   </div>
+//                   <div>
+//                     <p className="font-medium text-white text-sm">
+//                       Session Expired
+//                     </p>
+//                     <p className="text-gray-400 text-xs max-w-xs">
+//                       {sessionExpiredMessage}
+//                     </p>
+//                   </div>
+//                 </motion.div>
+//               )}
+//             </AnimatePresence>
+
+//             <motion.div
+//               className="space-y-1 mb-6 lg:text-left text-center"
+//               variants={itemVariants}
+//             >
+//               <h2 className="text-3xl lg:text-4xl text-mainheadingWhite font-semibold">
+//                 Welcome back.
+//               </h2>
+//               <p className="text-gray-400">
+//                 New to Remityn?{" "}
+//                 <Link
+//                   href="/auth/register"
+//                   className="text-primary hover:text-primaryhover font-medium underline underline-offset-2 transition-all duration-75 ease-linear"
+//                 >
+//                   Sign up
+//                 </Link>
+//               </p>
+//             </motion.div>
+
+//             <AnimatePresence>
+//               {isGeneralErrorVisible && generalError && (
+//                 <motion.div
+//                   key="general-error-msg"
+//                   className="bg-primary-foreground rounded-xl p-4 flex items-center gap-3 mb-5"
+//                   role="alert"
+//                   initial="initial"
+//                   animate="animate"
+//                   exit="exit"
+//                   variants={errorVariants}
+//                 >
+//                   <div className="flex bg-red-600/20 justify-center rounded-full items-center size-10 shrink-0">
+//                     <FiX className="text-red-500 size-6" />
+//                   </div>
+//                   <div>
+//                     <p className="text-white">{generalError}</p>
+//                   </div>
+//                 </motion.div>
+//               )}
+//             </AnimatePresence>
+
+//             <AnimatePresence>
+//               {isLoginSuccessVisible && loginSuccess && (
+//                 <motion.div
+//                   key="login-success-msg"
+//                   className="bg-primary-foreground p-4 rounded-xl flex items-center gap-3 mb-5"
+//                   role="alert"
+//                   initial="initial"
+//                   animate="animate"
+//                   exit="exit"
+//                   variants={successVariants}
+//                 >
+//                   <div className="flex bg-green-600/20 justify-center rounded-full items-center size-10 shrink-0">
+//                     <FaCheck className="text-green-500 size-5" />
+//                   </div>
+//                   <div>
+//                     <span className="text-mainheadingWhite block font-medium text-sm">
+//                       Login successful!
+//                     </span>
+                    
+//                     <span className="text-subheadingWhite block">
+//                       Redirecting to your dashboard...
+//                     </span>
+//                   </div>
+//                 </motion.div>
+//               )}
+//             </AnimatePresence>
+
+//             <form className="space-y-4" onSubmit={handleSubmit} noValidate>
+//               <motion.div variants={itemVariants}>
+//                 <button
+//                   type="button"
+//                   className="flex hover:bg-primarybox transition-all duration-75 ease-linear border justify-center rounded-lg h-14 text-white w-full cursor-pointer font-medium gap-2.5 items-center px-4 py-3"
+//                   onClick={handleGoogleLogin}
+//                 >
+//                   <Image
+//                     src="/assets/icon/google.svg"
+//                     width={25}
+//                     height={24}
+//                     alt="Google"
+//                   />
+//                   Continue with Google
+//                 </button>
+//               </motion.div>
+
+//               <motion.div
+//                 variants={itemVariants}
+//                 className="flex items-center py-2"
+//               >
+//                 <hr className="flex-grow border-t" />
+//                 <span className="px-3 text-white">Or</span>
+//                 <hr className="flex-grow border-t" />
+//               </motion.div>
+
+//               <motion.div variants={itemVariants}>
+//                 <label
+//                   htmlFor="email"
+//                   className="text-white inline-block mb-1.5"
+//                 >
+//                   Your email address
+//                 </label>
+//                 <input
+//                   type="email"
+//                   id="email"
+//                   placeholder="eg. johnfrans@gmail.com"
+//                   autoComplete="email"
+//                   className={`block px-4 py-3 bg-primarybox border text-white placeholder-gray-400 h-14 w-full rounded-lg focus:outline-none transition-all duration-75 ease-linear pr-10
+//                     ${
+//                       emailError
+//                         ? "border-red-600 ring-1 ring-red-600"
+//                         : "border-primarybox"
+//                     }`}
+//                   value={email}
+//                   onChange={(e) => {
+//                     setEmail(e.target.value);
+//                     if (emailError) setEmailError("");
+//                   }}
+//                   aria-invalid={!!emailError}
+//                 />
+//                 {emailError && (
+//                   <p className="flex text-red-500 text-sm items-center mt-1">
+//                     <IoMdCloseCircle className="size-3.5 mr-1" /> {emailError}
+//                   </p>
+//                 )}
+//               </motion.div>
+
+//               <motion.div variants={itemVariants}>
+//                 <label
+//                   htmlFor="password"
+//                   className="text-white inline-block mb-1.5"
+//                 >
+//                   Password
+//                 </label>
+//                 <div className="relative">
+//                   <input
+//                     type={showPassword ? "text" : "password"}
+//                     id="password"
+//                     placeholder="Enter your password"
+//                     autoComplete="current-password"
+//                     className={`block px-4 py-3 bg-primarybox border text-white placeholder-gray-400 h-14 w-full rounded-lg focus:outline-none transition-all duration-75 ease-linear pr-10
+//                       ${
+//                         passwordError
+//                           ? "border-red-600 ring-1 ring-red-600"
+//                           : "border-primarybox"
+//                       }`}
+//                     value={password}
+//                     onChange={(e) => {
+//                       setPassword(e.target.value);
+//                       if (passwordError) setPasswordError("");
+//                     }}
+//                     aria-invalid={!!passwordError}
+//                   />
+//                   <button
+//                     type="button"
+//                     className="absolute right-3 top-1/2 -translate-y-1/2 transform cursor-pointer text-gray-500 hover:text-gray-300 focus:outline-none transition-all duration-75 ease-linear"
+//                     onClick={togglePasswordVisibility}
+//                     aria-label={
+//                       showPassword ? "Hide password" : "Show password"
+//                     }
+//                   >
+//                     {showPassword ? (
+//                       <LuEye size={18} />
+//                     ) : (
+//                       <LuEyeOff size={18} />
+//                     )}
+//                   </button>
+//                 </div>
+//                 <p className="text-subheadingWhite text-sm mt-1.5">
+//                   Must be at least 8 characters.
+//                 </p>
+//                 {passwordError && (
+//                   <p className="flex text-red-500 text-sm items-center mt-1">
+//                     <IoMdCloseCircle className="size-3.5 mr-1" />{" "}
+//                     {passwordError}
+//                   </p>
+//                 )}
+//               </motion.div>
+
+//               <motion.div className="text-right pt-1" variants={itemVariants}>
+//                 <Link href="/auth/forgot-password" className="inline-block">
+//                   <span className="text-subheadingWhite hover:text-primary font-medium underline underline-offset-2 transition-all duration-75 ease-linear">
+//                     Forgot Password?
+//                   </span>
+//                 </Link>
+//               </motion.div>
+
+//               <motion.div variants={itemVariants} className="pt-2">
+//                 <button
+//                   type="submit"
+//                   className={`bg-primary hover:bg-primaryhover w-full text-mainheading font-semibold py-3 px-8 h-14 rounded-lg transition-all duration-75 ease-linear flex items-center justify-center 
+//                     ${
+//                       isSubmitting
+//                         ? "opacity-70 cursor-not-allowed"
+//                         : "cursor-pointer"
+//                     }`}
+//                   disabled={isSubmitting || loginSuccess}
+//                 >
+//                   {isSubmitting ? (
+//                     <>
+//                       <svg
+//                         className="h-4 w-4 text-mainheading animate-spin mr-2"
+//                         viewBox="0 0 24 24"
+//                         fill="none"
+//                         xmlns="http://www.w3.org/2000/svg"
+//                       >
+//                         <path
+//                           d="M12 2V6"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M12 18V22"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M4.93 4.93L7.76 7.76"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M16.24 16.24L19.07 19.07"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M2 12H6"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M18 12H22"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M4.93 19.07L7.76 16.24"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                         <path
+//                           d="M16.24 7.76L19.07 4.93"
+//                           stroke="currentColor"
+//                           strokeWidth="2"
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                         />
+//                       </svg>
+//                       <span>Logging in...</span>
+//                     </>
+//                   ) : loginSuccess ? (
+//                     "Success!"
+//                   ) : (
+//                     "Log in"
+//                   )}
+//                 </button>
+//               </motion.div>
+//             </form>
+//           </motion.div>
+//         </AnimatePresence>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
 "use client";
 
 import { useState, useEffect, FormEvent } from "react";
 import authService from "../../services/auth"; // Ensure this path is correct
 import { useAuth } from "../../contexts/AuthContext"; // Ensure this path is correct
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation"; // Corrected import
 import Image from "next/image";
 import Link from "next/link";
 import { IoMdCloseCircle } from "react-icons/io";
@@ -5350,8 +5967,8 @@ export default function LoginPage() {
   const [passwordError, setPasswordError] = useState("");
   const [generalError, setGeneralError] = useState("");
   const { login, user, loading } = useAuth();
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const router = useRouter(); // useRouter from next/navigation
+  const searchParams = useSearchParams(); // useSearchParams from next/navigation
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [sessionExpiredMessage, setSessionExpiredMessage] = useState("");
   const [isGeneralErrorVisible, setIsGeneralErrorVisible] = useState(false);
@@ -5359,44 +5976,47 @@ export default function LoginPage() {
   const [isLoginSuccessVisible, setIsLoginSuccessVisible] = useState(false);
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(searchParams.toString());
-    const sessionExpired = urlParams.get("sessionExpired");
-    const googleErr = urlParams.get("googleError");
-    const registerSuccessParam = urlParams.get("registerSuccess");
-    const resetSuccessParam = urlParams.get("resetSuccess");
-    let urlNeedsCleaning = false;
+    const params = new URLSearchParams(searchParams.toString());
+    const sessionExpiredParam = params.get("sessionExpired");
+    const googleErrParam = params.get("googleError");
+    const registerSuccessParam = params.get("registerSuccess");
+    const resetSuccessParam = params.get("resetSuccess");
 
-    setSessionExpiredMessage("");
-    setGeneralError("");
-    setIsGeneralErrorVisible(false);
+    let needsUrlClean = false;
+    let newSessionExpiredMsg = "";
+    let newGeneralErrorMsg = "";
 
-    if (googleErr) {
-      setGeneralError(decodeURIComponent(googleErr));
-      urlNeedsCleaning = true;
-    } else if (sessionExpired === "true") {
-      setSessionExpiredMessage(
-        "Your session has expired. Please log in again."
-      );
-      urlNeedsCleaning = true;
-    } else if (registerSuccessParam === "true") {
-      // console.log("Registration successful parameter detected.");
-      urlNeedsCleaning = true;
-    } else if (resetSuccessParam === "true") {
-      // console.log("Password reset successful parameter detected.");
-      urlNeedsCleaning = true;
+    // Determine messages based on URL params
+    if (googleErrParam) {
+      newGeneralErrorMsg = decodeURIComponent(googleErrParam);
+      needsUrlClean = true;
+    } else if (sessionExpiredParam === "true") {
+      newSessionExpiredMsg = "Your session has expired. Please log in again.";
+      needsUrlClean = true;
     }
 
-    if (urlNeedsCleaning) {
-      window.history.replaceState(null, "", "/auth/login");
+    // These params don't set messages but require URL cleaning
+    if (registerSuccessParam === "true" || resetSuccessParam === "true") {
+      needsUrlClean = true;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+    
+    // Update states
+    setSessionExpiredMessage(newSessionExpiredMsg);
+    setGeneralError(newGeneralErrorMsg);
+    // isGeneralErrorVisible will be updated by its own useEffect based on generalError
+
+    if (needsUrlClean) {
+      // Use router.replace to clean URL params, ensuring Next.js router state is updated
+      // This helps `searchParams` hook get the correct (empty) params on the next render cycle.
+      const currentPathname = window.location.pathname; // Or derive from router if needed, but pathname is fine
+      router.replace(currentPathname, { scroll: false });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, router]); // Added router to dependency array as it's used
 
   useEffect(() => {
     if (!loading && user) {
-      // console.log("Login page: User logged in. AuthContext handles redirect.");
-      // The AuthContext should handle the redirect logic.
-      // Example: router.push('/dashboard');
+      // AuthContext should handle the redirect logic.
     }
   }, [user, loading, router]);
 
@@ -5413,10 +6033,10 @@ export default function LoginPage() {
     setEmailError("");
     setPasswordError("");
     setGeneralError("");
-    setIsGeneralErrorVisible(false);
-    setSessionExpiredMessage("");
+    setSessionExpiredMessage(""); // Explicitly clear messages on new submission attempt
     setLoginSuccess(false);
-    setIsLoginSuccessVisible(false);
+    
+    // isGeneralErrorVisible and isLoginSuccessVisible will be updated by their useEffects
 
     let isValid = true;
     if (!email) {
@@ -5427,8 +6047,6 @@ export default function LoginPage() {
       setPasswordError("Password is required");
       isValid = false;
     } else if (password.length < 8) {
-      // This error will make the password field red if set
-      // The static helper "Must be at least 8 characters" is always visible
       setPasswordError("Password must be at least 8 characters.");
       isValid = false;
     }
@@ -5443,10 +6061,8 @@ export default function LoginPage() {
       });
       console.log("Login successful in component");
       setLoginSuccess(true);
-      // Delay redirect slightly to show success message
       setTimeout(() => {
         login(loggedInUser, token);
-        // AuthContext will handle redirect after login state is updated
       }, 1000);
     } catch (err: any) {
       let message = "Sorry, that email or password didn't work.";
@@ -5456,7 +6072,6 @@ export default function LoginPage() {
         message = err.message;
       }
       setGeneralError(message);
-      setIsGeneralErrorVisible(true);
       setLoginSuccess(false);
     } finally {
       setIsSubmitting(false);
@@ -5467,8 +6082,8 @@ export default function LoginPage() {
 
   const handleGoogleLogin = () => {
     setGeneralError("");
-    setIsGeneralErrorVisible(false);
-    setSessionExpiredMessage("");
+    setSessionExpiredMessage(""); // Explicitly clear messages
+    // isGeneralErrorVisible will be updated by its useEffect
     window.location.href = `${apiConfig.baseUrl}/auth/google`;
   };
 
@@ -5709,6 +6324,8 @@ export default function LoginPage() {
                   onChange={(e) => {
                     setEmail(e.target.value);
                     if (emailError) setEmailError("");
+                    if (sessionExpiredMessage) setSessionExpiredMessage(""); // Clear session message on input interaction
+                    if (generalError) setGeneralError(""); // Clear general message on input interaction
                   }}
                   aria-invalid={!!emailError}
                 />
@@ -5742,6 +6359,8 @@ export default function LoginPage() {
                     onChange={(e) => {
                       setPassword(e.target.value);
                       if (passwordError) setPasswordError("");
+                      if (sessionExpiredMessage) setSessionExpiredMessage(""); // Clear session message on input interaction
+                      if (generalError) setGeneralError(""); // Clear general message on input interaction
                     }}
                     aria-invalid={!!passwordError}
                   />
