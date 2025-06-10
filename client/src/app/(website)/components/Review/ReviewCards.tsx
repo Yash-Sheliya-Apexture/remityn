@@ -2201,24 +2201,17 @@ const ReviewCards: React.FC = () => {
 
   const renderHeader = () => (
     <div className="space-y-4 text-center md:text-left mb-10">
-      <div className="inline-block">
-        <span className="text-subheadingWhite font-medium text-sm uppercase">
-          <span className="text-subheadingWhite/30">[</span> Ours Reviews{" "}
-          <span className="text-subheadingWhite/30">]</span>
-        </span>
-      </div>
-      <div className="space-y-4 text-center md:text-left">
         <h2 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite lg:max-w-3xl max-w-full">
           Honest Reviews,{" "}
           <span className="text-primary">Real Travelers Like You</span>
         </h2>
+        
         <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
           Discover what real travelers have to say about their experiences with
           our currency exchange services. From frequent flyers to first-time
           tourists, our customers share honest feedback about fast, reliable,
           and secure transactions.
         </p>
-      </div>
     </div>
   );
 

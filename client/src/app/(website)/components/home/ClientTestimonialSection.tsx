@@ -1665,22 +1665,21 @@ const ClientTestimonialSection: React.FC = () => {
       <section className="ClientTestimonialSection py-10 lg:py-40 overflow-hidden">
         <div className="container mx-auto px-4">
           <div className="lg:flex lg:items-center lg:gap-12 xl:gap-20">
-            {/* Left Content: Heading and Buttons */}
             <div className="lg:w-2/5 xl:w-[38%] text-center lg:text-left mb-12 lg:mb-0">
               <div className="space-y-4 text-center md:text-left">
-                <div className="lg:inline-block hidden">
-                  <span className="text-subheadingWhite font-medium text-sm uppercase">
-                    <span className="text-subheadingWhite/30">[</span> Built for
-                    safety. Trusted worldwide{" "}
-                    <span className="text-subheadingWhite/30">]</span>
-                  </span>
+                <div className="text-subheadingWhite font-medium text-sm uppercase mb-1">
+                  <span className="text-subheadingWhite/30">[</span> Built for
+                  safety. Trusted worldwide{" "}
+                  <span className="text-subheadingWhite/30">]</span>
                 </div>
 
+
                 <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
-                  <h3 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight text-mainheadingWhite lg:block hidden">
+                  <h3 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight text-mainheadingWhite">
                     Real Stories,{" "}
-                    <span className="text-primary">Real Trust</span>
+                    <span className="text-primary capitalize">Real Trust</span>
                   </h3>
+
                   <p className="text-subheadingWhite md:text-lg text-base max-w-5xl">
                     From quick account setup to secure global transfers,
                     thousands rely on us every day. Real experiences from real
@@ -1688,11 +1687,11 @@ const ClientTestimonialSection: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="flex justify-center md:justify-start mt-8">
+                <div className="flex justify-center md:justify-start mt-7">
                   <Link href="/reviews" className="inline-block">
                     <button className="bg-primary hover:bg-primaryhover text-neutral-900 cursor-pointer font-medium text-base lg:text-lg py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
                       Read Their Stories
-                    </button>
+                      </button>
                   </Link>
                 </div>
               </div>
@@ -1744,10 +1743,10 @@ const ClientTestimonialSection: React.FC = () => {
                             </div>
                           </div>
 
-                          <div className="flex-grow overflow-y-auto my-3 sm:my-5 z-10 relative">
+                          <div className="flex-grow overflow-y-auto my-6 z-10 relative">
                             {" "}
                             {/* Adjusted sm:py-5 to sm:my-3 */}
-                            <p className="text-base md:text-2xl text-mainheadingWhite font-normal leading-normal">
+                            <p className="text-lg lg:text-2xl text-mainheadingWhite font-normal leading-normal">
                               {" "}
                               {/* Adjusted text size for quote */}
                               {testimonial.quote}
@@ -1794,7 +1793,8 @@ const ClientTestimonialSection: React.FC = () => {
                 </Swiper>
 
                 {/* Custom navigation buttons */}
-                <div className="swiper-button-prev-custom hidden md:inline-block group absolute left-0 lg:-left-4 xl:-left-6 top-1/2 -translate-y-1/2 z-30 cursor-pointer p-2 md:p-3 bg-black/20 hover:bg-black/40 active:bg-black/60 rounded-full ease-linear transition-all duration-150 [&.swiper-button-disabled]:opacity-30 [&.swiper-button-disabled]:cursor-not-allowed">
+                {/* left-icons */}
+                <div className="swiper-button-prev-custom hidden md:inline-block group absolute left-0 lg:-left-4 xl:left-10 top-1/2 -translate-y-1/2 z-30 cursor-pointer p-2 md:p-3 bg-black/20 hover:bg-black/40 active:bg-black/60 rounded-full ease-linear transition-all duration-150 [&.swiper-button-disabled]:opacity-30 [&.swiper-button-disabled]:cursor-not-allowed">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -1811,7 +1811,8 @@ const ClientTestimonialSection: React.FC = () => {
                   </svg>
                 </div>
 
-                <div className="swiper-button-next-custom hidden md:inline-block group absolute  right-0 lg:-right-4 xl:-right-6 top-1/2 -translate-y-1/2 z-30 cursor-pointer p-2 md:p-3 bg-black/20 hover:bg-black/40 active:bg-black/60 rounded-full ease-linear transition-all duration-150 [&.swiper-button-disabled]:opacity-30 [&.swiper-button-disabled]:cursor-not-allowed">
+                {/* right-icons */}
+                <div className="swiper-button-next-custom hidden md:inline-block group absolute  right-0 lg:-right-4 xl:right-10 top-1/2 -translate-y-1/2 z-30 cursor-pointer p-2 md:p-3 bg-black/20 hover:bg-black/40 active:bg-black/60 rounded-full ease-linear transition-all duration-150 [&.swiper-button-disabled]:opacity-30 [&.swiper-button-disabled]:cursor-not-allowed">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -1870,7 +1871,7 @@ const ClientTestimonialSection: React.FC = () => {
           }
           @media (max-width: 420px) {
             .testimonial-swiper-card {
-              width: 90vw;
+              width: 80vw;
               max-width: 320px;
               height: 470px; /* Adjusted height for potentially more content */
             }
@@ -1879,7 +1880,7 @@ const ClientTestimonialSection: React.FC = () => {
           .testimonial-swiper-card .swiper-slide {
             border-radius: 1.5rem; /* 24px */
             background-color: #394247; /* This is bg-primarybox */
-            box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 6px rgba(0, 0, 0, 0.2);
             overflow: hidden;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;

@@ -294,19 +294,19 @@ const featuresData: FeatureItem[] = [
   {
     title: "Your Global Footprint, Simplified",
     description:
-      "Easily manage, convert, and send money across borders—all in one secure, intuitive platform. Your finances, globally connected and locally empowered.",
+      "Easily send, convert, and manage money worldwide through one secure platform. Stay globally connected and in full control of your finances.",
     icons: <Globe className="size-6 lg:size-8 text-primary" />,
   },
   {
     title: "Security That Never Sleeps",
     description:
-      "Your trust is our top priority. That’s why every transaction is protected with bank-grade encryption, two-factor authentication, and 24/7 fraud monitoring.",
+      "We protect every transaction with advanced encryption, 2FA, and 24/7 fraud monitoring—so your trust is never compromised. ",
     icons: <LockKeyhole className="size-6 lg:size-8 text-primary" />,
   },
   {
     title: "Partnership, Not Just Processing",
     description:
-      "At Remityn, we don’t just process your transfers—we walk the journey with you. Whether you're sending your first payment or managing complex international.",
+      "We do more than transfer money—we partner in your journey, supporting every step from first payment to global growth.",
     icons: <Handshake className="size-6 lg:size-8 text-primary" />,
   },
 ];
@@ -315,7 +315,7 @@ const WhyChooseUs: React.FC = () => {
   const currentProducts = featuresData; // This variable isn't strictly necessary if always using featuresData
 
   return (
-    <section className="WhyChooseUsSection sm:py-16 py-10 overflow-hidden ">
+    <section className="WhyChooseUsSection sm:py-16 py-10 overflow-hidden">
       <div className="mx-auto container px-4">
         <div className="mx-auto max-w-4xl text-center space-y-4">
           {/* ... (heading content remains the same) ... */}
@@ -329,9 +329,7 @@ const WhyChooseUs: React.FC = () => {
             connection. At Remityn, we treat every transfer as a personal
             mission. With cutting-edge security, real-time tracking, and
             dedicated support, we make sure your funds reach their destination
-            safely and swiftly. From families to freelancers, from first-time
-            users to global citizens—Remityn is built for those who value more
-            than just speed.
+            safely and swiftly.
           </p>
         </div>
 
