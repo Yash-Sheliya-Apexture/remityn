@@ -65,7 +65,7 @@ interface AppProviderProps {
 
 export function WebsiteAppProvider({
   children,
-  initialSelectedSendCurrency = "EUR", // <--- CHANGED DEFAULT TO EUR
+  initialSelectedSendCurrency = "USD", // <--- CHANGED DEFAULT TO USD
 }: AppProviderProps) {
   const [selectedSendCurrency, setSelectedSendCurrency] = useState<string>(
     initialSelectedSendCurrency

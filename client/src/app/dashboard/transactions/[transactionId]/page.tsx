@@ -8470,6 +8470,8 @@ const TransactionDetailsPage = () => {
                         setIsCancelModalOpen(true);
                       }}
                     />
+
+                    
                     <TransactionUpdateActions
                       transaction={transactionDetails}
                       canCancel={canCancelTransaction}
