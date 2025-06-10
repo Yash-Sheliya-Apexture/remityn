@@ -5099,7 +5099,7 @@ const navLinks = [
   { href: "/about-us", text: "About" },
   { href: "/features", text: "Features" },
   { href: "/reviews", text: "Reviews" },
-  { href: "/contactUs", text: "Contact-Us" },
+  { href: "/contact-us", text: "Contact-Us" },
 ];
 
 const HEADER_HEIGHT_THRESHOLD = 60;

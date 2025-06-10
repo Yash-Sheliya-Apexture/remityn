@@ -3176,9 +3176,9 @@ export default function ResetPasswordPage() {
         <div className="lg:hidden mb-10 self-center">
           <Link href={"/"}>
             <Image
-              src="/assets/images/main_logo.svg" // Assuming dark logo is okay on light/dark background
-              width={200}
-              height={90}
+              src="/assets/images/mobile-logo.svg"
+              width={150}
+              height={100}
               alt="Remityn Logo"
             />
           </Link>
