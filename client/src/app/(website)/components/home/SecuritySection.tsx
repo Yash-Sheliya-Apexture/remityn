@@ -438,7 +438,7 @@ const SecuritySection: React.FC = () => {
               <Image
                 src="/assets/images/eretrtgcbvcb.png" // Ensure this path is correct and relative to the /public directory
                 width={550} // Original width
-                height={550} // Assuming the image is roughly square or you want to display it as such.
+                height={800} // Assuming the image is roughly square or you want to display it as such.
                 // The original had height={800}, which would make it very tall. Adjust based on aspect ratio.
                 alt="Padlock icon symbolizing secure currency exchange and trust" // More descriptive alt text
                 className="object-contain rounded-3xl"

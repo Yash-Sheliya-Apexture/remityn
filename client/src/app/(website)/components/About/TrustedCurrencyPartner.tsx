@@ -299,7 +299,7 @@ import { useAuth } from "@/app/contexts/AuthContext";
 const TrustedCurrencyPartner = () => {
   const { user } = useAuth();
 
-  const buttonText = user ? "Get Started" : "Start Your Journey";
+  const buttonText = user ? "Go to Exchange" : "Join Remityn Now";
   const buttonLink = user ? "/dashboard/send/select-balance" : "/auth/register";
 
   return (

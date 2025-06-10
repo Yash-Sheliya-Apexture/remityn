@@ -355,7 +355,7 @@
 //           {user && !loading && (
 //             <Link href="/dashboard/your-account">
 //               <div
-//                 className="relative flex items-center group sm:hover:bg-lightgray bg-transparent sm:dark:hover:bg-primarybox rounded-full cursor-pointer gap-2 
+//                 className="relative flex items-center group sm:hover:bg-lightgray bg-transparent sm:dark:hover:bg-primarybox rounded-full cursor-pointer gap-2
 //                sm:p-1.5 transition-all duration-75 ease-linear"
 //               >
 //                 {" "}
@@ -382,6 +382,142 @@
 
 // export default Header;
 
+// // components/Header.tsx
+// "use client";
+// import React, { useEffect, useState } from "react";
+// import { useRouter, usePathname } from "next/navigation";
+// import { HiArrowLeft } from "react-icons/hi";
+// import Link from "next/link";
+// import { useAuth } from "../../contexts/AuthContext"; // Path is likely correct based on existing structure
+// import { IoIosArrowForward } from "react-icons/io";
+// import Image from "next/image";
+// import { TbMenu3 } from "react-icons/tb";
+
+// interface HeaderProps {
+//   toggleSidebar: () => void;
+// }
+
+// const getInitials = (name: string | undefined): string => {
+//   if (!name || typeof name !== "string" || name.trim() === "") {
+//     return "?";
+//   }
+//   const nameParts = name
+//     .trim()
+//     .split(" ")
+//     .filter((part) => part.length > 0);
+//   if (nameParts.length === 0) {
+//     return "?";
+//   }
+//   if (nameParts.length === 1) {
+//     return nameParts[0][0].toUpperCase();
+//   }
+//   return `${nameParts[0][0]}${
+//     nameParts[nameParts.length - 1][0]
+//   }`.toUpperCase();
+// };
+
+// const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
+//   const router = useRouter();
+//   const pathname = usePathname();
+//   // --- Get user, loading, and unreadMessageCount from context ---
+//   const { user, loading, unreadMessageCount } = useAuth();
+//   const [showBackArrow, setShowBackArrow] = useState(false);
+//   const [isMobile, setIsMobile] = useState(false);
+
+//   useEffect(() => {
+//     const checkScreenWidth = () => {
+//       setIsMobile(window.innerWidth < 1024);
+//     };
+//     checkScreenWidth();
+//     window.addEventListener("resize", checkScreenWidth);
+//     return () => {
+//       window.removeEventListener("resize", checkScreenWidth);
+//     };
+//   }, []);
+
+//   useEffect(() => {
+//     setShowBackArrow(pathname !== "/dashboard");
+//   }, [pathname]);
+
+//   const handleBack = () => {
+//     router.back();
+//   };
+
+//   const userName = user?.fullName || "User";
+//   const userInitials = getInitials(user?.fullName);
+
+//   return (
+//     <header className="sticky bg-background top-0 z-5">
+//       <div className="max-w-5xl mx-auto px-4">
+//         <div className="flex justify-between items-center lg:h-28 h-20">
+//           <div className="flex justify-center items-center gap-4">
+//             <button
+//               onClick={toggleSidebar}
+//               className="focus:outline-none cursor-pointer p-2.5 bg-primarybox hover:bg-secondarybox text-primary rounded-full transition-colors lg:hidden sm:block hidden"
+//             >
+//               <TbMenu3
+//                 size={28}
+//               />
+//             </button>
+
+//             {isMobile && (
+//               <Link href="/dashboard">
+//                 <Image
+//                   src="/assets/images/mobile_logo.svg"
+//                   alt="logo"
+//                   width={40}
+//                   height={40}
+//                   // priority
+//                 />
+//               </Link>
+
+//             )}
+
+//             {showBackArrow && (
+//               <button
+//                 onClick={handleBack}
+//                 className="focus:outline-none w-12 h-12 flex justify-center items-center
+//                  cursor-pointer p-2.5 bg-primarybox rounded-full text-primary hover:bg-[#2f373b] transition-all duration-75 ease-linear"
+//               >
+//                 <HiArrowLeft
+//                   size={22}
+//                 />
+//               </button>
+//             )}
+
+//           </div>
+
+//           {user && !loading && (
+//             <Link href="/dashboard/your-account">
+//               <div
+//                 className="relative flex items-center group bg-transparent hover:bg-primarybox rounded-full cursor-pointer gap-2
+//                sm:p-1.5 transition-all duration-75 ease-linear"
+//               >
+//                 <span className="relative size-12.5 bg-primary rounded-full flex items-center justify-center font-bold text-background capitalize text-sm md:text-base">
+//                   {userInitials}
+//                   {/* --- Notification Dot --- */}
+//                   {unreadMessageCount > 0 && (
+//                     <span
+//                       className="absolute top-1 right-1 block h-3 w-3 transform translate-x-1/4 -translate-y-1/4 rounded-full bg-red-700 ring-2 ring-background group-hover:ring-primarybox"
+//                       aria-label="New notifications"
+//                     />
+//                   )}
+//                 </span>
+//                 <div className="text-white capitalize hidden sm:block font-medium text-sm md:text-base">
+//                   {userName}
+//                 </div>
+//                 <IoIosArrowForward className="size-4 md:size-5 text-white mr-1 md:mr-2 hidden md:block transition-transform ease-in-out duration-300" />
+//               </div>
+//             </Link>
+//           )}
+//         </div>
+//       </div>
+//     </header>
+//   );
+// };
+
+// export default Header;
+
 
 
 // components/Header.tsx
@@ -390,7 +526,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { HiArrowLeft } from "react-icons/hi";
 import Link from "next/link";
-import { useAuth } from "../../contexts/AuthContext"; // Path is likely correct based on existing structure
+import { useAuth } from "../../contexts/AuthContext"; // Path is likely correct
 import { IoIosArrowForward } from "react-icons/io";
 import Image from "next/image";
 import { TbMenu3 } from "react-icons/tb";
@@ -421,16 +557,17 @@ const getInitials = (name: string | undefined): string => {
 const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   const router = useRouter();
   const pathname = usePathname();
-  // --- Get user, loading, and unreadMessageCount from context ---
   const { user, loading, unreadMessageCount } = useAuth();
   const [showBackArrow, setShowBackArrow] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const checkScreenWidth = () => {
+      // Tailwind's default 'lg' breakpoint is 1024px.
+      // isMobile will be true for screens smaller than 'lg'.
       setIsMobile(window.innerWidth < 1024);
     };
-    checkScreenWidth();
+    checkScreenWidth(); // Initial check
     window.addEventListener("resize", checkScreenWidth);
     return () => {
       window.removeEventListener("resize", checkScreenWidth);
@@ -449,58 +586,70 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   const userInitials = getInitials(user?.fullName);
 
   return (
-    <header className="sticky bg-background top-0 z-5">
+    <header className="sticky bg-background top-0 z-50">
+      {" "}
+      {/* Increased z-index for better layering */}
       <div className="max-w-5xl mx-auto px-4">
-        <div className="flex justify-between items-center lg:h-28 h-20">
-          <div className="flex justify-center items-center gap-4">
+        {/* This div needs to be 'relative' for the absolutely positioned mobile logo */}
+        <div className="relative flex justify-between items-center lg:h-28 h-20">
+          {/* --- LEFT SECTION --- */}
+          <div className="flex items-center gap-4">
+            {/* Sidebar Toggle Button: 
+                Visible on sm, md (tablet range where isMobile can be true), 
+                hidden on xs (smallest mobile) and lg+ (desktop) 
+            */}
             <button
               onClick={toggleSidebar}
               className="focus:outline-none cursor-pointer p-2.5 bg-primarybox hover:bg-secondarybox text-primary rounded-full transition-colors lg:hidden sm:block hidden"
             >
-              <TbMenu3
-                size={28}
-              />
+              <TbMenu3 size={28} />
             </button>
 
-            {isMobile && (
-              <Link href="/dashboard">
-                <Image
-                  src="/assets/images/mobile_logo.svg"
-                  alt="logo"
-                  width={40}
-                  height={40}
-                  // priority
-                />
-              </Link>
-        
-            )}
-          
-
+            {/* Back Arrow: Shown if not on dashboard page.
+                This will be on the left for all screen sizes if showBackArrow is true.
+            */}
             {showBackArrow && (
               <button
                 onClick={handleBack}
-                className="focus:outline-none w-12 h-12 flex justify-center items-center
-                 cursor-pointer p-2.5 bg-primarybox rounded-full text-primary hover:bg-[#2f373b] transition-all duration-75 ease-linear"
+                className="focus:outline-none size-12 flex justify-center items-center
+                 cursor-pointer bg-primarybox hover:bg-secondarybox rounded-full text-primary transition-all duration-150 ease-linear"
               >
-                <HiArrowLeft
-                  size={22}
-                />
+                <HiArrowLeft size={26} />
               </button>
             )}
           </div>
 
+          {/* --- CENTER LOGO (Mobile Only: <1024px) --- */}
+          {/* Absolutely positioned to ensure it's in the true middle of the header bar,
+              regardless of left/right content width.
+          */}
+          {isMobile && (
+            <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <Link href="/dashboard" aria-label="Go to dashboard">
+                <Image
+                  src="/assets/images/mobile_logo.svg"
+                  alt="Logo" // Using a slightly more descriptive alt text
+                  width={40}
+                  height={40}
+                  // priority // Consider adding 'priority' if this logo is a Large Contentful Paint (LCP) element on mobile
+                />
+              </Link>
+            </div>
+          )}
+
+          {/* --- RIGHT SECTION (User Profile) --- */}
+          {/* This section is for the user profile, always on the right. */}
           {user && !loading && (
             <Link href="/dashboard/your-account">
               <div
                 className="relative flex items-center group bg-transparent hover:bg-primarybox rounded-full cursor-pointer gap-2 
-               sm:p-1.5 transition-all duration-75 ease-linear"
+               p-1 sm:p-1.5 transition-all duration-75 ease-linear" // Added base p-1 for smallest screens, sm:p-1.5 for slightly larger
               >
-                <span className="relative size-12.5 bg-primary rounded-full flex items-center justify-center font-bold text-background capitalize text-sm md:text-base">
+                <span className="relative size-10 md:size-12.5 bg-primary rounded-full flex items-center justify-center font-bold text-background capitalize text-sm md:text-base">
                   {userInitials}
-                  {/* --- Notification Dot --- */}
                   {unreadMessageCount > 0 && (
                     <span
-                      className="absolute top-1 right-1 block h-3 w-3 transform translate-x-1/4 -translate-y-1/4 rounded-full bg-red-700 ring-2 ring-background group-hover:ring-primarybox"
+                      className="absolute top-0.5 right-0.5 md:top-1 md:right-1 block h-2.5 w-2.5 md:h-3 md:w-3 transform translate-x-1/4 -translate-y-1/4 rounded-full bg-red-700 ring-2 ring-background group-hover:ring-primarybox"
                       aria-label="New notifications"
                     />
                   )}
