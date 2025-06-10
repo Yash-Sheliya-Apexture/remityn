@@ -2235,22 +2235,17 @@ const navLinks: NavLinkItem[] = [
   { href: "/", label: "Home" },
   { href: "/about-us", label: "About" },
   { href: "/features", label: "Features" },
-  { href: "/reviews", label: "Reviews" },
   { href: "/faqs", label: "Help" },
+  { href: "/contactus", label: "Contact-Us" },
 ];
+
 
 const contactInfo: ContactInfoItem[] = [
   {
     icon: MdEmail,
-    text: "hello@skillbirdge.com", // Assuming this is a placeholder, update if needed
-    href: "mailto:hello@skillbirdge.com",
+    text: "www.remityn.com", // Assuming this is a placeholder, update if needed
+    href: "mailto:https://www.remityn.com/",
     ariaLabel: "Email us at hello@skillbirdge.com",
-  },
-  {
-    icon: MdPhone,
-    text: "+91 8849498140",
-    href: "tel:+918849498140",
-    ariaLabel: "Call us at +91 88494 98140",
   },
   {
     icon: MdLocationOn,
@@ -2275,10 +2270,10 @@ const currentYear = new Date().getFullYear();
 // Data for Currency Converters
 const currencyConverterLinksData = [
   "USD to INR",
-  "AED to INR",
-  "AUD to INR",
-  "CAD to INR",
   "EUR to INR",
+  "AUD to INR",
+  "AED to INR",
+  "CAD to INR",
 ];
 
 const Footer: React.FC = () => {

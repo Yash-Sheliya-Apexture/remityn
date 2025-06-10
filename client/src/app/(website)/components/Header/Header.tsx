@@ -5063,16 +5063,13 @@
 
 // export default Header;
 
-
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { GiHamburgerMenu } from "react-icons/gi";
 import { motion, AnimatePresence } from "framer-motion";
 import MobileMenu from "./MobileMenu";
-import { IoMdClose } from "react-icons/io";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { HiOutlineLogout } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
@@ -5102,7 +5099,7 @@ const navLinks = [
   { href: "/about-us", text: "About" },
   { href: "/features", text: "Features" },
   { href: "/reviews", text: "Reviews" },
-  { href: "/faqs", text: "Help" },
+  { href: "/contactUs", text: "Contact-Us" },
 ];
 
 const HEADER_HEIGHT_THRESHOLD = 60;
@@ -5156,9 +5153,13 @@ const Header: React.FC = () => {
       if (currentScrollY <= HEADER_HEIGHT_THRESHOLD) {
         setIsHeaderVisible(true);
       } else {
-        if (deltaY < 0 && currentScrollY > HEADER_HEIGHT_THRESHOLD * 2) { // Hide only if scrolled down past a bit more
+        if (deltaY < 0 && currentScrollY > HEADER_HEIGHT_THRESHOLD * 2) {
+          // Hide only if scrolled down past a bit more
           setIsHeaderVisible(false);
-        } else if (deltaY >= SCROLL_UP_THRESHOLD || currentScrollY <= HEADER_HEIGHT_THRESHOLD) {
+        } else if (
+          deltaY >= SCROLL_UP_THRESHOLD ||
+          currentScrollY <= HEADER_HEIGHT_THRESHOLD
+        ) {
           setIsHeaderVisible(true);
         }
       }
@@ -5217,7 +5218,6 @@ const Header: React.FC = () => {
   // Tailwind breakpoints: sm: 640px, md: 768px
   const logoSizes = "(min-width: 768px) 160px, (min-width: 640px) 144px, 128px";
 
-
   return (
     <>
       <header
@@ -5245,7 +5245,7 @@ const Header: React.FC = () => {
                     src="/assets/images/main_logo.svg" // Ensure this path is correct
                     alt="Remityn Logo"
                     width={140} // Intrinsic width of the SVG (or desired base for aspect ratio)
-                    height={40}  // Intrinsic height of the SVG
+                    height={40} // Intrinsic height of the SVG
                     priority // Crucial for LCP potential elements
                     className="w-32 sm:w-36 md:w-40 h-auto" // Responsive logo size via CSS
                     sizes={logoSizes} // Added for optimal preloading of priority images with responsive widths
@@ -5283,7 +5283,7 @@ const Header: React.FC = () => {
                       >
                         <HiOutlineLogout className="text-xl" />
                       </button>
-                      
+
                       <Link
                         href="/dashboard"
                         className="bg-primary px-4 sm:px-5 py-2 h-10 flex items-center text-nowrap text-sm font-medium rounded-full hover:bg-primaryhover transition-all ease-linear duration-75 text-mainheading cursor-pointer"
@@ -5309,7 +5309,7 @@ const Header: React.FC = () => {
                   )}
                 </div>
               ) : (
-                 // Mobile Hamburger Menu Button
+                // Mobile Hamburger Menu Button
                 <div className="flex lg:hidden items-center">
                   <button
                     onClick={toggleMobileMenu}
@@ -5321,7 +5321,7 @@ const Header: React.FC = () => {
                     {isMobileMenuOpen ? (
                       <IoClose size={28} className="text-primary" />
                     ) : (
-                      <TbMenu3  size={28} className="text-primary" />
+                      <TbMenu3 size={28} className="text-primary" />
                     )}
                   </button>
                 </div>

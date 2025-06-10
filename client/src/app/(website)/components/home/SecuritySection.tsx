@@ -395,16 +395,17 @@ const SecuritySection: React.FC = () => {
 
               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
                 <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite lg:block hidden">
-                  Secure Currency Exchange{" "}
-                  <span className="text-primary">You Can Trust</span>
+                  Secure Global Exchange Rates:{" "}
+                  <span className="text-primary">Trusted & Protected</span>
                 </h3>
                 <p className="text-subheadingWhite md:text-lg text-base max-w-5xl">
-                  Exchange currency with confidence—fast, secure, and
-                  dependable. Enjoy competitive rates, zero hidden fees, and
-                  complete encryption for peace of mind at every step. Thousands
-                  trust us for our transparency, real-time tracking, and
-                  round-the-clock support. Your money, your rules—simple, safe,
-                  and always secure.
+                  Access real-time currency exchange rates with complete
+                  confidence. Our platform is built on bank-grade security
+                  protocols, featuring end-to-end encryption, real-time fraud
+                  monitoring, and strict compliance standards. Trusted by
+                  thousands worldwide, we ensure reliable, transparent financial
+                  conversions—keeping your money protected every step of the
+                  way."
                 </p>
               </div>
 
@@ -428,10 +429,8 @@ const SecuritySection: React.FC = () => {
               </span>
               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
                 <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
-                  {" "}
-                  {/* Adjusted xl:text-6xl from lg:text-7xl for consistency with above */}
-                  Secure Currency Exchange{" "}
-                  <span className="text-primary">You Can Trust</span>
+                  Secure Global Exchange Rates:{" "}
+                  <span className="text-primary">Trusted & Protected</span>
                 </h3>
               </div>
             </div>
