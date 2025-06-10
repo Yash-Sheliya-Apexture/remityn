@@ -1982,7 +1982,7 @@ const RatingStar = ({
 
   return (
     <div
-      className="w-4 h-4 mr-1 p-0.5 relative" // Container for each star
+      className="size-5 mr-1 p-0.5 relative" // Container for each star
       style={backgroundStyle}
     >
       <SingleRatingStarIcon />
@@ -2033,27 +2033,20 @@ const ReviewCard: React.FC<ReviewCardProps> = React.memo(({
   DateAndTime,
 }) => {
   return (
-    <div className="rounded-2xl bg-primary-foreground border border-gray-600/50 lg:p-6 p-4 flex flex-col sm:items-start items-end h-full">
+    <div className="rounded-2xl bg-primarybox border border-gray-600/50 lg:p-6 p-4 flex flex-col sm:items-start items-end h-full">
       <div className="flex justify-between items-center gap-4 w-full">
-        <div className="flex items-center gap-3">
-          <Image
-            src={avatarUrl}
-            alt={`Avatar of ${reviewerName}`}
-            width={64}
-            height={64}
-            className="lg:size-16 size-14 rounded-full object-cover flex-shrink-0"
-            sizes="(max-width: 1024px) 3.5rem, 4rem"
-          />
-          <div className="flex flex-col items-start gap-1">
-            <div className="text-mainheadingWhite lg:text-lg text-base capitalize dark:text-primary font-medium">
+        <div className="flex items-center">
+          <div className="flex flex-col items-start gap-2">
+            <div className="lg:text-2xl text-lg capitalize text-white/90 font-medium">
               {reviewerName}
             </div>
+
             {/* This now renders your new custom star component */}
             <StarRating rating={rating} />
           </div>
         </div>
       </div>
-      <div className="text-subheadingWhite lg:text-lg text-base mt-5 flex-grow">
+      <div className="text-subheadingWhite lg:text-2xl text-lg mt-5 flex-grow">
         {comment}
       </div>
       <div className="mt-5">
