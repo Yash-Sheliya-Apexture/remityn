@@ -2377,7 +2377,7 @@ const Footer: React.FC = () => {
               <div className="flex items-center" key={pair}>
                 <div className="relative group inline-block">
                   <button
-                    className="relative z-10 cursor-pointer bg-primary-foreground font-medium hover:bg-primaryhover px-4 py-2 rounded-full sm:text-base text-sm text-subheadingWhite transition-all duration-75 ease-linear hover:text-subheading"
+                    className="relative z-10 cursor-pointer bg-primarybox font-semibold hover:bg-primaryhover px-4 py-2  rounded-full sm:text-base text-sm text-mainheadingWhite transition-all duration-150 ease-linear hover:text-subheading"
                     onClick={() => handleCurrencyConverterClick(pair)}
                   >
                     {pair}
