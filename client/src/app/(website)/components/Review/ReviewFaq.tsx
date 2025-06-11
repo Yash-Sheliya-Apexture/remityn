@@ -108,7 +108,7 @@
 //             Find clear, concise answers to the most common questions about our
 //             services. Whether you're new or a returning customer, we've covered
 //             everything you need to know — from how it works to what sets us
-//             apart. Quick, reliable support made simple. 
+//             apart. Quick, reliable support made simple.
 //           </p>
 //         </div>
 
@@ -226,33 +226,33 @@ interface FaqItemData {
 const faqData: FaqItemData[] = [
   {
     id: "faq-1", // Made IDs slightly more descriptive
-    question: "How do I know the reviews are genuine?",
+    question: "Why should I trust the reviews on your platform? ",
     answer:
-      "We only accept reviews from customers who have completed a currency exchange transaction through our platform. Each review is verified and monitored to ensure authenticity and transparency.",
+      "All reviews are written by real users who’ve completed verified transactions. We don’t allow fake reviews or paid promotions each review goes through an automated and manual validation process to ensure authenticity.",
   },
   {
     id: "faq-2",
-    question: "Why do some customers mention different exchange rates in reviews?",
+    question: "How do I know the reviews are genuine?",
     answer:
-      "Exchange rates can vary based on market fluctuations and transaction times. Customer reviews reflect their personal experience at the time of exchange, which may differ slightly depending on when they made the transaction.",
+      "We only accept reviews from real users who’ve completed a currency exchange transaction through our platform. Each review goes through a strict verification process to ensure it’s authentic, honest, and helpful.",
   },
   {
     id: "faq-3",
-    question: "What should I include in my review to help others?",
+    question: "Are exchange rates the same for everyone who leaves a review?",
     answer:
-      "It's helpful to mention the currency you exchanged, the speed of the transaction, the clarity of the process, the customer support experience, and how satisfied you were overall. This gives future users a well-rounded picture.",
+      "Not necessarily. Rates may vary slightly depending on the transaction time, currency type, and market fluctuations. That’s why you might see different rates mentioned in different reviews.",
   },
   {
     id: "faq-4",
-    question: "Do negative reviews get published too?",
+    question: "What should I include in my review to help others?",
     answer:
-      "Yes. We believe in transparency. Both positive and negative reviews are published as long as they follow our community guidelines. This helps us improve and gives new customers a fair understanding.",
+      "You can mention how easy the process was, how quickly the money was delivered, customer support response, exchange rates, and overall satisfaction. Real details help others make confident decisions.",
   },
   {
     id: "faq-5",
     question: "How often are the reviews updated?",
     answer:
-      "Reviews are submitted in real time by users and appear on the site after moderation. This means our review section is constantly updated with fresh feedback from recent users.",
+      "Our review section updates in real time. As soon as a customer submits a verified review, it appears on our website after approval. This keeps our feedback accurate and current.",
   },
 ];
 
@@ -294,13 +294,20 @@ const ReviewFaq: React.FC = () => {
   }, []); // Empty dependency array: function doesn't depend on props or other state from parent scope
 
   return (
-    <section className="lg:py-20 py-10 sm:py-16 overflow-hidden" id="faq"> {/* Added sm:py-16 */}
+    <section className="lg:py-20 py-10 sm:py-16 overflow-hidden" id="faq">
+      {" "}
+      {/* Added sm:py-16 */}
       <div className="container mx-auto px-4">
-        <div className="mb-12 md:mb-16 lg:mb-20 text-center md:text-left"> {/* Added text-center md:text-left */}
+        <div className="mb-12 md:mb-16 lg:mb-20 text-center md:text-left">
+          {" "}
+          {/* Added text-center md:text-left */}
           <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold capitalize mb-6 lg:max-w-2xl max-w-full leading-tight text-mainheadingWhite">
-            Your questions, <span className="text-primary">answered.</span>
+            Honest Answers for {" "}
+            <span className="text-primary">Smart Travelers.</span>
           </h3>
-          <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full mx-auto md:mx-0"> {/* Added mx-auto md:mx-0 for centering on mobile */}
+          <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full mx-auto md:mx-0">
+            {" "}
+            {/* Added mx-auto md:mx-0 for centering on mobile */}
             Find clear, concise answers to the most common questions about our
             services. Whether you're new or a returning customer, we've covered
             everything you need to know — from how it works to what sets us
@@ -332,7 +339,8 @@ const ReviewFaq: React.FC = () => {
                     data-state={isOpen ? "open" : "closed"}
                     data-orientation="vertical"
                     id={uniqueTriggerId}
-                    className={`flex w-full cursor-pointer flex-1 gap-4 items-start justify-between text-start text-lg sm:text-xl xl:text-[28px] font-medium transition-colors duration-150 ease-linear ${ // Standardized text sizes, adjusted transition
+                    className={`flex w-full cursor-pointer flex-1 gap-4 items-start justify-between text-start text-lg sm:text-xl xl:text-[28px] font-medium transition-colors duration-150 ease-linear ${
+                      // Standardized text sizes, adjusted transition
                       isOpen
                         ? "text-primary hover:text-primary/80" // Slightly different hover for open state
                         : "text-mainheadingWhite hover:text-gray-300"
@@ -390,7 +398,9 @@ const ReviewFaq: React.FC = () => {
                       exit="exit"
                       className="overflow-hidden" // Important for height animation
                     >
-                      <p className="text-subheadingWhite text-base sm:text-lg xl:text-xl leading-relaxed pt-2 md:pt-3"> {/* Standardized text sizes, added md:pt-3 */}
+                      <p className="text-subheadingWhite text-base sm:text-lg xl:text-xl leading-relaxed pt-2 md:pt-3">
+                        {" "}
+                        {/* Standardized text sizes, added md:pt-3 */}
                         {item.answer}
                       </p>
                     </motion.div>
