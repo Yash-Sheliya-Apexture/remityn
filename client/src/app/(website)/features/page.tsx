@@ -2,6 +2,7 @@ import React from "react";
 import FeatherHero from "../components/Feature/FeatherHero";
 import CallToActionSection from "../components/CallToActionSection";
 import SendMoneySteps from "../components/Feature/SendMoneySteps";
+import FeaturesList from "../components/FeaturesList";
 
 const page = () => {
   return (

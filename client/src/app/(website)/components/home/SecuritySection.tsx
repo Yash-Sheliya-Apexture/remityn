@@ -412,6 +412,7 @@ const SecuritySection: React.FC = () => {
               </div>
             </div>
           </div>
+          
 
           {/* Right Image Block */}
           <div className="w-full lg:w-2/5 order-1 lg:order-2">

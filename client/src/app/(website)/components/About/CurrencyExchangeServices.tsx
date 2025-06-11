@@ -365,7 +365,7 @@ const CurrencyExchangeServices: React.FC<
 > = () => {
   const { user } = useAuth();
 
-  const buttonText = user ? "Go to Exchange Dashboard" : "Join Remityn Now";
+  const buttonText = user ? "Go to Dashboard" : "Join Remityn Now";
   const buttonLink = user ? "/dashboard/send/select-balance" : "/auth/register";
 
   return (
@@ -381,8 +381,8 @@ const CurrencyExchangeServices: React.FC<
               </span>
               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
                 <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
-                  Creating a Borderless Future With{" "}
-                  <span className="text-primary">Honest Currency Exchange</span>
+                  Making Money Transfers{" "}
+                  <span className="text-primary">Fair and Simple</span>
                 </h3>
               </div>
             </div>
@@ -401,23 +401,23 @@ const CurrencyExchangeServices: React.FC<
             {/* ... (rest of the content) ... */}
             <div className="block md:hidden">
               <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full pt-8 text-center">
-                We are committed to making global currency exchange simple and
-                clear. Our platform ensures transparency with honest rates and
-                no hidden fees. Trust and reliability are at the heart of every
-                transaction we facilitate. We empower travelers and businesses
-                to exchange money confidently worldwide. With us, your currency
-                exchange experience is secure, fast, and hassle-free.
+                At Remittin, our mission is to simplify global currency exchange
+                by breaking down financial borders and building trust through
+                transparent, reliable, and fair-rate services. We believe
+                everyone deserves access to honest and affordable money
+                transfers—no matter where they are.
               </p>
 
-              <div className="flex justify-center md:justify-start mt-8">
+              <div className="flex justify-center md:justify-start mt-7">
                 <Link href={buttonLink} className="inline-block">
-                  <button className="bg-primary hover:bg-primaryhover text-mainheading cursor-pointer font-semibold lg:text-lg text-base py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
+                  <button className="bg-primary hover:bg-primaryhover text-mainheading cursor-pointer font-medium py-3 px-8 h-12.5 lg:text-lg text-base rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
                     {buttonText}
                   </button>
                 </Link>
               </div>
             </div>
           </div>
+
           <div className="w-full lg:w-1/2 lg:order-2 order-1 hidden md:block">
             {/* ... (content remains the same) ... */}
             <div className="space-y-4 text-center md:text-left">
@@ -430,27 +430,22 @@ const CurrencyExchangeServices: React.FC<
 
               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
                 <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite sm:block hidden">
-                  Creating a Borderless Future With{" "}
-                  <span className="text-primary">
-                    Honest Currency Exchange{" "}
-                  </span>
+                  Making Money Transfers{" "}
+                  <span className="text-primary">Fair and Simple </span>
                 </h3>
                 <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
                   At Remittin, our mission is to simplify global currency
                   exchange by breaking down financial borders and building trust
                   through transparent, reliable, and fair-rate services. We
                   believe everyone deserves access to honest and affordable
-                  money transfers—no matter where they are. With a focus on
-                  integrity, innovation, and customer care, we’re creating a
-                  future where exchanging money is easy, borderless, and
-                  worry-free.
+                  money transfers—no matter where they are.
                 </p>
               </div>
             </div>
 
             <div className="flex justify-center md:justify-start mt-8">
               <Link href={buttonLink} className="inline-block">
-                <button className="bg-primary hover:bg-primaryhover text-mainheading cursor-pointer font-medium py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
+                <button className="bg-primary hover:bg-primaryhover text-mainheading cursor-pointer font-medium py-3 px-8 lg:text-lg text-base h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
                   {buttonText}
                 </button>
               </Link>

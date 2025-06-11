@@ -288,8 +288,6 @@
 
 // export default TrustedCurrencyPartner;
 
-
-
 "use client";
 import Image from "next/image";
 import Link from "next/link";
@@ -299,7 +297,7 @@ import { useAuth } from "@/app/contexts/AuthContext";
 const TrustedCurrencyPartner = () => {
   const { user } = useAuth();
 
-  const buttonText = user ? "Go to Exchange" : "Join Remityn Now";
+  const buttonText = user ? "Go to Dashboard" : "Join Remityn Now";
   const buttonLink = user ? "/dashboard/send/select-balance" : "/auth/register";
 
   return (
@@ -322,7 +320,7 @@ const TrustedCurrencyPartner = () => {
               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
                 {/* Heading */}
                 <h2 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite sm:block hidden">
-                  Money Without Borders To Powered {" "}
+                  Money Without Borders To Powered{" "}
                   <span className="text-primary"> By Remityn </span>
                 </h2>
 
@@ -330,15 +328,12 @@ const TrustedCurrencyPartner = () => {
                 <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
                   At Remittin, we believe that money should move freely—quickly,
                   securely, and affordably—across all borders. That’s why we’ve
-                  created a seamless currency exchange platform that empowers
-                  travelers, global workers, and businesses to send and receive
-                  money with confidence. Backed by real-time rates, zero hidden
-                  fees, and trusted support, Remittin is redefining how the
-                  world experiences cross-border transactions.
+                  created a seamless currency exchange platform. Backed by
+                  real-time rates, <span className="text-primary capitalize font-medium">zero hidden fees</span> , and trusted support.
                 </p>
               </div>
 
-              <div className="flex justify-center md:justify-start mt-8">
+              <div className="flex justify-center md:justify-start mt-7">
                 <Link href={buttonLink} className="inline-block">
                   <button className="bg-primary hover:bg-primaryhover text-mainheading cursor-pointer font-medium py-3 px-8 h-12.5 lg:text-lg text-base rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
                     {buttonText}
@@ -352,12 +347,12 @@ const TrustedCurrencyPartner = () => {
             {/* ... (content remains the same) ... */}
             <div className="sm:hidden block">
               <span className="text-subheadingWhite font-medium text-sm mb-1 text-center md:text-left block uppercase">
-                <span className="text-subheadingWhite/50">[</span> About us
+                <span className="text-subheadingWhite/50">[</span> ABOUT US
                 <span className="text-subheadingWhite/50">]</span>
               </span>
               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
                 <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
-                  Money Without Borders To – Powered {" "}
+                  Money Without Borders To – Powered{" "}
                   <span className="text-primary">By Remityn</span>
                 </h3>
               </div>
