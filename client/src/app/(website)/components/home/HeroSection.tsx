@@ -745,10 +745,10 @@ const HeroSection: React.FC = () => {
   let buttonLink: string;
 
   if (!authLoading && user) {
-    buttonText = "Get Started";
+    buttonText = "Send now - it' free";
     buttonLink = "/dashboard/send/select-balance";
   } else {
-    buttonText = "Create A Free Account";
+    buttonText = "Send now - it' free";
     buttonLink = "/auth/register"; // Assuming /signup, adjust if it's /auth/register
   }
 
@@ -801,17 +801,17 @@ const HeroSection: React.FC = () => {
         </div>
       </div>
 
-      <div className="relative z-10 flex flex-col items-center text-center max-w-4xl mx-auto mt-16 sm:mt-24 md:mt-20">
+      <div className="relative z-10 flex flex-col items-center text-center max-w-5xl mx-auto mt-16 sm:mt-24 md:mt-24">
         <div className="mb-6 inline-flex items-center bg-primarybox backdrop-blur-md text-white px-4 py-1.5 rounded-full text-sm sm:text-base border">
           <IoTrendingUp size={20} className="mr-2 text-primary" />
-          Always The Latest Exchange Rates
+          Always Better Than Google
         </div>
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight text-mainheadingWhite">
-          Easy Global Money Exchange at{" "}
-          <span className="text-primary">0% Fees.</span>
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight text-mainheadingWhite">
+          Send Money to India with {" "}
+          <span className="text-primary"> Remityn at zero fees</span>
         </h1>
         <p className="text-lg md:text-xl text-subheadingWhite mb-10 max-w-3xl px-2">
-          Experience lightning-fast, secure money exchange across borders. We offer transparent, real-time rates with absolutely 0% fees on your transfers.
+          Trusted by thousands of global indians for safe,fee-free remittances.
         </p>
         <Link
           href={buttonLink}
@@ -821,9 +821,9 @@ const HeroSection: React.FC = () => {
         </Link>
         <p className="mt-8 text-sm sm:text-base text-subheadingWhite flex items-center justify-center">
           <Globe size={20} className="mr-1.5 text-primary" />
-          <span className="opacity-90">Trusted by over </span>
+          <span className="opacity-90">Trusted by over</span>
           <span className="font-bold text-white mx-0.5 px-1">2000+</span>
-          <span className="opacity-90">happy clients worldwide.</span>
+          <span className="opacity-90">Indians abroad · Rated 4.9 / 5 on Trustpilot </span>
         </p>
       </div>
 
