@@ -29,10 +29,8 @@ const SecuritySection = () => {
             <div className="space-y-4 text-center md:text-left">
               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
                 <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
-                  Smart Dashboard for{" "}
-                  <span className="text-primary">
-                    Effortless Currency Management
-                  </span>
+                  Smart Dashboard for Effortless{" "}
+                  <span className="text-primary">Currency Management</span>
                 </h3>
 
                 <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
