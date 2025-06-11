@@ -383,7 +383,7 @@ const SecuritySection: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row items-center gap-8">
           {/* Left Text Block */}
-          <div className="w-full lg:w-1/2 order-2 lg:order-1">
+          <div className="w-full lg:w-3/5 order-2 lg:order-1">
             <div className="space-y-4 text-center md:text-left">
               <div className="lg:inline-block hidden">
                 <span className="text-subheadingWhite font-medium text-sm uppercase">
@@ -395,17 +395,11 @@ const SecuritySection: React.FC = () => {
 
               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
                 <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite lg:block hidden">
-                  Secure Global Exchange Rates:{" "}
-                  <span className="text-primary">Trusted & Protected</span>
+                  Secure & Trusted{" "}
+                  <span className="text-primary">Global Exchange Rates</span>
                 </h3>
                 <p className="text-subheadingWhite md:text-lg text-base max-w-5xl">
-                  Access real-time currency exchange rates with complete
-                  confidence. Our platform is built on bank-grade security
-                  protocols, featuring end-to-end encryption, real-time fraud
-                  monitoring, and strict compliance standards. Trusted by
-                  thousands worldwide, we ensure reliable, transparent financial
-                  conversions—keeping your money protected every step of the
-                  way."
+                  Get real-time currency rates backed by bank-grade security, end-to-end encryption, and global trust. Reliable, transparent, and fully protected.
                 </p>
               </div>
 
@@ -421,7 +415,7 @@ const SecuritySection: React.FC = () => {
           
 
           {/* Right Image Block */}
-          <div className="w-full lg:w-1/2 order-1 lg:order-2">
+          <div className="w-full lg:w-2/5 order-1 lg:order-2">
             <div className="lg:hidden block">
               <span className="text-subheadingWhite font-medium text-sm mb-1 text-center md:text-left block uppercase">
                 <span className="text-subheadingWhite/30">[</span> Built for
@@ -430,19 +424,19 @@ const SecuritySection: React.FC = () => {
               </span>
               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
                 <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
-                  Secure Global Exchange Rates:{" "}
-                  <span className="text-primary">Trusted & Protected</span>
+                  Secure & Trusted{" "}
+                  <span className="text-primary">Global Exchange Rates</span>
                 </h3>
               </div>
             </div>
-            <div className="relative w-full flex justify-center">
+            <div className="relative w-full flex lg:justify-end justify-center">
               <Image
                 src="/assets/images/gwdrgwerfg.png" // Ensure this path is correct and relative to the /public directory
-                width={550} // Original width
-                height={800} // Assuming the image is roughly square or you want to display it as such.
+                width={2000} // Original width
+                height={2000} // Assuming the image is roughly square or you want to display it as such.
                 // The original had height={800}, which would make it very tall. Adjust based on aspect ratio.
                 alt="Padlock icon symbolizing secure currency exchange and trust" // More descriptive alt text
-                className="object-contain rounded-3xl"
+                className="lg:w-[75%] w-auto rounded-3xl"
                 loading="lazy" // This section is likely below the fold, so lazy load.
                 sizes="(max-width: 768px) 90vw, (max-width: 1024px) 50vw, 550px" // Provide responsive sizes
                 // 90vw for smaller screens

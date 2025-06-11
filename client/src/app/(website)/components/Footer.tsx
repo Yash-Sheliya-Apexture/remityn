@@ -2299,12 +2299,12 @@ const Footer: React.FC = () => {
             {/* Footer-Logo */}
             <Link href="/" className="relative">
               <Image
-                src="/assets/images/main_logo.svg"
+                src="/assets/images/mobile-logo.svg"
                 alt="Remityn Logo" 
                 width={160}
                 height={50}
                 priority
-                className="w-46 h-auto" // Consider using explicit width e.g., w-[160px] or w-40 if using Tailwind's scale
+                className="w-36 h-auto" // Consider using explicit width e.g., w-[160px] or w-40 if using Tailwind's scale
               />
             </Link>
           </div>
