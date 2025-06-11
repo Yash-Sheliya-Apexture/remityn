@@ -294,19 +294,19 @@ const featuresData: FeatureItem[] = [
   {
     title: "Your Global Footprint, Simplified",
     description:
-      "Easily send, convert, and manage money worldwide through one secure platform. Stay globally connected and in full control of your finances.",
+      "Easily send, convert, and manage money worldwide through one secure platform.",
     icons: <Globe className="size-6 lg:size-8 text-primary" />,
   },
   {
     title: "Security That Never Sleeps",
     description:
-      "We protect every transaction with advanced encryption, 2FA, and 24/7 fraud monitoring—so your trust is never compromised. ",
+      "We protect every transaction with advanced encryption, 2FA, and 24/7 secure. ",
     icons: <LockKeyhole className="size-6 lg:size-8 text-primary" />,
   },
   {
     title: "Partnership, Not Just Processing",
     description:
-      "We do more than transfer money—we partner in your journey, supporting every step from first payment to global growth.",
+      "We do more than transfer money—we partner in your journey.",
     icons: <Handshake className="size-6 lg:size-8 text-primary" />,
   },
 ];

@@ -1117,9 +1117,6 @@
 
 // export default ReviewCards;
 
-
-
-
 // "use client";
 // import Image from "next/image";
 // import { useState, useEffect, useMemo } from "react";
@@ -1497,9 +1494,6 @@
 
 // export default ReviewCards;
 
-
-
-
 // "use client";
 
 // import Image from "next/image"; // Import next/image
@@ -1735,7 +1729,6 @@
 //     return allReviews.length > 0 && numVisibleReviews < allReviews.length;
 //   }, [allReviews, numVisibleReviews]);
 
-
 //   const renderHeader = () => (
 //     <div className="space-y-4 text-center md:text-left mb-10">
 //       <div className="inline-block">
@@ -1780,7 +1773,6 @@
 //     );
 //   }
 
-  
 //   if (!initialLoading && allReviews.length === 0 && !error) {
 //     return (
 //       <section className="Reviews md:pt-14 pt-10 overflow-hidden">
@@ -1923,14 +1915,11 @@
 
 // export default React.memo(ReviewCards);
 
-
-
 "use client";
 
-import Image from "next/image";
 import React, { useState, useEffect, useMemo } from "react";
 // --- CHANGE 1: REMOVED react-icons import ---
-// import { FaStar, FaStarHalfAlt } from "react-icons/fa"; 
+// import { FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -1961,7 +1950,7 @@ const RatingStar = ({
   starIndex: number;
 }) => {
   const greenColor = "#00B67B"; // Example: Your primary color for stars
-  const greyColor = "#4A5568";  // Example: A fitting dark-mode grey
+  const greyColor = "#4A5568"; // Example: A fitting dark-mode grey
 
   let backgroundStyle: React.CSSProperties = {};
   const starValue = starIndex + 1; // 1-indexed star
@@ -1982,7 +1971,7 @@ const RatingStar = ({
 
   return (
     <div
-      className="w-4 h-4 mr-1 p-0.5 relative" // Container for each star
+      className="size-5 mr-1 p-0.5 relative" // Container for each star
       style={backgroundStyle}
     >
       <SingleRatingStarIcon />
@@ -1990,31 +1979,33 @@ const RatingStar = ({
   );
 };
 
-
 // --- CHANGE 3: REPLACED the implementation of StarRating ---
 interface StarRatingProps {
   rating: number;
   maxRating?: number;
 }
 
-const StarRating: React.FC<StarRatingProps> = React.memo(({ rating, maxRating = 5 }) => {
-  // Create an array of star indexes from 0 to maxRating-1
-  const starIndexes = Array.from({ length: maxRating }, (_, i) => i);
+const StarRating: React.FC<StarRatingProps> = React.memo(
+  ({ rating, maxRating = 5 }) => {
+    // Create an array of star indexes from 0 to maxRating-1
+    const starIndexes = Array.from({ length: maxRating }, (_, i) => i);
 
-  return (
-    <div className="flex items-center"> {/* Use flex to align the star containers */}
-      {starIndexes.map((index) => (
-        <RatingStar
-          key={`star-${index}-${rating}`} // A robust key is good for re-renders
-          rating={rating}
-          starIndex={index}
-        />
-      ))}
-    </div>
-  );
-});
-StarRating.displayName = 'StarRating';
-
+    return (
+      <div className="flex items-center">
+        {" "}
+        {/* Use flex to align the star containers */}
+        {starIndexes.map((index) => (
+          <RatingStar
+            key={`star-${index}-${rating}`} // A robust key is good for re-renders
+            rating={rating}
+            starIndex={index}
+          />
+        ))}
+      </div>
+    );
+  }
+);
+StarRating.displayName = "StarRating";
 
 // --- ReviewCard Component (No changes needed here) ---
 interface ReviewCardProps {
@@ -2025,46 +2016,35 @@ interface ReviewCardProps {
   DateAndTime: string;
 }
 
-const ReviewCard: React.FC<ReviewCardProps> = React.memo(({
-  reviewerName,
-  avatarUrl,
-  rating,
-  comment,
-  DateAndTime,
-}) => {
-  return (
-    <div className="rounded-2xl bg-primary-foreground border border-gray-600/50 lg:p-6 p-4 flex flex-col sm:items-start items-end h-full">
-      <div className="flex justify-between items-center gap-4 w-full">
-        <div className="flex items-center gap-3">
-          <Image
-            src={avatarUrl}
-            alt={`Avatar of ${reviewerName}`}
-            width={64}
-            height={64}
-            className="lg:size-16 size-14 rounded-full object-cover flex-shrink-0"
-            sizes="(max-width: 1024px) 3.5rem, 4rem"
-          />
-          <div className="flex flex-col items-start gap-1">
-            <div className="text-mainheadingWhite lg:text-lg text-base capitalize dark:text-primary font-medium">
-              {reviewerName}
+const ReviewCard: React.FC<ReviewCardProps> = React.memo(
+  ({ reviewerName, avatarUrl, rating, comment, DateAndTime }) => {
+    return (
+      <div className="rounded-2xl bg-primarybox border border-gray-600/50 lg:p-6 p-4 flex flex-col sm:items-start items-end h-full">
+        <div className="flex justify-between items-center gap-4 w-full">
+          <div className="flex items-center">
+            <div className="flex flex-col items-start gap-2">
+              <div className="lg:text-2xl text-lg capitalize text-white/90 font-medium">
+                {reviewerName}
+              </div>
+
+              {/* This now renders your new custom star component */}
+              <StarRating rating={rating} />
             </div>
-            {/* This now renders your new custom star component */}
-            <StarRating rating={rating} />
           </div>
         </div>
+        <div className="text-subheadingWhite lg:text-2xl text-lg mt-5 flex-grow">
+          {comment}
+        </div>
+        <div className="mt-5">
+          <span className="text-subheadingWhite text-sm font-medium capitalize">
+            {DateAndTime}
+          </span>
+        </div>
       </div>
-      <div className="text-subheadingWhite lg:text-lg text-base mt-5 flex-grow">
-        {comment}
-      </div>
-      <div className="mt-5">
-        <span className="text-subheadingWhite text-sm font-medium capitalize">
-          {DateAndTime}
-        </span>
-      </div>
-    </div>
-  );
-});
-ReviewCard.displayName = 'ReviewCard';
+    );
+  }
+);
+ReviewCard.displayName = "ReviewCard";
 
 // ... (The rest of your file remains unchanged) ...
 
@@ -2092,7 +2072,7 @@ const listContainerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.10,
+      staggerChildren: 0.1,
       delayChildren: 0.2,
     },
   },
@@ -2123,7 +2103,11 @@ const ReviewCards: React.FC = () => {
     let flatReviews: Review[] = [];
     reviewGroups.forEach((group, groupIndex) => {
       group.reviews.forEach((review, reviewIndex) => {
-        const uniqueId = `review-${group.id || `group${groupIndex}`}-${reviewIndex}-${review.reviewerName.replace(/\s+/g, '-').toLowerCase()}-${review.rating}`;
+        const uniqueId = `review-${
+          group.id || `group${groupIndex}`
+        }-${reviewIndex}-${review.reviewerName
+          .replace(/\s+/g, "-")
+          .toLowerCase()}-${review.rating}`;
         flatReviews.push({
           ...review,
           id: uniqueId,
@@ -2145,20 +2129,29 @@ const ReviewCards: React.FC = () => {
         const data: ReviewJson = await response.json();
 
         if (!data || !Array.isArray(data.reviewGroups)) {
-            console.error("Fetched data is not in the expected format:", data);
-            throw new Error("Invalid review data format received from server.");
+          console.error("Fetched data is not in the expected format:", data);
+          throw new Error("Invalid review data format received from server.");
         }
-        data.reviewGroups.forEach(group => {
-            if (!group || !Array.isArray(group.reviews)) {
-                console.error("Invalid group structure in review data:", group);
-                throw new Error("Invalid group structure within review data.");
-            }
+        data.reviewGroups.forEach((group) => {
+          if (!group || !Array.isArray(group.reviews)) {
+            console.error("Invalid group structure in review data:", group);
+            throw new Error("Invalid group structure within review data.");
+          }
         });
 
         setReviewGroups(data.reviewGroups);
       } catch (err: any) {
         console.error("Failed to fetch or parse reviews:", err);
-        setError(err instanceof Error ? err : new Error(String(err.message || "An unknown error occurred while fetching reviews.")));
+        setError(
+          err instanceof Error
+            ? err
+            : new Error(
+                String(
+                  err.message ||
+                    "An unknown error occurred while fetching reviews."
+                )
+              )
+        );
       } finally {
         setInitialLoading(false);
       }
@@ -2198,20 +2191,20 @@ const ReviewCards: React.FC = () => {
     return allReviews.length > 0 && numVisibleReviews < allReviews.length;
   }, [allReviews, numVisibleReviews]);
 
-
   const renderHeader = () => (
     <div className="space-y-4 text-center md:text-left mb-10">
-        <h2 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite lg:max-w-3xl max-w-full">
-          Honest Reviews,{" "}
-          <span className="text-primary">Real Travelers Like You</span>
-        </h2>
-        
-        <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
-          Discover what real travelers have to say about their experiences with
-          our currency exchange services. From frequent flyers to first-time
-          tourists, our customers share honest feedback about fast, reliable,
-          and secure transactions.
-        </p>
+      <h2 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite lg:max-w-3xl max-w-full">
+        Honest Reviews, Real{" "}
+        <span className="text-primary"> Travelers Like You</span>
+      </h2>
+
+      <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
+        Discover what real travelers have to say about their experiences with
+        our currency exchange services. From frequent flyers to first-time
+        tourists, our customers share honest feedback about fast, reliable, and
+        secure transactions.
+      </p>
+      
     </div>
   );
 
@@ -2236,7 +2229,6 @@ const ReviewCards: React.FC = () => {
     );
   }
 
-  
   if (!initialLoading && allReviews.length === 0 && !error) {
     return (
       <section className="Reviews md:pt-14 pt-10 overflow-hidden">
@@ -2257,19 +2249,30 @@ const ReviewCards: React.FC = () => {
       <div className="container mx-auto px-4">
         {renderHeader()}
 
-         {initialLoading && (
+        {initialLoading && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-5">
             {Array.from({ length: INITIAL_REVIEWS_COUNT }).map((_, index) => (
-              <div key={`skeleton-${index}`} className="rounded-2xl bg-primary-foreground border border-gray-600/50 lg:p-6 p-4 flex flex-col h-full">
+              <div
+                key={`skeleton-${index}`}
+                className="rounded-2xl bg-primary-foreground border border-gray-600/50 lg:p-6 p-4 flex flex-col h-full"
+              >
                 <div className="flex justify-between items-center gap-4 w-full">
                   <div className="flex items-center gap-3">
-                    <Skeleton className="lg:size-16 size-14 rounded-full flex-shrink-0 bg-background/30" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-8 w-40 rounded flex-shrink-0 bg-background/30" />
+                      <div className="flex gap-1">
+                        <Skeleton className="size-6 rounded flex-shrink-0 bg-background/30" />
+                        <Skeleton className="size-6 rounded flex-shrink-0 bg-background/30" />
+                        <Skeleton className="size-6 rounded flex-shrink-0 bg-background/30" />
+                        <Skeleton className="size-6 rounded flex-shrink-0 bg-background/30" />
+                        <Skeleton className="size-6 rounded flex-shrink-0 bg-background/30" />
+                      </div>
+                    </div>
                     <div className="flex-1 space-y-2 py-1">
                       <Skeleton className="h-5 w-3/4 rounded bg-background/30" />
                       <Skeleton className="h-4 w-1/2 rounded bg-background/30 " />
                     </div>
                   </div>
-                  <Skeleton className="size-10 rounded-lg flex-shrink-0 bg-background/30" />
                 </div>
                 <div className="space-y-2.5 mt-5 flex-grow">
                   <Skeleton className="h-4 rounded bg-background/30" />
@@ -2278,7 +2281,7 @@ const ReviewCards: React.FC = () => {
                   <Skeleton className="h-4 rounded w-5/6 bg-background/30" />
                 </div>
                 <div className="mt-5">
-                  <Skeleton className="h-4 w-1/3 rounded bg-background/30" />
+                  <Skeleton className="h-4 w-1/2 rounded bg-background/30" />
                 </div>
               </div>
             ))}
@@ -2297,7 +2300,11 @@ const ReviewCards: React.FC = () => {
               >
                 <AnimatePresence>
                   {reviewsToDisplay.map((review) => (
-                    <motion.div key={review.id} variants={cardItemVariants} layout>
+                    <motion.div
+                      key={review.id}
+                      variants={cardItemVariants}
+                      layout
+                    >
                       <ReviewCard {...review} />
                     </motion.div>
                   ))}
@@ -2317,7 +2324,11 @@ const ReviewCards: React.FC = () => {
                 >
                   <AnimatePresence>
                     {columnReviews.map((review) => (
-                      <motion.div key={review.id} variants={cardItemVariants} layout>
+                      <motion.div
+                        key={review.id}
+                        variants={cardItemVariants}
+                        layout
+                      >
                         <ReviewCard {...review} />
                       </motion.div>
                     ))}
@@ -2338,7 +2349,11 @@ const ReviewCards: React.FC = () => {
                 >
                   <AnimatePresence>
                     {columnReviews.map((review) => (
-                      <motion.div key={review.id} variants={cardItemVariants} layout >
+                      <motion.div
+                        key={review.id}
+                        variants={cardItemVariants}
+                        layout
+                      >
                         <ReviewCard {...review} />
                       </motion.div>
                     ))}
