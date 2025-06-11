@@ -132,13 +132,15 @@ const SendMoneySteps = () => {
             Send Money in <span className="text-primary">4 Simple Steps</span>
           </h3>
           <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
-            Send money quickly and securely in just four easy steps. From setting up your account to your recipient receiving funds in India, our streamlined process ensures a smooth and hassle-free experience.
+            Send money quickly and securely in just four easy steps. From
+            setting up your account to your recipient receiving funds in India,
+            our streamlined process ensures a smooth and hassle-free experience.
           </p>
         </div>
 
         {/* Steps Container */}
-        <div className="flex flex-col lg:flex-row items-center gap-8 lg:mt-16 mt-10">
-          <div className="Steps-Container w-full lg:w-2/5">
+        <div className="flex flex-col xl:flex-row items-center xl:gap-0 gap-8 lg:mt-16 mt-10">
+          <div className="Steps-Container w-full xl:w-2/5">
             {steps.map((step, index) => (
               <div
                 key={step.id}
@@ -184,14 +186,15 @@ const SendMoneySteps = () => {
             ))}
           </div>
 
-          <div className="w-full lg:w-3/5 lg:block hidden">
-            <div className="relative w-full flex justify-center">
+          <div className="w-full xl:w-3/5">
+            <div className="relative w-full flex xl:justify-end justify-center items-center">
               <Image
-                src="/assets/images/steps_image-1.png"
+                src="/assets/images/steps.svg"
                 width={2000}
                 height={2000}
                 alt="Padlock symbolizing security"
-                className="object-contain w-[70%] rounded-3xl"
+                className="lg:w-[70%] w-auto rounded-3xl "
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 75vw, 550px" 
               />
             </div>
           </div>

@@ -1662,16 +1662,16 @@ const ClientTestimonialSection: React.FC = () => {
 
   return (
     <>
-      <section className="ClientTestimonialSection py-10 lg:py-40 overflow-hidden">
+      <section className="ClientTestimonialSection py-10 lg:py-16 overflow-hidden">
         <div className="container mx-auto px-4">
           <div className="lg:flex lg:items-center lg:gap-12 xl:gap-20">
             <div className="lg:w-2/5 xl:w-[38%] text-center lg:text-left mb-12 lg:mb-0">
               <div className="space-y-4 text-center md:text-left">
-                <div className="text-subheadingWhite font-medium text-sm uppercase mb-1">
+                {/* <div className="text-subheadingWhite font-medium text-sm uppercase mb-1">
                   <span className="text-subheadingWhite/30">[</span> Built for
                   safety. Trusted worldwide{" "}
                   <span className="text-subheadingWhite/30">]</span>
-                </div>
+                </div> */}
 
 
                 <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">

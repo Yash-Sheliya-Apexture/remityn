@@ -26032,7 +26032,7 @@ const CalculetingSection: React.FC = () => {
               {/* Added pointer-events-none */}
               <div className="absolute -left-1 -top-1">
                 <Image
-                  src="/assets/images/dsfsfdsfdsf.svg" // Path relative to /public
+                  src="/assets/images/LeftShep.svg" // Path relative to /public
                   width={150} // Provide appropriate dimensions
                   height={150}
                   className="z-1"
@@ -26042,7 +26042,7 @@ const CalculetingSection: React.FC = () => {
               </div>
               <div className="absolute -right-1 -top-1">
                 <Image
-                  src="/assets/images/zdfsdfwsedg.svg" // Path relative to /public
+                  src="/assets/images/RightShep.svg" // Path relative to /public
                   width={150} // Provide appropriate dimensions
                   height={150}
                   className="z-1"

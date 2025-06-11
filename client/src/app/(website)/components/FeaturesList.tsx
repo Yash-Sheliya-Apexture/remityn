@@ -9,10 +9,10 @@ const FeaturesList: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="space-y-4 text-center md:text-left">
           <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
-            Built for{" "}<span className="text-primary">Speed, Security, and Simplicity</span>
+            Fast, Flexible & {" "}<span className="text-primary">Transparent</span>
           </h3>
           <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
-            Explore powerful features that make cross-border transfers easier than ever — no hidden fees, just complete peace of mind.
+            Experience effortless money transfers with quick sign-up, instant INR deposits via bank transfer, live exchange rates, and real-time tracking—all in one seamless flow.
           </p>
         </div>
         <div className="w-full box-border lg:mt-16 mt-10">

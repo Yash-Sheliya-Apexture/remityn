@@ -294,12 +294,9 @@
 "use client"; // This component uses React state/effects implicitly or explicitly via icons, so "use client" is appropriate.
 
 import React from 'react';
-import {
-  IoRocketOutline,
-  IoSwapHorizontalOutline,
-  IoWalletOutline,
-} from 'react-icons/io5';
-
+import { MdOutlineHeadsetMic } from "react-icons/md";
+import { CgArrowsExchange } from "react-icons/cg";
+import { IoReceiptOutline } from "react-icons/io5";
 // Define type for Product data
 type Product = {
   icon: React.ReactNode;
@@ -308,26 +305,26 @@ type Product = {
 };
 
 // Icon components for better readability and potential reusability
-const TransferIcon = () => <IoSwapHorizontalOutline className="w-8 h-8 text-primary" />;
-const RocketIcon = () => <IoRocketOutline className="w-8 h-8 text-primary" />;
-const WalletIcon = () => <IoWalletOutline className="w-8 h-8 text-primary" />;
+const ReceiptIcon = () => <IoReceiptOutline className="w-8 h-8 text-primary" />;
+const ExchangeAltIcon = () => <CgArrowsExchange className="w-10 h-10 text-primary" />;
+const HeadsetIcon = () => <MdOutlineHeadsetMic className="w-8 h-8 text-primary" />;
 
 // Data for the "individuals" products
 const individualsProductsData: Product[] = [
   {
-    icon: <TransferIcon />,
-    title: 'Effortless Money Transfers',
-    description: 'Easily send funds directly to Indian bank accounts with a smooth experience.',
+    icon: <ReceiptIcon />,
+    title: 'No Hidden Fees',
+    description: 'Transparent transfers with No hidden Charges.',
   },
   {
-    icon: <RocketIcon />,
-    title: 'Fast & Secure Transfers',
-    description: 'Transfer funds swiftly and safely with our full data protection.',
+    icon: <ExchangeAltIcon />,
+    title: 'Superior Exchange Rates',
+    description: 'Always get the best value, guaranteed.',
   },
   {
-    icon: <WalletIcon />,
-    title: 'Competitive Exchange Rates',
-    description: 'Get the best, transparent exchange rates with zero hidden fees, saving you money on every transfer.',
+    icon: <HeadsetIcon />,
+    title: '24/7 Expert Support',
+    description: 'Help when you need it, not bots.',
   },
 ];
 
@@ -337,11 +334,11 @@ const InternationalTransferSection: React.FC = () => {
       <div className="container mx-auto px-4">
         {/* Header Section */}
         <div className="text-center lg:text-left">
-          <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite lg:max-w-4xl max-w-full">
-            Send Money to India,{" "}<span className="text-primary">The Smarter Way</span>
+          <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite lg:max-w-5xl max-w-full">
+            Why Thousands Choose{" "}<span className="text-primary">Remityn</span>
           </h3>
           <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
-            Send money with confidence through our fast, secure, and cost-effective platform. Whether it's for family, education, or emergencies, Remitin offers effortless transfers, competitive exchange rates, and a seamless user experience—all backed by bank-level security.
+            Experience unmatched convenience, reliability,and security, trusted by businesses and individuals alike.
           </p>
         </div>
 
