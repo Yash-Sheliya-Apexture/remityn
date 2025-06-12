@@ -1683,7 +1683,7 @@ const ClientTestimonialSection: React.FC = () => {
                   <p className="text-subheadingWhite md:text-lg text-base max-w-5xl">
                     From quick account setup to secure global transfers,
                     thousands rely on us every day. Real experiences from real
-                    people—proof that your money is in trusted hands.
+                    people proof that your money is in trusted hands.
                   </p>
                 </div>
 

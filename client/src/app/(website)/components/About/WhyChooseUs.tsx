@@ -292,21 +292,21 @@ interface FeatureItem {
 
 const featuresData: FeatureItem[] = [
   {
-    title: "Your Global Footprint, Simplified",
+    title: "Global Transfers, Simplified",
     description:
-      "Easily send, convert, and manage money worldwide through one secure platform.",
+      "Send and manage money worldwide with ease.",
     icons: <Globe className="size-6 lg:size-8 text-primary" />,
   },
   {
     title: "Security That Never Sleeps",
     description:
-      "We protect every transaction with advanced encryption, 2FA, and 24/7 secure. ",
+      "24/7 protection with encryption and 2FA.",
     icons: <LockKeyhole className="size-6 lg:size-8 text-primary" />,
   },
   {
-    title: "Partnership, Not Just Processing",
+    title: "Beyond Transfers",
     description:
-      "We do more than transfer money—we partner in your journey.",
+      "Trusted partner in your money journey.",
     icons: <Handshake className="size-6 lg:size-8 text-primary" />,
   },
 ];
@@ -325,11 +325,7 @@ const WhyChooseUs: React.FC = () => {
           </h3>
 
           <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
-            Your money isn’t just currency—it’s care, commitment, and
-            connection. At Remityn, we treat every transfer as a personal
-            mission. With cutting-edge security, real-time tracking, and
-            dedicated support, we make sure your funds reach their destination
-            safely and swiftly.
+            Your money isn’t just currency. it represents care, commitment and connection. Remityn ensures every transfer is secure, fast and personally supported.
           </p>
         </div>
 
