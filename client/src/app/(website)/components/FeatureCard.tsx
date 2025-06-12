@@ -25,8 +25,8 @@ export const features: Feature[] = [
   {
     id: 1,
     icon: Clock,
-    title: "2-Minute Sign-Up",
-    description: "Snap your ID, you’re in.",
+    title: "Quick Sign-Up",
+    description: "Start in two minutes.",
     colSpanLarge: "lg:col-span-3", // Spans 3 of 6 columns on large screens
     iconBgColor: "#e3ffd1", // Light green
   },
@@ -34,30 +34,30 @@ export const features: Feature[] = [
     id: 2,
     icon: Wallet,
     title: "Pay Any Way",
-    description: "Use bank transfer.",
+    description: "ACH, or wire transfer.",
     colSpanLarge: "lg:col-span-3", // Spans 3 of 6 columns on large screens
     iconBgColor: "#9bf7ff", // Light blue
   },
   {
     id: 3,
     icon: Send,
-    title: "Instant INR Deposit",
-    description: "Money drops via Bank transfer.",
+    title: "Fast INR Credit",
+    description: "Funds land within hours.",
     colSpanLarge: "lg:col-span-2", // Spans 2 of 6 columns on large screens
     iconBgColor: "#e2c9fb", // Light pink
   },
   {
     id: 4,
     icon: Shuffle,
-    title: "Live Exchange Rate",
-    description: "See it, lock it, send it.",
+    title: "Best Rate · Zero Fee",
+    description: "World-leading rate, absolutely free.",
     colSpanLarge: "lg:col-span-2", // Spans 2 of 6 columns on large screens
     iconBgColor: "#fbcdcd", // Light orange
   },
   {
     id: 7,
     icon: AudioWaveform,
-    title: "Clear Tracking",
+    title: "Live Tracking",
     description: "Watch every step till it arrives.",
     colSpanLarge: "lg:col-span-2", // Spans 3 of 6 columns on large screens
     iconBgColor: "#FFA07A", // Light yellow

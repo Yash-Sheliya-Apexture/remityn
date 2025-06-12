@@ -79,7 +79,7 @@
 // src/components/IndividualStepCard.tsx
 import React from "react";
 import Image from "next/image";
-import { StepData, ContentBlock } from "../../../../types/step-data"; // Adjust path as needed
+import { StepData, ContentBlock } from "../../../../../types/step-data"; // Adjust path as needed
 
 // Helper function to get CSS classes
 const getBlockClasses = (type: ContentBlock["type"]) => {
