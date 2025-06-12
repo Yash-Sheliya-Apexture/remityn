@@ -26423,7 +26423,7 @@ const CalculetingSection: React.FC = () => {
                     ? "Loading..."
                     : user
                     ? "Send Money"
-                    : "Get Started"}
+                    : "Send Money"}
                 </Link>
               </div>
             </div>

@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/app/contexts/AuthContext";
 
-const SecuritySection = () => {
+const FeatureHero = () => {
   const { user } = useAuth();
 
   const buttonText = user
@@ -69,4 +69,4 @@ const SecuritySection = () => {
     </section>
   );
 };
-export default SecuritySection;
+export default FeatureHero;

@@ -310,26 +310,23 @@ const TrustedCurrencyPartner = () => {
           <div className="w-full lg:w-1/2 order-2 md:order-1">
             {/* ... (content remains the same) ... */}
             <div className="space-y-4 text-center md:text-left">
-              <div className="sm:inline-block hidden">
-                <div className="text-subheadingWhite text-sm uppercase">
-                  <span className="text-subheadingWhite/50">[</span> ABOUT US{" "}
-                  <span className="text-subheadingWhite/50">]</span>
-                </div>
-              </div>
-
               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
                 {/* Heading */}
                 <h2 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite sm:block hidden">
-                  Money Without Borders To Powered{" "}
+                  Moving Your Money Powered{" "}
                   <span className="text-primary"> By Remityn </span>
                 </h2>
 
                 {/* Dicpription */}
-                <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
-                  At Remittin, we believe that money should move freely—quickly,
-                  securely, and affordably—across all borders. That’s why we’ve
+                {/* <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
+                  At Remittin, we believe that money should move freely quickly,
+                  securely, and affordably across all borders. That’s why we’ve
                   created a seamless currency exchange platform. Backed by
                   real-time rates, <span className="text-primary capitalize font-medium">zero hidden fees</span> , and trusted support.
+                </p> */}
+
+                <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
+                  At Remityn, we simplify the way you send money across borders. With real-time exchange rates, <span className="text-primary capitalize font-medium">zero hidden fees</span> and top-tier security, our platform ensures your funds move quickly, safely, and affordably.
                 </p>
               </div>
 
@@ -346,14 +343,10 @@ const TrustedCurrencyPartner = () => {
           <div className="w-full lg:w-1/2 lg:order-2 order-1">
             {/* ... (content remains the same) ... */}
             <div className="sm:hidden block">
-              <span className="text-subheadingWhite font-medium text-sm mb-1 text-center md:text-left block uppercase">
-                <span className="text-subheadingWhite/50">[</span> ABOUT US
-                <span className="text-subheadingWhite/50">]</span>
-              </span>
               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
                 <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
-                  Money Without Borders To – Powered{" "}
-                  <span className="text-primary">By Remityn</span>
+                  Moving Your Money Powered{" "}
+                  <span className="text-primary"> By Remityn </span>
                 </h3>
               </div>
             </div>

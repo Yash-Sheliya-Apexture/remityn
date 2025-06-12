@@ -1,7 +1,7 @@
 // src/components/OurFeatures.tsx
 import React from "react";
 // Import FeatureCard component, features data, and Feature interface from FeatureCard.tsx
-import FeatureCard, { features, Feature } from "./FeatureCard"; // Adjust path if necessary
+import FeatureCard, { features, Feature } from "../FeatureCard"; // Adjust path if necessary
 
 const FeaturesList: React.FC = () => {
   return (
@@ -12,7 +12,7 @@ const FeaturesList: React.FC = () => {
             Fast, Flexible & {" "}<span className="text-primary">Transparent</span>
           </h3>
           <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
-            Experience effortless money transfers with quick sign-up, instant INR deposits via bank transfer, live exchange rates, and real-time tracking—all in one seamless flow.
+            Experience effortless money transfers with quick sign-up, instant INR deposits via bank transfer, live exchange rates, and real-time tracking all in one seamless flow.
           </p>
         </div>
         <div className="w-full box-border lg:mt-16 mt-10">
