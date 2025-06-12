@@ -36,7 +36,7 @@ const SecuritySection = () => {
                 <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
                   Gain full visibility and control over your international
                   transactions with a sleek, real-time dashboard. Track
-                  balances, exchange rates, and transaction history—all in one
+                  balances, exchange rates, and transaction history all in one
                   intuitive interface designed for secure, seamless money
                   movement across borders.
                 </p>
