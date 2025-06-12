@@ -6661,7 +6661,6 @@ import { FaCoins } from "react-icons/fa";
 // Import the modal components (ensure paths are correct)
 import AddCurrencyModal from "../components/AddCurrencyModal";
 import DeleteCurrencyModal from "../components/DeleteCurrencyModal";
-import { error } from "console";
 
 axios.defaults.baseURL = apiConfig.baseUrl;
 
