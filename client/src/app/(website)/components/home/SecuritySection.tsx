@@ -385,14 +385,6 @@ const SecuritySection: React.FC = () => {
           {/* Left Text Block */}
           <div className="w-full lg:w-3/5 order-2 lg:order-1">
             <div className="space-y-4 text-center md:text-left">
-              {/* <div className="lg:inline-block hidden">
-                <span className="text-subheadingWhite font-medium text-sm uppercase">
-                  <span className="text-subheadingWhite/30">[</span> Built for
-                  safety. Trusted worldwide{" "}
-                  <span className="text-subheadingWhite/30">]</span>
-                </span>
-              </div> */}
-
               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
                 <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite lg:block hidden">
                   Secure & Trusted{" "}
