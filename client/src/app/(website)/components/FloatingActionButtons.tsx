@@ -1111,13 +1111,13 @@ const FloatingButton: React.FC<FloatingButtonProps> = ({
         aria-label={ariaLabel}
         type="button"
         style={buttonStyle}
-        className={`relative z-10 flex items-center rounded-full p-2 bg-white border ${borderColorClass} ${
-          applyBaseShadow ? "shadow-lg" : ""
+        className={`relative z-10 flex items-center rounded-full p-2 bg-background border ${borderColorClass} ${
+          applyBaseShadow ? "" : ""
         } transition-all duration-300 ease-in-out overflow-hidden group-hover:px-4 group-hover:border-transparent focus:outline-none cursor-pointer ${hoverButtonBgClass} ${buttonSpecificAnimationClass}`}
       >
         <span className={`flex-shrink-0 ${iconColorClass}`}>{icon}</span>
         <span
-          className={`whitespace-nowrap transition-all duration-300 ease-in-out overflow-hidden max-w-0 opacity-0 ml-0 group-hover:max-w-xs group-hover:opacity-100 group-hover:ml-2 ${initialTextColorClass} ${hoverTextColorClass}`}
+          className={`whitespace-nowrap transition-all duration-150 ease-linear overflow-hidden max-w-0 opacity-0 ml-0 group-hover:max-w-xs group-hover:opacity-100 group-hover:ml-2 ${initialTextColorClass} ${hoverTextColorClass}`}
         >
           {textOnHover}
         </span>
@@ -1209,6 +1209,7 @@ const FloatingActionButtons: React.FC = () => {
         animationConfig={{ type: "whatsapp", trigger: "always" }}
         animationDelay="0s"
       /> */}
+
       <FloatingButton
         onClick={handleMessagesClick}
         icon={<BsChatDots className={iconSize} />}
@@ -1219,6 +1220,7 @@ const FloatingActionButtons: React.FC = () => {
         animationConfig={{ type: "message", trigger: "always" }}
         animationDelay="0.3s" // This delay is fine, it will now be the last button
       />
+
       {/* FloatingButton for Phone removed */}
       {/*
       <FloatingButton
