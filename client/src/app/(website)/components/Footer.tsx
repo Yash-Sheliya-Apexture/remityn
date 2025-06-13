@@ -2244,7 +2244,7 @@ const navLinks: NavLinkItem[] = [
 const contactInfo: ContactInfoItem[] = [
   {
     icon: MdEmail,
-    text: "www.remityn.com", // Assuming this is a placeholder, update if needed
+    text: "help.remityn@gmail.com", // Assuming this is a placeholder, update if needed
     href: "mailto:https://www.remityn.com/",
     ariaLabel: "Email us at hello@skillbirdge.com",
   },
