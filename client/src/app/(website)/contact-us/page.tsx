@@ -789,9 +789,6 @@
 
 // export default ContactForm;
 
-
-
-
 "use client";
 // ContactForm.tsx
 import React, { useState, ChangeEvent, FormEvent, useCallback } from "react"; // Added useCallback
@@ -940,17 +937,21 @@ const ContactForm: React.FC = () => {
 
         <div className="lg:grid lg:grid-cols-12 lg:gap-10 items-start">
           {/* Left Column: Contact Info */}
-          <div className="lg:col-span-5 mb-10 lg:mb-0 bg-primarybox p-6 rounded-xl">
-            <h2 className="text-2xl font-semibold text-white/90 mb-6">
-              Contact Information
-            </h2>
+          <div className="lg:col-span-5 flex justify-between flex-col mb-10 lg:mb-0 bg-primarybox p-6 rounded-xl h-full">
+            <div>
+              <h2 className="text-2xl font-semibold text-white/90 mb-6">
+                Contact Information
+              </h2>
 
-            <p className="text-mainheadingWhite mb-8">
-              Need help with our currency exchange services? Contact us directly
-              or use the quick to form we’ll respond as soon as possible.
-            </p>
+              <p className="text-mainheadingWhite mb-8">
+                Need help with our currency exchange services? Contact us
+                directly or use the quick form we’ll respond as soon as
+                possible. You can also reach out for assistance with adding a
+                recipient or checking the status of your recent transfers.
+              </p>
+            </div>
 
-            <div className="space-y-6">
+            <div className="space-y-5">
               <div className="flex items-start">
                 <MailIcon className="size-6 text-primary flex-shrink-0 mr-4 mt-1" />
                 <div>
@@ -980,35 +981,6 @@ const ContactForm: React.FC = () => {
                     <span>Start Chat</span>
                   </button>
                 </div>
-              </div>
-            </div>
-
-            <div className="xl:mt-8 xl:pt-8 pt-6 mt-6 border-t">
-              {" "}
-              {/* Added border color for better visibility in dark themes */}
-              <h3 className="text-lg font-medium text-white mb-4">
-                Connect with Us:
-              </h3>
-              <div className="flex space-x-3">
-                <a
-                  href="#" // Example: Replace with your actual WhatsApp link
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Contact Remity on WhatsApp"
-                  className="text-mainheadingWhite hover:text-primary transition-all ease-linear duration-150"
-                >
-                  <IoLogoWhatsapp className="size-7" />
-                </a>
-
-                <a
-                  href="#" // Replace with your actual Telegram link
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Remity on Telegram"
-                  className="text-mainheadingWhite hover:text-primary transition-all ease-linear duration-150"
-                >
-                  <FaTelegram className="size-7" />
-                </a>
               </div>
             </div>
           </div>
@@ -1085,7 +1057,7 @@ const ContactForm: React.FC = () => {
                     maxLength={2000}
                     placeholder="Enter your message here..."
                     data-testid="message"
-                    className="mt-1 block px-4 py-3.5 bg-primarybox w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 text-white focus:outline-0 sm:[&::-webkit-scrollbar]:w-2 sm:[&::-webkit-scrollbar]:h-3 sm:[&::-webkit-scrollbar-track]:rounded-full sm:[&::-webkit-scrollbar-thumb]:rounded-full sm:[&::-webkit-scrollbar-track]:bg-primarybox sm:[&::-webkit-scrollbar-thumb]:bg-secondarybox resize-none max-h-[135px]" // Updated focus style
+                    className="mt-1 block px-4 py-3.5 bg-primarybox w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 text-white focus:outline-0 sm:[&::-webkit-scrollbar]:w-2 sm:[&::-webkit-scrollbar]:h-3 sm:[&::-webkit-scrollbar-track]:rounded-full sm:[&::-webkit-scrollbar-thumb]:rounded-full sm:[&::-webkit-scrollbar-track]:bg-secondarybox sm:[&::-webkit-scrollbar-thumb]:bg-secondaryboxhover resize-none max-h-[100px]" // Updated focus style
                   ></textarea>
                 </div>
               </div>

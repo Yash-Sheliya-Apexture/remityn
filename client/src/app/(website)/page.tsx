@@ -49,6 +49,7 @@
 // }
 
 
+
 import { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import HeroSection from "./components/home/HeroSection"; // Likely LCP, load eagerly
@@ -62,6 +63,7 @@ const ClientTestimonialSection = dynamic(() => import("./components/home/ClientT
 const FeaturesList = dynamic(() => import("./components/home/FeaturesList"));
 const StepCardContent = dynamic(() => import("./components/home/StepCard/StepContentCard"));
 const CallToActionSection = dynamic(() => import("./components/home/CallToActionSection"));
+
 
 export const metadata: Metadata = {
   title: 'Fast & Secure International Money Transfers',
