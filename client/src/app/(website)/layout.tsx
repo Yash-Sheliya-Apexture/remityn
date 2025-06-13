@@ -500,7 +500,7 @@ export default function WebsiteLayout({ children }: LayoutProps) {
 
         {/* --- USE THE REUSABLE BUTTON --- */}
         <BackToTopButton position="center" mobileBehavior="visible" />
-        <FloatingActionButtons />
+        {/* <FloatingActionButtons /> */}
       </WebsiteAppProvider>
     </>
   );
