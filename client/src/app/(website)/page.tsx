@@ -55,6 +55,7 @@ import HeroSection from "./components/home/HeroSection"; // Likely LCP, load eag
 import CalculetingSection from "./components/home/CalculetingSection"; // Core interactive element, load eagerly
 
 // Dynamic imports for sections below the fold or less critical for initial interaction
+const FeatureMarquee = dynamic(() => import("./components/home/FeatureMarquee"));
 const InternationalTransferSection = dynamic(() => import("./components/home/InternationalTransferSection"));
 const SecuritySection = dynamic(() => import("./components/home/SecuritySection"));
 const ClientTestimonialSection = dynamic(() => import("./components/home/ClientTestimonialSection"));
@@ -83,6 +84,7 @@ export default function Home() {
     <>
       <HeroSection />
       <CalculetingSection />
+      <FeatureMarquee/>
       <InternationalTransferSection />
       <SecuritySection />
       <FeaturesList />
