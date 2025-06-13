@@ -26266,14 +26266,14 @@ const CalculetingSection: React.FC = () => {
                               <FaPiggyBank className="size-6 text-background" />
                             </div>
                             <div>
-                              <p className="font-semibold text-primary lg:text-base text-sm flex items-center gap-1">
+                              <p className="font-semibold text-primary lg:text-base text-sm">
                                 <span>
                                   You could save up to {calculation.savings}{" "}
                                   {CONFIG.RECEIVE_CURRENCY}
                                 </span>
                                 <TrendingUp
                                   size={18}
-                                  className="text-primary/80"
+                                  className="text-primary/80 ml-1 inline-flex items-center"
                                 />
                               </p>
                               <p className="text-xs md:text-sm font-medium text-gray-400">
