@@ -1865,10 +1865,10 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 // --- Import shared types ---
-import { StepData } from "../../../../types/step-data"; // Adjust path as needed
+import { StepData } from "../../../../../types/step-data"; // Adjust path as needed
 
 // --- Import the new component ---
-import IndividualStepCard from "../StepCard/IndividualStepCard"; // Adjust path as needed
+import IndividualStepCard from "./IndividualStepCard"; // Adjust path as needed
 
 // --- Register GSAP Plugin ---
 gsap.registerPlugin(ScrollTrigger);

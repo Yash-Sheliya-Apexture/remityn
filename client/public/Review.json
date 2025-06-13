@@ -4,7 +4,7 @@
             "id": 1,
             "reviews": [
                 {
-                    "reviewerName": "Rahul Deshmukh",
+                    "reviewerName": "Rahul Patel",
                     "avatarUrl": "/assets/images/Tom.jpg",
                     "rating": 5,
                     "DateAndTime": "10:25 AM · May 15, 2025",
@@ -21,7 +21,7 @@
                     "reviewerName": "Laura Bennett",
                     "avatarUrl": "/assets/images/Ryan.jpg",
                     "rating": 5.0,
-                    "DateAndTime": "17:15 PM · Mar 20, 2025",
+                    "DateAndTime": "7:15 AM · Apirl 20, 2025",
                     "comment": "As someone who’s not very tech-savvy, I was pleasantly surprised by how easy it was to send EUR to India. The platform is intuitive, and I received great support when I had a question about exchange timing. Will definitely use again."
                 }
             ]
@@ -63,7 +63,7 @@
                     "comment": "Living in Germany, I always worried about international money transfers. But this website really changed that. It guided me step by step, and the money arrived in India much faster than I expected. Truly a reliable service."
                 },
                 {
-                    "reviewerName": "Ritika Sharma",    
+                    "reviewerName": "Ritika Sharma",
                     "avatarUrl": "/assets/images/Emily.avif",
                     "rating": 4.5,
                     "DateAndTime": "6:15 PM · Jan 30, 2025",

@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/app/contexts/AuthContext";
 
-const SecuritySection = () => {
+const FeatureHero = () => {
   const { user } = useAuth();
 
   const buttonText = user
@@ -29,16 +29,14 @@ const SecuritySection = () => {
             <div className="space-y-4 text-center md:text-left">
               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
                 <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
-                  Smart Dashboard for{" "}
-                  <span className="text-primary">
-                    Effortless Currency Management
-                  </span>
+                  Smart Dashboard for Effortless{" "}
+                  <span className="text-primary">Currency Management</span>
                 </h3>
 
                 <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
                   Gain full visibility and control over your international
                   transactions with a sleek, real-time dashboard. Track
-                  balances, exchange rates, and transaction history—all in one
+                  balances, exchange rates, and transaction history all in one
                   intuitive interface designed for secure, seamless money
                   movement across borders.
                 </p>
@@ -71,4 +69,4 @@ const SecuritySection = () => {
     </section>
   );
 };
-export default SecuritySection;
+export default FeatureHero;

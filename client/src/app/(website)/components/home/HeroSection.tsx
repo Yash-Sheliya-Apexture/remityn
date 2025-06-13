@@ -745,10 +745,10 @@ const HeroSection: React.FC = () => {
   let buttonLink: string;
 
   if (!authLoading && user) {
-    buttonText = "Send now - it' free";
+    buttonText = "Send now - it's free";
     buttonLink = "/dashboard/send/select-balance";
   } else {
-    buttonText = "Send now - it' free";
+    buttonText = "Send now - it's free";
     buttonLink = "/auth/register"; // Assuming /signup, adjust if it's /auth/register
   }
 

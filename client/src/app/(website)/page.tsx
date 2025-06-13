@@ -55,12 +55,12 @@ import HeroSection from "./components/home/HeroSection"; // Likely LCP, load eag
 import CalculetingSection from "./components/home/CalculetingSection"; // Core interactive element, load eagerly
 
 // Dynamic imports for sections below the fold or less critical for initial interaction
-const InternationalTransferSection = dynamic(() => import("./components/InternationalTransferSection"));
+const InternationalTransferSection = dynamic(() => import("./components/home/InternationalTransferSection"));
 const SecuritySection = dynamic(() => import("./components/home/SecuritySection"));
 const ClientTestimonialSection = dynamic(() => import("./components/home/ClientTestimonialSection"));
-const FeaturesList = dynamic(() => import("./components/FeaturesList"));
-const StepCardContent = dynamic(() => import("./components/StepCard/StepContentCard"));
-const CallToActionSection = dynamic(() => import("./components/CallToActionSection"));
+const FeaturesList = dynamic(() => import("./components/home/FeaturesList"));
+const StepCardContent = dynamic(() => import("./components/home/StepCard/StepContentCard"));
+const CallToActionSection = dynamic(() => import("./components/home/CallToActionSection"));
 
 export const metadata: Metadata = {
   title: 'Fast & Secure International Money Transfers',

@@ -375,14 +375,10 @@ const CurrencyExchangeServices: React.FC<
           <div className="w-full lg:w-1/2 lg:order-1 order-2">
             {/* ... (content remains the same) ... */}
             <div className="sm:hidden block">
-              <span className="text-subheadingWhite font-medium text-sm mb-1 text-center md:text-left block uppercase">
-                <span className="text-subheadingWhite/50">[</span> Our mission
-                <span className="text-subheadingWhite/50">]</span>
-              </span>
               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
                 <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
-                  Making Money Transfers{" "}
-                  <span className="text-primary">Fair and Simple</span>
+                  Breaking Borders,{" "}
+                  <span className="text-primary">Building Global Trust</span>
                 </h3>
               </div>
             </div>
@@ -401,11 +397,7 @@ const CurrencyExchangeServices: React.FC<
             {/* ... (rest of the content) ... */}
             <div className="block md:hidden">
               <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full pt-8 text-center">
-                At Remittin, our mission is to simplify global currency exchange
-                by breaking down financial borders and building trust through
-                transparent, reliable, and fair-rate services. We believe
-                everyone deserves access to honest and affordable money
-                transfers—no matter where they are.
+                At Remityn, simplify global currency exchange by breaking down financial borders and building trust through transparent, reliable and fair-rate services.
               </p>
 
               <div className="flex justify-center md:justify-start mt-7">
@@ -421,24 +413,13 @@ const CurrencyExchangeServices: React.FC<
           <div className="w-full lg:w-1/2 lg:order-2 order-1 hidden md:block">
             {/* ... (content remains the same) ... */}
             <div className="space-y-4 text-center md:text-left">
-              <div className="sm:inline-block hidden">
-                <span className="text-subheadingWhite font-medium text-sm uppercase">
-                  <span className="text-subheadingWhite/50">[</span> Our mission
-                  <span className="text-subheadingWhite/50">]</span>
-                </span>
-              </div>
-
               <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
                 <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite sm:block hidden">
-                  Making Money Transfers{" "}
-                  <span className="text-primary">Fair and Simple </span>
+                  Breaking Borders,{" "}
+                  <span className="text-primary">Building Global Trust</span>
                 </h3>
                 <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
-                  At Remittin, our mission is to simplify global currency
-                  exchange by breaking down financial borders and building trust
-                  through transparent, reliable, and fair-rate services. We
-                  believe everyone deserves access to honest and affordable
-                  money transfers—no matter where they are.
+                  At Remityn, simplify global currency exchange by breaking down financial borders and building trust through transparent, reliable and fair-rate services.
                 </p>
               </div>
             </div>
