@@ -80,7 +80,7 @@ const KycRequiredModal: React.FC<KycRequiredModalProps> = ({
           aria-labelledby="kyc-required-modal-title" // Added for accessibility
         >
           <motion.div
-            className="bg-background sm:rounded-3xl rounded-t-3xl sm:p-8 p-4 w-full sm:max-w-lg relative text-center" // Modal container styles
+            className="bg-background sm:rounded-3xl rounded-t-3xl sm:p-8 p-4 space-y-4 w-full sm:max-w-lg relative text-center" // Modal container styles
             variants={modalVariants}
             initial="initial"
             animate="animate"
