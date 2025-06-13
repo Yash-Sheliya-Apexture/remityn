@@ -60,14 +60,12 @@
 
 // export default CallToActionSection;
 
-
-
 "use client"; // Keep "use client" if future interactions are planned (e.g., button click analytics).
-              // If purely static, it could be a Server Component, but "use client" is safe.
+// If purely static, it could be a Server Component, but "use client" is safe.
 
 import React from "react";
 import Image from "next/image"; // Import next/image
-import Link from "next/link";   // Import next/link for internal navigation
+import Link from "next/link"; // Import next/link for internal navigation
 
 const CallToActionSection: React.FC = () => {
   return (
@@ -83,27 +81,20 @@ const CallToActionSection: React.FC = () => {
               "linear-gradient(160deg,rgba(102, 232, 250, 0.5) 0%, rgba(255, 255, 255, 0) 28%, rgba(255, 255, 255, 0) 72%, rgba(102, 232, 250, 0.5) 100%)",
           }}
         >
-          {/* If the above gradient is meant as a border, the structure would be:
-          <div className="p-[2px] rounded-3xl" style={{ background: "linear-gradient(...)" }}>
-            <div className="bg-primary-foreground rounded-[calc(1.5rem-2px)] ...">
-              ... content ...
-            </div>
-          </div>
-          Otherwise, the current structure is fine if the gradient is the main background.
-          The border-2 border-transparent bg-clip-padding seems to aim for a border effect,
-          so a padding on the gradient div would make it an actual border.
-          For now, I'll assume the current structure is intended.
-          */}
-          <div className="border-2 border-transparent bg-clip-padding"> {/* This creates an invisible border area if parent has padding */}
-            <div className="bg-primary-foreground rounded-3xl p-8 md:p-12 lg:p-16 relative">
+          <div className="border-2 border-transparent bg-clip-padding">
+            {" "}
+            {/* This creates an invisible border area if parent has padding */}
+            <div className="bg-primary-foreground rounded-3xl p-8 md:p-10 lg:p-12 relative">
               {/* Decorative Shapes */}
-              <div className="shep pointer-events-none"> {/* Added pointer-events-none to prevent interaction with decorative elements */}
+              <div className="shep pointer-events-none">
+                {" "}
+                {/* Added pointer-events-none to prevent interaction with decorative elements */}
                 <div className="absolute left-1 top-0">
                   <Image
                     className="z-1" // z-index might not be needed if positioned absolutely within a relative parent
                     alt="" // Decorative image, empty alt
                     src="/assets/images/CollToAc_lect_Shep.svg" // Ensure path is relative to /public
-                    width={150}  // Provide appropriate width based on SVG's typical size or desired display
+                    width={150} // Provide appropriate width based on SVG's typical size or desired display
                     height={200} // Provide appropriate height
                     loading="lazy" // Decorative, likely below fold or not critical
                   />
@@ -113,7 +104,7 @@ const CallToActionSection: React.FC = () => {
                     className="z-1"
                     alt="" // Decorative image, empty alt
                     src="/assets/images/CollToAc_Right_Shep.svg" // Ensure path is relative to /public
-                    width={180}  // Provide appropriate width
+                    width={180} // Provide appropriate width
                     height={150} // Provide appropriate height
                     loading="lazy"
                   />
@@ -129,19 +120,19 @@ const CallToActionSection: React.FC = () => {
                     <span className="text-primary">Remityn today!</span>
                   </h2>
                   <p className="text-subheadingWhite md:text-lg text-base mt-6 leading-relaxed max-w-xl mx-auto lg:mx-0">
-                    Ready to take control of your finances? Join Remityn now, and
-                    let us help you achieve your financial goals with our tailored
-                    solutions and exceptional customer service.
+                    Ready to take control of your finances? Join Remityn now,
+                    and let us help you achieve your financial goals with our
+                    tailored solutions and exceptional customer service.
                   </p>
                 </div>
 
                 {/* Right Content Block: Call to Action Button */}
                 <div className="flex-shrink-0">
                   {/* Use Next.js Link component for internal navigation */}
-                  <Link href="/faqs" legacyBehavior={false} passHref>
+                  <Link href="/contact-us">
                     <button className="bg-primary hover:bg-primaryhover text-mainheading cursor-pointer font-medium text-base lg:text-lg py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
-                      Read more FAQs
-                    </button>
+                      Begin Your Financial Journey
+                    </button> 
                   </Link>
                 </div>
               </div>

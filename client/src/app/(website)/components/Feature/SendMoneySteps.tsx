@@ -5,7 +5,7 @@
 //   const steps = [
 //     {
 //       id: 1,
-//       icon: <UserPlus className="w-6 h-6 text-primary" />, 
+//       icon: <UserPlus className="w-6 h-6 text-primary" />,
 //       title: "Create Your Account",
 //       description: "Sign up quickly with minimal information.",
 //     },
@@ -53,7 +53,7 @@
 
 //               {/* Step Content */}
 //               <div className="flex items-start gap-8">
-                
+
 //                 <div className="flex justify-center">
 //                   <div className="w-20 h-20 rounded-full icon-outer-wrapper flex items-center justify-center">
 //                     <div className="w-14 h-14 rounded-full icon-inner-background flex items-center justify-center">
@@ -61,7 +61,7 @@
 //                     </div>
 //                   </div>
 //                 </div>
-                
+
 //                 <div className="flex-1 pt-2">
 //                   <h3 className="text-2xl text-mainheadingWhite font-semibold">
 //                     {step.title}
@@ -73,7 +73,7 @@
 //               </div>
 //             </div>
 //           ))}
-          
+
 //         </div>
 //       </div>
 //     </div>
@@ -82,45 +82,41 @@
 
 // export default SendMoneySteps;
 
-
-
-
 import React from "react";
-import { UserPlus, Wallet, Send, CheckCircle } from "lucide-react";
+import { Wallet, Send, UserRoundCheck, Users } from "lucide-react";
 import Image from "next/image";
 
 const SendMoneySteps = () => {
   const steps = [
-  {
-    id: 1,
-    icon: <UserPlus className="w-6 h-6 text-primary" />,
-    title: "Sign Up and Get Verified",
-    description:
-      "Create your account in minutes and verify your identity with a secure, seamless KYC process.",
-  },
-  {
-    id: 2,
-    icon: <Wallet className="w-6 h-6 text-primary" />,
-    title: "Create & Fund Your Currency Wallet",
-    description:
-      "Set up a wallet in your preferred currency and easily fund it to begin sending money.",
-  },
-  {
-    id: 3,
-    icon: <Send className="w-6 h-6 text-primary" />,
-    title: "Add Your Recipient",
-    description:
-      "Securely add recipient details and manage multiple beneficiaries with ease.",
-  },
-  {
-    id: 4,
-    icon: <CheckCircle className="w-6 h-6 text-primary" />,
-    title: "Transfer Money Seamlessly",
-    description:
-      "Send money with confidence—track every transaction in real time from wallet to recipient.",
-  },
-];
-
+    {
+      id: 1,
+      icon: <UserRoundCheck className="size-7 text-primary" />,
+      title: "Sign Up and Get Verified",
+      description:
+        "Quickly create your account and complete secure KYC verification in minutes.",
+    },
+    {
+      id: 2,
+      icon: <Wallet className="size-7 text-primary" />,
+      title: "Create & Fund Your Currency Wallet",
+      description:
+        "Open your currency wallet and fund it easily to start sending money right away.",
+    },
+    {
+      id: 3,
+      icon: <Users className="size-7 text-primary" />,
+      title: "Add Your Recipient",
+      description:
+        "Add recipient details securely and manage multiple beneficiaries effortlessly.",
+    },
+    {
+      id: 4,
+      icon: <Send className="size-7 text-primary" />,
+      title: "Transfer Money",
+      description:
+        "Transfer money confidently and track each transaction in real time from wallet to recipient.",
+    },
+  ];
 
   return (
     <div className="SendMoneyStep sm:py-16 py-10">
@@ -131,6 +127,7 @@ const SendMoneySteps = () => {
           <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
             Send Money in <span className="text-primary">4 Simple Steps</span>
           </h3>
+
           <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
             Send money quickly and securely in just four easy steps. From
             setting up your account to your recipient receiving funds in India,
@@ -165,15 +162,15 @@ const SendMoneySteps = () => {
                 <div className="flex items-start sm:gap-8 gap-6 relative z-[2]">
                   {/* Left Side - Icon Container */}
                   <div className="flex justify-center bg-background shrink-0">
-                    <div className="w-20 h-20 rounded-full icon-outer-wrapper flex items-center justify-center">
-                      <div className="w-14 h-14 rounded-full icon-inner-background flex items-center justify-center">
+                    <div className="size-20 rounded-full icon-outer-wrapper flex items-center justify-center">
+                      <div className="size-14 rounded-full icon-inner-background flex items-center justify-center">
                         {step.icon}
                       </div>
                     </div>
                   </div>
 
                   {/* Right Side - Content */}
-                  <div className="flex-1 pt-2">
+                  <div className="flex-1 pt-2 space-y-1">
                     <h3 className="sm:text-2xl text-xl text-mainheadingWhite font-semibold">
                       {step.title}
                     </h3>
@@ -194,7 +191,7 @@ const SendMoneySteps = () => {
                 height={4000}
                 alt="Padlock symbolizing security"
                 className="lg:w-[70%] w-auto rounded-3xl "
-                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 75vw, 550px" 
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 75vw, 550px"
               />
             </div>
           </div>

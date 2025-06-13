@@ -2248,11 +2248,6 @@ const contactInfo: ContactInfoItem[] = [
     href: "mailto:https://www.remityn.com/",
     ariaLabel: "Email us at hello@skillbirdge.com",
   },
-  {
-    icon: MdLocationOn,
-    text: "Somewhere in the World",
-    ariaLabel: "Our location: Somewhere in the World",
-  },
 ];
 
 const socialLinks: SocialLinkItem[] = [
