@@ -187,8 +187,8 @@ const SendMoneySteps = () => {
             <div className="relative w-full flex xl:justify-end justify-center items-center">
               <Image
                 src="/assets/images/steps.svg"
-                width={4000}
-                height={4000}
+                width={2000}
+                height={2000}
                 alt="Padlock symbolizing security"
                 className="lg:w-[70%] w-auto rounded-3xl "
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 75vw, 550px"

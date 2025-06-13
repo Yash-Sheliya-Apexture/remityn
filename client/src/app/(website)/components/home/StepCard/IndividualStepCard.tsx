@@ -123,8 +123,8 @@ const IndividualStepCard: React.FC<IndividualStepCardProps> = ({
         <Image
           src={step.contentImages.img}
           alt={step.contentImages.imgTitle || `Step ${index + 1}: ${step.contentTitle}`} // Fallback alt text
-          width={1600} // Intrinsic width of the source image (largest version)
-          height={1000} // Intrinsic height of the source image (largest version)
+          width={1000} // Intrinsic width of the source image (largest version)
+          height={800} // Intrinsic height of the source image (largest version)
           priority={isFirst} // Preload the first image, lazy load others
           quality={75} // Adjust quality (0-100), 75 is a good default
           sizes="(max-width: 767px) 100vw, (max-width: 1023px) 768px, (max-width: 1279px) 60vw, 768px"
