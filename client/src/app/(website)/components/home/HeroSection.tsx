@@ -819,7 +819,7 @@ const HeroSection: React.FC = () => {
         >
           {buttonText}
         </Link>
-        <p className="mt-8 text-sm sm:text-base text-subheadingWhite flex items-center justify-center">
+        <p className="mt-8 text-sm sm:text-base text-subheadingWhite flex flex-wrap items-center justify-center">
           <Globe size={20} className="mr-1.5 text-primary" />
           <span className="opacity-90">Trusted by over</span>
           <span className="font-bold text-white mx-0.5 px-1">2000+</span>
