@@ -1078,8 +1078,8 @@ const FloatingButton: React.FC<FloatingButtonProps> = ({
   iconColorClass,
   initialTextColorClass = "text-white",
   borderColorClass = "border-gray-300",
-  hoverTextColorClass = "group-hover:text-white",
-  hoverButtonBgClass = "group-hover:bg-black",
+  hoverTextColorClass = "group-hover:text-mainheadingWhite",
+  hoverButtonBgClass = "group-hover:bg-primary-foreground",
   ariaLabel,
   animationConfig,
   animationDelay = "0s",
@@ -1113,7 +1113,7 @@ const FloatingButton: React.FC<FloatingButtonProps> = ({
         aria-label={ariaLabel}
         type="button"
         style={buttonStyle}
-        className={`relative z-10 flex items-center rounded-full p-2 bg-background border ${borderColorClass} ${
+        className={`relative z-10 flex items-center rounded-full p-2 bg-primary-foreground border ${borderColorClass} ${
           applyBaseShadow ? "" : ""
         } transition-all duration-300 ease-in-out overflow-hidden group-hover:px-4 group-hover:border-transparent focus:outline-none cursor-pointer ${hoverButtonBgClass} ${buttonSpecificAnimationClass}`}
       >
@@ -1200,7 +1200,7 @@ const FloatingActionButtons: React.FC = () => {
   const iconSize = "h-6 w-6";
 
   return (
-    <div className="fixed bottom-6 right-6 flex flex-col items-end gap-6 z-30">
+    <div className="fixed bottom-6 left-6 flex flex-col items-end gap-6 z-30">
       {/* <FloatingButton
         onClick={handleWhatsAppClick}
         icon={<IoLogoWhatsapp className={iconSize} />}
