@@ -414,6 +414,9 @@
 
 // export default React.memo(WhyChooseUs); // Memoize component
 
+
+
+
 "use client"; // This component uses React state/effects implicitly or explicitly via icons, so "use client" is appropriate.
 
 import React from "react"; // Simplified import
@@ -433,7 +436,7 @@ const featuresData: FeatureItem[] = [
     description: "Send and manage money worldwide with ease.",
     icons: <Globe className="size-6 lg:size-8 text-primary" />,
   },
-  {
+  { 
     title: "Security That Never Sleeps",
     description: "24/7 protection with encryption and 2FA.",
     icons: <LockKeyhole className="size-6 lg:size-8 text-primary" />,
