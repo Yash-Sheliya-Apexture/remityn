@@ -2348,7 +2348,7 @@ const Footer: React.FC = () => {
 
         {/* Bottom Bar: Social, Copyright, Legal */}
         <div className="bg-primary-foreground border-gray-700/50  sm:p-6 p-4 rounded-xl sm:rounded-full ">
-          <div className="flex flex-col md:flex-row justify-between items-center">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-2">
             <div className="flex items-center flex-row justify-center gap-3.5 sm:text-lg text-base shrink-0 flex-wrap">
               {contactInfo.map((item, index) => (
                 <a
@@ -2383,7 +2383,7 @@ const Footer: React.FC = () => {
             </div>
 
             {/* Copyright Text */}
-            <p className="text-subheadingWhite text-center order-2 sm:order-none">
+            <p className="text-subheadingWhite text-center order-2 sm:order-none lg:block hidden">
               {" "}
               {/* Adjusted order for desktop */}
               {copyrightText} © {currentYear}
@@ -2407,6 +2407,14 @@ const Footer: React.FC = () => {
                 Terms of Service
               </Link>
             </div>
+          </div>
+          <div className="mt-2 lg:hidden block">
+              {/* Copyright Text */}
+            <p className="text-subheadingWhite text-center order-2 sm:order-none">
+              {" "}
+              {/* Adjusted order for desktop */}
+              {copyrightText} © {currentYear}
+            </p>
           </div>
         </div>
       </div>

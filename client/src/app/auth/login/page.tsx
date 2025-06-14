@@ -6649,7 +6649,7 @@ export default function LoginPage() {
                                 <div>
                                     <p className="text-white">{generalError}</p>
                                     {notVerifiedError && (
-                                        <button onClick={handleResendVerification} className="text-primary hover:text-primaryhover text-sm font-medium underline mt-1 text-left">Resend verification code</button>
+                                        <button onClick={handleResendVerification} className="text-primary hover:text-primaryhover text-sm font-medium underline cursor-pointer mt-1 text-left">Resend verification code</button>
                                     )}
                                 </div>
                             </motion.div>
