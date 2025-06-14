@@ -234,6 +234,7 @@ export const InboxMessageDetailView: React.FC<InboxMessageDetailViewProps> = ({
   const handleConfirmDelete = () => {
     onDelete(message._id);
   };
+  
 
   return (
     <>
@@ -246,7 +247,7 @@ export const InboxMessageDetailView: React.FC<InboxMessageDetailViewProps> = ({
             className="flex items-center justify-center cursor-pointer gap-2 bg-secondarybox hover:bg-secondaryboxhover text-primary sm:px-4 sm:py-2 sm:h-auto h-8 sm:w-auto w-8 rounded-full transition-all duration-75 ease-linear disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isDeleting}
           >
-            <ChevronLeft  size={20} />
+            <ChevronLeft size={20} />
             <span className="hidden sm:block text-sm">Back</span>
           </button>
 
@@ -259,7 +260,6 @@ export const InboxMessageDetailView: React.FC<InboxMessageDetailViewProps> = ({
             {/* Keep the icon consistent, spinner logic is inside the modal */}
             <Trash2 className="size-4" />
           </button>
-          
         </div>
 
         {/* Message Header & Metadata */}
@@ -278,7 +278,7 @@ export const InboxMessageDetailView: React.FC<InboxMessageDetailViewProps> = ({
                 From:{" "}
                 <span className="font-medium text-subheadingWhite">
                   {/* {message.sender || "System"} */}
-                  [Webiste Name]
+                  Remityn
                 </span>
               </span>
             </div>

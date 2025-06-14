@@ -1768,7 +1768,7 @@ export default function ChangePassword() {
             {/* Error Message: Invalid Current Password */}
             {showInvalidCurrentPasswordError && (
               <div className="bg-red-900/25 border border-red-500 rounded-lg p-3 flex items-center gap-3">
-                <div className="flex-shrink-0 size-10  rounded-full flex items-center justify-center bg-red-600/20">
+                <div className="flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center bg-red-600/20">
                   <FiAlertTriangle className="text-red-500 size-5 sm:size-6 flex-shrink-0" />
                 </div>
                 <p className="text-red-300/90">
@@ -1803,10 +1803,10 @@ export default function ChangePassword() {
                   id="currentPassword"
                   name="currentPassword"
                   autoComplete="current-password"
-                  className={`mt-1 block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0 pr-10 ${
+                  className={`mt-1 block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 text-white focus:outline-0 pr-10 ${
                     showInvalidCurrentPasswordError
                       ? "border-red-600 ring-1 ring-red-600"
-                      : "border-primarybox" // Assuming border-primarybox is a valid class or replace with "border-gray-600"
+                      : " border-gray-600 hover:border-gray-500 focus:border-gray-500 " // Assuming border-primarybox is a valid class or replace with "border-gray-600"
                   }`}
                   placeholder="Enter current password"
                   value={currentPassword}
@@ -1829,12 +1829,12 @@ export default function ChangePassword() {
                     id="newPassword"
                     name="newPassword"
                     autoComplete="new-password"
-                    className={`mt-1 block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0 pr-10 ${
+                    className={`mt-1 block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 text-white focus:outline-0 pr-10 ${
                       (showSamePasswordError ||
                         (newPassword && !isNewPasswordValid())) &&
                       !showSortedMessage // Removed !successMessage check as success is now a toast
-                        ? "border-red-600"
-                        : "border-primarybox" // Assuming border-primarybox is a valid class or replace with "border-gray-600"
+                        ? "border-red-600 "
+                        : "border-gray-600 hover:border-gray-500 focus:border-gray-500" // Assuming border-primarybox is a valid class or replace with "border-gray-600"
                     }`}
                     placeholder="Enter new password"
                     value={newPassword}
