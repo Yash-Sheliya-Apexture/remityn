@@ -223,7 +223,7 @@ const ActivityList: React.FC<ActivityListProps> = ({
         {[...Array(activitiesPerPage)].map((_, i) => (
           <div
             key={`skel-activity-${i}`}
-            className="flex items-start bg-primarybox p-4 rounded-lg "
+            className="flex sm:items-center items-start bg-primarybox p-4 rounded-lg "
           >
             <Skeleton className="h-10 w-10 rounded-full mr-4 flex-shrink-0 bg-background/50" />
             <div className="flex sm:flex-row flex-col justify-between w-full">

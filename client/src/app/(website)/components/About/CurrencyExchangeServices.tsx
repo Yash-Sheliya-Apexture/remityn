@@ -366,7 +366,7 @@ const CurrencyExchangeServices: React.FC<
   const { user } = useAuth();
 
   const buttonText = user ? "Go to Dashboard" : "Join Remityn Now";
-  const buttonLink = user ? "/dashboard/send/select-balance" : "/auth/register";
+  const buttonLink = user ? "/dashboard" : "/auth/register";
 
   return (
     <section className="CurrencyExchangeServicesSection sm:py-16 py-10 overflow-hidden">

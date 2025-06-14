@@ -586,7 +586,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   const userInitials = getInitials(user?.fullName);
 
   return (
-    <header className="sticky bg-background top-0 z-50">
+    <header className="sticky bg-background top-0 z-5">
       {" "}
       {/* Increased z-index for better layering */}
       <div className="max-w-5xl mx-auto px-4">
