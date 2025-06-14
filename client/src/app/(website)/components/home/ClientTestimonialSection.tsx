@@ -1519,6 +1519,7 @@
 
 // export default ClientTestimonialSection;
 
+
 "use client";
 
 import React, { useState } from "react";
@@ -1544,15 +1545,15 @@ const testimonialsData: Testimonial[] = [
     id: 1,
     imageSrc: "/assets/images/nelson-dunk.jpg",
     quote:
-      "Remityn has been a game changer for me when it comes to sending money abroad. The platform is super easy to use, transparent with fees, and the exchange rates are way better than traditional banks. Transfers are fast and I always feel confident my money is safe.",
-    name: "Nelson Dunk",
+      "Remityn has truly been a game-changer for me when it comes to sending money abroad. The platform is simple to use, fully transparent about fees.Transfers are quick, and I always feel secure knowing my money is in safe hands.",
+    name: "Rashmi",
     trustpilotRating: 5, // Example: 4.8 out of 5
   },
   {
     id: 2,
     imageSrc: "/assets/images/ben-cane.jpg",
     quote:
-      "Remityn provides a smooth, user-friendly experience with quick transfers and low fees. The Euro to USD exchange rate is always fair and clearly displayed. I've used it multiple times and it never disappoints — highly recommended!",
+      "Remityn offers a smooth, user-friendly experience with fast transfers and low fees. The USD to INR exchange rate is always fair and clearly shown. I've used the service several times, and it has never let me down highly recommended!",
     name: "Ben Cane",
     trustpilotRating: 4.5, // Example: 5 out of 5
   },
@@ -1560,7 +1561,7 @@ const testimonialsData: Testimonial[] = [
     id: 3,
     imageSrc: "/assets/images/deshawn-robinson.jpg",
     quote:
-      "I have been using Remitly for my international money transfers, and I am more than happy with their service. The transfer process is fast, secure, and user-friendly. My funds arrived earlier than expected, and the exchange rates were very competitive.",
+      "I’ve been using Remityn for my international money transfers, and I’m more than satisfied with their service. The process is fast, secure, and easy to navigate. My funds arrived earlier than expected, and the exchange rates were very competitive.",
     name: "Anitha Kaipally",
     trustpilotRating: 4.5, // Example: 4.2 out of 5
   },
@@ -1568,7 +1569,7 @@ const testimonialsData: Testimonial[] = [
     id: 4,
     imageSrc: "/assets/images/Tom.jpg",
     quote:
-      "I love Remityn! It has completely changed the way I send money to my family. Transfers are always fast, reliable, and easy to track. Whether I need to send funds immediately or schedule something in advance, Remityn gives me peace of mind.",
+      "The process is easy, and the transfer charges are comparatively lower than other services. The recipient receives the money in less than 10 minutes. Remityn is one of the best money transfer services I’ve used. I’ll definitely continue using it for all my future transfers.",
     name: "Catherine Luna",
     trustpilotRating: 5, // Example: 4 out of 5
   },
@@ -1576,7 +1577,7 @@ const testimonialsData: Testimonial[] = [
     id: 5,
     imageSrc: "/assets/images/Sofia.png",
     quote:
-      "Besides the pricing has been good, I had an issue one time and someone from Remityn was so helpful in resolving my issue. When I had my problem, the person helping me spoke perfect English, which helped more than you could imagine.",
+      "Remityn is simply amazing. Not only are transfers instant, but the platform is also super user-friendly, and support is always available no matter what time you send money. I’ve saved a lot on international transfer fees and exchange rates.Highly reliable and definitely worth using!",
     name: "Sofia Vyas",
     trustpilotRating: 5, // Example: 3.5 out of 5
   },
@@ -1584,7 +1585,7 @@ const testimonialsData: Testimonial[] = [
     id: 6,
     imageSrc: "/assets/images/Sofia.png", // Assuming this is a placeholder or different Sofia
     quote:
-      "I had a great experience using Remityn. The app is very easy to use, and the process of sending money was smooth and quick. One of the best things is the excellent exchange rate, which is better than many other services.",
+      "Using Remityn is incredibly convenient, especially when I need to send money on the go. As long as I have my phone, I can quickly transfer funds without hassle. It’s also super helpful when I’m traveling abroad Remityn makes currency exchange and international transfers simple.",
     name: "Chelsy Desai",
     trustpilotRating: 4.5, // Example: 4.7 out of 5
   },

@@ -5063,6 +5063,8 @@
 
 // export default Header;
 
+
+
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
@@ -5074,24 +5076,6 @@ import { useAuth } from "@/app/contexts/AuthContext";
 import { HiOutlineLogout } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
 import { TbMenu3 } from "react-icons/tb";
-
-// --- LCP Optimization Note ---
-// The Lighthouse report indicates an LCP issue with an image: /assets/images/sdfsfd.png
-// This image is NOT the logo in this Header component.
-// To fix the LCP for /assets/images/sdfsfd.png:
-// 1. Locate the component rendering this image.
-// 2. If using <Image> from next/image:
-//    - Add the `priority` prop.
-//    - Ensure `width`, `height`, and `sizes` props are accurately set.
-//    e.g., <Image src="/assets/images/sdfsfd.png" ... priority sizes="..." />
-// 3. If using a native <img> tag:
-//    - Ensure it does not have `loading="lazy"`.
-//    - Add `fetchpriority="high"`.
-//    - Consider a manual <link rel="preload"> in the document <head>.
-// 4. Optimize the image file itself (compression, format like WebP, correct dimensions).
-// 5. Check for render-blocking JavaScript or CSS that might delay its loading.
-// The primary issue noted was "Load Delay", suggesting the browser discovered or started loading the image late.
-// ---
 
 // Define navigation links
 const navLinks = [
