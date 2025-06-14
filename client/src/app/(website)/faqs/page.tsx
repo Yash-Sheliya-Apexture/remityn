@@ -1867,11 +1867,10 @@ const FAQPage: React.FC = () => {
 
         <div className="faq-content sm:mt-25 mt-16"> 
           <div className="lg:space-y-10 space-y-6"> 
-            {faqSections.map((section) => (
+            {/* {faqSections.map((section) => (
               <div key={section.title}>
                 <h2 className="text-2xl xl:text-3xl font-semibold flex items-center sm:gap-3 gap-1.5 text-primary lg:mb-8 mb-6" 
                 >
-                  {/* Dots */}
                   <div className="xl:size-4 size-3 bg-primary rounded-full">
                   </div>
                   {section.title}
@@ -1890,7 +1889,38 @@ const FAQPage: React.FC = () => {
                   ))}
                 </div>
               </div>
-            ))}
+            ))} */}
+
+            {faqSections.map((section) => {
+              // --- MODIFICATION START ---
+              // Dynamically create a URL-friendly ID from the section title.
+              // e.g., "Safety and Security" becomes "safety-and-security"
+              const sectionId = section.title.toLowerCase().replace(/\s+/g, '-');
+              
+              return (
+                // Add the generated 'id' to the wrapping div for this section.
+                <div key={section.title} id={sectionId} className="scroll-mt-28">
+                {/* --- MODIFICATION END --- */}
+
+                  <h2 className="text-2xl xl:text-3xl font-semibold flex items-center sm:gap-3 gap-1.5 text-primary lg:mb-8 mb-6">
+                    <div className="xl:size-4 size-3 bg-primary rounded-full"></div>
+                    {section.title}
+                  </h2>
+
+                  <div>
+                    {section.items.map((item) => (
+                      <div key={item.id}>
+                        <AccordionItem
+                          item={item}
+                          isOpen={openAccordionId === item.id}
+                          onToggle={() => toggleAccordion(item.id)}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

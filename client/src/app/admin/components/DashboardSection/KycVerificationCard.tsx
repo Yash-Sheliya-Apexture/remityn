@@ -791,12 +791,12 @@ export default function KycVerificationCard({
       </div>
 
       {/* Footer Link */}
-      <div>
+      <div className="mt-6">
         {" "}
         {/* Wrapper div matches skeleton */}
         <Link
           href="/admin/kyc-management"
-          className="mt-6 inline-block text-primary text-sm font-medium hover:text-primaryhover hover:underline underline-offset-2 transition-all duration-75 ease-linear cursor-pointer" // mt-6 matches skeleton
+          className="inline-block text-primary text-sm font-medium hover:text-primaryhover hover:underline underline-offset-2 transition-all duration-75 ease-linear cursor-pointer" // mt-6 matches skeleton
         >
           Manage KYC Verifications →
         </Link>
