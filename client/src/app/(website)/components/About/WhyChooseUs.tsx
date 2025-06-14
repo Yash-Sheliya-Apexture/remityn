@@ -280,129 +280,253 @@
 
 // export default WhyChooseUs;
 
-"use client";
-import { Globe, Handshake, LockKeyhole } from "lucide-react";
-import React, { JSX } from "react"; // Import React for React.memo
+// "use client";
+// import { Globe, Handshake, LockKeyhole } from "lucide-react";
+// import React, { JSX } from "react"; // Import React for React.memo
 
+// interface FeatureItem {
+//   title: string;
+//   description: string;
+//   icons: JSX.Element;
+// }
+
+// const featuresData: FeatureItem[] = [
+//   {
+//     title: "Global Transfers, Simplified",
+//     description:
+//       "Send and manage money worldwide with ease.",
+//     icons: <Globe className="size-6 lg:size-8 text-primary" />,
+//   },
+//   {
+//     title: "Security That Never Sleeps",
+//     description:
+//       "24/7 protection with encryption and 2FA.",
+//     icons: <LockKeyhole className="size-6 lg:size-8 text-primary" />,
+//   },
+//   {
+//     title: "Beyond Transfers",
+//     description:
+//       "Trusted partner in your money journey.",
+//     icons: <Handshake className="size-6 lg:size-8 text-primary" />,
+//   },
+// ];
+
+// const WhyChooseUs: React.FC = () => {
+//   const currentProducts = featuresData; // This variable isn't strictly necessary if always using featuresData
+
+//   return (
+//     <section className="WhyChooseUsSection sm:py-16 py-10 overflow-hidden">
+//       <div className="mx-auto container px-4">
+//         <div className="mx-auto max-w-4xl text-center space-y-4">
+//           {/* ... (heading content remains the same) ... */}
+//           <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
+//             Remityn: Where Your Money {"  "}
+//             <span className="text-primary">Journey Truly Matters</span>
+//           </h3>
+
+//           <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
+//             Your money isn’t just currency. it represents care, commitment and connection. Remityn ensures every transfer is secure, fast and personally supported.
+//           </p>
+//         </div>
+
+//         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 sm:gap-10 gap-8 sm:mt-16 mt-10">
+//           {featuresData.map((product, index) => {
+//             const isLast = index === featuresData.length - 1;
+//             // Simplified conditional classes for borders, assuming standard grid behavior handles alignment.
+//             // The complex logic for col-span might be unnecessary if the grid itself handles item flow correctly.
+//             // Focus on border logic.
+//             let conditionalClasses = "";
+//             if (featuresData.length > 1 && !isLast) {
+//               // Add right border for items not last in their row on larger screens
+//               // And bottom border for items not in the last row on smaller screens
+//               conditionalClasses =
+//                 "lg:border-r border-r-gray-600/50 lg:border-b-0 border-b border-b-gray-600/50 pr-0 lg:pr-10 pb-8 sm:pb-10 lg:pb-0";
+
+//               // Refinement: Only add lg:border-r if not the last item in a 3-column row
+//               if ((index + 1) % 3 === 0) {
+//                 // Last in a 3-col row
+//                 conditionalClasses = conditionalClasses
+//                   .replace("lg:border-r border-r-gray-600/50", "")
+//                   .replace("lg:pr-10", "");
+//               }
+//               // Refinement: Only add border-b if not the last item in a 2-column row (for sm)
+//               if ((index + 1) % 2 === 0 && index < featuresData.length - 1) {
+//                 // Last in a 2-col row, but not overall last
+//                 // The original class had border-b for all non-last items. This might be fine.
+//               } else if (
+//                 index >=
+//                   featuresData.length -
+//                     (featuresData.length % 2 === 0 ? 2 : 1) &&
+//                 featuresData.length % 3 === 0 &&
+//                 index >= featuresData.length - 3
+//               ) {
+//                 // If in last row of sm or lg, no bottom border needed
+//               }
+
+//               // Sticking to the original simpler logic for borders on non-last items, as it's hard to perfect without visual testing.
+//               // The key is that `isLast` determines if ANY border styling for "non-last" items applies.
+//               // The original:
+//               if (!isLast) {
+//                 conditionalClasses =
+//                   "lg:border-r border-r-gray-600/50 lg:border-b-0 border-b border-b-gray-600/50 pr-0 lg:pr-10 pb-8 sm:pb-10 lg:pb-0";
+//               } else {
+//                 // The original col-span logic for the last item
+//                 if (
+//                   featuresData.length === 1 ||
+//                   (featuresData.length % 2 !== 0 && isLast)
+//                 ) {
+//                   conditionalClasses = "sm:col-span-2 lg:col-span-1";
+//                 } else if (isLast) {
+//                   conditionalClasses = "lg:col-span-1";
+//                 }
+//               }
+//             }
+
+//             return (
+//               <div
+//                 key={index}
+//                 className={`text-center space-y-6${
+//                   conditionalClasses ? " " + conditionalClasses.trim() : ""
+//                 }`}
+//               >
+//                 {/* ... (icon, title, description remains the same) ... */}
+//                 <div className="flex justify-center">
+//                   <div className="size-20 rounded-full icon-outer-wrapper flex items-center justify-center">
+//                     <div className="size-14 rounded-full icon-inner-background flex items-center justify-center">
+//                       {product.icons}
+//                     </div>
+//                   </div>
+//                 </div>
+//                 <h3 className="text-2xl text-mainheadingWhite font-semibold">
+//                   {product.title}
+//                 </h3>
+//                 <p className="text-subheadingWhite lg:text-lg text-base">
+//                   {product.description}
+//                 </p>
+//               </div>
+//             );
+//           })}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default React.memo(WhyChooseUs); // Memoize component
+
+
+
+
+"use client"; // This component uses React state/effects implicitly or explicitly via icons, so "use client" is appropriate.
+
+import React from "react"; // Simplified import
+import { Globe, Handshake, LockKeyhole } from "lucide-react";
+
+// Define type for FeatureItem data
 interface FeatureItem {
   title: string;
   description: string;
-  icons: JSX.Element;
+  icons: React.ReactNode; // Using React.ReactNode for broader compatibility with icon types
 }
 
+// Data for the features
 const featuresData: FeatureItem[] = [
   {
     title: "Global Transfers, Simplified",
-    description:
-      "Send and manage money worldwide with ease.",
+    description: "Send and manage money worldwide with ease.",
     icons: <Globe className="size-6 lg:size-8 text-primary" />,
   },
-  {
+  { 
     title: "Security That Never Sleeps",
-    description:
-      "24/7 protection with encryption and 2FA.",
+    description: "24/7 protection with encryption and 2FA.",
     icons: <LockKeyhole className="size-6 lg:size-8 text-primary" />,
   },
   {
     title: "Beyond Transfers",
-    description:
-      "Trusted partner in your money journey.",
+    description: "Trusted partner in your money journey.",
     icons: <Handshake className="size-6 lg:size-8 text-primary" />,
   },
 ];
 
 const WhyChooseUs: React.FC = () => {
-  const currentProducts = featuresData; // This variable isn't strictly necessary if always using featuresData
-
   return (
     <section className="WhyChooseUsSection sm:py-16 py-10 overflow-hidden">
       <div className="mx-auto container px-4">
+        {/* Header Section */}
         <div className="mx-auto max-w-4xl text-center space-y-4">
-          {/* ... (heading content remains the same) ... */}
           <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
             Remityn: Where Your Money {"  "}
             <span className="text-primary">Journey Truly Matters</span>
           </h3>
-
           <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
-            Your money isn’t just currency. it represents care, commitment and connection. Remityn ensures every transfer is secure, fast and personally supported.
+            Your money isn’t just currency. it represents care, commitment and
+            connection. Remityn ensures every transfer is secure, fast and
+            personally supported.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 sm:gap-10 gap-8 sm:mt-16 mt-10">
-          {featuresData.map((product, index) => {
-            const isLast = index === featuresData.length - 1;
-            // Simplified conditional classes for borders, assuming standard grid behavior handles alignment.
-            // The complex logic for col-span might be unnecessary if the grid itself handles item flow correctly.
-            // Focus on border logic.
-            let conditionalClasses = "";
-            if (featuresData.length > 1 && !isLast) {
-              // Add right border for items not last in their row on larger screens
-              // And bottom border for items not in the last row on smaller screens
-              conditionalClasses =
-                "lg:border-r border-r-gray-600/50 lg:border-b-0 border-b border-b-gray-600/50 pr-0 lg:pr-10 pb-8 sm:pb-10 lg:pb-0";
+        {/* 
+          Features Grid:
+          - Mobile (default): 1 column
+          - Tablet (sm): 2 columns, with the last item spanning both if total is 3 (as per featuresData structure)
+          - Desktop (lg): 3 columns
+        */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 sm:mt-16 mt-10">
+          {featuresData.map((feature, index) => {
+            const totalItems = featuresData.length;
 
-              // Refinement: Only add lg:border-r if not the last item in a 3-column row
-              if ((index + 1) % 3 === 0) {
-                // Last in a 3-col row
-                conditionalClasses = conditionalClasses
-                  .replace("lg:border-r border-r-gray-600/50", "")
-                  .replace("lg:pr-10", "");
-              }
-              // Refinement: Only add border-b if not the last item in a 2-column row (for sm)
-              if ((index + 1) % 2 === 0 && index < featuresData.length - 1) {
-                // Last in a 2-col row, but not overall last
-                // The original class had border-b for all non-last items. This might be fine.
-              } else if (
-                index >=
-                  featuresData.length -
-                    (featuresData.length % 2 === 0 ? 2 : 1) &&
-                featuresData.length % 3 === 0 &&
-                index >= featuresData.length - 3
-              ) {
-                // If in last row of sm or lg, no bottom border needed
-              }
+            // Specific check for the third item in a list of three to apply the full-width span on tablets (sm).
+            // This mirrors the logic from InternationalTransferSection (ITS used 'md', here 'sm' is used for the 2-col breakpoint).
+            const isThirdItemAndTotalIsThree = totalItems === 3 && index === 2;
 
-              // Sticking to the original simpler logic for borders on non-last items, as it's hard to perfect without visual testing.
-              // The key is that `isLast` determines if ANY border styling for "non-last" items applies.
-              // The original:
-              if (!isLast) {
-                conditionalClasses =
-                  "lg:border-r border-r-gray-600/50 lg:border-b-0 border-b border-b-gray-600/50 pr-0 lg:pr-10 pb-8 sm:pb-10 lg:pb-0";
-              } else {
-                // The original col-span logic for the last item
-                if (
-                  featuresData.length === 1 ||
-                  (featuresData.length % 2 !== 0 && isLast)
-                ) {
-                  conditionalClasses = "sm:col-span-2 lg:col-span-1";
-                } else if (isLast) {
-                  conditionalClasses = "lg:col-span-1";
-                }
-              }
-            }
+            const itemWrapperClasses = `
+              relative 
+              ${isThirdItemAndTotalIsThree ? "sm:col-span-2 lg:col-span-1" : ""}
+            `;
 
             return (
-              <div
-                key={index}
-                className={`text-center space-y-6${
-                  conditionalClasses ? " " + conditionalClasses.trim() : ""
-                }`}
-              >
-                {/* ... (icon, title, description remains the same) ... */}
-                <div className="flex justify-center">
-                  <div className="size-20 rounded-full icon-outer-wrapper flex items-center justify-center">
-                    <div className="size-14 rounded-full icon-inner-background flex items-center justify-center">
-                      {product.icons}
+              <div key={feature.title + index} className={itemWrapperClasses}>
+                {/* Content Area with Padding */}
+                {/* Using py-8 for vertical padding consistency with ITS, space-y-6 from original WCU */}
+                <div className="px-5 py-8 text-center space-y-6">
+                  <div className="flex justify-center">
+                    <div className="size-20 rounded-full icon-outer-wrapper flex items-center justify-center">
+                      <div className="size-14 rounded-full icon-inner-background flex items-center justify-center">
+                        {feature.icons}
+                      </div>
                     </div>
                   </div>
+                  <h3 className="text-2xl text-mainheadingWhite font-semibold">
+                    {feature.title}
+                  </h3>
+                  <p className="text-subheadingWhite lg:text-lg text-base">
+                    {feature.description}
+                  </p>
                 </div>
-                <h3 className="text-2xl text-mainheadingWhite font-semibold">
-                  {product.title}
-                </h3>
-                <p className="text-subheadingWhite lg:text-lg text-base">
-                  {product.description}
-                </p>
+
+                {/* --- SEPARATE BORDER DIVS (Adapted from InternationalTransferSection) --- */}
+
+                {/* Vertical Border: Show ONLY on large screens (lg) between items */}
+                {/* For 3 items, it will appear after items 0 and 1 in a 3-column layout. */}
+                {(index + 1) % 3 !== 0 && index < totalItems - 1 && (
+                  <div
+                    className="absolute top-0 right-0 h-full w-px bg-gray-600/50 hidden lg:block"
+                    aria-hidden="true"
+                  />
+                )}
+
+                {/* Horizontal Border: Show on mobile and tablet (sm), but hide on large screens (lg) */}
+                {/* Given featuresData has 3 items (like ITS's example), this applies a bottom border to the first two items (index 0 and 1).
+                    This ensures correct separation on mobile (1-col) and forms a line under the first row on tablet (sm: 2-col)
+                    when the third item spans the next row.
+                    If featuresData length were highly variable, this condition (index < 2) would need generalization.
+                */}
+                {index < 2 && ( // This condition is specific to featuresData having 3 items.
+                  <div
+                    className="absolute bottom-0 left-0 w-full h-px bg-gray-600/50 block lg:hidden"
+                    aria-hidden="true"
+                  />
+                )}
               </div>
             );
           })}
@@ -412,4 +536,7 @@ const WhyChooseUs: React.FC = () => {
   );
 };
 
-export default React.memo(WhyChooseUs); // Memoize component
+
+
+
+export default React.memo(WhyChooseUs);

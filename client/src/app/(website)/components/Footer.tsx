@@ -2197,6 +2197,7 @@
 
 // export default Footer;
 
+
 // app/components/Footer.tsx
 "use client";
 import Link from "next/link";
@@ -2279,7 +2280,7 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="lg:py-16 py-10">
+    <footer className="sm:py-16 py-10">
       <div className="container mx-auto px-4">
         {/* Top Section: Logo and Nav Links */}
         <div className="flex flex-col items-center ">

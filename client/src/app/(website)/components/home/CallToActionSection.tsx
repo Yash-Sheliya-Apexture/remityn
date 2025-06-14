@@ -60,6 +60,7 @@
 
 // export default CallToActionSection;
 
+
 "use client"; // Keep "use client" if future interactions are planned (e.g., button click analytics).
 // If purely static, it could be a Server Component, but "use client" is safe.
 
